@@ -9,36 +9,19 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
 
-/**
- * The Class Weekly.
- */
-// 週単位
+/** 週単位  */
 @Getter
 public class WeeklyUnit extends ValueObject {
 
 	/** The Constant DEFAULT_VALUE. */
 	public static final int DEFAULT_VALUE = 0;
 
-	/** The time. */
-	// 週間時間
+	/** 週間時間 */
 	private WeeklyTime time;
-
-	/** The start. */
-	// 週開始
-	private WeekStart start;
-
-	/**
-	 * Instantiates a new weekly.
-	 *
-	 * @param time
-	 *            the time
-	 * @param start
-	 *            the start
-	 */
-	public WeeklyUnit(WeeklyTime time, WeekStart start) {
+	
+	public WeeklyUnit(WeeklyTime time) {
 		super();
 		this.time = time;
-		this.start = start;
 	}
 
 }

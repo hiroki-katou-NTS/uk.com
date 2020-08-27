@@ -33,7 +33,6 @@ public class NormalSettingDto {
 		
 		NormalSettingDto dto = new NormalSettingDto();
 		
-		dto.setWeekStart(week.getWeeklyTime().getStart().value);
 		dto.setStatutorySetting(new WorkingTimeSettingDto(
 				week.getDailyTime().getDailyTime().valueAsMinutes(),
 				workTime.stream()

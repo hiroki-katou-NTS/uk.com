@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import lombok.val;
@@ -18,12 +16,17 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.company.KshmtLegalTimeMCom;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employee.KshmtLegalTimeMSya;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.employment.KshmtLegalTimeMEmp;
 import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.workingplace.KshmtLegalTimeMWkp;
+=======
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekStart;
+import nts.uk.ctx.at.shared.infra.entity.workrule.week.KsrmtWeekRuleMng;
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 import nts.uk.file.at.app.export.setworkinghoursanddays.CompanyColumn;
 import nts.uk.file.at.app.export.setworkinghoursanddays.EmployeeColumn;
 import nts.uk.file.at.app.export.setworkinghoursanddays.EmploymentColumn;
@@ -38,27 +41,11 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 
 @Stateless
 public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorkingHoursAndDaysExRepository {
-	
-	private static final String LEGAL_TIME_SYA = "SELECT s FROM KshmtLegalTimeMSya s WHERE "
-			+ " s.cid = :cid AND s.ym <= :start AND s.ym >= :end"
-			+ " ORDER BY s.ym";
-	private static final String LEGAL_TIME_WKP = "SELECT s FROM KshmtLegalTimeMWkp s WHERE "
-			+ " s.cid = :cid AND s.ym <= :start AND s.ym >= :end"
-			+ " ORDER BY s.ym";
-	private static final String LEGAL_TIME_EMP = "SELECT s FROM KshmtLegalTimeMEmp s WHERE "
-			+ " s.cid = :cid AND s.ym <= :start AND s.ym >= :end"
-			+ " ORDER BY s.ym";
-	private static final String LEGAL_TIME_COM = "SELECT s FROM KshmtLegalTimeMCom s WHERE "
-			+ " s.cid = :cid AND s.ym <= :start AND s.ym >= :end"
-			+ " ORDER BY s.ym";
-	@PersistenceContext
-	private EntityManager entityManager;
 	private static final String GET_EXPORT_MONTH = "SELECT m.MONTH_STR FROM BCMMT_COMPANY m WHERE m.CID = ?cid";
 	
 	private static final String GET_EXPORT_EXCEL = 
 									" SELECT "
 											+" KSHST_COM_REG_LABOR_TIME.DAILY_TIME, KSHST_COM_REG_LABOR_TIME.WEEKLY_TIME, "
-											+" KSHST_COM_REG_LABOR_TIME.WEEK_STR, "
 											+" KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR, "
 											+" IIF (KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_COM_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR , NUll) AS INCLUDE_LEGAL_AGGR, "
 											+" IIF (KRCST_COM_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_COM_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR , NUll) AS INCLUDE_HOLIDAY_AGGR, "
@@ -71,7 +58,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" KRCST_COM_FLEX_M_CAL_SET.INSUFFIC_SET, "
 											+" KSHST_COM_TRANS_LAB_TIME.DAILY_TIME AS REG_DAILY_TIME, "
 											+" KSHST_COM_TRANS_LAB_TIME.WEEKLY_TIME AS REG_WEEKLY_TIME, "
-											+" KSHST_COM_TRANS_LAB_TIME.WEEK_STR AS REG_WEEK_STR, "
 											+" KRCST_COM_DEFOR_M_CAL_SET.STR_MONTH, "
 											+" KRCST_COM_DEFOR_M_CAL_SET.PERIOD, "
 											+" KRCST_COM_DEFOR_M_CAL_SET.REPEAT_ATR, "
@@ -95,7 +81,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" IIF(BSYMT_EMPLOYMENT.NAME IS NOT NULL, BSYMT_EMPLOYMENT.NAME, 'マスタ未登録') AS NAME, "
 											+" KSHST_EMP_REG_LABOR_TIME.DAILY_TIME, "
 											+" KSHST_EMP_REG_LABOR_TIME.WEEKLY_TIME, "
-											+" KSHST_EMP_REG_LABOR_TIME.WEEK_STR, "
 											+" KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR AS INCLUDE_EXTRA_AGGR, "
 											+" IIF (KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_EMP_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR , NUll) AS INCLUDE_LEGAL_AGGR, "
 											+" IIF (KRCST_EMP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_EMP_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR , NUll) AS INCLUDE_HOLIDAY_AGGR, "
@@ -108,7 +93,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 											+" KRCST_EMP_FLEX_M_CAL_SET.INSUFFIC_SET, "
 											+" KSHST_EMP_TRANS_LAB_TIME.DAILY_TIME AS LAR_DAILY_TIME, "
 											+" KSHST_EMP_TRANS_LAB_TIME.WEEKLY_TIME AS LAR_WEEKLY_TIME, "
-											+" KSHST_EMP_TRANS_LAB_TIME.WEEK_STR AS LAR_WEEK_STR, "
 											+" KRCST_EMP_DEFOR_M_CAL_SET.STR_MONTH, "
 											+" KRCST_EMP_DEFOR_M_CAL_SET.PERIOD, "
 											+" KRCST_EMP_DEFOR_M_CAL_SET.REPEAT_ATR, "
@@ -143,7 +127,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	     exportSQL.append("             BSYMT_WKP_INFO.WKP_NAME AS WKP_NAME,   ");
 	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME .DAILY_TIME,   ");
 	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME.WEEKLY_TIME,   ");
-	     exportSQL.append("             KSHST_WKP_REG_LABOR_TIME.WEEK_STR,   ");
 	     exportSQL.append("             KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR,   ");
 	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS INCLUDE_LEGAL_AGGR,   ");
 	     exportSQL.append("             IIF (KRCST_WKP_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR != 0, KRCST_WKP_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS INCLUDE_HOLIDAY_AGGR,   ");
@@ -156,7 +139,6 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	     exportSQL.append("             KRCST_WKP_FLEX_M_CAL_SET.INSUFFIC_SET,   ");
 	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.DAILY_TIME AS LAB_DAILY_TIME,   ");
 	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.WEEKLY_TIME AS LAB_WEEKLY_TIME,   ");
-	     exportSQL.append("             KSHST_WKP_TRANS_LAB_TIME.WEEK_STR AS LAB_WEEK_STR,   ");
 	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.STR_MONTH,   ");
 	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.PERIOD,   ");
 	     exportSQL.append("             KRCST_WKP_DEFOR_M_CAL_SET.REPEAT_ATR,   ");
@@ -188,6 +170,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	     GET_WORKPLACE = exportSQL.toString();
 	  }
 	
+<<<<<<< HEAD
 	private static final String GET_EMPLOYEE = " SELECT "  
 			+ " ROW_NUMBER() OVER( "
 			+ " 	PARTITION BY BSYMT_EMP_DTA_MNG_INFO.SCD "
@@ -242,13 +225,126 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			+ "	KSHST_SHA_TRANS_LAB_TIME.CID = KSHST_FLX_GET_PRWK_TIME.CID "
 			+ " WHERE  KSHST_SHA_TRANS_LAB_TIME.CID = ? "
 			+ " ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC " ;
+=======
+	private static final String GET_EMPLOYEE = " SELECT  " 
+			 + "ROW_NUMBER() OVER(PARTITION BY BSYMT_EMP_DTA_MNG_INFO.SCD ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD ASC, KSHST_SHA_NORMAL_SET.[YEAR]) AS ROW_NUMBER, "
+			 + "BSYMT_EMP_DTA_MNG_INFO.SCD, " 
+			 + "BPSMT_PERSON.BUSINESS_NAME, "
+			 + "KSHST_SHA_NORMAL_SET.[YEAR], " 
+			 + "KSHST_SHA_NORMAL_SET.JAN_TIME AS S1, " 
+			 + "KSHST_SHA_NORMAL_SET.FEB_TIME AS S2, " 
+			 + "KSHST_SHA_NORMAL_SET.MAR_TIME AS S3, " 
+			 + "KSHST_SHA_NORMAL_SET.APR_TIME AS S4, " 
+			 + "KSHST_SHA_NORMAL_SET.MAY_TIME AS S5, " 
+			 + "KSHST_SHA_NORMAL_SET.JUN_TIME AS S6, " 
+			 + "KSHST_SHA_NORMAL_SET.JUL_TIME AS S7, " 
+			 + "KSHST_SHA_NORMAL_SET.AUG_TIME AS S8, " 
+			 + "KSHST_SHA_NORMAL_SET.SEP_TIME AS S9, " 
+			 + "KSHST_SHA_NORMAL_SET.OCT_TIME AS S10, " 
+			 + "KSHST_SHA_NORMAL_SET.NOV_TIME AS S11, " 
+			 + "KSHST_SHA_NORMAL_SET.DEC_TIME AS S12, " 
+			 + "KSHST_SHA_REG_LABOR_TIME.DAILY_TIME, " 
+			 + "KSHST_SHA_REG_LABOR_TIME.WEEKLY_TIME, " 
+			 + "KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR, " 
+			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULL) AS INCLUDE_LEGAL_AGGR, " 
+			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULL) AS INCLUDE_HOLIDAY_AGGR, " 
+			 + "KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT, " 
+			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_LEGAL_OT, NULL) AS INCLUDE_LEGAL_OT, " 
+			 + "IIF(KRCST_SHA_REG_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_REG_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULL) AS INCLUDE_HOLIDAY_OT, " 
+			 + "KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_JAN_TIME AS F1, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_FEB_TIME AS F2, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_MAR_TIME AS F3, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_APR_TIME AS F4, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_MAY_TIME AS F5, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_JUN_TIME AS F6, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_JUL_TIME AS F7, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_AUG_TIME AS F8, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_SEP_TIME AS F9, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_OCT_TIME AS F10, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_NOV_TIME AS F11, " 
+			 + "KSHST_SHA_FLEX_SET.STAT_DEC_TIME AS F12, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_JAN_TIME, NULL) AS T1, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_FEB_TIME, NULL) AS T2, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_MAR_TIME, NULL) AS T3, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_APR_TIME, NULL) AS T4, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_MAY_TIME, NULL) AS T5, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_JUN_TIME, NULL) AS T6, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_JUL_TIME, NULL) AS T7, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_AUG_TIME, NULL) AS T8, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_SEP_TIME, NULL) AS T9, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_OCT_TIME, NULL) AS T10, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_NOV_TIME, NULL) AS T11, " 
+			 + "IIF(KSHST_FLX_GET_PRWK_TIME.REFERENCE_PRED_TIME = 0, KSHST_SHA_FLEX_SET.SPEC_DEC_TIME, NULL) AS T12, " 
+			 + "KRCST_SHA_FLEX_M_CAL_SET.AGGR_METHOD, " 
+			 + "IIF(KRCST_SHA_FLEX_M_CAL_SET.AGGR_METHOD = 0, KRCST_SHA_FLEX_M_CAL_SET.INCLUDE_OT, NULL) AS INCLUDE_OT, " 
+			 + "KRCST_SHA_FLEX_M_CAL_SET.INSUFFIC_SET, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.JAN_TIME AS M1, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.FEB_TIME AS M2, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.MAR_TIME AS M3, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.APR_TIME AS M4, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.MAY_TIME AS M5, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.JUN_TIME AS M6, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.JUL_TIME AS M7, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.AUG_TIME AS M8, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.SEP_TIME AS M9, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.OCT_TIME AS M10, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.NOV_TIME AS M11, " 
+			 + "KSHST_SHA_DEFOR_LAR_SET.DEC_TIME AS M12, " 
+			 + "KSHST_SHA_TRANS_LAB_TIME.DAILY_TIME AS TRANS_DAILY_TIME, " 
+			 + "KSHST_SHA_TRANS_LAB_TIME.WEEKLY_TIME AS TRANS_WEEKLY_TIME, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.STR_MONTH, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.PERIOD, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.REPEAT_ATR, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR AS DEFOR_INCLUDE_EXTRA_AGGR, " 
+			 + "IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_LEGAL_AGGR, NULl) AS DEFOR_INCLUDE_LEGAL_AGGR, " 
+			 + "IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_AGGR = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_AGGR, NULl) AS DEFOR_INCLUDE_HOLIDAY_AGGR, " 
+			 + "KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT AS DEFOR_INCLUDE_EXTRA_OT, " 
+			 + "IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_LEGAL_OT, NULl) AS DEFOR_INCLUDE_LEGAL_OT, " 
+			 + "IIF(KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_EXTRA_OT = 1, KRCST_SHA_DEFOR_M_CAL_SET.INCLUDE_HOLIDAY_OT, NULl) AS DEFOR_INCLUDE_HOLIDAY_OT " 
+			 + "FROM KSHST_SHA_NORMAL_SET  " 
+			 + "INNER JOIN KSHST_SHA_FLEX_SET ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_SHA_FLEX_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.[YEAR] >= ? " 
+			 + "	AND KSHST_SHA_NORMAL_SET.[YEAR] <= ? " 
+			 + "	AND KSHST_SHA_NORMAL_SET.[YEAR] = KSHST_SHA_FLEX_SET.[YEAR] " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KSHST_SHA_FLEX_SET.SID " 
+			 + "INNER JOIN KSHST_SHA_DEFOR_LAR_SET ON " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_SHA_DEFOR_LAR_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.[YEAR] = KSHST_SHA_DEFOR_LAR_SET.[YEAR] " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KSHST_SHA_DEFOR_LAR_SET.SID " 
+			 + "INNER JOIN KSHST_SHA_TRANS_LAB_TIME ON " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_SHA_TRANS_LAB_TIME.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KSHST_SHA_TRANS_LAB_TIME.SID " 
+			 + "INNER JOIN KSHST_SHA_REG_LABOR_TIME ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_SHA_REG_LABOR_TIME.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KSHST_SHA_REG_LABOR_TIME.SID " 
+			 + "INNER JOIN KRCST_SHA_DEFOR_M_CAL_SET ON " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KRCST_SHA_DEFOR_M_CAL_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KRCST_SHA_DEFOR_M_CAL_SET.SID " 
+			 + "INNER JOIN KRCST_SHA_FLEX_M_CAL_SET ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KRCST_SHA_FLEX_M_CAL_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KRCST_SHA_FLEX_M_CAL_SET.SID " 
+			 + "INNER JOIN KRCST_SHA_REG_M_CAL_SET ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KRCST_SHA_REG_M_CAL_SET.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = KRCST_SHA_REG_M_CAL_SET.SID " 
+			 + "INNER JOIN BSYMT_EMP_DTA_MNG_INFO ON " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = BSYMT_EMP_DTA_MNG_INFO.CID " 
+			 + "	AND KSHST_SHA_NORMAL_SET.SID = BSYMT_EMP_DTA_MNG_INFO.SID " 
+			 + "INNER JOIN BPSMT_PERSON ON " 
+			 + "	BSYMT_EMP_DTA_MNG_INFO.PID = BPSMT_PERSON.PID " 
+			 + "LEFT JOIN KSHST_FLX_GET_PRWK_TIME ON  " 
+			 + "	KSHST_SHA_NORMAL_SET.CID = KSHST_FLX_GET_PRWK_TIME.CID " 
+			 + "WHERE  KSHST_SHA_NORMAL_SET.CID = ? "
+			 + "ORDER BY BSYMT_EMP_DTA_MNG_INFO.SCD, KSHST_SHA_NORMAL_SET.[YEAR] ASC  " ;
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 	
 	private static final String GET_USAGE = "SELECT s.IS_EMP, s.IS_WKP, s.IS_EMPT FROM KUWST_USAGE_UNIT_WT_SET s WHERE s.CID = ?cid ";
 	
 	@Override
 	public Object[] getUsage() {
 		String cid = AppContexts.user().companyId();
-		Query usage = entityManager.createNativeQuery(GET_USAGE.toString()).setParameter("cid", cid);
+		Query usage = this.getEntityManager().createNativeQuery(GET_USAGE.toString()).setParameter("cid", cid);
 		List<Object[]> data = usage.getResultList();
 		if (data.size() == 0) {
 			return null;
@@ -259,7 +355,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	private int month(){
 		String cid = AppContexts.user().companyId();
 		int month = 1;
-		Query monthQuery = entityManager.createNativeQuery(GET_EXPORT_MONTH.toString()).setParameter("cid", cid);
+		Query monthQuery = this.getEntityManager().createNativeQuery(GET_EXPORT_MONTH.toString()).setParameter("cid", cid);
 		List data = monthQuery.getResultList();
 		if (data.size() == 0) {
 			month = 1;
@@ -274,11 +370,15 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		
+<<<<<<< HEAD
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_COM, KshmtLegalTimeMCom.class)
 				.setParameter("cid", cid)
 				.setParameter("start", startDate * 100 + 1)
 				.setParameter("end", endDate * 100 + 12)
 				.getList();
+=======
+		String startOfWeek = getStartOfWeek(cid);
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 		
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EXPORT_EXCEL.toString())) {
 			stmt.setInt(1, startDate);
@@ -287,18 +387,36 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			int month = this.month();
 			result.forEach(i -> {
+<<<<<<< HEAD
 				datas.addAll(buildCompanyRow(i, legalTimes, startDate, endDate, month));
+=======
+				datas.addAll(buildCompanyRow(i, month, startOfWeek));
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 			});
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return datas;
 	}
+<<<<<<< HEAD
 	private List<MasterData> buildCompanyRow(NtsResultRecord r, List<KshmtLegalTimeMCom> legals, int startDate, int endDate, int month) {
+=======
+	
+	private String getStartOfWeek(String cid) {
+		
+		int startOfWeek = this.queryProxy().find(cid, KsrmtWeekRuleMng.class)
+											.map(w -> w.startOfWeek).orElse(0);
+		
+		return getWeekStart(startOfWeek);
+	}
+	
+	private List<MasterData> buildCompanyRow(NtsResultRecord r, int month, String startOfWeek){
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 		List<MasterData> datas = new ArrayList<>();
 
 		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
 		
+<<<<<<< HEAD
 		for (int y = startDate; y <= endDate; y++) {
 			int ym = y *100 + month;
 			
@@ -393,6 +511,149 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					.filter(l -> l.pk.ym == nextYm && l.pk.type == LaborWorkTypeAttr.FLEX.value)
 					.findFirst();
 			//Arow month + 1
+=======
+		//Arow month
+		datas.add(buildARow(
+				//R8_1
+				r.getString(("YEAR")),
+				//R8_2 R8_3
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"), 
+				//R8_4
+				convertTime(r.getInt(("N"+ ((month - 1) % 12 + 1)))),
+				//R8_5
+				I18NText.getText("KMK004_177"),
+				//R8_7
+				convertTime(r.getInt(("DAILY_TIME"))), 
+				//R8_9
+				startOfWeek,
+				//R8_10
+				getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
+				//R8_11
+				r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null, 
+				//R8_12
+				r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null, 
+				//R8_13
+				getExtraType(r.getInt("INCLUDE_EXTRA_OT")), 
+				//R8_14
+				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_OT")) : null,
+				//R8_15
+				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null,
+				//R8_16
+				getFlexType(r.getInt("REFERENCE_PRED_TIME")), 
+				//R8_17 R8_18
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				//R8_19
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("SPEC_T"+ ((month - 1) % 12 + 1)))) : null,
+				//R8_20
+				convertTime(r.getInt(("F"+ ((month - 1) % 12 + 1)))),
+				//R8_21		
+				getAggType(r.getInt("AGGR_METHOD")),
+				//R8_22
+				r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+				//R8_23
+				getShortageTime(r.getInt("INSUFFIC_SET")), 
+				//R8_24 8_25
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				//R8_26
+				convertTime(r.getInt(("T"+ ((month - 1) % 12 + 1)))), 
+				//R8_27		
+				I18NText.getText("KMK004_177"), 
+				//R8_29
+				convertTime(r.getInt("REG_DAILY_TIME")), 
+				//R8_31
+				startOfWeek,
+				//R8_32 R8_33
+				r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"), 
+				//R8_34 R8_35
+				r.getInt("PERIOD") + I18NText.getText("KMK004_180"), 
+				//R8_36
+				r.getInt("REPEAT_ATR") == 1 ? "○" : "-", 
+				//R8_37
+				getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_AGGR")),
+				//R8_38
+				r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+				//R8_39
+				r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+				//R8_40
+				getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_OT")),
+				//R8_41
+				r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+				//R8_42
+				r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")) : null
+				));
+		
+		//Arow month + 1
+		datas.add(buildARow(
+				//R8_1
+				null,
+				//R8_2 R8_3
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"), 
+				//R8_4
+				convertTime(r.getInt(("N"+ ((month - 1) % 12 + 2)))),
+				//R8_6
+				I18NText.getText("KMK004_178"),
+				//R8_8
+				convertTime(r.getInt(("WEEKLY_TIME"))), 
+				//R8_9
+				null,
+				//R8_10
+				null,
+				//R8_11
+				null, 
+				//R8_12
+				null, 
+				//R8_13
+				null, 
+				//R8_14
+				null,
+				//R8_15
+				null,
+				//R8_16
+				null, 
+				//R8_17 R8_18
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				//R8_19
+				r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("SPEC_T"+ ((month - 1) % 12 + 2)))) : null,
+				//R8_20
+				convertTime(r.getInt(("F"+ ((month - 1) % 12 + 2)))),
+				//R8_21		
+				null,
+				//R8_22
+				null,
+				//R8_23
+				null, 
+				//R8_24 8_25
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				//R8_26
+				convertTime(r.getInt(("T"+ ((month - 1) % 12 + 2)))), 
+				//R8_28	
+				I18NText.getText("KMK004_178"), 
+				//R8_30
+				convertTime(r.getInt("REG_WEEKLY_TIME")), 
+				//R8_31
+				null,
+				//R8_32 R8_33
+				null, 
+				//R8_34 R8_35
+				null, 
+				//R8_36
+				null, 
+				//R8_37
+				null,
+				//R8_38
+				null,
+				//R8_39
+				null,
+				//R8_40
+				null,
+				//R8_41
+				null,
+				//R8_42
+				null
+				));
+		//Arow month remain
+		for(int i = 1 ; i < 11; i++){
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 			datas.add(buildARow(
 					//R8_1
 					null,
@@ -730,12 +991,17 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		
+<<<<<<< HEAD
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_EMP, KshmtLegalTimeMEmp.class)
 				.setParameter("cid", cid)
 				.setParameter("start", startDate * 100 + 1)
 				.setParameter("end", endDate * 100 + 12)
 				.getList();
 			
+=======
+		String startOfWeek = getStartOfWeek(cid);
+		
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYMENT.toString())) {
 			stmt.setInt(1, startDate);
 			stmt.setInt(2, endDate);
@@ -743,7 +1009,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			int month = this.month();
 			result.forEach(i -> {
+<<<<<<< HEAD
 				datas.addAll(buildEmploymentRow(i, legalTimes, startDate, endDate, month));
+=======
+				datas.addAll(buildEmploymentRow(i, month, startOfWeek));
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -752,11 +1022,16 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		return datas;
 	}
 	
+<<<<<<< HEAD
 	private List<MasterData> buildEmploymentRow(NtsResultRecord r, List<KshmtLegalTimeMEmp> legals, int startDate, int endDate, int month) {
+=======
+	private List<MasterData> buildEmploymentRow(NtsResultRecord r, int month, String startOfWeek){
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 		List<MasterData> datas = new ArrayList<>();
 
 		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
 		
+<<<<<<< HEAD
 		for (int y = startDate; y <= endDate; y++) {
 			String employmentCode = r.getString("CODE");
 			int ym = y *100 + month;
@@ -857,6 +1132,156 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					.filter(l -> l.pk.ym == nextYm && l.pk.empCD.equals(employmentCode) && l.pk.type == LaborWorkTypeAttr.FLEX.value)
 					.findFirst();
 			// buil arow = month + 1
+=======
+		String refPreTime = r.getString("REFERENCE_PRED_TIME");
+		
+		datas.add(buildEmploymentARow(
+				//R12_3
+			     r.getString("YEAR"),
+				//R12_1
+				r.getInt("ROW_NUMBER_CODE") == 1 ? r.getString("CODE") : null,
+				//R12_2
+				r.getInt("ROW_NUMBER_CODE") == 1 ? r.getString("NAME") : null,
+				//R12_4 R12_5
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"), 
+				//R12_6
+				convertTime(r.getInt(("M"+ ((month - 1) % 12 + 1)))),
+				//R12_7
+				I18NText.getText("KMK004_177"),
+				//R12_9
+				convertTime(r.getInt("DAILY_TIME")),
+				//R12_11
+				startOfWeek,
+				//R12_12
+				getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
+				//R12_13
+				r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null, 
+				//R12_14		
+				r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null, 
+				//R12_15		
+				getExtraType(r.getInt("INCLUDE_EXTRA_OT")),
+				//R12_16
+				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_OT")) : null, 
+				//R12_17
+				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null, 
+				//R12_18
+				refPreTime == null? null : getFlexType(r.getInt("REFERENCE_PRED_TIME")),
+				//R12_19 R12_20
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				//R12_21
+				refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 1)))) : null,
+				//R12_22
+				convertTime(r.getInt(("S"+ ((month - 1) % 12 + 1)))),
+				//R12_23
+				getAggType(r.getInt("AGGR_METHOD")),
+				//R12_24
+				r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+				//R12_25
+				getShortageTime(r.getInt("INSUFFIC_SET")), 
+				//R12_26 R12_27
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				//R12_28
+				convertTime(r.getInt(("D"+ ((month - 1) % 12 + 1)))), 
+				//R12_29
+				I18NText.getText("KMK004_177"), 
+				//R12_31
+				convertTime(r.getInt("LAR_DAILY_TIME")),
+				//R12_33
+				startOfWeek,
+				//R12_34
+				r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"), 
+				//R12_35
+				r.getInt("PERIOD") + I18NText.getText("KMK004_180"), 
+				//R12_38
+				r.getInt("REPEAT_ATR") == 1 ? "○" : "-", 
+				//R8_39
+				getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_AGGR")),
+				//R8_40
+				r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+				//R8_41
+				r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+				//R8_42
+				getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_OT")),
+				//R8_43
+				r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+				//R8_44
+				r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")) : null
+				));
+		//Arow month + 1
+		datas.add(buildEmploymentARow(
+				//R12_1
+				null,
+				//R12_2
+				null,
+				//R12_3
+				null,
+				//R12_4 R12_5
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"), 
+				//R12_6
+				convertTime(r.getInt(("M"+ ((month - 1) % 12 + 2)))),
+				//R12_8
+				I18NText.getText("KMK004_178"),
+				//R12_9
+				convertTime(r.getInt("WEEKLY_TIME")),
+				//R12_11
+				null,
+				//R12_12
+				null,
+				//R12_13
+				null, 
+				//R12_14		
+				null, 
+				//R12_15		
+				null,
+				//R12_16
+				null, 
+				//R12_17
+				null, 
+				//R12_18
+				null,
+				//R12_19 R12_20
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				//R12_21
+				refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("F"+ ((month - 1) % 12 + 2)))) : null,
+				//R12_22
+				convertTime(r.getInt(("S"+ ((month - 1) % 12 + 2)))),
+				//R12_23
+				null,
+				//R12_24
+				null,
+				//R12_25
+				null, 
+				//R12_26 R12_27
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				//R12_28
+				convertTime(r.getInt(("D"+ ((month - 1) % 12 + 2)))), 
+				//R12_30
+				I18NText.getText("KMK004_178"), 
+				//R12_32
+				convertTime(r.getInt("LAR_WEEKLY_TIME")),
+				//R12_33
+				null,
+				//R12_34
+				null, 
+				//R12_35
+				null, 
+				//R12_38
+				null, 
+				//R8_39
+				null,
+				//R8_40
+				null,
+				//R8_41
+				null,
+				//R8_42
+				null,
+				//R8_43
+				null,
+				//R8_44
+				null
+				));
+		for(int i = 1 ; i < 11; i++){
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 			datas.add(buildEmploymentARow(
 					//R12_1
 					null,
@@ -1212,12 +1637,17 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 	public List<MasterData> getWorkPlaceExportData(int startDate, int endDate) {
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
+<<<<<<< HEAD
 
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_WKP, KshmtLegalTimeMWkp.class)
 			.setParameter("cid", cid)
 			.setParameter("start", startDate * 100 + 1)
 			.setParameter("end", endDate * 100 + 12)
 			.getList();
+=======
+		
+		String startOfWeek = getStartOfWeek(cid);
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 		
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_WORKPLACE.toString())) {
 			stmt.setInt(1, startDate);
@@ -1226,7 +1656,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			int month = this.month();
 			result.forEach(i -> {
+<<<<<<< HEAD
 				datas.addAll(buildWorkPlaceRow(i, legalTimes, startDate, endDate, month));
+=======
+				datas.addAll(buildWorkPlaceRow(i, month, startOfWeek));
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 			});
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -1234,8 +1668,13 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		}
 		return datas;
 	}
+<<<<<<< HEAD
 
 	private List<MasterData> buildWorkPlaceRow(NtsResultRecord r, List<KshmtLegalTimeMWkp> legals, int startDate, int endDate, int month) {
+=======
+	
+	private List<MasterData> buildWorkPlaceRow(NtsResultRecord r, int month, String startOfWeek){
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 		List<MasterData> datas = new ArrayList<>();
 
 		Integer refPreTime = r.getInt("REFERENCE_PRED_TIME");
@@ -1272,7 +1711,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_9
 					convertTime(r.getInt("DAILY_TIME")),
 					//R14_11
-					getWeekStart(r.getInt("WEEK_STR")),
+					startOfWeek,
 					//R14_12
 					getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
 					//R14_13
@@ -1308,7 +1747,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					//R14_31
 					convertTime(r.getInt("LAB_DAILY_TIME")),
 					//R14_33
-					getWeekStart(r.getInt("LAB_WEEK_STR")),
+					startOfWeek,
 					//R14_34 R14_35
 					r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"), 
 					//R14_36 R14_37
@@ -1730,11 +2169,15 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		String cid = AppContexts.user().companyId();
 		List<MasterData> datas = new ArrayList<>();
 		
+<<<<<<< HEAD
 		val legalTimes = this.queryProxy().query(LEGAL_TIME_SYA, KshmtLegalTimeMSya.class)
 			.setParameter("cid", cid)
 			.setParameter("start", startDate * 100 + 1)
 			.setParameter("end", endDate * 100 + 12)
 			.getList();
+=======
+		String startOfWeek = getStartOfWeek(cid);
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 		
 		try (PreparedStatement stmt = this.connection().prepareStatement(GET_EMPLOYEE.toString())) {
 			stmt.setInt(1, startDate);
@@ -1743,7 +2186,11 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 			NtsResultSet result = new NtsResultSet(stmt.executeQuery());
 			int month = this.month();
 			result.forEach(i -> {
+<<<<<<< HEAD
 				datas.addAll(buildEmployeeRow(i, legalTimes, startDate, endDate, month));
+=======
+				datas.addAll(buildEmployeeRow(i, month, startOfWeek));
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 			});
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -1751,6 +2198,7 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 		return datas;
 	}
 	
+<<<<<<< HEAD
 	private List<MasterData> buildEmployeeRow(NtsResultRecord r, List<KshmtLegalTimeMSya> legals, int startDate, int endDate, int month) {
 		List<MasterData> datas = new ArrayList<>();
 
@@ -1772,6 +2220,156 @@ public class jpaSetWorkingHoursAndDays extends JpaRepository implements SetWorki
 					.filter(l -> l.pk.ym == ym && l.pk.sid.equals(sid) && l.pk.type == LaborWorkTypeAttr.FLEX.value)
 					.findFirst();
 			
+=======
+	private List<MasterData> buildEmployeeRow(NtsResultRecord r, int month, String startOfWeek) {
+		List<MasterData> datas = new ArrayList<>();
+		String refPreTime = r.getString("REFERENCE_PRED_TIME");
+			datas.add(buildEmployeeARow(
+				r.getString("YEAR"),
+				// R10_1
+				r.getInt("ROW_NUMBER") == 1 ? r.getString("SCD") : null,
+				// R10_2
+				r.getInt("ROW_NUMBER") == 1 ? r.getString("BUSINESS_NAME") : null,
+				// R10_3
+				// R10_4 R10_5
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				// R10_6
+				convertTime(r.getInt(("S" + ((month - 1) % 12 + 1)))),
+				// R10_7
+				I18NText.getText("KMK004_177"),
+				// R10_9
+				convertTime(r.getInt("DAILY_TIME")),
+				// R10_11
+				startOfWeek,
+				// R10_12
+				getExtraType(r.getInt("INCLUDE_EXTRA_AGGR")),
+				// R10_13
+				r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_AGGR")) : null,
+				// R10_14
+				r.getInt("INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_AGGR")) : null,
+				// R10_15
+				getExtraType(r.getInt("INCLUDE_EXTRA_OT")),
+				// R10_16
+				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_LEGAL_OT")) : null,
+				// R10_17
+				r.getInt("INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("INCLUDE_HOLIDAY_OT")) : null,
+				// R10_18
+				refPreTime == null? null :getFlexType(r.getInt("REFERENCE_PRED_TIME")),
+				// R10_19 R10_20
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				// R10_21
+				refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month - 1) % 12 + 1)))) : null,
+				// R10_22
+				convertTime(r.getInt(("F" + ((month - 1) % 12 + 1)))),
+				// R10_23
+				getAggType(r.getInt("AGGR_METHOD")),
+				// R10_24
+				r.getInt("AGGR_METHOD") == 0 ? getInclude(r.getInt("INCLUDE_OT")) : null,
+				// R10_25
+				getShortageTime(r.getInt("INSUFFIC_SET")),
+				// R10_26 R10_27
+				((month - 1) % 12 + 1) + I18NText.getText("KMK004_176"),
+				// R10_28
+				convertTime(r.getInt(("M" + ((month - 1) % 12 + 1)))),
+				// R10_29
+				I18NText.getText("KMK004_177"),
+				// R10_31
+				convertTime(r.getInt("TRANS_DAILY_TIME")),
+				// R10_33
+				startOfWeek,
+				// R10_34 35
+				r.getInt("STR_MONTH") + I18NText.getText("KMK004_179"),
+				// R10_36 37
+				r.getInt("PERIOD") + I18NText.getText("KMK004_180"),
+				// R10_38
+				r.getInt("REPEAT_ATR") == 1 ? "○" : "-",
+				// R14_39
+				getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_AGGR")),
+				// R14_40
+				r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_AGGR")) : null,
+				// R14_41
+				r.getInt("DEFOR_INCLUDE_EXTRA_AGGR") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_AGGR")) : null,
+				// R14_42
+				getWeeklySurcharge(r.getInt("DEFOR_INCLUDE_EXTRA_OT")),
+				// R14_43
+				r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_LEGAL_OT")) : null,
+				// R14_44
+				r.getInt("DEFOR_INCLUDE_EXTRA_OT") != 0 ? getLegalType(r.getInt("DEFOR_INCLUDE_HOLIDAY_OT")) : null));
+		// buil arow = month + 1
+			datas.add(buildEmployeeARow(
+				// R10_1
+				null,
+				// R10_2
+				null,
+				// R10_3
+				null,
+				// R10_4 R10_5
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				// R10_6
+				convertTime(r.getInt(("S" + ((month - 1) % 12 + 2)))),
+				// R10_8
+				I18NText.getText("KMK004_178"),
+				// R10_9
+				convertTime(r.getInt("WEEKLY_TIME")),
+				// R10_11
+				null,
+				// R10_12
+				null,
+				// R10_13
+				null,
+				// R10_14
+				null,
+				// R10_15
+				null,
+				// R10_16
+				null,
+				// R10_17
+				null,
+				// R10_18
+				null,
+				// R10_19 R10_20
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				// R10_21
+				refPreTime != null && r.getInt("REFERENCE_PRED_TIME") == 0 ? convertTime(r.getInt(("T" + ((month - 1) % 12 + 2)))) : null,
+				// R10_22
+				convertTime(r.getInt(("F" + ((month - 1) % 12 + 2)))),
+				// R10_23
+				null,
+				// R10_24
+				null,
+				// R10_25
+				null,
+				// R10_26 R10_27
+				((month - 1) % 12 + 2) + I18NText.getText("KMK004_176"),
+				// R10_28
+				convertTime(r.getInt(("M" + ((month - 1) % 12 + 2)))),
+				// R10_30
+				I18NText.getText("KMK004_178"),
+				// R10_32
+				convertTime(r.getInt("TRANS_WEEKLY_TIME")),
+				// R10_33
+				null,
+				// R10_34 35
+				null,
+				// R10_36 37
+				null,
+				// R10_38
+				null,
+				// R14_39
+				null,
+				// R14_40
+				null,
+				// R14_41
+				null,
+				// R14_42
+				null,
+				// R14_43
+				null,
+				// R14_44
+				null));
+		// buil month remain
+		for (int i = 1; i < 11; i++) {
+>>>>>>> 5c46af2182b... 「週の管理」の対応
 			datas.add(buildEmployeeARow(
 					String.valueOf(y),
 					// R10_1

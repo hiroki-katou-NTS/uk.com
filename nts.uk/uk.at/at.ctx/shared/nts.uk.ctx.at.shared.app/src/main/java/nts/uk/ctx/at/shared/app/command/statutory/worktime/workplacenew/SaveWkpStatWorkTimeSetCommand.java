@@ -13,7 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.WkpDeforLaborSettingDto;
@@ -27,7 +26,6 @@ import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyLaborTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetWkp;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkp;
@@ -118,16 +116,14 @@ public class SaveWkpStatWorkTimeSetCommand{
 	public RegularLaborTimeWkp regurlarLabor(String cid) {
 		
 		return RegularLaborTimeWkp.of(cid, workplaceId,
-					new WeeklyUnit(new WeeklyTime(regularLaborTime.getWeeklyTime().getTime()), 
-									EnumAdaptor.valueOf(regularLaborTime.getWeeklyTime().getStart(), WeekStart.class)),
+					new WeeklyUnit(new WeeklyTime(regularLaborTime.getWeeklyTime().getTime())),
 					new DailyUnit(new TimeOfDay(regularLaborTime.getDailyTime().getDailyTime())));
 	}
 	
 	public DeforLaborTimeWkp deforLabor(String cid) {
 		
 		return DeforLaborTimeWkp.of(cid, workplaceId,
-					new WeeklyUnit(new WeeklyTime(transLaborTime.getWeeklyTime().getTime()), 
-									EnumAdaptor.valueOf(transLaborTime.getWeeklyTime().getStart(), WeekStart.class)),
+					new WeeklyUnit(new WeeklyTime(transLaborTime.getWeeklyTime().getTime())),
 					new DailyUnit(new TimeOfDay(transLaborTime.getDailyTime().getDailyTime())));
 	}
 }

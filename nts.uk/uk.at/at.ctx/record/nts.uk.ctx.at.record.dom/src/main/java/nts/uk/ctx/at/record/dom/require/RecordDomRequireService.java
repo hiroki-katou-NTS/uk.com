@@ -57,9 +57,12 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateTempAnnLeaMngProc;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
+import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
@@ -145,6 +148,7 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.monthly.workform.flex.MonthlyAggrSetOfFlex;
 import nts.uk.ctx.at.shared.dom.monthly.workform.flex.MonthlyAggrSetOfFlexRepository;
 import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.legaltransferorder.LegalTransferOrderSetOfAggrMonthly;
@@ -306,6 +310,8 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagementRepo;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
@@ -614,6 +620,16 @@ public class RecordDomRequireService {
 	protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
 	@Inject
 	protected RoleOfOpenPeriodRepository roleOfOpenPeriodRepo;
+	@Inject
+	private VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo;
+	@Inject
+	private StampCardRepository stampCardRepo;
+	@Inject
+	private BentoReservationRepository bentoReservationRepo;
+	@Inject
+	private BentoMenuRepository bentoMenuRepo;
+	@Inject
+	private WeekRuleManagementRepo weekRuleManagementRepo;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
@@ -701,8 +717,9 @@ public class RecordDomRequireService {
 				comDeforLaborMonthActCalSetRepo, comRegulaMonthActCalSetRepo, 
 				shaDeforLaborMonthActCalSetRepo, shaRegulaMonthActCalSetRepo, 
 				wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo, 
-				monthlyWorkTimeSetRepo, executionLogRepo, roleOfOpenPeriodRepo,
-				lockStatusService, sharedAffWorkPlaceHisAdapter);
+				monthlyWorkTimeSetRepo, executionLogRepo, 
+				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
+				bentoReservationRepo, bentoMenuRepo, weekRuleManagementRepo);
 	}
 	
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
@@ -817,18 +834,21 @@ public class RecordDomRequireService {
 				ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo,
 				WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo,
 				WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo, MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo,
-				ExecutionLogRepository executionLogRepo, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
-				DetermineActualResultLock lockStatusService, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter) {
-			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2, 
-					empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2,
-					interimSpecialHolidayMngRepo2, specialLeaveBasicInfoRepo, interimRecAbasMngRepo2,
-					empSubstVacationRepo, interimRemainRepo2, substitutionOfHDManaDataRepo2, 
-					payoutManagementDataRepo2, interimBreakDayOffMngRepo2, comDayOffManaDataRepo2,
-					companyAdapter2, shareEmploymentAdapter, leaveManaDataRepo2, 
-					workingConditionItemRepo, workingConditionRepo, workTimeSettingRepo, 
-					fixedWorkSettingRepo, flowWorkSettingRepo, diffTimeWorkSettingRepo, 
-					flexWorkSettingRepo, predetemineTimeSettingRepo2, closureRepo,
-					closureEmploymentRepo, workTypeRepo, remainCreateInforByApplicationData2,
+				ExecutionLogRepository executionLogRepo,
+				DetermineActualResultLock lockStatusService,
+				VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo,
+				StampCardRepository stampCardRepo,
+				BentoReservationRepository bentoReservationRepo,
+				BentoMenuRepository bentoMenuRepo,
+				WeekRuleManagementRepo weekRuleManagementRepo) {
+			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
+					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
+					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo, interimRemainRepo,
+					substitutionOfHDManaDataRepo, payoutManagementDataRepo, interimBreakDayOffMngRepo,
+					comDayOffManaDataRepo, companyAdapter, shareEmploymentAdapter, leaveManaDataRepo,
+					workingConditionItemRepo, workingConditionRepo, workTimeSettingRepo, fixedWorkSettingRepo,
+					flowWorkSettingRepo, diffTimeWorkSettingRepo, flexWorkSettingRepo, predetemineTimeSettingRepo,
+					closureRepo, closureEmploymentRepo, workTypeRepo, remainCreateInforByApplicationData,
 					compensLeaveEmSetRepo, employmentSettingRepo, retentionYearlySettingRepo,
 					annualPaidLeaveSettingRepo, outsideOTSettingRepo, workdayoffFrameRepo, 
 					yearHolidayRepo, usageUnitSettingRepo, regularLaborTimeComRepo, 
@@ -950,7 +970,11 @@ public class RecordDomRequireService {
 			this.monthlyWorkTimeSetRepo = monthlyWorkTimeSetRepo;
 			this.executionLogRepo = executionLogRepo;
 			this.lockStatusService = lockStatusService;
-			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
+			this.verticalTotalMethodOfMonthlyRepo = verticalTotalMethodOfMonthlyRepo;
+			this.stampCardRepo = stampCardRepo;
+			this.bentoReservationRepo = bentoReservationRepo;
+			this.bentoMenuRepo = bentoMenuRepo;
+			this.weekRuleManagementRepo = weekRuleManagementRepo;
 		}
 		
 		private RoleOfOpenPeriodRepository roleOfOpenPeriodRepo;
@@ -1056,8 +1080,7 @@ public class RecordDomRequireService {
 		private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepo;
 	 
 		private EditStateOfMonthlyPerRepository editStateOfMonthlyPerRepo;
-		/** 並列処理用 */
-		@Resource
+		
 		private ManagedExecutorService executorService;
 	 
 		private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepo;
@@ -1185,6 +1208,16 @@ public class RecordDomRequireService {
 		private ExecutionLogRepository executionLogRepo;
 	
 		private DetermineActualResultLock lockStatusService;
+		
+		private VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo;
+		
+		private StampCardRepository stampCardRepo;
+		
+		private BentoReservationRepository bentoReservationRepo;
+		
+		private BentoMenuRepository bentoMenuRepo;
+		
+		private WeekRuleManagementRepo weekRuleManagementRepo;
 		
 		@Override
 		public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
@@ -2130,8 +2163,6 @@ public class RecordDomRequireService {
 		public boolean isUseWorkLayer(String companyId) {
 			return false;
 		}
-		
-		
 
 		@Override
 		public Optional<RegularLaborTimeCom> regularLaborTimeByCompany(String companyId) {
@@ -2274,40 +2305,10 @@ public class RecordDomRequireService {
 				WorkingSystem workingSystem) {
 			return AgreementDomainService.getBasicSet(this, companyId, employeeId, criteriaDate, workingSystem);
 		}
-
-		@Override
-		public BasicAgreementSetting basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate) {
-			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, ym);
-		}
-
-		@Override
-		public List<RoleOfOpenPeriod> roleOfOpenPeriod(String cid) {
-			return roleOfOpenPeriodRepo.findByCID(cid);
-		}
 		
 
 		public Optional<VerticalTotalMethodOfMonthly> verticalTotalMethodOfMonthly(String cid) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<StampCard> stampCard(String empId) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date,
-				boolean ordered) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
-		public Bento bento(String companyID, GeneralDate date, int frameNo) {
-			// TODO Auto-generated method stub
-			return null;
+			return verticalTotalMethodOfMonthlyRepo.findByCid(cid);
 		}
 	}
 }

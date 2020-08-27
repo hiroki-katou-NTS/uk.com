@@ -17,12 +17,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
 import nts.uk.ctx.at.shared.dom.common.WeeklyTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeeklyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmp;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
@@ -105,7 +103,6 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements R
 
 		entity.setDailyTime(domain.getDailyTime().getDailyTime().v());
 		entity.setWeeklyTime(domain.getWeeklyTime().getTime().v());
-		entity.setWeekStr(domain.getWeeklyTime().getStart().value);
 		entity.setKshstEmpRegLaborTimePK(new KshstEmpRegLaborTimePK(domain.getComId(), 
 													domain.getEmploymentCode().v()));
 		
@@ -134,8 +131,7 @@ public class JpaEmpRegularLaborTimeRepository extends JpaRepository implements R
 	private RegularLaborTimeEmp toDomain(KshstEmpRegLaborTime entity) {
 		return RegularLaborTimeEmp.of(entity.getKshstEmpRegLaborTimePK().getCid(),
 				new EmploymentCode(entity.getKshstEmpRegLaborTimePK().getEmpCd()),
-				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime()), 
-								EnumAdaptor.valueOf(entity.getWeekStr(), WeekStart.class)), 
+				new WeeklyUnit(new WeeklyTime(entity.getWeeklyTime())), 
 				new DailyUnit(new TimeOfDay(entity.getDailyTime())));
 	}
 }

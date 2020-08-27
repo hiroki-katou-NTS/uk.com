@@ -33,7 +33,6 @@ import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.premiumtarget.TargetPrm
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.GetAddSet;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.PremiumAtr;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WeekStart;
 import nts.uk.ctx.at.shared.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -41,6 +40,8 @@ import nts.uk.ctx.at.shared.dom.workrecord.monthcal.export.GetSettlementPeriodOf
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekRuleManagement;
+import nts.uk.ctx.at.shared.dom.workrule.weekmanage.WeekStart;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
@@ -144,22 +145,14 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		ConcurrentStopwatches.start("12222.1:週開始の取得：");
 		
 		// 週開始を取得する
-		val workTimeSetOpt = companySets.getWorkingTimeSetting(require, employmentCd,
-				employeeSets.getWorkplacesToRoot(datePeriod.end()), workingSystem, employeeSets);
+		val workTimeSetOpt = require.weekRuleManagement(companyId);
 		if (!workTimeSetOpt.isPresent()){
 			this.errorInfos.add(new MonthlyAggregationErrorInfo(
 					"005", new ErrMessageContent(TextResource.localize("Msg_1171"))));
 			return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
 		}
-		WeekStart weekStart = null;
-		if (workTimeSetOpt.get().getWeeklyTime() != null){
-			weekStart = workTimeSetOpt.get().getWeeklyTime().getStart();
-		}
-		if (weekStart == null) {
-			this.errorInfos.add(new MonthlyAggregationErrorInfo(
-					"005", new ErrMessageContent(TextResource.localize("Msg_1171"))));
-			return AggregateMonthlyValue.of(aggregateTotalWorkingTime, excessOutsideWorkMng, resultWeeks);
-		}
+		
+		WeekStart weekStart = workTimeSetOpt.get().getWeekStart();
 
 		ConcurrentStopwatches.stop("12222.1:週開始の取得：");
 		ConcurrentStopwatches.start("12222.2:前月の最終週：");
@@ -293,14 +286,14 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	 * @param aggregateAtr 集計区分
 	 * @return 戻り値：月別実績を集計する
 	 */
-	public AggregateMonthlyValue aggregateMonthly(RequireM3 RequireM4, String cid, String sid,
-			DatePeriod datePeriod, WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr) {
-		
-	}
-	
-	private WeekStart getWeekStart(RequireM5 require, String cid, WorkingSystem workingSystem) {
-		
-	} 
+//	public AggregateMonthlyValue aggregateMonthly(RequireM3 RequireM4, String cid, String sid,
+//			DatePeriod datePeriod, WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr) {
+//		
+//	}
+//	
+//	private WeekStart getWeekStart(RequireM5 require, String cid, WorkingSystem workingSystem) {
+//		
+//	} 
 	
 	public static interface RequireM4 {
 		
@@ -652,5 +645,6 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	public static interface RequireM3 extends MonAggrCompanySettings.RequireM1, RequireM2, 
 												ExcessOutsideWorkMng.RequireM4 {
 		
+		Optional<WeekRuleManagement> weekRuleManagement(String cid);
 	}
 }

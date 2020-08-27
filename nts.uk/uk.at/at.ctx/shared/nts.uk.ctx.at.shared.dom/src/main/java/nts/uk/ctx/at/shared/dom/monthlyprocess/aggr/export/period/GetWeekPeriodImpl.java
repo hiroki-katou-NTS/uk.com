@@ -42,8 +42,7 @@ public class GetWeekPeriodImpl implements GetWeekPeriod {
 		if (period.start().before(GeneralDate.min().addDays(7))) return results;
 		
 		// 週開始を取得する
-		val weekStartOpt = this.getWeekStart.algorithm(
-				companyId, employmentCd, employeeId, period.end(), workingSystem);
+		val weekStartOpt = this.getWeekStart.algorithm(companyId);
 		if (!weekStartOpt.isPresent()) return results;
 		val weekStart = weekStartOpt.get();
 		
