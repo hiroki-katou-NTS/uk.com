@@ -162,7 +162,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 .stream()
                 .filter(i ->  i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.WORK_DAY.value).findFirst();
         if (targetWorkDay.isPresent()) {
-            targetWorkDay.get().setDisplayWorkType(true);
+//            targetWorkDay.get().setDisplayWorkType(true);
             targetWorkDay.get().setWorkTypeLst(workDays.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
         }
 
@@ -178,7 +178,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 .stream()
                 .filter(i -> i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.HOLIDAY.value).findFirst();
         if (targetHoliday.isPresent()) {
-            targetWorkDay.get().setDisplayWorkType(true);
+//            targetWorkDay.get().setDisplayWorkType(true);
             targetWorkDay.get().setWorkTypeLst(holidayWorkType.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
         }
 
