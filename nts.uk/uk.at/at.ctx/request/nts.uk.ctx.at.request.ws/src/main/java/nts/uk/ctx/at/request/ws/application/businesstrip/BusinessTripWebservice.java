@@ -4,19 +4,21 @@ package nts.uk.ctx.at.request.ws.application.businesstrip;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommand;
 import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.businesstrip.UpdateBusinessTripCommand;
+import nts.uk.ctx.at.request.app.command.application.businesstrip.UpdateBusinessTripCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripFinder;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.ParamStart;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripInfoOutputDto;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ChangeWorkCodeParam;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailStartScreenInfoDto;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ParamChangeDate;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.*;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamBeforeRegister;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import java.util.List;
 
 @Path("at/request/application/businesstrip")
 @Produces("application/json")
@@ -27,6 +29,9 @@ public class BusinessTripWebservice extends WebService {
 
     @Inject
     private AddBusinessTripCommandHandler addBusinessTripCommandHandler;
+
+    @Inject
+    private UpdateBusinessTripCommandHandler updateBusinessTripCommandHandler;
 
     @POST
     @Path("start")
@@ -60,13 +65,19 @@ public class BusinessTripWebservice extends WebService {
 
     @POST
     @Path("changeWorkTimeCode")
-    public String changeWorkTimeCode(ChangeWorkCodeParam param) {
+    public WorkTypeNameDto changeWorkTimeCode(ChangeWorkCodeParam param) {
         return this.businessTripFinder.changeWorkTimeCode(param);
     }
 
     @POST
     @Path("getDetailPC")
-    public BusinessTripInfoOutputDto getDetailPC(ParamUpdate param) {
+    public DetailScreenDto getDetailPC(ParamUpdate param) {
         return this.businessTripFinder.getDetailKAF008(param);
+    }
+
+    @POST
+    @Path("updateBusinessTrip")
+    public ProcessResult updateBusinesstrip(UpdateBusinessTripCommand param) {
+        return this.updateBusinessTripCommandHandler.handle(param);
     }
 }

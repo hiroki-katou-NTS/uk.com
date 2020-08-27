@@ -146,7 +146,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then(() => {
-            return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);    
+            return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
         }).then((loadData: any) => {
             if (loadData) {
                 return self.$http.post('at', API.startS07, {
@@ -158,30 +158,43 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
                 });
             }
+            if (self.appDispInfoStartupOutput) {
+                if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
+                    return self.$http.post('at', API.startS07, {
+                        mode: self.mode,
+                        companyId: self.user.companyId,
+                        employeeId: self.user.employeeId,
+                        listDates: [],
+                        appWorkChangeOutputDto: self.mode ? null : self.data,
+                        appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                    });
+                }
+            }
+
         }).then((res: any) => {
-                if (!res) {
-                    return;
-                }
-                self.data = res.data;
-                self.createParamA();
-                self.createParamB();
-                self.createParamC();
-                // let appWorkChange = res.data.appWorkChange;
-                self.bindStart();
-                self.$mask('hide');
-            }).catch((err: any) => {
-                self.$mask('hide');
-                if (err.messageId) {
-                    this.$modal.error({ messageId: err.messageId });
+            if (!res) {
+                return;
+            }
+            self.data = res.data;
+            self.createParamA();
+            self.createParamB();
+            self.createParamC();
+            // let appWorkChange = res.data.appWorkChange;
+            self.bindStart();
+            self.$mask('hide');
+        }).catch((err: any) => {
+            self.$mask('hide');
+            if (err.messageId) {
+                this.$modal.error({ messageId: err.messageId });
+            } else {
+
+                if (_.isArray(err.errors)) {
+                    this.$modal.error({ messageId: err.errors[0].messageId });
                 } else {
-    
-                    if (_.isArray(err.errors)) {
-                        this.$modal.error({ messageId: err.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: err.errors.messageId }); 
-                    }
+                    this.$modal.error({ messageId: err.errors.messageId });
                 }
-            });
+            }
+        });
     }
 
 
@@ -256,16 +269,24 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 console.log('changedate' + oldV + '--' + newV);
                 let startDate = _.clone(self.kaf000_B_Params.output.startDate);
                 let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                if (_.isNull(startDate)) {
+
+                    return;
+                }
                 let listDate = [];
                 if (!self.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
                     listDate.push(self.$dt(newV, 'YYYY/MM/DD'));
                 }
-                let isCheckDate = startDate.getTime() <= endDate.getTime();
-                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                    while (startDate.getTime() <= endDate.getTime()) {
-                        listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                        startDate.setDate(startDate.getDate() + 1);
+
+                if (!_.isNull(endDate)) {
+                    let isCheckDate = startDate.getTime() <= endDate.getTime();
+                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                        while (startDate.getTime() <= endDate.getTime()) {
+                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                            startDate.setDate(startDate.getDate() + 1);
+                        }
                     }
+
                 }
                 self.changeDate(listDate);
             });
@@ -277,14 +298,21 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
                 let startDate = _.clone(self.kaf000_B_Params.output.startDate);
                 let endDate = _.clone(self.kaf000_B_Params.output.endDate);
+                if (_.isNull(endDate)) {
+
+                    return;
+                }
                 let listDate = [];
-                let isCheckDate = startDate.getTime() <= endDate.getTime();
-                if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                    while (startDate.getTime() <= endDate.getTime()) {
-                        listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
-                        startDate.setDate(startDate.getDate() + 1);
+                if (!_.isNull(startDate)) {
+                    let isCheckDate = startDate.getTime() <= endDate.getTime();
+                    if (self.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                        while (startDate.getTime() <= endDate.getTime()) {
+                            listDate.push(self.$dt(startDate, 'YYYY/MM/DD'));
+                            startDate.setDate(startDate.getDate() + 1);
+                        }
                     }
                 }
+
                 self.changeDate(listDate);
             });
             self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
@@ -349,11 +377,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
     }
     public bindWork(params: any) {
         const self = this;
-        self.model.workType.code = self.mode ? params.appWorkChangeDispInfo.workTypeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTypeCD ? params.appWorkChange.opWorkTypeCD : '') : '');
+        self.model.workType.code = self.mode ? params.appWorkChangeDispInfo.workTypeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTypeCD ? params.appWorkChange.opWorkTypeCD : null) : null);
         let isExist = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == self.model.workType.code);
         self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
 
-        self.model.workTime.code = self.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : '') : '');
+        self.model.workTime.code = self.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : null) : null);
         isExist = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
         self.model.workTime.name = isExist ? isExist.workTimeDisplayName.workTimeName : self.$i18n('KAFS07_10');
         self.bindWorkTime(params.appWorkChangeDispInfo);
@@ -522,16 +550,20 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }
 
         if (this.kaf000_B_Params) {
-            this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
-            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
-            if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
-                this.application.opAppEndDate =  this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
-            } else {
-                this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+            if (this.mode) {
+                this.application.appDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                this.application.opAppStartDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                if (this.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
+                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.endDate, 'YYYY/MM/DD');
+                } else {
+                    this.application.opAppEndDate = this.$dt.date(this.kaf000_B_Params.output.startDate, 'YYYY/MM/DD');
+                }
             }
+
+            this.application.prePostAtr = this.kaf000_B_Params.output.prePostAtr;
+
         }
-        
+
         if (this.kaf000_C_Params.output) {
             this.application.opAppStandardReasonCD = this.kaf000_C_Params.output.opAppStandardReasonCD;
             this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
@@ -553,6 +585,24 @@ export class KafS07AComponent extends KafS00ShrComponent {
             .then((res: any) => {
                 self.data.appWorkChangeDispInfo = res.data;
                 self.bindStart();
+                let opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                msgID = '';
+                switch (opErrorFlag) {
+                    case 1:
+                        msgID = 'Msg_324';
+                        break;
+                    case 2: 
+                        msgID = 'Msg_238';
+                        break;
+                    case 3:
+                        msgID = 'Msg_237';
+                        break;
+                    default: 
+                        break;
+                }  
+                if (!_.isEmpty(msgID)) { 
+                    self.$modal.error({ messageId: msgID });
+                }
                 self.$mask('hide');
             })
             .catch((res: any) => {
@@ -560,15 +610,15 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (res.messageId) {
                     this.$modal.error({ messageId: res.messageId });
                 } else {
-    
+
                     if (_.isArray(res.errors)) {
                         this.$modal.error({ messageId: res.errors[0].messageId });
                     } else {
-                        this.$modal.error({ messageId: res.errors.messageId }); 
+                        this.$modal.error({ messageId: res.errors.messageId });
                     }
                 }
-                
-                
+
+
             });
 
     }
@@ -595,7 +645,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (_.isArray(res.errors)) {
                     this.$modal.error({ messageId: res.errors[0].messageId });
                 } else {
-                    this.$modal.error({ messageId: res.errors.messageId }); 
+                    this.$modal.error({ messageId: res.errors.messageId });
                 }
             }
         });
@@ -628,7 +678,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         vm.isValidateAll = validAll;
         console.log(validAll);
         console.log(vm.application);
-       
+
         // check validation 
         this.$validate();
         if (!this.$valid || !validAll) {
@@ -650,7 +700,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
             applicationDto: this.application,
             appWorkChangeDto: this.appWorkChangeDto,
             // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
-            isError: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag
+            isError: this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+            appDispInfoStartupDto: this.appDispInfoStartupOutput
         }).then((res: any) => {
             this.$mask('hide');
             // confirmMsgLst
@@ -681,7 +732,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (_.isArray(res.errors)) {
                     this.$modal.error({ messageId: res.errors[0].messageId });
                 } else {
-                    this.$modal.error({ messageId: res.errors.messageId }); 
+                    this.$modal.error({ messageId: res.errors.messageId });
                 }
             }
 
@@ -760,11 +811,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 if (res.messageId) {
                     this.$modal.error({ messageId: res.messageId });
                 } else {
-    
+
                     if (_.isArray(res.errors)) {
                         this.$modal.error({ messageId: res.errors[0].messageId });
                     } else {
-                        this.$modal.error({ messageId: res.errors.messageId }); 
+                        this.$modal.error({ messageId: res.errors.messageId });
                     }
                 }
             });
@@ -784,22 +835,22 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                    if (res.messageId) {
-                        this.$modal.error({ messageId: res.messageId });
-                    } else {
-        
-                        if (_.isArray(res.errors)) {
-                            this.$modal.error({ messageId: res.errors[0].messageId });
-                        } else {
-                            this.$modal.error({ messageId: res.errors.messageId }); 
-                        }
-                    }
-                });
-        }
-        
-        
+                if (res.messageId) {
+                    this.$modal.error({ messageId: res.messageId });
+                } else {
 
-        
+                    if (_.isArray(res.errors)) {
+                        this.$modal.error({ messageId: res.errors[0].messageId });
+                    } else {
+                        this.$modal.error({ messageId: res.errors.messageId });
+                    }
+                }
+            });
+        }
+
+
+
+
     }
 
 }
@@ -842,9 +893,8 @@ export enum ScreenMode {
 }
 
 const API = {
-    startNew: 'at/request/application/workchange/startNew',
-    startS07: 'at/request/application/workchange/startMobile',
-    checkBeforRegister: 'at/request/application/workchange/checkBeforeRegister_New',
-    registerAppWorkChange: 'at/request/application/workchange/addWorkChange_New',
-    updateAppWorkChange: 'at/request/application/workchange/changeDateKAFS07'
+    startS07: 'at/request/application/workchange/mobile/startMobile',
+    checkBeforRegister: 'at/request/application/workchange/mobile/checkBeforeRegister_New',
+    registerAppWorkChange: 'at/request/application/workchange/mobile/addWorkChange_New',
+    updateAppWorkChange: 'at/request/application/workchange/mobile/changeDateKAFS07'
 };

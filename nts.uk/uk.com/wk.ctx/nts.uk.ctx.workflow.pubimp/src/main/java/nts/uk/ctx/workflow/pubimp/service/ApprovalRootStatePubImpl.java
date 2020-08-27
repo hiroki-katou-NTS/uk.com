@@ -236,6 +236,10 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		}
 		ApprovalRootContentExport result = new ApprovalRootContentExport(
 				new ApprovalRootStateExport(
+					approvalRootContentOutput.getApprovalRootState().getRootStateID(),
+					approvalRootContentOutput.getApprovalRootState().getRootType().value,
+					approvalRootContentOutput.getApprovalRootState().getApprovalRecordDate(),
+					approvalRootContentOutput.getApprovalRootState().getEmployeeID(),
 					approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState()
 					.stream()
 					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
@@ -998,6 +1002,10 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				Optional.empty());
 		return new ApprovalRootContentExport(
 				new ApprovalRootStateExport(
+					approvalRootContentOutput.getApprovalRootState().getRootStateID(),
+					approvalRootContentOutput.getApprovalRootState().getRootType().value,
+					approvalRootContentOutput.getApprovalRootState().getApprovalRecordDate(),
+					approvalRootContentOutput.getApprovalRootState().getEmployeeID(),
 					approvalRootContentOutput.getApprovalRootState().getListApprovalPhaseState()
 					.stream()
 					.sorted(Comparator.comparing(ApprovalPhaseState::getPhaseOrder))
@@ -1120,5 +1128,32 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 				).collect(Collectors.toList()));
 		approvalRootStateRepository.insertApp(approvalRootState);
 		
+	}
+	@Override
+	public Map<String, List<ApprovalPhaseStateExport>> getApprovalPhaseByID(List<String> appIDLst) {
+		Map<String, List<ApprovalPhaseState>> mapResult = approvalRootStateRepository.getApprovalPhaseByID(appIDLst);
+		return mapResult.entrySet().stream().collect(Collectors.toMap(key -> key.getKey(), entry -> {
+			return entry.getValue().stream().map(x -> new ApprovalPhaseStateExport(
+					x.getPhaseOrder(), 
+					EnumAdaptor.valueOf(x.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+					EnumAdaptor.valueOf(x.getApprovalForm().value, ApprovalFormExport.class), 
+					x.getListApprovalFrame().stream().map(y -> new ApprovalFrameExport(
+							y.getFrameOrder(), 
+							y.getLstApproverInfo().stream().map(z -> new ApproverStateExport(
+									z.getApproverID(), 
+									EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class), 
+									z.getAgentID(), 
+									Strings.EMPTY, 
+									Strings.EMPTY, 
+									Strings.EMPTY, 
+									z.getApprovalDate(), 
+									z.getApprovalReason(), 
+									z.getApproverInListOrder())
+									).collect(Collectors.toList()), 
+							y.getConfirmAtr().value, 
+							y.getAppDate())
+							).collect(Collectors.toList()))
+					).collect(Collectors.toList());
+		}));
 	}
 }

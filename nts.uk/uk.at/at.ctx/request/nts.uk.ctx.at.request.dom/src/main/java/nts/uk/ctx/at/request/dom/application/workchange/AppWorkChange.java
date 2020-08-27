@@ -3,9 +3,7 @@ package nts.uk.ctx.at.request.dom.application.workchange;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
@@ -21,8 +19,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class AppWorkChange extends Application {
 
 	/**
@@ -60,6 +57,7 @@ public class AppWorkChange extends Application {
 		this.opWorkTimeCD = opWorkTimeCD;
 		this.timeZoneWithWorkNoLst = timeZoneWithWorkNoLst;
 	}
+	
 	
 	public AppWorkChange(Application application) {
 		super(application);

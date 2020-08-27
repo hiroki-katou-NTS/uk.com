@@ -43,7 +43,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 		KrqdtAppLateOrLeavePK_New pk = new KrqdtAppLateOrLeavePK_New(cID, application.getAppID());
 
 		// initial value for entity value
-		int lateCanAtr1 = 0, earlyCanAtr1 = 0, lateCanAtr2 = 0, earlyCanAtr2 = 0;
+		Integer lateCanAtr1 = null, earlyCanAtr1 = null, lateCanAtr2 = null, earlyCanAtr2 = null;
 		Integer lateTime1 = null, earlyTime1 = null, lateTime2 = null, earlyTime2 = null;
 
 		// get list cancel and list report time
@@ -214,12 +214,7 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 
 	@Override
 	public void remove(String cID, String appId) {
-		// create entity with value
-		KrqdtAppLateOrLeave_New entity = new NtsStatement(SELECT_BY_CID_APPID, this.jdbcProxy())
-				.paramString("companyId", cID).paramString("appId", appId)
-				.getSingle(x -> KrqdtAppLateOrLeave_New.MAPPER.toEntity(x)).get();
-
-		this.commandProxy().remove(entity);
+		this.commandProxy().remove(KrqdtAppLateOrLeave_New.class, new KrqdtAppLateOrLeavePK_New(cID, appId));
 	}
 
 }

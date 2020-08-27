@@ -23,7 +23,7 @@ public class JpaRequestByWorkplaceRepository extends JpaRepository implements Re
 	@Override
 	public Optional<ApprovalFunctionSet> findByWkpAndAppType(String companyID, String workplaceID,
 			ApplicationType appType) {
-		String sql = "select * from KRQST_APP_APV_WKP where CID = @companyID and WKP_ID = @wkpID and APP_TYPE = @appType";
+		String sql = "select * from KRQMT_APP_APV_WKP where CID = @companyID and WKP_ID = @wkpID and APP_TYPE = @appType";
 		
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)

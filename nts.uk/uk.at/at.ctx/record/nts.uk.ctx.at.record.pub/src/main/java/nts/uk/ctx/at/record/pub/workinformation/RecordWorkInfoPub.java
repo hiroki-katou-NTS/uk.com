@@ -15,7 +15,9 @@ public interface RecordWorkInfoPub {
 	 * @param ymd　日付
 	 * @return　RecordWorkInfoPubExport
 	 */
-	RecordWorkInfoPubExport getRecordWorkInfo(String employeeId, GeneralDate ymd);
+	RecordWorkInfoPubExport_Old getRecordWorkInfo(String employeeId, GeneralDate ymd);
+	
+	RecordWorkInfoPubExport getRecordWorkInfoNew(String employeeId, GeneralDate ymd);
 	
 	List<WorkInfoOfDailyPerExport> findByEmpId(String employeeId);
 

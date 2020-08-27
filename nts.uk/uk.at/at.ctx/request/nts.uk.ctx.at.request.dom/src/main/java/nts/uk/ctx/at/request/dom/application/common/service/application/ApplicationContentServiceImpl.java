@@ -66,7 +66,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			}
 			case GO_RETURN_DIRECTLY_APPLICATION: {
 				/** 直行直帰申請*/
-				return contentDtail.getContentGoBack(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
+//				return contentDtail.getContentGoBack(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value);
+				return "";
 			}
 			case HOLIDAY_WORK_APPLICATION: {
 				/** 休出時間申請*/

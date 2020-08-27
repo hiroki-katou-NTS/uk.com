@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.output.Apply
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.InitWkTypeWkTimeOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -88,10 +89,13 @@ public interface CommonAlgorithm {
 	 * @param appType 申請種類
 	 * @param prePostAtrDisp 事前事後区分表示
 	 * @param initValueAtr 事前事後区分の初期表示
+	 * @param opOvertimeAppAtr 残業区分<Optional>
+	 * @param otAppBeforeAccepRestric 残業申請事前の受付制限
 	 * @return
 	 */
 	public AppDispInfoRelatedDateOutput getAppDispInfoRelatedDate(String companyID, String employeeID, List<GeneralDate> dateLst, 
-			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr);
+			ApplicationType appType, DisplayAtr prePostAtrDisp, PrePostInitAtr initValueAtr, Optional<OvertimeAppAtr> opOvertimeAppAtr,
+			OTAppBeforeAccepRestric otAppBeforeAccepRestric);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.起動時の申請表示情報を取得する.起動時の申請表示情報を取得する

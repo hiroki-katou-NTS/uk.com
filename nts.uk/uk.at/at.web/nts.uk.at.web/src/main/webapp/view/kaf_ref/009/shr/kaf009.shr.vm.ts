@@ -18,13 +18,17 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
 
             vm.dataFetch.subscribe(value => {
                 console.log('Change dataFetch');
-                if (value) {
-                    vm.bindData();                    
+                if (ko.toJS(value)) {
+                    if (ko.toJS(value)) {
+                        vm.bindData(true);                                            
+                    }else {
+                        vm.bindData(false);
+                    }
                 }
             });
             
         }
-        bindData() {
+        bindData(isChangeDate: boolean) {
             const vm = this;
             let goBackApp = vm.dataFetch().goBackApplication();
             if ( goBackApp ) {
@@ -56,32 +60,38 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 
             } else {
                 let refApp = vm.dataFetch().goBackReflect().reflectApplication;
-                //           else {
-                vm.model.checkbox1( true );
-                vm.model.checkbox2( true );
-                //           }
-                if ( refApp == 3) {
-                    vm.model.checkbox3( true );
-                } else if ( refApp ==2 ) {
-                    vm.model.checkbox3( false );
-                }else {
-                    vm.model.checkbox3( null );
+                if (!vm.dataFetch().isChangeDate) {
+                    vm.model.checkbox1( true );
+                    vm.model.checkbox2( true );
+                    if ( refApp == 3) {
+                        vm.model.checkbox3( true );
+                    } else if ( refApp ==2 ) {
+                        vm.model.checkbox3( false );
+                    }else {
+                        vm.model.checkbox3( null );
+                    }
                 }
                 
- 
-                //            this.model.checkbox3(this.dataFetch().goBackReflect().reflectApplication == 3);
+
                 if (!_.isEmpty(ko.toJS(vm.dataFetch().workType))) {
                     let codeWorkType = vm.dataFetch().workType();
                     vm.model.workTypeCode(codeWorkType);
-                    let nameWorkType = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType).abbreviationName;
-                    vm.model.workTypeName(nameWorkType);
+                    let wt = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType);
+                    if (!_.isNull(wt)) {
+                        let nameWorkType = wt.abbreviationName;
+                        vm.model.workTypeName(nameWorkType);       
+                    }
     
                 }
                 if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
                     let codeWorkTime = vm.dataFetch().workTime(); 
                     vm.model.workTimeCode(codeWorkTime);
-                    let nameWorkTime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime).workTimeDisplayName.workTimeName;
-                    vm.model.workTimeName(nameWorkTime);
+                    let wt = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime);
+                    if (!_.isNull(wt)) {
+                        let nameWorkTime = wt.workTimeDisplayName.workTimeName;
+                        vm.model.workTimeName(nameWorkTime);
+                        
+                    }
     
                 }
             }
@@ -102,10 +112,10 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
             console.log( workTypeCodes );
             nts.uk.ui.windows.setShared( 'parentCodes', {
                 workTypeCodes: _.map( _.uniqBy( vm.dataFetch().lstWorkType(), e => e.workTypeCode ), item => item.workTypeCode ),
-                selectedWorkTypeCode: vm.model.workTypeCode,
+                selectedWorkTypeCode: vm.model.workTypeCode(),
                 workTimeCodes: _.map( vm.dataFetch().appDispInfoStartup().appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode ),
-                selectedWorkTimeCode: vm.model.workTypeCode
-            }, true );
+                selectedWorkTimeCode: vm.model.workTimeCode()
+            }, true);
 
             nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml' ).onClosed( function(): any {
                 //view all code of selected item 
@@ -115,8 +125,8 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                     vm.model.workTypeName(childData.selectedWorkTypeName);
                     vm.model.workTimeCode(childData.selectedWorkTimeCode);
                     vm.model.workTimeName(childData.selectedWorkTimeName);
-                    //                                フォーカス制御 => 定型理由
-                    //                                                   $("#combo-box").focus();
+                    //フォーカス制御 => 定型理由
+                    //$("#combo-box").focus();
                 }
             })
         }

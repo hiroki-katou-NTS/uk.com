@@ -24,7 +24,7 @@ public class JpaRequestByCompanyRepository extends JpaRepository implements Requ
 
 	@Override
 	public Optional<ApprovalFunctionSet> findByAppType(String companyID, ApplicationType appType) {
-		String sql = "select * from KRQST_APP_APV_CMP where CID = @companyID and APP_TYPE = @appType";
+		String sql = "select * from KRQMT_APP_APV_CMP where CID = @companyID and APP_TYPE = @appType";
 		
 		return new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)
@@ -40,7 +40,7 @@ public class JpaRequestByCompanyRepository extends JpaRepository implements Requ
 
 	@Override
 	public Optional<ApprovalFunctionSet> findByCompanyID(String companyID) {
-		String sql = "select * from KRQST_APP_APV_CMP where CID = @companyID";
+		String sql = "select * from KRQMT_APP_APV_CMP where CID = @companyID";
 		
 		List<ApplicationUseSetting> applicationUseSettingLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("companyID", companyID)

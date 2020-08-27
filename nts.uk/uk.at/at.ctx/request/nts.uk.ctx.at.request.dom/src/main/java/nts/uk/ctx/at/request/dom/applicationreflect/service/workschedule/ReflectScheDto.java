@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
@@ -29,7 +29,7 @@ public class ReflectScheDto {
 	private boolean reflectAtr;
 	/**	時刻の反映*/
 	private ApplyTimeRequestAtr timeAtr;
-	private Application_New appInfor;
+	private Application appInfor;
 	/**	直行直帰申請 */
 	private GoBackDirectly_Old goBackDirectly;
 	/**

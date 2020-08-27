@@ -30,6 +30,7 @@ import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampPK;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 @Stateless
 public class JpaAppStampRepository extends JpaRepository implements AppStampRepository{
 	public static final String FIND_BY_APPID = "SELECT * FROM KRQDT_APP_STAMP WHERE CID = @cid and APP_ID = @appId";
@@ -274,9 +275,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 					if (startCancelAtr == 1) {
 						listDestinationTimeApp.add(destinationTimeAppStart);
 					} else {
-						Optional<AppStampGoOutAtr> appStampGoOutAtrOp = Optional.empty();
+						Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
 						if (goOutAtr != null) {
-							AppStampGoOutAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, AppStampGoOutAtr.class);
+							GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
 							appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
 						}
 						TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppStart,
@@ -287,9 +288,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 					if (endCancelAtr == 1) {
 						listDestinationTimeApp.add(destinationTimeAppEnd);
 					} else {
-						Optional<AppStampGoOutAtr> appStampGoOutAtrOp = Optional.empty();
+						Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
 						if (goOutAtr != null) {
-							AppStampGoOutAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, AppStampGoOutAtr.class);
+							GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
 							appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
 						}
 						TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppEnd,

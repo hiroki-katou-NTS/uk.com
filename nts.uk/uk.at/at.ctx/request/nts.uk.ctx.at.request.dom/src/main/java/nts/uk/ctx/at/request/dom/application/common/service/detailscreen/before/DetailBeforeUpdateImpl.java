@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CheckWorkingInfoResult;
 @Stateless
 public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
@@ -26,7 +27,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate,
 			int employeeRouteAtr, String appID, PrePostAtr postAtr, int version, String wkTypeCode,
-			String wkTimeCode) {
+			String wkTimeCode, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		//勤務種類、就業時間帯チェックのメッセージを表示
 		displayWorkingHourCheck(companyID, wkTypeCode, wkTimeCode);
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
@@ -38,10 +39,10 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 		// 申請する開始日～申請する終了日までループする
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
 			if(application.getPrePostAtr() == PrePostAtr.PREDICT && application.getAppType() == ApplicationType.OVER_TIME_APPLICATION){
-				newBeforeRegister.confirmCheckOvertime(companyID, application.getEmployeeID(), loopDate);
+				newBeforeRegister.confirmCheckOvertime(companyID, application.getEmployeeID(), loopDate, appDispInfoStartupOutput);
 			}else{
 				// アルゴリズム「確定チェック」を実施する
-				newBeforeRegister.confirmationCheck(companyID, application.getEmployeeID(), loopDate);
+				newBeforeRegister.confirmationCheck(companyID, application.getEmployeeID(), loopDate, appDispInfoStartupOutput);
 			}
 		}
 
@@ -95,7 +96,7 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	 */
 	@Override
 	public boolean processBefDetailScreenReg(String companyID, String employeeID, GeneralDate appDate,
-			int employeeRouteAtr, String appID, PrePostAtr postAtr, int version) {
+			int employeeRouteAtr, String appID, PrePostAtr postAtr, int version, AppDispInfoStartupOutput appDispInfoStartupOutput) {
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
 		// selectedWorkTypeConflictCheck();
 
@@ -105,10 +106,10 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 		// 申請する開始日～申請する終了日までループする
 		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)){
 			if(loopDate.equals(GeneralDate.today()) && application.getPrePostAtr().equals(PrePostAtr.PREDICT) && application.isOverTimeApp()){
-				newBeforeRegister.confirmCheckOvertime(companyID, application.getEmployeeID(), loopDate);
+				newBeforeRegister.confirmCheckOvertime(companyID, application.getEmployeeID(), loopDate, appDispInfoStartupOutput);
 			}else{
 				// アルゴリズム「確定チェック」を実施する
-				newBeforeRegister.confirmationCheck(companyID, application.getEmployeeID(), loopDate);
+				newBeforeRegister.confirmationCheck(companyID, application.getEmployeeID(), loopDate, appDispInfoStartupOutput);
 			}
 		}
 		

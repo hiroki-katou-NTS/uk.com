@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @AllArgsConstructor
@@ -26,6 +27,6 @@ public class TimeStampApp {
 //	勤務場所
 	private Optional<WorkLocationCD> workLocationCd; 
 //	外出理由
-	private Optional<AppStampGoOutAtr> appStampGoOutAtr;
+	private Optional<GoOutReasonAtr> appStampGoOutAtr;
 	
 }

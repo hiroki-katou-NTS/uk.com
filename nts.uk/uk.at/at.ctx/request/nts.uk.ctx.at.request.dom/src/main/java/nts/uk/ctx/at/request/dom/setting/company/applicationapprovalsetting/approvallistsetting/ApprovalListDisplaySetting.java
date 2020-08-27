@@ -58,4 +58,5 @@ public class ApprovalListDisplaySetting {
 				EnumAdaptor.valueOf(dispWorkplace, NotUseAtr.class)
 		);
 	}
+	
 }

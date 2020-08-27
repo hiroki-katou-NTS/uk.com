@@ -13,7 +13,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommand;
-import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandCheck;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandPC;
 import nts.uk.ctx.at.request.app.command.application.workchange.UpdateAppWorkChangeCommandHandler;
@@ -24,12 +23,10 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetail
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParamPC;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeRecordWorkInfoFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeSetDto_Old;
 import nts.uk.ctx.at.request.app.find.application.workchange.RecordWorkInfoDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.UpdateWorkChangeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.WorkChangeDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto_Old;
@@ -184,35 +181,6 @@ public class WorkchangeService extends WebService {
 		return null;
 	}
 
-	@POST
-	@Path("startMobile")
-	public AppWorkChangeOutputDto startMobile(AppWorkChangeParam appWorkChangeParam) {
-		return appWorkFinder.getStartKAFS07(appWorkChangeParam);
-	}
 	
-	@POST
-	@Path("changeDateKAFS07")
-	public AppWorkChangeDispInfoDto changeDateKAFS07(UpdateWorkChangeParam updateWorkChangeParam) {
-		return appWorkFinder.getUpdateKAFS07(updateWorkChangeParam);
-	}
-
-	@POST
-	@Path("checkBeforeRegister_New")
-	public WorkChangeCheckRegisterDto checkBeforeRegisterNew(AddAppWorkChangeCommandCheck command) {
-		return appWorkFinder.checkBeforeRegisterNew(command);
-	}
-
-	@POST
-	@Path("addWorkChange_New")
-	public ProcessResult addWorkChange_New(AddAppWorkChangeCommand command) {
-		return addHandler.handle(command);
-	}
-	
-	@POST
-	@Path("startDetailMobile")
-	public AppWorkChangeOutputDto startDetail(AppWorkChangeDetailParam appWorkChangeDetailParam) {
-		
-		return appWorkFinder.getDetailKAFS07(appWorkChangeDetailParam);
-	}
 
 }

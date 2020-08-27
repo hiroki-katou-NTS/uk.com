@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
  * @author hoangnd
  *
  */
+//打刻申請時刻分類
 @AllArgsConstructor
 public enum TimeStampAppEnum {
 //	0

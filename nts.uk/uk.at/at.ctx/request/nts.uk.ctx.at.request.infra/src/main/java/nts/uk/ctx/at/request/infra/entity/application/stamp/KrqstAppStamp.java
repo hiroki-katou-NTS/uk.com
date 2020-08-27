@@ -13,7 +13,7 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="KRQST_APP_STAMP")
+@Table(name="KRQMT_APP_STAMP")
 public class KrqstAppStamp extends ContractUkJpaEntity{
 	
 	@EmbeddedId

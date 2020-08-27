@@ -14,8 +14,8 @@ import javax.management.RuntimeErrorException;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.Application_New;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.dailyperformance.DailyPerformanceAdapter;
@@ -74,10 +74,10 @@ public class KTG002QueryProcessor {
 			List<String> listApplicationID = approvalRootStateRepository.resultKTG002Mobile(startDate.get(), endDate,
 					employeeID, 0, cid);
 			// アルゴリズム「申請IDを使用して申請一覧を取得する」を実行する
-			List<Application_New> listApplication = applicationRepository_New.findByListID(cid, listApplicationID);
+			List<Application> listApplication = applicationRepository_New.findByListID(cid, listApplicationID);
 			/* 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする */
-			List<Application_New> listApplicationFilter = listApplication.stream()
-					.filter(c -> c.getReflectionInformation().getStateReflectionReal() != ReflectedState_New.REMAND)
+			List<Application> listApplicationFilter = listApplication.stream()
+					.filter(c -> c.getAppReflectedState() != ReflectedState.REMAND)
 					.collect(Collectors.toList());
 			if (listApplicationFilter.isEmpty()) {
 				return false;

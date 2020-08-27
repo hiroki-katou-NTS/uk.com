@@ -25,4 +25,5 @@ public interface ApplicationSettingRepository {
 	Integer getNightOvertimeReflectAtr(String companyId);
 
 	void save(ApplicationSetting domain, List<DisplayReason> reasonDisplaySettings, int nightOvertimeReflectAtr);
+
 }

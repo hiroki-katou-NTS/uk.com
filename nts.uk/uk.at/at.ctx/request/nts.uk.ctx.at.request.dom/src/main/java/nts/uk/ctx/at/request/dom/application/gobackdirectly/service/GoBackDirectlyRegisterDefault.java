@@ -55,6 +55,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 直行直帰登録
@@ -194,7 +195,9 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				inforGoBackCommonDirectOutput
 				.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().isPresent() ? inforGoBackCommonDirectOutput
 						.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get() : null,
-				Collections.emptyList());
+				Collections.emptyList(),
+				inforGoBackCommonDirectOutput
+				.getAppDispInfoStartup());
 		return listResult;
 	}
 	/**Refactor4
@@ -219,7 +222,8 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 				application.getPrePostAtr(),
 				application.getVersion(),
 				goBackDirectly.getDataWork().isPresent() ? goBackDirectly.getDataWork().get().getWorkTypeCode().v() : null,
-				goBackDirectly.getDataWork().isPresent() ? (goBackDirectly.getDataWork().get().getWorkTimeCode() != null ? goBackDirectly.getDataWork().get().getWorkTimeCode().v() : null) : null);
+				goBackDirectly.getDataWork().isPresent() ? (goBackDirectly.getDataWork().get().getWorkTimeCode() != null ? goBackDirectly.getDataWork().get().getWorkTimeCode().v() : null) : null,
+				inforGoBackCommonDirectOutput.getAppDispInfoStartup());
 	}
 	/**
 	 * 共通登録前のエラーチェック処理
@@ -233,6 +237,11 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	 */
 	public List<ConfirmMsgOutput> checkBeforRegisterNew(String companyId, boolean agentAtr, Application application,
 			GoBackDirectly goBackDirectly, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput, boolean mode) {
+		// #110892
+		if (goBackDirectly.getStraightDistinction() == NotUseAtr.NOT_USE && goBackDirectly.getStraightLine() == NotUseAtr.NOT_USE) {
+			throw new BusinessException("Msg_1808");
+		}
+		
 		// 確認メッセージリスト＝Empty
 		List<ConfirmMsgOutput> lstConfirm = new ArrayList<ConfirmMsgOutput>();
 		// mode new

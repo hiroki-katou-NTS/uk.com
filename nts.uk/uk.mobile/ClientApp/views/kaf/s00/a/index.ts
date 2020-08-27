@@ -43,7 +43,7 @@ export class KafS00AComponent extends Vue {
             opOvertimeAppAtr: self.params.opOvertimeAppAtr
         }).then((data: any) => {
             self.appMsg = data.data.applicationUseSetting.memo;
-            self.appMsgForCurrentMonth = data.data.deadlineLimitCurrentMonth.opAppDeadline;
+            self.appMsgForCurrentMonth = self.$i18n('KAFS00_3', data.data.deadlineLimitCurrentMonth.opAppDeadline) ;
             if (data.data.preAppAcceptLimit.opAvailableTime) {
                 self.preAppPeriod = self.$i18n('KAFS00_22', self.$dt.timedr(data.data.preAppAcceptLimit.opAvailableTime));    
             } else {
@@ -51,7 +51,7 @@ export class KafS00AComponent extends Vue {
             }
             self.postAppPeriod = self.$i18n('KAFS00_6', data.data.postAppAcceptLimit.opAcceptableDate);   
             
-            self.displayAppMsg = data.data.applicationUseSetting.useDivision && data.data.applicationUseSetting.memo;
+            self.displayAppMsg = data.data.applicationUseSetting.useDivision == 1 && !_.isEmpty(self.appMsg);
             self.displayAppMsgForCurrentMonth = data.data.deadlineLimitCurrentMonth.useAtr;
             self.displayPreAppPeriod = data.data.preAppAcceptLimit.useReceptionRestriction;
             self.displayPostAppPeriod = data.data.postAppAcceptLimit.useReceptionRestriction;

@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf000_ref.b.component7.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.opAppStandardReasonCD = params.application().opAppStandardReasonCD;
             vm.opAppReason = params.application().opAppReason;
-            vm.reasonTypeItemLst = ko.observableArray([{appStandardReasonCD: 0, opReasonForFixedForm: "test"}]);
+            vm.reasonTypeItemLst = ko.observableArray([]);
             vm.appReasonCDRequired = ko.observable(false);
             vm.appReasonRequired = ko.observable(false);
             vm.appReasonCDDisp = ko.observable(false);
@@ -30,6 +30,17 @@ module nts.uk.at.view.kaf000_ref.b.component7.viewmodel {
             vm.appReasonDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.displayAppReason == 1);
             vm.reasonTypeItemLst(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.reasonTypeItemLst);
             vm.opAppStandardReasonCD(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppStandardReasonCD);
+			let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+			if(_.isUndefined(initReasonTypeItem)) {
+				let dataLst = [{
+		            appStandardReasonCD: '',
+		            displayOrder: 0,
+		            defaultValue: false,
+		            opReasonForFixedForm: vm.$i18n('KAFS00_23'),   
+		        }];
+				vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
+				vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);
+			}
             vm.opAppReason(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppReason);   
         }
     

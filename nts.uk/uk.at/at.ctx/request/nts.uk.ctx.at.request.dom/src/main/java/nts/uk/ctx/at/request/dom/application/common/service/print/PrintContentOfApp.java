@@ -137,5 +137,6 @@ public class PrintContentOfApp {
 		this.opPrintContentOfWorkChange = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opBusinessTrip = Optional.empty();
+		this.opAppStampOutput = Optional.empty();
 	}
 }

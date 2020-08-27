@@ -286,8 +286,9 @@ public class AppWorkChangeFinder {
 		}
 		AppWorkChange appWorkChange = null;
 		if (appWorkChangeParam.getAppWorkChangeDto() != null) {
-			appWorkChange = appWorkChangeParam.getAppWorkChangeDto().toDomain();
-
+			if (appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDetailScreenInfo().isPresent()) {
+				appWorkChange = appWorkChangeParam.getAppWorkChangeDto().toDomain(appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication());
+			}
 		}
 
 		return AppWorkChangeOutputDto.fromDomain(
@@ -323,14 +324,14 @@ public class AppWorkChangeFinder {
 		ApplicationDto applicationDto = command.getApplicationDto();
 		applicationDto.setEmployeeID(sId);
 		Application application = applicationDto.toDomain();
-		if (command.getAppWorkChangeDto().getAppID() != null ) {
-			application.setAppID(command.getAppWorkChangeDto().getAppID());
-		}
+//		if (command.getAppWorkChangeDto().getAppID() != null ) {
+//			application.setAppID(command.getAppWorkChangeDto().getAppID());
+//		}
 		AppWorkChangeDto appWorkChangeDto = command.getAppWorkChangeDto();
 		int isError = command.getIsError();
 		WorkChangeCheckRegOutput workChangeCheckRegOutput = appWorkChangeService.checkBeforeRegister(mode, companyId,
 				application, appWorkChangeDto.toDomain(application),
-				EnumAdaptor.valueOf(isError, ErrorFlagImport.class));
+				EnumAdaptor.valueOf(isError, ErrorFlagImport.class), command.getAppDispInfoStartupDto().toDomain());
 
 		return WorkChangeCheckRegisterDto.fromDomain(workChangeCheckRegOutput);
 

@@ -87,10 +87,10 @@
 }
 .saturdayCell{
 	color: #0000ff;
-}	
+}
 .sundayCell{
 	color: #ff0000;
-}	
+}
 .rec{
 	height: auto;
 }
@@ -134,4 +134,8 @@
 }
 html {
     overflow: hidden;
+}
+.grid-text-label {
+	padding-top: 10px;
+	vertical-align: top;
 }

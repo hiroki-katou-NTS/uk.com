@@ -100,7 +100,7 @@ public class AsposeLateLeaveEarly {
 				? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
 				: null;
 		// A1_4
-		String cancel1 = cancelTemp.size() > 0 ? null : I18NText.getText("KAF004_63");
+		String cancel1 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
 
 		if (cancel1 != null) {
 			cellD8.setValue(cancel1);
@@ -136,7 +136,7 @@ public class AsposeLateLeaveEarly {
 				? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
 				: null;
 		// A2_4
-		String cancel2 = cancelTemp.size() > 0 ? null : I18NText.getText("KAF004_63");
+		String cancel2 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
 
 		if (cancel2 != null) {
 			cellD9.setValue(cancel2);
@@ -208,7 +208,7 @@ public class AsposeLateLeaveEarly {
 					? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
 					: null;
 			// A1_4
-			String cancel3 = cancelTemp.size() > 0 ? null : I18NText.getText("KAF004_63");
+			String cancel3 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
 
 			if (cancel3 != null) {
 				cellD10.setValue(cancel3);
@@ -244,7 +244,7 @@ public class AsposeLateLeaveEarly {
 					? timeReportsTemp.get(0).getTimeWithDayAttr().getInDayTimeWithFormat()
 					: null;
 			// A1_4
-			String cancel4 = cancelTemp.size() > 0 ? null : I18NText.getText("KAF004_63");
+			String cancel4 = cancelTemp.size() == 0 ? null : I18NText.getText("KAF004_63");
 
 			if (cancel4 != null) {
 				cellD11.setValue(cancel4);
@@ -260,7 +260,32 @@ public class AsposeLateLeaveEarly {
 					cellB11.setValue(EMPTY);
 				}
 			}
+		} else {
+			cellB10.setValue(EMPTY);
+			cellB11.setValue(EMPTY);
 		}
 
+	}
+
+	public void deleteEmptyRow(Worksheet worksheet) {
+		Cells cells = worksheet.getCells();
+
+		Cell cellB8 = cells.get("B8");
+		Cell cellB9 = cells.get("B9");
+		Cell cellB10 = cells.get("B10");
+		Cell cellB11 = cells.get("B11");
+
+		if (cellB11.getValue().toString().isEmpty()) {
+			worksheet.getCells().deleteRow(10);
+		}
+		if (cellB10.getValue().toString().isEmpty()) {
+			worksheet.getCells().deleteRow(9);
+		}
+		if (cellB9.getValue().toString().isEmpty()) {
+			worksheet.getCells().deleteRow(8);
+		}
+		if (cellB8.getValue().toString().isEmpty()) {
+			worksheet.getCells().deleteRow(7);
+		}
 	}
 }

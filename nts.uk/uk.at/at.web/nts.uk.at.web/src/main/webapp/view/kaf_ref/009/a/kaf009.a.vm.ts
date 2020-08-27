@@ -10,13 +10,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         
         application: KnockoutObservable<Application>;
         applicationTest: any = {
-                version: 1,
-                // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
-                prePostAtr: 1,
                 employeeID: this.$user.employeeId,
-                appType: 2,
+                appType: '4',
                 appDate: moment(new Date()).format('YYYY/MM/DD'),
-                enteredPerson: '1',
+                enteredPerson: '',
                 inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
                 reflectionStatus: {
                     listReflectionStatusOfDay: [{
@@ -43,17 +40,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
             };
         model: Model;
-//        appDispInfoStartupOutput: any;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
 
         created(params: any) {
             const vm = this;
             vm.application = ko.observable(new Application(AppType.GO_RETURN_DIRECTLY_APPLICATION));
-            vm.model = new Model(true, true, true, '', '', '', '');
-//            vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
-//            vm.application().appDate(moment(new Date()).format("YYYY/MM/DD"));
-            
+            vm.model = new Model(true, true, true, '', '', '', '');            
             vm.$blockui("show");
             vm.loadData([], [], AppType.GO_RETURN_DIRECTLY_APPLICATION)
             .then((loadDataFlag: any) => {
@@ -79,15 +72,16 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         appDispInfoStartup: ko.observable(res.appDispInfoStartup),
                         goBackReflect: ko.observable(res.goBackReflect),
                         lstWorkType: ko.observable(res.lstWorkType),
-                        goBackApplication: ko.observable(res.goBackApplication)
+                        goBackApplication: ko.observable(res.goBackApplication),
+                        isChangeDate: false
                     });     
                 }
             }).fail((failData: any) => {
                 let param;
                 if (failData.message) {
-                    param = {message: failData.message};
+                    param = {message: failData.message, messageParams: failData.parameterIds};
                 } else {
-                    param = {messageId: failData.messageId}
+                    param = {messageId: failData.messageId, messageParams: failData.parameterIds}
                 }
                 vm.$dialog.error(param); 
                 
@@ -100,7 +94,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
         mounted() {
             const vm = this;
-//            vm.fetchData();
         }
         
        
@@ -140,10 +133,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         location.reload();
                     } );
                 })
-//            .fail(errRegister => {
-//                console.log(errRegister);
-//                
-//            });
         }
 
         register() {
@@ -159,9 +148,6 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;    
             vm.applicationTest.opReversionReason = application.opReversionReason;
             
-            
-            console.log( vm.applicationTest );
-            console.log( ko.toJS( vm.model ) );
             vm.$blockui( "show" );
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then( isValid => {
@@ -177,12 +163,14 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             model.checkbox2 ? 1 : 0,
                         );
                         // is change can be null
-                        goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-                        let dw = new DataWork( model.workTypeCode );
-                        if ( model.workTimeCode ) {
-                            dw.workTime = model.workTimeCode
+                        if (!_.isNull(model.checkbox3)) {
+                            goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
+                            let dw = new DataWork( model.workTypeCode );
+                            if ( model.workTimeCode ) {
+                                dw.workTime = model.workTimeCode
+                            }
+                            goBackApp.dataWork = dw;
                         }
-                        goBackApp.dataWork = dw;
                         console.log( goBackApp );
 
                         let param = {
@@ -208,13 +196,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             .fail( err => {
                                 let param;
                                 if (err.message && err.messageId) {
-                                    param = {messageId: err.messageId};
+                                    param = {messageId: err.messageId, messageParams: err.parameterIds};
                                 } else {
                                     
                                     if (err.message) {
-                                        param = {message: err.message};
+                                        param = {message: err.message, messageParams: err.parameterIds};
                                     } else {
-                                        param = {messageId: err.messageId};
+                                        param = {messageId: err.messageId, messageParams: err.parameterIds};
                                     }
                                 }
                                 vm.$dialog.error(param);
@@ -230,20 +218,16 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         }
         
         changeDate() {
-            console.log("change date");
             const vm = this;
+            if(!_.isNull(ko.toJS(vm.dataFetch))) {
+                vm.dataFetch().isChangeDate = true;                
+            }
             let dataClone = _.clone(vm.dataFetch());
             if (!_.isNull(dataClone)) {
-                vm.dataFetch(dataClone);
+                vm.dataFetch(dataClone); 
                 return;
             }
             vm.$blockui( "show" );
-//            let param = {
-//                    companyId: vm.$user.companyId,
-//                    appDates: [vm.application().appDate()],
-//                    employeeIds: vm.application().employeeIDLst(),
-//                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch())
-//            }
             let ApplicantEmployeeID: null,
             ApplicantList: null,
             appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
@@ -257,7 +241,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                             appDispInfoStartup: ko.observable(res.appDispInfoStartup),
                             goBackReflect: ko.observable(res.goBackReflect),
                             lstWorkType: ko.observable(res.lstWorkType),
-                            goBackApplication: ko.observable(res.goBackApplication)
+                            goBackApplication: ko.observable(res.goBackApplication),
+                            isChangeDate: false
                         });
                     }
                 })
@@ -265,23 +250,13 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     
                     let param;
                     if (res.message) {
-                        param = {message: res.message};
+                        param = {message: res.message, messageParams: res.parameterIds};
                     } else {
-                        param = {messageId: res.messageId}
+                        param = {messageId: res.messageId, messageParams: res.parameterIds}
                     }
                     vm.$dialog.error(param);
                 })
                 .always(() => vm.$blockui( "hide" ));
-            
-            
-//            vm.dataFetch(){
-//                workType: ko.observable(res.workType),
-//                workTime: ko.observable(res.workTime),
-//                appDispInfoStartup: ko.observable(res.appDispInfoStartup),
-//                goBackReflect: ko.observable(res.goBackReflect),
-//                lstWorkType: ko.observable(res.lstWorkType),
-//                goBackApplication: ko.observable(res.goBackApplication)
-//            });
             
         }
 
@@ -327,6 +302,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         lstWorkType: KnockoutObservable<any>;
 
         goBackApplication: KnockoutObservable<any>;
+    
+        isChangeDate: boolean = false;
     }
 
     const API = {

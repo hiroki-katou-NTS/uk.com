@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
 import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.businesstrip.*;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripService;
+import nts.uk.ctx.at.request.dom.application.businesstrip.service.DetailScreenB;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
@@ -34,6 +35,7 @@ import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -202,23 +204,19 @@ public class BusinessTripFinder {
         List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
         Optional<ApplicationDate> appStartDate = application.getOpAppStartDate();
         Optional<ApplicationDate> appEndDate = application.getOpAppEndDate();
-        List<GeneralDate> lstDate = new ArrayList<>();
-        if (appStartDate.isPresent() && appEndDate.isPresent()) {
-            GeneralDate startDate = appStartDate.get().getApplicationDate();
-            GeneralDate endDate = appEndDate.get().getApplicationDate();
-            for (GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate = loopDate.addDays(1)) {
-                lstDate.add(loopDate);
-            }
-        } else {
-            lstDate.add(application.getAppDate().getApplicationDate());
-        }
+        DatePeriod period = new DatePeriod(appStartDate.get().getApplicationDate(), appEndDate.get().getApplicationDate());
+        List<GeneralDate> lstDate = period.datesBetween();
+
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
         confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
                 AppContexts.user().companyId(),
                 EmploymentRootAtr.APPLICATION,
                 false,
                 application,
-                null, errorFlag, null
+                null,
+                errorFlag,
+                null,
+                tripRequestInfoOutput.getAppDispInfoStartup()
         );
         if (confirmMsgOutputs.isEmpty()) {
             // アルゴリズム「出張申請個別エラーチェック」を実行する
@@ -267,6 +265,7 @@ public class BusinessTripFinder {
                 }
                 break;
         }
+        errorCheck.setResult(true);
         return errorCheck;
     }
 
@@ -365,8 +364,10 @@ public class BusinessTripFinder {
         if (currentDateWorkType.isPresent()) {
             workTypesBeforeChange = getBusinessTripWorkChangeInfo(businessTripInfoOutput, currentDateWorkType.get().getWorkType());
         }
+        // 取得した勤務種類リストの中に、INPUT.勤務種類コードが存在する
         Optional<WorkType> inputWorkType = workTypesBeforeChange.stream().filter(i -> i.getWorkTypeCode().v().equals(inputCode)).findFirst();
         if (inputWorkType.isPresent()) {
+            // ドメインモデル「勤務種類」を取得する
             Optional<WorkType> getWorkTypeInfo = wkTypeRepo.findByPK(cid, inputCode);
             if (businessTripInfoOutput.getWorkTypeAfterChange().isPresent()) {
                 BusinessTripWorkTypes itemAfterChange = new BusinessTripWorkTypes(inputDate, getWorkTypeInfo.get());
@@ -383,15 +384,28 @@ public class BusinessTripFinder {
         return BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput);
     }
 
+    /**
+     *
+     * @param businessTripInfoOutput
+     * @param workType
+     * @return
+     */
     private List<WorkType> getBusinessTripWorkChangeInfo(BusinessTripInfoOutput businessTripInfoOutput, WorkType workType) {
         Boolean businessTripWorkCls = getBusinessTripClsContent(workType);
         if (businessTripWorkCls) {
+            // 勤務種類リスト＝出張申請の表示情報.出勤日勤務種類リスト
             return businessTripInfoOutput.getWorkDayCds().get();
         } else {
+            // 勤務種類リスト＝出張申請の表示情報.休日勤務種類リスト
             return businessTripInfoOutput.getHolidayCds().get();
         }
     }
 
+    /**
+     * アルゴリズム「出張申請勤務種類分類内容取得」を実行する
+     * @param workType
+     * @return
+     */
     private boolean getBusinessTripClsContent(WorkType workType) {
         Boolean result = true;
         val workCls = workType.getDailyWork().getWorkTypeUnit();
@@ -434,13 +448,14 @@ public class BusinessTripFinder {
         return result;
     }
 
-    public String changeWorkTimeCode(ChangeWorkCodeParam changeWorkCodeParam) {
-        String result = Strings.EMPTY;
+    public WorkTypeNameDto changeWorkTimeCode(ChangeWorkCodeParam changeWorkCodeParam) {
+        WorkTypeNameDto result = new WorkTypeNameDto();
         String typeCode = changeWorkCodeParam.getTypeCode();
         String timeCode = changeWorkCodeParam.getTimeCode();
         BusinessTripInfoOutput businessTripInfoOutput = changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain();
         GeneralDate inputDate = GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd");
         CheckErrorDto checkCodeErr = this.businessTripWorkTimeCheck(typeCode, timeCode);
+        // アルゴリズム「出張申請就業時間帯チェック」を実行する
         if (checkCodeErr.isResult()) {
             if (Strings.isBlank(timeCode)) {
                 return result;
@@ -449,7 +464,7 @@ public class BusinessTripFinder {
             if (workTimeSet.isPresent() && !workTimeSet.get().isEmpty()) {
                 Optional<WorkTimeSetting> existWorkTimeSet = workTimeSet.get().stream().filter(i -> i.getWorktimeCode().v().equals(timeCode)).findFirst();
                 if (existWorkTimeSet.isPresent()) {
-                    result = existWorkTimeSet.get().getWorkTimeDisplayName().getWorkTimeName().v();
+                    result.setName(existWorkTimeSet.get().getWorkTimeDisplayName().getWorkTimeName().v());
                 } else {
                     throw new BusinessException("Msg_1685");
                 }
@@ -460,12 +475,13 @@ public class BusinessTripFinder {
         return result;
     }
 
-    public BusinessTripInfoOutputDto getDetailKAF008(ParamUpdate param) {
+    public DetailScreenDto getDetailKAF008(ParamUpdate param) {
         //		14-1.詳細画面起動前申請共通設定を取得する
         AppDispInfoStartupOutput appDispInfoStartupOutput =
                 appCommonSetService.getCommonSetBeforeDetail(param.getCompanyId(), param.getApplicationId());
-        BusinessTripInfoOutput businessTripInfoOutput = businessTripService.getDataDetail(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput);
-        return BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput);
+        DetailScreenB detailScreen = businessTripService.getDataDetail(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput);
+        DetailScreenDto detailScreenDto = DetailScreenDto.fromDomain(detailScreen);
+        return detailScreenDto;
 
     }
 

@@ -24,17 +24,17 @@ public enum ReasonNotReflect {
 	/**
 	 * 実績がロックされている
 	 */
-	ACHIEVEMENTS_LOCKED(1, "実績がロックされている"),
+	ACHIEVEMENTS_LOCKED(2, "実績がロックされている"),
 	
 	/**
 	 * 本人確認、上司確認済
 	 */
-	SELF_CONFIRMED_BOSS_CONFIRMED(2, "本人確認、上司確認済"),
+	SELF_CONFIRMED_BOSS_CONFIRMED(3, "本人確認、上司確認済"),
 	
 	/**
 	 * 締め処理が完了している
 	 */
-	TIGHTENING_PROCESS_COMPLETED(3, "締め処理が完了している");
+	TIGHTENING_PROCESS_COMPLETED(4, "締め処理が完了している");
 	
 	public final int value;
 	

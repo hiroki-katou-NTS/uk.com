@@ -21,6 +21,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 			opAppStampOutput: null,
 			opArrivedLateLeaveEarlyInfo: null,
 			opInforGoBackCommonDirectOutput: null,
+            opBusinessTripInfoOutput: null,
 		};
         childParam: any = {};
 

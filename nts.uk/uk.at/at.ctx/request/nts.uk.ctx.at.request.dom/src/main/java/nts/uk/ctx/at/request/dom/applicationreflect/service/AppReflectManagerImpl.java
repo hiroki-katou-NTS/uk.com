@@ -27,11 +27,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
-import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
@@ -112,41 +112,41 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	
 	@Override	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void reflectEmployeeOfApp(Application_New appInfor, InformationSettingOfEachApp reflectSetting,
+	public void reflectEmployeeOfApp(Application appInfor, InformationSettingOfEachApp reflectSetting,
 			ExecutionTypeExImport execuTionType, String excLogId, int currentRecord) {
-		try {
-			self.reflectEmployeeOfAppWithTransaction(appInfor, reflectSetting, execuTionType, excLogId);
-			
-		} catch(Exception ex) {
-			boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
-			if(!isError) {
-				log.info(isError + " 反映処理：　申請ID　＝　" + appInfor.getAppID() + " 申請者ID　＝　" + appInfor.getEmployeeID());
-				//return khong dung duoc do neu 1 ngay co nhieu don thi no cu tim trang thai don haneimachi lam khong ket thuc duoc vong lap
-				throw ex;
-			}		
-			if(!excLogId.isEmpty()) {
-				proRecord.createLogError(appInfor.getEmployeeID(), appInfor.getAppDate(), excLogId);	
-			}
-			int newCountRerun = currentRecord + 1;
-			if (newCountRerun == 10) {
-				log.info(isError + " 反映処理：　申請ID　＝　" + appInfor.getAppID() + " 申請者ID　＝　" + appInfor.getEmployeeID());
-				throw ex;
-			}
-			try {
-				Thread.sleep(newCountRerun * 50);				
-			} catch (InterruptedException e){
-				throw ex;
-			}	
-			
-			self.reflectEmployeeOfApp(appInfor, reflectSetting, execuTionType, excLogId, newCountRerun);
-		}
+//		try {
+//			self.reflectEmployeeOfAppWithTransaction(appInfor, reflectSetting, execuTionType, excLogId);
+//			
+//		} catch(Exception ex) {
+//			boolean isError = new ThrowableAnalyzer(ex).findByClass(OptimisticLockException.class).isPresent();
+//			if(!isError) {
+//				log.info(isError + " 反映処理：　申請ID　＝　" + appInfor.getAppID() + " 申請者ID　＝　" + appInfor.getEmployeeID());
+//				//return khong dung duoc do neu 1 ngay co nhieu don thi no cu tim trang thai don haneimachi lam khong ket thuc duoc vong lap
+//				throw ex;
+//			}		
+//			if(!excLogId.isEmpty()) {
+//				proRecord.createLogError(appInfor.getEmployeeID(), appInfor.getAppDate(), excLogId);	
+//			}
+//			int newCountRerun = currentRecord + 1;
+//			if (newCountRerun == 10) {
+//				log.info(isError + " 反映処理：　申請ID　＝　" + appInfor.getAppID() + " 申請者ID　＝　" + appInfor.getEmployeeID());
+//				throw ex;
+//			}
+//			try {
+//				Thread.sleep(newCountRerun * 50);				
+//			} catch (InterruptedException e){
+//				throw ex;
+//			}	
+//			
+//			self.reflectEmployeeOfApp(appInfor, reflectSetting, execuTionType, excLogId, newCountRerun);
+//		}
 	}
 	
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	@Transactional
-	public void reflectEmployeeOfAppWithTransaction(Application_New appInfor,
+	public void reflectEmployeeOfAppWithTransaction(Application appInfor,
 			InformationSettingOfEachApp reflectSetting, ExecutionTypeExImport execuTionType, String excLogId) {
-		GobackReflectPara appGobackTmp = null;
+/*		GobackReflectPara appGobackTmp = null;
 		OvertimeReflectPara overTimeTmp = null;
 		WorkChangeCommonReflectPara workchangeData = null;
 		HolidayWorkReflectPara holidayworkInfor = null;
@@ -311,9 +311,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 			if(!lstDate.isEmpty()) {
 				interimRegister.registerDateChange(appInfor.getCompanyID(), appInfor.getEmployeeID(), lstDate);	
 			}				
-		}
+		}*/
 	}	
-	private WorkChangeCommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange_Old workChange,
+/*	private WorkChangeCommonReflectPara getWorkChange(Application_New appInfor, AppWorkChange_Old workChange,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		CommonReflectPara workchangeInfor = null;
 		workchangeInfor = new CommonReflectPara(appInfor.getEmployeeID(), 
@@ -328,9 +328,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				reflectSetting.getIdentityProcessUseSet(),
 				reflectSetting.getApprovalProcessingUseSetting());
 		return new WorkChangeCommonReflectPara(workchangeInfor, workChange.getExcludeHolidayAtr());		
-	}
+	}*/
 	
-	private CommonReflectPara getAbsenceLeaveAppInfor(Application_New appInfor, AbsenceLeaveApp absenceLeaveApp,
+/*	private CommonReflectPara getAbsenceLeaveAppInfor(Application_New appInfor, AbsenceLeaveApp absenceLeaveApp,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		CommonReflectPara absenceLeave = null;
 		absenceLeave = new CommonReflectPara(appInfor.getEmployeeID(), 
@@ -345,9 +345,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				reflectSetting.getIdentityProcessUseSet(),
 				reflectSetting.getApprovalProcessingUseSetting());
 		return absenceLeave;
-	}
+	}*/
 	
-	private CommonReflectPara getRecruitmentInfor(Application_New appInfor, RecruitmentApp recuitmentApp,
+/*	private CommonReflectPara getRecruitmentInfor(Application_New appInfor, RecruitmentApp recuitmentApp,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		CommonReflectPara recruitment = null;
 		recruitment = new CommonReflectPara(appInfor.getEmployeeID(),
@@ -362,9 +362,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				reflectSetting.getIdentityProcessUseSet(),
 				reflectSetting.getApprovalProcessingUseSetting());
 		return recruitment;
-	}
+	}*/
 	
-	private HolidayWorkReflectPara getHolidayWork(Application_New appInfor, AppHolidayWork holidayWorkData,
+/*	private HolidayWorkReflectPara getHolidayWork(Application_New appInfor, AppHolidayWork holidayWorkData,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		HolidayWorkReflectPara holidayPara = null;
 		Map<Integer, Integer> mapOvertimeFrame =  new HashMap<>();
@@ -421,9 +421,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				reflectSetting.getApprovalProcessingUseSetting());
 		return new WorkChangeCommonReflectPara(absenceInfor, absenceAppData.isChangeWorkHour() == true ? 1 : 0);
 	}
+	*/
 	
-	
-	private GobackReflectPara getGobackReflectPara(Application_New appInfor, GoBackDirectly_Old gobackInfo,
+/*	private GobackReflectPara getGobackReflectPara(Application_New appInfor, GoBackDirectly_Old gobackInfo,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		GobackReflectPara appGobackTmp = null;		
 		GobackAppRequestPara gobackReques = new GobackAppRequestPara(
@@ -448,14 +448,14 @@ public class AppReflectManagerImpl implements AppReflectManager {
 				gobackReques);
 		
 		return appGobackTmp;
-	}
+	}*/
 	
 	/**
 	 * 残業申請
 	 * @param appInfor
 	 * @return
 	 */
-	private OvertimeReflectPara getOverTimeReflect(Application_New appInfor, AppOverTime appOvertimeInfor,
+/*	private OvertimeReflectPara getOverTimeReflect(Application_New appInfor, AppOverTime appOvertimeInfor,
 			InformationSettingOfEachApp reflectSetting, String excLogId) {
 		OvertimeReflectPara overTimeTmp = null;
 		Map<Integer, Integer> mapOvertimeFrame =  new HashMap<>();
@@ -496,6 +496,6 @@ public class AppReflectManagerImpl implements AppReflectManager {
 		
 		return overTimeTmp;
 		
-	}
+	}*/
 
 }

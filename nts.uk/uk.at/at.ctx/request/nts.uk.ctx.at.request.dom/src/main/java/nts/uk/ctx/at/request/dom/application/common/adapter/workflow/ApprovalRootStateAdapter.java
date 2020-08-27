@@ -160,4 +160,12 @@ public interface ApprovalRootStateAdapter {
      */
     public void insertApp(String appID, GeneralDate appDate, String employeeID, List<ApprovalPhaseStateImport_New> listApprovalPhaseState);
     
+    /**
+     * refactor 4
+     * @param appIDs
+     * @param companyID
+     * @return
+     */
+    public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalPhaseByID(List<String> appIDLst);
+    
 }

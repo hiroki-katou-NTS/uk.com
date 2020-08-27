@@ -5,7 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,8 +20,10 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -38,7 +43,6 @@ import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.Wwfdt
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApprovalRootMonthPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApprovalRootMonth;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -804,5 +808,76 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	public void insertApp(ApprovalRootState approvalRootState) {
 		this.commandProxy().insert(WwfdtApprovalRootState.fromDomain(approvalRootState));
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public Map<String, List<ApprovalPhaseState>> getApprovalPhaseByID(List<String> appIDLst) {
+		Map<String, List<ApprovalPhaseState>> mapResult = new HashMap<>();
+		String sql = "select * from WWFDT_APPROVAL_PHASE_ST phase " +
+				"left join WWFDT_APPROVER_STATE approver " +
+				"on phase.ROOT_STATE_ID = approver.ROOT_STATE_ID and phase.PHASE_ORDER = approver.PHASE_ORDER " +
+				"where phase.ROOT_STATE_ID in @appIDLst";
+		CollectionUtil.split(appIDLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+			List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+					.paramString("appIDLst", subList)
+					.getList(rec -> toObjectPhase(rec));
+			Map<String, List<ApprovalPhaseState>> subMapResult = convertToDomainPhase(mapLst);
+			mapResult.putAll(subMapResult);
+		});
+		return mapResult;
+	}
+	
+	private Map<String, Object> toObjectPhase(NtsResultRecord rec) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		// WWFDT_APPROVAL_PHASE_ST
+		map.put("ROOT_STATE_ID", rec.getString("ROOT_STATE_ID"));
+		map.put("PHASE_ORDER", rec.getInt("PHASE_ORDER"));
+		map.put("APP_PHASE_ATR", rec.getInt("APP_PHASE_ATR"));
+		map.put("APPROVAL_FORM", rec.getInt("APPROVAL_FORM"));
+		// KRQDT_APP_REFLECT_STATE
+		map.put("APPROVER_ORDER", rec.getInt("APPROVER_ORDER"));
+		map.put("APPROVER_ID", rec.getString("APPROVER_ID"));
+		map.put("APPROVAL_ATR", rec.getInt("APPROVAL_ATR"));
+		map.put("CONFIRM_ATR", rec.getInt("CONFIRM_ATR"));
+		map.put("AGENT_ID", rec.getString("AGENT_ID"));
+		map.put("APPROVAL_DATE", rec.getGeneralDate("APPROVAL_DATE"));
+		map.put("APPROVAL_REASON", rec.getString("APPROVAL_REASON"));
+		map.put("APP_DATE", rec.getGeneralDate("APP_DATE"));
+		map.put("APPROVER_LIST_ORDER", rec.getInt("APPROVER_LIST_ORDER"));
+		return map;
+	}
+	
+	private Map<String, List<ApprovalPhaseState>> convertToDomainPhase(List<Map<String, Object>> mapLst) {
+		return mapLst.stream().collect(Collectors.groupingBy(r -> (String) r.get("ROOT_STATE_ID"))).entrySet()
+			.stream().collect(Collectors.toMap(key -> (String) key.getKey(), x -> {
+				return x.getValue().stream().collect(Collectors.groupingBy(y -> y.get("PHASE_ORDER"))).entrySet()
+					.stream().map(y -> {
+						List<ApprovalFrame> listAppFrame = y.getValue().stream().collect(Collectors.groupingBy(z -> z.get("APPROVER_ORDER"))).entrySet()
+								.stream().map(z -> {
+									List<ApproverInfor> listApprover = z.getValue().stream()
+											.collect(Collectors.groupingBy(t -> t.get("APPROVER_ID")))
+											.entrySet().stream().map(t -> {
+												return ApproverInfor.convert(
+														(String) t.getValue().get(0).get("APPROVER_ID"), 
+														(int) t.getValue().get(0).get("APPROVAL_ATR"), 
+														(String) t.getValue().get(0).get("AGENT_ID"), 
+														(GeneralDate) t.getValue().get(0).get("APPROVAL_DATE"), 
+														(String) t.getValue().get(0).get("APPROVAL_REASON"),
+														(int) t.getValue().get(0).get("APPROVER_LIST_ORDER"));
+											}).sorted(Comparator.comparing(ApproverInfor::getApproverInListOrder))
+											.collect(Collectors.toList());
+									return ApprovalFrame.convert(
+											(int) z.getValue().get(0).get("APPROVER_ORDER"), 
+											(int) z.getValue().get(0).get("CONFIRM_ATR"), 
+											(GeneralDate) z.getValue().get(0).get("APP_DATE"), 
+											listApprover);
+								}).collect(Collectors.toList());
+						return ApprovalPhaseState.createFormTypeJava(
+								(int) y.getValue().get(0).get("PHASE_ORDER"), 
+								(int) y.getValue().get(0).get("APP_PHASE_ATR"), 
+								(int) y.getValue().get(0).get("APPROVAL_FORM"), 
+								listAppFrame);
+					}).collect(Collectors.toList());
+			}));
 	}
 }
