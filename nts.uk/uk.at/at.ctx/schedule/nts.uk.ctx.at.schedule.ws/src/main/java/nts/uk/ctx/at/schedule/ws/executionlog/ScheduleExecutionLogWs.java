@@ -61,8 +61,6 @@ public class ScheduleExecutionLogWs extends WebService {
 	
 	/** The add. */
 	@Inject
-	private ScheduleExecutionLogAddCommandHandler add;
-	@Inject
 	private ScheduleExecutionAddCommandHandler addNew;
 	/** The execution. */
 	@Inject

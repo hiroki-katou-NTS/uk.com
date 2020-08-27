@@ -10,11 +10,16 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 /**
  * Clone ScheduleExecutionLogAddCommandHandler.
  */
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
+@Stateless
 public class ScheduleExecutionAddCommandHandler extends CommandHandlerWithResult<ScheduleExecutionAddCommand, ScheduleExecutionLogSaveRespone> {
 
     /** The create content repository. */
