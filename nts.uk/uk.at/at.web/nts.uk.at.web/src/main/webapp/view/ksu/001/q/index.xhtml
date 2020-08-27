@@ -31,7 +31,7 @@
 			<div id="functions-area">
 				<button class="proceed" tabindex="1"
 					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3702')}</button>
-				<button id="close" tabindex="2"
+				<button id="close" tabindex="3"
 					style="float: right; margin-right: 20px;"
 					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
 			</div>
@@ -50,7 +50,7 @@
 						<div style="display: flex;">
 							<div style="margin-left: 40px; margin-top: 10px"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3704')}</div>
-							<div style="margin-left: 20px; margin-top: 15px"
+							<div tabindex="4" style="margin-left: 20px; margin-top: 15px"
 								data-bind="ntsComboBox: {
 										options: externalBudgetModel().externalBudgetItems,
 										optionsValue: 'code',
