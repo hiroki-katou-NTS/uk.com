@@ -60,7 +60,7 @@
 					</div>
 
 					<!--C4_1-->
-					<div data-bind="ntsPanel:{width: '400px', height: '400px', direction: 'right', showIcon: true, visible: true}">
+					<div data-bind="ntsPanel:{width: '400px', height: '350px', direction: 'right', showIcon: true, visible: true}">
 						<!--search box-->
 						<div class="search-box" tabindex="-1"
 							 data-bind="ntsSearchBox: {
@@ -77,8 +77,8 @@
 						/>
 						<!--C4_2-->
 						<div tabindex="4" data-bind="if: !!ko.unwrap(columnBento).length">
-							<table id="approver-job-list" data-bind="ntsGridList: {
-							height: 350,
+							<table id="approver-job-list" data-bind="attr: {tabindex: '-1'}, ntsGridList: {
+							height: 300,
 							dataSource: itemsBento,
 							primaryKey: 'id',
 							columns: columnBento,
@@ -106,7 +106,8 @@
 								<!--C6_1-->
 								<div data-bind="ntsFormLabel: {
 									required: true,
-									text: $i18n('KMR001_42')
+									text: $i18n('KMR001_42'),
+									constraint: 'BentoName',
 									}"
 								/>
 							</td>
@@ -152,7 +153,7 @@
 							<td/>
 							<td>
 								<!--C11_4-->
-								<div tabindex="7" class="data-control reservationAtr" data-bind="ntsCheckBox: {
+								<div tabindex="7" class="data-control" data-bind="ntsCheckBox: {
 										checked: reservationAtr2,
 										text: vm.reservationFrameName2(),
 										enable: vm.isLasted(),
