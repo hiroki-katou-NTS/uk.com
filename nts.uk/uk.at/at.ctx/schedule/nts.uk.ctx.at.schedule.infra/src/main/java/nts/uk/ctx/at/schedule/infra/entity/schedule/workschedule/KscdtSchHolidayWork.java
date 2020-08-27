@@ -67,7 +67,7 @@ public class KscdtSchHolidayWork extends ContractUkJpaEntity {
 	public int holidayWorkTimePreApp;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "SID", referencedColumnName = "SID"),
 			@PrimaryKeyJoinColumn(name = "YMD", referencedColumnName = "YMD") })
 	public KscdtSchTime kscdtSchTime;
 

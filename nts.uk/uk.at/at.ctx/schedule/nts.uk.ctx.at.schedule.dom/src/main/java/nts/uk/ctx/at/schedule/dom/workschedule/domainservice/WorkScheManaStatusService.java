@@ -33,13 +33,12 @@ public class WorkScheManaStatusService {
 			flatMap		*/												
 		Map<ScheManaStatuTempo, Optional<WorkSchedule>> map = new HashMap<>();
 		for (int i = 0; i < lstEmployeeID.size(); i++) {
-			long startTime = System.nanoTime();
+			long start = System.nanoTime();
 			
 			map.putAll(WorkScheManaStatusService.getByEmployee(require,lstEmployeeID.get(i), period));
 			
-			long endTime = System.nanoTime();
-			long duration = (endTime - startTime) / 1000000; // ms;
-			System.out.println("employee: " + duration + "ms");
+			System.out.println("employee: " + ((System.nanoTime() - start )/1000000) + "ms");	
+
 		}
 		
 		return  map;
@@ -58,11 +57,12 @@ public class WorkScheManaStatusService {
 		datePeriod.datesBetween().stream().forEach(x->{
 			//	map		$社員の予定管理状態 = 社員の予定管理状態#作成する( require, 社員ID, $ )
 			ScheManaStatuTempo zScheManaStatuTempo =  ScheManaStatuTempo.create(require, employeeID, x);
+			
 			if(!zScheManaStatuTempo.getScheManaStatus().needCreateWorkSchedule()){
 				 map.put(zScheManaStatuTempo, Optional.empty());
 				 return;
 			}
-			//$勤務予定 = require.勤務予定を取得する( 社員ID, $ )														
+			//$勤務予定 = require.勤務予定を取得する( 社員ID, $ )	
 			Optional<WorkSchedule> zWorkSchedule  = require.get(employeeID, x);
 			//return Key: $社員の予定管理状態, Value: $勤務予定															
 			map.put(zScheManaStatuTempo, zWorkSchedule);

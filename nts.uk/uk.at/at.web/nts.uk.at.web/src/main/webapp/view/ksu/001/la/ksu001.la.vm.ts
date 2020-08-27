@@ -89,8 +89,7 @@ module nts.uk.at.view.ksu001.la {
                         service.findAll(workplaceGroup.workplaceGroupId).done((listScheduleTeam: Array<ScheduleTeam>) => {
                             if (!_.isEmpty(listScheduleTeam) && !_.isNull(listScheduleTeam)) {                           
                                 self.listScheduleTeam(listScheduleTeam);
-                                self.selectedCode(listScheduleTeam[0].code);
-                                self.getEmpOrgInfo();
+                                self.selectedCode(listScheduleTeam[0].code);                                
                             } else {
                                 self.isEditing(false);
                             }
@@ -98,6 +97,7 @@ module nts.uk.at.view.ksu001.la {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                             dfd.reject(res);
                         });
+                        self.getEmpOrgInfo();
                     }
                     blockUI.clear();
                     dfd.resolve();
@@ -113,6 +113,7 @@ module nts.uk.at.view.ksu001.la {
             private getEmpOrgInfo(): void {
                 const self = this;
                 let request:any = {};
+                let itemLeft: any = {} ;
                 request.baseDate = self.baseDate();
                 request.workplaceGroupId = self.workplaceGroupId(); 
 
@@ -122,11 +123,15 @@ module nts.uk.at.view.ksu001.la {
                             x.teamName = nts.uk.resource.getText('KSU001_3223');
                         } 
                     });
-                    let itemLeft = _.filter(dataAll, x =>{
-                        return x.teamCd != self.selectedCode();
-                    });
+                    if(self.selectedCode()){
+                        itemLeft = _.filter(dataAll, x =>{
+                            return x.teamCd != self.selectedCode();
+                        });
                         self.itemsLeft(itemLeft);
                         self.itemsRight(_.difference(dataAll, itemLeft));
+                    } else {
+                        self.itemsLeft(dataAll);    
+                    }                                    
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 });

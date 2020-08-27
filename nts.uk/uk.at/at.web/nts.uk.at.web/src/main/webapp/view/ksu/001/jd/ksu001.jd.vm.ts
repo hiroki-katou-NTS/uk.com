@@ -29,13 +29,13 @@ module nts.uk.at.view.ksu001.jd {
                 self.target = ko.observable(dataShare.target);
                 self.targetID = ko.observable(dataShare.targetID);
                 self.originalPage = ko.observable(dataShare.pageNumber);
-                self.selectedCode.subscribe((data) => {
-                    let getName = _.find(self.itemList(), function(o) { return o.page == self.selectedCode(); });
-
-                    if (getName != null && getName.name.split(getText('KSU001_161')).length > 1) {
-                        self.orgName(getName.name.split(getText('KSU001_161'))[1]);
-                    }
-                });
+//                self.selectedCode.subscribe((data) => {
+//                    let getName = _.find(self.itemList(), function(o) { return o.page == self.selectedCode(); });
+//
+//                    if (getName != null && getName.name.split(getText('KSU001_161')).length > 1) {
+//                        self.orgName(getName.name.split(getText('KSU001_161'))[1]);
+//                    }
+//                });
             }
 
             /**
@@ -193,6 +193,9 @@ module nts.uk.at.view.ksu001.jd {
                 let self = this;
                 let shiftPaletData = [];
                 let page: string;
+                self.orgName(_.filter(data, function(o) {
+                    return o.page == self.originalPage();
+                })[0].name);
                 for (let i: number = 1; i <= 10; i++) {
                     if (_.filter(data, function(o) {
                         return o.page == i;
