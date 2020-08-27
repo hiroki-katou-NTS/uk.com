@@ -46,7 +46,10 @@ public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "EXE_SID")
     private String exeSid;
-    
+    // 契約コード
+    @NotNull
+    @Column(name = "CONTRACT_CD")
+    private String contractCode;
     /** The exe str D. */
     @Basic(optional = false)
     @NotNull

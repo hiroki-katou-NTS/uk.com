@@ -59,8 +59,8 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 	}
 
 	@Override
-	public void addNew(ScheduleCreateContent domain, String companyId, String employeeId, String executionId,String contractCode) {
-		this.commandProxy().insert(this.toEntityNew(domain,companyId,employeeId,executionId,contractCode));
+	public void add(ScheduleCreateContent domain, String companyId, String employeeId, String executionId,String contractCode) {
+		this.commandProxy().insert(this.toEntity(domain,companyId,employeeId,executionId,contractCode));
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 		domain.saveToMemento(new JpaScheduleCreateContentSetMemento(entity));
 		return entity;
 	}
-	private KscdtScheExeContent toEntityNew(ScheduleCreateContent domain,String companyId, String employeeId, String executionId,String contractCode){
+	private KscdtScheExeContent toEntity(ScheduleCreateContent domain,String companyId, String employeeId, String executionId,String contractCode){
 		val entity = KscdtScheExeContent.toEntityNew(domain, companyId,  employeeId,  executionId,contractCode);
 		return entity;
 	}

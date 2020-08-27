@@ -41,6 +41,9 @@ public class KscdtScheExeTarget extends UkJpaEntity implements Serializable {
     @Column(name = "EXE_STATUS")
     private int exeStatus;
 
+    @NotNull
+    @Column(name = "CONTRACT_CD")
+    private String contractCode;
     /**
      * Instantiates a new kscmt sch creator.
      */

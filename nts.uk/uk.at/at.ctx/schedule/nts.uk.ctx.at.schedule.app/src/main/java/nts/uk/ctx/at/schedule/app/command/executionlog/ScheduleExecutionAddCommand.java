@@ -107,7 +107,7 @@ public class ScheduleExecutionAddCommand {
      * @param executionId the execution id
      * @return the schedule execution log
      */
-    public ScheduleExecutionLog toDomain(String companyId, String employeeId, String executionId) {
+    public ScheduleExecutionLog toDomain(String companyId, String employeeId, String executionId ) {
         return new ScheduleExecutionLog(new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
     }
 

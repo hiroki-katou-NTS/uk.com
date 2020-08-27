@@ -105,7 +105,10 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository implements 
 	public void add(ScheduleExecutionLog domain) {
 		this.commandProxy().insert(this.toEntity(domain));
 	}
-
+	@Override
+	public void add(ScheduleExecutionLog domain,String contractCode) {
+		this.commandProxy().insert(this.toEntity(domain,contractCode));
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -125,6 +128,12 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository implements 
 	 *            the domain
 	 * @return the kscmt schedule exc log
 	 */
+	private KscdtScheExeLog toEntity(ScheduleExecutionLog domain,String contractCode) {
+		KscdtScheExeLog entity = new KscdtScheExeLog();
+		entity.setContractCode(contractCode);
+		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
+		return entity;
+	}
 	private KscdtScheExeLog toEntity(ScheduleExecutionLog domain) {
 		KscdtScheExeLog entity = new KscdtScheExeLog();
 		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));

@@ -152,6 +152,10 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		this.commandProxy().insertAll(
 				domains.stream().map(domain -> this.toEntity(domain)).collect(Collectors.toList()));
 	}
+	public void saveAll(List<ScheduleCreator> domains,String contractCode) {
+		this.commandProxy().insertAll(
+				domains.stream().map(domain -> this.toEntity(domain,contractCode)).collect(Collectors.toList()));
+	}
 	
 	/*
 	 * (non-Javadoc)
@@ -200,6 +204,12 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 	 */
 	private KscdtScheExeTarget toEntity(ScheduleCreator domain){
 		KscdtScheExeTarget entity = new KscdtScheExeTarget();
+		domain.saveToMemento(new JpaScheduleCreatorSetMemento(entity));
+		return entity;
+	}
+	private KscdtScheExeTarget toEntity(ScheduleCreator domain,String contractCode){
+		KscdtScheExeTarget entity = new KscdtScheExeTarget();
+		entity.setContractCode(contractCode);
 		domain.saveToMemento(new JpaScheduleCreatorSetMemento(entity));
 		return entity;
 	}
