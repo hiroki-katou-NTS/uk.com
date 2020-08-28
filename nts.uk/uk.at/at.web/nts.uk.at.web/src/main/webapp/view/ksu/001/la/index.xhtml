@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 1200, height: 610 };</script>
+            <script>var dialogSize = { width: 1200, height: 620 };</script>
             <com:ValidatorScript>
                 nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd
                 nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName
@@ -99,25 +99,29 @@
                         <div class="lblForm" data-bind="ntsFormLabel:{ require:true}">#{i18n.getText('KSU001_3212')}
                         </div>                        
                         <div class="lblForm" data-bind="ntsFormLabel:{ require:true} "> 
-                            <div data-bind="{text:nts.uk.resource.getText('KSU001_3213', [scheduleTeamModel().name()])}"></div>                              
+                            <div data-bind="if: isEditing"> 
+                                <div data-bind="{text:nts.uk.resource.getText('KSU001_3213', [scheduleTeamModel().name()])}"></div>   
+                            </div>
+                            <div data-bind="ifnot: isEditing">
+                                <div data-bind="{text:nts.uk.resource.getText('KSU001_3213', [nts.uk.resource.getText('KSU001_3202')])}"></div>
+                            </div>                            
                         </div>
                     </div>
-
                     <div class="container-custom">
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
                         <div style="width: 300px"
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', 
-                                            items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd'], mode: 'igGrid'}" />
+                                            items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd','businessName'], mode: 'igGrid'}" />
 
-                        <div style="width: 156px;"></div>
+                        <div style="width: 142px;"></div>
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
                         <div style="width: 266px;"
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-right', searchMode: 'highlight',
-                                            items: itemsRight, selected: currentCodeListRight, selectedKey: 'employeeCd', fields: ['employeeCd'], mode: 'igGrid'}" />
+                                            items: itemsRight, selected: currentCodeListRight, selectedKey: 'employeeCd', fields: ['employeeCd','businessName'], mode: 'igGrid'}" />
                     </div>
 
                     <div class="container-table">

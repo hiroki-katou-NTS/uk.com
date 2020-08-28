@@ -34,8 +34,8 @@ module nts.uk.at.view.ksu001.la {
                 ]);
 
                 self.columnsLeft = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 100 },
-                    { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 150 },
+                    { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 90 },
+                    { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 130 },
                     { headerText: nts.uk.resource.getText('KSU001_3215'), key: 'teamName', width: 66 }
                 ]);
 
