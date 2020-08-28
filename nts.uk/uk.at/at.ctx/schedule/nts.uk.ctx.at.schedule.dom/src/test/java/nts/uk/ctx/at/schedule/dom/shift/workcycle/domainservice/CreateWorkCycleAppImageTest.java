@@ -166,10 +166,22 @@ public class CreateWorkCycleAppImageTest {
         new Expectations() {
             {
                 require.getWorkCycle((String) any);
-                List<WorkCycleInfo> infos = WorkCycleTestHelper.WorkCycleInfoHelper.createListForTest(3);
+                List<WorkCycleInfo> infos = new ArrayList<>();
+                infos.add(new WorkCycleInfo(1, "001", "101", 1));
+                infos.add(new WorkCycleInfo(1, "002", "102", 2));
+                infos.add(new WorkCycleInfo(1, "003", "103", 3));
+                infos.add(new WorkCycleInfo(1, "004", "104", 4));
+                infos.add(new WorkCycleInfo(1, "005", "105", 5));
+
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
+
                 require.getWeeklyWorkSetting();
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWeeklyWorkDayPattern());
+
+                require.getpHolidayWhileDate((GeneralDate) any, (GeneralDate) any);
+                List<PublicHoliday> holidays = new ArrayList<>();
+                holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,1), "Dummy"));
+                result = holidays;
             }
         };
         List<WorkCreateMethod> createMethods = new ArrayList<>(Arrays.asList(WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.WORK_CYCLE));
@@ -181,16 +193,49 @@ public class CreateWorkCycleAppImageTest {
                 "dummy",
                 "dummy"
         );
-        CreateWorkCycleAppImage.create(require, datePeriod, refSetting);
         List<RefImageEachDay> result = CreateWorkCycleAppImage.create(require, datePeriod, refSetting);
         assertThat(result.isEmpty()).isFalse();
-        Assert.assertEquals(result.get(0).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
-        Assert.assertEquals(result.get(1).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
-        Assert.assertEquals(result.get(2).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
-        Assert.assertEquals(result.get(3).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
-        Assert.assertEquals(result.get(4).getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
-        Assert.assertEquals(result.get(5).getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
-        Assert.assertEquals(result.get(6).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
+        val day0 = result.get(0);
+        Assert.assertEquals(day0.getDate(), GeneralDate.ymd(2020, 1, 1));
+        Assert.assertEquals(day0.getWorkCreateMethod(), WorkCreateMethod.PUB_HOLIDAY);
+        Assert.assertEquals(day0.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("dummy"));
+        Assert.assertEquals(day0.getWorkInformation().getWorkTimeCode(), null);
+
+        val day1 = result.get(1);
+        Assert.assertEquals(day1.getDate(), GeneralDate.ymd(2020, 1, 2));
+        Assert.assertEquals(day1.getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
+        Assert.assertEquals(day1.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("001"));
+        Assert.assertEquals(day1.getWorkInformation().getWorkTimeCode(), new WorkTimeCode("101"));
+
+        val day2 = result.get(2);
+        Assert.assertEquals(day2.getDate(), GeneralDate.ymd(2020, 1, 3));
+        Assert.assertEquals(day2.getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
+        Assert.assertEquals(day2.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("dummy"));
+        Assert.assertEquals(day2.getWorkInformation().getWorkTimeCode(), null);
+
+        val day3 = result.get(3);
+        Assert.assertEquals(day3.getDate(), GeneralDate.ymd(2020, 1, 4));
+        Assert.assertEquals(day3.getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
+        Assert.assertEquals(day3.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("dummy"));
+        Assert.assertEquals(day3.getWorkInformation().getWorkTimeCode(), null);
+
+        val day4 = result.get(4);
+        Assert.assertEquals(day4.getDate(), GeneralDate.ymd(2020, 1, 5));
+        Assert.assertEquals(day4.getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
+        Assert.assertEquals(day4.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("002"));
+        Assert.assertEquals(day4.getWorkInformation().getWorkTimeCode(), new WorkTimeCode("102"));
+
+        val day5 = result.get(5);
+        Assert.assertEquals(day5.getDate(), GeneralDate.ymd(2020, 1, 6));
+        Assert.assertEquals(day5.getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
+        Assert.assertEquals(day5.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("003"));
+        Assert.assertEquals(day5.getWorkInformation().getWorkTimeCode(), new WorkTimeCode("103"));
+
+        val day6 = result.get(6);
+        Assert.assertEquals(day6.getDate(), GeneralDate.ymd(2020, 1, 7));
+        Assert.assertEquals(day6.getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
+        Assert.assertEquals(day6.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("004"));
+        Assert.assertEquals(day6.getWorkInformation().getWorkTimeCode(), new WorkTimeCode("104"));
     }
 
 }
