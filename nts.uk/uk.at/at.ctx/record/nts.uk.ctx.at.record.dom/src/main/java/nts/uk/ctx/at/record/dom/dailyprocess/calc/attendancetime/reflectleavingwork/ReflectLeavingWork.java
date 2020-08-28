@@ -37,7 +37,7 @@ public class ReflectLeavingWork {
 					integrationOfDaily);
 
 			// 2回目勤務の出勤打刻反映範囲内 (出勤打刻反映範囲内 của worktype lần 2)
-		} else if (outputCheckRangeReflectAttd == OutputCheckRangeReflectAttd.FIRST_TIME) {
+		} else if (outputCheckRangeReflectAttd == OutputCheckRangeReflectAttd.SECOND_TIME) {
 			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.LEAVING_WORK, ActualStampAtr.STAMP_REAL, 2,
 					integrationOfDaily);
 			reflectStampOuput = reflectAttendanceClock.reflect(stamp, AttendanceAtr.LEAVING_WORK, ActualStampAtr.STAMP, 2,

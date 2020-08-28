@@ -182,8 +182,8 @@ public class KrcdtStamp extends ContractUkJpaEntity implements Serializable {
 		this.lateNightOverTime = stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 				? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 				: null; // lateNightOverTime
-		this.locationLon = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude()):null;
-		this.locationLat = stamp.getLocationInfor().isPresent()? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude()):null;
+		this.locationLon = stamp.getLocationInfor().isPresent()? (stamp.getLocationInfor().get().getPositionInfor() !=null? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLongitude()):null):null;
+		this.locationLat = stamp.getLocationInfor().isPresent()? (stamp.getLocationInfor().get().getPositionInfor() !=null? new BigDecimal(stamp.getLocationInfor().get().getPositionInfor().getLatitude()):null):null;
 		this.outsideAreaArt = stamp.getLocationInfor().isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr()
 				: null;
 		return this;
