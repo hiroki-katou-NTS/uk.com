@@ -78,7 +78,7 @@ thead{
 }
 thead>tr {
 	position: relative;
-	display: inherit;
+	display: block;
 }
 
 thead>tr>th {
