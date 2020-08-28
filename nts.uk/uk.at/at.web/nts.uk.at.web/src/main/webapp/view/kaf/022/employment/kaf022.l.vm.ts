@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
         workTypeList: Array<any>;
         appSetData: KnockoutObservable<PreBeforeAppSetData> = ko.observable(new PreBeforeAppSetData(''));
         alreadySettingData: Array<any>;
-        codeStart: string = '';
+
         listWTShareKDL002: KnockoutObservableArray<any> = ko.observableArray([]);
         allowRegister: KnockoutObservable<boolean> = ko.observable(true);
         //previewData: any = null;
@@ -77,7 +77,9 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                     self.reloadData()
                 ).done((worktypes, data) => {
                     self.workTypeList = worktypes;
-                    self.selectedCode(self.codeStart);
+                    let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
+                    if (_.size(employmentList))
+                        self.selectedCode(employmentList[0].code);
                     dfd.resolve();
                 }).fail(error => {
                     dfd.reject();
@@ -139,7 +141,6 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                 if (_.size(lstEmp)) {
                     //Get Employment List.
                     let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
-                    self.codeStart = employmentList[0].code;
                     let alreadyLst: Array<UnitModel> = _.filter(employmentList,
                         function (emp) {
                             let foundEmployment = _.find(lstEmp, function (item: any) {
@@ -198,7 +199,8 @@ module nts.uk.at.view.kaf022.l.viewmodel {
 //                });   
 //             } 
             //return if no selected employment code
-            if (nts.uk.util.isNullOrEmpty(empCode)) {
+            if (isNullOrEmpty(empCode)) {
+                self.screenMode(ScreenMode.INSERT);
                 self.appSetData(new PreBeforeAppSetData(empCode));
                 return;
             }
@@ -440,20 +442,21 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                         //self.alreadySettingList.push(alreadyList);
                         //self.alreadySettingList.valueHasMutated();
                         //情報メッセージ（Msg_15）を表示する
-                        //Load data setting
-                        self.reloadData().done(() => {
-                            self.selectedCode("");
-                            self.selectedCode(code);
-                            self.screenMode(ScreenMode.UPDATE);
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                        }).fail(error => {
-                            nts.uk.ui.dialog.alertError(error);
-                        }).always(() => {
-                            clear();
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                            nts.uk.ui.block.invisible();
+                            //Load data setting
+                            self.reloadData().done(() => {
+                                self.selectedCode.valueHasMutated();
+                            }).fail(error => {
+                                nts.uk.ui.dialog.alertError(error);
+                            }).always(() => {
+                                clear();
+                            });
                         });
                     }).fail(error => {
-                        clear();
                         nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        clear();
                     });
                 } else {
                     //Array To AppEmploymentSetComman
@@ -463,18 +466,20 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                         listWTOAH: list
                     }).done(() => {
                         //情報メッセージ（Msg_15）を表示する
-                        self.reloadData().done(() => {
-                            self.selectedCode("");
-                            self.selectedCode(code);
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                        }).fail(error => {
-                            nts.uk.ui.dialog.alertError(error);
-                        }).always(() => {
-                            clear();
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                            nts.uk.ui.block.invisible();
+                            self.reloadData().done(() => {
+                                self.selectedCode.valueHasMutated();
+                            }).fail(error => {
+                                nts.uk.ui.dialog.alertError(error);
+                            }).always(() => {
+                                clear();
+                            });
                         });
                     }).fail(error => {
-                        clear();
                         nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        clear();
                     });
                 }
             }
@@ -505,18 +510,15 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                         _.remove(self.alreadySettingData, function (currentData: any) {
                             return currentData.employmentCode === self.selectedCode();
                         });
-                        //Change screen mode
-                        self.screenMode(ScreenMode.INSERT);
+                        self.selectedCode.valueHasMutated();
                     }).fail(error => {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
                         clear();
                     });
                 }).ifNo(function () {
-                    clear();
+
                 });
-            } else {
-                clear();
             }
         }
 
@@ -524,7 +526,6 @@ module nts.uk.at.view.kaf022.l.viewmodel {
          * 申請の前準備を複写する
          */
         copyEmploymentSet() {
-            nts.uk.ui.block.invisible();
             let self = this;
             if (self.screenMode() === ScreenMode.UPDATE) {
                 let listSetting = [];
@@ -541,11 +542,11 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                 };
                 setShared("CDL023Input", param);
                 nts.uk.ui.windows.sub.modal("com", "/view/cdl/023/a/index.xhtml").onClosed(() => {
-                    nts.uk.ui.block.invisible();
                     let data = nts.uk.ui.windows.getShared("CDL023Output");
                     if (!nts.uk.util.isNullOrUndefined(data)) {
+                        nts.uk.ui.block.invisible();
                         //check overide mode
-                        let isOveride: boolean = false;
+                        let isOverride: boolean = false;
                         let alreadyLst: Array<any> = _.filter(data,
                             function (emp) {
                                 let foundEmployment = _.find(self.alreadySettingList(), function (item: any) {
@@ -555,33 +556,32 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                             });
                         //Overide mode
                         if (!nts.uk.util.isNullOrUndefined(alreadyLst) && alreadyLst.length > 0) {
-                            isOveride = true;
+                            isOverride = true;
                         }
                         let command = {
                             targetEmploymentCodes: data,
-                            overide: isOveride,
+                            override: isOverride,
                             employmentCode: self.selectedCode()
                         };
                         service.copyEmploymentSet(command).done(() => {
                             //情報メッセージ（Msg_15）を表示する
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function () {
-                                //複写の場合は、複写先の数がわからないので、画面の初期表示処理を実行する
-                                self.reloadData();
-                                clear();
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
+                                nts.uk.ui.block.invisible();
+                                self.reloadData(() => {
+                                    self.selectedCode.valueHasMutated();
+                                }).fail(error => {
+                                    nts.uk.ui.dialog.alertError(error);
+                                }).always(() => {
+                                    clear();
+                                });
                             });
-                        }).fail(function (res: any) {
-                            nts.uk.ui.dialog.alertError({
-                                messageId: res.messageId,
-                                messageParams: res.parameterIds
-                            }).then(function () {
-                                clear();
-                            });
+                        }).fail(error => {
+                            nts.uk.ui.dialog.alertError(error);
+                        }).always(() => {
+                            clear();
                         });
                     }
-                    clear();
                 });
-            } else {
-                clear();
             }
         }
 

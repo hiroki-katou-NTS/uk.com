@@ -95,6 +95,7 @@ public class JpaAppEmploymentSetRepository extends JpaRepository implements AppE
                 .setParameter("employmentCode", employmentCode)
                 .getList();
         this.commandProxy().removeAll(entities);
+        this.getEntityManager().flush();
     }
 
 }
