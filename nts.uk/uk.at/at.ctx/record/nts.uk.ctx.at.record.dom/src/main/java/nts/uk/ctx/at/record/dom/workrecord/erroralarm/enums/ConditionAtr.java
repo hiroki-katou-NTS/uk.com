@@ -7,21 +7,20 @@ import lombok.AllArgsConstructor;
 
 /**
  * @author hungnm
- *
+ *　条件式の属性
  */
-//条件式の属性
 @AllArgsConstructor
 public enum ConditionAtr {
 
-	/* 回数 */
+	/** 回数 */
 	TIMES(0, "Enum_ConditionAtr_Times"),
-	/* 時間 */
+	/** 時間 */
 	TIME_DURATION(1, "Enum_ConditionAtr_TimeDuration"),
-	/* 時刻 */
+	/** 時刻 */
 	TIME_WITH_DAY(2, "Enum_ConditionAtr_TimeWithDay"),
-	/* 金額 */
+	/** 金額 */
 	AMOUNT_VALUE(3, "Enum_ConditionAtr_AmountValue"),
-	/* 日数*/
+	/** 日数*/
 	DAYS(4, "日数");
 
 	public final int value;

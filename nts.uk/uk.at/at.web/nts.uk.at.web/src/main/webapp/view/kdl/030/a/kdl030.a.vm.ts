@@ -110,23 +110,6 @@ module nts.uk.at.view.kdl030.a.viewmodel {
                             });
                             listPhaseDto.push(new ApprovalPhaseState(phase.phaseOrder, listFrameDto));
                         });
-                        // sort list approval
-                        if(listPhaseDto != undefined && listPhaseDto.length != 0) {
-                            listPhaseDto.forEach((el) => {
-                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
-                                    //sort by listApprovalFrame
-                                        el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['nameApprover'],['asc']);
-                                    // set again approver 
-                                    _.each(el.listApprovalFrame, (item, index) => {
-                                        if (index+1 != item.frameOrder ) {
-                                            item.frameOrder = index +1;    
-                                        }
-                                    });
-                                    
-                                }
-                            });  
-                        }
-                        
                         self.approvalRootState(listPhaseDto);
                     }
                     dfd.resolve();

@@ -69,7 +69,7 @@ public class WorkInfoList {
 	public Optional<WorkInformation> getRecord(GeneralDate ymd) {
 
 		if (!this.workInfoOfDailyMap.containsKey(ymd)) return Optional.empty();
-		WorkInformation record = this.workInfoOfDailyMap.get(ymd).getRecordInfo();
+		WorkInformation record = this.workInfoOfDailyMap.get(ymd).getWorkInformation().getRecordInfo();
 		if (record == null) return Optional.empty();
 		return Optional.of(new WorkInformation(record.getWorkTimeCode(), record.getWorkTypeCode()));
 	}
@@ -82,7 +82,7 @@ public class WorkInfoList {
 	public Optional<WorkInformation> getSchedule(GeneralDate ymd) {
 		
 		if (!this.workInfoOfDailyMap.containsKey(ymd)) return Optional.empty();
-		WorkInformation schedule = this.workInfoOfDailyMap.get(ymd).getScheduleInfo();
+		WorkInformation schedule = this.workInfoOfDailyMap.get(ymd).getWorkInformation().getScheduleInfo();
 		if (schedule == null) return Optional.empty();
 		return Optional.of(new WorkInformation(schedule.getWorkTimeCode(), schedule.getWorkTypeCode()));
 	}
@@ -95,8 +95,8 @@ public class WorkInfoList {
 		
 		Map<GeneralDate, WorkInformation> results = new HashMap<>();
 		for (val entry : this.workInfoOfDailyMap.entrySet()){
-			if (entry.getValue().getRecordInfo() == null) continue;
-			results.put(entry.getKey(), entry.getValue().getRecordInfo());
+			if (entry.getValue().getWorkInformation().getRecordInfo() == null) continue;
+			results.put(entry.getKey(), entry.getValue().getWorkInformation().getRecordInfo());
 		}
 		return results;
 	}
@@ -109,8 +109,8 @@ public class WorkInfoList {
 		
 		Map<GeneralDate, WorkInformation> results = new HashMap<>();
 		for (val entry : this.workInfoOfDailyMap.entrySet()){
-			if (entry.getValue().getScheduleInfo() == null) continue;
-			results.put(entry.getKey(), entry.getValue().getScheduleInfo());
+			if (entry.getValue().getWorkInformation().getScheduleInfo() == null) continue;
+			results.put(entry.getKey(), entry.getValue().getWorkInformation().getScheduleInfo());
 		}
 		return results;
 	}

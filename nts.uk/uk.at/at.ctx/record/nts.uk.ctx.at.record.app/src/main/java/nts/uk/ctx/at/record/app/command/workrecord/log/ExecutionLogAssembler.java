@@ -24,8 +24,8 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.Set
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
 @Stateless
 public class ExecutionLogAssembler {
@@ -161,7 +161,8 @@ public class ExecutionLogAssembler {
 				ExeStateOfCalAndSum.PROCESSING.value,
 				// objectPeriod param Screen C
 				GeneralDate.fromString(command.getPeriodStartDate(), "yyyy/MM/dd"),
-				GeneralDate.fromString(command.getPeriodEndDate(), "yyyy/MM/dd"));
+				GeneralDate.fromString(command.getPeriodEndDate(), "yyyy/MM/dd"),
+        command.getIsCalWhenLock()==null?null:new Boolean(command.getIsCalWhenLock()==1?true:false));
 		return executionLog;
 	}
 	

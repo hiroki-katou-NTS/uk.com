@@ -15,10 +15,13 @@ public class ErAlAtdItemConAdapterDto {
 	private int conditionAtr;
 	private boolean useAtr;
 	private int uncountableAtdItem;
+	/**	加算する勤怠項目一覧 */
 	private List<Integer> countableAddAtdItems;
+	/**減算する勤怠項目一覧	 */
 	private List<Integer> countableSubAtdItems;
 	private int conditionType;
-	private int compareOperator;
+	/**比較演算子：単一値との比較演算の種別、範囲との比較演算の種別 */
+	private int compareOperator; //Enumを定義ほしい
 	private int singleAtdItem;
 	private BigDecimal compareStartValue;
 	private BigDecimal compareEndValue;

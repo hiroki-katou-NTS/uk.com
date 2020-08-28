@@ -11,10 +11,10 @@ import lombok.val;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.shr.com.i18n.TextResource;
 

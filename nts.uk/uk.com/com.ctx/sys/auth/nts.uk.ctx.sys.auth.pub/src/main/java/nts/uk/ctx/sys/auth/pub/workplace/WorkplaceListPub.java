@@ -26,5 +26,11 @@ public interface WorkplaceListPub {
 	
 	// RequestList613: [RQ613]指定社員の職場管理者の職場リストを取得する（配下含む）
 	List<String> getWorkplaceId(GeneralDate baseDate, String employeeID);
+
+	// 指定社員が参照可能な職場リストを取得する（職場管理者なし）
+	List<String> getListWorkPlaceIDNoWkpAdmin(String employeeID, int empRange, GeneralDate referenceDate);
+	
+	// 職場管理者Repository.取得する(社員ID, 年月日)
+	List<WorkplaceManagerExport> findListWkpManagerByEmpIdAndBaseDate(String employeeId, GeneralDate baseDate);
 }
 

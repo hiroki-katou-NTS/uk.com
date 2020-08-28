@@ -23,6 +23,10 @@ public class SyCompanyRecordAdapterImpl implements SyCompanyRecordAdapter {
 
 	@Inject
 	private SyCompanyPub syCompanyPub;
+	
+	//private ICompanyPub companyPub;
+	
+	
 
 	@Override
 	public List<AffCompanyHistImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
@@ -54,5 +58,16 @@ public class SyCompanyRecordAdapterImpl implements SyCompanyRecordAdapter {
 				.map(x -> new StatusOfEmployeeExport(x.getEmployeeId(), x.getListPeriod()))
 				.collect(Collectors.toList());
 	}
+
+//	@Override
+//	public List<CompanyImportForKDP003> get(String contractCd, Optional<String> cid,Boolean isAbolition) {
+//		List<CompanyImportForKDP003> result = new ArrayList<>();
+//		List<CompanyExportForKDP003> importCom = companyPub.get(contractCd, cid, isAbolition);
+//		if (importCom.isEmpty()) {
+//			return result;
+//		}
+//		return importCom.stream().map(item -> new CompanyImportForKDP003(item.getCompanyCode(),item.getCompanyName(), item.getCompanyId(), item.getContractCd()))
+//				.collect(Collectors.toList());
+//	}
 
 }

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.workrule.specific;
 
 import java.util.Optional;
 
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
+
 /**
  * The Interface SpecificWorkRuleRepository.
  * @author HoangNDH

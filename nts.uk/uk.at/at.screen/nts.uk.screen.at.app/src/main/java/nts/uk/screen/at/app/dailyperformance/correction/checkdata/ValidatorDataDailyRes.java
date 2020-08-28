@@ -30,14 +30,12 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Ap
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
 import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveError;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveError;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
@@ -45,6 +43,8 @@ import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMntRepository;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -469,7 +469,7 @@ public class ValidatorDataDailyRes {
 			if (!divergenceErrors.isEmpty()) {
 				 Map<Integer, List<DPItemValue>> temMap = new HashMap<>();
 				temMap.put(TypeError.DEVIATION_REASON.value, divergenceErrors);
-				resultError.put(Pair.of(d.getWorkInformation().getEmployeeId(), d.getWorkInformation().getYmd()), new ResultReturnDCUpdateData(d.getWorkInformation().getEmployeeId(), d.getWorkInformation().getYmd(), temMap));
+				resultError.put(Pair.of(d.getEmployeeId(), d.getYmd()), new ResultReturnDCUpdateData(d.getEmployeeId(), d.getYmd(), temMap));
 			}
 		}
 		return resultError;
@@ -688,7 +688,7 @@ public class ValidatorDataDailyRes {
 			return new ArrayList<>();
 		List<ErrorAlarmWorkRecord> errorAlarms = errorAlarmWRRepo.getListErAlByListCodeRemark(companyId, errors);
 		for (IntegrationOfDaily domain : domainDailyNews) {
-			val dtoCorrespon = dtoNews.stream().filter(x -> x.getEmployeeId().equals(domain.getWorkInformation().getEmployeeId()) && x.getDate().equals(domain.getWorkInformation().getYmd())).findFirst().orElse(null);
+			val dtoCorrespon = dtoNews.stream().filter(x -> x.getEmployeeId().equals(domain.getEmployeeId()) && x.getDate().equals(domain.getYmd())).findFirst().orElse(null);
 			val error = domain.getEmployeeError().stream().filter(x -> {
 				val errorSelect = errorAlarms.stream()
 						.filter(y -> x.getErrorAlarmWorkRecordCode().v().equals(y.getCode().v())).findFirst()

@@ -3,11 +3,11 @@ package nts.uk.ctx.at.record.app.find.divergence.time;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeErrorCancelMethod;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeName;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeSetMemento;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceType;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeErrorCancelMethod;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeName;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeSetMemento;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeUseSet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceType;
 
 /**
  * Checks if is reason select.

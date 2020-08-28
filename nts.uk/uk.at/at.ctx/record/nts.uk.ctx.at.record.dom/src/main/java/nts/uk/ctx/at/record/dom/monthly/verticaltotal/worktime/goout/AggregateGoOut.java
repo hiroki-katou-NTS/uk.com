@@ -5,8 +5,8 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 

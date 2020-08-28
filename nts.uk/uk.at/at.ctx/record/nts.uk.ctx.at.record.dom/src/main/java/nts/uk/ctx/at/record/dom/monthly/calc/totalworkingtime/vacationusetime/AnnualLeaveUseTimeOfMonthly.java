@@ -78,7 +78,7 @@ public class AnnualLeaveUseTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// 「日別実績の年休」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			if (totalWorkingTime.getHolidayOfDaily() == null) return;
 			val holidayOfDaily = totalWorkingTime.getHolidayOfDaily();

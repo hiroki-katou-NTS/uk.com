@@ -86,7 +86,7 @@ public class PrescribedWorkingTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(attendanceTimeOfDaily.getYmd())) continue;
 			
 			// 「日別実績の勤務予定時間」を取得する
-			val workScheduleTimeOfDaily = attendanceTimeOfDaily.getWorkScheduleTimeOfDaily();
+			val workScheduleTimeOfDaily = attendanceTimeOfDaily.getTime().getWorkScheduleTimeOfDaily();
 			
 			// 取得した就業時間を「月別実績の所定労働時間」に入れる
 			this.timeSeriesWorks.add(PrescribedWorkingTimeOfTimeSeries.of(

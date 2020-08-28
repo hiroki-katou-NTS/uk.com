@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.workingcondition;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -12,9 +13,9 @@ import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class WorkingConditionItem.
+ * 労働条件項目
  */
 @Getter
-// 労働条件項目
 public class WorkingConditionItem extends AggregateRoot {
 
 	/** The history id. */
@@ -223,5 +224,13 @@ public class WorkingConditionItem extends AggregateRoot {
 		
 		
 	}
+
+	public WorkingConditionItem(String historyId, ManageAtr scheduleManagementAtr, String employeeId) {
+		super();
+		this.historyId = historyId;
+		this.scheduleManagementAtr = scheduleManagementAtr;
+		this.employeeId = employeeId;
+	}
+
 
 }

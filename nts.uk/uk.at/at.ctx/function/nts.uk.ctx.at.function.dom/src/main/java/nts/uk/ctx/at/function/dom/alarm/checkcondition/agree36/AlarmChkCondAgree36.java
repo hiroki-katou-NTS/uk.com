@@ -14,7 +14,9 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 @AllArgsConstructor
 public class AlarmChkCondAgree36 extends DomainObject{
+	/**	36協定エラーアラームのチェック条件 */
 	private List<AgreeConditionError> listCondError;
+	/**36協定時間超過回数のチェック条件	 */
 	private List<AgreeCondOt> listCondOt;
 	
 }

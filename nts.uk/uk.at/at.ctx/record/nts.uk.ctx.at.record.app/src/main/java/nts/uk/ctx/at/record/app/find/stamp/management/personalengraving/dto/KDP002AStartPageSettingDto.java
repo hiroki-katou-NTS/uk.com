@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 
 /**
@@ -12,6 +13,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.E
  *
  */
 @Data
+@NoArgsConstructor
 public class KDP002AStartPageSettingDto {
 
 	private TimeCardDto timeCard;

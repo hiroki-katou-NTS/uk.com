@@ -49,7 +49,7 @@ public class BudgetTimeVarienceOfMonthly implements Serializable{
 		if (attendanceTimeOfDaily == null) return;
 		
 		// 日別実績の「予実差異時間」を集計する
-		this.time = this.time.addMinutes(attendanceTimeOfDaily.getBudgetTimeVariance().v());
+		this.time = this.time.addMinutes(attendanceTimeOfDaily.getTime().getBudgetTimeVariance().v());
 	}
 
 	/**

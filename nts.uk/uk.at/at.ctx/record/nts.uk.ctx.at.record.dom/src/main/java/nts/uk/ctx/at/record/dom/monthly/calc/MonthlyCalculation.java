@@ -40,7 +40,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.SettingRequiredByReg;
 import nts.uk.ctx.at.record.dom.statutoryworkinghours.monthly.MonthlyStatutoryWorkingHours;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
 import nts.uk.ctx.at.shared.dom.common.Year;
@@ -58,6 +57,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.monthcal.export.GetDeforAggrSet;
 import nts.uk.ctx.at.shared.dom.workrecord.monthcal.export.GetFlexAggrSet;
 import nts.uk.ctx.at.shared.dom.workrecord.monthcal.export.GetRegularAggrSet;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkEnum;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -478,7 +478,7 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		// 実績の勤務情報リスト
 		for (val workInfoOfDaily : monthlyCalcDailys.getWorkInfoOfDailyMap().values()) {
 			val ymd = workInfoOfDaily.getYmd();
-			this.workInfoOfRecordMap.put(ymd, workInfoOfDaily.getRecordInfo());
+			this.workInfoOfRecordMap.put(ymd, workInfoOfDaily.getWorkInformation().getRecordInfo());
 		}
 
 		// 月別実績の勤怠時間 既存データ

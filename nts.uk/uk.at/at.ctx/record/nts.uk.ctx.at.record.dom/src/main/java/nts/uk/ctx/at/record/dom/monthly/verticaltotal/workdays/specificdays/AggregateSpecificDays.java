@@ -5,7 +5,7 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 
 /**
  * 集計特定日数

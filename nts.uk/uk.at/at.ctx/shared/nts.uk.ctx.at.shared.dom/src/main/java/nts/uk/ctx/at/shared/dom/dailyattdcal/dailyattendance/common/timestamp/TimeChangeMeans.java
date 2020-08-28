@@ -78,5 +78,4 @@ public enum TimeChangeMeans {
 		// Not found.
 		return null;
 	}
-
 }

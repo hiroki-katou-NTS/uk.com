@@ -33,6 +33,12 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	public static final String SELECT_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid" + " AND c.isAbolition = 0 ";
 	
+	public static final String SELECT_BY_CID_CONTRACTCD_ABOLITIATR = "SELECT c FROM BcmmtCompanyInfor c "
+			+ " WHERE c.bcmmtCompanyInforPK.companyId = :cid "
+			+ " AND c.contractCd = :contractCd "
+			+ " AND c.isAbolition = :isAbolition "
+			+ " ORDER BY c.companyCode ASC ";
+
 	public static final String GET_COMPANY_BY_CID = "SELECT c FROM BcmmtCompanyInfor c WHERE c.bcmmtCompanyInforPK.companyId = :cid ";
 	
 	static {
@@ -422,6 +428,20 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 			return Optional.empty();
 			
 		}
+	}
+
+	@Override
+	public Optional<Company> getComanyInfoByCidContractCdAndAboAtr(String cid, String contractCd, int isAbolition) {
+		BcmmtCompanyInfor entity = this.queryProxy().query(SELECT_BY_CID_CONTRACTCD_ABOLITIATR, BcmmtCompanyInfor.class)
+				.setParameter("cid", cid)
+				.setParameter("contractCd", contractCd)
+				.setParameter("isAbolition", isAbolition)
+				.getSingleOrNull();
+		Company company = new Company();
+		if (entity != null) {
+			company = toDomainCom(entity);
+		}
+		return Optional.of(company);
 	}
 }
 

@@ -227,6 +227,8 @@ public interface WorkTypeRepository {
 	
 	List<String> findWorkTypeCodeOneDay(String companyId, int abolishAtr, int worktypeAtr, int oneDay);
 	
+	List<WorkType> findWorkByDeprecate(String companyId, int deprecateAtr);
+	
 	/**
 	 * Gets the acquired attendance work types.
 	 *
@@ -346,4 +348,6 @@ public interface WorkTypeRepository {
 	List<WorkType> findListByCid(String companyId);
 	
 	List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes);
+	
+	
 }

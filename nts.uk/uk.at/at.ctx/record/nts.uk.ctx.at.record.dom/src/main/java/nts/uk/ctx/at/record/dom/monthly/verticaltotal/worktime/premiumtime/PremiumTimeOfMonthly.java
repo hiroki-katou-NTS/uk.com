@@ -85,7 +85,7 @@ public class PremiumTimeOfMonthly implements Serializable{
 
 		if (attendanceTimeOfDaily == null) return;
 		
-		val actualWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+		val actualWorkingTime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 		val premiumTimeOfDaily = actualWorkingTime.getPremiumTimeOfDailyPerformance();
 		if (premiumTimeOfDaily.getPremiumTimes() == null) return;
 		for (val premiumTime : premiumTimeOfDaily.getPremiumTimes()){

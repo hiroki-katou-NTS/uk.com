@@ -25,7 +25,15 @@ public class KrcdtStampRecordPk implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
+	
+	
+	/**
+	 * 契約コード
+	 */
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
+	
 	/**
 	 * 打刻カード番号
 	 */

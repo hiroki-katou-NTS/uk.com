@@ -8,8 +8,8 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -91,7 +91,7 @@ public class SpecificDaysOfMonthly implements Serializable{
 		if (isAdd) {
 			
 			// 特定日日数を取得
-			for (val specificDateAttrSheet : specificDateAttrOfDaily.getSpecificDateAttrSheets()){
+			for (val specificDateAttrSheet : specificDateAttrOfDaily.getSpecificDay().getSpecificDateAttrSheets()){
 	
 				// 特定日とする＝NOT_USE　の時、その枠はカウントしない
 				if (specificDateAttrSheet.getSpecificDateAttr() == SpecificDateAttr.NOT_USE) continue;

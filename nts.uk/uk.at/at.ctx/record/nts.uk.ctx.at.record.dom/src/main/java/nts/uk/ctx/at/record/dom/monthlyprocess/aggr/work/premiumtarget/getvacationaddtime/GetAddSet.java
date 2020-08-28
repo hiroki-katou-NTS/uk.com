@@ -6,7 +6,6 @@ import java.util.Optional;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.CalcurationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
@@ -14,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAd
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.com.i18n.TextResource;
 

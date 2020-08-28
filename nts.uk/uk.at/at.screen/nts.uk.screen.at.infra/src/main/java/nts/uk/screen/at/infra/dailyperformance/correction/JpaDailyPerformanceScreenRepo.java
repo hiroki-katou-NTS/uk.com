@@ -43,7 +43,6 @@ import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthority
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityFormSheet;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
@@ -76,6 +75,7 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtIdenti
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtWorktypeChangeable;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixed;
 import nts.uk.ctx.at.record.infra.entity.workrecord.workfixed.KrcstWorkFixedPK;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem.KrcmtDailyAttendanceItem;

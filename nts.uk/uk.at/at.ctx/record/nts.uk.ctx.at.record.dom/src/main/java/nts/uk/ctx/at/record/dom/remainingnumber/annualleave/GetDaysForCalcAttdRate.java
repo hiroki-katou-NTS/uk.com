@@ -42,9 +42,9 @@ public class GetDaysForCalcAttdRate {
 		// 「日別実績の勤務情報」を取得
 		val workInfos = require.dailyWorkInfos(employeeId, period);
 		for (val workInfo : workInfos){
-			if (workInfo.getRecordInfo() == null) continue;
-			if (workInfo.getRecordInfo().getWorkTypeCode() == null) continue;
-			val workTypeCode = workInfo.getRecordInfo().getWorkTypeCode().v();
+			if (workInfo.getWorkInformation().getRecordInfo() == null) continue;
+			if (workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode() == null) continue;
+			val workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 		
 			// 「勤務種類」を取得
 			WorkType workType = null;
@@ -113,9 +113,9 @@ public class GetDaysForCalcAttdRate {
 		val workInfos = monthlyCalcDailys.getWorkInfoOfDailyMap();
 		for (val workInfo : workInfos.values()){
 			if (!period.contains(workInfo.getYmd())) continue;
-			if (workInfo.getRecordInfo() == null) continue;
-			if (workInfo.getRecordInfo().getWorkTypeCode() == null) continue;
-			val workTypeCode = workInfo.getRecordInfo().getWorkTypeCode().v();
+			if (workInfo.getWorkInformation().getRecordInfo() == null) continue;
+			if (workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode() == null) continue;
+			val workTypeCode = workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode().v();
 		
 			// 「勤務種類」を取得
 			WorkType workType = companySets.getWorkTypeMap(require, workTypeCode);

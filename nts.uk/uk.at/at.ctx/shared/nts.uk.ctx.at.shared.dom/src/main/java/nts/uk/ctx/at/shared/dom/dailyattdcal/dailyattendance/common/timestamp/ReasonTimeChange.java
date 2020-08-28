@@ -19,15 +19,17 @@ public class ReasonTimeChange implements DomainObject {
 	
 	//時刻変更手段
 	@Setter
-	private TimeChangeMeans timeChangeWay;
+	private TimeChangeMeans timeChangeMeans;
+	
 	
 	//打刻方法
-	private Optional<EngravingMethod> stampMethod;
+	@Setter
+	private Optional<EngravingMethod> engravingMethod;
 
-	public ReasonTimeChange(TimeChangeMeans timeChangeWay, EngravingMethod stampMethod) {
+	public ReasonTimeChange(TimeChangeMeans timeChangeMeans, EngravingMethod engravingMethod) {
 		super();
-		this.timeChangeWay = timeChangeWay;
-		this.stampMethod = Optional.ofNullable(stampMethod);
+		this.timeChangeMeans = timeChangeMeans;
+		this.engravingMethod = Optional.ofNullable(engravingMethod);
 	}
 	
 	

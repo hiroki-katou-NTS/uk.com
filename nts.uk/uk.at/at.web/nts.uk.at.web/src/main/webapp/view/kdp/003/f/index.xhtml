@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = { width: 480, height: 270 };
+			</script>
+			
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.company.dom.company.CompanyCode
+					nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeCode
+			</com:ValidatorScript>
+			
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="./kdp003.f.style.css" />
+			<com:scriptfile path="./components/admin-mode.js" />
+			<com:scriptfile path="./components/emp-or-finger-vein-mode.js" />
+			<com:scriptfile path="./kdp003.f.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" class="kdp-003-f">
+				<table class="layout">
+					<com:ko-if bind="ko.toJS(mode) === 'admin'">
+						<tbody data-bind="component: { name: 'kdp-003-f-admin-mode', params: { model, params} }"></tbody>
+					</com:ko-if>
+					<com:ko-if bind="['employee', 'fingerVein'].indexOf(ko.toJS(mode)) &gt; -1">
+						<tbody data-bind="component: { name: 'kdp-003-f-finger-vein-mode', params: { model, params} }"></tbody>
+					</com:ko-if>
+				</table>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="5" class="proceed x-large" data-bind="text: $i18n('KDP003_6'), click: submitLogin"></button>
+				<button tabindex="5" class="large" data-bind="text: $i18n('KDP003_7'), click: cancelLogin"></button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.dom.stamp.management;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Optional;
+
 import org.junit.Test;
 
 import nts.arc.enums.EnumAdaptor;
@@ -31,7 +33,7 @@ public class ButtonTypeTest {
 	public void checkStampTypeTrue(){
 		ButtonType buttonType = new ButtonType(
 				EnumAdaptor.valueOf(0, ReservationArt.class), //dummy
-				Stamp.DUMMY);
+				Optional.of(Stamp.DUMMY));
 		assertThat(buttonType.checkStampType()).isTrue();
 	}
 	

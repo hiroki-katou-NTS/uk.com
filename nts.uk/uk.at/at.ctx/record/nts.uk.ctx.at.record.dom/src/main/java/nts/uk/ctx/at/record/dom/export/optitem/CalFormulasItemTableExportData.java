@@ -5,19 +5,19 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName;
-import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
-import nts.uk.ctx.at.record.dom.optitem.calculation.Symbol;
-import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.DispOrder;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberUnit;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.CalculationAtr;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaName;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.MinusSegment;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.Symbol;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.DispOrder;
 
 @Data
 @AllArgsConstructor

@@ -11,10 +11,10 @@ import nts.uk.ctx.at.record.dom.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
+import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
 import nts.arc.time.calendar.period.DatePeriod;
 
 /**
@@ -82,9 +82,9 @@ public class AnyItemByPeriod implements Cloneable {
 		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
 		for (val anyItemValueOfDaily : calcDailys.getAnyItemValueOfDailyList()){
 			if (!period.contains(anyItemValueOfDaily.getYmd())) continue;
-			if (anyItemValueOfDaily.getItems() == null) continue;
+			if (anyItemValueOfDaily.getAnyItem().getItems() == null) continue;
 			val ymd = anyItemValueOfDaily.getYmd();
-			for (val item : anyItemValueOfDaily.getItems()){
+			for (val item : anyItemValueOfDaily.getAnyItem().getItems()){
 				if (item.getItemNo() == null) continue;
 				Integer itemNo = item.getItemNo().v();
 				

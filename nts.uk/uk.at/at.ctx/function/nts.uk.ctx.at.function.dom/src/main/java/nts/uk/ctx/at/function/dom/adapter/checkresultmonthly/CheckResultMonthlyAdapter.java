@@ -22,7 +22,13 @@ public interface CheckResultMonthlyAdapter {
 	
 	// Call RQ 436
 	List<MonthlyRecordValuesImport> getListMonthlyRecords(String employeeId ,YearMonthPeriod period, List<Integer> itemIds);
-	
+	/**
+	 * 月別実績データを取得する
+	 * @param employeeId
+	 * @param period
+	 * @param itemIds
+	 * @return
+	 */
 	Map<String, List<MonthlyRecordValuesImport>> getListMonthlyRecords(List<String> employeeId ,YearMonthPeriod period, List<Integer> itemIds);
 	
 	// Process employee have many record alarm

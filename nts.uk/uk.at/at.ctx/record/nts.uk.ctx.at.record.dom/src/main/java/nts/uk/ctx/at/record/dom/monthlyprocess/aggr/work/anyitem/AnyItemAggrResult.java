@@ -12,12 +12,12 @@ import nts.uk.ctx.at.record.dom.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyAmountMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrder;
 
 /**
  * 任意項目集計結果

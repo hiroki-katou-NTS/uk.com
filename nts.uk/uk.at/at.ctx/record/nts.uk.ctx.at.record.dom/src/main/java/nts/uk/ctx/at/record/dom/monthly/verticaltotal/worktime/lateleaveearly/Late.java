@@ -54,7 +54,7 @@ public class Late implements Serializable{
 		
 		if (attendanceTimeOfDaily == null) return;
 		
-		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val totalWorkingTime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 		val lateTimeOfDailys = totalWorkingTime.getLateTimeOfDaily();
 		for (val lateTimeOfDaily : lateTimeOfDailys){
 			val lateTime = lateTimeOfDaily.getLateTime();

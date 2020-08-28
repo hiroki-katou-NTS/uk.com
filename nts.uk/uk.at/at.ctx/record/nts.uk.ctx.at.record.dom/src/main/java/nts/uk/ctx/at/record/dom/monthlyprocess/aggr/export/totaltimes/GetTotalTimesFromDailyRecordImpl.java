@@ -7,9 +7,9 @@ import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepo
 import nts.uk.ctx.at.record.dom.affiliationinformation.repository.WorkTypeOfDailyPerforRepository;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 

@@ -171,4 +171,8 @@ public class WorkTimeSetting extends WorkTimeAggregateRoot implements Cloneable{
 		return cloned;
 	}
 
+	public void setAbolishAtr(AbolishAtr abolishAtr) {
+		this.abolishAtr = abolishAtr;
+	}
+
 }

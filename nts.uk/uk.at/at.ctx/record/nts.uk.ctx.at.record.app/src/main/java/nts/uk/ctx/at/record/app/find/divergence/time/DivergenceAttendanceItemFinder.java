@@ -6,12 +6,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
 import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -50,7 +50,7 @@ public class DivergenceAttendanceItemFinder {
 		Integer divType = 0;
 		
 		//get option<domain>
-		Optional<DivergenceTime> optionalDivTime = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
+		Optional<DivergenceTimeRoot> optionalDivTime = divTimeRepo.getDivTimeInfo(companyId, divTimeNo);
 
 		//if present
 		if (optionalDivTime.isPresent()) {

@@ -9,10 +9,10 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.scherec.attdstatus.AttendanceStatus;
 
 /**
@@ -73,7 +73,7 @@ public class AttendanceStatusList {
 			this.map.putIfAbsent(ymd, new AttendanceStatus(ymd));
 			
 			// 総労働時間の確認
-			val totalTime = attendanceTime.getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime();
+			val totalTime = attendanceTime.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime().getTotalTime();
 			this.map.get(ymd).setTotalTime(new AttendanceTime(totalTime.v()));
 			
 			// 総労働時間＞0 の時、出勤あり
@@ -84,7 +84,7 @@ public class AttendanceStatusList {
 			this.map.putIfAbsent(ymd, new AttendanceStatus(ymd));
 		
 			// 出退勤の確認
-			val timeLeavingWorks = timeLeaving.getTimeLeavingWorks();
+			val timeLeavingWorks = timeLeaving.getAttendance().getTimeLeavingWorks();
 			
 			// 出勤あり・2回目の打刻があるか確認する
 			for (val timeLeavingWork : timeLeavingWorks){
@@ -93,7 +93,7 @@ public class AttendanceStatusList {
 					TimeActualStamp attendanceStamp = timeLeavingWork.getAttendanceStamp().get();
 					if (attendanceStamp.getStamp().isPresent()){
 						WorkStamp stamp = attendanceStamp.getStamp().get();
-						if (stamp.getTimeWithDay() != null){
+						if (stamp.getTimeDay().getTimeWithDay().isPresent()){
 							this.map.get(ymd).setExistAttendance(true);
 							if (workNo == 2) this.map.get(ymd).setExistTwoTimesStamp(true);
 						}
@@ -103,7 +103,7 @@ public class AttendanceStatusList {
 					TimeActualStamp leaveStamp = timeLeavingWork.getLeaveStamp().get();
 					if (leaveStamp.getStamp().isPresent()){
 						WorkStamp stamp = leaveStamp.getStamp().get();
-						if (stamp.getTimeWithDay() != null){
+						if (stamp.getTimeDay().getTimeWithDay().isPresent()){
 							this.map.get(ymd).setExistAttendance(true);
 							if (workNo == 2) this.map.get(ymd).setExistTwoTimesStamp(true);
 						}

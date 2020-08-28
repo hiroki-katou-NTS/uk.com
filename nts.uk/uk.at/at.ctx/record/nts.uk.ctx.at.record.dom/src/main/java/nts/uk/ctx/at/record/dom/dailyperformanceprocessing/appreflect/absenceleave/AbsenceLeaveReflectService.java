@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
 public interface AbsenceLeaveReflectService {

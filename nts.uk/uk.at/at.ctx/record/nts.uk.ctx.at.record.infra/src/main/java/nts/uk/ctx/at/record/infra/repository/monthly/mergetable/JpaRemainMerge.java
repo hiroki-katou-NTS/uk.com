@@ -129,7 +129,7 @@ public class JpaRemainMerge extends JpaRepository implements RemainMergeReposito
 				+ " where SID in @emps"
 				+ " and YM in @yms";
 		
-		val results = NtsStatement.In.split(employeeIds, emps -> {
+		List<RemainMerge> results = NtsStatement.In.split(employeeIds, emps -> {
 			return new NtsStatement(sql, this.jdbcProxy())
 					.paramString("emps", emps)
 					.paramInt("yms", yearMonthValues)

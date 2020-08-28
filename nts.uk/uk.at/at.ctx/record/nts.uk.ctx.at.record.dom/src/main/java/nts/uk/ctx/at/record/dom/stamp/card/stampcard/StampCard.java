@@ -1,51 +1,63 @@
 package nts.uk.ctx.at.record.dom.stamp.card.stampcard;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 
+/**
+ * 打刻カード
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻カード.打刻カード
+ * 
+ * @author sonnlb
+ *
+ */
 @Getter
 @Setter
+@AllArgsConstructor
 public class StampCard extends AggregateRoot {
-
-	// domain name: 打刻カード
-
+	
+	/** 契約コード */
+	private final ContractCode contractCd;
+	
 	/**
-	 * 打刻カードID
+	 * 番号
 	 */
-	private String stampCardId;
-
+	private final StampNumber stampNumber;
+	
 	/**
 	 * 社員ID
 	 */
 	private String employeeId;
-
-	/**
-	 * 番号
-	 */
-	private StampNumber stampNumber;
-
+	
 	/**
 	 * 登録日付
 	 */
 	private GeneralDate registerDate;
 	
+	/**
+	 * 打刻カードId
+	 */
+	private String stampCardId;
 	
-	/** 契約コード */
-	private ContractCode contractCd;
-
-	public static StampCard createFromJavaType(String stampCardId, String employeeId, String stampNumber,
-			GeneralDate registerDate , String contractCd) {
-		return new StampCard(stampCardId, employeeId, new StampNumber(stampNumber), registerDate , new ContractCode(contractCd));
-	}
-
-	public StampCard(String stampCardId, String employeeId, StampNumber stampNumber, GeneralDate registerDate, ContractCode contractCd) {
+	/**
+	 * [C-1] 作成する
+	 * 
+	 * @param 契約コード
+	 *            contractCd
+	 * @param 番号
+	 *            stampNumber
+	 * @param 社員ID
+	 *            employeeId
+	 */
+	public StampCard(String contractCd, String stampNumber, String employeeId) {
 		super();
-		this.stampCardId = stampCardId;
+		this.contractCd = new ContractCode(contractCd);
+		this.stampNumber = new StampNumber(stampNumber);
 		this.employeeId = employeeId;
-		this.stampNumber = stampNumber;
-		this.registerDate = registerDate;
-		this.contractCd = contractCd;
+		this.registerDate = GeneralDate.today();
+		this.stampCardId = IdentifierUtil.randomUniqueId();
 	}
 }

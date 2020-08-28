@@ -16,7 +16,7 @@ public class StampCardEditDto {
 	private int method;
 
 	public static StampCardEditDto createFromDomain(StampCardEditing domain) {
-		return new StampCardEditDto(domain.getDigitsNumber().v(), domain.getMethod().value);
+		return new StampCardEditDto(domain.getDigitsNumber().v(), domain.getStampMethod().value);
 	}
 
 }

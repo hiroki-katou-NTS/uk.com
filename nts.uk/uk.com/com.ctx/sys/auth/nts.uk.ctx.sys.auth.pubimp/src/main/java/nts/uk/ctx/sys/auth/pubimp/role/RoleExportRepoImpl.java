@@ -14,18 +14,24 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.auth.app.find.person.role.GetWhetherLoginerCharge;
 import nts.uk.ctx.sys.auth.app.find.person.role.RoleWhetherLoginDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.RoleWorkplaceIDFinder;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceIdDto;
 import nts.uk.ctx.sys.auth.app.find.role.workplace.WorkplaceParam;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrant;
+import nts.uk.ctx.sys.auth.dom.grant.roleindividual.RoleIndividualGrantRepository;
 import nts.uk.ctx.sys.auth.dom.role.Role;
 import nts.uk.ctx.sys.auth.dom.role.RoleAtr;
 import nts.uk.ctx.sys.auth.dom.role.RoleRepository;
+import nts.uk.ctx.sys.auth.dom.roleset.RoleSet;
+import nts.uk.ctx.sys.auth.dom.roleset.service.RoleSetService;
 import nts.uk.ctx.sys.auth.pub.role.OperableSystemExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.role.RoleWhetherLoginPubExport;
+import nts.uk.ctx.sys.auth.pub.role.RollInformationExport;
 import nts.uk.ctx.sys.auth.pub.role.WorkplaceIdExport;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
@@ -47,7 +53,12 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	@Inject 
 	private GetWhetherLoginerCharge app;
 	
-
+	@Inject
+	private RoleIndividualGrantRepository roleIndividualGrantRepo;
+	
+	@Inject
+	private RoleSetService roleSetService;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -262,6 +273,83 @@ public class RoleExportRepoImpl implements RoleExportRepo {
 	public Map<String, String> getNameLstByRoleIds(String cid, List<String> roleIds) {
 		Map<String, String> result = this.roleRepo.findRoleIdAndNameByListRoleId(cid, roleIds.stream().distinct().collect(Collectors.toList()));
 		return result;
+	}
+
+	@Override
+	public RollInformationExport getRoleIncludCategoryFromUserID(String userId, int roleType, GeneralDate baseDate, String companyId) {
+		
+		// ドメインモデル「ロール個人別付与」を取得する (Lấy DomainModel 「ロール個人別付与」)
+		Optional<RoleIndividualGrant> roleIndOpt = roleIndividualGrantRepo.findByUserCompanyRoleTypeDate(userId, companyId, roleType, baseDate);
+		if(roleIndOpt.isPresent()) {
+			RollInformationExport result = new RollInformationExport(true, roleIndOpt.get().getRoleId());
+			return result;
+		}
+		
+		// アルゴリズム「ユーザIDからロールセットを取得する」を実行する(thuc hiện thuat toán 「ユーザIDからロールセットを取得する」)
+		Optional<RoleSet> roleSetOpt =  roleSetService.getRoleSetFromUserId( userId,  baseDate);
+		RollInformationExport result = new RollInformationExport();
+		if (roleSetOpt.isPresent()) {
+			switch (roleType) {
+			case 3: // EMPLOYMENT
+				String employmentRoleId = roleSetOpt.get().getEmploymentRoleId();
+				if (StringUtil.isNullOrEmpty(employmentRoleId, true)) {
+					return null;
+				}
+				
+				result = new RollInformationExport(false, employmentRoleId);
+				return result;
+
+			case 4: // SALARY
+				String salaryRoleId = roleSetOpt.get().getSalaryRoleId();
+				if (StringUtil.isNullOrEmpty(salaryRoleId, true)) {
+					return null;
+				}
+				
+				result = new RollInformationExport(false, salaryRoleId);
+				return result;
+				
+			case 5: // HUMAN_RESOURCE
+				String hRRoleId = roleSetOpt.get().getHRRoleId();
+				if (StringUtil.isNullOrEmpty(hRRoleId, true)) {
+					return null;
+				}
+				
+				result = new RollInformationExport(false, hRRoleId);
+				return result;
+				
+			case 6: // OFFICE_HELPER
+				String officeHelperRoleId = roleSetOpt.get().getOfficeHelperRoleId();
+				if (StringUtil.isNullOrEmpty(officeHelperRoleId, true)) {
+					return null;
+				}
+				
+				result = new RollInformationExport(false, officeHelperRoleId);
+				return result;
+				
+			case 7: // MY_NUMBER
+				String myNumberRoleId = roleSetOpt.get().getMyNumberRoleId();
+				if (StringUtil.isNullOrEmpty(myNumberRoleId, true)) {
+					return null;
+				}
+				
+				result = new RollInformationExport(false, myNumberRoleId);
+				return result;
+				
+			case 8: // PERSONAL_INFO
+				String personInfRoleId = roleSetOpt.get().getPersonInfRoleId();
+				if (StringUtil.isNullOrEmpty(personInfRoleId, true)) {
+					return null;
+				}
+				
+				result = new RollInformationExport(false, personInfRoleId);
+				return result;
+
+			default:
+				return null;
+			}
+		}
+		
+		return null;
 	}
 
 }

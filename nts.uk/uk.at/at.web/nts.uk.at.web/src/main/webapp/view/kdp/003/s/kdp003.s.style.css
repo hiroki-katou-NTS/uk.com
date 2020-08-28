@@ -1,0 +1,11 @@
+.top-panel {
+	padding: 10px 15px;
+}
+
+.top-panel>div:first-child {
+	float: left;
+}
+
+.top-panel>div:first-child+div {
+	float: right;
+}

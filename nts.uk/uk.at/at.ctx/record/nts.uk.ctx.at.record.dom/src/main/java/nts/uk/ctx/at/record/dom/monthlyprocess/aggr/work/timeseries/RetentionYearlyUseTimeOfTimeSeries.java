@@ -5,8 +5,8 @@ import java.io.Serializable;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.YearlyReservedOfDaily;
 
 /**
  * 時系列の積立年休使用時間

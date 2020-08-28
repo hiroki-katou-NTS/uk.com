@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.infra.entity.approverstatemanagement.application;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -92,8 +93,8 @@ public class WwfdtApprovalPhaseState extends UkJpaEntity {
 			if(lstFrameChild.isEmpty()) continue;
 			WwfdtApproverState entity = lstFrameChild.get(0);
 			List<ApproverInfor> lstApproverInfo = lstFrameChild.stream()
-					.map(c -> ApproverInfor.convert(c.wwfdpApprovrStatePK.approverId, c.approvalAtr, c.agentID, c.approvalDate, c.approvalReason))
-					.collect(Collectors.toList());
+					.map(c -> ApproverInfor.convert(c.wwfdpApprovrStatePK.approverId, c.approvalAtr, c.agentID, c.approvalDate, c.approvalReason, c.approverInListOrder))
+					.sorted(Comparator.comparing(ApproverInfor::getApproverInListOrder)).collect(Collectors.toList());
 			lstFrame.add(ApprovalFrame.convert(
 					entity.wwfdpApprovrStatePK.approverOrder, 
 					entity.confirmAtr, entity.appDate, lstApproverInfo));

@@ -13,15 +13,15 @@ import nts.arc.task.tran.AtomTask;
  * 
  * @author chungnt
  * 
- * 	打刻入力結果
+ *         打刻入力結果
  */
 
 public class TimeStampInputResult {
-	
+
 	// 打刻データ反映処理結果
 	public final StampDataReflectResult stampDataReflectResult;
-	
-	//	永続化処理
+
+	// 永続化処理
 	public final Optional<AtomTask> at;
-	
+
 }

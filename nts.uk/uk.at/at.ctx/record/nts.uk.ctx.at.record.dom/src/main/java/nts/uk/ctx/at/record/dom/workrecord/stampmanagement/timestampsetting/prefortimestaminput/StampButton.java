@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainValue;
 /**
@@ -9,6 +10,7 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  *
  */
 @Getter
+@AllArgsConstructor
 public class StampButton implements DomainValue{
 	
 	/** ページNO */
@@ -17,9 +19,4 @@ public class StampButton implements DomainValue{
 	/** ボタン位置NO  */
 	private  ButtonPositionNo buttonPositionNo;
 	
-	// [C-0] 打刻ボタン(ページNO, ボタン位置NO)																							
-	public StampButton(PageNo pageNo, ButtonPositionNo buttonPositionNo) {
-		this.pageNo = pageNo;
-		this.buttonPositionNo = buttonPositionNo;
-	}
 }

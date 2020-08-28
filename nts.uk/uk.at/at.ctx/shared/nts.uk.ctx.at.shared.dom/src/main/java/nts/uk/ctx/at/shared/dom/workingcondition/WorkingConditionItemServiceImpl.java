@@ -10,6 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
 import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
@@ -102,6 +104,40 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 		}
 
 		return null;
+	}
+	@Override
+	public Optional<WorkInformation> getHolidayWorkScheduleNew(String companyId, String employeeId, GeneralDate baseDate,
+			String workTypeCode, WorkingDayCategory workingDayCategory) {
+		if (workingDayCategory == WorkingDayCategory.workingDay) {
+			Optional<WorkingConditionItem> optWorkingCondItem = this.repositoryWorkingConditionItem
+					.getBySidAndStandardDate(employeeId, baseDate);
+			if(!optWorkingCondItem.isPresent()) {
+				return Optional.empty();
+			}
+			// get Working Condition Item
+			WorkingConditionItem domain = optWorkingCondItem.get();
+			// ドメインモデル「個人勤務日区分別勤務」を取得する (Lấy 「個人勤務日区分別勤務」)
+			Optional<SingleDaySchedule> optpublicHoliday = domain.getWorkCategory().getPublicHolidayWork();
+			if(!optpublicHoliday.isPresent()) {
+				return Optional.empty();
+			}
+			return Optional.of(new WorkInformation(
+					optpublicHoliday.get().getWorkTimeCode().isPresent()
+							? optpublicHoliday.get().getWorkTimeCode().get()
+							: null,
+					optpublicHoliday.get().getWorkTypeCode().isPresent()?optpublicHoliday.get().getWorkTypeCode().get():null)); 
+			
+		}
+			
+		Optional<SingleDaySchedule> data = getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
+		if(!data.isPresent()) {
+			return Optional.empty();
+		}
+		return Optional.of(new WorkInformation(
+				data.get().getWorkTimeCode().isPresent()
+						? data.get().getWorkTimeCode().get()
+						: null,
+						data.get().getWorkTypeCode().isPresent()?data.get().getWorkTypeCode().get():null));
 	}
 
 }

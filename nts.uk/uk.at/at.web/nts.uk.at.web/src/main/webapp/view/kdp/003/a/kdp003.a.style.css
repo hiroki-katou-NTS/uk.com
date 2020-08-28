@@ -1,0 +1,17 @@
+.kdp-003-a {
+	min-width: 990px;
+}
+
+.kdp-003-a .time-sheet,
+.kdp-003-a .time-stamp {
+	float:left;
+}
+
+.kdp-003-a .time-sheet {
+	width: 250px;
+	margin-right: 20px;
+}
+
+.kdp-003-a #stamp-input.time-stamp {
+	min-width: 530px;
+}

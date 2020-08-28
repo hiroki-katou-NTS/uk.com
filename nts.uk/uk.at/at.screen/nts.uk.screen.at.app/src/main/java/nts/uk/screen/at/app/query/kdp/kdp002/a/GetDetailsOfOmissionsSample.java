@@ -11,14 +11,17 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDisplayNameAdapter;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplicationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
@@ -63,7 +66,9 @@ public class GetDetailsOfOmissionsSample {
 		//Viết code cho xử lý 2
 		String employeeId = AppContexts.user().employeeId();
 		CheckAttdErrorAfterStampRequiredImpl required = new CheckAttdErrorAfterStampRequiredImpl();
-		return new GetDetailsOfOmissionsSampleDto(CheckAttdErrorAfterStampService.get(required, employeeId, pageNo, buttonDisNo), appDisplayAdapter.getAppDisplay());
+		StampButton stampButton = new StampButton(new PageNo(pageNo), new ButtonPositionNo(buttonDisNo));
+
+		return new GetDetailsOfOmissionsSampleDto(CheckAttdErrorAfterStampService.get(required, employeeId, stampButton), appDisplayAdapter.getAppDisplay());
 	}
 	
 	private class CheckAttdErrorAfterStampRequiredImpl implements CheckAttdErrorAfterStampService.Require {

@@ -30,7 +30,9 @@ public class StamPromptApplicationTest {
 		CheckErrorType data1 = CheckErrorType.HOKIDAY_EMBOSSING;
 		assertThat(data1.getErrorAlarm().get(0)).isEqualTo("S005");
 		CheckErrorType data2 = CheckErrorType.OVERTIME_DIVERGGENCE;
-		assertThat(data2.getErrorAlarm().get(0)).isEqualTo("D001", "D003");
+		assertThat(data2.getErrorAlarm().get(0)).isEqualTo("D001");
+		CheckErrorType data3 = CheckErrorType.OVERTIME_DIVERGGENCE;
+		assertThat(data3.getErrorAlarm().get(0)).isEqualTo( "D003");
 	}
 	
 }

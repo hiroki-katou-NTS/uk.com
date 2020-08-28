@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.management;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -97,7 +98,7 @@ public class KscmtPaletteOrg extends ContractUkJpaEntity{
 		} else if (pk.targetUnit == 1)
 			groupWorkplaceId = pk.targetId;
 		
-		return new ShiftPalletsOrg(new TargetOrgIdenInfor(EnumAdaptor.valueOf(pk.targetUnit, TargetOrganizationUnit.class), workplaceId, groupWorkplaceId) ,
+		return new ShiftPalletsOrg( new TargetOrgIdenInfor(EnumAdaptor.valueOf(pk.targetUnit, TargetOrganizationUnit.class), Optional.ofNullable(workplaceId), Optional.ofNullable(groupWorkplaceId)) ,
 				pk.page,
 				new ShiftPallet(
 						new ShiftPalletDisplayInfor(new ShiftPalletName(pageName), EnumAdaptor.valueOf(useAtr, NotUseAtr.class),

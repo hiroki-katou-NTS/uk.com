@@ -49,7 +49,7 @@ public class TemporaryWorkTimesOfMonthly implements Serializable{
 		if (temporaryTimeOfDaily == null) return;
 		
 		// 勤務回数を計算
-		this.times = this.times.addTimes(temporaryTimeOfDaily.getWorkTimes().v());
+		this.times = this.times.addTimes(temporaryTimeOfDaily.getAttendance().getWorkTimes().v());
 	}
 
 	/**

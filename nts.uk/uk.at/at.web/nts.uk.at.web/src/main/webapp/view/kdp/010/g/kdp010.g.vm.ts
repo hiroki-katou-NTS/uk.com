@@ -1,5 +1,9 @@
 module nts.uk.at.view.kdp010.g {
 	export module viewmodel {
+        import getShared = nts.uk.ui.windows.getShared;
+        import block = nts.uk.ui.block;
+        import info = nts.uk.ui.dialog.info;
+        import error = nts.uk.ui.dialog.error;
 		export class ScreenModel {
 			// G2_2
 			optionPage: KnockoutObservableArray<any> = ko.observableArray([
@@ -25,9 +29,17 @@ module nts.uk.at.view.kdp010.g {
 			checkDelG: KnockoutObservable<string> = ko.observable(false);
 			checkLayout: KnockoutObservable<string> = ko.observable(false);
 			currentSelectLayout: KnockoutObservable<number> = ko.observable(0);
+            
+             /**
+             * 運用方法 (0:共有打刻 1:個人利用 2:ICカード 3:スマホ打刻)
+             * 0: Shared stamp, 1: Personal use, 2: IC card, 3: smartphone engraving
+             */
+            mode: number;
 
 			constructor() {
 				let self = this;
+                self.mode = getShared('STAMP_MEANS');
+                
 				self.selectedLayout.subscribe((newValue) => {
 					self.checkDelG(true);
 					self.getData(newValue);
@@ -69,7 +81,8 @@ module nts.uk.at.view.kdp010.g {
 			getData(newValue: number): JQueryPromise<any> {
 				let self = this;
 				let dfd = $.Deferred();
-				service.getStampPage(self.selectedPage()).done(function(totalTimeArr) {
+                let param = {mode: self.mode, pageNo: self.selectedPage()};
+				service.getStampPage(param).done(function(totalTimeArr) {
 
 					if (totalTimeArr && (newValue == totalTimeArr.buttonLayoutType)) {
 						self.pageName(totalTimeArr.stampPageName);
@@ -115,7 +128,7 @@ module nts.uk.at.view.kdp010.g {
 			registration() {
 				let self = this, dfd = $.Deferred();
 				if (!self.dataShare || self.dataShare.length == 0) {
-					nts.uk.ui.dialog.info({ messageId: "Msg_1627" });
+					error({ messageId: "Msg_1627" });
 					return;
 				}
 				if (self.checkDelG() == true) {
@@ -214,35 +227,61 @@ module nts.uk.at.view.kdp010.g {
 					buttonLayoutType: self.selectedLayout(),
 					lstButtonSet: lstButton
 				});
-
-				service.saveStampPage(data).done(function() {
-					self.isDel(true);
-					self.checkDelG(false);
-					self.currentSelectLayout(self.selectedLayout());
-					nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-						$(document).ready(function() {
-							$('#combobox').focus();
-						});
-					});
-
-				}).fail(function(res) {
-					nts.uk.ui.dialog.info({ messageId: res.messageId });
-				}).always(() => {
-					nts.uk.ui.block.clear();
-				});
+                if(self.mode == 1){
+    				service.saveStampPage(data).done(function() {
+    					self.isDel(true);
+    					self.checkDelG(false);
+    					self.currentSelectLayout(self.selectedLayout());
+    					info({ messageId: "Msg_15" }).then(() => {
+    						$(document).ready(function() {
+    							$('#combobox').focus();
+    						});
+    					});
+    
+    				}).fail(function(res) {
+    					error({ messageId: res.messageId });
+    				}).always(() => {
+    					block.clear();
+    				});
+                }else if(self.mode == 0){
+                    self.saveStampPageCommunal(data);
+                }
 			}
+            
+            saveStampPageCommunal(data: any){
+                let self = this;
+                service.saveStampPageCommunal(data).done(function() {
+                    self.isDel(true);
+                    self.checkDelG(false);
+                    self.currentSelectLayout(self.selectedLayout());
+                    info({ messageId: "Msg_15" }).then(() => {
+                        $(document).ready(function() {
+                            $('#combobox').focus();
+                        });
+                    });
+
+                }).fail(function(res) {
+                    error({ messageId: res.messageId });
+                }).always(() => {
+                    block.clear();
+                });    
+            }
 
 			public deleteBeforeAdd() {
-				let self = this;
-				let data = {
-					pageNo: self.selectedPage()
-				};
-
-				service.deleteStampPage(data).done(function(stampPage) {
-				}).fail(function(error) {
-					alert(error.message);
-					dfd.reject(error);
-				});
+				let self = this, dfd = $.Deferred();
+                if(self.mode == 1){
+    				let data = {
+    					pageNo: self.selectedPage(),
+                        mode: self.mode
+    				};
+    
+    				service.deleteStampPage(data).done(function(stampPage) {
+                        dfd.resolve();
+    				}).fail(function(error) {
+    					alert(error.message);
+    					dfd.reject(error);
+    				});
+                }
 			}
 
 			public getInfoButton(lstButtonSet: any, buttonLayoutType: number) {
@@ -279,11 +318,12 @@ module nts.uk.at.view.kdp010.g {
 				let self = this;
 				let dfd = $.Deferred();
 				let data = {
-					pageNo: self.selectedPage()
+					pageNo: self.selectedPage(),
+                    mode: self.mode
 				};
 				nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
 					service.deleteStampPage(data).done(function(stampPage) {
-						nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+						info({ messageId: "Msg_16" }).then(() => {
 							$(document).ready(function() {
 								$('#combobox').focus();
 							});
@@ -295,7 +335,7 @@ module nts.uk.at.view.kdp010.g {
 						dfd.reject(error);
 					});
 				}).ifNo(function() {
-					nts.uk.ui.block.clear();
+					block.clear();
 				});
 				return dfd.promise();
 			}
@@ -322,7 +362,8 @@ module nts.uk.at.view.kdp010.g {
 				};
 				let dataG = {
 					dataShare: self.dataShare.length == 0 ? shareH : self.dataShare,
-					buttonPositionNo: enumVal
+					buttonPositionNo: enumVal,
+                    fromScreen: self.mode == 0? 'A': ''
 				}
 				nts.uk.ui.windows.setShared('KDP010_G', dataG);
 				nts.uk.ui.windows.sub.modal("/view/kdp/010/h/index.xhtml").onClosed(() => {

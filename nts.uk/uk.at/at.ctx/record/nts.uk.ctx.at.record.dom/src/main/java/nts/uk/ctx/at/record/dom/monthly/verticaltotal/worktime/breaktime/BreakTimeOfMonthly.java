@@ -48,7 +48,7 @@ public class BreakTimeOfMonthly implements Serializable{
 
 		if (attendanceTimeOfDaily == null) return;
 		
-		val totalWorkingTime = attendanceTimeOfDaily.getActualWorkingTimeOfDaily().getTotalWorkingTime();
+		val totalWorkingTime = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();
 		val breakTimeOfDaily = totalWorkingTime.getBreakTimeOfDaily();
 		
 		this.breakTime = this.breakTime.addMinutes(

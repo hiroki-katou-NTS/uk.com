@@ -83,6 +83,7 @@ public class SysFixedCheckConMonPubImpl implements SysFixedCheckConMonPub {
 	
 	@Override
 	public List<ValueExtractAlarmWRPubExport> checkMonthlyUnconfirmeds(List<String> employeeID, List<YearMonth> yearMonth) {
+		//本人確認処理の利用設定
 		Optional<IdentityProcessUseSet> identityProcess = identityProcessRepo.findByKey(AppContexts.user().companyId());
 		
 		List<ValueExtractAlarmWR> datas = monthlyUnconfirmedService.checkMonthlyUnconfirmeds(employeeID, yearMonth,identityProcess);

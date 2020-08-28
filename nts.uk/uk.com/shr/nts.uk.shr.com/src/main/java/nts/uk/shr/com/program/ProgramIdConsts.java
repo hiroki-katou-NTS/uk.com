@@ -197,11 +197,17 @@ public class ProgramIdConsts {
 
 	public static final String KSU001JC = "KSU001JC";
 
+	public static final String KSU001JD = "KSU001JD";
+
 	public static final String KSU001L = "KSU001L";
+	
+	public static final String KSU001LA = "KSU001LA";
 
 	public static final String KSU001LX = "KSU001LX";
 
 	public static final String KSU001N = "KSU001N";
+	
+	public static final String KSU001U = "KSU001U";
 
 	public static final String KSU001R = "KSU001R";
 
@@ -465,13 +471,23 @@ public class ProgramIdConsts {
 
 	public static final String KCP005 = "KCP005";
 	
+	public static final String KDP010A = "KDP010A";
+	
 	public static final String KDP010B = "KDP010B";
 	
+	public static final String KDP010C = "KDP010C";
+	
+	public static final String KDP010D = "KDP010D";
+	
 	public static final String KDP010E = "KDP010E";
+	
+	public static final String KDP010F = "KDP010F";
 	
 	public static final String KDP010G = "KDP010G";
 	
 	public static final String KDP010H = "KDP010H";
+	
+	public static final String KDP010I = "KDP010I";
 
 	public static final String KDW007A = "KDW007A";
 
@@ -773,6 +789,7 @@ public class ProgramIdConsts {
 	public static final String KSM015A = "KSM015A";
 	public static final String KSM015B = "KSM015B";
 	public static final String KSM015C = "KSM015C";
+	public static final String KSM015D = "KSM015D";
 
 	public static final String KSC001A = "KSC001A";
 	public static final String KSC001B = "KSC001B";
@@ -1043,10 +1060,18 @@ public class ProgramIdConsts {
 	public static final String CLI003F = "CLI003F";
 	//KDL029
 	public static final String KDL029A = "KDL029A";
+	/** KDP001 */
+	public static final String KDP001A = "KDP001A";
 	/** KDP003 */
 	public static final String KDP003A = "KDP003A";
 	public static final String KDP003B = "KDP003B";
 	public static final String KDP003C = "KDP003C";
+	public static final String KDP003F = "KDP003F";
+	public static final String KDP003K = "KDP003K";
+	public static final String KDP003S = "KDP003S";
+	
+	/** KDP004 */
+	public static final String KDP004A = "KDP004A";
 	
 	/** CAS004 */
 	public static final String CAS004A = "CAS004A";
@@ -1094,7 +1119,7 @@ public class ProgramIdConsts {
 	public static final String KAFS05B = "KAFS05B";
 	public static final String CMMS45B = "CMMS45B";
 	public static final String CMMS45C = "CMMS45C";
-	public static final String CMMS45D = "CMMS45B";
+	public static final String CMMS45D = "CMMS45D";
 	public static final String CMMS45E = "CMMS45E";
 	public static final String CCGS33 = "CCGS33";
 	public static final String KDWS03A = "KDWS03A";

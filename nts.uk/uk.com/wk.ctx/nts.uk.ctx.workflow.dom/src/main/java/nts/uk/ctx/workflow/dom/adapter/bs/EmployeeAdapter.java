@@ -6,6 +6,7 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmpInfoRQ18;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
@@ -114,4 +115,12 @@ public interface EmployeeAdapter {
 	 * @return
 	 */
 	public Optional<String> getWkpBySidDate(String employeeID, GeneralDate date);
+	
+	/**
+	 * 社員ID(List)から個人社員基本情報を取得
+	 * @param lstSid
+	 * @return
+	 */
+	// RequestList61
+	List<EmpInfoImport> getEmpInfo(List<String> lstSid);
 }

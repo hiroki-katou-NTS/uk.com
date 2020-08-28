@@ -24,11 +24,11 @@ import nts.uk.ctx.at.record.dom.monthly.vacation.dayoff.monthremaindata.MonthlyD
 import nts.uk.ctx.at.record.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
 
 @Data
 /** 月別実績（WORK） */

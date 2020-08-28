@@ -9,7 +9,6 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.record.dom.workrule.specific.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.record.dom.workrule.specific.TimeOffVacationPriorityOrder;
 import nts.uk.ctx.at.record.dom.workrule.specific.UpperLimitTotalWorkingHour;
@@ -19,6 +18,7 @@ import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstHolidayPriorOrde
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstHolidayPriorOrderPK;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstWkHourLimitCtrl;
 import nts.uk.ctx.at.record.infra.entity.workrule.specific.KrcstWkHourLimitCtrlPK;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 
 /**
  * The Class JpaSpecificWorkRuleRepository.

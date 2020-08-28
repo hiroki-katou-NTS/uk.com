@@ -5,8 +5,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 public interface WorkInformationRepository {
 	
@@ -14,7 +15,12 @@ public interface WorkInformationRepository {
 	Optional<WorkInfoOfDailyPerformance> find(String employeeId, GeneralDate ymd);
 	
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmd(String employeeId, DatePeriod datePeriod);
-	
+	/**
+	 * List＜社員ID＞、基準日から日別実績の勤務情報を取得する
+	 * @param employeeIds
+	 * @param datePeriod
+	 * @return
+	 */
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdAndEmps(List<String> employeeIds, DatePeriod datePeriod);
 	
 	List<WorkInfoOfDailyPerformance> findByPeriodOrderByYmdDesc(String employeeId, DatePeriod datePeriod);

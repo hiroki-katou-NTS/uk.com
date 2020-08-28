@@ -23,8 +23,6 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.dom.affiliationinformation.AffiliationInforOfDailyPerfor;
-import nts.uk.ctx.at.record.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
@@ -57,8 +55,6 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAtt
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.pererror.CreatePerErrorsFromLeaveErrors;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.anyitem.AnyItemAggrResult;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.excessoutside.ExcessOutsideWorkMng;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.GetDaysForCalcAttdRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateInterimAnnualMngData;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
@@ -69,15 +65,18 @@ import nts.uk.ctx.at.record.dom.service.RemainNumberCreateInformation;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.record.dom.weekly.AttendanceTimeOfWeekly;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
+import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.aggframe.OuenAggregateFrameSetOfMonthly;
+import nts.uk.ctx.at.shared.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
@@ -108,6 +107,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -803,15 +803,12 @@ public class AggregateMonthlyRecordServiceProc {
 
 		// 任意項目ごとに集計する
 		Map<Integer, AggregateAnyItem> anyItemTotals = new HashMap<>();
-		for (val anyItemValueOfDaily : this.monthlyCalculatingDailys.getAnyItemValueOfDailyList()) {
-			if (!period.contains(anyItemValueOfDaily.getYmd()))
-				continue;
-			if (anyItemValueOfDaily.getItems() == null)
-				continue;
+		for (val anyItemValueOfDaily : this.monthlyCalculatingDailys.getAnyItemValueOfDailyList()){
+			if (!period.contains(anyItemValueOfDaily.getYmd())) continue;
+			if (anyItemValueOfDaily.getAnyItem().getItems() == null) continue;
 			val ymd = anyItemValueOfDaily.getYmd();
-			for (val item : anyItemValueOfDaily.getItems()) {
-				if (item.getItemNo() == null)
-					continue;
+			for (val item : anyItemValueOfDaily.getAnyItem().getItems()){
+				if (item.getItemNo() == null) continue;
 				Integer itemNo = item.getItemNo().v();
 
 				if (period.contains(ymd)) {
@@ -1594,9 +1591,12 @@ public class AggregateMonthlyRecordServiceProc {
 		val firstWorkTypeOfDaily = firstWorkTypeOfDailyList.get(0);
 
 		// 月初の情報を作成
-		val firstInfo = AggregateAffiliationInfo.of(firstInfoOfDaily.getEmploymentCode(),
-				new WorkplaceId(firstInfoOfDaily.getWplID()), new JobTitleId(firstInfoOfDaily.getJobTitleID()),
-				firstInfoOfDaily.getClsCode(), firstWorkTypeOfDaily.getWorkTypeCode());
+		val firstInfo = AggregateAffiliationInfo.of(
+				firstInfoOfDaily.getAffiliationInfor().getEmploymentCode(),
+				new WorkplaceId(firstInfoOfDaily.getAffiliationInfor().getWplID()),
+				new JobTitleId(firstInfoOfDaily.getAffiliationInfor().getJobTitleID()),
+				firstInfoOfDaily.getAffiliationInfor().getClsCode(),
+				firstWorkTypeOfDaily.getWorkTypeCode());
 
 		// 月末がシステム日付以降の場合、月初の情報を月末の情報とする
 		if (datePeriod.end().after(GeneralDate.today())) {
@@ -1635,10 +1635,13 @@ public class AggregateMonthlyRecordServiceProc {
 		val lastWorkTypeOfDaily = lastWorkTypeOfDailyOpt.get();
 
 		// 月末の情報を作成
-		val lastInfo = AggregateAffiliationInfo.of(lastInfoOfDaily.getEmploymentCode(),
-				new WorkplaceId(lastInfoOfDaily.getWplID()), new JobTitleId(lastInfoOfDaily.getJobTitleID()),
-				lastInfoOfDaily.getClsCode(), lastWorkTypeOfDaily.getWorkTypeCode());
-
+		val lastInfo = AggregateAffiliationInfo.of(
+				lastInfoOfDaily.getAffiliationInfor().getEmploymentCode(),
+				new WorkplaceId(lastInfoOfDaily.getAffiliationInfor().getWplID()),
+				new JobTitleId(lastInfoOfDaily.getAffiliationInfor().getJobTitleID()),
+				lastInfoOfDaily.getAffiliationInfor().getClsCode(),
+				lastWorkTypeOfDaily.getWorkTypeCode());
+		
 		// 月別実績の所属情報を返す
 		return AffiliationInfoOfMonthly.of(this.employeeId, this.yearMonth, this.closureId, this.closureDate, firstInfo,
 				lastInfo);
@@ -1745,8 +1748,8 @@ public class AggregateMonthlyRecordServiceProc {
 			private Optional<IntegrationOfDaily> findDaily(String empId, GeneralDate ymd) {
 				
 				return dailyWorksOpt.flatMap(dws -> {
-					return dws.stream().filter(dw -> empId.equals(dw.getWorkInformation().getEmployeeId())
-							&& ymd.equals(dw.getWorkInformation().getYmd())).findFirst();
+					return dws.stream().filter(dw -> empId.equals(dw.getEmployeeId())
+							&& ymd.equals(dw.getYmd())).findFirst();
 				});
 			}
 			

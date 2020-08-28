@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.application.output;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -13,7 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
  *
  */
 @AllArgsConstructor
-@Data
 @Getter
 public class ApprovalStateOutput {
 	private String approverID;
@@ -37,6 +35,8 @@ public class ApprovalStateOutput {
 	@Setter
 	private String sMailAgent;
 	
+	private Integer approverInListOrder;
+	
 	public static ApprovalStateOutput fromApprovalStateImportToOutput(ApproverStateImport_New approvalState){
 		return new ApprovalStateOutput(
 				approvalState.getApproverID(),
@@ -46,19 +46,9 @@ public class ApprovalStateOutput {
 				approvalState.getRepresenterID(), 
 				approvalState.getRepresenterName(),
 				approvalState.getApprovalDate(),
-				approvalState.getApprovalReason());
-	}
-
-	public ApprovalStateOutput(String approverID, ApprovalBehaviorAtrImport_New approvalAtr, String agentID, String approverName, 
-			String representerID, String representerName, GeneralDate approvalDate, String approvalReason) {
-		super();
-		this.approverID = approverID;
-		this.approvalAtr = approvalAtr;
-		this.agentID = agentID;
-		this.approverName = approverName;
-		this.representerID = representerID;
-		this.representerName = representerName;
-		this.approvalDate = approvalDate;
-		this.approvalReason = approvalReason;
+				approvalState.getApprovalReason(),
+				approvalState.getApproverEmail(),
+				approvalState.getRepresenterEmail(),
+				approvalState.getApproverInListOrder());
 	}
 }

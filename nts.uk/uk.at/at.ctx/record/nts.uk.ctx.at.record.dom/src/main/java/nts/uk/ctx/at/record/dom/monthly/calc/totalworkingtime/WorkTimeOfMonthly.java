@@ -11,9 +11,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.byperiod.FlexTimeByPeriod;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
-import nts.uk.ctx.at.record.dom.daily.withinworktime.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
@@ -25,6 +22,9 @@ import nts.uk.ctx.at.record.dom.weekly.RegAndIrgTimeOfWeekly;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
@@ -116,7 +116,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// ドメインモデル「日別実績の所定内時間」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			WithinStatutoryTimeOfDaily withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 			if (withinPrescribedTimeOfDaily == null){
@@ -147,8 +147,8 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			// 勤務種類を確認する
 			WorkType workType = null;
 			if (workInformationOfDailyMap.containsKey(ymd)) {
-				if (workInformationOfDailyMap.get(ymd).getRecordInfo() != null) {
-					val record = workInformationOfDailyMap.get(ymd).getRecordInfo();
+				if (workInformationOfDailyMap.get(ymd).getWorkInformation().getRecordInfo() != null) {
+					val record = workInformationOfDailyMap.get(ymd).getWorkInformation().getRecordInfo();
 					if (record.getWorkTypeCode() != null) {
 						String workTypeCode = record.getWorkTypeCode().v();
 						workType = companySets.getWorkTypeMap(require, workTypeCode);
@@ -304,7 +304,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			if (!datePeriod.contains(ymd)) continue;
 			
 			// ドメインモデル「日別実績の所定内時間」を取得する
-			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getActualWorkingTimeOfDaily();
+			val actualWorkingTimeOfDaily = attendanceTimeOfDaily.getTime().getActualWorkingTimeOfDaily();
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			WithinStatutoryTimeOfDaily withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 			if (withinPrescribedTimeOfDaily == null){
@@ -319,8 +319,8 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			// 勤務種類を確認する
 			WorkType workType = null;
 			if (workInfoOfDailyMap.containsKey(ymd)) {
-				if (workInfoOfDailyMap.get(ymd).getRecordInfo() != null) {
-					val record = workInfoOfDailyMap.get(ymd).getRecordInfo();
+				if (workInfoOfDailyMap.get(ymd).getWorkInformation().getRecordInfo() != null) {
+					val record = workInfoOfDailyMap.get(ymd).getWorkInformation().getRecordInfo();
 					if (record.getWorkTypeCode() != null) {
 						String workTypeCode = record.getWorkTypeCode().v();
 						workType = companySets.getWorkTypeMap(require, workTypeCode);

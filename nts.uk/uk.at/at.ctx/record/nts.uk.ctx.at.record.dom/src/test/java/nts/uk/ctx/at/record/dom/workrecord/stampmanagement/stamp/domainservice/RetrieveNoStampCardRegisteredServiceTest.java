@@ -36,7 +36,7 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 				require.getStempRcNotResgistNumber(period);
 				result = new ArrayList<>();
 				
-				require.getStempRcNotResgistNumberStamp(period);
+				require.getStempRcNotResgistNumberStamp("DUMMY", period);
 				result = new ArrayList<>();
 			}
 		};
@@ -55,12 +55,12 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 				require.getStempRcNotResgistNumber(period);
 				result = StampRecordHelper.getListStampRecord();
 				
-				require.getStempRcNotResgistNumberStamp(period);
+				require.getStempRcNotResgistNumberStamp("DUMMY", period);
 				result = new ArrayList<>();
 			}
 		};
 		
-		assertThat(RetrieveNoStampCardRegisteredService.get(require, period).isEmpty()).isTrue();
+		assertThat(RetrieveNoStampCardRegisteredService.get(require, period).isEmpty()).isFalse();
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 				require.getStempRcNotResgistNumber(period);
 				result = StampRecordHelper.getListStampRecord();
 				
-				require.getStempRcNotResgistNumberStamp(period);
+				require.getStempRcNotResgistNumberStamp("DUMMY", period);
 				result = StampHelper.getListStampDefault();
 			}
 		};

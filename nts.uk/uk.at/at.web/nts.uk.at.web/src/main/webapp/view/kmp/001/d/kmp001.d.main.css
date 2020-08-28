@@ -1,0 +1,29 @@
+
+.view-dialog .box {
+	height: 200px;
+	padding: 37px;
+	border: 1px solid black;
+}
+
+.view-dialog .box .label-column {
+	width: 120px;
+	margin: 20px;
+}
+
+.view-dialog .box .label-column-select {
+	width: 120px;
+	margin: 20px;
+	padding-top: 20px;
+}
+
+.view-dialog .view-button {
+	padding-left: 70px;
+	float: left;
+}
+
+#button_decide {
+	height: 50px;
+	font-size: 25px;
+	padding-left: 10px;
+	padding-right: 10px;
+}

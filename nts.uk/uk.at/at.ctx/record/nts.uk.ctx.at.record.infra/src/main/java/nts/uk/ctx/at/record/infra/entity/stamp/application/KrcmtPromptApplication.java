@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.infra.entity.stamp.application;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -51,12 +52,11 @@ public class KrcmtPromptApplication extends ContractUkJpaEntity{
 				companyId, 
 				listStamp.getCheckErrorType().value),
 				listStamp.getUseArt().value, 
-				listStamp.getPromptingMssage().getMessageContent().v(), 
-				listStamp.getPromptingMssage().getMessageColor().v() );
+				listStamp.getPromptingMssage().get().getMessageContent().v(), 
+				listStamp.getPromptingMssage().get().getMessageColor().v() );
 	}
 
 	public static List<KrcmtPromptApplication> toEntity(StampPromptApplication application) {
-		// TODO Auto-generated method stub
 		List<KrcmtPromptApplication> lstPrompt = new ArrayList<>();
 		for(StampRecordDis listStamp : application.getLstStampRecordDis()){
 			lstPrompt.add(KrcmtPromptApplication.toEntity(listStamp, application.getCompanyId()));
@@ -69,9 +69,9 @@ public class KrcmtPromptApplication extends ContractUkJpaEntity{
 		return new StampRecordDis(
 				EnumAdaptor.valueOf(this.useArt, NotUseAtr.class) , 
 				EnumAdaptor.valueOf(this.pk.errorType, CheckErrorType.class), 
-				new PromptingMessage(
+				Optional.of(new PromptingMessage(
 						new MessageContent(this.messageContent), 
-						new ColorCode(this.messageColor)));
+						new ColorCode(this.messageColor))));
 	}
 
 	public KrcmtPromptApplication(KrcmtPromptApplicationPk pk, int useArt, String messageContent, String messageColor) {

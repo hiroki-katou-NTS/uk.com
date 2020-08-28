@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.TimeDivergenceWithCalculationMinusExist;
-import nts.uk.ctx.at.record.dom.daily.overtimework.FlexTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimeDivergenceWithCalculationMinusExist;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.FlexTime;
 
 /**
  * 時系列のフレックス時間

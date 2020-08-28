@@ -15,8 +15,9 @@ public class AttendanceLeavingGateOfDailyCommand extends DailyWorkCommonCommand 
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
+		AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily = new AttendanceLeavingGateOfDaily(getEmployeeId(), getWorkDate(), ((AttendanceLeavingGateOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 
-				: Optional.of(((AttendanceLeavingGateOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+				: Optional.of(attendanceLeavingGateOfDaily);
 	}
 
 	@Override

@@ -1,0 +1,32 @@
+#ksm007d {
+    width: 1200px;
+}
+
+#tree-grid-d {
+    margin: 17px 30px 0px 20px;
+    width: 453px;
+    float: left;
+}
+.form-label {
+    width: 150px;
+}
+#register-form-d {
+    margin-top: 35px;
+}
+.ntsRadioBox{
+    margin-right: 10px;
+}
+
+#workplace-group-pannel{
+	margin-top: 0px !important;
+}
+
+#workplace-group-pannel{
+	height: 458px !important;
+}
+
+#form-title-d {
+    border-bottom: 1px solid black;
+    padding: 0px 0px 10px 0px;
+    margin: -18px 0px 14px 0px;
+}

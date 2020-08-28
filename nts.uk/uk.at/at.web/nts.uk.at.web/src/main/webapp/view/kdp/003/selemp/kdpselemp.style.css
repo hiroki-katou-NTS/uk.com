@@ -1,0 +1,78 @@
+#PA {
+	width: 260px;
+	height: 765px;
+	border: 1px solid #CCC;
+	background-color: #165660;
+	padding: 5px 0 5px 5px;
+	text-align: center;
+	margin-left: 5px;
+	margin-top: 9px;
+}
+
+#PA1 {
+	margin-right: 5px;
+}
+
+.nts-datepicker-wrapper .ntsDatepicker {
+	width: 218px;
+	text-align: center;
+}
+
+#PA2_row1 {
+	margin-top: 8px;
+	text-align: left;
+	margin-left: 9px;
+}
+
+#PA2_row2 {
+	margin-top: 6px;
+	text-align: left;
+	margin-left: 9px;
+}
+
+.all {
+	width: 77px;
+}
+
+#PA4 {
+	color: black;
+	width: 239px;
+	margin-top: 4px;
+	background-color: white;
+	font-weight: bold;
+	margin-right: 5px;
+	height: 79px;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 79px;
+}
+
+.fonttextbtn {
+	font-weight: bold;
+	background-color: #738088;
+	color: white;
+}
+
+.fonttextbtn:hover {
+	
+}
+
+#list-emp {
+	margin-left: 8px;
+}
+
+#gridListEmployees>tbody>tr {
+	height: 79px;
+}
+
+#gridListEmployeesContent {
+	margin-left: 7px;
+}
+
+#gridListEmployees_headers>thead>tr:nth-child(1) {
+	display: none;
+}
+
+#gridListEmployees_headers>thead>tr.ui-iggrid-filterrow.ui-widget {
+	display: none;
+}

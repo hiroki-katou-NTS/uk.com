@@ -113,8 +113,9 @@
 								value: currentCode
 							}"></table>
 							<div id = "text-b20">
-					<span id="text-b20-1" data-bind="visible : permissionCheck()">#{i18n.getText('KDP002_61')}</span> <span
-						id="text-b20-2" data-bind= "visible : !permissionCheck()">
+					<span id="text-b20-1" data-bind="visible : permissionCheck() &amp;&amp; displayButton">#{i18n.getText('KDP002_61')}</span>
+
+					<span id="text-b20-2" data-bind= "visible : !permissionCheck() &amp;&amp; displayButton">
 						#{i18n.getText('KDP002_99')}</span>
 					</div>
 					

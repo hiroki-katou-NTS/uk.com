@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.WkplaceInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod.WkTypeInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -20,6 +19,7 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.schedule.dom.adapter.generalinfo.workplace.ExWorkplaceHistItemImported;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.schedulemaster.requestperiodchange.RequestPeriodChangeService;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.arc.time.calendar.period.DatePeriod;

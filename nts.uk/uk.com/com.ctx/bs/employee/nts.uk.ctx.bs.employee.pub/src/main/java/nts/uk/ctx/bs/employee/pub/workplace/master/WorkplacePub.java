@@ -8,6 +8,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport2;
 import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
@@ -159,5 +160,12 @@ public interface WorkplacePub {
 	public Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate);
 
 	List<SWkpHistExport> findBySId(List<String> sids);
+	
+	/**
+	 * 職場と基準日から所属職場履歴項目を取得する
+	 * @param workPlaceId  職場ID
+	 * @param baseDate 基準日
+	 */
+	List<AffWorkplaceHistoryItemExport2> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate);
 
 }

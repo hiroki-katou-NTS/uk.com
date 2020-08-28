@@ -9,11 +9,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -38,7 +38,7 @@ public class LackOfStampingAlgorithm {
 		// .find(employeeID, processingDate).get();
 
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+				.checkWorkDay(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
 
@@ -47,8 +47,8 @@ public class LackOfStampingAlgorithm {
 			// processingDate).get();
 
 			if (timeLeavingOfDailyPerformance != null
-					&& !timeLeavingOfDailyPerformance.getTimeLeavingWorks().isEmpty()) {
-				List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getTimeLeavingWorks();
+					&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
+				List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 				for (TimeLeavingWork timeLeavingWork : timeLeavingWorkList) {
 //					if (timeLeavingWork.getLeaveStamp() != null 
@@ -78,8 +78,8 @@ public class LackOfStampingAlgorithm {
 								attendanceItemIDList.add(44);
 							}
 						} else if (leavingStamp.isPresent() && attendanceStamp.isPresent()){
-							TimeWithDayAttr leavingTimeWithDay = leavingStamp.get().getTimeWithDay();
-							TimeWithDayAttr attendanceTimeWithDay = attendanceStamp.get().getTimeWithDay();
+							TimeWithDayAttr leavingTimeWithDay = leavingStamp.get().getTimeDay().getTimeWithDay().get();
+							TimeWithDayAttr attendanceTimeWithDay = attendanceStamp.get().getTimeDay().getTimeWithDay().get();
 							if (leavingTimeWithDay != null && attendanceTimeWithDay == null) {
 								if (timeLeavingWork.getWorkNo().v().intValue() == 1) {
 									attendanceItemIDList.add(31);
