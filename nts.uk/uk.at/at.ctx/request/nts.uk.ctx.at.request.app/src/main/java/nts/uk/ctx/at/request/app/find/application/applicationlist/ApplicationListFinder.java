@@ -523,12 +523,13 @@ public class ApplicationListFinder {
 		AppListParamFilter param = new AppListParamFilter();
 		param.setDevice(MOBILE);
     	param.setMode(appListExtractConditionDto.getAppListAtr());
-    	param.setLstAppType(Collections.emptyList());
+    	param.setListOfAppTypes(listAppType);
     	if (appListExtractConditionDto.getPeriodStartDate() != null && appListExtractConditionDto.getPeriodEndDate() != null) {
 	    	param.setStartDate(appListExtractConditionDto.getPeriodStartDate());
 	    	param.setEndDate(appListExtractConditionDto.getPeriodEndDate());
 
     	}
+    	param.setAppListExtractCondition(appListExtractConditionDto);
 
 //    	申請一覧初期処理
     	AppListInitDto appListInitDto =this.getAppList(param);
