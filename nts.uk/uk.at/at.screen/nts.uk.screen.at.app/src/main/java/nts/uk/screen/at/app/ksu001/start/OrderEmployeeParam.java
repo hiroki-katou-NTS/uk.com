@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 
 /**
  * @author laitv
@@ -21,5 +22,5 @@ import lombok.Setter;
 public class OrderEmployeeParam {
 	
 	public String endDate; 
-	public List<String> sids;
+	public List<EmployeeInformationDto> listEmpInfo;
 }

@@ -5,6 +5,7 @@ package nts.uk.screen.at.app.ksu001.orderemployee;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -56,7 +57,7 @@ public class SortEmployees {
 	@Inject
 	private NurseClassificationRepository nurseClassificationRepo;
 
-	private static final String DATE_FORMAT = "yyyyMMdd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public List<String> getListEmp(OrderEmployeeParam param) {
 		
@@ -67,9 +68,10 @@ public class SortEmployees {
 				employeeRankRepo, rankRepo, syJobTitleAdapter, syClassificationAdapter, empMedicalWorkStyleHisRepo,
 				nurseClassificationRepo);	
 		// 並び順に基づいて社員を並び替える(Require, 年月日, List<社員ID>)
-		List<String> listSidOrder = SortEmpService.sortEmpTheirOrder(requireSortEmpImpl, baseDate, param.sids);		
+		List<String> sids = param.listEmpInfo.stream().map(i -> i.employeeId).collect(Collectors.toList());
+		List<String> listSidOrdered = SortEmpService.sortEmpTheirOrder(requireSortEmpImpl, baseDate, sids);		
 				
-		return listSidOrder;
+		return listSidOrdered;
 	}
 	
 	@AllArgsConstructor

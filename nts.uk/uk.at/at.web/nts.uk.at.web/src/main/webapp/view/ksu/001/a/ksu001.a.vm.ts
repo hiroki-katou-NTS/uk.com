@@ -109,8 +109,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         arrListCellLock = [];
         detailContentDeco = [];
         detailColumns = [];
-        dataBindGrid : any;
-       
+        
+        // data grid
+        listEmpInfo = [];
+        listWorkScheduleWorkInfor = [];
+        listWorkScheduleShift = [];
+        listPersonalConditions = [];
+        displayControlPersonalCond = {};
+        listDateInfo = [];
 
         constructor() {
             let self = this;
@@ -342,6 +348,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
                 console.log('userInfo');
                 console.log(data.dataBasicDto);
+
+                self.saveDataGrid(data);
+
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
                 
@@ -429,6 +438,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.visibleShiftPalette(true);
             self.visibleBtnInput(false);
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
+                
+                self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('shift');
                 
@@ -481,6 +492,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.visibleShiftPalette(false);
             self.visibleBtnInput(false);
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
+                
+                self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('shortName');
                 // set data Header
@@ -514,6 +527,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
+                
+                self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('time');
                 // set data Header
@@ -529,6 +544,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        
+        saveDataGrid(data: any) {
+            let self = this;
+            self.listEmpInfo = data.listEmpInfo;
+            self.listWorkScheduleWorkInfor = data.listWorkScheduleWorkInfor;
+            self.listWorkScheduleShift = data.listWorkScheduleShift;
+            self.listPersonalConditions = data.listPersonalConditions;
+            self.displayControlPersonalCond = data.displayControlPersonalCond;
+            self.listDateInfo = data.listDateInfo;
         }
 
         // binding ket qua cua <<ScreenQuery>> 初期起動の情報取得 
@@ -957,7 +982,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.key = 0;
             }
-            self.dataBindGrid = result;
             return result;
         }
 
@@ -1908,48 +1932,50 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared("baseDate", ko.observable(self.dateTimeAfter()));
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
-                
-                
+                self.stopRequest(false);
+                self.getListEmpIdSorted().done(() => {
+                    self.stopRequest(true);
+                });
             });
         }
         
         // A1_12_20
         openMDialog(): void {
             let self = this;
-            setShared("KSU001M", {
-                listEmpData: self.listEmpData
-            });
+            setShared("KSU001M", self.listEmpData);
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml").onClosed(() => {
                 self.stopRequest(false);
                 self.getListEmpIdSorted().done(() => {
-
                     self.stopRequest(true);
                 });
             });
         }
-        
+
         getListEmpIdSorted(): JQueryPromise<any> {
-            let self = this, dfd  = $.Deferred();
-            let leftmostDs        = [];
-            let middleDs          = [];
-            let detailColumns     = [];
-            let objDetailHeaderDs = {};
-            let detailHeaderDeco  = [];
-            let detailContentDs   = [];
-            let detailContentDeco = [];
-            let dataBindGrid      = self.dataBindGrid;
-            
+            let self = this, dfd = $.Deferred();
             let param = {
                 endDate: self.dateTimeAfter(),
-                sids: self.listSid()
+                listEmpInfo: self.listEmpInfo
             }
             service.getListEmpIdSorted(param).done((data) => {
                 // update lai grid
-                if(data.length > 0){
-                    
-                
-                
+                if (data.length > 0) {
+                    let listEmpInfo = data;
+                    let dataGrid: any = {
+                        listEmpInfo: data,
+                        listWorkScheduleWorkInfor: self.listWorkScheduleWorkInfor,
+                        listWorkScheduleShift: self.listWorkScheduleShift,
+                        listPersonalConditions: self.listPersonalConditions,
+                        displayControlPersonalCond: self.displayControlPersonalCond,
+                        listDateInfo: self.listDateInfo
+                    }
+
+                    let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
+
+                    self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), true, true, true);
+
+                    self.stopRequest(true);
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -1958,11 +1984,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        updateGridAfterOrderEmp(){
-            
-        
-        }
-
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
         }

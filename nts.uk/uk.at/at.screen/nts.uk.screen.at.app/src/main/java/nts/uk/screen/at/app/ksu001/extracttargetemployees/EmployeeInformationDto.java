@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EmployeeInformationDto {
 	
-	String employeeId; // 社員ID
-	String employeeCode; // 社員コード
-	String businessName; // ビジネスネーム
+	public String employeeId; // 社員ID
+	public String employeeCode; // 社員コード
+	public String businessName; // ビジネスネーム
 }
