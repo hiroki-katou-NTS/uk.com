@@ -34,7 +34,7 @@
 //			+ " WHERE c.krqstAppTypeDiscretePK.companyID = :companyID"
 //			+ " AND c.krqstAppTypeDiscretePK.appType = :appType ";
 //
-//	private AppTypeDiscreteSetting toDomain(KrqstAppTypeDiscrete entity) {
+//	private AppTypeDiscreteSetting toOvertimeAppSetDomain(KrqstAppTypeDiscrete entity) {
 //		return new AppTypeDiscreteSetting(entity.krqstAppTypeDiscretePK.companyID,
 //				EnumAdaptor.valueOf(entity.krqstAppTypeDiscretePK.appType, ApplicationType.class),
 //				EnumAdaptor.valueOf(entity.prePostInitAtr, InitValueAtr.class),
@@ -57,7 +57,7 @@
 //		return this.queryProxy().query(SELECT_WITH_APP_TYPE, KrqstAppTypeDiscrete.class)
 //			    .setParameter("companyID", companyID)
 //			    .setParameter("appType", appType)
-//			    .getSingle(c -> toDomain(c));
+//			    .getSingle(c -> toOvertimeAppSetDomain(c));
 //	}
 //
 //}

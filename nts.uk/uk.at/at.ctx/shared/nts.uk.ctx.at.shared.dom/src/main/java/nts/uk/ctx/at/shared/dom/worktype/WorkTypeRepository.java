@@ -346,4 +346,6 @@ public interface WorkTypeRepository {
 	List<WorkType> findListByCid(String companyId);
 	
 	List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes);
+
+	List<WorkType> findForAppKAF008(String companyId, int deprecateAtr, int worktypeAtr, List<Integer> hdType);
 }

@@ -14,9 +14,9 @@ public interface AppWorkChangeSetRepository {
 	
 	Optional<AppWorkChangeSet> findByCompanyId(String companyId);
 
-	void add(AppWorkChangeSet domain);
+	void add(AppWorkChangeSet domain, int workTimeReflectAtr);
 
-	void update(AppWorkChangeSet domain);
+	void update(AppWorkChangeSet domain, int workTimeReflectAtr);
 	
 	void remove(String companyId);
 	

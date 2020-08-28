@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
@@ -30,6 +31,7 @@ public class TargetWorkTypeByApp {
 	/**
 	 * 勤務種類リスト
 	 */
+	@Setter
 	private List<String> workTypeLst;
 	
 	/**

@@ -51,11 +51,11 @@
 //		return companyId;
 //	}
 //	
-//	public RequestOfEachCompany toDomain(){
+//	public RequestOfEachCompany toOvertimeAppSetDomain(){
 //		return new RequestOfEachCompany(
 //				this.companyId, 
 //				EnumAdaptor.valueOf(this.selectOfApproversFlg, SelectionFlg.class), 
-//				this.krqstComAppConfigDetails.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+//				this.krqstComAppConfigDetails.stream().map(x -> x.toOvertimeAppSetDomain()).collect(Collectors.toList()));
 //	}
 //	
 //	public static KrqstComAppConfig toEntity(RequestOfEachCompany requestOfEachCompany){

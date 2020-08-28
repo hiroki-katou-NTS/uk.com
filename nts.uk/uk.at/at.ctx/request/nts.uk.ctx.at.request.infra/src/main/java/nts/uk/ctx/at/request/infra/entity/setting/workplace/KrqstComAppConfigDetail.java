@@ -179,7 +179,7 @@
 //				.build();
 //	}
 //	
-//	public ApprovalFunctionSetting toDomain(){
+//	public ApprovalFunctionSetting toOvertimeAppSetDomain(){
 //		return new ApprovalFunctionSetting(
 //				SettingFlg.toEnum(this.prerequisiteForpauseFlg), 
 //				new InstructionUseSetting(

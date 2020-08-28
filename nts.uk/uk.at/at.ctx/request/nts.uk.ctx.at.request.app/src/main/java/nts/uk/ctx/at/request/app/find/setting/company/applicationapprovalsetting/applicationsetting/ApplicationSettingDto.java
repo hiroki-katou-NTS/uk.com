@@ -35,12 +35,12 @@ public class ApplicationSettingDto {
 	/**
 	 * 種類別設定
 	 */
-	private AppTypeSettingDto appTypeSetting;
+	private List<AppTypeSettingDto> appTypeSetting;
 	
 	/**
 	 * 代行申請で利用できる申請設定
 	 */
-	private AppSetForProxyAppDto appSetForProxyApp;
+	private List<AppSetForProxyAppDto> appSetForProxyApp;
 	
 	/**
 	 * 締切設定
@@ -55,7 +55,7 @@ public class ApplicationSettingDto {
 	/**
 	 * 受付制限設定
 	 */
-	private ReceptionRestrictionSetDto receptionRestrictionSetting;
+	private List<ReceptionRestrictionSetDto> receptionRestrictionSetting;
 	
 	/**
 	 * 承認ルートの基準日
@@ -65,24 +65,24 @@ public class ApplicationSettingDto {
 	public static ApplicationSettingDto fromDomain(ApplicationSetting applicationSetting) {
 		return new ApplicationSettingDto(
 				applicationSetting.getCompanyID(), 
-				applicationSetting.getAppLimitSetting(), 
-				AppTypeSettingDto.fromDomain(applicationSetting.getAppTypeSetting()), 
-				AppSetForProxyAppDto.fromDomain(applicationSetting.getAppSetForProxyApp()), 
+				applicationSetting.getAppLimitSetting(),
+				applicationSetting.getAppTypeSettings().stream().map(a -> AppTypeSettingDto.fromDomain(a)).collect(Collectors.toList()),
+				applicationSetting.getAppSetForProxyApps().stream().map(a -> AppSetForProxyAppDto.fromDomain(a)).collect(Collectors.toList()),
 				applicationSetting.getAppDeadlineSetLst().stream().map(x -> AppDeadlineSettingDto.fromDomain(x)).collect(Collectors.toList()), 
-				AppDisplaySettingDto.fromDomain(applicationSetting.getAppDisplaySetting()), 
-				ReceptionRestrictionSetDto.fromDomain(applicationSetting.getReceptionRestrictionSetting()), 
+				AppDisplaySettingDto.fromDomain(applicationSetting.getAppDisplaySetting()),
+				applicationSetting.getReceptionRestrictionSettings().stream().map(a -> ReceptionRestrictionSetDto.fromDomain(a)).collect(Collectors.toList()),
 				applicationSetting.getRecordDate().value);
 	}
-	
+
 	public ApplicationSetting toDomain() {
 		return new ApplicationSetting(
-				companyID, 
-				appLimitSetting, 
-				appTypeSetting.toDomain(), 
-				appSetForProxyApp.toDomain(), 
-				appDeadlineSetLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
-				appDisplaySetting.toDomain(), 
-				receptionRestrictionSetting.toDomain(), 
+				companyID,
+				appLimitSetting,
+				appTypeSetting.stream().map(AppTypeSettingDto::toDomain).collect(Collectors.toList()),
+				appSetForProxyApp.stream().map(AppSetForProxyAppDto::toDomain).collect(Collectors.toList()),
+				appDeadlineSetLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()),
+				appDisplaySetting.toDomain(),
+				receptionRestrictionSetting.stream().map(ReceptionRestrictionSetDto::toDomain).collect(Collectors.toList()),
 				EnumAdaptor.valueOf(recordDate, RecordDate.class));
 	}
 }
