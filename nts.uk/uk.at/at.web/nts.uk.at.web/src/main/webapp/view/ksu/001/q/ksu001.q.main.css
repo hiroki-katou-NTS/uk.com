@@ -64,6 +64,7 @@ table {
 	border-color: darkgrey;
 	border-left: none;
 	width: 263px;
+	border-bottom: none;
 }
 
 th, td {
