@@ -9,7 +9,9 @@ module ksm004.d.service{
         addCalendarWorkplace:"at/schedule/calendar/addcalendarworkplace",
         updateCalendarWorkplace:"at/schedule/calendar/updatecalendarworkplace",
         
-        getAllHoliday : "at/schedule/holiday/getAllHoliday"
+        getAllHoliday : "at/schedule/holiday/getAllHoliday",
+
+        getWeeklyWorkDay : "at/schedule/shift/weeklyworkday/getAll"
     }    
     /**
      * add new calendar Company
@@ -53,6 +55,13 @@ module ksm004.d.service{
      */
     export function getAllHoliday() : JQueryPromise<Array<viewmodel.model.Holiday>>{
         return nts.uk.request.ajax("at",paths.getAllHoliday);    
+    }
+
+    /**
+     * get Weekly Work Day : return Weekly Work Day
+     */
+    export function getWeeklyWorkDay() : JQueryPromise<Array<viewmodel.model.WeeklyWorkDay>>{
+        return nts.uk.request.ajax("at",paths.getWeeklyWorkDay);
     }
     
 }

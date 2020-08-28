@@ -8,11 +8,11 @@ import nts.arc.time.calendar.period.DatePeriod;
 @Data
 @Builder
 public class DatePeriodDto {
-    private String start;
+    private String startDate;
 
-    private String end;
+    private String endDate;
 
     public DatePeriod convertToDate(String format){
-        return new DatePeriod(GeneralDate.fromString(this.start,format), GeneralDate.fromString(this.end,format));
+        return new DatePeriod(GeneralDate.fromString(this.startDate,format), GeneralDate.fromString(this.endDate,format));
     }
 }
