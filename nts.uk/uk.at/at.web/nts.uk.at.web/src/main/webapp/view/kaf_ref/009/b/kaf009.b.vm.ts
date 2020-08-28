@@ -17,7 +17,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         applicationTest: any = {
             employeeID: this.$user.employeeId,
             appDate: moment(new Date()).format('YYYY/MM/DD'),
-            enteredPerson: '',
+            enteredPerson: this.$user.employeeId,
             inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
             opStampRequestMode: 1,
             opReversionReason: '1',
