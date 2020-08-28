@@ -61,8 +61,6 @@ module nts.uk.at.view.kmr004.a {
 				{id: OUTPUT_CONDITION.STATEMENT, name: getText('KMR004_13')},
 			]);
 
-
-
 			nts.uk.ui.block.grayout();
 			// Call init API
 			self.$ajax(API.START).done((data) => {
@@ -231,8 +229,8 @@ module nts.uk.at.view.kmr004.a {
 				nts.uk.request.exportFile("at", API.EXCEL, data).done(() => {
 					vm.$blockui("clear");
 				}).fail((res: any) => {
-					vm.$dialog.error({messageId: res.messageId}).then(function () {
-						vm.$blockui("clear");
+					vm.$blockui("clear").then(function () {
+						vm.$dialog.error({messageId: res.messageId});
 					});
 				});
 			}
@@ -251,8 +249,8 @@ module nts.uk.at.view.kmr004.a {
 				nts.uk.request.exportFile("at", API.PDF, data).done(() => {
 					vm.$blockui("clear");
 				}).fail((res: any) => {
-					vm.$dialog.error({messageId: res.messageId}).then(function () {
-						vm.$blockui("clear");
+					vm.$blockui("clear").then(function () {
+						vm.$dialog.error({messageId: res.messageId});
 					});
 				});
 			}
