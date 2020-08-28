@@ -100,7 +100,7 @@ public class ScheduleExecutionAddCommand {
     private GeneralDate copyStartYmd;
 
     /**
-     * The employee ids. 
+     * The employee ids.
      */
     private List<String> employeeIds;
 

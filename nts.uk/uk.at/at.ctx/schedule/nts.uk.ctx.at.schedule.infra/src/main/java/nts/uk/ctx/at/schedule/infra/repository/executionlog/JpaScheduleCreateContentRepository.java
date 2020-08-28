@@ -86,8 +86,8 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 		KscdtScheExeContent entity = new KscdtScheExeContent();
 		val cid = AppContexts.user().companyId();
 		val cd = AppContexts.user().contractCode();
-		entity.toEntityNew(domain,cid,cd);
-		return entity;
+		val rs = entity.toEntityNew(domain,cid,cd);
+		return rs;
 	}
 	/**
 	 * To entity.

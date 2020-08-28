@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
@@ -11,15 +12,14 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 /**
  * Clone ScheduleExecutionLogAddCommandHandler.
  */
-@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
+@Transactional
 public class ScheduleExecutionAddCommandHandler extends CommandHandlerWithResult<ScheduleExecutionAddCommand, ScheduleExecutionLogSaveRespone> {
 
     /** The create content repository. */
@@ -69,12 +69,13 @@ public class ScheduleExecutionAddCommandHandler extends CommandHandlerWithResult
         // save domain update add : cid, cd 28/8/2020
         this.executionLogRepository.addNew(domain);
         // save domain update not use memento pattern.
-        this.createContentRepository.addNew(command.toDomainContentNew(executionId));
+        val domainContent = command.toDomainContentNew(executionId);
+        this.createContentRepository.addNew(domainContent);
+        val domainCreator = command.toDomainCreator(executionId);
+        // save all domain creator update add : cid, cd- 28/8/2020
+        this.creatorRepository.saveAllNew(domainCreator);
 
-        // save all domain creator update add : cid, cd 28/8/2020
-        this.creatorRepository.saveAllNew(command.toDomainCreator(executionId));
-
-        // setup data respone
+        // setup data response
         respone.setEmployeeId(employeeId);
         respone.setExecutionId(executionId);
         return respone;
