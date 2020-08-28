@@ -57,13 +57,19 @@ module nts.uk.at.view.ksm004.f.viewmodel {
             const vm = this;
             const dayOffArr: KnockoutObservableArray<Date> = ko.observableArray([]);
             vm.months.removeAll();
-            dataRes.forEach(item => dayOffArr.push(new Date(item.date)));
-            this.getDateRange(date).forEach(item => vm.months.push(
-                {
-                    baseDate: ko.observable(item),
-                    holidays: dayOffArr
-                }
-            ));
+            let holidayDateAll = _.map(_.filter(dataRes, (item: any) => { return item.workingDayAtr != 0; }), (item: any) => { return new Date(item.date) });
+            let workingDateAll = _.map(_.filter(dataRes, (item: any) => { return item.workingDayAtr == 0; }), (item: any) => { return new Date(item.date) });
+            let baseDates = vm.getDateRange(date);
+            _.forEach(baseDates, (baseDate: Date) => {
+                let holidays = _.filter(holidayDateAll, (item: Date) => { return item.getMonth() == baseDate.getMonth(); });
+                let workingdays = _.filter(workingDateAll, (item: Date) => { return item.getMonth() == baseDate.getMonth(); });
+                vm.months.push(
+                    {
+                        baseDate: ko.observable(baseDate),
+                        holidays: ko.observableArray(holidays),
+                        isEmptyMonth: ko.observable(_.isEmpty(workingdays))
+                    });
+            })
         }
 
         getDateRange(baseDate: Date) {

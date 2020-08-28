@@ -103,6 +103,7 @@ module nts.uk.at.kmr003.a {
             const vm = this;
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
             vm.loadMGrid();
+            vm.initData();
 
             vm.date.subscribe((value: string) => {
                 let momentDate = moment(value);
