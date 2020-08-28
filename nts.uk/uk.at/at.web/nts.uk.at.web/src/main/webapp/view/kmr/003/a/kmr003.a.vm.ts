@@ -254,10 +254,10 @@ module nts.uk.at.kmr003.a {
             let data = $("#grid").mGrid("dataSource");
             _.each(data, (item: ReservationModifyEmployeeDto) => {
                 if (!item.activity) {
-                    self.disableControl(item.key, "reservationMemberCode", true);
-                    self.disableControl(item.key, "reservationMemberName", true);
+                    // self.disableControl(item.key, "reservationMemberCode", true);
+                    // self.disableControl(item.key, "reservationMemberName", true);
                     self.disableControl(item.key, "isDelete", true);
-                    self.disableControl(item.key, "reservationTime", true);
+                    // self.disableControl(item.key, "reservationTime", true);
                     self.disableControl(item.key, "ordered", true);
 
                     self.setBentoInput(item.key, true);
@@ -621,7 +621,7 @@ module nts.uk.at.kmr003.a {
             this.ordered = item.ordered;
             this.closingTimeFrame = item.closingTimeFrame;
 
-            this.key = item.reservationCardNo + "_" + item.reservationMemberCode;
+            this.key = item.reservationMemberCode;
             this.isDelete = false;
         }
 

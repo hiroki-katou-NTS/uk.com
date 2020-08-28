@@ -698,7 +698,7 @@ public class ProgramsManager {
     /**
      * KSM004F
      */
-    public static final Program KSM004F = new Program(WebAppId.AT, ProgramIdConsts.KSM004F, "KSM004_106",
+    public static final Program KSM004F = new Program(WebAppId.AT, ProgramIdConsts.KSM004F, "KSM004_116",
             "/view/ksm/004/f/index.xhtml");
 
     /**
