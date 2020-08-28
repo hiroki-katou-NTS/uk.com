@@ -52,8 +52,10 @@ import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.checkpreappaccept.PreAppAcceptLimit;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.service.AppDeadlineSettingGet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
@@ -153,7 +155,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		Optional<WorkManagementMultiple> opWorkManagementMultiple = workManagementMultipleRepository.findByCode(companyID);
 		// 事前申請がいつから受付可能か確認する
 		// TODO: 申請設定 domain has changed!
-		PreAppAcceptLimit preAppAcceptLimit = applicationSetting.getReceptionRestrictionSettings().get(0).checkWhenPreAppCanBeAccepted(opOvertimeAppAtr);
+		PreAppAcceptLimit preAppAcceptLimit = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType() == appType)
+				.findAny().map(x -> x.checkWhenPreAppCanBeAccepted(opOvertimeAppAtr)).orElse(null);
 		// OUTPUT「申請表示情報(基準日関係なし)」にセットする(Set vào  OUTPUT "application display information (kg liên quan base date)")
 		AppDispInfoNoDateOutput appDispInfoNoDateOutput = new AppDispInfoNoDateOutput(
 				mailServerSetImport.isMailServerSet(), 
@@ -240,16 +243,18 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// 申請表示情報(申請対象日関係あり)を取得する
 		// TODO: 申請設定 domain has changed!
+		ApplicationSetting applicationSetting = appDispInfoNoDateOutput.getApplicationSetting();
+		Optional<AppTypeSetting> opAppTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType()==appType).findAny();
+		Optional<ReceptionRestrictionSetting> opReceptionRestrictionSetting = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType()==appType).findAny();
 		AppDispInfoRelatedDateOutput appDispInfoRelatedDateOutput = this.getAppDispInfoRelatedDate(
 				companyID, 
 				employeeID, 
 				dateLst, 
-				appType, 
-				appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-				appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment().get(),
+				appType,
+				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(), 
+				opAppTypeSetting.map(x -> x.getDisplayInitialSegment().orElse(null)).orElse(null),
 				opOvertimeAppAtr,
-				appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric()
-                        .isPresent() ? appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric().get() : null);
+				opReceptionRestrictionSetting.map(x -> x.getOtAppBeforeAccepRestric().orElse(null)).orElse(null));
 		// 雇用に紐づく締めを取得する
 		int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
 		// 申請締切設定を取得する
@@ -349,15 +354,17 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		if(appDispInfoNoDateOutput.getApplicationSetting().getRecordDate() == RecordDate.SYSTEM_DATE) {
 			// 申請表示情報(申請対象日関係あり)を取得する
 			// TODO: 申請設定 domain has changed!
+			ApplicationSetting applicationSetting = appDispInfoNoDateOutput.getApplicationSetting();
+			Optional<AppTypeSetting> opAppTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == appType).findAny();
+			Optional<ReceptionRestrictionSetting> opReceptionRestrictionSetting = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType()==appType).findAny();
 			AppDispInfoRelatedDateOutput result = this.getAppDispInfoRelatedDate(
 					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), 
 					dateLst, 
-					appType, 
-					appDispInfoNoDateOutput.getApplicationSetting().getAppDisplaySetting().getPrePostDisplayAtr(), 
-					appDispInfoNoDateOutput.getApplicationSetting().getAppTypeSettings().get(0).getDisplayInitialSegment().get(),
+					appType,
+					applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(), 
+					opAppTypeSetting.map(x -> x.getDisplayInitialSegment().orElse(null)).orElse(null),
 					opOvertimeAppAtr,
-					appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric()
-                            .isPresent() ? appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings().get(0).getOtAppBeforeAccepRestric().get() : null);
+					opReceptionRestrictionSetting.map(x -> x.getOtAppBeforeAccepRestric().orElse(null)).orElse(null));
 			appDispInfoWithDateOutput.setPrePostAtr(result.getPrePostAtr());
 			appDispInfoWithDateOutput.setOpActualContentDisplayLst(
 					CollectionUtil.isEmpty(result.getActualContentDisplayLst()) ? Optional.empty() : Optional.of(result.getActualContentDisplayLst()));

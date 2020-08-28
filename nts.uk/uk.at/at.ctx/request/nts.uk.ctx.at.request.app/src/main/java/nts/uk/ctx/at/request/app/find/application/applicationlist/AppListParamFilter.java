@@ -3,11 +3,10 @@ package nts.uk.ctx.at.request.app.find.application.applicationlist;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 
-@Getter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppListParamFilter {
@@ -43,6 +42,11 @@ public class AppListParamFilter {
 	
 	//対象申請種類List
 	private List<Integer> lstAppType;
+	
+	/**
+	 * 申請一覧抽出条件
+	 */
+	private AppListExtractConditionDto appListExtractCondition;
 
 //	private AppListExtractConditionDto condition;
 //	private boolean spr;
@@ -52,5 +56,4 @@ public class AppListParamFilter {
 //	//対象申請種類List
 //	private List<Integer> lstAppType;
 	
-	private AppListExtractCondition appListExtractCondition;
 }

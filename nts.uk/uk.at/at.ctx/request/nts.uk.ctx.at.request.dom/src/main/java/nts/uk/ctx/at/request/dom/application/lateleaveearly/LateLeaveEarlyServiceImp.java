@@ -41,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeReport;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.CancelAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -425,10 +426,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		List<ConfirmMsgOutput> listMsg = new ArrayList<>();
 		List<TimeReport> timeReportsTemp;
 		List<LateCancelation> cancelTemp;
-		int attendTime = 0;
-		int leaveTime = 0;
-		int attendTime2 = 0;
-		int leaveTime2 = 0;
+		Integer attendTime = null;
+		Integer leaveTime = null;
+		Integer attendTime2 = null;
+		Integer leaveTime2 = null;
 		LateCancelation cancelAttend = null;
 		LateCancelation cancelLeave = null;
 		LateCancelation cancelAttend2 = null;
@@ -444,7 +445,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				return null;
 			}).filter(m -> (m != null)).collect(Collectors.toList());
 
-			attendTime = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+		attendTime = timeReportsTemp.isEmpty() ? null : timeReportsTemp.get(0).getTimeWithDayAttr().v();
 
 			// Get leave time by workno = 1 && classification = 1
 			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
@@ -454,7 +455,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				return null;
 			}).filter(m -> (m != null)).collect(Collectors.toList());
 
-			leaveTime = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+		leaveTime = timeReportsTemp.isEmpty() ? null : timeReportsTemp.get(0).getTimeWithDayAttr().v();
 
 			// Get attend time 2 by workno = 2 && classification = 0
 			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
@@ -464,7 +465,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				return null;
 			}).filter(m -> (m != null)).collect(Collectors.toList());
 
-			attendTime2 = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+		attendTime2 = timeReportsTemp.isEmpty() ? null : timeReportsTemp.get(0).getTimeWithDayAttr().v();
 
 			// Get attend time 2 by workno = 2 && classification = 1
 			timeReportsTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateOrLeaveEarlies().stream().map(x -> {
@@ -474,7 +475,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				return null;
 			}).filter(m -> (m != null)).collect(Collectors.toList());
 
-			leaveTime2 = timeReportsTemp.isEmpty() ? 0 : timeReportsTemp.get(0).getTimeWithDayAttr().v();
+		leaveTime2 = timeReportsTemp.isEmpty() ? null : timeReportsTemp.get(0).getTimeWithDayAttr().v();
 
 			// Get attend time by workno = 1 && classification = 0
 			cancelTemp = infoOutput.getArrivedLateLeaveEarly().get().getLateCancelation().stream().map(x -> {
@@ -516,24 +517,37 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 
 			cancelLeave = cancelTemp.isEmpty() ? null : cancelTemp.get(0);
 
-			if (attendTime != 0 && leaveTime != 0) {
-				if (attendTime > leaveTime) {
-					throw new BusinessException("Msg_1677");
-				}
-				if (attendTime2 != 0 && attendTime > attendTime2) {
-					throw new BusinessException("Msg_1677");
-				}
-			}
-			if (attendTime2 != 0 && leaveTime2 != 0 && attendTime2 > leaveTime2) {
+		if (attendTime != null && leaveTime != null && attendTime > leaveTime) {
+			throw new BusinessException("Msg_1677");
+		}
+
+		if (leaveTime != null && attendTime2 != null && leaveTime > attendTime2) {
+			throw new BusinessException("Msg_1677");
+		}
+
+		if (attendTime2 != null && leaveTime2 != null && attendTime2 > leaveTime2) {
 				throw new BusinessException("Msg_1677");
 			}
 
+		if (attendTime != null && leaveTime2 != null && attendTime > leaveTime2) {
+			throw new BusinessException("Msg_1677");
+		}
+
+		if (leaveTime != null && leaveTime2 != null && leaveTime > leaveTime2) {
+			throw new BusinessException("Msg_1677");
+		}
+
+		if (attendTime != null && attendTime2 != null && attendTime > attendTime2) {
+			throw new BusinessException("Msg_1677");
+		}
+
 		if (application.getPrePostAtr().value == 0) {
-			if (attendTime == 0 && attendTime2 == 0 && leaveTime == 0 && leaveTime2 == 0) {
+			if (attendTime == null && attendTime2 == null && leaveTime == null && leaveTime2 == null) {
 				throw new BusinessException("Msg_1681");
 			}
 		} else {
-			if (attendTime == 0 && attendTime2 == 0 && leaveTime == 0 && leaveTime2 == 0 && cancelAttend == null
+			if (attendTime == null && attendTime2 == null && leaveTime == null && leaveTime2 == null
+					&& cancelAttend == null
 					&& cancelAttend2 == null && cancelLeave == null && cancelLeave2 == null) {
 				throw new BusinessException("Msg_1681");
 			}
@@ -551,7 +565,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			// 4-1.詳細画面登録前の処理
 			this.updateService.processBeforeDetailScreenRegistration(companyID, application.getEmployeeID(),
 					application.getAppDate().getApplicationDate(), EmploymentRootAtr.APPLICATION.value,
-					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null, 
+					application.getAppID(), application.getPrePostAtr(), application.getVersion(), null, null,
 					infoOutput.getAppDispInfoStartupOutput());
 		}
 
@@ -582,13 +596,13 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		this.registerService.newScreenRegisterAtApproveInfoReflect(employeeId, application);
 
 		// TODO: 申請設定 domain has changed!
-		if (infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
-				.getAppTypeSettings().get(0).isSendMailWhenRegister()) {
+		AppTypeSetting appTypeSetting = infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
+				.getAppTypeSettings().stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
+		if (appTypeSetting.isSendMailWhenRegister()) {
 			// 「新規登録時に自動でメールを送信する」がする(chọn auto send mail 「新規登録時に自動でメールを送信する」)
 			// TODO: 申請設定 domain has changed!
 			processResult = this.newAfterRegister.processAfterRegister(application.getAppID(),
-					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting()
-							.getAppTypeSettings().get(0),
+					appTypeSetting,
 					infoOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
 		}
 
@@ -671,9 +685,25 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 					.getOpAchievementDetail();
 		}
 
+		// AnhNM Mock data: START
+		AchievementEarly mockAchiveEarly = new AchievementEarly(new TimeWithDayAttr(510), new TimeWithDayAttr(990),
+				new TimeWithDayAttr(900), new TimeWithDayAttr(1320));
+		AchievementDetail mockAchive = new AchievementDetail(null, null, null, null, null, null, mockAchiveEarly,
+				Optional.of(1320), Optional.empty(), Optional.empty(), Optional.of(510), Optional.of(900),
+				Optional.empty(), Optional.of(960), Optional.empty(), Optional.empty(), Optional.empty(),
+				Optional.empty(), Optional.empty());
+		ActualContentDisplay mockDisplay = new ActualContentDisplay(GeneralDate.fromString("2020/09/03", DATE_FORMAT),
+				Optional.of(mockAchive));
+		// AnhNM Mock data: END
+
 		// 取り消す初期情報
 		List<LateOrEarlyInfo> listInfo = this.initialInfo(lateEarlyCancelAppSet, opAchieve,
 				infoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
+
+		// AnhNM Mock data: START
+		listInfo = this.initialInfo(lateEarlyCancelAppSet, Optional.of(mockAchive),
+				infoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
+		// AnhNM Mock data: END
 
 		output.setEarlyInfos(listInfo);
 		output.setArrivedLateLeaveEarly(Optional.of(arrivedLateLeaveEarly));

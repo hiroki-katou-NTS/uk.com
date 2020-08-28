@@ -1,11 +1,9 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.appdeadlineset.AppDeadlineSetting;

@@ -36,7 +36,7 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
     private static final long serialVersionUID = 1L;
 
     @EmbeddedId
-    protected KrqstAppEmploymentSetPK pk;
+    protected KrqmtAppApvEmpPK pk;
 
     @Column(name = "HOLIDAY_TYPE_USE_FLG")
     private Integer holidayTypeUseFlg;
@@ -115,35 +115,68 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
     }
 
     public static List<KrqmtAppApvEmp> fromDomain(AppEmploymentSet domain) {
-        return domain.getTargetWorkTypeByAppLst().stream().map(t -> KrqmtAppApvEmp.fromDomain(domain.getCompanyID(), domain.getEmploymentCD(), t)).collect(Collectors.toList());
+        return domain.getTargetWorkTypeByAppLst().stream().map(target -> {
+            String companyId = domain.getCompanyID();
+            String employmentCode = domain.getEmploymentCD();
+            switch (target.getAppType()) {
+                case ABSENCE_APPLICATION:
+                    return new KrqmtAppApvEmp(
+                            new KrqmtAppApvEmpPK(companyId, employmentCode, target.getAppType().value, target.getOpHolidayAppType().get().value),
+                            BooleanUtils.toInteger(target.getOpHolidayTypeUse().get()),
+                            BooleanUtils.toInteger(target.isDisplayWorkType()),
+                            target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(companyId, employmentCode, target.getAppType().value, target.getOpHolidayAppType().get().value, c)).collect(Collectors.toList())
+                    );
+                case BUSINESS_TRIP_APPLICATION:
+                    return new KrqmtAppApvEmp(
+                            new KrqmtAppApvEmpPK(companyId, employmentCode, target.getAppType().value, target.getOpBusinessTripAppWorkType().get().value),
+                            null,
+                            BooleanUtils.toInteger(target.isDisplayWorkType()),
+                            target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(companyId, employmentCode, target.getAppType().value, target.getOpBusinessTripAppWorkType().get().value, c)).collect(Collectors.toList())
+                    );
+                case COMPLEMENT_LEAVE_APPLICATION:
+                    return new KrqmtAppApvEmp(
+                            new KrqmtAppApvEmpPK(companyId, employmentCode, target.getAppType().value, target.getOpBreakOrRestTime().get().value),
+                            null,
+                            BooleanUtils.toInteger(target.isDisplayWorkType()),
+                            target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(companyId, employmentCode, target.getAppType().value, target.getOpBreakOrRestTime().get().value, c)).collect(Collectors.toList())
+                    );
+                default:
+                    return new KrqmtAppApvEmp(
+                            new KrqmtAppApvEmpPK(companyId, employmentCode, target.getAppType().value, 9),
+                            null,
+                            BooleanUtils.toInteger(target.isDisplayWorkType()),
+                            target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(companyId, employmentCode, target.getAppType().value, 9, c)).collect(Collectors.toList())
+                    );
+            }
+        }).collect(Collectors.toList());
     }
 
     public static KrqmtAppApvEmp fromDomain(String companyId, String employmentCode, TargetWorkTypeByApp target) {
         switch (target.getAppType()) {
             case ABSENCE_APPLICATION:
                 return new KrqmtAppApvEmp(
-                        new KrqstAppEmploymentSetPK(companyId, employmentCode, target.getAppType().value, target.getOpHolidayAppType().get().value),
+                        new KrqmtAppApvEmpPK(companyId, employmentCode, target.getAppType().value, target.getOpHolidayAppType().get().value),
                         BooleanUtils.toInteger(target.getOpHolidayTypeUse().get()),
                         BooleanUtils.toInteger(target.isDisplayWorkType()),
                         target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(companyId, employmentCode, target.getAppType().value, target.getOpHolidayAppType().get().value, c)).collect(Collectors.toList())
                 );
             case BUSINESS_TRIP_APPLICATION:
                 return new KrqmtAppApvEmp(
-                        new KrqstAppEmploymentSetPK(companyId, employmentCode, target.getAppType().value, target.getOpBusinessTripAppWorkType().get().value),
+                        new KrqmtAppApvEmpPK(companyId, employmentCode, target.getAppType().value, target.getOpBusinessTripAppWorkType().get().value),
                         null,
                         BooleanUtils.toInteger(target.isDisplayWorkType()),
                         target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(companyId, employmentCode, target.getAppType().value, target.getOpBusinessTripAppWorkType().get().value, c)).collect(Collectors.toList())
                 );
             case COMPLEMENT_LEAVE_APPLICATION:
                 return new KrqmtAppApvEmp(
-                        new KrqstAppEmploymentSetPK(companyId, employmentCode, target.getAppType().value, target.getOpBreakOrRestTime().get().value),
+                        new KrqmtAppApvEmpPK(companyId, employmentCode, target.getAppType().value, target.getOpBreakOrRestTime().get().value),
                         null,
                         BooleanUtils.toInteger(target.isDisplayWorkType()),
                         target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(companyId, employmentCode, target.getAppType().value, target.getOpBreakOrRestTime().get().value, c)).collect(Collectors.toList())
                 );
             default:
                 return new KrqmtAppApvEmp(
-                        new KrqstAppEmploymentSetPK(companyId, employmentCode, target.getAppType().value, 9),
+                        new KrqmtAppApvEmpPK(companyId, employmentCode, target.getAppType().value, 9),
                         null,
                         BooleanUtils.toInteger(target.isDisplayWorkType()),
                         target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(companyId, employmentCode, target.getAppType().value, 9, c)).collect(Collectors.toList())

@@ -1,21 +1,24 @@
 package nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.appovertime;
 
-import javafx.util.Pair;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetUse;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeQuotaSetUse;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @AllArgsConstructor
@@ -48,11 +51,11 @@ public class KrqmtAppOvertimeFrame extends ContractUkJpaEntity {
 
     public static List<OvertimeQuotaSetUse> toDomains(String companyId, List<KrqmtAppOvertimeFrame> entities) {
         List<OvertimeQuotaSetUse> domains = new ArrayList<>();
-        Map<Map<Integer, Integer>, List<KrqmtAppOvertimeFrame>> group = entities.stream().collect(Collectors.groupingBy(e -> new HashMap() {{
+        Map<Object, List<KrqmtAppOvertimeFrame>> group = entities.stream().collect(Collectors.groupingBy(e -> new HashMap() {{
             put(e.pk.overtimeAtr, e.pk.flexAtr);
         }}));
         group.forEach((key, value) -> {
-            OvertimeQuotaSetUse quota = OvertimeQuotaSetUse.create((Integer) key.keySet().toArray()[0], (Integer) key.values().toArray()[0], value.stream().map(KrqmtAppOvertimeFrame::getTargetFrame).collect(Collectors.toList()));
+            OvertimeQuotaSetUse quota = OvertimeQuotaSetUse.create((Integer) ((Map)key).keySet().toArray()[0], (Integer) ((Map)key).values().toArray()[0], value.stream().map(KrqmtAppOvertimeFrame::getTargetFrame).collect(Collectors.toList()));
             domains.add(quota);
         });
         return domains;

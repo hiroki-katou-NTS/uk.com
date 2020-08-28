@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
@@ -14,7 +13,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
 public class ApprovalListDisplaySetting {
 	
@@ -47,6 +45,16 @@ public class ApprovalListDisplaySetting {
 	 * 所属職場名表示
 	 */
 	private NotUseAtr displayWorkPlaceName;
+	
+	public ApprovalListDisplaySetting(String companyID, DisplayAtr appReasonDisAtr, DisplayAtr advanceExcessMessDisAtr,
+			DisplayAtr actualExcessMessDisAtr, WeekNumberDays warningDateDisAtr, NotUseAtr displayWorkPlaceName) {
+		this.companyID = companyID;
+		this.appReasonDisAtr = appReasonDisAtr;
+		this.advanceExcessMessDisAtr = advanceExcessMessDisAtr;
+		this.actualExcessMessDisAtr = actualExcessMessDisAtr;
+		this.warningDateDisAtr = warningDateDisAtr;
+		this.displayWorkPlaceName = displayWorkPlaceName;
+	}
 
 	public static ApprovalListDisplaySetting create(String companyID, int appReasonDispAtr, int preExcessAtr, int atdExcessAtr, int warningDays, int dispWorkplace) {
 		return new ApprovalListDisplaySetting(
@@ -58,5 +66,5 @@ public class ApprovalListDisplaySetting {
 				EnumAdaptor.valueOf(dispWorkplace, NotUseAtr.class)
 		);
 	}
-	
+
 }

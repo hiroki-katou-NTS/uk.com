@@ -57,7 +57,7 @@
                     <tbody data-bind="foreach: absenceSet">
                         <tr class="inline-radio">
                             <!--<td class="color-header" data-bind="text: optionName">#{i18n.getText('KAF022_730')}</td>-->
-                            <td class="color-header" data-bind="text: optionName" />
+                            <td class="color-header" data-bind="text: optionName2" />
                             <td class="two-radio">
                                 <div tabindex="1" data-bind="ntsRadioBoxGroup: {
                                     options: $vm.itemListD13,
@@ -68,82 +68,10 @@
                                 </div>
                             </td>
                         </tr>
-                        <!--<tr class="inline-radio">-->
-                            <!--<td class="color-header">#{i18n.getText('KAF022_731')}</td>-->
-                            <!--<td class="two-radio">-->
-                                <!--<div tabindex="1" data-bind="ntsRadioBoxGroup: {-->
-                                    <!--options: itemListD13,-->
-                                    <!--optionsValue: 'code',-->
-                                    <!--optionsText: 'name',-->
-                                    <!--value: appReasonDispAtr,-->
-                                    <!--enable: true}">-->
-                                <!--</div>-->
-                            <!--</td>-->
-                        <!--</tr>-->
-                        <!--<tr class="inline-radio">-->
-                            <!--<td class="color-header">#{i18n.getText('KAF022_732')}</td>-->
-                            <!--<td class="two-radio">-->
-                                <!--<div tabindex="1" data-bind="ntsRadioBoxGroup: {-->
-                                    <!--options: itemListD13,-->
-                                    <!--optionsValue: 'code',-->
-                                    <!--optionsText: 'name',-->
-                                    <!--value: appReasonDispAtr,-->
-                                    <!--enable: true}">-->
-                                <!--</div>-->
-                            <!--</td>-->
-                        <!--</tr>-->
-                        <!--<tr class="inline-radio">-->
-                            <!--<td class="color-header">#{i18n.getText('KAF022_733')}</td>-->
-                            <!--<td class="two-radio">-->
-                                <!--<div tabindex="1" data-bind="ntsRadioBoxGroup: {-->
-                                    <!--options: itemListD13,-->
-                                    <!--optionsValue: 'code',-->
-                                    <!--optionsText: 'name',-->
-                                    <!--value: appReasonDispAtr,-->
-                                    <!--enable: true}">-->
-                                <!--</div>-->
-                            <!--</td>-->
-                        <!--</tr>-->
-                        <!--<tr class="inline-radio">-->
-                            <!--<td class="color-header">#{i18n.getText('KAF022_734')}</td>-->
-                            <!--<td class="two-radio">-->
-                                <!--<div tabindex="1" data-bind="ntsRadioBoxGroup: {-->
-                                    <!--options: itemListD13,-->
-                                    <!--optionsValue: 'code',-->
-                                    <!--optionsText: 'name',-->
-                                    <!--value: appReasonDispAtr,-->
-                                    <!--enable: true}">-->
-                                <!--</div>-->
-                            <!--</td>-->
-                        <!--</tr>-->
-                        <!--<tr class="inline-radio">-->
-                            <!--<td class="color-header">#{i18n.getText('KAF022_735')}</td>-->
-                            <!--<td class="two-radio">-->
-                                <!--<div tabindex="1" data-bind="ntsRadioBoxGroup: {-->
-                                    <!--options: itemListD13,-->
-                                    <!--optionsValue: 'code',-->
-                                    <!--optionsText: 'name',-->
-                                    <!--value: appReasonDispAtr,-->
-                                    <!--enable: true}">-->
-                                <!--</div>-->
-                            <!--</td>-->
-                        <!--</tr>-->
-                        <!--<tr class="inline-radio">-->
-                            <!--<td class="color-header">#{i18n.getText('KAF022_736')}</td>-->
-                            <!--<td class="two-radio">-->
-                                <!--<div tabindex="1" data-bind="ntsRadioBoxGroup: {-->
-                                    <!--options: itemListD13,-->
-                                    <!--optionsValue: 'code',-->
-                                    <!--optionsText: 'name',-->
-                                    <!--value: appReasonDispAtr,-->
-                                    <!--enable: true}">-->
-                                <!--</div>-->
-                            <!--</td>-->
-                        <!--</tr>-->
                     </tbody>
                 </table>
                 <!--   -->
-                <div class="kaf022l" data-bind="with: appSetData">
+                <div class="kaf022l" data-bind="with: appSetData" style="padding-bottom: 30px">
                     <table id="fixed-table-l5" class="fixed-table kaf022l">
                         <colgroup>
                             <col width="200px" />
@@ -159,7 +87,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <!-- 残業申請 -->
+                            <!-- 残業申請 -->
                             <tr>
                                 <td class="color-header">#{i18n.getText('KAF022_3')}</td>
                                 <td>
@@ -169,11 +97,11 @@
                                         <button class="small"
                                                 data-bind="click: function(){ $parent.openKDL002Dialog(overTimeSet()); },
                                                                     enable: overTimeSet().displayFlag">#{i18n.getText('KAF022_280')}</button>
-                                        <input class="lagre-input-code" id= "l37"
+                                        <input class="lagre-input-code"
                                                data-bind="ntsTextEditor: {value: overTimeSet().displayWorkTypes,
                                                                     required: true,
                                                                     enable: overTimeSet().displayFlag,
-                                                                    readonly: true}"/>
+                                                                    readonly: true}, attr: {id: overTimeSet().inputId}"/>
                                     </div>
                                 </td>
                             </tr>
@@ -191,17 +119,17 @@
                                         <div class="control-group valign-center">
                                             <div data-bind="ntsCheckBox: {
                                                         checked: displayFlag,
-                                                        enable: !((holidayOrPauseType==5)||(holidayOrPauseType==6)),}">#{i18n.getText('KAF022_100')}</div>
+                                                        enable: true}">#{i18n.getText('KAF022_100')}</div>
                                             <button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); },
-                                                                            enable: enableButton() &amp;&amp; !((holidayOrPauseType==5)||(holidayOrPauseType==6))">#{i18n.getText('KAF022_280')}</button>
+                                                                            enable: displayFlag">#{i18n.getText('KAF022_280')}</button>
                                             <input  class="lagre-input-code"
                                                     data-bind="ntsTextEditor: {
                                                             value: displayWorkTypes,
                                                             name: optionName,
-                                                            enable: enableButton() &amp;&amp; !((holidayOrPauseType==5)||(holidayOrPauseType==6)),
+                                                            enable: displayFlag,
                                                             readonly: true,
                                                             required: true},
-                                                            attr: { NameID: optionName }
+                                                            attr: {id: inputId}
                                                             "/>
                                         </div>
                                     </td>
@@ -214,7 +142,13 @@
                                     <div class="control-group valign-center">
                                         <div data-bind="ntsCheckBox: {checked: workChangeSet().displayFlag, enable: true }">#{i18n.getText('KAF022_100')}</div>
                                         <button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(workChangeSet()); }, enable: workChangeSet().displayFlag">#{i18n.getText('KAF022_280')}</button>
-                                        <input id="l46" class="lagre-input-code" data-bind="ntsTextEditor: {value: workChangeSet().displayWorkTypes, enable: workChangeSet().displayFlag, readonly: true}" />
+                                        <input class="lagre-input-code"
+                                               data-bind="ntsTextEditor: {
+                                                            value: workChangeSet().displayWorkTypes,
+                                                            enable: workChangeSet().displayFlag,
+                                                            readonly: true
+                                                        },
+                                                        attr: {id: workChangeSet().inputId}" />
                                     </div>
                                 </td>
                             </tr>
@@ -232,7 +166,11 @@
                                         <div class="control-group valign-center">
                                             <div data-bind="ntsCheckBox: {checked: displayFlag, enable: true}">#{i18n.getText('KAF022_100')}</div>
                                             <button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, enable: displayFlag">#{i18n.getText('KAF022_280')}</button>
-                                            <input class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes, enable: displayFlag, readonly: true}" />
+                                            <input class="lagre-input-code" data-bind="ntsTextEditor: {
+                                                                                        value: displayWorkTypes,
+                                                                                        enable: displayFlag,
+                                                                                        readonly: true
+                                                                            }, attr: {id: inputId}" />
                                         </div>
                                     </td>
                                 </tr>
@@ -244,7 +182,13 @@
                                     <div class="control-group valign-center">
                                         <div data-bind="ntsCheckBox: {checked: goReturndirectSet().displayFlag, enable: true }">#{i18n.getText('KAF022_100')}</div>
                                         <button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(goReturndirectSet()); }, enable: goReturndirectSet().displayFlag">#{i18n.getText('KAF022_280')}</button>
-                                        <input id = "l48" class="lagre-input-code" data-bind="ntsTextEditor: {value: goReturndirectSet().displayWorkTypes, enable: goReturndirectSet().displayFlag, readonly: true}" />
+                                        <input class="lagre-input-code"
+                                               data-bind="ntsTextEditor: {
+                                                            value: goReturndirectSet().displayWorkTypes,
+                                                            enable: goReturndirectSet().displayFlag,
+                                                            readonly: true
+                                                        },
+                                                        attr: {id: goReturndirectSet().inputId}" />
                                     </div>
                                 </td>
                             </tr>
@@ -255,9 +199,12 @@
                                     <div class="control-group valign-center">
                                         <div data-bind="ntsCheckBox: {checked: breakTimeSet().displayFlag, enable: true }">#{i18n.getText('KAF022_100')}</div>
                                         <button class="small" data-bind="click: function(){ $parent.openKDL002Dialog(breakTimeSet()); }, enable: breakTimeSet().displayFlag">#{i18n.getText('KAF022_280')}</button>
-                                        <input id = "l49" class="lagre-input-code" data-bind="ntsTextEditor: {value: breakTimeSet().displayWorkTypes,
-                                                                                enable: breakTimeSet().displayFlag,
-                                                                                readonly: true}" />
+                                        <input class="lagre-input-code"
+                                               data-bind="ntsTextEditor: {
+                                                                value: breakTimeSet().displayWorkTypes,
+                                                                enable: breakTimeSet().displayFlag,
+                                                                readonly: true
+                                                            }, attr: {id: breakTimeSet().inputId}" />
                                     </div>
                                 </td>
                             </tr>
@@ -315,7 +262,12 @@
                                         <div class="control-group valign-center">
                                             <div data-bind="ntsCheckBox: {checked: displayFlag, enable: true}">#{i18n.getText('KAF022_100')}</div>
                                             <button class="small" data-bind="click: function(){ $parents[1].openKDL002Dialog($data); }, enable: displayFlag">#{i18n.getText('KAF022_280')}</button>
-                                            <input class="lagre-input-code" data-bind="ntsTextEditor: {value: displayWorkTypes, enable: displayFlag, readonly: true}" />
+                                            <input class="lagre-input-code"
+                                                   data-bind="ntsTextEditor: {
+                                                           value: displayWorkTypes,
+                                                           enable: displayFlag,
+                                                           readonly: true
+                                                   }, attr: {id: inputId}" />
                                         </div>
                                     </td>
                                 </tr>

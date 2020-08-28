@@ -51,7 +51,7 @@ public class JpaAppEmploymentSetRepository extends JpaRepository implements AppE
 
     @Override
     public void insert(AppEmploymentSet domain) {
-        this.commandProxy().insert(KrqmtAppApvEmp.fromDomain(domain));
+        this.commandProxy().insertAll(KrqmtAppApvEmp.fromDomain(domain));
     }
 
     @Override
@@ -95,6 +95,7 @@ public class JpaAppEmploymentSetRepository extends JpaRepository implements AppE
                 .setParameter("employmentCode", employmentCode)
                 .getList();
         this.commandProxy().removeAll(entities);
+        this.getEntityManager().flush();
     }
 
 }

@@ -1,19 +1,16 @@
 package nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.approvallistsetting;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.WeekNumberDays;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
  * refactor 4

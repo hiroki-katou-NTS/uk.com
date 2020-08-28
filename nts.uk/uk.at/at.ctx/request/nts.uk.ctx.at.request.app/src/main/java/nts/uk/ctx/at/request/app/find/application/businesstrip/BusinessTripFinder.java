@@ -179,7 +179,7 @@ public class BusinessTripFinder {
         }
         // 取得した情報をOUTPUT「出張申請の表示情報」にセットしてを返す
         BusinessTripInfoOutput output = new BusinessTripInfoOutput(
-                tripRequestSet.get(),
+                tripRequestSet.isPresent() ? tripRequestSet.get() : null,
                 appDispInfoStartupOutput,
                 Optional.of(workDays),
                 Optional.of(holidayWorkType),

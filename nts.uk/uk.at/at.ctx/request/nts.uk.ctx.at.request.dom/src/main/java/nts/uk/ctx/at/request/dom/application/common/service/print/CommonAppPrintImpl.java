@@ -8,6 +8,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.time.GeneralDate;
@@ -55,6 +57,10 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 	
 	@Inject
 	private AtJobTitleAdapter atJobTitleAdapter;
+
+	@Inject
+	private BusinessTripRepository businessTripRepo;
+
 	
 	@Override
 	public PrintContentOfApp print(String companyID, String appID, AppDispInfoStartupOutput appDispInfoStartupOutput,
@@ -79,6 +85,10 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 		ApplicationType appType = application.getAppType();
 		// INPUT．申請表示情報．申請詳細画面情報．申請．申請種類をチェックする
 		switch(appType) {
+			case BUSINESS_TRIP_APPLICATION:
+				Optional<BusinessTrip> trip = businessTripRepo.findByAppId(companyID, appID);
+				printContentOfApp.setOpBusinessTrip(trip);
+				break;
 			default: 
 				break;
 		}

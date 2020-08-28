@@ -9,9 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import nts.arc.primitive.PrimitiveValue;
-import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationstandardreason.KrcmtAppReason;
-import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationstandardreason.KrcmtAppReasonPk;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -23,6 +20,8 @@ import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStan
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandardRepository;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
+import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationstandardreason.KrcmtAppReason;
+import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationstandardreason.KrcmtAppReasonPk;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

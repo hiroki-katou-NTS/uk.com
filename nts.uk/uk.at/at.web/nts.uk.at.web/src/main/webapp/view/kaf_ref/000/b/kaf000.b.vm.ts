@@ -25,6 +25,8 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 		};
         childParam: any = {};
 
+		displayGoback: KnockoutObservable<boolean> = ko.observable(false);
+
         displayApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
         enableApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
         displayApprovalLabel: KnockoutObservable<boolean> = ko.observable(false);
@@ -54,6 +56,15 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
         created(params: any) {
             const vm = this;
+			nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
+                if (nts.uk.util.isNullOrUndefined(obj)) {
+                    vm.displayGoback(false);
+                } else {
+                    vm.displayGoback(true);
+                }
+            }).fail(() => {
+                vm.displayGoback(false);
+            });
             vm.listApp = params.listApp;
             vm.currentApp = params.currentApp;
             vm.appType = ko.observable(99);
@@ -323,6 +334,17 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
         }
+
+		backtoCMM045() {
+			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+                let paramUrl = 0;
+                if (obj !== undefined && obj !== null){
+                    paramUrl = obj.appListAtr;
+                }
+                nts.uk.localStorage.setItem('UKProgramParam', 'a=' + paramUrl);
+                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
+            });	
+		}
     }
 
     const API = {

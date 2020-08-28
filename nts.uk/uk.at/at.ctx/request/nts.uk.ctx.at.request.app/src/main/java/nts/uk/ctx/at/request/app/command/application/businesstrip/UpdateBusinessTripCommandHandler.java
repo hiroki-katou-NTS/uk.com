@@ -65,7 +65,6 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 //		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
         // アルゴリズム「4-2.詳細画面登録後の処理」を実行する
-//        return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID());
-        return null;
+        return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID());
     }
 }

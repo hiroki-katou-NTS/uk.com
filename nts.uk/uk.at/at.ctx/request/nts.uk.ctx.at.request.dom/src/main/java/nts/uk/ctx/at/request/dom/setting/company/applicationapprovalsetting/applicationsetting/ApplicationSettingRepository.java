@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting;
 
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-
 import java.util.List;
 import java.util.Optional;
+
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
 /**
  * refactor 4
