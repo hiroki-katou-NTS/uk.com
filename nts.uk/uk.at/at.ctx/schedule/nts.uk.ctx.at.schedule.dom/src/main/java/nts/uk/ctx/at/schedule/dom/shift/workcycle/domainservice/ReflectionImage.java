@@ -45,7 +45,7 @@ public class ReflectionImage {
         if (refEachDay != null && refEachDay.getWorkCreateMethod().value == WorkCreateMethod.WEEKLY_WORK.value) {
             return;
         }
-        this.getDay().put(date, new RefImageEachDay(WorkCreateMethod.WEEKLY_WORK.value, workInformation, date));
+        this.getDay().put(date, new RefImageEachDay(WorkCreateMethod.PUB_HOLIDAY.value, workInformation, date));
     }
 
     /**
