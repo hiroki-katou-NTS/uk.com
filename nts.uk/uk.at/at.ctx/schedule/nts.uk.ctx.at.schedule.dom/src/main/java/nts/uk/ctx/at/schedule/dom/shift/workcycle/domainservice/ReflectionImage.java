@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
  * 	反映イメージ
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class ReflectionImage {
 
@@ -19,7 +18,7 @@ public class ReflectionImage {
 
     // [C-1] 作る
     public ReflectionImage() {
-        this.day = new HashMap<GeneralDate, RefImageEachDay>();
+        this.day = new HashMap<>();
     }
 
     /**
