@@ -148,12 +148,12 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		
 		// greater than or equal start date
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK),
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM),
 				startDate));
 		
 		// less than or equal end date
 		lstpredicateWhere.add(criteriaBuilder.lessThan(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK),
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM),
 				endDate));
 				
 		// set where to SQL
@@ -161,7 +161,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		
 		// order by ymdk id asc
 		cq.orderBy(criteriaBuilder.asc(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM)));
 
 		// create query
 		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);
@@ -242,14 +242,14 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 					.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
 			// in base date data list
 			lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
-					.get(KscmtWorkMonthSetPK_.ymdK).in(splitData)));
+					.get(KscmtWorkMonthSetPK_.ymdM).in(splitData)));
 			
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 			
 			// order by ymdk id asc
 			cq.orderBy(criteriaBuilder.asc(
-					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM)));
 			
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
@@ -302,14 +302,14 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 					.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
 			// in base date data list
 			lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
-					.get(KscmtWorkMonthSetPK_.ymdK).in(splitData)));
+					.get(KscmtWorkMonthSetPK_.ymdM).in(splitData)));
 			
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			// order by ymdk id asc
 			cq.orderBy(criteriaBuilder.asc(
-					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM)));
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
@@ -396,7 +396,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 		// order by ymdk id asc
 		cq.orderBy(criteriaBuilder.asc(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM)));
 
 		// create query
 		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);

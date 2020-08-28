@@ -72,7 +72,7 @@ public class ScheduleExecutionAddCommandHandler extends CommandHandlerWithResult
         val domainContent = command.toDomainContentNew(executionId);
         this.createContentRepository.addNew(domainContent);
         val domainCreator = command.toDomainCreator(executionId);
-        // save all domain creator update add : cid, cd- 28/8/2020
+        // save all domain creator update add : cid, cd 28/8/2020
         this.creatorRepository.saveAllNew(domainCreator);
 
         // setup data response
