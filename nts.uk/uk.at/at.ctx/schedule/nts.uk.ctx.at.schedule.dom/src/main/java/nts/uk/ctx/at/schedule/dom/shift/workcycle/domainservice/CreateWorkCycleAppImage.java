@@ -26,18 +26,18 @@ public class CreateWorkCycleAppImage {
      * @param config
      * @return $反映イメージ.年月日順序のリストを返す()
      */
-    public List<RefImageEachDay> create(Require require, DatePeriod period, WorkCycleRefSetting config) {
+    public static List<RefImageEachDay> create(Require require, DatePeriod period, WorkCycleRefSetting config) {
         ReflectionImage reflectionImage = new ReflectionImage();
-        config.getRefOrder().stream().forEach(i -> {
+        config.getRefOrder().forEach(i -> {
             switch (i) {
                 case WEEKLY_WORK:
-                    this.createImageWeekly(require, reflectionImage, period, config);
+                    createImageWeekly(require, reflectionImage, period, config);
                     break;
                 case PUB_HOLIDAY:
-                    this.createImageHoliday(require, reflectionImage, period, config);
+                    createImageHoliday(require, reflectionImage, period, config);
                     break;
                 case WORK_CYCLE:
-                    this.createImageInWorkCycle(require, reflectionImage, period, config);
+                    createImageInWorkCycle(require, reflectionImage, period, config);
                     break;
             }
         });
@@ -51,8 +51,8 @@ public class CreateWorkCycleAppImage {
      * @param createPeriod
      * @param config
      */
-    private void createImageWeekly(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
-        val weeklyWorkSet = require.getWeeklyWorkSetting(AppContexts.user().companyId());
+    private static void createImageWeekly(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
+        val weeklyWorkSet = require.getWeeklyWorkSetting();
         createPeriod.stream().forEach(i -> {
             switch (weeklyWorkSet.get().getWorkingDayCtgOfTagertDay(i)){
                 case WORKINGDAYS:
@@ -74,9 +74,8 @@ public class CreateWorkCycleAppImage {
      * @param createPeriod
      * @param config
      */
-    private void createImageHoliday(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
-        String cid = AppContexts.user().companyId();
-        val holidayList = require.getpHolidayWhileDate(cid, createPeriod.start(), createPeriod.end());
+    private static void createImageHoliday(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
+        val holidayList = require.getpHolidayWhileDate(createPeriod.start(), createPeriod.end());
         for (PublicHoliday pubHoliday : holidayList) {
             reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation("",config.getHolidayCd().get().v()));
         }
@@ -89,9 +88,8 @@ public class CreateWorkCycleAppImage {
      * @param createPeriod
      * @param config
      */
-    private void createImageInWorkCycle(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
-        String cid = AppContexts.user().companyId();
-        Optional<WorkCycle> workCycle = require.getWorkCycle(cid, config.getWorkCycleCode().v());
+    private static void createImageInWorkCycle(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
+        Optional<WorkCycle> workCycle = require.getWorkCycle(config.getWorkCycleCode().v());
         AtomicInteger position = new AtomicInteger(1);
         createPeriod.stream().forEach( i -> {
             WorkCycleInfo workCycleInfo = workCycle.get().getWorkInfo(position.intValue(), config.getNumOfSlideDays());
@@ -101,13 +99,13 @@ public class CreateWorkCycleAppImage {
         });
     }
 
-    public static interface Require {
+    public interface Require {
 
-        Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting(String cid);
+        Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting();
 
-        List<PublicHoliday> getpHolidayWhileDate(String companyId, GeneralDate strDate, GeneralDate endDate);
+        List<PublicHoliday> getpHolidayWhileDate(GeneralDate strDate, GeneralDate endDate);
 
-        Optional<WorkCycle> getWorkCycle(String cid, String code);
+        Optional<WorkCycle> getWorkCycle(String code);
 
     }
 

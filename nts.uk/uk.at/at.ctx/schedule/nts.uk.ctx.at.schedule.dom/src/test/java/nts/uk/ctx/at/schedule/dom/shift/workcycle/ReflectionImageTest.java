@@ -26,17 +26,20 @@ public class ReflectionImageTest {
         NtsAssert.invokeGetters(target);
     }
 
+
     @Test
-    public void seters() {
-        RefImageEachDay refImageEachDay = new RefImageEachDay();
-        HashMap<GeneralDate, RefImageEachDay> mapTest = new HashMap<>();
-        mapTest.put(GeneralDate.today(), refImageEachDay);
-        ReflectionImage target = new ReflectionImage(mapTest);
-        assertThat(mapTest.equals(target.getDay()));
+    public void addByWeeklyWorkingTest_1() {
+        ReflectionImage target = new ReflectionImage();
+        target.addByWeeklyWorking(GeneralDate.today(),null);
+
+        val result = target.getListRefOrdByDate().get(0);
+
+        Assert.assertEquals(GeneralDate.today(),result.getDate());
+        Assert.assertEquals(WorkCreateMethod.WEEKLY_WORK,result.getWorkCreateMethod());
     }
 
     @Test
-    public void addByWeeklyWorkingTest() {
+    public void addByWeeklyWorkingTest_2() {
         WorkInformation workCycleWorkInfor = new WorkInformation("workCcle-workTimeCode", "workCcle-workTypeCode");
         WorkInformation weeklWorkInfor = new WorkInformation("weekly-workTimeCode", "weekly-workTypeCode");
 
@@ -46,13 +49,13 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        Assert.assertEquals(result.getDate(), GeneralDate.today());
-        Assert.assertEquals(result.getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
-        Assert.assertEquals(result.getWorkInformation(), weeklWorkInfor);
+        Assert.assertEquals(GeneralDate.today(),result.getDate());
+        Assert.assertEquals(WorkCreateMethod.WEEKLY_WORK,result.getWorkCreateMethod());
+        Assert.assertEquals(weeklWorkInfor,result.getWorkInformation());
     }
 
     @Test
-    public void addByWeeklyWorkingTest_1() {
+    public void addByWeeklyWorkingTest_3() {
         WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
         RefImageEachDay refImageEachDay = new RefImageEachDay();
         refImageEachDay.setWorkCreateMethod(WorkCreateMethod.PUB_HOLIDAY);
@@ -64,7 +67,7 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        Assert.assertEquals(result.getWorkCreateMethod(), WorkCreateMethod.PUB_HOLIDAY);
+        Assert.assertEquals(WorkCreateMethod.PUB_HOLIDAY,result.getWorkCreateMethod());
     }
 
     @Test
@@ -78,9 +81,9 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        Assert.assertEquals(result.getDate(), GeneralDate.today());
-        Assert.assertEquals(result.getWorkCreateMethod(), WorkCreateMethod.PUB_HOLIDAY);
-        Assert.assertEquals(result.getWorkInformation(), weeklWorkInfor);
+        Assert.assertEquals(GeneralDate.today(),result.getDate());
+        Assert.assertEquals(WorkCreateMethod.PUB_HOLIDAY,result.getWorkCreateMethod());
+        Assert.assertEquals(weeklWorkInfor,result.getWorkInformation());
     }
 
     @Test
@@ -95,7 +98,7 @@ public class ReflectionImageTest {
         target.addHolidays(GeneralDate.today(),workInformation);
 
         val result = target.getListRefOrdByDate().get(0);
-        Assert.assertEquals(result.getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
+        Assert.assertEquals(WorkCreateMethod.WEEKLY_WORK,result.getWorkCreateMethod());
     }
 
     @Test
@@ -123,13 +126,15 @@ public class ReflectionImageTest {
         WorkInformation workInformation = new WorkInformation("workTimeCode","workTypeCode");
         RefImageEachDay item1 = new RefImageEachDay(1,workInformation,GeneralDate.today());
         RefImageEachDay item2 = new RefImageEachDay(2,workInformation,GeneralDate.max());
-        ReflectionImage target = new ReflectionImage();
 
-        target.getDay().put(GeneralDate.max(),item2);
-        target.getDay().put(GeneralDate.today(),item1);
+        HashMap<GeneralDate, RefImageEachDay> mapTest = new HashMap<>();
+        mapTest.put(GeneralDate.max(), item1);
+        mapTest.put(GeneralDate.today(), item2);
+        ReflectionImage target = new ReflectionImage(mapTest);
 
-        assertThat(target.getListRefOrdByDate().get(0).getDate().equals(GeneralDate.today()));
-        assertThat(target.getListRefOrdByDate().get(1).getDate().equals(GeneralDate.max()));
+        val result = target.getListRefOrdByDate();
+        assertThat(result.get(0).getDate().equals(GeneralDate.today()));
+        assertThat(result.get(1).getDate().equals(GeneralDate.max()));
     }
 
 

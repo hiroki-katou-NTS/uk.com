@@ -34,25 +34,20 @@ public class CreateWorkCycleAppImageTest {
     @Test
     public void test_01(@Mocked final AppContexts tr) {
         GeneralDate startDate = GeneralDate.ymd(2020,01,01);
-        List<GeneralDate> dates = new ArrayList<>();
-        for(int i = 0; i < 7 ; i++) {
-            dates.add(startDate.addDays(i));
-        }
-        List<DatePeriod> datePeriod = DatePeriod.create(dates);
+        GeneralDate endDate = GeneralDate.ymd(2020,01,07);
+
+        DatePeriod datePeriod = new DatePeriod(startDate,endDate);
+
         new Expectations() {
             {
-                AppContexts.user().companyId();
-                result = "0000001";
-
-                require.getWorkCycle((String) any, (String) any);
+                require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = WorkCycleTestHelper.WorkCycleInfoHelper.createListForTest(3);
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
-                require.getWeeklyWorkSetting((String) any);
+                require.getWeeklyWorkSetting();
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWeeklyWorkDayPattern());
             }
         };
-        CreateWorkCycleAppImage serivce = new CreateWorkCycleAppImage();
         List<WorkCreateMethod> createMethods = new ArrayList<>(Arrays.asList(WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.PUB_HOLIDAY));
         WorkCycleRefSetting refSetting = new WorkCycleRefSetting(
                 "code",
@@ -62,7 +57,7 @@ public class CreateWorkCycleAppImageTest {
                 "dummy",
                 "dummy"
         );
-        List<RefImageEachDay> result = serivce.create(require, datePeriod.get(0), refSetting);
+        List<RefImageEachDay> result = CreateWorkCycleAppImage.create(require, datePeriod, refSetting);
         assertThat(result.isEmpty()).isFalse();
         Assert.assertEquals(result.get(0).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
         Assert.assertEquals(result.get(1).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
@@ -85,23 +80,19 @@ public class CreateWorkCycleAppImageTest {
         List<DatePeriod> datePeriod = DatePeriod.create(dates);
         new Expectations() {
             {
-                AppContexts.user().companyId();
-                result = "0000001";
-
-                require.getWorkCycle((String) any, (String) any);
+                require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = WorkCycleTestHelper.WorkCycleInfoHelper.createListForTest(3);
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
 
-                require.getWeeklyWorkSetting((String) any);
+                require.getWeeklyWorkSetting();
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWeeklyWorkDayPattern());
 
-                require.getpHolidayWhileDate((String) any, (GeneralDate) any, (GeneralDate) any);
+                require.getpHolidayWhileDate((GeneralDate) any, (GeneralDate) any);
                 List<PublicHoliday> holidays = new ArrayList<>();
                 holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2000,12,01), "Dummy"));
                 result = holidays;
             }
         };
-        CreateWorkCycleAppImage serivce = new CreateWorkCycleAppImage();
         List<WorkCreateMethod> createMethods = new ArrayList<>(Arrays.asList(WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.PUB_HOLIDAY));
         WorkCycleRefSetting refSetting = new WorkCycleRefSetting(
                 "code",
@@ -111,8 +102,8 @@ public class CreateWorkCycleAppImageTest {
                 "dummy",
                 "dummy"
         );
-        serivce.create(require, datePeriod.get(0), refSetting);
-        List<RefImageEachDay> result = serivce.create(require, datePeriod.get(0), refSetting);
+        CreateWorkCycleAppImage.create(require, datePeriod.get(0), refSetting);
+        List<RefImageEachDay> result = CreateWorkCycleAppImage.create(require, datePeriod.get(0), refSetting);
         assertThat(result.isEmpty()).isFalse();
         Assert.assertEquals(result.get(0).getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
         Assert.assertEquals(result.get(1).getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
@@ -127,26 +118,19 @@ public class CreateWorkCycleAppImageTest {
     // 祝日 -> 週間勤務 -> 勤務サイクル
     @Test
     public void test_03(@Mocked final AppContexts tr) {
-        GeneralDate startDate = GeneralDate.ymd(2020,02,11);
-        List<GeneralDate> dates = new ArrayList<>();
-        for(int i = 0; i < 7 ; i++) {
-            dates.add(startDate.addDays(i));
-        }
-        List<DatePeriod> datePeriod = DatePeriod.create(dates);
+        GeneralDate startDate = GeneralDate.ymd(2020,01,01);
+        GeneralDate endDate = GeneralDate.ymd(2020,01,07);
+
+        DatePeriod datePeriod = new DatePeriod(startDate,endDate);
         new Expectations() {
             {
-                AppContexts.user().companyId();
-                result = "0000001";
-
-                require.getWorkCycle((String) any, (String) any);
+                require.getWorkCycle((String) any);
                 List<WorkCycleInfo> infos = WorkCycleTestHelper.WorkCycleInfoHelper.createListForTest(3);
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWorkCycleForTest(infos));
-
-                require.getWeeklyWorkSetting((String) any);
+                require.getWeeklyWorkSetting();
                 result = Optional.of(WorkCycleTestHelper.WorkCycleHelper.createWeeklyWorkDayPattern());
             }
         };
-        CreateWorkCycleAppImage serivce = new CreateWorkCycleAppImage();
         List<WorkCreateMethod> createMethods = new ArrayList<>(Arrays.asList(WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK, WorkCreateMethod.WORK_CYCLE));
         WorkCycleRefSetting refSetting = new WorkCycleRefSetting(
                 "code",
@@ -156,8 +140,8 @@ public class CreateWorkCycleAppImageTest {
                 "dummy",
                 "dummy"
         );
-        serivce.create(require, datePeriod.get(0), refSetting);
-        List<RefImageEachDay> result = serivce.create(require, datePeriod.get(0), refSetting);
+        CreateWorkCycleAppImage.create(require, datePeriod, refSetting);
+        List<RefImageEachDay> result = CreateWorkCycleAppImage.create(require, datePeriod, refSetting);
         assertThat(result.isEmpty()).isFalse();
         Assert.assertEquals(result.get(0).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
         Assert.assertEquals(result.get(1).getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
