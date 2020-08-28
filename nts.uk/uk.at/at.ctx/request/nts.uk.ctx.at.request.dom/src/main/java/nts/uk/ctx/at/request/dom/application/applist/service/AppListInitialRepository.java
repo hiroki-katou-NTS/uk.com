@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExt
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppHolidayWorkFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppOverTimeInfoFull;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInitOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
@@ -42,7 +43,7 @@ public interface AppListInitialRepository {
 	 * @param appListInfo ドメイン：申請一覧情報
 	 * @return
 	 */
-	public AppListInfo getApplicationList(AppListExtractCondition param, int device, AppListInfo appListInfo);
+	public AppListInitOutput getApplicationList(AppListExtractCondition param, int device, AppListInfo appListInfo);
 
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得申請.申請一覧リスト取得申請

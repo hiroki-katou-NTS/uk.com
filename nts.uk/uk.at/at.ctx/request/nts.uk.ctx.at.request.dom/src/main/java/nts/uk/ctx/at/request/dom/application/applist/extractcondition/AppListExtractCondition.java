@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationDisplayOrder;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 /**
@@ -92,7 +91,7 @@ public class AppListExtractCondition {
 	/**
 	 * 申請種類
 	 */
-	private Optional<List<ApplicationType>> opAppTypeLst;
+	private Optional<List<ListOfAppTypes>> opAppTypeLst;
 	
 	/**
 	 * 申請種類リスト

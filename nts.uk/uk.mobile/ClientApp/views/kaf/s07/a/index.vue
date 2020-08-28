@@ -43,7 +43,7 @@
         <span class="textSize uk-text-dark-gray">{{'KAFS07_4' | i18n}}</span>
         <button
           type="button"
-          v-bind:enable="isCondition3"
+          v-bind:disabled="!isCondition3"
           class="btn btn-selection mt-2 mb-2"
           v-on:click="openKDL002('worktime')"
         >

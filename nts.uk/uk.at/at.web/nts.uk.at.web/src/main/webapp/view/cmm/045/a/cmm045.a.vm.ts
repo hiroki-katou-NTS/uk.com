@@ -50,6 +50,7 @@ module cmm045.a.viewmodel {
         apptypeGridColumns: KnockoutObservable<NtsGridListColumn>;
         selectedAppId: KnockoutObservable<number> = ko.observable(-1);
 		orderCD: KnockoutObservable<number> = ko.observable(0);
+		appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
 
         constructor() {
             let self = this;
@@ -142,7 +143,38 @@ module cmm045.a.viewmodel {
                 _.each(data.listEmployee, function(emp){
                     self.lstSidFilter.push(emp.employeeId);
                 });
-                self.filter();
+				
+				
+				if(!self.checkConditionParam()) {
+					return;
+				}
+				let empIDLst = [];
+				_.each(data.listEmployee, function(emp){
+                    empIDLst.push(emp.employeeId);
+                });
+				self.appListExtractConditionDto.opListEmployeeID = empIDLst;
+
+				block.invisible();
+				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
+					self.items(data.appLst);	
+					if (data.appStatusCount != null) {
+                        self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
+                            data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
+                            data.appStatusCount.denialNumber));
+                    }
+
+                    if (self.mode() == 1) {
+                        $("#grid1").ntsGrid("destroy");
+                        let colorBackGr = self.fillColorbackGrAppr();
+                        let lstHidden: Array<any> = self.findRowHidden(self.items());
+                        self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                    } else {
+                        let colorBackGr = self.fillColorbackGr();
+                        $("#grid2").ntsGrid("destroy");
+                        self.reloadGridApplicaion(colorBackGr, self.isHidden());
+                    }
+				}).always(() => block.clear());
+                // self.filter();
              }
             }
 
@@ -155,6 +187,68 @@ module cmm045.a.viewmodel {
                 }
             }
         }
+
+		checkConditionParam() {
+			const self = this;
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            //check filter
+            //check startDate
+            if (self.dateValue().startDate == null || self.dateValue().startDate == '') {//期間開始日付または期間終了日付が入力されていない
+                $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+                return false;
+            }
+            //check endDate
+            if (self.dateValue().endDate == null || self.dateValue().endDate == '') {//期間開始日付または期間終了日付が入力されていない
+                $('.ntsDatepicker.nts-input.ntsEndDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+                return false;
+            }
+            if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
+                nts.uk.ui.dialog.error({ messageId: "Msg_360" });
+                return false;
+            }
+			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
+				nts.uk.ui.dialog.error({ messageId: "Msg_1722" });
+                return false;		
+			}
+			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
+			if (_.isEmpty(selectAppTypeLst)) {
+				nts.uk.ui.dialog.error({ messageId: "Msg_1723" });
+                return false;		
+			}
+			return true;
+		}
+		
+		findByPeriod() {
+			const self = this;	
+			if(!self.checkConditionParam()) {
+				return;
+			}
+			self.appListExtractConditionDto.periodStartDate = self.dateValue().startDate;
+			self.appListExtractConditionDto.periodEndDate = self.dateValue().endDate;
+
+			block.invisible();
+			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
+				self.items(data.appListInfo.appLst);
+				if (data.appStatusCount != null) {
+                    self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
+                        data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
+                        data.appStatusCount.denialNumber));
+                }
+
+                if (self.mode() == 1) {
+                    $("#grid1").ntsGrid("destroy");
+                    let colorBackGr = self.fillColorbackGrAppr();
+                    let lstHidden: Array<any> = self.findRowHidden(self.items());
+                    self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                } else {
+                    let colorBackGr = self.fillColorbackGr();
+                    $("#grid2").ntsGrid("destroy");
+                    self.reloadGridApplicaion(colorBackGr, self.isHidden());
+              	}	
+			}).always(() => block.clear());
+		}
 
         start(): JQueryPromise<any> {
             block.invisible();
@@ -180,8 +274,8 @@ module cmm045.a.viewmodel {
                 self.isSpr(true);
                 self.extractCondition(paramSprCmm045.extractCondition);
             }
-            character.restore("AppListExtractCondition").done((obj) => {
-                characterData = obj;
+            character.restore("AppListExtractCondition").then((obj) => {
+				characterData = obj;
                 if (obj !== undefined && obj !== null && !self.isSpr()) {
                     let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
                     self.dateValue(date);
@@ -220,32 +314,31 @@ module cmm045.a.viewmodel {
                                 screenId: 'A',
                                 queryString: 'a='+self.mode()};
                 service.writeLog(paramLog);
-                let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-                let param = {   condition: condition,
-                                spr: self.isSpr(),
-                                extractCondition: self.extractCondition(),
-                                device: 0,
-                                lstAppType: []
-                            }
-                service.getApplicationDisplayAtr().done(function(data1) {
-                    _.each(data1, function(obj) {
-                        self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
-                    });
-					service.getAppNameInAppList().then((data) => {
-						let newParam = {
+//                let condition: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+//                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+//                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
+//                let param = {   condition: condition,
+//                                spr: self.isSpr(),
+//                                extractCondition: self.extractCondition(),
+//                                device: 0,
+//                                lstAppType: []
+//                            };
+				return service.getAppNameInAppList();
+			}).then((data: any) => {
+				self.appListExtractConditionDto.opListOfAppTypes = data;
+				let newParam = {
 							mode: 0,
 							device: 0,
-							listOfAppTypes: data
+							listOfAppTypes: data,
+							appListExtractCondition: self.appListExtractConditionDto
 						};
-					
-					
-                    service.getApplicationList(newParam).done(function(data: any) {
-						self.dateValue({ startDate: data.displaySet.startDateDisp, endDate: data.displaySet.endDateDisp });
-                        self.lstContentApp(data.lstContentApp);
-                        let isHidden = data.isDisPreP == 1 ? false : true;
-                        self.isHidden(isHidden);
+				return service.getApplicationList(newParam);
+			}).then((data: any) => {
+				self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
+				self.appListExtractConditionDto = data.appListExtractCondition;
+                self.lstContentApp(data.lstContentApp);
+                let isHidden = data.isDisPreP == 1 ? false : true;
+                self.isHidden(isHidden);
 //                        self.selectedRuleCode.subscribe(function(codeChanged) {
 //                            self.filter();
 //                        });
@@ -254,65 +347,144 @@ module cmm045.a.viewmodel {
                             let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
                             self.dateValue(date);
                         }*/
-                        let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
-                            self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
-                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-                        character.save('AppListExtractCondition', paramSave);
-                        _.each(data.lstApp, function(app) {
-                            self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
-                                app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
-                                app.startDate, app.endDate, app.version, app.reflectStatus));
-                        });
-                        _.each(data.lstMasterInfo, function(master) {
-                            self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
-                                master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
-                        });
-                        self.itemApplication([]);
-                        _.each(data.lstAppInfor, function(appInfo){
-                            self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
-                        });
-                        self.lstListAgent([]);
-                        _.each(data.lstAgent, function(agent){
-                            self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
-                        });
-                        _.each(data.lstSyncData, function(complt){
-                            self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
-                        });
-                        let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
-                        self.lstApp(lstData);
-                        self.items(data.appLst);
-                        //mode approval - count
-                        if (data.appStatusCount != null) {
-                            self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
-                                data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
-                                data.appStatusCount.denialNumber));
-                        }
-                        if (self.mode() == 1) {
-                            let colorBackGr = self.fillColorbackGrAppr();
-                             let lstHidden: Array<any> = self.findRowHidden(self.items());
-                             self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
-                        } else {
-                            let colorBackGr = self.fillColorbackGr();
-                            self.reloadGridApplicaion(colorBackGr, self.isHidden());
-                        }
-                        if(appCHeck != null){
-                            self.selectedCode(appCHeck);
-                        }
-                        if(self.isSpr()){
-                            let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
-                            self.selectedCode(selectedType);
-                        }
-                        if(self.mode() == 0){
-                            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-                        }
-                        block.clear();
-                        dfd.resolve();
-                    });
-					});
-                }).fail(()=>{
-                    block.clear();
-                });
-            });
+//                let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+//                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+//                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
+                character.save('AppListExtractCondition', self.appListExtractConditionDto);
+//                _.each(data.lstApp, function(app) {
+//                    self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
+//                        app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
+//                        app.startDate, app.endDate, app.version, app.reflectStatus));
+//                });
+//                _.each(data.lstMasterInfo, function(master) {
+//                    self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
+//                        master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
+//                });
+//                self.itemApplication([]);
+//                _.each(data.lstAppInfor, function(appInfo){
+//                    self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
+//                });
+//                self.lstListAgent([]);
+//                _.each(data.lstAgent, function(agent){
+//                    self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
+//                });
+//                _.each(data.lstSyncData, function(complt){
+//                    self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
+//                });
+//                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
+//                self.lstApp(lstData);
+                self.items(data.appListInfo.appLst);
+                //mode approval - count
+                if (data.appStatusCount != null) {
+                    self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
+                        data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
+                        data.appStatusCount.denialNumber));
+                }
+                if (self.mode() == 1) {
+                    let colorBackGr = self.fillColorbackGrAppr();
+                     let lstHidden: Array<any> = self.findRowHidden(self.items());
+                     self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                } else {
+                    let colorBackGr = self.fillColorbackGr();
+                    self.reloadGridApplicaion(colorBackGr, self.isHidden());
+                }
+                if(appCHeck != null){
+                    self.selectedCode(appCHeck);
+                }
+                if(self.isSpr()){
+                    let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
+                    self.selectedCode(selectedType);
+                }
+                if(self.mode() == 0){
+                    $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+                }
+                dfd.resolve();
+			}).always(() => block.clear());
+                
+//                service.getApplicationDisplayAtr().done(function(data1) {
+//                    _.each(data1, function(obj) {
+//                        self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
+//                    });
+//					service.getAppNameInAppList().then((data) => {
+//						let newParam = {
+//							mode: 0,
+//							device: 0,
+//							listOfAppTypes: data
+//						};
+//					
+//					
+//                    service.getApplicationList(newParam).done(function(data: any) {
+//						self.dateValue({ startDate: data.appListInfoDto.displaySet.startDateDisp, endDate: data.appListInfoDto.displaySet.endDateDisp });
+//                        self.lstContentApp(data.lstContentApp);
+//                        let isHidden = data.isDisPreP == 1 ? false : true;
+//                        self.isHidden(isHidden);
+////                        self.selectedRuleCode.subscribe(function(codeChanged) {
+////                            self.filter();
+////                        });
+//                        //luu param
+//                        /*if (self.dateValue().startDate == '' || self.dateValue().endDate == '') {
+//                            let date: vmbase.Date = { startDate: data.startDate, endDate: data.endDate }
+//                            self.dateValue(date);
+//                        }*/
+//                        let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
+//                            self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
+//                            self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
+//                        character.save('AppListExtractCondition', paramSave);
+//                        _.each(data.lstApp, function(app) {
+//                            self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
+//                                app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
+//                                app.startDate, app.endDate, app.version, app.reflectStatus));
+//                        });
+//                        _.each(data.lstMasterInfo, function(master) {
+//                            self.lstAppMaster.push(new vmbase.AppMasterInfo(master.appID, master.appType, master.dispName, master.empName,master.inpEmpName,
+//                                master.workplaceName, master.statusFrameAtr, master.phaseStatus, master.checkAddNote, master.checkTimecolor, master.detailSet));
+//                        });
+//                        self.itemApplication([]);
+//                        _.each(data.lstAppInfor, function(appInfo){
+//                            self.itemApplication.push(new vmbase.ChoseApplicationList(appInfo.appType, appInfo.appName));
+//                        });
+//                        self.lstListAgent([]);
+//                        _.each(data.lstAgent, function(agent){
+//                            self.lstListAgent.push(new vmbase.ApproveAgent(agent.appID, agent.agentId));
+//                        });
+//                        _.each(data.lstSyncData, function(complt){
+//                            self.lstAppCompltSync.push(new vmbase.AppAbsRecSyncData(complt.typeApp, complt.appMainID, complt.appSubID, complt.appDateSub));
+//                        });
+//                        let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
+//                        self.lstApp(lstData);
+//                        self.items(data.appListInfoDto.appLst);
+//                        //mode approval - count
+//                        if (data.appStatusCount != null) {
+//                            self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
+//                                data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
+//                                data.appStatusCount.denialNumber));
+//                        }
+//                        if (self.mode() == 1) {
+//                            let colorBackGr = self.fillColorbackGrAppr();
+//                             let lstHidden: Array<any> = self.findRowHidden(self.items());
+//                             self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+//                        } else {
+//                            let colorBackGr = self.fillColorbackGr();
+//                            self.reloadGridApplicaion(colorBackGr, self.isHidden());
+//                        }
+//                        if(appCHeck != null){
+//                            self.selectedCode(appCHeck);
+//                        }
+//                        if(self.isSpr()){
+//                            let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
+//                            self.selectedCode(selectedType);
+//                        }
+//                        if(self.mode() == 0){
+//                            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+//                        }
+//                        block.clear();
+//                        dfd.resolve();
+//                    });
+//					});
+//                }).fail(()=>{
+//                    block.clear();
+//                });
+//            });
             return dfd.promise();
         }
 
@@ -451,7 +623,7 @@ module cmm045.a.viewmodel {
                 checkbox?: { visible: Function, applyToProperty: string },
                 button?: { text: string, click: Function }
             }>) {
-
+			const self = this;
             let $container = $("#app-grid-container");
             let $tbody = $container.find(".nts-fixed-body-wrapper tbody");
             $tbody.empty();
@@ -461,7 +633,7 @@ module cmm045.a.viewmodel {
                 columns.forEach(column => {
 
                     let $td = $("<td/>")
-                        .data("app-id", item.appId)
+                        .data("app-id", item.appID)
                         .addClass(column.key);
 
                     if (column.extraClassProperty !== undefined) {
@@ -486,7 +658,7 @@ module cmm045.a.viewmodel {
                             .appendTo($td);
                     }
                     else {
-                        $td.html(item[column.key]);
+                        $td.html(self.customContent(column.key, item[column.key]));
                     }
 
                     $td.appendTo($tr);
@@ -500,6 +672,29 @@ module cmm045.a.viewmodel {
                 $container.find(".nts-fixed-body-wrapper table"));
         }
 
+		customContent(key: string, value: any) {
+			const self = this;
+			if(key=='appType') {
+				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == value);	
+				if(_.isUndefined(appInfo)) {
+					return '';
+				} else {
+					return appInfo.appName;
+				}
+			}
+			if(key=='prePostAtr') {
+				if(value==0) {
+					return nts.uk.resource.getText('KAF000_47');
+				} else {
+					return nts.uk.resource.getText('KAF000_48');
+				}
+			}
+			if(key=='appContent') {
+				return value.replace(/\n/g, '<br/>');		
+			}
+			return value; 
+		}
+
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
 
             var self = this;
@@ -512,13 +707,13 @@ module cmm045.a.viewmodel {
                     text: getText('CMM045_50'),
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
-                        let lstAppId = self.items().map(app => app.appId);
+                        let lstAppId = self.items().map(app => app.appID);
                         nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
-                        nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                        nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
                 { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
-                { headerText: getText('CMM045_52'), key: 'appTye', width: '90px'},
+                { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
                 { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
                 { headerText: getText('CMM045_55'), key: 'appContent', width: '408px'},
@@ -726,7 +921,7 @@ module cmm045.a.viewmodel {
                     text: getText('CMM045_50'),
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
-                        let lstAppId = self.items().map(app => app.appId);
+                        let lstAppId = self.items().map(app => app.appID);
                         nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
                         nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }

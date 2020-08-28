@@ -16,6 +16,7 @@ public class ApplicationListDto {
 	private String startDate;
 	private String endDate;
 	private List<AppMasterInfo> lstMasterInfo;
+//	申請一覧
 	private List<ApplicationDataOutput> lstApp;
 	//TH: approval (count)
 	private	ApplicationStatus appStatusCount;

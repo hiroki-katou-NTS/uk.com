@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 employeeID: this.$user.employeeId,
                 appType: '4',
                 appDate: moment(new Date()).format('YYYY/MM/DD'),
-                enteredPerson: '',
+                enteredPerson: this.$user.employeeId,
                 inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
                 reflectionStatus: {
                     listReflectionStatusOfDay: [{
