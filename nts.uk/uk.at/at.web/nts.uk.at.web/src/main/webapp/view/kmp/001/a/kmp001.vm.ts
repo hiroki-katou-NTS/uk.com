@@ -9,7 +9,7 @@ module nts.uk.at.view.kmp001 {
 			mounted() {
 				const vm = this;
 
-				if (!!vm.$user.role.attendance) {
+				if (vm.$user.role.isInCharge.attendance) {
 					vm.tabs(['KMP001_1', 'KMP001_2', 'KMP001_3']);
 				} else {
 					vm.tabs(['KMP001_1']);
@@ -18,6 +18,32 @@ module nts.uk.at.view.kmp001 {
 		}
 	}
 
+	export interface IStampCardEdit {
+		stampCardDigitNumber: number;
+		stampCardEditMethod: number;
+	}
+	
+	export class StampCardEdit {
+		stampCardDigitNumber: KnockoutObservable<number> = ko.observable(0);
+		stampCardEditMethod: KnockoutObservable<number> = ko.observable(0);
+		
+		public create(params?: IStampCardEdit) {
+			const self = this;
+
+			if (params) {
+				self.update(params);
+			}
+		}
+
+		public update(params?: IStampCardEdit) {
+			const self = this;
+
+			if (params) {
+				self.stampCardDigitNumber(params.stampCardDigitNumber);
+				self.stampCardEditMethod(params.stampCardEditMethod);
+			}
+		}
+	}
 
 	export interface IModel {
 		code: string;

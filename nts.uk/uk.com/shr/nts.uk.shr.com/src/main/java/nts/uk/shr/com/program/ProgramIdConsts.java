@@ -1032,7 +1032,7 @@ public class ProgramIdConsts {
 	//KDL034
 	public static final String KDL034 = "KDL034";
 	//KDL034
-	public static final String KDL044A = "KDL044A";
+	public static final String KDL044 = "KDL044";
 
 	/** CCG009 */
 	public static final String CCG009A = "CCG009A";
@@ -1128,6 +1128,12 @@ public class ProgramIdConsts {
 	public static final String CMMS45E = "CMMS45E";
 	public static final String CCGS33 = "CCGS33";
 	public static final String KDWS03A = "KDWS03A";
+	
+	public static final String KDPS01A = "KDPS01A";
+	public static final String KDPS01B = "KDPS01B";
+	public static final String KDPS01C = "KDPS01C";
+	public static final String KDPS01S = "KDPS01S";
+	public static final String KDPS01T = "KDPS01T";
 
 	/** CPS013 */
 	public static final String CPS013A = "CPS013A";

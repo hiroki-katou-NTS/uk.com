@@ -4,7 +4,7 @@
     font-size: 28px;
 }
 .contents-area{
-	padding: 20px 0;
+	padding: 20px 0 0;
 }
 .row{
 	margin-left: 30px;
@@ -23,6 +23,9 @@
     line-height: 1.5;
 }
 .divBtn{
-	margin-top: 19px;
+	margin-top: 15px;
 	text-align: center;
+}
+button.small{
+	margin-left: 5px;
 }

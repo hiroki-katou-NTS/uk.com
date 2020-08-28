@@ -9,16 +9,6 @@ const requestUrl = {
 	getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress'
 }
 
-const stampTypes = [
-	{ text: "KDP002_120", name: "氏名選択" },
-	{ text: "KDP002_120", name: "指認証打刻" },
-	{ text: "KDP002_120", name: "ICカード打刻" },
-	{ text: "KDP002_120", name: "個人打刻" },
-	{ text: "KDP002_120", name: "ポータル打刻" },
-	{ text: "KDP002_121", name: "スマホ打刻" },
-	{ text: "KDP002_122", name: "タイムレコーダー打刻" }
-]
-
 const notUseMessage = [
 	{ text: "Msg_1644", value: 1 },
 	{ text: "Msg_1645", value: 2 },
@@ -136,6 +126,8 @@ class KDP001AViewModel extends ko.ViewModel {
 			vm.usedSatus(result.used);
 			vm.systemDate(moment(vm.$date.now()));
 
+
+
 			this.$blockui("invisible");
 			vm.$ajax(requestUrl.getSettingStampInput).then((setting: IStampSetting) => {
 
@@ -169,12 +161,10 @@ class KDP001AViewModel extends ko.ViewModel {
 						vm.resultDisplayTime(setting.portalStampSettings.displaySettingsStampScreen.resultDisplayTime);
 					}
 
-
-
-
+					vm.$date.interval(vm.settingCountTime() * 60000);
 
 					setInterval(() => {
-						if (vm.countTime() == vm.settingCountTime()) {
+						if (vm.countTime() == vm.settingCountTime() * 60) {
 							vm.systemDate(moment(vm.$date.now()));
 
 							this.$ajax(requestUrl.getStampToSuppress).then((data: IStampToSuppress) => {
@@ -468,62 +458,18 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	public getTextAlign(data: IStampInfoDisp) {
 
-		const {
-			WORK,
-			WORK_STRAIGHT,
-			WORK_EARLY,
-			WORK_BREAK,
-			DEPARTURE,
-			DEPARTURE_BOUNCE,
-			DEPARTURE_OVERTIME,
-			OUT,
-			RETURN,
-			GETTING_STARTED,
-			DEPAR,
-			TEMPORARY_WORK,
-			TEMPORARY_LEAVING,
-			START_SUPPORT,
-			END_SUPPORT,
-			WORK_SUPPORT,
-			START_SUPPORT_EARLY_APPEARANCE,
-			START_SUPPORT_BREAK,
-			RESERVATION,
-			CANCEL_RESERVATION
-		} = ContentsStampType;
 
-		const LEFT_ALIGNS = [
-			WORK,
-			WORK_STRAIGHT,
-			WORK_EARLY,
-			WORK_BREAK,
-			GETTING_STARTED,
-			TEMPORARY_WORK,
-			START_SUPPORT,
-			WORK_SUPPORT,
-			START_SUPPORT_EARLY_APPEARANCE,
-			START_SUPPORT_BREAK, 
-			RESERVATION,
-			CANCEL_RESERVATION
-		];
+		let value = data.buttonValueType;
+		if (ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) {
 
-		const RIGHT_ALIGNS = [
-			DEPARTURE,
-			DEPARTURE_BOUNCE,
-			DEPARTURE_OVERTIME,
-			DEPAR,
-			TEMPORARY_LEAVING,
-			END_SUPPORT
-		];
-
-
-
-
-		if (LEFT_ALIGNS.indexOf(data.correctTimeStampValue) > -1) {
 			return 'left';
+
 		}
 
-		if (RIGHT_ALIGNS.indexOf(data.correctTimeStampValue) > -1) {
+		if (ButtonType.WORKING_OUT == value) {
+
 			return 'right';
+
 		}
 
 		return 'center';
@@ -531,67 +477,23 @@ class KDP001AViewModel extends ko.ViewModel {
 
 }
 
-enum ContentsStampType {
-	/** 1: 出勤 */
-	WORK = 1,
-
-	/** 2: 出勤＋直行 */
-	WORK_STRAIGHT = 2,
-
-	/** 3: 出勤＋早出 */
-	WORK_EARLY = 3,
-
-	/** 4: 出勤＋休出 */
-	WORK_BREAK = 4,
-
-	/** 5: 退勤 */
-	DEPARTURE = 5,
-
-	/** 6: 退勤＋直帰 */
-	DEPARTURE_BOUNCE = 6,
-
-	/** 7: 退勤＋残業 */
-	DEPARTURE_OVERTIME = 7,
-
-	/** 8: 外出 */
-	OUT = 8,
-
-	/** 9: 戻り */
-	RETURN = 9,
-
-	/** 10: 入門 */
-	GETTING_STARTED = 10,
-
-	/** 11: 退門 */
-	DEPAR = 11,
-
-	/** 12: 臨時出勤 */
-	TEMPORARY_WORK = 12,
-
-	/** 13: 臨時退勤 */
-	TEMPORARY_LEAVING = 13,
-
-	/** 14: 応援開始 */
-	START_SUPPORT = 14,
-
-	/** 15: 応援終了 */
-	END_SUPPORT = 15,
-
-	/** 16: 出勤＋応援 */
-	WORK_SUPPORT = 16,
-
-	/** 17: 応援開始＋早出 */
-	START_SUPPORT_EARLY_APPEARANCE = 17,
-
-	/** 18: 応援開始＋休出 */
-	START_SUPPORT_BREAK = 18,
-
-	/** 19: 予約 */
-	RESERVATION = 19,
-
-	/** 20: 予約取消  */
-	CANCEL_RESERVATION = 20
-}
+	enum ButtonType {
+		// 系
+	
+		GOING_TO_WORK = 1,
+		// 系
+	
+		WORKING_OUT = 2,
+		// "外出系"
+	
+		GO_OUT = 3,
+		// 戻り系
+	
+		RETURN = 4,
+		// 予約系
+	
+		RESERVATION_SYSTEM = 5
+	}
 
 interface IStampToSuppress {
 	/**
@@ -687,6 +589,8 @@ interface IStampInfoDisp {
 	correctTimeStampValue: number;
 
 	stampHow: number;
+
+	buttonValueType: number;
 }
 
 interface IStamp {
