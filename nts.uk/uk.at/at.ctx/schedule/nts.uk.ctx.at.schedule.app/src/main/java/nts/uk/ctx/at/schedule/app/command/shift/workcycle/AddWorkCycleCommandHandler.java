@@ -33,7 +33,7 @@ import java.util.Optional;
 public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWorkCycleCommand, WorkCycleCreateResult> {
 
     @Inject
-    WorkCycleRepository workCycleRepository;
+    private WorkCycleRepository workCycleRepository;
 
     @Inject
     private BasicScheduleService basicScheduleService;
@@ -54,7 +54,7 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
         String cid = AppContexts.user().companyId();
         RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository);
         WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, AddWorkCycleCommand.createFromCommand(command, cid), true);
+        WorkCycleCreateResult result = RegisterWorkCycleService.register(require, AddWorkCycleCommand.createFromCommand(command, cid), true);
         if (!result.isHasError()) {
             AtomTask atomTask = result.getAtomTask().get();
             transaction.execute(() ->{
@@ -82,6 +82,31 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
         @Override
         public void update(WorkCycle item) {
             this.workCycleRepository.update(item);
+        }
+
+        @Override
+        public Optional<WorkType> findByPK(String workTypeCd) {
+            return Optional.empty();
+        }
+
+        @Override
+        public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+            return Optional.empty();
+        }
+
+        @Override
+        public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+            return null;
+        }
+
+        @Override
+        public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd, Integer workNo) {
+            return null;
+        }
+
+        @Override
+        public WorkStyle checkWorkDay(String workTypeCode) {
+            return null;
         }
     }
 
