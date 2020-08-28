@@ -51,7 +51,7 @@ public class ReservationConfirmationListScreenQuery {
         List<Bento> menu = bentoMenu.getMenu();
         List<List<Bento>> partitions = new ArrayList<>(
                 menu.stream()
-                        .collect(Collectors.partitioningBy(item -> !item.getWorkLocationCode().isPresent()))
+                        .collect(Collectors.partitioningBy(item -> item.getWorkLocationCode().isPresent()))
                         .values()
         );
 
