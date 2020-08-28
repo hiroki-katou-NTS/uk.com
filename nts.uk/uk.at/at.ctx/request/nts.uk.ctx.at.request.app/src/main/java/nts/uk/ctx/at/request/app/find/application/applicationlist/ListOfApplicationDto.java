@@ -1,11 +1,17 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ComplementLeaveAppConnect;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 
@@ -157,5 +163,36 @@ public class ListOfApplicationDto {
 				listOfApplication.getOpEntererName().orElse(null), 
 				listOfApplication.getOpBackgroundColor().orElse(null), 
 				listOfApplication.getOpMoreThanDispLineNO().orElse(null));
+	}
+	
+	// AnhNM add to domain
+	public ListOfApplication toDomain() {
+		ListOfApplication lstApp = new ListOfApplication();
+		
+		lstApp.setPrePostAtr(prePostAtr);
+		lstApp.setWorkplaceName(workplaceName);
+		lstApp.setAppID(appID);
+		lstApp.setApplicantCD(applicantCD);
+		lstApp.setApplicantName(applicantName);
+		lstApp.setAppType(EnumAdaptor.valueOf(appType, ApplicationType.class));
+		lstApp.setAppContent(appContent);
+		lstApp.setAppDate(GeneralDate.fromString(appDate, "yyyy/MM/dd"));
+		lstApp.setInputCompanyName(inputCompanyName);
+		lstApp.setInputDate(GeneralDateTime.fromString(inputDate, "yyyy/MM/dd HH:mm:ss"));
+		lstApp.setReflectionStatus(reflectionStatus);
+		lstApp.setOpTimeCalcUseAtr(opTimeCalcUseAtr == null ? Optional.empty() : Optional.of(opTimeCalcUseAtr));
+		lstApp.setOpApprovalPhaseLst(opApprovalPhaseLst == null ? Optional.empty() : Optional.of(opApprovalPhaseLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+		lstApp.setOpApprovalStatusInquiry(opApprovalStatusInquiry == null ? Optional.empty() : Optional.of(opApprovalStatusInquiry));
+		lstApp.setOpApprovalFrameStatus(opApprovalFrameStatus == null ? Optional.empty() : Optional.of(opApprovalFrameStatus));
+		lstApp.setOpComplementLeaveApp(opComplementLeaveApp == null ? Optional.empty() : Optional.of(opComplementLeaveApp));
+		lstApp.setOpAppStartDate(opAppStartDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(opAppStartDate, "yyyy/MM/dd")));
+		lstApp.setOpAppTypeDisplay(opAppTypeDisplay == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opAppTypeDisplay, ApplicationTypeDisplay.class)));
+		lstApp.setOpAppEndDate(opAppEndDate == null ? Optional.empty() : Optional.of(GeneralDate.fromString(opAppEndDate, "yyyy/MM/dd")));
+		lstApp.setOpAppStandardReason(opAppStandardReason == null ? Optional.empty() : Optional.of(opAppStandardReason));
+		lstApp.setOpEntererName(opEntererName == null ? Optional.empty() : Optional.of(opEntererName));
+		lstApp.setOpBackgroundColor(opBackgroundColor == null ? Optional.empty() : Optional.of(opBackgroundColor));
+		lstApp.setOpMoreThanDispLineNO(opMoreThanDispLineNO == null ? Optional.empty() : Optional.of(opMoreThanDispLineNO));
+		
+		return lstApp;
 	}
 }
