@@ -70,6 +70,23 @@ public class ReflectionImageTest {
 
         Assert.assertEquals(WorkCreateMethod.PUB_HOLIDAY,result.getWorkCreateMethod());
     }
+    @Test
+    public void addByWeeklyWorkingTest_4() {
+        WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+        RefImageEachDay refImageEachDay = new RefImageEachDay();
+        refImageEachDay.setWorkCreateMethod(WorkCreateMethod.WORK_CYCLE);
+
+        HashMap<GeneralDate, RefImageEachDay> mapTest = new HashMap<>();
+        mapTest.put(GeneralDate.today(), refImageEachDay);
+        ReflectionImage target = new ReflectionImage(mapTest);
+        target.addByWeeklyWorking(GeneralDate.today(),workInformation);
+
+        val result = target.getListRefOrdByDate().get(0);
+
+        Assert.assertEquals(GeneralDate.today(),result.getDate());
+        Assert.assertEquals(WorkCreateMethod.WEEKLY_WORK,result.getWorkCreateMethod());
+        Assert.assertEquals(workInformation,result.getWorkInformation());
+    }
 
     @Test
     public void addHolidaysTest() {
