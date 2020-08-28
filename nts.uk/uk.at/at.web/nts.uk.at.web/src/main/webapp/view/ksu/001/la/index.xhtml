@@ -72,13 +72,13 @@
                                             required: true,
                                             constraint: 'ScheduleTeamName',
                                             option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
-                                                width: '100px',
+                                                width: '40px',
                                                 textalign: 'left'
                                             })),                                              
                                             value: scheduleTeamModel().name
                                         }" tabindex="7" />
                         </div>
-                        <div style="margin-left: 60px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
+                        <div style="margin-left: 120px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
                         </div>
                         <div class="input">
                             <input id="scheduleTeamRemarks" data-bind="ntsTextEditor:{
