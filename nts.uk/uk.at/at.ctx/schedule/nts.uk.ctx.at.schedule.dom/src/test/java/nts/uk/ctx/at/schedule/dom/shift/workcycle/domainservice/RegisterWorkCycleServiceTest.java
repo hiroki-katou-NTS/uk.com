@@ -2,25 +2,18 @@ package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.arc.testing.exception.BusinessExceptionAssert;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.context.AppContexts;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RegisterWorkCycleService.Require;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,19 +21,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class RegisterWorkCycleServiceTest {
 
     @Injectable
-    Require require;
+    RegisterWorkCycleService.Require require;
 
-    @Injectable
-    WorkInformation.Require workRequire;
 
     @Test
     public void test_create_1() {
         String cid = "DUMMY";
         String code = "DUMMY";
-        WorkCycleInfo info = new WorkCycleInfo(1, "timecd", "typecd", 2);
+        WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(1, new WorkInformation("timecd", "typecd"));
         List<WorkCycleInfo> infos = new ArrayList<>();
         infos.add(info);
-        WorkCycle workCycle = new WorkCycle(cid, code, "name", infos);
+        WorkCycle workCycle = WorkCycle.WorkCycle(cid, code, "name", infos);
 
         new Expectations() {
             {
@@ -51,7 +42,6 @@ public class RegisterWorkCycleServiceTest {
 
         NtsAssert.businessException("Msg_3", () -> {
             RegisterWorkCycleService.register(
-                    workRequire,
                     require,
                     workCycle, //DUMMY
                     true  //DUMMY
@@ -61,81 +51,83 @@ public class RegisterWorkCycleServiceTest {
 
     @Test
     public void testWhenHasErrorCode() {
-        String cid = "DUMMY";
-        String code = "DUMMY";
-        WorkCycleInfo info = new WorkCycleInfo(1, "DUMMY", "DUMMY", 2);
-        List<WorkCycleInfo> infos = new ArrayList<>();
-        infos.add(info);
-        WorkCycle workCycle = new WorkCycle(cid, code, "DUMMY", infos);
-        new Expectations() {
+
+        WorkCycle workCycle = WorkCycle.WorkCycle("CID001", "COD001", "Name001", Arrays.asList(
+                WorkCycleInfo.WorkCycleInfo(2, new WorkInformation("WTime001", "WType001")),
+                WorkCycleInfo.WorkCycleInfo(3, new WorkInformation("WTime002", "WType002")),
+                WorkCycleInfo.WorkCycleInfo(4, new WorkInformation(null, "WType004")),
+                WorkCycleInfo.WorkCycleInfo(4, new WorkInformation(null, "WType005")),
+                WorkCycleInfo.WorkCycleInfo(4, new WorkInformation(null, "WType006")),
+                WorkCycleInfo.WorkCycleInfo(4, new WorkInformation("WTime003", "WType003"))
+                )
+        );
+
+        new Expectations(WorkInformation.class) {
             {
-                require.exists(cid, code);
-                result = false;
+                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require);
+                returns(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE,ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED,
+                        ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET,ErrorStatusWorkInfo.NORMAL,
+                        ErrorStatusWorkInfo.NORMAL,ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY);
             }
         };
-        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequire, require, workCycle, true);
-        List<ErrorStatusWorkInfo> expectedError = new ArrayList<>();
-        expectedError.add(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
-        Assert.assertEquals(Optional.empty(), result.getAtomTask());
-        Assert.assertEquals(expectedError, result.getErrorStatusList());
+        WorkCycleCreateResult result = RegisterWorkCycleService.register( require, workCycle, true);
         assertThat(result.isHasError()).isTrue();
+        assertThat(result.getErrorStatusList().get(0)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
+        assertThat(result.getErrorStatusList().get(1)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED);
+        assertThat(result.getErrorStatusList().get(2)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET);
+        assertThat(result.getErrorStatusList().get(3)).isEqualByComparingTo(ErrorStatusWorkInfo.NORMAL);
+        assertThat(result.getErrorStatusList().get(4)).isEqualByComparingTo(ErrorStatusWorkInfo.NORMAL);
+        assertThat(result.getErrorStatusList().get(5)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY);
+
     }
 
     @Test
     public void testInsert() {
-        String cid = "DUMMY";
-        String code = "DUMMY";
-        WorkCycleInfo info = new WorkCycleInfo(1, "DUMMY", null, 2);
-        List<WorkCycleInfo> infos = new ArrayList<>();
-        infos.add(info);
-        WorkCycle workCycle = new WorkCycle(cid, code, "DUMMY", infos);
-        List<ErrorStatusWorkInfo> errors = new ArrayList<>();
-        errors.add(ErrorStatusWorkInfo.NORMAL);
-        new Expectations() {
+        WorkCycle workCycle = WorkCycle.WorkCycle("CID001", "COD001", "Name001", Arrays.asList(
+                WorkCycleInfo.WorkCycleInfo(2, new WorkInformation(null, "WType001")),
+                WorkCycleInfo.WorkCycleInfo(3, new WorkInformation(null, "WType002"))
+                )
+        );
+        new Expectations(WorkInformation.class) {
             {
-                require.exists(cid, code);
-                result = false;
+                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require);
+                returns(ErrorStatusWorkInfo.NORMAL,ErrorStatusWorkInfo.NORMAL);
 
-                workRequire.findByPK(anyString);
-                result = Optional.of(new WorkType());
-
-                workRequire.checkNeededOfWorkTimeSetting(anyString);
-                result = SetupType.OPTIONAL;
             }
         };
-        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequire, require, workCycle, true);
+        WorkCycleCreateResult result = RegisterWorkCycleService.register(require, workCycle, true);
+
         assertThat(result.getAtomTask().isPresent()).isTrue();
+        assertThat(result.getErrorStatusList().size()).isEqualTo(0);
+        assertThat(result.isHasError()).isFalse();
         NtsAssert.atomTask(
                 () -> result.getAtomTask().get(),
-                any -> require.insert((WorkCycle) any.get())
-        );
+                any -> require.insert(any.get()));
+
     }
 
     @Test
     public void testUpdate() {
-        String cid = "DUMMY";
-        String code = "DUMMY";
-        WorkCycleInfo info = new WorkCycleInfo(1, "DUMMY", null, 2);
-        List<WorkCycleInfo> infos = new ArrayList<>();
-        infos.add(info);
-        WorkCycle workCycle = new WorkCycle(cid, code, "DUMMY", infos);
-        List<ErrorStatusWorkInfo> errors = new ArrayList<>();
-        errors.add(ErrorStatusWorkInfo.NORMAL);
-        new Expectations() {
-            {
-                workRequire.findByPK(anyString);
-                result = Optional.of(new WorkType());
+        WorkCycle workCycle = WorkCycle.WorkCycle("CID001", "COD001", "Name001", Arrays.asList(
+                WorkCycleInfo.WorkCycleInfo(2, new WorkInformation("WTime001", "WType001")),
+                WorkCycleInfo.WorkCycleInfo(3, new WorkInformation(null, "WType002"))
+                )
+        );
 
-                workRequire.checkNeededOfWorkTimeSetting(anyString);
-                result = SetupType.OPTIONAL;
+        new Expectations(WorkInformation.class) {
+            {
+                workCycle.getInfos().get(0).getWorkInformation().checkErrorCondition(require);
+                returns(ErrorStatusWorkInfo.NORMAL,ErrorStatusWorkInfo.NORMAL);
             }
         };
-        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequire, require, workCycle, false);
+        WorkCycleCreateResult result = RegisterWorkCycleService.register(require, workCycle, false);
+
         assertThat(result.getAtomTask().isPresent()).isTrue();
+        assertThat(result.getErrorStatusList().size()).isEqualTo(0);
+        assertThat(result.isHasError()).isFalse();
         NtsAssert.atomTask(
                 () -> result.getAtomTask().get(),
-                any -> require.update((WorkCycle) any.get())
-        );
+                any -> require.update(any.get()));
     }
 
 }

@@ -7,6 +7,7 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Data
@@ -21,11 +22,12 @@ public class WorkCycleDto {
     private List<WorkCyleInfoDto> infos;
 
     public static WorkCycleDto createFromDomain(WorkCycle domain) {
+        AtomicInteger index = new AtomicInteger();
         List<WorkCyleInfoDto> infos = domain.getInfos().stream().map(i -> new WorkCyleInfoDto(
                 i.getWorkInformation().getWorkTypeCode().v(),
                 i.getWorkInformation().getWorkTimeCode() != null? i.getWorkInformation().getWorkTimeCode().v(): null,
                 i.getDays().v(),
-                i.getDispOrder().v()
+                index.incrementAndGet()
         )).collect(Collectors.toList());
         return new WorkCycleDto(domain.getCode().v(), domain.getName().v(), infos);
     }

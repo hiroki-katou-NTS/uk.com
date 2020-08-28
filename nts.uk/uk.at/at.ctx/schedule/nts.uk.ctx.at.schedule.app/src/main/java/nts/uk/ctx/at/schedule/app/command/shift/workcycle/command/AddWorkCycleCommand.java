@@ -18,13 +18,11 @@ public class AddWorkCycleCommand {
     private List<WorkInformation> workInformations;
 
     public static WorkCycle createFromCommand(AddWorkCycleCommand command, String cid) {
-        List<WorkCycleInfo> infos = command.workInformations.stream().map(i -> new WorkCycleInfo(
+        List<WorkCycleInfo> infos = command.workInformations.stream().map(i -> WorkCycleInfo.WorkCycleInfo(
                 i.getDays(),
-                i.getWorkTypeCode(),
-                i.getWorkTimeCode(),
-                i.getDispOrder()
+                new nts.uk.ctx.at.shared.dom.WorkInformation(i.getWorkTimeCode(), i.getWorkTypeCode())
         )).collect(Collectors.toList());
-        return new WorkCycle(
+        return WorkCycle.WorkCycle(
                 cid,
                 command.getWorkCycleCode(),
                 command.getWorkCycleName(),

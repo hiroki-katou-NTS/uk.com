@@ -23,7 +23,7 @@ public class JpaWorkCycleScreenRepository extends JpaRepository implements WorkC
 
     private static final String GET_BY_CID_AND_CODE = SELECT_ALL + "WHERE f.kscmtWorkingCyclePK.cid = :cid AND f.kscmtWorkingCyclePK.workCycleCode = :code";
 
-    private static final String GET_INFO_BY_CID_AND_CODE = "SELECT f FROM KscmtWorkingCycleDtl f WHERE f.kscmtWorkingCycleDtlPK.cid = :cid and f.kscmtWorkingCycleDtlPK.workingCycleCode = :code";
+    private static final String GET_INFO_BY_CID_AND_CODE = "SELECT f FROM KscmtWorkingCycleDtl f WHERE f.kscmtWorkingCycleDtlPK.cid = :cid and f.kscmtWorkingCycleDtlPK.workingCycleCode = :code ORDER BY f.kscmtWorkingCycleDtlPK.dispOrder";
 
     /**
      * [3] get

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -41,15 +42,13 @@ public class KscmtWorkingCycle extends UkJpaEntity implements Serializable {
     public static WorkCycle toDomain(KscmtWorkingCycle entity, List<KscmtWorkingCycleDtl> entityValues){
         List<WorkCycleInfo> infos = new ArrayList<WorkCycleInfo>();
         entityValues.stream().forEach(item -> {
-            WorkCycleInfo info = new WorkCycleInfo(
+            WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(
                     item.days,
-                    item.workTypeCode,
-                    item.workTimeCode,
-                    item.kscmtWorkingCycleDtlPK.dispOrder
+                    new WorkInformation(item.workTimeCode, item.workTypeCode)
             );
             infos.add(info);
         });
-        WorkCycle result = new WorkCycle(
+        WorkCycle result = WorkCycle.WorkCycle(
                 entity.kscmtWorkingCyclePK.cid,
                 entity.kscmtWorkingCyclePK.workCycleCode,
                 entity.workCycleName,

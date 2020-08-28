@@ -33,7 +33,7 @@ import java.util.Optional;
 public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWorkCycleCommand, WorkCycleCreateResult> {
 
     @Inject
-    WorkCycleRepository workCycleRepository;
+    private WorkCycleRepository workCycleRepository;
 
     @Inject
     private BasicScheduleService basicScheduleService;
@@ -52,9 +52,8 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
 
         val command = context.getCommand();
         String cid = AppContexts.user().companyId();
-        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository);
-        WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, AddWorkCycleCommand.createFromCommand(command, cid), true);
+        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository,basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
+        WorkCycleCreateResult result = RegisterWorkCycleService.register(require, AddWorkCycleCommand.createFromCommand(command, cid), true);
         if (!result.isHasError()) {
             AtomTask atomTask = result.getAtomTask().get();
             transaction.execute(() ->{
@@ -66,29 +65,9 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
 
     @AllArgsConstructor
     private class RegisterWorkCycleServiceImlp implements RegisterWorkCycleService.Require {
+        private final String companyId = AppContexts.user().companyId();
 
         WorkCycleRepository workCycleRepository;
-
-        @Override
-        public boolean exists(String cid, String code) {
-            return workCycleRepository.exists(cid, code);
-        }
-
-        @Override
-        public void insert(WorkCycle item) {
-            this.workCycleRepository.add(item);
-        }
-
-        @Override
-        public void update(WorkCycle item) {
-            this.workCycleRepository.update(item);
-        }
-    }
-
-    @AllArgsConstructor
-    private static class WorkInfoRequireImpl implements WorkInformation.Require {
-
-        private final String companyId = AppContexts.user().companyId();
 
         private BasicScheduleService service;
 
@@ -125,5 +104,22 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
         public WorkStyle checkWorkDay(String workTypeCode) {
             return basicScheduleService.checkWorkDay(workTypeCode);
         }
+
+        @Override
+        public boolean exists(String cid, String code) {
+            return workCycleRepository.exists(cid, code);
+        }
+
+        @Override
+        public void insert(WorkCycle item) {
+            this.workCycleRepository.add(item);
+        }
+
+        @Override
+        public void update(WorkCycle item) {
+            this.workCycleRepository.update(item);
+        }
+
     }
+
 }

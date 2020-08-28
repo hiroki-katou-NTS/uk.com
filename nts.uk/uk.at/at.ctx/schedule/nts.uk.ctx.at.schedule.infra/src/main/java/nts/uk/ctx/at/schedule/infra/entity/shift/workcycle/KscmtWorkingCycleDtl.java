@@ -4,12 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -45,8 +47,9 @@ public class KscmtWorkingCycleDtl extends UkJpaEntity implements Serializable {
     }
 
     public static List<KscmtWorkingCycleDtl> toEntity(WorkCycle domain) {
+        AtomicInteger index = new AtomicInteger();
         List<KscmtWorkingCycleDtl> result = domain.getInfos().stream().map(i -> new KscmtWorkingCycleDtl(
-                new KscmtWorkingCycleDtlPK(domain.getCid(), domain.getCode().v(), i.getDispOrder().v()),
+                new KscmtWorkingCycleDtlPK(domain.getCid(), domain.getCode().v(), index.incrementAndGet()),
                 AppContexts.user().contractCode(),
                 i.getWorkInformation().getWorkTypeCode().v(),
                 i.getWorkInformation().getWorkTimeCode() != null? i.getWorkInformation().getWorkTimeCode().v():null,
@@ -56,11 +59,9 @@ public class KscmtWorkingCycleDtl extends UkJpaEntity implements Serializable {
     }
 
     public static WorkCycleInfo toDomain(KscmtWorkingCycleDtl entity) {
-        return new WorkCycleInfo(
+        return WorkCycleInfo.WorkCycleInfo(
                 entity.days,
-                entity.workTypeCode,
-                entity.workTimeCode,
-                entity.kscmtWorkingCycleDtlPK.dispOrder
+                new WorkInformation(entity.workTimeCode, entity.workTypeCode)
         );
     }
 }
