@@ -1,0 +1,90 @@
+<div id="kaf008-share">
+    <div class="flex valign-center A5">
+        <div id="A5_1" data-bind="ntsFormLabel: {text: $i18n('KAF008_20')}"></div>
+        <div id="A5_2">
+            <span  data-bind="text: $i18n('KAF008_21')"></span>
+        </div>
+        <input tab-index="4" id="A5_3" data-bind="ntsTimeWithDayEditor: {name: '#[KAF008_21]',
+	                    value: departureTime, enable: true, required: true, option: {timeWithDay: true}}"/>
+        <div id="A5_4">
+            <span  data-bind="text: $i18n('KAF008_22')"></span>
+        </div>
+        <input tab-index="5" id="A5_5" data-bind="ntsTimeWithDayEditor: {name: '#[KAF008_22]',
+	                    value: returnTime, enable: true, required: true, option: {timeWithDay: true}}"/>
+    </div>
+    <div id="A6_1">
+        <div class="label" data-bind="if: comment">
+            <span data-bind="text: comment.comment, style: { color: comment.colorCode, 'font-weight': comment.bold ? 'bold' : 'normal' }"></span>
+        </div>
+    </div>
+    <div id="A10" tab-index="6">
+        <table id="fixed-table">
+            <colgroup>
+                <col width="120px"/>
+                <col width="60px"/>
+                <col width="130px"/>
+                <col width="60px"/>
+                <col width="130px"/>
+                <col width="80px"/>
+                <col width="80px"/>
+            </colgroup>
+            <THEAD>
+            <tr>
+                <th class="ui-widget-header" data-bind="text: $i18n('KAF008_24')"></th>
+                <th class="ui-widget-header" data-bind="text: $i18n('KAF008_25')"></th>
+                <th class="ui-widget-header" data-bind="text: $i18n('KAF008_26')"></th>
+                <th class="ui-widget-header" data-bind="text: $i18n('KAF008_27')"></th>
+                <th class="ui-widget-header" data-bind="text: $i18n('KAF008_28')"></th>
+                <th class="ui-widget-header" data-bind="text: $i18n('KAF008_29')"></th>
+                <th class="ui-widget-header" data-bind="text: $i18n('KAF008_30')"></th>
+            </tr>
+            </THEAD>
+
+            <TBODY data-bind="foreach: items">
+            <tr>
+                <td>
+                    <div class="div_line" >
+                        <span data-bind="text: dateDisp, style: {color: dateColor}"></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="div_line code" id="A10_D2" tab-index="7">
+                        <input data-bind="ntsTextEditor: {
+                        value: wkTypeCd,
+                        enable: true
+                    }"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="div_line">
+                        <a tab-index="8" class="hyperlink" data-bind="text: wkTypeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="div_line code" id="A10_D4">
+                        <input tab-index="9" data-bind="ntsTextEditor: {
+                        value: wkTimeCd,
+                        enable: true
+                    }"/>
+                    </div>
+                </td>
+                <td>
+                    <div class="div_line">
+                        <a tab-index="10" class="hyperlink" data-bind="text: wkTimeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                    </div>
+                </td>
+                <td>
+                    <div class="div_line time">
+                        <span tab-index="11" class="label" data-bind="text: start"></span>
+                    </div>
+                </td>
+                <td>
+                    <div class="div_line time">
+                        <span tab-index="12" class="label" data-bind="text: end"></span>
+                    </div>
+                </td>
+            </tr>
+            </TBODY>
+        </table>
+    </div>
+</div>

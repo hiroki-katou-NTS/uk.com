@@ -49,7 +49,7 @@ public class ListOfApplication {
 	/**
 	 * 申請種類
 	 */
-	private ApplicationType appTye;
+	private ApplicationType appType;
 	
 	/**
 	 * 申請内容
@@ -142,7 +142,7 @@ public class ListOfApplication {
 		this.appID = null;
 		this.applicantCD = null;
 		this.applicantName = null;
-		this.appTye = null;
+		this.appType = null;
 		this.appContent = null;
 		this.appDate = null;
 		this.inputCompanyName  = null;

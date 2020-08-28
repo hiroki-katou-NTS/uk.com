@@ -36,14 +36,15 @@ public class ReasonTypeItemDto {
 	/**
 	 * 定型理由
 	 */
-	private String opReasonForFixedForm;
+	private String reasonForFixedForm;
 	
 	public static ReasonTypeItemDto fromDomain(ReasonTypeItem reasonTypeItem) {
 		return new ReasonTypeItemDto(
 				reasonTypeItem.getAppStandardReasonCD().v(), 
 				reasonTypeItem.getDisplayOrder(), 
 				reasonTypeItem.isDefaultValue(), 
-				reasonTypeItem.getOpReasonForFixedForm().map(x -> x.v()).orElse(null));
+				reasonTypeItem.getReasonForFixedForm().v()
+		);
 	}
 	
 	public ReasonTypeItem toDomain() {
@@ -51,7 +52,8 @@ public class ReasonTypeItemDto {
 				new AppStandardReasonCode(appStandardReasonCD), 
 				displayOrder, 
 				defaultValue, 
-				opReasonForFixedForm == null ? Optional.empty() : Optional.of(new ReasonForFixedForm(opReasonForFixedForm)));
+				new ReasonForFixedForm(reasonForFixedForm)
+		);
 	}
 	
 }

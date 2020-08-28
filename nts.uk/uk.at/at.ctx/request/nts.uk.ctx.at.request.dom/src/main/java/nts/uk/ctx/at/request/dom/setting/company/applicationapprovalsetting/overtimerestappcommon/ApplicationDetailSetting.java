@@ -2,7 +2,10 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.ove
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * refactor 4
@@ -12,6 +15,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ApplicationDetailSetting {
 	
 	/**
@@ -43,5 +47,16 @@ public class ApplicationDetailSetting {
 	 * 退勤時刻がない時システム時刻を表示するか
 	 */
 	private boolean dispSystemTimeWhenNoWorkTime;
+
+	public static ApplicationDetailSetting create(Integer requiredInstruction, int preRequiredSet, int timeInputUse, int timeCalUse, int atWorkTimeBeginDisplay, int dispSystemTimeWhenNoWorkTime) {
+		return new ApplicationDetailSetting(
+				BooleanUtils.toBooleanObject(requiredInstruction),
+				EnumAdaptor.valueOf(preRequiredSet, NotUseAtr.class),
+				EnumAdaptor.valueOf(timeInputUse, NotUseAtr.class),
+				EnumAdaptor.valueOf(timeCalUse, NotUseAtr.class),
+				EnumAdaptor.valueOf(atWorkTimeBeginDisplay, AtWorkAtr.class),
+				BooleanUtils.toBoolean(dispSystemTimeWhenNoWorkTime)
+		);
+	}
 	
 }

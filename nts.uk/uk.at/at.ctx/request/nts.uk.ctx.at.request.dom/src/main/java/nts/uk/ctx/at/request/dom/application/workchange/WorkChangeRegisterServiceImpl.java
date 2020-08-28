@@ -17,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 
@@ -87,9 +88,12 @@ public class WorkChangeRegisterServiceImpl implements IWorkChangeRegisterService
 //		interimRemainDataMngRegisterDateChange.registerDateChange(companyId, application.getEmployeeID(), listDate);
 
 		// 共通アルゴリズム「2-3.新規画面登録後の処理」を実行する
+		// TODO: 申請設定 domain has changed!
+		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
 		 return newAfterRegister.processAfterRegister(
 				 application.getAppID(), 
-				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(),
+				 appTypeSetting,
 				 appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet());
 	}
 

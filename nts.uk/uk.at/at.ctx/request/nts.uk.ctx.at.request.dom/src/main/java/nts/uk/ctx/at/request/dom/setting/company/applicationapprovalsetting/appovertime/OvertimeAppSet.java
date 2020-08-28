@@ -2,7 +2,9 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
@@ -14,6 +16,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
  *
  */
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class OvertimeAppSet implements DomainAggregate {
 	
 	/**

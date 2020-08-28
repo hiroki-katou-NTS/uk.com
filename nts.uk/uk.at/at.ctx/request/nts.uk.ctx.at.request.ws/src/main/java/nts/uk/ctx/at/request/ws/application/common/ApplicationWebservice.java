@@ -293,6 +293,7 @@ public class ApplicationWebservice extends WebService {
 	@Path("changeAppDate")
 	public AppDispInfoWithDateDto changeAppDate(ChangeDateParam param) {
 		String companyID = AppContexts.user().companyId();
+
 		List<GeneralDate> dateLst = new ArrayList<>();
 		if(Strings.isNotBlank(param.getStartDate()) && Strings.isNotBlank(param.getEndDate())) {
 			GeneralDate startDate = GeneralDate.fromString(param.getStartDate(), "yyyy/MM/dd");
@@ -301,10 +302,12 @@ public class ApplicationWebservice extends WebService {
 		} else {
 			dateLst.add(GeneralDate.fromString(param.getAppDate(), "yyyy/MM/dd"));
 		}
+		
+		// TODO: 申請設定 domain has changed!
 		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
 				companyID, 
 				dateLst, 
-				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().getAppType(), 
+				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0).getAppType(),
 				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoNoDateOutput(), 
 				param.getAppDispInfoStartupOutput().toDomain().getAppDispInfoWithDateOutput(),
 				param.getOpOvertimeAppAtr() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(param.getOpOvertimeAppAtr(), OvertimeAppAtr.class)));

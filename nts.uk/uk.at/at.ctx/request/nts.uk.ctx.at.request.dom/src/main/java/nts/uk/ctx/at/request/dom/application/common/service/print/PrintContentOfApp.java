@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
@@ -16,7 +17,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 
 /**
- * 申請の印刷内容
+ * refactor 4
+ * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.印刷内容を取得する.申請の印刷内容
  * @author Doan Duy Hung
  *
  */
@@ -104,6 +106,7 @@ public class PrintContentOfApp {
 	/**
 	 * 出張申請の印刷内容
 	 */
+	private Optional<BusinessTripInfo> opBusinessTrip;
 	
 	/**
 	 * 振休振出申請の印刷内容
@@ -123,6 +126,7 @@ public class PrintContentOfApp {
 	 * 直行直帰申請の印刷内容
 	 */
 	private Optional<InforGoBackCommonDirectOutput> opInforGoBackCommonDirectOutput;
+
 	
 	/**
 	 * 任意項目申請の印刷内容
@@ -133,5 +137,6 @@ public class PrintContentOfApp {
 		this.opPrintContentOfWorkChange = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
+		this.opBusinessTrip = Optional.empty();
 	}
 }
