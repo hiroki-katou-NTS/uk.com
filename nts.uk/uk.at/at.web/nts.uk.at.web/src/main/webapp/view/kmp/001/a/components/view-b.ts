@@ -227,7 +227,7 @@ module nts.uk.at.view.kmp001.b {
 						const dataSort: IStampCard[] = _.orderBy(stampCardList, ['stampNumber'], ['asc']);
 						
 						vm.items(dataSort);
-						const record = stampCardList[selectedIndex];
+						const record = dataSort[selectedIndex];
 
 						if (record) {
 							vm.model.stampNumber(record.stampNumber);

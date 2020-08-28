@@ -308,6 +308,7 @@ module nts.uk.at.view.kmp001.a {
 									.then(() => vm.model.code.valueHasMutated())
 									.fail((err: any) => {
 										nts.uk.ui.dialog.error({ messageId: err.messageId });
+										vm.model.code.valueHasMutated();
 									})
 									.always(() => vm.$blockui("clear"));
 							}
