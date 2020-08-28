@@ -14,10 +14,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -29,89 +31,118 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KSCDT_BATCH_CONTENT")
+@AllArgsConstructor
 public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
-    
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 1L;
 
-    /** The exe id. */
+    /**
+     * The Constant serialVersionUID.
+     */
+    private static final long serialVersionUID = 1L;
+    private static final int exclusVerConst =0;
+    /**
+     * The exe id.
+     */
     @Id
     @Basic(optional = false)
     @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
-
-    /** 排他バージョン */
-    @NotNull
-    @Column(name = "EXCLUS_VER")
-    private Integer exclusVer;
-
-    /** 契約コード */
+    /**
+     * 契約コード
+     */
     @NotNull
     @Column(name = "CONTRACT_CD")
-    private String contractCD;
+    private String contractCd;
 
-    /** 会社ID */
+    /**
+     * 会社ID
+     */
     @NotNull
     @Column(name = "CID")
     private String companyId;
 
-    /** 確定済みにする */
+    /**
+     * 確定済みにする
+     */
     @Basic(optional = false)
     @NotNull
     @Column(name = "BE_CONFIRMED")
     private Boolean beConfirmed;
 
-    /** 作成種類 */
+    /**
+     * 作成種類
+     */
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_TYPE")
     private Integer creationType;
-    
-    /** 作成方法 */
+
+    /**
+     * 作成方法
+     */
     @Basic(optional = false)
     @NotNull
     @Column(name = "CREATION_METHOD")
     private Integer creationMethod;
-    
-    /** The copy start ymd. */
+
+    /**
+     * The copy start ymd.
+     */
     @Column(name = "COPY_START_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate copyStartYmd;
-    
-    /** 作成方法参照先 */
+
+    /**
+     * 作成方法参照先
+     */
     @Column(name = "REFERENCE_MASTER")
     private Integer referenceMaster;
-    
-    /** 月間パターンコード */
+
+    /**
+     * 月間パターンコード
+     */
     @Column(name = "MONTHLY_PATTERN_CD")
     private String monthlyPatternId;
 
-    /** 再作成者を限定するか */
+    /**
+     * 再作成者を限定するか
+     */
     @Column(name = "RE_TARGET_ATR")
     private Boolean reTargetAtr;
-    
-    /** 異動者のみ再作成するか */
+
+    /**
+     * 異動者のみ再作成するか
+     */
     @Column(name = "RE_TARGET_TRANSFER")
     private Boolean reTargetTransfer;
-    
-    /** 休職休業者のみ再作成するか	 */
+
+    /**
+     * 休職休業者のみ再作成するか
+     */
     @Column(name = "RE_TARGET_LEAVE")
     private Boolean reTargetLeave;
-    
-    /** 短時間勤務者のみ再作成するか */
+
+    /**
+     * 短時間勤務者のみ再作成するか
+     */
     @Column(name = "RE_TARGET_SHORT_WORK")
     private Boolean reTargetShortWork;
-    
-    /** 労働条件変更者のみ再作成するか*/
+
+    /**
+     * 労働条件変更者のみ再作成するか
+     */
     @Column(name = "RE_TARGET_LABOR_CHANGE")
     private Boolean reTargetLaborChange;
-    
-    /** 確定済みも再作成するか */
+
+    /**
+     * 確定済みも再作成するか
+     */
     @Column(name = "RE_OVERWRITE_CONFIRMED")
     private Boolean reOverwriteConfirmed;
-    
-    /** 手修正・申請反映した日も再作成するか*/
+
+    /**
+     * 手修正・申請反映した日も再作成するか
+     */
     @Column(name = "RE_OVERWRITE_REVISED")
     private Boolean reOverwriteRevised;
 
@@ -119,6 +150,26 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
      * Instantiates a new kscmt sch create content.
      */
     public KscdtScheExeContent() {
+    }
+
+    public  KscdtScheExeContent toEntityNew(ScheduleCreateContent domain, String companyId, String contractCode) {
+        return new KscdtScheExeContent(
+                domain.getExecutionId(),
+                contractCode,
+                companyId,
+                domain.getConfirm(),
+                domain.getCreationType().value,
+                domain.getSpecifyCreation().getCreationMethod().value,
+                domain.getSpecifyCreation().getCopyStartDate().get(),
+                domain.getSpecifyCreation().getReferenceMaster().get().value,
+                domain.getSpecifyCreation().getMonthlyPatternCode().get().toString(),
+                domain.getRecreateCondition().getReTargetAtr(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetTransfer(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetLeave(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetShortWork(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetLaborChange(),
+                domain.getRecreateCondition().getReOverwriteConfirmed(),
+                domain.getRecreateCondition().getReOverwriteRevised());
     }
 
     /**
@@ -164,14 +215,14 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
         return "entity.KscmtSchCreateContent[ exeId=" + exeId + " ]";
     }
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
-	@Override
-	protected Object getKey() {
-		return this.exeId;
-	}
-    
-    
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+     */
+    @Override
+    protected Object getKey() {
+        return this.exeId;
+    }
+
+
 }
 

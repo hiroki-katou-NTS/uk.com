@@ -13,13 +13,13 @@ import java.util.Optional;
 public class RecreateCondition {
 
     //対象者を限定する
-    private final Boolean limitTarget;
+    private final Boolean reTargetAtr;
 
     //確定済みも対象とする
-    private final Boolean confirmed;
+    private final Boolean reOverwriteConfirmed;
 
     //手修正・申請反映も対象とする
-    private final Boolean handCorrection;
+    private final Boolean reOverwriteRevised;
 
     private final Optional<NarrowingEmployees> narrowingEmployees;
 }

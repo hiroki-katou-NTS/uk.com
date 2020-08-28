@@ -14,5 +14,5 @@ public class LeaveHolidayPeriod {
 
     public String sid;
 
-    public String frameNo;
+    public int frameNo;
 }

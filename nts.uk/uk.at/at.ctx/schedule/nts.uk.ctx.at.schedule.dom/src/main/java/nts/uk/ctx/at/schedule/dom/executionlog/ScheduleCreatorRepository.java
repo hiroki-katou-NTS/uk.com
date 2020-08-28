@@ -47,7 +47,9 @@ public interface ScheduleCreatorRepository {
 	 * @param domains the domains
 	 */
 	public void saveAll(List<ScheduleCreator> domains);
-	
+
+	public void saveAllNew(List<ScheduleCreator> domains );
+
 	
 	/**
 	 * Count by status.

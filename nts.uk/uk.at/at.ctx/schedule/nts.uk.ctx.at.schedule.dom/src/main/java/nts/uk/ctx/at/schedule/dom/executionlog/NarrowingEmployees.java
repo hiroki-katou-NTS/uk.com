@@ -10,14 +10,14 @@ import nts.arc.layer.dom.DomainObject;
 public class NarrowingEmployees extends DomainObject {
 
     //休職休業者
-    private Boolean leaveAbsence;
+    private Boolean reTargetLeave;
 
     //労働条件変更者
-    private Boolean personChanged;
+    private Boolean reTargetLaborChange;
 
     //異動者
-    private Boolean transfer;
+    private Boolean reTargetTransfer;
 
     //短時間勤務者
-    private Boolean shortWorking;
+    private Boolean reTargetShortWork;
 }

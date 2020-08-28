@@ -19,6 +19,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet_;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaWorkMonthlySettingRepository.
@@ -151,12 +153,12 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		
 		// greater than or equal start date
 		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK),
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM),
 				startDate));
 		
 		// less than or equal end date
 		lstpredicateWhere.add(criteriaBuilder.lessThan(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK),
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM),
 				endDate));
 				
 		// set where to SQL
@@ -164,7 +166,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		
 		// order by ymdk id asc
 		cq.orderBy(criteriaBuilder.asc(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM)));
 
 		// create query
 		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);
@@ -191,7 +193,9 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 */
 	private KscmtWorkMonthSet toEntity(WorkMonthlySetting domain){
 		KscmtWorkMonthSet entity = new KscmtWorkMonthSet();
+		val cd = AppContexts.user().contractCode();
 		domain.saveToMemento(new JpaWorkMonthlySettingSetMemento(entity));
+		entity.setContractCd(cd);
 		return entity;
 	}
 	
@@ -243,14 +247,14 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 					.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
 			// in base date data list
 			lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
-					.get(KscmtWorkMonthSetPK_.ymdK).in(splitData)));
+					.get(KscmtWorkMonthSetPK_.ymdM).in(splitData)));
 			
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 			
 			// order by ymdk id asc
 			cq.orderBy(criteriaBuilder.asc(
-					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM)));
 			
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
@@ -303,14 +307,14 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 					.get(KscmtWorkMonthSetPK_.mPatternCd), monthlyPatternCode));
 			// in base date data list
 			lstpredicateWhere.add(criteriaBuilder.and(root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK)
-					.get(KscmtWorkMonthSetPK_.ymdK).in(splitData)));
+					.get(KscmtWorkMonthSetPK_.ymdM).in(splitData)));
 			
 			// set where to SQL
 			cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 			// order by ymdk id asc
 			cq.orderBy(criteriaBuilder.asc(
-					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+					root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM)));
 
 			resultList.addAll(em.createQuery(cq).getResultList());
 		});
@@ -406,7 +410,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 
 		// order by ymdk id asc
 		cq.orderBy(criteriaBuilder.asc(
-				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdK)));
+				root.get(KscmtWorkMonthSet_.kscmtWorkMonthSetPK).get(KscmtWorkMonthSetPK_.ymdM)));
 
 		// create query
 		TypedQuery<KscmtWorkMonthSet> query = em.createQuery(cq);
