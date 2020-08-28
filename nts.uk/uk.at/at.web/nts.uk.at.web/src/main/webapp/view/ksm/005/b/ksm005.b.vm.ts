@@ -10,6 +10,7 @@ module nts.uk.at.view.ksm005.b {
 	import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import KeyMonthlyPatternSettingBatch = service.model.KeyMonthlyPatternSettingBatch;
     import MonthlyPatternSettingBatchDto = service.model.MonthlyPatternSettingBatchDto;
+    import WeeklyWork = service.model.WeeklyWork;
     import getText = nts.uk.resource.getText;
     
     export module viewmodel {
@@ -81,6 +82,7 @@ module nts.uk.at.view.ksm005.b {
 	            });
 
 	            self.findAllMonthlyPattern();
+	            self.getWeeklyWorkPattern();
             }
 
             /**
@@ -461,21 +463,32 @@ module nts.uk.at.view.ksm005.b {
                 let self = this;
 	            self.lstSelectableCode([]);
                 service.findAllMonthlyPattern().done(function (data) {
-                    self.lstHolidaysPattern(data);
+                    //self.lstHolidaysPattern(data);
 	                data && data.map( (item ) => {
 						 self.lstSelectableCode.push(item.code);
 	                });
                 });
+
+                let data = [
+               	   { code: '月', name: '稼働日' },
+	               { code: '火', name: '稼働日' },
+	               { code: '水', name: '稼働日' },
+	               { code: '木', name: '稼働日' },
+	               { code: '金', name: '稼働日' },
+	               { code: '土', name: '法定外休日' },
+	               { code: '日', name: '法定休日' },
+               	];
+	            self.lstHolidaysPattern(data);
             }
 
-	        /*public  getWeeklyWorkPattern() {
-		        let self = this;
-		        //self.lstSelectableCode([]);
-		        service.getWeeklyWork().done(function (data) {
+	        public  getWeeklyWorkPattern() {
+		        let self = this,
+		            weeklyWork = { listWorkTypeCd: [], worktimeCode: null };
+		        service.getWeeklyWork( weeklyWork ).done(function (data) {
 			        //self.lstHolidaysPattern(data);
                     console.log(data);
 		        });
-            }*/
+            }
 
             /*
             * 法定外休日

@@ -69,8 +69,8 @@ module nts.uk.at.view.ksm005.b {
 	    /**
 	     * find data client service MonthlyPatternSettingBatch
 	     */
-	    export function getWeeklyWork(key: command): JQueryPromise<void> {
-		    return nts.uk.request.ajax('at', paths.getWeeklyWork, command);
+	    export function getWeeklyWork(params: model.WeeklyWork) {
+		    return nts.uk.request.ajax('at', paths.getWeeklyWork, params);
 	    }
 	    /**
 	     * call service find all monthly pattern
@@ -115,10 +115,10 @@ module nts.uk.at.view.ksm005.b {
                 present: boolean;    
             }
 
-	        /*export interface MonthlyPattern {
-		        code: string;
-		        name: string;
-	        }*/
+	        export interface WeeklyWork {
+		        listWorkTypeCd: Array<string> ;
+		        worktimeCode: string;
+	        }
 
 	        // 月間パターンの一括設定
             export class MonthlyPatternSettingBatch {
