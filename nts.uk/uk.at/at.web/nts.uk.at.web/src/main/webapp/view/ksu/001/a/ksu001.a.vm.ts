@@ -647,6 +647,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
+            self.listEmpData = [];
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
