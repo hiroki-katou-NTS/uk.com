@@ -47,7 +47,7 @@
                 </div>
                 <div id="right-content" class="fixed-flex-layout-right">                    
                     <div id="workplaceGroupName" data-bind="{text:workplaceGroupName}"></div> 
-                    <hr style="margin: 5px 0px; width: 830px;" />
+                    <hr id="line" />
                     <div class="container-custom">
                         <div data-bind="ntsFormLabel:{ required:true, constraint:['ScheduleTeamCd', 'ScheduleTeamName']}">
                             #{i18n.getText('KSU001_3208')}/#{i18n.getText('KSU001_3209')}</div>
@@ -72,13 +72,13 @@
                                             required: true,
                                             constraint: 'ScheduleTeamName',
                                             option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
-                                                width: '100px',
+                                                width: '40px',
                                                 textalign: 'left'
                                             })),                                              
                                             value: scheduleTeamModel().name
                                         }" tabindex="7" />
                         </div>
-                        <div style="margin-left: 60px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
+                        <div style="margin-left: 120px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
                         </div>
                         <div class="input">
                             <input id="scheduleTeamRemarks" data-bind="ntsTextEditor:{
@@ -133,13 +133,6 @@
                             </table>
                         </div>
                         <div class="arrow-button">
-                            <!-- <div>
-                                <button class="btn-custom" data-bind="click: moveItemLeftToRight" ><i class="icon icon-button-arrow-right icon-btn-custom"></i></button>
-                            </div>
-                            <div>
-                                <button class="btn-custom" data-bind="click: moveItemRightToLeft" ><i class="icon icon-button-arrow-left icon-btn-custom"></i></button>
-                            </div>    -->
-
                             <div>
                                 <button class="btn-custom"   data-bind="click: moveItemLeftToRight" ><div><img src="img/arrow-right.png" /></div></button>
                             </div>

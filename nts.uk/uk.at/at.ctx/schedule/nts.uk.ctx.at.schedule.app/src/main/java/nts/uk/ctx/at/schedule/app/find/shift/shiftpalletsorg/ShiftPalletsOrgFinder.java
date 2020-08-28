@@ -19,11 +19,19 @@ public class ShiftPalletsOrgFinder {
 
 	@Inject
 	private ShiftPalletsOrgRepository shiftPalletsOrgRepository;
-
+	
 	public List<ShiftPalletsOrgDto> getbyWorkPlaceId(String workplaceId) {
 		// 0 = work place
 		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, workplaceId);
 		List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceId))
+				.collect(Collectors.toList());
+		return result;
+	}
+	
+	public List<ShiftPalletsOrgDto> getbyWorkPlaceGrId(String workplaceGrId) {
+		// 1 = work place group
+		List<ShiftPalletsOrg> shiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(1, workplaceGrId);
+		List<ShiftPalletsOrgDto> result = shiftPalletsOrg.stream().map(c -> new ShiftPalletsOrgDto(c, workplaceGrId))
 				.collect(Collectors.toList());
 		return result;
 	}
