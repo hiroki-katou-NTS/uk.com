@@ -54,7 +54,9 @@ public class CreateWorkCycleAppImage {
     private static void createImageWeekly(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
         val weeklyWorkSet = require.getWeeklyWorkSetting();
         createPeriod.stream().forEach(i -> {
-            switch (weeklyWorkSet.get().getWorkingDayCtgOfTagertDay(i)){
+            val workdayDivision = weeklyWorkSet.get().getWorkingDayCtgOfTagertDay(i);
+            if (workdayDivision == null) return;
+            switch (workdayDivision){
                 case WORKINGDAYS:
                     return;
                 case NON_WORKINGDAY_INLAW:
