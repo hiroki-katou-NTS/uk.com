@@ -1,34 +1,54 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
 import org.eclipse.persistence.internal.xr.ValueObject;
+
+import java.util.List;
 
 /*
     勤務サイクルの勤務情報
  */
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class WorkCycleInfo extends ValueObject {
 
     /*
         勤務の日数
      */
-    private NumOfWorkingDays days;
+    private final NumOfWorkingDays days;
 
     /*
         勤務情報
      */
-    private WorkInformation workInformation;
+    private final WorkInformation workInformation;
 
-    private DispOrder dispOrder;
+    /**
+     *	[C-1] 作る
+     * @param 	days
+     * @param 	workInformation
+     * @return 	勤務サイクルの勤務情報
+     */
+    public static WorkCycleInfo WorkCycleInfo(int days, WorkInformation workInformation) {
+        if (days < 1 || days > 99) {
+            throw new BusinessException("Msg_1689");
+        }
+        return new WorkCycleInfo(new NumOfWorkingDays(days),workInformation);
+    }
 
-    public WorkCycleInfo(int days, String typeCd, String timeCd, int disOrder) {
-        this.days = new NumOfWorkingDays(days);
-        this.workInformation = new WorkInformation(timeCd, typeCd);
-        this.dispOrder = new DispOrder(disOrder);
+
+    /**
+     *	[1] 勤務情報のエラー状態をチェックする
+     * @param require
+     * @return 	勤務情報のエラー状態
+     */
+    public ErrorStatusWorkInfo checkError(WorkInformation.Require require) {
+        return workInformation.checkErrorCondition(require);
     }
 
 }

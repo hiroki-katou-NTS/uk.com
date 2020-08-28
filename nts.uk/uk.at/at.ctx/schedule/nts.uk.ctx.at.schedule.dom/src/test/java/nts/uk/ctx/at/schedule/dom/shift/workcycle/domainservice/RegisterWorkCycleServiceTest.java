@@ -37,10 +37,10 @@ public class RegisterWorkCycleServiceTest {
     public void test_create_1() {
         String cid = "DUMMY";
         String code = "DUMMY";
-        WorkCycleInfo info = new WorkCycleInfo(1, "timecd", "typecd", 2);
+        WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(1, new WorkInformation("timecd", "typecd"));
         List<WorkCycleInfo> infos = new ArrayList<>();
         infos.add(info);
-        WorkCycle workCycle = new WorkCycle(cid, code, "name", infos);
+        WorkCycle workCycle = WorkCycle.WorkCycle(cid, code, "name", infos);
 
         new Expectations() {
             {
@@ -63,10 +63,10 @@ public class RegisterWorkCycleServiceTest {
     public void testWhenHasErrorCode() {
         String cid = "DUMMY";
         String code = "DUMMY";
-        WorkCycleInfo info = new WorkCycleInfo(1, "DUMMY", "DUMMY", 2);
+        WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(1, new WorkInformation("DUMMY", "DUMMY"));
         List<WorkCycleInfo> infos = new ArrayList<>();
         infos.add(info);
-        WorkCycle workCycle = new WorkCycle(cid, code, "DUMMY", infos);
+        WorkCycle workCycle = WorkCycle.WorkCycle(cid, code, "DUMMY", infos);
         new Expectations() {
             {
                 require.exists(cid, code);
@@ -85,10 +85,10 @@ public class RegisterWorkCycleServiceTest {
     public void testInsert() {
         String cid = "DUMMY";
         String code = "DUMMY";
-        WorkCycleInfo info = new WorkCycleInfo(1, "DUMMY", null, 2);
+        WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(1, new WorkInformation("DUMMY", null));
         List<WorkCycleInfo> infos = new ArrayList<>();
         infos.add(info);
-        WorkCycle workCycle = new WorkCycle(cid, code, "DUMMY", infos);
+        WorkCycle workCycle = WorkCycle.WorkCycle(cid, code, "DUMMY", infos);
         List<ErrorStatusWorkInfo> errors = new ArrayList<>();
         errors.add(ErrorStatusWorkInfo.NORMAL);
         new Expectations() {
@@ -115,10 +115,10 @@ public class RegisterWorkCycleServiceTest {
     public void testUpdate() {
         String cid = "DUMMY";
         String code = "DUMMY";
-        WorkCycleInfo info = new WorkCycleInfo(1, "DUMMY", null, 2);
+        WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(1, new WorkInformation("DUMMY", null));
         List<WorkCycleInfo> infos = new ArrayList<>();
         infos.add(info);
-        WorkCycle workCycle = new WorkCycle(cid, code, "DUMMY", infos);
+        WorkCycle workCycle = WorkCycle.WorkCycle(cid, code, "DUMMY", infos);
         List<ErrorStatusWorkInfo> errors = new ArrayList<>();
         errors.add(ErrorStatusWorkInfo.NORMAL);
         new Expectations() {
