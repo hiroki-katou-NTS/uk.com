@@ -8,7 +8,8 @@ module nts.uk.at.view.ksm005.b {
             checkPublicHoliday: "at/schedule/holiday/getHolidayByDate",
             checkWeeklyWorkSetting: "ctx/at/schedule/pattern/work/weekly/setting/checkDate",
             batchWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/batch",
-            getWeeklyWork: 'screen/at/record/weekly-work/get'
+            getWeeklyWork: 'screen/at/record/weekly-work/get',
+	        findAllMonthlyPattern: 'ctx/at/schedule/pattern/monthly/findAll'
         }
         
         /**
@@ -68,10 +69,15 @@ module nts.uk.at.view.ksm005.b {
 	    /**
 	     * find data client service MonthlyPatternSettingBatch
 	     */
-	    export function getWeeklyWork(key: command): JQueryPromise<model.MonthlyPatternSettingBatch> {
+	    export function getWeeklyWork(key: command): JQueryPromise<void> {
 		    return nts.uk.request.ajax('at', paths.getWeeklyWork, command);
 	    }
-
+	    /**
+	     * call service find all monthly pattern
+	     */
+	    export function findAllMonthlyPattern(): JQueryPromise<model.MonthlyPatternDto[]> {
+		    return nts.uk.request.ajax('at', paths.findAllMonthlyPattern);
+	    }
 
         export module model {
 
@@ -85,8 +91,8 @@ module nts.uk.at.view.ksm005.b {
             }
             
             export interface MonthlyPatternDto {
-                monthlyPatternCode: string;
-                monthlyPatternName: string;
+                code: string;
+                name: string;
             }
             
             export interface WeeklyWorkSettingDto{
@@ -108,8 +114,13 @@ module nts.uk.at.view.ksm005.b {
             export interface OptionalPublicHoliday{
                 present: boolean;    
             }
-            
-            // 月間パターンの一括設定
+
+	        /*export interface MonthlyPattern {
+		        code: string;
+		        name: string;
+	        }*/
+
+	        // 月間パターンの一括設定
             export class MonthlyPatternSettingBatch {
                 // 会社ID
                 companyId: string;

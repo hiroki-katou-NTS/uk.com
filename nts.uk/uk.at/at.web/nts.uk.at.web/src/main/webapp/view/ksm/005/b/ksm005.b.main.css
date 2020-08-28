@@ -47,3 +47,14 @@
 	clear: left;
 	border-bottom: solid 1px #b1b1b1;
 }
+.popup-panel.bg-green {
+	background-color: #E0F59E;
+	padding: 7px;
+}
+.d-flex {
+	display: flex;
+	align-items: center;
+}
+.hr-line {
+	margin: 5px 0 0;
+}
