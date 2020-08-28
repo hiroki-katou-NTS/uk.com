@@ -30,8 +30,8 @@ public class ShiftMasterMapWithWorkStyle {
 		this.shiftMasterName = info.getName().v();
 		this.color = info.getColor().v();
 		this.remark = info.getRemarks().isPresent() ? info.getRemarks().get().v() : null;
-		this.workTypeCode = domain.getWorkTypeCode().v();
-		this.workTimeCode = domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().v();
+		this.workTypeCode = domain.getWorkTypeCode() == null ? null : domain.getWorkTypeCode().toString().toString();
+		this.workTimeCode = domain.getWorkTimeCode() == null ? null : domain.getWorkTimeCode().toString().toString();
 		this.workStyle = workStyle;
 	}
 }
