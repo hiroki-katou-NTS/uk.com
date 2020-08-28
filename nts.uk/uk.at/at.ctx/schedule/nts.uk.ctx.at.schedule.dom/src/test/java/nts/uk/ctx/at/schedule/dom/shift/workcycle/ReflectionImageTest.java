@@ -30,12 +30,13 @@ public class ReflectionImageTest {
     @Test
     public void addByWeeklyWorkingTest_1() {
         ReflectionImage target = new ReflectionImage();
-        target.addByWeeklyWorking(GeneralDate.today(),null);
+        target.addByWeeklyWorking(GeneralDate.today(), null);
 
         val result = target.getListRefOrdByDate().get(0);
 
         Assert.assertEquals(GeneralDate.today(),result.getDate());
         Assert.assertEquals(WorkCreateMethod.WEEKLY_WORK,result.getWorkCreateMethod());
+        Assert.assertEquals(null,result.getWorkInformation());
     }
 
     @Test
