@@ -12,9 +12,7 @@ module nts.uk.at.view.kdl014.a {
         selectedItem = ko.observable( '' );
         listComponentOption: any;
         employeeInputList = ko.observableArray([]);
-        
         dataServer = [];
-        
         paramFromParent: ParamFromParent;
         display: boolean;
         height: number;
@@ -55,15 +53,11 @@ module nts.uk.at.view.kdl014.a {
                     listEmp: self.paramFromParent.listEmp
                 };
                 service.getInfo(param).done(function(data) {
-                    _.orderBy(data, ['name', 'stampDateTime'], ['asc', 'asc']);
                     console.log(data);
                     self.dataServer = data.listEmps;
                     self.display = data.display;
             
                     if (self.paramFromParent.mode == 0) {
-                        if (_.every(self.dataServer, ['locationInfo', null])) {
-                            self.display = false;
-                        }
                         self.selectedItem(self.employeeInputList()[0].id);
                         self.bindComponent();
                     } else {
@@ -74,9 +68,6 @@ module nts.uk.at.view.kdl014.a {
                             }
                             tg.push(new EmpInfomation(item));
                         });
-                        if (_.every(self.dataServer, ['locationInfo', null])) {
-                            self.display = false;
-                        }
                         self.empInfomationList(tg);
                     }
                     self.bindingGrid();
@@ -149,7 +140,7 @@ module nts.uk.at.view.kdl014.a {
                     tg.push(new EmpInfomation(item));
                 }
             });
-            self.empInfomationList(tg);
+            self.empInfomationList(_.orderBy(tg, ['code'], ['asc']));
         }
         
         cancel_Dialog(): any {
@@ -165,7 +156,7 @@ module nts.uk.at.view.kdl014.a {
         stampMeans: string;
         stampAtr: string;
         workLocationName: string;
-        locationInfo: GeoCoordinateDto;
+        locationInfo: string;
         time: string;
         date: string;
         color: number;
@@ -195,18 +186,18 @@ module nts.uk.at.view.kdl014.a {
             self.workLocationName = param.workLocationName;
             
             if (_.includes([0,1,2,3,4,8], param.stampMeans)) {
-                self.time = "<span>" + getText("KDP002_120") + "   " + param.time + "</span>";
+                self.time = "<span>" + getText("KDP002_120") + "</span><span class='time'>" + param.time + "</span>";
             
                 // 5:スマホ打刻
             } else if (param.stampMeans == 5) {
-                self.time = "<span>" + getText("KDP002_121") + "   " + param.time + "</span>";
+                self.time = "<span>" + getText("KDP002_121") + "</span><span class='time'>" + param.time + "</span>";
 
                 // 6:タイムレコーダー打刻
             } else if (param.stampMeans == 6) {
-                self.time = "<span>" + getText("KDP002_122") + "   " + param.time + "</span>";
+                self.time = "<span>" + getText("KDP002_122") + "</span><span class='time'>" + param.time + "</span>";
 
             } else {
-                self.time = "<span>     " + param.time + "</span>";
+                self.time = "<span class='time'>" + param.time + "</span>";
             }
             
             let date = moment(param.stampDateTime).format("YYYY/MM/DD");
@@ -250,10 +241,6 @@ module nts.uk.at.view.kdl014.a {
         affiliationName: string;
     }
     
-     interface GeoCoordinateDto {
-        latitude: string;
-        longitude: string
-    }
 }
 
 function gotoMap(latitude: string, longitude: string): any {
