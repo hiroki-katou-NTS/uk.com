@@ -11,6 +11,7 @@
 						<th style="width: 111px;"></th>
 						<th style="width: 230px;" data-bind="text: $i18n('KAF000_3')"></th>
 						<th style="width: 85px;" data-bind="text: $i18n('KAF000_29')"></th>
+						<th style="width: 130px;" data-bind="text: $i18n('KAF000_42')"></th>
 						<th style="width: 120px;" data-bind="text: $i18n('KAF000_30')"></th>
 					</tr>
 				</thead>
@@ -33,6 +34,11 @@
 								<span class="limited-label" 
 								style="width: 85px;" 
 								data-bind="text: loopApprover.approvalAtrName"></span>
+							</td>
+							<td >
+								<span class="limited-label" 
+								style="width: 130px; text-align: left; padding-left: 5px;" 
+								data-bind="text: $component.getApprovalDateFormat(loopApprover)"></span>
 							</td>
 							<td>
 								<span class="limited-label" 

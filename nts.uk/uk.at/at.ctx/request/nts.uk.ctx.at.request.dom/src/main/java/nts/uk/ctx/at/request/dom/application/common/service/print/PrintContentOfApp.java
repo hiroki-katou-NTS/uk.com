@@ -11,7 +11,6 @@ import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoOutput;
@@ -19,7 +18,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 
 /**
- * 申請の印刷内容
+ * refactor 4
+ * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.印刷内容を取得する.申請の印刷内容
  * @author Doan Duy Hung
  *
  */
@@ -137,7 +137,7 @@ public class PrintContentOfApp {
 		this.employeeInfoLst = Collections.emptyList();
 		this.opPrintContentOfWorkChange = Optional.empty();
 		this.opArrivedLateLeaveEarlyInfo = Optional.empty();
-		this.opBusinessTrip = Optional.empty();
 		this.opAppStampOutput = Optional.empty();
+		this.opBusinessTrip = Optional.empty();
 	}
 }

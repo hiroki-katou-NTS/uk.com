@@ -37,7 +37,7 @@
               </div>
               <div class="col-9 p-0">
                   <div v-bind:class = "item.appDateCss" class="pl-2 pt-2 pb-2 d-inline-block pr-2">{{ item.appDate | date('MM/DD (ddd)')}}</div>
-                  <div class="pt-2 pb-2 d-inline-block">{{appContent(item.appName, item.prePostName)}}</div>
+                  <div class="pt-2 pb-2 d-inline-block">{{appContent(item.appName, item.prePostAtr)}}</div>
               </div>
           </div>
       </li>

@@ -80,16 +80,16 @@ public class KrqdtAppLateOrLeave_New extends ContractUkJpaEntity implements Seri
 		List<TimeReport> lateOrLeaveEarlies = new ArrayList<>();
 		
 		if(this.lateCancelAtr1 != null) {
-			lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.lateCancelAtr1, LateOrEarlyAtr.class)));			
+			lateCancelation.add(new LateCancelation(1, LateOrEarlyAtr.LATE));			
 		}
 		if(this.lateCancelAtr2 != null) {
-			lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.lateCancelAtr2, LateOrEarlyAtr.class)));
+			lateCancelation.add(new LateCancelation(2, LateOrEarlyAtr.LATE));
 		}
 		if(this.earlyCancelAtr1 != null) {
-			lateCancelation.add(new LateCancelation(1, EnumAdaptor.valueOf(this.earlyCancelAtr1, LateOrEarlyAtr.class)));
+			lateCancelation.add(new LateCancelation(1, LateOrEarlyAtr.EARLY));
 		}
 		if(this.earlyCancelAtr2 != null) {
-			lateCancelation.add(new LateCancelation(2, EnumAdaptor.valueOf(this.earlyCancelAtr2, LateOrEarlyAtr.class)));
+			lateCancelation.add(new LateCancelation(2, LateOrEarlyAtr.EARLY));
 		}
 		
 		if(lateTime1 != null) {

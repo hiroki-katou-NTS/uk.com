@@ -23,7 +23,7 @@ public interface ApplicationRepository {
 	 * @return
 	 */
 	public List<Application> getApplicationBySIDs(List<String> employeeID,GeneralDate startDate, GeneralDate endDate);
-	
+
 	public List<Application_New> getApp(String applicantSID, GeneralDate appDate, int prePostAtr, int appType);
 	
 	/**

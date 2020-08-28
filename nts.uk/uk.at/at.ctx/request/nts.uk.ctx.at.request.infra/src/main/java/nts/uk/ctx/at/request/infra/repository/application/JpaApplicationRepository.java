@@ -793,8 +793,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				"and a.APP_TYPE in @appTypeLst";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("employeeLst", employeeLst)
-				.paramDate("startDate", GeneralDate.fromString("2020/08/01", "yyyy/MM/dd"))
-				.paramDate("endDate", GeneralDate.fromString("2020/08/31", "yyyy/MM/dd"))
+				.paramDate("startDate", startDate)
+				.paramDate("endDate", endDate)
 				.paramInt("appTypeLst", appTypeLst.stream().map(x -> x.value).collect(Collectors.toList()))
 				.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
@@ -803,6 +803,11 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		return krqdtApplicationLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 	}
+
+	private static final String SELECT_APP_FOR_KAF008 = "SELECT a FROM KrqdtApplication a WHERE"
+			+ " a.employeeID = :applicantSID"
+			+ " AND a.startDate <= :opAppEndDate AND a.opAppStartDate >= :startDate and a.appType IN (1,2,3,4,6,10)"
+			+ " ORDER BY a.inputDate DESC";
 
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請未承認申請を取得.ドメインモデル「申請」を取得する

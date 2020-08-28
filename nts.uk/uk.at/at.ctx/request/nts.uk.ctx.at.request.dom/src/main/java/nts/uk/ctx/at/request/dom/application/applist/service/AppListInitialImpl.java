@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.ContentApp;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.WkTypeWkTime;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInitOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmploymentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyEmployeeAdapter;
@@ -196,7 +197,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 * 1 - 申請一覧リスト取得
 	 */
 	@Override
-	public AppListInfo getApplicationList(AppListExtractCondition param, int device, AppListInfo appListInfo) {
+	public AppListInitOutput getApplicationList(AppListExtractCondition param, int device, AppListInfo appListInfo) {
 		//申請一覧区分が申請 OR 承認-(Check xem là application hay aprove)
 		if (param.getAppListAtr().equals(ApplicationListAtr.APPLICATION)) {//申請
 			//アルゴリズム「申請一覧リスト取得申請」を実行する - 2
@@ -205,7 +206,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//アルゴリズム「申請一覧リスト取得承認」を実行する - 3
 			// appListInfo = this.getAppListByApproval(param, displaySet, device, lstAppType);
 		}
-		return appListInfo;
+		return new AppListInitOutput(param, appListInfo);
 	}
 
 	/**
@@ -667,7 +668,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	public ApplicationStatus countAppListApproval(List<ListOfApplication> listApp, ApplicationStatus appStatus) {
 		for (ListOfApplication appFull : listApp) {
 			int add = 1;
-			if(appFull.getAppTye() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && appFull.getOpComplementLeaveApp().isPresent()) {
+			if(appFull.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && appFull.getOpComplementLeaveApp().isPresent()) {
 				add = 2;
 			}
 			//承認状況＝否
@@ -1090,10 +1091,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		// 申請データを作成して申請一覧に追加 ( Tạo data application và thêm vào applicationList)
 		ListOfApplication result = new ListOfApplication();
+		result.setAppID(application.getAppID());
 		result.setPrePostAtr(application.getPrePostAtr().value);
 		result.setApplicantName(applicant.getBusinessName());
 		// result.setWorkplaceName(workplaceName);
-		result.setAppTye(application.getAppType());
+		result.setAppType(application.getAppType());
 		result.setApplicantCD(applicant.getEmployeeCode());
 		// result.setAppReason
 		result.setInputDate(application.getInputDate());

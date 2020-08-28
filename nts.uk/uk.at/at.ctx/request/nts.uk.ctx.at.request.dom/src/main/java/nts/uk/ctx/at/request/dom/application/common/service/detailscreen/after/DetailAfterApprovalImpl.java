@@ -11,6 +11,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.ApprovalMailSendCheck;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.service.NewRegisterMailSendCheck;
 import nts.uk.shr.com.context.AppContexts;
@@ -74,8 +75,10 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 		isAutoSendMail = true;
 		// アルゴリズム「承認処理後にメールを自動送信するか判定」を実行する ( Thực hiện thuật toán「Xác định có tự động gửi thư sau khi xử lý phê duyệt hay không」
 		// TODO: 申請設定 domain has changed!
+		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
 		ProcessResult processResult1 = approvalMailSendCheck.sendMail(
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0),
+				appTypeSetting,
 				application, 
 				allApprovalFlg);
 		autoSuccessMail.addAll(processResult1.getAutoSuccessMail());
@@ -84,7 +87,7 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 		// アルゴリズム「新規登録時のメール送信判定」を実行する ( Thực hiện thuật toán 「 Xác định gửi mail khi đăng ký mới」
 		// TODO: 申請設定 domain has changed!
 		ProcessResult processResult2 = newRegisterMailSendCheck.sendMail(
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0),
+				appTypeSetting,
 				application, 
 				phaseNumber);
 		autoSuccessMail.addAll(processResult2.getAutoSuccessMail());

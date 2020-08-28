@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAt
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AppCommonDomainServiceRegisterImp implements AppCommonDomainServiceRegister {
@@ -68,9 +69,11 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 		}
 //		2-3.新規画面登録後の処理
 		// TODO: 申請設定 domain has changed!
+		AppTypeSetting appTypeSetting = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().orElse(null);
 		return newAfterRegister.processAfterRegister(
 				application.getAppID(),
-				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings().get(0),
+				appTypeSetting,
 				appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().isMailServerSet());
 
 	}
