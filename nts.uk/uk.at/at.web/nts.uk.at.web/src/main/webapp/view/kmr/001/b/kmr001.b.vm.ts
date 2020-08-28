@@ -20,7 +20,7 @@ module nts.uk.at.kmr001.b {
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         model : KnockoutObservable<Reservation> = ko.observable(new Reservation(0,0,0,0,0,0,0,'',0,0,
-            '',0,0,0));
+            '',null,,0));
         visibleContentChangeDeadline: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
         	super();
@@ -70,6 +70,15 @@ module nts.uk.at.kmr001.b {
             if (nts.uk.ui.errors.hasError()){
                 return;
             }
+            if(vm.model().reservationStartTime1() >= vm.model().reservationEndTime1()) {
+                $('#end1').ntsError('set', {messageId:'Msg_849'});
+                return;
+            }
+            if(vm.model().reservationStartTime2() && vm.model().reservationEndTime2() && vm.model().reservationFrameName2() && vm.model().reservationStartTime2() >= vm.model().reservationEndTime2()) {
+                $('#end2').ntsError('set', {messageId:'Msg_849'});
+                return;
+            }
+
             vm.$blockui("invisible");
             const dataRegister = {
                 operationDistinction : vm.model().operationDistinction(),
@@ -96,9 +105,6 @@ module nts.uk.at.kmr001.b {
         }
 
 	}
-
-
-
 
     interface ReservationChange{
         appId: number;
@@ -164,7 +170,13 @@ module nts.uk.at.kmr001.b {
                     return;
                 }
                 nts.uk.ui._viewModel.content.visibleContentChangeDeadline(false);
-            })
+            });
+            this.reservationEndTime1.subscribe(() => {
+                $('#end1').ntsError('clear');
+            });
+            this.reservationEndTime2.subscribe(() => {
+                    $('#end2').ntsError('clear');
+            });
         };
     }
 

@@ -2,6 +2,7 @@
 
 module nts.uk.at.kmr001.c {
     import parseTime = nts.uk.time.parseTime;
+    import confirm = nts.uk.ui.dialog.confirm;
 
     const API = {
         GET_LIST_WORK_LOCATION: 'screen/at/record/reservation/bento-menu/getworklocation',
@@ -139,30 +140,29 @@ module nts.uk.at.kmr001.c {
 
         deleteBento() {
             const vm = this;
-            vm.$dialog.confirm({ messageId: 'Msg_18' }).then(res => {
-                if (res == "yes"){
-                    vm.$blockui("invisible");
-                    let commandDelete ={
-                        histId: vm.history && vm.history.params.historyId ? vm.history.params.historyId : null,
-                        frameNo: vm.selectedBentoSetting()
-                    };
+            confirm({messageId: "Msg_18"}).ifYes(() => {
+                vm.$blockui("invisible");
+                let commandDelete ={
+                    histId: vm.history && vm.history.params.historyId ? vm.history.params.historyId : null,
+                    frameNo: vm.selectedBentoSetting()
+                };
 
-                    vm.$ajax(API.DELETE_BENTO, commandDelete).done(() => {
-                        vm.$dialog.info({ messageId: "Msg_16" }).then(function () {
-                            vm.reloadPage();
-                            vm.model( new BentoMenuSetting(
-                                '',  null,
-                                false,  false,
-                                null,  null,
-                                vm.workLocationList()[0].id
-                            ));
-                            vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
-                            vm.$blockui("clear");
-                        });
-                    }).fail(function (error) {
-                        vm.$dialog.error({ messageId: error.messageId });
-                    }).always(() => vm.$blockui("clear"));
-                }
+                vm.$ajax(API.DELETE_BENTO, commandDelete).done(() => {
+                    vm.$dialog.info({ messageId: "Msg_16" }).then(function () {
+                        vm.reloadPage();
+                        vm.model( new BentoMenuSetting(
+                            '',  null,
+                            false,  false,
+                            null,  null,
+                            vm.workLocationList()[0].id
+                        ));
+                        vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
+                        vm.$blockui("clear");
+                    });
+                }).fail(function (error) {
+                    vm.$dialog.error({ messageId: error.messageId });
+                }).always(() => vm.$blockui("clear"));
+            }).ifNo(() => {
             });
         }
 
@@ -170,6 +170,7 @@ module nts.uk.at.kmr001.c {
             const vm = this,
             model = this.model();
             $(".nts-input").trigger("validate");
+            $(".ntsControl").trigger("validate");
             if (nts.uk.ui.errors.hasError()){
                 return;
             }
@@ -335,9 +336,9 @@ module nts.uk.at.kmr001.c {
                             '',  null,
                             false,  false,
                             null,  null,
-                            vm.workLocationList()[0].id
+                            vm.workLocationList().length > 0 ? vm.workLocationList()[0].id : ""
                         ));
-                        vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
+                        vm.selectedWorkLocationCode(vm.workLocationList().length > 0 ? vm.workLocationList()[0].id : "");
                         vm.$blockui('clear');
                     }
                     nts.uk.ui.errors.clearAll();
@@ -347,19 +348,36 @@ module nts.uk.at.kmr001.c {
                 });
             }).fail(function (error) {
                 vm.$dialog.error({ messageId: error.messageId });
-                vm.columnBento([
-                    { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
-                    { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325 },
-                ]);
-                let array: Array<any> = [];
-                _.range(1, 41).forEach(item =>
-                    array.push(new ItemBentoByCompany(
-                        item.toString(),
-                        "",
-                    ))
-                );
-                vm.itemsBento(array);
+                if(vm.operationDistinction() == 1) {
+                    let array: Array<any> = [];
+                    _.range(1, 41).forEach(item =>
+                        array.push(new ItemBentoByLocation(
+                            item.toString(),
+                            "",
+                            "",
+                        ))
+                    );
+                    vm.itemsBento(array);
+                } else if(vm.operationDistinction() == 0) {
+                    let array: Array<any> = [];
+                    _.range(1, 41).forEach(item =>
+                        array.push(new ItemBentoByCompany(
+                            item.toString(),
+                            "",
+                        ))
+                    );
+                    vm.itemsBento(array);
+                }
                 vm.isLasted(false);
+                vm.operationDistinction(0);
+                vm.model( new BentoMenuSetting(
+                    '',  null,
+                    false,  false,
+                    null,  null,
+                    ''
+                ));
+                vm.start('');
+                vm.end('')
             }).always(() => this.$blockui("clear"));
         }
     }
