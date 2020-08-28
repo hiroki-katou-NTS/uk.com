@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
@@ -129,7 +130,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// check not setting
 		lstDomain.forEach(domain -> {
-			if (StringUtil.isNullOrEmpty(domain.getWorkTypeCode().v(), true)) {
+			if (StringUtil.isNullOrEmpty(domain.getWorkInformation().getWorkTypeCode().v(), true)) {
 				throw new BusinessException("Msg_148");
 			}
 		});
@@ -137,7 +138,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// check setting work type
 		lstDomain.forEach(domain -> {
 			Optional<WorkType> worktype = this.workTypeRepository.findByPK(companyId,
-					domain.getWorkTypeCode().v());
+					domain.getWorkInformation().getWorkTypeCode().v());
 
 			// not exist data
 			if (!worktype.isPresent()) {
@@ -152,9 +153,9 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// check setting work time
 		lstDomain.forEach(domain -> {
-			if (!StringUtil.isNullOrEmpty(domain.getWorkingCode().v(), true)) {
+			if (!StringUtil.isNullOrEmpty(domain.getWorkInformation().getWorkTimeCode().v(), true)) {
 				Optional<WorkTimeSetting> worktime = this.workTimeRepository.findByCode(companyId,
-						domain.getWorkingCode().v());
+						domain.getWorkInformation().getWorkTimeCode().v());
 
 				// not exist data
 				if (!worktime.isPresent()) {
@@ -170,8 +171,8 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// check pair work type and work time
 		lstDomain.forEach(domain -> {
-			this.basicScheduleService.checkPairWorkTypeWorkTime(domain.getWorkTypeCode().v(),
-					domain.getWorkingCode().v());
+			this.basicScheduleService.checkPairWorkTypeWorkTime(domain.getWorkInformation().getWorkTypeCode().v(),
+					domain.getWorkInformation().getWorkTimeCode().v());
 		});
 
 		// command to domain
@@ -227,8 +228,8 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// domain update all, add all collection
 		lstDomain.forEach(domainsetting -> {
 			
-			if (StringUtils.isEmpty(domainsetting.getWorkingCode().v())){
-				domainsetting.setWorkingCode(null);
+			if (StringUtils.isEmpty(domainsetting.getWorkInformation().getWorkTimeCode().v())){
+				domainsetting.setWorkInformation(new WorkInformation(null,domainsetting.getWorkInformation().getWorkTimeCode().v()));
 			}
 			
 			// check exist of domain update
