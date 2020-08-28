@@ -77,7 +77,7 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 				AtomTask atomTask = RegisterExtBudgetDailyService.signUp(require, targetOrg,
 						new ExtBudgetActItemCode(command.getItemCode()),
 						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
-						Optional.ofNullable(new ExtBudgetTime(valueTime.intValue())));
+						Optional.ofNullable(valueTime != null ? new ExtBudgetTime(valueTime.intValue()) : null));
 				transaction.execute(() -> {
 					atomTask.run();
 				});
@@ -87,8 +87,8 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			for (DateAndValueMap item : dateAndValueMap) {
 				AtomTask atomTask = RegisterExtBudgetDailyService.signUp(require, targetOrg,
 						new ExtBudgetActItemCode(command.getItemCode()),
-						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
-						Optional.ofNullable(new ExtBudgetMoney(Integer.parseInt(item.getValue()))));
+						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"), Optional.ofNullable(
+								item.getValue() != "" ? new ExtBudgetMoney(Integer.parseInt(item.getValue())) : null));
 				transaction.execute(() -> {
 					atomTask.run();
 				});
@@ -97,10 +97,12 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			break;
 		case "人数":
 			for (DateAndValueMap item : dateAndValueMap) {
-				AtomTask atomTask = RegisterExtBudgetDailyService.signUp(require, targetOrg,
-						new ExtBudgetActItemCode(command.getItemCode()),
-						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
-						Optional.ofNullable(new ExtBudgetNumberPerson(Integer.parseInt(item.getValue()))));
+				AtomTask atomTask = RegisterExtBudgetDailyService
+						.signUp(require, targetOrg, new ExtBudgetActItemCode(command.getItemCode()),
+								GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
+								Optional.ofNullable(item.getValue() != ""
+										? new ExtBudgetNumberPerson(Integer.parseInt(item.getValue()))
+										: null));
 				transaction.execute(() -> {
 					atomTask.run();
 				});
@@ -108,10 +110,12 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 			break;
 		case "数値":
 			for (DateAndValueMap item : dateAndValueMap) {
-				AtomTask atomTask = RegisterExtBudgetDailyService.signUp(require, targetOrg,
-						new ExtBudgetActItemCode(command.getItemCode()),
-						GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
-						Optional.ofNullable(new ExtBudgetNumericalVal(Integer.parseInt(item.getValue()))));
+				AtomTask atomTask = RegisterExtBudgetDailyService
+						.signUp(require, targetOrg, new ExtBudgetActItemCode(command.getItemCode()),
+								GeneralDate.fromString(item.getDate(), "yyyy/MM/dd"),
+								Optional.ofNullable(item.getValue() != ""
+										? new ExtBudgetNumericalVal(Integer.parseInt(item.getValue()))
+										: null));
 				transaction.execute(() -> {
 					atomTask.run();
 				});
@@ -138,33 +142,40 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 		}
 
 	}
+
 	private Long convertVal(String value) {
-        String CHARACTER_COLON = ":";
-        int numberFirst = 1;
-        
-        // not have colon
-        if (!value.contains(CHARACTER_COLON)) {
-            // it's is number: 0 (mean 00:00 -> 00:59), 1 (mean 01:00 -> 01:59), ...  --> #86500
-            return Long.parseLong(value);
-        }
-        // check number colon character.
-        // error when format: hh:mm:ss
-        else if (StringUtils.countMatches(value, CHARACTER_COLON) > numberFirst) {
-            throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
-        }
-        
-        // format time of value: 99:00 (hh:mm)
-        String[] timeComponents = value.split(CHARACTER_COLON);
-        
-        // error when format: hh:
-        if (timeComponents.length <= numberFirst) {
-        	throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
-        }
-        
-        Integer HOUR = 60;
-        Long numberHour = Long.parseLong(timeComponents[0]);
-        Long numberMinute = Long.parseLong(timeComponents[1]);
-        return numberHour * HOUR + numberMinute;
-    }
+		if (value == null)
+			return null;
+		String CHARACTER_COLON = ":";
+		int numberFirst = 1;
+
+		// not have colon
+		if (!value.contains(CHARACTER_COLON)) {
+			// it's is number: 0 (mean 00:00 -> 00:59), 1 (mean 01:00 -> 01:59), ... -->
+			// #86500
+			if (value == "")
+				return null;
+
+			return Long.parseLong(value);
+		}
+		// check number colon character.
+		// error when format: hh:mm:ss
+		else if (StringUtils.countMatches(value, CHARACTER_COLON) > numberFirst) {
+			throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
+		}
+
+		// format time of value: 99:00 (hh:mm)
+		String[] timeComponents = value.split(CHARACTER_COLON);
+
+		// error when format: hh:
+		if (timeComponents.length <= numberFirst) {
+			throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
+		}
+
+		Integer HOUR = 60;
+		Long numberHour = Long.parseLong(timeComponents[0]);
+		Long numberMinute = Long.parseLong(timeComponents[1]);
+		return numberHour * HOUR + numberMinute;
+	}
 
 }

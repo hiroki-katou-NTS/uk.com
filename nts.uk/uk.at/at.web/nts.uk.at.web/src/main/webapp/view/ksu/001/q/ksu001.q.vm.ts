@@ -105,7 +105,7 @@ module nts.uk.at.view.ksu001.q {
 					}
 					return arr;
 				};
-				
+
 				self.daylist = self.getDaysArray(new Date(period.startDate), new Date(period.endDate));
 				self.arrayDate = self.daylist.map((v) => {
 					return moment(v).format("YYYY/MM/DD") + '  (' + moment(v).format('dd') + ')';
@@ -187,12 +187,10 @@ module nts.uk.at.view.ksu001.q {
 				command.itemCode = self.selectItemCode();
 				var dateValues = [];
 				self.listperiods().forEach((x) => {
-					if (x.value() != "") {
-						dateValues.push({
-							date: x.date().slice(0, 10),
-							value: x.value()
-						});
-					}
+					dateValues.push({
+						date: x.date().slice(0, 10),
+						value: x.value()
+					});
 				});
 				command.dateAndValues = dateValues;
 				command.type = self.labelQ32();
@@ -207,7 +205,7 @@ module nts.uk.at.view.ksu001.q {
 			}
 
 		}
-		
+
 		export class ExternalBudgetModel {
 			orgName: KnockoutObservable<string>;
 			externalBudgetItems: KnockoutObservableArray<any>;

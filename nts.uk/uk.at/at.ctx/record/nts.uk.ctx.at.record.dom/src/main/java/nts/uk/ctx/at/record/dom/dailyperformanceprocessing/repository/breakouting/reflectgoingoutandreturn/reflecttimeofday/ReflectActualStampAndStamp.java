@@ -49,7 +49,7 @@ public class ReflectActualStampAndStamp {
 	 * @param ymd  処理中の年月日
 	 * @param workTimeCode 処理中の年月日の就業時間帯コード
 	 */
-	public void reflect(TimeActualStamp timeActualStamp,Stamp stamp,boolean isReflectTimeStamp,TimeFrame timeFrame,GeneralDate ymd,WorkTimeCode workTimeCode) {
+	public TimeActualStamp reflect(TimeActualStamp timeActualStamp,Stamp stamp,boolean isReflectTimeStamp,TimeFrame timeFrame,GeneralDate ymd,WorkTimeCode workTimeCode) {
 		//if not (False←普通打刻反映するか＝False　AND　勤怠打刻(実打刻付き)．実打刻に値が入っている)
 		if(!(!isReflectTimeStamp && timeActualStamp.getActualStamp().isPresent())) {
 			
@@ -79,7 +79,7 @@ public class ReflectActualStampAndStamp {
 		//反映済み区分　←　true
 		stamp.setReflectedCategory(true);
 		
-		
+		return timeActualStamp;
 	}
 	
 	/**
