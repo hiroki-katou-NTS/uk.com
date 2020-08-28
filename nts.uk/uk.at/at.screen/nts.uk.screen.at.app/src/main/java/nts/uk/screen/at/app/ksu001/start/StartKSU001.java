@@ -121,6 +121,7 @@ public class StartKSU001 {
 			param51.setListShiftMasterNotNeedGetNew(new ArrayList<>());
 			param51.setShiftPaletteWantGet(new ShiftPaletteWantGet(param.shiftPalletUnit, param.pageNumberCom, param.pageNumberOrg));
 			param51.setGetActualData(param.getActualData);
+			param51.setUnit(param.unit);
 
 			DisplayInShiftResult resultStep51 = displayInShift.getData(param51);
 			listPageInfo = resultStep51.listPageInfo;

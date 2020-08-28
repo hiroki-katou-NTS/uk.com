@@ -109,8 +109,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         arrListCellLock = [];
         detailContentDeco = [];
         detailColumns = [];
-        dataBindGrid : any;
-       
+        
+        // data grid
+        listEmpInfo = [];
+        listWorkScheduleWorkInfor = [];
+        listWorkScheduleShift = [];
+        listPersonalConditions = [];
+        displayControlPersonalCond = {};
+        listDateInfo = [];
 
         constructor() {
             let self = this;
@@ -327,22 +333,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
 
             let param = {
-                isFirstLogin: item.isPresent() ? false : true,
                 viewMode: viewMode,
                 startDate: item.isPresent() ? self.dateTimePrev : '',
                 endDate: item.isPresent() ? self.dateTimeAfter : '',
-                workplaceId: item.isPresent() ? userInfor.workplaceId : '',
-                workplaceGroupId: item.isPresent() ? userInfor.workplaceGroupId : '',
                 shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
                 pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
                 pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
-                listSid: self.listSid()
+                listSid: self.listSid(),
+                unit: item.isPresent() ? userInfor.unit : 0,
             }
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
-                
+                console.log('userInfo');
+                console.log(data.dataBasicDto);
+
+                self.saveDataGrid(data);
+
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
                 
@@ -401,6 +409,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.heightGridSetting = '';
                 userInfor.unit = dataBasic.unit;
                 userInfor.workplaceId= dataBasic.workplaceId;
+                userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
                 userInfor.workPlaceName= dataBasic.targetOrganizationName;
                 userInfor.workType = {}; 
                 userInfor.workTime = {}; 
@@ -417,19 +426,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 viewMode : 'shift',
                 startDate: self.dateTimePrev,
                 endDate  : self.dateTimeAfter,
-                workplaceId     : userInfor.workplaceId,
-                workplaceGroupId: userInfor.workplaceGroupId,
                 shiftPalletUnit : userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
                 pageNumberCom   : userInfor.shiftPalettePageNumberCom,
                 pageNumberOrg   : userInfor.shiftPalettePageNumberOrg,
                 getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
-                listSid: self.listSid()
+                listSid: self.listSid(),
+                unit: item.isPresent() ? userInfor.unit : 0,
             };
             self.saveModeGridToLocalStorege('shift');
             self.visibleShiftPalette(true);
             self.visibleBtnInput(false);
             service.getDataOfShiftMode(param).done((data: IDataStartScreen) => {
+                
+                self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('shift');
                 
@@ -475,12 +485,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     viewMode: 'shortName',
                     startDate: self.dateTimePrev,
                     endDate: self.dateTimeAfter,
-                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false
+                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false,
+                    unit: item.isPresent() ? userInfor.unit : 0
                 };
             self.saveModeGridToLocalStorege('shortName');
             self.visibleShiftPalette(false);
             self.visibleBtnInput(false);
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
+                
+                self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('shortName');
                 // set data Header
@@ -507,12 +520,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 viewMode: 'time',
                 startDate: self.dateTimePrev,
                 endDate: self.dateTimeAfter,
-                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
+                unit: item.isPresent() ? userInfor.unit : 0,
             };
             self.saveModeGridToLocalStorege('time');
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
+                
+                self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('time');
                 // set data Header
@@ -529,6 +545,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
+        
+        saveDataGrid(data: any) {
+            let self = this;
+            self.listEmpInfo = data.listEmpInfo;
+            self.listWorkScheduleWorkInfor = data.listWorkScheduleWorkInfor;
+            self.listWorkScheduleShift = data.listWorkScheduleShift;
+            self.listPersonalConditions = data.listPersonalConditions;
+            self.displayControlPersonalCond = data.displayControlPersonalCond;
+            self.listDateInfo = data.listDateInfo;
+        }
 
         // binding ket qua cua <<ScreenQuery>> 初期起動の情報取得 
         bindingToHeader(data: IDataStartScreen) {
@@ -541,10 +567,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             // save data to local Storage
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor: IUserInfor = JSON.parse(data);
-                userInfor.workplaceId = dataBasic.workplaceId;
+                let userInfor: IUserInfor  = JSON.parse(data);
+                userInfor.unit             = dataBasic.unit;
+                userInfor.workplaceId      = dataBasic.workplaceId;
                 userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
-                userInfor.workPlaceName = dataBasic.targetOrganizationName;
+                userInfor.workPlaceName    = dataBasic.targetOrganizationName;
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
         }
@@ -955,7 +982,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 self.key = 0;
             }
-            self.dataBindGrid = result;
             return result;
         }
 
@@ -1906,48 +1932,50 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setShared("baseDate", ko.observable(self.dateTimeAfter()));
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/la/index.xhtml").onClosed(() => {
-                
-                
+                self.stopRequest(false);
+                self.getListEmpIdSorted().done(() => {
+                    self.stopRequest(true);
+                });
             });
         }
         
         // A1_12_20
         openMDialog(): void {
             let self = this;
-            setShared("KSU001M", {
-                listEmpData: self.listEmpData
-            });
+            setShared("KSU001M", self.listEmpData);
             $('#A1_12_1').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/m/index.xhtml").onClosed(() => {
                 self.stopRequest(false);
                 self.getListEmpIdSorted().done(() => {
-
                     self.stopRequest(true);
                 });
             });
         }
-        
+
         getListEmpIdSorted(): JQueryPromise<any> {
-            let self = this, dfd  = $.Deferred();
-            let leftmostDs        = [];
-            let middleDs          = [];
-            let detailColumns     = [];
-            let objDetailHeaderDs = {};
-            let detailHeaderDeco  = [];
-            let detailContentDs   = [];
-            let detailContentDeco = [];
-            let dataBindGrid      = self.dataBindGrid;
-            
+            let self = this, dfd = $.Deferred();
             let param = {
                 endDate: self.dateTimeAfter(),
-                sids: self.listSid()
+                listEmpInfo: self.listEmpInfo
             }
             service.getListEmpIdSorted(param).done((data) => {
                 // update lai grid
-                if(data.length > 0){
-                    
-                
-                
+                if (data.length > 0) {
+                    let listEmpInfo = data;
+                    let dataGrid: any = {
+                        listEmpInfo: data,
+                        listWorkScheduleWorkInfor: self.listWorkScheduleWorkInfor,
+                        listWorkScheduleShift: self.listWorkScheduleShift,
+                        listPersonalConditions: self.listPersonalConditions,
+                        displayControlPersonalCond: self.displayControlPersonalCond,
+                        listDateInfo: self.listDateInfo
+                    }
+
+                    let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
+
+                    self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), true, true, true);
+
+                    self.stopRequest(true);
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -1956,11 +1984,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
         
-        updateGridAfterOrderEmp(){
-            
-        
-        }
-
         compareArrByRowIndexAndColumnKey(a: any, b: any): any {
             return a.rowIndex == b.rowIndex && a.comlumnKey == b.comlumnKey;
         }

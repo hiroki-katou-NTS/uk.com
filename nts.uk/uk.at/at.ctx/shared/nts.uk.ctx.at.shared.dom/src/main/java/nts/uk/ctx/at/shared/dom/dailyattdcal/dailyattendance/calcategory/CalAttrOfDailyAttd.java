@@ -3,12 +3,15 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainObject;
+import nts.uk.ctx.at.shared.dom.calculationattribute.enums.DivergenceTimeAttr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcOfLeaveEarlySetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalcSetOfDivergenceTime;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalRaisingSalarySetting;
 
 /**
@@ -60,6 +63,22 @@ public class CalAttrOfDailyAttd implements DomainObject {
 
 		);
 		}
+	
+	// Đang để tạm lấy giá trị default để khỏi oẳng xử lý của Thanh dz
+	public static CalAttrOfDailyAttd defaultData() {
+		AutoCalFlexOvertimeSetting flexExcessTime = new AutoCalFlexOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
+		AutoCalRaisingSalarySetting rasingSalarySetting = new AutoCalRaisingSalarySetting(false, false);
+		AutoCalRestTimeSetting holidayTimeSetting = new AutoCalRestTimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
+		AutoCalOvertimeSetting overtimeSetting = new AutoCalOvertimeSetting(new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)), 
+				new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(0), AutoCalAtrOvertime.valueOf(0)));
+		AutoCalcOfLeaveEarlySetting leaveEarlySetting = new AutoCalcOfLeaveEarlySetting(false, false);
+		AutoCalcSetOfDivergenceTime divergenceTime = new AutoCalcSetOfDivergenceTime(DivergenceTimeAttr.valueOf(0));
 		
+		return new CalAttrOfDailyAttd(flexExcessTime, rasingSalarySetting, holidayTimeSetting, overtimeSetting, leaveEarlySetting, divergenceTime);
+	}
 		
 }

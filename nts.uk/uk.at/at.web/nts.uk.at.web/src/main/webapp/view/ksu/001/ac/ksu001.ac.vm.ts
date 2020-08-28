@@ -81,7 +81,6 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableCompany.subscribe((value) => {
-                console.log(value);
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStick = [];
 
@@ -152,7 +151,6 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableWorkplace.subscribe((value) => {
-                console.log(value);
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStickWkp = [];
                 // get listShiftMaster luu trong localStorage
@@ -452,7 +450,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 shiftPalletUnit: self.selectedpalletUnit(),
                 pageNumberCom: pageNumberSelected,
                 pageNumberOrg: pageNumberSelected,
-                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
             }
 
             service.getShiftPalletWhenChangePage(param).done((data) => {
@@ -621,7 +619,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 shiftPalletUnit: self.selectedpalletUnit(),
                 pageNumberCom: pageNumber,
                 pageNumberOrg: pageNumber,
-                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
             }
 
             service.getShiftPalletWhenChangePage(param).done((data) => {
@@ -698,8 +696,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                     shiftPalletUnit: self.selectedpalletUnit(),
                     pageNumberOrg: pageNumber,
                 },
-                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
-                workplaceGroupId: ''
+                unit            : userInfor.unit,
+                workplaceId     : self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
+                workplaceGroupId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 1 ? userInfor.workplaceGroupId : null )
             }
             nts.uk.ui.block.grayout();
             service.getShiftPallets(param).done((data) => {
@@ -728,7 +727,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 selectedTab: self.selectedpalletUnit() == 1 ? 'company' : 'workplace',
                 workplaceName: self.workplaceModeName,
                 workplaceCode: '',
-                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
                 listWorkType: __viewContext.viewModel.viewAB.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewAB.listWorkTime(),
                 selectedLinkButton: self.selectedpalletUnit() === 1 ? userInfor.shiftPalettePageNumberCom - 1 : userInfor.shiftPalettePageNumberOrg - 1,
@@ -741,12 +740,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 if (self.selectedpalletUnit() === 1) {
                     self.modeCompany(true);
                     self.getDataComPattern(pageNumber).done(() => {
-                        console.log("get data com done");
                     });
                 } else {
                     self.modeCompany(false);
                     self.getDataWkpPattern(pageNumber).done(() => {
-                        console.log("get data workplace done");
                     });
                 }
                 dfd.resolve(undefined);

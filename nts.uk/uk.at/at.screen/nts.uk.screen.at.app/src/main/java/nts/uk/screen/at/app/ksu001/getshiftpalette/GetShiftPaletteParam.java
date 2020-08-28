@@ -20,4 +20,5 @@ public class GetShiftPaletteParam {
 	public ShiftPaletteWantGet shiftPaletteWantGet; // ・取得したいシフトパレット：Optional<単位, ページ>  単位
 	public String workplaceId;     	         // ・対象組織：対象組織識別情報
 	public String workplaceGroupId; 	     // ・対象組織：対象組織識別情報
+	public int unit;
 }
