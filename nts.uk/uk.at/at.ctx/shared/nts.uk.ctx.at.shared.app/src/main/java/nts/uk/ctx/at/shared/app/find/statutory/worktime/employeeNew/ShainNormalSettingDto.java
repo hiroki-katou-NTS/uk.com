@@ -7,16 +7,17 @@ package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
 
 /**
  * The Class ShainNormalSettingDto.
  */
 
 @Data
+@AllArgsConstructor
 public class ShainNormalSettingDto {
 	
 	/** The employee id. */
@@ -31,22 +32,11 @@ public class ShainNormalSettingDto {
 	/** The statutory setting. */
 	private List<MonthlyUnitDto> statutorySetting;
 
-	/**
-	 * From domain.
-	 *
-	 * @param domain the domain
-	 * @return the shain normal setting dto
-	 */
-	public static ShainNormalSettingDto fromDomain(ShainNormalSetting domain) {
-		ShainNormalSettingDto dto = new ShainNormalSettingDto();
-		dto.setYear(domain.getYear().v());
-		dto.setCompanyId(AppContexts.user().companyId());
-		dto.setEmployeeId(domain.getEmployeeId().v());
+	public static <T extends MonthlyWorkTimeSet> ShainNormalSettingDto with (String cid, String sid,
+			int year, List<T> workTime) {
 		
-		List<MonthlyUnitDto> monthlyUnitdtos = domain.getStatutorySetting().stream().map(monthly -> {
-			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
-		}).collect(Collectors.toList());
-		dto.setStatutorySetting(monthlyUnitdtos);
-		return dto;
+		return new ShainNormalSettingDto(sid, year, cid, workTime.stream()
+				.map(c -> new MonthlyUnitDto(c.getYm().month(), c.getLaborTime().getLegalLaborTime().v()))
+				.collect(Collectors.toList()));
 	}
 }

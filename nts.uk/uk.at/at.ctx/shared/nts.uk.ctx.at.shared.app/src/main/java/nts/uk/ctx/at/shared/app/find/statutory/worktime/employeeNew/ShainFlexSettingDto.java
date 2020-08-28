@@ -4,15 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.employeeNew;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.app.command.statutory.worktime.common.MonthlyUnitDto;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.MonthlyUnit;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet;
 
 
 /**
@@ -20,6 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
  */
 
 @Data
+@AllArgsConstructor
 public class ShainFlexSettingDto{
 	
 	/** The employee id. */
@@ -41,27 +40,21 @@ public class ShainFlexSettingDto{
 	/** 所定時間. */
 	private List<MonthlyUnitDto> specifiedSetting;
 
-	/**
-	 * From domain.
-	 *
-	 * @param domain the domain
-	 * @return the shain flex setting dto
-	 */
-	public static ShainFlexSettingDto fromDomain(ShainFlexSetting domain) {
-		ShainFlexSettingDto dto = new ShainFlexSettingDto();
-		dto.setYear(domain.getYear().v());
-		dto.setCompanyId(AppContexts.user().companyId());
-		dto.setEmployeeId(domain.getEmployeeId().v());
+	/** 週平均時間. */
+	private List<MonthlyUnitDto> weekAvgSetting;
+	
+	public static <T extends MonthlyWorkTimeSet> ShainFlexSettingDto with (String cid, String sid,
+			int year, List<T> workTime) {
 		
-		Function<MonthlyUnit, MonthlyUnitDto> funMap = monthly -> {
-			return new MonthlyUnitDto(monthly.getMonth().v(), monthly.getMonthlyTime().v());
-		};
+		ShainFlexSettingDto dto = new ShainFlexSettingDto(sid, year, cid, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 		
-		List<MonthlyUnitDto> statutoryMonthlys = domain.getStatutorySetting().stream().map(funMap).collect(Collectors.toList());
-		dto.setStatutorySetting(statutoryMonthlys);
+		workTime.stream().forEach(wt -> {
+			
+			dto.getStatutorySetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getLegalLaborTime().v()));
+			dto.getSpecifiedSetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getWithinLaborTime().get().v()));
+			dto.getWeekAvgSetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getWeekAvgTime().get().v()));
+		});
 		
-		List<MonthlyUnitDto> specMonthlys = domain.getSpecifiedSetting().stream().map(funMap).collect(Collectors.toList());
-		dto.setSpecifiedSetting(specMonthlys);
 		return dto;
 	}
 }

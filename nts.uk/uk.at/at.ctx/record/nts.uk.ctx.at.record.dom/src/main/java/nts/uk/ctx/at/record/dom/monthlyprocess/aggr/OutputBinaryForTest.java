@@ -23,13 +23,13 @@ import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSetRepo;
 
 /**
  * テスト用バイナリデータ出力
@@ -45,13 +45,13 @@ public class OutputBinaryForTest implements OutputBinaryForTestInterface {
 	private HolidayAddtionRepository holidayAddition;
 	/** 通常勤務会社別月別実績集計設定 */
 	@Inject
-	private ComRegulaMonthActCalSetRepository comRegSetRepo;
+	private ComRegulaMonthActCalSetRepo comRegSetRepo;
 	/** 変形労働会社別月別実績集計設定 */
 	@Inject
-	private ComDeforLaborMonthActCalSetRepository comIrgSetRepo;
+	private ComDeforLaborMonthActCalSetRepo comIrgSetRepo;
 	/** フレックス会社別月別実績集計設定 */
 	@Inject
-	private ComFlexMonthActCalSetRepository comFlexSetRepo;
+	private ComFlexMonthActCalSetRepo comFlexSetRepo;
 	/** 時間外超過設定の取得 */
 	@Inject
 	private OutsideOTSettingRepository outsideOTSetRepo;

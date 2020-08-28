@@ -4,24 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.employmentnew;
 
-import java.util.Optional;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import lombok.val;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransLaborTime;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employmentNew.EmpTransWorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmpRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmpRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -31,25 +27,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmpStatWorkTimeSetCommand> {
 
-	/** The emp normal setting repository. */
+	/** The trans labor time repository. */
 	@Inject
-	private EmpNormalSettingRepository empNormalSettingRepository;
-	
-	/** The emp flex setting repository. */
+	private DeforLaborTimeEmpRepo transLaborTimeRepository;
+
+	/** The regular labor time repository. */
 	@Inject
-	private EmpFlexSettingRepository empFlexSettingRepository;
-	
-	/** The emp defor labor setting repository. */
+	private RegularLaborTimeEmpRepo regularLaborTimeRepository;
+
 	@Inject
-	private EmpDeforLaborSettingRepository empDeforLaborSettingRepository;
-	
-	/** The emp regular work time repository. */
-	@Inject
-	private EmpRegularWorkTimeRepository empRegularWorkTimeRepository;
-	
-	/** The emp spe defor labor time repository. */
-	@Inject
-	private EmpTransWorkTimeRepository empTransWorkTimeRepository;
+	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
 	/* 
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -62,51 +49,45 @@ public class SaveEmpStatWorkTimeSetCommandHandler extends CommandHandler<SaveEmp
 		String emplCode = command.getEmploymentCode();
 		String companyId = AppContexts.user().companyId();
 
-		EmpNormalSetting empNormalSetting = command.getNormalSetting().toEmpDomain(year, emplCode);
-		EmpFlexSetting empFlexSetting = command.getFlexSetting().toEmpDomain(year, emplCode);
-		EmpDeforLaborSetting empDeforLaborSetting = command.getDeforLaborSetting().toEmpDomain(year, emplCode);
-		EmpRegularLaborTime empRegularLaborTime = command.getRegularLaborTime().toEmpRegularTimeDomain(emplCode);
-		EmpTransLaborTime empTransLaborTime = command.getTransLaborTime().toEmpTransTimeDomain(emplCode);
+		val normalSetting = command.regular(companyId);
+		val flexSetting = command.flex(companyId);
+		val deforLaborSetting = command.defor(companyId);
+		val regularLaborTime = command.regurlarLabor(companyId);
+		val deforLaborTime = command.deforLabor(companyId);
 		
-		Optional<EmpNormalSetting> optEmpNormalSet = this.empNormalSettingRepository.find(companyId, emplCode, year);
-		// Check info EmpNormalSetting if exist -> update into db / not exist -> insert into DB
-		if(optEmpNormalSet.isPresent()){
-			this.empNormalSettingRepository.update(empNormalSetting);
+		val regulars = monthlyWorkTimeSetRepo.findEmployment(companyId, emplCode, LaborWorkTypeAttr.REGULAR_LABOR, year);
+		addOrUpdate(normalSetting, regulars);
+
+		val flex = monthlyWorkTimeSetRepo.findEmployment(companyId, emplCode, LaborWorkTypeAttr.FLEX, year);
+		addOrUpdate(flexSetting, flex);
+
+		val defor = monthlyWorkTimeSetRepo.findEmployment(companyId, emplCode, LaborWorkTypeAttr.DEFOR_LABOR, year);
+		addOrUpdate(deforLaborSetting, defor);
+
+		val optRegularTime = regularLaborTimeRepository.findById(companyId, emplCode);
+		if (optRegularTime.isPresent()) {
+			regularLaborTimeRepository.update(regularLaborTime);
 		} else {
-			this.empNormalSettingRepository.add(empNormalSetting);
-		}
-		
-		Optional<EmpFlexSetting> optEmpFlexSet = this.empFlexSettingRepository.find(companyId, emplCode, year);
-		if(optEmpFlexSet.isPresent()) {
-			this.empFlexSettingRepository.update(empFlexSetting);
-		} else {
-			this.empFlexSettingRepository.add(empFlexSetting);
-		}
-		
-		Optional<EmpDeforLaborSetting> optEmpDeforSet = this.empDeforLaborSettingRepository.find(companyId, emplCode, year);
-		// Check info EmpDeforLaborSetting if exist -> update into db / not exist -> insert into DB
-		if(optEmpDeforSet.isPresent()) {
-			this.empDeforLaborSettingRepository.update(empDeforLaborSetting);
-		} else {
-			this.empDeforLaborSettingRepository.add(empDeforLaborSetting);
-		}
-		
-		Optional<EmpRegularLaborTime> optEmpRegularSet = this.empRegularWorkTimeRepository.findById(companyId, emplCode);
-		// Check info EmpRegularLaborTime if exist -> update into db / not exist -> insert into DB
-		if(optEmpRegularSet.isPresent()){
-			this.empRegularWorkTimeRepository.update(empRegularLaborTime);
-		} else {
-			this.empRegularWorkTimeRepository.add(empRegularLaborTime);
-		}
-		
-		Optional<EmpTransLaborTime> optEmpTransSet = this.empTransWorkTimeRepository.find(companyId, emplCode);
-		// Check info EmpTransLaborTime if exist -> update into db / not exist -> insert into DB
-		if(optEmpTransSet.isPresent()) {
-			this.empTransWorkTimeRepository.update(empTransLaborTime);
-		} else {
-			this.empTransWorkTimeRepository.add(empTransLaborTime);
+			regularLaborTimeRepository.add(regularLaborTime);
 		}
 
+		val optDeforTime = transLaborTimeRepository.find(companyId, emplCode);
+		if (optDeforTime.isPresent()) {
+			transLaborTimeRepository.update(deforLaborTime);
+		} else {
+			transLaborTimeRepository.add(deforLaborTime);
+		}
+	}
+	
+	private void addOrUpdate (List<MonthlyWorkTimeSetEmp> n, List<MonthlyWorkTimeSetEmp> o) {
+		
+		n.stream().forEach(mwtn -> {
+			if (o.stream().filter(mwto -> mwto.getYm().equals(mwtn.getYm())).findFirst().isPresent()) {
+				monthlyWorkTimeSetRepo.update(mwtn);
+			} else {
+				monthlyWorkTimeSetRepo.add(mwtn);
+			}
+		});
 	}
 
 }

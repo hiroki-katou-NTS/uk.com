@@ -54,9 +54,6 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	private StampDakokuRepository stampDakokuRepo;
 
 	@Inject
-	protected WorkingConditionService workingConditionService;
-
-	@Inject
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 
 	@Inject
@@ -186,8 +183,8 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 		}
 
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
-			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
+			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
 
 	}

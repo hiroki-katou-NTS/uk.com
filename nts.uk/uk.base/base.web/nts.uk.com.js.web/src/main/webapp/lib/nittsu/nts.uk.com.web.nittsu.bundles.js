@@ -224,6 +224,69 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var devices;
+        (function (devices) {
+            var WS_URI = "ws://localhost:18080/pasori/";
+            var instance = null;
+            var callback = null;
+            var Felica = /** @class */ (function () {
+                function Felica() {
+                    var fc = this;
+                    // create socket for connect to c# app
+                    fc.socket = new WebSocket(WS_URI);
+                    fc.socket.onopen = function $open(evt) {
+                        if (callback) {
+                            callback('open', undefined, undefined);
+                        }
+                    };
+                    fc.socket.onclose = function $close(evt) {
+                        if (callback) {
+                            callback('close', undefined, undefined);
+                        }
+                    };
+                    fc.socket.onmessage = function $message(evt) {
+                        var json = JSON.parse(evt.data);
+                        if (!callback || json.Category.toUpperCase() !== "FELICA") {
+                            return;
+                        }
+                        // if message pass (send from felica app)
+                        switch (json.Command) {
+                            case 'S':
+                                callback('status', json.ReaderConnected, undefined);
+                                break;
+                            case 'C':
+                                callback('connect', undefined, undefined);
+                                break;
+                            case 'D':
+                                callback('disconnect', undefined, undefined);
+                                break;
+                            case 'R':
+                                callback('read', undefined, json.CardNo);
+                                break;
+                        }
+                    };
+                }
+                return Felica;
+            }());
+            // export only create method for Felica class
+            function felica(cb) {
+                // if reconnect, close old connect
+                if (instance && instance.socket.OPEN) {
+                    instance.socket.close();
+                }
+                // register callback function
+                callback = cb;
+                // create new instance (and new socket connection)
+                return instance = new Felica();
+            }
+            devices.felica = felica;
+        })(devices = uk.devices || (uk.devices = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
         var ntsNumber;
         (function (ntsNumber) {
             function isInteger(value, option) {
@@ -6456,7 +6519,7 @@ var nts;
                                     var $dialogContentDoc = $(this.lastElementChild.contentDocument);
                                     // catch press tab key in close button of dialog.
                                     $dialogDocument.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
+                                        var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
                                             var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
                                             if ($(evt.target).hasClass("ui-dialog-titlebar-close") && evt.shiftKey === false) {
@@ -6471,7 +6534,7 @@ var nts;
                                     });
                                     // catch press tab key for component in dialog.
                                     $dialogContentDoc.on("keydown", ":tabbable", function (evt) {
-                                        var code = evt.which || evt.keyCode;
+                                        var code = evt.which || evt.keyCode || -1;
                                         if (code.toString() === "9") {
                                             var focusableElements = _.sortBy($dialogContentDoc.find(":tabbable"), function (o) { return parseInt($(o).attr("tabindex")); });
                                             if ($(evt.target).is(focusableElements.last()) && evt.shiftKey === false) {
@@ -48676,7 +48739,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
     }
 };
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean() {
+function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
             $storage().then(function ($params) {
@@ -48693,7 +48756,7 @@ function bean() {
                         $mounted.apply($viewModel, []);
                     }
                 });
-                __viewContext.bind($viewModel);
+                __viewContext.bind($viewModel, dialogOption);
             });
         });
     };
@@ -48784,6 +48847,7 @@ BaseViewModel.prototype.$user = __viewContext['user'];
 BaseViewModel.prototype.$program = __viewContext['program'];
 var $date = {
     diff: 0,
+    tick: -1,
     now: function () {
         return Date.now();
     },
@@ -48791,11 +48855,15 @@ var $date = {
         return $date.now();
     }
 };
-request.ajax('/server/time/now').then(function (time) {
-    Object.defineProperty($date, 'diff', {
-        value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+var getTime = function () {
+    request.ajax('/server/time/now').then(function (time) {
+        _.extend($date, {
+            diff: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
+        });
     });
-});
+};
+// get date time now
+getTime();
 BaseViewModel.prototype.$date = Object.defineProperties($date, {
     now: {
         value: function $now() {
@@ -48805,6 +48873,14 @@ BaseViewModel.prototype.$date = Object.defineProperties($date, {
     today: {
         value: function $today() {
             return moment($date.now()).startOf('day').toDate();
+        }
+    },
+    interval: {
+        value: function $interval(interval) {
+            // clear default intervale
+            clearInterval($date.tick);
+            // set new interface
+            $date.tick = setInterval(getTime, interval);
         }
     }
 });
@@ -48984,7 +49060,8 @@ BaseViewModel.prototype.$window = Object.defineProperties({}, {
                     $storeSession(name, params);
                     // for old page
                     windows.setShared(name, params);
-                });
+                })
+                    .then(function () { return $storeSession(name); });
             }
         }
     }

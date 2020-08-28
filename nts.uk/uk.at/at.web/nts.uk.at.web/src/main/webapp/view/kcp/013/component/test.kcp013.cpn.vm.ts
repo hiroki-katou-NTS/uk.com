@@ -27,7 +27,7 @@ module nts.uk.at.view.kcp013.a.viewmodel {
 			return dfd.promise();
 		}
 		selectedWorkingHours(data, data2): void {
-			
+
 		}
 		public closeDialog(): void {
 			let self = this;

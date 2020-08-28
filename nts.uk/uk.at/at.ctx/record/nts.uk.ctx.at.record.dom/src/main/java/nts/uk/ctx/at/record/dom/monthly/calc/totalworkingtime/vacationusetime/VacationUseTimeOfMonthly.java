@@ -6,11 +6,10 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 月別実績の休暇使用時間
@@ -85,14 +84,11 @@ public class VacationUseTimeOfMonthly implements Cloneable, Serializable {
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
 	 * @param companySets 月別集計で必要な会社別設定
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
-	public void confirm(
-			DatePeriod datePeriod,
+	public void confirm(RequireM1 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyPerformance> attendanceTimeOfDailyMap,
 			Map<GeneralDate, WorkInfoOfDailyPerformance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonAggrCompanySettings companySets){
 		
 		// 年休使用時間を確認する
 		this.annualLeave.confirm(datePeriod, attendanceTimeOfDailyMap);
@@ -104,8 +100,7 @@ public class VacationUseTimeOfMonthly implements Cloneable, Serializable {
 		this.specialHoliday.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 代休使用時間を確認する
-		this.compensatoryLeave.confirm(datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
-				companySets, repositories);
+		this.compensatoryLeave.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap, companySets);
 	}
 	
 	/**
@@ -137,5 +132,9 @@ public class VacationUseTimeOfMonthly implements Cloneable, Serializable {
 		this.retentionYearly.addMinuteToUseTime(target.retentionYearly.getUseTime().v());
 		this.specialHoliday.addMinuteToUseTime(target.specialHoliday.getUseTime().v());
 		this.compensatoryLeave.addMinuteToUseTime(target.compensatoryLeave.getUseTime().v());
+	}
+	
+	public static interface RequireM1 extends CompensatoryLeaveUseTimeOfMonthly.RequireM1 {
+
 	}
 }

@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -85,6 +86,8 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.Short
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -93,7 +96,9 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM3;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -235,7 +240,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	private DetermineActualResultLock lockStatusService;
 	
 	@Inject
-	private ClosureService closureService;
+	private ClosureRepository closureRepository;
+	@Inject
+	private ShareEmploymentAdapter shrEmpAdapter;
 	
 	@Inject
 	private EmploymentAdapter employmentAdapter;
@@ -501,6 +508,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		val afterCalcRecord = calculateDailyRecordServiceCenter.calculateForclosure(createList,companySet ,closureList,executeLogId);
 		List<EmploymentHistoryImported> listEmploymentHis = this.employmentAdapter.getEmpHistBySid(cid, employeeId);
 		boolean checkNextEmp =false;
+		val cacheCarrier = new CacheCarrier();
 		//データ更新
 		for(ManageCalcStateAndResult stateInfo : afterCalcRecord.getLst()) {
 			// 締めIDを取得する
@@ -515,7 +523,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			}
 						LockStatus lockStatus = LockStatus.UNLOCK;
 						if(isCalWhenLock ==null || isCalWhenLock == false) {
-							Closure closureData = closureService.getClosureDataByEmployee(employeeId, stateInfo.getIntegrationOfDaily().getYmd());
+							Closure closureData = ClosureService.getClosureDataByEmployee(createClosureServiceImp(), cacheCarrier, employeeId, stateInfo.getIntegrationOfDaily().getYmd());
 							//アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
 							//実績ロックされているか判定する
 							lockStatus = lockStatusService.getDetermineActualLocked(cid, 
@@ -548,6 +556,26 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 //			upDateCalcState(stateInfo);
 //		}
 		return afterCalcRecord.getPs();
+	}
+	private RequireM3 createClosureServiceImp() {
+		return new ClosureService.RequireM3() {
+			
+			@Override
+			public Optional<Closure> closure(String companyId, int closureId) {
+				return closureRepository.findById(companyId, closureId);
+			}
+			
+			@Override
+			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+				return closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+			}
+			
+			@Override
+			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+					String employeeId, GeneralDate baseDate) {
+				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+		};
 	}
 
 	/**

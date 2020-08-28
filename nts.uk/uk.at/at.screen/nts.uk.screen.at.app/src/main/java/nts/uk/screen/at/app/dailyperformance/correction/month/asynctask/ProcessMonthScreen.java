@@ -7,7 +7,9 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceCorrectionProcessor;
 import nts.uk.screen.at.app.dailyperformance.correction.DailyPerformanceScreenRepo;
@@ -33,9 +35,9 @@ public class ProcessMonthScreen {
 
 	@Inject
 	private DailyPerformanceCorrectionProcessor processor;
-
-	@Inject
-	private ClosureService closureService;
+	
+    @Inject
+    private RecordDomRequireService requireService;
 
 	@Inject
 	private CheckIndentityMonth checkIndentityMonth;
@@ -62,7 +64,9 @@ public class ProcessMonthScreen {
 											param.getStateParam().getPeriod())));
 			if (param.employeeTarget.equals(sId)) {
 				// 社員に対応する締め期間を取得する
-				DatePeriod period = closureService.findClosurePeriod(param.employeeTarget, param.dateRange.getEndDate());
+				DatePeriod period = ClosureService.findClosurePeriod(
+						requireService.createRequire(), new CacheCarrier(),
+						param.employeeTarget, param.dateRange.getEndDate());
 
 				// パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
 				if (period == null || !period.contains(param.dateRange.getEndDate())) {

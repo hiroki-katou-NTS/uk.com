@@ -16,8 +16,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.eclipse.persistence.exceptions.OptimisticLockException;
-
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -57,6 +58,8 @@ import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ReflectWorkInforDomainService;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.repository.RecreateFlag;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
@@ -70,6 +73,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM3;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
 
@@ -122,10 +126,9 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
     private DetermineActualResultLock lockStatusService;
     
     @Inject
-    private ClosureService closureService;
-    
-    @Inject
     private CheckProcessed checkProcessed;
+	@Inject
+	private ShareEmploymentAdapter shrEmpAdapter;
     
     
 	// =============== HACK ON (this) ================= //
@@ -197,6 +200,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		Collection<List<GeneralDate>> exectedList = ContextSupport.partitionBySize(listDayBetween, 7);
 		List<ProcessState> stateList = Collections.synchronizedList(new ArrayList<>());
         boolean checkNextEmp =false;
+        val cacheCarrier = new CacheCarrier();
 		for (List<GeneralDate> listDay : exectedList) {
 			for (GeneralDate day : listDay) {
                 if(checkNextEmp) {
@@ -211,7 +215,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
                 LockStatus lockStatus = LockStatus.UNLOCK;
                 //「ロック中の計算/集計する」の値をチェックする
                 if(executionLog.get().getIsCalWhenLock() == null || executionLog.get().getIsCalWhenLock() == false) {
-                    Closure closureData = closureService.getClosureDataByEmployee(employeeId, day);
+                    Closure closureData = ClosureService.getClosureDataByEmployee(createClosureServiceImp(), cacheCarrier, employeeId, day);
                     //アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
                     lockStatus = lockStatusService.getDetermineActualLocked(companyId, 
                             day, closureData.getClosureId().value, PerformanceType.DAILY);
@@ -428,6 +432,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 
 		List<ProcessState> process = new ArrayList<>();
 		boolean checkNextEmp = false;
+		val cacheCarrier = new CacheCarrier();
 		for(GeneralDate day: executeDate) {
 			if(checkNextEmp) {
 				continue;
@@ -443,7 +448,7 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
             LockStatus lockStatus = LockStatus.UNLOCK;
             //「ロック中の計算/集計する」の値をチェックする
             if(executionLog.get().getIsCalWhenLock() == null || executionLog.get().getIsCalWhenLock() == false) {
-                Closure closureData = closureService.getClosureDataByEmployee(employeeId, day);
+                Closure closureData = ClosureService.getClosureDataByEmployee(createClosureServiceImp(), cacheCarrier, employeeId, day);
                 //アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
                 lockStatus = lockStatusService.getDetermineActualLocked(companyId, 
                         day, closureData.getClosureId().value, PerformanceType.DAILY);
@@ -644,6 +649,27 @@ public class CreateDailyResultEmployeeDomainServiceImpl implements CreateDailyRe
 		}
 
 		return daysBetween;
+	}
+	
+	private RequireM3 createClosureServiceImp() {
+		return new ClosureService.RequireM3() {
+			
+			@Override
+			public Optional<Closure> closure(String companyId, int closureId) {
+				return closureRepository.findById(companyId, closureId);
+			}
+			
+			@Override
+			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
+				return closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
+			}
+			
+			@Override
+			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+					String employeeId, GeneralDate baseDate) {
+				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			}
+		};
 	}
 
 }

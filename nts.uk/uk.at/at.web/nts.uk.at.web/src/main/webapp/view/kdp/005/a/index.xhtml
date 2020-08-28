@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../share/kdp.main.css" />
+			<com:scriptfile path="../../share/kdpbutton.vm.js" />
+			<com:scriptfile path="../../share/kdpclock.vm.js" />
+			<com:stylefile path="kdp005.a.main.css" />
+			<com:scriptfile path="kdp005.a.model.js" />
+			<com:scriptfile path="kdp005.a.vm.js" />
+			<com:scriptfile path="kdp005.a.service.js" />
+			<com:scriptfile path="kdp005.a.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" class="cf">
+				<div id="kdp002a" class="cf">
+					<div class="pull-left" id="stamp-input">
+
+						<!-- clock -->
+						<div data-bind="component: {
+							name: 'stamp-clock',
+							params: {
+								setting: {
+									show:true,
+									textColor: stampSetting().textColor || '#ffffff',
+									backGroundColor:  stampSetting().backGroundColor || '#0033cc'
+								},
+								events: {
+									setting:{
+										show: btnChangeCompany,
+										click:  function(data, event) { settingUser($vm)}
+									} ,
+									company:{
+										show: btnHistory,
+										click:  function(data, event) { checkHis($vm) }
+									} 
+								}
+							}
+						}">
+						</div>
+
+						<!-- stamp -->						
+					<div data-bind="if:isUsed" class="panel" style="padding: 0 10px 0px 10px">
+						<div class="explanatoryText" data-bind="style: {'color': stampTab().stampPageCommentColor }">
+							<pre data-bind="text: stampTab().stampPageComment"></pre>
+						</div>
+						<ui:include src="stamp-tab.xhtml" />
+					</div>
+					<div style="padding: 0 10px 10px 80px; min-width: 66vmin;" data-bind="ifnot:isUsed">
+						<span class=" not_used_label label " data-bind="text:errorMessage"></span>
+					</div>
+					</div>
+
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

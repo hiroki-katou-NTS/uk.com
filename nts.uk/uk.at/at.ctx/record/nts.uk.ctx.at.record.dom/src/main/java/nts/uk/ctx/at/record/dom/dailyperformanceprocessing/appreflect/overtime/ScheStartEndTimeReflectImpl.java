@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
@@ -37,11 +38,11 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 	@Inject
 	private WorkUpdateService scheWork;
 	@Inject
-	private WorkTypeIsClosedService workTypeService;
-	@Inject
 	private EditStateOfDailyPerformanceRepository editDailyPerforRespository;
 	@Inject
 	private WorkInformationRepository workInforRepository;
+	@Inject 
+	private RecordDomRequireService requireService;
 	@Override
 	public void reflectScheStartEndTime(OvertimeParameter para,
 			WorkTimeTypeOutput timeTypeData, IntegrationOfDaily dailyPerfor) {
@@ -314,7 +315,7 @@ public class ScheStartEndTimeReflectImpl implements ScheStartEndTimeReflect {
 			return false;
 		}
 		//打刻自動セット区分を取得する
-		if(workTypeService.checkStampAutoSet(workTypeCode, AttendanceOfficeAtr.ATTENDANCE)) {
+		if(WorkTypeIsClosedService.checkStampAutoSet(requireService.createRequire(), workTypeCode, AttendanceOfficeAtr.ATTENDANCE)) {
 			//編集状態を取得する
 			//勤怠項目ID: 予定項目ID=予定開始時刻(枠番)の項目ID 3??
 			Integer attendentId;

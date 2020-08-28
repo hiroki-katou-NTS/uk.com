@@ -48,46 +48,10 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.Work
 public class RegisterDailyPerformanceInfoService {
 
 	@Inject
-	private AffiliationInforOfDailyPerforRepository affiliationInforOfDailyPerforRepository;
-
-	@Inject
-	private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
-
-	@Inject
-	private TemporaryTimeOfDailyPerformanceRepository temporaryTimeOfDailyPerformanceRepository;
-
-	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
 
 	@Inject
-	private OutingTimeOfDailyPerformanceRepository outingTimeOfDailyPerformanceRepository;
-
-	@Inject
-	private StampRepository stampRepository;
-
-	@Inject
 	private InsertWorkInfoOfDailyPerforService insertWorkInfoOfDailyPerforService;
-
-	@Inject
-	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
-
-	@Inject
-	private CalAttrOfDailyPerformanceRepository calAttrOfDailyPerformanceRepository;
-
-	@Inject
-	private AttendanceLeavingGateOfDailyRepo attendanceLeavingGateOfDailyRepo;
-
-	@Inject
-	private PCLogOnInfoOfDailyRepo pCLogOnInfoOfDailyRepo;
-
-	@Inject
-	private WorkTypeOfDailyPerforRepository workTypeOfDailyPerforRepository;
-
-	@Inject
-	private ShortTimeOfDailyPerformanceRepository shortTimeOfDailyPerformanceRepository;
-	
-	@Inject
-	private CreateEmployeeDailyPerError createEmployeeDailyPerError;
 	
 	@Inject
 	private DailyRecordTransactionService dailyTransaction;

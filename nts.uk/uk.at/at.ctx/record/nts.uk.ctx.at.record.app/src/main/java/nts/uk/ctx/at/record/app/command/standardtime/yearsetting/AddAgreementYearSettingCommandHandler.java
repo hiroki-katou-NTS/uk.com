@@ -11,6 +11,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
@@ -30,7 +31,7 @@ public class AddAgreementYearSettingCommandHandler extends CommandHandlerWithRes
 	private AgreementYearSetDomainService agreementYearSetDomainService;
 	
 	@Inject
-	private WorkingConditionService workingConditionService;
+	private RecordDomRequireService requireService;
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<AddAgreementYearSettingCommand> context) {
@@ -48,7 +49,9 @@ public class AddAgreementYearSettingCommandHandler extends CommandHandlerWithRes
 		
 //		agreementYearSetting.validate();
 		
-		Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(command.getEmployeeId(), GeneralDate.today());
+		Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService
+				.findWorkConditionByEmployee(requireService.createRequire(), 
+						command.getEmployeeId(), GeneralDate.today());
 
 		return this.agreementYearSetDomainService.add(agreementYearSetting, workingConditionItem);
 	}

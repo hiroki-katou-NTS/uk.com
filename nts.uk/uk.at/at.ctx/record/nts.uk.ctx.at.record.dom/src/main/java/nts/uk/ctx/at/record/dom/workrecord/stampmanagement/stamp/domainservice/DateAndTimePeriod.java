@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
-import nts.arc.time.ClockHourMinute;
+import nts.arc.time.clock.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;

@@ -29,10 +29,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ReflectStampOu
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
@@ -73,11 +73,11 @@ import nts.uk.shr.com.i18n.TextResource;
 @Stateless
 public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomainService {
 
+	@Inject 
+	private RecordDomRequireService requireService;
+	
 	@Inject
 	private ReflectWorkInforDomainService reflectWorkInforDomainService;
-
-	@Inject
-	private WorkInformationRepository workInformationRepository;
 
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
@@ -138,9 +138,6 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 	
 	@Inject
 	private ReflectWorkInforDomainService inforService;
-	
-	@Inject
-	private WorkingConditionService workingConditionService;
 	
 	@Inject
 	private ReflectStampDomainService reflectStampDomainServiceImpl;
@@ -466,7 +463,7 @@ public class ResetDailyPerforDomainServiceImpl implements ResetDailyPerforDomain
 							stampOutput.getReflectStampOutput().setAttendanceLeavingGateOfDaily(new AttendanceLeavingGateOfDaily(employeeID, processingDate, converter2.attendanceLeavingGate().orElse(null)));
 							stampOutput.getReflectStampOutput().setPcLogOnInfoOfDaily(new PCLogOnInfoOfDaily(employeeID, processingDate, converter2.pcLogInfo().orElse(null)));
 							// 社員の労働条件を取得する
-							Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(employeeID, processingDate);
+							Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService.findWorkConditionByEmployee(requireService.createRequire(), employeeID, processingDate);
 							if(workingConditionItem.isPresent()){
 								// 自動打刻セットする
 								TimeLeavingOfDailyPerformance timeLeavingOptional = stampBeforeReflection.getTimeLeavingOfDailyPerformance();

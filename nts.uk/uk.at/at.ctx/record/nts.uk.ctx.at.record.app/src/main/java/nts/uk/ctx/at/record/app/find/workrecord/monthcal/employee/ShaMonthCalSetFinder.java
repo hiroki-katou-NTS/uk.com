@@ -3,9 +3,9 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.employee;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -13,15 +13,15 @@ public class ShaMonthCalSetFinder {
 
 	/** The sha defor labor month act cal set repo. */
 	@Inject
-	private ShaDeforLaborMonthActCalSetRepository shaDeforLaborMonthActCalSetRepo;
+	private ShaDeforLaborMonthActCalSetRepo shaDeforLaborMonthActCalSetRepo;
 
 	/** The sha flex month act cal set repo. */
 	@Inject
-	private ShaFlexMonthActCalSetRepository shaFlexMonthActCalSetRepo;
+	private ShaFlexMonthActCalSetRepo shaFlexMonthActCalSetRepo;
 
 	/** The sha regula month act cal set repo. */
 	@Inject
-	private ShaRegulaMonthActCalSetRepository shaRegulaMonthActCalSetRepo;
+	private ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo;
 
 	/**
 	 * get All Work record extracing condition by errorAlarmCheckID
@@ -31,9 +31,9 @@ public class ShaMonthCalSetFinder {
 
 		ShaMonthCalSetDto dto = ShaMonthCalSetDto.builder().build();
 
-		shaDeforLaborMonthActCalSetRepo.find(cid, sId).ifPresent(domain -> domain.saveToMemento(dto));
-		shaFlexMonthActCalSetRepo.find(cid, sId).ifPresent(domain -> domain.saveToMemento(dto));
-		shaRegulaMonthActCalSetRepo.find(cid, sId).ifPresent(domain -> domain.saveToMemento(dto));
+		shaDeforLaborMonthActCalSetRepo.find(cid, sId).ifPresent(domain -> dto.transfer(domain));
+		shaFlexMonthActCalSetRepo.find(cid, sId).ifPresent(domain -> dto.transfer(domain));
+		shaRegulaMonthActCalSetRepo.find(cid, sId).ifPresent(domain -> dto.transfer(domain));
 
 		return dto;
 	}

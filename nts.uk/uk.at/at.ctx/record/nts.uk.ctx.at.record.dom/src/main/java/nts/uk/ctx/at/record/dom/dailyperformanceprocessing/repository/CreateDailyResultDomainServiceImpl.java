@@ -28,6 +28,7 @@ import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSetti
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
@@ -107,9 +108,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
 
 	@Inject
-	private WorkingConditionService workingConditionService;
-
-	@Inject
 	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
 
 	@Inject
@@ -138,6 +136,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
@@ -444,8 +444,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		// 加給利用単位．個人使用区分
 		if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get().getPersonalUseAtr() == UseAtr.USE) {
 			// 社員の労働条件を取得する
-			Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService
-					.findWorkConditionByEmployee(employeeId, date);
+			Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService
+					.findWorkConditionByEmployee(requireService.createRequire(), employeeId, date);
 
 			if (workingConditionItem.isPresent() && workingConditionItem.get().getTimeApply().isPresent()) {
 				// ドメインモデル「加給設定」を取得する

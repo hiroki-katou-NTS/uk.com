@@ -599,6 +599,7 @@ project (':at.screen:nts.uk.screen.at.app') {
 		
 		compile(group: 'com.query', name: 'nts.uk.query.app', version: version)
 		compile(group: 'com.query', name: 'nts.uk.query.model', version: version)
+		compile(group: 'com.query', name: 'nts.uk.query.pub', version: version)
 	}
 }
 

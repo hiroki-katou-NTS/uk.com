@@ -1,16 +1,20 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.workinfo;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.scherec.workinfo.GetWorkInfo;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：勤務情報を取得する
@@ -21,37 +25,50 @@ public class GetWorkInfoImpl implements GetWorkInfo {
 
 	/** 日別実績の勤務情報 */
 	@Inject
-	public WorkInformationRepository workInformationOfDaily;
+	WorkInformationRepository workInformationOfDaily;
+	
+	/** 実績の勤務情報を取得する */
+	public Optional<WorkInformation> getRecord(CacheCarrier cacheCarrier, 
+			String employeeId, GeneralDate ymd) {
+		return initWorkInfoList(cacheCarrier, employeeId, new DatePeriod(ymd, ymd)).getRecord(ymd);
+	}
+	
+	/** 予定の勤務情報を取得する */
+	public Optional<WorkInformation> getSchedule(CacheCarrier cacheCarrier, 
+			String employeeId, GeneralDate ymd) {
+		
+		return initWorkInfoList(cacheCarrier, employeeId, new DatePeriod(ymd, ymd)).getSchedule(ymd);
+	}
+	
+	/** 実績の勤務情報を取得する */
+	public Map<GeneralDate, WorkInformation> getRecordMap(CacheCarrier cacheCarrier, 
+			String employeeId, DatePeriod period) {
 
-	/** 実績の勤務情報を取得する */
-	@Override
-	public Optional<WorkInformation> getRecord(String employeeId, GeneralDate ymd) {
-		WorkInfoList workInfoList = new WorkInfoList(
-				employeeId, new DatePeriod(ymd, ymd), this.workInformationOfDaily);
-		return workInfoList.getRecord(ymd);
+		return initWorkInfoList(cacheCarrier, employeeId, period).getRecordMap();
 	}
 	
 	/** 予定の勤務情報を取得する */
-	@Override
-	public Optional<WorkInformation> getSchedule(String employeeId, GeneralDate ymd) {
-		WorkInfoList workInfoList = new WorkInfoList(
-				employeeId, new DatePeriod(ymd, ymd), this.workInformationOfDaily);
-		return workInfoList.getSchedule(ymd);
+	public Map<GeneralDate, WorkInformation> getScheduleMap(CacheCarrier cacheCarrier, 
+			String employeeId, DatePeriod period) {
+
+		return initWorkInfoList(cacheCarrier, employeeId, period).getScheduleMap();
 	}
 	
-	/** 実績の勤務情報を取得する */
-	@Override
-	public Map<GeneralDate, WorkInformation> getRecordMap(String employeeId, DatePeriod period) {
-		WorkInfoList workInfoList = new WorkInfoList(
-				employeeId, period, this.workInformationOfDaily);
-		return workInfoList.getRecordMap();
+	private WorkInfoList initWorkInfoList(CacheCarrier cacheCarrier, 
+			String employeeId, DatePeriod period) {
+		
+		return new WorkInfoList(new RequireM1(cacheCarrier), 
+				employeeId, period);
 	}
 	
-	/** 予定の勤務情報を取得する */
-	@Override
-	public Map<GeneralDate, WorkInformation> getScheduleMap(String employeeId, DatePeriod period) {
-		WorkInfoList workInfoList = new WorkInfoList(
-				employeeId, period, this.workInformationOfDaily);
-		return workInfoList.getScheduleMap();
+	@AllArgsConstructor
+	class RequireM1 implements WorkInfoList.RequireM1 {
+		
+		CacheCarrier cacheCarrier;
+
+		@Override
+		public List<WorkInfoOfDailyPerformance> dailyWorkInfo(String employeeId, DatePeriod datePeriod) {
+			return workInformationOfDaily.findByPeriodOrderByYmd(employeeId, datePeriod);
+		}
 	}
 }

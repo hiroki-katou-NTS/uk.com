@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex;
 
 import lombok.Getter;
 import lombok.val;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.AggregateTimeSetting;
 
 /**
  * フレックス時間勤務の法定内集計設定

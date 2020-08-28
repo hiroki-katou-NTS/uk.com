@@ -37,9 +37,8 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	@Inject
 	private JudgmentWorkTypeService judgmentService;
 	@Inject
-	private WorkTypeIsClosedService workTypeRepo;
-	@Inject
 	private PreOvertimeReflectService preOTService;
+
 	@Override
 	public void absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
 		CommonReflectParameter absencePara = param.getCommon();

@@ -401,7 +401,7 @@ public class TotalWorkingTime {
 																							 recordWorkTimeCode,
 																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 																							 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-																							 recordClass.getPersonalInfo().getWorkingSystem(),
+																							 conditionItem.getLaborSystem(),
 																							 recordClass.getWorkDeformedLaborAdditionSet(),
 																							 recordClass.getWorkFlexAdditionSet(),
 																							 recordClass.getWorkRegularAdditionSet(),
@@ -429,7 +429,7 @@ public class TotalWorkingTime {
 					 																				  recordWorkTimeCode,
 					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),  //日別実績の計算区分.遅刻早退の自動計算設定.遅刻
 					 																				  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),  //日別実績の計算区分.遅刻早退の自動計算設定.早退
-					 																				  recordClass.getPersonalInfo().getWorkingSystem(),
+					 																				  conditionItem.getLaborSystem(),
 					 																				  recordClass.getWorkDeformedLaborAdditionSet(),
 					 																				  recordClass.getWorkFlexAdditionSet(),
 					 																				  recordClass.getWorkRegularAdditionSet(),
@@ -1061,7 +1061,7 @@ public class TotalWorkingTime {
 																	  workTimeCode,
 																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 																	  recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-																	  recordClass.getPersonalInfo().getWorkingSystem(),
+																	  conditionItem.getLaborSystem(),
 																	  recordClass.getWorkDeformedLaborAdditionSet(),
 																	  recordClass.getWorkFlexAdditionSet(),
 																	  recordClass.getWorkRegularAdditionSet(),
@@ -1087,7 +1087,7 @@ public class TotalWorkingTime {
 																														 workTimeCode,
 																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLate(),
 																														 recordClass.getIntegrationOfDaily().getCalAttr().getLeaveEarlySetting().isLeaveEarly(),
-																														 recordClass.getPersonalInfo().getWorkingSystem(),
+																														 conditionItem.getLaborSystem(),
 																														 recordClass.getWorkDeformedLaborAdditionSet(),
 																														 recordClass.getWorkFlexAdditionSet(),
 																														 recordClass.getWorkRegularAdditionSet(),
@@ -1129,7 +1129,7 @@ public class TotalWorkingTime {
 
 
 	public TotalWorkingTime SpecialHolidayCalculationForOotsuka(ManageReGetClass recordClass, VacationClass vacationClass, WorkType workType, Optional<WorkTimeDailyAtr> workTimeDailyAtr, Optional<SettingOfFlexWork> flexCalcMethod, BonusPayAutoCalcSet bonusPayAutoCalcSet, List<CompensatoryOccurrenceSetting> eachCompanyTimeSet, WorkingConditionItem conditionItem, Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo, DeductLeaveEarly leaveLateSet) {
-		switch(recordClass.getPersonalInfo().getWorkingSystem()) {
+		switch(conditionItem.getLaborSystem()) {
 			case FLEX_TIME_WORK:
 				AttendanceTimeOfExistMinus flexTime = this.excessOfStatutoryTimeOfDaily.getOverTimeWork().get().getFlexTime().getFlexTime().getTime();
 				if(flexTime.lessThan(0))
