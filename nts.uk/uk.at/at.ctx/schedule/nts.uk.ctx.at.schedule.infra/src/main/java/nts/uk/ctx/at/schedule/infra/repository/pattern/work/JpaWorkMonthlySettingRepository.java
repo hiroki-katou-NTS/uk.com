@@ -19,6 +19,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK_;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet_;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaWorkMonthlySettingRepository.
@@ -186,7 +188,9 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	 */
 	private KscmtWorkMonthSet toEntity(WorkMonthlySetting domain){
 		KscmtWorkMonthSet entity = new KscmtWorkMonthSet();
+		val cd = AppContexts.user().contractCode();
 		domain.saveToMemento(new JpaWorkMonthlySettingSetMemento(entity));
+		entity.setContractCd(cd);
 		return entity;
 	}
 	

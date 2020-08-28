@@ -13,6 +13,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaScheduleCreateContentRepository.
@@ -59,8 +60,8 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 	}
 
 	@Override
-	public void add(ScheduleCreateContent domain, String companyId, String employeeId, String executionId,String contractCode) {
-		this.commandProxy().insert(this.toEntity(domain,companyId,employeeId,executionId,contractCode));
+	public void addNew(ScheduleCreateContent domain) {
+		this.commandProxy().insert(this.toEntityNew(domain));
 	}
 
 	/**
@@ -72,10 +73,20 @@ public class JpaScheduleCreateContentRepository extends JpaRepository
 	private KscdtScheExeContent toEntity(ScheduleCreateContent domain){
 		KscdtScheExeContent entity = new KscdtScheExeContent();
 		domain.saveToMemento(new JpaScheduleCreateContentSetMemento(entity));
+
 		return entity;
 	}
-	private KscdtScheExeContent toEntity(ScheduleCreateContent domain,String companyId, String employeeId, String executionId,String contractCode){
-		val entity = KscdtScheExeContent.toEntityNew(domain, companyId,  employeeId,  executionId,contractCode);
+
+	/**
+	 * To entity use : Domain KscdtScheExeContent, cid, cd.
+	 * @param domain
+	 * @return
+	 */
+	private KscdtScheExeContent toEntityNew(ScheduleCreateContent domain){
+		KscdtScheExeContent entity = new KscdtScheExeContent();
+		val cid = AppContexts.user().companyId();
+		val cd = AppContexts.user().contractCode();
+		entity.toEntityNew(domain,cid,cd);
 		return entity;
 	}
 	/**

@@ -47,7 +47,8 @@ public interface ScheduleCreatorRepository {
 	 * @param domains the domains
 	 */
 	public void saveAll(List<ScheduleCreator> domains);
-	public void saveAll(List<ScheduleCreator> domains,String contractCode );
+
+	public void saveAllNew(List<ScheduleCreator> domains );
 
 	
 	/**

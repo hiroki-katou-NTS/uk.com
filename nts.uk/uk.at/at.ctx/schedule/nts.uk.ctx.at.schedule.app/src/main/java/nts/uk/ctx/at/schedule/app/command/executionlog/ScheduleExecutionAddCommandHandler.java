@@ -52,26 +52,27 @@ public class ScheduleExecutionAddCommandHandler extends CommandHandlerWithResult
 
         // get company id
         String companyId = loginUserContext.companyId();
-        String contractCode = AppContexts.user().contractCode();
-
-         //get employee id
-        String employeeId = loginUserContext.employeeId();
 
         // auto executionId
         String executionId = IdentifierUtil.randomUniqueId();
 
         // get command
         ScheduleExecutionAddCommand command = context.getCommand();
+        //get employee id
+        String employeeId = command.getEmployeeIdLogin();
+        if(employeeId==null||employeeId.isEmpty()){
+            employeeId = loginUserContext.employeeId();
+        }
         // command to domain
         ScheduleExecutionLog domain = command.toDomain(companyId, employeeId, executionId);
 
-        // save domain
-        this.executionLogRepository.add(domain,contractCode);
-        // save domain
-        this.createContentRepository.add(command.toDomainContentNew(executionId),companyId,employeeId,executionId, contractCode);
+        // save domain update add : cid, cd 28/8/2020
+        this.executionLogRepository.addNew(domain);
+        // save domain update not use memento pattern.
+        this.createContentRepository.addNew(command.toDomainContentNew(executionId));
 
-        // save all domain creator
-        this.creatorRepository.saveAll(command.toDomainCreator(executionId),contractCode);
+        // save all domain creator update add : cid, cd 28/8/2020
+        this.creatorRepository.saveAllNew(command.toDomainCreator(executionId));
 
         // setup data respone
         respone.setEmployeeId(employeeId);

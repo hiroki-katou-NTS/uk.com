@@ -48,7 +48,7 @@ public interface ScheduleExecutionLogRepository {
 	 *            the domain
 	 */
 	public void add(ScheduleExecutionLog domain);
-	public void add(ScheduleExecutionLog domain,String contractCode);
+	public void addNew(ScheduleExecutionLog domain);
 
 
 	/**

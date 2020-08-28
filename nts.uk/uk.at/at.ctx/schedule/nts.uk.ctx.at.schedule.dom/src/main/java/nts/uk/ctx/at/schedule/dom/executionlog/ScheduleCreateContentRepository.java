@@ -38,5 +38,5 @@ public interface ScheduleCreateContentRepository {
 	 * Update KSC001-26/8/2020
 	 * @param domain
 	 */
-	public void add(ScheduleCreateContent domain,String companyId,String employeeId,String executionId,String contractCode);
+	public void addNew(ScheduleCreateContent domain);
 }

@@ -47,20 +47,12 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
-
-    /**
-     * 排他バージョン
-     */
-    @NotNull
-    @Column(name = "EXCLUS_VER")
-    private Integer exclusVer;
-
     /**
      * 契約コード
      */
     @NotNull
     @Column(name = "CONTRACT_CD")
-    private String contractCD;
+    private String contractCd;
 
     /**
      * 会社ID
@@ -160,11 +152,9 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
     public KscdtScheExeContent() {
     }
 
-    public static KscdtScheExeContent toEntityNew(ScheduleCreateContent domain, String companyId, String employeeId, String executionId, String contractCode) {
-
+    public  KscdtScheExeContent toEntityNew(ScheduleCreateContent domain, String companyId, String contractCode) {
         return new KscdtScheExeContent(
-                executionId,
-                exclusVerConst,
+                domain.getExecutionId(),
                 contractCode,
                 companyId,
                 domain.getConfirm(),
@@ -173,13 +163,13 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
                 domain.getSpecifyCreation().getCopyStartDate().get(),
                 domain.getSpecifyCreation().getReferenceMaster().get().value,
                 domain.getSpecifyCreation().getMonthlyPatternCode().get().toString(),
-                domain.getRecreateCondition().getLimitTarget(),
-                domain.getRecreateCondition().getNarrowingEmployees().get().getTransfer(),
-                domain.getRecreateCondition().getNarrowingEmployees().get().getLeaveAbsence(),
-                domain.getRecreateCondition().getNarrowingEmployees().get().getShortWorking(),
-                domain.getRecreateCondition().getNarrowingEmployees().get().getPersonChanged(),
-                domain.getRecreateCondition().getConfirmed(),
-                domain.getRecreateCondition().getHandCorrection());
+                domain.getRecreateCondition().getReTargetAtr(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetTransfer(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetLeave(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetShortWork(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetLaborChange(),
+                domain.getRecreateCondition().getReOverwriteConfirmed(),
+                domain.getRecreateCondition().getReOverwriteRevised());
     }
 
     /**

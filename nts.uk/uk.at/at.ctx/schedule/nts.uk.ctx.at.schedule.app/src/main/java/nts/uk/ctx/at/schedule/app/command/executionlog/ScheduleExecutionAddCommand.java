@@ -15,9 +15,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * command clone ScheduleExecutionLogAddCommand update 28/8/2020
+ */
 @Getter
 @Setter
 public class ScheduleExecutionAddCommand {
+    /**
+     * The employee ids. 1
+     */
+    private String employeeIdLogin;
     /**
      * The period start date.
      */
@@ -32,8 +39,6 @@ public class ScheduleExecutionAddCommand {
      * The process execution atr.
      */
     private int creationType;
-    ;
-
     /**
      * The reTargetAtr.
      */
@@ -59,43 +64,43 @@ public class ScheduleExecutionAddCommand {
     private boolean reTargetShortWork;
 
     /**
-     * The reTargetLaborChange. 8
+     * The reTargetLaborChange.
      */
     private boolean reTargetLaborChange;
 
     /**
-     * The reOverwriteConfirmed. 7
+     * The reOverwriteConfirmed.
      */
     private boolean reOverwriteConfirmed;
 
     /**
-     * The reOverwriteRevised.6
+     * The reOverwriteRevised.
      */
     private boolean reOverwriteRevised;
 
     /**
-     * The monthlyPatternId. 5
+     * The monthlyPatternId.
      */
     private String monthlyPatternId;
 
     /**
-     * The confirm. 4
+     * The confirm.
      */
     private boolean beConfirmed;
     ;
 
     /**
-     * The create method atr.3
+     * The create method atr.
      */
     private int creationMethod;
 
     /**
-     * The copy start date. 2
+     * The copy start date.
      */
     private GeneralDate copyStartYmd;
 
     /**
-     * The employee ids. 1
+     * The employee ids. 
      */
     private List<String> employeeIds;
 
@@ -110,7 +115,7 @@ public class ScheduleExecutionAddCommand {
     public ScheduleExecutionLog toDomain(String companyId, String employeeId, String executionId ) {
         return new ScheduleExecutionLog(new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
     }
-
+    // command to domain: not use memento pattern.
     public ScheduleCreateContent toDomainContentNew(String executionId) {
         val monthly = new MonthlyPatternCode(monthlyPatternId);
         val creMethod = CreationMethod.valueOf(creationMethod);
