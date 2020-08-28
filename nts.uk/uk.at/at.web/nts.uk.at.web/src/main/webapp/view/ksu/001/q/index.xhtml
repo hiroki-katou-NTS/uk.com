@@ -16,7 +16,7 @@
 			<script type='text/javascript'>
 				var dialogSize = {
 					width : 440,
-					height : 480
+					height : 490
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -48,7 +48,7 @@
 							</div>
 						</div>
 						<hr />
-						<div>
+						<div style="display: flex;">
 							<div style="margin-left: 40px; margin-top: 10px"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3704')}</div>
 							<div tabindex="4" style="margin-left: 20px; margin-top: 15px"
@@ -86,7 +86,7 @@
 											<td data-bind="text: date"></td>
 											<td
 												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; width: 121px; height: 21px; border-radius: 0px;"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsTimeEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetTime',
@@ -98,7 +98,7 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow-x: hidden; width: 121px; height: 21px; border-radius: 0px;"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetMoney',
@@ -108,7 +108,7 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; width: 121px; height: 21px; border-radius: 0px;"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetNumberPerson',
@@ -118,7 +118,7 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; width: 121px; height: 21px; border-radius: 0px;"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
 													value: $parent.value,
 													constraint: 'ExtBudgetNumericalVal',
