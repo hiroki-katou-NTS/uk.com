@@ -61,7 +61,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		// 手修正を基に戻す
 		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.createDailyConverter().setData(afterDomain)
 				.completed();
-		afterConverter.merge(beforeItems);
+		if(!beforeItems.isEmpty()) afterConverter.merge(beforeItems);
 
 		return afterConverter.toDomain();
 	}

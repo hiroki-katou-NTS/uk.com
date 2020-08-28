@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -21,7 +22,7 @@ public class StampReflectRangeOutput {
 	private TimeZoneOutput goOut;
 	
 	// 出退勤
-	private List<StampReflectTimezoneOutput> lstStampReflectTimezone;
+	private List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
 	
 	// 打刻取得範囲
 	private TimeZoneOutput stampRange;

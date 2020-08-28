@@ -129,18 +129,19 @@ public class StampServiceImpl implements StampDomainService {
 		if(lstStampCard.isEmpty()) {
 			return new ArrayList<>();
 		}
-		int timeStart = s.getStampRange().getStart().v();
-		int timeEnd = s.getStampRange().getEnd().v();
+		int timeStart = s.getStampRange().getStart() !=null?s.getStampRange().getStart().v():0;
+		int timeEnd = s.getStampRange().getEnd()!=null?s.getStampRange().getEnd().v():0;
 		GeneralDateTime start = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0)
 				.addMinutes(timeStart);
 
-		GeneralDateTime end = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 23, 59, 59)
+		GeneralDateTime end = GeneralDateTime.ymdhms(date.year(), date.month(), date.day(), 0, 0, 0)
 				.addMinutes(timeEnd);
 		// ドメインモデル「打刻」を取得する (Lấy dữ liệu)
 		if (flag == EmbossingExecutionFlag.ALL) {
-			listStamp = stampDakokuRepository.getByDateTimeperiod(companyId, start, end);
+			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end);
 		} else {
-			listStamp = stampDakokuRepository.getByDateTimeperiod(companyId, start, end).stream()
+			listStamp = stampDakokuRepository.getByDateTimeperiod(lstStampCard.stream().map(c->c.getStampNumber().v()).collect(Collectors.toList()),companyId, start, end)
+					.stream()
 					.filter(c -> !c.isReflectedCategory()).collect(Collectors.toList());
 		}
 		listStamp.stream().sorted(Comparator.comparing(Stamp::getStampDateTime)).collect(Collectors.toList());
