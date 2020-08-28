@@ -26,6 +26,7 @@
 			<button class="proceed" tabindex="2" data-bind="click:
 				registerBentoReserveSetting,
 				text: $i18n('KMR001_4'),
+				enable: $root.errors.isEmpty
 			"/>
 			<hr/>
 			<div class="break-line"></div>
@@ -135,7 +136,7 @@
 				<tr>
 					<td>
 						<!--B20_1-->
-						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_68')}}">締め時刻１</div>
+						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_68')}"></div>
 					</td>
 					<td>
 						<!--B20_2-->
