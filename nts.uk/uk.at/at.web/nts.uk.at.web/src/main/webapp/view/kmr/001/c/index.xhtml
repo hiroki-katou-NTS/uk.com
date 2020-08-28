@@ -28,7 +28,7 @@
 				<button tabindex="2" class="proceed sidebar-button" data-bind="
 					click: registerBentoMenu,
 					text: $i18n('KMR001_4'),
-					enable: $root.errors.isEmpty &amp;&amp; vm.isLasted()
+					enable: $root.errors.isEmpty || vm.isLasted()
 				"/>
 				<!--C1_3-->
 				<button class="danger" tabindex="3" data-bind="
