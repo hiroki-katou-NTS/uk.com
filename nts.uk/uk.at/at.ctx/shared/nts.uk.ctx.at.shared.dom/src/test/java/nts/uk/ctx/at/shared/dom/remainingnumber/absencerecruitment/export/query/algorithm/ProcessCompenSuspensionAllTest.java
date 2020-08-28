@@ -91,14 +91,14 @@ public class ProcessCompenSuspensionAllTest {
 //				require.getClosureDataByEmployee(SID, (GeneralDate) any);
 //				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
-				require.getFirstMonth(CID);
-				result = new CompanyDto(11);
-
-				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", 
-						new SubstVacationSetting(ManageDistinct.YES,
-						ExpirationTime.THIS_MONTH, 
-						ApplyPermission.ALLOW)));
+//				require.getFirstMonth(CID);
+//				result = new CompanyDto(11);
+//
+//				require.findEmpById(anyString, anyString);
+//				result = Optional.of(new EmpSubstVacation(CID, "00", 
+//						new SubstVacationSetting(ManageDistinct.YES,
+//						ExpirationTime.THIS_MONTH, 
+//						ApplyPermission.ALLOW)));
 
 			}
 		};

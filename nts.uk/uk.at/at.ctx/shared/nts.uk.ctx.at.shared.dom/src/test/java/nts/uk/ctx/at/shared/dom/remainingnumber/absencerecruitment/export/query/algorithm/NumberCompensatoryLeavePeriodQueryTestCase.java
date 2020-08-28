@@ -169,8 +169,8 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 //				require.getClosureDataByEmployee(SID, (GeneralDate) any);
 //				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
-				require.getFirstMonth(CID);
-				result = new CompanyDto(11);
+//				require.getFirstMonth(CID);
+//				result = new CompanyDto(11);
 			}
 		};
 
@@ -257,8 +257,8 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 //				require.getClosureDataByEmployee(SID, (GeneralDate) any);
 //				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
-				require.getFirstMonth(CID);
-				result = new CompanyDto(11);
+//				require.getFirstMonth(CID);
+//				result = new CompanyDto(11);
 			}
 		};
 
@@ -332,8 +332,8 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 //				require.getClosureDataByEmployee(SID, (GeneralDate) any);
 //				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
-				require.getFirstMonth(CID);
-				result = new CompanyDto(11);
+//				require.getFirstMonth(CID);
+//				result = new CompanyDto(11);
 			}
 		};
 
@@ -406,8 +406,8 @@ public class NumberCompensatoryLeavePeriodQueryTestCase {
 //				require.getClosureDataByEmployee(SID, (GeneralDate) any);
 //				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
 
-				require.getFirstMonth(CID);
-				result = new CompanyDto(11);
+//				require.getFirstMonth(CID);
+//				result = new CompanyDto(11);
 			}
 		};
 
