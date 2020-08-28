@@ -1,9 +1,12 @@
 #table-top {
     width: 100%;
 }
+#F1_1 {
+    margin-left: 18px;
+}
 #day-off {
     float: right;
-    margin-right: 5px;
+    margin-right: 35px;
 }
 .nts-calendar-container {
     width: 26%;
@@ -27,8 +30,8 @@
     height: 336px !important;
 }
 .label-day-off {
-    background-color: #fabf8f;
-    color: #fabf8f;
+    background-color: #ffbf8f;
+    color: #ffbf8f;
     width: 20px !important;
 }
 .ksm004-f .holiday-calendar{

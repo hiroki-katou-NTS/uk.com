@@ -26,6 +26,14 @@
     margin: 0 -2px;
 }
 
+.holiday-calendar .day:first-child {
+    margin: 0 -2px 0 0;
+}
+
+.holiday-calendar .day:last-child {
+    margin: 0 0 0 -2px;
+}
+
 .holiday-calendar .week .name-day {
  background-color: #f2f2f2;
 }
@@ -39,7 +47,7 @@
 }
 
 .holiday-calendar .month .day.holiday {
-    background-color: #fabf8f;
+    background-color: #ffbf8f;
 }
 
 .holiday-calendar .month .day.out-month {
