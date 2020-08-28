@@ -9,12 +9,15 @@ import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCommand;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommand;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ReflectAfterApproveAsyncCmdHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
+import nts.uk.ctx.at.request.app.find.application.AppScreenExportService;
+import nts.uk.ctx.at.request.app.find.application.AppScreenQuery;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListExtractConditionDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInfoDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInitDto;
@@ -52,6 +55,9 @@ public class ApplicationListWebservice extends WebService{
 	@Inject
 	private ReflectAfterApproveAsyncCmdHandler reflect;
 
+	@Inject
+	private AppScreenExportService exportService;
+
 	@POST
 	/**
 	 * get all list application
@@ -72,28 +78,28 @@ public class ApplicationListWebservice extends WebService{
 		return new AppListInfo();
 	}
 	// Refactor 4 CMMS45
-	
+
 	@POST
 	@Path("getapplistMobile")
 	public ApplicationListDtoMobile getAppListMobile(StartMobileParam param) {
 		return this.appListFinder.getList(param.getListAppType(), param.getAppListExtractConditionDto());
 	}
-	
+
 	@POST
 	@Path("getapplistFilterMobile")
 	public ApplicationListDtoMobile getAppListFilterMobille(FilterMobileParam param) {
-		ApplicationListDtoMobile applicationListDtoMobile = param.getApplicationListDtoMobile();	
+		ApplicationListDtoMobile applicationListDtoMobile = param.getApplicationListDtoMobile();
 		return this.appListFinder.getListFilter(applicationListDtoMobile);
-		
+
 	}
-	
+
 	@POST
 	@Path("getapplistFilterByAppTypeMobile")
 	public ApplicationListDtoMobile getAppListFilterByAppTypeMobille() {
 		return null;
-		
+
 	}
-	
+
 	// Refactor 4 CMMS45
 	/**
 	 * get before After Restriction
@@ -141,17 +147,22 @@ public class ApplicationListWebservice extends WebService{
 	public void reflectAfterApprove(List<String> command){
 		reflect.handle(command);
 	}
-	
+
 	@POST
 	@Path("findByPeriod")
 	public AppListInitDto findByPeriod(AppListExtractConditionDto param) {
 		return this.appListFinder.findByPeriod(param);
 	}
-	
+
 	@POST
 	@Path("findByEmpIDLst")
 	public AppListInfoDto findByEmpIDLst(AppListExtractConditionDto param) {
 		return this.appListFinder.findByEmpIDLst(param);
 	}
 
+	@POST
+	@Path("print")
+	public ExportServiceResult print(AppScreenQuery query) {
+		return exportService.start(query);
+	}
 }
