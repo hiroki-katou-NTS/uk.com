@@ -37,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numb
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
@@ -158,7 +159,7 @@ public class EmploymentSystemFinder {
 					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
 					itemDto.setExpiredInCurrentMonth(false);
 					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
-						UnbalanceCompensation itemOccurrent = (UnbalanceCompensation) item;
+						UnbalanceVacation itemOccurrent = (UnbalanceVacation) item;
 						// 	・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
 						itemDto.setOccurrenceDate(itemOccurrent.getDateOccur().getDayoffDate().orElse(null));
 						// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数

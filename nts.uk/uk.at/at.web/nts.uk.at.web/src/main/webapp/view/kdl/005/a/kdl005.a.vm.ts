@@ -1,8 +1,9 @@
 module nts.uk.at.view.kdl005.a {
-    import blockUI = nts.uk.ui.block;
 
     export module viewmodel {
-        export class ScreenModel {
+
+        @bean()
+        export class ScreenModel extends ko.ViewModel {
             //Grid data
             listComponentOption: any;
             selectedCode: KnockoutObservable<string> = ko.observable('');
@@ -18,10 +19,10 @@ module nts.uk.at.view.kdl005.a {
 
             legendOptions: any;
             kdl005Data: any;
-            employeeInfo: KnockoutObservable<string>;
+            employeeInfo: KnockoutObservable<string> = ko.observable("");
 
             isManagementSection: KnockoutObservable<boolean> = ko.observable(true);
-            dataItems: KnockoutObservableArray<any>;
+            dataItems: KnockoutObservableArray<any> = ko.observableArray([]);
 
             value01: KnockoutObservable<string> = ko.observable("");
             value02: KnockoutObservable<string> = ko.observable("");
@@ -32,22 +33,22 @@ module nts.uk.at.view.kdl005.a {
             hint04: KnockoutObservable<string> = ko.observable("");
             expirationDateText: KnockoutObservable<string> = ko.observable("");
 
-            constructor() {
+            created(params: any) {
                 const vm = this;
-
                 vm.kdl005Data = nts.uk.ui.windows.getShared("KDL005_DATA");
-
                 vm.employeeInfo = ko.observable("");
-
                 vm.dataItems = ko.observableArray([]);
-
-                this.legendOptions = {
+                vm.legendOptions = {
                     items: [
                         { labelText: nts.uk.resource.getText("KDL005_20") },
                         { labelText: nts.uk.resource.getText("KDL005_22") }
                     ]
                 };
-                blockUI.invisible();
+            }
+
+            mounted() {
+                const vm = this;
+                vm.$blockui('grayout');
                 service.getEmployeeList(vm.kdl005Data).done((data: any) => {
                     if (data.employeeBasicInfo.length > 1) {
                         vm.selectedCode.subscribe((value) => {
@@ -91,31 +92,25 @@ module nts.uk.at.view.kdl005.a {
                             isShowSelectAllButton: vm.isShowSelectAllButton(),
                             maxRows: 12
                         };
-
-
                         $('#component-items-list').ntsListComponent(vm.listComponentOption)
                         .done(() => {
                             $('#component-items-list').focusComponent();
                             // Employment List
                             vm.employeeList($('#component-items-list').getDataList());
                         });
-
-                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else if (data.employeeBasicInfo.length == 1) {
                         // vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
-
                         vm.onSelectEmployee(
                             data.employeeBasicInfo[0].employeeId,
                             vm.kdl005Data.baseDate,
                             data.employeeBasicInfo[0].employeeCode,
                             data.employeeBasicInfo[0].businessName,
                         );
-                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     } else {
                         vm.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
-                        $("#date-fixed-table").ntsFixedTable({ height: 155 });
                     }
-                }).always(() => blockUI.clear());
+                })
+                .always(() => vm.$blockui('clear'));
             }
 
             // 社員リストの先頭を選択
@@ -123,17 +118,19 @@ module nts.uk.at.view.kdl005.a {
                 const vm = this;
                 // Show employee name
                 vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
-                blockUI.invisible();
+                vm.$blockui('grayout');
                 // Get employee data
                 service.getDetailsConfirm(id, baseDate)
-                    .done(function(data) {
+                    .then((data) => {
                         if (data.deadLineDetails && data.deadLineDetails.isManaged) {
                             vm.expirationDateText(ExpirationDate[data.deadLineDetails.expirationTime]);
                         }
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
                         vm.isManagementSection(data.isManagementSection);
-                    }).always(() => blockUI.clear());
+                        vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
+                    })
+                    .always(() => vm.$blockui('clear'));
             }
 
             startPage(): JQueryPromise<any> {
