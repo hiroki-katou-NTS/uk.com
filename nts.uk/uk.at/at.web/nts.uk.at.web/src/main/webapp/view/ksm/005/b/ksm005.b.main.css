@@ -58,3 +58,11 @@
 .hr-line {
 	margin: 5px 0 0;
 }
+
+#lstHolidaysPattern tr:nth-child(6) td,
+#lstHolidaysPattern tr:nth-child(7) td{
+	color: #e51010;
+}
+#lstHolidaysPattern tr:nth-child(6) td:first-child {
+	color: #0D86D1;
+}

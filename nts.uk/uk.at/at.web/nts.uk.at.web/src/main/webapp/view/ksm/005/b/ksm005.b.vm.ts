@@ -81,7 +81,7 @@ module nts.uk.at.view.ksm005.b {
 		            dismissible: true
 	            });
 
-	            self.findAllMonthlyPattern();
+	            //self.findAllMonthlyPattern();
 	            self.getWeeklyWorkPattern();
             }
 
@@ -483,11 +483,34 @@ module nts.uk.at.view.ksm005.b {
 
 	        public  getWeeklyWorkPattern() {
 		        let self = this,
-		            weeklyWork = { listWorkTypeCd: [], worktimeCode: null };
+		            weeklyWork = { listWorkTypeCd: [], worktimeCode: null },
+			        workTypeCode: Array<string> = [],
+			        weeklyWorkDayPatternDtos: Array<any> = [];
+
 		        service.getWeeklyWork( weeklyWork ).done(function (data) {
-			        //self.lstHolidaysPattern(data);
-                    console.log(data);
+					//非稼働日（法内）
+                    if( data ) {
+	                    data.weeklyWorkDayPatternDtos && data.weeklyWorkDayPatternDtos.map( ( item ) => {
+	                    	let day = item.dayOfWeek;
+		                        day = day.substring(0, 1);
+		                    let desPos = item.workdayDivision.indexOf('（');
+		                    let des = ( desPos > -1 ) ? item.workdayDivision.substring(0, desPos) : item.workdayDivision;
+
+		                    let dayHoliday = { code: day, name: des };
+		                    self.lstHolidaysPattern.push(dayHoliday);
+	                    });
+
+	                    self.lstSelectableCode(data.workTypeCode);
+                    }
 		        });
+		        //---
+		       /* self.lstSelectableCode([]);
+		        service.findAllMonthlyPattern().done(function (data) {
+			        //self.lstHolidaysPattern(data);
+			        data && data.map( (item ) => {
+				        self.lstSelectableCode.push(item.code);
+			        });
+		        });*/
             }
 
             /*
