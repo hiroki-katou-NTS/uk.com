@@ -8,6 +8,9 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import javax.ejb.Stateless;
 import java.util.Optional;
 
+/**
+ * 月間パターンの勤務情報を登録する
+ */
 @Stateless
 public class WorkMonthlySettingService {
 
