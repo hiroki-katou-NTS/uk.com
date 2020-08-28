@@ -110,6 +110,9 @@ public class SaveShainStatWorkTimeSetCommand{
 	}
 	
 	private Optional<MonthlyUnitDto> find(List<MonthlyUnitDto> s, int m) {
+		if (s == null) {
+			return Optional.of(new MonthlyUnitDto(m, 0));
+		}
 		return s.stream().filter(f -> f.getMonth() == m).findFirst();
 	}
 
