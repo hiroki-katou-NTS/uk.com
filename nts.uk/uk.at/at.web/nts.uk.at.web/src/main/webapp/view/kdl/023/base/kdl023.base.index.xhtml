@@ -25,7 +25,22 @@
 					<div class="pull-left reflect-setting bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
 						<div class="control-group cf">
-							<div class="pull-left" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_3')}</div>
+							<!--A1_36-->
+							<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>
+							<!--A1_37-->
+							<div  id="daterangepicker" class="kdl023-daterange pull-left" tabindex="1" data-bind="ntsDateRangePicker: {
+								required: true,
+								enable: true,
+								showNextPrevious: false,
+								value: $parent.dateValue,
+								maxRange: 'oneYear',
+								type: 'yearmonth'}"/>
+						</div>
+						<div class="control-group cf">
+
+							<!--A1_2-->
+							<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_3')}</div>
+							<!--A1_3-->
 							<div tabindex="1" id="cbb-daily-work-pattern" class="pull-left" style="margin-left: 36px"
 								data-bind="ntsComboBox: {
 										name: '#[KDL023_4]',
@@ -40,16 +55,102 @@
 										]}">
 							</div>
 						</div>
+						<div class="control-group">
+							<!--A1_6-->
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
+						</div>
+						<!--A1_7-->
+						<div id="reflection-method-radio-group" tabindex="2" class="margin-left-50">
+							<!--A1_8-->
 							<div class="control-group">
-								<div class="" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_5')}</div>
+								<label class="ntsRadioBox"><input type="radio"
+																  name="textRadio"
+																  data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
+								</label>
 							</div>
+							<!--A1_9-->
 							<div class="control-group">
-								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
+								<label class="ntsRadioBox"><input type="radio"
+																  name="textRadio"
+																  data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
+								</label>
+							</div>
+							<!--A1_10-->
+							<div class="control-group">
+								<label class="ntsRadioBox"><input type="radio"
+																  name="textRadio"
+																  data-bind="name:'#[KDL023_10]', checkedValue: 3, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_27')}</span>
+								</label>
 							</div>
 							<div class="margin-left-100">
+								<!--A1_11-->
+								<span class="label">#{i18n.getText('KDL023_28')}</span>
+								<!--A1_12-->
+								<div tabindex="3" id="cbb-reflection-order-1" class="cbb-reflection" style="margin-left: 36px"
+									 data-bind="ntsComboBox: {
+										name: '#[KDL023_31]',
+										options: $parent.dailyPatternList,
+										optionsValue: 'patternCode',
+										optionsText: 'patternName',
+										value: selectedPatternCd,
+										enable: true,
+										columns: [
+											{ prop: 'patternCode', length: 3 },
+											{ prop: 'patternName', length: 5 },
+										]}">
+								</div>
+								<br/>
+								<!--A1_14-->
+								<span class="label">#{i18n.getText('KDL023_29')}</span>
+								<!--A1_15-->
+								<div tabindex="4" id="cbb-reflection-order-2" class="cbb-reflection" style="margin-left: 36px"
+									 data-bind="ntsComboBox: {
+										name: '#[KDL023_32]',
+										options: $parent.dailyPatternList,
+										optionsValue: 'patternCode',
+										optionsText: 'patternName',
+										value: selectedPatternCd,
+										enable: true,
+										columns: [
+											{ prop: 'patternCode', length: 3 },
+											{ prop: 'patternName', length: 5 },
+										]}">
+								</div>
+								<br/>
+								<!--A1_17-->
+								<span class="label">#{i18n.getText('KDL023_30')}</span>
+								<!--A1_18-->
+								<div tabindex="5" id="cbb-reflection-order-3" class="cbb-reflection" style="margin-left: 36px"
+									 data-bind="ntsComboBox: {
+										name: '#[KDL023_33]',
+										options: $parent.dailyPatternList,
+										optionsValue: 'patternCode',
+										optionsText: 'patternName',
+										value: selectedPatternCd,
+										enable: true,
+										columns: [
+											{ prop: 'patternCode', length: 3 },
+											{ prop: 'patternName', length: 5 },
+										]}">
+								</div>
+							</div>
+						</div>
+						<!--A1_20-->
+						<div class="label warning" style="font-size: 14px">#{i18n.getText('KDL023_34')}</div>
+						<br/><br/>
+							<div class="control-group">
+								<!--A1_21-->
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
+							</div>
+							<div class="margin-left-50">
 								<div class="control-group" data-bind="with: statutorySetting">
-									<div tabindex="2" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_6')}' }"></div>
-									<div tabindex="3" id="cbb-work-type-statutory" class="pull-right"
+									<!--A1_22-->
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_6')}</div>
+
+									<div id="cbb-work-type-statutory" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_17]',
 												options: $parents[1].listWorkType,
@@ -64,7 +165,9 @@
 									</div>
 								</div>
 								<div class="control-group" data-bind="with: nonStatutorySetting">
-									<div tabindex="4" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}' }"></div>
+									<!--A1_26-->
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_7')}</div>
+
 									<div tabindex="5" id="cbb-work-type-non-statutory" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_18]',
@@ -80,7 +183,9 @@
 									</div>
 								</div>
 								<div class="control-group" data-bind="with: holidaySetting">
-									<div tabindex="6" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_8')}' }"></div>
+									<!--A1_30-->
+									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_8')}</div>
+
 									<div tabindex="7" id="cbb-work-type-holiday" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_19]',
@@ -95,27 +200,12 @@
 												]}">
 									</div>
 								</div>
-								<p class="control-group priority">#{i18n.getText('KDL023_9')}</p>
+
+								<!--p class="control-group priority">#{i18n.getText('KDL023_9')}</p-->
 							</div>
-							<div class="control-group">
-								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
-							</div>
-							<div id="reflection-method-radio-group" tabindex="8" class="margin-left-100">
-								<div class="control-group">
-									<label class="ntsRadioBox"><input type="radio"
-										name="textRadio"
-										data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
-										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
-									</label>
-								</div>
-								<div class="control-group">
-									<label class="ntsRadioBox"><input type="radio"
-										name="textRadio"
-										data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
-										<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
-									</label>
-								</div>
-							</div>
+						<!--A1_34-->
+						<br/><br/>
+						<div class="label warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
 						</com:ko>
 						<button tabindex="9" class="btn-apply-setting caret-right pull-right" data-bind="text: buttonReflectPatternText(), click: onBtnApplySettingClicked">
 						</button>

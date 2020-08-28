@@ -7,7 +7,7 @@
 .reflect-setting {
 	padding: 20px;
 	width:420px;
-	height: 550px;
+	height: auto;
 	margin-right: 50px;
 }
 
@@ -28,4 +28,15 @@
 .priority {
 	margin-top: 20px;
 	margin-bottom: 20px;
+}
+
+.cbb-reflection{
+	display: inline-block;
+}
+.kdl023-warning{
+	margin-bottom: 20px;
+	margin-top: 20px;
+}
+.kdl023-inline{
+	display: inline-block;
 }

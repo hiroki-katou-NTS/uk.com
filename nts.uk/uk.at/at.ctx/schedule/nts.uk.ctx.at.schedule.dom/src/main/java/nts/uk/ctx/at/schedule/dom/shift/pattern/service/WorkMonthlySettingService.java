@@ -5,14 +5,16 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 
+import javax.ejb.Stateless;
 import java.util.Optional;
 
 /**
  * 月間パターンの勤務情報を登録する
  */
+@Stateless
 public class WorkMonthlySettingService {
 
-    public Optional<AtomTask> register(WorkInformation.Require requireWorkInfo, Require require,WorkMonthlySetting workMonthlySetting, Boolean isOverwrite) {
+    public static Optional<AtomTask> register(WorkInformation.Require requireWorkInfo, Require require,WorkMonthlySetting workMonthlySetting, Boolean isOverwrite) {
 
         workMonthlySetting.checkForErrors(requireWorkInfo);
         if(require.exists(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk())) {

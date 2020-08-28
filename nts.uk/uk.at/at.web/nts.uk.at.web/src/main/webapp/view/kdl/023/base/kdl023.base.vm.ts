@@ -9,6 +9,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import WorkTime = service.model.WorkTime;
     import DailyPatternSetting = service.model.DailyPatternSetting;
     import DailyPatternValue = service.model.DailyPatternValue;
+    import formatDate = nts.uk.time.formatDate;
 
     export abstract class BaseScreenModel {
         dailyPatternList: KnockoutObservableArray<DailyPatternSetting>;
@@ -45,6 +46,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         holidayDisplay: KnockoutObservable<boolean>;
         cellButtonDisplay: KnockoutObservable<boolean>;
         workplaceName: KnockoutObservable<string>;
+        dateValue: KnockoutObservable<any> = ko.observable({
+            startDate: formatDate( new Date(), 'yyyy/MM'),
+            endDate: formatDate( new Date(), 'yyyy/MM')
+        });
 
         constructor() {
             let self = this;
