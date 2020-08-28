@@ -33,6 +33,14 @@ public class EditStateOfDailyPerformCommand extends DailyWorkCommonCommand {
 	@Override
 	public void updateData(Object data) {
 		if(data != null){
+			EditStateOfDailyPerformance d = (EditStateOfDailyPerformance) data;
+			this.data.removeIf(es -> es.getEditState().getAttendanceItemId() == d.getEditState().getAttendanceItemId());
+			this.data.add(d);
+		}
+	}
+	
+	public void updateDataNew(Object data) {
+		if(data != null){
 			EditStateOfDailyAttd d = (EditStateOfDailyAttd) data;
 			this.data.removeIf(es -> es.getEditState().getAttendanceItemId() == d.getAttendanceItemId());
 			this.data.add(new EditStateOfDailyPerformance(getEmployeeId(), getWorkDate(), d));

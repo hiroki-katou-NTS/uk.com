@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 1200, height: 700 };</script>
+            <script>var dialogSize = { width: 1200, height: 610 };</script>
             <com:ValidatorScript>
                 nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd
                 nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName
@@ -46,8 +46,8 @@
                     </div>
                 </div>
                 <div id="right-content" class="fixed-flex-layout-right">                    
-                    <div data-bind="{text:workplaceGroupName}"></div> 
-                    <hr style="margin: 10px 0px; width: 830px;" />
+                    <div id="workplaceGroupName" data-bind="{text:workplaceGroupName}"></div> 
+                    <hr style="margin: 5px 0px; width: 830px;" />
                     <div class="container-custom">
                         <div data-bind="ntsFormLabel:{ required:true, constraint:['ScheduleTeamCd', 'ScheduleTeamName']}">
                             #{i18n.getText('KSU001_3208')}/#{i18n.getText('KSU001_3209')}</div>
@@ -133,12 +133,19 @@
                             </table>
                         </div>
                         <div class="arrow-button">
-                            <div>
+                            <!-- <div>
                                 <button class="btn-custom" data-bind="click: moveItemLeftToRight" ><i class="icon icon-button-arrow-right icon-btn-custom"></i></button>
                             </div>
                             <div>
                                 <button class="btn-custom" data-bind="click: moveItemRightToLeft" ><i class="icon icon-button-arrow-left icon-btn-custom"></i></button>
-                            </div>                           
+                            </div>    -->
+
+                            <div>
+                                <button class="btn-custom"   data-bind="click: moveItemLeftToRight" ><div><img src="img/arrow-right.png" /></div></button>
+                            </div>
+                            <div>
+                                <button class="btn-custom"  data-bind="click: moveItemRightToLeft" ><div><img src="img/arrow-left.png" /></div></button>
+                            </div>   
                         </div>
                         <div>
                             <table id="emp-list-right" data-bind="ntsGridList: {
@@ -152,7 +159,6 @@
                             </table>
                         </div>
                     </div>
-
                     <div>#{i18n.getText('KSU001_3216')}</div>
                 </div>
             </div>

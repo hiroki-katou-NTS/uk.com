@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.schedule.dom.schedule.workschedule;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 
 /**
  * 
@@ -40,6 +43,16 @@ public interface WorkScheduleRepository {
 	void delete(String sid, DatePeriod datePeriod);
 
 	boolean checkExits(String employeeID, GeneralDate ymd);
+
+	Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo);
+
+	void deleteShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo);
+
+	void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID);
+
+	void deleteAllShortTime(String sid, GeneralDate ymd);
+
+	boolean checkExitsShortTime(String employeeID, GeneralDate ymd);
 	
 }
 

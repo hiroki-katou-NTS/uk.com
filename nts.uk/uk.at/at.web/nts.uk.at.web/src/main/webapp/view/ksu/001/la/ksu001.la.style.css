@@ -2,7 +2,7 @@
 	width:1200px;
 } */
 #left-content {
-	padding: 27px 0px 0px 7px;
+	padding: 10px 0px 0px 7px;
 	float: left;
 	width: 250px;
     height: 410px;
@@ -13,7 +13,7 @@
 #right-content {
 	margin-left: 55px;
 	float: left;
-	margin-top: 30px;
+	margin-top: 8px;
 }
 
 .custom {
@@ -28,16 +28,16 @@
 }
 
 .btn-custom{
-	width: 50px !important;
-	height: 40px !important;
-	margin: 10px 0px;
+	/* width: 50px !important; */
+	height: 46px !important;
+	margin-bottom: 20px !important;
 }
 .icon-btn-custom {
 	width: 32px !important;
 }
 .container-custom {	
 	display: flex;
-	margin-top: 15px;
+	margin-top: 5px;
 	width: 800px;
 }
 .container-table {
@@ -48,7 +48,7 @@
 	margin-left: 10px;		
 }
 .label {
-	margin-top: 10px;		
+	margin-top: 5px;		
 }
 .lblForm{
 	margin-right: 338px;
