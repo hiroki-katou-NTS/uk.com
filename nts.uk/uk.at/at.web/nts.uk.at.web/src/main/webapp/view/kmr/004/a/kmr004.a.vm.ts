@@ -75,7 +75,7 @@ module nts.uk.at.view.kmr004.a {
 
             nts.uk.characteristics.restore(self.cacheKey).done((c13sData: any) => {
             	if(self.closingTimeOptions().length < c13sData.selectedClosingTime){
-                    c13sData.selectedClosingTime = self.selectedClosingTime()
+                    c13sData.selectedClosingTime = self.model().reservationClosingTimeFrame();
 				}
                 self.restoreScreenState(c13sData);
             });
@@ -290,9 +290,9 @@ module nts.uk.at.view.kmr004.a {
 
 			// init selected
 			if (data.closingTime.selectedClosingTime == 2 && closingTime2Exists){
-				vm.selectedClosingTime(2);
+				vm.model().reservationClosingTimeFrame(2);
 			} else {
-				vm.selectedClosingTime(1);
+                vm.model().reservationClosingTimeFrame(1);
 			}
 		}
 
@@ -308,7 +308,7 @@ module nts.uk.at.view.kmr004.a {
 				+ "～" + parseTime(end2, true).format();
 
 			vm.reservationTimeRange(vm.reservationTimeRange1);
-			vm.selectedClosingTime.subscribe((value) => {
+			vm.model().reservationClosingTimeFrame.subscribe((value) => {
 				if (value == 1) {
 					vm.reservationTimeRange(vm.reservationTimeRange1);
 				} else {
@@ -380,7 +380,7 @@ module nts.uk.at.view.kmr004.a {
    		saveCharacteristics(){
 			const vm = this;
 			let c13sData:Characteristics = new Characteristics();
-			c13sData.selectedClosingTime = vm.selectedClosingTime();
+			c13sData.selectedClosingTime = vm.model().reservationClosingTimeFrame();
 			c13sData.outputConditionChecked = vm.outputConditionChecked();
 			c13sData.selectedTab = vm.selectedTab();
 			c13sData.totalTitle = vm.model().totalTitle();
