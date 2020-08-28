@@ -24,18 +24,18 @@
 				<div id="contents-area" data-bind="visible: true" style="display: none">
 					<div class="pull-left reflect-setting bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
-						<div class="control-group cf">
-							<!--A1_36-->
-							<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>
-							<!--A1_37-->
-							<div  id="daterangepicker" class="kdl023-daterange pull-left" tabindex="1" data-bind="ntsDateRangePicker: {
-								required: true,
-								enable: true,
-								showNextPrevious: false,
-								value: $parent.dateValue,
-								maxRange: 'oneYear',
-								type: 'yearmonth'}"/>
-						</div>
+						<!--<div class="control-group cf">-->
+							<!--&lt;!&ndash;A1_36&ndash;&gt;-->
+							<!--<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>-->
+							<!--&lt;!&ndash;A1_37&ndash;&gt;-->
+							<!--<div  id="daterangepicker" class="kdl023-daterange pull-left" tabindex="1" data-bind="ntsDateRangePicker: {-->
+								<!--required: true,-->
+								<!--enable: true,-->
+								<!--showNextPrevious: false,-->
+								<!--value: $parent.dateValue,-->
+								<!--maxRange: 'oneYear',-->
+								<!--type: 'yearmonth'}"/>-->
+						<!--</div> for capturing UI image khaidh-->
 						<div class="control-group cf">
 
 							<!--A1_2-->
@@ -60,7 +60,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
 						</div>
 						<!--A1_7-->
-						<div id="reflection-method-radio-group" tabindex="2" class="margin-left-50">
+						<div id="reflection-method-radio-group" tabindex="2" class="margin-left-30">
 							<!--A1_8-->
 							<div class="control-group">
 								<label class="ntsRadioBox"><input type="radio"
@@ -139,13 +139,12 @@
 							</div>
 						</div>
 						<!--A1_20-->
-						<div class="label warning" style="font-size: 14px">#{i18n.getText('KDL023_34')}</div>
-						<br/><br/>
+						<div class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_34')}</div>
 							<div class="control-group">
 								<!--A1_21-->
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
 							</div>
-							<div class="margin-left-50">
+							<div class="margin-left-30">
 								<div class="control-group" data-bind="with: statutorySetting">
 									<!--A1_22-->
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_6')}</div>
@@ -204,8 +203,7 @@
 								<!--p class="control-group priority">#{i18n.getText('KDL023_9')}</p-->
 							</div>
 						<!--A1_34-->
-						<br/><br/>
-						<div class="label warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
+						<div class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
 						</com:ko>
 						<button tabindex="9" class="btn-apply-setting caret-right pull-right" data-bind="text: buttonReflectPatternText(), click: onBtnApplySettingClicked">
 						</button>
@@ -213,7 +211,7 @@
 					<!-- Calendar function -->
 					<div id="calendar-reflect-pattern">
 						<ui:insert name="period-calendar-header" />
-						<div class="pull-right" style="margin-bottom: 20px">
+						<div class="pull-right kdl023">
 							<button tabindex="10" data-bind="click: backward">#{i18n.getText('KDL023_14')}</button>
 							<button tabindex="11" data-bind="click: forward">#{i18n.getText('KDL023_15')}</button>
 						</div>
