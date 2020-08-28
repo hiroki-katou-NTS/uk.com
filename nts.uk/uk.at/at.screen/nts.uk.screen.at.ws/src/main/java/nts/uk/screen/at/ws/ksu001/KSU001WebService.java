@@ -95,5 +95,4 @@ public class KSU001WebService extends WebService{
 	public List<String> orderEmployee(OrderEmployeeParam param) {
 		return sortEmployees.getListEmp(param);
 	}
-	
 }

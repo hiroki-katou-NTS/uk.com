@@ -327,22 +327,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
 
             let param = {
-                isFirstLogin: item.isPresent() ? false : true,
                 viewMode: viewMode,
                 startDate: item.isPresent() ? self.dateTimePrev : '',
                 endDate: item.isPresent() ? self.dateTimeAfter : '',
-                workplaceId: item.isPresent() ? userInfor.workplaceId : '',
-                workplaceGroupId: item.isPresent() ? userInfor.workplaceGroupId : '',
                 shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
                 pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
                 pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: item.isPresent() ? userInfor.shiftMasterWithWorkStyleLst : [], // List of shifts không cần lấy mới
-                listSid: self.listSid()
+                listSid: self.listSid(),
+                unit: item.isPresent() ? userInfor.unit : 0,
             }
 
             service.getDataStartScreen(param).done((data: IDataStartScreen) => {
-                
+                console.log('userInfo');
+                console.log(data.dataBasicDto);
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
                 
@@ -401,6 +400,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.heightGridSetting = '';
                 userInfor.unit = dataBasic.unit;
                 userInfor.workplaceId= dataBasic.workplaceId;
+                userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
                 userInfor.workPlaceName= dataBasic.targetOrganizationName;
                 userInfor.workType = {}; 
                 userInfor.workTime = {}; 
@@ -417,14 +417,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 viewMode : 'shift',
                 startDate: self.dateTimePrev,
                 endDate  : self.dateTimeAfter,
-                workplaceId     : userInfor.workplaceId,
-                workplaceGroupId: userInfor.workplaceGroupId,
                 shiftPalletUnit : userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
                 pageNumberCom   : userInfor.shiftPalettePageNumberCom,
                 pageNumberOrg   : userInfor.shiftPalettePageNumberOrg,
                 getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, // List of shifts không cần lấy mới
-                listSid: self.listSid()
+                listSid: self.listSid(),
+                unit: item.isPresent() ? userInfor.unit : 0,
             };
             self.saveModeGridToLocalStorege('shift');
             self.visibleShiftPalette(true);
@@ -475,7 +474,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     viewMode: 'shortName',
                     startDate: self.dateTimePrev,
                     endDate: self.dateTimeAfter,
-                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false
+                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false,
+                    unit: item.isPresent() ? userInfor.unit : 0
                 };
             self.saveModeGridToLocalStorege('shortName');
             self.visibleShiftPalette(false);
@@ -507,7 +507,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 viewMode: 'time',
                 startDate: self.dateTimePrev,
                 endDate: self.dateTimeAfter,
-                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
+                unit: item.isPresent() ? userInfor.unit : 0,
             };
             self.saveModeGridToLocalStorege('time');
             self.visibleShiftPalette(false);
@@ -541,10 +542,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             // save data to local Storage
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor: IUserInfor = JSON.parse(data);
-                userInfor.workplaceId = dataBasic.workplaceId;
+                let userInfor: IUserInfor  = JSON.parse(data);
+                userInfor.unit             = dataBasic.unit;
+                userInfor.workplaceId      = dataBasic.workplaceId;
                 userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
-                userInfor.workPlaceName = dataBasic.targetOrganizationName;
+                userInfor.workPlaceName    = dataBasic.targetOrganizationName;
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
             });
         }
