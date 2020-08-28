@@ -55,16 +55,16 @@
 }
 
 .holiday-calendar .isEmtyMonth {
-    background-color: lightgray;
+    background-color: #d9d9d9;
 }
 
 .holiday-calendar .isEmtyMonth .out-month {
-    color: lightgray !important;
+    color: #d9d9d9 !important;
 }
 .holiday-calendar .isEmtyMonth .day:not(:last-child) {
-    border-right: 1px solid lightgray !important;
+    border-right: 1px solid #d9d9d9 !important;
 }
 .holiday-calendar .isEmtyMonth .day {
-    border-bottom: 1px solid lightgray !important;
+    border-bottom: 1px solid #d9d9d9 !important;
 }
 
