@@ -65,9 +65,11 @@ table {
 	border-left: none;
 	width: 263px;
 }
-
+*{
+	box-sizing: border-box;
+}
 th, td {
-	width: 121px;
+	width: 122px;
 	border: 1px solid black;
 	border-color: darkgrey;
 	padding-right: 0px;
@@ -100,7 +102,9 @@ tbody {
 	overflow-x: hidden;
 	height: auto;
 }
-
+tbody>tr>td{
+	width: 122px;
+}
 hr {
 	border-color: E0FFFF;
 	width: 390px;
