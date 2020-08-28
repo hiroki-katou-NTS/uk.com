@@ -182,15 +182,15 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                         nts.uk.ui.block.clear();
                     });
             } else {
-                service.getCom().done(config => {
-                    if (config) {
-                        _.extend(config, {
-                            companyId: config.companyID
-                        });
-                    }
-
-                    self.selectedSetting.update(config);
-                });
+                // service.getCom().done(config => {
+                //     if (config) {
+                //         _.extend(config, {
+                //             companyId: config.companyID
+                //         });
+                //     }
+                //
+                //     self.selectedSetting.update(config);
+                // });
             }
         }
 
