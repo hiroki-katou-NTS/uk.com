@@ -1,10 +1,12 @@
 package nts.uk.screen.at.app.reservation;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
@@ -37,34 +39,42 @@ public class ReservationConfirmationListScreenQuery {
         if (optBentoReservationSetting.isPresent()) {
             BentoReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
             dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
+        } else {
+        	throw new BusinessException("Msg_1847");
         }
 
-        BentoMenu bentoMenuByEndDate = bentoMenuRepo.getBentoMenuByEndDate(companyId, GeneralDate.max());
-        List<Bento> bentoList = bentoMenuByEndDate.getMenu();
+        BentoMenu bentoMenu = bentoMenuRepo.getBentoMenuByEndDate(companyId, GeneralDate.max());
+		if (bentoMenu == null) {
+        	throw new BusinessException("Msg_1848");
+        }
+
+        List<Bento> menu = bentoMenu.getMenu();
         List<List<Bento>> partitions = new ArrayList<>(
-                bentoList.stream()
+                menu.stream()
                         .collect(Collectors.partitioningBy(item -> item.getWorkLocationCode().isPresent()))
                         .values()
         );
 
-        List<Bento> bentoMenu;
+        List<Bento> menuByOperationType;
         OperationDistinction operationDistinction = dto.getOperationDistinction();
         if (operationDistinction == OperationDistinction.BY_COMPANY) {
-            bentoMenu = partitions.get(1);
+            menuByOperationType = partitions.get(0);
         } else {
-            bentoMenu = partitions.get(0);
+            menuByOperationType = partitions.get(1);
         }
-        List<BentoItemDto> bentoItemList = copyBentoItemList(bentoMenu);
+        List<BentoItemDto> bentoItemList = copyBentoItemList(menuByOperationType);
         dto.setMenu(bentoItemList);
 
-        BentoReservationClosingTime closingTime = bentoMenuByEndDate.getClosingTime();
+        BentoReservationClosingTime closingTime = bentoMenu.getClosingTime();
         String reservationFrameName1 = closingTime.getClosingTime1().getReservationTimeName().v();
         int reservationStartTime1 = closingTime.getClosingTime1().getStart().get().v();
         int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
-        String reservationFrameName2 = closingTime.getClosingTime2().get().getReservationTimeName().v();
-        int reservationStartTime2 = closingTime.getClosingTime2().get().getStart().get().v();
-        int reservationEndTime2 = closingTime.getClosingTime2().get().getFinish().v();
-        BentoMenuDto bentoMenuDtoClosingTime = new BentoMenuDto(
+        Optional<ReservationClosingTime> closingTime2 = closingTime.getClosingTime2();
+        String reservationFrameName2 = closingTime2.isPresent()? closingTime2.get().getReservationTimeName().v(): "";
+		Integer reservationStartTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getStart().get().v()): null;
+		Integer reservationEndTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getFinish().v()): null;
+
+		ReservationClosingTimeDto timeFrame = new ReservationClosingTimeDto(
                 reservationFrameName1,
                 reservationStartTime1,
                 reservationEndTime1,
@@ -72,7 +82,7 @@ public class ReservationConfirmationListScreenQuery {
                 reservationStartTime2,
                 reservationEndTime2
         );
-        dto.setClosingTime(bentoMenuDtoClosingTime);
+        dto.setClosingTime(timeFrame);
 
         return dto;
     }
@@ -81,6 +91,11 @@ public class ReservationConfirmationListScreenQuery {
         return bentoList.stream().map(item -> {
             BentoItemDto bentoItemDto = new BentoItemDto();
             bentoItemDto.setCode(item.getFrameNo());
+			if (item.getWorkLocationCode().isPresent()) {
+				bentoItemDto.setLocationCode(item.getWorkLocationCode().get().v());
+			} else {
+				bentoItemDto.setLocationCode(null);
+			}
             bentoItemDto.setName(item.getName().v());
             return bentoItemDto;
         }).collect(Collectors.toList());

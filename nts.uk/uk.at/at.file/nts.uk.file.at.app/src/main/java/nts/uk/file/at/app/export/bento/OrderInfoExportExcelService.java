@@ -1,9 +1,12 @@
 package nts.uk.file.at.app.export.bento;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.app.command.reservation.bento.BentoMakeOrderCommandHandler;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.OrderInfoDto;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,20 +15,27 @@ import javax.inject.Inject;
 public class OrderInfoExportExcelService extends ExportService<CreateOrderInfoDataSource> {
 
     @Inject
-    CreateOrderInfoGenerator generator;
+    private CreateOrderInfoGenerator generator;
 
     @Inject
-    CreateOrderInfoFileQuery createOrderInfoFileQuery;
+    private CreateOrderInfoFileQuery createOrderInfoFileQuery;
 
-    private boolean isWorkLocationExport = true;
+    @Inject
+    private BentoMakeOrderCommandHandler commandHandler;
+
+    private boolean isWorkLocationExport = false;
+
+    //private final OutputExtension OUT_PUT_EXT = OutputExtension.EXCEL;
 
     @Override
-    protected void handle(ExportServiceContext<CreateOrderInfoDataSource> exportServiceContext) {
+    protected void handle(ExportServiceContext<CreateOrderInfoDataSource> exportServiceContext){
         CreateOrderInfoDataSource dataSource = exportServiceContext.getQuery();
-        OrderInfoDto dataGenerator = dataSource.getGeneratorData(createOrderInfoFileQuery);
-        if(CollectionUtil.isEmpty(dataSource.getWorkLocationCodes()))
-            isWorkLocationExport = false;
+        OrderInfoDto dataGenerator = dataSource.getGeneratorData(createOrderInfoFileQuery, commandHandler);
+        if(CollectionUtil.isEmpty(dataSource.getWorkplaceIds()))
+            isWorkLocationExport = true;
+        ReservationClosingTimeFrame closingTimeFrame = EnumAdaptor.valueOf(dataSource.getReservationClosingTimeFrame(),
+                ReservationClosingTimeFrame.class);
         generator.generate(exportServiceContext.getGeneratorContext(),new OrderInfoExportData(dataGenerator,
-                dataSource.isBreakPage(), isWorkLocationExport, dataSource.getReservationTimeZone(), OutputExtension.EXCEL));
+                dataSource.isBreakPage(), isWorkLocationExport, closingTimeFrame.name, OutputExtension.EXCEL));
     }
 }

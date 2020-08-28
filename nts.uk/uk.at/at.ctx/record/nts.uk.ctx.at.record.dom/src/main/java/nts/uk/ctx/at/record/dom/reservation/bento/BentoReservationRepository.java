@@ -42,7 +42,7 @@ public interface BentoReservationRepository {
 	/**
 	 * 注文してない社員IDを取得する
 	 */
-	List<BentoReservation> getEmployeeNotOrder (List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate);
+	List<ReservationRegisterInfo> getEmployeeNotOrder (List<ReservationRegisterInfo> inforLst, ReservationDate reservationDate);
 
 	/**
 	 * List＜予約登録情報＞から取得する
