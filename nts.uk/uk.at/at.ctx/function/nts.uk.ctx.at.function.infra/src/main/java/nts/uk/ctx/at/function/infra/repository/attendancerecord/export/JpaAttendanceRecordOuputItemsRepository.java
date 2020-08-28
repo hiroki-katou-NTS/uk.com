@@ -1,10 +1,12 @@
-package nts.uk.ctx.at.function.infra.repository.attendancerecord.outputitems;
+package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
+
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.ouput.items.AttendanceRecordOuputItems;
-import nts.uk.ctx.at.function.dom.attendancerecord.ouput.items.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordOuputItems;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordOuputItemsRepository;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 
 @Stateless
@@ -51,11 +53,9 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository imple
 	}
 
 	@Override
-	public AttendanceRecordOuputItems getAttendanceByCompnayAndEmployee(String companyId, String employeeId) {
-		return this.queryProxy()
-				.query(QUERY_SELECT_BY_COMPANY_AND_EMPLOYEE, KfnmtRptWkAtdOut.class)
-				.setParameter("cId", companyId)
-				.setParameter("sId", employeeId)
-				.getSingle(AttendanceRecordOuputItems::createFromMemento);
+	public Optional<AttendanceRecordOuputItems> getOutputItemsByCompnayAndEmployee(String companyId,
+			String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

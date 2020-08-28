@@ -34,6 +34,8 @@ public class AttendaceAuthorityOfWorkPerform {
 	 * 	社員ID
 	 */
 	private String employeeId;
+	
+	private boolean isFreeSetting;
 
 	public AttendaceAuthorityOfWorkPerform(int functionNo, String companyId,
 			String roleId) {

@@ -1,5 +1,6 @@
-package nts.uk.ctx.at.function.dom.attendancerecord.standard.setting;
+package nts.uk.ctx.at.function.dom.attendancerecord.export;
 
+import java.util.Optional;
 
 /**
  * @author nws-ducnt
@@ -23,5 +24,5 @@ public interface AttendanceRecordStandardSettingRepository {
      * 	「出勤簿の出力項目定型設定」－「出勤簿の出力項目設定」
      * @param compnayId
      */
-    AttendanceRecordStandardSetting get(String compnayId);
+    public Optional<AttendanceRecordStandardSetting> getStandardByCompanyId(String compnayId);
 }

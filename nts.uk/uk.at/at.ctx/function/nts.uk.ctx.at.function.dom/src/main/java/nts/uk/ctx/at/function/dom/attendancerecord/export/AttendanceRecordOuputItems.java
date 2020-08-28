@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.attendancerecord.ouput.items;
+package nts.uk.ctx.at.function.dom.attendancerecord.export;
 
 import java.util.List;
 

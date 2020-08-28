@@ -1,5 +1,6 @@
-package nts.uk.ctx.at.function.dom.attendancerecord.ouput.items;
+package nts.uk.ctx.at.function.dom.attendancerecord.export;
 
+import java.util.Optional;
 
 /**
  * @author nws-ducnt
@@ -25,5 +26,5 @@ public interface AttendanceRecordOuputItemsRepository {
      * @param employeeId
      * @return
      */
-    AttendanceRecordOuputItems getAttendanceByCompnayAndEmployee(String companyId, String employeeId);
+    public Optional<AttendanceRecordOuputItems> getOutputItemsByCompnayAndEmployee(String companyId, String employeeId);
 }

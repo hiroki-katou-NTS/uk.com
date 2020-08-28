@@ -11,14 +11,14 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.repository.attendancerecord.JpaCalculateAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.infra.repository.attendancerecord.JpaSingleAttendanceRecordGetMemento;
-
 /**
  * The Class JpaAttendanceRecordExportGetMemento.
  * 
  * @author NWS_QUANGNT
  */
 public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExportGetMemento {
-
+	
+	
 	/** The entity. */
 	private KfnstAttndRec upperEntity;
 

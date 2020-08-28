@@ -1,10 +1,12 @@
-package nts.uk.ctx.at.function.infra.repository.attendancerecord.standard.export;
+package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
+
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.standard.setting.AttendanceRecordStandardSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.standard.setting.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordStandardSettingRepository;
 
 @Stateless
 public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository implements AttendanceRecordStandardSettingRepository{
@@ -21,16 +23,18 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository 
 		
 	}
 	
-	@Override
-	public AttendanceRecordStandardSetting get(String compnayId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	
 	private static AttendanceRecordStandardSetting toEntity(AttendanceRecordStandardSetting domain) {
 		AttendanceRecordStandardSetting entity = new AttendanceRecordStandardSetting();
 //		domain.setMemento(entity);
 		return entity;
+	}
+
+	@Override
+	public Optional<AttendanceRecordStandardSetting> getStandardByCompanyId(String compnayId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
