@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
-import nts.uk.ctx.at.request.dom.application.applist.service.param.AppLstApprovalLstDispSet;
 
 /**
  * refactor 4
@@ -35,13 +34,13 @@ public class AppListInfoDto {
 	/**
 	 * 表示設定
 	 */
-	private AppLstApprovalLstDispSet displaySet;
+	private AppLstApprovalLstDispSetDto displaySet;
 	
 	public static AppListInfoDto fromDomain(AppListInfo appListInfo) {
 		return new AppListInfoDto(
 				appListInfo.getAppLst().stream().map(x -> ListOfApplicationDto.fromDomain(x)).collect(Collectors.toList()), 
 				appListInfo.getNumberOfApp(), 
 				appListInfo.isMoreThanDispLineNO(), 
-				appListInfo.getDisplaySet());
+				AppLstApprovalLstDispSetDto.fromDomain(appListInfo.getDisplaySet()));
 	}
 }
