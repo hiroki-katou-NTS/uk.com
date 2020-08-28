@@ -8,13 +8,10 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class MonthlyPatternRequestPrams {
+public class MonthlySettingPatternDto {
 
-    /** The monthly pattern code. */
-    private String monthlyPatternCode;
+    private List<MonthlyPatternDto> monthlyPatternDtos;
 
-    private GeneralDate startDate;
-
-    private GeneralDate endDate;
+    private List<GeneralDate> listMonthYear;
 
 }

@@ -10,9 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 public class WeeklyWorkDto {
 
-    private List<WorkdayPatternItem> weeklyWorkDayPatternDtos;
+    private List<WorkdayPatternDto> weeklyWorkDayPatternDtos;
 
-    private List<String> workTypeName;
+    private List<workTypeDto> workType;
 
     private List<String> workTypeCode;
 

@@ -24,8 +24,8 @@ public class RegisterMonthlyPatternProcessor {
         String cid = AppContexts.user().companyId();
 
         List<MonthlyPattern> monthlyPattern = monthlyPatternRepository.findAll(cid);
-        MonthlyPatternDto monthlyPatternDto = monthlyPatternScreenProcessor.findDataMonthlyPattern(requestPrams);
-        return  new RegisterMonthlyPatternDto(monthlyPatternDto,monthlyPattern);
+        MonthlySettingPatternDto monthlyPatternDto = monthlyPatternScreenProcessor.findDataMonthlyPattern(requestPrams);
+        return  new RegisterMonthlyPatternDto(monthlyPatternDto.getMonthlyPatternDtos(),monthlyPattern);
     }
 
 

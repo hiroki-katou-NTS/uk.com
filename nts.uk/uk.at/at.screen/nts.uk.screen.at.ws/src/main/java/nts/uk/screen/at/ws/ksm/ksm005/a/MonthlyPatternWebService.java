@@ -1,8 +1,8 @@
 package nts.uk.screen.at.ws.ksm.ksm005.a;
 
-import nts.uk.screen.at.app.ksm005.find.MonthlyPatternDto;
 import nts.uk.screen.at.app.ksm005.find.MonthlyPatternRequestPrams;
 import nts.uk.screen.at.app.ksm005.find.MonthlyPatternScreenProcessor;
+import nts.uk.screen.at.app.ksm005.find.MonthlySettingPatternDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -19,7 +19,7 @@ public class MonthlyPatternWebService {
 
     @POST
     @Path("get")
-    public MonthlyPatternDto getWeeklyWork(MonthlyPatternRequestPrams requestPrams) {
+    public MonthlySettingPatternDto getWeeklyWork(MonthlyPatternRequestPrams requestPrams) {
         return this.monthlyPatternScreenProcessor.findDataMonthlyPattern(requestPrams);
     }
 }

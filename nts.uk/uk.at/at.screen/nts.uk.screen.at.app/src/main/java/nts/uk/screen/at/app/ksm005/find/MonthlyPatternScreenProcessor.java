@@ -4,9 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingSetMemento;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -25,6 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -46,49 +49,54 @@ public class MonthlyPatternScreenProcessor {
     private WorkTypeRepository workTypeRepository;
 
     @Inject
+    private WorkTimeSettingRepository workTimeRepository;
+
+    @Inject
     private GetYearMonthScreenprocessor getYearMonthScreenprocessor;
 
     @Inject
     private WorkTimeSettingRepository workTimeSettingRepository;
 
-    private static final String YYYYMMDD = "yyyy-MM-dd";
-
-
-    public MonthlyPatternDto findDataMonthlyPattern(MonthlyPatternRequestPrams requestPrams) {
+    public MonthlySettingPatternDto findDataMonthlyPattern(MonthlyPatternRequestPrams requestPrams) {
 
         String cid = AppContexts.user().companyId();
 
         // 1. get List<WorkMonthlySetting>
-        List<WorkMonthlySetting> weeklyWorkSettings = workMonthlySettingRepository.findByPeriod(
-                cid,requestPrams.getMonthlyPatternCode(),requestPrams.getDatePeriodDto().convertToDate(YYYYMMDD));
 
-        // 2. get WorkStyle
+        DatePeriod date = new DatePeriod(requestPrams.getStartDate(),requestPrams.getEndDate());
+        List<MonthlyPatternDto> workMonthlySettings = this.workMonthlySettingRepository
+                .findByPeriod(cid, requestPrams.getMonthlyPatternCode(),date).stream()
+                .map(domain -> {
+                    MonthlyPatternDto dto = new MonthlyPatternDto();
+                    domain.saveToMemento(dto);
+                    return dto;
+                }).collect(Collectors.toList());
+
+
         WorkInformation.Require require = new RequireImpl(basicScheduleService);
-        List<WorkStyle> workStyle = new ArrayList<>();
-        weeklyWorkSettings.forEach(x -> {
-            WorkInformation information = new WorkInformation(x.getWorkInformation().getWorkTimeCode(), x.getWorkInformation().getWorkTypeCode());
-            workStyle.add(information.getWorkStyle(require).get());
+        workMonthlySettings.forEach(x -> {
+            // 2. set WorkStyle
+            WorkInformation information = new WorkInformation(x.getWorkingCode(), x.getWorkTypeCode());
+            Integer typeColor = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
+            x.setTypeColor(typeColor);
+
+            // 3. set work type name
+            List<WorkTypeInfor> getPossibleWorkType = workTypeFinder.getPossibleWorkTypeKDL002(Arrays.asList(x.getWorkTypeCode()));
+            List<String> workTypeName = new ArrayList<>();
+            getPossibleWorkType.forEach(c -> workTypeName.add(c.getName()));
+            x.setWorkTypeName(workTypeName.size() == 0 ? null : workTypeName.get(0));
+
+            // 4. set work time name
+            Map<String, String> listWorkTimeCodeName = workTimeSettingRepository
+                    .getCodeNameByListWorkTimeCd(cid, Arrays.asList(x.getWorkingCode()));
+            List<String> workTimeName = new ArrayList<>(listWorkTimeCodeName.values());
+            x.setWorkingName(workTimeName.size() == 0 ? null :workTimeName.get(0));
         });
 
-        // 3.get work type name
-        List<String> ListWorkTypeCd = new ArrayList<>();
-        List<WorkTypeInfor> getPossibleWorkType = workTypeFinder.getPossibleWorkTypeKDL002(ListWorkTypeCd);
-        List<String> workTypeName = new ArrayList<>();
-        getPossibleWorkType.stream().forEach(x -> workTypeName.add(x.getName()));
-
-        // 4.get work time name
-        List<String> ListWorkTimeCd = new ArrayList<>();
-        weeklyWorkSettings.forEach(x -> ListWorkTimeCd.add( x.getWorkInformation().getWorkTimeCode().v()));
-
-        Map<String, String> listWorkTimeCodeName = ListWorkTimeCd.size() > 0
-                ? workTimeSettingRepository.getCodeNameByListWorkTimeCd(cid, ListWorkTimeCd) : new HashMap<>();
-        List<String> workTimeName = new ArrayList<>(listWorkTimeCodeName.values());
-
         // 5.get yearMonth
-        int date = requestPrams.getDatePeriodDto().convertToDate(YYYYMMDD).start().year();
-        List<String> listMonthYear = getYearMonthScreenprocessor.GetYearMonth(cid,requestPrams.getMonthlyPatternCode(),date);
+        List<GeneralDate> listMonthYear = getYearMonthScreenprocessor.GetYearMonth(cid,requestPrams.getMonthlyPatternCode(),requestPrams.getStartDate().year());
 
-        return new MonthlyPatternDto(weeklyWorkSettings,workTypeName,workTimeName,workStyle,listMonthYear);
+        return new MonthlySettingPatternDto(workMonthlySettings, listMonthYear);
     }
 
     @AllArgsConstructor

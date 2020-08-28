@@ -10,7 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RegisterMonthlyPatternDto {
 
-    private MonthlyPatternDto monthlyPatternDto;
+    private List<MonthlyPatternDto> monthlyPatternDto;
 
     private List<MonthlyPattern> workMonthlySettings;
 }

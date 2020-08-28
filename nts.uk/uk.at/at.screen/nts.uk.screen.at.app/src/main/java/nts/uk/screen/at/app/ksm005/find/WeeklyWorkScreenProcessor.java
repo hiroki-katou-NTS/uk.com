@@ -29,18 +29,34 @@ public class WeeklyWorkScreenProcessor {
         String cid = AppContexts.user().companyId();
         WeeklyWorkDayPattern weeklyWorkDayPattern = weeklyWorkDayRepository.getWeeklyWorkDayPatternByCompanyId(cid);
 
+        //get WorkdayPatternDto
+        List<WorkdayPatternDto> workdayPatternDtos = new ArrayList<>();
+        weeklyWorkDayPattern.getListWorkdayPatternItem().forEach(x -> {
+            workdayPatternDtos.add(new WorkdayPatternDto(
+                    x.getDayOfWeek().description,
+                    x.getWorkdayDivision().description,
+                    x.getWorkdayDivision().value
+            ));
+        });
+
+        // get workTypeCodes
+        List<WorkType> workTypes = workTypeRepository.getAcquiredHolidayWorkTypes(cid);
+        List<String> workTypeCodes = new ArrayList<>();
+        workTypes.forEach(x ->workTypeCodes.add(x.getWorkTypeCode().v()));
+
+        //get workTypeName
+        List<workTypeDto> workTypeDtos = new ArrayList<>();
+
         List<String> listWorkTypeCode = requestPrams.listWorkTypeCd.stream().filter(Objects::nonNull).collect(Collectors.toList());
         Map<String, String> listWorkTypeCodeName = listWorkTypeCode.size() > 0
                 ? workTypeRepository.getCodeNameWorkType(cid, listWorkTypeCode) : new HashMap<>();
 
-        List<WorkType> workTypes = workTypeRepository.findByCompanyId(cid);
-        List<String> workTypeCodes = new ArrayList<>();
-        workTypes.stream().forEach(x ->workTypeCodes.add(x.getWorkTypeCode().v()));
-        List<String> workTypeName = new ArrayList<>(listWorkTypeCodeName.values());
+        listWorkTypeCodeName.forEach((k,v) -> workTypeDtos.add(new workTypeDto(k, v)));
+
+        // get WorkTimeSettingName
         String WorkTimeSettingName = workTimeSettingPub.getWorkTimeSettingName(cid, requestPrams.worktimeCode);
 
-        return new WeeklyWorkDto(weeklyWorkDayPattern.getListWorkdayPatternItem(),workTypeName,workTypeCodes,WorkTimeSettingName);
+        return new WeeklyWorkDto(workdayPatternDtos,workTypeDtos,workTypeCodes,WorkTimeSettingName);
     }
-
 
 }

@@ -1,30 +1,101 @@
 package nts.uk.screen.at.app.ksm005.find;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
-
-import java.util.List;
-import java.util.Optional;
+import lombok.Setter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingSetMemento;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Getter
-@AllArgsConstructor
-public class MonthlyPatternDto {
+@Setter
+public class MonthlyPatternDto implements WorkMonthlySettingSetMemento {
 
-    //List<月間パターンの勤務情報>
-    private List<WorkMonthlySetting> workMonthlySettings;
 
-    //List<勤務種類名称>
-    private List<String> workTypeName;
+    /** The work monthly setting code. */
+    private String workTypeCode;
 
-    //List<就業時間帯名称>
-    private List<String> workTimeName;
+    /** The working code. */
+    private String workingCode;
 
-    //Optional<出勤休日区分>
-    private List<WorkStyle> workStyles;
+    /** The work type name. */
+    private String workTypeName;
 
-    private List<String> listMonthYear;
+    /** The type color. */
+    // ATTENDANCE = 1 , HOLIDAY = 0
+    private Integer typeColor;
 
+    /** The working name. */
+    private String workingName;
+
+    /** The date. */
+    private GeneralDate ymdk;
+
+    /** The monthly pattern code. */
+    private String monthlyPatternCode;
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * nts.uk.ctx.at.schedule.dom.shift.pattern.WorkMonthlySettingSetMemento#
+     * setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+     */
+    @Override
+    public void setCompanyId(CompanyId companyId) {
+        // No thing code
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * nts.uk.ctx.at.schedule.dom.shift.pattern.WorkMonthlySettingSetMemento#
+     * setWorkMonthlySettingCode(nts.uk.ctx.at.schedule.dom.shift.pattern.
+     * WorkMonthlySettingCode)
+     */
+    @Override
+    public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+        this.workTypeCode = workTypeCode.v();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * nts.uk.ctx.at.schedule.dom.shift.pattern.WorkMonthlySettingSetMemento#
+     * setSiftCode(nts.uk.ctx.at.shared.dom.worktime.SiftCode)
+     */
+    @Override
+    public void setWorkingCode(WorkTimeCode workingCode) {
+        this.workingCode = workingCode == null ? "" : workingCode.v();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * nts.uk.ctx.at.schedule.dom.shift.pattern.WorkMonthlySettingSetMemento#
+     * setDate(nts.arc.time.GeneralDate)
+     */
+    @Override
+    public void setYmdK(GeneralDate ymdk) {
+        this.ymdk = ymdk;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * nts.uk.ctx.at.schedule.dom.shift.pattern.WorkMonthlySettingSetMemento#
+     * setMonthlyPatternCode(nts.uk.ctx.at.schedule.dom.shift.pattern.
+     * MonthlyPatternCode)
+     */
+    @Override
+    public void setMonthlyPatternCode(MonthlyPatternCode monthlyPatternCode) {
+        this.monthlyPatternCode = monthlyPatternCode.v();
+    }
 
 }
