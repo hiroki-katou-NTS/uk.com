@@ -505,7 +505,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
             }
-            if (this.isCondition2) {
+            if (this.isCondition2 && !(_.isNull(this.valueWorkHours2.start) && _.isNull(this.valueWorkHours2.end))) {
                 b = {
                     workNo: 2,
                     timeZone: {
