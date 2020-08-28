@@ -41,7 +41,7 @@ public class DisplayInShift {
 		// Step 1
 		// khởi tạo param để truyền vào ScreenQuery シフトパレットを取得する
 		GetShiftPaletteParam paramStep1 = new GetShiftPaletteParam(param.listShiftMasterNotNeedGetNew,
-				param.shiftPaletteWantGet, param.workplaceId, param.workplaceGroupId);
+				param.shiftPaletteWantGet, param.workplaceId, param.workplaceGroupId, param.unit);
 		// call ScreenQuery シフトパレットを取得する
 		GetShiftPaletteResult resultStep1 = getShiftPalette.getDataShiftPallet(paramStep1);
 

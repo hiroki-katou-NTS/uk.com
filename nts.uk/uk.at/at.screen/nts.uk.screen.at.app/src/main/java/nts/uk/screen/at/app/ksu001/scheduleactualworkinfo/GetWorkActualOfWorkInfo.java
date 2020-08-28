@@ -313,7 +313,7 @@ public class GetWorkActualOfWorkInfo {
 		@Override
 		public Optional<IntegrationOfDaily> getDailyResults(String empId, GeneralDate date) {
 			Optional<DailyRecordDto> dailyRecordDto = workScheduleCache.get(empId, date);
-			if (!dailyRecordDto.isPresent()) {
+			if (dailyRecordDto.isPresent()) {
 				IntegrationOfDaily data = dailyRecordDto.get().toDomain(empId, date);
 				return Optional.of(data);
 			}
