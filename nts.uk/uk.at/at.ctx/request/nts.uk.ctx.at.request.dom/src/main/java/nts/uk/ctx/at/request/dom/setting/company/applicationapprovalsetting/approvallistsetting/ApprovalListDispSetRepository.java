@@ -9,6 +9,8 @@ import java.util.Optional;
  */
 public interface ApprovalListDispSetRepository {
 	
-	public Optional<ApprovalListDisplaySetting> findByCID(String companyID);
+	Optional<ApprovalListDisplaySetting> findByCID(String companyID);
+
+	void save(ApprovalListDisplaySetting domain);
 	
 }

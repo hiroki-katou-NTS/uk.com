@@ -4,6 +4,8 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 
+import java.util.Optional;
+
 /**
  * refactor 4
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.申請設定.申請種類別設定.申請種類別設定
@@ -31,12 +33,12 @@ public class AppTypeSetting {
 	/**
 	 * 事前事後区分の初期表示
 	 */
-	private PrePostInitAtr displayInitialSegment;
+	private Optional<PrePostInitAtr> displayInitialSegment;
 	
 	/**
 	 * 事前事後区分を変更できる
 	 */
-	private boolean canClassificationChange;
+	private Optional<Boolean> canClassificationChange;
 	
 	public AppTypeSetting(ApplicationType appType, boolean sendMailWhenRegister,
 			boolean sendMailWhenApproval, PrePostInitAtr displayInitialSegment,
@@ -44,18 +46,18 @@ public class AppTypeSetting {
 		this.appType = appType;
 		this.sendMailWhenRegister = sendMailWhenRegister;
 		this.sendMailWhenApproval = sendMailWhenApproval;
-		this.displayInitialSegment = displayInitialSegment;
-		this.canClassificationChange = canClassificationChange;
+		this.displayInitialSegment = Optional.ofNullable(displayInitialSegment);
+		this.canClassificationChange = Optional.ofNullable(canClassificationChange);
 	}
 	
 	public static AppTypeSetting createNew(int appType, boolean sendMailWhenRegister,
-			boolean sendMailWhenApproval, int displayInitialSegment,
-			boolean canClassificationChange) {
+			boolean sendMailWhenApproval, Integer displayInitialSegment,
+			Boolean canClassificationChange) {
 		return new AppTypeSetting(
 				EnumAdaptor.valueOf(appType, ApplicationType.class), 
 				sendMailWhenRegister, 
-				sendMailWhenApproval, 
-				EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class), 
+				sendMailWhenApproval,
+				displayInitialSegment == null ? null : EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class),
 				canClassificationChange);
 	}
 	

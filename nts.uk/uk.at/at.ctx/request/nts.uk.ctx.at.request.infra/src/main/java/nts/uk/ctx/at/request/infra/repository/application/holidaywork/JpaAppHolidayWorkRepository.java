@@ -100,8 +100,8 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 //		}
 //		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
 //		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
-//		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toDomain();
-//		appHolidayWork.setApplication(kafdtApplication.toDomain());
+//		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toOvertimeAppSetDomain();
+//		appHolidayWork.setApplication(kafdtApplication.toOvertimeAppSetDomain());
 //		return Optional.of(appHolidayWork);
 		return Optional.empty();
 	}

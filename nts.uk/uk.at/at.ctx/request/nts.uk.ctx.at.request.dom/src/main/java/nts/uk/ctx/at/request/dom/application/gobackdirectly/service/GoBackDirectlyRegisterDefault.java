@@ -40,6 +40,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyReposi
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDirectOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
@@ -618,9 +619,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		
 		if (inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet()) {
 			// アルゴリズム「2-3.新規画面登録後の処理」を実行する
+			// TODO: 申請設定 domain has changed!
+			AppTypeSetting appTypeSetting = inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+					.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
 			return newAfterRegister.processAfterRegister(
 					application.getAppID(), 
-					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting(),
+					appTypeSetting,
 					inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput().isMailServerSet());
 		}
 		return null;

@@ -31,8 +31,7 @@ public class KrqstAppLateOrEarly extends UkJpaEntity {
 	public static final JpaEntityMapper<KrqstAppLateOrEarly> MAPPER = new JpaEntityMapper<>(KrqstAppLateOrEarly.class);
 
 	public LateEarlyCancelAppSet toDomain() {
-		return new LateEarlyCancelAppSet(this.companyid, EnumAdaptor.valueOf(cancleAtr, CancelAtr.class),
-				this.lateAlClearAtr);
+		return new LateEarlyCancelAppSet(this.companyid, EnumAdaptor.valueOf(cancleAtr, CancelAtr.class));
 	}
 
 }

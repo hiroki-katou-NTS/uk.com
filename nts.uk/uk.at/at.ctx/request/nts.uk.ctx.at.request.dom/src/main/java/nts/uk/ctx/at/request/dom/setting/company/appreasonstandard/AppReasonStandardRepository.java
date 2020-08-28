@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.company.appreasonstandard;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
@@ -12,10 +13,15 @@ import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
  */
 public interface AppReasonStandardRepository {
 	
-	public Optional<AppReasonStandard> findByAppType(String companyID, ApplicationType appType);
+	Optional<AppReasonStandard> findByAppType(String companyID, ApplicationType appType);
 	
-	public Optional<AppReasonStandard> findByHolidayAppType(String companyID, HolidayAppType holidayAppType);
+	Optional<AppReasonStandard> findByHolidayAppType(String companyID, HolidayAppType holidayAppType);
 	
-	public Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode);
-	
+	Optional<AppReasonStandard> findByCD(ApplicationType appType, AppStandardReasonCode appStandardReasonCode);
+
+	List<AppReasonStandard> findByCompanyId(String companyID);
+
+	void saveReasonTypeItem(String companyId, int appType, ReasonTypeItem reasonItem);
+
+	void deleteReasonTypeItem(String companyId, int appType, int reasonCode);
 }

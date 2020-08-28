@@ -33,8 +33,8 @@ public class SettingForEachTypeDto {
 	
 	public SettingForEachType toDomain() {
 		return new SettingForEachType(
-				bottomComment.toDomain(),
+				EnumAdaptor.valueOf(stampAtr, StampAtr.class),
 				topComment.toDomain(),
-				EnumAdaptor.valueOf(stampAtr, StampAtr.class));
+				bottomComment.toDomain());
 	}
 }

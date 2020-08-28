@@ -15,7 +15,9 @@
 	</div>	
 		<div id="right-content" data-bind="with: selectedSetting">
 			<div class="row" style = "margin-top: 20px; margin-bottom: 10px;">
-			    <div data-bind="visible: !!$vmm.selectVer27(),ntsFormLabel: {}"> <span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Workplace')])"/></div>
+			    <div data-bind="visible: !!$vmm.selectVer27(),ntsFormLabel: {}">
+					<span data-bind="text: nts.uk.resource.getText('KAF022_276',[ nts.uk.resource.getText('Com_Workplace')])"/>
+				</div>
 			    <span data-bind="visible: !!$vmm.selectVer27(), text: wkpName"></span>
 		   </div>
 		   <!-- update ver38 theo bug 97952 -->

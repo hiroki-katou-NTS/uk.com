@@ -1,9 +1,5 @@
 package nts.uk.ctx.at.request.dom.setting.company.appreasonstandard;
 
-import java.util.Optional;
-
-import org.apache.logging.log4j.util.Strings;
-
 import lombok.Getter;
 
 /**
@@ -33,14 +29,14 @@ public class ReasonTypeItem {
 	/**
 	 * 定型理由
 	 */
-	private Optional<ReasonForFixedForm> opReasonForFixedForm;
+	private ReasonForFixedForm reasonForFixedForm;
 	
 	public ReasonTypeItem(AppStandardReasonCode appStandardReasonCD, int displayOrder,
-			boolean defaultValue, Optional<ReasonForFixedForm> opReasonForFixedForm) {
+			boolean defaultValue, ReasonForFixedForm reasonForFixedForm) {
 		this.appStandardReasonCD = appStandardReasonCD;
 		this.displayOrder = displayOrder;
 		this.defaultValue = defaultValue;
-		this.opReasonForFixedForm = opReasonForFixedForm;
+		this.reasonForFixedForm = reasonForFixedForm;
 	}
 	
 	public static ReasonTypeItem createNew(int appStandardReasonCD, int displayOrder,
@@ -49,7 +45,8 @@ public class ReasonTypeItem {
 				new AppStandardReasonCode(appStandardReasonCD), 
 				displayOrder, 
 				defaultValue, 
-				Strings.isBlank(opReasonForFixedForm) ? Optional.empty() : Optional.of(new ReasonForFixedForm(opReasonForFixedForm)));
+				new ReasonForFixedForm(opReasonForFixedForm)
+		);
 	}
 	
 }

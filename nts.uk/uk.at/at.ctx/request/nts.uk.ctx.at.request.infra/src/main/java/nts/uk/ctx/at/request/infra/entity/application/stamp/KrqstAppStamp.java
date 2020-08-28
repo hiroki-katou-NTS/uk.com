@@ -384,7 +384,7 @@ public class KrqstAppStamp extends ContractUkJpaEntity{
 		return krqstAppStamp;
 	}
 	
-//	public AppStampSetting toDomain () {
+//	public AppStampSetting toDomainApplicationSetting () {
 //		
 //	}
 	

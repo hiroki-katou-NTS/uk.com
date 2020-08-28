@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApplicationGenerator;
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApproverPrintDetails;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
+import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
@@ -45,6 +46,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	
 	@Inject
 	private AsposeAppStamp asposeAppStamp;
+
+	@Inject
+	private AposeBusinessTrip aposeBusinessTrip;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
@@ -88,6 +92,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case BUSINESS_TRIP_APPLICATION:
+			aposeBusinessTrip.printWorkChangeContent(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B15");
+			remarkLabel = worksheet.getCells().get("B18");
+			reasonContent = worksheet.getCells().get("D15");
+			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			break;
@@ -129,7 +138,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case WORK_CHANGE_APPLICATION:
 			return "application/KAF007_template.xlsx";
 		case BUSINESS_TRIP_APPLICATION:
-			return "";
+			return "application/KAF008_template.xlsx";
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "";
 		case HOLIDAY_WORK_APPLICATION:
@@ -158,7 +167,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case WORK_CHANGE_APPLICATION:
 			return "KAF007_template.xlsx";
 		case BUSINESS_TRIP_APPLICATION:
-			return "";
+			return "KAF008_template.xlsx";
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "";
 		case HOLIDAY_WORK_APPLICATION:
@@ -281,7 +290,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		reasonLabel.setValue(I18NText.getText("KAF000_52"));
 		remarkLabel.setValue(I18NText.getText("KAF000_59"));
 		String appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
-				.map(x -> x.getOpReasonForFixedForm().map(y -> y.v()).orElse(null)).orElse(null);
+				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
 		String appReason = printContentOfApp.getOpAppReason().v();
 		reasonContent.setValue(appReasonStandard + "\n" + appReason);
 	}

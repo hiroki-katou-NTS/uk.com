@@ -27,5 +27,5 @@ public class LateEarlyCancelAppSet {
 	/**
 	 * 遅刻早退報告を行った場合はアラームとしない
 	 */
-	private int lateAlClearAtr;
+//	private int lateAlClearAtr;
 }

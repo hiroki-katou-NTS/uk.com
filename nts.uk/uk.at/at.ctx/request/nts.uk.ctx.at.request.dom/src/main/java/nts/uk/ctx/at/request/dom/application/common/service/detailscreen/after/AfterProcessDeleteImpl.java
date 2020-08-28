@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -47,8 +48,10 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		List<String> autoFailMail = new ArrayList<>();
 		List<String> autoFailServer = new ArrayList<>();
 		// ノートのIF文を参照
-		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() &&
-				appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSetting().isSendMailWhenRegister();
+		AppTypeSetting appTypeSetting = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
+				.stream().filter(x -> x.getAppType()==application.getAppType()).findAny().get();
+		boolean condition = appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet() && 
+				appTypeSetting.isSendMailWhenRegister();
 		if(condition) {
 			isAutoSendMail = true;
 			// アルゴリズム「削除時のメール通知者を取得する」を実行する ( Thực hiện thuật toán 「削除時のメール通知者を取得するLấy người thông báo mail khi delete」

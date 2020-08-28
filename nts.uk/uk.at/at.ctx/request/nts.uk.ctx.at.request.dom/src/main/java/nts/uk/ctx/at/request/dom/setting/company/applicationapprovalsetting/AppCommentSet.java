@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
 import nts.uk.shr.com.color.ColorCode;
@@ -13,6 +15,8 @@ import nts.uk.shr.com.color.ColorCode;
  */
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AppCommentSet {
 	
 	/**
@@ -28,6 +32,6 @@ public class AppCommentSet {
 	/**
 	 * 文字色
 	 */
-	private ColorCode ColorCode;
+	private ColorCode colorCode;
 	
 }

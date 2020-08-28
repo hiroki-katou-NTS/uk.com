@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.ApplicationDetailSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
@@ -11,6 +13,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
  * @author Doan Duy Hung
  *
  */
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 public class HolidayWorkAppSet implements DomainAggregate {
 	

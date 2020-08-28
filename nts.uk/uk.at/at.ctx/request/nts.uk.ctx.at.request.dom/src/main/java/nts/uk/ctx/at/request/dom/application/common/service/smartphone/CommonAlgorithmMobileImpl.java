@@ -53,6 +53,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.OTAppBeforeAccepRestric;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.PrePostInitAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.ReceptionRestrictionSetting;
@@ -282,13 +283,16 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			opErrorFlag = Optional.of(approvalRootContentImport_New.getErrorFlag());
 		}
 		// 事前事後の初期選択状態を取得する
+		// TODO: 申請設定 domain has changed!
+		Optional<AppTypeSetting> opAppTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType()==appType).findAny();
+		Optional<ReceptionRestrictionSetting> opReceptionRestrictionSetting = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType()==appType).findAny();
 		PrePostInitAtr prePostInitAtr = this.getPrePostInitAtr(
 				appDateLst.stream().findFirst(), 
 				appType, 
 				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(),
-				applicationSetting.getAppTypeSetting().getDisplayInitialSegment(), 
+				opAppTypeSetting.map(x -> x.getDisplayInitialSegment().orElse(null)).orElse(null), 
 				opOvertimeAppAtr,
-				applicationSetting.getReceptionRestrictionSetting().getOtAppBeforeAccepRestric());
+				opReceptionRestrictionSetting.map(x -> x.getOtAppBeforeAccepRestric().orElse(null)).orElse(null));
 		// INPUT．「申請種類」をチェックする
 		Optional<List<ActualContentDisplay>> opActualContentDisplayLst = Optional.empty();
 		Optional<List<PreAppContentDisplay>> opPreAppContentDisplayLst = Optional.empty();
