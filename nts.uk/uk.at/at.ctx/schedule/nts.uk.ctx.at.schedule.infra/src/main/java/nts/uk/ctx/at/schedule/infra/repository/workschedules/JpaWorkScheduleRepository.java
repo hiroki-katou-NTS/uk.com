@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,10 +11,19 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchAtdLvwTime;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBasicInfoPK;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchBreakTs;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchEditState;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTs;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.workschedule.KscdtSchShortTimeTsPK;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class JpaWorkScheduleRepository extends JpaRepository implements WorkScheduleRepository {
@@ -20,7 +31,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	private static final String SELECT_BY_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 	
 	private static final String SELECT_CHECK_UPDATE = "SELECT count (c) FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
-
+	
 	@Override
 	public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
 		Optional<WorkSchedule> workSchedule = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
@@ -151,40 +162,61 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			});
 			
 			//List<KscdtSchEditState> editStates;
-			oldData.get().editStates.stream().forEach(x -> {
-					newData.editStates.stream().forEach(y ->{
+			for(KscdtSchEditState y : newData.editStates) {
+				oldData.get().editStates.forEach(x->{
+					if(y.pk.atdItemId == x.pk.atdItemId) {
 						x.cid = y.cid;
 						x.sditState = y.sditState;
-					});
-			});
-			//List<KscdtSchAtdLvwTime> atdLvwTimes;
-			oldData.get().atdLvwTimes.stream().forEach(x ->{
-				newData.atdLvwTimes.stream().forEach(y ->{
-					x.cid = y.cid;
-					x.atdClock = y.atdClock;
-					x.lwkClock = y.lwkClock;
-				});
-			});
-			//List<KscdtSchShortTimeTs> schShortTimeTs
-			for(KscdtSchShortTimeTs ts : newData.schShortTimeTs) {
-				oldData.get().schShortTimeTs.forEach(x->{
-					if(ts.pk.frameNo == x.pk.frameNo) {
-						x.cid = ts.cid;
-						x.shortTimeTsStart = ts.shortTimeTsStart;
-						x.shortTimeTsEnd = ts.shortTimeTsEnd;
 					}
 				});
 			}
-			//List<KscdtSchBreakTs> breakTs;
-			oldData.get().breakTs.stream().forEach(x -> {
-				newData.breakTs.stream().forEach(y ->{
-					x.cid = y.cid;
-					x.breakTsStart = y.breakTsStart;
-					x.breakTsEnd = y.breakTsEnd;
+			
+			//List<KscdtSchAtdLvwTime> atdLvwTimes;
+			for(KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
+				oldData.get().atdLvwTimes.forEach(x->{
+					if(y.pk.workNo == x.pk.workNo) {
+						x.cid = y.cid;
+						x.atdClock = y.atdClock;
+						x.lwkClock = y.lwkClock;
+					}
 				});
-			});
-
+			}
+			
+			
+			if(workSchedule.getOptSortTimeWork().isPresent()) {
+				List<ShortWorkingTimeSheet> timeSheets = workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets();
+				if(timeSheets.isEmpty()) {
+					this.deleteAllShortTime(workSchedule.getEmployeeID(), workSchedule.getYmd());	
+				} else {
+					//List<KscdtSchShortTimeTs> schShortTimeTs
+					for(KscdtSchShortTimeTs ts : newData.schShortTimeTs) {
+						oldData.get().schShortTimeTs.forEach(x->{
+							if(ts.pk.frameNo == x.pk.frameNo) {
+								x.cid = ts.cid;
+								x.shortTimeTsStart = ts.shortTimeTsStart;
+								x.shortTimeTsEnd = ts.shortTimeTsEnd;
+							} else {
+								this.deleteShortTime(workSchedule.getEmployeeID(), workSchedule.getYmd(), x.getPk().getChildCareAtr(), x.getPk().getFrameNo());
+								this.insert(new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(ts.pk.frameNo), ChildCareAttribute.decisionValue(ts.pk.childCareAtr),
+											new TimeWithDayAttr(ts.shortTimeTsStart), new TimeWithDayAttr(ts.shortTimeTsEnd)), workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+							}
+						});
+					}
+				}
+			}
+			
+			//List<KscdtSchBreakTs> breakTs;
+			for(KscdtSchBreakTs y : newData.breakTs) {
+				oldData.get().breakTs.stream().forEach(x -> {
+					if(y.pk.frameNo == x.pk.frameNo) {
+						x.cid = y.cid;
+						x.breakTsStart = y.breakTsStart;
+						x.breakTsEnd = y.breakTsEnd;
+					}
+				});
+			}
 			this.commandProxy().update(oldData.get());
+			
 		}
 	}
 
@@ -207,5 +239,47 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			}
 		});
 	}
-
+	
+	@Override
+	public void deleteShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo) {
+		Optional<ShortTimeOfDailyAttd> optWorkShortTime = this.getShortTime(sid, ymd,childCareAtr, frameNo);
+		if(optWorkShortTime.isPresent()){
+			KscdtSchShortTimeTsPK pk = new KscdtSchShortTimeTsPK(sid, ymd, childCareAtr, frameNo);
+			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
+		}	
+	}
+	
+	@Override
+	public void deleteAllShortTime(String sid, GeneralDate ymd) {
+		Boolean optWorkShortTime = this.checkExitsShortTime(sid, ymd);
+		if(optWorkShortTime){
+			KscdtSchShortTimeTsPK pk = new KscdtSchShortTimeTsPK(sid, ymd);
+			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
+		}	
+	}
+	
+	@Override
+	public void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID) {
+		this.commandProxy().insert(KscdtSchShortTimeTs.toEntity(shortWorkingTimeSheets, sID, yMD, cID));
+	}
+	
+	private static final String SELECT_BY_SHORTTIME_TS = "SELECT c FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd AND c.pk.childCareAtr = :childCareAtr AND c.pk.frameNo = :frameNo";
+	@Override
+	public Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo) {
+		Optional<ShortTimeOfDailyAttd> workSchedule = this.queryProxy().query(SELECT_BY_SHORTTIME_TS, KscdtSchShortTimeTs.class)
+				.setParameter("employeeID", sid)
+				.setParameter("ymd", ymd)
+				.setParameter("childCareAtr", childCareAtr)
+				.setParameter("frameNo", frameNo)
+				.getSingle(c -> c.toDomain(sid, ymd,childCareAtr, frameNo));
+		return workSchedule;
+	}
+	
+	private static final String SELECT_ALL_SHORTTIME_TS = "SELECT count (c) FROM KscdtSchShortTimeTs c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
+	@Override
+	public boolean checkExitsShortTime(String employeeID, GeneralDate ymd) {
+		return this.queryProxy().query(SELECT_ALL_SHORTTIME_TS, Long.class)
+				.setParameter("employeeID", employeeID).setParameter("ymd", ymd)
+				.getSingle().get() > 0;
+	}
 }
