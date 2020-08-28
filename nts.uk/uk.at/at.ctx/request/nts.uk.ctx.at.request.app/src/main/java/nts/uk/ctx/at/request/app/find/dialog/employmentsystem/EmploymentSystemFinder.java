@@ -35,6 +35,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffOutputHisData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
@@ -146,7 +147,8 @@ public class EmploymentSystemFinder {
 				Optional.empty(), 
 				Collections.emptyList(), 
 				Collections.emptyList(), 
-				Optional.empty());
+				Optional.empty(),
+				new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
 		SubstituteHolidayAggrResult substituteHolidayAggrResult = this.numberRemainVacationLeaveRangeProcess
 				.getBreakDayOffMngInPeriod(inputParam);
 		
@@ -156,32 +158,26 @@ public class EmploymentSystemFinder {
 					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
 					itemDto.setExpiredInCurrentMonth(false);
 					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
+						UnbalanceCompensation itemOccurrent = (UnbalanceCompensation) item;
 						// 	・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
-						itemDto.setOccurrenceDate(item.getDateOccur().getDayoffDate().orElse(null));
+						itemDto.setOccurrenceDate(itemOccurrent.getDateOccur().getDayoffDate().orElse(null));
 						// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
-						itemDto.setOccurrenceNumber(item.getNumberOccurren().getDay().v());
+						itemDto.setOccurrenceNumber(itemOccurrent.getNumberOccurren().getDay().v());
 						// field ・発生時間　＝　取得した逐次発生の休暇明細．発生数．時間
-						Optional<AttendanceTime> oOccurrenceHour = item.getNumberOccurren().getTime();
-						if (oOccurrenceHour.isPresent()) {
-							itemDto.setOccurrenceHour(oOccurrenceHour.get().v());
-						}	
+						Optional<AttendanceTime> oOccurrenceHour = itemOccurrent.getNumberOccurren().getTime();
+						itemDto.setOccurrenceHour(oOccurrenceHour.map(o -> o.v()).orElse(null));						
 						// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
-						Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
-						if (oUnbalanceCompensation.isPresent()) {
-							itemDto.setExpirationDate(oUnbalanceCompensation.get().getDeadline());
-							// condition 取得した期間．開始日＜＝期限日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
-							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(oUnbalanceCompensation.get().getDeadline()));
-						}
+						itemDto.setExpirationDate(itemOccurrent.getDeadline());
+						// condition 取得した期間．開始日＜＝期限日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
+						itemDto.setExpiredInCurrentMonth(closingPeriod.contains(itemOccurrent.getDeadline()));
 					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
-						// 	・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
+						// field ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
 						itemDto.setDigestionDate(item.getDateOccur().getDayoffDate().orElse(null));
 						// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
 						itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
 						// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
 						Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
-						if (oDigestionHour.isPresent()) {
-							itemDto.setDigestionHour(oDigestionHour.get().v());
-						}	
+						itemDto.setDigestionHour(oDigestionHour.map(o -> o.v()).orElse(null));
 					}
 					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
 					itemDto.setManagementDataStatus(item.getDataAtr().value);
@@ -345,7 +341,8 @@ public class EmploymentSystemFinder {
 				Collections.emptyList(),
 				Optional.empty(),
 				Optional.empty(),
-				Optional.empty());
+				Optional.empty(),
+				new FixedManagementDataMonth(Collections.emptyList(), Collections.emptyList()));
 		CompenLeaveAggrResult compenLeaveAggrResult = this.numberCompensatoryLeavePeriodProcess.process(inputParam);
 
 		// Step 紐付け情報を生成する ()
@@ -367,38 +364,29 @@ public class EmploymentSystemFinder {
 					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
 					itemDto.setExpiredInCurrentMonth(false);
 					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
+						UnbalanceCompensation itemOccurrent = (UnbalanceCompensation) item;
 						// 	・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
-						if (item.getDateOccur().getDayoffDate().isPresent()) {
-							GeneralDate occurrenceDate = item.getDateOccur().getDayoffDate().get();
-							itemDto.setOccurrenceDate(occurrenceDate);
-							// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
-							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
-						}
+						itemDto.setOccurrenceDate(itemOccurrent.getDateOccur().getDayoffDate().orElse(null));
+						// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
+						itemDto.setOccurrenceNumber(itemOccurrent.getNumberOccurren().getDay().v());
+						// field ・発生時間　＝　取得した逐次発生の休暇明細．発生数．時間
+						Optional<AttendanceTime> oOccurrenceHour = itemOccurrent.getNumberOccurren().getTime();
+						itemDto.setOccurrenceHour(oOccurrenceHour.map(o -> o.v()).orElse(null));						
+						// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
+						itemDto.setExpirationDate(itemOccurrent.getDeadline());
+						// condition 取得した期間．開始日＜＝期限日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
+						itemDto.setExpiredInCurrentMonth(closingPeriod.contains(itemOccurrent.getDeadline()));
 					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
-						// 	・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
+						// field ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
 						itemDto.setDigestionDate(item.getDateOccur().getDayoffDate().orElse(null));
-					}
-					// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
-					itemDto.setOccurrenceNumber(item.getNumberOccurren().getDay().v());
-					// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
-					itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
-					// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
-					Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
-					if (oUnbalanceCompensation.isPresent()) {
-						itemDto.setExpirationDate(oUnbalanceCompensation.get().getDeadline());
+						// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
+						itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
+						// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
+						Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
+						itemDto.setDigestionHour(oDigestionHour.map(o -> o.v()).orElse(null));
 					}
 					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
 					itemDto.setManagementDataStatus(item.getDataAtr().value);
-					// field ・発生時間　＝　取得した逐次発生の休暇明細．発生数．時間
-					Optional<AttendanceTime> oOccurrenceHour = item.getNumberOccurren().getTime();
-					if (oOccurrenceHour.isPresent()) {
-						itemDto.setOccurrenceHour(oOccurrenceHour.get().v());				
-					}
-					// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
-					Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
-					if (oDigestionHour.isPresent()) {
-						itemDto.setDigestionHour(oDigestionHour.get().v());				
-					}
 					return itemDto;
 				})
 				.collect(Collectors.toList());

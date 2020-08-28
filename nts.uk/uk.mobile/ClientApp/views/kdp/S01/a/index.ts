@@ -237,6 +237,7 @@ export class KdpS01AComponent extends Vue {
                                 break;
                             }
                             default:
+                                vm.openDialogB(command.stampButton);
                                 break;
                         }
 
@@ -302,8 +303,8 @@ export class KdpS01AComponent extends Vue {
     private setBtnColor(buttonSetting: model.ButtonSettingsDto, stampToSuppress: model.IStampToSuppress) {
 
         const DEFAULT_GRAY = '#E8E9EB';
-        let valueType = DEFAULT_GRAY,
-            backGroundColor = _.get(buttonSetting, 'buttonDisSet.backGroundColor', DEFAULT_GRAY);
+        let backGroundColor = _.get(buttonSetting, 'buttonDisSet.backGroundColor', DEFAULT_GRAY),
+            valueType = backGroundColor;
 
         switch (buttonSetting.buttonValueType) {
             case ButtonType.GOING_TO_WORK:
@@ -323,7 +324,7 @@ export class KdpS01AComponent extends Vue {
                 break;
 
             default:
-                valueType = DEFAULT_GRAY;
+                valueType = backGroundColor;
                 break;
         }
         buttonSetting.buttonDisSet.backGroundColor = backGroundColor;
