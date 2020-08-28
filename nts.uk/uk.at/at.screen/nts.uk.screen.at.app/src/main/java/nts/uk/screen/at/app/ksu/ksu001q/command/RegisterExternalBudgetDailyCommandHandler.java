@@ -47,7 +47,7 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 
 		List<DateAndValueMap> dateAndValueMap = command.getDateAndValues();
 
-		TargetOrgIdenInfor targetOrg = command.getUnit().equals("1")
+		TargetOrgIdenInfor targetOrg = ("1").equals(command.getUnit())
 				? TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(command.getId())
 				: TargetOrgIdenInfor.creatIdentifiWorkplace(command.getId());
 

@@ -35,7 +35,7 @@ public class DailyExternalBudgetQuery {
 	 */
 	public List<DailyExternalBudgetDto> getDailyExternalBudget(DailyExternalBudget dailyExternal) {
 
-		TargetOrgIdenInfor targetOrg = dailyExternal.getUnit().equals("1")
+		TargetOrgIdenInfor targetOrg = ("1").equals(dailyExternal.getUnit())
 				? TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(dailyExternal.getId())
 				: TargetOrgIdenInfor.creatIdentifiWorkplace(dailyExternal.getId());
 				
