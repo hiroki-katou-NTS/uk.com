@@ -254,16 +254,16 @@ module nts.uk.at.view.kmp001.a {
 				model: IModel = ko.toJS(vm.model),
 				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
 
-			var stampInput = "";
+			var stampInput = ko.toJS(vm.textInput);
 
 			if (ko.unwrap(vm.model.code) != '') {
 
-				if (ko.toJS(vm.model.stampCardDto).length > 0) {
+				/*if (ko.toJS(vm.model.stampCardDto).length > 0) {
 					const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
 					stampInput = stamp.stampNumber;
 				} else {
 					stampInput = ko.toJS(vm.textInput);
-				}
+				}*/
 
 				if (stampInput == '') {
 					vm.$dialog.info({ messageId: "Msg_1679" });
@@ -308,7 +308,6 @@ module nts.uk.at.view.kmp001.a {
 									.then(() => vm.model.code.valueHasMutated())
 									.fail((err: any) => {
 										nts.uk.ui.dialog.error({ messageId: err.messageId });
-										vm.model.code.valueHasMutated();
 									})
 									.always(() => vm.$blockui("clear"));
 							}

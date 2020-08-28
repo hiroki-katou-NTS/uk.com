@@ -4,42 +4,20 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const templateCardList = `
-	<!-- ko if: ko.unwrap(model.stampCardDto).length === 0 -->
-			<div
-				data-bind="ntsFormLabel: {
-					constraint: $component.constraint, 
-					required: true,
-					text: $i18n('KMP001_22') }">
-			</div>
-			<input id="card-input" class="ip-stamp-card"
-				data-bind="ntsTextEditor: {
-					name:'#[KMP001_30]',
-					value: textInput,
-					constraint: $component.constraint,
-					enabled: true,
-					width: 200
-			}"/>		
-		<!-- /ko -->
-		<!-- ko if: ko.unwrap(model.stampCardDto).length !== 0 -->
-		<div data-bind="foreach: model.stampCardDto">
-			<!-- ko if: $index() === 0 -->
-				<div
-					data-bind="ntsFormLabel: {
-						constraint: $component.constraint, 
-						required: true, 
-						text: $i18n('KMP001_22') }">
-				</div>
-				<input id="card-input" class="ip-stamp-card"
-					data-bind="ntsTextEditor: {
-						name:'#[KMP001_30]',
-						value: stampNumber,
-						constraint: $component.constraint,
-						enabled: true,
-						width: 200
-				}"/>
-			<!-- /ko -->
-		</div>
-		<!-- /ko -->
+	<div
+		data-bind="ntsFormLabel: {
+			constraint: $component.constraint, 
+			required: true,
+			text: $i18n('KMP001_22') }">
+	</div>
+	<input id="card-input" class="ip-stamp-card"
+		data-bind="ntsTextEditor: {
+			name:'#[KMP001_30]',
+			value: textInput,
+			constraint: $component.constraint,
+			enabled: true,
+			width: 200
+	}"/>		
 	<table id="stampcard-list"></table>
 	`;
 
