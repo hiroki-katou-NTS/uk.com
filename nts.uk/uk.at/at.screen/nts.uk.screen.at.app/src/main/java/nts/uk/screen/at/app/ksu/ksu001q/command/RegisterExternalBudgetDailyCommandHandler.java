@@ -25,7 +25,6 @@ import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.E
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.workschedule.budgetcontrol.budgetperformance.ExtBudgetDailyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
-import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 /**
  * 外部予算日次を登録するHandler
@@ -48,22 +47,9 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 
 		List<DateAndValueMap> dateAndValueMap = command.getDateAndValues();
 
-		String workplaceId = null;
-		String workplaceGroupId = null;
-
-		if (command.getUnit().equals("1")) {
-			workplaceId = null;
-			workplaceGroupId = command.getId();
-		}
-		if (command.getUnit().equals("0")) {
-			workplaceId = command.getId();
-			workplaceGroupId = null;
-		}
-
-		// 外部予算日次を登録する
-		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(
-				TargetOrganizationUnit.valueOf(Integer.parseInt(command.getUnit())), Optional.ofNullable(workplaceId),
-				Optional.ofNullable(workplaceGroupId));
+		TargetOrgIdenInfor targetOrg = command.getUnit().equals("1")
+				? TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(command.getId())
+				: TargetOrgIdenInfor.creatIdentifiWorkplace(command.getId());
 
 		RequireImpl require = new RequireImpl(extBudgetDailyRepository);
 

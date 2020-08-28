@@ -112,20 +112,17 @@ module nts.uk.at.view.ksu001.q {
 				});
 
 				self.numbereditor = {
-					constraint: '',
 					option: new nts.uk.ui.option.NumberEditorOption({
 						grouplength: 3,
 						decimallength: 0
 					}),
 				}
 				self.yearmontheditor = {
-					constraint: 'ExtBudgetTime',
 					option: ko.mapping.fromJS(new nts.uk.ui.option.TimeEditorOption({
 						inputFormat: 'time'
 					})),
 				};
 				self.currencyeditor = {
-					constraint: '',
 					option: new nts.uk.ui.option.CurrencyEditorOption({
 						grouplength: 3,
 						currencyformat: "JPY"
