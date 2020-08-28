@@ -18,11 +18,11 @@ public class MonthlyPattern extends AggregateRoot {
 
 	/** The company id. */
 	//会社ID
-	private CompanyId companyId;
+	private final CompanyId companyId;
 	
 	/** The monthly pattern code. */
 	//月間パターンコード
-	private MonthlyPatternCode monthlyPatternCode;
+	private final MonthlyPatternCode monthlyPatternCode;
 	
 	/** The monthly pattern name. */
 	// 月間パターン名称
