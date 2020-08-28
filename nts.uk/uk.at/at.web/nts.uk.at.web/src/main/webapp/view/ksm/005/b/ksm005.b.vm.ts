@@ -7,6 +7,7 @@ module nts.uk.at.view.ksm005.b {
     import MonthlyPatternSettingBatch = service.model.MonthlyPatternSettingBatch;
     import BusinessDayClassification = service.model.BusinessDayClassification;
     import WeeklyWorkSettingDto = service.model.WeeklyWorkSettingDto;
+	import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import KeyMonthlyPatternSettingBatch = service.model.KeyMonthlyPatternSettingBatch;
     import MonthlyPatternSettingBatchDto = service.model.MonthlyPatternSettingBatchDto;
     import getText = nts.uk.resource.getText;
@@ -33,11 +34,18 @@ module nts.uk.at.view.ksm005.b {
             worktimeInfoPublicHolidays: KnockoutObservable<string>;
 
 	        settingForHolidays: KnockoutObservable<boolean>;
+	        lstSelectableCode: KnockoutObservableArray<string>;
+	        columnHolidayPatterns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+	        lstHolidaysPattern:KnockoutObservableArray<MonthlyPatternDto>;
+	        selectHolidayPattern: KnockoutObservable<string>;
 
             constructor() {
                 var self = this;
                 self.startYearMonth = ko.observable(nts.uk.ui.windows.getShared("yearmonth"));
                 self.endYearMonth = ko.observable(nts.uk.ui.windows.getShared("yearmonth"));
+	            self.monthlyPatternCode = nts.uk.ui.windows.getShared("monthlyPatternCode");
+	            self.monthlyPatternName = nts.uk.ui.windows.getShared("monthlyPatternName");
+
                 self.overwirte = ko.observable(true);
                 self.worktypeInfoWorkDays = ko.observable('');
                 self.worktimeInfoWorkDays = ko.observable('');
@@ -51,10 +59,15 @@ module nts.uk.at.view.ksm005.b {
                 self.monthlyPatternSettingBatchStatutoryHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternSettingBatchNoneStatutoryHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternSettingBatchPublicHolidays = ko.observable(new MonthlyPatternSettingBatch());
-                self.monthlyPatternCode = nts.uk.ui.windows.getShared("monthlyPatternCode");
-                self.monthlyPatternName = nts.uk.ui.windows.getShared("monthlyPatternName");
                 self.settingForHolidays = ko.observable(false);
+                self.lstSelectableCode = ko.observableArray([]);
 
+	            self.columnHolidayPatterns = ko.observableArray([
+		            { headerText: getText("KSM005_92"), key: 'code', width: 50 },
+		            { headerText: getText("KSM005_93"), key: 'name', width: 100 ,formatter: _.escape }
+	            ]);
+	            self.lstHolidaysPattern = ko.observableArray([]);
+	            self.selectHolidayPattern = ko.observable(null);
 	            // Init
 	            $(".popup-b72").ntsPopup({
 		            trigger: ".showDialogB72",
@@ -66,8 +79,9 @@ module nts.uk.at.view.ksm005.b {
 		            showOnStart: false,
 		            dismissible: true
 	            });
-            }
 
+	            self.findAllMonthlyPattern();
+            }
 
             /**
             * start page data 
@@ -77,7 +91,7 @@ module nts.uk.at.view.ksm005.b {
                 var dfd = $.Deferred();
                 service.findAllWorkType().done(function(dataWorkType) {
                     service.findAllWorkTime().done(function(dataWorkTime) {
-                       self.getMonthlyPatternSettingBatch(BusinessDayClassification.WORK_DAYS).done(function(monthlyBatch) {
+                        self.getMonthlyPatternSettingBatch(BusinessDayClassification.WORK_DAYS).done(function(monthlyBatch) {
                             if (monthlyBatch != undefined && monthlyBatch != null) {
                                 self.worktypeInfoWorkDays(monthlyBatch.workTypeCode + ' ' + self.findNameByWorktypeCode(monthlyBatch.workTypeCode, dataWorkType));
                                 self.worktimeInfoWorkDays(monthlyBatch.workingCode + ' ' + self.findNameWorkTimeCode(monthlyBatch.workingCode, dataWorkTime));
@@ -108,7 +122,6 @@ module nts.uk.at.view.ksm005.b {
 
                     });
                 });
-
 
                 dfd.resolve(self);
                 return dfd.promise();
@@ -278,7 +291,6 @@ module nts.uk.at.view.ksm005.b {
 
             }
             
-            
             /**
              * open dialog KDL003 by Work Days
              */
@@ -311,7 +323,21 @@ module nts.uk.at.view.ksm005.b {
              * open dialog KDL003 statutory holidays
              */
             public openDialogStatutoryHolidays(): void {
-                var self = this;
+	             let self = this,
+		             workTypeCode = self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode;
+	             nts.uk.ui.windows.setShared('KDL002_AllItemObj', self.lstSelectableCode(),true);
+	             nts.uk.ui.windows.setShared('KDL002_SelectedItemId', workTypeCode, true);
+	             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', width: 700 , height: 520}).onClosed(function(): any {
+		             let lstNewData = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+		             if( lstNewData ) {
+			             self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = lstNewData[0].code;
+			             if ( nts.uk.util.isNullOrEmpty(lstNewData.code) ) {
+				             self.worktypeInfoStatutoryHolidays(lstNewData[0].code + ' ' + lstNewData[0].name);
+			             }
+		             }
+	             })
+
+                /*var self = this;
                 nts.uk.ui.windows.setShared('parentCodes', {
                     selectedWorkTypeCode: self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode,
                     selectedWorkTimeCode: self.monthlyPatternSettingBatchStatutoryHolidays().workingCode
@@ -331,14 +357,27 @@ module nts.uk.at.view.ksm005.b {
                             self.worktimeInfoStatutoryHolidays('');
                         }
                     }
-                });
+                });*/
             }
              /**
              * open dialog KDL003 none statutory holidays
              */
             public openDialogNoneStatutoryHolidays(): void {
-                var self = this;
-                nts.uk.ui.windows.setShared('parentCodes', {
+                 let self = this,
+	                workTypeCode = self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode;
+	             nts.uk.ui.windows.setShared('KDL002_AllItemObj', self.lstSelectableCode(),true);
+	             nts.uk.ui.windows.setShared('KDL002_SelectedItemId', workTypeCode, true);
+	             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', width: 700 , height: 520}).onClosed(function(): any {
+		             let lstNewData = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+		             if( lstNewData ) {
+			             self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = lstNewData[0].code;
+			             if ( nts.uk.util.isNullOrEmpty(lstNewData.code) ) {
+				             self.worktypeInfoNoneStatutoryHolidays(lstNewData[0].code + ' ' + lstNewData[0].name);
+			             }
+                     }
+	             })
+
+                /*nts.uk.ui.windows.setShared('parentCodes', {
                     selectedWorkTypeCode: self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode,
                     selectedWorkTimeCode: self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode
                 }, true);
@@ -360,13 +399,26 @@ module nts.uk.at.view.ksm005.b {
                             self.worktimeInfoNoneStatutoryHolidays('');
                         }
                     }
-                });
+                });*/
             }
              /**
              * open dialog KDL003 public holiday
              */
             public openDialogPublicHolidays(): void {
-                var self = this;
+	             let self = this,
+		             workTypeCode = self.monthlyPatternSettingBatchPublicHolidays().workTypeCode;
+	             nts.uk.ui.windows.setShared('KDL002_AllItemObj', self.lstSelectableCode(),true);
+	             nts.uk.ui.windows.setShared('KDL002_SelectedItemId', workTypeCode, true);
+	             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', width: 700 , height: 520}).onClosed(function(): any {
+		             let lstNewData = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
+		             if( lstNewData ) {
+			             self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = lstNewData[0].code;
+			             if ( nts.uk.util.isNullOrEmpty(lstNewData.code) ) {
+				             self.worktypeInfoPublicHolidays(lstNewData[0].code + ' ' + lstNewData[0].name);
+			             }
+		             }
+	             })
+                /*var self = this;
                 nts.uk.ui.windows.setShared('parentCodes', {
                     selectedWorkTypeCode: self.monthlyPatternSettingBatchPublicHolidays().workTypeCode,
                     selectedWorkTimeCode: self.monthlyPatternSettingBatchPublicHolidays().workingCode
@@ -387,18 +439,16 @@ module nts.uk.at.view.ksm005.b {
                             self.worktimeInfoPublicHolidays('');
                         }
                     }
-                });
+                });*/
             }
 
-	        public showDialogKDL002() : void {
+	        public showDialogKDL002( i : number) : void {
 		        var self = this;
-		        nts.uk.ui.windows.setShared('KDL002_SelectedItem', {
-			        selectedWorkTypeCode: self.monthlyPatternSettingBatchPublicHolidays().workTypeCode,
-			        selectedWorkTimeCode: self.monthlyPatternSettingBatchPublicHolidays().workingCode
-		        }, true);
+                console.log(self.lstSelectableCode());
+		        nts.uk.ui.windows.setShared('KDL002_AllItemObj', self.lstSelectableCode(),true);
+		        nts.uk.ui.windows.setShared('KDL002_SelectedItemId', null, true);
 		        nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '乖離時間の登録＞対象項目', width: 700 , height: 520}).onClosed(function(): any {
-			         let lst = nts.uk.ui.windows.getShared('KDL002_SelectedItem');
-			         console.log(lst);
+			         let lst = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
 			         /*if (lst != undefined && lst.length > 0 && lst[0].code != "") {
 						 self.updateCodeName(self.rowId(), self.attendenceId, lst[0].name, lst[0].code, self.selectedCode());
 					 } else {
@@ -407,11 +457,48 @@ module nts.uk.at.view.ksm005.b {
 		        })
 	        }
 
-	        public showDialogB72() {
-		        var self = this;
-                //getWeeklyWork
-                alert(1232);
+            public findAllMonthlyPattern() {
+                let self = this;
+	            self.lstSelectableCode([]);
+                service.findAllMonthlyPattern().done(function (data) {
+                    self.lstHolidaysPattern(data);
+	                data && data.map( (item ) => {
+						 self.lstSelectableCode.push(item.code);
+	                });
+                });
             }
+
+	        /*public  getWeeklyWorkPattern() {
+		        let self = this;
+		        //self.lstSelectableCode([]);
+		        service.getWeeklyWork().done(function (data) {
+			        //self.lstHolidaysPattern(data);
+                    console.log(data);
+		        });
+            }*/
+
+            /*
+            * 法定外休日
+            * */
+            public openDialogNonStatutoryHolidays() {
+                let self = this;
+                self.showDialogKDL002(3);
+            }
+            /*
+            * 法定休日
+            * */
+            public openDialogLegalHolidays() {
+	            let self = this;
+	            self.showDialogKDL002(2);
+            }
+
+	        /*
+			* 定休日
+			* */
+	        public openDialogRegularHolidays() {
+		        let self = this;
+		        self.showDialogKDL002(1);
+	        }
         }
     }
 }
