@@ -53,3 +53,12 @@
 .lblForm{
 	margin-right: 338px;
 }
+
+#line {
+	margin: 5px 0px;
+	width: 830px;	
+	display: block;
+	height: 0.1px;
+	background:#9A9A9A;
+	border: none;
+}

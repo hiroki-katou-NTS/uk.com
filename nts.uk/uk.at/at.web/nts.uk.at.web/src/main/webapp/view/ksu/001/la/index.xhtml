@@ -47,7 +47,7 @@
                 </div>
                 <div id="right-content" class="fixed-flex-layout-right">                    
                     <div id="workplaceGroupName" data-bind="{text:workplaceGroupName}"></div> 
-                    <hr style="margin: 5px 0px; width: 830px;" />
+                    <hr id="line" />
                     <div class="container-custom">
                         <div data-bind="ntsFormLabel:{ required:true, constraint:['ScheduleTeamCd', 'ScheduleTeamName']}">
                             #{i18n.getText('KSU001_3208')}/#{i18n.getText('KSU001_3209')}</div>
@@ -133,13 +133,6 @@
                             </table>
                         </div>
                         <div class="arrow-button">
-                            <!-- <div>
-                                <button class="btn-custom" data-bind="click: moveItemLeftToRight" ><i class="icon icon-button-arrow-right icon-btn-custom"></i></button>
-                            </div>
-                            <div>
-                                <button class="btn-custom" data-bind="click: moveItemRightToLeft" ><i class="icon icon-button-arrow-left icon-btn-custom"></i></button>
-                            </div>    -->
-
                             <div>
                                 <button class="btn-custom"   data-bind="click: moveItemLeftToRight" ><div><img src="img/arrow-right.png" /></div></button>
                             </div>
