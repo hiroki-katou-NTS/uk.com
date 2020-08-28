@@ -84,8 +84,28 @@ export class CmmS45BComponent extends Vue {
     }
 
     public created() {
+        const self = this;
+        self.getData(!this.params.CMMS45_FromMenu, false);
 
-        this.getData(!this.params.CMMS45_FromMenu, false);
+        self.$watch('selectedValue', (newV, oldV) => {
+            // if (!_.isEmpty(self.lstApp)) {
+            //     if (newV == oldV) {
+                    
+            //         return;
+            //     }
+            //     self.filterApp();
+            // }
+            if (newV == oldV) {
+
+                return;
+            }
+            self.filterApp();
+        });
+    }
+
+    public filterApp() {
+        const self = this;
+        self.getData(true, true);
     }
     // 未承認のチェック：する　or　しない
     private checkUnapprovalStatus() {
@@ -115,7 +135,6 @@ export class CmmS45BComponent extends Vue {
     //データを取る
     private getData(getCache: boolean, filter: boolean) {
         let self = this;
-        self.$mask('show');
         // check: キャッシュを取るか？
         if (filter) {
             // self.prFilter = {
@@ -133,10 +152,14 @@ export class CmmS45BComponent extends Vue {
             //     listEmployeeId: [],
             //     empRefineCondition: ''
             // } as AppListExtractConditionDto;
+            // self.convertAppInfo(self.data.appListInfoDto);
         } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
+            self.$mask('show');
             // self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
             // self.selectedValue = self.prFilter.appType.toString();
+
         } else {
+            self.$mask('show');
             // self.prFilter = {
             //     startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
             //     endDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),

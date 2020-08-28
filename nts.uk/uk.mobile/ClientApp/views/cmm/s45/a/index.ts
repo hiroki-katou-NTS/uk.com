@@ -48,7 +48,22 @@ export class CmmS45AComponent extends Vue {
 
     // 起動する
     public created() {
-        this.getData(!this.params.CMMS45_FromMenu, false);
+        const self = this;
+        self.getData(!this.params.CMMS45_FromMenu, false);
+        self.$watch('selectedValue', (newV, oldV) => {
+            // if (!_.isEmpty(self.lstApp)) {
+            //     if (newV == oldV) {
+                    
+            //         return;
+            //     }
+            //     self.filterApp();
+            // }
+            if (newV == oldV) {
+
+                return;
+            }
+            self.filterApp();
+        });
     }
 
     // 申請種類名称
@@ -71,15 +86,41 @@ export class CmmS45AComponent extends Vue {
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '0':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '1':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;    
+            case '2':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '3':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '4':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '5':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '6':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;  
+            case '7':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '8':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '9':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+            case '10':
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
+                
+            // case '0':
+            //     return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             default:
                 return [];
         }
     }
+    public filterApp() {
+        const self = this;
+        self.getData(true, true);
+    }
+
     //データを取る
     private getData(getCache: boolean, filter: boolean) {
         let self = this;
-        self.$mask('show');
-
         // check: キャッシュを取るか？
         if (filter) {
             // self.prFilter.startDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
@@ -90,24 +131,27 @@ export class CmmS45AComponent extends Vue {
             //         _.set(i, 'appType', self.selectedValue);
             //     });
             // }
-            // 抽出条件を変更する
-            self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
-            self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
-            if (!_.isEmpty(self.data.appListInfoDto.appLst)) {
-                _.forEach(self.data.appListInfoDto.appLst, (item: ListOfAppTypes) => {
-                    _.set(item, 'appType', self.selectedValue);
-                });
-            }
 
-            return self.$http.post('at', servicePath.filterByDate, {applicationListDtoMobile: self.data})
-                .then((res: any) => {
-                    self.$mask('hide');
-                    self.data = res.data;
-                    self.convertAppInfo(self.data.appListInfoDto);
-                })
-                .catch((res: any) => {
-                    self.$mask('hide');
-                });
+            // 抽出条件を変更する
+            // self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
+            // self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
+            // if (!_.isEmpty(self.data.appListInfoDto.appLst)) {
+            //     _.forEach(self.data.appListInfoDto.appLst, (item: ListOfAppTypes) => {
+            //         _.set(item, 'appType', self.selectedValue);
+            //     });
+            // }
+
+            // return self.$http.post('at', servicePath.filterByDate, {applicationListDtoMobile: self.data})
+            //     .then((res: any) => {
+            //         self.$mask('hide');
+            //         self.data = res.data;
+            //         self.convertAppInfo(self.data.appListInfoDto);
+            //     })
+            //     .catch((res: any) => {
+            //         self.$mask('hide');
+            //     });
+            self.convertAppInfo(self.data.appListInfoDto);
+
 
 
         } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
@@ -117,7 +161,7 @@ export class CmmS45AComponent extends Vue {
 
             // self.createLstAppType();
             // return service
-
+            self.$mask('show');
             self.$http.post('at', servicePath.filterByDate, {applicationListDtoMobile: self.data})
                 .then((res: any) => {
                     self.$mask('hide');
@@ -153,6 +197,7 @@ export class CmmS45AComponent extends Vue {
             //     listEmployeeId: [],
             //     empRefineCondition: ''
             // } as AppListExtractConditionDto;
+            self.$mask('show');
             self.appListExtractCondition = {
                 // 申請一覧区分
                 // 0: application , 1: approval
@@ -277,15 +322,17 @@ export class CmmS45AComponent extends Vue {
         //     }));
         // });
         _.forEach(data.appLst, (app: ListOfApplication) => {
-            self.lstApp.push(new AppInfo({
-                id: app.appID,
-                appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
-                appType: app.appType,
-                appName: self.appTypeName(app.appType),
-                prePostAtr: app.prePostAtr,
-                reflectStatus: app.reflectionStatus,
-                appStatusNo: 2
-            }));
+            if (self.selectedValue == '-1' || String(app.appType) == self.selectedValue) {
+                self.lstApp.push(new AppInfo({
+                    id: app.appID,
+                    appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
+                    appType: app.appType,
+                    appName: self.appTypeName(app.appType),
+                    prePostAtr: app.prePostAtr,
+                    reflectStatus: app.reflectionStatus,
+                    appStatusNo: 2
+                }));
+            }
         });
         // data.appLst.array.forEach((app: ListOfApplication) => {
         //     self.lstApp.push(new AppInfo({
@@ -309,7 +356,7 @@ export class CmmS45AComponent extends Vue {
         });
         // 「C：申請内容確認」画面へ遷移する
         self.$modal('cmms45c', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
-            self.getData(true, false);
+            self.getData(true, true);
         });
     }
 
