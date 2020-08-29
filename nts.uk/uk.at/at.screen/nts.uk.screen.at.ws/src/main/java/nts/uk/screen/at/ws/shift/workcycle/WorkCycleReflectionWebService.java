@@ -33,7 +33,7 @@ public class WorkCycleReflectionWebService extends WebService {
 
     @POST
     @Path("start")
-    public WorkCycleReflectionDto getStartupInfo(WorkCycleReflectionParam param) {
+    public WorkCycleReflectionDto getStartupInfo(GetStartupInfoParam param) {
 
 		DatePeriod creationPeriod = createDatePeriod(
 			param.getCreationPeriodStartDate(),
@@ -59,7 +59,7 @@ public class WorkCycleReflectionWebService extends WebService {
 	 */
 	@POST
 	@Path("get-reflection-image")
-	public ReflectionImage getWorkCycleAppImage(WorkCycleReflectionParam param){
+	public ReflectionImage getWorkCycleAppImage(GetWorkCycleAppImageParam param){
 
 		List<WorkCreateMethod> refOrder = createFromIntArray(param.getRefOrder());
 
