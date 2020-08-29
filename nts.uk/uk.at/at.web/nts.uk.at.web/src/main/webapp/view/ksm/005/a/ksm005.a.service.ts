@@ -8,7 +8,9 @@ module nts.uk.at.view.ksm005.a {
             deleteMonthlyPattern: "ctx/at/schedule/pattern/monthly/delete",
             findByMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/findByMonth",
             getItemOfMonth: "ctx/at/schedule/pattern/work/monthly/setting/getItemOfMonth",
-            saveMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/saveMonth"
+            saveMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/saveMonth",
+	        getMonthlyPattern : 'screen/at/schedule/monthly-pattern/get',
+	        getMonthlyAll: 'monthly/get/all'
         }
         
         /**

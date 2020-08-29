@@ -525,7 +525,9 @@ module nts.uk.at.view.ksm005.a {
              * save data (add or update monthly pattern)
              */
             public saveDataMonthlyPattern(): void {
-                var self = this;
+                var self = this,
+                    hasmonthlyPattern = true,
+	                monthlyPatternData = self.lstWorkMonthlySetting();
                 if(self.validateClient()){
                     return;    
                 }
@@ -533,8 +535,11 @@ module nts.uk.at.view.ksm005.a {
                 if (_.isNull(self.yearMonthPicked())){
                     return;
                 }
+                //登録の時には月間パターンカレンダーのデータがない。
+	            //monthlyPatternData
                 blockUI.grayout();
-                service.saveMonthWorkMonthlySetting(self.lstWorkMonthlySetting(), self.monthlyPatternModel().toDto(), self.modeMonthlyPattern()).done(function() {
+                service.saveMonthWorkMonthlySetting(self.lstWorkMonthlySetting(), self.monthlyPatternModel().toDto(),
+                                                    self.modeMonthlyPattern()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                         // reload pa    

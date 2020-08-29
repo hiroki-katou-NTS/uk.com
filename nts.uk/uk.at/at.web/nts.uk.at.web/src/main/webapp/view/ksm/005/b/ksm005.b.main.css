@@ -40,6 +40,7 @@
 #checkOverWriteSetting {
 	height: 30px;
 	display: block;
+    margin-bottom: 5px;
 }
 .workday_labels .hr {
 	width: 100%;
@@ -61,8 +62,14 @@
 
 #lstHolidaysPattern tr:nth-child(6) td,
 #lstHolidaysPattern tr:nth-child(7) td{
-	color: #e51010;
+	color: #ff0000;
 }
 #lstHolidaysPattern tr:nth-child(6) td:first-child {
-	color: #0D86D1;
+	color: #0000ff;
+}
+
+#checkOverWriteSetting .ntsCheckBox-label {
+    background: #ffc0cb;
+    padding: 5px;
+    border-radius: 5px;
 }
