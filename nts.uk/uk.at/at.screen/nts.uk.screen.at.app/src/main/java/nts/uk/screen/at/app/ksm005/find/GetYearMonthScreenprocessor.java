@@ -24,11 +24,11 @@ public class GetYearMonthScreenprocessor {
     private WorkMonthlySettingRepository workMonthlySettingRepository;
 
 
-    public Set<YearMonth> GetYearMonth(String cid, String monthlyPatternCode, int year) {
+    public Set<Integer> GetYearMonth(String cid, String monthlyPatternCode, int year) {
         List<WorkMonthlySetting> workMonthlySettings = workMonthlySettingRepository.findByYear(cid,monthlyPatternCode,year);
 
-        Set<YearMonth> listMonthYear = new HashSet<>();
-        workMonthlySettings.stream().forEach(x -> listMonthYear.add(x.getYmdk().yearMonth()) );
+        Set<Integer> listMonthYear = new HashSet<>();
+        workMonthlySettings.stream().forEach(x -> listMonthYear.add(x.getYmdk().yearMonth().v()) );
         return listMonthYear;
     }
 }
