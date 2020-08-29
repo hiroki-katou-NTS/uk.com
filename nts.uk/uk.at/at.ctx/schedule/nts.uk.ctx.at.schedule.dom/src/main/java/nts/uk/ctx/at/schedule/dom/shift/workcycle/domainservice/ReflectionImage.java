@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 /**
  * 	反映イメージ
  */
-@Getter
-@Setter
 @AllArgsConstructor
 public class ReflectionImage {
 
@@ -19,7 +17,7 @@ public class ReflectionImage {
 
     // [C-1] 作る
     public ReflectionImage() {
-        this.day = new HashMap<GeneralDate, RefImageEachDay>();
+        this.day = new HashMap<>();
     }
 
     /**
@@ -28,11 +26,11 @@ public class ReflectionImage {
      * @param workInformation
      */
     public void addByWeeklyWorking(GeneralDate date, WorkInformation workInformation){
-        val refEachDay = this.getDay().get(date);
+        val refEachDay = this.day.get(date);
         if (refEachDay != null && refEachDay.getWorkCreateMethod().value == WorkCreateMethod.PUB_HOLIDAY.value) {
             return;
         }
-        this.getDay().put(date, new RefImageEachDay(WorkCreateMethod.WEEKLY_WORK.value, workInformation, date));
+        this.day.put(date, new RefImageEachDay(WorkCreateMethod.WEEKLY_WORK.value, workInformation, date));
     }
 
     /**
@@ -41,11 +39,11 @@ public class ReflectionImage {
      * @param workInformation
      */
     public void addHolidays(GeneralDate date, WorkInformation workInformation) {
-        val refEachDay = this.getDay().get(date);
+        val refEachDay = this.day.get(date);
         if (refEachDay != null && refEachDay.getWorkCreateMethod().value == WorkCreateMethod.WEEKLY_WORK.value) {
             return;
         }
-        this.getDay().put(date, new RefImageEachDay(WorkCreateMethod.PUB_HOLIDAY.value, workInformation, date));
+        this.day.put(date, new RefImageEachDay(WorkCreateMethod.PUB_HOLIDAY.value, workInformation, date));
     }
 
     /**
@@ -55,9 +53,9 @@ public class ReflectionImage {
      * @return
      */
     public boolean addInWorkCycle(GeneralDate date, WorkInformation workInformation) {
-        if (this.getDay().containsKey(date))
+        if (this.day.containsKey(date))
             return false;
-        this.getDay().put(date, new RefImageEachDay(WorkCreateMethod.WORK_CYCLE.value, workInformation, date));
+        this.day.put(date, new RefImageEachDay(WorkCreateMethod.WORK_CYCLE.value, workInformation, date));
         return true;
     }
 
@@ -66,7 +64,7 @@ public class ReflectionImage {
      * @return 	List<一日分の反映イメージ>
      */
     public List<RefImageEachDay> getListRefOrdByDate() {
-        return this.getDay().entrySet().stream().sorted(Map.Entry.comparingByKey()).map(i -> i.getValue()).collect(Collectors.toList());
+        return this.day.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(i -> i.getValue()).collect(Collectors.toList());
     }
 
 }

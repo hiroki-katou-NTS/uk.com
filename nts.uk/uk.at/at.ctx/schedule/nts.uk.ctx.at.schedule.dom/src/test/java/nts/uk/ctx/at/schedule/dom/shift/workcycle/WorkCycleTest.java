@@ -83,54 +83,22 @@ public class WorkCycleTest {
                 WorkCycleInfo.WorkCycleInfo(4, new WorkInformation("WTime003", "WType003"))
                 )
         );
-        WorkType workTypeDeprecated = new WorkType("001", new WorkTypeCode("WTime001"),new WorkTypeSymbolicName(""), new WorkTypeName(""),
-                new WorkTypeAbbreviationName(""), new WorkTypeMemo(""), new DailyWork(), DeprecateClassification.Deprecated, CalculateMethod.DO_NOT_GO_TO_WORK
-        );
-        WorkType workType = new WorkType("001", new WorkTypeCode("WTime001"),new WorkTypeSymbolicName(""), new WorkTypeName(""),
-                new WorkTypeAbbreviationName(""), new WorkTypeMemo(""), new DailyWork(), DeprecateClassification.NotDeprecated, CalculateMethod.DO_NOT_GO_TO_WORK
-        );
-        new Expectations() {
+        new Expectations(WorkInformation.class) {
             {
-                require.findByPK(item.getInfos().get(0).getWorkInformation().getWorkTypeCode().v());
-                result = Optional.empty();
-
-                require.findByPK(item.getInfos().get(1).getWorkInformation().getWorkTypeCode().v());
-                result = Optional.of(workTypeDeprecated);
-
-                require.findByPK(item.getInfos().get(2).getWorkInformation().getWorkTypeCode().v());
-                result = Optional.of(workType);
-
-                require.checkNeededOfWorkTimeSetting(item.getInfos().get(2).getWorkInformation().getWorkTypeCode().v());
-                result = SetupType.REQUIRED;
-
-                require.findByPK(item.getInfos().get(3).getWorkInformation().getWorkTypeCode().v());
-                result = Optional.of(workType);
-
-                require.checkNeededOfWorkTimeSetting(item.getInfos().get(3).getWorkInformation().getWorkTypeCode().v());
-                result = SetupType.OPTIONAL;
-
-                require.findByPK(item.getInfos().get(4).getWorkInformation().getWorkTypeCode().v());
-                result = Optional.of(workType);
-
-                require.checkNeededOfWorkTimeSetting(item.getInfos().get(4).getWorkInformation().getWorkTypeCode().v());
-                result = SetupType.NOT_REQUIRED;
-
-                require.findByPK(item.getInfos().get(5).getWorkInformation().getWorkTypeCode().v());
-                result = Optional.of(workType);
-
-                require.checkNeededOfWorkTimeSetting(item.getInfos().get(5).getWorkInformation().getWorkTypeCode().v());
-                result = SetupType.NOT_REQUIRED;
+                item.getInfos().get(0).getWorkInformation().checkErrorCondition(require);
+                returns(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE,ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED,
+                        ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET,ErrorStatusWorkInfo.NORMAL,
+                        ErrorStatusWorkInfo.NORMAL,ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY);
             }
         };
         List<ErrorStatusWorkInfo> errorStatusWorkInfos = item.checkError(require);
-        assertThat(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE).isEqualByComparingTo(errorStatusWorkInfos.get(0));
-        assertThat(ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED).isEqualByComparingTo(errorStatusWorkInfos.get(1));
-        assertThat(ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET).isEqualByComparingTo(errorStatusWorkInfos.get(2));
-        assertThat(ErrorStatusWorkInfo.NORMAL).isEqualByComparingTo(errorStatusWorkInfos.get(3));
-        assertThat(ErrorStatusWorkInfo.NORMAL).isEqualByComparingTo(errorStatusWorkInfos.get(4));
-        assertThat(ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY).isEqualByComparingTo(errorStatusWorkInfos.get(5));
+        assertThat(errorStatusWorkInfos.get(0)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTYPE_WAS_DELETE);
+        assertThat(errorStatusWorkInfos.get(1)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTYPE_WAS_ABOLISHED);
+        assertThat(errorStatusWorkInfos.get(2)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET);
+        assertThat(errorStatusWorkInfos.get(3)).isEqualByComparingTo(ErrorStatusWorkInfo.NORMAL);
+        assertThat(errorStatusWorkInfos.get(4)).isEqualByComparingTo(ErrorStatusWorkInfo.NORMAL);
+        assertThat(errorStatusWorkInfos.get(5)).isEqualByComparingTo(ErrorStatusWorkInfo.WORKTIME_ARE_SET_WHEN_UNNECESSARY);
+
     }
-
-
 
 }
