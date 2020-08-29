@@ -30,11 +30,11 @@ public class ScheduleCreateContent extends AggregateRoot{
 	/** The creation type. */
 	//作成種類
 	private ImplementAtr creationType;
-	
+
 	/** The specify creation. */
 	// 作成方法の指定
 	private SpecifyCreation specifyCreation;
-	
+
 	//再作成条件
 	private RecreateCondition recreateCondition;
 
@@ -63,7 +63,7 @@ public class ScheduleCreateContent extends AggregateRoot{
 		this.specifyCreation = memento.getSpecifyCreation();
 		this.recreateCondition = memento.getRecreateCondition();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
@@ -84,7 +84,7 @@ public class ScheduleCreateContent extends AggregateRoot{
 //		this.implementAtr = implementAtr;
 	}
 
-	
+
 	public ScheduleCreateContent() {
 	}
 
@@ -106,5 +106,10 @@ public class ScheduleCreateContent extends AggregateRoot{
 		this.executionId = executionId;
 	}
 
-
+    public void setSpecifyCreation(SpecifyCreation specifyCreation) {
+        this.specifyCreation = specifyCreation;
+    }
+    public void setRecreateCondition(RecreateCondition recreateCondition) {
+        this.recreateCondition = recreateCondition;
+    }
 }

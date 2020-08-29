@@ -164,10 +164,10 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
                 domain.getSpecifyCreation().getReferenceMaster().get().value,
                 domain.getSpecifyCreation().getMonthlyPatternCode().get().toString(),
                 domain.getRecreateCondition().getReTargetAtr(),
-                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetTransfer(),
-                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetLeave(),
-                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetShortWork(),
-                domain.getRecreateCondition().getNarrowingEmployees().get().getReTargetLaborChange(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().isTransfer(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().isLeaveOfAbsence(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().isShortWorkingHours(),
+                domain.getRecreateCondition().getNarrowingEmployees().get().isChangedWorkingConditions(),
                 domain.getRecreateCondition().getReOverwriteConfirmed(),
                 domain.getRecreateCondition().getReOverwriteRevised());
     }

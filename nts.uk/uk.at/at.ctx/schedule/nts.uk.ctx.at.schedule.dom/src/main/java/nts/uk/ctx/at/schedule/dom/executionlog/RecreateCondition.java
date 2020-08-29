@@ -2,6 +2,7 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 
 import java.util.Optional;
@@ -9,7 +10,7 @@ import java.util.Optional;
 
 @Getter
 @AllArgsConstructor
-
+@Setter
 //再作成条件
 public class RecreateCondition {
 
