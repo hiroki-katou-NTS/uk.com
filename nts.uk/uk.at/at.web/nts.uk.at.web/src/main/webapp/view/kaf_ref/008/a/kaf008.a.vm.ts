@@ -7,8 +7,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
     @bean()
     class Kaf008AViewModel extends Kaf000AViewModel {
-
-        application: KnockoutObservable<Application> = ko.observable(new Application(AppType.BUSINESS_TRIP_APPLICATION));
+		
+		appType: KnockoutObservable<number> = ko.observable(AppType.BUSINESS_TRIP_APPLICATION);
+        application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
         applicationTest: any = {
             version: 1,
             // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
@@ -48,7 +49,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         created(params: any) {
             const vm = this;
 
-            vm.loadData([], [], AppType.BUSINESS_TRIP_APPLICATION)
+            vm.loadData([], [], vm.appType())
                 .then((loadDataFlag: any) => {
                     if(loadDataFlag) {
                         let applicantList = [],

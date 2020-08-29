@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
     @bean()
     class Kaf009AViewModel extends Kaf000AViewModel {
         
+		appType: KnockoutObservable<number> = ko.observable(AppType.GO_RETURN_DIRECTLY_APPLICATION);
         application: KnockoutObservable<Application>;
         applicationTest: any = {
                 employeeID: this.$user.employeeId,
@@ -45,10 +46,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
         created(params: any) {
             const vm = this;
-            vm.application = ko.observable(new Application(AppType.GO_RETURN_DIRECTLY_APPLICATION));
+            vm.application = ko.observable(new Application(vm.appType()));
             vm.model = new Model(true, true, true, '', '', '', '');            
             vm.$blockui("show");
-            vm.loadData([], [], AppType.GO_RETURN_DIRECTLY_APPLICATION)
+            vm.loadData([], [], vm.appType())
             .then((loadDataFlag: any) => {
                 vm.appDispInfoStartupOutput.subscribe(value => {
                     console.log(value);

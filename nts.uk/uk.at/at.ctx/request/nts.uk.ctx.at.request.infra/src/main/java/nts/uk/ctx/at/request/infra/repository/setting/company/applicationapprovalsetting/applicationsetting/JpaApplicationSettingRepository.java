@@ -159,12 +159,13 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 					}).collect(Collectors.toList());
 				List<AppTypeSetting> appTypeSettingLst = x.getValue().stream().collect(Collectors.groupingBy(y -> y.get("bAPP_TYPE"))).entrySet()
 						.stream().map(y -> {
+							Integer prePostChangeAtr = (int)x.getValue().get(0).get("bPRE_POST_CHANGE_ATR");
 							return AppTypeSetting.createNew(
 									(int) x.getValue().get(0).get("bAPP_TYPE"),
 									BooleanUtils.toBoolean((int)x.getValue().get(0).get("bAPP_SEND_MAIL_ATR")),
 									BooleanUtils.toBoolean((int)x.getValue().get(0).get("bAPV_SEND_MAIL_ATR")),
-									(int) x.getValue().get(0).get("bPRE_POST_INIT_ATR"),
-									BooleanUtils.toBoolean((int)x.getValue().get(0).get("bPRE_POST_CHANGE_ATR")));
+									(Integer) x.getValue().get(0).get("bPRE_POST_INIT_ATR"),
+									prePostChangeAtr == null ? null : BooleanUtils.toBoolean(prePostChangeAtr));
 						}).collect(Collectors.toList());
 				List<AppSetForProxyApp> appSetForProxyAppLst = x.getValue().stream().collect(Collectors.groupingBy(y -> y.get("dAPP_TYPE"))).entrySet()
 						.stream().map(y -> {
@@ -180,18 +181,29 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 						}).collect(Collectors.toList());
 				List<ReceptionRestrictionSetting> recepRestrictSetLst = x.getValue().stream().collect(Collectors.groupingBy(y -> y.get("bAPP_TYPE"))).entrySet()
 						.stream().map(y -> {
+							OTAppBeforeAccepRestric otAppBeforeAccepRestric = null;
+							Integer methodCheck = (Integer) x.getValue().get(0).get("bPRE_OT_CHECK_SET");
+							Integer dateBeforehandRestrictions = (int) x.getValue().get(0).get("bPRE_EARLY_DAYS");
+							Boolean toUse = BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR"));
+							if(methodCheck != null && dateBeforehandRestrictions != null && toUse != null) {
+								otAppBeforeAccepRestric = OTAppBeforeAccepRestric.createNew(
+										methodCheck,
+										dateBeforehandRestrictions,
+										toUse,
+										(Integer) x.getValue().get(0).get("bPRE_OT_BEF_WORK_TIME"),
+										(Integer) x.getValue().get(0).get("bPRE_OT_AFT_WORK_TIME"),
+										(Integer) x.getValue().get(0).get("bPRE_OT_BEF_AFT_WORK_TIME"));
+							}
+							BeforehandRestriction beforehandRestriction = null;
+							if(dateBeforehandRestrictions != null && toUse != null) {
+								beforehandRestriction = BeforehandRestriction.createNew(
+										(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"),
+										BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR")));
+							}
 							return new ReceptionRestrictionSetting(
-									OTAppBeforeAccepRestric.createNew(
-											(int) x.getValue().get(0).get("bPRE_OT_CHECK_SET"),
-											(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"),
-											BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR")),
-											(Integer) x.getValue().get(0).get("bPRE_OT_BEF_WORK_TIME"),
-											(Integer) x.getValue().get(0).get("bPRE_OT_AFT_WORK_TIME"),
-											(Integer) x.getValue().get(0).get("bPRE_OT_BEF_AFT_WORK_TIME")),
+									otAppBeforeAccepRestric,
 									new AfterhandRestriction(BooleanUtils.toBoolean((int)x.getValue().get(0).get("bPOST_FUTURE_ALLOW_ATR"))),
-									BeforehandRestriction.createNew(
-											(int) x.getValue().get(0).get("bPRE_EARLY_DAYS"),
-											BooleanUtils.toBoolean((int)x.getValue().get(0).get("bUSE_ATR"))),
+									beforehandRestriction,
 									EnumAdaptor.valueOf((int) x.getValue().get(0).get("bAPP_TYPE"), ApplicationType.class));
 						}).collect(Collectors.toList());
 				ApplicationSetting applicationSetting = new ApplicationSetting(

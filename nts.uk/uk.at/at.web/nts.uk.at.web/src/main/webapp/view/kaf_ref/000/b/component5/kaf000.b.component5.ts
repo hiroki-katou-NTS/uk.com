@@ -5,11 +5,13 @@ module nts.uk.at.view.kaf000_ref.b.component5.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/000/b/component5/index.html'
     })
     class Kaf000BComponent5ViewModel extends ko.ViewModel {
+		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
         prePostAtrName: KnockoutObservable<string>;
         prePostAtrDisp: KnockoutObservable<boolean>;
         created(params: any) {
             const vm = this;
+			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.prePostAtrName = ko.observable("prePostAtrName");
             vm.prePostAtrDisp = ko.observable(false);
