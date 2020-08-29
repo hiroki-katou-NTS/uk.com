@@ -153,7 +153,8 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// check setting work time
 		lstDomain.forEach(domain -> {
-			if (!StringUtil.isNullOrEmpty(domain.getWorkInformation().getWorkTimeCode().v(), true)) {
+			if (domain.getWorkInformation().getWorkTimeCode()!= null
+					&& !StringUtil.isNullOrEmpty(domain.getWorkInformation().getWorkTimeCode().v(), true)) {
 				Optional<WorkTimeSetting> worktime = this.workTimeRepository.findByCode(companyId,
 						domain.getWorkInformation().getWorkTimeCode().v());
 
@@ -303,13 +304,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 	/**
 	 * To date.
 	 *
-	 * @param year
-	 *            the year
-	 * @param month
-	 *            the month
-	 * @param day
-	 *            the day
-	 * @return the date
+	 * @param yearMonthDate
 	 */
 	public Date toDate(int yearMonthDate) {
 		Calendar cal = Calendar.getInstance();
