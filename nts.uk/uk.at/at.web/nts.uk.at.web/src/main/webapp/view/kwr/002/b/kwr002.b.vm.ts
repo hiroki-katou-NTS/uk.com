@@ -52,8 +52,12 @@ module nts.uk.com.view.kwr002.b {
                 });
                 self.resetShare();
                 if (value) {
-                    service.getARESByCode(value).done((aRESData) => {
+                    service.getARESByCode(value).done((aRESData: any) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
+                        // choose default font size large
+                        if (_.isNil(self.currentARES().fontSizeAtr())) {
+                            self.currentARES().fontSizeAtr(1)
+                        }
                         self.newMode(false);
                         newModeFlag = false;
                     })
@@ -95,7 +99,7 @@ module nts.uk.com.view.kwr002.b {
                     delARECmd: delARESCmd,
                     delARICmd: delARESCmd
                 };
-                self.indexOfDelete(_.findIndex(self.aRES(), (e) => {
+                self.indexOfDelete(_.findIndex(self.aRES(), (e: any) => {
                     return e.code == self.currentARESCode()
                 }));
                 service.delARES(cmd).done(() => {
@@ -118,14 +122,14 @@ module nts.uk.com.view.kwr002.b {
             block.invisible();
             let self = this;
             let dfd = $.Deferred<any>();
-            service.getAllARES().done((data) => {
+            service.getAllARES().done((data: any) => {
                 block.clear();
                 if (data.length > 0) {
-                    _.map(data, (item) => {
+                    _.map(data, (item: any) => {
                         item.code = _.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
                     });
-                    data = _.orderBy(data, [item => item.code], ['asc']);
+                    data = _.orderBy(data, [(item: any) => item.code], ['asc']);
                     self.aRES(data);
                     if (self.indexOfDelete() == self.aRES().length) {
                         self.currentARESCode(self.aRES()[self.indexOfDelete() - 1].code);
@@ -183,7 +187,7 @@ module nts.uk.com.view.kwr002.b {
                 },
 
                 isListValid: function(list) {
-                    return _.find(list, (item) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
+                    return _.find(list, (item: any) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
                 }
             };
 
@@ -220,7 +224,7 @@ module nts.uk.com.view.kwr002.b {
         callGetAll(self, currentData) {
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-                    _.map(data, (item) => {
+                    _.map(data, (item: any) => {
                         item.code = _.padStart(item.code, 2, '0');
                     });
                     data = _.orderBy(data, [e => e.code], ['asc']);
@@ -260,7 +264,7 @@ module nts.uk.com.view.kwr002.b {
                 let timeItemIds = o.attendanceId;
                 let columnIndex = Number(o.columnIndex);
                 if (_.isArray(timeItemIds)) {
-                    let timeItems = _.map(timeItemIds, (item) => {
+                    let timeItems = _.map(timeItemIds, (item: any) => {
                         let type = _.isEqual(_.trim(item.action), getText("KWR002_178")) ? 1 : 2; //KWR002_178
                         return new TimeItem(type, item.code);
                     });
