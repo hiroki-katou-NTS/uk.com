@@ -24,6 +24,7 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputItemDailyWorkScheduleFinder;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputStandardSettingOfDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarksContentChoice;
@@ -138,6 +139,28 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("code") String code){
 		return this.outputItemDailyWorkScheduleFinder.findByCodeId(code);
 	}
+
+	/**
+	 * Find stand setting by company id.
+	 *
+	 * @param companyId the company id
+	 * @return the output standard setting of daily work schedule dto
+	 */
+	@Path("findStandardSetting/{companyId}")
+	@POST
+	public OutputStandardSettingOfDailyWorkScheduleDto findStandSettingByCompanyId(@PathParam("companyId") String companyId) {
+		return this.outputItemDailyWorkScheduleFinder.getStandardSetting(companyId);
+	}
 	
-	
+	/**
+	 * Find free setting by company id.
+	 *
+	 * @param companyId the company id
+	 * @return the output standard setting of daily work schedule dto
+	 */
+	@Path("findFreeSetting/{companyId}/{employeeId}")
+	@POST
+	public OutputStandardSettingOfDailyWorkScheduleDto findFreeSettingByCompanyId(@PathParam("companyId") String companyId) {
+		return this.outputItemDailyWorkScheduleFinder.getStandardSetting(companyId);
+	}
 }

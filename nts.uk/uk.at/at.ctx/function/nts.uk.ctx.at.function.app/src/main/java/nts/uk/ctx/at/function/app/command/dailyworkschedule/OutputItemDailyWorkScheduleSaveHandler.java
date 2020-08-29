@@ -25,22 +25,22 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 	@Inject
 	private OutputItemDailyWorkScheduleRepository repository;
 	
-	/* (non-Javadoc)
+	/* (non-Javadoc)WorkScheduleOutputCondition
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<OutputItemDailyWorkScheduleCommand> context) {
 		OutputItemDailyWorkScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		OutputItemDailyWorkSchedule domain = new OutputItemDailyWorkSchedule(command);
-
-		if (command.isNewMode()) {
-			if (repository.findByCidAndCode(companyId, domain.getItemCode().v()).isPresent()) {
-				throw new BusinessException("Msg_3");
-			}
-			repository.add(domain);
-		} else {
-			repository.update(domain);
-		}
+//		OutputItemDailyWorkSchedule domain = new OutputItemDailyWorkSchedule(command);
+//
+//		if (command.isNewMode()) {
+//			if (repository.findByCidAndCode(companyId, domain.getItemCode().v()).isPresent()) {
+//				throw new BusinessException("Msg_3");
+//			}
+//			repository.add(domain);
+//		} else {
+//			repository.update(domain);
+//		}
 	}
 }

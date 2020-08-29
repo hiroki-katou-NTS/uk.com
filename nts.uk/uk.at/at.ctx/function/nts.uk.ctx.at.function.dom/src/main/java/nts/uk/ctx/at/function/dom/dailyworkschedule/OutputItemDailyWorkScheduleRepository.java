@@ -9,17 +9,18 @@ import java.util.Optional;
 
 /**
  * The Interface OutputItemDailyWorkScheduleRepository.
- * @author HoangDD
+ * @author HoangDD change by LienPTK 2020/08/29
  */
 public interface OutputItemDailyWorkScheduleRepository {
 	
+
 	/**
-	 * Find by cid and code.
+	 * Find by layout id.
 	 *
-	 * @param code the code
+	 * @param layoutId the layout id
 	 * @return the optional
 	 */
-	public Optional<OutputItemDailyWorkSchedule> findByCidAndCode(String companyId, String code);
+	public Optional<OutputItemDailyWorkSchedule> findByLayoutId(String layoutId);
 	
 	/**
 	 * Find by cid.

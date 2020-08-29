@@ -11,14 +11,7 @@ import java.util.List;
  * @author HoangDD
  */
 public interface OutputItemDailyWorkScheduleGetMemento {
-	
-	/**
-	 * Gets the company ID.
-	 *
-	 * @return the company ID
-	 */
-	String getCompanyID();
-	
+
 	/**
 	 * Gets the item code.
 	 *

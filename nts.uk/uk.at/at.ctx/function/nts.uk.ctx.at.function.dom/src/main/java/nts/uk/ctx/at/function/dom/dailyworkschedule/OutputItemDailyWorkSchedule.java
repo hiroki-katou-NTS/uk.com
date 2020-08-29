@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class OutputItemDailyWorkSchedule.
@@ -51,24 +52,34 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 	private FontSizeEnum fontSize;
 	
 	private static final String MAX_ATTENDANCE_ITEM = "48";
+
+	/**
+	 * Instantiates a new output item daily work schedule.
+	 *
+	 * @param memento the memento
+	 */
+	public OutputItemDailyWorkSchedule(OutputItemDailyWorkScheduleGetMemento memento) {
+		this.itemCode = memento.getItemCode();
+		this.itemName = memento.getItemName();
+		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();
+		this.lstRemarkContent = memento.getLstRemarkContent();
+		this.workTypeNameDisplay = memento.getWorkTypeNameDisplay();
+		this.remarkInputNo = memento.getRemarkInputNo();
+	}
 	
-	public OutputItemDailyWorkSchedule(String outputLayoutId
-			, OutputItemSettingCode itemCode
-			, OutputItemSettingName itemName
-			, List<AttendanceItemsDisplay> lstDisplayedAttendance
-			, List<PrintRemarksContent> lstRemarkContent
-			, NameWorkTypeOrHourZone workTypeNameDisplay
-			, RemarkInputContent remarkInputNo
-			, FontSizeEnum fontSize) {
-		super();
-		this.outputLayoutId = outputLayoutId;
-		this.itemCode = itemCode;
-		this.itemName = itemName;
-		this.lstDisplayedAttendance = lstDisplayedAttendance;
-		this.lstRemarkContent = lstRemarkContent;
-		this.workTypeNameDisplay = workTypeNameDisplay;
-		this.remarkInputNo = remarkInputNo;
-		this.fontSize = fontSize;
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(OutputItemDailyWorkScheduleSetMemento memento) {
+
+		memento.setItemCode(this.itemCode);
+		memento.setItemName(this.itemName);
+		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
+		memento.setLstRemarkContent(this.lstRemarkContent);
+		memento.setWorkTypeNameDisplay(this.workTypeNameDisplay);
+		memento.setRemarkInputNo(this.remarkInputNo);
 	}
 
 	/* (non-Javadoc)

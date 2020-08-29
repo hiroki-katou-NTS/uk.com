@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.find.dailyworkschedule;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
@@ -26,11 +27,31 @@ public class OutputStandardSettingOfDailyWorkScheduleDto implements OutputStanda
 	/**
 	 *	出力項目
 	 */
-	private List<OutputItemDailyWorkScheduleDto> outputItemDailyWorkSchedules;
+	private List<DataInforReturnDto> outputItemDailyWorkSchedules;
 
 	@Override
 	public void setOutputItemDailyWorkSchedules(List<OutputItemDailyWorkSchedule> outputItem) {
-		// TODO
+		this.outputItemDailyWorkSchedules = outputItem.stream()
+				.map(domain -> {
+					DataInforReturnDto dto = new DataInforReturnDto();
+					dto.setCode(String.valueOf(domain.getItemCode().v()));
+					dto.setName(domain.getItemName().v());
+					return dto;
+				})
+				.collect(Collectors.toList());
 	}
+
+	/**
+	 * To standard dto.
+	 *
+	 * @param domain the domain
+	 * @return the output standard setting of daily work schedule dto
+	 */
+	public static OutputStandardSettingOfDailyWorkScheduleDto toStandardDto(OutputStandardSettingOfDailyWorkSchedule domain) {
+		OutputStandardSettingOfDailyWorkScheduleDto dto = new OutputStandardSettingOfDailyWorkScheduleDto();
+		domain.setMemento(dto);
+		return dto;
+	}
+	
 
 }

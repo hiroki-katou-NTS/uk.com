@@ -9,7 +9,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingReposit
 
 public class JpaOutputItemDailyWorkScheduleRepo implements OutputStandardSettingRepository, FreeSettingOfOutputItemRepository {
 	
-	public static final String GET_FREE_SETTING_BY_EMPLOYEE_AND_COMPANY = "";
+	public static final String GET_FREE_SETTING_BY_EMPLOYEE_AND_COMPANY = "SELECT outItem FROM KfnmtRptWkDaiOutItem outItem WHERE ";
 	public static final String GET_STANDARD_SETTING_BY_COMPANY = "";
 
 	@Override

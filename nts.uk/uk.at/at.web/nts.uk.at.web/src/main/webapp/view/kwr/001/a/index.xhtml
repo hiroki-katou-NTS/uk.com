@@ -101,7 +101,7 @@
 																type="radio"
 																name="textRadioA7_18"
 																data-bind="checkedValue: 0,
-																					 checked: selectedCodeA7_2,
+																					 checked: selectionType,
 																					 enable: true,
 																					 attr: {tabindex:43}" />
 															<span class="box"></span>
@@ -147,7 +147,7 @@
 																type="radio"
 																name="textRadioA7_18"
 																data-bind="checkedValue: 1,
-																					 checked: selectedCodeA7_2,
+																					 checked: selectionType,
 																					 enable: true,
 																					 attr: {tabindex:43}" />
 															<span class="box"></span>
@@ -159,7 +159,7 @@
 														<!-- A7_9 -->
 													<div tabindex="10" id="combo-box" data-bind="ntsComboBox: {
 														name: '#{i18n.getText('KWR001_124')}',
-														options: itemListCodeTemplate,
+														options: outputItemDailyWorkSchedules,
 														optionsValue: 'code',
 														visibleItemsCount: 10,
 														value: selectedCodeA7_8,

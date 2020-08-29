@@ -65,6 +65,13 @@ public class WorkScheduleOutputCondition  {
 		condition.setErrorAlarmCode(Optional.of(dto.getErrorAlarmCode().stream().map(temp -> {
 			return new ErrorAlarmWorkRecordCode(temp);
 		}).collect(Collectors.toList())));
+		condition.setSelectionType(ItemSelectionType.valueOf(dto.getSelectionType()));
+		condition.setStandardSelectionLayoutId(dto.getStandardSelectionLayoutId());
+		condition.setFreeSettingLayoutId(dto.getFreeSettingLayoutId());
+		condition.setFreeSettingCode(new OutputItemSettingCode(dto.getFreeSettingCode()));
+		condition.setZeroDisplayType(ZeroDisplayType.valueOf(dto.getZeroDisplayType()));
+		condition.setSwitchItemDisplay(SwitchItemDisplay.valueOf(dto.getSwitchItemDisplay()));
+		condition.setOutputConditionSpecification(Optional.of(dto.getOutputConditionSpecification()));
 		return condition;
 	}
 	

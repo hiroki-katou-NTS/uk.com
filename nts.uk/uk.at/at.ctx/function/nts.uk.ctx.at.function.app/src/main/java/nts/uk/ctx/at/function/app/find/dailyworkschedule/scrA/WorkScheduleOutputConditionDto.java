@@ -4,13 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkScheduleDto;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputStandardSettingOfDailyWorkScheduleDto;
 
 
 /**
@@ -33,15 +32,19 @@ public class WorkScheduleOutputConditionDto {
 	/** The str return. */
 	private String strReturn;
 	
-	/** The lst output item daily work schedule. */
-	private List<DataInforReturnDto> lstOutputItemDailyWorkSchedule;
-	
 	/** The employee charge. */
 	private boolean employeeCharge;
 	
 	private String msgErrClosingPeriod;
 	
-	private boolean isFreeSetting;
+	/** The is free setting. */
+	private boolean checkFreeSetting;
+	
+	/** The standard setting. */
+	private OutputStandardSettingOfDailyWorkScheduleDto standardSetting;
+	
+	/** The free setting. */
+	private FreeSettingOfOutputItemForDailyWorkScheduleDto freeSetting;
 
 	/**
 	 * Instantiates a new work schedule output condition dto.
@@ -53,14 +56,19 @@ public class WorkScheduleOutputConditionDto {
 	 * @param employeeCharge the employee charge
 	 * @param msgErrClosingPeriod the msg err closing period
 	 */
-	public WorkScheduleOutputConditionDto(GeneralDate startDate, GeneralDate endDate, String strReturn,
-			List<DataInforReturnDto> lstOutputItemDailyWorkSchedule, boolean employeeCharge,
-			String msgErrClosingPeriod) {
+	public WorkScheduleOutputConditionDto(GeneralDate startDate
+			, GeneralDate endDate
+			, String strReturn
+			, OutputStandardSettingOfDailyWorkScheduleDto standardSetting
+			, FreeSettingOfOutputItemForDailyWorkScheduleDto freeSetting
+			, boolean employeeCharge
+			, String msgErrClosingPeriod) {
 		super();
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.strReturn = strReturn;
-		this.lstOutputItemDailyWorkSchedule = lstOutputItemDailyWorkSchedule;
+		this.standardSetting = standardSetting;
+		this.freeSetting = freeSetting;
 		this.employeeCharge = employeeCharge;
 		this.msgErrClosingPeriod = msgErrClosingPeriod;
 	}

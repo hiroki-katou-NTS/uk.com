@@ -4,51 +4,77 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatdPK;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnote;
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleSetMemento.
- * 
- * @author HoangDD change by LienPTK update specs ver34
+ * @author HoangDD
  */
-public class JpaOutputItemDailyWorkScheduleSetMemento
-		implements FreeSettingOfOutputItemForDailyWorkSchedule.MementoSetter,
-		OutputStandardSettingOfDailyWorkSchedule.MementoSetter {
-	
-	private List<KfnmtRptWkDaiOutnote> kfnmtRptWkDaiOutnotes;
-	private List<KfnmtRptWkDaiOutatd> kfnmtRptWkDaiOutatds;
+public class JpaOutputItemDailyWorkScheduleSetMemento implements OutputItemDailyWorkScheduleSetMemento {
+
+	/** The kfnmt item work schedule. */
 	private KfnmtRptWkDaiOutItem kfnmtRptWkDaiOutItem;
 
-	@Override
-	public void setCid(String companyId) {
-		// TODO Auto-generated method stub
-
+	/**
+	 * Instantiates a new jpa output item daily work schedule set memento.
+	 */
+	public JpaOutputItemDailyWorkScheduleSetMemento(KfnmtRptWkDaiOutItem entity) {
+		this.kfnmtRptWkDaiOutItem = entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setItemCode(nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode)
+	 */
 	@Override
-	public void setEmployeeId(String employeeId) {
-		// TODO Auto-generated method stub
-
+	public void setItemCode(OutputItemSettingCode itemCode) {
+		this.kfnmtRptWkDaiOutItem.setItemCode(itemCode.v());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setItemName(nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName)
+	 */
 	@Override
-	public void setSelectionSetting(int itemSelection) {
-		// TODO Auto-generated method stub
-
+	public void setItemName(OutputItemSettingName itemName) {
+		this.kfnmtRptWkDaiOutItem.setItemName(itemName.v());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setLstDisplayedAttendance(java.util.List)
+	 */
 	@Override
-	public void setOutputItemDailyWorkSchedule(List<OutputItemDailyWorkSchedule> outputItem) {
-		// TODO Auto-generated method stub
+	public void setLstDisplayedAttendance(List<AttendanceItemsDisplay> lstDisplayAttendance) {
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setLstRemarkContent(java.util.List)
+	 */
+	@Override
+	public void setLstRemarkContent(List<PrintRemarksContent> lstRemarkContent) {
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setWorkTypeNameDisplay(nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone)
+	 */
+	@Override
+	public void setWorkTypeNameDisplay(NameWorkTypeOrHourZone workTypeNameDisplay) {
+		this.kfnmtRptWkDaiOutItem.setWorkTypeNameDisplay(new BigDecimal(workTypeNameDisplay.value));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento#setRemarkInputNo(java.lang.Integer)
+	 */
+	@Override
+	public void setRemarkInputNo(RemarkInputContent remarkInputNo) {
+		this.kfnmtRptWkDaiOutItem.setNoteInputNo(BigDecimal.valueOf(remarkInputNo.value));
+	}
 }

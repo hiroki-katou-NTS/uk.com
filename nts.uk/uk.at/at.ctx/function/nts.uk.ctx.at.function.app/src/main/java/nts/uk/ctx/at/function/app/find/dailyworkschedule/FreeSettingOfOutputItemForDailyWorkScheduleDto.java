@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.function.app.find.dailyworkschedule;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 
+/**
+ * The Class FreeSettingOfOutputItemForDailyWorkScheduleDto.
+ * @author LienPTK
+ */
 @Data
 public class FreeSettingOfOutputItemForDailyWorkScheduleDto
 		implements FreeSettingOfOutputItemForDailyWorkSchedule.MementoSetter {
@@ -27,11 +32,29 @@ public class FreeSettingOfOutputItemForDailyWorkScheduleDto
 	/**
 	 *	出力項目
 	 */
-	private List<OutputItemDailyWorkScheduleDto> outputItemDailyWorkSchedules;
+	private List<DataInforReturnDto> outputItemDailyWorkSchedules;
 
 	@Override
 	public void setOutputItemDailyWorkSchedules(List<OutputItemDailyWorkSchedule> outputItem) {
-		// TODO Auto-generated method stub
-		
+		this.outputItemDailyWorkSchedules = outputItem.stream()
+						.map(domain -> {
+							DataInforReturnDto dto = new DataInforReturnDto();
+							dto.setCode(String.valueOf(domain.getItemCode().v()));
+							dto.setName(domain.getItemName().v());
+							return dto;
+						})
+						.collect(Collectors.toList());
+	}
+
+	/**
+	 * To free setting dto.
+	 *
+	 * @param domain the domain
+	 * @return the free setting of output item for daily work schedule dto
+	 */
+	public static FreeSettingOfOutputItemForDailyWorkScheduleDto toFreeSettingDto(FreeSettingOfOutputItemForDailyWorkSchedule domain) {
+		FreeSettingOfOutputItemForDailyWorkScheduleDto dto = new FreeSettingOfOutputItemForDailyWorkScheduleDto();
+		domain.setMemento(dto);
+		return dto;
 	}
 }

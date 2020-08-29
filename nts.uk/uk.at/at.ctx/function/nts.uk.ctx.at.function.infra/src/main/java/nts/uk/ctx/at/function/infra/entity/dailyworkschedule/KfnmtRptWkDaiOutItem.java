@@ -58,11 +58,11 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity implements Serializable {
 
 	/** The noteInputNo */
 	@Column(name="NOTE_INPUT_NO")
-	private int noteInputNo;
+	private BigDecimal noteInputNo;
 
 	/** font size */
-	@Column(name="NOTE_INPUT_NO")
-	private int charSizeType;
+	@Column(name="CHAR_SIZE_TYPE")
+	private BigDecimal charSizeType;
 
 	@Override
 	protected Object getKey() {

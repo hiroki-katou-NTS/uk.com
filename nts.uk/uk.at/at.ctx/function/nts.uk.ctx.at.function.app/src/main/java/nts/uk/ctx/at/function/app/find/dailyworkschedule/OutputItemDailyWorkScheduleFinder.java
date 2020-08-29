@@ -412,7 +412,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		Optional<OutputStandardSettingOfDailyWorkSchedule> oDomain = this.outputStandardSettingRepository
 				.getStandardSettingByCompanyId(companyId);
 
-		return oDomain.map(d -> toStandardDto(d)).orElse(null);
+		return oDomain.map(d -> OutputStandardSettingOfDailyWorkScheduleDto.toStandardDto(d)).orElse(null);
 	}
 
 	/**
@@ -426,30 +426,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		Optional<FreeSettingOfOutputItemForDailyWorkSchedule> oDomain = this.freeSettingOfOutputItemRepository
 				.getFreeSettingByCompanyAndEmployee(companyId, employeeId);
 
-		return oDomain.map(d -> toFreeSettingDto(d)).orElse(null);
+		return oDomain.map(d -> FreeSettingOfOutputItemForDailyWorkScheduleDto.toFreeSettingDto(d)).orElse(null);
 	}
-	
-	/**
-	 * To standard dto.
-	 *
-	 * @param domain the domain
-	 * @return the output standard setting of daily work schedule dto
-	 */
-	private OutputStandardSettingOfDailyWorkScheduleDto toStandardDto(OutputStandardSettingOfDailyWorkSchedule domain) {
-		OutputStandardSettingOfDailyWorkScheduleDto dto = new OutputStandardSettingOfDailyWorkScheduleDto();
-		domain.setMemento(dto);
-		return dto;
-	}
-	
-	/**
-	 * To free setting dto.
-	 *
-	 * @param domain the domain
-	 * @return the free setting of output item for daily work schedule dto
-	 */
-	private FreeSettingOfOutputItemForDailyWorkScheduleDto toFreeSettingDto(FreeSettingOfOutputItemForDailyWorkSchedule domain) {
-		FreeSettingOfOutputItemForDailyWorkScheduleDto dto = new FreeSettingOfOutputItemForDailyWorkScheduleDto();
-		domain.setMemento(dto);
-		return dto;
-	}
+
 }

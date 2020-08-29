@@ -8,7 +8,7 @@ public enum ItemSelectionType {
 	/** 定型選択 */
 	STANDARD_SELECTION(0),
 	/** 目由設定 */
-	SETTING(1);
+	FREE_SETTING(1);
 	
 	public final int value;
 

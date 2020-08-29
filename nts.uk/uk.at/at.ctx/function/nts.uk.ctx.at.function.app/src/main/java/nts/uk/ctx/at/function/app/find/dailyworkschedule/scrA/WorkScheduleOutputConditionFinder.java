@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -16,13 +15,10 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkScheduleDto;
+import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputStandardSettingOfDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
@@ -56,10 +52,6 @@ public class WorkScheduleOutputConditionFinder {
 	/** The closure repository. */
 	@Inject
 	private ClosureRepository closureRepository;
-	
-	/** The output item daily work schedule repository. */
-	@Inject
-	private OutputItemDailyWorkScheduleRepository outputItemDailyWorkScheduleRepository;
 
 	@Inject
 	private FreeSettingOfOutputItemRepository freeSettingOfOutputItemRepository;
@@ -113,7 +105,7 @@ public class WorkScheduleOutputConditionFinder {
 				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
 
 		// 自由設定(A7_7～A7_12)の活性制御を行う
-		dto.setFreeSetting(isFreeSetting);
+		dto.setCheckFreeSetting(isFreeSetting);
 
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
 		Optional<Closure> optClosure = getDomClosure(employeeId, systemDate);
@@ -137,27 +129,36 @@ public class WorkScheduleOutputConditionFinder {
 			dto.setEndDate(null);
 		}
 
-		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = new ArrayList<OutputItemDailyWorkSchedule>();
+		// 社員IDから自由設定の出力項目を取得 (Get output item for free setup from employee ID)
+		FreeSettingOfOutputItemForDailyWorkScheduleDto freeSettingDto = this.freeSettingOfOutputItemRepository
+				.getFreeSettingByCompanyAndEmployee(companyId, employeeId)
+				.map(d -> FreeSettingOfOutputItemForDailyWorkScheduleDto.toFreeSettingDto(d)).orElse(null);
+
+		// 定型設定の出力項目を取得(Get output items of standard settings)
+		OutputStandardSettingOfDailyWorkScheduleDto standardSettingDto = this.outputStandardSettingRepository
+				.getStandardSettingByCompanyId(companyId)
+				.map(d -> OutputStandardSettingOfDailyWorkScheduleDto.toStandardDto(d)).orElse(null);
 
 		if (isFreeSetting) {
-			Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSetting = this.freeSettingOfOutputItemRepository
-																					.getFreeSettingByCompanyAndEmployee(companyId, employeeId);
+			if (freeSettingDto != null && !freeSettingDto.getOutputItemDailyWorkSchedules().isEmpty()) {
+				if (isExistWorkScheduleOutputCondition) {
+					dto.setStrReturn(SHOW_CHARACTERISTIC);
+				} else {
+					dto.setStrReturn(STRING_EMPTY);
+				}
+			}
 		} else {
-			Optional<OutputStandardSettingOfDailyWorkSchedule> standardSetting = this.outputStandardSettingRepository
-																					.getStandardSettingByCompanyId(companyId);
-		}
-
-		// ドメインモデル「日別勤務表の出力項目」をすべて取得する(Acquire all domain model "Output items of daily work schedule")
-//		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = outputItemDailyWorkScheduleRepository.findByCid(companyId);
-		if (!lstOutputItemDailyWorkSchedule.isEmpty()) {
-			if (isExistWorkScheduleOutputCondition) {
-				dto.setStrReturn(SHOW_CHARACTERISTIC);
-			} else {
-				dto.setStrReturn(STRING_EMPTY);
+			if (standardSettingDto != null && !standardSettingDto.getOutputItemDailyWorkSchedules().isEmpty()) {
+				if (isExistWorkScheduleOutputCondition) {
+					dto.setStrReturn(SHOW_CHARACTERISTIC);
+				} else {
+					dto.setStrReturn(STRING_EMPTY);
+				}
 			}
 		}
 
-		dto.setLstOutputItemDailyWorkSchedule(getOutputItemDailyWorkSchedule(lstOutputItemDailyWorkSchedule));
+		dto.setStandardSetting(standardSettingDto);
+		dto.setFreeSetting(freeSettingDto);
 
 		return dto;
 	}
@@ -206,16 +207,5 @@ public class WorkScheduleOutputConditionFinder {
 								.sorted(Comparator.comparing(ErrorAlarmCodeDto::getCode))
 								.collect(Collectors.toList());
 	} 
-	
-	// convert to DTO
-	private List<DataInforReturnDto> getOutputItemDailyWorkSchedule(List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule) {
-		return lstOutputItemDailyWorkSchedule.stream()
-						.map(domain -> {
-							DataInforReturnDto dto = new DataInforReturnDto();
-							dto.setCode(String.valueOf(domain.getItemCode().v()));
-							dto.setName(domain.getItemName().v());
-							return dto;
-						})
-						.collect(Collectors.toList());
-	}
+
 }
