@@ -1,11 +1,14 @@
 package nts.uk.screen.at.app.shift.workcycle;
 
+import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.*;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -17,10 +20,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
-import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -35,18 +34,12 @@ import java.util.Optional;
 @Stateless
 public class WorkCycleReflectionDialog {
 	@Inject private HolidayWorkTypeService holidayWorkTypeService;
-	//@Inject private WorkInformation workInformation;
 	@Inject private WorkCycleQueryRepository workCycleQueryRepository;
-
-	@Inject private WorkInformationRequire wRequire;
-	@Inject private CreateWorkCycleAppImageRequire cRequire;
 	@Inject private CreateWorkCycleAppImage createWorkCycleAppImage;
-//
-//	public WorkCycleReflectionDialog(){
-//		wRequire = new WorkInformationRequire();
-//		cRequire = new CreateWorkCycleAppImageRequire();
-//		createWorkCycleAppImage = new CreateWorkCycleAppImage();
-//	}
+	@Inject private WeeklyWorkDayRepository weeklyWorkDayRepository;
+	@Inject private PublicHolidayRepository publicHolidayRepository;
+	@Inject private WorkCycleRepository workCycleRepository;
+	@Inject private BasicScheduleService basicScheduleService;
 
  	/**
 	 * 起動情報を取得する
@@ -86,10 +79,14 @@ public class WorkCycleReflectionDialog {
 				null,
 				null
 		);
-
+		CreateWorkCycleAppImageRequire cRequire = new CreateWorkCycleAppImageRequire(
+				weeklyWorkDayRepository,
+				publicHolidayRepository,
+				workCycleRepository);
 		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(cRequire, creationPeriod, config);
  		ReflectionImage reflectionImage = new ReflectionImage();
 		HashMap<GeneralDate,WorkStyle> workStyles = new HashMap<>();
+		WorkInformationRequire wRequire = new WorkInformationRequire(basicScheduleService);
 		refImageEachDayList.stream().forEach(ref -> {
 			GeneralDate date = ref.getDate();
 			WorkInformation wInfo = ref.getWorkInformation();
@@ -117,6 +114,10 @@ public class WorkCycleReflectionDialog {
 	public ReflectionImage getWorkCycleAppImage(
 			DatePeriod creationPeriod,
 			WorkCycleRefSetting workCycleRefSetting){
+		CreateWorkCycleAppImageRequire cRequire = new CreateWorkCycleAppImageRequire(
+				weeklyWorkDayRepository,
+				publicHolidayRepository,
+				workCycleRepository);
 		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(cRequire, creationPeriod, workCycleRefSetting);
 		ReflectionImage reflectionImage = new ReflectionImage();
 		refImageEachDayList.stream().forEach(ref -> {
@@ -126,11 +127,11 @@ public class WorkCycleReflectionDialog {
 		return reflectionImage;
 	}
 
-	@Stateless
+	@AllArgsConstructor
 	private static class CreateWorkCycleAppImageRequire implements CreateWorkCycleAppImage.Require {
-		@Inject private WeeklyWorkDayRepository weeklyWorkDayRepository;
-		@Inject private PublicHolidayRepository publicHolidayRepository;
-		@Inject private WorkCycleRepository workCycleRepository;
+		private WeeklyWorkDayRepository weeklyWorkDayRepository;
+		private PublicHolidayRepository publicHolidayRepository;
+		private WorkCycleRepository workCycleRepository;
 
 		@Override
 		public Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting(String cid){
@@ -149,9 +150,9 @@ public class WorkCycleReflectionDialog {
 
 	}
 
-	@Stateless
+	@AllArgsConstructor
 	private static class WorkInformationRequire implements WorkInformation.Require {
-		@Inject private BasicScheduleService basicScheduleService;
+		private BasicScheduleService basicScheduleService;
 
 		@Override
 		public Optional<WorkType> findByPK(String workTypeCd) {

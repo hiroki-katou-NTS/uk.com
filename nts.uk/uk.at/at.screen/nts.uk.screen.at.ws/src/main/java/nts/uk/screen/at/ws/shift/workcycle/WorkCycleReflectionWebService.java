@@ -12,11 +12,11 @@ import nts.uk.screen.at.app.shift.workcycle.WorkCycleReflectionDto;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.ws.rs.FormParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,61 +33,67 @@ public class WorkCycleReflectionWebService extends WebService {
 
     @POST
     @Path("start")
-    public WorkCycleReflectionDto getStartupInfo(
-			@FormParam("bootMode") BootMode bootMode,
-			@FormParam("creationPeriodStartDate") String creationPeriodStartDate,
-			@FormParam("creationPeriodEndDate") String creationPeriodEndDate,
-			@FormParam("workCycleCode") String workCycleCode,
-			@FormParam("refOrder") List<WorkCreateMethod> refOrder,
-			@FormParam("numOfSlideDays") int numOfSlideDays){
-		DatePeriod creationPeriod = createDatePeriod(creationPeriodStartDate, creationPeriodEndDate, DATE_FORMAT_YYYYMMDD);
+    public WorkCycleReflectionDto getStartupInfo(WorkCycleReflectionParam param) {
+
+		DatePeriod creationPeriod = createDatePeriod(
+			param.getCreationPeriodStartDate(),
+			param.getCreationPeriodEndDate(),
+			DATE_FORMAT_YYYYMMDD);
+
+		List<WorkCreateMethod> refOrder = createFromIntArray(param.getRefOrder());
+
+		int bootModeParam = param.getBootMode();
+		BootMode bootMode = (bootModeParam == 0)? BootMode.REF_MODE:BootMode.EXEC_MODE;
 
 		return wcrdScreenQuery.getStartupInfo(
-        		bootMode,
+				bootMode,
 				creationPeriod,
-				workCycleCode,
+				param.getWorkCycleCode(),
 				refOrder,
-				numOfSlideDays);
+				param.getNumOfSlideDays());
     }
 
 	/**
 	 * 勤務サイクルの適用イメージを取得する
-	 * @param creationPeriodStartDate	作成期間 start
-	 * @param creationPeriodEndDate		作成期間 end
-	 * @param workCycleCode				勤務サイクルコード
-	 * @param refOrder					反映順序
-	 * @param numOfSlideDays			スライド日数
-	 * @param legalHolidayCd			祝日の勤務種類
-	 * @param nonStatutoryHolidayCd		法定外休日の勤務種類
-	 * @param holidayCd					法定休日の勤務種類
 	 * @return 反映イメージ
 	 */
 	@POST
 	@Path("get-reflection-image")
-	public ReflectionImage getWorkCycleAppImage(
-			@FormParam("creationPeriodStartDate") String creationPeriodStartDate,
-			@FormParam("creationPeriodEndDate") String creationPeriodEndDate,
-			@FormParam("workCycleCode") String workCycleCode,
-			@FormParam("refOrder") List<WorkCreateMethod> refOrder,
-			@FormParam("numOfSlideDays") int numOfSlideDays,
-			@FormParam("legalHolidayCd") String legalHolidayCd,
-			@FormParam("nonStatutoryHolidayCd") String nonStatutoryHolidayCd,
-			@FormParam("holidayCd") String holidayCd){
+	public ReflectionImage getWorkCycleAppImage(WorkCycleReflectionParam param){
+
+		List<WorkCreateMethod> refOrder = createFromIntArray(param.getRefOrder());
 
 		WorkCycleRefSetting config = new WorkCycleRefSetting(
-				workCycleCode,
+				param.getWorkCycleCode(),
 				refOrder,
-				numOfSlideDays,
-				legalHolidayCd,
-				nonStatutoryHolidayCd,
-				holidayCd
+				param.getNumOfSlideDays(),
+				param.getLegalHolidayCd(),
+				param.getNonStatutoryHolidayCd(),
+				param.getHolidayCd()
 		);
-		DatePeriod creationPeriod = createDatePeriod(creationPeriodStartDate, creationPeriodEndDate, DATE_FORMAT_YYYYMMDD);
+
+		DatePeriod creationPeriod = createDatePeriod(
+				param.getCreationPeriodStartDate(),
+				param.getCreationPeriodEndDate(),
+				DATE_FORMAT_YYYYMMDD);
 
 		return wcrdScreenQuery.getWorkCycleAppImage(creationPeriod, config);
 	}
 
 	private DatePeriod createDatePeriod(String startDate, String endDate, String format){
 		return new DatePeriod(GeneralDate.fromString(startDate,format), GeneralDate.fromString(endDate,format));
+	}
+
+	private List<WorkCreateMethod> createFromIntArray(int[] input){
+		List<WorkCreateMethod> workCreateMethods = new ArrayList<>();
+		for (int i:input) {
+			for (WorkCreateMethod workCreateMethod : WorkCreateMethod.values()) {
+				if (workCreateMethod.value == i) {
+					workCreateMethods.add(workCreateMethod);
+				}
+			}
+		}
+
+		return workCreateMethods;
 	}
 }
