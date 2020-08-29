@@ -14,6 +14,6 @@ public class MonthlySettingPatternDto {
 
     private List<MonthlyPatternDto> monthlyPatternDtos;
 
-    private Set<Integer> listMonthYear;
+    private List<Integer> listMonthYear;
 
 }

@@ -95,7 +95,7 @@ public class MonthlyPatternScreenProcessor {
         });
 
         // 5.get yearMonth
-        Set<Integer> listMonthYear = getYearMonthScreenprocessor.GetYearMonth(cid,requestPrams.getMonthlyPatternCode(),requestPrams.getStartDate().year());
+        List<Integer> listMonthYear = getYearMonthScreenprocessor.GetYearMonth(cid,requestPrams.getMonthlyPatternCode(),requestPrams.getStartDate().year());
         return new MonthlySettingPatternDto(workMonthlySettings, listMonthYear);
     }
 
