@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
+package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordStandardSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 
 @Stateless
 public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository implements AttendanceRecordStandardSettingRepository{

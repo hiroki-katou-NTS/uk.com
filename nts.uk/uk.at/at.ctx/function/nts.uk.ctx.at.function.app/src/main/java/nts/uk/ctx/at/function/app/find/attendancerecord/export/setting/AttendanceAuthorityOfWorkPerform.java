@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AttendaceAuthorityOfWorkPerform {
+public class AttendanceAuthorityOfWorkPerform {
 	/**
 	 * 	日別実績の機能NO
 	 */
@@ -35,9 +35,11 @@ public class AttendaceAuthorityOfWorkPerform {
 	 */
 	private String employeeId;
 	
+	/** The is free setting. */
 	private boolean isFreeSetting;
+	
 
-	public AttendaceAuthorityOfWorkPerform(int functionNo, String companyId,
+	public AttendanceAuthorityOfWorkPerform(int functionNo, String companyId,
 			String roleId) {
 		this.functionNo = functionNo;
 		this.companyId = companyId;

@@ -11,16 +11,15 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA.WorkScheduleOutputConditionFinder;
 import nts.uk.ctx.at.function.dom.adapter.RoleLogin.LoginRoleAdapter;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordOuputItems;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordOuputItemsRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordStandardSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 //import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
@@ -140,23 +139,11 @@ public class AttendanceRecordExportSettingFinder {
 		return new AttendaceMonthDto(optCls.getClosureMonth().getProcessingYm().toString());
 	}
 	
-	public List<AttendaceAuthorityOfWorkPerform> getAuthorityOfWorkPerformance() {
+	public AttendanceAuthorityOfWorkPerform getAuthorityOfWorkPerformance() {
 		String roleId = AppContexts.user().roles().forAttendance();
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
-		int functionNo51 = 51;
-		List<DailyPerformanceAuthority> daiPerAuthors = dailyPerAuthRepo.get(roleId);
-		List<AttendaceAuthorityOfWorkPerform> results =  daiPerAuthors.stream().filter(i -> {
-			return i.getFunctionNo().v().equals(BigDecimal.valueOf(functionNo51)) && i.getRoleID().equals(roleId) && i.isAvailability() == true;})
-		.map(i -> {
-			AttendaceAuthorityOfWorkPerform attendaceAuthorityOfWorkPerform = new AttendaceAuthorityOfWorkPerform();
-			attendaceAuthorityOfWorkPerform.setAvailability(i.isAvailability());
-			attendaceAuthorityOfWorkPerform.setCompanyId(companyId);
-			attendaceAuthorityOfWorkPerform.setRoleId(roleId);
-			attendaceAuthorityOfWorkPerform.setFunctionNo(i.getFunctionNo().v().intValue());
-			attendaceAuthorityOfWorkPerform.setEmployeeId(employeeId);
-			return attendaceAuthorityOfWorkPerform;
-		}).collect(Collectors.toList());
+		AttendanceAuthorityOfWorkPerform attendanceDto = new AttendanceAuthorityOfWorkPerform();
 		boolean isFreeSetting = this.dailyPerAuthRepo.getAuthorityOfEmployee(roleId,
 				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
 		if (isFreeSetting) {
@@ -166,7 +153,12 @@ public class AttendanceRecordExportSettingFinder {
 			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo
 													.getStandardByCompanyId(companyId);
 		}
-		return results;
+		attendanceDto.setFreeSetting(isFreeSetting);
+		attendanceDto.setCompanyId(companyId);
+		attendanceDto.setRoleId(roleId);
+		attendanceDto.setEmployeeId(employeeId);
+		attendanceDto.setFunctionNo(51);
+		return attendanceDto;
 	}
 	
 	/**

@@ -3,8 +3,8 @@ package nts.uk.ctx.at.function.app.find.attendancerecord.export.setting;
 import java.util.List;
 
 import lombok.Data;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 
 /**
  * The Class AttendanceRecordStandardSettingDto.

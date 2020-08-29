@@ -1,11 +1,10 @@
-package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
+package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.util.List;
 
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordOuputItems;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 
 public class JpaAttendanceRecordOuputItemsGetMemento implements AttendanceRecordOuputItems.MementoGetter ,  AttendanceRecordStandardSetting.MementoGetter{
@@ -37,9 +36,9 @@ public class JpaAttendanceRecordOuputItemsGetMemento implements AttendanceRecord
 	}
 
 	@Override
-	public ItemSelectionType getItemSelectionType() {
+	public int getItemSelectionType() {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 }

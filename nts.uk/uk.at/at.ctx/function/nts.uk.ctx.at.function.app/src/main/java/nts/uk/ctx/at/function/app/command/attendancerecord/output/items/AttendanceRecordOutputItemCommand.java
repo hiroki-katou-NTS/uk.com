@@ -5,9 +5,8 @@ import java.util.List;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingCommand;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordOuputItems;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
 
 @Setter
 @NoArgsConstructor
@@ -56,9 +55,12 @@ public class AttendanceRecordOutputItemCommand implements AttendanceRecordOuputI
 	}
 
 	@Override
-	public ItemSelectionType getItemSelectionType() {
-		return ItemSelectionType.valueOf(this.itemSelectionType);
+	public int getItemSelectionType() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
+
+
 
 
 

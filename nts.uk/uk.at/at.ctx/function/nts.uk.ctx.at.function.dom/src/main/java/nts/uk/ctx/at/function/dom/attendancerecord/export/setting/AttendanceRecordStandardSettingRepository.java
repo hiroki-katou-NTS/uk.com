@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.dom.attendancerecord.export;
+package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 
 import java.util.Optional;
 

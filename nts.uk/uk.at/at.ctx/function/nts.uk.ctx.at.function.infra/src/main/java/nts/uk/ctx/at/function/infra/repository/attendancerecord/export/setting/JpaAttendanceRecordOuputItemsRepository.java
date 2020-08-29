@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
+package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordOuputItems;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 
 @Stateless

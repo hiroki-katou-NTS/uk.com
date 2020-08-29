@@ -1,10 +1,8 @@
-package nts.uk.ctx.at.function.dom.attendancerecord.export;
+package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 
 import java.util.List;
 
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 import nts.uk.shr.com.context.AppContexts;
 
 
