@@ -148,11 +148,15 @@ public class ReflectionImageTest {
         HashMap<GeneralDate, RefImageEachDay> mapTest = new HashMap<>();
         mapTest.put(GeneralDate.max(), item1);
         mapTest.put(GeneralDate.today(), item2);
+        mapTest.put(GeneralDate.today().addDays(-1), item2);
+        mapTest.put(GeneralDate.today().addDays(1), item2);
         ReflectionImage target = new ReflectionImage(mapTest);
 
         val result = target.getListRefOrdByDate();
-        assertThat(result.get(0).getDate().equals(GeneralDate.today()));
-        assertThat(result.get(1).getDate().equals(GeneralDate.max()));
+        assertThat(result.get(0).getDate().equals(GeneralDate.today().addDays(-1)));
+        assertThat(result.get(1).getDate().equals(GeneralDate.today()));
+        assertThat(result.get(2).getDate().equals(GeneralDate.today().addDays(1)));
+        assertThat(result.get(3).getDate().equals(GeneralDate.max()));
     }
 
 

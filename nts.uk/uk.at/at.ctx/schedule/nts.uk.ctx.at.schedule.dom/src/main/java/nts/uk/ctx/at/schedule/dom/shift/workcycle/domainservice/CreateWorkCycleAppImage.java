@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 勤務サイクルの適用イメージを作成する
+ *  勤務サイクルの適用イメージを作成する
  */
 public class CreateWorkCycleAppImage {
 
