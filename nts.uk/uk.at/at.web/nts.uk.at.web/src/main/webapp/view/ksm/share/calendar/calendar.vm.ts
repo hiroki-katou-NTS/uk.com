@@ -5,18 +5,19 @@ module nts.uk.at.view.ksm004.share {
     export interface CalendarParam {
         baseDate: KnockoutObservable<Date>;
         holidays: KnockoutObservableArray<Date>;
+        isEmptyMonth: KnockoutObservable<boolean>;
     }
 
     // template định nghĩa cấu trúc component calendar
     const calendarHtml = `
 	<!-- ko let: { $model: ko.unwrap(displayModel) } -->
-	<div class="title" data-bind="date: $model.baseDate, format: 'YYYY年MM月'"></div>
+	<div class="title" data-bind="date: $model.baseDate, format: 'YYYY年M月'"></div>
 	<div class="week" data-bind="foreach: $model.daysOfWeek">
-		<div class="day" data-bind="date: $data.date, format: 'ddd', css: { holiday: $data.holiday }"></div>
+		<div class="day name-day" data-bind="date: $data.date, format: 'ddd', css: { holiday: $data.holiday }"></div>
 	</div>
 	<div class="month" data-bind="foreach: _.chunk($model.daysOfMonth, 7), css: {isEmtyMonth: $model.isEmtyMonth }">
 		<div class="week" data-bind="foreach: $data">
-			<div class="day" data-bind="date: $data.date, format: 'DD', css: { holiday: $data.holiday, 'out-month': $data.outMonth }"></div>
+			<div class="day" data-bind="date: $data.date, format: 'D', css: { holiday: $data.holiday, 'out-month': $data.outMonth }"></div>
 		</div>
 	</div>
 	<!-- /ko -->
@@ -36,9 +37,10 @@ module nts.uk.at.view.ksm004.share {
             const name = COMPONENT_NAME;
             const baseDate = valueAccessor();
             const holidays = allBindingsAccessor.get('holidays');
+            const isEmptyMonth = allBindingsAccessor.get('isEmptyMonth');
 
             // apply component
-            ko.applyBindingsToNode(element, { component: { name, params: { baseDate, holidays } } }, bindingContext);
+            ko.applyBindingsToNode(element, { component: { name, params: { baseDate, holidays, isEmptyMonth } } }, bindingContext);
 
             // thông báo cho ko không binding tiếp nữa (cụ thể là cancel holidays binding)
             return { controlsDescendantBindings: true };
@@ -62,6 +64,7 @@ module nts.uk.at.view.ksm004.share {
             vm.displayModel = ko.computed(() => {
                 const baseDate = ko.unwrap((model || {}).baseDate || new Date());
                 const holidays = ko.unwrap((model || {}).holidays || []);
+                const isEmtyMonth = ko.unwrap((model || {}).isEmptyMonth || true);
                 const start = moment(baseDate).startOf('month').startOf('week');
                 const isHoliday = (d: moment.Moment) => !!_.find(holidays, (h: Date) => d.isSame(h, 'day'));
                 const isSameMonth = (d: moment.Moment) => d.isSame(baseDate, 'month');
@@ -80,7 +83,6 @@ module nts.uk.at.view.ksm004.share {
                 // Lọc ra 7 ngày đầu tiên để hiện thị thứ
                 const daysOfWeek = _.filter(daysOfMonth, (__: Date, i: number) => i < 7);
 
-                const isEmtyMonth = _.filter(daysOfMonth, data => data.holiday).length === 0;
                 return { baseDate, daysOfWeek, daysOfMonth, isEmtyMonth };
             });
         }

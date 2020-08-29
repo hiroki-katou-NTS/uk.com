@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.command.reservation.bento;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -10,22 +11,18 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
-import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.app.query.stamp.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
-import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
-import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -41,6 +38,8 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 	@Inject
 	private BentoReservationRepository bentoReservationRepository;
 
+	@Inject
+	private GetStampCardQuery getStampCardQuery;
 
 	@Override
 	protected void handle(CommandHandlerContext<BentoReserveCommand> context) {
@@ -52,11 +51,11 @@ public class BentoReserveMofidyCommandHandler extends CommandHandler<BentoReserv
 				Optional.of(new WorkLocationCode(command.getWorkLocationCode())): Optional.empty();
 		// End
 
-		StampCard stampCard = stampCardRepository.getLstStampCardByLstSidAndContractCd(
-				Arrays.asList(AppContexts.user().employeeId()),
-				AppContexts.user().contractCode()).get(0);
-		
-		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampCard.getStampNumber().toString());
+		String employeeId = AppContexts.user().employeeId();
+		Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(Arrays.asList(employeeId));
+		if (!stampCards.containsKey(employeeId)) throw new RuntimeException("Invalid Stamp Number");
+		StampNumber stampNumber = stampCards.get(employeeId);
+		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampNumber.toString());
 		
 		RequireImpl require = new RequireImpl(bentoMenuRepository, bentoReservationRepository);
 		

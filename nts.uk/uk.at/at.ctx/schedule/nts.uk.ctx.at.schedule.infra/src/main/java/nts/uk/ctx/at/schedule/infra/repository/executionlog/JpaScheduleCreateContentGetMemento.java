@@ -4,6 +4,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.*;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 
 import javax.swing.text.html.Option;
 import java.util.Optional;
@@ -58,11 +59,11 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 				this.entity.getReTargetAtr(),
 				this.entity.getReOverwriteConfirmed(),
 				this.entity.getReOverwriteRevised(),
-				Optional.of(new NarrowingEmployees(
-						this.entity.getReTargetLeave(),
-						this.entity.getReTargetLaborChange(),
+				Optional.of(new ConditionEmployee(
 						this.entity.getReTargetTransfer(),
-						this.entity.getReTargetShortWork()
+						this.entity.getReTargetLeave(),
+						this.entity.getReTargetShortWork(),
+						this.entity.getReTargetLaborChange()
 				))
 		);
 	}

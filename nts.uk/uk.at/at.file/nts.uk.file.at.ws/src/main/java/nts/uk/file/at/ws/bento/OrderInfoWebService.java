@@ -1,18 +1,15 @@
 package nts.uk.file.at.ws.bento;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.app.find.reservation.bento.dto.*;
-import nts.uk.file.at.app.export.bento.*;
+import nts.uk.file.at.app.export.bento.CreateOrderInfoDataSource;
+import nts.uk.file.at.app.export.bento.OrderInfoExportExcelService;
+import nts.uk.file.at.app.export.bento.OrderInfoExportPDFService;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Path("order/report")
 @Produces(MediaType.APPLICATION_JSON)
@@ -26,7 +23,7 @@ public class OrderInfoWebService {
 
     @POST
     @Path("print/pdf")
-    public ExportServiceResult generatePdfDetail(CreateOrderInfoDataSource data) {
+    public ExportServiceResult generatePdf(CreateOrderInfoDataSource data) {
         return exportPDFService.start(data);
     }
 

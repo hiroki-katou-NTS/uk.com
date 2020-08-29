@@ -10,7 +10,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-@Path("screen/at/record/reservation/bento_menu")
+@Path("screen/at/record/reservation/bento-menu")
 @Produces(MediaType.APPLICATION_JSON)
 public class BentoMenuWebService extends WebService{
 
@@ -18,19 +18,19 @@ public class BentoMenuWebService extends WebService{
     private BentoMenuSetScreenProcessor bentoMenuSetScreenProcessor;
 
     @POST
-    @Path("getBentoMenu")
+    @Path("getbentomenu")
     public BentoMenuJoinBentoSettingDto getReservation() {
         return this.bentoMenuSetScreenProcessor.findDataBentoMenu();
     }
 
     @POST
-    @Path("getBentoMenuByHist")
-    public List<BentoJoinReservationSetting> getBentoMenu(BentoRequest request) {
+    @Path("getbentomenubyhist")
+    public BentoJoinReservationSetting getBentoMenu(BentoRequest request) {
         return this.bentoMenuSetScreenProcessor.getBentoMenuByHist(request);
     }
 
     @POST
-    @Path("getWorkLocation")
+    @Path("getworklocation")
     public List<WorkLocationDto> getWorklocation() {
         return this.bentoMenuSetScreenProcessor.getWorkLocationByCid();
     }

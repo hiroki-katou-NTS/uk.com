@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,55 +18,31 @@ public class BentoJoinReservationSetting {
     public int operationDistinction;
 
     //bentomenu
+
+    public GeneralDate startDate;
+
+    public GeneralDate endDate;
+
     public String reservationFrameName1;
 
-    public int reservationStartTime1;
+    public Integer reservationStartTime1;
 
     public int reservationEndTime1;
 
     public String reservationFrameName2;
 
-    public int reservationStartTime2;
+    public Integer reservationStartTime2;
 
-    public int reservationEndTime2;
+    public Integer reservationEndTime2;
 
-    //bento
-    public GeneralDate startDate;
+    public List<BentoDto> bentoDtos;
 
-    public GeneralDate endDate;
+    public static BentoJoinReservationSetting setData(List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos, BentoReservationSettingDto bentoReservationSettingDto){
+        if (bentomenuJoinBentoDtos == null || CollectionUtil.isEmpty(bentomenuJoinBentoDtos)) return null;
+        List<BentoDto> bentoDtos = new ArrayList<>();
 
-    public int frameNo;
-
-    public String bentoName;
-
-    public String unitName;
-
-    public int price1;
-
-    public int price2;
-
-    public boolean reservationAtr1;
-
-    public boolean reservationAtr2;
-
-    public String workLocationCode;
-
-    public String workLocationName;
-
-    public static List<BentoJoinReservationSetting> setData(List<BentoDto> bentoDtos, BentoReservationSettingDto bentoReservationSettingDto){
-        if (bentoDtos == null) return null;
-        List<BentoJoinReservationSetting> listFullJoin = new ArrayList<>();
-        for(BentoDto x : bentoDtos){
-            listFullJoin.add(new BentoJoinReservationSetting(
-                    bentoReservationSettingDto.getOperationDistinction(),
-                    x.getReservationFrameName1(),
-                    x.getReservationStartTime1(),
-                    x.getReservationEndTime1(),
-                    x.getReservationFrameName2(),
-                    x.getReservationStartTime2(),
-                    x.getReservationEndTime2(),
-                    x.getStartDate(),
-                    x.getEndDate(),
+        for(BentomenuJoinBentoDto x : bentomenuJoinBentoDtos){
+            bentoDtos.add(new BentoDto(
                     x.getFrameNo(),
                     x.getBentoName(),
                     x.getUnitName(),
@@ -77,6 +54,19 @@ public class BentoJoinReservationSetting {
                     x.getWorkLocationName()
             ));
         }
-        return listFullJoin;
+
+        val dto = bentomenuJoinBentoDtos.get(0);
+        return new BentoJoinReservationSetting(
+                bentoReservationSettingDto.getOperationDistinction(),
+                dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getReservationFrameName1(),
+                dto.getReservationStartTime1(),
+                dto.getReservationEndTime1(),
+                dto.getReservationFrameName2(),
+                dto.getReservationStartTime2(),
+                dto.getReservationEndTime2(),
+                bentoDtos
+        );
     }
 }

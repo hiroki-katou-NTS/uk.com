@@ -198,7 +198,12 @@ public class JpaScheduleCreatorRepository extends JpaRepository
 		// exclude select
 		return query.getSingleResult().intValue();
 	}
-	
+
+	@Override
+	public Optional<ScheduleCreator> findByExecutionIdAndSId(String executionId, String sId) {
+		return this.queryProxy().find(new KscdtScheExeTargetPK(executionId, sId), KscdtScheExeTarget.class).map(this::toDomain);
+	}
+
 	/**
 	 * To entity.
 	 *

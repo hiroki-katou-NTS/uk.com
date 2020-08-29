@@ -26,7 +26,6 @@ public class SixMonthsCalendarRepositoryImpl extends JpaRepository implements Si
         stringBuilder.append("FROM KsmmtCalendarCompany c ");
         stringBuilder.append("WHERE c.ksmmtCalendarCompanyPK.companyId = :companyId ");
         stringBuilder.append("AND c.ksmmtCalendarCompanyPK.date >= :startDate AND c.ksmmtCalendarCompanyPK.date <= :endDate ");
-        stringBuilder.append("AND c.workingDayAtr != 0 ");
         SELECT_SIXMONTHS_COMPANY = stringBuilder.toString();
 
         stringBuilder = new StringBuilder();
@@ -35,7 +34,6 @@ public class SixMonthsCalendarRepositoryImpl extends JpaRepository implements Si
         stringBuilder.append("FROM KsmmtCalendarWorkplace c ");
         stringBuilder.append("WHERE c.ksmmtCalendarWorkplacePK.workPlaceId = :workPlaceId ");
         stringBuilder.append("AND c.ksmmtCalendarWorkplacePK.date >= :startDate AND c.ksmmtCalendarWorkplacePK.date <= :endDate ");
-        stringBuilder.append("AND c.workingDayAtr != 0 ");
         SELECT_SIXMONTHS_WORKPLACE = stringBuilder.toString();
 
         stringBuilder = new StringBuilder();
@@ -46,7 +44,6 @@ public class SixMonthsCalendarRepositoryImpl extends JpaRepository implements Si
         stringBuilder.append("WHERE c.ksmmtCalendarClassPK.classId = :classId ");
         stringBuilder.append("AND c.ksmmtCalendarClassPK.companyId = :companyId ");
         stringBuilder.append("AND c.ksmmtCalendarClassPK.date >= :startDate AND c.ksmmtCalendarClassPK.date <= :endDate ");
-        stringBuilder.append("AND c.workingDayAtr != 0 ");
         SELECT_SIXMONTHS_CLASSIFICATION = stringBuilder.toString();
     }
 

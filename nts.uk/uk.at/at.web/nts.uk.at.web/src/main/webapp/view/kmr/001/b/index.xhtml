@@ -8,7 +8,7 @@
 <ui:composition template="/master/base.xhtml">
 	<ui:define name="htmlHead">
 		<com:ValidatorScript>
-			nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth
+			nts.uk.ctx.at.record.dom.reservation.reservationsetting.ReferenceTime
 			nts.uk.ctx.at.record.dom.reservation.bento.rules.BentoReservationTimeName
 			nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationTime
 		</com:ValidatorScript>
@@ -23,13 +23,17 @@
 			<!--B1_1-->
 			<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }, text: $i18n('KMR001_3')"></a>
 			<!--B1_2-->
-			<button class="proceed" tabindex="1" data-bind="click: registerBentoReserveSetting, text: $i18n('KMR001_4'), enable: $root.errors.isEmpty"></button>
+			<button class="proceed" tabindex="2" data-bind="click:
+				registerBentoReserveSetting,
+				text: $i18n('KMR001_4'),
+				enable: $root.errors.isEmpty
+			"/>
 			<hr/>
 			<div class="break-line"></div>
 		</div>
 		<div class="kmr001b" id="contents-area" data-bind="with: model" >
 			<!--B2_1-->
-			<div class="label" data-bind="text: $i18n('KMR001_3')" ></div>
+			<div class="label" data-bind="text: $i18n('KMR001_82')" ></div>
 			<hr/>
 			<table>
 				<tr>
@@ -64,9 +68,9 @@
 							enable: true,
 							readonly: false,
 							required: true,
-							constraint: 'AttendanceTimeMonth',
+							constraint: 'ReferenceTime',
 							value: referenceTime,
-							name: 'KMR001_9'
+							name: $i18n('KMR001_9')
 							}"  />
 						</span>
 						<!--B5_3-->
@@ -76,22 +80,28 @@
 				<tr>
 					<td>
 						<!--B19_1-->
-						<div data-bind="ntsFormLabel: { required: true, inline: true, enable: true, text: $i18n('KMR001_35')}"></div>
+						<div data-bind="ntsFormLabel: {
+							required: true,
+							inline: true,
+							enable: true,
+							text: $i18n('KMR001_63')}
+						" />
 					</td>
 					<td>
 						<!--B19_2-->
-						<span class="label" data-bind="text: $i18n('KMR001_69')"></span>
+						<span class="label reservation" data-bind="text: $i18n('KMR001_69')"></span>
 						<!--B19_3-->
 						<input tabindex="5" data-bind="ntsTextEditor: {
 							required: true,
 							value: reservationFrameName1,
 							constraint: 'BentoReservationTimeName',
-							name: 'KMR001_69'
+							name: $i18n('KMR001_69')
 						}"
 						/>
-
+					</td>
+					<td>
 						<!--B19_4-->
-						<span class="label" data-bind="text: $i18n('KMR001_70')"></span>
+						<span class="label label reservation" data-bind="text: $i18n('KMR001_70')"></span>
 
 						<!--B19_5-->
 						<span>
@@ -101,7 +111,7 @@
 								required: true ,
 								value: reservationStartTime1,
 								constraint: 'BentoReservationTime',
-								name: 'KMR001_71'
+								name: $i18n('KMR001_71')
 								}"
 							/>
 						</span>
@@ -111,13 +121,13 @@
 
 						<!--B19_7-->
 						<span >
-							<input tabindex="7" class="kmr-time-editor" data-bind="ntsTimeEditor: {
+							<input tabindex="7" id="end1" class="kmr-time-editor" data-bind="ntsTimeEditor: {
 								mode: 'time',
 								inputFormat: 'time',
 								required: true,
 								value: reservationEndTime1,
-								constraint: 'BentoReservationTime'
-								name: 'KMR001_72'
+								constraint: 'BentoReservationTime',
+								name: $i18n('KMR001_72')
 								}"
 							/>
 						</span>
@@ -126,33 +136,32 @@
 				<tr>
 					<td>
 						<!--B20_1-->
-						<div data-bind="ntsFormLabel: {}">締め時刻１</div>
+						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_68')}"></div>
 					</td>
 					<td>
 						<!--B20_2-->
-						<span class="label" data-bind="text: $i18n('KMR001_73')"></span>
+						<span class="label reservation" data-bind="text: $i18n('KMR001_73')"></span>
 
 						<!--B20_3-->
 						<input tabindex="8" data-bind="ntsTextEditor: {
-							required: true,
 							value: reservationFrameName2,
 							constraint: 'BentoReservationTimeName',
-							name: 'KMR001_73'
+							name: $i18n('KMR001_73')
 							}"
 						/>
-
+					</td>
+					<td>
 						<!--B20_4-->
-						<span class="label" data-bind="text: $i18n('KMR001_74')"></span>
+						<span class="label reservation" data-bind="text: $i18n('KMR001_74')"></span>
 
 						<!--B20_5-->
 						<span>
 							<input tabindex="9" class="kmr-time-editor" data-bind="ntsTimeEditor: {
 								mode: 'time',
 								inputFormat: 'time',
-								required: true,
 								value: reservationStartTime2,
 								constraint: 'BentoReservationTime',
-								name: 'KMR001_75'
+								name: $i18n('KMR001_75')
 								}"
 							/>
 
@@ -162,13 +171,12 @@
 
 						<!--B20_7-->
 						<span>
-							<input tabindex="10" class="kmr-time-editor" data-bind="ntsTimeEditor: {
+							<input id="end2" tabindex="10" class="kmr-time-editor" data-bind="ntsTimeEditor: {
 								mode: 'time',
 								inputFormat: 'time',
-								required: true,
 								value: reservationEndTime2,
 								constraint: 'BentoReservationTime',
-								name: 'KMR001_76'
+								name: $i18n('KMR001_76')
 								}"
 							/>
 						</span>
@@ -187,7 +195,7 @@
 						<!--B10_2-->
 						<div tabindex="11" style="top: 10px; width: 250px;" id="combo-box"  data-bind="ntsComboBox: {
 							width: '150px',
-							name:'#[KMR001_22]',
+							name:$i18n('KMR001_22'),
 							options: vm.itemsReservationChange,
 							optionsValue: 'appId',
 							visibleItemsCount: 5,
@@ -201,18 +209,21 @@
 						/>
 
 						<!--B10_3-->
-						<div tabindex="-1" style="width: 90px; top: 10px; padding: 0 10px" data-bind="ntsComboBox: {
-							name:'#[KMR001_23]',
+						<div style="display: inline;" data-bind="if: vm.visibleContentChangeDeadline() ">
+							<div tabindex="-1" style="width: 90px; top: 10px; padding: 0 10px" data-bind="ntsComboBox: {
+							name:$i18n('KMR001_23'),
 							options: vm.itemsReservationChangeDay,
 							optionsValue: 'appId',
 							optionsText: 'appValue',
 							value: contentChangeDeadlineDay,
 							enable: true,
 							columns: [{ prop: 'appValue'}]}"
-						/>
+							/>
 
-						<!--B10_4-->
-						<span>日間まで</span>
+							<!--B10_4-->
+							<span>日間まで</span>
+						</div>
+
 					</td>
 				</tr>
 				<tr>

@@ -6,17 +6,21 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentomenuAdapter;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.SWkpHistExport;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
+import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 従業員の弁当予約を強制修正する
@@ -29,6 +33,12 @@ public class ForceUpdateBentoReserveCommandHandler extends CommandHandler<ForceU
     @Inject
     private BentoReservationRepository bentoReservationRepository;
 
+    @Inject
+    private BentomenuAdapter bentomenuAdapter;
+
+    @Inject
+    private BentoReservationSettingRepository bentoReservationSettingRepo;
+
     @Override
     protected void handle(CommandHandlerContext<ForceUpdateBentoReserveCommand> context) {
         String companyId = AppContexts.user().companyId();
@@ -37,8 +47,38 @@ public class ForceUpdateBentoReserveCommandHandler extends CommandHandler<ForceU
 
         ReservationDate reservationDate = new ReservationDate(command.getDate(), EnumAdaptor.valueOf(command.getClosingTimeFrame(), ReservationClosingTimeFrame.class));
         List<BentoReservationInfoTemp> bentoReservationInfos = new ArrayList<>();
-        GeneralDateTime dateTime = GeneralDateTime.now();
+        for (ForceUpdateBentoReserveCommand.BentoReserveInfoCommand reservationInfoCmd: command.getReservationInfos()){
+            // Input．弁当予約情報．明細がEmptyの場合担当の弁当予約を登録してない
+            if (CollectionUtil.isEmpty(reservationInfoCmd.getDetails())) continue;
+
+            BentoReservationInfoTemp reservation = new BentoReservationInfoTemp();
+            reservation.setRegisterInfo(new ReservationRegisterInfo(reservationInfoCmd.getReservationCardNo()));
+            reservation.setOrdered(reservationInfoCmd.isOrdered());
+            Map<Integer, BentoReservationCount> bentoDetails = new HashMap<>();
+            for(ForceUpdateBentoReserveCommand.BentoReserveDetailCommand detailCmd : reservationInfoCmd.getDetails()){
+                bentoDetails.put(detailCmd.getFrameNo(), new BentoReservationCount(detailCmd.getBentoCount()));
+            }
+            reservation.setBentoDetails(bentoDetails);
+            bentoReservationInfos.add(reservation);
+        }
+
+        Optional<BentoReservationSetting> bentoReservationSettingOpt = bentoReservationSettingRepo.findByCId(companyId);
+        if (!bentoReservationSettingOpt.isPresent()) return;
+        BentoReservationSetting bentoReservationSetting = bentoReservationSettingOpt.get();
+
         Optional<WorkLocationCode> workLocationCode = Optional.empty();
+        GeneralDateTime dateTime = GeneralDateTime.now();
+        if (bentoReservationSetting.getOperationDistinction() == OperationDistinction.BY_LOCATION){
+            Optional<SWkpHistExport> sWkpHistOpt = bentomenuAdapter.findBySid(employeeId ,reservationDate.getDate());
+            if (sWkpHistOpt.isPresent()){
+                String code = sWkpHistOpt.get().getWorkLocationCd();
+                if (code != null){
+                    workLocationCode = Optional.of(new WorkLocationCode(code));
+                }
+            }
+        }
+
+
         if (command.isNew()) {
             RequireForceAddImpl require = new RequireForceAddImpl(bentoReservationRepository);
             AtomTask persist = ForceAddBentoReservationService.forceAdd(require, bentoReservationInfos, reservationDate,

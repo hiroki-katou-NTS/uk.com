@@ -29,10 +29,7 @@ public class ReservationConfirmationListWebService extends WebService {
         // 予約確認一覧
         LoginUserContext user = AppContexts.user();
         String companyId = user.companyId();
-        String employeeId = user.employeeId();
         ReservationConfirmationListDto dto = reservationConfirmationListScreenQuery.getReservationConfirmationListStartupInfo(companyId);
-        dto.setCompanyId(companyId);
-        dto.setEmployeeId(employeeId);
 
         return dto;
     }
