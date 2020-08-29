@@ -10,6 +10,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.executionlog.*;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 
 import java.util.List;
 import java.util.Optional;
@@ -123,8 +124,8 @@ public class ScheduleExecutionAddCommand {
         val copyStartD = Optional.of(copyStartYmd);
         val re = ReferenceMaster.valueOf(referenceMaster);
         val specify = new SpecifyCreation(creMethod,copyStartD, Optional.of(re),Optional.of(monthly));
-        val narrow = new NarrowingEmployees(reTargetLeave,reTargetLaborChange,reTargetTransfer,reTargetShortWork);
-        val recreateCondition = new RecreateCondition(reTargetAtr,reOverwriteConfirmed,reOverwriteRevised,Optional.of(narrow));
+        val con = new ConditionEmployee(reTargetTransfer,reTargetLeave,reTargetShortWork,reTargetLaborChange);
+        val recreateCondition = new RecreateCondition(reTargetAtr,reOverwriteConfirmed,reOverwriteRevised,Optional.of(con));
         return new ScheduleCreateContent(executionId,beConfirmed,ImplementAtr.valueOf(creationType),specify,recreateCondition);
     }
 
