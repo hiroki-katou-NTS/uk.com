@@ -36,17 +36,19 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 	 */
 	private ItemSelectionType itemSelectionType;
 	
+	
 	/**
-	 * 1. Ẩn constructor để khởi tạo domain qua hàm createFromMemento
+	 * Instantiates a new attendance record ouput items.
 	 */
 	private AttendanceRecordOuputItems() {
 	}
 	
+	
 	/**
-	 * 2. Hàm khởi tạo domain thông qua memento
-	 * 
-	 * @param memento
-	 * @return
+	 * Creates the from memento.
+	 *
+	 * @param memento the memento
+	 * @return the attendance record ouput items
 	 */
 	public static AttendanceRecordOuputItems createFromMemento(MementoGetter memento) {
 		AttendanceRecordOuputItems domain = new AttendanceRecordOuputItems();
@@ -54,14 +56,12 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 		return domain;
 	}
 	
+
 	/**
-	 * 3. Hàm get memento được sử dụng để cài đặt giá trị cho các primitive trong
-	 * domain
-	 * 
-	 * @param memento Ý nghĩa của phương thức này là để thể hiện tính đóng gói (bao
-	 *                đóng) của đối tượng. Mọi thuộc tính của đối tượng đều được
-	 *                khởi tạo và cài đặt bên trong đối tượng. Hàm được sử dụng khi
-	 *                lấy các primitive value từ command hoặc entity
+	 * Gets the memento.
+	 *
+	 * @param memento the memento
+	 * @return the memento
 	 */
 	public void getMemento(MementoGetter memento) {
 		if (memento.getCid() == null) {
@@ -71,15 +71,15 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 		}
 		this.attendanceRecordExportSettings = memento.getAttendanceRecordExportSettings();
 		this.employeeId = memento.getEmployeeId();
-		this.itemSelectionType = memento.getItemSelectionType();
+		this.itemSelectionType = ItemSelectionType.valueOf(memento.getItemSelectionType());
 		
 	}
+	
+	
 	/**
-	 * 4. Hàm set memento được sử dụng để set các giá trị primitive của domain cho
-	 * các đối tượng cần lấy dữ liệu như là dto hoặc entity
-	 * 
-	 * @param memento Ý nghĩa của hàm này cũng như getMemento, mọi lỗi ngoại lệ có
-	 *                thể xảy ra trong domain đều được quản lý bởi domain
+	 * Sets the memento.
+	 *
+	 * @param memento the new memento
 	 */
 	public void setMemento(MementoSetter memento) {
 		memento.setCid(cid);
@@ -88,18 +88,15 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 		}
 		memento.setEmployeeId(employeeId);
 		if (this.itemSelectionType !=null ) {
-			memento.setItemSelectionType(this.itemSelectionType);
+			memento.setItemSelectionType(this.itemSelectionType.value);
 		}
 	}
 	
+	
 	/**
-	 * 5. interface này sẽ được implement bởi các đối tượng có quan hệ trực tiếp với
-	 * domain Cụ thể trong trường hợp này là DTO và Entity là 2 đối tượng sẽ lấy dữ
-	 * liệu từ domain trả ra. Như vậy 2 đối tượng kiểu này sẽ implement interface
-	 * này
-	 * 
-	 * @author nws-ducnt
+	 * The Interface MementoSetter.
 	 *
+	 * 
 	 */
 	public static interface MementoSetter {
 		void setCid(String cid);
@@ -108,16 +105,11 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 		
 		void setEmployeeId(String employeeId);
 		
-		void setItemSelectionType(ItemSelectionType itemSelectionType);
+		void setItemSelectionType(int itemSelectionType);
 	}
 	
 	/**
-	 * 6. Interface này sẽ được implement bởi đối tượng sẽ sử dụng để khởi tạo
-	 * domain Trong kiến trúc của project này thì có command và entity sẽ implement
-	 * interface này.
-	 * 
-	 * @author nws-ducnt
-	 *
+	 * The Interface MementoGetter.
 	 */
 	public static interface MementoGetter {
 		String getCid();
@@ -126,7 +118,7 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 		
 		String getEmployeeId();
 		
-		ItemSelectionType getItemSelectionType();
+		int getItemSelectionType();
 	}
 	
 }
