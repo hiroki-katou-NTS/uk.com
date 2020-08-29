@@ -1,3 +1,5 @@
+import { visitModel } from 'knockout.mapping';
+
 module nts.uk.com.view.kwr002.b {
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
@@ -21,6 +23,7 @@ module nts.uk.com.view.kwr002.b {
         sealUseAtrSwitchs: KnockoutObservableArray<SealUseAtrSwitch>;
         newMode: KnockoutObservable<boolean>;
         fontSizeSwitch: KnockoutObservableArray<SealUseAtrSwitch>;
+        inputKWR002B: KnockoutObservable<DataInputScreenB>;
 
         constructor() {
             let self = this;
@@ -297,17 +300,21 @@ module nts.uk.com.view.kwr002.b {
             block.invisible();
             let self = this;
             let dfd = $.Deferred<any>();
-
+            var dataGetShareFromScreenA = getShared("dataTranferScreenB");
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-                    _.map(data, (item) => {
+                    _.map(data, (item:any) => {
                         item.code = _.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
                     });
                     data = _.orderBy(data, [item => item.code], ['asc']);
+                    if(_.isNil(data.exportFontSize)) {
+
+                    }
                     self.aRES(data);
 //                    let firstData = _.first(data);
                     self.currentARESCode(getShared("currentARESSelectCode"));
+
                 } else {
                     self.onNew(true);
                 }
@@ -445,6 +452,22 @@ module nts.uk.com.view.kwr002.b {
         constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    class DataInputScreenB {
+        settingCategory: number; //設定区分（自由設定）
+        companyId: string; //会社ID
+        employeeId: string; //社員ID
+        selectedOutputLayoutId: string; //選択出力レイアウトID
+        selectedCode: string;// 選択コード
+
+        constructor(settingCategory: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
+            this.settingCategory = settingCategory;
+            this.companyId = companyId;
+            this.employeeId = employeeId;
+            this.selectedOutputLayoutId = selectedOutputLayoutId;
+            this.selectedCode = selectedCode;
         }
     }
 }

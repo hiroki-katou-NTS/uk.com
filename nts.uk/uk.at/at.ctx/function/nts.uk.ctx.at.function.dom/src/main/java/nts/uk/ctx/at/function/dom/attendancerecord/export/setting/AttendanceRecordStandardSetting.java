@@ -61,7 +61,7 @@ public class AttendanceRecordStandardSetting extends AggregateRoot{
 			this.cid = memento.getCid();
 		}
 		this.attendanceRecordExportSettings = memento.getAttendanceRecordExportSettings();
-		this.itemSelectionType = ItemSelectionType.valueOf(memento.getiItemSelectionType());
+		this.itemSelectionType = ItemSelectionType.valueOf(memento.getItemSelectionType());
 	}
 
 	
@@ -101,7 +101,7 @@ public class AttendanceRecordStandardSetting extends AggregateRoot{
 		
 		List<AttendanceRecordExportSetting> getAttendanceRecordExportSettings();
 		
-		int getiItemSelectionType();
+		int getItemSelectionType();
 	}
 	
 }

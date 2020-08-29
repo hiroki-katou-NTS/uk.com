@@ -31,6 +31,10 @@ public class AttendanceRecordExportSettingDto {
 
 	/** The seal use atr. */
 	Boolean sealUseAtr;
+	
+	/** The export font size. */
+	String exportFontSize;
+	
 
 	/**
 	 * Instantiates a new attendance record export setting dto.

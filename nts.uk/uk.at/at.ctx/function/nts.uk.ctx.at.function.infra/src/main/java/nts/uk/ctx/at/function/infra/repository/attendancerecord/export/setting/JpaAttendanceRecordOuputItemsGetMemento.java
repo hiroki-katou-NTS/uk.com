@@ -6,16 +6,14 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 
 public class JpaAttendanceRecordOuputItemsGetMemento implements AttendanceRecordOuputItems.MementoGetter ,  AttendanceRecordStandardSetting.MementoGetter{
 
 	private List<KfnmtRptWkAtdOut> kfnmtRptWkAtdOuts;
 	
-	@Override
-	public int getiItemSelectionType() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+	private List<KfnmtRptWkAtdOutatd> kfnmtRptWkAtdOutatd;
+	
 
 	@Override
 	public String getCid() {
@@ -34,6 +32,7 @@ public class JpaAttendanceRecordOuputItemsGetMemento implements AttendanceRecord
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 	@Override
 	public int getItemSelectionType() {

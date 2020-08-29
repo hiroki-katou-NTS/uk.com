@@ -255,12 +255,13 @@ module nts.uk.com.view.kwr002.a {
 
                 //   ログイン社員の就業帳票の権限を取得する (Get the authority of work report of logged in employee)
                 service.getAuthorityOfWorkPerformance().done((dto: any) => {
-                    if (_.isEmpty(dto)) {
+                    if (_.isNil(dto)) {
                         vm.enableAuthority(false);
                     } else {
-                        vm.roleId = dto.roleId;
+                        vm.enableAuthority(dto.freeSetting);
                         vm.companyId = dto.companyId;
-                        vm.employeeId = dto.companyId;
+                        vm.roleId = dto.roleId;
+                        vm.employeeId = dto.employeeId;
                     }
                 })
 
@@ -491,7 +492,7 @@ module nts.uk.com.view.kwr002.a {
 
                 vm.dataTranferScreenB = new DataScreenB(vm.selectedCodeA8_5(),vm.companyId,vm.employeeId,'',vm.selectedCode());
                 setShared("currentARESSelectCode",vm.selectedCode());
-
+                setShared("dataTranferScreenB", vm.dataTranferScreenB);
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
 
                     service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
@@ -542,7 +543,7 @@ module nts.uk.com.view.kwr002.a {
 
                 // 自由設定の「設定」ボタン - if choose btn free setting
                 if (vm.selectedCodeA8_5() === 1) {
-                    setShared("dataFromScreenA", vm.dataTranferScreenB);
+                    setShared("dataTranferScreenB", vm.dataTranferScreenB);
                 }
 
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
