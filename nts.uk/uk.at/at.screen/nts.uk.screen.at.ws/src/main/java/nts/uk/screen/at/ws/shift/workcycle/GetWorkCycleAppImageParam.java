@@ -2,6 +2,9 @@ package nts.uk.screen.at.ws.shift.workcycle;
 
 import lombok.Data;
 
+/**
+ * @author khai.dh
+ */
 @Data
 public class GetWorkCycleAppImageParam {
 	private String creationPeriodStartDate; // 作成期間 start

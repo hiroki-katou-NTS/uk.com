@@ -1,5 +1,6 @@
 package nts.uk.screen.at.ws.shift.workcycle;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -62,7 +63,6 @@ public class WorkCycleReflectionWebService extends WebService {
 	public ReflectionImage getWorkCycleAppImage(GetWorkCycleAppImageParam param){
 
 		List<WorkCreateMethod> refOrder = createFromIntArray(param.getRefOrder());
-
 		WorkCycleRefSetting config = new WorkCycleRefSetting(
 				param.getWorkCycleCode(),
 				refOrder,
@@ -87,11 +87,7 @@ public class WorkCycleReflectionWebService extends WebService {
 	private List<WorkCreateMethod> createFromIntArray(int[] input){
 		List<WorkCreateMethod> workCreateMethods = new ArrayList<>();
 		for (int i:input) {
-			for (WorkCreateMethod workCreateMethod : WorkCreateMethod.values()) {
-				if (workCreateMethod.value == i) {
-					workCreateMethods.add(workCreateMethod);
-				}
-			}
+			workCreateMethods.add(EnumAdaptor.valueOf(i, WorkCreateMethod.class));
 		}
 
 		return workCreateMethods;

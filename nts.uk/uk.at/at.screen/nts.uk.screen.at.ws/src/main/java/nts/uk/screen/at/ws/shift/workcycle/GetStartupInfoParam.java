@@ -2,6 +2,9 @@ package nts.uk.screen.at.ws.shift.workcycle;
 
 import lombok.Data;
 
+/**
+ * @author khai.dh
+ */
 @Data
 public class GetStartupInfoParam {
 	private int bootMode; //REF_MODE(0), EXEC_MODE(1)
