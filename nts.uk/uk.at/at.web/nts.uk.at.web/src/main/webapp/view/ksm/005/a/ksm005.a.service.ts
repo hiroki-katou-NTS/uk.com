@@ -59,7 +59,6 @@ module nts.uk.at.view.ksm005.a {
         export function deleteMonthlyPattern(code: string) :JQueryPromise<void> {
             return nts.uk.request.ajax('at', paths.deleteMonthlyPattern, {monthlyPattnernCode: code});
         }
-                
         
         /**
          * call service save all work monthly setting by month
@@ -68,7 +67,22 @@ module nts.uk.at.view.ksm005.a {
             dto.code = nts.uk.text.padLeft(dto.code, '0', 3);
             return nts.uk.request.ajax('at', paths.saveMonthWorkMonthlySetting, {workMonthlySetting: settings, mode: mode, monthlyPattern: dto});
         }
-        export module model {
+
+	    /**
+	     * call service get monthly pattern
+	     */
+	    export function getMonthlyPattern( params: model.MonthlyPatternDto) : JQueryPromise<void> {
+		    return nts.uk.request.ajax('at', paths.getMonthlyPattern, params);
+	    }
+
+	    /**
+	     * call service get monthly pattern
+	     */
+	    export function getMonthlyAll() : JQueryPromise<void> {
+		    return nts.uk.request.ajax('at', paths.getMonthlyAll);
+	    }
+
+	    export module model {
 
             export interface MonthlyPatternDto {
                 code: string;
@@ -92,7 +106,12 @@ module nts.uk.at.view.ksm005.a {
                 code: string;
                 name: string;
             }
-                        
+
+            export interface MonthlyPatternDto {
+			    monthlyPatternCode: string;
+			    startDate: string;
+			    endDate: string;
+            }
         }
 
     }
