@@ -1,4 +1,3 @@
-import { visitModel } from 'knockout.mapping';
 
 module nts.uk.com.view.kwr002.b {
     import block = nts.uk.ui.block;
@@ -308,9 +307,6 @@ module nts.uk.com.view.kwr002.b {
                         // new AttendanceRecordExportSetting(item);
                     });
                     data = _.orderBy(data, [item => item.code], ['asc']);
-                    if(_.isNil(data.exportFontSize)) {
-
-                    }
                     self.aRES(data);
 //                    let firstData = _.first(data);
                     self.currentARESCode(getShared("currentARESSelectCode"));
