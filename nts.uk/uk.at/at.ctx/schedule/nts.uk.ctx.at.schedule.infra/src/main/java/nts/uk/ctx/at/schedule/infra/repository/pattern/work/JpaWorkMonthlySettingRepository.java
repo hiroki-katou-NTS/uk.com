@@ -367,6 +367,14 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	}
 
 	@Override
+	public List<WorkMonthlySetting> findByYear(String companyId, String monthlyPatternCode, int year) {
+		return this.queryProxy().query(SELECT_BY_YEAR, KscmtWorkMonthSet.class)
+				.setParameter("cid", companyId)
+				.setParameter("mPatternCd", monthlyPatternCode)
+				.setParameter("year", year)
+				.getList(x -> this.toDomain(x));
+	}
+	@Override
 	public void deleteWorkMonthlySettingById(String companyId,String mPatternCd,GeneralDate date) {
 		this.getEntityManager().createQuery(DELETE_BY_WORK_MONTHLY_ID_AND_DATE, KscmtWorkMonthSet.class)
 				.setParameter("cid", companyId)
