@@ -54,6 +54,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 			+ " AND w.kscmtWorkMonthSetPK.ymdM <= :endDate"
 			+ " w.kscmtWorkMonthSetPK.ymdM ASC";
 
+	private static final String DELETE_BY_WORK_MONTHLY_ID_AND_DATE = "DELETE from KscmtWorkMonthSet c "
+			+ " WHERE c.kscmtWorkMonthSetPK.cid = :cid"
+			+ " AND c.kscmtWorkMonthSetPK.mPatternCd = :mPatternCd"
+			+ " AND c.kscmtWorkMonthSetPK.ymdM = :ymdM";
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -355,6 +359,14 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 	@Override
 	public void update(WorkMonthlySetting workMonthlySetting) {
 		this.commandProxy().update(toEntity(workMonthlySetting));
+	}
+
+	@Override
+	public void deleteWorkMonthlySettingById(String companyId,String mPatternCd,GeneralDate date) {
+		this.getEntityManager().createQuery(DELETE_BY_WORK_MONTHLY_ID_AND_DATE, KscmtWorkMonthSet.class)
+				.setParameter("cid", companyId)
+				.setParameter("mPatternCd", mPatternCd)
+				.setParameter("ymdM", date).executeUpdate();
 	}
 
 	/**

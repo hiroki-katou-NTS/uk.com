@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.record.app.command.reservation.reseritemset;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 @Data
 public class CreateReseItemSettingCommand {
+
+    private String histId;
 
     // 枠番
     private int frameNo;
@@ -21,10 +20,10 @@ public class CreateReseItemSettingCommand {
     private int amount1;
 
     // 金額２
-    private  int amount2;
+    private Integer amount2;
 
     // 単位
-    private String Unit;
+    private String unit;
 
     // 締め時刻１で予約可能
     private boolean canBookClosesingTime1;
