@@ -2,7 +2,10 @@ package nts.uk.ctx.at.record.dom.reservation.bento;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
@@ -15,7 +18,7 @@ import java.util.Optional;
 @Stateless
 public class BentoMenuHistService {
 
-    public static AtomTask register(Require require, DatePeriod date, String companyId) {
+    public static AtomTask register(Require require, DatePeriod date, String companyId,BentoReservationClosingTime bentoReservationClosingTime) {
 
         // Get all list history
         val listBentoMenuHist = require.findByCompanyId(companyId);
@@ -41,6 +44,7 @@ public class BentoMenuHistService {
             }
             // Add
             require.add(itemToBeAdded);
+            require.addBentomenu(itemToBeAdded,bentoReservationClosingTime);
         });
     }
     public static interface Require {
@@ -50,6 +54,8 @@ public class BentoMenuHistService {
         void update(DateHistoryItem item);
 
         void add(DateHistoryItem item);
+
+        void addBentomenu(DateHistoryItem item,BentoReservationClosingTime bentoReservationClosingTime);
 
     }
 }

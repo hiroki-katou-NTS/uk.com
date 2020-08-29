@@ -886,11 +886,11 @@ module nts.uk.at.view.ksm004.a {
                 change Style when change selected Working Day
             */
             changeWorkingDayAtr(value){
-                $('.panel-frame-btn').css("background-color","unset");
+                $('.panel-frame-btn').css("background-color","white");
                 const self = this;
                 if(value!=null) {
                     if (value == 1) {
-                        $('.button-sqr1').css("background-color","rgb(72 147 224 / 40%)");
+                        $('.button-sqr1').css("background-color","rgb(155,194,230)");
                     } else {
                         $('.button-sqr'+value).css("background","lightgoldenrodyellow");
                     }
@@ -1182,8 +1182,8 @@ module nts.uk.at.view.ksm004.a {
         
         export enum WorkingDayAtr {
             WorkingDayAtr_Company = '稼働日',
-            WorkingDayAtr_WorkPlace = '非稼働日\n（法内）',
-            WorkingDayAtr_Class = '非稼働日\n（法外）'
+            WorkingDayAtr_WorkPlace = '法定休日',
+            WorkingDayAtr_Class = '法定外休日'
         }
     }
 }

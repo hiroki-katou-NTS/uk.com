@@ -6,7 +6,6 @@ import nts.uk.screen.at.app.reservation.*;
 
 import javax.ejb.Stateless;
 import java.util.List;
-import java.util.Optional;
 
 @Stateless
 public class JpaBentoMenuScreenRepository extends JpaRepository implements BentoMenuScreenRepository {
@@ -37,7 +36,7 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
         FIND_BENTO_MENU_DATE = builderString.toString();
 
         builderString = new StringBuilder();
-        builderString.append(" SELECT NEW " + BentoDto.class.getName());
+        builderString.append(" SELECT NEW " + BentomenuJoinBentoDto.class.getName());
         builderString.append(
                 "( a.reservationFrameName1, a.reservationStartTime1, a.reservationEndTime1, a.reservationFrameName2," +
                         " a.reservationStartTime2, a.reservationEndTime2, b.startDate, b.endDate, c.pk.frameNo, c.bentoName," +
@@ -73,12 +72,12 @@ public class JpaBentoMenuScreenRepository extends JpaRepository implements Bento
     }
 
     @Override
-    public List<BentoDto> findDataBento(String companyId, GeneralDate date,BentoRequest request) {
+    public List<BentomenuJoinBentoDto> findDataBento(String companyId, GeneralDate date, BentoRequest request) {
         if (request.getHistId() !=null){
-            return this.queryProxy().query(FIND_BENTO_BY_MAXDATE, BentoDto.class)
+            return this.queryProxy().query(FIND_BENTO_BY_MAXDATE, BentomenuJoinBentoDto.class)
                     .setParameter("companyID", companyId).setParameter("histId", request.getHistId()).getList();
         }
-        return this.queryProxy().query(FIND_BENTO_BY_HIS, BentoDto.class)
+        return this.queryProxy().query(FIND_BENTO_BY_HIS, BentomenuJoinBentoDto.class)
                 .setParameter("companyID", companyId).setParameter("date", date).getList();
     }
 

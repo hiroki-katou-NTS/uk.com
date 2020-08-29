@@ -33,7 +33,7 @@ public class KrcmtBentoReservationSetting extends UkJpaEntity {
     @Column(name = "ORDERED_DEA")
     public int orderDeadline;
 
-    @Column(name = "ORDERED_DATA")
+    @Column(name = "ORDERED_MODIFY")
     public int orderData;
 
     @Column(name = "MON_RES")

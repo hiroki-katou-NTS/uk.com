@@ -72,47 +72,49 @@ public interface WorkMonthlySettingRepository  {
 	 * @param companyId the company id
 	 * @param monthlyPatternCode the monthly pattern code
 	 */
-	void remove(String companyId, String monthlyPatternCode);
+	public void remove(String companyId, String monthlyPatternCode);
 
 	/**
 	 * Find by start YMD - end YMD.
 	 *
 	 * @param companyId the company id
 	 * @param monthlyPatternCode the monthly pattern code
-	 * @param datePeriod the base dates
+	 * @param DatePeriod the base dates
 	 * @return the list
 	 */
-	List<WorkMonthlySetting> findByPeriod(String companyId, String monthlyPatternCode, DatePeriod datePeriod);
+	public List<WorkMonthlySetting> findByPeriod(String companyId, String monthlyPatternCode, DatePeriod datePeriod);
 
 	/**
 	 * Check exist KscmtWorkMonthSet.
-	 *
+	 * exists(会社ID, 月間パターンコード, 年月日)
 	 * @param companyId the company id
 	 * @param monthlyPatternCode the monthly pattern code
 	 * @param date the ymd K
 	 * @return the list
 	 */
-	Boolean exists(String companyId, String monthlyPatternCode, GeneralDate date);
+	public Boolean exists(String companyId, String monthlyPatternCode, GeneralDate date);
 
 	/**
-	 * add KscmtWorkMonthSet.
-	 *
+	 * insert KscmtWorkMonthSet.
+	 * insert（月間パターンの勤務情報）
 	 * @param workMonthlySetting
 	 * @return
 	 */
-	void add(WorkMonthlySetting workMonthlySetting);
+	public void add(WorkMonthlySetting workMonthlySetting);
 
 	/**
 	 * update KscmtWorkMonthSet.
-	 *
+	 * update（月間パターンの勤務情報）
 	 * @param workMonthlySetting
 	 * @return
 	 */
-	void update(WorkMonthlySetting workMonthlySetting);
+	public void update(WorkMonthlySetting workMonthlySetting);
 
 	/**
-	 * Find by year.
-	 *
+	 * update KscmtWorkMonthSet.
+	 * update（月間パターンの勤務情報）
+	 * @param companyId, mPatternCd, generalDate
+	 * @return
 	 */
-	List<WorkMonthlySetting> findByYear(String companyId, String monthlyPatternCode, int year);
+	public void deleteWorkMonthlySettingById(String companyId,String mPatternCd,GeneralDate date);
 }
