@@ -1,25 +1,36 @@
-
+#contents-area {
+	padding: 25px;
+}
 .date-fixed-table {
 	padding-top: 10px;
 }
+.date-fixed-table .nts-fixed-body-container {
+	overflow-x: hidden;
+}
+.date-fixed-table .scroll-header.nts-fixed-header {
+	height: 30px;
+}
 
 table#date-fixed-table {
-    empty-cells: show;
-    width: auto;
+	empty-cells: show;
 }
 
 table.fixed-table th {
-    padding: 3px !important;
+  padding: 3px !important;
 }
 
 table#date-fixed-table tr {
-    height: 25px;
+  height: 25px;
 }
 
 table#date-fixed-table td {
-    padding: 3px;
+	padding: 6px 3px;
+	border-top: none;
 }
-
+table#date-fixed-table td.border-dotted {
+	padding: 6px 3px;
+	border-bottom: 1px dotted #CCC !important;
+}
 
 table.summary-table {
 	margin-top: 10px;
