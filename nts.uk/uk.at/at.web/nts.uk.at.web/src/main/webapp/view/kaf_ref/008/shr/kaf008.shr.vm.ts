@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (value) {
                     let setting = value.setting.appCommentSet;
                     let wkTimeSet = value.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-                    let wkDaySet = value.workdays;
+                    let wkDaySet = value.infoBeforeChange;
                     vm.comment({
                         comment: setting.comment,
                         colorCode: setting.colorCode,
@@ -109,10 +109,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                         if (!wkTypeName) {
                             let wkDayInfo = _.filter(ko.toJS(wkDaySet), function (item) {
-                                return item.workTypeCode == wkTypeCode
+                                return item.date == date
                             });
                             if (wkDayInfo.length != 0) {
-                                wkTypeName = wkDayInfo[0].name;
+                                wkTypeName = wkDayInfo[0].workTypeDto.name;
                             }
                         }
 
@@ -124,7 +124,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                             wkTimeName,
                             statWork,
                             endWork
-                        );
+                        ) ;
                         convertDisp.wkTypeCd.subscribe(value => {
                             vm.changeTypeCodeScreenB(vm.businessTripOutput(), data.date, value, index);
                         });
@@ -177,11 +177,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (valid) {
                     return vm.$ajax(API.changeWorkTypeCode, command);
                 }
-            }).done(data => {
-                if (data) {
-                    vm.businessTripOutput(data);
-
-                    let workTypeAfterChange = data.infoAfterChange;
+            }).done(res => {
+                if (res) {
+                    let workTypeAfterChange = res.infoAfterChange;
                     let InfoChanged = _.findIndex(workTypeAfterChange, {date: date});
                     let workCodeChanged = workTypeAfterChange[InfoChanged].workTypeDto.workTypeCode;
                     let workNameChanged = workTypeAfterChange[InfoChanged].workTypeDto.name;
@@ -223,10 +221,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (valid) {
                     return vm.$ajax(API.changWorkTimeCode, command);
                 }
-            }).done(data => {
+            }).done(res => {
                 contentChanged.workTimeCD = timeCode;
-                if (data) {
-                    contentChanged.opWorkTimeName = data.name;
+                if (res && res.name) {
+                    contentChanged.opWorkTimeName = res.name;
                 } else {
                     contentChanged.opWorkTimeName = "なし";
                 }
@@ -266,9 +264,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (valid) {
                     return vm.$ajax(API.changeWorkTypeCode, command);
                 }
-            }).done(data => {
-                if (data) {
-                    let workTypeAfterChange = data.infoAfterChange;
+            }).done(res => {
+                if (res) {
+                    let workTypeAfterChange = res.infoAfterChange;
                     let InfoChanged = _.findIndex(workTypeAfterChange, {date: date});
                     let workCodeChanged = workTypeAfterChange[InfoChanged].workTypeDto.workTypeCode;
                     let workNameChanged = workTypeAfterChange[InfoChanged].workTypeDto.name;
