@@ -63,3 +63,7 @@
 .ksm005a .panel .panel-body .row-flex .label {
 	width: 85px
 }
+.round-green {
+	background-color: #92F29B !important;
+	border-radius: 20px;
+}

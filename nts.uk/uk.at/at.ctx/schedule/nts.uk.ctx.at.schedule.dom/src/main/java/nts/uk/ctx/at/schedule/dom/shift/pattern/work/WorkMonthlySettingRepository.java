@@ -117,6 +117,4 @@ public interface WorkMonthlySettingRepository  {
 	 * @return
 	 */
 	public void deleteWorkMonthlySettingById(String companyId,String mPatternCd,GeneralDate date);
-
-	List<WorkMonthlySetting> findByYear(String companyId, String monthlyPatternCode, int year);
 }
