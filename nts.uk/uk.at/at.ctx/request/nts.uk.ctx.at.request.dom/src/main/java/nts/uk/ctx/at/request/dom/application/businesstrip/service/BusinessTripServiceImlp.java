@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.businesstrip.service;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -29,6 +30,8 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTime;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.*;
@@ -78,6 +81,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Inject
     private WorkTypeRepository workTypeRepository;
+
+    @Inject
+    private BasicScheduleService basicScheduleService;
 
 
     /**
@@ -260,6 +266,30 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             }
         }
         return result;
+    }
+
+    /**
+     * アルゴリズム「出張申請就業時間帯チェック」を実行する
+     * @param wkTypeCd
+     * @param wkTimeCd
+     */
+    @Override
+    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate) {
+        SetupType checkNeededOfWorkTime = basicScheduleService.checkNeededOfWorkTimeSetting(wkTypeCd);
+        switch (checkNeededOfWorkTime) {
+            case REQUIRED:
+                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+                    throw new BusinessException("Msg_24", inputDate.toString());
+                }
+                break;
+            case OPTIONAL:
+                break;
+            case NOT_REQUIRED:
+                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+                    throw new BusinessException("23", inputDate.toString());
+                }
+                break;
+        }
     }
 
     /**

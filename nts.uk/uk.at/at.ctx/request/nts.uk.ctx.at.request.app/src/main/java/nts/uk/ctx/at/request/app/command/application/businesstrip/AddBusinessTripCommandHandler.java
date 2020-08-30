@@ -59,7 +59,7 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
                 Optional.empty(),
                 Optional.empty(),
                 Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
-                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
                 Optional.of(new AppReason(applicationDto.getOpAppReason())),
                 Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
                 ));

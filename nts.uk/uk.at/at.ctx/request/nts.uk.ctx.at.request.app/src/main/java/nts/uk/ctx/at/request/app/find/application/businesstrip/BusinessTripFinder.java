@@ -27,9 +27,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.*;
 import nts.uk.shr.com.context.AppContexts;
@@ -55,9 +53,6 @@ public class BusinessTripFinder {
 
     @Inject
     private WorkTypeRepository wkTypeRepo;
-
-    @Inject
-    private BasicScheduleService basicScheduleService;
 
     @Inject
     private BusinessTripService businessTripService;
@@ -223,15 +218,15 @@ public class BusinessTripFinder {
         if (confirmMsgOutputs.isEmpty()) {
             // アルゴリズム「出張申請個別エラーチェック」を実行する
             if (businessTripApp.getInfos().isEmpty()) {
-                throw new BusinessException("Msg_1073");
+                throw new BusinessException("Msg_1703");
             }
             // loop 年月日　in　期間
             businessTripApp.getInfos().stream().forEach(i -> {
+                String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
+                String wkTimeCd = i.getWorkInformation().getWorkTimeCode().v();
                 // アルゴリズム「出張申請就業時間帯チェック」を実行する
-                CheckErrorDto error = this.businessTripWorkTimeCheck(i.getWorkInformation().getWorkTypeCode().v(), i.getWorkInformation().getWorkTimeCode().v());
-                if (!error.isResult()){
-                    throw new BusinessException(error.getMsg(), i.getDate().toString());
-                }
+                businessTripService.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
+
                 List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
                 // 申請の矛盾チェック
                 this.commonAlgorithm.appConflictCheck(
@@ -246,30 +241,6 @@ public class BusinessTripFinder {
         return confirmMsgOutputs;
     }
 
-    private CheckErrorDto businessTripWorkTimeCheck(String wkTypeCd, String wkTimeCd) {
-        CheckErrorDto errorCheck = new CheckErrorDto();
-        SetupType checkNeededOfWorkTime = basicScheduleService.checkNeededOfWorkTimeSetting(wkTypeCd);
-        switch (checkNeededOfWorkTime) {
-            case REQUIRED:
-                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
-                    errorCheck.setResult(false);
-                    errorCheck.setMsg("Msg_24");
-                    return errorCheck;
-                }
-                break;
-            case OPTIONAL:
-                break;
-            case NOT_REQUIRED:
-                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
-                    errorCheck.setResult(false);
-                    errorCheck.setMsg("Msg_23");
-                    return errorCheck;
-                }
-                break;
-        }
-        errorCheck.setResult(true);
-        return errorCheck;
-    }
 
     /**
      * アルゴリズム「申請日を変更する処理」を実行する
@@ -468,23 +439,19 @@ public class BusinessTripFinder {
         String timeCode = changeWorkCodeParam.getTimeCode();
         BusinessTripInfoOutput businessTripInfoOutput = changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain();
         GeneralDate inputDate = GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd");
-        CheckErrorDto checkCodeErr = this.businessTripWorkTimeCheck(typeCode, timeCode);
+        businessTripService.checkInputWorkCode(typeCode, timeCode, inputDate);
         // アルゴリズム「出張申請就業時間帯チェック」を実行する
-        if (checkCodeErr.isResult()) {
-            if (Strings.isBlank(timeCode)) {
-                return result;
+        if (Strings.isBlank(timeCode)) {
+            return result;
+        }
+        val workTimeSet = businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst();
+        if (workTimeSet.isPresent() && !workTimeSet.get().isEmpty()) {
+            Optional<WorkTimeSetting> existWorkTimeSet = workTimeSet.get().stream().filter(i -> i.getWorktimeCode().v().equals(timeCode)).findFirst();
+            if (existWorkTimeSet.isPresent()) {
+                result.setName(existWorkTimeSet.get().getWorkTimeDisplayName().getWorkTimeName().v());
+            } else {
+                throw new BusinessException("Msg_1685");
             }
-            val workTimeSet = businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpWorkTimeLst();
-            if (workTimeSet.isPresent() && !workTimeSet.get().isEmpty()) {
-                Optional<WorkTimeSetting> existWorkTimeSet = workTimeSet.get().stream().filter(i -> i.getWorktimeCode().v().equals(timeCode)).findFirst();
-                if (existWorkTimeSet.isPresent()) {
-                    result.setName(existWorkTimeSet.get().getWorkTimeDisplayName().getWorkTimeName().v());
-                } else {
-                    throw new BusinessException("Msg_1685");
-                }
-            }
-        } else {
-            throw new BusinessException(checkCodeErr.getMsg());
         }
         return result;
     }
