@@ -229,6 +229,10 @@ module nts.uk.at.view.ksm005.a {
                     dfd.resolve(self);
                 });
 
+                service.getMonthlyAll().done( (data) => {
+                    console.log(data);
+                });
+
                 nts.uk.ui.block.clear();
                 return dfd.promise();
             }
@@ -716,34 +720,11 @@ module nts.uk.at.view.ksm005.a {
 		        return data;
 	        }
 
-	        private getMonthlyPattern( monthlyPatternCode: string = '') {
-
-		        let self = this,
-                    currentMonth = self.getCurrentMonthPicked(),
-			        params = {
-				        monthlyPatternCode: monthlyPatternCode || self.selectMonthlyPattern(),
-				        startDate: currentMonth.startDate,
-				        endDate: currentMonth.endDate
-			        },
-                    results = [];
-
-	            service.getMonthlyPattern( params ).done( (data) => {
-	                if( typeof data !== 'undefined' && data !== null) {
-		                results = data;
-                    } else
-                        return false;
-                }).fail((error) => {
-		            return false;
-                });
-            }
-
 	        private  getCurrentMonthPicked() {
 		        let self = this,
-			        yearMonth = self.yearMonthPicked().toString(),
-			        year: number = parseInt(yearMonth.substring(0, 4)),
-			        month: number = parseInt(yearMonth.substring(4, yearMonth.length)),
-			        startDate = moment([year, month - 1]).format("YYYY-MM-DD"),
-			        endDate = moment(startDate).endOf('month').format("YYYY-MM-DD");
+		            currentMonth = moment(self.yearMonthPicked(), "YYYYMM"),
+			        startDate = currentMonth.format("YYYY-MM-DD"),
+			        endDate = currentMonth.endOf('month').format("YYYY-MM-DD");
 		        return { startDate: moment.utc(startDate , "YYYY/MM/DD"), endDate: moment.utc(endDate , "YYYY/MM/DD") };
             }
         }
