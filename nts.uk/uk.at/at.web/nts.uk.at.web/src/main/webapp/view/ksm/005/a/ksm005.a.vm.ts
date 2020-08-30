@@ -253,21 +253,40 @@ module nts.uk.at.view.ksm005.a {
                 var self = this;
                 var start: string = self.convertYMD(dto.ymdk);
                 var textColor: string = '';
+	            var row1: string = '';
+	            var row2: string = '';
                 var listText: string[] = [
                     dto.workTypeName,
                     dto.workingName
                 ];
-                if (dto.typeColor == TypeColor.ATTENDANCE) {
+                //row1
+                if( nts.uk.util.isNullOrEmpty(dto.workTypeCode)
+	                && !nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
+	                row1 = dto.workTypeCode + text.getText('KSM005_84');
+                } else  if( nts.uk.util.isNullOrEmpty(dto.workTypeCode)
+	                && nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
+	                row1 = '';
+                } else row1 = dto.workTypeName;
+
+	            //row2
+	            if( nts.uk.util.isNullOrEmpty(dto.workingCode)
+		            && !nts.uk.util.isNullOrEmpty(dto.workingName) ){
+		            row2 = dto.workingCode + text.getText('KSM005_84');
+	            } else  if( nts.uk.util.isNullOrEmpty(dto.workingCode)
+		            && nts.uk.util.isNullOrEmpty(dto.workingName) ){
+		            row2 = '';
+	            } else row2 = dto.workingName;
+
+                if (dto.typeColor == TypeColor.ATTENDANCE || (dto.workingCode && dto.workingCode) ) {
                     textColor = TypeColor.ATTENDANCE_COLOR;
-                }
-                else {
+                } else {
                     textColor = TypeColor.HOLIDAY_COLOR;
                 }
                 return {
                     start: start,
                     textColor: textColor,
                     backgroundColor: 'white',
-                    listText: listText
+                    listText: [row1, row2] //listText
                 };
             }
             
