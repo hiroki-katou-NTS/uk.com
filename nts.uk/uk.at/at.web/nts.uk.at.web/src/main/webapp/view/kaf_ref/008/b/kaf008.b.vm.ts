@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf008_ref.b.viewmodel {
     //import Kaf000BViewModel = nts.uk.at.view.kaf000_ref.b.viewmodel.Kaf000BViewModel;
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-
+    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
 
     @component({
         name: 'kaf008-b',
@@ -56,10 +56,14 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         businessTripOutput: KnockoutObservable<any> = ko.observable();
         businessTrip: KnockoutObservable<BusinessTripInfo> = ko.observable();
+        printContent: any;
 
         created(params: {
+            application: any,
+            printContentOfEachAppDto: PrintContentOfEachAppDto,
+            approvalReason: any,
             appDispInfoStartupOutput: any,
-            eventUpdate: (evt: () => void) => void
+            eventUpdate: (evt: () => void ) => void
         }) {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
@@ -69,6 +73,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             }
             vm.applicationTest = vm.appDispInfoStartupOutput().appDetailScreenInfo.application;
             vm.createParamKAF008();
+            vm.printContent = params.printContentOfEachAppDto;
 
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
@@ -78,6 +83,9 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         mounted() {
             const vm = this;
+            vm.businessTrip.subscribe(value => {
+                vm.printContent.opBusinessTripInfoOutput = value;
+            });
         }
 
         createParamKAF008() {
@@ -106,7 +114,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                         tripInfos: eachDetail
                     }
                     vm.businessTrip(tripInfo);
+                    // vm.printContent.opBusinessTripInfoOutput = tripInfo;
                     vm.businessTripOutput(res.businessTripInfoOutputDto);
+
+
                 }
             }).fail(err => {
                 vm.$dialog.error({messageId: err.msgId});
@@ -144,7 +155,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                     }
                 }
                 vm.$dialog.error(param);
-            }).always(() => vm.$blockui("show"));;
+            }).always(() => vm.$blockui("hide"));;
         }
 
         dispose() {

@@ -80,4 +80,10 @@ public class BusinessTripWebservice extends WebService {
     public ProcessResult updateBusinesstrip(UpdateBusinessTripCommand param) {
         return this.updateBusinessTripCommandHandler.handle(param);
     }
+
+    @POST
+    @Path("startKDL003")
+    public boolean startKDL003(ParamStartKDL003 param) {
+        return this.businessTripFinder.getFlagStartKDL003(param);
+    }
 }

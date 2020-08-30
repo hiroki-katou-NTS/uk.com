@@ -53,7 +53,6 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
 		try {
-
 			val designer = this.createContext(this.getFileTemplate(appType));
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
@@ -92,10 +91,10 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case BUSINESS_TRIP_APPLICATION:
-			aposeBusinessTrip.printWorkChangeContent(worksheet, printContentOfApp);
-			reasonLabel = worksheet.getCells().get("B15");
-			remarkLabel = worksheet.getCells().get("B18");
-			reasonContent = worksheet.getCells().get("D15");
+			aposeBusinessTrip.printBusinessTrip(worksheet, printContentOfApp);
+			reasonLabel = worksheet.getCells().get("B27");
+			remarkLabel = worksheet.getCells().get("B30");
+			reasonContent = worksheet.getCells().get("D27");
 			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:

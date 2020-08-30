@@ -161,11 +161,11 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
             entity.setKrqdtAppTripPK(new KrqdtAppTripPK(cid, domain.getAppID(), i.getDate().toString()));
             entity.setContractCD(contractCd);
             entity.setWorkTypeCD(i.getWorkInformation().getWorkTypeCode().v());
-            entity.setWorkTimeCD(i.getWorkInformation().getWorkTimeCode().v());
-            entity.setStartTime(domain.getDepartureTime().get());
-            entity.setArrivalTime(domain.getReturnTime().get());
-            entity.setWorkTimeStart(i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v());
-            entity.setWorkTimeEnd(i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v());
+            entity.setWorkTimeCD(i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v());
+            entity.setStartTime(domain.getDepartureTime().isPresent() ? domain.getDepartureTime().get() : null);
+            entity.setArrivalTime(domain.getReturnTime().isPresent() ? domain.getReturnTime().get() : null);
+            entity.setWorkTimeStart(i.getWorkingHours().isPresent() ? i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v() : null);
+            entity.setWorkTimeEnd(i.getWorkingHours().isPresent() ? i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v() : null);
             entities.add(entity);
         });
 

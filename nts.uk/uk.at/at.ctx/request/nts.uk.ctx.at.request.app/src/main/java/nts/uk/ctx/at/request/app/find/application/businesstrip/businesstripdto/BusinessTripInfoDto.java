@@ -25,9 +25,9 @@ public class BusinessTripInfoDto {
     private Integer endWorkTime;
 
     public BusinessTripInfo toDomain() {
-        Optional<List<TimeZoneWithWorkNo>> workingHours = Optional.of(Collections.emptyList());
+        Optional<List<TimeZoneWithWorkNo>> workingHours = Optional.empty();
         if (startWorkTime != null && endWorkTime != null) {
-            workingHours = Optional.of(Arrays.asList(new TimeZoneWithWorkNo(0, startWorkTime, endWorkTime)));
+            workingHours = Optional.of(Arrays.asList(new TimeZoneWithWorkNo(1, startWorkTime, endWorkTime)));
         }
         return new BusinessTripInfo(
                 new WorkInformation(this.wkTimeCd, this.wkTypeCd),
@@ -46,7 +46,7 @@ public class BusinessTripInfoDto {
         return new BusinessTripInfoDto(
                 domain.getDate().toString(),
                 domain.getWorkInformation().getWorkTypeCode().v(),
-                domain.getWorkInformation().getWorkTimeCode().v(),
+                domain.getWorkInformation().getWorkTimeCode() == null ? null : domain.getWorkInformation().getWorkTimeCode().v(),
                 begin,
                 end
         );

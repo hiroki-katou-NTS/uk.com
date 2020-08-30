@@ -22,10 +22,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
+import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -278,16 +280,28 @@ public class BusinessTripFinder {
      */
     public DetailStartScreenInfoDto updateAppDate(BusinessTripInfoOutputDto businessTripInfoOutputDto, ApplicationDto applicationDto) {
         String cid = AppContexts.user().companyId();
-        String sid = applicationDto.getEmployeeID() == null ? AppContexts.user().employeeId() : applicationDto.getEmployeeID();
+        String loginSid = AppContexts.user().employeeId();
         DetailStartScreenInfoDto result = new DetailStartScreenInfoDto();
         BusinessTripInfoOutput tripRequestInfoOutput = businessTripInfoOutputDto.toDomain();
         AppDispInfoStartupOutput appDispInfoStartupOutput = tripRequestInfoOutput.getAppDispInfoStartup();
-        Application application = applicationDto.toDomain();
+        Application application = Application.createFromNew(
+                EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
+                applicationDto.getEmployeeID() == null ? loginSid : applicationDto.getEmployeeID(),
+                EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
+                new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
+                loginSid,
+                Optional.empty(),
+                Optional.empty(),
+                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+                Optional.of(new AppReason(applicationDto.getOpAppReason())),
+                Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
+                ));
         DatePeriod dates = new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate());
         List<GeneralDate> inputDates = dates.datesBetween();
 
         List<ActualContentDisplay> appActualContents = businessTripService.getBusinessTripNotApproved(
-                sid, inputDates, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+                loginSid, inputDates, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
         );
 
         //Dummy data
@@ -482,7 +496,13 @@ public class BusinessTripFinder {
         DetailScreenB detailScreen = businessTripService.getDataDetail(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput);
         DetailScreenDto detailScreenDto = DetailScreenDto.fromDomain(detailScreen);
         return detailScreenDto;
+    }
 
+    public boolean getFlagStartKDL003(ParamStartKDL003 param) {
+        GeneralDate selectedDate = GeneralDate.fromString(param.getSelectedDate(), "yyyy/MM/dd");
+        BusinessTripInfoOutput infoOutput = param.getBusinessTripInfoOutputDto().toDomain();
+        WorkType selectedWorkType = infoOutput.getWorkTypeBeforeChange().get().stream().filter(i -> i.getDate().equals(selectedDate)).findFirst().get().getWorkType();
+        return this.getBusinessTripClsContent(selectedWorkType);
     }
 
 

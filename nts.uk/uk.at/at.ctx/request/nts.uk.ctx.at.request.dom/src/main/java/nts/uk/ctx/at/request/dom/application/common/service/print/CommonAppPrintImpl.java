@@ -85,10 +85,6 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 		ApplicationType appType = application.getAppType();
 		// INPUT．申請表示情報．申請詳細画面情報．申請．申請種類をチェックする
 		switch(appType) {
-			case BUSINESS_TRIP_APPLICATION:
-				Optional<BusinessTrip> trip = businessTripRepo.findByAppId(companyID, appID);
-				printContentOfApp.setOpBusinessTrip(trip);
-				break;
 			default: 
 				break;
 		}
@@ -96,6 +92,7 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 		printContentOfApp.setOpAppStampOutput(opPrintContentOfEachApp.map(x -> x.getOpAppStampOutput()).orElse(Optional.empty()));
 		printContentOfApp.setOpArrivedLateLeaveEarlyInfo(opPrintContentOfEachApp.map(x -> x.getOpArrivedLateLeaveEarlyInfo()).orElse(Optional.empty()));
 		printContentOfApp.setOpInforGoBackCommonDirectOutput(opPrintContentOfEachApp.map(x -> x.getOpInforGoBackCommonDirectOutput()).orElse(Optional.empty()));
+		printContentOfApp.setOpBusinessTripPrintContent(opPrintContentOfEachApp.map(x -> x.getOpBusinessTrip()).orElse(Optional.empty()));
 		// INPUT．申請表示情報．申請表示情報(基準日関係なし)．社員情報リストの一つ目を取得する
 		printContentOfApp.setEmployeeInfoLst(appDispInfoStartupOutput.getAppDispInfoNoDateOutput().getEmployeeInfoLst());
 		// 社員と基準日から所属職場履歴項目を取得する

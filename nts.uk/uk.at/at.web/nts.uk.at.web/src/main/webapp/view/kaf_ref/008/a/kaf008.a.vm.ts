@@ -9,36 +9,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
     @bean()
     export class Kaf008AViewModel extends Kaf000AViewModel {
         application: KnockoutObservable<Application> = ko.observable(new Application(AppType.BUSINESS_TRIP_APPLICATION));
-        applicationTest: any = {
-            version: 1,
-            // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
-            prePostAtr: 1,
-            employeeID: this.$user.employeeId,
-            appType: 3,
-            appDate: moment(new Date()).format('YYYY/MM/DD'),
-            enteredPerson: '1',
-            inputDate: moment(new Date()).format('YYYY/MM/DD HH:mm:ss'),
-            reflectionStatus: {
-                listReflectionStatusOfDay: [{
-                    actualReflectStatus: 1,
-                    scheReflectStatus: 1,
-                    targetDate: '2020/01/07',
-                    opUpdateStatusAppReflect: {
-                        opActualReflectDateTime: '2020/01/07 20:11:11',
-                        opScheReflectDateTime: '2020/01/07 20:11:11',
-                        opReasonActualCantReflect: 1,
-                        opReasonScheCantReflect: 0
-
-                    },
-                    opUpdateStatusAppCancel: {
-                        opActualReflectDateTime: '2020/01/07 20:11:11',
-                        opScheReflectDateTime: '2020/01/07 20:11:11',
-                        opReasonActualCantReflect: 1,
-                        opReasonScheCantReflect: 0
-                    }
-                }]
-            }
-        };
         businessTripContent: KnockoutObservable<TripContent> = ko.observable({
             departureTime: ko.observable(null),
             returnTime: ko.observable(null),
@@ -105,19 +75,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         changeAppDate() {
             const vm = this;
-            let application = ko.toJS(vm.application);
 
-            vm.applicationTest.appID = application.appID;
-            vm.applicationTest.appDate = application.appDate;
-            vm.applicationTest.appType = application.appType;
-            vm.applicationTest.prePostAtr = application.prePostAtr;
-            vm.applicationTest.opAppStartDate = application.opAppStartDate;
-            vm.applicationTest.opAppEndDate = application.opAppEndDate;
-            vm.applicationTest.opAppReason = application.opAppReason;
-            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
-            vm.applicationTest.opReversionReason = application.opReversionReason;
-
-            let applicationDto = vm.applicationTest;
+            let applicationDto = ko.toJS(vm.application);
             let businessTripInfoOutputDto = ko.toJS(vm.businessTripOutput());
             let command = {
                 businessTripInfoOutputDto, applicationDto
@@ -161,20 +120,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 returnTime: vm.businessTripContent().returnTime(),
                 tripInfos: lstContent
             };
-            
-            let application = ko.toJS(vm.application);
 
-            vm.applicationTest.appID = application.appID;
-            vm.applicationTest.appDate = application.appDate;
-            vm.applicationTest.appType = application.appType;
-            vm.applicationTest.prePostAtr = application.prePostAtr;
-            vm.applicationTest.opAppStartDate = application.opAppStartDate;
-            vm.applicationTest.opAppEndDate = application.opAppEndDate;
-            vm.applicationTest.opAppReason = application.opAppReason;
-            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
-            vm.applicationTest.opReversionReason = application.opReversionReason;
-
-            let applicationDto = vm.applicationTest;
+            let applicationDto = ko.toJS(vm.application);
             let command = {
                 businessTripDto,
                 businessTripInfoOutputDto,

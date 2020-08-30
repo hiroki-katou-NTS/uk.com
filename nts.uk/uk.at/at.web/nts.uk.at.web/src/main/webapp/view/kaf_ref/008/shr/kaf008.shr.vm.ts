@@ -347,6 +347,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
         openDialogKdl003(data: TripContentDisp) {
             const vm = this;
+            let selectedDate = data.date;
             let workTypeCodes = data.wkTypeCd();
             let workTimeCodes = data.wkTimeCd();
             let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: data.date});
@@ -361,12 +362,24 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 return obj.worktimeCode
             });
             let cloneOutput = _.clone(vm.businessTripOutput());
+            let dispFlag: boolean = true;
+            let command = {
+                selectedDate: selectedDate,
+                businessTripInfoOutputDto: ko.toJS(vm.businessTripOutput)
+            }
+
+            vm.$ajax(API.startKDL003, command).then(res => {
+                if(res) {
+                    dispFlag = res;
+                }
+            });
 
             vm.$window.storage('parentCodes', {
                 workTypeCodes: _.merge(listWorkCode, listHolidayCode),
                 selectedWorkTypeCode: workTypeCodes,
                 workTimeCodes: listWkTimeCd,
-                selectedWorkTimeCode: workTimeCodes
+                selectedWorkTimeCode: workTimeCodes,
+                showNone: dispFlag
             });
 
             vm.$window.modal('/view/kdl/003/a/index.xhtml').then((result: any) => {
@@ -480,7 +493,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
     const API = {
         changeWorkTypeCode: "at/request/application/businesstrip/changeWorkTypeCode",
-        changWorkTimeCode: "at/request/application/businesstrip/changeWorkTimeCode"
+        changWorkTimeCode: "at/request/application/businesstrip/changeWorkTimeCode",
+        startKDL003: "at/request/application/businesstrip/startKDL003"
     }
 
     const Mode = {

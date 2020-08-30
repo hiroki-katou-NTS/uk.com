@@ -158,29 +158,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Attendance))
         );
 
-        Optional<TargetWorkTypeByApp> targetWorkDay = opEmploymentSet.get().getTargetWorkTypeByAppLst()
-                .stream()
-                .filter(i ->  i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.WORK_DAY.value).findFirst();
-        if (targetWorkDay.isPresent()) {
-//            targetWorkDay.get().setDisplayWorkType(true);
-            targetWorkDay.get().setWorkTypeLst(workDays.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
-        }
-
         // アルゴリズム「出張申請勤務種類を取得する」を実行する
         List<WorkType> holidayWorkType = this.getBusinessAppWorkType(
                 opEmploymentSet.get(),
                 EnumAdaptor.valueOf(BusinessTripAppWorkType.HOLIDAY.value, BusinessTripAppWorkType.class),
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Holiday, WorkTypeClassification.HolidayWork, WorkTypeClassification.Shooting))
         );
-
-        Optional<TargetWorkTypeByApp> targetHoliday = opEmploymentSet.get()
-                .getTargetWorkTypeByAppLst()
-                .stream()
-                .filter(i -> i.getOpBusinessTripAppWorkType().isPresent() && i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.HOLIDAY.value).findFirst();
-        if (targetHoliday.isPresent()) {
-//            targetWorkDay.get().setDisplayWorkType(true);
-            targetHoliday.get().setWorkTypeLst(holidayWorkType.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
-        }
 
         // ドメインモデル「勤務種類」を取得する
         List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
@@ -214,7 +197,6 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         output.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         output.setWorkDayCds(Optional.of(workDays));
         output.setHolidayCds(Optional.of(holidayWorkType));
-        output.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         output.setWorkTypeAfterChange(Optional.empty());
         output.setActualContentDisplay(Optional.empty());
         result.setBusinessTripInfoOutput(output);
@@ -224,8 +206,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Override
     public List<WorkType> getBusinessAppWorkType(AppEmploymentSet appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification) {
-        List<WorkType> result = new ArrayList<>();
         String cid = AppContexts.user().companyId();
+        List<WorkType> result = Collections.emptyList();
         Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet
                 .getTargetWorkTypeByAppLst()
                 .stream()
@@ -242,26 +224,40 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 result = workTypeRepository.findNotDeprecatedByListCode(cid, workTypeCDLst);
             } else {
                 // ドメインモデル「勤務種類」を取得して返す
-                List<WorkType> workTypes = workTypeRepository.findForAppKAF008(
+                if (!workTypeClassification.isEmpty()) {
+                    result = workTypeRepository.findForAppKAF008(
+                            cid,
+                            DeprecateClassification.NotDeprecated.value,
+                            WorkTypeUnit.OneDay.value,
+                            workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
+                    );
+                } else {
+                    result = workTypeRepository.findByDepreacateAtrAndWorkTypeAtr(
+                            cid,
+                            DeprecateClassification.NotDeprecated.value,
+                            WorkTypeUnit.OneDay.value
+                    );
+                }
+                opTargetWorkTypeByApp.get().setDisplayWorkType(true);
+                opTargetWorkTypeByApp.get().setWorkTypeLst(result.stream().map(i-> i.getWorkTypeCode().v()).collect(Collectors.toList()));
+                opTargetWorkTypeByApp.get().setOpBusinessTripAppWorkType(Optional.of(EnumAdaptor.valueOf(workStyle.value, BusinessTripAppWorkType.class)));
+            }
+        } else {
+            // ドメインモデル「勤務種類」を取得して返す
+            if (!workTypeClassification.isEmpty()) {
+                result = workTypeRepository.findForAppKAF008(
                         cid,
                         DeprecateClassification.NotDeprecated.value,
                         WorkTypeUnit.OneDay.value,
                         workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
                 );
-                opTargetWorkTypeByApp.get().setDisplayWorkType(true);
-                opTargetWorkTypeByApp.get().setWorkTypeLst(workTypes.stream().map(i-> i.getWorkTypeCode().v()).collect(Collectors.toList()));
-                opTargetWorkTypeByApp.get().setOpBusinessTripAppWorkType(Optional.of(EnumAdaptor.valueOf(workStyle.value, BusinessTripAppWorkType.class)));
-                result = workTypes;
+            } else {
+                result = workTypeRepository.findByDepreacateAtrAndWorkTypeAtr(
+                        cid,
+                        DeprecateClassification.NotDeprecated.value,
+                        WorkTypeUnit.OneDay.value
+                );
             }
-        } else {
-            // ドメインモデル「勤務種類」を取得して返す
-            List<WorkType> workTypes = workTypeRepository.findForAppKAF008(
-                    cid,
-                    DeprecateClassification.NotDeprecated.value,
-                    WorkTypeUnit.OneDay.value,
-                    workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
-            );
-            result = workTypes;
         }
         return result;
     }
