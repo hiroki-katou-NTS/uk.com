@@ -374,6 +374,7 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 				.setParameter("year", year)
 				.getList(x -> this.toDomain(x));
 	}
+	@Override
 	public void deleteWorkMonthlySettingById(String companyId,String mPatternCd,GeneralDate date) {
 		this.getEntityManager().createQuery(DELETE_BY_WORK_MONTHLY_ID_AND_DATE, KscmtWorkMonthSet.class)
 				.setParameter("cid", companyId)
