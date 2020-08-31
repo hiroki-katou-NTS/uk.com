@@ -61,8 +61,6 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
 		 * 直行直帰申請の印刷内容
 		 */
 		opInforGoBackCommonDirectOutput: any;
-
-		opBusinessTripInfoOutput: any;
 	}
     
     export module model {
@@ -151,7 +149,8 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             }
             
             let advanceAppAcceptanceLimit = value.appDispInfoNoDateOutput.advanceAppAcceptanceLimit == 1;
-            let allowFutureDay = value.appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0].allowFutureDay;
+			let receptionRestrictionSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting, (o: any) => o.appType == vm.appType());
+            let allowFutureDay = receptionRestrictionSetting.afterhandRestriction.allowFutureDay;
             let appDeadlineUseCategory = value.appDispInfoWithDateOutput.appDeadlineUseCategory == 1;
             // 注意：申請表示情報(基準日関係なし)．事前申請の受付制限が利用しない && 申請表示情報．申請設定（基準日関係なし）．申請承認設定．申請設定．受付制限設定．事後の受付制限．未来日許可しないがfalse && 申請表示情報(基準日関係あり)．申請締め切り日利用区分が利用しない
             if(!advanceAppAcceptanceLimit && !allowFutureDay && !appDeadlineUseCategory) {

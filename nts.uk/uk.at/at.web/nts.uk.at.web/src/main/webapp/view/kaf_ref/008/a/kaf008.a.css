@@ -9,3 +9,7 @@
 .A5 #A5_1 {
     width: 120px
 }
+
+button.nts-switch-button {
+    min-width: 100px;
+}

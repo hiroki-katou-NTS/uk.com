@@ -6,6 +6,7 @@ module nts.uk.at.view.kaf000_ref.b.component1.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/000/b/component1/index.html'
     })
     class Kaf000BComponent1ViewModel extends ko.ViewModel {
+		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
         message: KnockoutObservable<string>; 
         deadline: KnockoutObservable<string>;
@@ -15,6 +16,7 @@ module nts.uk.at.view.kaf000_ref.b.component1.viewmodel {
         
         created(params: any) {
             const vm = this;
+			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.message = ko.observable("line111111111111111111");
             vm.deadline = ko.observable("line222222222222222222");

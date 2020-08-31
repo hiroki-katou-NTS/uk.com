@@ -35,4 +35,6 @@ public interface BusinessTripService {
      */
     List<WorkType> getBusinessAppWorkType(AppEmploymentSet appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification);
 
+    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate);
+
 }

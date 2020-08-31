@@ -3,7 +3,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
     import isNullOrEmpty = nts.uk.text.isNullOrEmpty;
     import dialogInfo = nts.uk.ui.dialog.info;
     import dialogConfirm =  nts.uk.ui.dialog.confirm;
-    import alert = nts.uk.ui.dialog.alert;
+    import alert = nts.uk.ui.dialog.alertError;
     import getText = nts.uk.resource.getText;
 
     export class ScreenModel {
@@ -72,7 +72,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         getData(currentCode?: number): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
             service.getReason().done((lstData: Array<any>) => {
                 if (lstData.length > 0) {
                     const tmp = [];

@@ -9,14 +9,15 @@ module nts.uk.at.view.kaf007_ref.a.viewmodel {
 
 	@bean()
 	export class Kaf007AViewModel extends Kaf000AViewModel {
-
-		application: KnockoutObservable<Application> = ko.observable(new Application(AppType.WORK_CHANGE_APPLICATION));
+		
+		appType: KnockoutObservable<number> = ko.observable(AppType.WORK_CHANGE_APPLICATION);
+		application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
 		appWorkChange: KnockoutObservable<AppWorkChange> = ko.observable(new AppWorkChange("001", "001", 100, 200));
 
 		created(params: any) {
 			const vm = this;
             vm.$blockui("show");
-            vm.loadData([], [], AppType.WORK_CHANGE_APPLICATION)
+            vm.loadData([], [], vm.appType())
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
                     let empLst = [],

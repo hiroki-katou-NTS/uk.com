@@ -88,7 +88,7 @@
       <!-- A7_1 -->
       <div v-if="isCondition2" class="card-header uk-bg-accordion">
         <span>{{'KAFS07_7' | i18n}}</span>
-        <span class="badge badge-info">必須</span>
+        <span class="badge badge-info">任意</span>
       </div>
       <!-- A7_2 -->
       <div v-if="isCondition2" class="card-body">

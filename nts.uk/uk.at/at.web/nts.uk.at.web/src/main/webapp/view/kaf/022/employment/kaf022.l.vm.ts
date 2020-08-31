@@ -80,6 +80,8 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                     let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
                     if (_.size(employmentList))
                         self.selectedCode(employmentList[0].code);
+                    else
+                        self.selectedCode.valueHasMutated();
                     dfd.resolve();
                 }).fail(error => {
                     dfd.reject();
@@ -89,74 +91,62 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                 });
             }).fail((error) => {
                 dfd.reject();
+                clear();
                 nts.uk.ui.dialog.alertError(error).then(function () {
                     nts.uk.request.jump("com", "view/ccg/008/a/index.xhtml");
                 });
-                clear();
             });
             return dfd.promise();
         }
 
         reloadData(): JQueryPromise<any> {
             let self = this;
-            var dfd = $.Deferred();
-            service.findEmploymentSetByCid().done(data => {
-                //refkaf022 hoangnd
-                if (data == null) return;
-
+            const dfd = $.Deferred();
+            service.findEmploymentSetByCid().done((data: Array<any>) => {
                 let lstEmp = [];
-                for (let i = 0; i < data.length; i++) {
-                    let dataI = data[i];
-                    let listWTOAH = dataI.targetWorkTypeByAppLst;
-                    if (listWTOAH != null && listWTOAH.length >= 1) {
-                        for (let j = 0; j < listWTOAH.length; j++) {
-                            let lstWork = [];
-                            let workTypeListArr = listWTOAH[j];
-                            if (workTypeListArr.workTypeLst != null && workTypeListArr.workTypeLst.length >= 1) {
-                                for (let k = 0; k < workTypeListArr.workTypeLst.length; k++) {
-                                    let workTypeCode = workTypeListArr.workTypeLst[k];
-                                    lstWork.push({
-                                        companyID: dataI.companyID,
-                                        employmentCode: dataI.employmentCD,
-                                        appType: workTypeListArr.appType,
-                                        holidayOrPauseType: workTypeListArr.appType == 10 ? workTypeListArr.opBreakOrRestTime : (workTypeListArr.appType == 1 ? workTypeListArr.opHolidayAppType : (workTypeListArr.appType == 3 ? workTypeListArr.opBusinessTripAppWorkType : null)),
-                                        workTypeCode: workTypeCode
-                                    })
+                if (data != null && data.length > 0) {
+                    for (let i = 0; i < data.length; i++) {
+                        let dataI = data[i];
+                        let listWTOAH = dataI.targetWorkTypeByAppLst;
+                        if (listWTOAH != null && listWTOAH.length >= 1) {
+                            for (let j = 0; j < listWTOAH.length; j++) {
+                                let lstWork = [];
+                                let workTypeListArr = listWTOAH[j];
+                                if (workTypeListArr.workTypeLst != null && workTypeListArr.workTypeLst.length >= 1) {
+                                    for (let k = 0; k < workTypeListArr.workTypeLst.length; k++) {
+                                        let workTypeCode = workTypeListArr.workTypeLst[k];
+                                        lstWork.push({
+                                            companyID: dataI.companyID,
+                                            employmentCode: dataI.employmentCD,
+                                            appType: workTypeListArr.appType,
+                                            holidayOrPauseType: workTypeListArr.appType == 10 ? workTypeListArr.opBreakOrRestTime : (workTypeListArr.appType == 1 ? workTypeListArr.opHolidayAppType : (workTypeListArr.appType == 3 ? workTypeListArr.opBusinessTripAppWorkType : null)),
+                                            workTypeCode: workTypeCode
+                                        })
+                                    }
                                 }
+                                lstEmp.push({
+                                    companyID: dataI.companyID,
+                                    employmentCode: dataI.employmentCD,
+                                    appType: workTypeListArr.appType,
+                                    holidayOrPauseType: workTypeListArr.appType == 10 ? workTypeListArr.opBreakOrRestTime : (workTypeListArr.appType == 1 ? workTypeListArr.opHolidayAppType : (workTypeListArr.appType == 3 ? workTypeListArr.opBusinessTripAppWorkType : null)),
+                                    holidayTypeUseFlg: workTypeListArr.opHolidayTypeUse,
+                                    displayFlag: workTypeListArr.displayWorkType,
+                                    lstWorkType: lstWork
+                                })
                             }
-                            lstEmp.push({
-                                companyID: dataI.companyID,
-                                employmentCode: dataI.employmentCD,
-                                appType: workTypeListArr.appType,
-                                holidayOrPauseType: workTypeListArr.appType == 10 ? workTypeListArr.opBreakOrRestTime : (workTypeListArr.appType == 1 ? workTypeListArr.opHolidayAppType : (workTypeListArr.appType == 3 ? workTypeListArr.opBusinessTripAppWorkType : null)),
-                                holidayTypeUseFlg: workTypeListArr.opHolidayTypeUse,
-                                displayFlag: workTypeListArr.displayWorkType,
-                                lstWorkType: lstWork
-                            })
                         }
                     }
                 }
 
-                //Find already setting list
-                if (_.size(lstEmp)) {
-                    //Get Employment List.
-                    let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
-                    let alreadyLst: Array<UnitModel> = _.filter(employmentList,
-                        function (emp) {
-                            let foundEmployment = _.find(lstEmp, function (item: any) {
-                                return item.employmentCode === emp.code;
-                            });
-                            return !nts.uk.util.isNullOrUndefined(foundEmployment);
-                        });
-                    self.alreadySettingList(_.map(alreadyLst, item => {
-                        let alreadyList: UnitAlreadySettingModel = {code: item.code, isAlreadySetting: true};
-                        return alreadyList;
-                    }));
-                    //Store for preview process
-                    self.alreadySettingData = lstEmp;
-                    self.updateWorkTypeName();
-                    dfd.resolve();
-                }
+                self.alreadySettingList(_.map(lstEmp, item => ({
+                    code: item.employmentCode,
+                    isAlreadySetting: true
+                })));
+                //Store for preview process
+                self.alreadySettingData = lstEmp;
+                self.updateWorkTypeName();
+
+                dfd.resolve();
             }).fail((res) => {
                 dfd.reject();
             });
@@ -307,8 +297,6 @@ module nts.uk.at.view.kaf022.l.viewmodel {
             nts.uk.ui.errors.clearAll();
             nts.uk.ui.block.grayout();
             let self = this;
-            var dfd = $.Deferred();
-            let code = self.selectedCode();
             let commands = [];
             if (!self.allowRegister()) {
                 clear();
@@ -567,7 +555,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                             //情報メッセージ（Msg_15）を表示する
                             nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                                 nts.uk.ui.block.invisible();
-                                self.reloadData(() => {
+                                self.reloadData().done(() => {
                                     self.selectedCode.valueHasMutated();
                                 }).fail(error => {
                                     nts.uk.ui.dialog.alertError(error);

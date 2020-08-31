@@ -4,8 +4,10 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Worksheet;
 import nts.arc.i18n.I18NText;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.DayOfWeek;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintContent;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -26,15 +28,14 @@ public class AposeBusinessTrip {
     @Inject
     private WorkTypeRepository workTypeRepository;
 
-    public void printWorkChangeContent(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
+    public void printBusinessTrip(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
         Cells cells = worksheet.getCells();
-
 
         String departureTime = Strings.EMPTY;
         String returnTime = Strings.EMPTY;
         String cid = AppContexts.user().companyId();
 
-        Optional<BusinessTrip> businessTrip = printContentOfApp.getOpBusinessTrip();
+        Optional<BusinessTripPrintContent> businessTrip = printContentOfApp.getOpBusinessTripPrintContent();
         if( businessTrip.isPresent()) {
             if (businessTrip.get().getDepartureTime().isPresent()) {
                 departureTime = new TimeWithDayAttr(businessTrip.get().getDepartureTime().get()).getFullText();
@@ -51,12 +52,14 @@ public class AposeBusinessTrip {
                 List<BusinessTripInfo> lstInfo = businessTrip.get().getInfos();
                 if (lstInfo.size() > 15) {
                     int startRow = 10;
-                    List<BusinessTripInfo> listECell = lstInfo.subList(0, 15);
-                    this.setColumnVal(cells, "D", "E", "F", lstInfo, lstWorkType);
+                    List<BusinessTripInfo> listECell = lstInfo.subList(0, 16);
+                    this.setColumnVal(cells, "D", "E", "F", listECell, lstWorkType);
                     List<BusinessTripInfo> listICell = lstInfo.subList(16, lstInfo.size());
-                    this.setColumnVal(cells, "H", "I", "J", lstInfo, lstWorkType);
+                    this.setColumnVal(cells, "H", "I", "J", listICell, lstWorkType);
                 } else {
                     this.setColumnVal(cells, "D", "E", "F", lstInfo, lstWorkType);
+                    int totalDateRows = businessTrip.get().getInfos().size();
+                    cells.hideRows(9 + totalDateRows, 16 - totalDateRows);
                 }
             }
         }
@@ -102,7 +105,8 @@ public class AposeBusinessTrip {
 
             String wkTypeName = Strings.EMPTY;
 
-            currentDateRow.setValue(eachinfo.getDate().toString("M/d(D)"));
+            GeneralDate currentDate = eachinfo.getDate();
+            currentDateRow.setValue(currentDate.toString("M/d") + this.getDayOfWeek(currentDate.dayOfWeekEnum()));
 
             if (eachinfo.getWorkInformation().getWorkTypeCode() != null) {
                 Optional<WorkType> workTypeInfo = lstWorkType.stream().filter(i -> i.getWorkTypeCode().v().equals(eachinfo.getWorkInformation().getWorkTypeCode().v())).findFirst();
@@ -120,7 +124,28 @@ public class AposeBusinessTrip {
                     currentTimeRow.setValue(workNo1.get().getTimeZone().getStartTime().getFullText() + I18NText.getText("KAF008_69") + workNo1.get().getTimeZone().getEndTime().getFullText());
                 }
             }
+            startRow++;
         }
+    }
+
+    private String getDayOfWeek(DayOfWeek dayOfWeek) {
+        switch (dayOfWeek) {
+            case MONDAY:
+                return "(月)";
+            case TUESDAY:
+                return "(火)";
+            case WEDNESDAY:
+                return "(水)";
+            case THURSDAY:
+                return "(木)";
+            case FRIDAY:
+                return "(金)";
+            case SATURDAY:
+                return "(土)";
+            case SUNDAY:
+                return "(日)";
+        }
+        return null;
     }
 
 }
