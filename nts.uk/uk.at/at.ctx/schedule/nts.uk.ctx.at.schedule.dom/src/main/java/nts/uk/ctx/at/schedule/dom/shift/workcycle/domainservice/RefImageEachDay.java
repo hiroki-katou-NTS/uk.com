@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,12 +8,13 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 
-@Getter
-@Setter
-@NoArgsConstructor
 /**
  * 一日分の反映イメージ
  */
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RefImageEachDay {
 
     // 勤務作成方法
