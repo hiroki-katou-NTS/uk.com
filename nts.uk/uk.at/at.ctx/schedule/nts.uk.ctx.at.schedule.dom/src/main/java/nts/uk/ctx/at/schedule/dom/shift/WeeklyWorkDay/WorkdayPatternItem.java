@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay;
+package nts.uk.ctx.at.schedule.dom.shift.weeklyworkday;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
