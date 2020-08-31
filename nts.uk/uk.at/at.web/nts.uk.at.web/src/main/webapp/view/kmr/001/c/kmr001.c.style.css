@@ -46,3 +46,6 @@
 .kmr001-c .kmr001_44 span{
     width: auto !important;
 }
+.kmr001-c .reservation-time {
+    width: 300px;
+}
