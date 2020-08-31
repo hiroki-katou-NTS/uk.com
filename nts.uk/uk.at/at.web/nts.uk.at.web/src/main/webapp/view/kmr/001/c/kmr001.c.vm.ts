@@ -161,7 +161,10 @@ module nts.uk.at.kmr001.c {
                     });
                 }).fail(function (error) {
                     vm.$dialog.error({ messageId: error.messageId });
-                }).always(() => vm.$blockui("clear"));
+                }).always(() => {
+                    vm.$blockui("clear");
+                    nts.uk.ui.errors.clearAll();
+                });
             }).ifNo(() => {
             });
         }
