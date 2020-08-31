@@ -1,9 +1,5 @@
 package nts.uk.ctx.basic.dom.system.bank;
 
-import javax.inject.Inject;
-
-import com.google.common.base.Optional;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -11,9 +7,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.shr.com.primitive.Memo;
 
 public class Bank extends AggregateRoot {
-	
-	@Inject
-	BankRepository bankRepo;
 	/**
 	 * Company code
 	 */
@@ -69,9 +62,6 @@ public class Bank extends AggregateRoot {
 	 */
 	public Bank(String companyCode, BankCode bankCode, BankName bankName, BankNameKana bankNameKana, Memo memo) {
 		super();
-		
-		java.util.Optional<Bank> bank = bankRepo.find("0001", "0001");
-		
 		this.companyCode = companyCode;
 		this.bankCode = bankCode;
 		this.bankName = bankName;
