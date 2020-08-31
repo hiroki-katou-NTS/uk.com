@@ -305,10 +305,10 @@ module nts.uk.at.kmr003.a {
             self.$blockui("invisible");
             let param = self.createParamGet();
             self.datas = [];
+            self.dynamicColumns = [];
             self.deleteItems.removeAll();
             self.canDelete(false);
             self.$ajax(API.BENTO_RESERVATTIONS, param).done((res: IReservationModifyDto) => {
-                self.dynamicColumns = [];
                 if (!_.isEmpty(res.bentoClosingTimes)) {
                     self.closingTimeFrames.removeAll();
                 }
