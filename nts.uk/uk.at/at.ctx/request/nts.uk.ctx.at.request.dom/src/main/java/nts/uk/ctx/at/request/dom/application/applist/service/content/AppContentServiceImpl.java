@@ -91,7 +91,7 @@ public class AppContentServiceImpl implements AppContentService {
 		// アルゴリズム「申請内容の申請理由」を実行する
 		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
-			result += appReasonContent;
+			result += "\n" + appReasonContent;
 		}
 		return result;
 	}
@@ -225,7 +225,7 @@ public class AppContentServiceImpl implements AppContentService {
 		// アルゴリズム「申請内容の申請理由」を実行する
 		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
-			result += appReasonContent;
+			result += "\n" + appReasonContent;
 		}
 		return result;
 	}
@@ -287,7 +287,7 @@ public class AppContentServiceImpl implements AppContentService {
 				appType, 
 				Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
-			result += appReasonContent;
+			result += "\n" + appReasonContent;
 		}
 		return result;
 	}
