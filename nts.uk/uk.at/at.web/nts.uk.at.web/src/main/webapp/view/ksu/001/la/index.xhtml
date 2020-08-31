@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 1200, height: 620 };</script>
+            <script>var dialogSize = { width: 1200, height: 630 };</script>
             <com:ValidatorScript>
                 nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd
                 nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName
@@ -33,9 +33,9 @@
                 <div id="left-content" class="fixed-flex-layout-left">
                     <div id="emp-component" style="visibility: hidden; width: 0px; height: 0px;"></div>
                     <div
-                        data-bind="ntsPanel:{width: '260px', height: '445px', direction: 'right', showIcone: true, visible: true}">
+                        data-bind="ntsPanel:{width: '260px', height: '436px', direction: 'right', showIcone: true, visible: true}">
                         <table id="single-list" data-bind="ntsGridList: {								
-                            height: 444,
+                            height: 433,
                             dataSource: listScheduleTeam,
                             primaryKey: 'code',
                             columns: columns,
@@ -115,7 +115,7 @@
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', 
                                             items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd','businessName'], mode: 'igGrid'}" />
 
-                        <div style="width: 142px;"></div>
+                        <div style="width: 129px;"></div>
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
@@ -127,7 +127,7 @@
                     <div class="container-table">
                         <div>
                             <table id="emp-list-left" data-bind="ntsGridList: {
-                                            height: 265,
+                                            height: 260,
                                             options: itemsLeft,
                                             optionsValue: 'employeeCd',
                                             columns: columnsLeft,
@@ -146,7 +146,7 @@
                         </div>
                         <div>
                             <table id="emp-list-right" data-bind="ntsGridList: {
-                                            height: 265,
+                                            height: 260,
                                             options: itemsRight,
                                             optionsValue: 'employeeCd',
                                             columns: columnsRight,
@@ -156,7 +156,7 @@
                             </table>
                         </div>
                     </div>
-                    <div style="margin-top: -16px">#{i18n.getText('KSU001_3216')}</div>
+                    <div style="margin-top: 2px">#{i18n.getText('KSU001_3216')}</div>
                 </div>
             </div>
         </ui:define>

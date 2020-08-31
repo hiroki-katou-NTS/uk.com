@@ -28,8 +28,9 @@
 }
 
 .btn-custom{
-	/* width: 50px !important; */
-	height: 46px !important;
+	width: 50px !important;
+	height: 33px !important;
+	padding: 0px !important	;
 	margin-bottom: 20px !important;
 }
 .icon-btn-custom {
@@ -51,7 +52,7 @@
 	margin-top: 5px;		
 }
 .lblForm{
-	margin-right: 325px;
+	margin-right: 313px;
 }
 
 #line {

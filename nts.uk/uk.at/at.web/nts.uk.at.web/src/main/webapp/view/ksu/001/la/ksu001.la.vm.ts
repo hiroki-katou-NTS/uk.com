@@ -92,6 +92,7 @@ module nts.uk.at.view.ksu001.la {
                                 self.selectedCode(listScheduleTeam[0].code);                                
                             } else {
                                 self.isEditing(false);
+                                self.clearData();
                             }
                         }).fail((res) => {
                             nts.uk.ui.dialog.alertError({ messageId: res.messageId});
@@ -158,8 +159,9 @@ module nts.uk.at.view.ksu001.la {
                             self.listScheduleTeam(listScheduleTeam);
                             self.selectedCode(self.scheduleTeamModel().code());
                             blockUI.clear();
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                            $('#scheduleTeamCd').focus();
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function() {
+                                $('#scheduleTeamName').focus();
+                            });                            
                         });
                     }).fail((res) => {
                         blockUI.clear();
@@ -179,8 +181,9 @@ module nts.uk.at.view.ksu001.la {
                         }));                                             
                         self.getEmpOrgInfo();
                         blockUI.clear();
-                        nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                        $('#scheduleTeamName').focus();
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function() {
+                            $('#scheduleTeamName').focus();
+                        }); 
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({messageId: res.messageId});                        
                     }).always (()=>{
