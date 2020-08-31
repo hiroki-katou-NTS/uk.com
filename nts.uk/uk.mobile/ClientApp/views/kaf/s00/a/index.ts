@@ -47,7 +47,7 @@ export class KafS00AComponent extends Vue {
             if (data.data.preAppAcceptLimit.opAvailableTime) {
                 self.preAppPeriod = self.$i18n('KAFS00_22', self.$dt.timedr(data.data.preAppAcceptLimit.opAvailableTime));    
             } else {
-                self.preAppPeriod = self.$i18n('KAFS00_5', self.$dt(data.data.preAppAcceptLimit.opAcceptableDate, 'MM月DD日'));
+                self.preAppPeriod = self.$i18n('KAFS00_5', self.$dt(data.data.preAppAcceptLimit.opAcceptableDate, 'M月D日'));
             }
             self.postAppPeriod = self.$i18n('KAFS00_6', data.data.postAppAcceptLimit.opAcceptableDate);   
             
