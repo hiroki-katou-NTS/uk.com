@@ -1,7 +1,5 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,5 +24,5 @@ public class Holder {
 	private String employeeCd;
 	
 	// 社員名
-	private Optional<String> employeeName;
+	private String employeeName;
 }

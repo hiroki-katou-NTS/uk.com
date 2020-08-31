@@ -1,7 +1,5 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory;
 
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,24 +25,24 @@ public class EligibilityQualification {
 	private String qualificationId;
 	
 	// 社内外区分CD
-	private Optional<String> categoryCd;
+	private String categoryCd;
 	
 	// 社内外区分名
-	private Optional<String> divisionName;
+	private String divisionName;
 	
 	// 終了日
-	private Optional<GeneralDate> endDate;
+	private GeneralDate endDate;
 	
 	// 資格名
-	private Optional<String> qualificationName;
+	private String qualificationName;
 	
 	// 資格認定ランク
-	private Optional<String> qualificationRank;
+	private String qualificationRank;
 	
 	// 資格認定団体
-	private Optional<String> qualificationOrganization;
+	private String qualificationOrganization;
 	
 	// 資格認定番号
-	private Optional<String> qualificationNumber;
+	private String qualificationNumber;
 	
 }

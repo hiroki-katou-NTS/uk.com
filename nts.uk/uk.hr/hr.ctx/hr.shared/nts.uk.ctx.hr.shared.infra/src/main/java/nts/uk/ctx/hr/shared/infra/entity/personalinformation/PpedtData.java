@@ -873,7 +873,7 @@ public class PpedtData extends ContractUkJpaEntity implements Serializable {
 		entity.cId = domain.getCid().map(m -> m).orElse(null);
 		entity.ccd = domain.getCompanyCode().map(m -> m).orElse(null);
 		entity.pId = domain.getPId();
-		entity.sid = domain.getScd().map(m -> m).orElse(null);
+		entity.sid = domain.getSid().map(m -> m).orElse(null);
 		entity.scd = domain.getScd().map(m -> m).orElse(null);
 		entity.personName = domain.getPersonName().map(m -> m).orElse(null);
 		entity.workId = domain.getWorkId();
@@ -1282,7 +1282,7 @@ public class PpedtData extends ContractUkJpaEntity implements Serializable {
 		domain.setCid(Optional.of(this.cId));
 		domain.setCompanyCode(Optional.of(this.ccd));
 		domain.setPId(this.pId);
-		domain.setSid(Optional.of(this.scd));
+		domain.setSid(Optional.of(this.sid));
 		domain.setScd(Optional.of(this.scd));
 		domain.setPersonName(Optional.of(this.personName));
 		domain.setWorkId(this.workId);

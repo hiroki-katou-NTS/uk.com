@@ -1,6 +1,8 @@
 package nts.uk.ctx.hr.shared.ws.personalinfo.perinfo.perinfohr;
 
+import java.util.HashMap;
 import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -20,11 +22,11 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetP
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHROutput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHRInput;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.EligibilityQualification;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeApp;
-import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeDto;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeInput;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.Holder;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationApp;
-import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationDto;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationInput;
 
 /**
@@ -99,13 +101,13 @@ public class PersonInfoTestWebService extends WebService {
 
 	@POST
 	@Path("getHoldingQualification")
-	public List<HoldingQualificationDto> testHoldingQualification(HoldingQualificationInput input) {
+	public HashMap<String, List<EligibilityQualification>> testHoldingQualification(HoldingQualificationInput input) {
 		return holdingQualification.getHoldingQualification(input);
 	}
 	
 	@POST
 	@Path("getHistoryGetDegree")
-	public List<HistoryGetDegreeDto> testHistoryGetDegree(HistoryGetDegreeInput input) {
+	public HashMap<Long, List<Holder>> testHistoryGetDegree(HistoryGetDegreeInput input) {
 		return historyGetDegreeApp.get(input);
 	}
 }
