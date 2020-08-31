@@ -42,9 +42,9 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                 { id: 'tab-06', title: getText('KAF022_6'), content: '.tab-content-06', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-07', title: getText('KAF022_7'), content: '.tab-content-07', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-08', title: getText('KAF022_8'), content: '.tab-content-08', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-11', title: getText('KAF022_11'), content: '.tab-content-11', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-09', title: getText('KAF022_707'), content: '.tab-content-09', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-10', title: getText('KAF022_10'), content: '.tab-content-10', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-11', title: getText('KAF022_11'), content: '.tab-content-11', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-12', title: getText('KAF022_12'), content: '.tab-content-12', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-13', title: getText('KAF022_705'), content: '.tab-content-13', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-14', title: getText('KAF022_395'), content: '.tab-content-14', enable: ko.observable(true), visible: ko.observable(true) },
@@ -113,6 +113,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             const dataV = self.viewmodelV.collectData();
             const dataB = self.viewmodelB.collectData();
             const dataD = self.viewmodelD.collectData();
+            const dataE = self.viewmodelE.collectData();
             const dataJ = self.viewmodelJ.collectData();
             const dataQ = self.viewmodelQ.collectData();
             const data: any = {};
@@ -133,6 +134,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             data["overtimeApplicationSetting"] = dataB.overtimeApplicationSetting;
             data["overtimeApplicationReflect"] = dataB.overtimeApplicationReflect;
             data["appWorkChangeSetting"] = dataD;
+            data["tripRequestSetting"] = dataE;
             data["goBackReflectAtr"] = self.viewmodelF.selectedValueF13();
             data["lateEarlyCancelAtr"] = self.viewmodelI.lateEarlyCancelAtr();
             data["lateEarlyClearAlarmAtr"] = self.viewmodelI.lateEarlyClearAlarmAtr();

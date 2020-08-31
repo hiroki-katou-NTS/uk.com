@@ -3,10 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
-
-import java.util.Optional;
 
 @Data
 @NoArgsConstructor

@@ -17,11 +17,20 @@ module nts.uk.at.view.kaf022.e.viewmodel {
 
         initData(allData: any): void {
             const self = this;
-            let data = allData.tripReq;
-            if (data) {
-                self.texteditorD9(data.comment1);
-                self.valueD10(data.color1);
-                self.enableD11(data.weight1);
+            let data = allData.tripRequestSetting;
+            if (data && data.appCommentSet) {
+                self.texteditorD9(data.appCommentSet.comment);
+                self.valueD10(data.appCommentSet.colorCode);
+                self.enableD11(data.appCommentSet.bold);
+            }
+        }
+
+        collectData(): any {
+            const self = this;
+            return {
+                commentContent: self.texteditorD9(),
+                commentColor: self.valueD10(),
+                commentBold: self.enableD11()
             }
         }
 

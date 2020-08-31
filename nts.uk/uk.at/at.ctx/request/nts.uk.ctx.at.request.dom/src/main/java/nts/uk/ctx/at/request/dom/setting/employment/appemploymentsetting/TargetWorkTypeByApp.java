@@ -26,6 +26,7 @@ public class TargetWorkTypeByApp {
 	/**
 	 * 表示する勤務種類を設定する
 	 */
+	@Setter
 	private boolean displayWorkType;
 	
 	/**
@@ -52,6 +53,7 @@ public class TargetWorkTypeByApp {
 	/**
 	 * 出張申請勤務種類
 	 */
+	@Setter
 	private Optional<BusinessTripAppWorkType> opBusinessTripAppWorkType;
 	
 	public TargetWorkTypeByApp(ApplicationType appType, boolean displayWorkType, List<String> workTypeLst,

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.businesstrip.service;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -29,6 +30,8 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTime;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.*;
@@ -78,6 +81,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Inject
     private WorkTypeRepository workTypeRepository;
+
+    @Inject
+    private BasicScheduleService basicScheduleService;
 
 
     /**
@@ -139,12 +145,15 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public BusinessTripInfoOutput getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+    public DetailScreenB getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput) {
+        DetailScreenB result = new DetailScreenB();
         BusinessTripInfoOutput output = new BusinessTripInfoOutput();
+        // ドメインモデル「出張申請設定」を取得する
         Optional<AppTripRequestSet> tripRequestSet = appTripRequestSetRepository.findById(companyId);
         if (tripRequestSet.isPresent()) {
             output.setSetting(tripRequestSet.get());
         }
+        // ドメインモデル「出張申請」を取得する
         Optional<BusinessTrip> businessTrip = businessTripRepository.findByAppId(companyId, appId);
 
         Optional<AppEmploymentSet> opEmploymentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet();
@@ -155,22 +164,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Attendance))
         );
 
-        Optional<TargetWorkTypeByApp> targetWorkDay = opEmploymentSet.get().getTargetWorkTypeByAppLst().stream().filter(i -> i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.WORK_DAY.value).findFirst();
-        if (targetWorkDay.isPresent()) {
-            targetWorkDay.get().setWorkTypeLst(workDays.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
-        }
-
         // アルゴリズム「出張申請勤務種類を取得する」を実行する
         List<WorkType> holidayWorkType = this.getBusinessAppWorkType(
                 opEmploymentSet.get(),
                 EnumAdaptor.valueOf(BusinessTripAppWorkType.HOLIDAY.value, BusinessTripAppWorkType.class),
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Holiday, WorkTypeClassification.HolidayWork, WorkTypeClassification.Shooting))
         );
-
-        Optional<TargetWorkTypeByApp> targetHoliday = opEmploymentSet.get().getTargetWorkTypeByAppLst().stream().filter(i -> i.getOpBusinessTripAppWorkType().get().value == BusinessTripAppWorkType.WORK_DAY.value).findFirst();
-        if (targetHoliday.isPresent()) {
-            targetWorkDay.get().setWorkTypeLst(holidayWorkType.stream().map(i -> i.getWorkTypeCode().v()).collect(Collectors.toList()));
-        }
 
         // ドメインモデル「勤務種類」を取得する
         List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
@@ -196,56 +195,101 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                         .distinct()
                         .collect(Collectors.toList());
                 // ドメインモデル「就業時間帯の設定」を取得する
-                List<WorkTimeSetting> mapWorkCds = wkTimeRepo.findByCodes(companyId, cds);
-                appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workTimeSettings));
+                workTimeSettings = wkTimeRepo.findByCodes(companyId, cds);
             }
         }
-
+        appDispInfoStartupOutput.getAppDispInfoWithDateOutput().setOpWorkTimeLst(Optional.of(workTimeSettings));
         output.setAppDispInfoStartup(appDispInfoStartupOutput);
         output.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         output.setWorkDayCds(Optional.of(workDays));
         output.setHolidayCds(Optional.of(holidayWorkType));
-        output.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         output.setWorkTypeAfterChange(Optional.empty());
-        return output;
+        output.setActualContentDisplay(Optional.empty());
+        result.setBusinessTripInfoOutput(output);
+        result.setBusinessTrip(businessTrip.isPresent() ? businessTrip.get() : null);
+        return result;
     }
 
     @Override
     public List<WorkType> getBusinessAppWorkType(AppEmploymentSet appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification) {
-        List<WorkType> result = new ArrayList<>();
         String cid = AppContexts.user().companyId();
+        List<WorkType> result = Collections.emptyList();
         Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet
-                .getTargetWorkTypeByAppLst().stream().filter((x -> x.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION))
+                .getTargetWorkTypeByAppLst()
+                .stream()
+                .filter((x ->
+                        x.getAppType() == ApplicationType.BUSINESS_TRIP_APPLICATION && x.getOpBusinessTripAppWorkType().isPresent() && x.getOpBusinessTripAppWorkType().get().value == workStyle.value
+                ))
                 .findAny();
-        if (opTargetWorkTypeByApp.isPresent() && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()) {
-            if (opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().get().value == workStyle.value) {
-                if (opTargetWorkTypeByApp.get().isDisplayWorkType()
-                        && opTargetWorkTypeByApp.get().getWorkTypeLst().isEmpty()
-                        && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()
-                        && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().get() == workStyle) {
-                    //INPUT．「雇用別申請承認設定．申請別対象勤務種類．勤務種類リスト」を返す
-                    List<String> workTypeCDLst = opTargetWorkTypeByApp.get().getWorkTypeLst();
-                    result = workTypeRepository.findNotDeprecatedByListCode(cid, workTypeCDLst);
-                } else {
-                    // ドメインモデル「勤務種類」を取得して返す
+        if (opTargetWorkTypeByApp.isPresent()) {
+            if (opTargetWorkTypeByApp.get().isDisplayWorkType()
+                    && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().isPresent()
+                    && opTargetWorkTypeByApp.get().getOpBusinessTripAppWorkType().get().value == workStyle.value) {
+                //INPUT．「雇用別申請承認設定．申請別対象勤務種類．勤務種類リスト」を返す
+                List<String> workTypeCDLst = opTargetWorkTypeByApp.get().getWorkTypeLst();
+                result = workTypeRepository.findNotDeprecatedByListCode(cid, workTypeCDLst);
+            } else {
+                // ドメインモデル「勤務種類」を取得して返す
+                if (!workTypeClassification.isEmpty()) {
                     result = workTypeRepository.findForAppKAF008(
                             cid,
                             DeprecateClassification.NotDeprecated.value,
                             WorkTypeUnit.OneDay.value,
                             workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
                     );
+                } else {
+                    result = workTypeRepository.findByDepreacateAtrAndWorkTypeAtr(
+                            cid,
+                            DeprecateClassification.NotDeprecated.value,
+                            WorkTypeUnit.OneDay.value
+                    );
                 }
+                opTargetWorkTypeByApp.get().setDisplayWorkType(true);
+                opTargetWorkTypeByApp.get().setWorkTypeLst(result.stream().map(i-> i.getWorkTypeCode().v()).collect(Collectors.toList()));
+                opTargetWorkTypeByApp.get().setOpBusinessTripAppWorkType(Optional.of(EnumAdaptor.valueOf(workStyle.value, BusinessTripAppWorkType.class)));
             }
         } else {
             // ドメインモデル「勤務種類」を取得して返す
-            result = workTypeRepository.findForAppKAF008(
-                    cid,
-                    DeprecateClassification.NotDeprecated.value,
-                    WorkTypeUnit.OneDay.value,
-                    workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
-            );
+            if (!workTypeClassification.isEmpty()) {
+                result = workTypeRepository.findForAppKAF008(
+                        cid,
+                        DeprecateClassification.NotDeprecated.value,
+                        WorkTypeUnit.OneDay.value,
+                        workTypeClassification.stream().map(i -> i.value).collect(Collectors.toList())
+                );
+            } else {
+                result = workTypeRepository.findByDepreacateAtrAndWorkTypeAtr(
+                        cid,
+                        DeprecateClassification.NotDeprecated.value,
+                        WorkTypeUnit.OneDay.value
+                );
+            }
         }
         return result;
+    }
+
+    /**
+     * アルゴリズム「出張申請就業時間帯チェック」を実行する
+     * @param wkTypeCd
+     * @param wkTimeCd
+     */
+    @Override
+    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate) {
+        SetupType checkNeededOfWorkTime = basicScheduleService.checkNeededOfWorkTimeSetting(wkTypeCd);
+        switch (checkNeededOfWorkTime) {
+            case REQUIRED:
+                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+                    throw new BusinessException("Msg_24", inputDate.toString());
+                }
+                break;
+            case OPTIONAL:
+                break;
+            case NOT_REQUIRED:
+                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+                    throw new BusinessException("23", inputDate.toString());
+                }
+                break;
+        }
     }
 
     /**

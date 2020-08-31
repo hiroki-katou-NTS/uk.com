@@ -24,7 +24,6 @@ public class AppTripRequestSet implements DomainAggregate {
     private String companyId;
     // コメント
     private AppCommentSet comment;
-    // 申請対象の矛盾チェック
-    private Optional<ContractCheck> contractCheck;
+
 
 }

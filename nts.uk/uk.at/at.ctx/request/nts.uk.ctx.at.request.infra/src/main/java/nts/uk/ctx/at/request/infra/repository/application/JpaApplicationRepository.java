@@ -49,7 +49,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- *
+ * 
  * @author Doan Duy Hung
  *
  */
@@ -105,12 +105,12 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate" + " AND c.prePostAtr = :prePostAtr"
 			+ " AND c.appType = :appType" + " AND c.krqdtAppReflectStateLst.actualReflectStatus IN :lstRef"
 			+ " ORDER BY c.appType ASC, c.inputDate DESC";
-
+	
 	/*
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
 		return this.queryProxy().query(SELECT_APPLICATION_BY_ID, KrqdtApplication_New.class)
-				.setParameter("appID", appID).setParameter("companyID", companyID).getSingle(x -> x.toOvertimeAppSetDomain());
+				.setParameter("appID", appID).setParameter("companyID", companyID).getSingle(x -> x.toDomain());
 	}
 	*/
 
@@ -595,9 +595,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		return mapResult;
 	}
-
+	
 	// refactor 4
-
+	
 	@Override
 	public Optional<Application> findByID(String companyID, String appID) {
 		return this.findByID(appID);
@@ -774,7 +774,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		return Optional.of(krqdtApplicationLst.get(0));
 	}
-	
+
 	@Override
 	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst) {
 		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
@@ -842,5 +842,4 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		return krqdtApplicationLst.stream().map(i -> i.toDomain()).collect(Collectors.toList());
 	}
-
 }

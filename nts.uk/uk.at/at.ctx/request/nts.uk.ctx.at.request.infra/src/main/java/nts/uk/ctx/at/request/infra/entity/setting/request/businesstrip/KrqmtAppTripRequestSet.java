@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stam
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
 import nts.uk.shr.com.color.ColorCode;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
@@ -17,8 +18,8 @@ import java.util.Optional;
 @NoArgsConstructor
 @Entity
 @Getter
-@Table(name = "KRQST_APP_TRIP")
-public class KrqstAppTripRequestSet extends UkJpaEntity {
+@Table(name = "KRQMT_APP_TRIP")
+public class KrqmtAppTripRequestSet extends ContractUkJpaEntity {
 
     /** 会社ID */
     @Id
@@ -43,8 +44,8 @@ public class KrqstAppTripRequestSet extends UkJpaEntity {
         return this.companyId;
     }
 
-    public static KrqstAppTripRequestSet toEntity(AppTripRequestSet domain) {
-        return new KrqstAppTripRequestSet(
+    public static KrqmtAppTripRequestSet toEntity(AppTripRequestSet domain) {
+        return new KrqmtAppTripRequestSet(
                 domain.getCompanyId(),
                 AppContexts.user().contractCode(),
                 domain.getComment().getComment().v(),
@@ -60,8 +61,7 @@ public class KrqstAppTripRequestSet extends UkJpaEntity {
         appCommentSet.setColorCode(new ColorCode(this.getColorCode()));
         return new AppTripRequestSet(
                 this.getCompanyId(),
-                appCommentSet,
-                Optional.empty()
+                appCommentSet
         );
     }
 }

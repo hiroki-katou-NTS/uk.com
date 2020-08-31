@@ -12,8 +12,12 @@ import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet
  */
 public interface RequestByCompanyRepository {
 	
-	public Optional<ApprovalFunctionSet> findByAppType(String companyID, ApplicationType appType);
+	Optional<ApprovalFunctionSet> findByAppType(String companyID, ApplicationType appType);
 	
-	public Optional<ApprovalFunctionSet> findByCompanyID(String companyID);
+	Optional<ApprovalFunctionSet> findByCompanyID(String companyID);
+
+	Optional<RequestByCompany> findByCompanyId(String companyId);
+
+	void save(RequestByCompany domain);
 	
 }

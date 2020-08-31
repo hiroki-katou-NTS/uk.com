@@ -13,8 +13,8 @@
 	                    value: returnTime, enable: true, required: true, option: {timeWithDay: true}}"/>
     </div>
     <div id="A6_1">
-        <div class="label" data-bind="if: comment">
-            <span data-bind="text: comment.comment, style: { color: comment.colorCode, 'font-weight': comment.bold ? 'bold' : 'normal' }"></span>
+        <div class="label" data-bind="if: comment()">
+            <span data-bind="text: comment().comment, style: { color: comment().colorCode, 'font-weight': comment().bold ? 'bold' : 'normal' }"></span>
         </div>
     </div>
     <div id="A10" tab-index="6">
@@ -41,49 +41,51 @@
             </THEAD>
 
             <TBODY data-bind="foreach: items">
-            <tr>
-                <td>
-                    <div class="div_line" >
-                        <span data-bind="text: dateDisp, style: {color: dateColor}"></span>
-                    </div>
-                </td>
-                <td>
-                    <div class="div_line code" id="A10_D2" tab-index="7">
-                        <input data-bind="ntsTextEditor: {
-                        value: wkTypeCd,
-                        enable: true
-                    }"/>
-                    </div>
-                </td>
-                <td>
-                    <div class="div_line">
-                        <a tab-index="8" class="hyperlink" data-bind="text: wkTypeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
-                    </div>
-                </td>
-                <td>
-                    <div class="div_line code" id="A10_D4">
-                        <input tab-index="9" data-bind="ntsTextEditor: {
-                        value: wkTimeCd,
-                        enable: true
-                    }"/>
-                    </div>
-                </td>
-                <td>
-                    <div class="div_line">
-                        <a tab-index="10" class="hyperlink" data-bind="text: wkTimeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
-                    </div>
-                </td>
-                <td>
-                    <div class="div_line time">
-                        <span tab-index="11" class="label" data-bind="text: start"></span>
-                    </div>
-                </td>
-                <td>
-                    <div class="div_line time">
-                        <span tab-index="12" class="label" data-bind="text: end"></span>
-                    </div>
-                </td>
-            </tr>
+                <tr>
+                    <td>
+                        <div class="div_line" >
+                            <span data-bind="text: dateDisp, style: {color: dateColor}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="div_line code" id="A10_D2" tab-index="7">
+                            <input data-bind="ntsTextEditor: {
+                            value: wkTypeCd,
+                            enable: true,
+                            constraint: 'WorkTypeCode'
+                        }"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="div_line" id="A10_D3">
+                            <a tab-index="8" class="hyperlink" data-bind="text: wkTypeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="div_line code" id="A10_D4">
+                            <input tab-index="9" data-bind="ntsTextEditor: {
+                            value: wkTimeCd,
+                            enable: true,
+                            constraint: 'WorkTimeCode'
+                        }"/>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="div_line" id="A10_D5">
+                            <a tab-index="10" class="hyperlink" data-bind="text: wkTimeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="div_line time">
+                            <span tab-index="11" class="label" data-bind="text: start"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="div_line time">
+                            <span tab-index="12" class="label" data-bind="text: end"></span>
+                        </div>
+                    </td>
+                </tr>
             </TBODY>
         </table>
     </div>

@@ -155,7 +155,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		Optional<WorkManagementMultiple> opWorkManagementMultiple = workManagementMultipleRepository.findByCode(companyID);
 		// 事前申請がいつから受付可能か確認する
 		// TODO: 申請設定 domain has changed!
-		PreAppAcceptLimit preAppAcceptLimit = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType()==appType)
+		PreAppAcceptLimit preAppAcceptLimit = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType() == appType)
 				.findAny().map(x -> x.checkWhenPreAppCanBeAccepted(opOvertimeAppAtr)).orElse(null);
 		// OUTPUT「申請表示情報(基準日関係なし)」にセットする(Set vào  OUTPUT "application display information (kg liên quan base date)")
 		AppDispInfoNoDateOutput appDispInfoNoDateOutput = new AppDispInfoNoDateOutput(
@@ -250,7 +250,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				companyID, 
 				employeeID, 
 				dateLst, 
-				appType, 
+				appType,
 				applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(), 
 				opAppTypeSetting.map(x -> x.getDisplayInitialSegment().orElse(null)).orElse(null),
 				opOvertimeAppAtr,
@@ -355,12 +355,12 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			// 申請表示情報(申請対象日関係あり)を取得する
 			// TODO: 申請設定 domain has changed!
 			ApplicationSetting applicationSetting = appDispInfoNoDateOutput.getApplicationSetting();
-			Optional<AppTypeSetting> opAppTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType()==appType).findAny();
+			Optional<AppTypeSetting> opAppTypeSetting = applicationSetting.getAppTypeSettings().stream().filter(x -> x.getAppType() == appType).findAny();
 			Optional<ReceptionRestrictionSetting> opReceptionRestrictionSetting = applicationSetting.getReceptionRestrictionSettings().stream().filter(x -> x.getAppType()==appType).findAny();
 			AppDispInfoRelatedDateOutput result = this.getAppDispInfoRelatedDate(
 					companyID, appDispInfoNoDateOutput.getEmployeeInfoLst().stream().findFirst().get().getSid(), 
 					dateLst, 
-					appType, 
+					appType,
 					applicationSetting.getAppDisplaySetting().getPrePostDisplayAtr(), 
 					opAppTypeSetting.map(x -> x.getDisplayInitialSegment().orElse(null)).orElse(null),
 					opOvertimeAppAtr,

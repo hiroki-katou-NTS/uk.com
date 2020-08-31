@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -8,7 +9,15 @@ import java.util.Optional;
  *
  */
 public interface AppEmploymentSetRepository {
-	
-	public Optional<AppEmploymentSet> findByCompanyIDAndEmploymentCD(String companyID, String employmentCD);
+
+    List<AppEmploymentSet> findByCompanyID(String companyID);
+
+	Optional<AppEmploymentSet> findByCompanyIDAndEmploymentCD(String companyID, String employmentCD);
+
+	void insert(AppEmploymentSet domain);
+
+	void update(AppEmploymentSet domain);
+
+	void delete(String companyId, String employmentCode);
 	
 }

@@ -96,7 +96,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 			ApplicationType appType, OvertimeAppAtr overtimeAppAtr, AppDispInfoNoDateOutput appDispInfoNoDateOutput){
 		GeneralDate systemDate = GeneralDate.today();
 		ReceptionRestrictionSetting receptionRestrictionSetting = appDispInfoNoDateOutput.getApplicationSetting().getReceptionRestrictionSettings()
-				.stream().filter(x -> x.getAppType()==appType).findAny().orElse(null);
+				.stream().filter(x -> x.getAppType() == appType).findAny().orElse(null);
 		// INPUT．事前事後区分をチェックする
 		if(prePostAtr==PrePostAtr.POSTERIOR) {
 			// INPUT．申請設定（基準日関係なし）．申請承認設定．申請設定．受付制限設定．事後の受付制限．未来日許可しないをチェックする

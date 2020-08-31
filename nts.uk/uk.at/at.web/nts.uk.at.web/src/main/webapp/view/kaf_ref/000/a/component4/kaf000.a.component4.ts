@@ -29,7 +29,7 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
 
             vm.appDispInfoStartupOutput.subscribe(value => {
                 if(!vm.appType){
-                    vm.appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.appType;
+                    vm.appType = value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting[0].appType;
                     if (vm.appType == AppType.ABSENCE_APPLICATION || vm.appType == AppType.WORK_CHANGE_APPLICATION || vm.appType == AppType.BUSINESS_TRIP_APPLICATION) {
                         vm.dispCheckBox(true);
                         vm.dispSingleDate(true);
