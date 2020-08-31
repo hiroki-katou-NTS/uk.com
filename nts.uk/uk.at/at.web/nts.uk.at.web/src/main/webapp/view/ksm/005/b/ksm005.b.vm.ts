@@ -1,13 +1,11 @@
 module nts.uk.at.view.ksm005.b {
 
-    import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import UserInfoDto = service.model.UserInfoDto;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
     import MonthlyPatternSettingBatch = service.model.MonthlyPatternSettingBatch;
     import BusinessDayClassification = service.model.BusinessDayClassification;
     import WeeklyWorkSettingDto = service.model.WeeklyWorkSettingDto;
-	import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import KeyMonthlyPatternSettingBatch = service.model.KeyMonthlyPatternSettingBatch;
     import MonthlyPatternSettingBatchDto = service.model.MonthlyPatternSettingBatchDto;
     import WeeklyWork = service.model.WeeklyWork;
@@ -37,7 +35,7 @@ module nts.uk.at.view.ksm005.b {
 	        settingForHolidays: KnockoutObservable<boolean>;
 	        lstSelectableCode: KnockoutObservableArray<string>;
 	        columnHolidayPatterns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-	        lstHolidaysPattern:KnockoutObservableArray<MonthlyPatternDto>;
+	        lstHolidaysPattern:KnockoutObservableArray<MonthlyPattern>;
 	        selectHolidayPattern: KnockoutObservable<string>;
 
             constructor() {
@@ -83,6 +81,7 @@ module nts.uk.at.view.ksm005.b {
 
 	            //self.findAllMonthlyPattern();
 	            self.getWeeklyWorkPattern();
+                $("#fixed-table").ntsFixedTable({ height: 190, width: 600 });
             }
 
             /**
@@ -413,8 +412,11 @@ module nts.uk.at.view.ksm005.b {
 		                        day = day.substring(0, 1);
 		                    let desPos = item.workdayDivision.indexOf('（');
 		                    let des = ( desPos > -1 ) ? item.workdayDivision.substring(0, desPos) : item.workdayDivision;
-
-		                    let dayHoliday = { code: day, name: des };
+		                    let isSat = day == '土';
+                            let isSun = day == '日';
+                            let isHolidayOrWeekend = item.typeColor == 1 || item.typeColor == 2;
+                            let isHalfDayWork = item.typeColor == 3;
+		                    let dayHoliday = { code: day, name: des, isSat , isSun , isHolidayOrWeekend , isHalfDayWork };
 		                    self.lstHolidaysPattern.push(dayHoliday);
 	                    });
 
@@ -445,6 +447,15 @@ module nts.uk.at.view.ksm005.b {
 		        let self = this;
 		        self.showDialogKDL002(1);
 	        }
+
+        }
+        interface MonthlyPattern {
+            code: string,
+            name: string,
+            isSat: boolean,
+            isSun: boolean,
+            isHolidayOrWeekend: boolean,
+            isHalfDayWork: boolean
         }
     }
 }

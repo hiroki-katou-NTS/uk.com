@@ -60,12 +60,18 @@
 	margin: 5px 0 0;
 }
 
-#lstHolidaysPattern tr:nth-child(6) td,
-#lstHolidaysPattern tr:nth-child(7) td{
+.popup-b72 .sat{
+	color: #0000ff;
+}
+.popup-b72 .sun{
 	color: #ff0000;
 }
-#lstHolidaysPattern tr:nth-child(6) td:first-child {
-	color: #0000ff;
+
+.popup-b72 .holidayOrWeekend{
+	color: #ff0000;
+}
+.popup-b72 .halfDayWork{
+	color: #FF7F27;
 }
 
 #checkOverWriteSetting .ntsCheckBox-label {

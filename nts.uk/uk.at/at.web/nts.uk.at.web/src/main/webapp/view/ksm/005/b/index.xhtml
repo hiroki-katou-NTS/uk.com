@@ -89,16 +89,23 @@
 				</div>
 				<div class="popup-area popup-b72 popup-panel bg-green">
 					<div tabindex="-1" class="popup-panel-body">
-						<table tabindex="6" id="lstHolidaysPattern"
-							   data-bind="ntsGridList: {
-								dataSource: lstHolidaysPattern,
-								primaryKey: 'code',
-								columns: columnHolidayPatterns,
-								multiple: false,
-								value: selectHolidayPattern,
-								rows: 8,
-								name: '#[KSM005_15]'
-								}">
+						<table id="fixed-table" tabindex="6">
+							<colgroup>
+								<col width="50px"/>
+								<col width="100px"/>
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header">#{i18n.getText('KSM005_92')}</th>
+									<th class="ui-widget-header">#{i18n.getText('KSM005_93')}</th>
+								</tr>
+							</thead>
+							<tbody data-bind="foreach: $vm.lstHolidaysPattern">
+								<tr>
+									<td><div data-bind="text: code, css: {sat: $data.isSat, sun: $data.isSun}"></div></td>
+									<td><div data-bind="text: $data.name, css : {holidayOrWeekend: $data.isHolidayOrWeekend, halfDayWork: $data.isHalfDayWork}"></div></td>
+								</tr>
+							</tbody>
 						</table>
 					</div>
 				</div>
