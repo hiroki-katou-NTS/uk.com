@@ -6,35 +6,44 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 
 /**
- * Name and attribute corresponding to the daily work item
+ * Attribute of attendance item.
  */
 @Setter
 @Getter
 @AllArgsConstructor
 public class AttributeOfAttendanceItemDto {
 
-	/** The attendance item id. */
+	/**
+	 * List 勤怠項目ID
+	 */
 	private List<Integer> attendanceItemIds;
 
-	/** The attendance item name. */
-	private List<AttItemName> attendanceItemNames;
+	/**
+	 * List 名称
+	 */
+	private List<String> attendanceItemNames;
 	
-	/** The attendance item name. */
-	private List<DailyAttendanceAtr> attributes;
+	/**
+	 * List 属性 
+	 */
+	private List<DailyAttendanceAtr> attendanceAtrs;
 	
-	/** The attendance item name. */
+	/**
+	 *  List マスタの種類
+	 */
 	private List<Optional<TypesMasterRelatedDailyAttendanceItem>> masterTypes;
 	
-	/** The attendance item name. */
+	/**
+	 * List 表示番号
+	 */
 	private List<Integer> displayNumbers;
 	
 	/**
-	 * Instantiates a new attendance item dto.
+	 * Attribute of attendance item.
 	 */
 	public AttributeOfAttendanceItemDto() {
 		

@@ -18,6 +18,7 @@ import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
+import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
@@ -187,15 +188,17 @@ public class AttendanceIdItemFinder {
 	
 	public AttributeOfAttendanceItemDto getDailyAttendanceItemAtrs(String cid, int reportId, int attendanceType) {
 		AttributeOfAttendanceItemDto result = new AttributeOfAttendanceItemDto();
-		// 画面で使用可能な日次勤怠項目を取得する - pending, dang mock de xu ly cac giai thuat sau
+		// 画面で使用可能な日次勤怠項目を取得する - To do
+		//	アルゴリズム「帳票で利用できる日次の勤怠項目を取得する」を実行する - To do
+		
+		//	アルゴリズム「使用不可の勤怠項目を除く」を実行する - To do
 		List<Integer> attendanceIdList = new ArrayList<Integer>();
 		
 		
 		
 		
-		
-		//** 日次勤怠項目に対応する名称、属性を取得する */
-		//		日次の勤怠項目を取得する
+		// 日次勤怠項目に対応する名称、属性を取得する 
+		//	日次の勤怠項目を取得する
 		List<DailyAttendanceItem> dailyAttendanceItemList = dailyAtRepo.getListById(cid, attendanceIdList);
 		//		取得した勤怠項目の件数をチェックする
 		if (dailyAttendanceItemList.size() > 0) {
@@ -203,16 +206,27 @@ public class AttendanceIdItemFinder {
 			Optional<String> roleId = Optional.of(AppContexts.user().roles().forAttendance());
 			// アルゴリズム「会社の日次を取得する」を実行する
 			List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(cid, roleId, attendanceIdList, Collections.emptyList());
-			List<DailyAttendanceAtr> attributes = new ArrayList<DailyAttendanceAtr>();
+			// List＜勤怠項目ID＞
+			List<Integer> attendanceItemIds = new ArrayList<Integer>();
+			// List<名称>
+			List<String> attendanceItemNames = new ArrayList<String>();
+			dailyItems.stream().forEach(element -> {
+				attendanceItemIds.add(element.getAttendanceItemId());
+				attendanceItemNames.add(element.getAttendanceItemName());
+			});
+			// List<属性>
+			List<DailyAttendanceAtr> attendanceAtrs = new ArrayList<DailyAttendanceAtr>();
+			// List<マスタの種類＞
 			List<Optional<TypesMasterRelatedDailyAttendanceItem>> masterTypes = new ArrayList<Optional<TypesMasterRelatedDailyAttendanceItem>>();
+			// List<表示番号>
 			List<Integer> displayNumbers = new ArrayList<Integer>();
 			dailyAttendanceItemList.stream().forEach(element -> {
-				attributes.add(element.getDailyAttendanceAtr());
+				attendanceAtrs.add(element.getDailyAttendanceAtr());
 				masterTypes.add(element.getMasterType());
 				displayNumbers.add(element.getDisplayNumber());
 			});
 
-			result = new AttributeOfAttendanceItemDto(attendanceIdList, dailyItems, attributes, masterTypes, displayNumbers);
+			result = new AttributeOfAttendanceItemDto(attendanceItemIds, attendanceItemNames, attendanceAtrs, masterTypes, displayNumbers);
 		}
 		return result;
 	}
@@ -227,16 +241,40 @@ public class AttendanceIdItemFinder {
 	 * 			the attendanceId list
 	 * @return AttItemName>
 	 */
-	public List<AttItemName> getMonthlyAttendanceItemAtrs(String cid, List<Integer> attendanceIds) {
-		List<MonthlyAttendanceItem> monthlyAttItems = monthlyAtRepo.findByAttendanceItemId(cid, attendanceIds);
-		if (monthlyAttItems.size() > 1) {
+	public AttributeOfAttendanceItemDto getMonthlyAttendanceItemAtrs(String cid, List<Integer> attendanceIds) {
+		// 画面で使用可能な月次勤怠項目を取得する - To do
+		//	アルゴリズム「帳票で利用できる月次の勤怠項目を取得する」を実行する - To do
+		//	アルゴリズム「使用不可の勤怠項目を除く」を実行する - To do
+		List<Integer> attendanceIdList = new ArrayList<Integer>();
+		
+		
+		// 月次勤怠項目に対応する名称、属性を取得する
+		//	月次の勤怠項目を取得する
+		List<MonthlyAttendanceItem> monthlyAttendanceItemList = monthlyAtRepo.findByAttendanceItemId(cid, attendanceIdList);
+		//	取得した勤怠項目の件数をチェックする
+		if (monthlyAttendanceItemList.size() > 0) {
 			// ログインユーザの就業のロールID
 			Optional<String> roleId = Optional.of(AppContexts.user().roles().forAttendance());
-			List<AttItemName> monthlyItems = companyMonthlyItemService.getMonthlyItems(cid, roleId, attendanceIds, Collections.emptyList());
-			return monthlyItems;
-		}
-		return null;
-	}
+			// アルゴリズム「会社の日次を取得する」を実行する
+			List<AttItemName> monthlyItems = companyMonthlyItemService.getMonthlyItems(cid, roleId, attendanceIdList, Collections.emptyList());
+			// List＜勤怠項目ID＞
+			List<Integer> attendanceItemIds = new ArrayList<Integer>();
+			// List<名称>
+			List<String> attendanceItemNames = new ArrayList<String>();
+			monthlyItems.stream().forEach(element -> {
+				attendanceItemIds.add(element.getAttendanceItemId());
+				attendanceItemNames.add(element.getAttendanceItemName());
+			});
+			List<MonthlyAttendanceItemAtr> attendanceAtrs = new ArrayList<MonthlyAttendanceItemAtr>();
+			List<Optional<TypesMasterRelatedDailyAttendanceItem>> masterTypes = new ArrayList<Optional<TypesMasterRelatedDailyAttendanceItem>>();
+			List<Integer> displayNumbers = new ArrayList<Integer>();
+			monthlyAttendanceItemList.stream().forEach(element -> {
+				attendanceAtrs.add(element.getMonthlyAttendanceAtr());
+				displayNumbers.add(element.getDisplayNumber());
+			});
 	
+			result = new AttributeOfAttendanceItemDto(attendanceItemIds, attendanceItemNames, attendanceAtrs, masterTypes, displayNumbers);
+		}
+	}
 	
 }

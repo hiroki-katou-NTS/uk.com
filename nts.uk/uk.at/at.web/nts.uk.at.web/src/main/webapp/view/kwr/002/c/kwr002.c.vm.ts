@@ -134,6 +134,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     position = 1;
                 }
                 else position = 2;
+
+                const positionText = position == 1 ? "上" : "下";
                 if (self.selectedTab() == "tab-1") {
                     exportAtr = 1;
                     if (position == 1)
@@ -144,6 +146,34 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         else attendanceItemName = self.attendanceRecExpDaily()[columnIndex].lowwerPosition();
 
                     attItem = self.attendanceRecExpDaily()[columnIndex];
+
+                    // update ver 25
+                    service.getDailyAttendanceTtem()
+                        .then((response: AttributeOfAttendanceItem) => {
+                            if (response) {
+                                const shareParam: model.AttendanceItemShare = new model.AttendanceItemShare({
+                                    titleFlag: true,
+                                    layoutCode: self.attendanceCode(),
+                                    layoutName: self.attendanceName(),
+                                    directText: getText('KWR002_131')+ columnIndex + getText('KWR002_132') + positionText + getText('KWR002_133'),
+                                    itemNameFlag: true,
+                                    inputCategory: 2,
+                                    attendanceItemName: attendanceItemName,
+                                    selectionCategory: 2,
+                                    attendaceTypes: [
+                                        new model.AttendaceType(1, getText('KWR002_141')),
+                                        new model.AttendaceType(2, getText('KWR002_142')),
+                                        new model.AttendaceType(3, getText('KWR002_143')),
+                                    ],
+                                    selectedAttr: self.attendanceRecordExportSettings().dailyExportItem[0].exportAtr,
+                                    attendanceItemIds: Array<number>,
+                                    attendanceItemNames: Array<AttItemName>,
+                                    attributes: Array<DailyAttendanceAtr>,
+                                    attendaceSelected: number,
+                                    exportItems: Array<any>
+                                });
+                            }
+                        })
                 } else {
                     exportAtr = 2;
                     if (position == 1)
@@ -560,17 +590,17 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             // タイトル行表示フラグ
             titleFlag: boolean;
             // 出力レイアウトコード
-            layoutCode: string;
+            layoutCode: String;
             // 出力レイアウト名
-            layoutName: string;
+            layoutName: String;
             // コメント
-            directText: string;
+            directText: String;
             // 項目名行表示フラグ
             itemNameFlag: boolean;
             // 項目名表示入力区分
             inputCategory: number;
             // 項目名
-            attendanceItemName: string;
+            attendanceItemName: String;
             // 属性選択区分
             selectionCategory: number;
             // 属性<List>
@@ -587,6 +617,10 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             attendaceSelected: number;
             // 選択済み勤怠項目<List>
             exportItems: Array<any>;
+
+            constructor(init?: Partial<AttendanceItemShare>) {
+                $.extend(this, init);
+            }
         }
     }
 

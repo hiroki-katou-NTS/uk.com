@@ -38,7 +38,7 @@ module nts.uk.com.view.kwr002.c{
             return nts.uk.request.ajax(path.getApprovalProcessingUseSetting);
         }
         // Add in Ver 25
-        export function getDailyAttendanceTtems(): JQueryPromise<AttributeOfAttendanceItem> {
+        export function getDailyAttendanceTtem(): JQueryPromise<AttributeOfAttendanceItem> {
             return nts.uk.request.ajax(path.getDailyAttendanceTtems);
         }
 
