@@ -43,7 +43,7 @@ public class WeeklyWorkScreenProcessor {
         List<WorkType> workTypes = workTypeRepository.getAcquiredHolidayWorkTypes(cid);
         List<String> workTypeCodes = new ArrayList<>();
         workTypes.forEach(x ->workTypeCodes.add(x.getWorkTypeCode().v()));
-
+        List<String> finalworkTypeCodes = workTypeCodes.stream().distinct().collect(Collectors.toList());
         //get workTypeName
         List<workTypeDto> workTypeDtos = new ArrayList<>();
 
@@ -56,7 +56,7 @@ public class WeeklyWorkScreenProcessor {
         // get WorkTimeSettingName
         String WorkTimeSettingName = workTimeSettingPub.getWorkTimeSettingName(cid, requestPrams.worktimeCode);
 
-        return new WeeklyWorkDto(workdayPatternDtos,workTypeDtos,workTypeCodes,WorkTimeSettingName);
+        return new WeeklyWorkDto(workdayPatternDtos,workTypeDtos,finalworkTypeCodes,WorkTimeSettingName);
     }
 
 }
