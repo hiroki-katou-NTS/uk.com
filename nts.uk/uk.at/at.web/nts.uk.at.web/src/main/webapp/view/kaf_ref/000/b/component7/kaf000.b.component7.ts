@@ -38,7 +38,7 @@ module nts.uk.at.view.kaf000_ref.b.component7.viewmodel {
 		            appStandardReasonCD: '',
 		            displayOrder: 0,
 		            defaultValue: false,
-		            opReasonForFixedForm: vm.$i18n('KAFS00_23'),   
+		            reasonForFixedForm: vm.$i18n('KAFS00_23'),   
 		        }];
 				vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
 				vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);
