@@ -15,7 +15,7 @@ module nts.uk.at.view.kaf022.z.viewmodel {
 
         constructor() {
             const self = this;
-            const labels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_707", "KAF022_10", "KAF022_11", "KAF022_12", "KAF022_705"];
+            const labels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_11", "KAF022_707", "KAF022_10", "KAF022_12", "KAF022_705"];
             self.settings = ko.observableArray([]);
             const listAppType = __viewContext.enums.ApplicationType;
             for (let i = 0; i < listAppType.length; i++) {
