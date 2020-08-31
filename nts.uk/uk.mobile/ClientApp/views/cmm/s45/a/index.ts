@@ -154,7 +154,7 @@ export class CmmS45AComponent extends Vue {
 
 
 
-        } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
+        } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractConditionNew')) {
             // 申請を絞り込む
             // self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
             // self.appListExtractCondition = storage.local.getItem('CMMS45_AppListExtractConditionNew') as AppListExtractCondition;
@@ -162,6 +162,8 @@ export class CmmS45AComponent extends Vue {
             // self.createLstAppType();
             // return service
             self.$mask('show');
+            self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
+            self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
             self.$http.post('at', servicePath.filterByDate, {applicationListDtoMobile: self.data})
                 .then((res: any) => {
                     self.$mask('hide');
@@ -171,9 +173,9 @@ export class CmmS45AComponent extends Vue {
         
                     storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
                     self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
-                    // self.isDisPreP = 
+
                     self.convertAppInfo(self.data.appListInfoDto);
-                    self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
+                    // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
         
         
                 }).catch(() => {
@@ -201,7 +203,7 @@ export class CmmS45AComponent extends Vue {
             self.appListExtractCondition = {
                 // 申請一覧区分
                 // 0: application , 1: approval
-                appListAtr: 0,
+                appListAtr: Mode.APPLICATION,
                 // 表の幅登録
                 tableWidthRegis: false,
                 // 事前出力
@@ -599,6 +601,10 @@ export class ListOfApplication {
     //  表示行数超
 
     public opMoreThanDispLineNO: boolean;
+}
+export enum Mode {
+    APPLICATION,
+    APPROVAL
 }
 const servicePath = {
     getApplicationList: 'at/request/application/applist/getapplistMobile',
