@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 
 /**
@@ -10,6 +13,9 @@ import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet
  *
  */
 @Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestByCompany {
 	
 	/**

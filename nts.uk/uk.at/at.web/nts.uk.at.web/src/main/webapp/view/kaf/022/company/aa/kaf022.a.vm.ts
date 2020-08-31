@@ -211,13 +211,13 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                             new ReceptionRestrictionSetting(
                                 appType.name,
                                 appType.value,
-                                obj.useAtr,
-                                obj.dateBeforehandRestrictions,
-                                obj.methodCheck,
-                                obj.earlyOvertime,
-                                obj.normalOvertime,
-                                obj.earlyNormalOvertime,
-                                obj.allowFutureDay
+                                obj.appType == 0 ? obj.otAppBeforeAccepRestric.toUse : obj.beforehandRestriction.toUse,
+                                obj.appType == 0 ? obj.otAppBeforeAccepRestric.dateBeforehandRestrictions : obj.beforehandRestriction.dateBeforehandRestrictions,
+                                obj.appType == 0 ? obj.otAppBeforeAccepRestric.methodCheck : null,
+                                obj.appType == 0 ? obj.otAppBeforeAccepRestric.opEarlyOvertime : null,
+                                obj.appType == 0 ? obj.otAppBeforeAccepRestric.opNormalOvertime : null,
+                                obj.appType == 0 ? obj.otAppBeforeAccepRestric.opEarlyNormalOvertime : null,
+                                obj.afterhandRestriction.allowFutureDay
                             )
                         );
                     } else {

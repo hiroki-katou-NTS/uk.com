@@ -1,38 +1,48 @@
 module nts.uk.at.view.kaf022.wkp.viewmodel {
-    import flat = nts.uk.util.flatArray;
     import getText = nts.uk.resource.getText;
-    import clearError = nts.uk.ui.errors.clearAll;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
+    import ScreenModelZ = z.viewmodel.ScreenModelZ;
+    import ScreenModelM = m.viewmodel.ScreenModelM;
+
     let __viewContext: any = window["__viewContext"] || {};
 
     export class ScreenModel {
         title: KnockoutObservable<string> = ko.observable('');
         removeAble: KnockoutObservable<boolean> = ko.observable(true);
         tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-            new TabModel({ id: 'com', name: getText('Com_Company'), active: true }),
+            new TabModel({ id: 'com', name: getText('Com_Company') }),
             new TabModel({ id: 'wkp', name: getText('Com_Workplace') })
 
         ]);
         currentTab: KnockoutObservable<string> = ko.observable('com');
 
+        radioOptions: KnockoutObservableArray<any> = ko.observableArray([
+            {code: 1, name: getText("KAF022_100")},
+            {code: 0, name: getText("KAF022_101")}
+        ]);
+
+        viewmodelZ: ScreenModelZ;
+        viewmodelM: ScreenModelM;
+
         constructor() {
             let self = this;
+            self.viewmodelZ = new ScreenModelZ();
+            self.viewmodelM = new ScreenModelM();
             self.changeTab(self.tabs()[0]);
         }
 
         changeTab(tab: TabModel) {
             let self = this,
-                // view: any = __viewContext.viewModel,
                 oldtab: TabModel = _.find(self.tabs(), t => t.active());
 
-            // cancel action if tab self click
-            if (oldtab.id == tab.id) {
+            if (oldtab && oldtab.id == tab.id) {
                 return;
             }
-            //set not display remove button first when change tab
-            //__viewContext.viewModel.tabView.removeAble(false);
-            tab.active(true);
+
+            self.tabs().forEach(t => {
+                if (t.id == tab.id) t.active(true);
+                else t.active(false);
+            });
+            // tab.active(true);
             self.title(tab.name);
 
             // self.tabs().map(t => (t.id != tab.id) && t.active(false));
@@ -42,6 +52,7 @@ module nts.uk.at.view.kaf022.wkp.viewmodel {
                 case 'com':
                     self.currentTab('com');
                     nts.uk.ui.errors.clearAll();
+                    self.viewmodelZ.start();
                     // if (!!view.viewmodelA && typeof view.viewmodelA.start == 'function') {
                     //     view.viewmodelA.start();
                     // }
@@ -49,6 +60,7 @@ module nts.uk.at.view.kaf022.wkp.viewmodel {
                 case 'wkp':
                     self.currentTab('wkp');
                     nts.uk.ui.errors.clearAll();
+                    self.viewmodelM.start();
                     // if (!!view.viewmodelL && typeof view.viewmodelL.start == 'function') {
                     //     view.viewmodelL.start();
                     // }
