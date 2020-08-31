@@ -65,9 +65,11 @@ public class WorkCycleReflectionDto {
             Optional<WorkStyle> workStyle = domain.getWorkInformation().getWorkStyle(require);
             return new WorkCycleReflectionDto.RefImageEachDayDto(
                     domain.getWorkCreateMethod().value,
-                    new WorkCycleReflectionDto.WorkInformationDto(domain.getWorkInformation().getWorkTypeCode().v(),
-                            domain.getWorkInformation().getWorkTimeCode().v()),
-                    domain.getDate(),
+                    new WorkCycleReflectionDto.WorkInformationDto(
+							domain.getWorkInformation().getWorkTypeCode() != null ? domain.getWorkInformation().getWorkTypeCode().v():null,
+                            domain.getWorkInformation().getWorkTimeCode() != null ? domain.getWorkInformation().getWorkTimeCode().v():null
+					),
+					domain.getDate(),
                     workStyle.map(workStyle1 -> workStyle1.value).orElse(-1)
             );
 		}
