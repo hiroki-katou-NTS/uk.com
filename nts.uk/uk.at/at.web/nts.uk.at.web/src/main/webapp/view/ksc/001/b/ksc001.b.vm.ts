@@ -438,29 +438,29 @@ module nts.uk.at.view.ksc001.b {
             /**
              * apply ccg001 search data to kcp005
              */
-            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]) : JQueryPromise<void>  {
                 let self = this,
                     employeeSearchs: UnitModel[] = [],
                     listSelectedEmpCode: any = [],
+	                oldListSelectedEmpCode: any = [],
 	                employeeIds: Array<string> = [] ;
+
+	            let dfd = $.Deferred<void>();
+
+	            nts.uk.ui.block.invisible(); // block ui
 
                 self.employeeList([]);
                 self.selectedEmployeeCode([]);
 	            self.employeeIds([]);
+	            oldListSelectedEmpCode = dataList;
 
                 _.each(dataList, (employeeSearch) => {
-                    employeeSearchs.push({
-                        code: employeeSearch.employeeCode,
-                        name: employeeSearch.employeeName,
-                        affiliationName: employeeSearch.affiliationName
-                    });
-                    listSelectedEmpCode.push(employeeSearch.employeeCode.trim());
 	                employeeIds.push(employeeSearch.employeeId);
                 });
 
                 // update employee list by ccg001 search
-	            self.employeeList(employeeSearchs);
-                self.selectedEmployeeCode(listSelectedEmpCode);
+	            //self.employeeList(employeeSearchs);
+                //self.selectedEmployeeCode(listSelectedEmpCode);
                 self.employeeIds(employeeIds);
 
                 //filter personal with new conditions
@@ -475,19 +475,43 @@ module nts.uk.at.view.ksc001.b {
                     startDate, endDate
                 );
 
-                //pending
                 let newListEmployees = self.listEmployeeFilter(listEmployeeFilter);
+	            service.getEmployeeListAfterFilter( listEmployeeFilter )
+	            .done( ( response ) => {
+		            newListEmployees = response.listEmployeeId;
+		            //reset data listing after filtered
+		            employeeSearchs = []; listSelectedEmpCode = [];
+		            if( newListEmployees.length > 0 ) {
+			            newListEmployees.map(( item ) => {
+				            let employeeSearch = oldListSelectedEmpCode.find( ({ employeeId }) => employeeId === item );
+				            if( employeeSearch ) {
+					            employeeSearchs.push ( {
+						            code : employeeSearch.employeeCode,
+						            name : employeeSearch.employeeName,
+						            affiliationName : employeeSearch.affiliationName
+					            } );
+					            listSelectedEmpCode.push ( employeeSearch.employeeCode.trim () );
+				            }
+			            });
 
-                //reset
-                employeeSearchs = []; listSelectedEmpCode = [];
-                newListEmployees && newListEmployees.map((employeeSearch) => {
-                    employeeSearchs.push({
-                        code: employeeSearch.employeeCode,
-                        name: employeeSearch.employeeName,
-                        affiliationName: employeeSearch.affiliationName
-                    });
-                    listSelectedEmpCode.push(employeeSearch.employeeCode.trim());
-                });
+			            self.employeeList(employeeSearchs);
+			            self.selectedEmployeeCode(listSelectedEmpCode);
+
+		            } else {
+			            self.employeeList([]);
+			            self.selectedEmployeeCode([]);
+		            }
+		            self.isEnableNextPageD(true);
+		            dfd.resolve();
+		            nts.uk.ui.block.clear();
+	            }).always( ( response ) => {
+		            //nts.uk.ui.block.clear();
+	            })
+	            .fail((error) => {
+		            self.employeeList([]);
+		            self.selectedEmployeeCode([]);
+		            //nts.uk.ui.block.clear();
+	            });
                 //end
 
                 // update kc005
@@ -508,6 +532,8 @@ module nts.uk.at.view.ksc001.b {
                     maxRows: 10,
                     tabindex: 5
                 };
+
+	            return dfd.promise();
             }
 
             /**
@@ -929,7 +955,6 @@ module nts.uk.at.view.ksc001.b {
                 let self = this;
                 self.savePersonalSchedule(self.toPersonalScheduleData());
                 service.addScheduleExecutionLog(self.scheduleCollectionData()).done(function (data) {
-                    console.log(data);
                     nts.uk.ui.block.clear();
                     nts.uk.ui.windows.setShared('inputData', data);
                     nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function () {
