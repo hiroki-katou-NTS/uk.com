@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.app.find.shift.weeklyworkday;
 
 import lombok.*;
-import nts.uk.ctx.at.schedule.dom.shift.weeklyworkday.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 
 import java.util.List;
 import java.util.stream.Collectors;

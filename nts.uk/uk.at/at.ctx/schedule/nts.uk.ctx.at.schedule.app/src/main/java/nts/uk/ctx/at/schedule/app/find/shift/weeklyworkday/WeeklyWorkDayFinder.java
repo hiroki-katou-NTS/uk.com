@@ -2,8 +2,8 @@ package nts.uk.ctx.at.schedule.app.find.shift.weeklyworkday;
 
 
 
-import nts.uk.ctx.at.schedule.dom.shift.weeklyworkday.WeeklyWorkDayPattern;
-import nts.uk.ctx.at.schedule.dom.shift.weeklyworkday.WeeklyWorkDayRepository;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayRepository;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
