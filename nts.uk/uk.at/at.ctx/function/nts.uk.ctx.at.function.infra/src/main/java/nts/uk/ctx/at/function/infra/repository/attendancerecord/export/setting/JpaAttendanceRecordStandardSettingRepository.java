@@ -9,22 +9,19 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 
 @Stateless
-public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository implements AttendanceRecordStandardSettingRepository{
+public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
+		implements AttendanceRecordStandardSettingRepository {
 
 	@Override
 	public void add(AttendanceRecordStandardSetting domain) {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(AttendanceRecordStandardSetting domain) {
-		// TODO Auto-generated method stub
-		
+
 	}
-	
-	
-	
+
 	private static AttendanceRecordStandardSetting toEntity(AttendanceRecordStandardSetting domain) {
 		AttendanceRecordStandardSetting entity = new AttendanceRecordStandardSetting();
 //		domain.setMemento(entity);
@@ -33,7 +30,7 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository 
 
 	@Override
 	public Optional<AttendanceRecordStandardSetting> getStandardByCompanyId(String compnayId) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
 

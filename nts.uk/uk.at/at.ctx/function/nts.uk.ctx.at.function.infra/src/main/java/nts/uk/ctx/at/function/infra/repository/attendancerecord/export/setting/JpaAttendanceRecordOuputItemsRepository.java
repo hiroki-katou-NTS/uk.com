@@ -10,13 +10,14 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 
 @Stateless
-public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository implements AttendanceRecordOuputItemsRepository{
+public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
+		implements AttendanceRecordOuputItemsRepository {
 	// Select all
 	private static final String QUERY_SELECT_ALL = "SELECT f FROM KfnmtRptWkAtdOut f";
 	// Select one
 	private static final String QUERY_SELECT_BY_COMPANY_AND_EMPLOYEE = QUERY_SELECT_ALL
 			+ " WHERE f.cid = :cId AND f.sid = :sId";
-	
+
 	@Override
 	public void add(AttendanceRecordOuputItems domain) {
 		// Convert data to entity
@@ -41,10 +42,9 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository imple
 		oldEntity.setNameUseAtr(entity.getNameUseAtr());
 		oldEntity.setCharSizeType(entity.getCharSizeType());
 		oldEntity.setMonthAppDispAtr(entity.getMonthAppDispAtr());
-		//update entity
+		// update entity
 		this.commandProxy().update(oldEntity);
 	}
-
 
 	private static KfnmtRptWkAtdOut toEntity(AttendanceRecordOuputItems domain) {
 		KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
