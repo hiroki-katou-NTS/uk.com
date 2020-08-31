@@ -34,6 +34,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.FormatPerformanceAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FormatPerformanceImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
@@ -122,13 +123,46 @@ public class OutputItemDailyWorkScheduleFinder {
 	 *
 	 * @return the map
 	 */
-	public Map<String, Object> findByCid() {
+	public Map<String, Object> findByCid(Optional<String> layoutId, int selectionType) {	
 		String companyID = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+
 		Map<String, Object> mapDtoReturn = new HashMap<>();
 		
-		// Start algorithm 画面で利用できる任意項目を含めた勤怠項目一覧を取得する
-		// 対応するドメインモデル「画面で利用できる勤怠項目一覧」を取得する (get domain model đối ứng 「画面で利用できる勤怠項目一覧」 )
-		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getItemByScreenUseAtr(companyID, DAILY_WORK_SCHEDULE);
+		List<OutputItemDailyWorkSchedule> lstDomainModel;
+		
+		// Input．項目選択種類をチェック (Check the selection type of Input.item)
+		// Type: 定型選択の場合
+		if (selectionType == ItemSelectionType.STANDARD_SELECTION.value) {
+
+			// 定型設定の出力項目を取得 (Get the output item for fix-form setup)
+			Optional<OutputStandardSettingOfDailyWorkSchedule> standardSetting = this.outputStandardSettingRepository
+					.getStandardSettingByCompanyId(companyID);
+			lstDomainModel = standardSetting.isPresent() ? standardSetting.get().getOutputItems() : new ArrayList<>();
+		
+		// Type: 自由設定の場合
+		} else {
+			
+			// 社員IDから自由設定の出力項目を取得 (Get the output item for free setup from Company ID)
+			Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSetting = this.freeSettingOfOutputItemRepository
+					.getFreeSettingByCompanyAndEmployee(companyID, employeeId);
+			lstDomainModel = freeSetting.isPresent() ? freeSetting.get().getOutputItemDailyWorkSchedules() : new ArrayList<>();
+		}
+		
+		// 取得したドメインモデル「日別勤務表の出力項目」からList<「出力項目設定>を作成 (Creat list [出力項目設定]from the
+		// acquired domain model 「日別勤務表の出力項目」)
+		mapDtoReturn.put("outputItemDailyWorkSchedule", lstDomainModel.stream()
+				.map(domain -> {
+					DataInforReturnDto dto = new DataInforReturnDto();
+					dto.setCode(String.valueOf(domain.getItemCode().v()));
+					dto.setName(domain.getItemName().v());
+					dto.setLayoutId(domain.getOutputLayoutId());
+					return dto;
+				})
+				.sorted(Comparator.comparing(DataInforReturnDto::getCode)).collect(Collectors.toList()));
+		
+		// 選択している項目情報を取得する(Get the selected information item)
+		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getDailyAttendanceItem(companyID, layoutId, lstDomainModel);
 		
 		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
  		
@@ -151,22 +185,6 @@ public class OutputItemDailyWorkScheduleFinder {
 		} else {
 			mapDtoReturn.put("dailyAttendanceItem", Collections.emptyList());
 		}		
-		
-		// get all domain 日別勤務表の出力項目
-		List<OutputItemDailyWorkSchedule> lstOutputItemDailyWorkSchedule = this.outputItemDailyWorkScheduleRepository.findByCid(companyID);
-		
-		// if find
-		if (!lstOutputItemDailyWorkSchedule.isEmpty()) {
-			mapDtoReturn.put("outputItemDailyWorkSchedule", lstOutputItemDailyWorkSchedule.stream()
-									.map(domain -> {
-										OutputItemDailyWorkScheduleDto dto = new OutputItemDailyWorkScheduleDto();
-										dto.setItemCode(domain.getItemCode().v());
-										dto.setItemName(domain.getItemName().v());
-										return dto;
-									})
-									.sorted(Comparator.comparing(OutputItemDailyWorkScheduleDto::getItemCode))
-									.collect(Collectors.toList()));
-		}
 		
 		// find nothing
 		return mapDtoReturn;

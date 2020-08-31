@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.dailyworkschedule;
 
 import java.util.List;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.EmployeeId;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.EmployeeId;
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.日別勤務表.日別勤務表の出力項目自由設定
  * @author LienPTK
  */
+@Getter
 public class FreeSettingOfOutputItemForDailyWorkSchedule extends AggregateRoot {
 	/**
 	 *	項目選択種類

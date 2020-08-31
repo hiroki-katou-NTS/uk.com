@@ -478,7 +478,7 @@ module nts.uk.at.view.kwr001.a {
             openScreenC (): void {
                 let self = this;
                 let dataTransfer = {
-                    codeChoose: '',
+                    codeChoose: undefined,
                     selection: self.selectionType(),
                     layoutId: '',
                 };

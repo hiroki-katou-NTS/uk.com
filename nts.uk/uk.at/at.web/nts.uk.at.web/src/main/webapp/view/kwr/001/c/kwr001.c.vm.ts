@@ -227,10 +227,11 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
 
                 $.when(self.getDataService(), self.getEnumName(), self.getEnumRemarkContentChoice(), self.getEnumRemarkInputContent()).done(function() {
-                    if (_.isUndefined(nts.uk.ui.windows.getShared('KWR001_C'))) {
+                    let dataTransfer = nts.uk.ui.windows.getShared('KWR001_C');
+                    if (_.isUndefined(dataTransfer.codeChoose)) {
                         self.currentCodeList(null);
                     } else {
-                        self.currentCodeList(nts.uk.ui.windows.getShared('KWR001_C'));
+                        self.currentCodeList(dataTransfer.codeChoose);
                     }
 
                     dfd.resolve();

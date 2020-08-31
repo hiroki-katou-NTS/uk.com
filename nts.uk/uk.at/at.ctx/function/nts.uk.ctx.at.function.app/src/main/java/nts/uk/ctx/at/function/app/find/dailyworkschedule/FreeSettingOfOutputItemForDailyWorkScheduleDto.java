@@ -41,6 +41,7 @@ public class FreeSettingOfOutputItemForDailyWorkScheduleDto
 							DataInforReturnDto dto = new DataInforReturnDto();
 							dto.setCode(String.valueOf(domain.getItemCode().v()));
 							dto.setName(domain.getItemName().v());
+							dto.setLayoutId(domain.getOutputLayoutId());
 							return dto;
 						})
 						.collect(Collectors.toList());
