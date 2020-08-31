@@ -329,7 +329,7 @@ module cmm045.a.viewmodel {
 			}).then((data: any) => {
 				self.appListExtractConditionDto.opListOfAppTypes = data;
 				let newParam = {
-							mode: 0,
+							mode: self.mode(),
 							device: 0,
 							listOfAppTypes: data,
 							appListExtractCondition: self.appListExtractConditionDto

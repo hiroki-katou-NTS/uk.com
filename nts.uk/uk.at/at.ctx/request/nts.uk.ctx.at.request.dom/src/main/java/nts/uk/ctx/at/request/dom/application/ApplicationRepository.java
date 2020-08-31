@@ -54,6 +54,8 @@ public interface ApplicationRepository {
 	 */
 	public List<Application_New> getListAppBySID(String companyId, String sID, GeneralDate startDate, GeneralDate endDate);
 	/**
+	 * refactor 4
+	 * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.申請.アルゴリズム.承認一覧の申請を取得.承認一覧の申請を取得
 	 * @author hoatt
 	 * get List Application
 	 * Phuc vu CMM045
@@ -62,7 +64,7 @@ public interface ApplicationRepository {
 	 * @param endDate
 	 * @return
 	 */
-	public List<Application_New> getListAppModeApprCMM045(String companyId, DatePeriod period, List<String> lstAppId,
+	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType);
 
