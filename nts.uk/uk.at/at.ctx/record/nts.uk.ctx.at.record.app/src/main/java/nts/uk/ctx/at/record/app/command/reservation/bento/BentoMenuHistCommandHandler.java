@@ -24,6 +24,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -52,7 +53,7 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
         RequireImpl require = new RequireImpl(bentoMenuHistotyRepository,bentoMenuRepository,reservationSettingRepository);
         val companyId = AppContexts.user().companyId();
 
-        ReservationClosingTime closingTime1 = new ReservationClosingTime(new BentoReservationTimeName("昼食"),
+        ReservationClosingTime closingTime1 = new ReservationClosingTime(new BentoReservationTimeName("1111"),
                 new BentoReservationTime(120),
                 Optional.of(new BentoReservationTime(0)));
 
@@ -75,6 +76,11 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
         private BentoReservationSettingRepository reservationSettingRepository;
 
         @Override
+        public BentoMenu getBentoMenu(String companyID, GeneralDate date) {
+            return bentoMenuRepository.getBentoMenuByEndDate(companyID, date);
+        }
+
+        @Override
         public Optional<BentoMenuHistory> findByCompanyId(String companyId) {
             Optional<BentoMenuHistory> existHist = bentoMenuHistoryRepository.findByCompanyId(companyId);
             return existHist;
@@ -91,7 +97,7 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
         }
 
         @Override
-        public void addBentomenu(DateHistoryItem hist, BentoReservationClosingTime bentoReservationClosingTime) {
+        public void addBentomenu(DateHistoryItem hist, BentoReservationClosingTime bentoReservationClosingTime,List<Bento> bentos) {
 
             Optional<BentoReservationSetting> bentoReservationSetting = reservationSettingRepository.findByCId(AppContexts.user().companyId());
 
@@ -103,10 +109,15 @@ public class BentoMenuHistCommandHandler extends CommandHandler<BentoMenuHistCom
             }
             Optional<WorkLocationCode> workLocationCode = workLocation == null ? Optional.empty() : Optional.of(new WorkLocationCode(workLocation));
 
-            Bento bento = new Bento(1,new BentoName(bentoName),new BentoAmount(1000),
-                    new BentoAmount(0),new BentoReservationUnitName(unit),
-                    true,false,workLocationCode);
-            bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento),bentoReservationClosingTime));
+            if (bentos.size() == 0){
+                Bento bento = new Bento(1,new BentoName(bentoName),new BentoAmount(1000),
+                        new BentoAmount(0),new BentoReservationUnitName(unit),
+                        true,false,workLocationCode);
+                bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento),bentoReservationClosingTime));
+            }else {
+                bentoMenuRepository.add(new BentoMenu(hist.identifier() , bentos,bentoReservationClosingTime));
+            }
+
         }
     }
 }
