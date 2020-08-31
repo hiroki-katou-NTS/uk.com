@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.command.reservation.bento;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.*;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
+import nts.uk.shr.com.i18n.TextResource;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -38,6 +40,10 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
     @Inject
     private  BentomenuAdapter bentomenuAdapter;
 
+    final String bentoName = TextResource.localize("KMR001_83");
+    final String unit = TextResource.localize("KMR001_84");
+
+
     @Override
     protected void handle(CommandHandlerContext<BentoReserveSettingCommand> commandHandlerContext) {
 
@@ -46,23 +52,26 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
 
         Achievements achievements =  new Achievements(
                 new ReferenceTime(command.getReferenceTime()),
-                AchievementMethod.valueOf(command.getDailyResults()),
-                AchievementMethod.valueOf(command.getMonthlyResults())
+                EnumAdaptor.valueOf(command.getDailyResults(), AchievementMethod.class),
+                EnumAdaptor.valueOf(command.getMonthlyResults(), AchievementMethod.class)
         );
         CorrectionContent correctionContent = new CorrectionContent(
-                ContentChangeDeadline.valueOf(command.getContentChangeDeadline()),
-                ContentChangeDeadlineDay.valueOf(command.getContentChangeDeadlineDay()),
-                OrderedData.valueOf(command.getOrderedData()),
-                OrderDeadline.valueOf(command.getOrderDeadline())
+                EnumAdaptor.valueOf(command.getContentChangeDeadline(), ContentChangeDeadline.class),
+                EnumAdaptor.valueOf(command.getContentChangeDeadlineDay(), ContentChangeDeadlineDay.class),
+                EnumAdaptor.valueOf(command.getOrderedData(), OrderedData.class),
+                EnumAdaptor.valueOf(command.getOrderDeadline(), OrderDeadline.class)
         );
         ReservationClosingTime closingTime1 = new ReservationClosingTime(new BentoReservationTimeName(command.getName1()),
                 new BentoReservationTime(command.getEnd1()),
-                Optional.of(new BentoReservationTime(command.getStart1())));
+                Optional.ofNullable(command.getStart1() == null? null :new BentoReservationTime(command.getStart1())));
 
-        Optional<ReservationClosingTime> closingTime2 = Optional.of(new ReservationClosingTime(
-                new BentoReservationTimeName(command.getName2()),
-                new BentoReservationTime(command.getEnd2()),
-                Optional.of(new BentoReservationTime(command.getStart2()))));
+        Optional<ReservationClosingTime> closingTime2 = Optional.empty();
+        if (command.getName2() != null && command.getEnd2() != null){
+            closingTime2 = Optional.of(new ReservationClosingTime(
+                    new BentoReservationTimeName(command.getName2()),
+                    new BentoReservationTime(command.getEnd2()),
+                    Optional.ofNullable(command.getStart2() == null? null :new BentoReservationTime(command.getStart2()))));
+        }
 
         BentoReservationClosingTime bentoReservationClosingTime = new BentoReservationClosingTime(closingTime1,closingTime2);
         OperationDistinction operationDistinction = OperationDistinction.valueOf(command.getOperationDistinction());
@@ -90,22 +99,22 @@ public class BentoReserveSettingCommandHandler extends CommandHandler<BentoReser
         }
 
         @Override
-        public void registerBentoMenu(String historyID, BentoReservationClosingTime bentoReservationClosingTime,OperationDistinction OperationDistinction) {
+        public void registerBentoMenu(String historyID, BentoReservationClosingTime bentoReservationClosingTime,OperationDistinction operationDistinction) {
 
             String companyId = AppContexts.user().companyId();
             if (historyID == null){
                 val hist = DateHistoryItem.createNewHistory(new DatePeriod(GeneralDate.today(),GeneralDate.max()));
 
-                bentoMenuHistoryRepository.add(new BentoMenuHistory(companyId, new ArrayList<>(Arrays.asList(hist))));
+                bentoMenuHistoryRepository.add(new BentoMenuHistory(companyId, Arrays.asList(hist)));
 
                 String workLocation = null;
-                if (OperationDistinction.value == 1){
+                if (operationDistinction.value == OperationDistinction.BY_LOCATION.value){
                     val data = bentomenuAdapter.findBySid(AppContexts.user().employeeId(),GeneralDate.today());
                     workLocation = data.isPresent() ? data.get().getWorkLocationCd() : null;
                 }
                 Optional<WorkLocationCode> workLocationCode = workLocation == null ? Optional.empty() : Optional.of(new WorkLocationCode(workLocation));
-                Bento bento = new Bento(1,new BentoName("弁当１"),new BentoAmount(1000),
-                        new BentoAmount(0),new BentoReservationUnitName("円"),
+                Bento bento = new Bento(1,new BentoName(bentoName),new BentoAmount(1000),
+                        new BentoAmount(0),new BentoReservationUnitName(unit),
                         true,false,workLocationCode);
 
                 bentoMenuRepository.add(new BentoMenu(hist.identifier() , Arrays.asList(bento),bentoReservationClosingTime));

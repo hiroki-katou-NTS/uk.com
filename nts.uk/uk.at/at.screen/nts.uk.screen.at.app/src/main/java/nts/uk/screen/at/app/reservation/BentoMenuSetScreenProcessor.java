@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.reservation;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -26,12 +27,18 @@ public class BentoMenuSetScreenProcessor {
         return BentoMenuJoinBentoSettingDto.setData(bentoMenuDto,reservationSettingDto);
     }
 
-    public List<BentoJoinReservationSetting> getBentoMenuByHist(BentoRequest request) {
+    public BentoJoinReservationSetting getBentoMenuByHist(BentoRequest request) {
         String companyID = AppContexts.user().companyId();
         GeneralDate generalDate = GeneralDate.max();
-        List<BentoDto> bentoDtos =  bentoMenuScreenRepository.findDataBento(companyID,generalDate,request);
+        List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos =  bentoMenuScreenRepository.findDataBento(companyID,generalDate,request);
+        if (bentomenuJoinBentoDtos.size() == 0){
+            throw new BusinessException("Msg_1848");
+        }
         BentoReservationSettingDto reservationSettingDto = bentoReservationScreenRepository.findDataBentoRervation(companyID);
-        return BentoJoinReservationSetting.setData(bentoDtos,reservationSettingDto);
+        if (reservationSettingDto == null){
+            throw new BusinessException("Msg_1847");
+        }
+        return BentoJoinReservationSetting.setData(bentomenuJoinBentoDtos,reservationSettingDto);
     }
 
     public List<WorkLocationDto> getWorkLocationByCid() {

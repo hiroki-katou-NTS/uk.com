@@ -20,10 +20,10 @@ public class CreateReseItemSettingCommand {
     private int amount1;
 
     // 金額２
-    private  int amount2;
+    private Integer amount2;
 
     // 単位
-    private String Unit;
+    private String unit;
 
     // 締め時刻１で予約可能
     private boolean canBookClosesingTime1;

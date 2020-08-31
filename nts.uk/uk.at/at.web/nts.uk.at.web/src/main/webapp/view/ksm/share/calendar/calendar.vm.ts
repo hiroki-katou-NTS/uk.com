@@ -10,13 +10,13 @@ module nts.uk.at.view.ksm004.share {
     // template định nghĩa cấu trúc component calendar
     const calendarHtml = `
 	<!-- ko let: { $model: ko.unwrap(displayModel) } -->
-	<div class="title" data-bind="date: $model.baseDate, format: 'YYYY年MM月'"></div>
+	<div class="title" data-bind="date: $model.baseDate, format: 'YYYY年M月'"></div>
 	<div class="week" data-bind="foreach: $model.daysOfWeek">
-		<div class="day" data-bind="date: $data.date, format: 'ddd', css: { holiday: $data.holiday }"></div>
+		<div class="day name-day" data-bind="date: $data.date, format: 'ddd', css: { holiday: $data.holiday }"></div>
 	</div>
 	<div class="month" data-bind="foreach: _.chunk($model.daysOfMonth, 7), css: {isEmtyMonth: $model.isEmtyMonth }">
 		<div class="week" data-bind="foreach: $data">
-			<div class="day" data-bind="date: $data.date, format: 'DD', css: { holiday: $data.holiday, 'out-month': $data.outMonth }"></div>
+			<div class="day" data-bind="date: $data.date, format: 'D', css: { holiday: $data.holiday, 'out-month': $data.outMonth }"></div>
 		</div>
 	</div>
 	<!-- /ko -->

@@ -25,11 +25,11 @@ public class RegisterWorkCycleService {
      * @param isNewMode
      * @return
      */
-    public static WorkCycleCreateResult register(WorkInformation.Require workRequire, Require require, WorkCycle workCycle, boolean isNewMode) {
+    public static WorkCycleCreateResult register(Require require, WorkCycle workCycle, boolean isNewMode) {
         if (isNewMode && require.exists(workCycle.getCid(), workCycle.getCode().v())) {
             throw new BusinessException("Msg_3");
         }
-        val listErrorStatus =  workCycle.checkError(workRequire);
+        val listErrorStatus =  workCycle.checkError(require);
         if(listErrorStatus.stream().filter(i -> i.value != ErrorStatusWorkInfo.NORMAL.value).findAny().isPresent()) {
             return new WorkCycleCreateResult(listErrorStatus);
         }
@@ -43,7 +43,7 @@ public class RegisterWorkCycleService {
         return new WorkCycleCreateResult(atomTask);
     }
 
-    public static interface Require {
+    public static interface Require extends WorkInformation.Require{
 
         /**
          * [R1] 勤務サイクルが既に登録されているか

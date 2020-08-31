@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.reservation.bento.query;
 
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.app.find.reservation.bento.dto.BentoReservationSearchConditionDto;
 import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
@@ -40,8 +41,8 @@ public class ListBentoResevationQuery {
             return getUnOrderedBentoReservationsDetail(reservationRegisterInfos, period, reservationClosingTimeFrame, workLocationCodes);
 
         /** 検索条件 == 新規注文 */
-        if(searchCondition == BentoReservationSearchConditionDto.NEW_ORDER)
-            return getNewOrderDetail(period,reservationRegisterInfos,reservationClosingTimeFrame);
+        //if(searchCondition == BentoReservationSearchConditionDto.NEW_ORDER)
+            //return getNewOrderDetail(period,reservationRegisterInfos,reservationClosingTimeFrame);
 
         /** 検索条件 ==　全部 */
         if(searchCondition == BentoReservationSearchConditionDto.ALL)
@@ -62,20 +63,29 @@ public class ListBentoResevationQuery {
 
     public List<BentoReservation> handleData(List<BentoReservation> bentoReservations,
                                              ReservationClosingTimeFrame reservationClosingTimeFrame, List<WorkLocationCode> workLocationCodes){
+        if(CollectionUtil.isEmpty(workLocationCodes))
+            return bentoReservations.stream()
+                    .filter(item -> !item.getWorkLocationCode().isPresent())
+                    .filter(item -> reservationClosingTimeFrame == item.getReservationDate().getClosingTimeFrame())
+                    .collect(Collectors.toList());
+
         return bentoReservations.stream()
-                                .filter(item -> workLocationCodes.contains(item.getWorkLocationCode().get()))
+                                .filter(item -> workLocationCodes.contains(item.getWorkLocationCode().orElse(null)))
                                 .filter(item -> reservationClosingTimeFrame == item.getReservationDate().getClosingTimeFrame())
                                 .collect(Collectors.toList());
     }
 
-    public List<BentoReservation> getNewOrderDetail(DatePeriod period, List<ReservationRegisterInfo> reservationRegisterInfos, ReservationClosingTimeFrame reservationClosingTimeFrame){
-        Set<BentoReservation> reservations = new HashSet<>();
+    /**
+     * 検索条件 == 新規注文
+     */
+    public List<ReservationRegisterInfo> getNewOrderDetail(DatePeriod period, List<ReservationRegisterInfo> reservationRegisterInfos, ReservationClosingTimeFrame reservationClosingTimeFrame){
+        Set<ReservationRegisterInfo> results = new HashSet<>();
         period.stream().forEach( date ->{
-            reservations.addAll(bentoReservationRepository.getEmployeeNotOrder(reservationRegisterInfos,
-                    new ReservationDate(date,reservationClosingTimeFrame )));
+            results.addAll(bentoReservationRepository.getEmployeeNotOrder(reservationRegisterInfos,
+                    new ReservationDate(date, reservationClosingTimeFrame )));
                 }
         );
-        return new ArrayList<>(reservations);
+        return new ArrayList<>(results);
     }
 
 }

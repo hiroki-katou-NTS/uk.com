@@ -1,19 +1,18 @@
-package nts.uk.ctx.at.record.dom.reservation.bentomenu;
+package nts.uk.ctx.at.record.dom.reservation.bento;
 
 import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.shr.com.history.DateHistoryItem;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class BentoMenuHistoryTest {
-
+public class BentoMenuHistTest {
 
 	@Test
 	public void getters() {
@@ -32,10 +31,27 @@ public class BentoMenuHistoryTest {
 	@Test
 	public void toDomainTest_2() {
 
-		val result = BentoMenuHistory.toDomain("cid",Arrays.asList(DateHistoryItem.createNewHistory(
+		val result = BentoMenuHistory.toDomain("cid", Arrays.asList(DateHistoryItem.createNewHistory(
 				new DatePeriod(GeneralDate.today(),GeneralDate.max()))));
 		assertThat(result.getHistoryItems().size()).isEqualTo(1);
 		assertThat(result.companyId).isEqualTo("cid");
 	}
 
+
+	@Test
+	public void testGetItems() {
+
+		BentoMenuHistory bentoMenuHistory = new BentoMenuHistory("cid",new ArrayList<>());
+		val result = bentoMenuHistory.items();
+		assertThat(result.size()).isEqualTo(0);
+
+	}
+
+	@Test
+	public void testGetItems_2() {
+
+		val result = BentoMenuHistory.toDomain("cid", Arrays.asList(DateHistoryItem.createNewHistory(
+				new DatePeriod(GeneralDate.today(),GeneralDate.max()))));
+		assertThat(result.items().size()).isEqualTo(1);
+	}
 }

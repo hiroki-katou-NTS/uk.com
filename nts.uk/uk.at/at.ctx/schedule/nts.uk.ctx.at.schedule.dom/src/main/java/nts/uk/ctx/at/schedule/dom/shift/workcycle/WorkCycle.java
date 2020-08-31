@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.val;
+import lombok.*;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -16,7 +13,7 @@ import java.util.stream.Collectors;
     勤務サイクル
  */
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class WorkCycle extends AggregateRoot {
 
     /*
@@ -46,15 +43,11 @@ public class WorkCycle extends AggregateRoot {
      * @param 名称 name
      * @param 勤務情報リスト infos
      */
-    public WorkCycle(String cid, String code, String name, List<WorkCycleInfo> infos) {
-        this.cid = cid;
-        this.code = new WorkCycleCode(code);
-        this.name = new WorkCycleName(name);
+    public static WorkCycle WorkCycle(String cid, String code, String name, List<WorkCycleInfo> infos) {
         if (infos.size() < 1 || infos.size() > 99) {
             throw new BusinessException("Msg_1688");
-        } else {
-            this.infos = infos;
         }
+        return new WorkCycle(cid, new WorkCycleCode(code), new WorkCycleName(name), infos );
     }
 
 
@@ -91,7 +84,7 @@ public class WorkCycle extends AggregateRoot {
     private WorkCycleInfo getWorkInfoByPosition(int position) {
         while (true) {
             for (WorkCycleInfo info : this.getInfos()) {
-                if (position < info.getDays().v()) {
+                if (position <= info.getDays().v()) {
                     return info;
                 }
                 position = position - info.getDays().v();

@@ -52,9 +52,8 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
     protected WorkCycleCreateResult handle(CommandHandlerContext<AddWorkCycleCommand> context) {
         val command = context.getCommand();
         String cid = AppContexts.user().companyId();
-        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository);
-        WorkInformation.Require workRequired = new WorkInfoRequireImpl(basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-        WorkCycleCreateResult result = RegisterWorkCycleService.register(workRequired, require, AddWorkCycleCommand.createFromCommand(command, cid), false);
+        RegisterWorkCycleServiceImlp require = new RegisterWorkCycleServiceImlp(workCycleRepository,basicScheduleService, workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
+        WorkCycleCreateResult result = RegisterWorkCycleService.register(require, AddWorkCycleCommand.createFromCommand(command, cid), false);
         if (!result.isHasError()) {
             AtomTask atomTask = result.getAtomTask().get();
             transaction.execute(() ->{
@@ -67,7 +66,45 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
     @AllArgsConstructor
     private class RegisterWorkCycleServiceImlp implements RegisterWorkCycleService.Require {
 
+        private final String companyId = AppContexts.user().companyId();
+
         private WorkCycleRepository workCycleRepository;
+
+        private BasicScheduleService service;
+
+        private WorkTypeRepository workTypeRepo;
+
+        private WorkTimeSettingRepository workTimeSettingRepository;
+
+        private WorkTimeSettingService workTimeSettingService;
+
+        private BasicScheduleService basicScheduleService;
+
+        @Override
+        public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+            return service.checkNeededOfWorkTimeSetting(workTypeCode);
+        }
+
+        @Override
+        public Optional<WorkType> findByPK(String workTypeCd) {
+            return workTypeRepo.findByPK(companyId, workTypeCd);
+        }
+
+        @Override
+        public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+            return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+        }
+
+        @Override
+        public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd,
+                                                                   String workTypeCd, Integer workNo) {
+            return workTimeSettingService .getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+        }
+
+        @Override
+        public WorkStyle checkWorkDay(String workTypeCode) {
+            return basicScheduleService.checkWorkDay(workTypeCode);
+        }
 
         @Override
         public boolean exists(String cid, String code) {

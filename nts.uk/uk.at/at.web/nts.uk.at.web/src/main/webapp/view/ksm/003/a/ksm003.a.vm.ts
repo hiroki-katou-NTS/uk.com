@@ -163,6 +163,7 @@ module nts.uk.at.view.ksm003.a {
             let vm = this;
             vm.dayIsRequired(true);
             this.addNewLineItem(false);
+            vm.selectedCheckAll(false);
         }
 
         // get Pattern Val By PatternCd form database
@@ -339,7 +340,8 @@ module nts.uk.at.view.ksm003.a {
                     vm.dailyPatternValModel(dailyPatternValModel);
                     vm.lessThan99Items(true);
                     if( dailyPatternValModel.length <= 0 ) vm.selectedCheckAll(false);
-                    //vm.disableAddNewLine();
+
+                    vm.enableRemoveItem(false);
                     vm.$blockui("hide");
                 }
             });

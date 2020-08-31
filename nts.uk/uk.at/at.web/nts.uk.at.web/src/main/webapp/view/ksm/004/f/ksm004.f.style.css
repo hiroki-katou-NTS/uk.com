@@ -32,8 +32,15 @@
     width: 20px !important;
 }
 .ksm004-f .holiday-calendar{
-    margin: 9px;
+    margin: 3px;
 }
+.ksm004-f {
+    margin-left: 10px;
+}
+
 .btn-close-dialog {
     margin-top: 15px;
+}
+.ui-dialog .ui-dialog-content {
+    height: 620px !important;
 }

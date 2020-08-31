@@ -33,9 +33,9 @@ public class BentoMenuHistServiceTest {
         };
         NtsAssert.atomTask(
                 () -> BentoMenuHistService.register(require, new DatePeriod(GeneralDate.today(),
-                        GeneralDate.max()), "cid"),
-                any -> require.add(any.get()));
-
+                        GeneralDate.max()), "cid",null),
+                any -> require.add(any.get()),
+                any -> require.addBentomenu(any.get(),any.get()));
     }
 
     /**
@@ -55,7 +55,7 @@ public class BentoMenuHistServiceTest {
         };
         NtsAssert.businessException("Msg_102",
                 () -> BentoMenuHistService.register(require, new DatePeriod(GeneralDate.today(), GeneralDate.max()),
-                        "cid"));
+                        "cid",null));
 
 
     }
@@ -77,7 +77,7 @@ public class BentoMenuHistServiceTest {
         };
         NtsAssert.systemError(
                 () -> BentoMenuHistService.register(require, new DatePeriod(GeneralDate.today().addDays(+1)
-                        , GeneralDate.today().addDays(+2)), "cid"));
+                        , GeneralDate.today().addDays(+2)), "cid",null));
 
 
     }
@@ -99,8 +99,9 @@ public class BentoMenuHistServiceTest {
         NtsAssert.atomTask(
                 () -> BentoMenuHistService.register(require,
                         new DatePeriod(GeneralDate.today().addDays(3)
-                                , GeneralDate.max()), "cid"),
+                                , GeneralDate.max()), "cid",null),
                 any -> require.add(any.get()),
+                any -> require.addBentomenu(any.get(),any.get()),
                 any -> require.update(any.get()));
 
     }

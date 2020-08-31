@@ -18,11 +18,16 @@
 }
 
 .holiday-calendar .day {
-    width: 25px;
-    line-height: 25px;
+    width: 31px;
+    line-height: 27px;
     text-align: center;
     display: inline-block;
     box-sizing: border-box;
+    margin: 0 -2px;
+}
+
+.holiday-calendar .week .name-day {
+ background-color: #f2f2f2;
 }
 
 .holiday-calendar .week .day:not(:last-child) {
@@ -38,9 +43,20 @@
 }
 
 .holiday-calendar .month .day.out-month {
-    color: #ddd;
+    color: white;
 }
 
 .holiday-calendar .isEmtyMonth {
     background-color: lightgray;
 }
+
+.holiday-calendar .isEmtyMonth .out-month {
+    color: lightgray !important;
+}
+.holiday-calendar .isEmtyMonth .day:not(:last-child) {
+    border-right: 1px solid lightgray !important;
+}
+.holiday-calendar .isEmtyMonth .day {
+    border-bottom: 1px solid lightgray !important;
+}
+

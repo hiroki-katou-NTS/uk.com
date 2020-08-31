@@ -188,7 +188,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	public BentoMenu getBentoMenu(String companyID, GeneralDate date) {
 		String query = FIND_BENTO_MENU_DATE;
 		query = query.replaceFirst("companyID", companyID);
-		query = query.replaceFirst("date", date.toString());
+		query = query.replace("date", date.toString());
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
@@ -234,8 +234,8 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	public List<BentoMenu> getBentoMenuPeriod(String companyID, DatePeriod period) {
 		String query = FIND_BENTO_MENU_PERIOD;
 		query = query.replaceFirst("companyID", companyID);
-		query = query.replaceAll("startDate", period.start().toString());
-		query = query.replaceAll("endDate", period.end().toString());
+		query = query.replaceAll("startDate", period.end().toString());
+		query = query.replaceAll("endDate", period.start().toString());
 		return getBentoMenus(query);
 	}
 
@@ -244,9 +244,9 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		String query = FIND_BENTO_MENU_DATE;
 
 		if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1) {
-			query += " AND a.RESERVATION_FRAME1_START_TIME IS NOT NULL ";
+			query += " AND c.RESERVATION1_ATR = 1 ";
 		} else {
-			query += " AND a.RESERVATION_FRAME2_START_TIME IS NOT NULL ";
+			query += " AND c.RESERVATION2_ATR = 1 ";
 		}
 
 		query = query.replaceFirst("companyID", companyID);
@@ -267,16 +267,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		String query = FIND_BENTO_MENU_BY_ENDATE;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceFirst("date", date.toString());
-        try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
-            ResultSet rs = stmt.executeQuery();
-            List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
-            if(bentoMenuLst.isEmpty()){
-                return null;
-            }
-            return bentoMenuLst.get(0);
-        } catch (SQLException ex) {
-            throw new RuntimeException(ex);
-        }
+		return getBentoMenu(query);
 	}
 
 	private BentoMenu getBentoMenu(String query) {
@@ -284,7 +275,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
 			if(bentoMenuLst.isEmpty()){
-				throw new BusinessException("Msg_1604");
+				return null;
 			}
 			return bentoMenuLst.get(0);
 		} catch (SQLException ex) {
