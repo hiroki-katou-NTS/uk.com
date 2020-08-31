@@ -155,8 +155,6 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 self.isFixedSchedules = ko.computed(() => {
-                    /*return self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_TARGET_ONLY
-                        && self.isEnableRadioboxRebuildAtr();*/
                     return self.selectedImplementAtrCode() == ImplementAtr.RECREATE;
                 });
 
@@ -225,11 +223,10 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 self.creationMethodCode.subscribe(( value) => {
-                    if( self.creationMethodCode() != CreationMethodRef.MONTHLY_PATTERN ) {
+                    if( value != CreationMethodRef.MONTHLY_PATTERN ) {
                         nts.uk.ui.errors.clearAll();
-                        //self.monthlyPatternCode(null);
+                        self.monthlyPatternCode(null);
                     } else {
-                        //self.monthlyPatternCode(null);
                         $('.monthly-pattern-code').focus();
                     }
                 });
@@ -253,13 +250,18 @@ module nts.uk.at.view.ksc001.b {
                         let copyStartDate = moment(self.periodStartDate()).format('YYYY/MM/DD');
                         self.copyStartDate(copyStartDate);
                     }
+
+                    if( value !== CreateMethodAtr.PATTERN_SCHEDULE ) {
+	                    self.creationMethodCode(0); //default
+	                    self.monthlyPatternCode(null);
+                    }
                 });
 
                 self.creationMethodReference([
-                    {code: 0, name: nts.uk.resource.getText('KSC001_108')}, //会社カレンダー
-                    {code: 1, name: nts.uk.resource.getText('KSC001_109')}, //職場カレンダー
-                    {code: 2, name: nts.uk.resource.getText('KSC001_110')}, //分類カレンダー
-                    {code: 3, name: nts.uk.resource.getText('KSC001_111')}, //月間パターン
+                    {code: CreationMethodRef.COMPANY_CALENDAR, name: nts.uk.resource.getText('KSC001_108')}, //会社カレンダー
+                    {code: CreationMethodRef.WORKPLACE_CALENDAR, name: nts.uk.resource.getText('KSC001_109')}, //職場カレンダー
+                    {code: CreationMethodRef.CLASSIFICATION_CALENDAR, name: nts.uk.resource.getText('KSC001_110')}, //分類カレンダー
+                    {code: CreationMethodRef.MONTHLY_PATTERN, name: nts.uk.resource.getText('KSC001_111')}, //月間パターン
                 ]);
 
                 self.monthlyPatternOpts([]);
@@ -734,28 +736,6 @@ module nts.uk.at.view.ksc001.b {
                     self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
                     self.openDialogPageE();
                 }
-                /*if (self.isInValidCopyPasteSchedule()) {
-                    return;
-                }
-                // check D1_4 is checked
-                if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
-                    if (self.responeReflectionSetting()) {
-                        // next page E by pattern code of self
-                        self.findByPatternCodeAndOpenPageE(self.responeReflectionSetting().selectedPatternCd);
-                    }
-                    else {
-                        self.findPersonalSchedule().done(function (res) {
-                            if (res && res != null) {
-                                // next page E by pattern code of res
-                                self.findByPatternCodeAndOpenPageE(res.patternCode);
-                            } else {
-                                self.findAllPattern();
-                            }
-                        });
-                    }
-                } else {
-                    self.openDialogPageE();
-                }*/
             }
 
             /**
@@ -1034,16 +1014,16 @@ module nts.uk.at.view.ksc001.b {
                         periodEndDate: self.toDate(self.periodDate().endDate),
                         creationType: data.selectedImplementAtrCode,
                         reTargetAtr: data.selectRebuildAtrCode,
-                        referenceMaster: data.creationMethodCode,
+                        referenceMaster: data.creationMethodCode, //作成方法（参照先）ラベル
                         reTargetTransfer: data.recreateConverter,
                         reTargetLeave: data.recreateEmployeeOffWork,
                         reTargetShortWork: data.recreateShortTimeWorkers,
                         reTargetLaborChange: data.recreateDirectBouncer,
                         reOverwriteConfirmed: data.overwriteConfirmedData,
                         reOverwriteRevised: data.createAfterDeleting,
-                        monthlyPatternId: data.monthlyPatternCode,
+                        monthlyPatternId: data.monthlyPatternCode, //月間パターンラベル
                         beConfirmed: data.confirm, //confirm
-                        creationMethod: data.creationMethodCode,
+                        creationMethod: data.checkCreateMethodAtrPersonalInfo, //作成方法区分
                         copyStartYmd: self.toDate(self.copyStartDate()), //copyStartDate
                         employeeIds: self.employeeIds(),
 	                    employeeIdLogin: user.employeeIdLogin
