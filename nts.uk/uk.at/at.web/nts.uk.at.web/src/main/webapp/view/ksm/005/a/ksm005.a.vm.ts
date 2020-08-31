@@ -277,7 +277,7 @@ module nts.uk.at.view.ksm005.a {
 		            row2 = '';
 	            } else row2 = dto.workingName;
 
-                if (dto.typeColor == TypeColor.ATTENDANCE || (dto.workingCode && dto.workingCode) ) {
+                if (dto.typeColor == TypeColor.ATTENDANCE) {
                     textColor = TypeColor.ATTENDANCE_COLOR;
                 } else {
                     textColor = TypeColor.HOLIDAY_COLOR;
