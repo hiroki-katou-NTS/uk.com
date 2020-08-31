@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.weeklyworkday;
+package nts.uk.ctx.at.schedule.dom.shift.weeklywrkday;
 
 import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
