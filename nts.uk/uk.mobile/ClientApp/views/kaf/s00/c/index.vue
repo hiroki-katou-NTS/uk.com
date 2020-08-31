@@ -14,7 +14,7 @@
                 <div>
                     <nts-dropdown v-model="params.output.opAppStandardReasonCD">
                         <option v-for="(item, itemIndex) in dropdownList" v-bind:key="itemIndex" v-bind:value="item.appStandardReasonCD">
-                            {{item.opReasonForFixedForm | i18n}}
+                            {{item.reasonForFixedForm | i18n}}
                         </option>
                     </nts-dropdown>
                 </div>
