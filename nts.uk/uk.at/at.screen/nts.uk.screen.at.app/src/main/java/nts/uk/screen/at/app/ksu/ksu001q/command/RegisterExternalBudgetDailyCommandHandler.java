@@ -79,7 +79,6 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 					atomTask.run();
 				});
 			}
-
 			break;
 		case "人数":
 			for (DateAndValueMap item : dateAndValueMap) {
@@ -107,6 +106,8 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 				});
 			}
 			break;
+		default:
+			return;
 		}
 	}
 
@@ -119,7 +120,6 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 		@Override
 		public void insert(ExtBudgetDaily extBudgetDaily) {
 			extBudgetDailyRepository.insert(extBudgetDaily);
-
 		}
 
 		@Override

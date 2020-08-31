@@ -38,7 +38,7 @@ public class DailyExternalBudgetQuery {
 		TargetOrgIdenInfor targetOrg = ("1").equals(dailyExternal.getUnit())
 				? TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(dailyExternal.getId())
 				: TargetOrgIdenInfor.creatIdentifiWorkplace(dailyExternal.getId());
-				
+
 		DatePeriod datePeriod = new DatePeriod(GeneralDate.fromString(dailyExternal.getStartDate(), "yyyy/MM/dd"),
 				GeneralDate.fromString(dailyExternal.getEndDate(), "yyyy/MM/dd"));
 
@@ -47,9 +47,10 @@ public class DailyExternalBudgetQuery {
 				datePeriod, new ExtBudgetActItemCode(dailyExternal.getItemCode()));
 
 		// 値（項目）
-		if (dailyExternal.getUnit().equals("0")) {
+		if (dailyExternal.getUnit().equals("1")) {
 			return extBudgetDailies.stream()
-					.filter(item -> dailyExternal.getId().equals(item.getTargetOrg().getWorkplaceId().get())).map(x -> {
+					.filter(item -> dailyExternal.getId().equals(item.getTargetOrg().getWorkplaceGroupId().get()))
+					.map(x -> {
 						DailyExternalBudgetDto budgetDto = new DailyExternalBudgetDto();
 						budgetDto.setValue(x.getActualValue().toString());
 						budgetDto.setDate(x.getYmd().toString());
@@ -58,12 +59,12 @@ public class DailyExternalBudgetQuery {
 		}
 
 		return extBudgetDailies.stream()
-				.filter(item -> dailyExternal.getId().equals(item.getTargetOrg().getWorkplaceGroupId().get()))
-				.map(x -> {
+				.filter(item -> dailyExternal.getId().equals(item.getTargetOrg().getWorkplaceId().get())).map(x -> {
 					DailyExternalBudgetDto budgetDto = new DailyExternalBudgetDto();
 					budgetDto.setValue(x.getActualValue().toString());
 					budgetDto.setDate(x.getYmd().toString());
 					return budgetDto;
 				}).collect(Collectors.toList());
+
 	}
 }
