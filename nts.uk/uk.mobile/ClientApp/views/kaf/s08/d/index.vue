@@ -27,7 +27,7 @@
       </div>
     </div>
     <!-- D3_1 -->
-    <div class="pt-2">
+    <div class="pt-2 py-3">
       <div>{{ 'KAFS08_72' | i18n }}</div>
       <div class="pl-3 pt-1">
         <button type="button" class="btn btn-selection">

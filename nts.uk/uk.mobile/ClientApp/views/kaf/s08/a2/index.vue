@@ -1,9 +1,5 @@
 <template>
-  <div class="kafs08a2">
-    <div class="step-wizard">
-      <step-wizard v-bind:items="['KAFS08_10', 'KAFS08_11', 'KAFS08_12']" v-bind:selected="step" />
-    </div>
-    <br />
+  <div class="kafs08a2 mt-4 mx-n3">
     <!-- A2_1 -->
     <div class="card bg-danger top-alert uk-text-danger topError">
               <button class="btn btn-link uk-text-danger">
@@ -21,7 +17,7 @@
       <div class="contentError">{{'KAFS08_13'| i18n}}</div>
     </div> -->
     <!-- A7 -->
-    <div class="field-set">
+    <div class="field-set mt-3 ml-3">
       <!-- A7_1 -->
       <label class="uk-text-dark-gray">{{'KAFS08_20' | i18n}}</label>
       <!-- A7_2 -->
@@ -38,13 +34,13 @@
       <div class="uk-text-dark-gray">
         <label class="a7_5">{{'KAFS08_28' | i18n}}</label>
         <!-- A7_6 -->
-        <label>出発時刻</label>
+        <label>{{(departureTime || 0) | timewd}}</label>
       </div>
       <!-- A7_7 -->
       <div class="uk-text-dark-gray">
         <label class="a7_7">{{'KAFS08_29' | i18n}}</label>
         <!-- A7_8 -->
-        <label>戻り時刻</label>
+        <label>{{(returnTime || 0) | timewd}}</label>
       </div>
       <!-- A6 -->
       <div class="field-set">
@@ -52,7 +48,7 @@
         <span class="a6_1">コメント１</span>
       </div>
       <!-- A_10 -->
-      <div class="mx-n3">
+      <div class="mx-n2">
         <table class="table uk-table-striped table-bordered">
           <thead>
             <tr>

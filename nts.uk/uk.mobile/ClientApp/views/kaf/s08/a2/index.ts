@@ -17,6 +17,14 @@ import * as moment from 'moment';
         'fix-table': FixTableComponent,
         'showDialog' : KafS08DComponent
     },
+    props: {
+        departureTime : {
+            type : Number
+        },
+        returnTime : {
+            type : Number
+        }
+    },
     directives : {
         date : {
             bind(el: HTMLElement, binding: DirectiveBinding) {
@@ -26,7 +34,7 @@ import * as moment from 'moment';
             }
         }
     },
-    constraints: []
+    constraints: [],
 })
 
 
@@ -34,7 +42,6 @@ export class KafS08A2Component extends Vue {
     public title: string = 'KafS08A2';
     public name: string = 'hello my dialog';
     public date: Date = new Date(2020,2,14);
-    public date1: Date = new Date(2020,2,15);
     public step = 'KAFS08_11';
     public showModal(type) {
         let name = this.name;

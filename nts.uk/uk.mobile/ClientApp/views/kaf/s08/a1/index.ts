@@ -4,6 +4,7 @@ import { KafS00AComponent } from '../../../kaf/s00/a';
 import { StepwizardComponent } from '@app/components';
 import { KafS00BComponent } from '../../../kaf/s00/b';
 import { KafS00CComponent } from '../../../kaf/s00/c';
+import { KafS08A2Component } from '../../../kaf/s08/a2';
 import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
 
 @component({
@@ -16,19 +17,22 @@ import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
         'step-wizard': StepwizardComponent,
         'kafs00-b': KafS00BComponent,
         'kafs00-c': KafS00CComponent,
+        'kafs08-a2': KafS08A2Component,
     }
 })
 export class KAFS08A1ViewModel extends KafS00ShrComponent {
     public kaf000_A_Params: any = null;
     public kaf000_B_Params: any = null;
     public kaf000_C_Params: any = null;
-    public timeWithDay: number | null = null;
+    public departTureTime: number | null = null;
+    public returnTime: number | null = null;
+    private seen: boolean = true;
+    public step: string = 'KAFS08_10';
 
     @Prop({ default: null })
     public params?: any;
 
     public user: any;
-    public step = 'KAFS08_10';
     public title: String = 'KafS08A1';
     public mode: Boolean = true;
     public data: any = 'data';
@@ -45,9 +49,10 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
         self.fetchStart();
     }
 
-    public nextToScreenA2() {
+    //Nhảy đến step tiếp theo
+    public nextToStepTwo() {
         const vm = this;
-        //vm.$goto("kafs08a2",{});
+        vm.seen = !this.seen;
         vm.step = 'KAFS08_11';
     }
 
@@ -86,7 +91,7 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
             applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
             // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
-            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
             // opOvertimeAppAtr: null
         };
     }
