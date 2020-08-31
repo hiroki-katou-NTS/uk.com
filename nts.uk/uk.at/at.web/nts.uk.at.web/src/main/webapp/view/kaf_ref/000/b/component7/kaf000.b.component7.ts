@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf000_ref.b.component7.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/000/b/component7/index.html'
     })
     class Kaf000BComponent7ViewModel extends ko.ViewModel {
+		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
         opAppStandardReasonCD: KnockoutObservable<number>;
         opAppReason: KnockoutObservable<string>;
@@ -15,6 +16,7 @@ module nts.uk.at.view.kaf000_ref.b.component7.viewmodel {
         appReasonDisp: KnockoutObservable<boolean>; 
         created(params: any) {
             const vm = this;
+			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.opAppStandardReasonCD = params.application().opAppStandardReasonCD;
             vm.opAppReason = params.application().opAppReason;

@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/004/b/index.html'
     })
     class KAF004AViewModel extends ko.ViewModel {
+		appType: KnockoutObservable<number> = ko.observable(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
         application: KnockoutObservable<Application>;
         workManagement: WorkManagement;
         arrivedLateLeaveEarlyInfo: any;

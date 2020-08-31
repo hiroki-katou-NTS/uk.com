@@ -5,11 +5,13 @@ module nts.uk.at.view.kaf000_ref.b.component2.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/000/b/component2/index.html'
     })
     class Kaf000BComponent2ViewModel extends ko.ViewModel {
+		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
         opReversionReason: KnockoutObservable<string>;
         opReversionReasonDisp: KnockoutObservable<boolean>;
         created(params: any) {
             const vm = this; 
+			vm.appType = params.appType;
             vm.opReversionReason = ko.observable("opReversionReason");
             vm.opReversionReasonDisp = ko.observable(false);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput();

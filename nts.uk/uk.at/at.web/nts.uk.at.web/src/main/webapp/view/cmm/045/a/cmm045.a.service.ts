@@ -10,7 +10,8 @@ module cmm045.a.service {
          writeLog: "at/request/application/write-log",
 		 getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
 		findByPeriod: "at/request/application/applist/findByPeriod",
-		findByEmpIDLst: "at/request/application/applist/findByEmpIDLst",
+        findByEmpIDLst: "at/request/application/applist/findByEmpIDLst",
+        print: "at/request/application/applist/print"
     }
 
     /**
@@ -25,7 +26,7 @@ module cmm045.a.service {
     export function getApplicationDisplayAtr(): JQueryPromise<Array<any>>{
         return nts.uk.request.ajax("at", paths.getApplicationDisplayAtr);
     }
-    
+
     /**
      * -PhuongDV- for test
      */
@@ -48,17 +49,21 @@ module cmm045.a.service {
 
 	export function getAppNameInAppList(): JQueryPromise<any> {
 		return nts.uk.request.ajax("at", paths.getAppNameInAppList).then(((data) => {
-			return data;	
+			return data;
 		}), ((fail) => {
 			return [];
-		}));	
+		}));
 	}
-	
+
 	export function findByPeriod(param: any): JQueryPromise<Array<any>>{
         return nts.uk.request.ajax("at", paths.findByPeriod,param);
     }
 
 	export function findByEmpIDLst(param: any): JQueryPromise<Array<any>>{
         return nts.uk.request.ajax("at", paths.findByEmpIDLst,param);
+    }
+
+    export function print(param: any): JQueryPromise<any> {
+        return nts.uk.request.exportFile("at", paths.print, param)
     }
 }
