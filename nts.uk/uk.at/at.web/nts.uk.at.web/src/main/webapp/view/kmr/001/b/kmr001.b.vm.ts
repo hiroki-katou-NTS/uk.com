@@ -28,9 +28,9 @@ module nts.uk.at.kmr001.b {
 
             //combo box B10_2
             vm.itemsReservationChange([
-                {appId: 0, appName: '常に修正可能'},
-                {appId: 1, appName: '注文からの期間'},
-                {appId: 2, appName: '受付時間内のみ修正可能'}
+                {appId: 0, appName: vm.$i18n('KMR001_85')},
+                {appId: 1, appName: vm.$i18n('KMR001_86')},
+                {appId: 2, appName: vm.$i18n('KMR001_87')}
             ]);
 
             //combo box B10_3
