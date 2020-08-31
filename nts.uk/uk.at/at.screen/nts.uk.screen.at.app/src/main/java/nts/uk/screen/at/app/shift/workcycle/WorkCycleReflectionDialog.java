@@ -16,14 +16,19 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
+import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
+import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +46,12 @@ public class WorkCycleReflectionDialog {
 	@Inject private WorkCycleRepository workCycleRepository;
 	@Inject private BasicScheduleService basicScheduleService;
 
+	@Inject
+	private GetWorkCycle getWorkCycle;
+
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+
  	/**
 	 * 起動情報を取得する
 	 * @param bootMode 起動モード
@@ -56,16 +67,14 @@ public class WorkCycleReflectionDialog {
 			String workCycleCode,
 			List<WorkCreateMethod> refOrder,
 			int numOfSlideDays){
-
 		WorkCycleReflectionDto dto = new WorkCycleReflectionDto();
+		List<WorkCycleDto> workCycleDtoList = new ArrayList<>();
 
 		// 1. 勤務サイクル一覧を取得する [Get a list of work cycles]
 		if (bootMode == BootMode.EXEC_MODE){
-			String cid = AppContexts.user().companyId();
-			List<WorkCycle> workCycleList = workCycleQueryRepository.getByCid(cid);
-			workCycleCode = workCycleList.get(0).getCode().v();
-			dto.setWorkCycleList(workCycleList);
+			workCycleDtoList = getWorkCycle.getDataStartScreen();
 		}
+		dto.setWorkCycleList(workCycleDtoList);
 
 		// 2. 休日系の勤務種類を取得する [Get holiday type of work]
 		List<WorkType> workTypes = holidayWorkTypeService.acquiredHolidayWorkType();
@@ -84,26 +93,37 @@ public class WorkCycleReflectionDialog {
 				publicHolidayRepository,
 				workCycleRepository);
 		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(cRequire, creationPeriod, config);
- 		ReflectionImage reflectionImage = new ReflectionImage();
-		HashMap<GeneralDate,WorkStyle> workStyles = new HashMap<>();
+		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = new ArrayList<>();
+
 		WorkInformationRequire wRequire = new WorkInformationRequire(basicScheduleService);
-		refImageEachDayList.stream().forEach(ref -> {
-			GeneralDate date = ref.getDate();
-			WorkInformation wInfo = ref.getWorkInformation();
-			reflectionImage.addInWorkCycle(date, wInfo);
-			workStyles.put(ref.getDate(),  wInfo.getWorkStyle(wRequire).get());
-		});
+        for (RefImageEachDay ref : refImageEachDayList)
+            refImageEachDayDtos.add(WorkCycleReflectionDto.RefImageEachDayDto.fromDomain(ref, wRequire));
 
-		// 4. 出勤・休日系の判定(Require)
-		// WorkTimeCode workTimeCode, WorkTypeCode workTypeCode
-		// Optional<WorkStyle> optWorkStyle = workInformation.getWorkStyle(wRequire);
-
-		dto.setWorkTypes(workTypes); // List<勤務種類>：休日系の勤務種類
-		dto.setReflectionImage(reflectionImage); // 反映イメージ
-		dto.setWorkStyles(workStyles); // 出勤休日区分
-
+        Iterator<WorkType> it = workTypes.iterator();
+		dto.setPubHoliday(handle(it, HolidayAtr.PUBLIC_HOLIDAY));
+		dto.setSatHoliday(handle(it, HolidayAtr.STATUTORY_HOLIDAYS));
+		dto.setNonSatHoliday(handle(it, HolidayAtr.NON_STATUTORY_HOLIDAYS));
+		dto.setReflectionImage(refImageEachDayDtos); // 反映イメージ
 		return dto;
 	}
+
+	public List<WorkCycleReflectionDto.WorkTypeDto> handle(Iterator<WorkType> iterator, HolidayAtr holidayAtr){
+        List<WorkCycleReflectionDto.WorkTypeDto> result = new ArrayList<>();
+	    while (iterator.hasNext()){
+	        WorkType workType = iterator.next();
+	        Iterator<WorkTypeSet> it = workType.getWorkTypeSetList().iterator();
+	        while(it.hasNext()){
+				WorkTypeSet workTypeSet = it.next();
+				if(workTypeSet.getHolidayAtr().equals(holidayAtr)){
+					result.add(WorkCycleReflectionDto.WorkTypeDto.fromDomain(workType));
+					it.remove();
+				}
+			}
+			if(!it.hasNext())
+				iterator.remove();
+        }
+        return result;
+    }
 
 	/**
 	 * 勤務サイクルの適用イメージを取得する
@@ -111,17 +131,18 @@ public class WorkCycleReflectionDialog {
 	 * @param workCycleRefSetting 設定
 	 * @return 反映イメージ
 	 */
-	public ReflectionImage getWorkCycleAppImage(
+	public List<WorkCycleReflectionDto.RefImageEachDayDto> getWorkCycleAppImage(
 			DatePeriod creationPeriod,
 			WorkCycleRefSetting workCycleRefSetting){
 		CreateWorkCycleAppImageRequire cRequire = new CreateWorkCycleAppImageRequire(
 				weeklyWorkDayRepository,
 				publicHolidayRepository,
 				workCycleRepository);
+		WorkInformationRequire wRequire = new WorkInformationRequire(basicScheduleService);
 		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(cRequire, creationPeriod, workCycleRefSetting);
-		ReflectionImage reflectionImage = new ReflectionImage();
+		List<WorkCycleReflectionDto.RefImageEachDayDto> reflectionImage = new ArrayList<>();
 		refImageEachDayList.stream().forEach(ref -> {
-			reflectionImage.addInWorkCycle(ref.getDate(), ref.getWorkInformation());
+			reflectionImage.add(WorkCycleReflectionDto.RefImageEachDayDto.fromDomain(ref, wRequire));
 		});
 
 		return reflectionImage;
@@ -147,7 +168,6 @@ public class WorkCycleReflectionDialog {
 		public Optional<WorkCycle> getWorkCycle(String cid, String code){
 			return workCycleRepository.getByCidAndCode(cid, code);
 		}
-
 	}
 
 	@AllArgsConstructor

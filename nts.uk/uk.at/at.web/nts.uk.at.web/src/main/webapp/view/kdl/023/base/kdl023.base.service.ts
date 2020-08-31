@@ -6,7 +6,10 @@ module nts.uk.at.view.kdl023.base.service {
         getWorkType: 'at/share/worktype/findAll',
         getAllPattern: 'ctx/at/schedule/shift/pattern/daily/getall',
         findPatternByCode: 'ctx/at/schedule/shift/pattern/daily/find',
-        getWeeklyWorkSetting: 'ctx/at/schedule/pattern/work/weekly/setting/findAll'
+        getWeeklyWorkSetting: 'ctx/at/schedule/pattern/work/weekly/setting/findAll',
+        registerMonthlyPattern: 'ctx/at/schedule/pattern/work/monthly/setting/register',
+        startUp: 'screen/at/shift/workcycle/workcycle-reflection/start',
+        getWorkCycleAppImage: 'screen/at/shift/workcycle/workcycle-reflection/get-reflection-image'
     }
 
     export function findAllPattern(): JQueryPromise<Array<model.DailyPatternSetting>> {
@@ -26,6 +29,9 @@ module nts.uk.at.view.kdl023.base.service {
     }
     export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
         return nts.uk.request.ajax(servicePath.getWeeklyWorkSetting);
+    }
+    export function registerMonthlyPattern(data: any){
+        return nts.uk.request.ajax(servicePath.registerMonthlyPattern)
     }
 
     export module model {
@@ -83,6 +89,10 @@ module nts.uk.at.view.kdl023.base.service {
         export interface PublicHoliday {
             day: number;
             holidayName: string;
+        }
+        export enum BootMode{
+            REF_MODE = 0;
+            EXEC_MODE = 1;
         }
     }
 }
