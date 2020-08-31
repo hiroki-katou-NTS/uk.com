@@ -173,7 +173,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// check pair work type and work time
 		lstDomain.forEach(domain -> {
 			this.basicScheduleService.checkPairWorkTypeWorkTime(domain.getWorkInformation().getWorkTypeCode().v(),
-					domain.getWorkInformation().getWorkTimeCode().v());
+					domain.getWorkInformation().getWorkTimeCode() == null ? null : domain.getWorkInformation().getWorkTimeCode().v());
 		});
 
 		// command to domain
@@ -228,11 +228,11 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// domain update all, add all collection
 		lstDomain.forEach(domainsetting -> {
-			
-			if (StringUtils.isEmpty(domainsetting.getWorkInformation().getWorkTimeCode().v())){
-				domainsetting.setWorkInformation(new WorkInformation(null,domainsetting.getWorkInformation().getWorkTimeCode().v()));
+
+			if (StringUtils.isEmpty(domainsetting.getWorkInformation().getWorkTimeCode() == null ? null : domainsetting.getWorkInformation().getWorkTimeCode().v())){
+				domainsetting.setWorkInformation(new WorkInformation(null,domainsetting.getWorkInformation().getWorkTypeCode().v()));
 			}
-			
+
 			// check exist of domain update
 			if (mapDomainUpdate.containsKey(domainsetting.getYmdk())) {
 				updateAllDomains.add(domainsetting);
