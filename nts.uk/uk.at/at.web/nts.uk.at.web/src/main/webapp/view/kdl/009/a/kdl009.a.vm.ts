@@ -20,7 +20,7 @@ module nts.uk.at.view.kdl009.a {
             kdl009Data: any;
             employeeInfo: KnockoutObservable<string>;
 
-            isManagementSection: KnockoutObservable<boolean> = ko.observable(true);
+            isManagementSection: KnockoutObservable<boolean> = ko.observable(null);
             dataItems: KnockoutObservableArray<DataItems>;
 
             value01: KnockoutObservable<string> = ko.observable("");
@@ -48,6 +48,12 @@ module nts.uk.at.view.kdl009.a {
             mounted() {
                 const vm = this;
                 vm.$blockui('grayout');
+                // Render table
+                vm.isManagementSection.subscribe((value) => {
+                    if (value) {
+                        vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
+                    }
+                });
                 service.getEmployee(vm.kdl009Data)
                     .then((data: any) => {
                         if (data.employeeBasicInfo.length > 1) {
@@ -90,7 +96,6 @@ module nts.uk.at.view.kdl009.a {
                         vm.expirationDateText(ExpirationDate[data.expiredDay]);
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
-                        vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
                     })
                     .fail(vm.onError)
                     .always(() => vm.$blockui('clear'));
