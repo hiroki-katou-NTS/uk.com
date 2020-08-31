@@ -211,7 +211,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
             applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
             // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
-            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
             // opOvertimeAppAtr: null
         };
     }
