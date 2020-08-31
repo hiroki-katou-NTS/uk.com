@@ -121,7 +121,10 @@ public class ScheduleExecutionAddCommand {
     public ScheduleCreateContent toDomainContentNew(String executionId) {
         val monthly = new MonthlyPatternCode(monthlyPatternId);
         val creMethod = CreationMethod.valueOf(creationMethod);
-        val copyStartD = Optional.of(copyStartYmd);
+        Optional copyStartD = Optional.empty();
+        if(copyStartYmd!=null){
+            copyStartD =  Optional.of(copyStartYmd);
+        }
         val re = ReferenceMaster.valueOf(referenceMaster);
         Optional ref = Optional.empty();
         Optional mon = Optional.empty();
