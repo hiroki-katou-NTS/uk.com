@@ -69,6 +69,8 @@ export module model {
 
         /** 背景色 */
         backGroundColor: string;
+
+        displayBackGroundColor:string;
     }
 
     export interface IButtonNameSetDto {
@@ -217,7 +219,6 @@ export module model {
     }
 
     export interface IScreenBParam {
-        stampDate: Date;
         resultDisplayTime: number;
         employeeId: string;
         employeeCode: string;

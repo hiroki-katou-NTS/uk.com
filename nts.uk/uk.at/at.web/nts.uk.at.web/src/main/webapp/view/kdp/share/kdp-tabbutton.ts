@@ -115,6 +115,10 @@ module nts.uk.at.view.kdp.share {
 				});
 			}
 
+			if (!params.marginBottom) {
+				params.marginBottom = ko.observable(0);
+			}
+
 			ko.computed({
 				read: () => {
 					const data = ko.unwrap(params.tabs);
@@ -278,11 +282,12 @@ module nts.uk.at.view.kdp.share {
 			$(window)
 				.on('resize', () => {
 					if (vm.$el) {
+						const marginBottom = ko.toJS(vm.params.marginBottom);
 						const tabs = vm.$el.querySelector('#tab-button-group');
 
 						if (tabs) {
 							const bound = tabs.getBoundingClientRect();
-							const height = Math.floor((window.innerHeight - bound.top - 110) / 4);
+							const height = Math.floor((window.innerHeight - bound.top - 110 - marginBottom) / 4);
 
 							vm.buttonSize(height);
 						}
@@ -301,6 +306,7 @@ module nts.uk.at.view.kdp.share {
 		click: () => void;
 		tabs: KnockoutObservableArray<PageLayout>;
 		stampToSuppress: KnockoutObservable<StampToSuppress>;
+		marginBottom: KnockoutObservable<number>;
 	}
 
 	export interface StampToSuppress {

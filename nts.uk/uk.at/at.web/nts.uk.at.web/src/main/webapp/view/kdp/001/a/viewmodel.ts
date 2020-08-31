@@ -9,16 +9,6 @@ const requestUrl = {
 	getStampToSuppress: 'at/record/stamp/employment_system/get_stamp_to_suppress'
 }
 
-const stampTypes = [
-	{ text: "KDP002_120", name: "氏名選択" },
-	{ text: "KDP002_120", name: "指認証打刻" },
-	{ text: "KDP002_120", name: "ICカード打刻" },
-	{ text: "KDP002_120", name: "個人打刻" },
-	{ text: "KDP002_120", name: "ポータル打刻" },
-	{ text: "KDP002_121", name: "スマホ打刻" },
-	{ text: "KDP002_122", name: "タイムレコーダー打刻" }
-]
-
 const notUseMessage = [
 	{ text: "Msg_1644", value: 1 },
 	{ text: "Msg_1645", value: 2 },
@@ -34,6 +24,8 @@ const daysColor = [
 	{ day: 0, color: '#FF0000' },
 	{ day: 6, color: '#0000FF' }
 ]
+
+const STAMP_MEANS_PORTAL= 4;
 
 const DEFAULT_GRAY = '#E8E9EB';
 @bean()
@@ -59,60 +51,11 @@ class KDP001AViewModel extends ko.ViewModel {
 	} as IStampToSuppress);
 
 	stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({
-		companyId: "000000000000-000",
-		displayItemId: [653, 651, 652],
+		companyId: "",
+		displayItemId: [],
 		notUseAttr: 0
 	});
-	buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([
-		{
-			buttonPositionNo: 1,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 2,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test2'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 3,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test3'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 4,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test4'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		}
-	]);
+	buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([]);
 
 	constructor() {
 		super();
@@ -262,7 +205,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	public getStampTime(data: IStampInfoDisp) {
 
-		return data.stampHow + ' ' + moment.utc(data.stampTimeWithSec).format("HH:mm");
+		return moment.utc(data.stampTimeWithSec).format("HH:mm");
 	}
 
 	public convertToShortMDW(data: IStampInfoDisp) {

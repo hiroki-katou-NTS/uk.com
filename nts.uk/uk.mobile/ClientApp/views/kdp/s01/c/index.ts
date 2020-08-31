@@ -12,7 +12,6 @@ const servicePath = {
 
 @component({
     name: 'kdpS01c',
-    route: '/kdp/s01/c',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -24,13 +23,7 @@ export class KdpS01CComponent extends Vue {
     @Prop({ default: () => ({}) })
     public params!: any;
     public screenData: IScreenData = {
-        confirmResult: {
-            employeeId: '',
-            date: new Date(),
-            status: false,
-            permissionCheck: 0,
-            permissionRelease: 0
-        },
+        confirmResult: null,
         employeeCode: '000001',
         employeeName: '日通　太郎',
         date: new Date(),
@@ -50,20 +43,17 @@ export class KdpS01CComponent extends Vue {
         }
     };
 
-    public mounted() {
-        this.pgName = 'KDPS01_5';
-    }
-
 
     public created() {
-        let vm = this;
-        vm.params.attendanceItemIds.push(28, 29, 31, 34);
+        let vm = this,
+            parameterIds = [].concat(vm.params.attendanceItemIds);
+        parameterIds.push(28, 29, 31, 34);
 
         let command = {
-            startDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
-            endDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
-            attendanceItemIds: vm.params.attendanceItemIds,
-            baseDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD')
+            startDate: moment(vm.$dt.now).format('YYYY/MM/DD'),
+            endDate: moment(vm.$dt.now).format('YYYY/MM/DD'),
+            attendanceItemIds: parameterIds,
+            baseDate: moment(vm.$dt.now).format('YYYY/MM/DD')
         };
 
         vm.$mask('show');
@@ -77,7 +67,7 @@ export class KdpS01CComponent extends Vue {
                 let item = _.head(_.orderBy(items, ['stampTimeWithSec'], ['desc']));
 
                 if (item) {
-                    vm.screenData.date = item.stampDatetime;
+                    vm.screenData.date = item.stampTimeWithSec;
                     vm.screenData.stampAtr = item.stampArtName;
                     vm.screenData.localtion = [item.workLocationCD, item.workLocationName].join(' ');
                 }
@@ -102,18 +92,20 @@ export class KdpS01CComponent extends Vue {
             });
 
 
-            _.remove(data.lstItemDisplayed, function (item) {
-                return [28, 29, 31, 34].indexOf(item.attendanceItemId) != -1;
+            let items = [];
+            _.forEach(vm.params.attendanceItemIds, (id) => {
+                let item = _.find(data.lstItemDisplayed, ['attendanceItemId', id]);
+                if (item) {
+                    items.push(item);
+                }
             });
 
-            let isNoItemHasData = !_.find(data.itemValues, (item) => item.value);
             let timeData = [];
-            if (!isNoItemHasData) {
-                _.forEach(_.orderBy(data.lstItemDisplayed, 'attendanceItemId'), function (item) {
-                    let value = vm.toValue(item, _.find(data.itemValues, ['itemId', item.attendanceItemId]));
-                    timeData.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
-                });
-            }
+
+            _.forEach(_.orderBy(items, 'attendanceItemId'), function (item) {
+                let value = vm.toValue(item, _.find(data.itemValues, ['itemId', item.attendanceItemId]));
+                timeData.push({ itemId: item.attendanceItemId, title: item.attendanceName, value });
+            });
 
             vm.screenData.attendanceItem.timeItems = timeData;
 
@@ -124,12 +116,15 @@ export class KdpS01CComponent extends Vue {
     }
 
     get isHasImplementation() {
-        let vm = this;
-        if (!vm.screenData.confirmResult) {
+        let vm = this,
+            permissionCheck = _.get(vm, 'screenData.confirmResult.permissionCheck');
+
+
+        if (_.isNil(permissionCheck)) {
             return State.SETTING_NULL;
         }
 
-        if (vm.screenData.confirmResult.permissionCheck === ReleasedAtr.IMPLEMENT && vm.screenData.attendanceItem.timeItems.length > 0) {
+        if (permissionCheck === ReleasedAtr.IMPLEMENT && vm.screenData.attendanceItem.timeItems.length > 0) {
             return State.IMPLEMENT;
         } else {
             return State.CAN_NOT_IMPLEMENT;
@@ -162,10 +157,25 @@ export class KdpS01CComponent extends Vue {
 
         if (attendanceItem.dailyAttendanceAtr == DailyAttendanceAtr.AmountOfMoney) {
 
-            result = item.value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+            result = item.value.toFixed(1).toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
         }
 
         return result;
+    }
+
+    public getTextColor(date) {
+
+        const daysColor = [
+            { day: 0, color: '#FF0000' },
+            { day: 6, color: '#0000FF' }
+        ];
+
+        let day = moment.utc(date).day(),
+
+            dayColor = _.find(daysColor, ['day', day]);
+
+        return dayColor ? dayColor.color : '#000000';
+
     }
 
 

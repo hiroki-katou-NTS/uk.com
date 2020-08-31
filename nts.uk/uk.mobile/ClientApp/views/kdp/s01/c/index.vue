@@ -1,5 +1,13 @@
 <template>
   <div>
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+          <i class="fas fa-angle-left mr-1" v-on:click="$close"></i>
+          <span>{{ "KDPS01_5" | i18n }}</span>
+        </h4>
+      </div>
+    </div>
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_26" | i18n }}</label>
     </div>
@@ -11,9 +19,13 @@
       <label>{{ "KDPS01_27" | i18n }}</label>
     </div>
     <div class="col-12 value">
-      <label class="col-7 px-1">{{
-        screenData.date | date("YYYY年 MM月 DD日（ddd）")
-      }}</label>
+      <label
+        v-bind:style="{
+          color: getTextColor(screenData.date)
+        }"
+        class="col-7 px-1"
+        >{{ screenData.date | date("YYYY/MM/DD") }}</label
+      >
       <label
         class="col-5 stamp-time font-weight-bold"
         style="line-height: 1rem;"
@@ -24,11 +36,11 @@
     <div class="row ml-1 title uk-text-over-time">
       <label>{{ "KDPS01_28" | i18n }}</label>
     </div>
-    <div class="col-12 value uk-text-blue">
+    <div class="row">
       <div class="col-7 d-inline-block"></div>
       <label
-        class=" col-5 stamp-text font-weight-bold"
-        style="line-height: 1rem;"
+        class="col-5 px-0 stamp-text font-weight-bold"
+        style="line-height: 1.5rem; color:#0033cc;"
         >{{ screenData.stampAtr }}</label
       >
     </div>
@@ -85,6 +97,7 @@
     <div>
       <button
         v-bind:disabled="isHasImplementation === 2"
+        v-show="isHasImplementation !== 0"
         type="button"
         v-click:500="regDailyResult"
         class="mb-3 col-12 btn btn-success btn-block btn-lg"
@@ -93,6 +106,7 @@
       </button>
     </div>
     <button
+      v-focus
       type="button"
       v-on:click="$close"
       class="col-12 btn btn-secondary btn-block"

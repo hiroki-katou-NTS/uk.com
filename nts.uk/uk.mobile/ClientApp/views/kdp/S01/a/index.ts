@@ -51,80 +51,19 @@ export class KdpS01AComponent extends Vue {
             commentColor: '#fabf8f'
         },
         buttons: [
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 1,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 2,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 3,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 4,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 5,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            },
-            {
-                buttonValueType: -1,
-                buttonPositionNo: 6,
-                buttonDisSet: {
-                    buttonNameSet: {
-                        textColor: '',
-                        buttonName: ''
-                    },
-                    backGroundColor: ''
-                },
-                usrArt: 1
-            }
         ]
     };
+
+    public get textComment() {
+        const vm = this;
+        const { setting } = vm;
+
+        if (setting) {
+            return _.escape(_.get(setting, 'stampPageComment.pageComment', '')).replace(/\n/g, '<br />');
+        }
+
+        return '';
+    }
 
     public created() {
         let vm = this;
@@ -197,12 +136,14 @@ export class KdpS01AComponent extends Vue {
 
     private InitCountTime() {
 
-        let vm = this;
+        let vm = this,
+            interval = _.get(vm, 'setting.displaySettingsStampScreen.serverCorrectionInterval', 1) as number * 60000;
+
+        vm.$dt.interval(interval);
 
         setInterval(() => {
-
             vm.getStampToSuppress();
-        }, vm.setting.displaySettingsStampScreen.serverCorrectionInterval * 1000);
+        }, interval);
     }
 
     private getStampToSuppress() {
@@ -239,7 +180,8 @@ export class KdpS01AComponent extends Vue {
                             textColor: '',
                             buttonName: ''
                         },
-                        backGroundColor: ''
+                        backGroundColor: '',
+                        displayBackGroundColor: ''
                     },
                     usrArt: 1
                 };
@@ -283,18 +225,19 @@ export class KdpS01AComponent extends Vue {
                             case 1:
                             case 3:
                             case 4:
-                                vm.openDialogB(result, command.stampButton);
+                                vm.openDialogB(command.stampButton);
                                 break;
 
                             case 2: {
                                 if (vm.setting.usrAtrValue === 1) {
-                                    vm.openDialogC(result, command.stampButton);
+                                    vm.openDialogC(command.stampButton);
                                 } else {
-                                    vm.openDialogB(result, command.stampButton);
+                                    vm.openDialogB(command.stampButton);
                                 }
                                 break;
                             }
                             default:
+                                vm.openDialogB(command.stampButton);
                                 break;
                         }
 
@@ -305,17 +248,16 @@ export class KdpS01AComponent extends Vue {
         });
     }
 
-    private openDialogB(date: Date, stampButton: model.IStampButtonCommand) {
+    private openDialogB(stampButton: model.IStampButtonCommand) {
 
         let vm = this;
         vm.$auth.user.then((userInfo) => {
-            vm.$modal('screenB', {
-                stampDate: date,
+            vm.$modal(KdpS01BComponent, {
                 resultDisplayTime: vm.setting.displaySettingsStampScreen.resultDisplayTime,
                 employeeId: userInfo.employeeId,
                 employeeCode: userInfo.employeeCode
             }).then(() => {
-
+                vm.getStampToSuppress();
                 vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
                     let data: model.IGetOmissionContentDto = result.data;
                     if (data && data.errorInfo && data.errorInfo.length > 0) {
@@ -326,13 +268,14 @@ export class KdpS01AComponent extends Vue {
         });
     }
 
-    private openDialogC(date: Date, stampButton: model.IStampButtonCommand) {
+    private openDialogC(stampButton: model.IStampButtonCommand) {
         let vm = this;
         vm.$auth.user.then((userInfo) => {
-            vm.$modal('screenC', {
+            vm.$modal(KdpS01CComponent, {
                 attendanceItemIds: vm.setting.lstDisplayItemId
-            }).then(() => {
-
+            }
+            ).then(() => {
+                vm.getStampToSuppress();
                 vm.$http.post('at', servicePath.getOmission, stampButton).then((result: any) => {
                     let data: model.IGetOmissionContentDto = result.data;
 
@@ -346,14 +289,13 @@ export class KdpS01AComponent extends Vue {
 
     public openDialogS() {
         let vm = this;
-        vm.$modal('screenS').then(() => {
-
+        vm.$modal(KdpS01SComponent, null, { title: 'KDPS01_22' }).then(() => {
         });
     }
 
     public openDialogT(data) {
         let vm = this;
-        vm.$modal('screenT', data).then(() => {
+        vm.$modal(KdpS01TComponent, data, { title: 'KDPS01_23' }).then(() => {
 
         });
     }
@@ -361,26 +303,32 @@ export class KdpS01AComponent extends Vue {
     private setBtnColor(buttonSetting: model.ButtonSettingsDto, stampToSuppress: model.IStampToSuppress) {
 
         const DEFAULT_GRAY = '#E8E9EB';
+        let backGroundColor = _.get(buttonSetting, 'buttonDisSet.backGroundColor', DEFAULT_GRAY),
+            valueType = backGroundColor;
 
-        if (buttonSetting.buttonValueType === ButtonType.GOING_TO_WORK) {
-            // 出勤
-            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.goingToWork ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
-        }
+        switch (buttonSetting.buttonValueType) {
+            case ButtonType.GOING_TO_WORK:
+                valueType = !stampToSuppress.goingToWork ? backGroundColor : DEFAULT_GRAY;
+                break;
 
-        if (buttonSetting.buttonValueType === ButtonType.WORKING_OUT) {
-            // 退勤
-            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.departure ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
-        }
+            case ButtonType.WORKING_OUT:
+                valueType = !stampToSuppress.departure ? backGroundColor : DEFAULT_GRAY;
+                break;
 
-        if (buttonSetting.buttonValueType === ButtonType.GO_OUT) {
-            // 外出
-            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.goOut ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
-        }
+            case ButtonType.GO_OUT:
+                valueType = !stampToSuppress.goOut ? backGroundColor : DEFAULT_GRAY;
+                break;
 
-        if (buttonSetting.buttonValueType === ButtonType.RETURN) {
-            // 戻り
-            buttonSetting.buttonDisSet.backGroundColor = !stampToSuppress.turnBack ? buttonSetting.buttonDisSet.backGroundColor : DEFAULT_GRAY;
+            case ButtonType.RETURN:
+                valueType = !stampToSuppress.turnBack ? backGroundColor : DEFAULT_GRAY;
+                break;
+
+            default:
+                valueType = backGroundColor;
+                break;
         }
+        buttonSetting.buttonDisSet.backGroundColor = backGroundColor;
+        buttonSetting.buttonDisSet.displayBackGroundColor = valueType;
     }
 
 

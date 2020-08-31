@@ -4,7 +4,6 @@ import { model } from 'views/kdp/S01/shared/index.d';
 
 @component({
     name: 'kdpS01t',
-    route: '/kdp/s01/t',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -33,10 +32,10 @@ export class KdpS01TComponent extends Vue {
             url = button.screen + 'S' + button.screenCd.slice(1) + button.screenId.toLowerCase(),
             param;
 
-        if (button.queryString) {     
+        if (button.queryString) {
             let value = button.queryString.split('=')[1];
             param = { value };
-            
+
             vm.$goto(url, param);
         } else {
             vm.$goto(url);
@@ -54,17 +53,32 @@ export class KdpS01TComponent extends Vue {
         if (errorData && errorData.promptingMessage) {
             vm.setting.error = errorData.promptingMessage;
             vm.setting.errorDate = errorData.lastDateError;
-            vm.setting.buttons = [];
-            _.forEach(_.slice(errorData.listRequired, 0, 6), function (value) {
-                vm.setting.buttons.push(_.find(vm.params.appDispNames, ['appType', value]));
-            });
 
+            let buttons = [];
+            _.forEach(_.slice(errorData.listRequired, 0, 6), function (value) {
+                buttons.push(_.find(vm.params.appDispNames, ['appType', value]));
+            });
+            vm.setting.buttons = buttons;
         }
+
 
     }
 
     public mounted() {
-        this.pgName = 'KDPS01_23';
+        let vm = this;
+
+        _.delay(function () {
+            let btnFunctions = vm.$refs.functionBtns as HTMLButtonElement[],
+                btnDefault = vm.$refs.functionBtn as HTMLButtonElement;
+
+            if (btnFunctions.length) {
+                btnFunctions[0].focus();
+            } else {
+                btnDefault.focus();
+            }
+
+        }, 300);
+
     }
 }
 

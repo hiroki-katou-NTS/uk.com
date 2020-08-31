@@ -10,7 +10,6 @@ const servicePath = {
 
 @component({
     name: 'kdpS01b',
-    route: '/kdp/s01/b',
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
@@ -37,8 +36,8 @@ export class KdpS01BComponent extends Vue {
     public created() {
         let vm = this,
             command = {
-                startDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD'),
-                endDate: moment(vm.params.stampDate ? vm.params.stampDate : vm.$dt.now).format('YYYY/MM/DD')
+                startDate: moment(vm.$dt.now).format('YYYY/MM/DD'),
+                endDate: moment(vm.$dt.now).format('YYYY/MM/DD')
             };
 
         vm.$mask('show');
@@ -54,10 +53,8 @@ export class KdpS01BComponent extends Vue {
                 if (item) {
                     vm.screenData.date = item.stampStringDatetime;
                     vm.screenData.stampAtr = item.stampAtr;
-                    if (item.stamp.length) {
-                        let stamp = item.stamp[0];
-                        vm.screenData.stampCard = stamp.cardNumber;
-                    }
+                    vm.screenData.stampCard = _.get(item, 'stamp.refActualResult.cardNumberSupport', null);
+
                 }
 
             } else {
@@ -80,6 +77,21 @@ export class KdpS01BComponent extends Vue {
 
     }
 
+    public getTextColor(date) {
+
+        const daysColor = [
+            { day: 0, color: '#FF0000' },
+            { day: 6, color: '#0000FF' }
+        ];
+
+        let day = moment.utc(date).day(),
+
+            dayColor = _.find(daysColor, ['day', day]);
+
+        return dayColor ? dayColor.color : '#000000';
+
+    }
+
     private InitCountTime() {
         let vm = this;
         if (vm.params.resultDisplayTime > 0) {
@@ -89,10 +101,6 @@ export class KdpS01BComponent extends Vue {
             }, 1000);
         }
 
-    }
-
-    public mounted() {
-        this.pgName = 'KDPS01_5';
     }
 }
 
