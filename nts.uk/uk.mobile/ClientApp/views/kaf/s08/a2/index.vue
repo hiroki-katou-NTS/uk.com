@@ -76,7 +76,7 @@
               </td>
             </tr>
             <tr>
-              <td class="px-1">03/12</td>
+              <td class="px-1"></td>
               <td class="px-1">Jacob</td>
               <td class="px-1">Thornton</td>
               <td class="px-1">@fat</td>
@@ -86,7 +86,7 @@
               </td>
             </tr>
             <tr>
-              <td class="px-1">03/12</td>
+              <td class="px-1"></td>
               <td class="px-1">Larry</td>
               <td class="px-1">The Bird</td>
               <td class="px-1">@twitter</td>
@@ -96,7 +96,7 @@
               </td>
             </tr>
             <tr>
-              <td class="px-1">03/12</td>
+              <td class="px-1" v-date="date"></td>
               <td class="px-1">Larry</td>
               <td class="px-1">The Bird</td>
               <td class="px-1">@twitter</td>
@@ -106,7 +106,7 @@
               </td>
             </tr>
             <tr>
-              <td class="px-1">03/12</td>
+              <td class="px-1"></td>
               <td class="px-1">Larry</td>
               <td class="px-1">The Bird</td>
               <td class="px-1">@twitter</td>

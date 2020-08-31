@@ -13,5 +13,5 @@ import { component } from '@app/core/component';
 export class KafS08DComponent extends Vue {
     public name: string = 'Nittsu System Viet Nam';
     public title: string = 'KafS08D';
-    
+    public date: Date = new Date(2020,2,12);
 }

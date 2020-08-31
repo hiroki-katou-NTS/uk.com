@@ -27,28 +27,20 @@
           <span class="badge badge-info">任意</span>
         </div>
       </div>
-      <div class="aParent">
-        <!-- A5_2 -->
-        <label class="uk-text-dark-gray">{{'KAFS08_28' | i18n}}</label>
         <!-- A5_3 -->
         <nts-time-editor
           v-model="timeWithDay"
-          name="日区分付き時刻"
+          :name="'KAFS08_28'"
           time-input-type="time-with-day"
-          v-bind:show-title="false"
+          :columns="{ title: 'col-3', input: 'col-5' }"
         />
-      </div>
-      <div class="bParent">
-        <!-- A5_4 -->
-        <label class="uk-text-dark-gray">{{'KAFS08_29' | i18n}}</label>
         <!-- A5_5 -->
         <nts-time-editor
           v-model="timeWithDay"
-          name="日区分付き時刻"
+          :name="'KAFS08_29'"
           time-input-type="time-with-day"
-          v-bind:show-title="false"
+          :columns="{ title: 'col-3', input: 'col-5' }"
         />
-      </div>
       <!-- A_20 -->
       <div>
         <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" />
