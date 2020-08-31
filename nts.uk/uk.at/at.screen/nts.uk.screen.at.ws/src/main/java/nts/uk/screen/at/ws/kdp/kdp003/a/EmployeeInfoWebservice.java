@@ -22,6 +22,6 @@ public class EmployeeInfoWebservice extends WebService {
 	@POST
 	@Path("in-workplace")
 	public List<EmployeeStampData> listEmployee(@Context HttpServletRequest request, EmployeeQuery query) {
-		return employeeStamped.getListEmployee(query.getCompanyId(), query.getWorkplaceId(), query.getBaseDate());
+		return employeeStamped.getListEmployee(query.getCompanyId(), query.getWorkplaceIds(), query.getBaseDate());
 	}
 }

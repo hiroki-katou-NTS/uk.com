@@ -224,6 +224,69 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var devices;
+        (function (devices) {
+            var WS_URI = "ws://localhost:18080/pasori/";
+            var instance = null;
+            var callback = null;
+            var Felica = /** @class */ (function () {
+                function Felica() {
+                    var fc = this;
+                    // create socket for connect to c# app
+                    fc.socket = new WebSocket(WS_URI);
+                    fc.socket.onopen = function $open(evt) {
+                        if (callback) {
+                            callback('open', undefined, undefined);
+                        }
+                    };
+                    fc.socket.onclose = function $close(evt) {
+                        if (callback) {
+                            callback('close', undefined, undefined);
+                        }
+                    };
+                    fc.socket.onmessage = function $message(evt) {
+                        var json = JSON.parse(evt.data);
+                        if (!callback || json.Category.toUpperCase() !== "FELICA") {
+                            return;
+                        }
+                        // if message pass (send from felica app)
+                        switch (json.Command) {
+                            case 'S':
+                                callback('status', json.ReaderConnected, undefined);
+                                break;
+                            case 'C':
+                                callback('connect', undefined, undefined);
+                                break;
+                            case 'D':
+                                callback('disconnect', undefined, undefined);
+                                break;
+                            case 'R':
+                                callback('read', undefined, json.CardNo);
+                                break;
+                        }
+                    };
+                }
+                return Felica;
+            }());
+            // export only create method for Felica class
+            function felica(cb) {
+                // if reconnect, close old connect
+                if (instance && instance.socket.OPEN) {
+                    instance.socket.close();
+                }
+                // register callback function
+                callback = cb;
+                // create new instance (and new socket connection)
+                return instance = new Felica();
+            }
+            devices.felica = felica;
+        })(devices = uk.devices || (uk.devices = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
         var ntsNumber;
         (function (ntsNumber) {
             function isInteger(value, option) {
@@ -47761,7 +47824,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
     }
 };
 /** Create new ViewModel and automatic binding to __viewContext */
-function bean() {
+function bean(dialogOption) {
     return function (ctor) {
         __viewContext.ready(function () {
             $storage().then(function ($params) {
@@ -47778,7 +47841,7 @@ function bean() {
                         $mounted.apply($viewModel, []);
                     }
                 });
-                __viewContext.bind($viewModel);
+                __viewContext.bind($viewModel, dialogOption);
             });
         });
     };
