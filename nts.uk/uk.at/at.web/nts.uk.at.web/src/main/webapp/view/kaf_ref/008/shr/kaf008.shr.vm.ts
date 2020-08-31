@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (value) {
                     let setting = value.setting.appCommentSet;
                     let wkTimeSet = value.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-                    let wkDaySet = value.workdays;
+                    let wkDaySet = value.infoBeforeChange;
                     vm.comment({
                         comment: setting.comment,
                         colorCode: setting.colorCode,
@@ -109,10 +109,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                         if (!wkTypeName) {
                             let wkDayInfo = _.filter(ko.toJS(wkDaySet), function (item) {
-                                return item.workTypeCode == wkTypeCode
+                                return item.date == date
                             });
                             if (wkDayInfo.length != 0) {
-                                wkTypeName = wkDayInfo[0].name;
+                                wkTypeName = wkDayInfo[0].workTypeDto.name;
                             }
                         }
 
@@ -124,7 +124,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                             wkTimeName,
                             statWork,
                             endWork
-                        );
+                        ) ;
                         convertDisp.wkTypeCd.subscribe(value => {
                             vm.changeTypeCodeScreenB(vm.businessTripOutput(), data.date, value, index);
                         });
@@ -177,11 +177,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (valid) {
                     return vm.$ajax(API.changeWorkTypeCode, command);
                 }
-            }).done(data => {
-                if (data) {
-                    vm.businessTripOutput(data);
-
-                    let workTypeAfterChange = data.infoAfterChange;
+            }).done(res => {
+                if (res) {
+                    let workTypeAfterChange = res.infoAfterChange;
                     let InfoChanged = _.findIndex(workTypeAfterChange, {date: date});
                     let workCodeChanged = workTypeAfterChange[InfoChanged].workTypeDto.workTypeCode;
                     let workNameChanged = workTypeAfterChange[InfoChanged].workTypeDto.name;
@@ -223,10 +221,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (valid) {
                     return vm.$ajax(API.changWorkTimeCode, command);
                 }
-            }).done(data => {
+            }).done(res => {
                 contentChanged.workTimeCD = timeCode;
-                if (data) {
-                    contentChanged.opWorkTimeName = data.name;
+                if (res && res.name) {
+                    contentChanged.opWorkTimeName = res.name;
                 } else {
                     contentChanged.opWorkTimeName = "なし";
                 }
@@ -266,9 +264,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (valid) {
                     return vm.$ajax(API.changeWorkTypeCode, command);
                 }
-            }).done(data => {
-                if (data) {
-                    let workTypeAfterChange = data.infoAfterChange;
+            }).done(res => {
+                if (res) {
+                    let workTypeAfterChange = res.infoAfterChange;
                     let InfoChanged = _.findIndex(workTypeAfterChange, {date: date});
                     let workCodeChanged = workTypeAfterChange[InfoChanged].workTypeDto.workTypeCode;
                     let workNameChanged = workTypeAfterChange[InfoChanged].workTypeDto.name;
@@ -314,22 +312,23 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 if (valid) {
                     return vm.$ajax(API.changWorkTimeCode, command);
                 }
-            }).done(data => {
+            }).done(res => {
                 contentChanged.workTimeCD = timeCode;
-                if (data) {
-                    contentChanged.opWorkTimeName = data.name;
+                if (res && res.name) {
+                    contentChanged.opWorkTimeName = res.name;
+                    vm.items()[index].wkTimeName(res.name);
                 } else {
                     contentChanged.opWorkTimeName = "なし";
+                    vm.items()[index].wkTimeName("なし");
                 }
+                vm.items()[index].wkTimeCd(timeCode);
                 vm.model(cloneModel);
-                vm.businessTripOutput(data);
             }).fail(err => {
                 let param;
 
                 contentChanged.wkTimeCd = "";
                 contentChanged.wkTimeName = "なし";
                 vm.model(cloneModel);
-                vm.businessTripOutput(businessTripInfoOutputDto);
 
                 if (err.message && err.messageId) {
                     param = {messageId: err.messageId};
@@ -347,6 +346,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
         openDialogKdl003(data: TripContentDisp) {
             const vm = this;
+            let selectedDate = data.date;
             let workTypeCodes = data.wkTypeCd();
             let workTimeCodes = data.wkTimeCd();
             let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: data.date});
@@ -361,12 +361,24 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 return obj.worktimeCode
             });
             let cloneOutput = _.clone(vm.businessTripOutput());
+            let dispFlag: boolean = true;
+            let command = {
+                selectedDate: selectedDate,
+                businessTripInfoOutputDto: ko.toJS(vm.businessTripOutput)
+            }
+
+            vm.$ajax(API.startKDL003, command).then(res => {
+                if(res) {
+                    dispFlag = res;
+                }
+            });
 
             vm.$window.storage('parentCodes', {
                 workTypeCodes: _.merge(listWorkCode, listHolidayCode),
                 selectedWorkTypeCode: workTypeCodes,
                 workTimeCodes: listWkTimeCd,
-                selectedWorkTimeCode: workTimeCodes
+                selectedWorkTimeCode: workTimeCodes,
+                showNone: dispFlag
             });
 
             vm.$window.modal('/view/kdl/003/a/index.xhtml').then((result: any) => {
@@ -374,26 +386,35 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     // const startTime = nts.uk.time.format.byId("Clock_Short_HM", rs.first.start);
                     // const endTime = nts.uk.time.format.byId("Clock_Short_HM", rs.first.end);
                     if (vm.mode == Mode.New) {
-
                         let currentDetail = cloneOutput.businessTripActualContent[selectedIndex].opAchievementDetail;
+
                         currentDetail.workTypeCD = rs.selectedWorkTypeCode;
                         currentDetail.opWorkTypeName = rs.selectedWorkTypeName;
                         currentDetail.workTimeCD = rs.selectedWorkTimeCode;
                         currentDetail.opWorkTimeName = rs.selectedWorkTimeName;
                         currentDetail.opWorkTime = rs.first.start;
                         currentDetail.opLeaveTime = rs.first.end;
+
                         vm.businessTripOutput(cloneOutput);
                     } else {
                         let cloneModel = _.clone(vm.model());
                         let contentChanged = cloneModel.tripInfos[selectedIndex];
+
                         contentChanged.wkTypeCd = rs.selectedWorkTypeCode;
                         contentChanged.wkTypeName = rs.selectedWorkTypeName;
                         contentChanged.wkTimeCd = rs.selectedWorkTimeCode;
                         contentChanged.wkTimeName = rs.selectedWorkTimeName;
                         contentChanged.startWorkTime = rs.first.start;
                         contentChanged.endWorkTime = rs.first.end;
+
+                        vm.items()[selectedIndex].wkTypeCd(rs.selectedWorkTypeCode);
+                        vm.items()[selectedIndex].wkTypeName(rs.selectedWorkTypeName);
+                        vm.items()[selectedIndex].wkTimeCd(rs.selectedWorkTimeCode);
+                        vm.items()[selectedIndex].wkTimeName(rs.selectedWorkTimeName);
+                        vm.items()[selectedIndex].start(rs.first.start);
+                        vm.items()[selectedIndex].end(rs.first.end);
+
                         vm.model(cloneModel);
-                        vm.businessTripOutput(cloneOutput)
                     }
                 });
             });
@@ -480,7 +501,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
     const API = {
         changeWorkTypeCode: "at/request/application/businesstrip/changeWorkTypeCode",
-        changWorkTimeCode: "at/request/application/businesstrip/changeWorkTimeCode"
+        changWorkTimeCode: "at/request/application/businesstrip/changeWorkTimeCode",
+        startKDL003: "at/request/application/businesstrip/startKDL003"
     }
 
     const Mode = {

@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.request.app.command.application.businesstrip;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -45,19 +48,21 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
     @Override
     protected ProcessResult handle(CommandHandlerContext<AddBusinessTripCommand> context) {
         AddBusinessTripCommand command = context.getCommand();
-        Application application = command.getApplicationDto().toDomain();
-        application = Application.createFromNew(
-                application.getPrePostAtr(),
-                application.getEmployeeID(),
-                application.getAppType(),
-                application.getAppDate(),
-                application.getEnteredPersonID(),
-                application.getOpStampRequestMode(),
-                application.getOpReversionReason(),
-                application.getOpAppStartDate(),
-                application.getOpAppEndDate(),
-                application.getOpAppReason(),
-                application.getOpAppStandardReasonCD());
+        String loginSid = AppContexts.user().employeeId();
+        ApplicationDto applicationDto = command.getApplicationDto();
+        Application application = Application.createFromNew(
+                EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
+                applicationDto.getEmployeeID() == null ? loginSid : applicationDto.getEmployeeID(),
+                EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
+                new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
+                loginSid,
+                Optional.empty(),
+                Optional.empty(),
+                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+                Optional.of(new AppReason(applicationDto.getOpAppReason())),
+                Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
+                ));
         BusinessTrip businessTrip = command.getBusinessTripDto().toDomain(application);
         businessTrip.setAppID(application.getAppID());
         BusinessTripInfoOutput businessTripInfoOutput = command.getBusinessTripInfoOutputDto().toDomain();
@@ -76,7 +81,7 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
         this.businessTripRepository.add(businessTrip);
 
         // ドメインモデル「申請」の新規登録をする
-        this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+        this.registerService.newScreenRegisterAtApproveInfoReflect(loginSid, application);
         GeneralDate appStartDate = application.getOpAppStartDate().isPresent() ? application.getOpAppStartDate().get().getApplicationDate() : null;
         GeneralDate appEndDate = application.getOpAppStartDate().isPresent() ? application.getOpAppEndDate().get().getApplicationDate() : null;
         List<GeneralDate> dates = new ArrayList<>();

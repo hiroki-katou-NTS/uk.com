@@ -1,14 +1,15 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
-
 module nts.uk.at.view.kaf008_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     import BusinessTripInfoDetail = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripInfoDetail;
 
+
     @bean()
-    export class Kaf008AViewModel extends Kaf000AViewModel {
-        application: KnockoutObservable<Application> = ko.observable(new Application(AppType.BUSINESS_TRIP_APPLICATION));
+    class Kaf008AViewModel extends Kaf000AViewModel {
+		
+		appType: KnockoutObservable<number> = ko.observable(AppType.BUSINESS_TRIP_APPLICATION);
+        application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
         applicationTest: any = {
             version: 1,
             // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
@@ -39,52 +40,54 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }]
             }
         };
-        businessTripContent: KnockoutObservable<TripContent> = ko.observable({
+        businessTripContent : KnockoutObservable<TripContent> = ko.observable({
             departureTime: ko.observable(null),
             returnTime: ko.observable(null),
-            contentDisp: ko.observableArray([])
-        });
-        businessTripOutput: KnockoutObservable<BusinessTripInfoOutput> = ko.observable();
+            contentDisp: ko.observableArray([]) });
+        businessTripOutput : KnockoutObservable<BusinessTripInfoOutputDto> = ko.observable();
 
         created(params: any) {
             const vm = this;
 
-            vm.loadData([], [], AppType.BUSINESS_TRIP_APPLICATION)
-                .then((loadDataFlag: boolean) => {
-                    if (loadDataFlag) {
-                        const applicantList = [];
-                        const dateLst = [];
-                        const appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput);
-                        const command = { applicantList, dateLst, appDispInfoStartupOutput };
-
+            vm.loadData([], [], vm.appType())
+                .then((loadDataFlag: any) => {
+                    if(loadDataFlag) {
+                        let applicantList = [],
+                            dateLst = [],
+                            appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
+                            command = { applicantList, dateLst, appDispInfoStartupOutput };
                         return vm.$ajax(API.startNew, command);
                     }
-
-                    return null;
-                }).then((successData: Model | null) => {
-                    if (successData) {
-                        const { result, businessTripInfoOutputDto } = successData;
-
-                        if (result) {
-                            if (businessTripInfoOutputDto) {
-                                vm.businessTripContent({
-                                    departureTime: ko.observable(null),
-                                    returnTime: ko.observable(null),
-                                    contentDisp: ko.observableArray([])
-                                });
-
-                                vm.businessTripOutput(businessTripInfoOutputDto);
-                            }
-                        } else {
-                            successData.confirmMsgOutputs
-                                .forEach(i => {
-                                    vm.$dialog.error({ messageId: i.msgID })
-                                });
+                }).then((successData: Model) => {
+                if(successData) {
+                    if (successData.result) {
+                        if (successData.businessTripInfoOutputDto) {
+                            let actualContent = successData.businessTripInfoOutputDto.businessTripActualContent;
+                            vm.businessTripContent({
+                                departureTime: ko.observable(null),
+                                returnTime: ko.observable(null),
+                                contentDisp: ko.observableArray([])
+                            });
+                            let output: BusinessTripInfoOutputDto = {
+                                setting: successData.businessTripInfoOutputDto.setting,
+                                appDispInfoStartup: successData.businessTripInfoOutputDto.appDispInfoStartup,
+                                holidays: successData.businessTripInfoOutputDto.holidays,
+                                workdays: successData.businessTripInfoOutputDto.workdays,
+                                businessTripActualContent: successData.businessTripInfoOutputDto.businessTripActualContent,
+                                infoBeforeChange: successData.businessTripInfoOutputDto.infoBeforeChange,
+                                infoAfterChange: successData.businessTripInfoOutputDto.infoAfterChange
+                            };
+                            vm.businessTripOutput(output);
                         }
+                    } else {
+                        successData.confirmMsgOutputs.forEach(i => {
+                            vm.$dialog.error({ messageId: i.msgID })
+                        })
                     }
-                }).fail((failData: any) => {
-                    console.log(failData);
-                }).always(() => vm.$blockui("hide"));
+                }
+            }).fail((failData: any) => {
+                console.log(failData);
+            }).always(() => vm.$blockui("hide"));
 
 
             // Dummy Grid data
@@ -93,9 +96,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         mounted() {
             const vm = this;
-
-            vm.application().opAppEndDate
-            .subscribe(value => {
+            vm.application().opAppEndDate.subscribe(value => {
                 console.log(value);
                 if (value) {
                     vm.changeAppDate();
@@ -106,7 +107,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         changeAppDate() {
             const vm = this;
             let application = ko.toJS(vm.application);
-
             vm.applicationTest.appID = application.appID;
             vm.applicationTest.appDate = application.appDate;
             vm.applicationTest.appType = application.appType;
@@ -116,7 +116,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
-
             let applicationDto = vm.applicationTest;
             let businessTripInfoOutputDto = ko.toJS(vm.businessTripOutput());
             let command = {
@@ -127,13 +126,12 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 // '.ntsControl',
                 // '.nts-input'
             ]).then((valid: boolean) => {
-                if (valid) {
+                if(valid) {
                     return vm.$blockui("show").then(() => vm.$ajax(API.changeAppDate, command));
                 }
             }).done((res: any) => {
                 if (res.result) {
                     let content = res.businessTripInfoOutputDto;
-
                     vm.businessTripOutput(content);
                 } else {
                     console.log(res.confirmMsgOutputs);
@@ -145,9 +143,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         register() {
             const vm = this;
-            const businessTripInfoOutputDto= ko.toJS(vm.businessTripOutput);
-
-            let lstContent: Array<BusinessTripInfoDetail> = _.map(businessTripInfoOutputDto.businessTripActualContent, function (i) {
+            let lstContent: Array<BusinessTripInfoDetail> = _.map(vm.businessTripOutput().businessTripActualContent, function (i) {
                 return {
                     date: i.date,
                     wkTypeCd: i.opAchievementDetail.workTypeCD,
@@ -160,10 +156,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 departureTime: vm.businessTripContent().departureTime(),
                 returnTime: vm.businessTripContent().returnTime(),
                 tripInfos: lstContent
-            };
-            
+            }
+            let businessTripInfoOutputDto =  vm.businessTripOutput();
             let application = ko.toJS(vm.application);
-
             vm.applicationTest.appID = application.appID;
             vm.applicationTest.appDate = application.appDate;
             vm.applicationTest.appType = application.appType;
@@ -173,7 +168,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
-
             let applicationDto = vm.applicationTest;
             let command = {
                 businessTripDto,
@@ -185,35 +179,36 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 '.ntsControl',
                 '.nts-input'
             ]).then((valid: boolean) => {
-                if (valid) {
+                if(valid) {
                     return vm.$blockui("show").then(() => vm.$ajax(API.register, command));
                 }
             }).done((res: any) => {
                 if (res) {
-                    vm.$dialog.info({ messageId: "Msg_15" });
+                    vm.$dialog.info({messageId: "Msg_15"});
                 }
             }).fail(res => {
                 console.log(res);
                 let param;
                 if (res.message && res.messageId) {
-                    param = { messageId: res.messageId };
+                    param = {messageId: res.messageId};
                 } else {
 
                     if (res.message) {
-                        param = { message: res.message };
+                        param = {message: res.message};
                     } else {
-                        param = { messageId: res.messageId };
+                        param = {messageId: res.messageId};
                     }
                 }
                 vm.$dialog.error(param);
             }).always(() => vm.$blockui("hide"));
         }
+
     }
 
     interface Model {
         result: boolean;
         confirmMsgOutputs: Array<MessageOutput>;
-        businessTripInfoOutputDto: BusinessTripInfoOutput;
+        businessTripInfoOutputDto: BusinessTripInfoOutputDto;
     }
 
     interface Setting {
@@ -222,7 +217,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         contractCheck: number;
     }
 
-    export interface BusinessTripInfoOutput {
+    export interface BusinessTripInfoOutputDto {
         setting: Setting;
         appDispInfoStartup: any;
         holidays: any;
@@ -237,7 +232,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         paramLst: Array<string>
     }
 
-    export interface TripContent {
+    interface TripContent {
         departureTime: KnockoutObservable<number>;
         returnTime: KnockoutObservable<number>;
         contentDisp: KnockoutObservableArray<any>;
@@ -245,7 +240,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
     const API = {
         startNew: "at/request/application/businesstrip/start",
-        checkBeforeRegister: "at/request/application/businesstrip/checkBeforeRegister",
+        checkBeforeRegister:"at/request/application/businesstrip/checkBeforeRegister",
         register: "at/request/application/businesstrip/register",
         changeAppDate: "at/request/application/businesstrip/changeAppDate"
     }

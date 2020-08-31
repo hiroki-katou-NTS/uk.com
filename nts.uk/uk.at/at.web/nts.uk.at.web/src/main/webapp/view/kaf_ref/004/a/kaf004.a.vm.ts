@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
     @bean()
     class KAF004AViewModel extends Kaf000AViewModel {
+		appType: KnockoutObservable<number> = ko.observable(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
         application: KnockoutObservable<Application>;
         workManagement: WorkManagement;
         arrivedLateLeaveEarlyInfo: any;
@@ -31,7 +32,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
         created(params: any) {
             const vm = this;
 
-            vm.application = ko.observable(new Application(AppType.EARLY_LEAVE_CANCEL_APPLICATION));
+            vm.application = ko.observable(new Application(vm.appType()));
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
             vm.arrivedLateLeaveEarlyInfo = ko.observable(ArrivedLateLeaveEarlyInfo.initArrivedLateLeaveEarlyInfo());
             vm.appDispInfoStartupOutput = ko.observable(CommonProcess.initCommonSetting());
@@ -55,9 +56,9 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
             if (ko.toJS(vm.application().appDate)) {
                 dates.push(ko.toJS(vm.application().appDate));
             }
-            vm.loadData([], [], AppType.EARLY_LEAVE_CANCEL_APPLICATION)
+            vm.loadData([], [], vm.appType())
                 .then((loadDataFlag: any) => {
-                        let appType = AppType.EARLY_LEAVE_CANCEL_APPLICATION,
+                        let appType = vm.appType,
                             appDates = dates,
                             appDispInfoStartupDto = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { appType, appDates, appDispInfoStartupDto };

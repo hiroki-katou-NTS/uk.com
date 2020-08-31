@@ -50,7 +50,8 @@ module cmm045.a.viewmodel {
         apptypeGridColumns: KnockoutObservable<NtsGridListColumn>;
         selectedAppId: KnockoutObservable<number> = ko.observable(-1);
 		orderCD: KnockoutObservable<number> = ko.observable(0);
-		appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
+        appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
+        appList: any = ko.observable(null);
 
         constructor() {
             let self = this;
@@ -143,8 +144,8 @@ module cmm045.a.viewmodel {
                 _.each(data.listEmployee, function(emp){
                     self.lstSidFilter.push(emp.employeeId);
                 });
-				
-				
+
+
 				if(!self.checkConditionParam()) {
 					return;
 				}
@@ -156,7 +157,7 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
-					self.items(data.appLst);	
+					self.items(data.appLst);
 					if (data.appStatusCount != null) {
                         self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
                             data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
@@ -210,18 +211,18 @@ module cmm045.a.viewmodel {
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
 				nts.uk.ui.dialog.error({ messageId: "Msg_1722" });
-                return false;		
+                return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
 				nts.uk.ui.dialog.error({ messageId: "Msg_1723" });
-                return false;		
+                return false;
 			}
 			return true;
 		}
-		
+
 		findByPeriod() {
-			const self = this;	
+			const self = this;
 			if(!self.checkConditionParam()) {
 				return;
 			}
@@ -246,7 +247,7 @@ module cmm045.a.viewmodel {
                     let colorBackGr = self.fillColorbackGr();
                     $("#grid2").ntsGrid("destroy");
                     self.reloadGridApplicaion(colorBackGr, self.isHidden());
-              	}	
+              	}
 			}).always(() => block.clear());
 		}
 
@@ -334,6 +335,7 @@ module cmm045.a.viewmodel {
 						};
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
+                self.appList(data.appListInfo);
 				self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
 				self.appListExtractConditionDto = data.appListExtractCondition;
                 self.lstContentApp(data.lstContentApp);
@@ -400,7 +402,7 @@ module cmm045.a.viewmodel {
                 }
                 dfd.resolve();
 			}).always(() => block.clear());
-                
+
 //                service.getApplicationDisplayAtr().done(function(data1) {
 //                    _.each(data1, function(obj) {
 //                        self.roundingRules.push(new vmbase.ApplicationDisplayAtr(obj.value, obj.localizedName));
@@ -411,8 +413,8 @@ module cmm045.a.viewmodel {
 //							device: 0,
 //							listOfAppTypes: data
 //						};
-//					
-//					
+//
+//
 //                    service.getApplicationList(newParam).done(function(data: any) {
 //						self.dateValue({ startDate: data.appListInfoDto.displaySet.startDateDisp, endDate: data.appListInfoDto.displaySet.endDateDisp });
 //                        self.lstContentApp(data.lstContentApp);
@@ -675,7 +677,7 @@ module cmm045.a.viewmodel {
 		customContent(key: string, value: any) {
 			const self = this;
 			if(key=='appType') {
-				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == value);	
+				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == value);
 				if(_.isUndefined(appInfo)) {
 					return '';
 				} else {
@@ -690,9 +692,9 @@ module cmm045.a.viewmodel {
 				}
 			}
 			if(key=='appContent') {
-				return value.replace(/\n/g, '<br/>');		
+				return value.replace(/\n/g, '<br/>');
 			}
-			return value; 
+			return value;
 		}
 
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
@@ -1643,6 +1645,13 @@ module cmm045.a.viewmodel {
 
         approveAll() {
             console.log("Approve all");
+        }
+
+        print(params: any) {
+            let self = this;
+
+            const command = { lstApp: self.appList() }
+            service.print(command);
         }
     }
 }

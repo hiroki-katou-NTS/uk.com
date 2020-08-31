@@ -51,9 +51,9 @@ public class ReceptionRestrictionSetDto {
 
 	public ReceptionRestrictionSetting toDomain() {
 		return new ReceptionRestrictionSetting(
-				otAppBeforeAccepRestric.toDomain(),
+				appType == ApplicationType.OVER_TIME_APPLICATION.value ? otAppBeforeAccepRestric.toDomain() : null,
 				afterhandRestriction,
-				beforehandRestriction.toDomain(),
+				appType == ApplicationType.OVER_TIME_APPLICATION.value ? null : beforehandRestriction.toDomain(),
 				EnumAdaptor.valueOf(appType, ApplicationType.class));
 	}
 }

@@ -4,6 +4,7 @@ import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripPrintContent;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,14 @@ public class BusinessTripDto {
                 this.getDepartureTime(),
                 this.getReturnTime(),
                 app
+        );
+    }
+
+    public BusinessTripPrintContent toPrintContentOutput() {
+        return new BusinessTripPrintContent(
+                this.getTripInfos().stream().map(i -> i.toDomain()).collect(Collectors.toList()),
+                this.getDepartureTime(),
+                this.getReturnTime()
         );
     }
 
