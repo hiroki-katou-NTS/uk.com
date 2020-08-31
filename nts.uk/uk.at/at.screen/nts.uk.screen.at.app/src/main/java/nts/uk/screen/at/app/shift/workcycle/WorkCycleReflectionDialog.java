@@ -24,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
 import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -154,18 +155,20 @@ public class WorkCycleReflectionDialog {
 		private PublicHolidayRepository publicHolidayRepository;
 		private WorkCycleRepository workCycleRepository;
 
+		private final String cid = AppContexts.user().companyId();
+
 		@Override
-		public Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting(String cid){
+		public Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting(){
 			return Optional.of(weeklyWorkDayRepository.getWeeklyWorkDayPatternByCompanyId(cid));
 		}
 
 		@Override
-		public List<PublicHoliday> getpHolidayWhileDate(String companyId, GeneralDate strDate, GeneralDate endDate){
-			return publicHolidayRepository.getpHolidayWhileDate(companyId, strDate, endDate);
+		public List<PublicHoliday> getpHolidayWhileDate(GeneralDate strDate, GeneralDate endDate){
+			return publicHolidayRepository.getpHolidayWhileDate(cid, strDate, endDate);
 		}
 
 		@Override
-		public Optional<WorkCycle> getWorkCycle(String cid, String code){
+		public Optional<WorkCycle> getWorkCycle(String code){
 			return workCycleRepository.getByCidAndCode(cid, code);
 		}
 	}

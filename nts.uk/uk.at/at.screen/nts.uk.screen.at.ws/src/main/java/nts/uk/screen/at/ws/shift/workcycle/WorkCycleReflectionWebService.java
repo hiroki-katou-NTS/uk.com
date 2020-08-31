@@ -13,6 +13,7 @@ import nts.uk.screen.at.app.shift.workcycle.WorkCycleReflectionDto;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -34,6 +35,7 @@ public class WorkCycleReflectionWebService extends WebService {
 
     @POST
     @Path("start")
+	@Consumes(MediaType.APPLICATION_JSON)
     public WorkCycleReflectionDto getStartupInfo(GetStartupInfoParam param) {
 
 		DatePeriod creationPeriod = createDatePeriod(
@@ -60,7 +62,8 @@ public class WorkCycleReflectionWebService extends WebService {
 	 */
 	@POST
 	@Path("get-reflection-image")
-	public ReflectionImage getWorkCycleAppImage(GetWorkCycleAppImageParam param){
+	@Consumes(MediaType.APPLICATION_JSON)
+	public List<WorkCycleReflectionDto.RefImageEachDayDto> getWorkCycleAppImage(GetWorkCycleAppImageParam param){
 
 		List<WorkCreateMethod> refOrder = createFromIntArray(param.getRefOrder());
 		WorkCycleRefSetting config = new WorkCycleRefSetting(

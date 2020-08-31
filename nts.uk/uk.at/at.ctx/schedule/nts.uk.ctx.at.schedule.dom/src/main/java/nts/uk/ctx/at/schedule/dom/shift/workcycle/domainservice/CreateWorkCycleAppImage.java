@@ -8,8 +8,8 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.shr.com.context.AppContexts;
 
+import javax.ejb.Stateless;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  *  勤務サイクルの適用イメージを作成する
  */
+@Stateless
 public class CreateWorkCycleAppImage {
 
     /**
@@ -79,7 +80,7 @@ public class CreateWorkCycleAppImage {
     private static void createImageHoliday(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
         val holidayList = require.getpHolidayWhileDate(createPeriod.start(), createPeriod.end());
         for (PublicHoliday pubHoliday : holidayList) {
-            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation("",config.getHolidayCd().get().v()));
+			reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation("", config.getHolidayCd().isPresent()?config.getHolidayCd().get().v(): null));
         }
     }
 
