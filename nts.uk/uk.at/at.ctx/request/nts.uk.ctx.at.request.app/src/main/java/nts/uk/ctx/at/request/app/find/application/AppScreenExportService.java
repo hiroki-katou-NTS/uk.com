@@ -22,10 +22,11 @@ public class AppScreenExportService extends ExportService<AppScreenQuery> {
 	@Override
 	protected void handle(ExportServiceContext<AppScreenQuery> context) {
 		AppScreenQuery query = context.getQuery();
+		int appListAtr = query.getAppListAtr();
 		AppListInfoDto lstApp = query.getLstApp();
 		FileGeneratorContext exportContext = context.getGeneratorContext();
 
-		generator.generate(exportContext, lstApp.toDomain());
+		generator.generate(exportContext, appListAtr, lstApp.toDomain());
 	}
 
 }
