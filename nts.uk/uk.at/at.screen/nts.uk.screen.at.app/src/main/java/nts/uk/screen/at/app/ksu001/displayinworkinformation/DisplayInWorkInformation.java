@@ -51,8 +51,7 @@ public class DisplayInWorkInformation {
 			// <<Public>> 廃止されていない勤務種類をすべて取得する
 			WorkTypeDto workTypeDto = listWorkTypeDto.get(i);
 			// 就業時間帯の必須チェック
-			SetupType workTimeSetting = basicScheduleService
-					.checkNeededOfWorkTimeSetting(listWorkTypeDto.get(i).getWorkTypeCode());
+			SetupType workTimeSetting = basicScheduleService.checkNeededOfWorkTimeSetting(listWorkTypeDto.get(i).getWorkTypeCode());
 
 			// 1日半日出勤・1日休日系の判定 - (Thực hiện thuật toán [Kiểm tra hệ thống đi làm
 			// nửa ngày・ nghỉ cả ngày ])
