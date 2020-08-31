@@ -13,17 +13,7 @@ module nts.uk.at.kmr003.a {
         BENTO_DELETE: 'at/record/reservation/bento/force-delete'
     };
 
-    // Grid cell errors
-    const dialogOptions: any = {
-        forGrid: true,
-        headers: [
-            new nts.uk.ui.errors.ErrorHeader("rowId", getText("KMR003_21"), "auto", true),
-            new nts.uk.ui.errors.ErrorHeader("columnKey", "弁当ヘッダー", "auto", true),
-            new nts.uk.ui.errors.ErrorHeader("message", "エラー内容", "auto", true)
-        ]
-    };
-
-    @bean(dialogOptions)
+    @bean()
     export class KMR003AViewModel extends ko.ViewModel {
         date: KnockoutObservable<string> = ko.observable((new Date()).toISOString().substr(0, 10) + 'T00:00:00.000Z');
 
