@@ -23,13 +23,17 @@
 			<!--B1_1-->
 			<a class="goback" tabindex="1" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }, text: $i18n('KMR001_3')"></a>
 			<!--B1_2-->
-			<button class="proceed" tabindex="2" data-bind="click: registerBentoReserveSetting, text: $i18n('KMR001_4'), enable: $root.errors.isEmpty"></button>
+			<button class="proceed" tabindex="2" data-bind="click:
+				registerBentoReserveSetting,
+				text: $i18n('KMR001_4'),
+				enable: $root.errors.isEmpty
+			"/>
 			<hr/>
 			<div class="break-line"></div>
 		</div>
 		<div class="kmr001b" id="contents-area" data-bind="with: model" >
 			<!--B2_1-->
-			<div class="label" data-bind="text: $i18n('KMR001_3')" ></div>
+			<div class="label" data-bind="text: $i18n('KMR001_82')" ></div>
 			<hr/>
 			<table>
 				<tr>
@@ -76,7 +80,12 @@
 				<tr>
 					<td>
 						<!--B19_1-->
-						<div data-bind="ntsFormLabel: { required: true, inline: true, enable: true, text: $i18n('KMR001_35')}"></div>
+						<div data-bind="ntsFormLabel: {
+							required: true,
+							inline: true,
+							enable: true,
+							text: $i18n('KMR001_63')}
+						" />
 					</td>
 					<td>
 						<!--B19_2-->
@@ -112,7 +121,7 @@
 
 						<!--B19_7-->
 						<span >
-							<input tabindex="7" class="kmr-time-editor" data-bind="ntsTimeEditor: {
+							<input tabindex="7" id="end1" class="kmr-time-editor" data-bind="ntsTimeEditor: {
 								mode: 'time',
 								inputFormat: 'time',
 								required: true,
@@ -127,7 +136,7 @@
 				<tr>
 					<td>
 						<!--B20_1-->
-						<div data-bind="ntsFormLabel: {}">締め時刻１</div>
+						<div data-bind="ntsFormLabel: {text: $i18n('KMR001_68')}"></div>
 					</td>
 					<td>
 						<!--B20_2-->
@@ -162,7 +171,7 @@
 
 						<!--B20_7-->
 						<span>
-							<input tabindex="10" class="kmr-time-editor" data-bind="ntsTimeEditor: {
+							<input id="end2" tabindex="10" class="kmr-time-editor" data-bind="ntsTimeEditor: {
 								mode: 'time',
 								inputFormat: 'time',
 								value: reservationEndTime2,

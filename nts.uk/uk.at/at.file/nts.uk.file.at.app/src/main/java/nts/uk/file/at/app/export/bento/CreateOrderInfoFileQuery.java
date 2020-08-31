@@ -250,7 +250,7 @@ public class CreateOrderInfoFileQuery {
     /** convert to DTO::職場又は場所情報 */
     private List<PlaceOfWorkInfoDto> convertToPlaceOfWorkInfoDto(List<WorkplaceInformation> workplaceInformations, List<WorkLocation> workLocations){
         List<PlaceOfWorkInfoDto> result = new ArrayList<>();
-        if(workplaceInformations == null)
+        if(CollectionUtil.isEmpty(workplaceInformations))
             for(WorkLocation item : workLocations)
                 result.add(new PlaceOfWorkInfoDto(item.getWorkLocationCD().v(), item.getWorkLocationName().v()));
         else
