@@ -1,5 +1,6 @@
 module nts.uk.at.view.kdl023.base.service {
 
+    import GetStartupInfoParam = nts.uk.at.view.kdl023.base.service.model.GetStartupInfoParam;
     let servicePath: any = {
         getHoliday: 'at/schedule/holiday/getHolidayByListDate',
         getWorkTime: 'at/shared/worktimesetting/findAll',
@@ -32,6 +33,12 @@ module nts.uk.at.view.kdl023.base.service {
     }
     export function registerMonthlyPattern(data: any){
         return nts.uk.request.ajax(servicePath.registerMonthlyPattern)
+    }
+    export function startUpWindows(data: GetStartupInfoParam): JQueryPromise<model.WorkCycleReflectionDto>{
+        return nts.uk.request.ajax(servicePath.startUp, data)
+    }
+    export function getReflectionWorkCycleAppImage(data: any): JQueryPromise<model.WorkCycleReflectionDto>{
+        return nts.uk.request.ajax(servicePath.getWorkCycleAppImage)
     }
 
     export module model {
@@ -91,8 +98,37 @@ module nts.uk.at.view.kdl023.base.service {
             holidayName: string;
         }
         export enum BootMode{
-            REF_MODE = 0;
-            EXEC_MODE = 1;
+            REF_MODE = 0,
+            EXEC_MODE = 1
+        }
+
+        export interface WorkCycleReflectionDto{
+            pubHoliday: Array<WorkType>;
+            satHoliday: Array<WorkType>;
+            nonSatHoliday: Array<WorkType>;
+            reflectionImage: Array<RefImageEachDayDto>;
+            workCycleList: Array<any>;
+        }
+
+        export interface RefImageEachDayDto{
+            workCreateMethod: number;
+            workInformation: WorkInformationDto
+            date: Date;
+            workStyles: number;
+        }
+
+        export interface WorkInformationDto{
+            workTypeCode: string;
+            workTimeCode: string;
+        }
+
+        export interface GetStartupInfoParam{
+            bootMode: number;
+            creationPeriodStartDate: string;
+            creationPeriodEndDate: string;
+            workCycleCode: string;
+            refOrder: Array<number>;
+            numOfSlideDays: number;
         }
     }
 }

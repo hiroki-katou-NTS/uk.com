@@ -152,7 +152,7 @@
 									<div id="cbb-work-type-statutory" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_17]',
-												options: $parents[1].listWorkType,
+												options: $parents[1].listPubHoliday,
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,
@@ -170,7 +170,7 @@
 									<div tabindex="5" id="cbb-work-type-non-statutory" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_18]',
-												options: $parents[1].listWorkType,
+												options: $parents[1].listSatHoliday,
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,
@@ -188,7 +188,7 @@
 									<div tabindex="7" id="cbb-work-type-holiday" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_19]',
-												options: $parents[1].listWorkType,
+												options: $parents[1].listNonSatHoliday,
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,

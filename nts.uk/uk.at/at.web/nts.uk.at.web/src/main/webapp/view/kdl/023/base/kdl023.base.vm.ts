@@ -10,6 +10,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import DailyPatternSetting = service.model.DailyPatternSetting;
     import DailyPatternValue = service.model.DailyPatternValue;
     import formatDate = nts.uk.time.formatDate;
+    import WorkCycleReflectionDto = nts.uk.at.view.kdl023.base.service.model.WorkCycleReflectionDto;
+    import GetStartupInfoParam = nts.uk.at.view.kdl023.base.service.model.GetStartupInfoParam;
 
     export abstract class BaseScreenModel {
         dailyPatternList: KnockoutObservableArray<DailyPatternSetting>;
@@ -50,6 +52,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             startDate: formatDate( new Date(), 'yyyy/MM'),
             endDate: formatDate( new Date(), 'yyyy/MM')
         });
+
+        listPubHoliday: KnockoutObservableArray<WorkType> = ko.observableArray([]);
+        listSatHoliday: KnockoutObservableArray<WorkType> = ko.observableArray([]);
+        listNonSatHoliday: KnockoutObservableArray<WorkType> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -316,10 +322,21 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private loadWorktypeList(): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            service.getAllWorkType().done(function(list: Array<WorkType>) {
-                if (list && list.length > 0) {                             
-                    self.listWorkType(list);
-                } else {
+            //let start: Date = new Date();
+            let param:GetStartupInfoParam = {
+                bootMode: 1,
+                creationPeriodStartDate: '2020/08/01',
+                creationPeriodEndDate: '2020/08/31',
+                workCycleCode: 'code-1',
+                refOrder:[0,1,2],
+                numOfSlideDays: 1
+            }
+            service.startUpWindows(param).done(function(list: WorkCycleReflectionDto) {
+                if(list){
+                    self.listPubHoliday(list.pubHoliday);
+                    self.listSatHoliday(list.satHoliday);
+                    self.listNonSatHoliday(list.nonSatHoliday);
+                }else {
                     self.isDataEmpty = true;
                 }
                 dfd.resolve();
@@ -465,7 +482,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 dayOfPattern++;
 
                 // Reserve dayOfPattern if reflection method = fill in the blank
-                if (optionDate.textColor == 'red' // Is holiday 
+                if (optionDate.textColor == '#ff0000' // Is holiday
                     && self.isFillInTheBlankChecked()) {
                     dayOfPattern--;
                 }
@@ -517,7 +534,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 dayOfPattern++;
 
                 // Reserve dayOfPattern if reflection method = fill in the blank
-                if (optionDate.textColor == 'red' // Is holiday 
+                if (optionDate.textColor == '#ff0000' // Is holiday
                     && self.isFillInTheBlankChecked()) {
                     dayOfPattern--;
                 }
@@ -561,7 +578,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
                 return {
                     start: currentDate.format('YYYY-MM-DD'),
-                    textColor: 'red',
+                    textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
                         self.getWorktypeNameByCode(self.reflectionSetting.holidaySetting.workTypeCode())
@@ -573,7 +590,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
                 return {
                     start: currentDate.format('YYYY-MM-DD'),
-                    textColor: 'red',
+                    textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
                         self.getWorktypeNameByCode(self.reflectionSetting.statutorySetting.workTypeCode())
@@ -585,7 +602,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
                 return {
                     start: currentDate.format('YYYY-MM-DD'),
-                    textColor: 'red',
+                    textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
                         self.getWorktypeNameByCode(self.reflectionSetting.nonStatutorySetting.workTypeCode())
@@ -600,7 +617,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.isMasterDataUnregisterd(true);
                 return {
                     start: currentDate.format('YYYY-MM-DD'),
-                    textColor: 'blue',
+                    textColor: '#0000ff',
                     backgroundColor: 'white',
                     listText: [
                         nts.uk.resource.getText('KSM005_43') // display no master data
@@ -609,7 +626,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             } else if (worktime) { // work time is set => work day
                 return {
                     start: currentDate.format('YYYY-MM-DD'),
-                    textColor: 'blue',
+                    textColor: '#0000ff',
                     backgroundColor: 'white',
                     listText: [
                         worktype,
@@ -853,6 +870,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.shared = self.getDefaultPatternReflection();
             }
 
+
             // Init patternReflection setting.
             self.reflectionSetting = new ReflectionSetting(self.shared);
 
@@ -966,5 +984,24 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         textColor: string;
         backgroundColor: string;
         listText: Array<string>;
+    }
+
+    export class GetStartupInfoParam{
+        bootMode: KnockoutObservable<number>;
+        creationPeriodStartDate: KnockoutObservable<string>;
+        creationPeriodEndDate: KnockoutObservable<string>;
+        workCycleCode: KnockoutObservable<string>;
+        refOrder: KnockoutObservableArray<number>;
+        numOfSlideDays: KnockoutObservable<number>;
+
+        constructor(data: service.model.GetStartupInfoParam){
+            const model = this;
+            model.bootMode = ko.observable(data.bootMode)
+            model.creationPeriodStartDate = ko.observable(data.creationPeriodStartDate)
+            model.creationPeriodEndDate = ko.observable(data.creationPeriodEndDate)
+            model.workCycleCode = ko.observable(data.workCycleCode)
+            model.refOrder = ko.observableArray(data.refOrder)
+            model.numOfSlideDays = ko.observable(data.numOfSlideDays)
+        }
     }
 }
