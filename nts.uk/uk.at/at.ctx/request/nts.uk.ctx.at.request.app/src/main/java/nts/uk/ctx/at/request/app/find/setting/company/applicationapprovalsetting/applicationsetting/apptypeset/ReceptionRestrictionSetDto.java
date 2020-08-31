@@ -21,82 +21,39 @@ import nts.uk.shr.com.time.AttendanceClock;
 @Data
 public class ReceptionRestrictionSetDto {
 	/**
+	 * 残業申請事前の受付制限
+	 */
+	private OTAppBeforeAccepRestricDto otAppBeforeAccepRestric;
+
+	/**
+	 * 事後の受付制限
+	 */
+	private AfterhandRestriction afterhandRestriction;
+
+	/**
+	 * 事前の受付制限
+	 */
+	private BeforehandRestrictionDto beforehandRestriction;
+
+	/**
 	 * 申請種類
 	 */
 	private int appType;
 
-	/**
-	 * 未来日許可しない
-	 */
-	private boolean allowFutureDay;
-
-	/**
-	 * 日数
-	 */
-	private int dateBeforehandRestrictions;
-
-	/**
-	 * 利用する
-	 */
-	private boolean useAtr;
-
-	/**
-	 * チェック方法
-	 */
-	private Integer methodCheck;
-
-	/**
-	 * 時刻（早出残業）
-	 */
-	private Integer earlyOvertime;
-
-	/**
-	 * 時刻（通常残業）
-	 */
-	private Integer normalOvertime;
-
-	/**
-	 * 時刻（早出残業・通常残業）
-	 */
-	private Integer earlyNormalOvertime;
+	public static ReceptionRestrictionSetDto fromDomain(ReceptionRestrictionSetting receptionRestrictionSetting) {
+		if (receptionRestrictionSetting == null) return null;
+		return new ReceptionRestrictionSetDto(
+				receptionRestrictionSetting.getOtAppBeforeAccepRestric().map(OTAppBeforeAccepRestricDto::fromDomain).orElse(null),
+				receptionRestrictionSetting.getAfterhandRestriction(),
+				receptionRestrictionSetting.getBeforehandRestriction().map(BeforehandRestrictionDto::fromDomain).orElse(null),
+				receptionRestrictionSetting.getAppType().value);
+	}
 
 	public ReceptionRestrictionSetting toDomain() {
-		if (appType == ApplicationType.OVER_TIME_APPLICATION.value)
-			return new ReceptionRestrictionSetting(
-					OTAppBeforeAccepRestric.createNew(methodCheck, dateBeforehandRestrictions, useAtr, earlyOvertime, normalOvertime, earlyNormalOvertime),
-					new AfterhandRestriction(allowFutureDay),
-					null,
-					EnumAdaptor.valueOf(appType, ApplicationType.class));
-		else
-			return new ReceptionRestrictionSetting(
-					null,
-					new AfterhandRestriction(allowFutureDay),
-					BeforehandRestriction.createNew(dateBeforehandRestrictions, useAtr),
-					EnumAdaptor.valueOf(appType, ApplicationType.class));
-	}
-	
-	public static ReceptionRestrictionSetDto fromDomain(ReceptionRestrictionSetting domain) {
-		if (domain.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
-			return new ReceptionRestrictionSetDto(
-					domain.getAppType().value,
-					domain.getAfterhandRestriction().isAllowFutureDay(),
-					domain.getOtAppBeforeAccepRestric().get().getDateBeforehandRestrictions().value,
-					domain.getOtAppBeforeAccepRestric().get().isToUse(),
-					domain.getOtAppBeforeAccepRestric().get().getMethodCheck().value,
-					domain.getOtAppBeforeAccepRestric().get().getOpEarlyOvertime().map(AttendanceClock::v).orElse(null),
-					domain.getOtAppBeforeAccepRestric().get().getOpNormalOvertime().map(AttendanceClock::v).orElse(null),
-					domain.getOtAppBeforeAccepRestric().get().getOpEarlyNormalOvertime().map(AttendanceClock::v).orElse(null)
-					);
-		else
-			return new ReceptionRestrictionSetDto(
-					domain.getAppType().value,
-					domain.getAfterhandRestriction().isAllowFutureDay(),
-					domain.getBeforehandRestriction().get().getDateBeforehandRestrictions().value,
-					domain.getBeforehandRestriction().get().isToUse(),
-					null,
-					null,
-					null,
-					null
-			);
+		return new ReceptionRestrictionSetting(
+				otAppBeforeAccepRestric.toDomain(),
+				afterhandRestriction,
+				beforehandRestriction.toDomain(),
+				EnumAdaptor.valueOf(appType, ApplicationType.class));
 	}
 }
