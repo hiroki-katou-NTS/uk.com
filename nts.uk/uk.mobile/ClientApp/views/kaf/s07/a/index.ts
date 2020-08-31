@@ -788,6 +788,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
     }
     public openKDL002(name: string) {
+        const self = this;
         console.log(_.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode));
         if (name == 'worktype') {
             this.$modal(
@@ -801,11 +802,38 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
             ).then((f: any) => {
                 if (f) {
-                    this.model.workType.code = f.selectedWorkType.workTypeCode;
-                    this.model.workType.name = f.selectedWorkType.name;
-                    this.model.workTime.code = f.selectedWorkTime.code;
-                    this.model.workTime.name = f.selectedWorkTime.name;
-                    this.model.workTime.time = f.selectedWorkTime.workTime1;
+                    // check worktime
+                    let appWorkChangeSet = self.data.appWorkChangeDispInfo.appWorkChangeSet;
+                    let param = {
+                        companyId: self.user.companyId,
+                        workType: f.selectedWorkType.workTypeCode,
+                        workTime: f.selectedWorkTime ? f.selectedWorkTime.code : null,
+                        appWorkChangeSetDto: appWorkChangeSet
+                    };
+                    self.$http.post('at', API.checkWorkTime, param)
+                        .then((res: any) => {
+                            self.data.setUpType = res.data.setupType;
+                            self.data.predetemineTimeSetting = res.data.opPredetemineTimeSetting;
+                            self.bindVisibleView(self.data.appWorkChangeDispInfo);
+                            this.model.workType.code = f.selectedWorkType.workTypeCode;
+                            this.model.workType.name = f.selectedWorkType.name;
+                            this.model.workTime.code = f.selectedWorkTime ? f.selectedWorkTime.code : null;
+                            this.model.workTime.name = f.selectedWorkTime ? f.selectedWorkTime.name : null;
+                            this.model.workTime.time = f.selectedWorkTime ? f.selectedWorkTime.workTime1 :'';
+                        })
+                        .catch((res: any) => {
+                            if (res.messageId) {
+                                this.$modal.error({ messageId: res.messageId });
+                            } else {
+            
+                                if (_.isArray(res.errors)) {
+                                    this.$modal.error({ messageId: res.errors[0].messageId });
+                                } else {
+                                    this.$modal.error({ messageId: res.errors.messageId });
+                                }
+                            }
+                        });
+                    
                 }
             }).catch((res: any) => {
                 if (res.messageId) {
@@ -896,5 +924,6 @@ const API = {
     startS07: 'at/request/application/workchange/mobile/startMobile',
     checkBeforRegister: 'at/request/application/workchange/mobile/checkBeforeRegister_New',
     registerAppWorkChange: 'at/request/application/workchange/mobile/addWorkChange_New',
-    updateAppWorkChange: 'at/request/application/workchange/mobile/changeDateKAFS07'
+    updateAppWorkChange: 'at/request/application/workchange/mobile/changeDateKAFS07',
+    checkWorkTime: 'at/request/application/workchange/mobile/checkWorkTime'
 };

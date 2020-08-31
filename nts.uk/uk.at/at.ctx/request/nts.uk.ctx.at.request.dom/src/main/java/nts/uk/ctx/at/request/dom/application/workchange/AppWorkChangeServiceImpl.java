@@ -221,7 +221,7 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		ChangeWkTypeTimeOutput result = new ChangeWkTypeTimeOutput();
 		result.setOpPredetemineTimeSetting(Optional.empty());
 		// 就業時間帯の必須チェック
-		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCD);
+		SetupType setupType = basicScheduleService.checkNeededOfWorkTimeSetting(workTimeCD.isPresent() ? workTimeCD.get() : null);
 		result.setSetupType(setupType);
 		// INPUT．「勤務変更申請設定」をチェックする
 		if(workTimeCD.isPresent() && appWorkChangeSet.getInitDisplayWorktimeAtr() == InitDisplayWorktimeAtr.FIXEDTIME) {
