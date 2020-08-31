@@ -408,8 +408,12 @@ module nts.uk.at.kmr003.a {
             commandUpdate.setReservationInfos(reservations, self.headerInfos);
             self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
                 self.$dialog.info({ messageId: "Msg_15" }).then(function () {
-                    self.$blockui("clear");;
-                    self.initData();
+                    self.$blockui("clear");
+                    if (self.isNewMode()) {
+                        self.searchConditionValue(4);
+                    } else {
+                        self.initData();
+                    }
                 });
             }).always(() => self.$blockui("clear"));
         }
