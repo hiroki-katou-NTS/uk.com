@@ -523,7 +523,6 @@ module nts.uk.at.view.ksc001.b {
                     var user: any = __viewContext.user;
                     self.findPersonalScheduleByEmployeeId(user.employeeId).done(function (data) {
                         self.updatePersonalScheduleData(data);
-
                         // focus by done
                         self.next().done(function () {
                             $('#inputSelectImplementAtr').focus();
@@ -904,8 +903,10 @@ module nts.uk.at.view.ksc001.b {
             private createPersonalSchedule(): void {
                 let self = this;
                 nts.uk.ui.dialog.confirm({messageId: 'Msg_569'}).ifYes(function () {
+	                self.savePersonalScheduleData();
                     // C1_5 is check -> B4_5 is checked
-                    if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
+	                //以前作成したスケジュールを無視してスケジュールを作成します。よろしいですか？
+                    /*if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
                         nts.uk.ui.dialog.confirm({messageId: 'Msg_570'}).ifYes(function () {
                             self.savePersonalScheduleData();
                         }).ifNo(function () {
@@ -914,7 +915,7 @@ module nts.uk.at.view.ksc001.b {
                     }
                     else {
                         self.savePersonalScheduleData();
-                    }
+                    }*/
                 }).ifNo(function () {
                     return;
                 });
