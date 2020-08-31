@@ -501,7 +501,6 @@ module nts.uk.at.view.ksc001.b {
 			            self.employeeList([]);
 			            self.selectedEmployeeCode([]);
 		            }
-		            self.isEnableNextPageD(true);
 		            dfd.resolve();
 		            nts.uk.ui.block.clear();
 	            }).always( ( response ) => {
@@ -512,8 +511,8 @@ module nts.uk.at.view.ksc001.b {
 		            self.selectedEmployeeCode([]);
 		            //nts.uk.ui.block.clear();
 	            });
-                //end
 
+	            //self.isEnableNextPageD(true);
                 // update kc005
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false, //設定済表示
