@@ -24,6 +24,7 @@
     display: inline-block;
     box-sizing: border-box;
     margin: 0 -2px;
+    background-color: #ffffff;
 }
 
 .holiday-calendar .day:first-child {
@@ -35,7 +36,7 @@
 }
 
 .holiday-calendar .week .name-day {
- background-color: #f2f2f2;
+    background-color: #f2f2f2;
 }
 
 .holiday-calendar .week .day:not(:last-child) {
@@ -66,5 +67,6 @@
 }
 .holiday-calendar .isEmtyMonth .day {
     border-bottom: 1px solid #d9d9d9 !important;
+    background-color: #d9d9d9;
 }
 
