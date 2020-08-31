@@ -3,6 +3,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import AppWorkChange = nts.uk.at.view.kaf007_ref.shr.viewmodel.AppWorkChange; 
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
+	import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     
     @component({
         name: 'kaf007-b',
@@ -10,6 +11,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
     })
     class Kaf007CViewModel extends ko.ViewModel {
         
+		appType: KnockoutObservable<number> = ko.observable(AppType.WORK_CHANGE_APPLICATION);
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
         appWorkChange: KnockoutObservable<AppWorkChange>;

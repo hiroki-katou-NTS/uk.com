@@ -12,7 +12,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
+import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompany;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
+import nts.uk.ctx.at.request.infra.entity.setting.workplace.requestbycompany.KrqmtAppApvCmp;
 
 /**
  * refactor 4
@@ -54,6 +56,36 @@ public class JpaRequestByCompanyRepository extends JpaRepository implements Requ
 			return Optional.empty();
 		}
 		return Optional.of(new ApprovalFunctionSet(applicationUseSettingLst));
+	}
+
+	@Override
+	public Optional<RequestByCompany> findByCompanyId(String companyId) {
+		return Optional.ofNullable(
+				KrqmtAppApvCmp.toDomain(
+						this.queryProxy()
+						.query("select a from KrqmtAppApvCmp a where a.pk.companyId = :companyId", KrqmtAppApvCmp.class)
+						.setParameter("companyId", companyId)
+						.getList()
+				)
+		);
+	}
+
+	@Override
+	public void save(RequestByCompany domain) {
+		List<KrqmtAppApvCmp> entities = this.queryProxy()
+				.query("select a from KrqmtAppApvCmp a where a.pk.companyId = :companyId", KrqmtAppApvCmp.class)
+				.setParameter("companyId", domain.getCompanyID())
+				.getList();
+		domain.getApprovalFunctionSet().getAppUseSetLst().forEach(setting -> {
+			Optional<KrqmtAppApvCmp> optEntity = entities.stream().filter(e -> e.getPk().appType == setting.getAppType().value).findFirst();
+			if (optEntity.isPresent()) {
+				KrqmtAppApvCmp entity = optEntity.get();
+				entity.update(setting);
+				this.commandProxy().update(entity);
+			} else {
+				this.commandProxy().insert(KrqmtAppApvCmp.fromDomain(domain.getCompanyID(), setting));
+			}
+		});
 	}
 
 }

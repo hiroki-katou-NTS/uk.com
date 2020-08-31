@@ -35,26 +35,31 @@
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
 				<div data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
+												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }" style="display: inline-block;"></div>
 			</div>
 			<div id="contents-area">
 				<div data-bind="component: { name: 'kaf000-a-component1', 
 											params: {
+												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component2', 
 											params: {
+												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component3', 
 											params: {
+												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component4', 
 											params: {
+												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
@@ -62,11 +67,13 @@
 											params: appWorkChange }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component5', 
 											params: {
+												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component6', 
 											params: {
+												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 			</div>

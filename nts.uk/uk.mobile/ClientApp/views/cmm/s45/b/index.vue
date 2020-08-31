@@ -47,8 +47,8 @@
     <div class="accordion accordion-mn3 pt-2">
         <div
             class="card show border border-left-0 border-right-0"
-            v-for="emp in filterByAppType"
-            v-bind:key="emp.empCD"
+            v-for="(emp, index) in filterByAppType"
+            v-bind:key="index"
             :value="emp.empCD"
         >
         <!-- Emp Name -->
@@ -61,8 +61,8 @@
             <ul class="list-group list-group-flush"  v-bind:class="{'list-group-selection': !modeAppr, 'ml-n3 mr-n3': modeAppr}" >
               <li
                 class="list-group-item mb-0"
-                v-for="item in emp.lstApp"
-                v-bind:key="item.id"
+                v-for="(item, index) in emp.lstApp"
+                v-bind:key="index"
                 :value="item.id"
                 v-on:click="() => goToDetail(item)"
               >

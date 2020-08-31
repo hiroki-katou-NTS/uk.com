@@ -4,6 +4,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     @bean()
     class Kaf002BViewModel extends Kaf000AViewModel {
+		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
         dataSource: KnockoutObservableArray<ItemModel>;
         dataSourceReason: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
@@ -32,9 +33,9 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             // initial time 
             self.time = ko.observable(null);
             
-            self.application = ko.observable(new Application(AppType.STAMP_APPLICATION));
+            self.application = ko.observable(new Application(self.appType()));
 
-            self.loadData([], [], AppType.STAMP_APPLICATION)
+            self.loadData([], [], self.appType())
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
                     let ApplicantEmployeeID: null,

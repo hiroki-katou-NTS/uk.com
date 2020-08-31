@@ -8,12 +8,14 @@ module nts.uk.at.view.kaf000_ref.b.component3.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/000/b/component3/index.html'
     })
     class Kaf000BComponent3ViewModel extends ko.ViewModel {
+		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
         approvalReason: KnockoutObservable<string>;
         dispApprovalReason: KnockoutObservable<boolean>;
         enableApprovalReason: KnockoutObservable<boolean>;
         created(params: any) {
             const vm = this;
+			vm.appType = params.appType;
             vm.approvalReason = params.approvalReason;
             vm.dispApprovalReason = ko.observable(false);
             vm.enableApprovalReason = ko.observable(false);
