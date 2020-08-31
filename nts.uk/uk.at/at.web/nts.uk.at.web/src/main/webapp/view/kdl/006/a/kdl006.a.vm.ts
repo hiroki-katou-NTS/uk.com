@@ -3,7 +3,6 @@ module nts.uk.at.view.kdl006.a {
     import block = nts.uk.ui.block;
     import info = nts.uk.ui.dialog.info;
     import error = nts.uk.ui.dialog.error;
-    import getShared = nts.uk.ui.windows.getShared;
     import windows = nts.uk.ui.windows;
     
     export class ScreenModel {
@@ -13,18 +12,16 @@ module nts.uk.at.view.kdl006.a {
         width = ko.observable('614');
         descriptive = ko.observable('');
         
-        closureId : number;
         workPlaceComfirmList = [];
         
         constructor(){
             let self = this;
-            self.closureId = parseInt(getShared('KDL006-CLOSUREID'));
             self.selectedId.subscribe((newValue) => {
-                let closure = _.find(self.tighteningList(), ['closureId', self.selectedId()]);
+                let closure = _.find(self.tighteningList(), ['closureId', newValue]);
                 self.descriptive(getText('KDL006_15',[closure ? closure.closureName:'']));
                 self.getWorkplace();
             });
-            self.workplaceList.subscribe((newValue) => {
+            self.workplaceList.subscribe(() => {
                 if(self.workplaceList().length > 12){
                     $('.scroll').css({"width": "647", "overflow-y": "scroll"});
                 }else{
@@ -37,13 +34,13 @@ module nts.uk.at.view.kdl006.a {
             let self = this;
             let dfd = $.Deferred();
             block.grayout();
-            service.startPage().done(function(data) {
+            $.when(self.getSelectedClosure(), service.startPage()).done(function(closureSelected, data) {
                 let c = [];
                 _.forEach(data, function(closure) {
                     c.push(new Closure(closure));
                 });
                 self.tighteningList(c);
-                self.selectedId(self.closureId);
+                self.selectedId(closureSelected);
                 dfd.resolve();
             }).fail(function(res) {
                 error({ messageId: res.messageId });
@@ -52,6 +49,29 @@ module nts.uk.at.view.kdl006.a {
             
             return dfd.promise();
         }
+
+		getSelectedClosure(): JQueryPromise<number> {
+			let dfd = $.Deferred<number>();
+			const key = __viewContext.user.employeeId + '' + __viewContext.user.companyId;
+			nts.uk.characteristics.restore(key).done(function(data) {
+				if (!nts.uk.util.isNullOrEmpty(data) && !nts.uk.util.isNullOrEmpty(data.employmentInfo) && !nts.uk.util.isNullOrEmpty(data.employmentInfo.selectedClosureId)) {
+					dfd.resolve(data.employmentInfo.selectedClosureId);
+				} else {
+					nts.uk.request.ajax('com', 'bs/employee/employment/history/getcurrenthistoryitem').done(item => {
+						if (item) {
+							nts.uk.request.ajax("at","ctx/at/shared/workrule/closure/getclosuretiedbyemployment/"+item.employmentCode).done(id => 
+								dfd.resolve(id)
+							);
+						} else {
+							const DEFAULT_VALUE = 1;
+							// Q&A: #88282 (update specs)
+							dfd.resolve(DEFAULT_VALUE);
+						}
+					});
+				}
+			});
+			return dfd.promise();
+		}
         
         getWorkplace(): void {
             let self = this;
