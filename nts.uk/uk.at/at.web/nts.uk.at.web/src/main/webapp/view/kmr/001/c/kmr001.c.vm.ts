@@ -161,7 +161,10 @@ module nts.uk.at.kmr001.c {
                     });
                 }).fail(function (error) {
                     vm.$dialog.error({ messageId: error.messageId });
-                }).always(() => vm.$blockui("clear"));
+                }).always(() => {
+                    vm.$blockui("clear");
+                    nts.uk.ui.errors.clearAll();
+                });
             }).ifNo(() => {
             });
         }
@@ -222,8 +225,7 @@ module nts.uk.at.kmr001.c {
             vm.$blockui('invisible');
             vm.$window.modal('at', PATH.KMR001_D, vm.history && vm.history.params ? vm.history.params : null)
                 .then((result: any) => {
-                    console.log(result);
-                    if(vm.history && vm.history.params.historyId == result.params.historyId) {
+                    if(vm.history && vm.history.params.endDate == result.params.endDate) {
                         return
                     }
                     vm.isLasted(!!(result.params.endDate == '9999/12/31' || null));

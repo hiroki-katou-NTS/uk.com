@@ -1,8 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay;
-
-import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
+package nts.uk.ctx.at.schedule.dom.shift.weeklyworkday;
 
 /**
  *
