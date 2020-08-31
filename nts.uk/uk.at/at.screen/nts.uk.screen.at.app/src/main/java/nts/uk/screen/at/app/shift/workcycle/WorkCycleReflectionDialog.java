@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.shift.workcycle;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
@@ -9,7 +10,10 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.*;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.CreateWorkCycleAppImage;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RefImageEachDay;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCreateMethod;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleRefSetting;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
@@ -18,12 +22,10 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
 import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
-import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -40,18 +42,12 @@ import java.util.Optional;
 @Stateless
 public class WorkCycleReflectionDialog {
 	@Inject private HolidayWorkTypeService holidayWorkTypeService;
-	@Inject private WorkCycleQueryRepository workCycleQueryRepository;
 	@Inject private CreateWorkCycleAppImage createWorkCycleAppImage;
 	@Inject private WeeklyWorkDayRepository weeklyWorkDayRepository;
 	@Inject private PublicHolidayRepository publicHolidayRepository;
 	@Inject private WorkCycleRepository workCycleRepository;
 	@Inject private BasicScheduleService basicScheduleService;
-
-	@Inject
-	private GetWorkCycle getWorkCycle;
-
-	@Inject
-	private WorkTypeRepository workTypeRepository;
+	@Inject private GetWorkCycle getWorkCycle;
 
  	/**
 	 * 起動情報を取得する
@@ -68,7 +64,7 @@ public class WorkCycleReflectionDialog {
 			String workCycleCode,
 			List<WorkCreateMethod> refOrder,
 			int numOfSlideDays){
-		WorkCycleReflectionDto dto = new WorkCycleReflectionDto();
+		val dto = new WorkCycleReflectionDto();
 		List<WorkCycleDto> workCycleDtoList = new ArrayList<>();
 
 		// 1. 勤務サイクル一覧を取得する [Get a list of work cycles]
@@ -81,7 +77,7 @@ public class WorkCycleReflectionDialog {
 		List<WorkType> workTypes = holidayWorkTypeService.acquiredHolidayWorkType();
 
 		// 3. 作成する(Require, 期間, 勤務サイクルの反映設定)
-		WorkCycleRefSetting config = new WorkCycleRefSetting(
+		val config = new WorkCycleRefSetting(
 				workCycleCode,
 				refOrder,
 				numOfSlideDays,
@@ -89,14 +85,13 @@ public class WorkCycleReflectionDialog {
 				null,
 				null
 		);
-		CreateWorkCycleAppImageRequire cRequire = new CreateWorkCycleAppImageRequire(
+		val cRequire = new CreateWorkCycleAppImageRequire(
 				weeklyWorkDayRepository,
 				publicHolidayRepository,
 				workCycleRepository);
 		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(cRequire, creationPeriod, config);
 		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = new ArrayList<>();
-
-		WorkInformationRequire wRequire = new WorkInformationRequire(basicScheduleService);
+		val wRequire = new WorkInformationRequire(basicScheduleService);
         for (RefImageEachDay ref : refImageEachDayList)
             refImageEachDayDtos.add(WorkCycleReflectionDto.RefImageEachDayDto.fromDomain(ref, wRequire));
 
@@ -135,11 +130,11 @@ public class WorkCycleReflectionDialog {
 	public List<WorkCycleReflectionDto.RefImageEachDayDto> getWorkCycleAppImage(
 			DatePeriod creationPeriod,
 			WorkCycleRefSetting workCycleRefSetting){
-		CreateWorkCycleAppImageRequire cRequire = new CreateWorkCycleAppImageRequire(
+		val cRequire = new CreateWorkCycleAppImageRequire(
 				weeklyWorkDayRepository,
 				publicHolidayRepository,
 				workCycleRepository);
-		WorkInformationRequire wRequire = new WorkInformationRequire(basicScheduleService);
+		val wRequire = new WorkInformationRequire(basicScheduleService);
 		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(cRequire, creationPeriod, workCycleRefSetting);
 		List<WorkCycleReflectionDto.RefImageEachDayDto> reflectionImage = new ArrayList<>();
 		refImageEachDayList.stream().forEach(ref -> {
