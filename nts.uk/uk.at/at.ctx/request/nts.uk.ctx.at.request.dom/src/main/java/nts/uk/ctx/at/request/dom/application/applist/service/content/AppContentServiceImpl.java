@@ -63,7 +63,7 @@ public class AppContentServiceImpl implements AppContentService {
 			ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
 		String result = Strings.EMPTY;
 		String paramString = Strings.EMPTY;
-		if(screenAtr == ScreenAtr.KAF018 || screenAtr == ScreenAtr.CMM045) {
+		if(screenAtr != ScreenAtr.KAF018 || screenAtr != ScreenAtr.CMM045) {
 			// @＝改行
 			paramString = "\n";
 		} else {
@@ -198,7 +198,7 @@ public class AppContentServiceImpl implements AppContentService {
 			List<StampAppOutputTmp> stampAppOutputTmpLst, ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
 		String result = Strings.EMPTY;
 		String paramString = Strings.EMPTY;
-		if(screenAtr == ScreenAtr.KAF018 || screenAtr == ScreenAtr.CMM045) {
+		if(screenAtr != ScreenAtr.KAF018 || screenAtr != ScreenAtr.CMM045) {
 			// @＝改行
 			paramString = "\n";
 		} else {
