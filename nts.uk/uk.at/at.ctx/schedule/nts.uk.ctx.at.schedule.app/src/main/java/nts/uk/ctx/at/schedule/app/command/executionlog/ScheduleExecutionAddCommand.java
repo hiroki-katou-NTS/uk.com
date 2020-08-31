@@ -123,7 +123,17 @@ public class ScheduleExecutionAddCommand {
         val creMethod = CreationMethod.valueOf(creationMethod);
         val copyStartD = Optional.of(copyStartYmd);
         val re = ReferenceMaster.valueOf(referenceMaster);
-        val specify = new SpecifyCreation(creMethod,copyStartD, Optional.of(re),Optional.of(monthly));
+        Optional ref = Optional.empty();
+        Optional mon = Optional.empty();
+        if(creationMethod == CreationMethod.SPECIFY_CREATION.value){
+            if(re!=null){
+                ref =   Optional.of(re);
+            }
+            if(referenceMaster== ReferenceMaster.MONTH_PATTERN.value){
+                mon = Optional.of(monthly);
+            }
+        }
+        val specify = new SpecifyCreation(creMethod,copyStartD, ref,mon);
         val con = new ConditionEmployee(reTargetTransfer,reTargetLeave,reTargetShortWork,reTargetLaborChange);
         val recreateCondition = new RecreateCondition(reTargetAtr,reOverwriteConfirmed,reOverwriteRevised,Optional.of(con));
         return new ScheduleCreateContent(executionId,beConfirmed,ImplementAtr.valueOf(creationType),specify,recreateCondition);
