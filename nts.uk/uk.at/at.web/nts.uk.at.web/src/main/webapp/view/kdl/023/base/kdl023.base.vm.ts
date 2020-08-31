@@ -243,7 +243,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 holidaySetting: {
                     useClassification: false,
                     workTypeCode: ''
-                }
+                },
+				bootMode: 0
             }
         };
 
@@ -902,6 +903,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         statutorySetting: DayOffSetting;
         nonStatutorySetting: DayOffSetting;
         holidaySetting: DayOffSetting;
+        bootMode: KnockoutObservable<number>;
 
         constructor(data: service.model.ReflectionSetting) {
             let self = this;
@@ -913,6 +915,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.statutorySetting = new DayOffSetting(data.statutorySetting);
             self.nonStatutorySetting = new DayOffSetting(data.nonStatutorySetting);
             self.holidaySetting = new DayOffSetting(data.holidaySetting);
+			self.bootMode = ko.observable(data.bootMode);
         }
 
         public static newSetting(): ReflectionSetting {
@@ -928,6 +931,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             newSetting.statutorySetting = dummy;
             newSetting.nonStatutorySetting = dummy;
             newSetting.holidaySetting = dummy;
+			newSetting.bootMode = 0;
 
             return new ReflectionSetting(newSetting);
         }
@@ -944,6 +948,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.statutorySetting.fromDto(dto.statutorySetting);
             self.nonStatutorySetting.fromDto(dto.nonStatutorySetting);
             self.holidaySetting.fromDto(dto.holidaySetting);
+			self.bootMode = ko.observable(dto.bootMode);
         }
     }
     class DayOffSetting {

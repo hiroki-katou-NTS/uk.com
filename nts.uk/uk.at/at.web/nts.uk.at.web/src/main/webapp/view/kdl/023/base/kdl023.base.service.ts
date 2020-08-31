@@ -44,6 +44,7 @@ module nts.uk.at.view.kdl023.base.service {
             statutorySetting: DayOffSetting;
             nonStatutorySetting: DayOffSetting;
             holidaySetting: DayOffSetting;
+			bootMode: number;
         }
         export interface DailyPatternSetting {
             patternCode: string;
@@ -91,8 +92,8 @@ module nts.uk.at.view.kdl023.base.service {
             holidayName: string;
         }
         export enum BootMode{
-            REF_MODE = 0;
-            EXEC_MODE = 1;
+            REF_MODE = 0,
+            EXEC_MODE = 1
         }
     }
 }
