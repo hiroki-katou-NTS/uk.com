@@ -841,7 +841,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		map.put("APPROVAL_ATR", rec.getInt("APPROVAL_ATR"));
 		map.put("CONFIRM_ATR", rec.getInt("CONFIRM_ATR"));
 		map.put("AGENT_ID", rec.getString("AGENT_ID"));
-		map.put("APPROVAL_DATE", rec.getGeneralDate("APPROVAL_DATE"));
+		map.put("APPROVAL_DATE", rec.getGeneralDateTime("APPROVAL_DATE"));
 		map.put("APPROVAL_REASON", rec.getString("APPROVAL_REASON"));
 		map.put("APP_DATE", rec.getGeneralDate("APP_DATE"));
 		map.put("APPROVER_LIST_ORDER", rec.getInt("APPROVER_LIST_ORDER"));
