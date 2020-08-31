@@ -23,6 +23,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
@@ -861,7 +862,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 														(String) t.getValue().get(0).get("APPROVER_ID"), 
 														(int) t.getValue().get(0).get("APPROVAL_ATR"), 
 														(String) t.getValue().get(0).get("AGENT_ID"), 
-														(GeneralDate) t.getValue().get(0).get("APPROVAL_DATE"), 
+														(GeneralDateTime) t.getValue().get(0).get("APPROVAL_DATE"), 
 														(String) t.getValue().get(0).get("APPROVAL_REASON"),
 														(int) t.getValue().get(0).get("APPROVER_LIST_ORDER"));
 											}).sorted(Comparator.comparing(ApproverInfor::getApproverInListOrder))

@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.ApprovalSettingRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.PrincipalApprovalFlg;
@@ -89,7 +89,7 @@ public class ApproveImpl implements ApproveService {
 							if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
 								approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 								approverInfor.setAgentID(employeeID);
-								approverInfor.setApprovalDate(GeneralDate.today());
+								approverInfor.setApprovalDate(GeneralDateTime.now());
 								approverInfor.setApprovalReason(memo);
 								breakLoop = true;
 							} else {
@@ -100,7 +100,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
-							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalDate(GeneralDateTime.now());
 							approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}
@@ -114,7 +114,7 @@ public class ApproveImpl implements ApproveService {
 						if(Strings.isNotBlank(approverInfor.getAgentID())&&approverInfor.getAgentID().equals(employeeID)) {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 							approverInfor.setAgentID(employeeID);
-							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalDate(GeneralDateTime.now());
 							approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}
@@ -122,7 +122,7 @@ public class ApproveImpl implements ApproveService {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.APPROVED);
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
-							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalDate(GeneralDateTime.now());
 							approverInfor.setApprovalReason(memo);
 							breakLoop = true;
 						}

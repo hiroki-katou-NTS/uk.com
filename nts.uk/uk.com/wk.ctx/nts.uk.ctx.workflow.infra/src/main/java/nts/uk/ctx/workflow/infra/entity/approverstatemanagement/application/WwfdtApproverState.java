@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApproverInfor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -41,7 +42,7 @@ public class WwfdtApproverState extends UkJpaEntity {
 	public String agentID;
 	/**承認日*/
 	@Column(name="APPROVAL_DATE")
-	public GeneralDate approvalDate;
+	public GeneralDateTime approvalDate;
 	/**理由*/
 	@Column(name="APPROVAL_REASON")
 	public String approvalReason;
