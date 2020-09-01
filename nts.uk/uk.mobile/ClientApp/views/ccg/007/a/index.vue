@@ -5,7 +5,6 @@
       <div>{{ 'CCGS07_51' | i18n }}</div>
     </div>
     <fieldset class="login-form mt-3">
-      <!-- <form v-submit="login"> -->
       <nts-text-editor
         id="contractCode"
         name="CCGS07_52"
@@ -24,7 +23,6 @@
         v-bind:columns="{ title: 'col-lg-4', input: 'col-lg-8' }"
         v-bind:constraint="validations.model.password"
       />
-      <!-- </form> -->
       <div class="text-left page-info mt-3 uk-text-dark-gray">
         <div>{{ 'CCGS07_54' | i18n }}</div>
       </div>
