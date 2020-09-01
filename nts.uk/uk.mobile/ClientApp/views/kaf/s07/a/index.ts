@@ -603,7 +603,11 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 self.$mask('hide');
             })
             .catch((res: any) => {
-                self.handleErrorMessage(res);
+                self.handleErrorMessage(res).then((msgId: any) => {
+                    if (res.messageId == 'Msg_426') {
+                        self.$goto('ccg008a');
+                    }
+                });
             }); 
 
     }
@@ -745,13 +749,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
         const self = this;
         self.$mask('hide');
         if (res.messageId) {
-            self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+            return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
             
             if (_.isArray(res.errors)) {
-                self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
             } else {
-                self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+                return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
             }
         }
     }
