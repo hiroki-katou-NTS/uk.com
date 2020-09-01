@@ -515,6 +515,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
             }
+        } else {
+            this.appWorkChangeDto.timeZoneWithWorkNoLst = null;
         }
         if (!this.mode && !this.isCondition3) {
 
