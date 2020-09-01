@@ -34,6 +34,7 @@ module nts.uk.at.kmr003.a {
 
         dynamicColumns = [];
         datas: Array<ReservationModifyEmployeeDto> = [];
+        hasData: KnockoutObservable<boolean> = ko.observable(false);
         listBento = [];
         headerInfos: Array<HeaderInfoDto> = [];
         empSearchItems: Array<EmployeeSearchDto> = [];
@@ -358,8 +359,10 @@ module nts.uk.at.kmr003.a {
 
                 // check focus
                 if (_.isEmpty(self.datas)) {
+                    self.hasData(false);
                     $("#ccg001-btn-search-drawer").focus()
                 } else {
+                    self.hasData(true);
                     $("#A1_2").focus();
                 }
                 dfd.resolve();
