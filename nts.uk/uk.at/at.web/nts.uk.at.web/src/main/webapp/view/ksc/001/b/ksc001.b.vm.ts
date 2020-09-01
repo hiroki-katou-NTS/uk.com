@@ -442,16 +442,15 @@ module nts.uk.at.view.ksc001.b {
             /**
              * apply ccg001 search data to kcp005
              */
-            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]) : JQueryPromise<void>  {
+            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]){
                 let self = this,
                     employeeSearchs: UnitModel[] = [],
                     listSelectedEmpCode: any = [],
 	                oldListSelectedEmpCode: any = [],
-	                employeeIds: Array<string> = [] ;
+	                employeeIds: Array<string> = [],
+	                newListEmployees: Array<string> = [];
 
-	            let dfd = $.Deferred<void>();
-
-	            nts.uk.ui.block.invisible(); // block ui
+	            //let dfd = $.Deferred<void>();
 
                 self.employeeList([]);
                 self.selectedEmployeeCode([]);
@@ -463,8 +462,6 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 // update employee list by ccg001 search
-	            //self.employeeList(employeeSearchs);
-                //self.selectedEmployeeCode(listSelectedEmpCode);
                 self.employeeIds(employeeIds);
 
                 //filter personal with new conditions
@@ -479,42 +476,37 @@ module nts.uk.at.view.ksc001.b {
                     startDate, endDate
                 );
 
-                let newListEmployees = self.listEmployeeFilter(listEmployeeFilter);
-	            service.getEmployeeListAfterFilter( listEmployeeFilter )
-	            .done( ( response ) => {
-		            newListEmployees = response.listEmployeeId;
-		            //reset data listing after filtered
-		            employeeSearchs = []; listSelectedEmpCode = [];
-		            if( newListEmployees.length > 0 ) {
-			            newListEmployees.map(( item ) => {
-				            let employeeSearch = oldListSelectedEmpCode.find( ({ employeeId }) => employeeId === item );
-				            if( employeeSearch ) {
-					            employeeSearchs.push ( {
-						            code : employeeSearch.employeeCode,
-						            name : employeeSearch.employeeName,
-						            affiliationName : employeeSearch.affiliationName
-					            } );
-					            listSelectedEmpCode.push ( employeeSearch.employeeCode.trim () );
-				            }
-			            });
+                if( employeeIds.length > 0 ) {
+	                nts.uk.ui.block.grayout(); // block ui
+	                service.getEmployeeListAfterFilter ( listEmployeeFilter )
+		                .done ( ( response ) => {
+			                newListEmployees = response.listEmployeeId;
+			                //reset data listing after filtered
+			                employeeSearchs = [];
+			                listSelectedEmpCode = [];
+			                if ( newListEmployees.length > 0 ) {
+				                for( let i = 0; i < newListEmployees.length; i++ ) {
+					                for( let j= 0; j < oldListSelectedEmpCode.length; j++ ) {
+						                if( oldListSelectedEmpCode[j].employeeId == newListEmployees[i] ) {
+							                employeeSearchs.push ( {
+								                code : oldListSelectedEmpCode[j].employeeCode,
+								                name : oldListSelectedEmpCode[j].employeeName,
+								                affiliationName : oldListSelectedEmpCode[j].affiliationName
+							                } );
+							                listSelectedEmpCode.push ( oldListSelectedEmpCode[j].employeeCode.trim () );
+						                }
+					                }
+				                }
 
-			            self.employeeList(employeeSearchs);
-			            self.selectedEmployeeCode(listSelectedEmpCode);
+				                self.employeeList ( employeeSearchs );
+				                self.selectedEmployeeCode ( listSelectedEmpCode );
 
-		            } else {
-			            self.employeeList([]);
-			            self.selectedEmployeeCode([]);
-		            }
-		            dfd.resolve();
-		            nts.uk.ui.block.clear();
-	            }).always( ( response ) => {
-		            //nts.uk.ui.block.clear();
-	            })
-	            .fail((error) => {
-		            self.employeeList([]);
-		            self.selectedEmployeeCode([]);
-		            //nts.uk.ui.block.clear();
-	            });
+			                }
+
+			                nts.uk.ui.block.clear ();
+			                //dfd.resolve();
+		                } );
+                }
 
 	            //self.isEnableNextPageD(true);
                 // update kc005
@@ -536,7 +528,7 @@ module nts.uk.at.view.ksc001.b {
                     tabindex: 5
                 };
 
-	            return dfd.promise();
+	            //return dfd.promise();
             }
 
             /**
