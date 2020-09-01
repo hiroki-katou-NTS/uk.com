@@ -466,9 +466,11 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	public void upDateCalcState(ManageCalcStateAndResult stateInfo) {
 		stateInfo.getIntegrationOfDaily().getWorkInformation().changeCalcState(stateInfo.isCalc?CalculationState.Calculated:CalculationState.No_Calculated);
 //		workInformationRepository.updateByKeyFlush(stateInfo.getIntegrationOfDaily().getWorkInformation());
-		dailyRecordAdUpService.adUpWorkInfo(new WorkInfoOfDailyPerformance(
+		WorkInfoOfDailyPerformance data = new WorkInfoOfDailyPerformance(
 				stateInfo.getIntegrationOfDaily().getEmployeeId(), stateInfo.getIntegrationOfDaily().getYmd(),
-				stateInfo.getIntegrationOfDaily().getWorkInformation()));
+				stateInfo.getIntegrationOfDaily().getWorkInformation());
+		data.setVersion(stateInfo.getIntegrationOfDaily().getWorkInformation().getVer());
+		dailyRecordAdUpService.adUpWorkInfo(data);
 		
 	}
 	
@@ -597,7 +599,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			val businessType = workTypeOfDailyPerforRepository.findByKey(employeeId, attendanceTime.getYmd());
 			if(!workInf.isPresent() || !affiInfo.isPresent() || !businessType.isPresent())//calAttr == null
 				continue;
-			
+			workInf.get().getWorkInformation().setVer(workInf.get().getVersion());
 			/** リポジトリ：日別実績のPCログオン情報 */
 			Optional<PCLogOnInfoOfDaily> pCLogOnInfoOfDaily = pcLogOnInfoOfDailyRepo.find(employeeId, attendanceTime.getYmd());
 			Optional<PCLogOnInfoOfDailyAttd> pCLogOnInfoOfDailyAttd = pCLogOnInfoOfDaily.isPresent()?Optional.of(pCLogOnInfoOfDaily.get().getTimeZone()):Optional.empty();
@@ -633,6 +635,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			List<RemarksOfDailyPerform> listRemarksOfDailyPerform = remarksRepository.getRemarks(employeeId, attendanceTime.getYmd());
 			returnList.add(
 				new IntegrationOfDaily(
+					employeeId, attendanceTime.getYmd(),
 					workInf.get().getWorkInformation(),
 					calAttr.getCalcategory(),
 					affiInfo.get().getAffiliationInfor(),
