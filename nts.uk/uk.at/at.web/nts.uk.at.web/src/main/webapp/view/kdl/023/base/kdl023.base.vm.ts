@@ -332,19 +332,21 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 refOrder:[0,1,2],
                 numOfSlideDays: 1
             }
-            service.startUpWindows(param).done(function(list: WorkCycleReflectionDto) {
-                if(list){
-                    self.listPubHoliday(list.pubHoliday);
-                    self.listSatHoliday(list.satHoliday);
-                    self.listNonSatHoliday(list.nonSatHoliday);
-                }else {
-                    self.isDataEmpty = true;
-                }
-                dfd.resolve();
-            }).fail(() => {
-                self.showErrorThenCloseDialog();
-                dfd.fail();
-            });
+
+			service.startUpWindows(param).done(function(list: WorkCycleReflectionDto) {
+				if(list){
+					self.listPubHoliday(list.pubHoliday);
+					self.listSatHoliday(list.satHoliday);
+					self.listNonSatHoliday(list.nonSatHoliday);
+				}else {
+					self.isDataEmpty = true;
+				}
+				dfd.resolve();
+			}).fail(() => {
+				self.showErrorThenCloseDialog();
+				dfd.fail();
+			});
+
             return dfd.promise();
         }
 
