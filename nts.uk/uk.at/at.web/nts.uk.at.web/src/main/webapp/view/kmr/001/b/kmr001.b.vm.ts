@@ -20,7 +20,7 @@ module nts.uk.at.kmr001.b {
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         model : KnockoutObservable<Reservation> = ko.observable(new Reservation(0,0,0,0,0,0,0,'',0,0,
-            '',null,,0));
+            '',null,null,0));
         visibleContentChangeDeadline: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
         	super();
@@ -74,7 +74,7 @@ module nts.uk.at.kmr001.b {
                 $('#end1').ntsError('set', {messageId:'Msg_849'});
                 return;
             }
-            if(vm.model().reservationStartTime2() && vm.model().reservationEndTime2() && vm.model().reservationFrameName2() && vm.model().reservationStartTime2() >= vm.model().reservationEndTime2()) {
+            if(vm.model().reservationStartTime2() != null && vm.model().reservationEndTime2() != null && vm.model().reservationStartTime2()  >= vm.model().reservationEndTime2()) {
                 $('#end2').ntsError('set', {messageId:'Msg_849'});
                 return;
             }
