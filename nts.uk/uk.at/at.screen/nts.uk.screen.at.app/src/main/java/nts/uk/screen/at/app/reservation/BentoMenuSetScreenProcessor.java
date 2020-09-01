@@ -30,14 +30,17 @@ public class BentoMenuSetScreenProcessor {
     public BentoJoinReservationSetting getBentoMenuByHist(BentoRequest request) {
         String companyID = AppContexts.user().companyId();
         GeneralDate generalDate = GeneralDate.max();
-        List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos =  bentoMenuScreenRepository.findDataBento(companyID,generalDate,request);
-        if (bentomenuJoinBentoDtos.size() == 0){
-            throw new BusinessException("Msg_1848");
-        }
+
         BentoReservationSettingDto reservationSettingDto = bentoReservationScreenRepository.findDataBentoRervation(companyID);
         if (reservationSettingDto == null){
             throw new BusinessException("Msg_1847");
         }
+        
+        List<BentomenuJoinBentoDto> bentomenuJoinBentoDtos =  bentoMenuScreenRepository.findDataBento(companyID,generalDate,request);
+        if (bentomenuJoinBentoDtos.size() == 0){
+            throw new BusinessException("Msg_1848");
+        }
+
         return BentoJoinReservationSetting.setData(bentomenuJoinBentoDtos,reservationSettingDto);
     }
 
