@@ -211,7 +211,7 @@ module cmm045.shr {
 		        this.details = '';
 		        this.appName = '';
 		        this.appAtr = '';
-		        this.checkAtr = false;
+		        this.checkAtr = true;
 		        this.version = 0;
 		        this.checkTimecolor = 0;
 		        this.appIdSub = '';

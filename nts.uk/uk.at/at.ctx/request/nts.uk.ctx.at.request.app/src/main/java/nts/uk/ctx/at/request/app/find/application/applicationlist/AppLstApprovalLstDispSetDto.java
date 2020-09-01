@@ -40,9 +40,10 @@ public class AppLstApprovalLstDispSetDto {
 	
 
 	public static AppLstApprovalLstDispSetDto fromDomain(AppLstApprovalLstDispSet displaySet) {
-		return new AppLstApprovalLstDispSetDto(displaySet.getStartDateDisp().toString(), 
+		return new AppLstApprovalLstDispSetDto(
+				displaySet.getStartDateDisp() == null ? null : displaySet.getStartDateDisp().toString(), 
 				displaySet.getPrePostAtrDisp(), 
-				displaySet.getEndDateDisp().toString(), 
+				displaySet.getEndDateDisp() == null ? null : displaySet.getEndDateDisp().toString(), 
 				displaySet.getWorkplaceNameDisp(), 
 				displaySet.getAppDateWarningDisp());
 	}
