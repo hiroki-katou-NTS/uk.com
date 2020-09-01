@@ -474,7 +474,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				companyID, 
 				lstApp, 
 				new DatePeriod(param.getPeriodStartDate(), param.getPeriodEndDate()), 
-				ApplicationListAtr.APPLICATION, 
+				ApplicationListAtr.APPROVER, 
 				mapApprInfo, 
 				device, 
 				param, 

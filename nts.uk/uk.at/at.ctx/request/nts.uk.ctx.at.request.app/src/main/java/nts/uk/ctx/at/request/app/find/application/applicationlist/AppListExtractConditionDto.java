@@ -1,20 +1,12 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
-import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationDisplayOrder;
 
 @NoArgsConstructor
 @AllArgsConstructor

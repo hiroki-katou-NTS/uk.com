@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +27,9 @@ import nts.uk.ctx.at.request.dom.application.applist.service.detail.AppStampData
 import nts.uk.ctx.at.request.dom.application.applist.service.detail.ScreenAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalFrameImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
@@ -342,37 +345,47 @@ public class AppContentServiceImpl implements AppContentService {
 		listOfApp.setOpApprovalStatusInquiry(Optional.of(this.getApprovalStatusInquiryContent(listOfApp.getOpApprovalPhaseLst().get())));
 		// アルゴリズム「反映状態を取得する」を実行する(Thực hiện thuật toán [lấy trạng thái phản ánh])
 		ReflectedState reflectedState = application.getAppReflectedState();
-		
+		String reflectedStateString = reflectedState.name;
 		ApprovalBehaviorAtrImport_New phaseAtr = ApprovalBehaviorAtrImport_New.UNAPPROVED;
 		ApprovalBehaviorAtrImport_New frameAtr = ApprovalBehaviorAtrImport_New.UNAPPROVED;
 		if(mode == ApplicationListAtr.APPROVER) {
-//			String loginID = AppContexts.user().employeeId();
-//			Optional<ApprovalPhaseStateImport_New> phaseLogin = result.getOpApprovalPhaseLst().get()
-//					.stream().filter(x -> {
-//						List<ApprovalFrameImport_New> x.getListApprovalFrame().stream().filter(y -> { 
-//							return y.getApproverID().equals(loginID);
-//						}).findAny();
-//					}).findAny();
-//			
-//			
-//			
-//			for(ApprovalPhaseStateImport_New phase : result.getOpApprovalPhaseLst().get()) {
-//				for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
-//					
-//					
-//					
-//					for(ApproverStateImport_New approver : frame.getListApprover()) {
-//						// 承認枠　＝　ロープの承認枠(ApprovalFrame= ApproveFrame dang loop)
-//						// 承認フェーズ　＝　ロープの承認フェーズ(ApprovalPhase = ApprovalPhase dang loop)
-//						// 承認枠の承認状態　＝　承認枠．承認区分(ApprovalStatus của ApprovalFrame = ApprovalFrame. ApprovalAtr)
-//						phaseAtr = phase.getApprovalAtr();
-//						frameAtr = approver
-//					}
-//				}
-//			}
+			String loginID = AppContexts.user().employeeId();
+			List<ApprovalPhaseStateImport_New> listPhase = listOfApp.getOpApprovalPhaseLst().orElse(Collections.emptyList());
+			boolean isBreak = false;
+			for(ApprovalPhaseStateImport_New phase : listPhase) {
+				if(isBreak) {
+					break;
+				}
+				for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
+					if(isBreak) {
+						break;
+					}
+					for(ApproverStateImport_New approver : frame.getListApprover()) {
+						boolean isMapWithApprover = Strings.isNotBlank(approver.getApproverID()) && approver.getApproverID().equals(loginID);
+						boolean isMapWithAgent = (Strings.isNotBlank(approver.getAgentID()) && approver.getAgentID().equals(loginID));
+						if (!isMapWithApprover && !isMapWithAgent) {
+							continue;
+						}
+						Optional<ApprovalPhaseStateImport_New> opPhaseBeforeNotApproved = listPhase.stream()
+								.filter(x -> x.getPhaseOrder() > phase.getPhaseOrder())
+								.filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+						if(opPhaseBeforeNotApproved.isPresent()) {
+							continue;
+						}
+						// 承認枠　＝　ロープの承認枠(ApprovalFrame= ApproveFrame dang loop)
+						// 承認フェーズ　＝　ロープの承認フェーズ(ApprovalPhase = ApprovalPhase dang loop)
+						// 承認枠の承認状態　＝　承認枠．承認区分(ApprovalStatus của ApprovalFrame = ApprovalFrame. ApprovalAtr)
+						phaseAtr = phase.getApprovalAtr();
+						frameAtr = approver.getApprovalAtr();
+						isBreak = true;
+					}
+				}
+			}
+			// 反映状態　＝　反映状態（承認一覧モード）//Trạng thái phản ánh= trạng thái phản ánh(mode danh sách approve)
+			reflectedStateString = this.getReflectStatusApprovalListMode(reflectedState, phaseAtr, frameAtr, device);
 		}
 		// 申請一覧．反映状態　＝　申請の反映状態(ApplicationList. trạng thái phản ánh = trạng thái phản ánh của đơn xin)
-		listOfApp.setReflectionStatus(reflectedState.name);
+		listOfApp.setReflectionStatus(reflectedStateString);
 		return listOfApp;
 	}
 
@@ -399,9 +412,62 @@ public class AppContentServiceImpl implements AppContentService {
 
 	@Override
 	public String getReflectStatusApprovalListMode(ReflectedState reflectedState,
-			ApprovalBehaviorAtrImport_New phaseAtr, ApprovalBehaviorAtrImport_New frameAtr) {
-		// TODO Auto-generated method stub
-		return null;
+			ApprovalBehaviorAtrImport_New phaseAtr, ApprovalBehaviorAtrImport_New frameAtr, int device) {
+		String result = Strings.EMPTY;
+		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_62スマホ：#CMMS45_7
+		if(device==0) {
+			result = I18NText.getText("CMM045_62");
+		} else {
+			result = I18NText.getText("CMMS45_7");
+		}
+		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_64スマホ：#CMMS45_9
+		if(reflectedState==ReflectedState.REFLECTED) {
+			if(device==0) {
+				result = I18NText.getText("CMM045_64");
+			} else {
+				result = I18NText.getText("CMMS45_9");
+			}
+		}
+		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_63スマホ：#CMMS45_8
+		boolean condition1 = 
+				(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.UNAPPROVED 
+					&& frameAtr==ApprovalBehaviorAtrImport_New.APPROVED) || 
+				(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED && 
+						(frameAtr==ApprovalBehaviorAtrImport_New.APPROVED || frameAtr==ApprovalBehaviorAtrImport_New.UNAPPROVED)) ||
+				((reflectedState==ReflectedState.WAITREFLECTION || reflectedState==ReflectedState.REFLECTED) &&
+						phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED && frameAtr==ApprovalBehaviorAtrImport_New.APPROVED);
+		if(condition1) {
+			if(device==0) {
+				result = I18NText.getText("CMM045_63");
+			} else {
+				result = I18NText.getText("CMMS45_8");
+			}
+		}
+		// 反映状態　＝　PC：#CMM045_65スマホ：#CMMS45_11
+		if(reflectedState==ReflectedState.DENIAL) {
+			if(device==0) {
+				result = I18NText.getText("CMM045_65");
+			} else {
+				result = I18NText.getText("CMMS45_11");
+			}
+		}
+		// 反映状態　＝　PC：#CMM045_66スマホ：#CMMS45_36
+		if(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.REMAND) {
+			if(device==0) {
+				result = I18NText.getText("CMM045_66");
+			} else {
+				result = I18NText.getText("CMMS45_36");
+			}
+		}
+		// 反映状態　＝　PC：#CMM045_67スマホ：#CMMS45_10
+		if(reflectedState==ReflectedState.CANCELED) {
+			if(device==0) {
+				result = I18NText.getText("CMM045_67");
+			} else {
+				result = I18NText.getText("CMMS45_10");
+			}
+		}
+		return result;
 	}
 
 }
