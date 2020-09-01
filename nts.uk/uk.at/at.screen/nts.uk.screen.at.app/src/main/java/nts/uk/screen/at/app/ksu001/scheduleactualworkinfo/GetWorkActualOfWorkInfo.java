@@ -180,8 +180,8 @@ public class GetWorkActualOfWorkInfo {
 						}
 					}
 
-					WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder().employeeId(
-							key.getEmployeeID())
+					WorkScheduleWorkInforDto dto = WorkScheduleWorkInforDto.builder()
+							.employeeId(key.getEmployeeID())
 							.date(key.getDate())
 							.haveData(true)
 							.achievements(true)

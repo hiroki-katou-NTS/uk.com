@@ -106,7 +106,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             // set style text 貼り付けのパターン1
             if (self.isDisableWorkTime) {
                 $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                    debugger;
                     return { textColor: "red" };
                 });
             } else {
