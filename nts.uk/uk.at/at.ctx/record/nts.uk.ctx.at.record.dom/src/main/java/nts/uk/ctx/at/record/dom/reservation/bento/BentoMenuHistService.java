@@ -4,12 +4,14 @@ import lombok.val;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
 import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -44,10 +46,19 @@ public class BentoMenuHistService {
             }
             // Add
             require.add(itemToBeAdded);
-            require.addBentomenu(itemToBeAdded,bentoReservationClosingTime);
+
+            BentoMenu bentomenu = require.getBentoMenu(companyId, GeneralDate.max());
+            if (bentomenu != null){
+                require.addBentomenu(itemToBeAdded,bentomenu.getClosingTime(),bentomenu.getMenu());
+            }else {
+                require.addBentomenu(itemToBeAdded,bentoReservationClosingTime,new ArrayList<>());
+            }
         });
     }
     public static interface Require {
+
+        /** 1. 弁当メニューを取得 */
+        BentoMenu getBentoMenu(String companyID, GeneralDate date);
 
         Optional<BentoMenuHistory> findByCompanyId(String companyId);
 
@@ -55,7 +66,7 @@ public class BentoMenuHistService {
 
         void add(DateHistoryItem item);
 
-        void addBentomenu(DateHistoryItem item,BentoReservationClosingTime bentoReservationClosingTime);
+        void addBentomenu(DateHistoryItem item,BentoReservationClosingTime bentoReservationClosingTime, List<Bento> bentos);
 
     }
 }

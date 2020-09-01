@@ -34,7 +34,7 @@ public class WorkCycleInfo extends ValueObject {
      * @param 	workInformation
      * @return 	勤務サイクルの勤務情報
      */
-    public static WorkCycleInfo WorkCycleInfo(int days, WorkInformation workInformation) {
+    public static WorkCycleInfo create(int days, WorkInformation workInformation) {
         if (days < 1 || days > 99) {
             throw new BusinessException("Msg_1689");
         }
