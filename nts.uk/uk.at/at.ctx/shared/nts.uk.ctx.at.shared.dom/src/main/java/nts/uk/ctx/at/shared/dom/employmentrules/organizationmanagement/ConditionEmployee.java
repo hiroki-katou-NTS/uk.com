@@ -40,7 +40,7 @@ public class ConditionEmployee extends ValueObject {
     }
 
     //[1] 社員が対象となるかどうかチェックする
-    public boolean CheckEmployeesIsEligible(Require require, String sid, DatePeriod datePeriod){
+    public boolean CheckEmployeesAreEligible(Require require, String sid, DatePeriod datePeriod){
 
         return isShortTimeWork(require, sid, datePeriod) ||
                 isConditionChanger(require, sid, datePeriod) ||
