@@ -183,17 +183,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             self.bindStart();
             self.$mask('hide');
         }).catch((err: any) => {
-            self.$mask('hide');
-            if (err.messageId) {
-                this.$modal.error({ messageId: err.messageId });
-            } else {
-
-                if (_.isArray(err.errors)) {
-                    this.$modal.error({ messageId: err.errors[0].messageId });
-                } else {
-                    this.$modal.error({ messageId: err.errors.messageId });
-                }
-            }
+            self.handleErrorMessage(err);
         });
     }
 
@@ -613,23 +603,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 self.$mask('hide');
             })
             .catch((res: any) => {
-                self.$mask('hide');
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
-
-
+                self.handleErrorMessage(res);
             });
 
     }
     public registerData(res: any) {
+        const self = this;
         this.$mask('show');
         this.$http.post('at', API.registerAppWorkChange, {
             mode: this.mode,
@@ -644,17 +623,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             // KAFS00_D_申請登録後画面に移動する
             this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
         }).catch((res: any) => {
-            this.$mask('hide');
-            if (res.messageId) {
-                this.$modal.error({ messageId: res.messageId });
-            } else {
-
-                if (_.isArray(res.errors)) {
-                    this.$modal.error({ messageId: res.errors[0].messageId });
-                } else {
-                    this.$modal.error({ messageId: res.errors.messageId });
-                }
-            }
+            self.handleErrorMessage(res);
         });
     }
     public handleConfirmMessage(listMes: any, res: any) {
@@ -730,18 +699,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
 
         }).catch((res: any) => {
-            this.$mask('hide');
-            // show message error
-            if (res.messageId) {
-                this.$modal.error({ messageId: res.messageId });
-            } else {
-
-                if (_.isArray(res.errors)) {
-                    this.$modal.error({ messageId: res.errors[0].messageId });
-                } else {
-                    this.$modal.error({ messageId: res.errors.messageId });
-                }
-            }
+            this.handleErrorMessage(res);
 
         });
 
@@ -783,7 +741,20 @@ export class KafS07AComponent extends KafS00ShrComponent {
     // }
     // handle message dialog
 
-
+    public handleErrorMessage(res: any) {
+        const self = this;
+        self.$mask('hide');
+        if (res.messageId) {
+            self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+            
+            if (_.isArray(res.errors)) {
+                self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+            } else {
+                self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+            }
+        }
+    }
 
     // bind visible of view 
     public bindVisibleView(params: any) {
@@ -817,6 +788,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                         workTime: this.model.workTime.code ? this.model.workTime.code : null,
                         appWorkChangeSetDto: appWorkChangeSet
                     };
+                    self.$mask('show');
                     self.$http.post('at', API.checkWorkTime, param)
                         .then((res: any) => {
                             self.data.appWorkChangeDispInfo.setupType = res.data.setupType;
@@ -831,30 +803,12 @@ export class KafS07AComponent extends KafS00ShrComponent {
                             }
                         })
                         .catch((res: any) => {
-                            if (res.messageId) {
-                                this.$modal.error({ messageId: res.messageId });
-                            } else {
-            
-                                if (_.isArray(res.errors)) {
-                                    this.$modal.error({ messageId: res.errors[0].messageId });
-                                } else {
-                                    this.$modal.error({ messageId: res.errors.messageId });
-                                }
-                            }
+                            self.handleErrorMessage(res);
                         });
                     
                 }
             }).catch((res: any) => {
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         } else {
             this.$modal(
@@ -872,16 +826,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
             }).catch((res: any) => {
-                if (res.messageId) {
-                    this.$modal.error({ messageId: res.messageId });
-                } else {
-
-                    if (_.isArray(res.errors)) {
-                        this.$modal.error({ messageId: res.errors[0].messageId });
-                    } else {
-                        this.$modal.error({ messageId: res.errors.messageId });
-                    }
-                }
+                self.handleErrorMessage(res);
             });
         }
 

@@ -59,16 +59,16 @@ export class CmmS45ComponentsApp2Component extends Vue {
                 self.params.appDetail = self.dataFetch;
                 // self.bindCodition(self.dataFetch.appWorkChangeDispInfo);
             })
-            .catch((err: any) => {
+            .catch((res: any) => {
                 self.$mask('hide');
-                if (err.messageId) {
-                    self.$modal.error({ messageId: err.messageId });
+                if (res.messageId) {
+                    self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
                 } else {
 
-                    if (_.isArray(err.errors)) {
-                        self.$modal.error({ messageId: err.errors[0].messageId });
+                    if (_.isArray(res.errors)) {
+                        self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
                     } else {
-                        self.$modal.error({ messageId: err.errors.messageId });
+                        self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
                     }
                 }
             })
