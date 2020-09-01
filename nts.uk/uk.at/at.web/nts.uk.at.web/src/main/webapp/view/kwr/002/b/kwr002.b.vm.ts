@@ -304,14 +304,38 @@ module nts.uk.com.view.kwr002.b {
             let self = this;
             let dfd = $.Deferred<any>();
             var dataGetShareFromScreenA = getShared("dataTranferScreenB");
-            service.getAllARES().done((data) => {
-                if (data.length > 0) {
-                    _.map(data, (item:any) => {
+//             service.getAllARES().done((data: any) => {
+//                 if (data.length > 0) {
+//                     _.map(data, (item:any) => {
+//                         item.code = _.padStart(item.code, 2, '0');
+//                         // new AttendanceRecordExportSetting(item);
+//                     });
+//                     data = _.orderBy(data, [item => item.code], ['asc']);
+//                     self.aRES(data);
+// //                    let firstData = _.first(data);
+//                     self.currentARESCode(getShared("currentARESSelectCode"));
+//                     console.log("1");
+
+//                     console.log(data);
+//                 } else {
+//                     self.onNew(true);
+//                 }
+//                 dfd.resolve();
+//             }).fail(function(error) {
+//                 dfd.reject();
+//                 alert(error.message);
+//             }).always(() => {
+//                 block.clear();
+//             });
+            service.startScreenB(dataGetShareFromScreenA).done((data: any) => {
+                console.log(data);
+                if (data.lstAttendanceRecordExportSetting.length > 0) {
+                    _.map(data.lstAttendanceRecordExportSetting, (item:any) => {
                         item.code = _.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
                     });
-                    data = _.orderBy(data, [item => item.code], ['asc']);
-                    self.aRES(data);
+                    data.lstAttendanceRecordExportSetting = _.orderBy(data.lstAttendanceRecordExportSetting, [item => item.code], ['asc']);
+                    self.aRES(data.lstAttendanceRecordExportSetting);
 //                    let firstData = _.first(data);
                     self.currentARESCode(getShared("currentARESSelectCode"));
 
@@ -443,6 +467,14 @@ module nts.uk.com.view.kwr002.b {
                 });
             }
         }
+
+        public openDialogF() {
+            let self = this;
+            let openDialogFParam: OpenDialogFParam;
+            openDialogFParam.code(self.code());
+
+        }
+
     }
 
     class SealUseAtrSwitch {
@@ -456,18 +488,28 @@ module nts.uk.com.view.kwr002.b {
     }
 
     class DataInputScreenB {
-        settingCategory: number; //設定区分（自由設定）
+        selectionType: number; //設定区分（自由設定）
         companyId: string; //会社ID
         employeeId: string; //社員ID
         selectedOutputLayoutId: string; //選択出力レイアウトID
         selectedCode: string;// 選択コード
 
-        constructor(settingCategory: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
-            this.settingCategory = settingCategory;
+        constructor(selectionType: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
+            this.selectionType = selectionType;
             this.companyId = companyId;
             this.employeeId = employeeId;
             this.selectedOutputLayoutId = selectedOutputLayoutId;
             this.selectedCode = selectedCode;
         }
+    }
+
+    class OpenDialogFParam{
+        code: KnockoutObservable<string>;
+        name: KnockoutObservable<string>;
+        selectedCode: string;
+        layoutCode: string;
+        constructor(init?: Partial<OpenDialogFParam>) {
+          $.extend(this, init);
+      }
     }
 }

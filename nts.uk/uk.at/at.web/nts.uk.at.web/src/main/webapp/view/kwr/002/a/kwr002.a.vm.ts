@@ -697,14 +697,14 @@ module nts.uk.com.view.kwr002.a {
         }
 
         class DataScreenB {
-            settingCategory: number; //設定区分（自由設定）
+            selectionType: number; //設定区分（自由設定）
             companyId: string; //会社ID
             employeeId: string; //社員ID
             selectedOutputLayoutId: string; //選択出力レイアウトID
             selectedCode: string;// 選択コード
 
-            constructor(settingCategory: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
-                this.settingCategory = settingCategory;
+            constructor(selectionType: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
+                this.selectionType = selectionType;
                 this.companyId = companyId;
                 this.employeeId = employeeId;
                 this.selectedOutputLayoutId = selectedOutputLayoutId;
