@@ -40,15 +40,10 @@ export class Ccg007AComponent extends Vue {
             return;
         }
         this.$http.post('ctx/sys/gateway/login/submitcontract', this.model).then((response) => {
-            console.log('success', response);
-
-            return;
             storage.local.setItem('contract', { code: this.model.contractCode, password: this.model.password });
             this.$router.go(-1);
         }).catch((error) => {
-            console.log('failed', error);
-
-            return;
+            this.$modal.error(error.message);
         });
     }
 
