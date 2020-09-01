@@ -56,9 +56,11 @@ public class WorkMonthlySettingServiceTest {
         Optional<AtomTask> expected = Optional.empty();
         new Expectations(WorkMonthlySetting.class) {{
             workMonthlySetting.checkForErrors(require);
+            require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
+            result = true;
 
         }};
-        assertThat(expected.equals(WorkMonthlySettingService.register(require, workMonthlySetting, true)));
+        assertThat(expected.equals(WorkMonthlySettingService.register(require, workMonthlySetting, false)));
     }
 
     @Test
@@ -91,36 +93,5 @@ public class WorkMonthlySettingServiceTest {
         );
     }
 
-
-    @AllArgsConstructor
-    class WorkMonthlySettingGetMementoImpl implements WorkMonthlySettingGetMemento {
-
-        private String cid;
-
-        @Override
-        public CompanyId getCompanyId() {
-            return new CompanyId(cid);
-        }
-
-        @Override
-        public WorkTypeCode getWorkTypeCode() {
-            return new WorkTypeCode("A");
-        }
-
-        @Override
-        public WorkingCode getWorkingCode() {
-            return new WorkingCode("code-1");
-        }
-
-        @Override
-        public GeneralDate getYmdK() {
-            return GeneralDate.today();
-        }
-
-        @Override
-        public MonthlyPatternCode getMonthlyPatternCode() {
-            return new MonthlyPatternCode("COD");
-        }
-    }
 }
 
