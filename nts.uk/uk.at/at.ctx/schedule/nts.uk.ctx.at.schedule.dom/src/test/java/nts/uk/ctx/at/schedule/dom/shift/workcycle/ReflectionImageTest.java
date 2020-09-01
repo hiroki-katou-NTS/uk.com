@@ -146,7 +146,6 @@ public class ReflectionImageTest {
     public void getListRefOrdByDateTest() {
         WorkInformation workInformation = new WorkInformation("workTimeCode","workTypeCode");
 
-
         ReflectionImage target = ReflectionImage.create();
         target.addHolidays(GeneralDate.ymd(2020,9,5),workInformation);
         target.addHolidays(GeneralDate.ymd(2020,9,2),workInformation);
@@ -154,10 +153,10 @@ public class ReflectionImageTest {
         target.addHolidays(GeneralDate.ymd(2020,9,3),workInformation);
 
         val result = target.getListRefOrdByDate();
-        assertThat(result.get(0).getDate().equals(GeneralDate.ymd(2020,9,1)));
-        assertThat(result.get(1).getDate().equals(GeneralDate.ymd(2020,9,1)));
-        assertThat(result.get(2).getDate().equals(GeneralDate.ymd(2020,9,2)));
-        assertThat(result.get(3).getDate().equals(GeneralDate.ymd(2020,9,5)));
+        Assert.assertEquals(result.get(0).getDate(),GeneralDate.ymd(2020,9,1));
+        Assert.assertEquals(result.get(1).getDate(),GeneralDate.ymd(2020,9,2));
+        Assert.assertEquals(result.get(2).getDate(),GeneralDate.ymd(2020,9,3));
+        Assert.assertEquals(result.get(3).getDate(),GeneralDate.ymd(2020,9,5));
     }
 
 
