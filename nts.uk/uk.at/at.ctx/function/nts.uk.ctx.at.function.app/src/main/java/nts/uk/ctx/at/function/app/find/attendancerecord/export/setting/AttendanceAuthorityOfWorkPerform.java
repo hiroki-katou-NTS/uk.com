@@ -1,4 +1,9 @@
+/*
+ * 
+ */
 package nts.uk.ctx.at.function.app.find.attendancerecord.export.setting;
+
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,7 +42,7 @@ public class AttendanceAuthorityOfWorkPerform {
 	
 	/** The is free setting. */
 	private boolean isFreeSetting;
-	
+
 
 	public AttendanceAuthorityOfWorkPerform(int functionNo, String companyId,
 			String roleId) {

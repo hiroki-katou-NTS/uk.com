@@ -18,6 +18,8 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.Attendace
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceAuthorityOfWorkPerform;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceSettingDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.ItemSelectedTypeSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -54,8 +56,7 @@ public class AttendanceRecordExportSettingWebService {
 	@POST
 	@Path("getAllAttendanceRecExpSet")
 	public List<AttendanceRecordExportSettingDto> getAllAttendanceRecExpSet() {
-		String companyId = AppContexts.user().companyId();
-		return attendanceEcExpSetFinder.getAllAttendanceRecordExportSetting(companyId);
+		return attendanceEcExpSetFinder.getAllAttendanceRecordExportSetting();
 	}
 
 	/**
@@ -142,5 +143,11 @@ public class AttendanceRecordExportSettingWebService {
 	@Path("getAuthorityOfWorkPerformance")
 	public AttendanceAuthorityOfWorkPerform getAuthorityOfWorkPerformance() {
 		return attendanceEcExpSetFinder.getAuthorityOfWorkPerformance();
+	}
+	
+	@POST
+	@Path("startScreenB")
+	public AttendanceSettingDto startScreenB(ItemSelectedTypeSettingDto dto) {
+		return attendanceEcExpSetFinder.startScreenB(dto);
 	}
 }

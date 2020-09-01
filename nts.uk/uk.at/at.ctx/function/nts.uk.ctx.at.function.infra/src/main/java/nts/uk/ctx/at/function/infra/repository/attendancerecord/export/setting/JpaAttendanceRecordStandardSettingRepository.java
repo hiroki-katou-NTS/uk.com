@@ -12,6 +12,8 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 		implements AttendanceRecordStandardSettingRepository {
 
+	private JpaAttendanceRecordExportSettingRepository recordExportSettingRepo;
+	
 	@Override
 	public void add(AttendanceRecordStandardSetting domain) {
 
@@ -31,6 +33,7 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 	@Override
 	public Optional<AttendanceRecordStandardSetting> getStandardByCompanyId(String compnayId) {
 
+//		this.recordExportSettingRepo.getAllAttendanceRecExpSet(compnayId);
 		return null;
 	}
 
