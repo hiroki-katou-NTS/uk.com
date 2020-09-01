@@ -68,7 +68,7 @@ module nts.uk.at.view.kmp001.a {
 						name: "Selection",
 						mode: "row",
 						multipleSelection: true,
-						activation: true,
+						activation: false,
 						rowSelectionChanged: function(evt, ui) {
 							const selectedRows = ui.selectedRows.map(m => m.index) as number[];
 							const stampCard = ko.unwrap(vm.model.stampCardDto);
@@ -84,7 +84,7 @@ module nts.uk.at.view.kmp001.a {
 									_.extend(stamp, { checked: false });
 								}
 							})
-
+							
 							vm.model.stampCardDto(stampCard);
 						}
 					}, {

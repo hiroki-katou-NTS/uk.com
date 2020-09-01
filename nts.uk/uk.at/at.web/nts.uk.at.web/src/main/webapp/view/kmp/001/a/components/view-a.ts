@@ -74,12 +74,14 @@ module nts.uk.at.view.kmp001.a {
 									data.retiredDate = null;
 								}
 
-								if (data.stampCardDto.length > 0) {
+								vm.mode("new");
+
+								/*if (data.stampCardDto.length > 0) {
 									data.stampCardDto[0].checked = true;
 									vm.mode("update");
 								} else {
 									vm.mode("new");
-								}
+								}*/
 
 								vm.$errors('clear').then(() => {
 									vm.model.update(ko.toJS(data));
@@ -91,6 +93,26 @@ module nts.uk.at.view.kmp001.a {
 						$('.ip-stamp-card').focus();
 					});
 				});
+
+			vm.model.stampCardDto
+				.subscribe(() => {
+					const stampCards: [] = ko.toJS(vm.model.stampCardDto);
+					let checkModeDelete: boolean = false;
+
+					for (var i = 0; i < stampCards.length; i++) {
+						const c: StampCard = stampCards[i];
+						if (c.checked) {
+							checkModeDelete = true;
+							break;
+						}
+					}
+					
+					if (checkModeDelete) {
+						vm.mode('update');
+					} else {
+						vm.mode('new');
+					}
+				})
 
 			vm.employees
 				.subscribe(() => {
@@ -299,7 +321,7 @@ module nts.uk.at.view.kmp001.a {
 								}
 
 								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
-								
+
 								vm.$ajax(KMP001A_API.ADD, commandNew)
 									.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 									.then(() => vm.$blockui("invisible"))
