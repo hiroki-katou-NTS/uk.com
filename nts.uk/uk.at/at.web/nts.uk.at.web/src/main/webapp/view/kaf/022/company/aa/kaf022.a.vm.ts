@@ -42,6 +42,8 @@ module nts.uk.at.view.kaf022.a.viewmodel {
         itemListA21_2: KnockoutObservableArray<ItemModel>;
         appReflectCondition: KnockoutObservable<AppReflectExeCondition>;
 
+        appTypeLabels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_11", "KAF022_707", "KAF022_10", "KAF022_12", "KAF022_705"];
+
         constructor() {
             const self = this;
 
@@ -203,28 +205,28 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             let listAppType = __viewContext.enums.ApplicationType;
             self.dataReceptionRestrictionSettings([]);
             let data: Array<any> = allData.applicationSetting ? allData.applicationSetting.receptionRestrictionSetting : [];
-            if (data) {
-                _.forEach(listAppType, (appType: any) => {
-                    let obj: any = _.find(data, ['appType', appType.value]);
-                    if (obj) {
-                        self.dataReceptionRestrictionSettings.push(
-                            new ReceptionRestrictionSetting(
-                                appType.name,
-                                appType.value,
-                                obj.useAtr,
-                                obj.dateBeforehandRestrictions,
-                                obj.methodCheck,
-                                obj.earlyOvertime,
-                                obj.normalOvertime,
-                                obj.earlyNormalOvertime,
-                                obj.allowFutureDay
-                            )
-                        );
-                    } else {
-                        self.dataReceptionRestrictionSettings.push(new ReceptionRestrictionSetting(appType.name, appType.value, 0, 0, 0, 0, 0, 0, 0));
-                    }
-                });
-            }
+
+            listAppType.forEach( (appType: any, index: number) => {
+                let obj: any = _.find(data, ['appType', appType.value]);
+                if (obj) {
+                    self.dataReceptionRestrictionSettings.push(
+                        new ReceptionRestrictionSetting(
+                            getText(self.appTypeLabels[index]),
+                            appType.value,
+                            obj.appType == 0 ? obj.otAppBeforeAccepRestric.toUse : obj.beforehandRestriction.toUse,
+                            obj.appType == 0 ? obj.otAppBeforeAccepRestric.dateBeforehandRestrictions : obj.beforehandRestriction.dateBeforehandRestrictions,
+                            obj.appType == 0 ? obj.otAppBeforeAccepRestric.methodCheck : null,
+                            obj.appType == 0 ? obj.otAppBeforeAccepRestric.opEarlyOvertime : null,
+                            obj.appType == 0 ? obj.otAppBeforeAccepRestric.opNormalOvertime : null,
+                            obj.appType == 0 ? obj.otAppBeforeAccepRestric.opEarlyNormalOvertime : null,
+                            obj.afterhandRestriction.allowFutureDay
+                        )
+                    );
+                } else {
+                    self.dataReceptionRestrictionSettings.push(new ReceptionRestrictionSetting(getText(self.appTypeLabels[index]), appType.value, 0, 0, 0, 0, 0, 0, 0));
+                }
+            });
+
         }
 
         initDataA11(allData: any): void {
@@ -242,23 +244,23 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             let listAppType = __viewContext.enums.ApplicationType;
             self.appTypeSettings([]);
             let data: Array<any> = allData.applicationSetting ? allData.applicationSetting.appTypeSetting : [];
-            if (data) {
-                _.forEach(listAppType, (appType: any) => {
-                    let obj: any = _.find(data, ['appType', appType.value]);
-                    if (obj) {
-                        self.appTypeSettings.push(
-                            new AppTypeSetting(
-                                appType.value,
-                                appType.name,
-                                obj.canClassificationChange,
-                                obj.displayInitialSegment
-                            )
-                        );
-                    } else {
-                        self.appTypeSettings.push(new AppTypeSetting(appType.value, appType.name,  false, 0));
-                    }
-                });
-            }
+
+            listAppType.forEach( (appType: any, index: number) => {
+                let obj: any = _.find(data, ['appType', appType.value]);
+                if (obj) {
+                    self.appTypeSettings.push(
+                        new AppTypeSetting(
+                            appType.value,
+                            getText(self.appTypeLabels[index]),
+                            obj.canClassificationChange,
+                            obj.displayInitialSegment
+                        )
+                    );
+                } else {
+                    self.appTypeSettings.push(new AppTypeSetting(appType.value, getText(self.appTypeLabels[index]),  false, 0));
+                }
+            });
+
         }
 
         initDataA8(allData: any): void {
@@ -267,30 +269,29 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             let listHdType = __viewContext.enums.HolidayAppType;
             self.listDataA8([]);
             let data: Array<any> = allData.reasonDisplaySettings || [];
-            if (data) {
-                _.forEach(listAppType, (appType: any) => {
-                    if (appType.value == 1) {
-                        self.listDataA8.push(new DisplayReasonSetting(appType.value, appType.name, null, null, null));
-                        _.forEach(listHdType, (hdType: any)=>{
-                            if (hdType.value < 7) {
-                                let obj2: any = _.find(data, ['holidayAppType', hdType.value]);
-                                if (obj2) {
-                                    self.listDataA8.push(new DisplayReasonSetting(appType.value, hdType.name, obj2.displayFixedReason, obj2.displayAppReason, hdType.value));
-                                } else {
-                                    self.listDataA8.push(new DisplayReasonSetting(appType.value, hdType.name,0, 0, hdType.value));
-                                }
+
+            listAppType.forEach( (appType: any, index: number) => {
+                if (appType.value == 1) {
+                    self.listDataA8.push(new DisplayReasonSetting(appType.value, getText(self.appTypeLabels[index]), null, null, null));
+                    _.forEach(listHdType, (hdType: any)=>{
+                        if (hdType.value < 7) {
+                            let obj2: any = _.find(data, ['holidayAppType', hdType.value]);
+                            if (obj2) {
+                                self.listDataA8.push(new DisplayReasonSetting(appType.value, hdType.name, obj2.displayFixedReason, obj2.displayAppReason, hdType.value));
+                            } else {
+                                self.listDataA8.push(new DisplayReasonSetting(appType.value, hdType.name,0, 0, hdType.value));
                             }
-                        });
-                    } else {
-                        let obj1: any = _.find(data, ['appType', appType.value]);
-                        if (obj1) {
-                            self.listDataA8.push(new DisplayReasonSetting(appType.value, appType.name, obj1.displayFixedReason, obj1.displayAppReason, null));
-                        } else {
-                            self.listDataA8.push(new DisplayReasonSetting(appType.value, appType.name,0, 0, null));
                         }
+                    });
+                } else {
+                    let obj1: any = _.find(data, ['appType', appType.value]);
+                    if (obj1) {
+                        self.listDataA8.push(new DisplayReasonSetting(appType.value, getText(self.appTypeLabels[index]), obj1.displayFixedReason, obj1.displayAppReason, null));
+                    } else {
+                        self.listDataA8.push(new DisplayReasonSetting(appType.value, getText(self.appTypeLabels[index]),0, 0, null));
                     }
-                });
-            }
+                }
+            });
         }
 
         initDataA21(allData: any): void {

@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
+		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
         dataSourceOb: KnockoutObservableArray<any>;
         application: KnockoutObservable<Application>;
         tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
@@ -51,9 +52,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         
     created() {
         const self = this;
-        self.application = ko.observable(new Application(AppType.STAMP_APPLICATION));
+        self.application = ko.observable(new Application(self.appType()));
 
-        self.loadData([], [], AppType.STAMP_APPLICATION)
+        self.loadData([], [], self.appType())
         .then((loadDataFlag: any) => {
             if(loadDataFlag) {
                 let ApplicantEmployeeID: null,

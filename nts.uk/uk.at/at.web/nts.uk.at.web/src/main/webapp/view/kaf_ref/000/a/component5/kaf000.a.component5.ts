@@ -5,6 +5,7 @@ module nts.uk.at.view.kaf000_ref.a.component5.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/000/a/component5/index.html'
     })
     class Kaf000AComponent5ViewModel extends ko.ViewModel {
+		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
         opAppStandardReasonCD: KnockoutObservable<number>;
         opAppReason: KnockoutObservable<string>;
@@ -16,6 +17,7 @@ module nts.uk.at.view.kaf000_ref.a.component5.viewmodel {
 
         created(params: any) {
             const vm = this;
+			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.opAppStandardReasonCD = params.application().opAppStandardReasonCD;
             vm.opAppReason = params.application().opAppReason;
@@ -32,7 +34,7 @@ module nts.uk.at.view.kaf000_ref.a.component5.viewmodel {
 			            appStandardReasonCD: '',
 			            displayOrder: 0,
 			            defaultValue: false,
-			            opReasonForFixedForm: vm.$i18n('KAFS00_23'),   
+			            reasonForFixedForm: vm.$i18n('KAFS00_23'),   
 			        }];
 					vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
                     vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);

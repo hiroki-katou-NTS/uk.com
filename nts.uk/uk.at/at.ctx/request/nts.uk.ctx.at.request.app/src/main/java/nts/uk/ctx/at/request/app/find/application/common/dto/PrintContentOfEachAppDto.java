@@ -8,6 +8,7 @@ import nts.uk.ctx.at.request.app.find.application.gobackdirectly.InforGoBackComm
 import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ArrivedLateLeaveEarlyInfoDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfEachApp;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeOutput;
@@ -47,7 +48,7 @@ public class PrintContentOfEachAppDto {
 	 */
 	public InforGoBackCommonDirectDto opInforGoBackCommonDirectOutput;
 
-	public BusinessTripInfoOutputDto opBusinessTripInfoOutput;
+	public BusinessTripDto opBusinessTripInfoOutput;
 	
 	public PrintContentOfEachApp toDomain() {
 		PrintContentOfEachApp printContentOfEachApp = new PrintContentOfEachApp();
@@ -68,7 +69,7 @@ public class PrintContentOfEachAppDto {
 			printContentOfEachApp.setOpInforGoBackCommonDirectOutput(Optional.of(opInforGoBackCommonDirectOutput.toDomain()));
 		}
 		if(opBusinessTripInfoOutput != null) {
-			printContentOfEachApp.setOpBusinessTrip(Optional.of(opBusinessTripInfoOutput.toDomain()));
+			printContentOfEachApp.setOpBusinessTrip(Optional.of(opBusinessTripInfoOutput.toPrintContentOutput()));
 		}
 		return printContentOfEachApp;
 	}

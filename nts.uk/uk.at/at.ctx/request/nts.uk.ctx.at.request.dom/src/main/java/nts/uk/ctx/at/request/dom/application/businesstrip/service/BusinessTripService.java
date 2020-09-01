@@ -24,7 +24,7 @@ public interface BusinessTripService {
      */
     public List<ActualContentDisplay> getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst);
 
-    public BusinessTripInfoOutput getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput);
+    public DetailScreenB getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput);
 
     /**
      * 出張申請勤務種類を取得する
@@ -34,5 +34,7 @@ public interface BusinessTripService {
      * @param workTypeClassification 勤務分類(LIST)
      */
     List<WorkType> getBusinessAppWorkType(AppEmploymentSet appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification);
+
+    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate);
 
 }

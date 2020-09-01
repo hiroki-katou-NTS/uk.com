@@ -211,7 +211,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
             applicationUseSetting: appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0],
             // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．受付制限設定
-            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting,
+            receptionRestrictionSetting: appDispInfoNoDateOutput.applicationSetting.receptionRestrictionSetting[0],
             // opOvertimeAppAtr: null
         };
     }
@@ -379,7 +379,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         const self = this;
         self.model.workType.code = self.mode ? params.appWorkChangeDispInfo.workTypeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTypeCD ? params.appWorkChange.opWorkTypeCD : null) : null);
         let isExist = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == self.model.workType.code);
-        self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
+        self.model.workType.name = isExist ? isExist.name : self.$i18n('KAFS07_10');
 
         self.model.workTime.code = self.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : null) : null);
         isExist = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
@@ -505,7 +505,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
             }
-            if (this.isCondition2) {
+            if (this.isCondition2 && !(_.isNull(this.valueWorkHours2.start) && _.isNull(this.valueWorkHours2.end))) {
                 b = {
                     workNo: 2,
                     timeZone: {
@@ -515,6 +515,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
             }
+        } else {
+            this.appWorkChangeDto.timeZoneWithWorkNoLst = null;
         }
         if (!this.mode && !this.isCondition3) {
 
@@ -576,6 +578,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public changeDate(dates: any) {
         const self = this;
         self.$mask('show');
+        self.data.appWorkChangeDispInfo.workTypeCD = self.model.workType.code;
+        self.data.appWorkChangeDispInfo.workTimeCD = self.model.workTime.code;
         let params = {
             companyId: self.user.companyId,
             listDates: dates,
@@ -788,6 +792,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
 
     }
     public openKDL002(name: string) {
+        const self = this;
         console.log(_.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode));
         if (name == 'worktype') {
             this.$modal(
@@ -801,11 +806,40 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 }
             ).then((f: any) => {
                 if (f) {
-                    this.model.workType.code = f.selectedWorkType.workTypeCode;
-                    this.model.workType.name = f.selectedWorkType.name;
-                    this.model.workTime.code = f.selectedWorkTime.code;
-                    this.model.workTime.name = f.selectedWorkTime.name;
-                    this.model.workTime.time = f.selectedWorkTime.workTime1;
+                    // check worktime
+                    let appWorkChangeSet = self.data.appWorkChangeDispInfo.appWorkChangeSet;
+                    let param = {
+                        companyId: self.user.companyId,
+                        workType: f.selectedWorkType.workTypeCode,
+                        workTime: this.model.workTime.code ? this.model.workTime.code : null,
+                        appWorkChangeSetDto: appWorkChangeSet
+                    };
+                    self.$http.post('at', API.checkWorkTime, param)
+                        .then((res: any) => {
+                            self.data.appWorkChangeDispInfo.setupType = res.data.setupType;
+                            self.data.appWorkChangeDispInfo.predetemineTimeSetting = res.data.opPredetemineTimeSetting;
+                            self.bindVisibleView(self.data.appWorkChangeDispInfo);
+                            this.model.workType.code = f.selectedWorkType.workTypeCode;
+                            this.model.workType.name = f.selectedWorkType.name;
+                            if (f.selectedWorkTime) {
+                                this.model.workTime.code = f.selectedWorkTime.code;
+                                this.model.workTime.name = f.selectedWorkTime.name;
+                                this.model.workTime.time = f.selectedWorkTime.workTime1;
+                            }
+                        })
+                        .catch((res: any) => {
+                            if (res.messageId) {
+                                this.$modal.error({ messageId: res.messageId });
+                            } else {
+            
+                                if (_.isArray(res.errors)) {
+                                    this.$modal.error({ messageId: res.errors[0].messageId });
+                                } else {
+                                    this.$modal.error({ messageId: res.errors.messageId });
+                                }
+                            }
+                        });
+                    
                 }
             }).catch((res: any) => {
                 if (res.messageId) {
@@ -896,5 +930,6 @@ const API = {
     startS07: 'at/request/application/workchange/mobile/startMobile',
     checkBeforRegister: 'at/request/application/workchange/mobile/checkBeforeRegister_New',
     registerAppWorkChange: 'at/request/application/workchange/mobile/addWorkChange_New',
-    updateAppWorkChange: 'at/request/application/workchange/mobile/changeDateKAFS07'
+    updateAppWorkChange: 'at/request/application/workchange/mobile/changeDateKAFS07',
+    checkWorkTime: 'at/request/application/workchange/mobile/checkWorkTime'
 };

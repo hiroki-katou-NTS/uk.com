@@ -585,15 +585,14 @@ public class ApplicationListFinder {
     private AppListInitialRepository appListInitialRepository;
 //    UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.ユースケース
     public ApplicationListDtoMobile getListFilter(ApplicationListDtoMobile applicationListDtoMobile) {
-    	AppListExtractCondition appListExtractCondition = null; //applicationListDtoMobile.getAppListExtractConditionDto()
+    	AppListExtractCondition appListExtractCondition = applicationListDtoMobile.getAppListExtractConditionDto().convertDtotoDomain();
     	int device = MOBILE;
-    	AppListInfo appListInfo = null; //  applicationListDtoMobile.getAppListInfoDto();
+    	AppListInfo appListInfo = applicationListDtoMobile.getAppListInfoDto().toDomain();
     	// change value of appListExtractCondition and appListInfo
     	AppListInitOutput appListInitOutput = appListInitialRepository.getApplicationList(appListExtractCondition, device, appListInfo);
     	// set value
-    	applicationListDtoMobile.setAppListInfoDto(null);
-    	applicationListDtoMobile.setAppListExtractConditionDto(null);
-//    	return this.convertApplicationListDto(appListExtractCondition, appListInfo, applicationListDtoMobile);
+    	applicationListDtoMobile.setAppListInfoDto(AppListInfoDto.fromDomain(appListInitOutput.getAppListInfo()));
+    	applicationListDtoMobile.setAppListExtractConditionDto(AppListExtractConditionDto.fromDomain(appListInitOutput.getAppListExtractCondition()));
     	return applicationListDtoMobile;
     }
     

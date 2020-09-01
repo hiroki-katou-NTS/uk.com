@@ -13,6 +13,8 @@ import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeDetail
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
+import nts.uk.ctx.at.request.app.find.application.workchange.ChangeWkTypeTimeDto;
+import nts.uk.ctx.at.request.app.find.application.workchange.CheckWorkTimeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.UpdateWorkChangeParam;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
 import nts.uk.ctx.at.request.app.find.application.workchange.dto.WorkChangeCheckRegisterDto;
@@ -56,5 +58,11 @@ public class AppWorkChangeMobileService extends WebService{
 	public AppWorkChangeOutputDto startDetail(AppWorkChangeDetailParam appWorkChangeDetailParam) {
 		
 		return appWorkFinder.getDetailKAFS07(appWorkChangeDetailParam);
+	}
+	@POST
+	@Path("checkWorkTime")
+	public ChangeWkTypeTimeDto checkWorkTime(CheckWorkTimeParam checkWorkTimeParam) {
+		
+		return appWorkFinder.checkWorkTime(checkWorkTimeParam);
 	}
 }

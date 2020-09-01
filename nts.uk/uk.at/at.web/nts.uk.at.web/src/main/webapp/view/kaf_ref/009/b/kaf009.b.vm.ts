@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf009_ref.b.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
+	import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     
     @component({
         name: 'kaf009-b',
@@ -8,6 +9,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     })
     class Kaf009BViewModel extends ko.ViewModel {
         
+		appType: KnockoutObservable<number> = ko.observable(AppType.GO_RETURN_DIRECTLY_APPLICATION);
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
         model: Model;

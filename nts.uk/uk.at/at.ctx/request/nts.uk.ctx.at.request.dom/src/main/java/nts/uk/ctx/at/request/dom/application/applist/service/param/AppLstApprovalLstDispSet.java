@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.param;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
@@ -12,6 +14,8 @@ import nts.arc.time.GeneralDate;
  */
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppLstApprovalLstDispSet {
 	
 	/**

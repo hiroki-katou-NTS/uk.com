@@ -406,11 +406,19 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		}else {
 			workTypeLst = this.getWorkTypeLst(null);
 		}
+		
+		// 勤務種類・就業時間帯を変更する時 #111189
+		String workTypeCD = appWorkChange.getOpWorkTypeCD().isPresent() ? appWorkChange.getOpWorkTypeCD().get().v() : null;
+		String workTimeCD = appWorkChange.getOpWorkTimeCD().isPresent() ? appWorkChange.getOpWorkTimeCD().get().v() : null;
+		ChangeWkTypeTimeOutput changeWkTypeTimeOutput =
+				this.changeWorkTypeWorkTime(companyID, workTypeCD, Optional.ofNullable(workTimeCD), appWorkChangeSettingOutput.getAppWorkChangeSet());
 		// 取得した情報をOUTPUT「勤務変更申請の表示情報」にセットする
 		appWorkChangeDispInfo.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		appWorkChangeDispInfo.setAppWorkChangeSet(appWorkChangeSettingOutput.getAppWorkChangeSet());
 		appWorkChangeDispInfo.setReflectWorkChangeApp(appWorkChangeSettingOutput.getAppWorkChangeReflect());
 		appWorkChangeDispInfo.setWorkTypeLst(workTypeLst);
+		appWorkChangeDispInfo.setPredetemineTimeSetting(changeWkTypeTimeOutput.getOpPredetemineTimeSetting());
+		appWorkChangeDispInfo.setSetupType(Optional.ofNullable(changeWkTypeTimeOutput.getSetupType()));
 		// 「勤務変更申請の表示情報」と「勤務変更申請」を返す
 		result.setAppWorkChangeDispInfo(appWorkChangeDispInfo);
 		result.setAppWorkChange(appWorkChange);

@@ -3,7 +3,7 @@ import { component, Prop, Watch } from '@app/core/component';
 
 import { AppInfo } from '../shr';
 import { AppListExtractConditionDto } from '../shr/index.d';
-import { AppListExtractCondition, ApplicationListDtoMobile, ListOfApplication, ListOfAppTypes } from '../a/index';
+import { AppListExtractCondition, ApplicationListDtoMobile, ListOfApplication, ListOfAppTypes, Mode } from '../a/index';
 
 import { TotopComponent } from '@app/components/totop';
 import { storage } from '@app/utils';
@@ -50,7 +50,7 @@ export class CmmS45BComponent extends Vue {
     public lstAppType: Array<{ code: string, appType: number; appName: string; }> = [];
     public lstAppByEmp: Array<AppByEmp> = [];
     public modeAppr: boolean = false;
-    public prFilter: AppListExtractConditionDto = null;//抽出条件
+    // public prFilter: AppListExtractConditionDto = null;//抽出条件
     public lstAppr: Array<string> = [];
     // public lstMasterInfo: Array<any> = [];
     // public isDisPreP: number = 0;//申請表示設定.事前事後区分
@@ -79,13 +79,33 @@ export class CmmS45BComponent extends Vue {
         let self = this;
         self.$validate();
         if (self.$valid) {
-            self.getData(false, true);
+            self.getData(true, false);
         }
     }
 
     public created() {
+        const self = this;
+        self.getData(!this.params.CMMS45_FromMenu, false);
 
-        this.getData(!this.params.CMMS45_FromMenu, false);
+        self.$watch('selectedValue', (newV, oldV) => {
+            // if (!_.isEmpty(self.lstApp)) {
+            //     if (newV == oldV) {
+
+            //         return;
+            //     }
+            //     self.filterApp();
+            // }
+            if (newV == oldV) {
+
+                return;
+            }
+            self.filterApp();
+        });
+    }
+
+    public filterApp() {
+        const self = this;
+        self.getData(true, true);
     }
     // 未承認のチェック：する　or　しない
     private checkUnapprovalStatus() {
@@ -115,7 +135,6 @@ export class CmmS45BComponent extends Vue {
     //データを取る
     private getData(getCache: boolean, filter: boolean) {
         let self = this;
-        self.$mask('show');
         // check: キャッシュを取るか？
         if (filter) {
             // self.prFilter = {
@@ -133,10 +152,32 @@ export class CmmS45BComponent extends Vue {
             //     listEmployeeId: [],
             //     empRefineCondition: ''
             // } as AppListExtractConditionDto;
-        } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractCondition')) {
-            // self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
-            // self.selectedValue = self.prFilter.appType.toString();
+            // self.convertAppInfo(self.data.appListInfoDto);
+            self.convertAppInfo(self.data);
+        } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractConditionNew')) {
+            self.$mask('show');
+            self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
+            self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
+            self.$http.post('at', servicePath.filterByDate, { applicationListDtoMobile: self.data })
+                .then((res: any) => {
+                    self.$mask('hide');
+                    // let data = res.data as ApplicationListDtoMobile;
+                    self.appListExtractCondition = res.data.appListExtractConditionDto;
+                    self.data = res.data;
+
+                    storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
+                    self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
+                    // self.isDisPreP = 
+                    self.convertAppInfo(self.data);
+                    // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
+
+
+                }).catch(() => {
+                    self.$mask('hide');
+                });
+
         } else {
+            self.$mask('show');
             // self.prFilter = {
             //     startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
             //     endDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
@@ -155,7 +196,7 @@ export class CmmS45BComponent extends Vue {
             self.appListExtractCondition = {
                 // 申請一覧区分
                 // 0: application , 1: approval
-                appListAtr: 0,
+                appListAtr: Mode.APPROVAL,
                 // 表の幅登録
                 tableWidthRegis: false,
                 // 事前出力
@@ -197,21 +238,21 @@ export class CmmS45BComponent extends Vue {
                         listAppType: res.data,
                         appListExtractConditionDto: self.appListExtractCondition
                     };
-    
+
                     return self.$http.post('at', servicePath.getApplicationList, paramNew);
                 }
-    
+
             }).then((res: any) => {
                 self.$mask('hide');
                 self.appListExtractCondition = res.data.appListExtractConditionDto;
                 self.data = res.data;
-    
+
                 storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
                 self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
                 self.convertAppInfo(self.data);
                 self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
                 self.disableB24 = self.appStatus.unApprovalNumber == 0 ? true : false;
-    
+
             }).catch(() => {
                 self.$mask('hide');
             });
@@ -243,7 +284,7 @@ export class CmmS45BComponent extends Vue {
         //     self.$mask('hide');
         // });
 
-        
+
 
 
     }
@@ -273,7 +314,8 @@ export class CmmS45BComponent extends Vue {
         self.appAllNumber = data.appAllNumber;
         let lstSCD = _.uniqBy(data.appListInfoDto.appLst, (o: any) => o.applicantCD);
         lstSCD.forEach((o) => {
-            let appInfor = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.applicantCD == o.applicantCD);
+
+            let appInfor = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.applicantCD == o.applicantCD && (self.selectedValue == '-1' || String(i.appType) == self.selectedValue));
             self.lstAppByEmp.push(new AppByEmp({
                 empCD: o.applicantCD,
                 empName: o.applicantName,
@@ -304,22 +346,44 @@ export class CmmS45BComponent extends Vue {
     }
 
     private convertLstApp(lstApp: Array<ListOfApplication>) {
+        const self = this;
         let lst = [];
         lstApp.forEach((app: ListOfApplication) => {
             lst.push(new AppInfo({
                 id: app.appID,
-                appDate: this.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
+                appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
                 appType: app.appType,
-                appName: this.appTypeName(app.appType),
+                appName: self.appTypeName(app.appType),
                 prePostAtr: app.prePostAtr,
                 reflectStatus: app.reflectionStatus,
-                appStatusNo: 2,//app.re,
+                appStatusNo: self.convertReflectToInt(app.reflectionStatus),
                 frameStatus: null,//this.getFrameStatus(app.appID),
                 version: null
             }));
         });
 
         return lst;
+    }
+    public convertReflectToInt(value: string) {
+        if (value == '未反映') {
+
+            return 5;
+        } else if (value == '反映待ち') {
+
+            return 4;
+        } else if (value == '反映済') {
+            
+            return -1;
+        } else if (value == '取消済') {
+            
+            return 3;
+        } else if (value == '差し戻し') {
+            
+            return 2;
+        } else if (value == '否認') {
+            
+            return 1;
+        }
     }
 
     // private getFrameStatus(appID: string) {
@@ -388,7 +452,7 @@ export class CmmS45BComponent extends Vue {
             //「D：申請内容確認（承認）」画面へ遷移する
             this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': item.id }).then(() => {
                 //reload
-                self.getData(true, false);
+                self.getData(false, true);
             });
         } else {
             if (!item.frameStatus) {//TH đơn không được approve thì bỏ qua
@@ -507,6 +571,24 @@ export class CmmS45BComponent extends Vue {
                 return lstDisplay;
             case '0':
                 return lstDisplay;
+            case '1':
+                return lstDisplay;
+            case '2':
+                return lstDisplay;
+            case '3':
+                return lstDisplay;
+            case '4':
+                return lstDisplay;
+            case '5':
+                return lstDisplay;
+            case '6':
+                return lstDisplay;
+            case '7':
+                return lstDisplay;
+            case '8':
+                return lstDisplay;
+            case '9':
+                return lstDisplay;
             default:
                 return [];
         }
@@ -570,6 +652,7 @@ export class ApplicationStatus {
     public denialNumber: number;
 }
 
+
 const servicePath = {
     // getApplicationList: 'at/request/application/applist/getapplist',
     approvalListApp: 'at/request/application/applist/approval',
@@ -577,4 +660,5 @@ const servicePath = {
     getListApproval: 'at/request/application/applist/getapplistApprovalMobile',
     getApplicationList: 'at/request/application/applist/getapplistMobile',
     getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList',
+    filterByDate: 'at/request/application/applist/getapplistFilterMobile'
 };

@@ -5,10 +5,12 @@ module nts.uk.at.view.kaf000_ref.a.component6.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/000/a/component6/index.html'
     })
     class Kaf000AComponent6ViewModel extends ko.ViewModel {
+		appType: KnockoutObservable<number> = null;
         approvalRootState: KnockoutObservableArray<any>;
         appDispInfoStartupOutput: any;
         created(params: any) {
             const vm = this;
+			vm.appType = params.appType;
 			vm.approvalRootState = ko.observableArray([]);
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.appDispInfoStartupOutput.subscribe(value => {

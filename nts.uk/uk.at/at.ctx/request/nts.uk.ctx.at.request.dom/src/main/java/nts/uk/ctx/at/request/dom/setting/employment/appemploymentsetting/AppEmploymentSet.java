@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * refactor 4
@@ -21,6 +22,7 @@ public class AppEmploymentSet {
 	/**
 	 * 雇用区分コード
 	 */
+	@Setter
 	private String employmentCD;
 	
 	/**

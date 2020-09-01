@@ -15,7 +15,6 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInitOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -59,16 +58,16 @@ public interface AppListInitialRepository {
 	 * @return
 	 */
 	public ListApplicantOutput getListApplicantForListApp(AppListExtractCondition param);
+
 	/**
-	 * 3 - 申請一覧リスト取得承認
-	 * @param 抽出条件　param
-	 * @param displaySet
-	 * @param デバイス　device
-	 * @param 申請種類リスト　lstAppType
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧リスト取得承認(二次開発).申請一覧リスト取得承認(二次開発)
+	 * @param param 申請一覧抽出条件
+	 * @param device デバイス：PC or スマートフォン
+	 * @param appListInfo 申請一覧情報
 	 * @return
 	 */
-	public AppListInfo getAppListByApproval(AppListExtractCondition param, ApprovalListDisplaySetting approvalListDisplaySetting,
-			int device, List<ApprovalBehaviorAtrImport_New> approvalAtrLst, List<String> appIDLst, AppListInfo appListInfo);
+	public AppListInfo getAppListByApproval(AppListExtractCondition param, int device, AppListInfo appListInfo);
 
 	/**
 	 * refactor 4
