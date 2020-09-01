@@ -8,6 +8,7 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.*;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
@@ -27,14 +28,6 @@ public class ConditionEmployeeTest {
 	@Injectable
 	private ConditionEmployee.Require require;
 
-	private SingleDaySchedule dummySingleDaySchedule = new SingleDaySchedule(
-			"workTypeCode",
-			new ArrayList<TimeZone>(){{
-				add(new TimeZone(NotUseAtr.USE, 1, 2, 3));
-				add(new TimeZone(NotUseAtr.USE, 4, 5, 6));
-			}},
-			Optional.of("workTimeCode")
-	);
 
 	@Test
 	public void getters() {
@@ -190,12 +183,18 @@ public class ConditionEmployeeTest {
 	public void CheckEmployeesAreEligible_TFFF_R5Has2OrMore_True() {
 		val conditionEmployee = new ConditionEmployee(true, false, false, false);
 
+		val datePeriod = new DatePeriod(GeneralDate.min(), GeneralDate.max());
+		val datePeriod1 = new DatePeriod(GeneralDate.ymd(2020,1,1),GeneralDate.ymd(2020,2,2));
+		val workPlaceId = IdentifierUtil.randomUniqueId();
+		val datePeriod2 = new DatePeriod(GeneralDate.ymd(2020,2,3),GeneralDate.max());
+		val workPlaceId2 = IdentifierUtil.randomUniqueId();
+
 		new Expectations() {{
 			// R5
-			require.GetWorkHistory(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			require.GetWorkHistory(Arrays.asList("eid"),datePeriod);
 			result = new ArrayList<WorkPlaceHist>(){{
-				val item1 = new AffiliationPeriodAndWorkplace();
-				val item2 = new AffiliationPeriodAndWorkplace();
+				val item1 = new AffiliationPeriodAndWorkplace(datePeriod1,workPlaceId);
+				val item2 = new AffiliationPeriodAndWorkplace(datePeriod2,workPlaceId2);
 				val workPlaceHist = new WorkPlaceHist("eid",new ArrayList<AffiliationPeriodAndWorkplace>(){{
 					add(item1);
 					add(item2);
@@ -211,11 +210,14 @@ public class ConditionEmployeeTest {
 	public void CheckEmployeesAreEligible_TFFF_R5HasLessThan2_False() {
 		val conditionEmployee = new ConditionEmployee(true, false, false, false);
 
+		val datePeriod1 = new DatePeriod(GeneralDate.ymd(2020,2,3),GeneralDate.max());
+		val workPlaceId1 = IdentifierUtil.randomUniqueId();
+
 		new Expectations() {{
 			// R5
 			require.GetWorkHistory(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 			result = new ArrayList<WorkPlaceHist>(){{
-				val item1 = new AffiliationPeriodAndWorkplace();
+				val item1 = new AffiliationPeriodAndWorkplace(datePeriod1,workPlaceId1);
 				val workPlaceHist = new WorkPlaceHist("eid",new ArrayList<AffiliationPeriodAndWorkplace>(){{
 					add(item1);
 				}});
@@ -362,6 +364,15 @@ public class ConditionEmployeeTest {
 			return Optional.of( new MonthlyPatternCode("dummySingleDaySchedule"));
 		}
 	}
+
+	private SingleDaySchedule dummySingleDaySchedule = new SingleDaySchedule(
+			"workTypeCode",
+			new ArrayList<TimeZone>(){{
+				add(new TimeZone(NotUseAtr.USE, 1, 2, 3));
+				add(new TimeZone(NotUseAtr.USE, 4, 5, 6));
+			}},
+			Optional.of("workTimeCode")
+	);
 
 	class PersonalWorkCategoryGetMementoImpl implements PersonalWorkCategoryGetMemento {
 
