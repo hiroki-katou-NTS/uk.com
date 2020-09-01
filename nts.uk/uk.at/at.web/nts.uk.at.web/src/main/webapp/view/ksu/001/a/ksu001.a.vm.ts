@@ -154,7 +154,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     self.isEnableCompareMonth(false);
                 }
-                let item = uk.localStorage.getItem(self.KEY);
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor = JSON.parse(data);
                     userInfor.achievementDisplaySelected = (newValue == 1) ? true : false;
@@ -163,35 +162,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.stopRequest(false);
                 let viewMode = self.selectedModeDisplayInBody();
                 if (viewMode == 'shift') { // mode シフト表示   
-                    if (window.innerWidth > 1462) {
-                        $("#extable").width('1404');
-                    }
-                    $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "multi");
                     self.shiftModeStart().done(() => {
+                        self.setUpdateMode();
                         self.setPositionButonToRight();
-                        $(".settingHeightGrid").css('display', '');
-                        self.pasteData();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
-                    $("#extable").width(window.innerWidth - 51);
-                    $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "single");
                     self.shortNameModeStart().done(() => {
+                        self.setUpdateMode();
                         self.setPositionButonToRight();
-                        $(".settingHeightGrid").css('display', '');
-                        self.pasteData();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
-                    $("#extable").width(window.innerWidth - 51);
-                    $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "single");
                     self.timeModeStart().done(() => {
+                        self.setUpdateMode();
                         self.setPositionButonToRight();
-                        $(".settingHeightGrid").css('display', '');
-                        self.pasteData();
                         self.stopRequest(true);
                     });
                 }
@@ -428,14 +416,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $(".toLeft").css("display", "none");
                 }
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                if(updateMode == 'stick'){
-                    self.pasteData();    
-                }else if(updateMode == 'copyPaste'){
-                    self.coppyData();    
-                }else if(updateMode == 'edit'){
-                    self.inputData();    
-                }
-                
+                self.setUpdateMode();
                 self.setPositionButonToRight();
                 self.flagBg = false;
                 dfd.resolve();
@@ -468,6 +449,24 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.workTime = {}; 
                 userInfor.shiftMasterWithWorkStyleLst = [];
                 uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            }
+        }
+        
+        setUpdateMode() {
+            let self = this;
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = {};
+            if (item.isPresent()) {
+                userInfor = JSON.parse(item.get());
+            }
+            let updateMode = item.isPresent() ? (userInfor.updateMode == undefined ? 'stick' : userInfor.updateMode) : 'stick';
+
+            if (updateMode == 'stick') {
+                self.pasteData();
+            } else if (updateMode == 'copyPaste') {
+                self.coppyData();
+            } else if (updateMode == 'edit') {
+                self.inputData();
             }
         }
 
@@ -988,7 +987,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.arrDay.push(new Time(new Date(dateInfo.ymd)));
                 let time = new Time(new Date(dateInfo.ymd));
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/time/time", headerControl: "link"
+                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", required: true, min: "-12:00", max: "71:59", headerControl: "link"
                 });
                 let ymd = time.yearMonthDay;
                 let field = '_' + ymd;
@@ -1316,10 +1315,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     .create();
             }
             
-
-            $("#extable").exTable("scrollBack", 0, { h: 0 });
-            $("#extable").exTable("saveScroll");
-            
             // set height grid theo localStorage đã lưu
             self.setPositionButonDownAndHeightGrid();
             
@@ -1337,8 +1332,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         updateExTable(dataBindGrid: any, viewMode : string , updateLeftMost : boolean, updateMiddle : boolean, updateDetail : boolean): void {
             let self = this;
-            // save scroll's position
-            $("#extable").exTable("saveScroll");
             self.stopRequest(false);
             
             // update phan leftMost
@@ -1472,15 +1465,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (updateDetail) {
                 $("#extable").exTable("updateTable", "detail", detailHeaderUpdate, detailContentUpdate);
             }
-            $("#extable").exTable("scrollBack", 0, { h: 1050 });
-            
         }
         
         // khi thay đổi combobox backgrounndMode
         updateExTableWhenChangeModeBg(detailContentDecoUpdate ): void {
             let self = this;
             // save scroll's position
-            $("#extable").exTable("saveScroll");
             self.stopRequest(false);
              
             // update Phần Detail
@@ -1519,7 +1509,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }]);
 
             $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
-            $("#extable").exTable("scrollBack", 0, { h: 1050 });
         }
 
         // save setting hight cua grid vao localStorage
