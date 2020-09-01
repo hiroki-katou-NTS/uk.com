@@ -38,7 +38,7 @@ module nts.uk.at.view.ksm003.a {
 
         constructor(params: any) {
             super();
-            $("#fixedTable").ntsFixedTable({ height: 365, width: 450});
+            $("#fixedTable").ntsFixedTable({ height: 442, width: 450});
         }
 
         created(params: any) {
@@ -129,6 +129,7 @@ module nts.uk.at.view.ksm003.a {
             self.mainModel().patternName("");
             self.mainModel().resetModel();
             self.clearError();
+	        self.selectedCheckAll(false);
             self.addNewLineItem(true);
             $("#inpCode").focus();
         }
