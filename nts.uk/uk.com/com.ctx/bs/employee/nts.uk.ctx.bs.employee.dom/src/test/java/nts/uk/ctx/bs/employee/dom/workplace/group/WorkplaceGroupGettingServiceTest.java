@@ -55,7 +55,7 @@ public class WorkplaceGroupGettingServiceTest {
 	@Test
 	public void testGet_1() {
 		GeneralDate date = GeneralDate.today();
-		List<String> employeeIDs = Arrays.asList("emp1","emp2","emp3");
+		List<String> employeeIDs = Arrays.asList("emp1");
 		String wkp = "wkp1";
 		String wkpGroup = "wKPGRPID";
 		List<AffWorkplaceGroup> listAffWorkplaceGroup = Arrays.asList(
@@ -77,9 +77,7 @@ public class WorkplaceGroupGettingServiceTest {
 		assertThat(datas)
 		.extracting(d->d.getEmployeeID(),d->d.getEmployeeCode(),d->d.getBusinessName(),d->d.getWorkplaceID(),d->d.getWorkplaceGroupID())
 		.containsExactly(
-				tuple(employeeIDs.get(0),Optional.empty(),Optional.empty(),wkp,Optional.of(wkpGroup)),
-				tuple(employeeIDs.get(1),Optional.empty(),Optional.empty(),wkp,Optional.of(wkpGroup)),
-				tuple(employeeIDs.get(2),Optional.empty(),Optional.empty(),wkp,Optional.of(wkpGroup))
+				tuple(employeeIDs.get(0),Optional.empty(),Optional.empty(),wkp,Optional.of(wkpGroup))
 				);
 	}
 
