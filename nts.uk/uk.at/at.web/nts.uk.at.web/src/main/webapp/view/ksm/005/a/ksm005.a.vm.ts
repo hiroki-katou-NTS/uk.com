@@ -6,7 +6,6 @@ module nts.uk.at.view.ksm005.a {
     import WorkMonthlySettingDto = service.model.WorkMonthlySettingDto;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
-	import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import blockUI = nts.uk.ui.block;
     import text = nts.uk.resource;
     import empty = nts.uk.util;
@@ -56,8 +55,8 @@ module nts.uk.at.view.ksm005.a {
             constructor() {
                 var self = this;
                 self.columnMonthlyPatterns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSM005_13"), key: 'monthlyPatternCode', width: 100 },
-                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'monthlyPatternName', width: 150 ,formatter: _.escape }
+                    { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
+                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'code', width: 150 ,formatter: _.escape }
                 ]);
                 self.isBuild = false;
                 self.lstWorkMonthlySetting = ko.observableArray([]);
@@ -216,13 +215,19 @@ module nts.uk.at.view.ksm005.a {
 	            nts.uk.ui.block.invisible();
 
 	            service.getMonthlyAll().done( function( data ) {
-	            	let  listMonthlyPattern = data.listMonthlyPattern;
+	            	let listMonthlyPattern = data.listMonthlyPattern;
+                    listMonthlyPattern = listMonthlyPattern && listMonthlyPattern.map(item =>  {
+                        return {
+                            code: item.monthlyPatternCode,
+                            name: item.monthlyPatternName
+                        }
+                    });
 		            self.lstMonthlyPattern(listMonthlyPattern);
 		            if(listMonthlyPattern.length <= 0){
 			            self.enableDelete(false);
 			            self.resetData();
 		            }else {
-			            self.selectMonthlyPattern(listMonthlyPattern[0].monthlyPatternCode);
+			            self.selectMonthlyPattern(listMonthlyPattern[0].code);
 		            }
 
 		            dfd.resolve(self);
@@ -279,7 +284,10 @@ module nts.uk.at.view.ksm005.a {
 
                 if (dto.typeColor == TypeColor.ATTENDANCE) {
                     textColor = TypeColor.ATTENDANCE_COLOR;
-                } else {
+                } else if (dto.typeColor == TypeColor.HALF_DAY_WORK) {
+                    textColor = TypeColor.HALF_DAY_WORK_COLOR;
+                }
+                else {
                     textColor = TypeColor.HOLIDAY_COLOR;
                 }
                 return {
@@ -819,6 +827,8 @@ module nts.uk.at.view.ksm005.a {
             static HOLIDAY_COLOR = "#ff0000";
             static ATTENDANCE = 1;
             static ATTENDANCE_COLOR = "#0000ff";
+            static HALF_DAY_WORK = 2;
+            static HALF_DAY_WORK_COLOR = '#FF7F27';
         }
 
     }
