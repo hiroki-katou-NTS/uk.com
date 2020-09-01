@@ -59,7 +59,7 @@ public class KscmtWorkingCycleDtl extends UkJpaEntity implements Serializable {
     }
 
     public static WorkCycleInfo toDomain(KscmtWorkingCycleDtl entity) {
-        return WorkCycleInfo.WorkCycleInfo(
+        return WorkCycleInfo.create(
                 entity.days,
                 new WorkInformation(entity.workTimeCode, entity.workTypeCode)
         );
