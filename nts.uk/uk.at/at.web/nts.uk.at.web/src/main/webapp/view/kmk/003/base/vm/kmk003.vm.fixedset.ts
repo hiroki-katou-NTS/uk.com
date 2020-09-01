@@ -1,33 +1,23 @@
 module nts.uk.at.view.kmk003.a {
     
     import EmTimeZoneSetDto = service.model.common.EmTimeZoneSetDto;
-    import OverTimeOfTimeZoneSetDto = service.model.common.OverTimeOfTimeZoneSetDto;
     import HDWorkTimeSheetSettingDto = service.model.common.HDWorkTimeSheetSettingDto;
     import StampReflectTimezoneDto = service.model.common.StampReflectTimezoneDto;
-    import OverTimeCalcNoBreakDto = service.model.common.OverTimeCalcNoBreakDto;
-    import ExceededPredAddVacationCalcDto = service.model.common.ExceededPredAddVacationCalcDto;
     import FixedWorkCalcSettingDto = service.model.common.FixedWorkCalcSettingDto;
     
     import FixOffdayWorkTimezoneDto = service.model.fixedset.FixOffdayWorkTimezoneDto;
-    import FixedWorkTimezoneSetDto = service.model.fixedset.FixedWorkTimezoneSetDto;
     import FixHalfDayWorkTimezoneDto = service.model.fixedset.FixHalfDayWorkTimezoneDto;
     
     import WorkTimezoneCommonSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.WorkTimezoneCommonSetModel;
-    import TimeRangeModel = nts.uk.at.view.kmk003.a.viewmodel.common.TimeRangeModel;
     import FixedWorkRestSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkRestSetModel;
     import HDWorkTimeSheetSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.HDWorkTimeSheetSettingModel;
     import StampReflectTimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.common.StampReflectTimezoneModel;
-    import DeductionTimeModel = nts.uk.at.view.kmk003.a.viewmodel.common.DeductionTimeModel;
-    import EmTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.EmTimeZoneSetModel;
-    import OverTimeOfTimeZoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.OverTimeOfTimeZoneSetModel;
     import FixedWorkTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkTimezoneSetModel;
     import FixedWorkCalcSettingModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixedWorkCalcSettingModel;
-    import OtherFlowColumnSetting = nts.uk.at.view.kmk003.a.viewmodel.common.OtherFlowColumnSetting;
     import OffdayWorkTimeConverter = nts.uk.at.view.kmk003.a.viewmodel.common.OffdayWorkTimeConverter;
     import FixRestTimezoneSetModel = nts.uk.at.view.kmk003.a.viewmodel.common.FixRestTimezoneSetModel;
     import BaseDataModel = nts.uk.at.view.kmk003.a.viewmodel.common.BaseDataModel;
     import TimezoneModel = nts.uk.at.view.kmk003.a.viewmodel.predset.TimezoneModel;
-    import FixedTableDataConverter = nts.uk.at.view.kmk003.a.viewmodel.common.FixedTableDataConverter;
     
     import FixedWorkSettingDto = service.model.fixedset.FixedWorkSettingDto;
     export module viewmodel {
@@ -260,7 +250,7 @@ module nts.uk.at.view.kmk003.a {
                         lstHalfDayWorkTimezone = this.getHDWtzOneday().toListDto();
                     }
 
-                    let lstStampReflectTimezone: Array<StampReflectTimezoneDto> = _.map(this.lstStampReflectTimezone, (dataModel) => dataModel.toDto());
+                    let lstStampReflectTimezone: Array<StampReflectTimezoneDto> = _.chain(this.lstStampReflectTimezone).filter((dataModel) => dataModel.startTime() != null && dataModel.endTime() != null).map((dataModel) => dataModel.toDto()).value();
                     
                     let dataDTO: FixedWorkSettingDto = {
                         workTimeCode: this.workTimeCode(),                       
