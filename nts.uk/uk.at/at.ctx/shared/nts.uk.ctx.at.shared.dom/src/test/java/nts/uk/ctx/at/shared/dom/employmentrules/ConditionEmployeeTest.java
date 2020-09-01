@@ -1,25 +1,23 @@
 package nts.uk.ctx.at.shared.dom.employmentrules;
 
 import lombok.AllArgsConstructor;
+import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mocked;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.*;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
 import nts.uk.ctx.at.shared.dom.workingcondition.*;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 import nts.uk.shr.com.history.DateHistoryItem;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,6 +27,15 @@ public class ConditionEmployeeTest {
 	@Injectable
 	private ConditionEmployee.Require require;
 
+	private SingleDaySchedule dummySingleDaySchedule = new SingleDaySchedule(
+			"workTypeCode",
+			new ArrayList<TimeZone>(){{
+				add(new TimeZone(NotUseAtr.USE, 1, 2, 3));
+				add(new TimeZone(NotUseAtr.USE, 4, 5, 6));
+			}},
+			Optional.of("workTimeCode")
+	);
+
 	@Test
 	public void getters() {
 		ConditionEmployee workInformation = new ConditionEmployee(true,true,true,true);
@@ -36,101 +43,233 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void Check_isShortTimeWork_isTrue() {
-		ConditionEmployee conditionEmployee = new ConditionEmployee(true,true,true,true);
-		new Expectations() {
-			{
+	public void CheckEmployeesAreEligible_FFTF_R1NotEmpty_True() {
+		val conditionEmployee = new ConditionEmployee(false, false, true, false);
+		new Expectations() {{
+				// R1
 				require.GetShortWorkHistory("eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+
 				List<DateHistoryItem> historyItems = new ArrayList<>();
 				GeneralDate today = GeneralDate.today();
 				DatePeriod period1 = DatePeriod.oneDay(today.addDays(-1));
 				DatePeriod period2 = DatePeriod.oneDay(today);
 				historyItems.add(DateHistoryItem.createNewHistory(period1));
 				historyItems.add(DateHistoryItem.createNewHistory(period2));
+
 				result = Optional.of(new ShortWorkTimeHistory("cid","sid", historyItems));
-			}
-		};
-		assertThat(conditionEmployee.CheckEmployeesIsEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isTrue();
+		}};
+
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isTrue();
 	}
 
 	@Test
-	public void Check_isConditionChanger_isTrue(@Mocked final AppContexts tr) {
-		ConditionEmployee conditionEmployee = new ConditionEmployee(true,true,true,true);
-		WorkingConditionItemGetMemento memento = new WorkingConditionItemGetMementoImpl();
-		WorkingConditionItem item1 = new WorkingConditionItem(memento);
-		WorkingConditionItem item2 = new WorkingConditionItem(memento);
+	public void CheckEmployeesAreEligible_FFTF_R1Empty_False() {
+		val conditionEmployee = new ConditionEmployee(false, false, true, false);
+		new Expectations() {{
+			// R1
+			require.GetShortWorkHistory("eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = Optional.empty();
+		}};
 
-		new Expectations() {
-			{
-				require.GetHistoryItemByPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
-				result = new ArrayList<WorkingConditionItem>(){{
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isFalse();
+	}
+
+	@Test
+	public void CheckEmployeesAreEligible_FFFT_R2Has2OrMore_True() {
+		val conditionEmployee = new ConditionEmployee(false, false, false, true);
+		new Expectations() {{
+			// R2
+			require.GetHistoryItemByPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<WorkingConditionItem>(){{
+				WorkingConditionItemGetMemento memento = new WorkingConditionItemGetMementoImpl();
+				WorkingConditionItem item1 = new WorkingConditionItem(memento);
+				WorkingConditionItem item2 = new WorkingConditionItem(memento);
+				add(item1);
+				add(item2);
+			}};
+		}};
+
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isTrue();
+	}
+
+	@Test
+	public void CheckEmployeesAreEligible_FFFT_R2HasLessThan2_False() {
+		val conditionEmployee = new ConditionEmployee(false, false, false, true);
+		new Expectations() {{
+			// R2
+			require.GetHistoryItemByPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<WorkingConditionItem>(){{
+				val memento = new WorkingConditionItemGetMementoImpl();
+				val item1 = new WorkingConditionItem(memento);
+				add(item1);
+			}};
+		}};
+
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isFalse();
+	}
+
+	@Test
+	public void CheckEmployeesAreEligible_FTFF_R3NotEmpty_R4NotEmpty_True() {
+		val conditionEmployee = new ConditionEmployee(false, true, false, false);
+
+		new Expectations() {{
+			// R3
+			require.GetLeavePeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<LeavePeriod>(){{
+				val leavePeriod = new LeavePeriod(new DatePeriod(GeneralDate.min(), GeneralDate.max()),"sid");
+				add(leavePeriod);
+			}};
+
+			// R4
+			require.GetLeaveHolidayPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<LeaveHolidayPeriod>(){{
+				val leaveHolidayPeriod = new LeaveHolidayPeriod(DatePeriod.oneDay(GeneralDate.today()), "sid", "frameNo");
+				add(leaveHolidayPeriod);
+			}};
+		}};
+
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isTrue();
+	}
+
+	@Test
+	public void CheckEmployeesAreEligible_FTFF_R3NotEmpty_R4Empty_True() {
+		val conditionEmployee = new ConditionEmployee(false, true, false, false);
+
+		new Expectations() {{
+			// R3
+			require.GetLeavePeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<LeavePeriod>(){{
+				val leavePeriod = new LeavePeriod(new DatePeriod(GeneralDate.min(), GeneralDate.max()), "sid");
+				add(leavePeriod);
+			}};
+
+			// R4
+			require.GetLeaveHolidayPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = Collections.emptyList();
+		}};
+
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isTrue();
+	}
+
+	@Test
+	public void CheckEmployeesAreEligible_FTFF_R3Empty_R4NotEmpty_True() {
+		val conditionEmployee = new ConditionEmployee(false, true, false, false);
+		new Expectations() {{
+			// R3
+			require.GetLeavePeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+		    result = Collections.emptyList();
+
+		    // R4
+			require.GetLeaveHolidayPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<LeaveHolidayPeriod>(){{
+				val leaveHolidayPeriod = new LeaveHolidayPeriod(DatePeriod.oneDay(GeneralDate.today()), "sid", "frameNo");
+				add(leaveHolidayPeriod);
+			}};
+		}};
+
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isTrue();
+	}
+
+	@Test
+	public void CheckEmployeesAreEligible_FTFF_R3Empty_R4Empty_False() {
+		val conditionEmployee = new ConditionEmployee(false, true, false, false);
+		new Expectations() {{
+			// R3
+			require.GetLeavePeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = Collections.emptyList();
+
+			// R4
+			require.GetLeaveHolidayPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = Collections.emptyList();
+		}};
+
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isFalse();
+	}
+
+	@Test
+	public void CheckEmployeesAreEligible_TFFF_R5Has2OrMore_True() {
+		val conditionEmployee = new ConditionEmployee(true, false, false, false);
+
+		new Expectations() {{
+			// R5
+			require.GetWorkHistory(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<WorkPlaceHist>(){{
+				val item1 = new AffiliationPeriodAndWorkplace();
+				val item2 = new AffiliationPeriodAndWorkplace();
+				val workPlaceHist = new WorkPlaceHist("eid",new ArrayList<AffiliationPeriodAndWorkplace>(){{
 					add(item1);
 					add(item2);
-				}};
-			}
-		};
-		assertThat(conditionEmployee.CheckEmployeesIsEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max())));
+				}});
+				add(workPlaceHist);
+			}};
+		}};
+
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isTrue();
 	}
 
 	@Test
-	public void Check_isLeave_isTrue(@Mocked final AppContexts tr) {
-		ConditionEmployee conditionEmployee = new ConditionEmployee(true,true,true,true);
+	public void CheckEmployeesAreEligible_TFFF_R5HasLessThan2_False() {
+		val conditionEmployee = new ConditionEmployee(true, false, false, false);
 
-		LeavePeriod leavePeriod = new LeavePeriod();
+		new Expectations() {{
+			// R5
+			require.GetWorkHistory(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<WorkPlaceHist>(){{
+				val item1 = new AffiliationPeriodAndWorkplace();
+				val workPlaceHist = new WorkPlaceHist("eid",new ArrayList<AffiliationPeriodAndWorkplace>(){{
+					add(item1);
+				}});
+				add(workPlaceHist);
+			}};
+		}};
 
-		new Expectations() {
-			{
-				require.GetLeavePeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
-				result = new ArrayList<LeavePeriod>(){{
-					add(leavePeriod);
-				}};
-			}
-		};
-		assertThat(conditionEmployee.CheckEmployeesIsEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max())));
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isFalse();
 	}
 
 	@Test
-	public void Check_isLeave_isTrue_V1(@Mocked final AppContexts tr) {
-		ConditionEmployee conditionEmployee = new ConditionEmployee(true,true,true,true);
+	public void CheckEmployeesAreEligible_FFFF_False() {
+		val conditionEmployee = new ConditionEmployee(false, false, false, false);
 
-		LeaveHolidayPeriod leaveHolidayPeriod = new LeaveHolidayPeriod();
-
-		new Expectations() {
-			{
-				require.GetLeaveHolidayPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
-				result = new ArrayList<LeaveHolidayPeriod>(){{
-					add(leaveHolidayPeriod);
-				}};
-			}
-		};
-		assertThat(conditionEmployee.CheckEmployeesIsEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max())));
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isFalse();
 	}
 
 	@Test
-	public void Check_isTransferPerson_isTrue(@Mocked final AppContexts tr) {
-		ConditionEmployee conditionEmployee = new ConditionEmployee(true,true,true,true);
-		AffiliationPeriodAndWorkplace item1 = new AffiliationPeriodAndWorkplace();
-		AffiliationPeriodAndWorkplace item2 = new AffiliationPeriodAndWorkplace();
-		WorkPlaceHist workPlaceHist = new WorkPlaceHist("eid",new ArrayList<AffiliationPeriodAndWorkplace>(){{
-			add(item1);
-			add(item2);
-		}});
+	public void CheckEmployeesAreEligible_TTTT_R1R3R4EmptyR2R5LessThan2_False() {
+		val conditionEmployee = new ConditionEmployee(true, true, true, true);
+		
+		new Expectations() {{
+			// R1
+			require.GetShortWorkHistory("eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = Optional.empty();
 
-		new Expectations() {
-			{
-				require.GetWorkHistory(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
-				result = new ArrayList<WorkPlaceHist>(){{
-					add(workPlaceHist);
-				}};
-			}
-		};
-		assertThat(conditionEmployee.CheckEmployeesIsEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max())));
-	}
+			// R2
+			require.GetHistoryItemByPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<WorkingConditionItem>(){{
+				val memento = new WorkingConditionItemGetMementoImpl();
+				val item1 = new WorkingConditionItem(memento);
+				add(item1);
+			}};
+			
+			// R3
+			require.GetLeavePeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+		    result = Collections.emptyList();
+			
+			// R4
+			require.GetLeaveHolidayPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = Collections.emptyList();
+			
+			// R5
+			require.GetWorkHistory(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
+			result = new ArrayList<WorkPlaceHist>(){{
+				val item1 = new AffiliationPeriodAndWorkplace();
+				val workPlaceHist = new WorkPlaceHist("eid",new ArrayList<AffiliationPeriodAndWorkplace>(){{
+					add(item1);
+				}});
+				add(workPlaceHist);
+			}};
+		}};
 
-	@Test
-	public void Check_employeesIsEligible_isFalse() {
-		ConditionEmployee conditionEmployee = new ConditionEmployee(false,false,false,false);
-		assertThat(conditionEmployee.CheckEmployeesIsEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isFalse();
+		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isFalse();
 	}
 
 	@AllArgsConstructor
@@ -195,22 +334,32 @@ public class ConditionEmployeeTest {
 
 		@Override
 		public Optional<ScheduleMethod> getScheduleMethod() {
-			return Optional.empty();
+			return Optional.of(new ScheduleMethod(
+					0,
+					new WorkScheduleBusCal(
+							WorkScheduleMasterReferenceAtr.CLASSIFICATION,
+							WorkScheduleMasterReferenceAtr.WORK_PLACE,
+							TimeZoneScheduledMasterAtr.FOLLOW_MASTER_REFERENCE),
+					new MonthlyPatternWorkScheduleCre(1)));
 		}
 
 		@Override
 		public Optional<BreakdownTimeDay> getHolidayAddTimeSet() {
-			return Optional.empty();
+			return Optional.of( new BreakdownTimeDay(
+					new AttendanceTime(280),
+					new AttendanceTime(240),
+					new AttendanceTime(240)
+			));
 		}
 
 		@Override
 		public Optional<BonusPaySettingCode> getTimeApply() {
-			return Optional.empty();
+			return Optional.of(new BonusPaySettingCode("dummySingleDaySchedule"));
 		}
 
 		@Override
 		public Optional<nts.uk.ctx.at.shared.dom.workingcondition.MonthlyPatternCode> getMonthlyPattern() {
-			return Optional.empty();
+			return Optional.of( new MonthlyPatternCode("dummySingleDaySchedule"));
 		}
 	}
 
@@ -218,37 +367,37 @@ public class ConditionEmployeeTest {
 
 		@Override
 		public SingleDaySchedule getHolidayWork() {
-			return null;
+			return dummySingleDaySchedule;
 		}
 
 		@Override
 		public SingleDaySchedule getHolidayTime() {
-			return null;
+			return dummySingleDaySchedule;
 		}
 
 		@Override
 		public SingleDaySchedule getWeekdayTime() {
-			return null;
+			return dummySingleDaySchedule;
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getPublicHolidayWork() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getInLawBreakTime() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getOutsideLawBreakTime() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getHolidayAttendanceTime() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 	}
 
@@ -256,37 +405,37 @@ public class ConditionEmployeeTest {
 
 		@Override
 		public Optional<SingleDaySchedule> getSaturday() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getSunday() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getMonday() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getThursday() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getWednesday() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getTuesday() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 
 		@Override
 		public Optional<SingleDaySchedule> getFriday() {
-			return Optional.empty();
+			return Optional.of(dummySingleDaySchedule);
 		}
 	}
 }
