@@ -807,19 +807,21 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     let param = {
                         companyId: self.user.companyId,
                         workType: f.selectedWorkType.workTypeCode,
-                        workTime: f.selectedWorkTime ? f.selectedWorkTime.code : null,
+                        workTime: this.model.workTime.code ? this.model.workTime.code : null,
                         appWorkChangeSetDto: appWorkChangeSet
                     };
                     self.$http.post('at', API.checkWorkTime, param)
                         .then((res: any) => {
-                            self.data.setUpType = res.data.setupType;
-                            self.data.predetemineTimeSetting = res.data.opPredetemineTimeSetting;
+                            self.data.appWorkChangeDispInfo.setupType = res.data.setupType;
+                            self.data.appWorkChangeDispInfo.predetemineTimeSetting = res.data.opPredetemineTimeSetting;
                             self.bindVisibleView(self.data.appWorkChangeDispInfo);
                             this.model.workType.code = f.selectedWorkType.workTypeCode;
                             this.model.workType.name = f.selectedWorkType.name;
-                            this.model.workTime.code = f.selectedWorkTime ? f.selectedWorkTime.code : null;
-                            this.model.workTime.name = f.selectedWorkTime ? f.selectedWorkTime.name : null;
-                            this.model.workTime.time = f.selectedWorkTime ? f.selectedWorkTime.workTime1 :'';
+                            if (f.selectedWorkTime) {
+                                this.model.workTime.code = f.selectedWorkTime.code;
+                                this.model.workTime.name = f.selectedWorkTime.name;
+                                this.model.workTime.time = f.selectedWorkTime.workTime1;
+                            }
                         })
                         .catch((res: any) => {
                             if (res.messageId) {
