@@ -2,6 +2,7 @@ package nts.uk.cnv.dom.service;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,14 +29,14 @@ import nts.uk.cnv.dom.tabledesign.TableDesign;
 
 public class TableDesignImportService {
 	/**
-	 * 
+	 *
 	 * @param require
 	 * @param createTable create table文を指定する. 列のデータ型はDB設計規約の「Name for layout」を参照すること
 	 * @param createIndex テーブルに所属するcreate index文を指定する.
 	 * @param type SQL文がどのRDBMSかを指定する
 	 * @throws JSQLParserException
 	 */
-	public static AtomTask regist(Require require, String createTable, String createIndexes, String type) throws JSQLParserException {
+	public static AtomTask regist(Require require, String createTable, String createIndexes, String comment, String type) throws JSQLParserException {
 		DataTypeDefine typeDefine;
 		if("uk".equals(type)) {
 			typeDefine = new UkDataType();
@@ -43,40 +44,57 @@ public class TableDesignImportService {
 		else {
 			typeDefine = DatabaseType.valueOf(type).spec();
 		}
-		TableDesign tableDesign = ddlToDomain(createTable, createIndexes, typeDefine);
+		TableDesign tableDesign = ddlToDomain(createTable, createIndexes, comment, typeDefine);
 
 		return AtomTask.of(() -> {
 			require.regist(tableDesign);
 		});
 	}
-	
-	private static TableDesign ddlToDomain(String createTable, String createIndexes, DataTypeDefine typeDefine) throws JSQLParserException {
+
+	private static TableDesign ddlToDomain(String createTable, String createIndexes, String comment, DataTypeDefine typeDefine) throws JSQLParserException {
 		CCJSqlParserManager pm = new CCJSqlParserManager();
-		Statement createTableSt = pm.parse(new StringReader(createTable.toUpperCase()));
-		
+
+		boolean isClusteredPK = true;
+		if(createTable.toUpperCase().contains("PRIMARY KEY NONCLUSTERED")) {
+			isClusteredPK = false;
+		}
+		String formatedCreateTable = createTable.toUpperCase().replace("NONCLUSTERED", "").replace("CLUSTERED", "");
+		Statement createTableSt = pm.parse(new StringReader(formatedCreateTable));
+
 		List<CreateIndex> indexes = new ArrayList<>();
+		Map<String, Boolean> indexClusteredMap = new HashMap<>();
 		if(createIndexes != null && !createIndexes.isEmpty()) {
 			for (String ci : createIndexes.split(";")) {
-				indexes.add( (CreateIndex) pm.parse(new StringReader(ci.toUpperCase())));
+
+				boolean isClusteredIndex = false;
+				if(ci.toUpperCase().contains("CREATE CLUSTERED INDEX")) {
+					isClusteredIndex = true;
+				}
+				String formatedIndex = ci.toUpperCase().replace("NONCLUSTERED", "").replace("CLUSTERED", "");
+
+				CreateIndex idx =(CreateIndex) pm.parse(new StringReader(formatedIndex));
+				indexClusteredMap.put(idx.getIndex().getName(), isClusteredIndex);
+				indexes.add(idx);
 			}
 		}
-		
+
 		if (createTableSt instanceof CreateTable) {
-			return toDomain( (CreateTable) createTableSt, indexes, typeDefine);
+			return toDomain( (CreateTable) createTableSt, indexes, typeDefine, comment, indexClusteredMap, isClusteredPK);
 		}
-		
+
 		throw new JSQLParserException();
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private static TableDesign toDomain(CreateTable statement, List<CreateIndex> createIndex, DataTypeDefine typeDefine) {
+	private static TableDesign toDomain(CreateTable statement, List<CreateIndex> createIndex, DataTypeDefine typeDefine,
+			String comment, Map<String, Boolean> indexClusteredMap, boolean isClusteredPK) {
 		GeneralDateTime now = GeneralDateTime.now();
-		
+
 		List<Indexes> indexes = new ArrayList<>();
 		Map<String, Integer> pk = new LinkedHashMap<>();
 		Map<String, Integer> uk = new LinkedHashMap<>();
 		if (statement.getIndexes() != null) {
-			analyzeIndex(statement, indexes, pk, uk);
+			analyzeIndex(statement, indexes, pk, uk, isClusteredPK);
 		}
 		if (!createIndex.isEmpty()) {
 			indexes.addAll(
@@ -84,12 +102,13 @@ public class TableDesignImportService {
 						.map(idx -> new Indexes(
 								idx.getIndex().getName(),
 								"INDEX",
+								indexClusteredMap.get(idx.getIndex().getName()),
 								idx.getIndex().getColumnsNames(),
 								(idx.getTailParameters() == null ? new ArrayList<>() : idx.getTailParameters())
 						)).collect(Collectors.toList())
 			);
 		}
-		
+
 		List<ColumnDesign> columns = new ArrayList<>();
 		int id = 1;
 		for (Iterator<ColumnDefinition> colmnDef =  statement.getColumnDefinitions().iterator(); colmnDef.hasNext();) {
@@ -104,18 +123,18 @@ public class TableDesignImportService {
 			else {
 				args = new ArrayList<>();
 			}
-			
+
 			Integer[] argsArray = new Integer[args.size()];
 			DataType type = typeDefine.parse(col.getColDataType().getDataType(), args.toArray(argsArray));
-			
+
 			boolean nullable = !specs.stream().anyMatch(arg -> arg.equals("NOT"));
-			String defaultValue = 
+			String defaultValue =
 					specs.stream().anyMatch(arg-> arg.equals("DEFAULT"))
 					? specs.get(specs.indexOf("DEFAULT") + 1).toString()
 					: "";
 			int maxLength = 0;
 			int scale = 0;
-			
+
 			switch(type) {
 			case REAL:
 				scale = Integer.parseInt(args.get(1).toString());
@@ -131,7 +150,7 @@ public class TableDesignImportService {
 			case DATETIME:
 				break;
 			}
-			
+
 			ColumnDesign newItem = new ColumnDesign(
 					id,
 					col.getColumnName(),
@@ -147,22 +166,24 @@ public class TableDesignImportService {
 			columns.add(newItem);
 			id++;
 		}
-		
+
 		Table table = statement.getTable();
 		TableDesign result = new TableDesign(table.getName(), table.getName(), "",now, now, columns, indexes);
 		return result;
 	}
- 
+
 	@SuppressWarnings("unchecked")
-	private static void analyzeIndex(CreateTable statement, List<Indexes> indexes, Map<String, Integer> pk, Map<String, Integer> uk) {
+	private static void analyzeIndex(CreateTable statement, List<Indexes> indexes, Map<String, Integer> pk, Map<String, Integer> uk, boolean isClusteredPK) {
 		for (Iterator<Index> indexDef =  statement.getIndexes().iterator(); indexDef.hasNext();) {
 			Index index = (Index) indexDef.next();
+			boolean clustered = false;
 			if(index.getType().equals("PRIMARY KEY")) {
 				int seq = 1;
 				for(Object colName : index.getColumnsNames()){
 					pk.put((String)colName, seq);
 					seq++;
 				}
+				clustered = isClusteredPK;
 			}
 			else if(index.getType().equals("UNIQUE")) {
 				int seq = 1;
@@ -175,16 +196,17 @@ public class TableDesignImportService {
 			Indexes idx = new Indexes(
 					index.getName(),
 					index.getType(),
+					clustered,
 					index.getColumnsNames(),
 					new ArrayList<>()
 			);
 			indexes.add(idx);
 		}
 	}
-	
+
 	public interface Require {
 
 		void regist(TableDesign tableDesign);
-		
+
 	}
 }

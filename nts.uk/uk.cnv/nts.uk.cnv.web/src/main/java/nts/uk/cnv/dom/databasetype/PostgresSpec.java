@@ -25,6 +25,8 @@ public class PostgresSpec implements DataBaseSpec{
 			return "DATE";
 		case DATETIME:
 			return "TIMESTAMP";
+		case GUID:
+			return "CHAR(32)";
 		default:
 			break;
 		}
@@ -34,7 +36,7 @@ public class PostgresSpec implements DataBaseSpec{
 	public String param(String expression) {
 		return ":" + expression;
 	}
-	
+
 	public String declaration(String pramName, DataType type, Integer... length) {
 		return String.format("%s %s;", pramName, this.dataType(type, length));
 	}
@@ -71,7 +73,7 @@ public class PostgresSpec implements DataBaseSpec{
 	public DataType parse(String type, Integer... length) {
 		if(type == null)
 			throw new IllegalArgumentException();
-		
+
 		if (type.equals("NUMERIC") && length[0] == 1) {
 			return DataType.BOOL;
 		}
@@ -93,7 +95,7 @@ public class PostgresSpec implements DataBaseSpec{
 		else if(type.equals("TIMESTAMP")) {
 			return DataType.DATETIME;
 		}
-		
+
 		throw new IllegalArgumentException();
 	}
 

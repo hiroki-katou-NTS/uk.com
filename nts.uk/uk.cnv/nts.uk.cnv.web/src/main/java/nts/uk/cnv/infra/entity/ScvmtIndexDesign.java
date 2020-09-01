@@ -36,12 +36,15 @@ public class ScvmtIndexDesign extends JpaEntity implements Serializable {
 
 	@Column(name = "PARAMS")
 	public String params;
-	
+
+	@Column(name = "IS_CLUSTERED")
+	public boolean clustered;
+
 	@OrderBy(value = "pk.id asc")
 	@OneToMany(targetEntity = ScvmtIndexColumns.class, mappedBy = "indexdesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "SCVMT_COLUMN_DESIGN")
 	public List<ScvmtIndexColumns> columns;
-	
+
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID")
@@ -52,5 +55,5 @@ public class ScvmtIndexDesign extends JpaEntity implements Serializable {
 	protected Object getKey() {
 		return pk;
 	}
-	
+
 }

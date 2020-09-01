@@ -7,5 +7,6 @@ public class TableDesignImportCommand {
 
 	private String createTableSql;
 	private String createIndexSql;
+	private String commentSql;
 	private String type;
 }

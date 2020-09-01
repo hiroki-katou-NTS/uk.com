@@ -8,7 +8,6 @@ public interface TableDesignRepository {
 	void update(TableDesign tableDesign);
 	void delete(TableDesign tableDesign);
 	boolean exists(String tableName);
-	void rename(String befor, String after);
-	
+
 	Optional<TableDesign> find(String tablename);
 }

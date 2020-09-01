@@ -9,5 +9,6 @@ public enum DataType {
 	NCHAR,
 	NVARCHAR,
 	DATE,
-	DATETIME
+	DATETIME,
+	GUID
 }

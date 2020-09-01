@@ -1,7 +1,7 @@
 package nts.uk.cnv.dom.databasetype;
 
 public class UkDataType implements DataTypeDefine {
-	
+
 	public String dataType(DataType type, Integer... length) {
 		switch (type) {
 		case BOOL:
@@ -22,6 +22,8 @@ public class UkDataType implements DataTypeDefine {
 			return "DATE";
 		case DATETIME:
 			return "DATETIME";
+		case GUID:
+			return "GUID";
 		default:
 			break;
 		}

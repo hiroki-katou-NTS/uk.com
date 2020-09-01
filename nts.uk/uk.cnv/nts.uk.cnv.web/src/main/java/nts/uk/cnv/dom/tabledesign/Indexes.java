@@ -10,6 +10,7 @@ import lombok.Getter;
 public class Indexes {
 	private String name;
 	private String constraintType;
+	private Boolean clustered;
 	private List<String> colmns;
 	private List<String> params;
 }

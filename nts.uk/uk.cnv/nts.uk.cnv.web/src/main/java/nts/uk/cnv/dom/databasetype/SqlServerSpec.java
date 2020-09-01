@@ -25,6 +25,8 @@ public class SqlServerSpec implements DataBaseSpec{
 			return "DATE";
 		case DATETIME:
 			return "DATETIME2";
+		case GUID:
+			return "CHAR(32)";
 		default:
 			break;
 		}
@@ -34,7 +36,7 @@ public class SqlServerSpec implements DataBaseSpec{
 	public String param(String expression) {
 		return "@" + expression;
 	}
-	
+
 	public String declaration(String pramName, DataType type, Integer... length) {
 		return String.format("DECLARE @%s %s;", pramName, this.dataType(type, length));
 	}
@@ -71,7 +73,7 @@ public class SqlServerSpec implements DataBaseSpec{
 	public DataType parse(String type, Integer... length) {
 		if(type == null)
 			throw new IllegalArgumentException();
-		
+
 		if (type.equals("DECIMAL") && length[0] == 1) {
 			return DataType.BOOL;
 		}
@@ -99,7 +101,7 @@ public class SqlServerSpec implements DataBaseSpec{
 		else if(type.equals("DATETIME2")) {
 			return DataType.DATETIME;
 		}
-		
+
 		throw new IllegalArgumentException();
 	}
 

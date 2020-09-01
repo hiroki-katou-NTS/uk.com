@@ -24,14 +24,14 @@ public class TableDesignImportCommandHandler extends CommandHandler<TableDesignI
 	protected void handle(CommandHandlerContext<TableDesignImportCommand> context) {
 
 		TableDesignImportCommand command = context.getCommand();
-		
+
 		RequireImpl require = new RequireImpl(tableDesignRepository);
 
 		transaction.execute(() -> {
 			AtomTask at;
 			try {
 				at = TableDesignImportService.regist(
-						require, command.getCreateTableSql(), command.getCreateIndexSql(), command.getType());
+						require, command.getCreateTableSql(), command.getCreateIndexSql(), command.getCommentSql(), command.getType());
 			} catch (JSQLParserException e) {
 				throw new BusinessException(new RawErrorMessage("SQL文解析に失敗しました：" + e.getCause().toString()));
 			}
@@ -43,7 +43,7 @@ public class TableDesignImportCommandHandler extends CommandHandler<TableDesignI
 	private static class RequireImpl implements TableDesignImportService.Require {
 
 		private final TableDesignRepository tableDesignRepository;
-		
+
 		@Override
 		public void regist(TableDesign tableDesign) {
 			boolean exists = tableDesignRepository.exists(tableDesign.getName());

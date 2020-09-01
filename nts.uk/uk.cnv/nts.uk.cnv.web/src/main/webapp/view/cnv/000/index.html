@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="main.css">
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-3.3.1.min.js" defer></script>
+<script type="text/javascript" src="cnv000.js"></script>
+</head>
+
+<body>
+<h1>Table Design Importer</h1>
+<table>
+	<tr>
+		<td colspan=3><div>import file folder path:</div></td>
+	</tr>
+	<tr>
+		<td>
+			<input type="file" id="folderpath" style="font-size:80%; width:340px;" webkitdirectory/>
+			<button id="import">import</button>
+		</td>
+	</tr>
+</table>
+<hr />
+<textarea id="result" style="font-size:80%; width:800px; height:200px;" disabled></textarea>
+
+</body>
+</html>

@@ -20,16 +20,23 @@ public class TableDesignWebService extends WebService{
 
 	@Inject
 	private TableDesignerService tdService;
-	
+
 	@POST
 	@Path("import")
 	public void importTable(TableDesignImportCommand command) {
 		handler.handle(command);
 	}
-	
+
 	@POST
 	@Path("exportddl")
 	public String export(TableDesignExportDto params) {
 		return tdService.exportDdl(params);
+	}
+
+	@POST
+	@Path("importfromfile")
+	public void importFromFile(String folderpath) {
+		tdService.importFromFile(folderpath);
+
 	}
 }

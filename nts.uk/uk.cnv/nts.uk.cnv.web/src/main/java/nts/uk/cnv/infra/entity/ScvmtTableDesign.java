@@ -35,7 +35,7 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 	@Id
 	@Column(name = "TABLE_ID")
 	private String tableId;
-	
+
 	@Column(name = "NAME")
 	private String name;
 
@@ -56,12 +56,12 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 	@OneToMany(targetEntity = ScvmtIndexDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "SCVMT_INDEX_DESIGN")
 	private List<ScvmtIndexDesign> indexes;
-	
+
 	@Override
 	protected Object getKey() {
 		return name;
 	}
-	
+
 	public TableDesign toDomain() {
 		List<ColumnDesign> cols = columns.stream()
 				.map(col -> col.toDomain())
@@ -79,11 +79,12 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 			 idxs.add(new Indexes(
 					 index.pk.getName(),
 					 index.type,
+					 index.clustered,
 					 colmns,
 					 params
 			));
 		}
-				
+
 		return new TableDesign(tableId, name, comment, createDate, updateDate, cols, idxs);
 	}
 }

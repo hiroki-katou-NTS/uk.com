@@ -44,16 +44,11 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 		return result.isPresent();
 	}
 
-	@Override
-	public void rename(String befor, String after) {
-		// TODO 自動生成されたメソッド・スタブ
-	}
-
 	private ScvmtTableDesign toEntity(TableDesign tableDesign) {
 		List<ScvmtColumnDesign> columns = tableDesign.getColumns().stream()
 				.map(cd -> toEntity(tableDesign.getId(), cd))
 				.collect(Collectors.toList());
-		
+
 		List<ScvmtIndexDesign> indexes = new ArrayList<>();
 		for (Indexes idx: tableDesign.getIndexes()) {
 			List<ScvmtIndexColumns> indexcolumns = idx.getColmns().stream()
@@ -67,11 +62,12 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 					new ScvmtIndexDesignPk(tableDesign.getId(), idx.getName()),
 					idx.getConstraintType(),
 					String.join(",", idx.getParams()),
+					idx.getClustered(),
 					indexcolumns,
 					null
 			));
 		}
-		
+
 		return new ScvmtTableDesign(
 				tableDesign.getId(),
 				tableDesign.getName(),
@@ -81,7 +77,7 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 				columns,
 				indexes);
 	}
-	
+
 	private ScvmtColumnDesign toEntity(String tableId, ColumnDesign columnDesign) {
 		return new ScvmtColumnDesign(
 					new ScvmtColumnDesignPk(tableId, columnDesign.getId()),
@@ -107,7 +103,7 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 				.setParameter("name", tablename)
 				.getSingle();
 		if(!parent.isPresent()) return Optional.empty();
-		
+
 		Optional<ScvmtTableDesign> result = this.queryProxy().find(parent.get().getTableId(), ScvmtTableDesign.class);
 		if(!parent.isPresent()) return Optional.empty();
 
