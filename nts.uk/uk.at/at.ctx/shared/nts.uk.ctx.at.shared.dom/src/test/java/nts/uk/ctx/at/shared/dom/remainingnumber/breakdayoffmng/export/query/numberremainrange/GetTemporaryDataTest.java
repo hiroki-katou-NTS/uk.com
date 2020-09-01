@@ -150,10 +150,10 @@ public class GetTemporaryDataTest {
 								Optional.of(new AttendanceTime(240)), Optional.empty()),
 						Tuple.tuple("k1", MngDataStatus.SCHEDULE, false, Optional.of(GeneralDate.ymd(2019, 11, 05)),
 								1.0, Optional.of(new AttendanceTime(480)), OccurrenceDigClass.OCCURRENCE, 1.0,
-								Optional.of(new AttendanceTime(480)), GeneralDate.ymd(2020, 02, 05)),
+								Optional.of(new AttendanceTime(480)), GeneralDate.ymd(2020, 06, 06)),
 						Tuple.tuple("k2", MngDataStatus.RECORD, false, Optional.of(GeneralDate.ymd(2019, 11, 6)), 1.0,
 								Optional.of(new AttendanceTime(480)), OccurrenceDigClass.OCCURRENCE, 1.0,
-								Optional.of(new AttendanceTime(480)), GeneralDate.ymd(2020, 02, 06)));
+								Optional.of(new AttendanceTime(480)), GeneralDate.ymd(2019, 06, 06)));
 
 	}
 
