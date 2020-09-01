@@ -39,7 +39,7 @@ export class CmmS45ComponentsApp2Component extends Vue {
         }).then((res: any) => {
             this.fetchData(self.params);
         });
-        
+
     }
 
 
@@ -48,17 +48,31 @@ export class CmmS45ComponentsApp2Component extends Vue {
     }
     public fetchData(getParams: any) {
         const self = this;
-        this.$http.post('at', API.start, {
+        self.$http.post('at', API.start, {
             companyId: self.user.companyId,
-            appId: this.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
-            appDispInfoStartupDto: this.params.appDispInfoStartupOutput
+            appId: self.params.appDispInfoStartupOutput.appDetailScreenInfo.application.appID,
+            appDispInfoStartupDto: self.params.appDispInfoStartupOutput
         })
             .then((res: any) => {
-                this.dataFetch = res.data;
-                this.bindStart();
-                this.params.appDetail = this.dataFetch;
-                // this.bindCodition(this.dataFetch.appWorkChangeDispInfo);
-            });
+                self.dataFetch = res.data;
+                self.bindStart();
+                self.params.appDetail = self.dataFetch;
+                // self.bindCodition(self.dataFetch.appWorkChangeDispInfo);
+            })
+            .catch((err: any) => {
+                self.$mask('hide');
+                if (err.messageId) {
+                    self.$modal.error({ messageId: err.messageId });
+                } else {
+
+                    if (_.isArray(err.errors)) {
+                        self.$modal.error({ messageId: err.errors[0].messageId });
+                    } else {
+                        self.$modal.error({ messageId: err.errors.messageId });
+                    }
+                }
+            })
+            ;
     }
     public bindStart() {
         let params = this.dataFetch;
@@ -72,7 +86,7 @@ export class CmmS45ComponentsApp2Component extends Vue {
 
         let workTimeCode = params.appWorkChange.opWorkTimeCD;
         let workTime = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == workTimeCode);
-        let workTimeName = workTime ?  workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS07_10');
+        let workTimeName = workTime ? workTime.workTimeDisplayName.workTimeName : this.$i18n('KAFS07_10');
         if (!workTimeCode) {
             workTimeCode = this.$i18n('KAFS07_9');
             workTimeName = '';

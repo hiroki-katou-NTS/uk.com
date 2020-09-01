@@ -133,9 +133,23 @@ export class CmmS45CComponent extends Vue {
                     self.back();
                 });    
             } else {
-                self.$modal.error(res.message).then(() => {
+                // self.$modal.error(res.message).then(() => {
+                //     self.back();
+                // }); 
+                let promise ;
+                if (res.messageId) {
+                    promise = self.$modal.error({ messageId: res.messageId });
+                } else {
+
+                    if (_.isArray(res.errors)) {
+                        promise = self.$modal.error({ messageId: res.errors[0].messageId });
+                    } else {
+                        promise = self.$modal.error({ messageId: res.errors.messageId });
+                    }
+                }
+                promise.then(() => {
                     self.back();
-                }); 
+                });
             }
         });
     }
