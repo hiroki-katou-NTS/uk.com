@@ -37,9 +37,15 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 @Transactional
 public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<RegisterExternalBudgetDailyCommand> {
 
+	/** The ext budget daily repository. */
 	@Inject
 	private ExtBudgetDailyRepository extBudgetDailyRepository;
 
+	/**
+	 * 外部予算日次を登録するHandler
+	 *
+	 * @param context the context
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<RegisterExternalBudgetDailyCommand> context) {
 
@@ -111,17 +117,35 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 		}
 	}
 
+	/**
+	 * Instantiates a new require impl.
+	 *
+	 * @param extBudgetDailyRepository the ext budget daily repository
+	 */
 	@AllArgsConstructor
 	private class RequireImpl implements RegisterExtBudgetDailyService.Require {
 
+		/** The ext budget daily repository. */
 		@Inject
 		private ExtBudgetDailyRepository extBudgetDailyRepository;
 
+		/**
+		 * Insert.
+		 *
+		 * @param extBudgetDaily the ext budget daily
+		 */
 		@Override
 		public void insert(ExtBudgetDaily extBudgetDaily) {
 			extBudgetDailyRepository.insert(extBudgetDaily);
 		}
 
+		/**
+		 * Delete.
+		 *
+		 * @param targetOrg the target org
+		 * @param itemCode the item code
+		 * @param ymd the ymd
+		 */
 		@Override
 		public void delete(TargetOrgIdenInfor targetOrg, ExtBudgetActItemCode itemCode, GeneralDate ymd) {
 			extBudgetDailyRepository.delete(targetOrg, itemCode, ymd);
@@ -129,6 +153,12 @@ public class RegisterExternalBudgetDailyCommandHandler extends CommandHandler<Re
 
 	}
 
+	/**
+	 * Convert val.
+	 *
+	 * @param value the value
+	 * @return the long
+	 */
 	private Long convertVal(String value) {
 		if (value == null)
 			return null;
