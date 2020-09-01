@@ -501,7 +501,7 @@ html {
 	background: url(../image/toleft.png) no-repeat center;
 	width: 27px;
 	height: 15px;
-	margin-left: 305px;  /* 190 */ 
+	margin-left: 308px;  
 	float: left;
 }
 
@@ -515,7 +515,7 @@ html {
 .toDown {
 	background: url(../image/todown.png) no-repeat center;
 	height: 25px;
-	margin-left: 6px;
+	margin-left: 10px;
 	float: left;
 }
 
