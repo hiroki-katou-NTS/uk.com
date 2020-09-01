@@ -225,7 +225,7 @@ module nts.uk.at.kmr001.c {
             vm.$blockui('invisible');
             vm.$window.modal('at', PATH.KMR001_D, vm.history && vm.history.params ? vm.history.params : null)
                 .then((result: any) => {
-                    if(vm.history && vm.history.params.endDate == result.params.endDate) {
+                    if(vm.history && vm.history.params.historyId == result.params.historyId && result.params.endDate != '9999/12/31') {
                         return
                     }
                     vm.isLasted(!!(result.params.endDate == '9999/12/31' || null));
