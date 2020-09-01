@@ -272,6 +272,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
      * アルゴリズム「出張申請就業時間帯チェック」を実行する
      * @param wkTypeCd
      * @param wkTimeCd
+     * @param inputDate
      */
     @Override
     public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate) {
