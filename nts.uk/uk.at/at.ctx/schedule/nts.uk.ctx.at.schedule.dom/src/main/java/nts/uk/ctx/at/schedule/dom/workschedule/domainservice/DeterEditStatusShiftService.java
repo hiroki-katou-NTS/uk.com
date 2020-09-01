@@ -69,6 +69,10 @@ public class DeterEditStatusShiftService {
 		val workTypeStt = workTypeStatus.get().getEditStateSetting();
 		val workHourStt = workingHourStatus.get().getEditStateSetting();
 		
+		if(workTypeStt == EditStateSetting.IMPRINT && workHourStt == EditStateSetting.IMPRINT ) {
+			return Optional.empty();
+		}
+		
 		if(workTypeStt == EditStateSetting.REFLECT_APPLICATION || workHourStt == EditStateSetting.REFLECT_APPLICATION ) {
 			return Optional.of(EditStateSetting.REFLECT_APPLICATION);
 		}
