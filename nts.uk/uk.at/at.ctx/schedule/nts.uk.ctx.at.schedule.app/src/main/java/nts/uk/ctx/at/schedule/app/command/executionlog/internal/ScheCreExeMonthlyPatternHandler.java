@@ -121,7 +121,7 @@ public class ScheCreExeMonthlyPatternHandler {
 			// 入力パラメータ「実施区分」を判断
 			ScheMasterInfo scheMasterInfo = new ScheMasterInfo(null);
 			BasicSchedule basicSche = new BasicSchedule(null, scheMasterInfo);
-			if (ImplementAtr.RECREATE == command.getContent().getImplementAtr()
+			if (ImplementAtr.RECREATE == command.getContent().getCreationType()
 					&& !this.scheduleCreationDeterminationProcess(command, dateInPeriod, basicSche, employmentInfo,
 							workingConditionItem, masterCache)) {
 				return;

@@ -1237,37 +1237,36 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				.isRecreateTransfer();
 		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
 				.isRecreateWorkType();
-		//ScheduleCreateContent s = createContent(execId,companyId,execItemCd);
-		ScheduleCreateContent s = new ScheduleCreateContent();
+		ScheduleCreateContent s = createContent(execId,companyId,execItemCd);
+		//ScheduleCreateContent s = new ScheduleCreateContent();
 		// 1-実行ID ＝ 取得した実行ID
 		// execId
-		s.setExecutionId(execId);
-		ReCreateContent reCreateContent = new ReCreateContent();
-		if (recreateTransfer || recreateWorkType) {
+		//s.setExecutionId(execId);
+		//ReCreateContent reCreateContent = new ReCreateContent();
+		//if (recreateTransfer || recreateWorkType) {
 			// 6-実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+		//	s.setImplementAtr(ImplementAtr.RECREATE);
 			// 7-再作成区分 → 未確定データのみ とする
-			reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
+		//	reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
 			// 8-処理実行区分 → もう一度作り直す とする
-			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		} else {
+		//	reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
+		//} else {
 			// #107055
 			// ・実施区分 → 通常作成
-			s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+		//	s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
 			// ・再作成区分 → 全件 とする
-			reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
+		//	reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
 			// ・処理実行区分 → もう一度作り直す とする
-			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		}
-		// ・9-マスタ情報再設定 → falseとする
-		ResetAtr r = new ResetAtr();
-		r.setResetMasterInfo(false);
+		//	reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
+		//// ・9-マスタ情報再設定 → falseとする
+		//ResetAtr r = new ResetAtr();
+		//r.setResetMasterInfo(false);
 		// 10-申し送り時間再設定 → falseとする
-		r.setResetTimeAssignment(false);
+		//r.setResetTimeAssignment(false);
 		// ・11-作成時に確定済みにする → falseとする
-		s.setConfirm(false);
+		//s.setConfirm(false);
 		// ・12-作成方法区分 → 個人情報とする
-		s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
+		//s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
 		// 13-コピー開始日 → nullとする
 
 		// 14-パターンコード → nullとする
@@ -1289,33 +1288,33 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// 22-祝日勤務種類 → nullとする
 
 		// 23-実行区分 ＝ 自動
-		scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
-		RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr();
-		if (recreateTransfer) {
+		//scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
+		//RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr();
+		//if (recreateTransfer) {
 			// 24-異動者を再作成 → true
-			rebuildTargetDetailsAtr.setRecreateConverter(true);
+		//	rebuildTargetDetailsAtr.setRecreateConverter(true);
 
-		} else {
+		//} else {
 			// 異動者を再作成 → false
-			rebuildTargetDetailsAtr.setRecreateConverter(false);
-		}
-		if (recreateWorkType) {
+		//	rebuildTargetDetailsAtr.setRecreateConverter(false);
+		//}
+		//if (recreateWorkType) {
 			// 25-・勤務種別変更者を再作成 → true
-			rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
-		} else {
+		//	rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
+		//} else {
 			// ・勤務種別変更者を再作成 → false
-			rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
-		}
+		//	rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
+		//}
 		// 【ドメインモデル「作成対象詳細設定」．手修正を保護する = "する" 】
-		boolean manualCorrection = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isManualCorrection();
-		if (manualCorrection) {
+		//boolean manualCorrection = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+		//		.isManualCorrection();
+		//if (manualCorrection) {
 			// 26-・手修正を保護 → true
-			rebuildTargetDetailsAtr.setProtectHandCorrection(true);
-		} else {
+		//	rebuildTargetDetailsAtr.setProtectHandCorrection(true);
+		//} else {
 			// 手修正を保護 → false
-				rebuildTargetDetailsAtr.setProtectHandCorrection(false);
-		}
+		//		rebuildTargetDetailsAtr.setProtectHandCorrection(false);
+		//}
 
 		// 27-再作成対象区分 → 対象者のみ
 		//reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
@@ -1371,35 +1370,35 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				.isRecreateTransfer();
 		boolean recreateWorkType = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
 				.isRecreateWorkType();
-		//ScheduleCreateContent s = createContent(execId,cid,execItemCd);
-		ScheduleCreateContent s = new ScheduleCreateContent();
-		s.setExecutionId(execId);
-		ReCreateContent reCreateContent = new ReCreateContent();
-		if (recreateTransfer || recreateWorkType) {
+		ScheduleCreateContent s = createContent(execId,cid,execItemCd);
+		//ScheduleCreateContent s = new ScheduleCreateContent();
+		//s.setExecutionId(execId);
+		//ReCreateContent reCreateContent = new ReCreateContent();
+		//if (recreateTransfer || recreateWorkType) {
 			// 6-実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+		//	s.setImplementAtr(ImplementAtr.RECREATE);
 			// 7-再作成区分 → 未確定データのみ とする
 
-			reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
+		//	reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
 			// 8-処理実行区分 → もう一度作り直す とする
-			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		} else {
+		//	reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
+		//} else {
 			// ・実施区分 → 再作成 とする
-			s.setImplementAtr(ImplementAtr.RECREATE);
+		//	s.setImplementAtr(ImplementAtr.RECREATE);
 			// ・再作成区分 → 全件 とする
-			reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
+		//	reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
 			// ・処理実行区分 → もう一度作り直す とする
-			reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
-		}
+		//	reCreateContent.setProcessExecutionAtr(ProcessExecutionAtr.REBUILD);
+		//}
 		// ・9-マスタ情報再設定 → falseとする
-		ResetAtr r = new ResetAtr();
-		r.setResetMasterInfo(false);
+		//ResetAtr r = new ResetAtr();
+		//r.setResetMasterInfo(false);
 		// 10-申し送り時間再設定 → falseとする
-		r.setResetTimeAssignment(false);
+		//r.setResetTimeAssignment(false);
 		// ・11-作成時に確定済みにする → falseとする
-		s.setConfirm(false);
+		//s.setConfirm(false);
 		// ・12-作成方法区分 → 個人情報とする
-		s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
+		//s.setCreateMethodAtr(CreateMethodAtr.PERSONAL_INFO);
 		// 13-コピー開始日 → nullとする
 
 		// 14-パターンコード → nullとする
@@ -1421,57 +1420,55 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		// 22-祝日勤務種類 → nullとする
 
 		// 23-実行区分 ＝ 自動
-		scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
+		//scheduleExecutionLog.setExeAtr(ExecutionAtr.AUTOMATIC);
 
-		RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr();
-		if (recreateTransfer) {
+		//RebuildTargetDetailsAtr rebuildTargetDetailsAtr = new RebuildTargetDetailsAtr();
+		//if (recreateTransfer) {
 			// 24-異動者を再作成 → true
-			rebuildTargetDetailsAtr.setRecreateConverter(true);
+		//	rebuildTargetDetailsAtr.setRecreateConverter(true);
 
-		} else {
+		//} else {
 			// 異動者を再作成 → false
-			rebuildTargetDetailsAtr.setRecreateConverter(false);
-		}
-		if (recreateWorkType) {
+		//	rebuildTargetDetailsAtr.setRecreateConverter(false);
+		//}
+		//if (recreateWorkType) {
 			// 25-・勤務種別変更者を再作成 → true
-			rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
-		} else {
+		//	rebuildTargetDetailsAtr.setRecreateWorkTypeChange(true);
+		//} else {
 			// ・勤務種別変更者を再作成 → false
-			rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
-		}
+		//	rebuildTargetDetailsAtr.setRecreateWorkTypeChange(false);
+		//}
 		// 【ドメインモデル「作成対象詳細設定」．手修正を保護する = "する" 】
-		boolean manualCorrection = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
-				.isManualCorrection();
-		if (manualCorrection) {
+		//boolean manualCorrection = procExec.getExecSetting().getPerSchedule().getTarget().getTargetSetting()
+		//		.isManualCorrection();
+		//if (manualCorrection) {
 			// 26-・手修正を保護 → true
-			rebuildTargetDetailsAtr.setProtectHandCorrection(true);
-		} else {
+		//	rebuildTargetDetailsAtr.setProtectHandCorrection(true);
+		//} else {
 			// 手修正を保護 → false
-			rebuildTargetDetailsAtr.setProtectHandCorrection(false);
-		}
+		//	rebuildTargetDetailsAtr.setProtectHandCorrection(false);
+		//}
 
 		// 27-再作成対象区分 → 対象者のみ
-		reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
+		//reCreateContent.setRebuildTargetAtr(RebuildTargetAtr.TARGET_ONLY);
 		// 28-休職休業者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateEmployeeOffWork(false);
+		//rebuildTargetDetailsAtr.setRecreateEmployeeOffWork(false);
 		// 29-・直行直帰者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateDirectBouncer(false);
+		//rebuildTargetDetailsAtr.setRecreateDirectBouncer(false);
 		// 30短時間勤務者を再作成 → falseとする
-		rebuildTargetDetailsAtr.setRecreateShortTermEmployee(false);
+		//rebuildTargetDetailsAtr.setRecreateShortTermEmployee(false);
 		// 31勤務開始・終了時刻を再設定 → falseとする
-		r.setResetWorkingHours(false);
+		//r.setResetWorkingHours(false);
 		// 32休憩開始・終了時刻を再設定 → falseとする
-		r.setResetStartEndTime(false);
+		//r.setResetStartEndTime(false);
 
 		//reCreateContent.setRebuildTargetDetailsAtr(rebuildTargetDetailsAtr);
 		//reCreateContent.setResetAtr(r);
-		;
 		//s.setReCreateContent(reCreateContent);
 		//scheduleCommand.setScheduleExecutionLog(scheduleExecutionLog);
 		scheduleCommand.setContent(s);
 		return scheduleCommand;
 	}
-	// TODO : ĐANG SỬA- KSC001
 	private  ScheduleCreateContent createContent(String execId,String companyId,String execItemCd){
 		ScheduleCreateContent s = new ScheduleCreateContent();
 		// 1-実行ID ＝ 取得した実行ID
@@ -1482,29 +1479,49 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		//作成種類←"新規作成"
 
 		s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+		//作成方法の指定 {
+        //・作成方法←"個人情報"
+        //・コピー開始日←optional.empty
+        //・マスタ参照先←optional.empty
+        //・月間パターンコード←optional.empty
+		//}
 		s.setSpecifyCreation(new SpecifyCreation(CreationMethod.PERSONAL_INFO,Optional.empty(),Optional.empty(),Optional.empty()));
 		// ドメインモデル「更新処理自動実行」を取得する
-		ProcessExecution procExec = null;
+		ProcessExecution procExec;
 		Optional<ProcessExecution> procExecOpt = this.procExecRepo.getProcessExecutionByCidAndExecCd(companyId,
 				execItemCd);
-
 		if (procExecOpt.isPresent()) {
 			procExec = procExecOpt.get();
 			val checkReTarget = procExec.getProcessExecType().value;
-			boolean reTargetAtr;
+			 //・再作成条件{
+			 //・対象者を限定する←{
+             //ドメインモデル「更新処理自動実行」.実行種別="再実行" →true
+			 // }
 			if (checkReTarget == ProcessExecType.NORMAL_EXECUTION.value) {
-				reTargetAtr = false;
-			} else if (checkReTarget == ProcessExecType.RE_CREATE.value) {
-				reTargetAtr = true;
-
+				val reTargetAtr = false;
 				val narrowing = new ConditionEmployee(false, false, false, false);
+				//・確定済みも対象とする←false
+                //・手修正・申請反映も対象とする←false
+				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false, Optional.of(narrowing));
+				s.setRecreateCondition(recreateCondition);
+			} else if (checkReTarget == ProcessExecType.RE_CREATE.value) {
+				val reTargetAtr = true;
+				//・対象者の条件{
+				// ・異動者←false
+				//・休職休業者←false
+				//・短時間勤務者←false
+				//・労働条件変更者←false
+				//}
+				val narrowing = new ConditionEmployee(false, false, false, false);
+				//・確定済みも対象とする←false
+				//・手修正・申請反映も対象とする←false
 				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false, Optional.of(narrowing));
 				s.setRecreateCondition(recreateCondition);
 			}
 		}
-
 		return s;
 	}
+
 	/**
 	 * 実行
 	 * 
