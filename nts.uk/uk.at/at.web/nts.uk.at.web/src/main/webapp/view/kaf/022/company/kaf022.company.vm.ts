@@ -2,18 +2,19 @@ module nts.uk.at.view.kaf022.company.viewmodel {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
 
-    import ScreenModelA = nts.uk.at.view.kaf022.a.viewmodel.ScreenModelA;
-    import ScreenModelB = nts.uk.at.view.kaf022.b.viewmodel.ScreenModelB;
-    import ScreenModelC = nts.uk.at.view.kaf022.c.viewmodel.ScreenModelC;
-    import ScreenModelD = nts.uk.at.view.kaf022.d.viewmodel.ScreenModelD;
-    import ScreenModelE = nts.uk.at.view.kaf022.e.viewmodel.ScreenModelE;
-    import ScreenModelF = nts.uk.at.view.kaf022.f.viewmodel.ScreenModelF;
-    import ScreenModelG = nts.uk.at.view.kaf022.g.viewmodel.ScreenModelG;
-    import ScreenModelH = nts.uk.at.view.kaf022.h.viewmodel.ScreenModelH;
-    import ScreenModelI = nts.uk.at.view.kaf022.i.viewmodel.ScreenModelI;
-    import ScreenModelJ = nts.uk.at.view.kaf022.j.viewmodel.ScreenModelJ;
-    import ScreenModelQ = nts.uk.at.view.kaf022.q.viewmodel.ScreenModelQ;
-    import ScreenModelV = nts.uk.at.view.kaf022.v.viewmodel.ScreenModelV;
+    import ScreenModelA = a.viewmodel.ScreenModelA;
+    import ScreenModelB = b.viewmodel.ScreenModelB;
+    import ScreenModelC = c.viewmodel.ScreenModelC;
+    import ScreenModelD = d.viewmodel.ScreenModelD;
+    import ScreenModelE = e.viewmodel.ScreenModelE;
+    import ScreenModelF = f.viewmodel.ScreenModelF;
+    import ScreenModelG = g.viewmodel.ScreenModelG;
+    import ScreenModelH = h.viewmodel.ScreenModelH;
+    import ScreenModelI = i.viewmodel.ScreenModelI;
+    import ScreenModelJ = j.viewmodel.ScreenModelJ;
+    import ScreenModelQ = q.viewmodel.ScreenModelQ;
+    import ScreenModelV = v.viewmodel.ScreenModelV;
+    import ScreenModelY = y.viewmodel.ScreenModelY;
 
     export class ScreenModel {
         tabs: KnockoutObservableArray<NtsTabPanelModel>;
@@ -30,6 +31,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         viewmodelJ: ScreenModelJ;
         viewmodelQ: ScreenModelQ;
         viewmodelV: ScreenModelV;
+        viewmodelY: ScreenModelY;
 
         constructor() {
             const self = this;
@@ -64,6 +66,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             self.viewmodelJ = new ScreenModelJ();
             self.viewmodelQ = new ScreenModelQ();
             self.viewmodelV = new ScreenModelV();
+            self.viewmodelY = new ScreenModelY();
         }
 
         start(): JQueryPromise<any> {
@@ -86,6 +89,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                 self.viewmodelJ.initData(data);
                 self.viewmodelQ.initData(data);
                 self.viewmodelV.initData(data);
+                self.viewmodelY.initData(data);
                 dfd.resolve();
             }).fail(error => {
                 dfd.reject();
@@ -116,13 +120,24 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             const dataE = self.viewmodelE.collectData();
             const dataJ = self.viewmodelJ.collectData();
             const dataQ = self.viewmodelQ.collectData();
+            const dataY = self.viewmodelY.collectData();
             const data: any = {};
             data["applicationSetting"] = {
                 appLimitSetting: dataA.appLimitSetting,
-                appTypeSettings: dataA.appTypeSettings,
+                appTypeSettings: dataA.appTypeSettings.map(setting => {
+                    const s = _.find(dataY.appTypeSettings, i => i.appType == setting.appType);
+                    if (s) {
+                        setting["sendMailWhenApproval"] = s.sendMailWhenApproval;
+                        setting["sendMailWhenRegister"] = s.sendMailWhenRegister;
+                    }
+                    return setting;
+                }),
                 appSetForProxyApps: dataV,
                 appDeadlineSettings: dataA.appDeadlineSettings,
-                appDisplaySetting: dataA.appDisplaySetting,
+                appDisplaySetting: {
+                    prePostDisplayAtr: dataA.prePostDisplayAtr,
+                    manualSendMailAtr: dataY.manualSendMailAtr
+                },
                 receptionRestrictionSettings: dataA.receptionRestrictionSettings,
                 recordDate: dataA.recordDate
             };
@@ -141,6 +156,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             data["appStampSetting"] = dataJ.appStampSetting;
             data["appStampReflect"] = dataJ.appStampReflect;
             data["approvalListDisplaySetting"] = dataQ;
+            data["appMailSetting"] = dataY.appMailSetting;
 
             nts.uk.ui.block.grayout();
             service.update(data).done(() => {

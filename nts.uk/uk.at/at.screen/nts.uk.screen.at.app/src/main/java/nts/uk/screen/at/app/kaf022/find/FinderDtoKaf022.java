@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
+import nts.uk.ctx.at.request.app.find.setting.company.emailset.AppEmailSetDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.businesstrip.BusinessTripSetDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationSettingFinder;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackReflectDto;
@@ -44,6 +45,8 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.ApplicationStampSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
@@ -184,6 +187,9 @@ public class FinderDtoKaf022 {
     @Inject
 	private AppTripRequestSetRepository appTripRequestSetRepo;
 
+    @Inject
+	private AppEmailSetRepository appEmailSetRepo;
+
 	public DtoKaf022 findDtoKaf022() {
 		String companyId = AppContexts.user().companyId();
 		// TODO: get Application Settings
@@ -194,6 +200,7 @@ public class FinderDtoKaf022 {
         LateEarlyCancelAppSet lateEarlyCancelAppSet = lateEarlyCancelRepo.getByCId(companyId);
         AppStampSettingDto appStampSetting = appStampSettingRepo.findSettingByCompanyId(companyId).map(AppStampSettingDto::fromDomain).orElse(null);
         ApprovalListDispSettingDto approvalListDispSetting = approvalListDispSetRepo.findByCID(companyId).map(ApprovalListDispSettingDto::fromDomain).orElse(null);
+		AppEmailSet appEmailSet = appEmailSetRepo.findByCID(companyId);
 
 		// TODO: get Reflection Settings
         AppReflectExeConditionDto appReflectCondition = appReflectConditionRepo.findByCompanyId(companyId).map(AppReflectExeConditionDto::fromDomain).orElse(null);
@@ -290,6 +297,9 @@ public class FinderDtoKaf022 {
 
         // Q
         result.approvalListDisplaySetting = approvalListDispSetting;
+
+        // Y
+		result.appMailSetting = appEmailSet == null ? null : new AppEmailSetDto(appEmailSet);
 
 		return result;
 	}

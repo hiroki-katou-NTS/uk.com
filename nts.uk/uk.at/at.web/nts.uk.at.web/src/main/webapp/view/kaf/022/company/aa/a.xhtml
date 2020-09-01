@@ -229,7 +229,7 @@
     <table class="viewmodel-a" id="fixed-table-a11" data-bind="with: appLimitSetting">
         <colgroup>
             <col width="300px" />
-            <col width="500px" />
+            <col width="580px" />
         </colgroup>
         <thead>
             <tr>
@@ -295,8 +295,8 @@
     <!-- A17 -->
     <table class="viewmodel-a" id="fixed-table-a17" data-bind="with: approvalSetting">
         <colgroup>
-            <col width="250px" />
-            <col width="600px" />
+            <col width="300px" />
+            <col width="580px" />
         </colgroup>
         <thead>
             <tr>
@@ -348,7 +348,7 @@
     <table class="viewmodel-a" id="fixed-table-a19">
         <colgroup>
             <col width="300px" />
-            <col width="500px" />
+            <col width="580px" />
         </colgroup>
         <thead>
             <tr>
@@ -376,8 +376,8 @@
         <!--A12-->
         <table class="viewmodel-a" id="fixed-table-a12">
             <colgroup>
-                <col width="300px" />
-                <col width="500px" />
+                <col width="290px" />
+                <col width="570px" />
             </colgroup>
             <thead>
                 <tr>
@@ -404,9 +404,9 @@
         <!--A22-->
         <table class="viewmodel-a" id="fixed-table-a22">
             <colgroup>
-                <col width="300px" />
-                <col width="300px" />
-                <col width="300px" />
+                <col width="290px" />
+                <col width="285px" />
+                <col width="285px" />
             </colgroup>
             <thead>
                 <tr>
@@ -418,7 +418,7 @@
             <tbody data-bind="foreach: appTypeSettings">
                 <tr>
                     <td class="color-header" data-bind="text:appTypeName"/>
-                    <td>
+                    <td style="text-align: center">
                         <div style="margin: 5px auto"
                                 data-bind="ntsSwitchButton: {
                                     options: $parent.itemListA22_2,
@@ -428,7 +428,7 @@
                                     required: true,
                                     enable: $parent.prePostDisplayAtr() == 1 }"/>
                     </td>
-                    <td>
+                    <td style="text-align: center">
                         <span data-bind="ntsCheckBox: { checked: canClassificationChange, enable: $parent.prePostDisplayAtr() == 1 }">#{i18n.getText('KAF022_75')}</span>
                     </td>
                 </tr>
@@ -440,8 +440,8 @@
         <!--A20-->
         <table class="viewmodel-a" id="fixed-table-a20" data-bind="with: appLimitSetting">
             <colgroup>
-                <col width="300px" />
-                <col width="500px" />
+                <col width="290px" />
+                <col width="570px" />
             </colgroup>
             <thead>
                 <tr>
@@ -480,9 +480,9 @@
         <!-- A8 -->
         <table class="viewmodel-a" id="fixed-table-a8">
             <colgroup>
-                <col width="200px" />
-                <col width="200px" />
-                <col width="200px" />
+                <col width="290px" />
+                <col width="285px" />
+                <col width="285px" />
             </colgroup>
             <thead>
                 <tr>
@@ -502,7 +502,7 @@
                     <td class="color-header">
                         <span class="label" data-bind="text:appTypeName"/>
                     </td>
-                    <td>
+                    <td style="text-align: center">
                         <div
                             data-bind="ntsCheckBox: {
                                         checked: displayFixedReason,
@@ -511,7 +511,7 @@
                                     tabindex:95 + $index()*6
                                 }">#{i18n.getText('KAF022_61')}</div>
                     </td>
-                    <td>
+                    <td style="text-align: center">
                         <div
                             data-bind="ntsCheckBox: {
                                         checked: displayAppReason,
@@ -530,7 +530,7 @@
     <table class="viewmodel-a" id="fixed-table-a21">
         <colgroup>
             <col width="300px" />
-            <col width="500px" />
+            <col width="580px" />
         </colgroup>
         <thead>
             <tr>

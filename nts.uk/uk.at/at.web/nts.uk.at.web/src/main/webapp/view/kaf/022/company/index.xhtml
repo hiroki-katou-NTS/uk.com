@@ -24,6 +24,7 @@
         <com:scriptfile path="j/kaf022.j.vm.js" />
         <com:scriptfile path="q/kaf022.q.vm.js" />
         <com:scriptfile path="v/kaf022.v.vm.js" />
+        <com:scriptfile path="y/kaf022.y.vm.js" />
 
         <com:scriptfile path="kaf022.company.vm.js" />
         <com:scriptfile path="kaf022.company.start.js" />
@@ -32,6 +33,8 @@
             nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.ObstacleName
             nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.Comment
             nts.uk.shr.com.time.AttendanceClock
+            nts.uk.ctx.at.request.dom.setting.company.emailset.EmailText
+            nts.uk.ctx.at.request.dom.setting.company.emailset.EmailSubject
         </com:ValidatorScript>
 
         <com:EnumScript>
@@ -96,8 +99,8 @@
                 <div class="tab-content-14" data-bind="with: viewmodelQ">
                     <ui:include src="./q/q.xhtml" />
                 </div>
-                <div class="tab-content-15">
-                    <span>Tab Content Y</span><br/>
+                <div class="tab-content-15" data-bind="with: viewmodelY">
+                    <ui:include src="./y/y.xhtml" />
                 </div>
             </div>
         </div>

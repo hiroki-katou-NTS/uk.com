@@ -306,10 +306,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                 receptionRestrictionSettings: ko.toJS(self.dataReceptionRestrictionSettings),
                 appLimitSetting: ko.toJS(self.appLimitSetting),
                 appTypeSettings: ko.toJS(self.appTypeSettings),
-                appDisplaySetting: {
-                    prePostDisplayAtr: self.prePostDisplayAtr(),
-                    manualSendMailAtr: 0
-                },
+                prePostDisplayAtr: self.prePostDisplayAtr(),
                 recordDate: self.approvalSetting().baseDateAtr(),
                 approvalByPersonAtr: self.approvalSetting().approvalByPersonAtr(),
                 includeConcurrentPersonel: self.approvalSetting().includeConcurrentPersonel(),
@@ -460,8 +457,6 @@ module nts.uk.at.view.kaf022.a.viewmodel {
         appTypeName: string;
         canClassificationChange: KnockoutObservable<boolean>;
         displayInitialSegment: KnockoutObservable<number>;
-        // sendMailWhenApproval: true
-        // sendMailWhenRegister: true
         constructor(appType: number, appName: string, canChangeCls: boolean, displayInitSegment: number) {
             this.appType = appType;
             this.appTypeName = appName;

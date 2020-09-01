@@ -41,6 +41,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.ApplicationStampSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
@@ -168,6 +169,9 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	@Inject
 	private AppTripRequestSetRepository appTripRequestSetRepo;
 
+	@Inject
+	private AppEmailSetRepository appEmailSetRepo;
+
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -206,6 +210,8 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		appStampSettingRepo.save(companyId, kaf022.getAppStampSetting().toDomain(companyId), kaf022.getAppStampReflect().toDomain(companyId));
 
 		approvalListDispSetRepo.save(kaf022.getApprovalListDisplaySetting().toDomain(companyId));
+
+		appEmailSetRepo.save(kaf022.getAppMailSetting().toDomain(companyId));
 	}
 
 	private void oldmethod (CommandHandlerContext<Kaf022AddCommand> context) {

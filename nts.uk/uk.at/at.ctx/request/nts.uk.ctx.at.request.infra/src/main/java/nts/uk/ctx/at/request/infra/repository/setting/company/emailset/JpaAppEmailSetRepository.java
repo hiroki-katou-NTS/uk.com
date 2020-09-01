@@ -6,6 +6,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
+import nts.uk.ctx.at.request.infra.entity.setting.company.emailset.KrqmtAppMail;
 
 /**
  * refactor 4
@@ -23,8 +24,18 @@ public class JpaAppEmailSetRepository extends JpaRepository implements AppEmailS
 
 	@Override
 	public AppEmailSet findByCID(String companyID) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().find(companyID, KrqmtAppMail.class).map(KrqmtAppMail::toDomain).orElse(null);
 	}
-	
+
+	@Override
+	public void save(AppEmailSet domain) {
+		KrqmtAppMail entity = this.queryProxy().find(domain.getCompanyID(), KrqmtAppMail.class).orElse(null);
+		if (entity == null) {
+			this.commandProxy().insert(KrqmtAppMail.fromDomain(domain));
+		} else {
+			entity.update(domain);
+			this.commandProxy().update(entity);
+		}
+	}
+
 }

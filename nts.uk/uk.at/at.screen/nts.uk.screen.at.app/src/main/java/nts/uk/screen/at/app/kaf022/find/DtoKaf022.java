@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.find.setting.company.emailset.AppEmailSetDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.businesstrip.BusinessTripSetDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackReflectDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSettingDto;
@@ -28,24 +29,6 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.setting.JobAssignSettingD
 @Builder
 public class DtoKaf022 {
 	public List<ClosureHistoryFindDto> allClosure;
-
-//	public StampRequestSettingDto stampReq;
-//	public HdAppSetDto hdSet;
-//
-//	public TripRequestSetDto tripReq;
-//	public WithdrawalAppSetDto wdApp;
-//	public TimeHdAppSetDto timeHd;
-//	public WithDrawalReqSetDto wdReq;
-//	public LateEarlyRequestDto lateEarly;
-//
-//	// A14
-//
-//	// B8 -> B26
-//	public OvertimeRestAppCommonSetDto otRestAppCom;
-//	// G10 -> G23
-//	public OvertimeRestAppCommonSetDto otRestApp7;
-
-	// refactor 4
 	public ApplicationSettingDto applicationSetting;
 	public List<DisplayReasonDto> reasonDisplaySettings;
 	public List<StandardMenuNameExport> menus;
@@ -71,4 +54,6 @@ public class DtoKaf022 {
 	public StampAppReflectDto appStampReflect;
 
 	public ApprovalListDispSettingDto approvalListDisplaySetting;
+
+	public AppEmailSetDto appMailSetting;
 }
