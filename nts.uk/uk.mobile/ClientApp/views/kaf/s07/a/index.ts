@@ -604,7 +604,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             })
             .catch((res: any) => {
                 self.handleErrorMessage(res);
-            });
+            }); 
 
     }
     public registerData(res: any) {
@@ -791,6 +791,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     self.$mask('show');
                     self.$http.post('at', API.checkWorkTime, param)
                         .then((res: any) => {
+                            self.$mask('hide');
                             self.data.appWorkChangeDispInfo.setupType = res.data.setupType;
                             self.data.appWorkChangeDispInfo.predetemineTimeSetting = res.data.opPredetemineTimeSetting;
                             self.bindVisibleView(self.data.appWorkChangeDispInfo);
