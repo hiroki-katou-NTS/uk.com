@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -146,19 +147,18 @@ public class GetActualOfShift {
 			// step 4.1
 			boolean needToWork = key.getScheManaStatus().needCreateWorkSchedule();
 			// 4.2
-			Optional<ShiftMasterMapWithWorkStyle> shiftMaster = Optional.empty();
 			if (value.isPresent()) {
 				IntegrationOfDaily daily = value.get();
 				if(daily.getWorkInformation() != null){
 					WorkInformation workInformation = daily.getWorkInformation().getRecordInfo();
 
-					String workTypeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString();
-					String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString();
+					String workTypeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString().toString();
+					String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString().toString();
 
-					shiftMaster = listShiftMaster.stream().filter(shiftLocal -> {
-						if (shiftLocal.workTypeCode.equals(workTypeCode) && shiftLocal.workTimeCode.equals(workTimeCode))
-							return true;
-						return false;
+					Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(x -> {
+						boolean s = Objects.equals(x.workTypeCode, workTypeCode);
+						boolean y = Objects.equals(x.workTimeCode, workTimeCode);
+						return s&&y;
 					}).findFirst();
 					
 					ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
