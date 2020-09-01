@@ -129,3 +129,7 @@ button.nts-switch-button {
 	padding: 10px 5px;
 	margin: 11px 156px;
 }
+
+#contents-area, #functions-area-bottom {
+	background-color: rgb(235, 255, 235);
+}
