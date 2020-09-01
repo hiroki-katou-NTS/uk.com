@@ -94,7 +94,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dataScheduleDisplayControl: KnockoutObservable<any> = ko.observableArray([]);
         isInsuranceStatus: boolean = false;
 
-        flagBg: boolean = true;
+        flag: boolean = true;
 
         stopRequest: KnockoutObservable<boolean> = ko.observable(true);
         arrLockCellInit: KnockoutObservableArray<Cell> = ko.observableArray([]);
@@ -148,6 +148,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
 
             self.achievementDisplaySelected.subscribe(function(newValue) {
+                if(newValue == null || newValue == undefined)
+                    return;
+                
+                if(self.flag == true)
+                    return;
+                
                 if (newValue == 1) {
                     self.isEnableCompareMonth(true);
                     
@@ -206,15 +212,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.selectedModeDisplayInBody.subscribe(function(viewMode) {
                 if (viewMode == null)
                     return;
+                if(self.flag == true)
+                    return;
+                
                 console.log('mode:  ' + viewMode);
                 nts.uk.ui.errors.clearAll();
                 self.removeClass();
                 self.stopRequest(false);
                 // close screen O1 when change mode
                 if (viewMode == 'shift') { // mode シフト表示   
-                    if (window.innerWidth > 1462) {
-                        $("#extable").width('1404');
-                    }
                     $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "multi");
                     self.shiftModeStart().done(() => {
@@ -252,7 +258,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 // update lại màu background phần detail
                 let self = this;
-                if(self.flagBg == true)
+                if(self.flag == true)
                     return;
                 let shiftMasterWithWorkStyleLst;
                 let detailContentDeco = [];
@@ -418,7 +424,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
                 self.setUpdateMode();
                 self.setPositionButonToRight();
-                self.flagBg = false;
+                self.flag = false;
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -517,10 +523,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
-                
                 self.setDataWorkType(data.listWorkTypeInfo);
                 
-                self.updateExTable(dataBindGrid, 'shift', true, true, true);
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, 'shift');
                 
                 dfd.resolve();
             }).fail(function() {
@@ -552,10 +558,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shortName');
-                
                 self.setDataWorkType(data.listWorkTypeInfo);
-
-                self.updateExTable(dataBindGrid , 'shortName', true, true, true);
+                
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, 'shortName');
                 
                 dfd.resolve();
             }).fail(function() {
@@ -587,15 +593,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'time');
-                
                 self.setDataWorkType(data.listWorkTypeInfo);
 
-                self.updateExTable(dataBindGrid, 'time', true, true, true);
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, 'time');
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
             });
             return dfd.promise();
+        }
+        
+        destroyAndCreateGrid(dataBindGrid,viewMode){
+            let self = this;
+            $("#extable").remove();
+            let ex = "<div id='extable'></div>";
+            $("#extableA").append(ex);
+            self.initExTable(dataBindGrid, viewMode, 'stick');
+            if (!self.showA9) {
+                $(".toLeft").css("display", "none");
+                
+            }
+            $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+            self.setUpdateMode();
+            self.setPositionButonToRight();
         }
         
         saveDataGrid(data: any) {
@@ -1247,7 +1269,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.showA9) {
                 new nts.uk.ui.exTable.ExTable($("#extable"), {
                     headerHeight: "60px",
-                    bodyRowHeight: "50px",
+                    bodyRowHeight: viewMode == 'shift' ? "35px" : "50px",
                     bodyHeight: "500px",
                     horizontalSumHeaderHeight: "0px",
                     horizontalSumBodyHeight: "0px",
@@ -1282,7 +1304,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else {
                 new nts.uk.ui.exTable.ExTable($("#extable"), {
                     headerHeight: "60px",
-                    bodyRowHeight: "50px",
+                    bodyRowHeight: viewMode == 'shift' ? "35px" : "50px",
                     bodyHeight: "500px",
                     horizontalSumHeaderHeight: "0px",
                     horizontalSumBodyHeight: "0px",
@@ -1318,8 +1340,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set height grid theo localStorage đã lưu
             self.setPositionButonDownAndHeightGrid();
             
-            //self.setLockCell(dataBindGrid.arrListCellLock);
-
             console.log(performance.now() - start);
         }
         
