@@ -161,6 +161,10 @@ public class GetActualOfShift {
 						return s&&y;
 					}).findFirst();
 					
+					if(!shiftMaster.isPresent()){
+						System.out.println("Daily : workType - workTime chua dc dang ky: " + workTypeCode + " - " + workTimeCode);
+					}
+					
 					ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
 							.employeeId(key.getEmployeeID())
 							.date(key.getDate())
