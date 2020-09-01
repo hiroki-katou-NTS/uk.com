@@ -319,7 +319,7 @@ module nts.uk.at.kmr003.a {
                             {
                                 headerText: item.unitLabel,
                                 key: item.key,
-                                dataType: 'number',
+                                dataType: 'string',
                                 width: '80px',
                                 columnCssClass: 'halign-right',
                                 constraint: {
