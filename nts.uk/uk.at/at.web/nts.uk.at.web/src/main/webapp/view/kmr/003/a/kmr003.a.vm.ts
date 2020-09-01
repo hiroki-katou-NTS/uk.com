@@ -706,7 +706,7 @@ module nts.uk.at.kmr003.a {
                 if (!check.isValid) {
                     errors.push(new ErrorDto(reservation.reservationMemberCode + "　" + reservation.reservationMemberName, bento.bentoName, check.errorMessage));
                 } else {
-                    if (!isNaN(bentoCount) && bentoCount != null) {
+                    if (!isNaN(bentoCount) && bentoCount != null && !nts.uk.text.isNullOrEmpty(bentoCount.toString().trim())) {
                         self.details.push(new BentoReserveDetailCommand(bento.frameNo, bentoCount));
                     }
                 }
