@@ -16,8 +16,8 @@ public class ReflectionImage {
     private HashMap<GeneralDate, RefImageEachDay> day;
 
     // [C-1] 作る
-    public ReflectionImage() {
-        this.day = new HashMap<>();
+    public static ReflectionImage create() {
+        return new ReflectionImage(new HashMap<>());
     }
 
     /**

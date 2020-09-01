@@ -28,10 +28,10 @@ public class RegisterWorkCycleServiceTest {
     public void test_create_1() {
         String cid = "DUMMY";
         String code = "DUMMY";
-        WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(1, new WorkInformation("timecd", "typecd"));
+        WorkCycleInfo info = WorkCycleInfo.create(1, new WorkInformation("timecd", "typecd"));
         List<WorkCycleInfo> infos = new ArrayList<>();
         infos.add(info);
-        WorkCycle workCycle = WorkCycle.WorkCycle(cid, code, "name", infos);
+        WorkCycle workCycle = WorkCycle.create(cid, code, "name", infos);
 
         new Expectations() {
             {
@@ -52,13 +52,13 @@ public class RegisterWorkCycleServiceTest {
     @Test
     public void testWhenHasErrorCode() {
 
-        WorkCycle workCycle = WorkCycle.WorkCycle("CID001", "COD001", "Name001", Arrays.asList(
-                WorkCycleInfo.WorkCycleInfo(2, new WorkInformation("WTime001", "WType001")),
-                WorkCycleInfo.WorkCycleInfo(3, new WorkInformation("WTime002", "WType002")),
-                WorkCycleInfo.WorkCycleInfo(4, new WorkInformation(null, "WType004")),
-                WorkCycleInfo.WorkCycleInfo(4, new WorkInformation(null, "WType005")),
-                WorkCycleInfo.WorkCycleInfo(4, new WorkInformation(null, "WType006")),
-                WorkCycleInfo.WorkCycleInfo(4, new WorkInformation("WTime003", "WType003"))
+        WorkCycle workCycle = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(
+                WorkCycleInfo.create(2, new WorkInformation("WTime001", "WType001")),
+                WorkCycleInfo.create(3, new WorkInformation("WTime002", "WType002")),
+                WorkCycleInfo.create(4, new WorkInformation(null, "WType004")),
+                WorkCycleInfo.create(4, new WorkInformation(null, "WType005")),
+                WorkCycleInfo.create(4, new WorkInformation(null, "WType006")),
+                WorkCycleInfo.create(4, new WorkInformation("WTime003", "WType003"))
                 )
         );
 
@@ -83,9 +83,9 @@ public class RegisterWorkCycleServiceTest {
 
     @Test
     public void testInsert() {
-        WorkCycle workCycle = WorkCycle.WorkCycle("CID001", "COD001", "Name001", Arrays.asList(
-                WorkCycleInfo.WorkCycleInfo(2, new WorkInformation(null, "WType001")),
-                WorkCycleInfo.WorkCycleInfo(3, new WorkInformation(null, "WType002"))
+        WorkCycle workCycle = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(
+                WorkCycleInfo.create(2, new WorkInformation(null, "WType001")),
+                WorkCycleInfo.create(3, new WorkInformation(null, "WType002"))
                 )
         );
         new Expectations(WorkInformation.class) {
@@ -108,9 +108,9 @@ public class RegisterWorkCycleServiceTest {
 
     @Test
     public void testUpdate() {
-        WorkCycle workCycle = WorkCycle.WorkCycle("CID001", "COD001", "Name001", Arrays.asList(
-                WorkCycleInfo.WorkCycleInfo(2, new WorkInformation("WTime001", "WType001")),
-                WorkCycleInfo.WorkCycleInfo(3, new WorkInformation(null, "WType002"))
+        WorkCycle workCycle = WorkCycle.create("CID001", "COD001", "Name001", Arrays.asList(
+                WorkCycleInfo.create(2, new WorkInformation("WTime001", "WType001")),
+                WorkCycleInfo.create(3, new WorkInformation(null, "WType002"))
                 )
         );
 

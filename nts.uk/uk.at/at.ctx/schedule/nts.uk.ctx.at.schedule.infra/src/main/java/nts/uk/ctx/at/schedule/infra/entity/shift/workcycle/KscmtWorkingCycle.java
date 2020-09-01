@@ -42,13 +42,13 @@ public class KscmtWorkingCycle extends UkJpaEntity implements Serializable {
     public static WorkCycle toDomain(KscmtWorkingCycle entity, List<KscmtWorkingCycleDtl> entityValues){
         List<WorkCycleInfo> infos = new ArrayList<WorkCycleInfo>();
         entityValues.stream().forEach(item -> {
-            WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(
+            WorkCycleInfo info = WorkCycleInfo.create(
                     item.days,
                     new WorkInformation(item.workTimeCode, item.workTypeCode)
             );
             infos.add(info);
         });
-        WorkCycle result = WorkCycle.WorkCycle(
+        WorkCycle result = WorkCycle.create(
                 entity.kscmtWorkingCyclePK.cid,
                 entity.kscmtWorkingCyclePK.workCycleCode,
                 entity.workCycleName,

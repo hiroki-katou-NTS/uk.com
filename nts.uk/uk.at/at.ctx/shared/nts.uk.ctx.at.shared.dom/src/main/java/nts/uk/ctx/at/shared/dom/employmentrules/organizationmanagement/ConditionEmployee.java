@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.shortworktime.ShortWorkTimeHistory;
@@ -12,20 +13,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * 社員の絞り込み条件.
+ */
 @Getter
 public class ConditionEmployee extends ValueObject {
 
     /** 異動者. */
-    final boolean transfer;
+    private final boolean transfer;
 
     /** 休職休業者. */
-    final boolean leaveOfAbsence;
+    private final boolean leaveOfAbsence;
 
     /** 短時間勤務者. */
-    final boolean shortWorkingHours;
+    private final boolean shortWorkingHours;
 
     /** 労働条件変更者. */
-    final boolean changedWorkingConditions;
+    private final boolean changedWorkingConditions;
 
     /** [C-0] 社員の絞り込み条件 */
     public ConditionEmployee(boolean transfer, boolean leaveOfAbsence, boolean shortWorkingHours, boolean changedWorkingConditions) {

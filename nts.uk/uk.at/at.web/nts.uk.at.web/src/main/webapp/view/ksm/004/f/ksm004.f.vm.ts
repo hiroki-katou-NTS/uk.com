@@ -21,27 +21,29 @@ module nts.uk.at.view.ksm004.f.viewmodel {
             vm.baseDate = ko.observable(new Date(yearParam, monthParam, 1));
 
             vm.baseDate.subscribe(value => {
-                if(value) {
-                    this.$blockui("show");
-                    let startDate = moment(this.getDateRange(value)[0]).format("YYYY-MM-DD");
-                    let endDate = moment(this.getDateRange(value)[5]).add(30, "days").format("YYYY-MM-DD");
-                    if(param.classification == 1) {
-                        let workPlaceId = param.workPlaceId;
-                        vm.$ajax(paths.getSixMonthsCalendarWorkPlace+ workPlaceId + "/" + startDate + "/" + endDate).done(dataRes => {
-                            this.setDataCalendar(value, dataRes)
-                        });
-                    } else if(param.classification == 2){
-                        let classId = param.classId;
-                        vm.$ajax(paths.getSixMonthsCalendarClass+ classId+ "/" + startDate + "/" + endDate).done(dataRes => {
-                            this.setDataCalendar(value, dataRes)
-                        });
-                    } else {
-                        vm.$ajax(paths.getSixMonthsCalendarCompany+ startDate + "/" + endDate).done(dataRes => {
-                            this.setDataCalendar(value, dataRes)
-                        });
-                    }
-                    this.$blockui("hide");
+                let momentDate = moment(value);
+                if (momentDate instanceof moment && !momentDate.isValid()) {
+                    return;
                 }
+                this.$blockui("show");
+                let startDate = moment(this.getDateRange(value)[0]).format("YYYY-MM-DD");
+                let endDate = moment(this.getDateRange(value)[5]).add(30, "days").format("YYYY-MM-DD");
+                if(param.classification == 1) {
+                    let workPlaceId = param.workPlaceId;
+                    vm.$ajax(paths.getSixMonthsCalendarWorkPlace+ workPlaceId + "/" + startDate + "/" + endDate).done(dataRes => {
+                        this.setDataCalendar(value, dataRes)
+                    });
+                } else if(param.classification == 2){
+                    let classId = param.classId;
+                    vm.$ajax(paths.getSixMonthsCalendarClass+ classId+ "/" + startDate + "/" + endDate).done(dataRes => {
+                        this.setDataCalendar(value, dataRes)
+                    });
+                } else {
+                    vm.$ajax(paths.getSixMonthsCalendarCompany+ startDate + "/" + endDate).done(dataRes => {
+                        this.setDataCalendar(value, dataRes)
+                    });
+                }
+                this.$blockui("hide");
             })
         }
 
@@ -57,13 +59,19 @@ module nts.uk.at.view.ksm004.f.viewmodel {
             const vm = this;
             const dayOffArr: KnockoutObservableArray<Date> = ko.observableArray([]);
             vm.months.removeAll();
-            dataRes.forEach(item => dayOffArr.push(new Date(item.date)));
-            this.getDateRange(date).forEach(item => vm.months.push(
-                {
-                    baseDate: ko.observable(item),
-                    holidays: dayOffArr
-                }
-            ));
+            let holidayDateAll = _.map(_.filter(dataRes, (item: any) => { return item.workingDayAtr != 0; }), (item: any) => { return new Date(item.date) });
+            let workingDateAll = _.map(_.filter(dataRes, (item: any) => { return item.workingDayAtr == 0; }), (item: any) => { return new Date(item.date) });
+            let baseDates = vm.getDateRange(date);
+            _.forEach(baseDates, (baseDate: Date) => {
+                let holidays = _.filter(holidayDateAll, (item: Date) => { return item.getMonth() == baseDate.getMonth(); });
+                let workingdays = _.filter(workingDateAll, (item: Date) => { return item.getMonth() == baseDate.getMonth(); });
+                vm.months.push(
+                    {
+                        baseDate: ko.observable(baseDate),
+                        holidays: ko.observableArray(holidays),
+                        isEmptyMonth: ko.observable(_.isEmpty(workingdays))
+                    });
+            })
         }
 
         getDateRange(baseDate: Date) {

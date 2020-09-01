@@ -51,7 +51,7 @@ public class WorkMonthlySettingServiceTest {
         WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
         WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
 
-        NtsAssert.businessException("Msg_435", () ->{
+        NtsAssert.businessException("Msg_1608", () ->{
                     new WorkMonthlySettingService()
                             .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE);
                 }
@@ -90,7 +90,7 @@ public class WorkMonthlySettingServiceTest {
             requireWorkInfo.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
             result = SetupType.NOT_REQUIRED;
         }};
-        NtsAssert.businessException("Msg_435", () ->{
+        NtsAssert.businessException("Msg_434", () ->{
                     new WorkMonthlySettingService()
                             .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE);
                 }
@@ -111,7 +111,7 @@ public class WorkMonthlySettingServiceTest {
             requireWorkInfo.findByCode(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
             result = Optional.empty();
         }};
-        NtsAssert.businessException("Msg_435", () ->{
+        NtsAssert.businessException("Msg_1609", () ->{
                     new WorkMonthlySettingService()
                             .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_FALSE);
                 }
@@ -166,7 +166,7 @@ public class WorkMonthlySettingServiceTest {
             result = SetupType.REQUIRED;
             requireWorkInfo.findByCode(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
             result = Optional.of(workTimeSetting);
-            require.exists(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
+            require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
             result = false;
         }};
 
@@ -185,7 +185,7 @@ public class WorkMonthlySettingServiceTest {
             result = SetupType.REQUIRED;
             requireWorkInfo.findByCode(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
             result = Optional.of(workTimeSetting);
-            require.exists(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
+            require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
             result = true;
         }};
     }

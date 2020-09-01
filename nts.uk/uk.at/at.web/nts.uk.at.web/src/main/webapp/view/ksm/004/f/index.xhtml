@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 720, height:680 };</script>
+			<script>var dialogSize = { width: 750, height: 680 };</script>
 			<!--<com:scriptfile path="ksm004.e.start.js" />-->
 			<!--<com:scriptfile path="ksm004.e.service.js" />-->
 			<com:scriptfile set="IGNITE" />
@@ -24,14 +24,14 @@
 				<table id="table-top">
 					<tr>
 						<td>
-							<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM004_106')}</div>
+							<div id="F1_1" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSM004_106')}</div>
 							<div tabindex="5" data-bind="ntsDatePicker: {
 								value: baseDate,
 								dateFormat: 'YYYY/MM',
 								valueFormat: 'YYYY/MM',
 								showJumpButtons: false,
 								required: true,
-								name: $i18n('KSM004_107')
+								name: $i18n('KSM004_106')
 							}"></div>
 						</td>
 						<td>

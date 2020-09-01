@@ -24,10 +24,19 @@
     display: inline-block;
     box-sizing: border-box;
     margin: 0 -2px;
+    background-color: #ffffff;
+}
+
+.holiday-calendar .day:first-child {
+    margin: 0 -2px 0 0;
+}
+
+.holiday-calendar .day:last-child {
+    margin: 0 0 0 -2px;
 }
 
 .holiday-calendar .week .name-day {
- background-color: #f2f2f2;
+    background-color: #f2f2f2;
 }
 
 .holiday-calendar .week .day:not(:last-child) {
@@ -47,16 +56,17 @@
 }
 
 .holiday-calendar .isEmtyMonth {
-    background-color: lightgray;
+    background-color: #d9d9d9;
 }
 
 .holiday-calendar .isEmtyMonth .out-month {
-    color: lightgray !important;
+    color: #d9d9d9 !important;
 }
 .holiday-calendar .isEmtyMonth .day:not(:last-child) {
-    border-right: 1px solid lightgray !important;
+    border-right: 1px solid #d9d9d9 !important;
 }
 .holiday-calendar .isEmtyMonth .day {
-    border-bottom: 1px solid lightgray !important;
+    border-bottom: 1px solid #d9d9d9 !important;
+    background-color: #d9d9d9;
 }
 
