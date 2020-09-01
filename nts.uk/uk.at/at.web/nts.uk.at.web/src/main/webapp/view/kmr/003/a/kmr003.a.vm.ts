@@ -13,6 +13,10 @@ module nts.uk.at.kmr003.a {
         BENTO_DELETE: 'at/record/reservation/bento/force-delete'
     };
 
+    const PATH = {
+        KMR003_B: '/view/kmr/003/b/index.xhtml'
+    };
+
     @bean()
     export class KMR003AViewModel extends ko.ViewModel {
         date: KnockoutObservable<string> = ko.observable((new Date()).toISOString().substr(0, 10) + 'T00:00:00.000Z');
@@ -183,8 +187,6 @@ module nts.uk.at.kmr003.a {
                 enter: 'right',
                 autoFitWindow: false,
                 hidePrimaryKey: true,
-                // errorColumns: [ "ruleCode" ],
-                errorsOnPage: true,
                 columns: self.getFixedColumns().concat(self.dynamicColumns),
                 ntsControls: [
                     {
@@ -395,7 +397,15 @@ module nts.uk.at.kmr003.a {
             let reservations: Array<ReservationModifyEmployeeDto> = $("#grid").mGrid("dataSource", true);
 
             let commandUpdate = new ForceUpdateBentoReserveCommand(self.date(), self.isNewMode(), self.closingTimeFrameValue());
-            commandUpdate.setReservationInfos(reservations, self.headerInfos);
+            let errors: Array<ErrorDto> = [];
+            commandUpdate.setReservationInfos(reservations, self.headerInfos, errors);
+
+            if (!_.isEmpty(errors)) {
+                self.$blockui("clear");
+                self.$window.modal('at', PATH.KMR003_B, errors);
+                return;
+            }
+
             self.$ajax(API.BENTO_UPDATE, commandUpdate).done(() => {
                 self.$dialog.info({ messageId: "Msg_15" }).then(function () {
                     self.$blockui("clear");
@@ -539,6 +549,8 @@ module nts.uk.at.kmr003.a {
 
         key: string;
         unitLabel: string;
+
+        bentoValidation: any;
         constructor(item: IHeaderInfoDto) {
             this.frameNo = item.frameNo;
             this.bentoName = item.bentoName;
@@ -546,6 +558,8 @@ module nts.uk.at.kmr003.a {
 
             this.key = item.frameNo + "_" + item.bentoName;
             this.unitLabel = "(" + item.unit + ")";
+
+            this.bentoValidation = new validation.NumberValidator(this.bentoName, "BentoReservationCount", { required: false });
         }
     }
 
@@ -640,6 +654,20 @@ module nts.uk.at.kmr003.a {
         }
     }
 
+    class ErrorDto {
+        key: string;
+        employee: string;
+        bento: string;
+        message: string;
+
+        constructor(employee: string, bento: string, message: string) {
+            this.key = uk.util.randomId();
+            this.employee = employee
+            this.bento = bento
+            this.message = message
+        }
+    }
+
     class ForceUpdateBentoReserveCommand {
         reservationInfos: Array<BentoReserveInfoCommand>;
         date: any;
@@ -653,9 +681,9 @@ module nts.uk.at.kmr003.a {
             this.closingTimeFrame = closingTimeFrame;
         }
 
-        setReservationInfos(reservations: Array<ReservationModifyEmployeeDto>, bentos: Array<HeaderInfoDto>) {
+        setReservationInfos(reservations: Array<ReservationModifyEmployeeDto>, bentos: Array<HeaderInfoDto>, errors: Array<ErrorDto>) {
             this.reservationInfos = _.map(reservations, (reservation: ReservationModifyEmployeeDto) => {
-                return new BentoReserveInfoCommand(reservation, bentos);
+                return new BentoReserveInfoCommand(reservation, bentos, errors);
             });
         }
     }
@@ -664,15 +692,20 @@ module nts.uk.at.kmr003.a {
         reservationCardNo: String;
         ordered: boolean;
         details: Array<BentoReserveDetailCommand>
-        constructor(reservation: ReservationModifyEmployeeDto, bentos: Array<HeaderInfoDto>) {
+        constructor(reservation: ReservationModifyEmployeeDto, bentos: Array<HeaderInfoDto>, errors: Array<ErrorDto>) {
             let self = this;
             self.reservationCardNo = reservation.reservationCardNo;
             self.ordered = reservation.ordered;
             self.details = [];
             _.forEach(bentos, (bento: HeaderInfoDto) => {
                 let bentoCount = reservation[bento.key];
-                if (!isNaN(bentoCount) && bentoCount != null) {
-                    self.details.push(new BentoReserveDetailCommand(bento.frameNo, bentoCount));
+                let check = bento.bentoValidation.validate(bentoCount == null ? null : bentoCount.toString());
+                if (!check.isValid) {
+                    errors.push(new ErrorDto(reservation.reservationMemberCode + "　" + reservation.reservationMemberName, bento.bentoName, check.errorMessage));
+                } else {
+                    if (!isNaN(bentoCount) && bentoCount != null) {
+                        self.details.push(new BentoReserveDetailCommand(bento.frameNo, bentoCount));
+                    }
                 }
             })
         }
