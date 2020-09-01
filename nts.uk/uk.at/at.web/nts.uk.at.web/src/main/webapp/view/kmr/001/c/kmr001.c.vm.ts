@@ -225,7 +225,7 @@ module nts.uk.at.kmr001.c {
             vm.$blockui('invisible');
             vm.$window.modal('at', PATH.KMR001_D, vm.history && vm.history.params ? vm.history.params : null)
                 .then((result: any) => {
-                    if(vm.history && vm.history.params.endDate == result.params.endDate) {
+                    if(vm.history && vm.history.params.historyId == result.params.historyId && result.params.endDate == '9999/12/31') {
                         return
                     }
                     vm.isLasted(!!(result.params.endDate == '9999/12/31' || null));
@@ -349,37 +349,10 @@ module nts.uk.at.kmr001.c {
                     vm.model().workLocationCode(data);
                 });
             }).fail(function (error) {
-                vm.$dialog.error({ messageId: error.messageId });
-                if(vm.operationDistinction() == 1) {
-                    let array: Array<any> = [];
-                    _.range(1, 41).forEach(item =>
-                        array.push(new ItemBentoByLocation(
-                            item.toString(),
-                            "",
-                            "",
-                        ))
-                    );
-                    vm.itemsBento(array);
-                } else if(vm.operationDistinction() == 0) {
-                    let array: Array<any> = [];
-                    _.range(1, 41).forEach(item =>
-                        array.push(new ItemBentoByCompany(
-                            item.toString(),
-                            "",
-                        ))
-                    );
-                    vm.itemsBento(array);
-                }
                 vm.isLasted(false);
-                vm.operationDistinction(0);
-                vm.model( new BentoMenuSetting(
-                    '',  null,
-                    false,  false,
-                    null,  null,
-                    ''
-                ));
-                vm.start('');
-                vm.end('')
+                vm.$dialog.error({ messageId: error.messageId }).then(function () {
+                    vm.$jump("at", "/view/kmr/001/a/index.xhtml");
+                });
             }).always(() => this.$blockui("clear"));
         }
     }
