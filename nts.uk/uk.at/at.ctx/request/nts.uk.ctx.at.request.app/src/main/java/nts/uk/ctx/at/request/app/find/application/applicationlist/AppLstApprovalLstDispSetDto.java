@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppLstApprovalLstDispSet;
 
 @Setter
@@ -48,12 +47,4 @@ public class AppLstApprovalLstDispSetDto {
 				displaySet.getAppDateWarningDisp());
 	}
 	
-	// AnhNM add to domain
-	public AppLstApprovalLstDispSet toDomain() {
-		return new AppLstApprovalLstDispSet(GeneralDate.fromString(startDateDisp, "yyyy/MM/dd"),
-				prePostAtrDisp,
-				GeneralDate.fromString(endDateDisp, "yyyy/MM/dd"),
-				workplaceNameDisp,
-				appDateWarningDisp);
-	}
 }
