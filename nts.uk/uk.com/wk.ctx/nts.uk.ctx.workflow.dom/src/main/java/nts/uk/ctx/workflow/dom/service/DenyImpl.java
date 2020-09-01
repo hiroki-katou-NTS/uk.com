@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.util.Strings;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
@@ -78,7 +78,7 @@ public class DenyImpl implements DenyService {
 							if(approvalRepresenterOutput.getListAgent().contains(employeeID)){
 								approverInfor.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 								approverInfor.setAgentID(employeeID);
-								approverInfor.setApprovalDate(GeneralDate.today());
+								approverInfor.setApprovalDate(GeneralDateTime.now());
 								approverInfor.setApprovalReason(memo);
 								approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 								executedFlag = true;
@@ -89,7 +89,7 @@ public class DenyImpl implements DenyService {
 						} else {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							approverInfor.setAgentID("");
-							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalDate(GeneralDateTime.now());
 							approverInfor.setApprovalReason(memo);
 							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							executedFlag = true;
@@ -102,7 +102,7 @@ public class DenyImpl implements DenyService {
 						if(Strings.isNotBlank(approverInfor.getAgentID())&&approverInfor.getAgentID().equals(employeeID)) {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							approverInfor.setAgentID(employeeID);
-							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalDate(GeneralDateTime.now());
 							approverInfor.setApprovalReason(memo);
 							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							executedFlag = true;
@@ -111,7 +111,7 @@ public class DenyImpl implements DenyService {
 							approverInfor.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							approverInfor.setApproverID(employeeID);
 							approverInfor.setAgentID("");
-							approverInfor.setApprovalDate(GeneralDate.today());
+							approverInfor.setApprovalDate(GeneralDateTime.now());
 							approverInfor.setApprovalReason(memo);
 							approvalPhaseState.setApprovalAtr(ApprovalBehaviorAtr.DENIAL);
 							executedFlag = true;

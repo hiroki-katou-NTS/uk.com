@@ -208,7 +208,7 @@ public class BusinessTripFinder {
         confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
                 AppContexts.user().companyId(),
                 EmploymentRootAtr.APPLICATION,
-                false,
+                true,
                 application,
                 null,
                 errorFlag,
