@@ -44,7 +44,6 @@ module nts.uk.at.kmr001.d {
             super();
             var vm = this;
             let self = this;
-            console.log("paramKMR001C", params);
             self.lstWpkHistory = ko.observableArray([]);
             self.selectedHistoryId = ko.observable(null);
             self.selectedStartDateInput = ko.observable(null);
@@ -139,7 +138,6 @@ module nts.uk.at.kmr001.d {
                 if (self.lstWpkHistory().length > 1) {
                     vm.$ajax(API.DELETE, data).done(() => {
                         self.created(self.params).done(() => {
-                            console.log(self.lstWpkHistory());
                             self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
                         });
                         nts.uk.ui.dialog.info({messageId: "Msg_16"});

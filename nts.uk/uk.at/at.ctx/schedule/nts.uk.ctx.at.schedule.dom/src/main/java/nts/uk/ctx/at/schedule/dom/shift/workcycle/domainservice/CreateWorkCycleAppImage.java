@@ -3,7 +3,7 @@ package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
@@ -27,7 +27,7 @@ public class CreateWorkCycleAppImage {
      * @return $反映イメージ.年月日順序のリストを返す()
      */
     public static List<RefImageEachDay> create(Require require, DatePeriod period, WorkCycleRefSetting config) {
-        ReflectionImage reflectionImage = new ReflectionImage();
+        ReflectionImage reflectionImage = ReflectionImage.create();
         config.getRefOrder().forEach(i -> {
             switch (i) {
                 case WEEKLY_WORK:

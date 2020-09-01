@@ -38,12 +38,8 @@ public class WorkCycle extends AggregateRoot {
 
     /**
      * [C-1] 作る
-     * @param 会社ID cid
-     * @param コード code
-     * @param 名称 name
-     * @param 勤務情報リスト infos
      */
-    public static WorkCycle WorkCycle(String cid, String code, String name, List<WorkCycleInfo> infos) {
+    public static WorkCycle create(String cid, String code, String name, List<WorkCycleInfo> infos) {
         if (infos.size() < 1 || infos.size() > 99) {
             throw new BusinessException("Msg_1688");
         }
@@ -53,8 +49,6 @@ public class WorkCycle extends AggregateRoot {
 
     /**
      * 	[1] 勤務情報を取得する
-     * @param 位置 position
-     * @param スライド日数 slideDays
      * @return 勤務情報
      */
     public WorkCycleInfo getWorkInfo(int position, int slideDays) {
@@ -78,7 +72,6 @@ public class WorkCycle extends AggregateRoot {
 
     /**
      * [pvt-1] 指定した位置の勤務情報を取得する
-     * @param 	位置 position
      * @return 	勤務情報
      */
     private WorkCycleInfo getWorkInfoByPosition(int position) {
