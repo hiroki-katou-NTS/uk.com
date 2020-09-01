@@ -379,7 +379,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         const self = this;
         self.model.workType.code = self.mode ? params.appWorkChangeDispInfo.workTypeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTypeCD ? params.appWorkChange.opWorkTypeCD : null) : null);
         let isExist = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == self.model.workType.code);
-        self.model.workType.name = isExist ? isExist.abbreviationName : self.$i18n('KAFS07_10');
+        self.model.workType.name = isExist ? isExist.name : self.$i18n('KAFS07_10');
 
         self.model.workTime.code = self.mode ? params.appWorkChangeDispInfo.workTimeCD : (params.appWorkChange ? (params.appWorkChange.opWorkTimeCD ? params.appWorkChange.opWorkTimeCD : null) : null);
         isExist = _.find(params.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode == self.model.workTime.code);
@@ -576,6 +576,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public changeDate(dates: any) {
         const self = this;
         self.$mask('show');
+        self.data.appWorkChangeDispInfo.workTypeCD = self.model.workType.code;
+        self.data.appWorkChangeDispInfo.workTimeCD = self.model.workTime.code;
         let params = {
             companyId: self.user.companyId,
             listDates: dates,
