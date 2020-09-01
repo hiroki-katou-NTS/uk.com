@@ -61,6 +61,8 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
 		 * 直行直帰申請の印刷内容
 		 */
 		opInforGoBackCommonDirectOutput: any;
+		
+		opBusinessTripInfoOutput: any;
 	}
     
     export module model {

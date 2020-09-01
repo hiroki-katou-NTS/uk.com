@@ -377,7 +377,9 @@ module cmm045.a.viewmodel {
 //                });
 //                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
 //                self.lstApp(lstData);
-                self.items(data.appListInfo.appLst);
+				_.each(data.appListInfo.appLst, item => {
+					self.items.push(new vmbase.DataModeApp(item));	
+				})
                 //mode approval - count
                 if (data.appStatusCount != null) {
                     self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -927,7 +929,7 @@ module cmm045.a.viewmodel {
                         let targetAppId = $(e.target).closest("td").data("app-id");
                         let lstAppId = self.items().map(app => app.appID);
                         nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
-                        nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                        nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
                 { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
