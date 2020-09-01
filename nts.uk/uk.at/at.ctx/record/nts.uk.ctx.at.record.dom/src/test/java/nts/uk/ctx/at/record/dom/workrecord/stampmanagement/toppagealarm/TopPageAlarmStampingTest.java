@@ -27,7 +27,7 @@ public class TopPageAlarmStampingTest {
 		lstsid.add("DUMMY");
 		lstsid.add("DUMMY");
 		
-		TopPageAlarm topPageAlarm = new TopPageAlarm("DUMMY", GeneralDateTime.now(), ExistenceError.NO_ERROR, IsCancelled.NOT_CANCELLED, new ArrayList<>());
+		TopPageAlarmMgrStamp topPageAlarm = new TopPageAlarmMgrStamp("DUMMY", GeneralDateTime.now(), ExistenceError.NO_ERROR, IsCancelled.NOT_CANCELLED, new ArrayList<>());
 		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping(list, topPageAlarm);
 		
 		NtsAssert.invokeGetters(alarmStamping);

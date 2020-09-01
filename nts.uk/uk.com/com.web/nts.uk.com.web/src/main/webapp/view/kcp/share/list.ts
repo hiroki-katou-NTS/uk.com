@@ -43,6 +43,7 @@ module kcp.share.list {
          * 2. Classification.
          * 3. Job title list.
          * 4. Employee list.
+         * 5. Workplace list.
          */
         listType: ListType;
         
@@ -205,6 +206,7 @@ module kcp.share.list {
         static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
+        static WORKPLACE = 5;
     }
     
     /**
@@ -294,7 +296,6 @@ module kcp.share.list {
             this.componentWrapperId = nts.uk.util.randomId();
             this.searchBoxId = nts.uk.util.randomId();
             this.isSelectAllAfterReload = true;
-            disableSelection = false;
             this.disableSelection = false;
             this.isRemoveFilterWhenReload = true;
         }
@@ -920,7 +921,8 @@ module kcp.share.list {
             var totalRowsHeight = heightOfRow * this.maxRows + 20;
             var totalHeight: number = self.calcTotalHeightRev(data);
             
-            var optionalColumnSize = 0;
+
+            var optionalColumnSize: any = 0;
 
             if (this.showOptionalColumn) {
                 codeColumnSize = data.maxWidth ? '15%': codeColumnSize;
@@ -951,9 +953,10 @@ module kcp.share.list {
             }
         }
         
+
         private calcTotalHeightRev(data: ComponentOption) {
             var totalHeightRev = this.hasBaseDate || this.isDisplayClosureSelection ? 97 : 55;
-            if (data.listType === ListType.EMPLOYEE) {
+            if (data.listType === ListType.EMPLOYEE ) {
                 totalHeightRev -= 48;
             }
             return totalHeightRev;
@@ -1019,6 +1022,8 @@ module kcp.share.list {
                     return service.findJobTitles(this.baseDate());
                 case ListType.Classification:
                     return service.findClassifications();
+                case ListType.WORKPLACE:
+                    return service.findAllWorkplace();
                 default:
                     return;
             }
@@ -1089,6 +1094,8 @@ module kcp.share.list {
                     return '#[KCP002_1]';
                 case ListType.EMPLOYEE:
                     return '#[KCP005_1]';
+                case ListType.WORKPLACE:
+                    return '#[KCP012_1]';
                 default:
                     return '';
             }
@@ -1115,7 +1122,8 @@ module kcp.share.list {
             findClassifications: 'bs/employee/classification/findAll',
             findAllClosureItems: 'ctx/at/shared/workrule/closure/find/currentyearmonthandused',
             findEmploymentByClosureId: 'ctx/at/shared/workrule/closure/findEmpByClosureId/',
-            findEmploymentByCodes: 'bs/employee/employment/findByCodes'
+            findEmploymentByCodes: 'bs/employee/employment/findByCodes',
+            findAllWorkplace: 'at/record/worklocation/kcp012'
         }
         
         /**
@@ -1169,6 +1177,14 @@ module kcp.share.list {
             return nts.uk.request.ajax('com', servicePath.findClassifications);
         }
         
+
+        /**
+         * Find Workplace list.
+         */
+        export function findAllWorkplace(): JQueryPromise<Array<UnitModel>> {
+            return nts.uk.request.ajax('at', servicePath.findAllWorkplace);
+        }
+
     }
 
     export class ListComponentTextResource {
@@ -1223,7 +1239,7 @@ var LIST_COMPONENT_HTML = `<style type="text/css">
         <!-- /ko -->
         <!-- End of Upgrade -->
 
-        <!-- ko if: listType !== kcp.share.list.ListType.EMPLOYEE -->
+        <!-- ko if: (listType !== kcp.share.list.ListType.EMPLOYEE  ) -->
             <div data-bind=" attr: {id: searchBoxId}, style:{width: gridStyle.totalComponentSize + 'px'}" style="display: inline-block"></div>
         <!-- /ko -->
         <table id="grid-list-all-kcp"></table>

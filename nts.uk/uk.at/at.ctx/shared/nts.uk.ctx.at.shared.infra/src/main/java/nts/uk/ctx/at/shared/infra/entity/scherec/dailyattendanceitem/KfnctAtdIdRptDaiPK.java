@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.stamp.application;
+package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem;
 
 import java.io.Serializable;
 
@@ -6,20 +6,25 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 @EqualsAndHashCode
-public class KrccpStampFunctionPk  implements Serializable {
+@Data
+public class KfnctAtdIdRptDaiPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
-	/** 会社ID */
+	
+	/*会社ID*/
 	@Column(name = "CID")
-	public String companyId;
+	private String companyId;
+	
+	/*勤怠項目ID*/
+	@Column(name = "ATTENDANCE_ITEM_ID")
+	private int 	attendanceItemId;
 
 }
-								
