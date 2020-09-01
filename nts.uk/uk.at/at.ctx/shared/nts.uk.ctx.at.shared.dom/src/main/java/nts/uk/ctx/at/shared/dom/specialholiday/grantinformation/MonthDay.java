@@ -1,30 +1,26 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantinformation;
 
-import lombok.AllArgsConstructor;
-//import lombok.Data;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * 年月
+ * 月日
  * @author masaaki_jinno
  *
  */
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
-public class YearMonth {
-	private int year;
+public class MonthDay {
+	
 	private int month;
+	private int day;
 	
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof YearMonth))
             return false;
 
-        YearMonth mdc = (YearMonth) obj;
-        return mdc.year == this.year && mdc.month == this.month;
+        MonthDay mdc = (MonthDay) obj;
+        return mdc.month == this.month && mdc.day == this.day;
     }
 }

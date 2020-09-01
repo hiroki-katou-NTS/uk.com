@@ -72,7 +72,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecia
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.残数管理.残数管理.特別休暇管理.Export
- * @author do_dt
  *
  */
 public class SpecialLeaveManagementService {
@@ -135,7 +134,7 @@ public class SpecialLeaveManagementService {
 						param.getOptBeforeResult(),
 						param.getSpecialLeaveCode());
 
-		// 次回年休付与日を計算
+		// 次回特休付与日を計算
 		CalcNextSpecialLeaveGrantDate calcNextSpecialLeaveGrantDate
 			= new CalcNextSpecialLeaveGrantDate();
 		List<NextSpecialLeaveGrant> list
@@ -145,6 +144,12 @@ public class SpecialLeaveManagementService {
 				param.getSid(), 
 				param.getSpecialLeaveCode(), 
 				Optional.of(param.getComplileDate()));
+		
+		
+		
+		
+		
+		
 		
 		
 		

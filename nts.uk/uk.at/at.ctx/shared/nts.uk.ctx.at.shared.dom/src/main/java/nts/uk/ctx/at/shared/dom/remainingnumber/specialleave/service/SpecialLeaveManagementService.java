@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -1141,97 +1142,113 @@ public class SpecialLeaveManagementService {
 			SpecialHolidayRepository specialHolidayRepo, InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo,
 			InterimRemainRepository interimRemainRepo, SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo) {
 		
-		return new RequireM5() {
-			
-			/** 特別休暇付与残数データ */
-			@Override
-			public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
-				return specialLeaveGrantRepo.getBySpecialId(specialId);
-			}
-			
-			@Override
-			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-					String employeeId, GeneralDate baseDate) {
-				return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-			}
-			
-			@Override
-			public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
-				return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
-			}
-			
-			@Override
-			public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
-				return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
-			}
-			
-			@Override
-			public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
-					List<String> employeeIds, DatePeriod datePeriod) {
-				return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
-			}
-			
-			/** 特別休暇付与テーブル */
-			@Override
-			public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
-				return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
-			}
-			
-			/** 経過年数に対する付与日数 */
-			@Override
-			public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
-				return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
-			}
-			
-			/** 年休社員基本情報 */
-			@Override
-			public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
-				return annLeaEmpBasicInfoRepo.get(employeeId);
-			}
-			
-			@Override
-			public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
-					List<String> sids, DatePeriod datePeriod) {
-				return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
-			}
-			
-			/** 特別休暇 */
-			@Override
-			public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
-				return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
-			}
-			
-			/** 特別休暇付与残数データ */
-			@Override
-			public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
-					DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
-				return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
-			}
-			
-			/** 特別休暇付与残数データ */
-			@Override
-			public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
-					LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
-				return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate, deadlineDate);
-			}
-			
-			/** 特別休暇暫定データ */
-			@Override
-			public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
-				return interimSpecialHolidayMngRepo.findById(mngId);
-			}
-			
-			/** 暫定残数管理データ */
-			@Override
-			public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
-				return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
-			}
-			
-			/** 特別休暇基本情報 */
-			@Override
-			public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
-				return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
-			}
-		};
+		return new RequireM5Impl(specialLeaveGrantRepo, shareEmploymentAdapter, 
+				empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, 
+				specialHolidayRepo, interimSpecialHolidayMngRepo, interimRemainRepo, 
+				specialLeaveBasicInfoRepo);
+	}
+	
+	@AllArgsConstructor
+	public static class RequireM5Impl implements RequireM5 {
+		
+		protected SpecialLeaveGrantRepository specialLeaveGrantRepo;
+		protected ShareEmploymentAdapter shareEmploymentAdapter;
+		protected EmpEmployeeAdapter empEmployeeAdapter;
+		protected GrantDateTblRepository grantDateTblRepo;
+		protected AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+		protected SpecialHolidayRepository specialHolidayRepo;
+		protected InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
+		protected InterimRemainRepository interimRemainRepo;
+		protected SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
+		
+		/** 特別休暇付与残数データ */
+		@Override
+		public Optional<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String specialId) {
+			return specialLeaveGrantRepo.getBySpecialId(specialId);
+		}
+		
+		@Override
+		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
+				String employeeId, GeneralDate baseDate) {
+			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+		
+		@Override
+		public EmployeeRecordImport employeeFullInfo(CacheCarrier cacheCarrier, String empId) {
+			return empEmployeeAdapter.findByAllInforEmpId(cacheCarrier, empId);
+		}
+		
+		@Override
+		public EmployeeImport employeeInfo(CacheCarrier cacheCarrier, String empId) {
+			return empEmployeeAdapter.findByEmpIdRequire(cacheCarrier, empId);
+		}
+		
+		@Override
+		public List<SClsHistImport> employeeClassificationHistoires(CacheCarrier cacheCarrier, String companyId,
+				List<String> employeeIds, DatePeriod datePeriod) {
+			return empEmployeeAdapter.lstClassByEmployeeId(cacheCarrier, companyId, employeeIds, datePeriod);
+		}
+		
+		/** 特別休暇付与テーブル */
+		@Override
+		public Optional<GrantDateTbl> grantDateTbl(String companyId, int specialHolidayCode) {
+			return grantDateTblRepo.findByCodeAndIsSpecified(companyId, specialHolidayCode);
+		}
+		
+		/** 経過年数に対する付与日数 */
+		@Override
+		public List<ElapseYear> elapseYear(String companyId, int specialHolidayCode, String grantDateCode) {
+			return grantDateTblRepo.findElapseByGrantDateCd(companyId, specialHolidayCode, grantDateCode);
+		}
+		
+		/** 年休社員基本情報 */
+		@Override
+		public Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId) {
+			return annLeaEmpBasicInfoRepo.get(employeeId);
+		}
+		
+		@Override
+		public List<AffCompanyHistSharedImport> employeeAffiliatedCompanyHistories(CacheCarrier cacheCarrier,
+				List<String> sids, DatePeriod datePeriod) {
+			return empEmployeeAdapter.getAffCompanyHistByEmployee(cacheCarrier, sids, datePeriod);
+		}
+		
+		/** 特別休暇 */
+		@Override
+		public Optional<SpecialHoliday> specialHoliday(String companyID, int specialHolidayCD) {
+			return specialHolidayRepo.findByCode(companyID, specialHolidayCD);
+		}
+		
+		/** 特別休暇付与残数データ */
+		@Override
+		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int speCode,
+				DatePeriod datePriod, GeneralDate startDate, LeaveExpirationStatus expirationStatus) {
+			return specialLeaveGrantRepo.getByNextDate(sid, speCode, datePriod, startDate, expirationStatus);
+		}
+		
+		/** 特別休暇付与残数データ */
+		@Override
+		public List<SpecialLeaveGrantRemainingData> specialLeaveGrantRemainingData(String sid, int specialLeaveCode,
+				LeaveExpirationStatus expirationStatus, GeneralDate grantDate, GeneralDate deadlineDate) {
+			return specialLeaveGrantRepo.getByPeriodStatus(sid, specialLeaveCode, expirationStatus, grantDate, deadlineDate);
+		}
+		
+		/** 特別休暇暫定データ */
+		@Override
+		public List<InterimSpecialHolidayMng> interimSpecialHolidayMng(String mngId) {
+			return interimSpecialHolidayMngRepo.findById(mngId);
+		}
+		
+		/** 暫定残数管理データ */
+		@Override
+		public List<InterimRemain> interimRemains(String employeeId, DatePeriod dateData, RemainType remainType) {
+			return interimRemainRepo.getRemainBySidPriod(employeeId, dateData, remainType);
+		}
+		
+		/** 特別休暇基本情報 */
+		@Override
+		public Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfo(String sid, int spLeaveCD, UseAtr use) {
+			return specialLeaveBasicInfoRepo.getBySidLeaveCdUser(sid, spLeaveCD, use);
+		}
 	}
 }

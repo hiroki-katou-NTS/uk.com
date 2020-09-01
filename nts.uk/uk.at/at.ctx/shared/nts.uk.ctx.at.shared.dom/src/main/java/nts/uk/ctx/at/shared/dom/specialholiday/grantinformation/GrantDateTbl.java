@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 @Getter
 @Setter
 public class GrantDateTbl extends AggregateRoot {
+	
 	/** 会社ID */
 	private String companyId;
 
