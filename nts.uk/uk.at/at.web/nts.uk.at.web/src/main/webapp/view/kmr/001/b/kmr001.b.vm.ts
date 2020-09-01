@@ -36,7 +36,6 @@ module nts.uk.at.kmr001.b {
             //combo box B10_3
             _.range(0, 31).map(item => vm.itemsReservationChangeDay.push({appId: item, appValue: (item+1).toString()}));
             vm.enable = ko.observable(true);
-            console.log(vm.model);
         }
 
 		created() {
