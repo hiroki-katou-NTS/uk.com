@@ -1,0 +1,92 @@
+#contents-area {
+  padding-top: 5px;
+  padding-left: 5px;
+  width: 470px;
+  border: 1px groove;
+}
+.addSign {
+	background: url("../image/addSign.png");
+	margin: -8px 10px;
+	border-radius: 5px;
+	height: 28px;
+	text-align: center;
+	padding-bottom: 5px;
+}
+.sub {
+	margin: 10px;
+	border-radius: 5px;
+	height: 28px;
+	text-align: center;
+	word-wrap: break-word;
+}
+.row-inline{
+  display: inline-flex;
+}
+.custom-panel {
+  width: 115px;
+  height: 115px;
+  margin: 5px;
+  border-radius: 10px;
+  text-align: center;
+  word-wrap: break-word;
+}
+.grid {
+  display: grid;
+}
+.block {
+  display: block;
+}
+.big-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.title-border {
+  padding: 10px;
+  border-left: 5px solid #48b5cb;
+  border-top: 1px groove;
+  border-bottom: 1px groove;
+}
+.p-10 {
+  padding: 10px;
+}
+.pl-0 {
+  padding-left: 0px;
+}
+.non-statutory-color {
+  color: #49bfa8;
+}
+.time-outside-color {
+  color: #e05f4e;
+}
+.pr-20 {
+  padding-right: 20px;
+}
+.pb-0 {
+  padding-bottom: 0px;
+}
+.scroll {
+  overflow-y: scroll;
+  height: 160px;
+}
+.scroll thead th {
+  position: sticky;
+  top: 0;
+  background: white;
+}
+.pl-10 {
+  padding-left: 10px;
+}
+.right {
+  float: right;
+}
+.flex100 {
+  display: flex;
+  width: 100%;
+}
+.flex {
+  display: flex;
+}
+.left40 {
+  float: left;
+  width: 40%;
+}
