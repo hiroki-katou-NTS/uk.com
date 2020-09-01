@@ -8,9 +8,12 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import com.aspose.cells.BackgroundType;
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
+import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
+import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
@@ -30,6 +33,10 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  * @author anhnm
  *
  */
+/**
+ * @author anhnm
+ *
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class AsposeApplicationScreen extends AsposeCellsReportGenerator implements AppScreenGenerator {
@@ -40,6 +47,14 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	private final String TEMPLATE_FILE = "application/CMM045_template.xlsx";
 	private final String OUTPUT_FILE = "申請一覧.xlsx";
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see
+	 * nts.uk.ctx.at.request.dom.application.AppScreenGenerator#generate(nts.arc.
+	 * layer.infra.file.export.FileGeneratorContext, int,
+	 * nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo)
+	 */
 	@Override
 	public void generate(FileGeneratorContext context, int appListAtr, AppListInfo appLst) {
 		try {
@@ -60,8 +75,7 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			this.printHeader(worksheet, companyId);
 			this.printTopR1(worksheet, appLst);
 			this.printContent(workbook, appLst);
-
-			worksheet.autoFitColumn(3);
+			this.applyStyle(worksheet, appLst);
 
 			for (int i = 2; i < appLst.getAppLst().size() + 2; i++) {
 				worksheet.autoFitRow(i);
@@ -82,6 +96,114 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 		}
 	}
 
+	/**
+	 * @param worksheet
+	 * @param appLst
+	 */
+	private void applyStyle(Worksheet worksheet, AppListInfo appLst) {
+		Cells cells = worksheet.getCells();
+
+
+		for (int i = 3; i < appLst.getAppLst().size() + 3; i++) {
+
+			// Chua xu ly voi app type = 10
+			// Column E
+			Cell cellE = cells.get("E" + i);
+			String contentE = cellE.getStringValue();
+			this.colorSatSun(cellE, contentE, "ー");
+
+			// Column F
+
+			// Column G
+			Cell cellG = cells.get("G" + i);
+			String contentG = cellG.getStringValue();
+			this.colorSatSun(cellG, contentG, null);
+
+			// Column H
+			Cell cellH = cells.get("H" + i);
+			String contextH = cellH.getStringValue();
+			if (contextH.equals("承認済")) {
+				this.backgroundColor(cellH, 191, 234, 96);
+			}
+			if (contextH.equals("反映済")) {
+				this.backgroundColor(cellH, 206, 230, 255);
+			}
+			if (contextH.equals("否認")) {
+				this.backgroundColor(cellH, 253, 77, 77);
+			}
+			if (contextH.equals("未承認")) {
+				this.backgroundColor(cellH, 255, 255, 255);
+			}
+			if (contextH.equals("差戻")) {
+				this.backgroundColor(cellH, 253, 77, 77);
+			}
+			if (contextH.equals("取消")) {
+				this.backgroundColor(cellH, 246, 246, 54);
+			}
+		}
+	}
+
+	/**
+	 * @param cell
+	 *            Cell
+	 * @param i
+	 *            Red
+	 * @param j
+	 *            Green
+	 * @param k
+	 *            Blue
+	 * @return
+	 */
+	private void backgroundColor(Cell cell, int i, int j, int k) {
+		Style style = cell.getStyle();
+		style.setPattern(BackgroundType.SOLID);
+		style.setForegroundColor(Color.fromArgb(i, j, k));
+		cell.setStyle(style);
+	}
+
+	/**
+	 * @param cell
+	 * @param content
+	 * @param separator
+	 */
+	private void colorSatSun(Cell cell, String content, String separator) {
+		Color colorSaturday = Color.fromArgb(0, 0, 255);
+		Color colorSunday = Color.fromArgb(255, 0, 0);
+
+		if (separator != null) {
+			String[] datas = content.split(separator);
+			for (int j = 0; j < datas.length; j++) {
+				if (datas[j].contains("土")) {
+					if (j == 0) {
+						cell.characters(j, datas[j].length()).getFont().setColor(colorSaturday);
+					} else {
+						cell.characters(j + datas[0].length(), datas[j].length() + datas[0].length() + 1).getFont()
+								.setColor(colorSaturday);
+					}
+				}
+				if (datas[j].contains("日")) {
+					if (j == 0) {
+						cell.characters(j, datas[j].length()).getFont().setColor(colorSunday);
+					} else {
+						cell.characters(j + datas[0].length(), datas[j].length() + datas[0].length() + 1).getFont()
+								.setColor(colorSunday);
+					}
+				}
+			}
+		} else {
+			if (content.contains("土")) {
+				cell.characters(0, content.length() - 1).getFont().setColor(colorSaturday);
+			}
+			if (content.contains("日")) {
+				cell.characters(0, content.length() - 1).getFont().setColor(colorSunday);
+			}
+		}
+	}
+
+	/**
+	 * @param workbook
+	 * @param appLst
+	 */
 	private void printContent(Workbook workbook, AppListInfo appLst) {
 		List<ListOfApplication> lstApp = appLst.getAppLst();
 		List<AsposeAppScreenDto> dataSource = lstApp.stream().map(x -> AsposeAppScreenDto.fromDomain(x))
@@ -97,40 +219,12 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// for(int i = 0; i < lstApp.size(); i++) {
-		// // Cell of ApplicantName
-		// Cell cellB = cells.get("B" + i + 3);
-		// cellB.setValue(lstApp.get(i).getApplicantName());
-		// // Cell of Application Name
-		// Cell cellC = cells.get("C" + i + 3);
-		// cellC.setValue(lstApp.get(i).getAppType().name);
-		// // Cell of prepost type
-		// Cell cellD = cells.get("D" + i + 3);
-		// cellD.setValue(EnumAdaptor.valueOf(lstApp.get(i).getPrePostAtr(),
-		// PrePostAtr.class).name);
-		// // Cell of start date - end date
-		// Cell cellE = cells.get("E" + i + 3);
-		// cellE.setValue(
-		// lstApp.get(i).getOpAppStartDate().isPresent() ?
-		// lstApp.get(i).getOpAppStartDate().get().toString()
-		// : "");
-		// // Cell of application content
-		// Cell cellF = cells.get("F" + i + 3);
-		// cellF.setValue(lstApp.get(i).getAppContent());
-		// // Cell of input date
-		// Cell cellG = cells.get("G" + i + 3);
-		// cellG.setValue(lstApp.get(i).getInputDate().toString());
-		// // Cell approval status
-		// Cell cellH = cells.get("H" + i + 3);
-		// cellH.setValue(lstApp.get(i).getReflectionStatus());
-		// // Cell of phase approval
-		// Cell cellI = cells.get("I" + i + 3);
-		// cellI.setValue(lstApp.get(i).getOpApprovalStatusInquiry().isPresent()
-		// ? lstApp.get(i).getOpApprovalStatusInquiry().get().toString()
-		// : "");
-		// }
 	}
 
+	/**
+	 * @param worksheet
+	 * @param appLst
+	 */
 	private void printTopR1(Worksheet worksheet, AppListInfo appLst) {
 		Cells cells = worksheet.getCells();
 		Cell cellB1 = cells.get("B1");
