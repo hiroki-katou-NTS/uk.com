@@ -505,15 +505,18 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 };
                 this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
             }
-            if (this.isCondition2 && !(_.isNull(this.valueWorkHours2.start) && _.isNull(this.valueWorkHours2.end))) {
-                b = {
-                    workNo: 2,
-                    timeZone: {
-                        startTime: this.valueWorkHours2 ? this.valueWorkHours2.start : null,
-                        endTime: this.valueWorkHours2 ? this.valueWorkHours2.end : null
-                    }
-                };
-                this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
+            if (this.valueWorkHours2) {
+
+                if (this.isCondition2 && !(_.isNull(this.valueWorkHours2.start) && _.isNull(this.valueWorkHours2.end))) {
+                    b = {
+                        workNo: 2,
+                        timeZone: {
+                            startTime: this.valueWorkHours2 ? this.valueWorkHours2.start : null,
+                            endTime: this.valueWorkHours2 ? this.valueWorkHours2.end : null
+                        }
+                    };
+                    this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
+                }
             }
         } else {
             this.appWorkChangeDto.timeZoneWithWorkNoLst = null;
