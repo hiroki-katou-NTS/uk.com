@@ -500,7 +500,6 @@ module nts.uk.at.view.ksc001.b {
 
 				                self.employeeList ( employeeSearchs );
 				                self.selectedEmployeeCode ( listSelectedEmpCode );
-
 			                }
 
 			                nts.uk.ui.block.clear ();
