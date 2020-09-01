@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.workschedule.displaysetting;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.GetEmRankInforService;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.EmpTeamInfor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetScheduleTeamInfoService;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 個人条件の表示制御 
@@ -62,46 +65,79 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 	// [1] 個人条件の表示制御に対して必要な個人情報を取得する
 	public  List<PersonalCondition> acquireInforDisplayControlPersonalCondition(Require require,
 			GeneralDate referenceDate, List<String> lstEmpId) {
+		// 	$社員チームリスト
+		Map<String, EmpTeamInfor> mapEmpTeam = new HashMap<>();
+		
+		// 	$社員ランクリスト
+		Map<String, EmpRankInfor> mapEmpRankInfor = new HashMap<>();
+		
+		// $社員免許区分リスト
+		Map<String, EmpLicenseClassification> mapEmpLicenseClassification = new HashMap<>();
+		
 		/*
 		 * $社員チームリスト = DS_所属スケジュールチーム情報を取得する.取得する(require, 社員リスト) :map key
 		 * $.社員ID value $
 		 */
-		List<EmpTeamInfor> lstEmpTeam = GetScheduleTeamInfoService.get(require, lstEmpId);
-		Map<String, EmpTeamInfor> mapEmpTeamLst = lstEmpTeam.stream()
-				.collect(Collectors.toMap(EmpTeamInfor::getEmployeeID, x -> x));
+		if(this.getDisplayCategory(ConditionATRWorkSchedule.TEAM).equals(NotUseAtr.USE)) {
+			List<EmpTeamInfor> lstEmpTeam = GetScheduleTeamInfoService.get(require, lstEmpId);
+			mapEmpTeam = lstEmpTeam.stream()
+					.collect(Collectors.toMap(EmpTeamInfor::getEmployeeID, x -> x));
+		}
 
 		/*
 		 * $社員ランクリスト = DS_社員ランク情報を取得する.取得する(require, 社員リスト) :map key $.社員ID
 		 * value $
 		 */
+		if(this.getDisplayCategory(ConditionATRWorkSchedule.RANK).equals(NotUseAtr.USE)) {
 		List<EmpRankInfor> lstRank = GetEmRankInforService.get(require, lstEmpId);
-		Map<String, EmpRankInfor> mapEmpRankInfor = lstRank.stream()
+		mapEmpRankInfor = lstRank.stream()
 				.collect(Collectors.toMap(EmpRankInfor::getEmpId, x -> x));
+		}
 		/*
 		 * $社員免許区分リスト = DS_社員の免許区分を取得する.取得する(require, 基準日, 社員リスト) :map key
 		 * $.社員ID value $
 		 */
-		
+		if(this.getDisplayCategory(ConditionATRWorkSchedule.LICENSE_ATR).equals(NotUseAtr.USE)) {
 		List<EmpLicenseClassification> lstEmpLicense = GetEmpLicenseClassificationService
 				.get(require, referenceDate, lstEmpId);
-		Map<String, EmpLicenseClassification> mapEmpLicenseClassification = lstEmpLicense.stream()
+		mapEmpLicenseClassification = lstEmpLicense.stream()
 				.collect(Collectors.toMap(EmpLicenseClassification::getEmpID, x -> x));
-			
+		}
 			/*
 			 * $社員チーム = $社員チームリスト.get($).チーム名称 $社員ランク = $社員ランクリスト.get($).ランク記号
 			 * $社員免許区分 = $社員免許区分リスト.get($).免許区分 return 個人条件( $, $社員チーム, $社員ランク,
 			 * $社員免許区分)
 			 */
-		return lstEmpId.stream().map(empId->{
-			Optional<ScheduleTeamName> teamName = mapEmpTeamLst.get(empId).getOptScheduleTeamName();
-			String empRank = mapEmpRankInfor.get(empId).getRankSymbol().v();
+		List<PersonalCondition> conditions = new ArrayList<>();
+		
+		for(String empId : lstEmpId) {
+			Optional<ScheduleTeamName> teamName = mapEmpTeam.get(empId).getOptScheduleTeamName() == null ? Optional.empty() : mapEmpTeam.get(empId).getOptScheduleTeamName();
+			String empRank = mapEmpRankInfor.get(empId).getRankSymbol() == null ? null : mapEmpRankInfor.get(empId).getRankSymbol().get().v();
 			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId)
 					.getOptLicenseClassification();
-
-			return new PersonalCondition(empId, Optional.ofNullable(teamName.get().v()),
+			
+			PersonalCondition condition = new PersonalCondition(empId, Optional.ofNullable(teamName.isPresent() ? teamName.get().v() : null),
 					Optional.ofNullable(empRank), mapEmpLicense);
 			
-		}).collect(Collectors.toList());
+			conditions.add(condition);
+		}
+		return conditions;
+	}
+	
+	/**
+	 * [prv-1] 表示区分を取得する
+	 * @param atrWorkSchedule
+	 * @return
+	 */
+	private NotUseAtr getDisplayCategory(ConditionATRWorkSchedule atrWorkSchedule) {
+		// note $条件表示制御
+		Optional<PersonInforDisplayControl> displayControl = listConditionDisplayControl.stream().filter(x-> x.getConditionATR().equals(atrWorkSchedule)).findFirst();
+		
+		if(displayControl.isPresent()) {
+			return displayControl.get().getDisplayCategory();
+		}
+		
+		return NotUseAtr.NOT_USE;
 	}
 
 	public static interface Require extends GetScheduleTeamInfoService.Require, GetEmRankInforService.Require,
