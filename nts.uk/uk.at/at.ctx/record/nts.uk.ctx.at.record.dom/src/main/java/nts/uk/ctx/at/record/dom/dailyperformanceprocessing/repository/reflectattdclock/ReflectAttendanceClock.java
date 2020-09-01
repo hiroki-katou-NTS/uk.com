@@ -353,7 +353,8 @@ public class ReflectAttendanceClock {
 				timeActualStamp.get().setStamp(workStamp);
 			}
 			//打刻を丸める (làm tròn 打刻)
-			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), workStamp.get(),
+			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
+					?integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp.get(),
 					attendanceAtr, actualStampAtr);
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
@@ -381,7 +382,8 @@ public class ReflectAttendanceClock {
 				timeActualStamp.setActualStamp(Optional.of(workStamp));
 			}
 			
-			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v(), workStamp,
+				this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
+						? integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp,
 					attendanceAtr, actualStampAtr);
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {

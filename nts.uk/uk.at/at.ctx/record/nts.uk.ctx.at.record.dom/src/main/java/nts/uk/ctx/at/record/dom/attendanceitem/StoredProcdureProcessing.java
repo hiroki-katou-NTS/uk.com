@@ -571,11 +571,11 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 			daily.getAttendanceLeavingGate().ifPresent(alg -> 
 				alg.getAttendanceLeavingGate(new WorkNo(1)).ifPresent(alw -> {
 					alw.getAttendance().ifPresent(as -> { 
-						int time = as.getTimeDay().getTimeWithDay() == null ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes();
+						int time = as.getTimeDay().getTimeWithDay() == null ||  !as.getTimeDay().getTimeWithDay().isPresent() ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes();
 						leaveGateStartTime.set(time); 
 						timeOn.set(time);
 					});
-					alw.getLeaving().ifPresent(as -> leaveGateEndTime.set(as.getTimeDay().getTimeWithDay() == null ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes()));
+					alw.getLeaving().ifPresent(as -> leaveGateEndTime.set(as.getTimeDay().getTimeWithDay() == null ||  !as.getTimeDay().getTimeWithDay().isPresent() ? 0 : as.getTimeDay().getTimeWithDay().get().valueAsMinutes()));
 				})
 			);
 		}
@@ -592,8 +592,8 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		private void calcAttendanceLeave(IntegrationOfDaily daily) {
 			daily.getAttendanceLeave().ifPresent(al -> 
 				al.getAttendanceLeavingWork(1).ifPresent(alw -> {
-					alw.getAttendanceStamp().ifPresent(as -> as.getStamp().ifPresent(s -> startTime.set(s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
-					alw.getLeaveStamp().ifPresent(as -> as.getStamp().ifPresent(s -> endTime.set(s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
+					alw.getAttendanceStamp().ifPresent(as -> as.getStamp().ifPresent(s -> startTime.set(!s.getTimeDay().getTimeWithDay().isPresent() || s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
+					alw.getLeaveStamp().ifPresent(as -> as.getStamp().ifPresent(s -> endTime.set(!s.getTimeDay().getTimeWithDay().isPresent() || s.getTimeDay().getTimeWithDay() == null ? 0 : s.getTimeDay().getTimeWithDay().get().valueAsMinutes())));
 				})
 			);
 		}

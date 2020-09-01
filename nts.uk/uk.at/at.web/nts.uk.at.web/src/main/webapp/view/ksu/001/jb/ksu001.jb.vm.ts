@@ -23,6 +23,7 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         dataWorkPairSet: KnockoutObservableArray<any> = ko.observableArray([]);
         source: KnockoutObservableArray<any> = ko.observableArray([]);
         isDeleteEnable: KnockoutObservable<boolean> = ko.observable(true);
+        isCopy: KnockoutObservable<boolean> = ko.observable(true);
         currentObject: KnockoutObservable<any> = ko.observable(null);
         isAllowCheckChanged: boolean = false;
         sourceEmpty: any[] = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
@@ -73,10 +74,18 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
 
 
                 });
-            } else {
+            } else if (self.selectedTab() === 'workplace') {
                 self.isVisibleWkpName(true);
                 $.when(self.getDataWkpPattern()).done(() => {
                     self.Jb2_1Name(nts.uk.resource.getText("Com_Workplace"));
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                    self.workplaceName();
+                    // nts.uk.ui.windows.getSelf().setSize(400, 845);
+                });
+            } else if (self.selectedTab() === 'workplaceGroup') {
+                self.isVisibleWkpName(true);
+                $.when(self.getDataWkpGrPattern()).done(() => {
+                    self.Jb2_1Name(nts.uk.resource.getText("Com_WorkplaceGroup"));
                     self.clickLinkButton(null, self.selectedLinkButton);
                     self.workplaceName();
                     // nts.uk.ui.windows.getSelf().setSize(400, 845);
@@ -102,8 +111,9 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 taisho.workplaceId = self.workplaceId;
                 taisho.targetUnit = 0
             }
-            if (self.selectedTab() == 'groupworkplace') {
-                taisho.workplaceId = '';
+            if (self.selectedTab() == 'workplaceGroup') {
+                taisho.workplaceGroupId = self.workplaceId;
+                taisho.targetUnit = 1
             }
 
             service.getShiftMasterWorkInfo(taisho).done((data) => {
@@ -136,6 +146,11 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             //            } 
             self.handleClickButton(index);
             self.isAllowCheckChanged = true;
+            if (self.dataSource()[self.selectedLinkButton()] == null) {
+                self.isCopy(false);
+            } else {
+                self.isCopy(true);
+            }
         }
 
         /**
@@ -318,7 +333,15 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 }
             }
 
+            let unitTarget = 2;
+            if (self.selectedTab() == 'workplace') {
+                unitTarget = 0;
+            }
+            if (self.selectedTab() == 'workplaceGroup') {
+                unitTarget = 1;
+            }
             let obj = {
+                unit: unitTarget,
                 workplaceId: self.workplaceId,
                 groupNo: self.currentObject().groupNo,
                 groupName: self.groupName(),
@@ -383,8 +406,12 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
                 $.when(self.getDataComPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
                 });
-            } else {
+            } else if (self.selectedTab() == 'workplace') {
                 $.when(self.getDataWkpPattern()).done(() => {
+                    self.clickLinkButton(null, self.selectedLinkButton);
+                });
+            } else if (self.selectedTab() == 'workplaceGroup') {
+                $.when(self.getDataWkpGrPattern()).done(() => {
                     self.clickLinkButton(null, self.selectedLinkButton);
                 });
             }
@@ -439,6 +466,20 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
         getDataWkpPattern(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             service.getDataWkpPattern(self.workplaceId).done((data) => {
+                self.listPattern(data);
+                self.handleAfterGetData(self.listPattern());
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
+
+            return dfd.promise();
+        }
+
+        /** get data form WKPGR_PATTERN */
+        getDataWkpGrPattern(): JQueryPromise<any> {
+            let self = this, dfd = $.Deferred();
+            service.getDataWkpGrPattern(self.workplaceId).done((data) => {
                 self.listPattern(data);
                 self.handleAfterGetData(self.listPattern());
                 dfd.resolve();

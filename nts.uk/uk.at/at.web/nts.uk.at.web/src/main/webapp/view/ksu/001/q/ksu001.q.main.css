@@ -64,10 +64,9 @@ table {
 	border-color: darkgrey;
 	border-left: none;
 	width: 263px;
+	border-bottom: none;
 }
-*{
-	box-sizing: border-box;
-}
+
 th, td {
 	width: 122px;
 	border: 1px solid black;
@@ -86,11 +85,13 @@ thead>tr {
 }
 
 thead>tr>th {
+	box-sizing: border-box;
 	background-color: lightgreen;
 	border-top: none;
 }
 
 input {
+	box-sizing: border-box;
 	border: 1px solid black;
 	border-color: darkgrey;
 }
@@ -103,6 +104,7 @@ tbody {
 	height: auto;
 }
 tbody>tr>td{
+	box-sizing: border-box;
 	width: 122px;
 }
 hr {

@@ -11,3 +11,4 @@ module nts.uk.at.view.kdp010.f.service {
     export function getData(): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getData);
 }
+}

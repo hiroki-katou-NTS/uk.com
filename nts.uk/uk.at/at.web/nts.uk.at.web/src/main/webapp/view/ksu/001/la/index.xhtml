@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 1200, height: 610 };</script>
+            <script>var dialogSize = { width: 1200, height: 630 };</script>
             <com:ValidatorScript>
                 nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamCd
                 nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName
@@ -33,9 +33,9 @@
                 <div id="left-content" class="fixed-flex-layout-left">
                     <div id="emp-component" style="visibility: hidden; width: 0px; height: 0px;"></div>
                     <div
-                        data-bind="ntsPanel:{width: '260px', height: '445px', direction: 'right', showIcone: true, visible: true}">
+                        data-bind="ntsPanel:{width: '260px', height: '436px', direction: 'right', showIcone: true, visible: true}">
                         <table id="single-list" data-bind="ntsGridList: {								
-                            height: 444,
+                            height: 434,
                             dataSource: listScheduleTeam,
                             primaryKey: 'code',
                             columns: columns,
@@ -47,7 +47,7 @@
                 </div>
                 <div id="right-content" class="fixed-flex-layout-right">                    
                     <div id="workplaceGroupName" data-bind="{text:workplaceGroupName}"></div> 
-                    <hr style="margin: 5px 0px; width: 830px;" />
+                    <hr id="line" />
                     <div class="container-custom">
                         <div data-bind="ntsFormLabel:{ required:true, constraint:['ScheduleTeamCd', 'ScheduleTeamName']}">
                             #{i18n.getText('KSU001_3208')}/#{i18n.getText('KSU001_3209')}</div>
@@ -72,13 +72,13 @@
                                             required: true,
                                             constraint: 'ScheduleTeamName',
                                             option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
-                                                width: '100px',
+                                                width: '40px',
                                                 textalign: 'left'
                                             })),                                              
                                             value: scheduleTeamModel().name
                                         }" tabindex="7" />
                         </div>
-                        <div style="margin-left: 60px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
+                        <div style="margin-left: 120px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
                         </div>
                         <div class="input">
                             <input id="scheduleTeamRemarks" data-bind="ntsTextEditor:{
@@ -99,31 +99,35 @@
                         <div class="lblForm" data-bind="ntsFormLabel:{ require:true}">#{i18n.getText('KSU001_3212')}
                         </div>                        
                         <div class="lblForm" data-bind="ntsFormLabel:{ require:true} "> 
-                            <div data-bind="{text:nts.uk.resource.getText('KSU001_3213', [scheduleTeamModel().name()])}"></div>                              
+                            <div data-bind="if: isEditing"> 
+                                <div data-bind="{text:nts.uk.resource.getText('KSU001_3213', [scheduleTeamModel().name()])}"></div>   
+                            </div>
+                            <div data-bind="ifnot: isEditing">
+                                <div data-bind="{text:nts.uk.resource.getText('KSU001_3213', [nts.uk.resource.getText('KSU001_3202')])}"></div>
+                            </div>                            
                         </div>
                     </div>
-
                     <div class="container-custom">
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
                         <div style="width: 300px"
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', 
-                                            items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd'], mode: 'igGrid'}" />
+                                            items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd','businessName'], mode: 'igGrid'}" />
 
-                        <div style="width: 156px;"></div>
+                        <div style="width: 129px;"></div>
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
                         <div style="width: 266px;"
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-right', searchMode: 'highlight',
-                                            items: itemsRight, selected: currentCodeListRight, selectedKey: 'employeeCd', fields: ['employeeCd'], mode: 'igGrid'}" />
+                                            items: itemsRight, selected: currentCodeListRight, selectedKey: 'employeeCd', fields: ['employeeCd','businessName'], mode: 'igGrid'}" />
                     </div>
 
                     <div class="container-table">
                         <div>
                             <table id="emp-list-left" data-bind="ntsGridList: {
-                                            height: 265,
+                                            height: 261,
                                             options: itemsLeft,
                                             optionsValue: 'employeeCd',
                                             columns: columnsLeft,
@@ -133,13 +137,6 @@
                             </table>
                         </div>
                         <div class="arrow-button">
-                            <!-- <div>
-                                <button class="btn-custom" data-bind="click: moveItemLeftToRight" ><i class="icon icon-button-arrow-right icon-btn-custom"></i></button>
-                            </div>
-                            <div>
-                                <button class="btn-custom" data-bind="click: moveItemRightToLeft" ><i class="icon icon-button-arrow-left icon-btn-custom"></i></button>
-                            </div>    -->
-
                             <div>
                                 <button class="btn-custom"   data-bind="click: moveItemLeftToRight" ><div><img src="img/arrow-right.png" /></div></button>
                             </div>
@@ -149,7 +146,7 @@
                         </div>
                         <div>
                             <table id="emp-list-right" data-bind="ntsGridList: {
-                                            height: 265,
+                                            height: 261,
                                             options: itemsRight,
                                             optionsValue: 'employeeCd',
                                             columns: columnsRight,
@@ -159,7 +156,7 @@
                             </table>
                         </div>
                     </div>
-                    <div>#{i18n.getText('KSU001_3216')}</div>
+                    <div style="margin-top: 2px">#{i18n.getText('KSU001_3216')}</div>
                 </div>
             </div>
         </ui:define>

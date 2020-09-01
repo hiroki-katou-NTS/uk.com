@@ -35,6 +35,11 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
         baseDate: KnockoutObservable<Date>;
         selectedWorkplaceId: KnockoutObservable<string>;
         workplaceGridList: KnockoutObservableArray<any> = ko.observableArray([]);
+        options: Option;
+        workplaceGroupList: KnockoutObservable<any> = ko.observable([]);
+        currentIds: KnockoutObservable<any> = ko.observable(null);
+        currentCodes: KnockoutObservable<any> = ko.observable([]);
+        currentNames: KnockoutObservable<any> = ko.observable([]);
 
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray([
             { id: 'company', title: getText("Com_Company"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -98,13 +103,35 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
                 isDialog: false,
                 systemType: 2
             };
+
+            self.options = {
+                itemList: self.workplaceGroupList,
+                currentCodes: self.currentCodes,
+                currentNames: self.currentNames,
+                currentIds: self.currentIds,
+                multiple: false,
+                tabindex: 2,
+                isAlreadySetting: false,
+                showEmptyItem: false,
+                reloadData: ko.observable(''),
+                height: 373,
+                selectedMode: 1
+            };
+
             self.contextMenu = [
                 { id: "openDialog", text: getText("KSU001_1705"), action: self.openDialogJB.bind(self) },
                 { id: "openPopup", text: getText("KSU001_1706"), action: self.openPopup.bind(self) },
                 { id: "delete", text: getText("KSU001_1707"), action: self.remove.bind(self) }
             ];
-
+            $("#workplaceGroup").hide();
             self.selectedTab.subscribe((newValue) => {
+                if (newValue === 'workplaceGroup') {
+                    $("#tree-grid-screen-e").hide();
+                    $("#workplaceGroup").show();
+                } else {
+                    $("#workplaceGroup").hide();
+                    $("#tree-grid-screen-e").show();
+                }
                 if (newValue === 'workplace' && self.flag) {
                     self.initScreenQ();
                     self.flag = false;
@@ -334,19 +361,22 @@ module nts.uk.at.view.ksu001.test1.viewmodel {
          */
         openDialogJA(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
-            if (self.selectedWorkplaceId() == null) {
+            if ((self.selectedTab() === 'workplace' || self.selectedTab() === 'company') && self.selectedWorkplaceId() == null) {
                 nts.uk.ui.dialog.alertError({ messageId: 'Msg_1197' });
                 return;
             }
             var lwps = $('#tree-grid-screen-e').getDataList();
             var rstd_1 = $('#tree-grid-screen-e').getRowSelected();
             var flwps = flat(_.cloneDeep(lwps), "children");
-            var wkp = _.find(flwps, function(wkp) { return wkp.id == _.head(rstd_1).id; });
+            var wkp;
+            if (self.selectedTab() !== 'workplaceGroup') {
+                wkp = _.find(flwps, function(wkp) { return wkp.id == _.head(rstd_1).id; });
+            }
             setShared('dataForJB', {
                 selectedTab: self.selectedTab(),
-                workplaceCode: rstd_1[0].code,
-                workplaceName: wkp ? wkp.name : '',
-                workplaceId: self.selectedTab() === 'company' ? null : self.selectedWorkplaceId(),
+                workplaceCode: self.selectedTab() === 'workplaceGroup' ? self.currentCodes() : rstd_1[0].code,
+                workplaceName: self.selectedTab() === 'workplaceGroup' ? self.currentNames() : wkp ? wkp.name : '',
+                workplaceId: self.selectedTab() === 'company' ? null : self.selectedTab() === 'workplace' ? self.selectedWorkplaceId() : self.currentIds(),
                 listWorkType: __viewContext.viewModel.viewO.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewO.listWorkTime(),
                 selectedLinkButton: self.selectedTab() === 'company' ? self.selectedLinkButtonCom()
