@@ -78,7 +78,17 @@ public class MonthlyPatternScreenProcessor {
         workMonthlySettings.forEach(x -> {
             // 2. set WorkStyle
             WorkInformation information = new WorkInformation(x.getWorkingCode(), x.getWorkTypeCode());
-            Integer typeColor = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
+            Integer workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
+            Integer typeColor = 0;
+            //check output for frontend
+            if (workStyle != null)
+            if (workStyle == WorkStyle.ONE_DAY_WORK.value){
+                typeColor = 1;
+            }else if (workStyle == WorkStyle.ONE_DAY_REST.value){
+                typeColor = 2;
+            }else {
+                typeColor = 3;
+            }
             x.setTypeColor(typeColor);
 
             // 3. set work type name
