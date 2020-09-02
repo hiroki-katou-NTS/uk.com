@@ -44,7 +44,7 @@ public class GetEligibleEmployeesScreenQuery {
             val listId = conditionDto.getListEmployeeId();
             val period = new DatePeriod(conditionDto.getStartDate(),conditionDto.getEndDate());
             listId.stream().parallel().forEach(e ->{
-                if(checkEmployee.CheckEmployeesIsEligible(require,e,period)){
+                if(checkEmployee.CheckEmployeesAreEligible(require,e,period)){
                     rs.add(e);
                 }
             });
@@ -69,7 +69,7 @@ public class GetEligibleEmployeesScreenQuery {
         }
         //[R-2]
         @Override
-        public List<WorkingConditionItem> GetHistoryItemByPeriod(String cid, List<String> sids, DatePeriod datePeriod) {
+        public List<WorkingConditionItem> GetHistoryItemByPeriod(List<String> sids, DatePeriod datePeriod) {
             val listItem = workingConditionItemRepository.getBySidsAndDatePeriod(sids,datePeriod);
             return listItem;
         }
