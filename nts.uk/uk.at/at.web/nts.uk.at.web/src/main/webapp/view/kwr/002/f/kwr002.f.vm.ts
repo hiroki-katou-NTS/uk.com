@@ -1,5 +1,9 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.kwr002.f {
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import windows = nts.uk.ui.windows;
 
     @bean()
     export class KWR002FViewModel extends ko.ViewModel {
@@ -38,7 +42,9 @@ module nts.uk.com.view.kwr002.f {
         }
 
         closeDialog() {
-
+            let self = this;
+            // setShared('currentARESCode', self.currentARESCode(), true);
+            windows.close();
         }
 
     }
