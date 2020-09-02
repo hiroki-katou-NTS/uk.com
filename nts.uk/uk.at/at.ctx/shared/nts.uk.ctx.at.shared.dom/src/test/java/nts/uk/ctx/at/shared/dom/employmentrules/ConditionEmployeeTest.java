@@ -36,7 +36,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FFTF_R1NotEmpty_True() {
+	public void checkEmployeesAreEligible_FFTF_R1NotEmpty_True() {
 		val conditionEmployee = new ConditionEmployee(false, false, true, false);
 		new Expectations() {{
 				// R1
@@ -56,7 +56,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FFTF_R1Empty_False() {
+	public void checkEmployeesAreEligible_FFTF_R1Empty_False() {
 		val conditionEmployee = new ConditionEmployee(false, false, true, false);
 		new Expectations() {{
 			// R1
@@ -68,7 +68,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FFFT_R2Has2OrMore_True() {
+	public void checkEmployeesAreEligible_FFFT_R2Has2OrMore_True() {
 		val conditionEmployee = new ConditionEmployee(false, false, false, true);
 		new Expectations() {{
 			// R2
@@ -86,7 +86,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FFFT_R2HasLessThan2_False() {
+	public void checkEmployeesAreEligible_FFFT_R2HasLessThan2_False() {
 		val conditionEmployee = new ConditionEmployee(false, false, false, true);
 		new Expectations() {{
 			// R2
@@ -102,7 +102,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FTFF_R3NotEmpty_R4NotEmpty_True() {
+	public void checkEmployeesAreEligible_FTFF_R3NotEmpty_R4NotEmpty_True() {
 		val conditionEmployee = new ConditionEmployee(false, true, false, false);
 
 		new Expectations() {{
@@ -125,7 +125,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FTFF_R3NotEmpty_R4Empty_True() {
+	public void checkEmployeesAreEligible_FTFF_R3NotEmpty_R4Empty_True() {
 		val conditionEmployee = new ConditionEmployee(false, true, false, false);
 
 		new Expectations() {{
@@ -145,7 +145,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FTFF_R3Empty_R4NotEmpty_True() {
+	public void checkEmployeesAreEligible_FTFF_R3Empty_R4NotEmpty_True() {
 		val conditionEmployee = new ConditionEmployee(false, true, false, false);
 		new Expectations() {{
 			// R3
@@ -164,7 +164,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FTFF_R3Empty_R4Empty_False() {
+	public void checkEmployeesAreEligible_FTFF_R3Empty_R4Empty_False() {
 		val conditionEmployee = new ConditionEmployee(false, true, false, false);
 		new Expectations() {{
 			// R3
@@ -180,7 +180,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_TFFF_R5Has2OrMore_True() {
+	public void checkEmployeesAreEligible_TFFF_R5Has2OrMore_True() {
 		val conditionEmployee = new ConditionEmployee(true, false, false, false);
 
 		val datePeriod = new DatePeriod(GeneralDate.min(), GeneralDate.max());
@@ -207,7 +207,7 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_TFFF_R5HasLessThan2_False() {
+	public void checkEmployeesAreEligible_TFFF_R5HasLessThan2_False() {
 		val conditionEmployee = new ConditionEmployee(true, false, false, false);
 
 		val datePeriod1 = new DatePeriod(GeneralDate.ymd(2020,2,3),GeneralDate.max());
@@ -229,14 +229,14 @@ public class ConditionEmployeeTest {
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_FFFF_False() {
+	public void checkEmployeesAreEligible_FFFF_False() {
 		val conditionEmployee = new ConditionEmployee(false, false, false, false);
 
 		assertThat(conditionEmployee.CheckEmployeesAreEligible(require,"eid",new DatePeriod(GeneralDate.min(), GeneralDate.max()))).isFalse();
 	}
 
 	@Test
-	public void CheckEmployeesAreEligible_TTTT_R1R3R4EmptyR2R5LessThan2_False() {
+	public void checkEmployeesAreEligible_TTTT_R1R3R4EmptyR2R5LessThan2_False() {
 		val conditionEmployee = new ConditionEmployee(true, true, true, true);
 		
 		new Expectations() {{
