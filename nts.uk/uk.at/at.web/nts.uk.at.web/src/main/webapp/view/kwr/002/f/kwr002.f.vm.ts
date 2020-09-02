@@ -9,6 +9,7 @@ module nts.uk.com.view.kwr002.f {
     export class KWR002FViewModel extends ko.ViewModel {
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
+        selectedName: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         F1_5_value: KnockoutObservable<string>;
@@ -27,10 +28,19 @@ module nts.uk.com.view.kwr002.f {
             self.isEditable = ko.observable(true);
             self.F1_5_value = ko.observable('');
             self.F1_6_value = ko.observable('');
+
+
         }
 
         created() {
+            let self = this;
+            let code = nts.uk.ui.windows.getShared("codeScreenB");
+            let name = nts.uk.ui.windows.getShared("nameScreenB");
+            self.selectedCode = ko.observable(code);
+            self.selectedName = ko.observable(name);
 
+
+            // vm.F1_5_value = ko.observable(codeName.code());
         }
 
         mounted() {
