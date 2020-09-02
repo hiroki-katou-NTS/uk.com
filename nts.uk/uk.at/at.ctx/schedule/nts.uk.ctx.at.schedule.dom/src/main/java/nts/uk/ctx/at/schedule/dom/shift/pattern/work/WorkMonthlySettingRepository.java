@@ -20,7 +20,7 @@ public interface WorkMonthlySettingRepository  {
 	 * @param workMonthlySettings the work monthly settings
 	 */
 	public void addAll(List<WorkMonthlySetting> workMonthlySettings);
-	
+	public List<WorkMonthlySetting> findByYear(String companyId, String monthlyPatternCode, int year);
 	
 	/**
 	 * Update all.

@@ -19,16 +19,16 @@ import java.util.stream.Collectors;
 @Getter
 public class ConditionEmployee extends ValueObject {
 
-    /** 異動者. */
+    /** 異動者. reTargetTransfer*/
     private final boolean transfer;
 
-    /** 休職休業者. */
+    /** 休職休業者.reTargetLeave */
     private final boolean leaveOfAbsence;
 
-    /** 短時間勤務者. */
+    /** 短時間勤務者.reTargetShortWork */
     private final boolean shortWorkingHours;
 
-    /** 労働条件変更者. */
+    /** 労働条件変更者. reTargetLaborChange*/
     private final boolean changedWorkingConditions;
 
     /** [C-0] 社員の絞り込み条件 */

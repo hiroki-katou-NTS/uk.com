@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
@@ -15,6 +16,7 @@ import nts.arc.time.GeneralDate;
  */
 //Domain: スケジュール作成内容
 @Getter
+@AllArgsConstructor
 public class ScheduleCreateContent extends AggregateRoot{
 
 	/** The execution id. */
@@ -28,11 +30,11 @@ public class ScheduleCreateContent extends AggregateRoot{
 	/** The creation type. */
 	//作成種類
 	private ImplementAtr creationType;
-	
+
 	/** The specify creation. */
 	// 作成方法の指定
 	private SpecifyCreation specifyCreation;
-	
+
 	//再作成条件
 	private RecreateCondition recreateCondition;
 
@@ -40,7 +42,14 @@ public class ScheduleCreateContent extends AggregateRoot{
 	private ImplementAtr implementAtr;
 	private ReCreateContent reCreateContent;
 	private CreateMethodAtr createMethodAtr;
-	
+	public ScheduleCreateContent (String executionId,Boolean confirm,ImplementAtr creationType,
+								  SpecifyCreation specifyCreation,RecreateCondition recreateCondition){
+		this.executionId = executionId;
+		this.confirm =confirm;
+		this.creationType = creationType;
+		this.specifyCreation = specifyCreation;
+		this.recreateCondition =recreateCondition;
+	}
 	/**
 	 * To domain.
 	 *
@@ -54,7 +63,7 @@ public class ScheduleCreateContent extends AggregateRoot{
 		this.specifyCreation = memento.getSpecifyCreation();
 		this.recreateCondition = memento.getRecreateCondition();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
@@ -74,7 +83,8 @@ public class ScheduleCreateContent extends AggregateRoot{
 		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
 //		this.implementAtr = implementAtr;
 	}
-	
+
+
 	public ScheduleCreateContent() {
 	}
 
@@ -95,6 +105,11 @@ public class ScheduleCreateContent extends AggregateRoot{
 	public void setExecutionId(String executionId) {
 		this.executionId = executionId;
 	}
-	
-	
+
+    public void setSpecifyCreation(SpecifyCreation specifyCreation) {
+        this.specifyCreation = specifyCreation;
+    }
+    public void setRecreateCondition(RecreateCondition recreateCondition) {
+        this.recreateCondition = recreateCondition;
+    }
 }
