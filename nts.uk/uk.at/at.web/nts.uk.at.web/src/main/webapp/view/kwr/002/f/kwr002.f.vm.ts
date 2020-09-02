@@ -21,7 +21,7 @@ module nts.uk.com.view.kwr002.f {
             self.selectedCode = ko.observable('');
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            self.F1_6_value = ko.observable('');
+            self.F1_5_value = ko.observable('');
             self.F1_6_value = ko.observable('');
         }
 

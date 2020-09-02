@@ -287,13 +287,14 @@ module nts.uk.com.view.kwr002.b {
             return data;
         };
 
-        openKDL002F() {
+        public openDialogF() {
             let self = this;
+            let openDialogFParam: OpenDialogFParam;
             block.grayout();
             // setShared('inputDialogD',
             //     { repeatMonthDateList: self.curExecSetting().repeatMonthDateList()
             //     });
-            modal("/view/kbt/002/d/index.xhtml").onClosed(function(){
+            modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
 
                 block.clear();
             });
@@ -466,13 +467,6 @@ module nts.uk.com.view.kwr002.b {
                     }
                 });
             }
-        }
-
-        public openDialogF() {
-            let self = this;
-            let openDialogFParam: OpenDialogFParam;
-            openDialogFParam.code(self.code());
-
         }
 
     }
