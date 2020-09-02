@@ -10,4 +10,6 @@ public interface OutputStandardSettingRepository {
 	 * @return ドメインモデル Domain Model「日別勤務表の出力項目定型設定」
 	 */
 	public Optional<OutputStandardSettingOfDailyWorkSchedule> getStandardSettingByCompanyId(String companyId);
+	
+	public void add(OutputStandardSettingOfDailyWorkSchedule outputStandard);
 }

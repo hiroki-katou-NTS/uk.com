@@ -4,14 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.app.command.dailyworkschedule;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -24,6 +31,12 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 	/** The repository. */
 	@Inject
 	private OutputItemDailyWorkScheduleRepository repository;
+	/** The repository. */
+	@Inject
+	private OutputStandardSettingRepository standardSettingRepository;
+	/** The repository. */
+	@Inject
+	private FreeSettingOfOutputItemRepository freeSettingRepository;
 	
 	/* (non-Javadoc)WorkScheduleOutputCondition
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -32,9 +45,39 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 	protected void handle(CommandHandlerContext<OutputItemDailyWorkScheduleCommand> context) {
 		OutputItemDailyWorkScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-//		OutputItemDailyWorkSchedule domain = new OutputItemDailyWorkSchedule(command);
-//
-//		if (command.isNewMode()) {
+		OutputItemDailyWorkSchedule domain = new OutputItemDailyWorkSchedule(command);
+
+		// Step. 画面モードをチェックする(Check screen mode)
+		// IF.新規モードの場合(Th new mode)
+		if (command.isNewMode()) {
+			// Input．項目選択種類をチェック (Check select type Input.item)
+			// 定型選択の場合
+			if (command.getSelectionType() == ItemSelectionType.STANDARD_SELECTION.value) {
+				// 定型設定のコードから出力項目を取得 (Get the output item from the code of the fixed form setting)
+				Optional<OutputStandardSettingOfDailyWorkSchedule> standardDomain = this.standardSettingRepository
+						.getStandardSettingByCompanyId(companyId);
+				
+				if (standardDomain.isPresent()) {
+					throw new BusinessException("Msg_3");
+				}
+				// TODO add
+			}
+			
+			// 自由設定の場合
+			if (command.getSelectionType() == ItemSelectionType.FREE_SETTING.value) {
+				// 自由設定のコードから出力項目を取得 (Get the output item from free setup code)
+				Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSettingDomain = this.freeSettingRepository
+						.getFreeSettingByCompanyAndEmployee(companyId, command.getEmployeeId());
+				
+				if (!freeSettingDomain.isPresent()) {
+					throw new BusinessException("Msg_3");
+				}
+			}
+		// IF 更新モード(Update mode)
+		} else {
+			
+		}
+
 //			if (repository.findByCidAndCode(companyId, domain.getItemCode().v()).isPresent()) {
 //				throw new BusinessException("Msg_3");
 //			}

@@ -53,4 +53,11 @@ public interface OutputItemDailyWorkScheduleGetMemento {
 	 * @return the remark input no
 	 */
 	RemarkInputContent getRemarkInputNo();
+	
+	/**
+	 * Gets the font size.
+	 *
+	 * @return the font size
+	 */
+	FontSizeEnum getFontSize();
 }

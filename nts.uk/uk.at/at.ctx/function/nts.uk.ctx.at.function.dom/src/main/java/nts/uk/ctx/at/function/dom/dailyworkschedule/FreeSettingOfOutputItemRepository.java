@@ -12,4 +12,6 @@ public interface FreeSettingOfOutputItemRepository {
 	 * @return ドメインモデル「日別勤務表の出力項目自由設定」
 	 */
 	public Optional<FreeSettingOfOutputItemForDailyWorkSchedule> getFreeSettingByCompanyAndEmployee(String companyId, String employeeId);
+	
+	public void add(FreeSettingOfOutputItemForDailyWorkSchedule freeSettingOfOutputItemForDailyWorkSchedule);
 }

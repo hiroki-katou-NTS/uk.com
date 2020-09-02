@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -19,7 +20,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KFNCT_ATD_ID_RPT_DAI")
 @EqualsAndHashCode(callSuper = true)
-public class KfnctAtdIdRptDai extends UkJpaEntity implements DailyAttendanceItemUsed.MementoGetter, DailyAttendanceItemUsed.MementoSetter, Serializable {
+public class KfnctAtdIdRptDai extends UkJpaEntity
+		implements DailyAttendanceItemUsed.MementoGetter, DailyAttendanceItemUsed.MementoSetter, Serializable {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -53,13 +57,32 @@ public class KfnctAtdIdRptDai extends UkJpaEntity implements DailyAttendanceItem
 
 	@Override
 	public void setItemDailyId(BigDecimal itemDailyId) {
-		
+		if (this.kfnctAtdIdRptDaiPK == null) {
+			this.kfnctAtdIdRptDaiPK = new KfnctAtdIdRptDaiPK();
+		}
+		this.kfnctAtdIdRptDaiPK.setAttendanceItemId(itemDailyId);
 	}
 
 	@Override
 	public void setFormCanUsedForTimes(List<FormCanUsedForTime> form) {
-		// TODO Auto-generated method stub
-		
+		for (FormCanUsedForTime formCanUsedForTime : form) {
+			switch (formCanUsedForTime) {
+				case DAILY_WORK_SCHEDULE:
+					this.setWorkDaily(BigDecimal.valueOf(formCanUsedForTime.value));
+					break;
+				case ATTENDANCE_BOOK:
+					this.setWorkAttendance(BigDecimal.valueOf(formCanUsedForTime.value));
+					break;
+				case WORK_SITUATION_TABLE:
+					this.setAtdWorkDaily(BigDecimal.valueOf(formCanUsedForTime.value));
+					break;
+				case ANNUAL_WORK_LEDGER:
+					this.setAtdWorkAttendance(BigDecimal.valueOf(formCanUsedForTime.value));
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	@Override
@@ -69,14 +92,17 @@ public class KfnctAtdIdRptDai extends UkJpaEntity implements DailyAttendanceItem
 
 	@Override
 	public BigDecimal getItemDailyId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.kfnctAtdIdRptDaiPK.getAttendanceItemId();
 	}
 
 	@Override
 	public List<FormCanUsedForTime> getFormCanUsedForTimes() {
-		// TODO Auto-generated method stub
-		return null;
+		List<FormCanUsedForTime> canUsedForTimes = Arrays.asList(
+				FormCanUsedForTime.valueOf(this.workDaily.intValue()),
+				FormCanUsedForTime.valueOf(this.workAttendance.intValue()),
+				FormCanUsedForTime.valueOf(this.atdWorkAttendance.intValue()),
+				FormCanUsedForTime.valueOf(this.atdWorkDaily.intValue()));
+		return canUsedForTimes;
 	}
 
 }

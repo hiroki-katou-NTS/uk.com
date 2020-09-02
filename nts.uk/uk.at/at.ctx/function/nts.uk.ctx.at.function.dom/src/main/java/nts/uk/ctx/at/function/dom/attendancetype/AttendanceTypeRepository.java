@@ -1,9 +1,6 @@
 package nts.uk.ctx.at.function.dom.attendancetype;
 
 import java.util.List;
-import java.util.Optional;
-
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 /**
  * 
  * @author Doan Duy Hung
@@ -54,7 +51,5 @@ public interface AttendanceTypeRepository {
 	 * @return
 	 */
 	public List<AttendanceType> getItemByAtrandType(String companyId, List<ScreenUseAtr> screenUseAtr, int attendanceItemType, List<Integer> AttendanceIds);
-	
-	public List<AttendanceType> getDailyAttendanceItem(String companyId, Optional<String> layoutId, List<OutputItemDailyWorkSchedule> outputItem); 
 	
 }

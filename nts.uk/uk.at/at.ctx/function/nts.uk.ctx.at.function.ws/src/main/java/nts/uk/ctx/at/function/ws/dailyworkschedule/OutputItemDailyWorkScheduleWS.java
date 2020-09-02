@@ -6,6 +6,7 @@ package nts.uk.ctx.at.function.ws.dailyworkschedule;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -54,10 +55,10 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 *
 	 * @return the output item daily work schedule dto
 	 */
-	@Path("find")
+	@Path("find/{selectionType}/{layoutId}")
 	@POST
-	public Map<String, Object> find(){
-		return this.outputItemDailyWorkScheduleFinder.findByCid();
+	public Map<String, Object> find(@PathParam("selectionType") int selectionType, @PathParam("layoutId") String layoutId) {
+		return this.outputItemDailyWorkScheduleFinder.startScreenC(Optional.of(layoutId), selectionType);
 	}
 	
 	/**

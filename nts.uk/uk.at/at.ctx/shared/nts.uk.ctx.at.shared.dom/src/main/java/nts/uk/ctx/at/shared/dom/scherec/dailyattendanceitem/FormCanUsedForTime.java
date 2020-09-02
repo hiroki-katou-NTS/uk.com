@@ -27,4 +27,25 @@ public enum FormCanUsedForTime {
 	WORKBOOK(8);
 
 	public final Integer value;
+	
+	private FormCanUsedForTime(int value) {
+		this.value = value;
+	}
+
+	public static FormCanUsedForTime valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (FormCanUsedForTime val : FormCanUsedForTime.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
 }

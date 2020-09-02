@@ -25,4 +25,16 @@ public class JpaOutputItemDailyWorkScheduleRepo implements OutputStandardSetting
 		return Optional.empty();
 	}
 
+	@Override
+	public void add(FreeSettingOfOutputItemForDailyWorkSchedule freeSettingOfOutputItemForDailyWorkSchedule) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void add(OutputStandardSettingOfDailyWorkSchedule outputStandard) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

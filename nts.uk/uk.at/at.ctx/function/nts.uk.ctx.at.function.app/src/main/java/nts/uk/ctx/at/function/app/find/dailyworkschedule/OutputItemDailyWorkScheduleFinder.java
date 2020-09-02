@@ -118,12 +118,8 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	private static final String AUTHORITY_DEFINE = "権限";
 	private static final String BUSINESS_TYPE_DEFINE = "勤務種別";
-	/**
-	 * Find by cid.
-	 *
-	 * @return the map
-	 */
-	public Map<String, Object> findByCid(Optional<String> layoutId, int selectionType) {	
+
+	public Map<String, Object> startScreenC(Optional<String> layoutId, int selectionType) {	
 		String companyID = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 

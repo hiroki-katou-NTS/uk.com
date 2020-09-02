@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -25,6 +26,6 @@ public class KfnctAtdIdRptDaiPK implements Serializable {
 	
 	/*勤怠項目ID*/
 	@Column(name = "ATTENDANCE_ITEM_ID")
-	private int 	attendanceItemId;
+	private BigDecimal attendanceItemId;
 
 }

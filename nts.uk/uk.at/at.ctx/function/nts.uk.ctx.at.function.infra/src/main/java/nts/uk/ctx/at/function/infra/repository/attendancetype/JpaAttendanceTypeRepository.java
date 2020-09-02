@@ -3,7 +3,6 @@ package nts.uk.ctx.at.function.infra.repository.attendancetype;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,7 +15,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.infra.entity.attendancetype.KmnmtAttendanceType;
 
 /**
@@ -166,12 +164,4 @@ public class JpaAttendanceTypeRepository extends JpaRepository implements Attend
 			});
 		}
 	}
-
-	@Override
-	public List<AttendanceType> getDailyAttendanceItem(String companyId, Optional<String> layoutId,
-			List<OutputItemDailyWorkSchedule> outputItem) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
