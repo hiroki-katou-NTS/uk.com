@@ -43,7 +43,7 @@ public class GetEligibleEmployeesScreenQuery {
                     conditionDto.isShortWorkingHours(),conditionDto.isChangedWorkingConditions());
             val listId = conditionDto.getListEmployeeId();
             val period = new DatePeriod(conditionDto.getStartDate(),conditionDto.getEndDate());
-            listId.forEach(e ->{
+            listId.stream().parallel().forEach(e ->{
                 if(checkEmployee.CheckEmployeesIsEligible(require,e,period)){
                     rs.add(e);
                 }
