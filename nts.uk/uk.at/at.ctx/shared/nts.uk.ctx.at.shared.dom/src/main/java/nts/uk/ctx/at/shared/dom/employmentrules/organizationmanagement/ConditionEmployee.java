@@ -40,7 +40,7 @@ public class ConditionEmployee extends ValueObject {
     }
 
     //[1] 社員が対象となるかどうかチェックする
-    public boolean CheckEmployeesIsEligible(Require require, String sid, DatePeriod datePeriod){
+    public boolean CheckEmployeesAreEligible(Require require, String sid, DatePeriod datePeriod){
 
         return isShortTimeWork(require, sid, datePeriod) ||
                 isConditionChanger(require, sid, datePeriod) ||
@@ -63,8 +63,7 @@ public class ConditionEmployee extends ValueObject {
         if (!changedWorkingConditions)
             return false;
 
-        String cid = AppContexts.user().companyId();
-        List<WorkingConditionItem> conditionItems = require.GetHistoryItemByPeriod(cid, Arrays.asList(sid),datePeriod);
+        List<WorkingConditionItem> conditionItems = require.GetHistoryItemByPeriod(Arrays.asList(sid),datePeriod);
 
         return conditionItems.size()>=2;
     }
@@ -98,7 +97,7 @@ public class ConditionEmployee extends ValueObject {
         Optional<ShortWorkTimeHistory> GetShortWorkHistory(String sid,DatePeriod datePeriod);
 
         //[R-2] 期間を指定して社員の労働条件項目リストを取得する
-        List<WorkingConditionItem> GetHistoryItemByPeriod(String cid, List<String> sids, DatePeriod datePeriod);
+        List<WorkingConditionItem> GetHistoryItemByPeriod(List<String> sids, DatePeriod datePeriod);
 
         //[R-3] 期間を指定して休職期間を取得する
         List<LeavePeriod> GetLeavePeriod(List<String> sids, DatePeriod datePeriod);
