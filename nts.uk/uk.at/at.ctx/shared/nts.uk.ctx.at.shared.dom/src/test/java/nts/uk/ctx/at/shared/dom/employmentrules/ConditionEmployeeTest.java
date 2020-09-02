@@ -116,7 +116,7 @@ public class ConditionEmployeeTest {
 			// R4
 			require.GetLeaveHolidayPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 			result = new ArrayList<LeaveHolidayPeriod>(){{
-				val leaveHolidayPeriod = new LeaveHolidayPeriod(DatePeriod.oneDay(GeneralDate.today()), "sid", "frameNo");
+				val leaveHolidayPeriod = new LeaveHolidayPeriod(DatePeriod.oneDay(GeneralDate.today()), "sid", 1);
 				add(leaveHolidayPeriod);
 			}};
 		}};
@@ -155,7 +155,7 @@ public class ConditionEmployeeTest {
 		    // R4
 			require.GetLeaveHolidayPeriod(Arrays.asList("eid"),new DatePeriod(GeneralDate.min(), GeneralDate.max()));
 			result = new ArrayList<LeaveHolidayPeriod>(){{
-				val leaveHolidayPeriod = new LeaveHolidayPeriod(DatePeriod.oneDay(GeneralDate.today()), "sid", "frameNo");
+				val leaveHolidayPeriod = new LeaveHolidayPeriod(DatePeriod.oneDay(GeneralDate.today()), "sid", 1);
 				add(leaveHolidayPeriod);
 			}};
 		}};
