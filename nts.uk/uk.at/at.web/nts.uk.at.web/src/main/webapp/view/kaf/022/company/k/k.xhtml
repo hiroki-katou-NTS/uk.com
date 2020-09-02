@@ -16,7 +16,7 @@
 			<tr class="inline-radio">
 				<td class="color-header">#{i18n.getText('KAF022_695')}</td>
 				<td class="two-radio">
-					<div tabindex="1" data-bind="ntsRadioBoxGroup: {
+					<div data-bind="ntsRadioBoxGroup: {
 								options: itemListD15,
 								optionsValue: 'code',
 								optionsText: 'name',
@@ -42,7 +42,7 @@
 			<tr class="inline-radio">
 				<td class="color-header">#{i18n.getText('KAF022_703')}</td>
 				<td class="two-radio">
-					<div id="d15" tabindex="1" data-bind="ntsRadioBoxGroup: {
+					<div data-bind="ntsRadioBoxGroup: {
 									options: itemListD15,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -52,9 +52,9 @@
 				</td>
 			</tr>
 			<tr class="inline-radio">
-				<td class="color-header" id="d6">#{i18n.getText('KAF022_702')}</td>
+				<td class="color-header">#{i18n.getText('KAF022_702')}</td>
 				<td class="two-radio">
-					<div class="blockdeki" id="d13" tabindex="2" data-bind="ntsRadioBoxGroup: {
+					<div data-bind="ntsRadioBoxGroup: {
 									options: itemListD13,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -72,7 +72,7 @@
 				</td>
 				<td>
 					<div class="control-group valign-center">
-						<input tabindex="2" data-bind="ntsTextEditor: {
+						<input data-bind="ntsTextEditor: {
 										name: '#[KAF022_183]',
 										value: texteditorD9,
 										constraint: 'Comment',

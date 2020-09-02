@@ -1,6 +1,8 @@
 module nts.uk.at.view.kaf022.c.viewmodel {
     import text = nts.uk.resource.getText;
 
+    let __viewContext: any = window["__viewContext"] || {};
+
     export class ScreenModelC {
         itemListC27: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 1, name: text('KAF022_100')},
@@ -35,69 +37,45 @@ module nts.uk.at.view.kaf022.c.viewmodel {
             {code: 1, name: text('KAF022_82')},
         ]);
 
-        selectedIdC51: KnockoutObservable<number>;
-        selectedIdC48: KnockoutObservable<number>;
-        selectedIdC38: KnockoutObservable<number>;
-        selectedIdC39: KnockoutObservable<number>;
-        selectedIdC40: KnockoutObservable<number>;
-        selectedIdC27: KnockoutObservable<number>;
-        selectedIdC28: KnockoutObservable<number>;
-        selectedIdC182: KnockoutObservable<number>;
+        reflectWorkHour: KnockoutObservable<number>;
+        reflectAttendance: KnockoutObservable<number>;
+        oneDayLeaveDeleteAttendance: KnockoutObservable<number>;
 
-        selectedIdC29: KnockoutObservable<number>;
-        selectedIdC30: KnockoutObservable<number>;
-        selectedIdC31: KnockoutObservable<number>;
-        selectedIdC32: KnockoutObservable<number>;
-        selectedIdC33: KnockoutObservable<number>;
-        selectedIdC34: KnockoutObservable<number>;
-        selectedIdC35: KnockoutObservable<number>;
-        selectedIdC36: KnockoutObservable<number>;
-        selectedIdC37: KnockoutObservable<number>;
-        selectedIdC49: KnockoutObservable<number>;
+        annualVacationTime: KnockoutObservable<number>;
+        superHoliday60H: KnockoutObservable<number>;
+        substituteLeaveTime: KnockoutObservable<number>;
+        nursing: KnockoutObservable<number>;
+        childNursing: KnockoutObservable<number>;
+        specialVacationTime: KnockoutObservable<number>;
 
-        texteditorC41: KnockoutObservable<string>;
-        texteditorC42: KnockoutObservable<string>;
-        texteditorC43: KnockoutObservable<string>;
-        texteditorC44: KnockoutObservable<string>;
-        texteditorC45: KnockoutObservable<string>;
-        texteditorC46: KnockoutObservable<string>;
-        texteditorC47: KnockoutObservable<string>;
-        texteditorC51: KnockoutObservable<string>;
+        halfDayAnnualLeaveUsageLimitCheck: KnockoutObservable<number>;
 
-        selectedIdCC1: KnockoutObservable<number>;
+        holidayAppTypeDispNames: KnockoutObservableArray<HolidayAppTypeDispName>;
 
         constructor() {
             const self = this;
-            self.selectedIdC51 = ko.observable(0);
-            self.selectedIdC48 = ko.observable(0);
-            self.selectedIdC38 = ko.observable(0);
-            self.selectedIdC39 = ko.observable(0);
-            self.selectedIdC40 = ko.observable(0);
-            self.selectedIdC27 = ko.observable(0);
-            self.selectedIdC28 = ko.observable(0);
-            self.selectedIdC182 = ko.observable(0);
 
-            self.selectedIdC29 = ko.observable(0);
-            self.selectedIdC30 = ko.observable(0);
-            self.selectedIdC31 = ko.observable(0);
-            self.selectedIdC32 = ko.observable(0);
-            self.selectedIdC33 = ko.observable(0);
-            self.selectedIdC34 = ko.observable(0);
-            self.selectedIdC35 = ko.observable(0);
-            self.selectedIdC36 = ko.observable(0);
-            self.selectedIdC37 = ko.observable(0);
-            self.selectedIdC49 = ko.observable(0);
+            self.oneDayLeaveDeleteAttendance = ko.observable(0);
+            self.reflectAttendance = ko.observable(0);
+            self.reflectWorkHour = ko.observable(0);
 
-            self.texteditorC41 = ko.observable(null);
-            self.texteditorC42 = ko.observable(null);
-            self.texteditorC43 = ko.observable(null);
-            self.texteditorC44 = ko.observable(null);
-            self.texteditorC45 = ko.observable(null);
-            self.texteditorC46 = ko.observable(null);
-            self.texteditorC47 = ko.observable(null);
-            self.texteditorC51 = ko.observable(null);
+            self.annualVacationTime = ko.observable(0);
+            self.superHoliday60H = ko.observable(0);
+            self.substituteLeaveTime = ko.observable(0);
+            self.nursing = ko.observable(0);
+            self.childNursing = ko.observable(0);
+            self.specialVacationTime = ko.observable(0);
 
-            self.selectedIdCC1 = ko.observable(0);
+            self.halfDayAnnualLeaveUsageLimitCheck = ko.observable(0);
+
+            self.holidayAppTypeDispNames = ko.observableArray([]);
+            const listHdType = __viewContext.enums.HolidayAppType;
+            const labels = ["KAF022_161", "KAF022_162", "KAF022_163", "KAF022_164", "KAF022_165", "KAF022_166", "KAF022_167"];
+            listHdType.forEach((hdType: any, index: number) => {
+                if (index < 7) {
+                    self.holidayAppTypeDispNames.push(new HolidayAppTypeDispName(hdType.value, text(labels[index]), ""));
+                }
+            });
 
             $("#fixed-table-c1").ntsFixedTable({});
             $("#fixed-table-c2").ntsFixedTable({});
@@ -107,7 +85,58 @@ module nts.uk.at.view.kaf022.c.viewmodel {
 
         initData(allData: any): void {
             const self = this;
+            const dataSetting = allData.holidayApplicationSetting;
+            if (dataSetting) {
+                self.halfDayAnnualLeaveUsageLimitCheck(dataSetting.halfDayAnnualLeaveUsageLimitCheck || 0);
+                const dispNames = dataSetting.dispNames || [];
+                self.holidayAppTypeDispNames().forEach(d => {
+                    const disp = _.find(dispNames, i => i.holidayAppType == d.holidayAppType);
+                    d.displayName(disp.displayName || "");
+                });
+            }
 
+            const dataReflect = allData.holidayApplicationReflect;
+            if (dataReflect) {
+                if (dataReflect.workAttendanceReflect) {
+                    self.oneDayLeaveDeleteAttendance(dataReflect.workAttendanceReflect.oneDayLeaveDeleteAttendance || 0);
+                    self.reflectAttendance(dataReflect.workAttendanceReflect.reflectAttendance || 0);
+                    self.reflectWorkHour(dataReflect.workAttendanceReflect.reflectWorkHour || 0);
+                }
+                if (dataReflect.timeLeaveReflect) {
+                    self.annualVacationTime(dataReflect.timeLeaveReflect.annualVacationTime || 0);
+                    self.childNursing(dataReflect.timeLeaveReflect.childNursing || 0);
+                    self.nursing(dataReflect.timeLeaveReflect.nursing || 0);
+                    self.specialVacationTime(dataReflect.timeLeaveReflect.specialVacationTime || 0);
+                    self.substituteLeaveTime(dataReflect.timeLeaveReflect.substituteLeaveTime || 0);
+                    self.superHoliday60H(dataReflect.timeLeaveReflect.superHoliday60H || 0);
+
+                }
+            }
+        }
+
+        collectData(): any {
+            const self = this;
+            return {
+                holidayApplicationSetting: {
+                    halfDayAnnualLeaveUsageLimitCheck: self.halfDayAnnualLeaveUsageLimitCheck(),
+                    dispNames: ko.toJS(self.holidayAppTypeDispNames)
+                },
+                holidayApplicationReflect: {
+                    workAttendanceReflect: {
+                        oneDayLeaveDeleteAttendance: self.oneDayLeaveDeleteAttendance(),
+                        reflectAttendance: self.reflectAttendance(),
+                        reflectWorkHour: self.reflectWorkHour()
+                    },
+                    timeLeaveReflect: {
+                        superHoliday60H: self.superHoliday60H(),
+                        nursing: self.nursing(),
+                        childNursing: self.childNursing(),
+                        substituteLeaveTime: self.substituteLeaveTime(),
+                        annualVacationTime: self.annualVacationTime(),
+                        specialVacationTime: self.specialVacationTime()
+                    }
+                }
+            };
         }
 
     }
@@ -119,6 +148,18 @@ module nts.uk.at.view.kaf022.c.viewmodel {
         constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
+        }
+    }
+
+    class HolidayAppTypeDispName {
+        holidayAppType: number;
+        holidayAppTypeLabel: string;
+        displayName: KnockoutObservable<string>;
+
+        constructor(hdAppType: number, label: string, displayName: string) {
+            this.holidayAppType = hdAppType;
+            this.holidayAppTypeLabel = label;
+            this.displayName = ko.observable(displayName || "");
         }
     }
 

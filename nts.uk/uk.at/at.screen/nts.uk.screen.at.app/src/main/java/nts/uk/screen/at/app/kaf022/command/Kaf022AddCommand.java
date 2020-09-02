@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.stampsetting.AppStampSettingCommand;
+import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSetCommand;
 import nts.uk.ctx.at.request.app.command.applicationreflect.AppReflectExeConditionCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.applicationsetting.ApplicationSettingCommand;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.request.app.command.setting.company.emailset.AppEmailSetCom
 import nts.uk.ctx.at.request.app.command.setting.request.application.businesstrip.BusinessTripSetCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectCommand;
+import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
 
 @Data
 @AllArgsConstructor
@@ -33,6 +35,9 @@ public class Kaf022AddCommand {
 
 	private OvertimeAppSetCommand overtimeApplicationSetting;
 	private OtWorkAppReflectCommand overtimeApplicationReflect;
+
+	private HolidayApplicationSettingCommand holidayApplicationSetting;
+	private HolidayApplicationReflectCommand holidayApplicationReflect;
 
 	private AppWorkChangeSetCommand appWorkChangeSetting;
 

@@ -82,6 +82,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             service.findAllData().done((data: any) => {
                 self.viewmodelA.initData(data);
                 self.viewmodelB.initData(data);
+                self.viewmodelC.initData(data);
                 self.viewmodelD.initData(data);
                 self.viewmodelE.initData(data);
                 self.viewmodelF.initData(data);
@@ -106,16 +107,13 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         }
 
         saveDataAt(): void {
-            $('#a16_14').trigger("validate");
-            $('#a16_15').trigger("validate");
-            $('#a7_23').trigger("validate");
-            $('#a7_23_2').trigger("validate");
-            $('#a7_23_3').trigger("validate");
+            $('input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) { return; }
             const self = this, postion: number = $('.tab-content-1').scrollTop();;
             const dataA = self.viewmodelA.collectData();
             const dataV = self.viewmodelV.collectData();
             const dataB = self.viewmodelB.collectData();
+            const dataC = self.viewmodelC.collectData();
             const dataD = self.viewmodelD.collectData();
             const dataE = self.viewmodelE.collectData();
             const dataJ = self.viewmodelJ.collectData();
@@ -148,6 +146,8 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             data["appReflectCondition"] = dataA.appReflectCondition;
             data["overtimeApplicationSetting"] = dataB.overtimeApplicationSetting;
             data["overtimeApplicationReflect"] = dataB.overtimeApplicationReflect;
+            data["holidayApplicationSetting"] = dataC.holidayApplicationSetting;
+            data["holidayApplicationReflect"] = dataC.holidayApplicationReflect;
             data["appWorkChangeSetting"] = dataD;
             data["tripRequestSetting"] = dataE;
             data["goBackReflectAtr"] = self.viewmodelF.selectedValueF13();

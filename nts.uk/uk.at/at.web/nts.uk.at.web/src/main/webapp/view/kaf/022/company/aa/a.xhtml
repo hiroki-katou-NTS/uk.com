@@ -23,8 +23,8 @@
             <td class="td-table-a4">
                 <div class="control-group valign-center">
                     <div id="a4_6"
-                         data-bind="ntsCheckBox: { checked: useAtr }, attr:{ tabindex:1 + $index()*3 }"/>
-                    <div tabindex="1" class="a4_7"
+                         data-bind="ntsCheckBox: { checked: useAtr }"/>
+                    <div class="a4_7"
                          data-bind="ntsComboBox: {
                             options: $parent.itemListA4_7,
                             optionsValue: 'code',
@@ -35,10 +35,7 @@
                             enable: true,
                             columns: [
                                 { prop: 'name', length: 8 }
-                            ]},
-                            attr:{
-                                tabindex:2 + $index()*3
-                            }" />
+                            ]}" />
                     <span class="label">#{i18n.getText('KAF022_355')}</span>
                     <div class="a4_8"
                          data-bind="ntsComboBox: {
@@ -51,9 +48,7 @@
                             enable: true,
                             columns: [
                                 { prop: 'name', length: 4 }
-                            ]},attr:{
-                                tabindex:3 + $index()*3
-                            }">
+                            ]}">
                     </div>
                     <span class="label">#{i18n.getText('KAF022_356')}</span>
                 </div>
@@ -81,18 +76,18 @@
             <tr data-bind="if: appType == 0">
                 <td class="color-header" id="a7_4" data-bind="text: appTypeName"/>
                 <td>
-                    <div data-bind="ntsCheckBox: { checked: useAtr }, attr:{ tabindex:42 }">
+                    <div data-bind="ntsCheckBox: { checked: useAtr }">
                         #{i18n.getText('KAF022_61')}
                     </div>
                 </td>
                 <td>
                     <div class="control-group valign-center">
                         <div class="control-group valign-center">
-                            <label class="ntsRadioBox overtime-method" tabindex="43">
+                            <label class="ntsRadioBox overtime-method">
                                 <input
                                     type="radio"
                                     name="textRadioA7_18"
-                                    data-bind="checkedValue: 1, checked: methodCheck, enable: true, attr:{ tabindex:43 }"/>
+                                    data-bind="checkedValue: 1, checked: methodCheck, enable: true"/>
                                 <span class="box"/>
                                 <span class="label">#{i18n.getText('KAF022_63')}</span>
                             </label>
@@ -108,18 +103,16 @@
                                             enable: true,
                                             columns: [
                                                 { prop: 'name', length: 4 }
-                                            ]},attr:{
-                                                tabindex:44
-                                            }" />
+                                            ]}" />
                                 <span class="label" id="a7_21" style="padding-left: 5px">#{i18n.getText('KAF022_65')}</span>
                             </div>
                         </div>
                         <div class="control-group valign-center" style="padding-bottom: 5px">
-                            <label class="ntsRadioBox overtime-method" tabindex="45">
+                            <label class="ntsRadioBox overtime-method">
                                 <input
                                     type="radio"
                                     name="textRadioA7_18"
-                                    data-bind="checkedValue: 0, checked: methodCheck, enable: true, attr:{ tabindex:45 }"/>
+                                    data-bind="checkedValue: 0, checked: methodCheck, enable: true"/>
                                 <span class="box"/>
                                 <span class="label">#{i18n.getText('KAF022_66')}</span>
                             </label>
@@ -136,9 +129,7 @@
                                         required: requiredA7_23,
                                         enable: true,
                                         readonly: false,
-                                        immediate: false},attr:{
-                                            tabindex:45
-                                        }"/>
+                                        immediate: false}"/>
                                 <span class="label" id="a7_24" style="padding-left: 8px">#{i18n.getText('KAF022_65')}</span>
                             </div>
                         </div>
@@ -156,9 +147,7 @@
                                         required: requiredA7_23,
                                         enable: true,
                                         readonly: false,
-                                        immediate: false},attr:{
-                                            tabindex:46
-                                        }"/>
+                                        immediate: false}"/>
                             </div>
                         </div>
                         <div class="control-group valign-center" style="padding-bottom: 5px">
@@ -175,15 +164,13 @@
                                         required: requiredA7_23,
                                         enable: true,
                                         readonly: false,
-                                        immediate: false},attr:{
-                                            tabindex:47
-                                        }"/>
+                                        immediate: false}"/>
                             </div>
                         </div>
                     </div>
                 </td>
                 <td>
-                    <div data-bind="ntsCheckBox: { checked: allowFutureDay },attr:{ tabindex:48 }">
+                    <div data-bind="ntsCheckBox: { checked: allowFutureDay }">
                         #{i18n.getText('KAF022_68')}
                     </div>
                 </td>
@@ -191,7 +178,7 @@
             <tr data-bind="if: appType != 0">
                 <td class="color-header" id="a7_5" data-bind="text: appTypeName">#{i18n.getText('KAF022_4')}</td>
                 <td>
-                    <div data-bind="ntsCheckBox: { checked: useAtr, enable: true },attr:{ tabindex:48 + ($index()-1)*3 }">
+                    <div data-bind="ntsCheckBox: { checked: useAtr, enable: true }">
                         #{i18n.getText('KAF022_61')}
                     </div>
                 </td>
@@ -209,15 +196,13 @@
                                 enable: true,
                                 columns: [
                                     { prop: 'name', length: 4 }
-                                ]},attr:{
-                                    tabindex:49 + ($index()-1)*3
-                                }">
+                                ]}">
                         </div>
                         <span class="label" id="a7_29">#{i18n.getText('KAF022_65')}</span>
                     </div>
                 </td>
                 <td>
-                    <div data-bind="ntsCheckBox: { checked: allowFutureDay, enable: true }, attr:{ tabindex:50 + ($index()-1)*3 }">
+                    <div data-bind="ntsCheckBox: { checked: allowFutureDay, enable: true }">
                         #{i18n.getText('KAF022_68')}
                     </div>
                 </td>
@@ -240,7 +225,7 @@
             <tr class="inline-radio">
                 <td class="color-header" id="a11_7">#{i18n.getText('KAF022_94')}</td>
                 <td class="two-radio">
-                    <div id="a11_13" class="a5_14" tabindex="219"
+                    <div id="a11_13" class="a5_14"
                          data-bind="ntsRadioBoxGroup: {
                             options: $parent.itemListA11_8,
                             optionsValue: 'code',
@@ -253,7 +238,7 @@
             <tr class="inline-radio">
                 <td class="color-header" id="a11_2">#{i18n.getText('KAF022_89')}</td>
                 <td class="two-radio">
-                    <div id="a11_8" class="a5_14" tabindex="214"
+                    <div id="a11_8" class="a5_14"
                          data-bind="ntsRadioBoxGroup: {
                             options: $parent.itemListA11_8,
                             optionsValue: 'code',
@@ -266,7 +251,7 @@
             <tr class="inline-radio">
                 <td class="color-header" id="a11_5">#{i18n.getText('KAF022_92')}</td>
                 <td class="two-radio">
-                    <div id="a11_11" class="a5_14" tabindex="217"
+                    <div id="a11_11" class="a5_14"
                          data-bind="ntsRadioBoxGroup: {
                                 options: $parent.itemListA11_8,
                                 optionsValue: 'code',
@@ -279,7 +264,7 @@
             <tr class="inline-radio">
                 <td class="color-header" id="a11_4">#{i18n.getText('KAF022_91')}</td>
                 <td class="two-radio">
-                    <div id="a11_10" class="a5_14" tabindex="216"
+                    <div id="a11_10" class="a5_14"
                          data-bind="ntsRadioBoxGroup: {
                                 options: $parent.itemListA11_8,
                                 optionsValue: 'code',
@@ -307,7 +292,7 @@
             <tr class="inline-radio">
                 <td class="color-header" id="a17-6">#{i18n.getText('KAF022_402')}</td>
                 <td class="two-radio">
-                    <div class="a17" id="a17_7" tabindex="26"
+                    <div class="a17" id="a17_7"
                          data-bind="ntsRadioBoxGroup: {
                             options: $parent.itemListA17_7,
                             optionsValue: 'code',
@@ -319,7 +304,7 @@
             <tr class="inline-radio">
                 <td class="color-header" id="a17_2">#{i18n.getText('KAF022_366')}</td>
                 <td class="two-radio">
-                    <div class="a17" id="a17_4" tabindex="27"
+                    <div class="a17" id="a17_4"
                          data-bind="ntsRadioBoxGroup: {
                             options: $parent.itemListA17_4,
                             optionsValue: 'code',
@@ -331,7 +316,7 @@
             <tr class="inline-radio">
                 <td class="color-header" id="a14_2">#{i18n.getText('KAF022_106')}</td>
                 <td class="two-radio">
-                    <div id="a14_3" class="a5_14" tabindex="225"
+                    <div id="a14_3" class="a5_14"
                          data-bind="ntsRadioBoxGroup: {
                                 options: $parent.itemListA14_3,
                                 optionsValue: 'code',
@@ -359,7 +344,7 @@
             <tr class="inline-radio">
                 <td class="color-header" id="a11_3">#{i18n.getText('KAF022_90')}</td>
                 <td class="two-radio">
-                    <div id="a11_9" class="a5_14" tabindex="215"
+                    <div id="a11_9" class="a5_14"
                          data-bind="ntsRadioBoxGroup: {
                                 options: itemListA11_12,
                                 optionsValue: 'code',
@@ -388,7 +373,7 @@
                 <tr class="inline-radio">
                     <td class="color-header" id="a12_2">#{i18n.getText('KAF022_96')}</td>
                     <td class="two-radio">
-                        <div id="a12_5" class="a12_5" tabindex="220"
+                        <div id="a12_5" class="a12_5"
                              data-bind="ntsRadioBoxGroup: {
                                     options: itemListA12_5 ,
                                     optionsValue: 'code',
@@ -452,7 +437,7 @@
                 <tr class="inline-radio">
                     <td class="color-header">#{i18n.getText('KAF022_744')}</td>
                     <td class="two-radio">
-                        <div class="a12_5" tabindex="220"
+                        <div class="a12_5"
                              data-bind="ntsRadioBoxGroup: {
                                         options: $parent.itemListA12_5 ,
                                         optionsValue: 'code',
@@ -465,7 +450,7 @@
                 <tr class="inline-radio">
                     <td class="color-header">#{i18n.getText('KAF022_93')}</td>
                     <td class="two-radio">
-                        <div class="a12_5" tabindex="220"
+                        <div class="a12_5"
                              data-bind="ntsRadioBoxGroup: {
                                         options: $parent.itemListA12_5 ,
                                         optionsValue: 'code',
@@ -507,8 +492,6 @@
                             data-bind="ntsCheckBox: {
                                         checked: displayFixedReason,
                                         enable: true
-                                },attr:{
-                                    tabindex:95 + $index()*6
                                 }">#{i18n.getText('KAF022_61')}</div>
                     </td>
                     <td style="text-align: center">
@@ -516,8 +499,6 @@
                             data-bind="ntsCheckBox: {
                                         checked: displayAppReason,
                                         enable: true
-                                },attr:{
-                                    tabindex:96 + $index()*6
                                 }">#{i18n.getText('KAF022_61')}</div>
                     </td>
                 </tr>
@@ -541,7 +522,7 @@
             <tr class="inline-radio">
                 <td class="color-header">#{i18n.getText('KAF022_33')}</td>
                 <td class="two-radio">
-                    <div class="a12_5" tabindex="220"
+                    <div class="a12_5"
                          data-bind="ntsRadioBoxGroup: {
                                             options: $parent.itemListA21_2 ,
                                             optionsValue: 'code',
@@ -554,13 +535,13 @@
             <tr class="inline-radio">
                 <td class="color-header">#{i18n.getText('KAF022_34')}</td>
                 <td class="two-radio">
-                    <div class="a12_5" tabindex="220"
+                    <div class="a12_5"
                          data-bind="ntsRadioBoxGroup: {
-                                            options: $parent.itemListA21_2 ,
-                                            optionsValue: 'code',
-                                            optionsText: 'name',
-                                            value: evenIfRecordConfirmed,
-                                            enable: true}">
+                                options: $parent.itemListA21_2 ,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: evenIfRecordConfirmed,
+                                enable: true}">
                     </div>
                 </td>
             </tr>

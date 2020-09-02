@@ -8,6 +8,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.UnregisterableCheckAtr;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.apptypesetting.HolidayAppType;
 
+import java.util.List;
+
 /**
  * refactor 4 refactor4
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.申請承認.設定.会社別.申請承認設定.休暇申請設定
@@ -25,20 +27,17 @@ public class HolidayApplicationSetting extends AggregateRoot {
     /**
      * 休暇申請種類表示名
      */
-    private HolidayApplicationTypeDisplayName holidayApplicationTypeDisplayName;
+    private List<HolidayApplicationTypeDisplayName> holidayApplicationTypeDisplayName;
 
     /**
      * 半日年休の使用上限チェック
      */
     private UnregisterableCheckAtr halfDayAnnualLeaveUsageLimitCheck;
 
-    public static HolidayApplicationSetting create(String companyId, String displayName, HolidayAppType applicationType, Integer halfDayAnnualLeaveUsageLimitCheck) {
+    public static HolidayApplicationSetting create(String companyId, List<HolidayApplicationTypeDisplayName> displayNames, Integer halfDayAnnualLeaveUsageLimitCheck) {
         return new HolidayApplicationSetting(
                 companyId,
-                new HolidayApplicationTypeDisplayName(
-                        new ApplicationDisplayName(displayName),
-                        applicationType
-                ),
+                displayNames,
                 EnumAdaptor.valueOf(halfDayAnnualLeaveUsageLimitCheck, UnregisterableCheckAtr.class));
     }
 }
