@@ -70,7 +70,7 @@ public class AnnualHolidayFinder {
 
 		// 10-1.年休の設定を取得する
 		AnnualHolidaySetOutput annualHd = AbsenceTenProcess.getSettingForAnnualHoliday(require, cId);
-		if (!annualHd.isYearHolidayManagerFlg() || !annualHd.isSuspensionTimeYearFlg()) {
+		if (!annualHd.isYearHolidayManagerFlg() && !annualHd.isSuspensionTimeYearFlg()) {
 			result.setAnnualLeaveGrant(new ArrayList<>());
 			result.setEmployees(new ArrayList<>());
 			result.setAnnualLeaveManagementFg(false);
