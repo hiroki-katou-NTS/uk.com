@@ -257,11 +257,13 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         setLogSetInfo(logSet: any) {
             const self = this;
+            console.log(logSet);
             self.currentLogDisplaySet(logSet);
             self.logSetId(logSet.id);
             self.inputCode(self.currentCode());
             self.currentName(logSet.name);
             self.recordType(logSet.recordType);
+            self.systemType(logSet.systemType);
 //            self.dataType(logSet.dataType);
         }
 
@@ -296,7 +298,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         obsSelectedLogSet() {
             const self = this;
-            self.currentCode.subscribe(function(newValue) {
+            self.currentCode.subscribe((newValue) => {
                 errors.clearAll();
                 for (let i = 0; i < self.logSets().length; i++) {
                     const logSet = self.logSets()[i];
