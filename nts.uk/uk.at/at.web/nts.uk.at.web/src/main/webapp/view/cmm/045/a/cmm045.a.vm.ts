@@ -60,7 +60,7 @@ module cmm045.a.viewmodel {
             let self = this;
             self.apptypeGridColumns = ko.observable([
                 { headerText: 'appType', key: 'appType', width: 50, hidden: true},
-                { headerText: '申請種類選択', key: 'appName', width: 125 },
+                { headerText: getText('CMM045_94'), key: 'appName', width: 125 },
             ])
 
             $(".popup-panel").ntsPopup({
@@ -652,6 +652,10 @@ module cmm045.a.viewmodel {
                                     .addClass(column.key))
                                 .append($("<span/>").addClass("box"))
                                 .appendTo($td);
+
+                            if(moment(item.opAppStartDate).add("days", -(self.appList().displaySet.appDateWarningDisp)) <= moment.utc()) {
+                                $("<label/>").addClass("approvalCell");
+                            }
                         }
                     }
                     else if (column.button !== undefined) {
@@ -659,6 +663,13 @@ module cmm045.a.viewmodel {
                             .addClass(column.key)
                             .text(column.button.text)
                             .appendTo($td);
+                    }
+                    else if(column.key == 'appDate') {
+                        var date = nts.uk.time.formatDate(new Date(item.opAppStartDate), "MM/ddD");
+                        if(item.opAppStartDate !== item.opAppEndDate) {
+                            date.concat("－").concat(nts.uk.time.formatDate(new Date(item.opAppEndDate), "MM/ddD"))
+                        }
+                        $td.html(self.appDateColor(date, "", ""));
                     }
                     else {
                         $td.html(self.customContent(column.key, item[column.key]));
@@ -697,7 +708,14 @@ module cmm045.a.viewmodel {
 				return value.replace(/\n/g, '<br/>');
             }
             if(key=='inputDate') {
-                return nts.uk.time.formatDate(new Date(value), "yy/MM/ddD hh:mm");
+                var cl = "";
+                var time = nts.uk.time.formatDate(new Date(value), "yy/MM/ddD hh:mm");
+
+                if(time.includes(''))
+                return self.inputDateColor(time, cl);
+            }
+            if(key == 'reflectionStatus') {
+
             }
 			return value;
 		}
@@ -815,37 +833,62 @@ module cmm045.a.viewmodel {
             let result = [];
             _.each(self.items(), function(item) {
                 let rowId = item.appId;
-                //fill color in 承認状況
-                if (item.appStatusNo == 0) {//0 下書き保存/未反映　=　未
-                    item.appStatusName = 'unapprovalCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['unapprovalCell']));
-                }
-                if (item.appStatusNo == 1) {//1 反映待ち　＝　承認済み
+                // //fill color in 承認状況
+                // if (item.appStatusNo == 0) {//0 下書き保存/未反映　=　未
+                //     item.appStatusName = 'unapprovalCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['unapprovalCell']));
+                // }
+                // if (item.appStatusNo == 1) {//1 反映待ち　＝　承認済み
+                //     item.appStatusName = 'approvalCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['approvalCell']));
+                // }
+                // if (item.appStatusNo == 2) {//2 反映済　＝　反映済み
+                //     item.appStatusName = 'reflectCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['reflectCell']));
+                // }
+                // if (item.appStatusNo == 3 || item.appStatusNo == 4) {//3,4 取消待ち/取消済　＝　取消
+                //     item.appStatusName = 'cancelCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
+                // }
+                // if (item.appStatusNo == 5) {//5 差し戻し　＝　差戻
+                //     item.appStatusName = 'remandCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['remandCell']));
+                // }
+                // if (item.appStatusNo == 6) {//6 否認　=　否
+                //     item.appStatusName = 'denialCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['denialCell']));
+                // }
+                // //fill color in 申請内容
+                // if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
+                //     result.push(new vmbase.CellState(rowId,'appContent',['preAppExcess']));
+                // }
+                // if (item.checkTimecolor == 2) {////2: thuc te < xin sau
+                //     result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
+                // }
+
+                if(item.reflectionStatus === '承認済') {
                     item.appStatusName = 'approvalCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['approvalCell']));
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['approvalCell']));
                 }
-                if (item.appStatusNo == 2) {//2 反映済　＝　反映済み
+                if(item.reflectionStatus === '反映済') {
                     item.appStatusName = 'reflectCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['reflectCell']));
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['reflectCell']));
                 }
-                if (item.appStatusNo == 3 || item.appStatusNo == 4) {//3,4 取消待ち/取消済　＝　取消
-                    item.appStatusName = 'cancelCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
-                }
-                if (item.appStatusNo == 5) {//5 差し戻し　＝　差戻
-                    item.appStatusName = 'remandCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['remandCell']));
-                }
-                if (item.appStatusNo == 6) {//6 否認　=　否
+                if(item.reflectionStatus === '否認') {
                     item.appStatusName = 'denialCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['denialCell']));
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['denialCell']));
                 }
-                //fill color in 申請内容
-                if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-                    result.push(new vmbase.CellState(rowId,'appContent',['preAppExcess']));
+                if(item.reflectionStatus === '未承認') {
+                    item.appStatusName = 'unapprovalCell';
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['unapprovalCell']));
                 }
-                if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-                    result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
+                if(item.reflectionStatus === '差戻') {
+                    item.appStatusName = 'remandCell';
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['remandCell']));
+                }
+                if(item.reflectionStatus === '取消') {
+                    item.appStatusName = 'cancelCell';
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['cancelCell']));
                 }
             });
             return result;

@@ -139,3 +139,6 @@ html {
 	padding-top: 10px;
 	vertical-align: top;
 }
+.reflectionStatus, .opApprovalStatusInquiry {
+	text-align: center;
+}
