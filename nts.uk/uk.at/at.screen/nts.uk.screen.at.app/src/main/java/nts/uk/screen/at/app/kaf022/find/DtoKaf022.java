@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
@@ -56,6 +57,8 @@ public class DtoKaf022 {
 
 	public HolidayWorkAppSetDto holidayWorkApplicationSetting;
 	public HdWorkAppReflectDto holidayWorkApplicationReflect;
+
+	public TimeLeaveAppReflectDto timeLeaveApplicationReflect;
 
 	public int lateEarlyCancelAtr;
 	public int lateEarlyClearAlarmAtr;

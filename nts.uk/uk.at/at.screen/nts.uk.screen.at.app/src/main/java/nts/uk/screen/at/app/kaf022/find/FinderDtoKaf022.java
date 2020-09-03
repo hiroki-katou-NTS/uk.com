@@ -56,9 +56,11 @@ import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureHistoryFinder;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameQuery;
@@ -127,6 +129,9 @@ public class FinderDtoKaf022 {
 	@Inject
 	private HolidayWorkAppSetRepository holidayWorkAppSetRepo;
 
+	@Inject
+	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepo;
+
 	public DtoKaf022 findDtoKaf022() {
 		String companyId = AppContexts.user().companyId();
 		// TODO: get Application Settings
@@ -151,6 +156,7 @@ public class FinderDtoKaf022 {
 		StampAppReflectDto stampAppReflectDto = appStampSettingRepo.findReflectByCompanyId(companyId).map(StampAppReflectDto::fromDomain).orElse(null);
 		HolidayApplicationReflectDto holidayApplicationReflect = holidayApplicationSettingRepo.findReflectByCompanyId(companyId).map(HolidayApplicationReflectDto::fromDomain).orElse(null);
 		HdWorkAppReflectDto hdWorkAppReflectDto = holidayWorkAppSetRepo.findReflectByCompany(companyId).map(HdWorkAppReflectDto::fromDomain).orElse(null);
+		TimeLeaveAppReflectDto timeLeaveAppReflectDto = timeLeaveAppReflectRepo.findByCompany(companyId).map(TimeLeaveAppReflectDto::fromDomain).orElse(null);
 
 		// TODO: get menu
 		List<StandardMenuNameQuery> queries = new ArrayList<>();
@@ -204,6 +210,9 @@ public class FinderDtoKaf022 {
 		// G
 		result.setHolidayWorkApplicationSetting(holidayWorkAppSet);
 		result.setHolidayWorkApplicationReflect(hdWorkAppReflectDto);
+
+		// H
+		result.setTimeLeaveApplicationReflect(timeLeaveAppReflectDto);
 
 		// I
         result.lateEarlyCancelAtr = lateEarlyCancelAppSet != null ? lateEarlyCancelAppSet.getCancelAtr().value : 0;

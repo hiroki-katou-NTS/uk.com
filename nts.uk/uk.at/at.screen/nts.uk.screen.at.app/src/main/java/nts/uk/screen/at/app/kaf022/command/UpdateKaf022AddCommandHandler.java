@@ -48,6 +48,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.ApprovalSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.JobAssignSettingCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.setting.UpdateApprovalSettingCommandHandler;
@@ -108,6 +109,9 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 	@Inject
 	private HolidayWorkAppSetRepository holidayWorkAppSetRepo;
 
+	@Inject
+	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepo;
+
 	@Override
 	protected void handle(CommandHandlerContext<Kaf022AddCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -151,6 +155,8 @@ public class UpdateKaf022AddCommandHandler extends CommandHandler<Kaf022AddComma
 		appEmailSetRepo.save(kaf022.getAppMailSetting().toDomain(companyId));
 
 		holidayWorkAppSetRepo.save(companyId, kaf022.getHolidayWorkApplicationSetting().toDomain(companyId), kaf022.getHolidayWorkApplicationReflect().toDomain());
+
+		timeLeaveAppReflectRepo.save(kaf022.getTimeLeaveApplicationReflect().toDomain(companyId));
 	}
 
 }

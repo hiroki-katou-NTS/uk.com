@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectCommand;
+import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
 
@@ -51,6 +52,8 @@ public class Kaf022AddCommand {
 
 	private HolidayWorkAppSetCommand holidayWorkApplicationSetting;
 	private HdWorkAppReflectCommand holidayWorkApplicationReflect;
+
+	private TimeLeaveAppReflectCommand timeLeaveApplicationReflect;
 
 	private int lateEarlyCancelAtr;
 	private int lateEarlyClearAlarmAtr;
