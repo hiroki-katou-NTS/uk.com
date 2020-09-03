@@ -187,6 +187,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.stopRequest(false);
                 let viewMode = self.selectedModeDisplayInBody();
                 self.getNewData(viewMode, null, null);
+                self.editMode2();
             });
 
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -219,6 +220,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.stopRequest(false);
                 // close screen O1 when change mode
                 self.getNewData(viewMode, null, null);
+                self.editMode2();
             });
 
             self.backgroundColorSelected.subscribe((value) => {
@@ -1739,7 +1741,40 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         editMode() {
             let self = this;
-            nts.uk.ui.block.grayout();
+            if(self.mode() == 'edit')
+                return;
+            
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
+                nts.uk.ui.block.grayout();
+                self.mode('edit');
+                // set color button
+                $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+
+                self.removeClass();
+
+                // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
+                self.enableBtnPaste(true);
+                self.enableBtnCoppy(true);
+                self.enableHelpBtn(true);
+                
+                if (self.selectedModeDisplayInBody() == 'time') {
+                    self.visibleBtnInput(true);
+                    self.enableBtnInput(true);
+                } else {
+                    self.visibleBtnInput(false);
+                    self.enableBtnInput(false);
+                }
+
+                self.visibleBtnUndo(true);
+                self.visibleBtnRedo(true);
+
+                nts.uk.ui.block.clear();
+            }).ifNo(() => {});
+        }
+        
+        editMode2() {
+            let self = this;
             self.mode('edit');
             // set color button
             $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
@@ -1750,6 +1785,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
             self.enableBtnPaste(true);
             self.enableBtnCoppy(true);
+            self.enableHelpBtn(true);
+
             if (self.selectedModeDisplayInBody() == 'time') {
                 self.visibleBtnInput(true);
                 self.enableBtnInput(true);
@@ -1760,40 +1797,43 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.visibleBtnUndo(true);
             self.visibleBtnRedo(true);
-            self.enableBtnUndo(true);
-            
-            nts.uk.ui.block.clear();
         }
 
         confirmMode() {
             let self = this;
-            nts.uk.ui.block.grayout();
-            self.mode('confirm');
-            // set color button
-            $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            if(self.mode() == 'confirm')
+                return;
+                
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
+                nts.uk.ui.block.grayout();
+                self.mode('confirm');
+                // set color button
+                $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 
-            self.removeClass();
+                self.removeClass();
 
-            // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
-            self.enableBtnPaste(false);
-            self.enableBtnCoppy(false);
+                // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
+                self.enableBtnPaste(false);
+                self.enableBtnCoppy(false);
+                self.enableHelpBtn(false);
 
-            if (self.selectedModeDisplayInBody() == 'time') {
-                self.visibleBtnInput(true);
-                self.enableBtnInput(false);
-            } else {
-                self.visibleBtnInput(false);
-                self.enableBtnInput(false);
-            }
+                if (self.selectedModeDisplayInBody() == 'time') {
+                    self.visibleBtnInput(true);
+                    self.enableBtnInput(false);
+                } else {
+                    self.visibleBtnInput(false);
+                    self.enableBtnInput(false);
+                }
 
-            self.visibleBtnUndo(true);
-            self.visibleBtnRedo(true);
-            self.enableHelpBtn(false);
-            
-            nts.uk.ui.block.clear();
+                self.visibleBtnUndo(true);
+                self.visibleBtnRedo(true);
+
+                nts.uk.ui.block.clear();
+
+            }).ifNo(() => {});
         }
-
+        
         removeClass() {
             let self = this;
             $("#paste").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
