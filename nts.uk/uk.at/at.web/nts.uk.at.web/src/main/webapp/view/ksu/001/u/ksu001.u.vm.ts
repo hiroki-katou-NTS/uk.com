@@ -69,7 +69,7 @@ module nts.uk.at.view.ksu001.u {
             let self = this;
             let dates = self.optionDates();
             let year = parseInt(yearMonth.toString().substr(0, 4));
-            let month = parseInt(yearMonth.toString().substr(5, 2));
+            let month = parseInt(yearMonth.toString().substr(4, 2));
             let publicDateSplit = [];
             let editDateSplit = [];
             let numberDayOfMonth = self.getNumberOfDays(year, month);;
@@ -83,48 +83,44 @@ module nts.uk.at.view.ksu001.u {
                         if (month < parseInt(publicDateSplit[1]) && self.editDate() >= endDate) {                            
                             for (let i = 1; i <= numberDayOfMonth; i++) {
                                 let date = self.formatDate(new Date(year, month - 1, i));
-                                let existDate = self.checkExistDate(date);
-                                if (existDate) {
-                                    self.removeExistDate(existDate);
+                                let existDate = self.checkExistDate(date);                              
+                                if (!existDate) {
+                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
                                 }
-                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
                             }
                         } else if(month < parseInt(publicDateSplit[1]) && self.editDate() >= startDate){
                             for (let i = 1; i <= numberDayOfMonth; i++) {
                                 let date = self.formatDate(new Date(year, month - 1, i));
-                                let existDate = self.checkExistDate(date);
-                                if (existDate) {
-                                    self.removeExistDate(existDate);
-                                }
-                                if(date < self.editDate()){
-                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));                                    
-                                } else {
-                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
-                                }                                
+                                let existDate = self.checkExistDate(date);                               
+                                if (!existDate) {
+                                    if(date < self.editDate()){
+                                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));                                    
+                                    } else {
+                                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
+                                    } 
+                                }                               
                             }
                         }
                     } else if (year < parseInt(publicDateSplit[0])) {
                         if (self.editDate() >= endDate) {                            
                             for (let i = 1; i <= numberDayOfMonth; i++) {
                                 let date = self.formatDate(new Date(year, month - 1, i));
-                                let existDate = self.checkExistDate(date);
-                                if (existDate) {
-                                    self.removeExistDate(existDate);
-                                }
-                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                                let existDate = self.checkExistDate(date);                               
+                                if (!existDate) {
+                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                                }                                
                             }
                         } else if(self.editDate() >= startDate){
                             for (let i = 1; i <= numberDayOfMonth; i++) {
                                 let date = self.formatDate(new Date(year, month - 1, i));
-                                let existDate = self.checkExistDate(date);
-                                if (existDate) {
-                                    self.removeExistDate(existDate);
-                                }
-                                if(date < self.editDate()){
-                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));                                    
-                                } else {
-                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
-                                }                                
+                                let existDate = self.checkExistDate(date);                                 
+                                if (!existDate) {
+                                    if (date < self.editDate()) {
+                                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                                    } else {
+                                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
+                                    }  
+                                }                          
                             }
                         }                        
                     } 
@@ -134,22 +130,20 @@ module nts.uk.at.view.ksu001.u {
                         numberDayOfMonth = self.getNumberOfDays(year, month);
                         for (let i = 1; i <= numberDayOfMonth; i++) {
                             let date = self.formatDate(new Date(year, month - 1, i));
-                            let existDate = self.checkExistDate(date);
-                            if (existDate) {
-                                self.removeExistDate(existDate);
-                            }
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                            let existDate = self.checkExistDate(date);                        
+                            if (!existDate) {
+                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                            } 
                         }
                     }
                 } else if (year < parseInt(publicDateSplit[0])) {
                     let numberDayOfMonth = self.getNumberOfDays(year, month);
                     for (let i = 1; i <= numberDayOfMonth; i++) {
                         let date = self.formatDate(new Date(year, month - 1, i));
-                        let existDate = self.checkExistDate(date);
-                        if (existDate) {
-                            self.removeExistDate(existDate);
-                        }
-                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                        let existDate = self.checkExistDate(date);                        
+                        if (!existDate) {
+                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                        } 
                     }
                 } 
                 self.optionDates(dates);
@@ -348,84 +342,34 @@ module nts.uk.at.view.ksu001.u {
                     } else {
                         publicDateSplit = publicDate.split('-');
                     }
-                    if(parseInt(publicDateSplit[0]) == parseInt(dateClickSplit[0])){
-                        if(parseInt(publicDateSplit[1]) == parseInt(dateClickSplit[1])){
-                            if (self.newEditDate()) {
-                                // baseEditDateSplit = self.newEditDate().split('-');
-                                editDateSplit = editDate.split('-');
-                                size = self.daysDifference(dateClick, self.newEditDate());
-                                if (existDate) {
-                                    // set new edit date is date click cell calendar
-                                    self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));                                
-                                    // check cell date is public or edit
-                                    if (existDate.textColor === Ksu001u.TEXT_COLOR_PUB && existDate.backgroundColor === Ksu001u.BG_COLOR_PUB) {
-                                        for (let i = 0; i <= parseInt(publicDateSplit[2]) - parseInt(dateClickSplit[2]); i++) {
-                                            let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - i));
-                                            if (self.checkExistDate(date)) {
-                                                self.removeExistDate(self.checkExistDate(date));
-                                            }
-                                            self.optionDates.push({
-                                                start: date,
-                                                textColor: Ksu001u.TEXT_COLOR_EDIT,
-                                                backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
-                                                listText: [Ksu001u.EDIT]
-                                            });
-                                        }
-                                    } else if (existDate.textColor === Ksu001u.TEXT_COLOR_EDIT) {
-                                        self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
-                                        // for (let i = 0; i <= parseInt(dateClickSplit[2]) - parseInt(editDateSplit[2]); i++) {
-                                        for (let i = 0; i <= size; i++) {
-                                            let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
-                                            if (self.checkExistDate(date)) {
-                                                self.removeExistDate(self.checkExistDate(date));
-                                            }
-                                            self.optionDates.push({
-                                                start: date,
-                                                textColor: Ksu001u.TEXT_COLOR_PUB,
-                                                backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
-                                                listText: [Ksu001u.PUBLIC]
-                                            });
-                                        }
-                                    }
-                                } else {                          
-                                    // let size = parseInt(dateClickSplit[2]) -  parseInt(editDateSplit[2]) ;
-                                    for (let i = 0; i <= size + offset; i++) {
-                                            let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
-                                            if (self.checkExistDate(date)) {
-                                                self.removeExistDate(self.checkExistDate(date));
-                                            }
-                                            self.optionDates.push({
-                                                start: date,
-                                                textColor: Ksu001u.TEXT_COLOR_PUB,
-                                                backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
-                                                listText: [Ksu001u.PUBLIC]
-                                            });
-                                    }
+                    if (parseInt(publicDateSplit[0]) == parseInt(dateClickSplit[0])) {
+                        if (parseInt(publicDateSplit[1]) == parseInt(dateClickSplit[1])) { 
+                            if (existDate) {
+                                size = self.daysDifference(dateClick, self.newPublicDate());
+                                // set new edit date is date click cell calendar
+                                if(dateClick == self.newPublicDate()){
                                     self.newEditDate("");
-                                    self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
-                                }
-                            } else {
-                                if (existDate) {
-                                    // set new edit date is date click cell calendar                                    
-                                    if(dateClick <= self.editDate() && dateClick <= self.newEditDate()){
-                                        self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
-                                        for (let i = 0; i <= parseInt(publicDateSplit[2]) - parseInt(dateClickSplit[2]); i++) {
-                                            let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - i));
-                                            if (self.checkExistDate(date)) {
-                                                self.removeExistDate(self.checkExistDate(date));
-                                            }
-                                            self.optionDates.push({
-                                                start: date,
-                                                textColor: Ksu001u.TEXT_COLOR_EDIT,
-                                                backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
-                                                listText: [Ksu001u.EDIT]
-                                            });
-                                        }
-                                    }
                                 } else {
-                                    let periodPub = parseInt(dateClickSplit[2]) - parseInt(publicDateSplit[2]);
-                                    // self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
-                                    for (let i = 0; i < periodPub; i++) {
+                                    self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
+                                }                                
+                                // check cell date is public or edit
+                                if (existDate.textColor === Ksu001u.TEXT_COLOR_PUB && existDate.backgroundColor === Ksu001u.BG_COLOR_PUB) {
+                                    for (let i = 0; i < size; i++) {
+                                        let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - i));
+                                        if (self.checkExistDate(date)) {
+                                            self.removeExistDate(self.checkExistDate(date));
+                                        }
+                                        self.optionDates.push({
+                                            start: date,
+                                            textColor: Ksu001u.TEXT_COLOR_EDIT,
+                                            backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
+                                            listText: [Ksu001u.EDIT]
+                                        });
+                                    }
+                                } else if (existDate.textColor === Ksu001u.TEXT_COLOR_EDIT) {
+                                    editDateSplit = editDate.split('-');
+                                    // self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
+                                    for (let i = 0; i <= parseInt(dateClickSplit[2]) - parseInt(editDateSplit[2]); i++) {
                                         let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
                                         if (self.checkExistDate(date)) {
                                             self.removeExistDate(self.checkExistDate(date));
@@ -437,34 +381,75 @@ module nts.uk.at.view.ksu001.u {
                                             listText: [Ksu001u.PUBLIC]
                                         });
                                     }
-                                    self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
+                                    for (let i = 1; i <= parseInt(publicDateSplit[2]) - parseInt(dateClickSplit[2]); i++) {
+                                        let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + i));
+                                        if (self.checkExistDate(date)) {
+                                            self.removeExistDate(self.checkExistDate(date));
+                                        }
+                                        self.optionDates.push({
+                                            start: date,
+                                            textColor: Ksu001u.TEXT_COLOR_EDIT,
+                                            backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
+                                            listText: [Ksu001u.EDIT]
+                                        });
+                                    }
                                 }
+                            } else {
+                                if (self.newEditDate() || self.newEditDate() != "") {
+                                    size = self.daysDifference(dateClick, self.newEditDate());
+                                } else {
+                                    size = self.daysDifference(dateClick, self.newPublicDate());
+                                }
+                                for (let i = 0; i <= size + offset; i++) {
+                                    let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
+                                    if (self.checkExistDate(date)) {
+                                        self.removeExistDate(self.checkExistDate(date));
+                                    }
+                                    self.optionDates.push({
+                                        start: date,
+                                        textColor: Ksu001u.TEXT_COLOR_PUB,
+                                        backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
+                                        listText: [Ksu001u.PUBLIC]
+                                    });
+                                }
+                                self.newEditDate("");
+                                self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
                             }
+                            
                         } else if (parseInt(publicDateSplit[1]) > parseInt(dateClickSplit[1])) {
                             size = self.daysDifference(self.newPublicDate(), dateClick);
-                            // let periodPub = parseInt(dateClickSplit[2]) - parseInt(publicDateSplit[2]);
-                            if(!self.editDate() && (!self.newEditDate() || self.newEditDate() == "")){
-                                for (let i = 0; i <= size; i++) {
+                            let t = self.editDate();
+                            if( (!self.editDate() && !self.newEditDate()) || (!self.editDate() && self.newEditDate() == "") ){
+                                for (let i = 1; i <= size; i++) {
                                     let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + i));
                                     if (self.checkExistDate(date)) {
                                         self.removeExistDate(self.checkExistDate(date));
                                     }
                                     dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
                                 }
-                                self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
-                            }
-                            if(self.newEditDate() == "") {
+                                self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));                               
+                            } else if(self.newEditDate() == "") {
                                 if (dateClick < self.editDate()) {
-                                    for (let i = 0; i <= size; i++) {
+                                    for (let i = 1; i <= size; i++) {
                                         let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + i));
                                         if (self.checkExistDate(date)) {
                                             self.removeExistDate(self.checkExistDate(date));
                                         }
                                         dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
                                     }
-                                    self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
+                                    self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
                                 }
                             } else if (dateClick < self.editDate() && dateClick < self.newEditDate()) {
+                                for (let i = 1; i <= size; i++) {
+                                    let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + i));
+                                    if (self.checkExistDate(date)) {
+                                        self.removeExistDate(self.checkExistDate(date));
+                                    }
+                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
+                                }
+                                self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
+                            } else {
+                                self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + 1)));
                                 for (let i = 0; i <= size; i++) {
                                     let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) + i));
                                     if (self.checkExistDate(date)) {
@@ -472,11 +457,19 @@ module nts.uk.at.view.ksu001.u {
                                     }
                                     dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
                                 }
-                                self.newEditDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
+                                let sizePub = self.daysDifference(dateClick, self.editDate()) > self.daysDifference(dateClick, self.newEditDate()) ? self.daysDifference(dateClick, self.editDate()) : self.daysDifference(dateClick, self.newEditDate()) ;
+                                for (let i = 0; i <= sizePub ; i++) {
+                                    let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
+                                    if (self.checkExistDate(date)) {
+                                        self.removeExistDate(self.checkExistDate(date));
+                                    }
+                                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
+                                }
                             }
                         } else {
                             size = self.daysDifference(self.newPublicDate(), dateClick);
                             self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
+                            self.newEditDate("");
                             for (let i = 0; i < size; i++) {
                                 let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
                                 if (self.checkExistDate(date)) {
@@ -495,16 +488,11 @@ module nts.uk.at.view.ksu001.u {
                                     self.removeExistDate(self.checkExistDate(date));
                                 }
                                 dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
-                                // self.optionDates.push({
-                                //     start: date,
-                                //     textColor: Ksu001u.TEXT_COLOR_EDIT,
-                                //     backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
-                                //     listText: [Ksu001u.EDIT]
-                                // });
                             }
                         }
                     } else {
                         self.newPublicDate(self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]))));
+                        self.newEditDate("");
                         size = self.daysDifference(self.newPublicDate(), dateClick);
                         for (let i = 0; i < size; i++) {
                             let date = self.formatDate(new Date(parseInt(dateClickSplit[0]), parseInt(dateClickSplit[1]) - 1, parseInt(dateClickSplit[2]) - i));
@@ -512,15 +500,8 @@ module nts.uk.at.view.ksu001.u {
                                 self.removeExistDate(self.checkExistDate(date));
                             }
                             dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
-                            // self.optionDates.push({
-                            //     start: date,
-                            //     textColor: Ksu001u.TEXT_COLOR_PUB,
-                            //     backgroundColor: Ksu001u.BG_COLOR_PRE_PUB,
-                            //     listText: [Ksu001u.PUBLIC]
-                            // });
                         }
                     }
-                    let a = self.optionDates(dates);
                     self.isBtnClick(true);  
                     self.yearMonthPicked(parseInt(dateClickSplit[0] + dateClickSplit[1]));  
                     self.isBtnClick(false);                    
@@ -529,8 +510,6 @@ module nts.uk.at.view.ksu001.u {
         }
         public Prev(): void {
             const self = this;
-
-            let tmp = self.stepSelected();
             if (self.stepSelected() == "0") {
                 self.weekPrev();
             } else {
@@ -552,8 +531,8 @@ module nts.uk.at.view.ksu001.u {
             let dates = self.optionDates();
             let basePubDate = self.publicDate();
             let basePubDateSplit = [];
-            let baseEditDate = self.editDate();
-            let publicDate = self.newPublicDate();
+            // let baseEditDate = self.editDate();
+            // let publicDate = self.newPublicDate();
             let publicDateSplit = [];
             let editDate = self.newEditDate();
             let a = self.optionDates();   

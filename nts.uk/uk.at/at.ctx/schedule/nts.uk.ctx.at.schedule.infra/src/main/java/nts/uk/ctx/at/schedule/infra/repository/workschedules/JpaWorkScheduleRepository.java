@@ -245,7 +245,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		Optional<ShortTimeOfDailyAttd> optWorkShortTime = this.getShortTime(sid, ymd,childCareAtr, frameNo);
 		if(optWorkShortTime.isPresent()){
 			KscdtSchShortTimeTsPK pk = new KscdtSchShortTimeTsPK(sid, ymd, childCareAtr, frameNo);
-			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
+			this.commandProxy().remove(KscdtSchShortTimeTs.class, pk);
 		}	
 	}
 	
@@ -254,7 +254,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		Boolean optWorkShortTime = this.checkExitsShortTime(sid, ymd);
 		if(optWorkShortTime){
 			KscdtSchShortTimeTsPK pk = new KscdtSchShortTimeTsPK(sid, ymd);
-			this.commandProxy().remove(KscdtSchBasicInfo.class, pk);
+			this.commandProxy().remove(KscdtSchShortTimeTs.class, pk);
 		}	
 	}
 	
