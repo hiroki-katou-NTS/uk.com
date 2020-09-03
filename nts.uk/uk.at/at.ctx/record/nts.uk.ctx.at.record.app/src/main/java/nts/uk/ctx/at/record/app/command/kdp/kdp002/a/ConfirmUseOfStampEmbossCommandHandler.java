@@ -53,8 +53,8 @@ public class ConfirmUseOfStampEmbossCommandHandler extends CommandHandler<Confir
 	@Inject
 	private StampDakokuRepository stampDakokuRepo;
 
-	@Inject
-	protected WorkingConditionService workingConditionService;
+//	@Inject
+//	protected WorkingConditionService workingConditionService;
 
 	@Inject
 	protected PredetemineTimeSettingRepository predetemineTimeSettingRepo;
