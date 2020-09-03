@@ -28,6 +28,8 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -59,6 +61,9 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	/** The Basic schedule service. */
 	@Inject
 	private BasicScheduleService basicScheduleService;
+
+	@Inject
+	private WeeklyWorkDayRepository weeklyWorkDayRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -117,8 +122,9 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// data insert setting batch
 		List<WorkMonthlySetting> addWorkMonthlySettings = new ArrayList<>();
-		
-		
+
+		WeeklyWorkDayPattern dto = this.weeklyWorkDayRepository.getWeeklyWorkDayPatternByCompanyId(companyId);
+
 		// check by next day of begin end
 		while (toStartDate.yearMonth().v() <= command.getEndYearMonth()) {
 			
@@ -142,11 +148,11 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					updateWorkMonthlySettings.add(dataPublic);
 				}
 			} else {
-				WeeklyWorkSettingDto dto = this.weeklyWorkSettingFinder
+				WeeklyWorkSettingDto dto1 = this.weeklyWorkSettingFinder
 						.checkWeeklyWorkSetting(toStartDate);
-				
+
 				// is work day
-				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
+				switch (EnumAdaptor.valueOf(dto.getWorkingDayCtgOfTagertDay(toStartDate).value, WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
 					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, toStartDate);

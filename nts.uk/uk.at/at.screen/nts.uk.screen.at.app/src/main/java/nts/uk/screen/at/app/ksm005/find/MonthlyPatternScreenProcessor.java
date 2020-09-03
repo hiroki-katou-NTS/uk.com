@@ -79,7 +79,7 @@ public class MonthlyPatternScreenProcessor {
             // 2. set WorkStyle
             WorkInformation information = new WorkInformation(x.getWorkingCode(), x.getWorkTypeCode());
             Integer workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
-            Integer typeColor = 0;
+            Integer typeColor = -1;
             //check output for frontend
             if (workStyle != null)
             if (workStyle == WorkStyle.ONE_DAY_WORK.value){
