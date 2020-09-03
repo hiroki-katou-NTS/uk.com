@@ -95,7 +95,6 @@ module nts.uk.at.view.ksm005.a {
                     if($('#yMPicker').ntsError('hasError')){
                         return; 
                     }
-
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE
 	                    && self.currentMonthlyPattern() !== month ) {
                         self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
@@ -392,11 +391,10 @@ module nts.uk.at.view.ksm005.a {
 	            nts.uk.ui.block.invisible();
 
 	            service.getMonthlyPattern( params ).done( (data) => {
+                    let a = {};
+                    a[Math.floor(self.yearMonthPicked() / 100)] = data.listMonthYear;
+                    self.cssRangerYM(a);
                     if (monthlyPatternCode) {
-	                    let a = {};
-	                    a[Math.floor(self.yearMonthPicked()/100)] = data.listMonthYear;
-	                    self.cssRangerYM(a);
-
                         service.findByIdMonthlyPattern(monthlyPatternCode)
 	                    .done(function(response) {
 	                        self.monthlyPatternModel().updateData( response );
