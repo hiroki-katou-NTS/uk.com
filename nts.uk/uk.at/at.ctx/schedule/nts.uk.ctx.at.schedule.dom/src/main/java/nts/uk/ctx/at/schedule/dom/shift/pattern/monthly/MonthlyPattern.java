@@ -60,6 +60,7 @@ public class MonthlyPattern extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);
 		memento.setMonthlyPatternName(this.monthlyPatternName);
+		memento.setContractCd();
 	}
 
 	/* (non-Javadoc)
