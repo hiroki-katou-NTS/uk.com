@@ -11,14 +11,14 @@ public enum ItemSelectionType {
 	/**
 	 * ENUM_FIXED_FORM_SELECTION
 	 */
-	FIXED_FORM_SELECTION(0, "定型選択"),
+	STANDARD_SETTING(0, "定型選択"),
 
 	
 	// 	自由選択
 	/**
 	 * ENUM_FREE_CHOICE
 	 */
-	FREE_CHOICE(1, "自由選択");
+	FREE_SETTING(1, "自由選択");
 	
 
 	/** The value. */

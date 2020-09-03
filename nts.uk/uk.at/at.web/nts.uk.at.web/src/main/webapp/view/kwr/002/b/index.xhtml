@@ -41,7 +41,7 @@
 				<!-- B1_2 -->
 				<button tabindex="2" data-bind="click: onRegister" class="proceed">#{i18n.getText('KWR002_31')}</button>
 				<!-- B1_5 -->
-				<button tabindex="3" data-bind="click: openKDL002F" >#{i18n.getText('KWR002_232')}</button>
+				<button tabindex="3" data-bind="click: openDialogF" >#{i18n.getText('KWR002_232')}</button>
 				<!-- B1_3 -->
 				<button tabindex="4" data-bind="click: onDelete, enable: !newMode()" class="danger"
 					style="margin-right: 0px;">#{i18n.getText('KWR002_32')}</button>
@@ -144,6 +144,7 @@
 											data-bind="ntsFormLabel: {  required: false }" id="B7_1">#{i18n.getText('KWR002_49')}
 										</div>
 									</td>
+									<!-- font size -->
 									<!--B9_2-->
 									<td colspan="2">
 										<div class="cf switch-btn" tabindex="10"

@@ -14,10 +14,15 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA.WorkScheduleOutput
 import nts.uk.ctx.at.function.dom.adapter.RoleLogin.LoginRoleAdapter;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 //import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceFunctionNo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -46,6 +51,12 @@ public class AttendanceRecordExportSettingFinder {
 	@Inject
 	private DailyPerformAuthorRepo dailyPerAuthRepo;
 	
+	@Inject
+	private AttendanceRecordOuputItemsRepository outputItemRepo;
+	
+	@Inject
+	private AttendanceRecordStandardSettingRepository standardRepo;
+	
 	/**
 	 * Gets the all attendance record export setting.
 	 *
@@ -53,8 +64,8 @@ public class AttendanceRecordExportSettingFinder {
 	 *            the company id
 	 * @return the all attendance record export setting
 	 */
-	public List<AttendanceRecordExportSettingDto> getAllAttendanceRecordExportSetting(String companyId) {
-
+	public List<AttendanceRecordExportSettingDto> getAllAttendanceRecordExportSetting() {
+		String companyId = AppContexts.user().companyId();
 		// get domain
 		List<AttendanceRecordExportSetting> domainList = attendanceRecExpSetRepo.getAllAttendanceRecExpSet(companyId);
 
@@ -130,23 +141,111 @@ public class AttendanceRecordExportSettingFinder {
 		return new AttendaceMonthDto(optCls.getClosureMonth().getProcessingYm().toString());
 	}
 	
-	public List<AttendaceAuthorityOfWorkPerform> getAuthorityOfWorkPerformance() {
+	public AttendanceAuthorityOfWorkPerform getAuthorityOfWorkPerformance() {
 		String roleId = AppContexts.user().roles().forAttendance();
 		String companyId = AppContexts.user().companyId();
-		String employeeID = AppContexts.user().employeeId();
-		int functionNo51 = 51;
-		List<DailyPerformanceAuthority> daiPerAuthors = dailyPerAuthRepo.get(roleId);
-		List<AttendaceAuthorityOfWorkPerform> results =  daiPerAuthors.stream().filter(i -> {
-			return i.getFunctionNo().v().equals(BigDecimal.valueOf(functionNo51)) && i.getRoleID().equals(roleId) && i.isAvailability() == true;})
-		.map(i -> {
-			AttendaceAuthorityOfWorkPerform attendaceAuthorityOfWorkPerform = new AttendaceAuthorityOfWorkPerform();
-			attendaceAuthorityOfWorkPerform.setAvailability(i.isAvailability());
-			attendaceAuthorityOfWorkPerform.setCompanyId(companyId);
-			attendaceAuthorityOfWorkPerform.setRoleId(roleId);
-			attendaceAuthorityOfWorkPerform.setFunctionNo(i.getFunctionNo().v().intValue());
-			attendaceAuthorityOfWorkPerform.setEmployeeId(employeeID);
-			return attendaceAuthorityOfWorkPerform;
-		}).collect(Collectors.toList());
-		return results;
+		String employeeId = AppContexts.user().employeeId();
+
+		AttendanceAuthorityOfWorkPerform attendanceDto = new AttendanceAuthorityOfWorkPerform();
+		
+		boolean isFreeSetting = this.dailyPerAuthRepo.getAuthorityOfEmployee(roleId,
+				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
+		
+		if (isFreeSetting) {
+			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo
+					.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+		} else {
+			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo
+					.getStandardByCompanyId(companyId);
+		}
+
+		attendanceDto.setFreeSetting(isFreeSetting);
+		attendanceDto.setCompanyId(companyId);
+		attendanceDto.setRoleId(roleId);
+		attendanceDto.setEmployeeId(employeeId);
+		attendanceDto.setFunctionNo(51);
+		return attendanceDto;
 	}
+	
+	/**
+	 * Gets the free setting.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @return the free setting
+	 */
+	private AttendanceRecordOuputItemsDto getFreeSetting(String companyId, String employeeId) {
+		Optional<AttendanceRecordOuputItems> oDomain = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+		
+		return oDomain.map(d -> toFreeSettingDto(d)).orElse(null);
+	}
+	
+	/**
+	 * Gets the standard setting.
+	 *
+	 * @param companyId the company id
+	 * @return the standard setting
+	 */
+	private AttendanceRecordStandardSettingDto getStandardSetting(String companyId) {
+		Optional<AttendanceRecordStandardSetting> oDomain = this.standardRepo.getStandardByCompanyId(companyId);
+		
+		return oDomain.map(d -> toStandardSettingDto(d)).orElse(null);
+	}
+	
+	/**
+	 * To free setting dto.
+	 *
+	 * @param domain the domain
+	 * @return the attendance record ouput items dto
+	 */
+	private AttendanceRecordOuputItemsDto toFreeSettingDto(AttendanceRecordOuputItems domain) {
+		AttendanceRecordOuputItemsDto dto = new AttendanceRecordOuputItemsDto();
+		domain.setMemento(dto);
+		return dto;
+	}
+	
+	/**
+	 * To standard setting dto.
+	 *
+	 * @param domain the domain
+	 * @return the attendance record standard setting dto
+	 */
+	private AttendanceRecordStandardSettingDto toStandardSettingDto(AttendanceRecordStandardSetting domain) {
+		AttendanceRecordStandardSettingDto dto = new AttendanceRecordStandardSettingDto();
+		domain.setMemento(dto);
+		return dto;
+	}
+	
+	public AttendanceSettingDto startScreenB(ItemSelectedTypeSettingDto itemSelectedTypeSettingDto) {
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		AttendanceSettingDto settingDto = new AttendanceSettingDto();
+		// convert domain to Dto
+//		List<AttendanceRecordExportSettingDto> dtoList = checkSelectionTypeOfInputItem(
+//				itemSelectedTypeSettingDto.getSelectionType(), companyId, employeeId).stream().map(item -> {
+//					AttendanceRecordExportSettingDto dto = new AttendanceRecordExportSettingDto();
+//					dto.setCode(item.getCode().toString());
+//					dto.setName(item.getName().toString());
+//					dto.setSealUseAtr(item.getSealUseAtr());
+//					dto.setNameUseAtr(item.getNameUseAtr().value);
+//					return dto;
+//				}).collect(Collectors.toList());
+		List<AttendanceRecordExportSettingDto> dtoList = this.getAllAttendanceRecordExportSetting();
+		settingDto.setLstAttendanceRecordExportSetting(dtoList);
+		return settingDto;
+	}
+	
+	private List<AttendanceRecordExportSetting> checkSelectionTypeOfInputItem(int selectionType, String companyId, String employeeId) {
+		List<AttendanceRecordExportSetting> lstAttenDanceReportExportDto;
+		if(selectionType == ItemSelectionType.STANDARD_SETTING.value) {
+			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo.getStandardByCompanyId(companyId);
+			lstAttenDanceReportExportDto = standardSetting.isPresent() ? standardSetting.get().getAttendanceRecordExportSettings() : new ArrayList<>();
+		}else {
+			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+			lstAttenDanceReportExportDto = freeSetting.isPresent() ? freeSetting.get().getAttendanceRecordExportSettings() : new ArrayList<>();
+		}
+		return lstAttenDanceReportExportDto;
+	}
+	
 }
+
