@@ -9,7 +9,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ComplementLeaveAppConnect;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -165,5 +168,20 @@ public class ListOfApplicationCmd {
 		lstApp.setOpMoreThanDispLineNO(opMoreThanDispLineNO == null ? Optional.empty() : Optional.of(opMoreThanDispLineNO));
 		
 		return lstApp;
+	}
+	
+	public Application toDomainApplication() {
+		return Application.createFromNew(
+				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
+				"", 
+				EnumAdaptor.valueOf(appType, ApplicationType.class), 
+				new ApplicationDate(GeneralDate.fromString(appDate, "yyyy/MM/dd")), 
+				"", 
+				Optional.empty(), 
+				Optional.empty(), 
+				opAppStartDate == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(opAppStartDate, "yyyy/MM/dd"))), 
+				opAppEndDate == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(opAppEndDate, "yyyy/MM/dd"))), 
+				Optional.empty(), 
+				Optional.empty());
 	}
 }

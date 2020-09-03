@@ -172,4 +172,10 @@ public class ApplicationListWebservice extends WebService{
 	public ExportServiceResult print(AppScreenQuery query) {
 		return exportService.start(query);
 	}
+	
+	@POST
+	@Path("approve")
+	public AppListApproveResult approveAppLst(AppListApproveCommand command) {
+		return appListApproveCommandHandler.handle(command);
+	}
 }
