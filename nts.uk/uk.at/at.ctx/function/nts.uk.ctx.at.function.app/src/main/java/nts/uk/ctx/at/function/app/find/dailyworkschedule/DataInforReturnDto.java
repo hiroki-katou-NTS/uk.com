@@ -8,7 +8,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 出力項目設定
  * @author LienPTK
  */
 @Data
@@ -20,9 +19,8 @@ public class DataInforReturnDto {
 	
 	/** 名称 */
 	private String name;
-	
-	/** 出力レイアウトID */
-	private String layoutId;
+
+	private int id;
 
 	/**
 	 * Instantiates a new data infor return dto.
@@ -31,11 +29,11 @@ public class DataInforReturnDto {
 	 * @param name the name
 	 * @param layoutId the layout id
 	 */
-	public DataInforReturnDto(String code, String name, String layoutId) {
+	public DataInforReturnDto(String code, String name, int id) {
 		super();
 		this.code = code;
 		this.name = name;
-		this.layoutId = layoutId;
+		this.id = id;
 	}
 
 }

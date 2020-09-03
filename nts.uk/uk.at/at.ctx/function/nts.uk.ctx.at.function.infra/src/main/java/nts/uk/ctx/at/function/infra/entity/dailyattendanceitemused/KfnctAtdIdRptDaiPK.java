@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem;
+package nts.uk.ctx.at.function.infra.entity.dailyattendanceitemused;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

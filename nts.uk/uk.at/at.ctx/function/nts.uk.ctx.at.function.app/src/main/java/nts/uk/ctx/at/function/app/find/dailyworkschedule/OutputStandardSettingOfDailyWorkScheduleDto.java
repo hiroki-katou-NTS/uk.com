@@ -27,13 +27,13 @@ public class OutputStandardSettingOfDailyWorkScheduleDto implements OutputStanda
 	/**
 	 *	出力項目
 	 */
-	private List<DataInforReturnDto> outputItemDailyWorkSchedules;
+	private List<OutputItemSettingDto> outputItemDailyWorkSchedules;
 
 	@Override
-	public void setOutputItemDailyWorkSchedules(List<OutputItemDailyWorkSchedule> outputItem) {
+	public void setOutputItems(List<OutputItemDailyWorkSchedule> outputItem) {
 		this.outputItemDailyWorkSchedules = outputItem.stream()
 				.map(domain -> {
-					DataInforReturnDto dto = new DataInforReturnDto();
+					OutputItemSettingDto dto = new OutputItemSettingDto();
 					dto.setCode(String.valueOf(domain.getItemCode().v()));
 					dto.setName(domain.getItemName().v());
 					dto.setLayoutId(domain.getOutputLayoutId());

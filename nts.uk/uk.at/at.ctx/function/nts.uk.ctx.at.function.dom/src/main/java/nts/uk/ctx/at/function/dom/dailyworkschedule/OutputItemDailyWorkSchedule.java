@@ -50,7 +50,8 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 	// 文字の大きさ
 	private FontSizeEnum fontSize;
 	
-	private static final String MAX_ATTENDANCE_ITEM = "48";
+	private static final String MAX_ATTENDANCE_ITEM_BIG_SIZE = "48";
+	private static final String MAX_ATTENDANCE_ITEM_SMALL_SIZE = "48";
 
 	/**
 	 * Instantiates a new output item daily work schedule.
@@ -91,9 +92,17 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 		if (this.lstDisplayedAttendance.isEmpty() || this.lstDisplayedAttendance == null) {
 			throw new BusinessException("Msg_880");
 		}
+
+		// check max display item 
+		int numberDisplayItem = fontSize == FontSizeEnum.SMALL ? 60 : 48;
 		
-		if (this.lstDisplayedAttendance.size() > 48) {
-			throw new BusinessException("Msg_1297", new String[]{MAX_ATTENDANCE_ITEM});
+		// error message 
+		String[] errString = fontSize == FontSizeEnum.SMALL
+				? new String[] { MAX_ATTENDANCE_ITEM_SMALL_SIZE }
+				: new String[] { MAX_ATTENDANCE_ITEM_BIG_SIZE };
+
+		if (this.lstDisplayedAttendance.size() > numberDisplayItem) {
+			throw new BusinessException("Msg_1297", errString);
 		}
 	}
 }

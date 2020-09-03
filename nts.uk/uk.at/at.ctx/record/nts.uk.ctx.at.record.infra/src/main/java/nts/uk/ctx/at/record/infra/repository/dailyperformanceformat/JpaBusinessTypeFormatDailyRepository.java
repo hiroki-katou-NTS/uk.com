@@ -49,14 +49,12 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
 		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
-		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		FIND_DETAIl = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KrcmtBusinessTypeDaily a ");
 		builderString.append("SET a.order = :order , a.columnWidth = :columnWidth ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
-		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
 		builderString.append("AND a.krcmtBusinessTypeDailyPK.attendanceItemId = :attendanceItemId ");
 		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		UPDATE_BY_KEY = builderString.toString();
@@ -99,11 +97,10 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode,
-			BigDecimal sheetNo) {
+	public List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode) {
 
 		return this.queryProxy().query(FIND_DETAIl, KrcmtBusinessTypeDaily.class).setParameter("companyId", companyId)
-				.setParameter("businessTypeCode", businessTypeCode).setParameter("sheetNo", sheetNo)
+				.setParameter("businessTypeCode", businessTypeCode)
 				.getList(f -> toDomain(f));
 	}
 

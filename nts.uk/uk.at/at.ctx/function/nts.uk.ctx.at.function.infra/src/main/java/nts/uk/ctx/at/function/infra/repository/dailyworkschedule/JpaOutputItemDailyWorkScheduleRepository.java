@@ -25,16 +25,6 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplayPK;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplayPK_;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtAttendanceDisplay_;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedulePK_;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtItemWorkSchedule_;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkCont;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtPrintRemarkContPK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatdPK;
@@ -49,14 +39,6 @@ import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnot
 public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository implements OutputItemDailyWorkScheduleRepository {
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#add(nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule)
-	 */
-	@Override
-	public void add(OutputItemDailyWorkSchedule domain) {
-		this.commandProxy().insert(this.toEntity(domain));
-	}
-
-	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#update(nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule)
 	 */
 	@Override
@@ -66,10 +48,10 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 
         // create delete
-        CriteriaDelete<KfnmtAttendanceDisplay> delete = cb.createCriteriaDelete(KfnmtAttendanceDisplay.class);
+        CriteriaDelete<KfnmtRptWkDaiOutatd> delete = cb.createCriteriaDelete(KfnmtRptWkDaiOutatd.class);
 
         // set the root class
-        Root<KfnmtAttendanceDisplay> root = delete.from(KfnmtAttendanceDisplay.class);
+        Root<KfnmtRptWkDaiOutatd> root = delete.from(KfnmtRptWkDaiOutatd.class);
 
         // set where clause
         delete.where(cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.cid), domain.getCompanyID()),
@@ -81,13 +63,6 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 		this.commandProxy().update(this.toEntity(domain));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#delete(nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule)
-	 */
-	@Override
-	public void delete(OutputItemDailyWorkSchedule domain) {
-		this.commandProxy().remove(this.toEntity(domain));
-	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCid(java.lang.String)
@@ -120,17 +95,6 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 		// Return
 		return results.stream().map(item -> new OutputItemDailyWorkSchedule(new JpaOutputItemDailyWorkScheduleGetMemento(item)))
 				.collect(Collectors.toList());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#deleteByCidAndCode(java.lang.String, int)
-	 */
-	@Override
-	public void deleteByCidAndCode(String layoutId) {
-        KfnmtItemWorkSchedulePK primaryKey = new KfnmtItemWorkSchedulePK();
-        primaryKey.setCid(companyId);
-        primaryKey.setItemCode(code);
-        this.commandProxy().remove(KfnmtItemWorkSchedule.class, primaryKey);
 	}
 
 	/* (non-Javadoc)

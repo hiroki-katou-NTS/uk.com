@@ -77,6 +77,9 @@ module nts.uk.at.view.kwr001.c {
             // C7_13 label
             sizeClassificationLabel: KnockoutObservable<string>;
 
+            layoutId: string;
+            selectionType: number;
+
             constructor() {
                 var self = this;
                 self.allMainDom = ko.observable();
@@ -233,7 +236,8 @@ module nts.uk.at.view.kwr001.c {
                     } else {
                         self.currentCodeList(dataTransfer.codeChoose);
                     }
-
+                    self.layoutId = dataTransfer.layoutId;
+                    self.selectionType = dataTransfer.selection;
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -328,7 +332,13 @@ module nts.uk.at.view.kwr001.c {
             openScreenD() {
                 var self = this;
                 let dataScrD: any;
-                //                nts.uk.ui.windows.setShared('KWR001_D', self.outputItemPossibleLst(), true);
+
+                // update ver34 set shared data
+                nts.uk.ui.windows.setShared('KWR001_D', {
+                    fontSize: self.selectedSizeClassificationType,
+                    selecttionType: self.selectionType,
+                }, true);
+
                 if (!_.isEmpty(self.currentCodeList())) {
                     self.storeCurrentCodeBeforeCopy(self.currentCodeList());
                 }
@@ -492,7 +502,7 @@ module nts.uk.at.view.kwr001.c {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     blockUI.grayout();
-                    service.remove(self.currentCodeList()).done(function() {
+                    service.remove(self.layoutId, self.selectionType.toString()).done(function() {
                         let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
                             return self.currentCodeList() == value.code;
                         })

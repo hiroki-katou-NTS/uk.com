@@ -39,7 +39,7 @@ public class OutputStandardSettingOfDailyWorkSchedule extends AggregateRoot {
 	public void getMemento(MementoGetter memento) {
 		this.companyId = new CompanyId(memento.getCompanyId());
 		this.selection = ItemSelectionType.valueOf(memento.getSelection());
-		this.outputItems = memento.getOutputItemDailyWorkSchedules();
+		this.outputItems = memento.getOutputItems();
 	}
 
 	public void setMemento(MementoSetter memento) {
@@ -47,19 +47,19 @@ public class OutputStandardSettingOfDailyWorkSchedule extends AggregateRoot {
 		if (this.selection != null) {
 			memento.setSelection(this.selection.value);
 		}
-		memento.setOutputItemDailyWorkSchedules(this.outputItems);
+		memento.setOutputItems(this.outputItems);
 	}
 
 	public static interface MementoSetter {
 		void setCompanyId(String companyId);
 		void setSelection(int itemSelection);
-		void setOutputItemDailyWorkSchedules(List<OutputItemDailyWorkSchedule> outputItem);
+		void setOutputItems(List<OutputItemDailyWorkSchedule> outputItem);
 	}
 
 	public static interface MementoGetter {
 		String getCompanyId();
 		int getSelection();
-		List<OutputItemDailyWorkSchedule> getOutputItemDailyWorkSchedules();
+		List<OutputItemDailyWorkSchedule> getOutputItems();
 	}
 
 

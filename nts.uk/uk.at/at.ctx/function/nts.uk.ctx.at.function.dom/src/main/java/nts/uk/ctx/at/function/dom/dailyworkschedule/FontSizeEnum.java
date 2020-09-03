@@ -11,7 +11,7 @@ public enum FontSizeEnum {
 	/** 小 */
 	SMALL(1);
 	
-	private final int value;
+	public final int value;
 
 	private FontSizeEnum(int value) {
 		this.value = value;

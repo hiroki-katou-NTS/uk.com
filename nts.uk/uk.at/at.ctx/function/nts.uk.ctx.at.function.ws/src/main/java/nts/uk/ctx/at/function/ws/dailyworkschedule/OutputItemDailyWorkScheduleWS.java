@@ -77,10 +77,10 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 *
 	 * @param code the code
 	 */
-	@Path("delete/{code}")
+	@Path("delete/{layoutId}/{selectionType}")
 	@POST
-	public void delete(@PathParam("code") String code){
-		this.outputItemDailyWorkScheduleDeleteHandler.delete(code);
+	public void delete(@PathParam("layoutId") String layoutId, @PathParam("selectionType") Integer selectionType) {
+		this.outputItemDailyWorkScheduleDeleteHandler.delete(layoutId, selectionType);
 	}
 	
 	/**
@@ -90,7 +90,7 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 */
 	@Path("findCopy")
 	@POST
-	public List<DataInforReturnDto> findCopy(){
+	public List<DataInforReturnDto> findCopy() {
 		return this.outputItemDailyWorkScheduleFinder.getFormatDailyPerformance();
 	}
 	
@@ -101,10 +101,13 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 * @param codeSourceSerivce the code source serivce
 	 * @return the list
 	 */
-	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
+	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}/{selectionType}/{fontSize}")
 	@POST
-	public DataReturnDto executeCopy(@PathParam("codeCopy") String codeCopy, @PathParam("codeSourceSerivce") String codeSourceSerivce){
-		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
+	public DataReturnDto executeCopy(@PathParam("codeCopy") String codeCopy
+			, @PathParam("codeSourceSerivce") String codeSourceSerivce
+			, @PathParam("selectionType") Integer selectionType
+			, @PathParam("fontSize") Integer fontSize) {
+		return this.outputItemDailyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce, selectionType, fontSize);
 	}
 	
 	/**
@@ -137,7 +140,7 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	
 	@Path("findByCode/{code}")
 	@POST
-	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("code") String code){
+	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("code") String code) {
 		return this.outputItemDailyWorkScheduleFinder.findByCodeId(code);
 	}
 

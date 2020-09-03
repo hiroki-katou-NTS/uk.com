@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.app.command.dailyworkschedule;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -57,10 +58,18 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 				Optional<OutputStandardSettingOfDailyWorkSchedule> standardDomain = this.standardSettingRepository
 						.getStandardSettingByCompanyId(companyId);
 				
+				// エラーメッセージ（ID:Msg_3）を表示する(Display error message (ID: Msg_3))
 				if (standardDomain.isPresent()) {
 					throw new BusinessException("Msg_3");
 				}
-				// TODO add
+				
+				// ドメインモデル「日別勤務表の出力項目定型設定」を追加する (Add domain model「日別勤務表の出力項目定型設定」)
+				OutputStandardSettingOfDailyWorkScheduleCommand standardCommand = new OutputStandardSettingOfDailyWorkScheduleCommand(
+						command.getSelectionType()
+						, companyId
+						, Arrays.asList(command));
+				this.standardSettingRepository.add(OutputStandardSettingOfDailyWorkSchedule.createFromMemento(standardCommand));
+				
 			}
 			
 			// 自由設定の場合
@@ -69,21 +78,22 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 				Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSettingDomain = this.freeSettingRepository
 						.getFreeSettingByCompanyAndEmployee(companyId, command.getEmployeeId());
 				
+				// エラーメッセージ（ID:Msg_3）を表示する(Display error message (ID: Msg_3))
 				if (!freeSettingDomain.isPresent()) {
 					throw new BusinessException("Msg_3");
 				}
+				
+				// ドメインモデル「日別勤務表の出力項目自由設定」を追加 (Add domain model 「日別勤務表の出力項目自由設定」)
+				FreeSettingOfOutputItemForDailyWorkScheduleCommand freeSettingCommand = new FreeSettingOfOutputItemForDailyWorkScheduleCommand(
+						command.getSelectionType()
+						, companyId
+						, command.getEmployeeId()
+						, Arrays.asList(command));
+				this.freeSettingRepository.add(FreeSettingOfOutputItemForDailyWorkSchedule.createFromMemento(freeSettingCommand));
 			}
 		// IF 更新モード(Update mode)
 		} else {
-			
+			repository.update(domain);
 		}
-
-//			if (repository.findByCidAndCode(companyId, domain.getItemCode().v()).isPresent()) {
-//				throw new BusinessException("Msg_3");
-//			}
-//			repository.add(domain);
-//		} else {
-//			repository.update(domain);
-//		}
 	}
 }

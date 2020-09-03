@@ -10,7 +10,7 @@ public interface BusinessTypeFormatDailyRepository {
 	
 	List<BusinessTypeFormatDaily> getBusinessTypeFormat(String companyId, String businessTypeCode);
 	
-	List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode, BigDecimal sheetNo);
+	List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode);
 
 	void deleteExistData(List<Integer> attendanceItemIds);
 	

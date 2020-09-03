@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.scherec.dailyattendanceitem;
+package nts.uk.ctx.at.function.infra.entity.dailyattendanceitemused;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -12,8 +12,8 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemUsed;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.FormCanUsedForTime;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItemUsed;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Data

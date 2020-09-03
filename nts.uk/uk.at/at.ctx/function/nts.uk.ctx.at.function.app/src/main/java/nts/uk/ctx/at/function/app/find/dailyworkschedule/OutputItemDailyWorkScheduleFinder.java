@@ -23,6 +23,7 @@ import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkS
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
+import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPer
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityDailyPerformanceFormatRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FontSizeEnum;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FormatPerformanceAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FormatPerformanceImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
@@ -46,6 +48,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemUsedRepository;
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
 import nts.uk.shr.com.context.AppContexts;
@@ -95,6 +98,10 @@ public class OutputItemDailyWorkScheduleFinder {
 	/** The free setting of output item repository. */
 	@Inject
 	private FreeSettingOfOutputItemRepository freeSettingOfOutputItemRepository;
+
+	/** The daily attendance item used repository. */
+	@Inject
+	private DailyAttendanceItemUsedRepository dailyAttendanceItemUsedRepository;
 	
 	// Input of algorithm when use enum ScreenUseAtr: 勤怠項目を利用する画面
 	private static final int DAILY_WORK_SCHEDULE = 19;
@@ -149,16 +156,17 @@ public class OutputItemDailyWorkScheduleFinder {
 		// acquired domain model 「日別勤務表の出力項目」)
 		mapDtoReturn.put("outputItemDailyWorkSchedule", lstDomainModel.stream()
 				.map(domain -> {
-					DataInforReturnDto dto = new DataInforReturnDto();
+					OutputItemSettingDto dto = new OutputItemSettingDto();
 					dto.setCode(String.valueOf(domain.getItemCode().v()));
 					dto.setName(domain.getItemName().v());
 					dto.setLayoutId(domain.getOutputLayoutId());
 					return dto;
 				})
-				.sorted(Comparator.comparing(DataInforReturnDto::getCode)).collect(Collectors.toList()));
-		
+				.sorted(Comparator.comparing(OutputItemSettingDto::getCode)).collect(Collectors.toList()));
+
 		// 選択している項目情報を取得する(Get the selected information item)
-		List<AttendanceType> lstAttendanceType = attendanceTypeRepository.getDailyAttendanceItem(companyID, layoutId, lstDomainModel);
+		List<Integer> lstAttendanceID = this.dailyAttendanceItemUsedRepository.getAllDailyItemId(companyID,
+				BigDecimal.valueOf(FormCanUsedForTime.DAILY_WORK_SCHEDULE.value));
 		
 		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
  		
@@ -248,26 +256,43 @@ public class OutputItemDailyWorkScheduleFinder {
 	}
 	
 	// algorithm for screen D: copy
-	public DataReturnDto executeCopy(String codeCopy, String codeSourceSerivce) {
+	public DataReturnDto executeCopy(String codeCopy, String codeSourceSerivce, Integer selection, Integer fontSize) {
 		String companyId = AppContexts.user().companyId();
 		
-		// get domain 日別勤務表の出力項目
-		Optional<OutputItemDailyWorkSchedule> optOutputItemDailyWorkSchedule = outputItemDailyWorkScheduleRepository.findByCidAndCode(companyId, new OutputItemSettingCode(codeCopy).v());
+		// Input．項目選択種類をチェック (Check the selection type of Input.item)
+		// Type: 定型選択の場合
+		if (selection == ItemSelectionType.STANDARD_SELECTION.value) {
+
+			// 定型設定の出力項目を取得 (Get the output item for fix-form setup)
+			Optional<OutputStandardSettingOfDailyWorkSchedule> standardSetting = this.outputStandardSettingRepository
+					.findByCompanyIdAndCode(companyId, codeCopy);
+			
+			if (standardSetting.isPresent()) {
+				throw new BusinessException("Msg_3");
+			}
 		
-		if (optOutputItemDailyWorkSchedule.isPresent()) {
-			throw new BusinessException("Msg_3");
+		// Type: 自由設定の場合
 		} else {
-			DataReturnDto dataReturnDto = getDomConvertDailyWork(companyId, codeSourceSerivce);
-			//List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce);
-			if (dataReturnDto.getDataInforReturnDtos().isEmpty()) {
-				throw new BusinessException("Msg_1411");
-			} 
-			return dataReturnDto;
+			String employeeId = AppContexts.user().employeeId();
+
+			// 社員IDから自由設定の出力項目を取得 (Get the output item for free setup from Company ID)
+			Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSetting = this.freeSettingOfOutputItemRepository
+					.findByCompanyIdAndEmployeeIdAndCode(companyId, employeeId, codeCopy);
+			
+			if (freeSetting.isPresent()) {
+				throw new BusinessException("Msg_3");
+			}
 		}
+		DataReturnDto dataReturnDto = getDomConvertDailyWork(companyId, codeSourceSerivce, fontSize);
+		//List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce);
+		if (dataReturnDto.getDataInforReturnDtos().isEmpty()) {
+			throw new BusinessException("Msg_1411");
+		} 
+		return dataReturnDto;
 	}
 	
 	// アルゴリズム「日別勤務表用フォーマットをコンバートする」を実行する(Execute algorithm "Convert daily work table format")
-	private DataReturnDto getDomConvertDailyWork(String companyId, String codeSourceSerivce) {
+	private DataReturnDto getDomConvertDailyWork(String companyId, String codeSourceSerivce, Integer fontSize) {
 		// Get domain 実績修正画面で利用するフォーマット from request list 402
 		Optional<FormatPerformanceImport> optFormatPerformanceImport = formatPerformanceAdapter.getFormatPerformance(companyId);
 		
@@ -280,7 +305,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				case AUTHORITY: // In case of authority
 					// ドメインモデル「会社の日別実績の修正のフォーマット」を取得する (Acquire the domain model "format of company's daily performance correction")
 					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
-					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(codeSourceSerivce), new BigDecimal(SHEET_NO_1));
+					List<AuthorityFomatDaily>  lstAuthorityFomatDaily = authorityFormatDailyRepository.getAuthorityFormatDailyDetail(companyId, new DailyPerformanceFormatCode(codeSourceSerivce));
 					lstAuthorityFomatDaily.sort(Comparator.comparing(AuthorityFomatDaily::getDisplayOrder));
 					lstDataReturn = lstAuthorityFomatDaily.stream()
 															.map(domain -> {
@@ -293,7 +318,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				case BUSINESS_TYPE:
 					// ドメインモデル「勤務種別日別実績の修正のフォーマット」を取得する (Acquire the domain model "Format of working type daily performance correction)
 					// 「日別実績の修正の表示項目」から表示項目を取得する (Acquire display items from "display items for correction of daily performance")
-					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatDailyDetail(companyId, new BusinessTypeCode(codeSourceSerivce).v(), new BigDecimal(SHEET_NO_1));
+					List<BusinessTypeFormatDaily> lstBusinessTypeFormatDaily = businessTypeFormatDailyRepository.getBusinessTypeFormatDailyDetail(companyId, new BusinessTypeCode(codeSourceSerivce).v());
 					lstBusinessTypeFormatDaily.sort(Comparator.comparing(BusinessTypeFormatDaily::getOrder));
 					lstDataReturn = lstBusinessTypeFormatDaily.stream()
 															.map(domain -> {
@@ -335,7 +360,7 @@ public class OutputItemDailyWorkScheduleFinder {
 					return domain;
 				}).collect(Collectors.toList());
 		
-		if(sizeData !=lstDataReturn.size()){
+		if (sizeData != lstDataReturn.size()) {
 			List<String> lstMsgErr = new ArrayList<String>();
 			lstMsgErr.add("Msg_1476");
 			dataReturnDto.setMsgErr(lstMsgErr);
@@ -344,12 +369,18 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 		dataReturnDto.setDataInforReturnDtos(lstDataReturn);
 		
-		
-		if (lstDataReturn.size() <= 48) {
-			return dataReturnDto;
+		// 　・大の場合：48件までとする
+		int numberDisplayItem = 48;
+
+		// 表示項目の件数を最大表示件数とチェックする(Check số hạng mục hiển thị)
+		if (fontSize == FontSizeEnum.SMALL.value) {
+			// 小の場合：60件までとする
+			numberDisplayItem = 60;
 		}
-		else { // 1Sheet目の表示項目の先頭48項目までを返り値とする(Lấy 48 hạng mục đầu trong sheet đầu tiên làm giá trị trả về)
-			List<DataInforReturnDto> lstDto = dataReturnDto.getDataInforReturnDtos().stream().limit(48)
+		if (lstDataReturn.size() <= numberDisplayItem) {
+			return dataReturnDto;
+		} else { // 1Sheet目の表示項目の先頭48項目までを返り値とする(Lấy 48 hạng mục đầu trong sheet đầu tiên làm giá trị trả về)
+			List<DataInforReturnDto> lstDto = dataReturnDto.getDataInforReturnDtos().stream().limit(numberDisplayItem)
 					.collect(Collectors.toList());
 			dataReturnDto.setDataInforReturnDtos(lstDto);
 			return dataReturnDto;
@@ -393,11 +424,11 @@ public class OutputItemDailyWorkScheduleFinder {
 								.collect(Collectors.toList());
 	} 
 	
-	public OutputItemDailyWorkScheduleDto findByCodeId(String code) {
+	public OutputItemDailyWorkScheduleDto findByLayoutId(String layoutId) {
 		String companyId = AppContexts.user().companyId();
 		OutputItemDailyWorkScheduleDto dtoOIDW = new OutputItemDailyWorkScheduleDto();
-		OutputItemDailyWorkSchedule domainOIDW = outputItemDailyWorkScheduleRepository.findByCidAndCode(companyId, code).get();
-		
+		OutputItemDailyWorkSchedule domainOIDW = outputItemDailyWorkScheduleRepository.findByLayoutId(layoutId).get();
+
 		Map<Integer, String> mapIdNameAttendance = dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(domainOIDW.getLstDisplayedAttendance()
 																					.stream()
 																					.map(atdId -> atdId.getAttendanceDisplay())

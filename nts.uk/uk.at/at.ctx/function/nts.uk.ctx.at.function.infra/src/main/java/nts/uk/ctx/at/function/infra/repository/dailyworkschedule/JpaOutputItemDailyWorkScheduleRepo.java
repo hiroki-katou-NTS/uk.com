@@ -37,4 +37,29 @@ public class JpaOutputItemDailyWorkScheduleRepo implements OutputStandardSetting
 		
 	}
 
+	@Override
+	public void deleteFreeSetting(String companyId, String employeeId, String layoutId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Optional<FreeSettingOfOutputItemForDailyWorkSchedule> findByCompanyIdAndEmployeeIdAndCode(String companyId,
+			String employeeId, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteStandardSetting(String companyId, String layoutId) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Optional<OutputStandardSettingOfDailyWorkSchedule> findByCompanyIdAndCode(String companyId, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

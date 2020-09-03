@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem;
+package nts.uk.ctx.at.function.dom.dailyattendanceitem;
 
 import java.math.BigDecimal;
 

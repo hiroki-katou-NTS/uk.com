@@ -6,7 +6,7 @@ module nts.uk.at.view.kwr001.c {
         var paths = {
            getDataStartPage: "at/function/dailyworkschedule/find",
            save: "at/function/dailyworkschedule/save",
-           remove: "at/function/dailyworkschedule/delete",
+           remove: "at/function/dailyworkschedule/delete/{0}/{1}",
            getEnumName: "at/function/dailyworkschedule/enumName",
            getEnumRemarkContentChoice: "at/function/dailyworkschedule/enumRemarkContentChoice",
            getEnumRemarkInputContent: "at/function/dailyworkschedule/enumRemarkInputContent",
@@ -21,8 +21,9 @@ module nts.uk.at.view.kwr001.c {
             return nts.uk.request.ajax('at', paths.save, command);
         }
         
-        export function remove(code: string): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.remove + SLASH + code);
+        export function remove(layoutId: string, selectionType: string): JQueryPromise<any> {
+            let _path = nts.uk.text.format(paths.remove, layoutId, selectionType);
+            return nts.uk.request.ajax('at', _path);
         }
         
         export function getEnumName(): JQueryPromise<any> {
