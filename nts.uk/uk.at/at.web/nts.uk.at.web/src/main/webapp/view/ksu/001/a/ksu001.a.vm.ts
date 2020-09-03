@@ -171,21 +171,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("stickMode", "multi");
                     self.shiftModeStart().done(() => {
                         self.setUpdateMode();
-                        self.setPositionButonToRight();
+                        self.setPositionButonToRightToLeft();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
                     $("#extable").exTable("stickMode", "single");
                     self.shortNameModeStart().done(() => {
                         self.setUpdateMode();
-                        self.setPositionButonToRight();
+                        self.setPositionButonToRightToLeft();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
                     $("#extable").exTable("stickMode", "single");
                     self.timeModeStart().done(() => {
                         self.setUpdateMode();
-                        self.setPositionButonToRight();
+                        self.setPositionButonToRightToLeft();
                         self.stopRequest(true);
                     });
                 }
@@ -224,7 +224,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "multi");
                     self.shiftModeStart().done(() => {
-                        self.setPositionButonToRight();
+                        self.setPositionButonToRightToLeft();
                         $(".settingHeightGrid").css('display', '');
                         self.pasteData();
                         self.stopRequest(true);
@@ -234,7 +234,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "single");
                     self.shortNameModeStart().done(() => {
-                        self.setPositionButonToRight();
+                        self.setPositionButonToRightToLeft();
                         $(".settingHeightGrid").css('display', '');
                         self.pasteData();
                         self.stopRequest(true);
@@ -244,7 +244,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $(".settingHeightGrid").css('display', 'none');
                     $("#extable").exTable("stickMode", "single");
                     self.timeModeStart().done(() => {
-                        self.setPositionButonToRight();
+                        self.setPositionButonToRightToLeft();
                         $(".settingHeightGrid").css('display', '');
                         self.pasteData();
                         self.stopRequest(true);
@@ -418,12 +418,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setDataWorkType(data.listWorkTypeInfo);
                 
                 self.initExTable(dataBindGrid, viewMode, updateMode);
-                if (!self.showA9) {
-                    $(".toLeft").css("display", "none");
-                }
+                
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
                 self.setUpdateMode();
-                self.setPositionButonToRight();
+                self.setPositionButonToRightToLeft();
                 self.flag = false;
                 dfd.resolve();
             }).fail(function() {
@@ -617,7 +615,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
             self.setUpdateMode();
-            self.setPositionButonToRight();
+            self.setPositionButonToRightToLeft();
         }
         
         saveDataGrid(data: any) {
@@ -704,11 +702,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             __viewContext.viewModel.viewAB.listWorkType(listWorkType);
         }
         
-        updateDatailDeco(listEmpInfo : any){
-            
-        
-        }
-
         // convert data lấy từ server để đẩy vào Grid
         private convertDataToGrid(data: IDataStartScreen, viewMode: string) {
             let self = this;
@@ -1561,13 +1554,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("hideMiddle");
                 }
                 $(".toLeft").css("background", "url(../image/toright.png) no-repeat center");
-                $(".toLeft").css("margin-left", "185px");
+                $(".toLeft").css("margin-left", "188px");
+                
+                let marginleft = $("#extable").width() - 160 - 27 - 27 - 30;
+                $(".toRight").css('margin-left', marginleft + 'px');
             } else {
                 if (self.showA9) {
                     $("#extable").exTable("showMiddle");
                 }
                 $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
                 $(".toLeft").css("margin-left", "310px");
+                
+                let marginleft = $("#extable").width() - 280 - 27 - 27 - 30;
+                $(".toRight").css('margin-left', marginleft + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
 
@@ -1595,8 +1594,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.indexBtnToDown = self.indexBtnToDown + 1;
         }
         
-        setPositionButonToRight() {
-            let marginleft: number = $("#extable").width() - 280 - 27 - 27 - 30;
+        setPositionButonToRightToLeft() {
+            let self = this;
+            self.indexBtnToLeft = 0; 
+            
+            let marginleft: number = 0;
+            if(self.showA9){
+                $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
+                $(".toLeft").css("margin-left", "310px");
+                marginleft = $("#extable").width() - 280 - 27 - 27 - 32;
+            }else{
+                $(".toLeft").css("display", "none");
+                marginleft = $("#extable").width() - 32;
+            }
             $(".toRight").css('margin-left', marginleft);
         }
 

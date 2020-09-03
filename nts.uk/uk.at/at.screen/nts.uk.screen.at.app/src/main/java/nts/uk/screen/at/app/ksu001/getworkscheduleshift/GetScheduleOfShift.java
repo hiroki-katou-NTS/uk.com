@@ -166,6 +166,10 @@ public class GetScheduleOfShift {
 					return s&&y;
 				}).findFirst();
 				
+				if(!shiftMaster.isPresent()){
+					System.out.println("Schedule : workType - workTime chua dc dang ky: " + workTypeCode + " - " + workTimeCode);
+				}
+				
 				// 4.2.3
 				ScheduleOfShiftDto dto = ScheduleOfShiftDto.builder()
 						.employeeId(key.getEmployeeID())
