@@ -40,23 +40,25 @@ public class WorkInformationTest {
 
 	@Test
 	public void getters() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 		workInformation.removeWorkTimeInHolydayWorkType();
 		NtsAssert.invokeGetters(workInformation);
 	}
 
 	@Test
 	public void testRemoveWorkTimeInHolydayWorkType() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 		workInformation.removeWorkTimeInHolydayWorkType();
 		assertThat(workInformation.getWorkTimeCode()).isEqualTo(null);
 	}
 
 	@Test
 	public void testWorkInformation() {
-		WorkTimeCode workTimeCode = new WorkTimeCode("abc");
 		WorkTypeCode workTypeCode = new WorkTypeCode("123");
-		WorkInformation workInformation = new WorkInformation(workTimeCode, workTypeCode);
+		WorkTimeCode workTimeCode = new WorkTimeCode("abc");
+		
+		WorkInformation workInformation = new WorkInformation(workTypeCode, workTimeCode);
+		
 		assertThat(workInformation.getWorkTimeCode()).isEqualTo(workTimeCode);
 		assertThat(workInformation.getWorkTypeCode()).isEqualTo(workTypeCode);
 	}
@@ -64,7 +66,7 @@ public class WorkInformationTest {
 	@Test
 	public void testSetWorkTimeCode() {
 		WorkTimeCode workTimeCode = new WorkTimeCode("abc");
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 		workInformation.setWorkTimeCode(workTimeCode);
 		assertThat(workInformation.getWorkTimeCode()).isEqualTo(workTimeCode);
 	}
@@ -72,14 +74,14 @@ public class WorkInformationTest {
 	@Test
 	public void testSetWorkTypeCode() {
 		WorkTypeCode workTypeCode = new WorkTypeCode("123");
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 		workInformation.setWorkTypeCode(workTypeCode);
 		assertThat(workInformation.getWorkTypeCode()).isEqualTo(workTypeCode);
 	}
 
 	@Test
 	public void checkNormalCondition_is_true() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -98,7 +100,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void checkNormalCondition_is_false() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -110,7 +112,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void testCheckErrorCondition_is_WORKTYPE_WAS_DELETE() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -123,7 +125,7 @@ public class WorkInformationTest {
 	//if SetupType = REQUIRED 
 	@Test
 	public void testCheckErrorCondition_is_WORKTIME_WAS_DELETE() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -151,7 +153,7 @@ public class WorkInformationTest {
 	 */
 	@Test
 	public void testCheckErrorCondition_is_WORKTIME_HAS_BEEN_ABOLISHED() {
-		WorkInformation workInformation = new WorkInformation("worktimecode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimecode");
 		WorkType workType = new WorkType();
 		workType.setDeprecate(DeprecateClassification.NotDeprecated);
 		WorkTimeSetting workTimeSetting = new WorkTimeSetting("companyId",
@@ -176,7 +178,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void testCheckErrorCondition_is_WORKTIME_ARE_REQUIRE_NOT_SET() {
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 
 		new Expectations() {
 			{
@@ -195,7 +197,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void testCheckErrorCondition_is_WORKTIME_ARE_SET_WHEN_UNNECESSARY() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -222,7 +224,7 @@ public class WorkInformationTest {
 	 */
 	@Test
 	public void testCheckErrorCondition_is_WORKTYPE_WAS_ABOLISHED_1() {
-		WorkInformation workInformation = new WorkInformation("worktimecode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimecode");
 		WorkType workType = new WorkType();
 		workType.setDeprecate(DeprecateClassification.Deprecated);
 		new Expectations() {
@@ -239,7 +241,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void testCheckErrorCondition_is_NORMAL_1() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -270,7 +272,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void testCheckErrorCondition_is_NORMAL_2() {
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 
 		new Expectations() {
 			{
@@ -288,7 +290,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void testCheckErrorCondition_is_NORMAL_3() {
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 
 		new Expectations() {
 			{
@@ -306,7 +308,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void testGetWorkStyle_1() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -320,7 +322,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void testGetWorkStyle_2() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -335,7 +337,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void getWorkInfoAndTimeZone_1() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -349,7 +351,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void getWorkInfoAndTimeZone_2() {
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 
 		new Expectations() {
 			{
@@ -365,7 +367,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void getWorkInfoAndTimeZone_3() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		new Expectations() {
 			{
@@ -382,7 +384,7 @@ public class WorkInformationTest {
 
 	@Test
 	public void getWorkInfoAndTimeZone_4() {
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
 		List<TimezoneUse> listTimezoneUse = new ArrayList<>();
 		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(1), new TimeWithDayAttr(2), UseSetting.USE, 1));
@@ -410,7 +412,7 @@ public class WorkInformationTest {
 	 */
 	@Test
 	public void testCheckErrorCondition_1() { 
-		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", null);
 		new Expectations() {
 			{
 
@@ -433,7 +435,7 @@ public class WorkInformationTest {
 	 */
 	@Test
 	public void testCheckErrorCondition_2() { 
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+		WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 		new Expectations() {
 			{
 

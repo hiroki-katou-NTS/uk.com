@@ -94,8 +94,8 @@ public class KrcdtDaiPerWorkInfo extends UkJpaEntity implements Serializable {
 	
 	public static WorkInfoOfDailyPerformance toDomain(KrcdtDaiPerWorkInfo entity, List<KrcdtWorkScheduleTime> scheduleTimes) {
 		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(entity.krcdtDaiPerWorkInfoPK.employeeId,
-												new WorkInformation(entity.recordWorkWorktimeCode, entity.recordWorkWorktypeCode),
-												new WorkInformation(entity.scheduleWorkWorktimeCode, entity.scheduleWorkWorktypeCode),
+												new WorkInformation(entity.recordWorkWorktypeCode, entity.recordWorkWorktimeCode),
+												new WorkInformation(entity.scheduleWorkWorktypeCode, entity.scheduleWorkWorktimeCode),
 												EnumAdaptor.valueOf(entity.calculationState, CalculationState.class),
 												EnumAdaptor.valueOf(entity.goStraightAttribute, NotUseAttribute.class),
 												EnumAdaptor.valueOf(entity.backStraightAttribute, NotUseAttribute.class), 

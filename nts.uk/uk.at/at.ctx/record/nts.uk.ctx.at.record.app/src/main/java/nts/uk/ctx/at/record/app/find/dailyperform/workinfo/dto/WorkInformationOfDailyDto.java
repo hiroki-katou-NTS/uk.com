@@ -2,6 +2,8 @@ package nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
@@ -106,12 +108,15 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 		if (!this.isHaveData()) {
 			return null;
 		}
+		
 		if (employeeId == null) {
 			employeeId = this.employeeId();
 		}
+		
 		if (date == null) {
 			date = this.workingDate();
 		}
+		
 		WorkInfoOfDailyPerformance domain = new WorkInfoOfDailyPerformance(employeeId, getWorkInfo(actualWorkInfo), getWorkInfo(planWorkInfo),
 				calculationState == CalculationState.No_Calculated.value ? CalculationState.No_Calculated : CalculationState.Calculated, 
 				goStraightAtr == NotUseAttribute.Not_use.value ? NotUseAttribute.Not_use : NotUseAttribute.Use,
@@ -120,6 +125,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 				ConvertHelper.mapTo(this.getScheduleTimeZone(), 
 						(c) -> new ScheduleTimeSheet(c.getNo(), c.getWorking(), c.getLeave()),
 						(c) -> c.getLeave() != null && c.getWorking() != null));
+		
 		domain.setVersion(this.version);
 		
 		return domain;
@@ -128,7 +134,12 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
-		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode() == null || dto.getWorkTimeCode().isEmpty() ? null : dto.getWorkTimeCode(), dto.getWorkTypeCode());
+		if (dto == null) {
+			return null;
+		}
+
+		return new WorkInformation(dto.getWorkTypeCode(),
+				StringUtils.isEmpty(dto.getWorkTimeCode()) ? null : dto.getWorkTimeCode());
 	}
 
 	@Override

@@ -114,7 +114,7 @@ public class ShiftMasterTest {
 		String shiftMasterCode = "shiftMasterCode";
 		String workTypeCode = "workTypeCode";
 		String workTimeCode = "workTimeCode";
-		WorkInformation workInfor =new WorkInformation("workTimeCode123", "workTypeCode123");
+		WorkInformation workInfor =new WorkInformation("workTypeCode123", "workTimeCode123");
 		ShiftMasterDisInfor displayInfor = new ShiftMasterDisInfor(
 				new ShiftMasterName("name1"),//dummy
 				new ColorCodeChar6("color1"),//dummy 

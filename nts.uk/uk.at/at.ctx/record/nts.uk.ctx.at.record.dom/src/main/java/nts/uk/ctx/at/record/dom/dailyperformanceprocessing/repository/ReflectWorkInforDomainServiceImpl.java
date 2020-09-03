@@ -1014,12 +1014,13 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}
 				// 存在する - has data
 				else {
-					workInfoOfDailyPerformanceUpdate
-							.setScheduleInfo(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
-									basicScheduleHasData.get().getWorkTypeCode()));
-					workInfoOfDailyPerformanceUpdate
-							.setRecordInfo(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
-									basicScheduleHasData.get().getWorkTypeCode()));
+					basicScheduleHasData.ifPresent(c -> {
+						WorkInformation wInfo = new WorkInformation(c.getWorkTypeCode(), c.getWorkTimeCode());
+						
+						workInfoOfDailyPerformanceUpdate.setScheduleInfo(wInfo.clone());
+				
+						workInfoOfDailyPerformanceUpdate.setRecordInfo(wInfo.clone());
+					});
 
 					// ドメインモデル「勤務種類」を取得する
 					Optional<WorkType> workTypeOpt = this.workTypeRepository.findByDeprecated(companyId,
@@ -1462,17 +1463,14 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						errMesInfos.add(employmentErrMes);
 					}
 				} else {
-					WorkInformation recordInfo = new WorkInformation(
-							workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode(),
-							workTypeNeed.getWorkTypeCode());
+					WorkInformation recordInfo = new WorkInformation(workTypeNeed.getWorkTypeCode(), workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode());
 					workInfoOfDailyPerformance.setRecordInfo(recordInfo);
 					WorkTypeClassification oneDay = workTypeNeed.getDailyWork().getOneDay();
 					if (oneDay == WorkTypeClassification.Holiday || oneDay == WorkTypeClassification.Pause
 							|| oneDay == WorkTypeClassification.ContinuousWork
 							|| oneDay == WorkTypeClassification.LeaveOfAbsence
 							|| oneDay == WorkTypeClassification.Closure) {
-						WorkInformation recordWorkInformation = new WorkInformation(null,
-								workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode());
+						WorkInformation recordWorkInformation = new WorkInformation(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode(), null);
 						workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
 					}
 					// to show clear attendance item
