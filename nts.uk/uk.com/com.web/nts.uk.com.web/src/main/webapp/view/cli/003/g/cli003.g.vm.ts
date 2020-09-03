@@ -18,6 +18,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         recordTypeList: KnockoutObservableArray<ItemTypeModel>;
         selectedRecordType: KnockoutObservable<string>;
 
+        systemTypeList: KnockoutObservableArray<ItemTypeModel>;
 
         dataTypeList: KnockoutObservableArray<ItemTypeModel>;
         selectedDataType: KnockoutObservable<string>;
@@ -39,6 +40,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         currentName: KnockoutObservable<string>;
         recordType: KnockoutObservable<string>;
         dataType: KnockoutObservable<string>;
+        systemType: KnockoutObservable<string>;
         logSetOutputItems: KnockoutObservableArray<any>;
         dataTypeEmpty: KnockoutObservable<string>;
 
@@ -54,7 +56,8 @@ module nts.uk.com.view.cli003.g.viewmodel {
         enableCode: KnockoutObservable<boolean>;
         enableRecordType: KnockoutObservable<boolean>;
         enableDataType: KnockoutObservable<boolean>;
-        
+        enableSystemType: KnockoutObservable<boolean>;
+
         logItemsFull: KnockoutObservableArray<ItemLogSetRecordTypeModel>;
 
         constructor() {
@@ -76,6 +79,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.currentName = ko.observable('');
             self.recordType = ko.observable(-1);
             self.dataType = ko.observable(-1);
+            self.systemType = ko.observable('-1');
             self.dataTypeEmpty = ko.observable(-1);
             self.logSetOutputItems = ko.observableArray([]);
 
@@ -90,6 +94,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.enableCode = ko.observable(true);
             self.enableRecordType = ko.observable(true);
             self.enableDataType = ko.observable(true);
+            self.enableSystemType = ko.observable(true);
 
             self.initCombobox();
             self.initSwapList();
@@ -113,12 +118,17 @@ module nts.uk.com.view.cli003.g.viewmodel {
 //                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo'))
             ]);
 
+            self.systemTypeList = ko.observableArray([
+                new ItemTypeModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
+                new ItemTypeModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
+                new ItemTypeModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
+                new ItemTypeModel(2, getText('Enum_SystemType_OFFICE_HELPER')),
+            ]);
             self.dataTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_DataType_Schedule')),
                 new ItemTypeModel(1, getText('Enum_DataType_DailyResults')),
                 new ItemTypeModel(2, getText('Enum_DataType_MonthlyResults')),
             ]);
-            
             self.dataTypeListEmpty = ko.observableArray([
                 new ItemTypeModel(-1, '')]);
             
@@ -149,7 +159,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 { headerText: getText("CLI003_41"), dataType: 'string', key: 'name', width: 150 },
                 {
                     headerText: getText("CLI003_42"), dataType: 'string', key: 'isShow', width: 100,
-                    template: '<select style="width: 100%; padding-right:0px!important", onchange="changeShowOption(this, ${code});">'                    + '{{if ${isShow} == "0" }}'                    + '<option value="0" selected="true">' + getText("CLI003_44") + '</option>'                    + '<option value="1">' + getText("CLI003_45") + '</option>'                    + '{{else}}'                    + '<option value="0">' + getText("CLI003_44") + '</option>'                    + '<option value="1" selected="true">' + getText("CLI003_45") + '</option>'                    + '{{/if}}'                    + '</select>'
+                    template: '<select style="width: 100%; padding-right:0px!important", onchange="changeShowOption(this, ${code});">'
+                    + '{{if ${isShow} == "0" }}'
+                    + '<option value="0" selected="true">' + getText("CLI003_44") + '</option>'
+                    + '<option value="1">' + getText("CLI003_45") + '</option>'
+                    + '{{else}}'
+                    + '<option value="0">' + getText("CLI003_44") + '</option>'
+                    + '<option value="1" selected="true">' + getText("CLI003_45") + '</option>'
+                    + '{{/if}}'
+                    + '</select>'
                 },
                 {
                     headerText: getText("CLI003_43"), dataType: 'string', key: 'detail', width: 100,
@@ -446,6 +464,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     self.enableCode(true);
                     self.enableRecordType(true);
                     self.enableDataType(true);
+                    self.enableSystemType(true);
                 }
                 else if (newValue == MODE.UPDATE) {
                     self.enableBtnReg(true);
@@ -455,6 +474,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     self.enableCode(false);
                     self.enableRecordType(false);
                     self.enableDataType(false);
+                    self.enableSystemType(false);
                 }
                 else {
                     self.enableBtnReg(true);
@@ -464,6 +484,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     self.enableCode(true);
                     self.enableRecordType(false);
                     self.enableDataType(false);
+                    self.enableSystemType(false);
                 }
             });
         }
@@ -479,13 +500,15 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         openH(itemNo, itemName) {
             var self = this;
-            let curLogSetOutputItem;
+            let curLogSetOutputItem;
+
             for (let i = 0; i < self.selectedCodeList().length; i++) {
                 let logSetOutputItem = self.selectedCodeList()[i];
                 if (logSetOutputItem.code == itemNo) {
                     curLogSetOutputItem = logSetOutputItem;
                 }
-            }
+            }
+
             if (curLogSetOutputItem) {
                 setShared("CLI003GParams_ListSetItemDetail", curLogSetOutputItem.detail);
                 setShared("CLI003GParams_ItemName", curLogSetOutputItem.name);
@@ -597,14 +620,16 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         private saveLogDisplaySet(): void {
             let self = this;
-            //self.logSetOutputItems(self.getListSetOutputItems());
+            //self.logSetOutputItems(self.getListSetOutputItems());
+
             var dataType = self.dataType();
             if (self.recordType() != 6) {
                 dataType = '';
             }
             
             var logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
-                self.currentName(), dataType, self.recordType(), self.logSetOutputItems());            block.grayout();
+                self.currentName(), dataType, self.recordType(), self.logSetOutputItems());
+            block.grayout();
 
             service.addLogDisplaySet(logDisplaySet).done(function(id: any) {
                 infor({ messageId: "Msg_15" }).then(function() {
@@ -649,13 +674,16 @@ module nts.uk.com.view.cli003.g.viewmodel {
             }).always(() => {
                 block.clear();
             });
-        }
+        }
+
         //get list of output item that was selected in the swap list
         getListSetOutputItems(): Array<LogSetOutputItemModal> {
             var self = this;
             var listSelectedLogOutputItems = [];
-            for (let i = 0; i < self.selectedCodeList().length; i++) {                var item = self.selectedCodeList()[i];
-//                if (item.isShow == 1) {                listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, item.detail));
+            for (let i = 0; i < self.selectedCodeList().length; i++) {
+                var item = self.selectedCodeList()[i];
+//                if (item.isShow == 1) {
+                listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, item.detail));
 //                } else {
 //                    listSelectedLogOutputItems.push(new LogSetOutputItemModal(self.logSetId(), item.code, i, item.isShow, []));
 //                }
