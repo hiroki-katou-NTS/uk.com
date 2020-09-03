@@ -54,9 +54,6 @@ public class StandardMenu extends AggregateRoot {
 	/** The afterLoginDisplay. */
 	private int afterLoginDisplay;
 	
-	/** The logSettingDisplay. */
-	private int logSettingDisplay;
-	
 	/** プログラムID **/
 	private String programId;
 	
@@ -65,6 +62,21 @@ public class StandardMenu extends AggregateRoot {
 	
 	/** Query string */
 	private String queryString;
+	
+	/**
+	 * ログイン履歴表示区分
+	 */
+	private int logLoginDisplay;
+	
+	/**
+	 * 起動履歴表示区分
+	 */
+	private int logStartDisplay;
+	
+	/**
+	 * 修正履歴表示区分
+	 */
+	private int logUpdateDisplay;
 
 	/**
 	 * Instantiates a new Standard Menu.
@@ -84,7 +96,8 @@ public class StandardMenu extends AggregateRoot {
 	 */
 	public StandardMenu(String companyId, MenuCode code, String targetItems, MenuDisplayName displayName, int displayOrder,
 			MenuAtr menuAtr, String url, System system, MenuClassification classification, WebMenuSetting webMenuSetting,
-			int afterLoginDisplay, int logSettingDisplay, String programId, String screenId, String queryString) {
+			int afterLoginDisplay, String programId, String screenId, String queryString,
+			int logLoginDisplay, int logStartDisplay, int logUpdateDisplay) {
 		
 		this.companyId = companyId;
 		this.code = code;
@@ -97,10 +110,12 @@ public class StandardMenu extends AggregateRoot {
 		this.classification = classification;
 		this.webMenuSetting = webMenuSetting;
 		this.afterLoginDisplay = afterLoginDisplay;
-		this.logSettingDisplay = logSettingDisplay;
 		this.programId = programId;
 		this.screenId = screenId;
 		this.queryString = queryString;
+		this.logLoginDisplay = logLoginDisplay;
+		this.logStartDisplay = logStartDisplay;
+		this.logUpdateDisplay = logUpdateDisplay;
 	}
 	
 	
@@ -115,8 +130,8 @@ public class StandardMenu extends AggregateRoot {
 	}
 	
 	/**
-	 * author: yennth
-	 * update displayName
+	 * author: yennth update displayName
+	 * 
 	 * @param companyId
 	 * @param classification
 	 * @param code
@@ -124,39 +139,42 @@ public class StandardMenu extends AggregateRoot {
 	 * @param system
 	 * @return
 	 */
-	public static StandardMenu updateName(String companyId, int classification, String code, String displayName, int system)
-	{
-		return new StandardMenu(companyId, EnumAdaptor.valueOf(classification, MenuClassification.class), new MenuCode(code), new MenuDisplayName(displayName), EnumAdaptor.valueOf(system, System.class));
+	public static StandardMenu updateName(String companyId, int classification, String code, String displayName,
+			int system) {
+		return new StandardMenu(companyId, EnumAdaptor.valueOf(classification, MenuClassification.class),
+				new MenuCode(code), new MenuDisplayName(displayName), EnumAdaptor.valueOf(system, System.class));
 	}
 
-
 	/**
-	 * Creates the from java type.
-	 *
-	 * @param companyId the company Id
-	 * @param code the menu code
-	 * @param targetItems the target items
-	 * @param displayName the display name
-	 * @param displayOrder the displayOrder
-	 * @param menuAtr the menuAtr
-	 * @param url the url
-	 * @param system the system
-	 * @param classification the classification
-	 * @param webMenuSetting the webMenuSetting
-	 * @param afterLoginDisplay the afterLoginDisplay
-	 * @param logSettingDisplay the logSettingDisplay
-	 * @param programId programId
-	 * @param screenId screenId
-	 * @param queryString query string
+	 * 
+	 * @param companyId
+	 * @param code
+	 * @param targetItems
+	 * @param displayName
+	 * @param displayOrder
+	 * @param menuAtr
+	 * @param url
+	 * @param system
+	 * @param classification
+	 * @param webMenuSetting
+	 * @param afterLoginDisplay
+	 * @param programId
+	 * @param screenId
+	 * @param queryString
+	 * @param logLoginDisplay
+	 * @param logStartDisplay
+	 * @param logUpdateDisplay
+	 * @return
 	 */
-	public static StandardMenu createFromJavaType(String companyId, String code, String targetItems, String displayName, 
+	public static StandardMenu createFromJavaType(String companyId, String code, String targetItems, String displayName,
 			int displayOrder, int menuAtr, String url, int system, int classification, int webMenuSetting,
-			int afterLoginDisplay, int logSettingDisplay, String programId, String screenId, String queryString) {
-		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName), displayOrder, EnumAdaptor.valueOf(menuAtr, MenuAtr.class), url,
-				EnumAdaptor.valueOf(system, System.class),EnumAdaptor.valueOf(classification, MenuClassification.class) , 
-				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, logSettingDisplay,
-				programId, screenId, queryString);
-	}	
-	
-	
+			int afterLoginDisplay, String programId, String screenId, String queryString,
+			int logLoginDisplay, int logStartDisplay, int logUpdateDisplay) {
+		return new StandardMenu(companyId, new MenuCode(code), targetItems, new MenuDisplayName(displayName),
+				displayOrder, EnumAdaptor.valueOf(menuAtr, MenuAtr.class), url,
+				EnumAdaptor.valueOf(system, System.class),
+				EnumAdaptor.valueOf(classification, MenuClassification.class),
+				EnumAdaptor.valueOf(webMenuSetting, WebMenuSetting.class), afterLoginDisplay, programId, screenId,
+				queryString, logLoginDisplay, logStartDisplay, logUpdateDisplay);
+	}
 }
