@@ -11,10 +11,10 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
-import nts.uk.ctx.at.record.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOTRepository;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.midnighttime.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
@@ -25,6 +25,7 @@ import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
+import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -88,10 +89,10 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 
 		String companyId = AppContexts.user().companyId();
 		
-		List<ErrorAlarmWorkRecord> errorAlerms = Collections.emptyList();
-		if (!calcOption.isMasterTime()) {
-			errorAlerms = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true);
-		}
+//		List<ErrorAlarmWorkRecord> errorAlerms = Collections.emptyList();
+//		if (!calcOption.isMasterTime()) {
+//			errorAlerms = errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyId, true);
+//		}
 		
 		val optionalItems = optionalItemRepository.findAll(companyId);
 		val usageSetting = usageUnitSettingRepository.findByCompany(companyId);
@@ -100,7 +101,7 @@ public class CommonCompanySettingForCalcImpl implements CommonCompanySettingForC
 									  specificWorkRuleRepository.findCalcMethodByCid(companyId),
 									  compensLeaveComSetRepository.find(companyId),
 									  divergenceTimeRepository.getAllDivTime(companyId),
-									  errorAlerms,
+//									  errorAlerms,
 									  bPUnitUseSettingRepository.getSetting(companyId),
 									  optionalItems,
 									  formulaRepository.find(companyId),

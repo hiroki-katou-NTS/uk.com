@@ -32,6 +32,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.EmployeeGe
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.UpdateLogInfoWithNewTransaction;
 import nts.uk.ctx.at.record.dom.functionalgorithm.errorforcreatedaily.ErrorHandlingCreateDailyResults;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.TargetPersonRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExeStateOfCalAndSum;
@@ -107,8 +108,8 @@ public class CreateDailyResultDomainServiceNew {
 	@Inject
 	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
 
-	@Inject
-	private WorkingConditionService workingConditionService;
+//	@Inject
+//	private WorkingConditionService workingConditionService;
 
 	@Inject
 	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
@@ -144,6 +145,9 @@ public class CreateDailyResultDomainServiceNew {
 	
 	@Inject
 	private BusinessTypeOfEmpHisAdaptor businessTypeOfEmpHisAdaptor;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 	
 	/**
 	 * ③日別実績の作成処理
@@ -389,8 +393,8 @@ public class CreateDailyResultDomainServiceNew {
 		// 加給利用単位．個人使用区分
 		if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get().getPersonalUseAtr() == UseAtr.USE) {
 			// 社員の労働条件を取得する
-			Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService
-					.findWorkConditionByEmployee(employeeId, date);
+			Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService
+					.findWorkConditionByEmployee(requireService.createRequire(), employeeId, date);
 
 			if (workingConditionItem.isPresent() && workingConditionItem.get().getTimeApply().isPresent()) {
 				// ドメインモデル「加給設定」を取得する

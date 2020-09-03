@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -16,14 +16,16 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
-import nts.uk.ctx.at.record.dom.divergencetime.service.DivTimeSysFixedCheckService;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryWorkingHours;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.FactoryManagePerPersonDailySet;
+import nts.uk.ctx.at.record.dom.divergence.time.service.DivTimeSysFixedCheckService;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
+import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
@@ -32,8 +34,19 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.sharedNew.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeCom;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeEmp;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeWkp;
+import nts.uk.ctx.at.shared.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -56,6 +69,9 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	
 	@Inject
 	private AttendanceItemConvertFactory converterFactory;
+	//エラーアラーム設定
+	@Inject
+	private ErrorAlarmWorkRecordRepository errorAlarmWorkRecordRepository;
 	
 	@Inject
 	/*日別作成側に実装されていたエラーアラーム処理*/
@@ -68,10 +84,13 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 	private WorkingConditionItemRepository workingConditionItemRepository;
 	
 	@Inject
-	private DailyStatutoryWorkingHours dailyStatutoryWorkingHours;
+	private CalculationErrorCheckService calculationErrorCheckService;
+	
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	@Inject
-	private CalculationErrorCheckService calculationErrorCheckService;
+	private FactoryManagePerPersonDailySet factoryManagePerPersonDailySet;
 	
 	@Override
 	public IntegrationOfDaily errorCheck(IntegrationOfDaily integrationOfDaily, ManagePerPersonDailySet personCommonSetting, ManagePerCompanySet master) {
@@ -80,7 +99,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		List<ErrorAlarmWorkRecord> divergenceError = new ArrayList<>();
 		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.converterFactory.createDailyConverter().setData(integrationOfDaily);
 		//勤務実績のエラーアラーム数分ループ
-		for(ErrorAlarmWorkRecord errorItem : master.getErrorAlarm()) {
+		for(ErrorAlarmWorkRecord errorItem : errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyID, true)) {
 			//使用しない
 			if(!errorItem.getUseAtr()) continue;
 			//乖離系のシステムエラーかどうかチェック
@@ -292,7 +311,9 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData
 				.getItemAtDateAndEmpId(integrationOfDaily.getYmd(), integrationOfDaily.getEmployeeId());
 		if (nowWorkingItem.isPresent()) {
-			DailyUnit dailyUnit = dailyStatutoryWorkingHours.getDailyUnit(companyId,
+			DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(
+					requireService.createRequire(),
+					new CacheCarrier(), companyId,
 					integrationOfDaily.getAffiliationInfor().getEmploymentCode().toString(),
 					integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),
 					nowWorkingItem.get().getValue().getLaborSystem());
@@ -300,7 +321,8 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 				dailyUnit = new DailyUnit(new TimeOfDay(0));
 			else {
 				integrationOfDaily = errorCheckNew(integrationOfDaily,
-						new ManagePerPersonDailySet(Optional.of(nowWorkingItem.get().getValue()), dailyUnit),
+						factoryManagePerPersonDailySet.create(companyId, companyCommonSetting, 
+																		integrationOfDaily, nowWorkingItem.get().getValue()).get(),
 						companyCommonSetting, sysfixecategory);
 			}
 		}
@@ -317,7 +339,7 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 		DailyRecordToAttendanceItemConverter attendanceItemConverter = this.converterFactory.createDailyConverter()
 				.setData(integrationOfDaily);
 		// 勤務実績のエラーアラーム数分ループ
-		for (ErrorAlarmWorkRecord errorItem : master.getErrorAlarm()) {
+		for (ErrorAlarmWorkRecord errorItem : errorAlarmWorkRecordRepository.getAllErAlCompanyAndUseAtr(companyID, true)) {
 			// 使用しない
 			if (!errorItem.getUseAtr())
 				continue;

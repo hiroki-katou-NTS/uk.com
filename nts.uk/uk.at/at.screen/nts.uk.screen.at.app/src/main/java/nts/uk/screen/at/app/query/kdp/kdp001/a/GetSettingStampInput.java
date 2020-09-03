@@ -33,7 +33,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -76,7 +78,7 @@ public class GetSettingStampInput {
 	private PredetemineTimeSettingRepository preRepo;
 	
 	@Inject
-	private WorkingConditionService workingService;
+	private WorkingConditionRepository workingService;
 
 	public SettingPotalStampInputDto getSettingPotalStampInput() {
 		// get ログイン会社ID
@@ -172,7 +174,9 @@ public class GetSettingStampInput {
 	}
 
 	@AllArgsConstructor
-	private class GetStampTypeToSuppressServiceRequireImpl implements GetStampTypeToSuppressService.Require {
+	private class GetStampTypeToSuppressServiceRequireImpl 
+		implements GetStampTypeToSuppressService.Require,
+					WorkingConditionService.RequireM1{
 
 		@Inject
 		private StampSetPerRepository stampSetPerRepo;
@@ -196,7 +200,7 @@ public class GetSettingStampInput {
 		private PredetemineTimeSettingRepository preRepo;
 		
 		@Inject
-		private WorkingConditionService workingService;
+		private WorkingConditionRepository workingConditionRepo;
 		
 
 		@Override
@@ -216,7 +220,7 @@ public class GetSettingStampInput {
 		}
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return this.workingService.findWorkConditionByEmployee(employeeId, baseDate);
+			return WorkingConditionService.findWorkConditionByEmployee(this, employeeId, baseDate);
 		}
 
 		@Override
@@ -238,6 +242,16 @@ public class GetSettingStampInput {
 		@Override
 		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
 			return this.portalStampSettingsrepo.get(comppanyID);
+		}
+
+		@Override
+		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+			return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+			return workingConditionRepo.getWorkingConditionItem(historyId);
 		}
 
 		

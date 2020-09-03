@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.attendanceitem.util;
 
 import java.util.Map;
 
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
 
 public interface AttendanceItemConvertFactory {

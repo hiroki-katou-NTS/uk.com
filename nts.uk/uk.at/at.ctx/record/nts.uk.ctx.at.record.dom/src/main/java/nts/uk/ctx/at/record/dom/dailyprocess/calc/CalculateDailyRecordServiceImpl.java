@@ -60,6 +60,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.Wo
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.TimeSheetAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.PreviousAndNextDaily;
@@ -662,7 +663,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 			return recordReGetClass.getIntegrationOfDaily();
 
 		// 乖離時間(AggregateRoot)取得
-		List<DivergenceTime> divergenceTimeList = recordReGetClass.getCompanyCommonSetting().getDivergenceTime();
+		List<DivergenceTimeRoot> divergenceTimeList = recordReGetClass.getCompanyCommonSetting().getDivergenceTime();
 
 		// スケジュール側の補正
 		Optional<PredetermineTimeSetForCalc> schePred = Optional.empty();

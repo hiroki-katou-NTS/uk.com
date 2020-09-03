@@ -24,7 +24,9 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pref
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSettingRepository;
@@ -61,7 +63,7 @@ public class DisplaySuppressStampButtonInStampInput {
 	private PredetemineTimeSettingRepository preRepo;
 	
 	@Inject
-	private WorkingConditionService workingService;
+	private WorkingConditionRepository workingService;
 
 	public StampToSuppress getStampToSuppress() {
 		GetStampTypeToSuppressServiceRequireImpl require = new GetStampTypeToSuppressServiceRequireImpl(stampSetPerRepo,
@@ -74,7 +76,8 @@ public class DisplaySuppressStampButtonInStampInput {
 	}
 
 	@AllArgsConstructor
-	private class GetStampTypeToSuppressServiceRequireImpl implements GetStampTypeToSuppressService.Require {
+	private class GetStampTypeToSuppressServiceRequireImpl 
+		implements GetStampTypeToSuppressService.Require, WorkingConditionService.RequireM1 {
 
 		@Inject
 		private StampSetPerRepository stampSetPerRepo;
@@ -98,7 +101,7 @@ public class DisplaySuppressStampButtonInStampInput {
 		private PredetemineTimeSettingRepository preRepo;
 		
 		@Inject
-		private WorkingConditionService workingService;
+		private WorkingConditionRepository workingService;
 
 		@Override
 		public List<StampCard> getListStampCard(String sid) {
@@ -118,7 +121,7 @@ public class DisplaySuppressStampButtonInStampInput {
 
 		@Override
 		public Optional<WorkingConditionItem> findWorkConditionByEmployee(String employeeId, GeneralDate baseDate) {
-			return this.workingService.findWorkConditionByEmployee(employeeId, baseDate);
+			return WorkingConditionService.findWorkConditionByEmployee(this, employeeId, baseDate);
 		}
 
 		@Override
@@ -140,6 +143,16 @@ public class DisplaySuppressStampButtonInStampInput {
 		@Override
 		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
 			return this.portalStampSettingsrepo.get(comppanyID);
+		}
+
+		@Override
+		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+			return workingService.getBySidAndStandardDate(companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+			return workingService.getWorkingConditionItem(historyId);
 		}
 
 	}

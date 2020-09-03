@@ -147,14 +147,14 @@ public class KrcdtDayOuenTimeSheet extends UkJpaEntity implements Serializable {
 		entity.workNo = domain.getOuenTimeSheet().getTimeSheet().getWorkNo().v();
 		
 		domain.getOuenTimeSheet().getTimeSheet().getStart().ifPresent(start -> {
-			entity.startTimeChangeWay = start.getReasonTimeChange().getTimeChangeWay().value;
-			entity.startStampMethod = start.getReasonTimeChange().getStampMethod().map(c -> c.value).orElse(null);
+			entity.startTimeChangeWay = start.getReasonTimeChange().getTimeChangeMeans().value;
+			entity.startStampMethod = start.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
 			entity.startTime = start.getTimeWithDay().map(c -> c.v()).orElse(null); 
 		});
 		
 		domain.getOuenTimeSheet().getTimeSheet().getEnd().ifPresent(end -> {
-			entity.endTimeChangeWay = end.getReasonTimeChange().getTimeChangeWay().value;
-			entity.endStampMethod = end.getReasonTimeChange().getStampMethod().map(c -> c.value).orElse(null);
+			entity.endTimeChangeWay = end.getReasonTimeChange().getTimeChangeMeans().value;
+			entity.endStampMethod = end.getReasonTimeChange().getEngravingMethod().map(c -> c.value).orElse(null);
 			entity.endTime = end.getTimeWithDay().map(c -> c.v()).orElse(null); 
 		});
 		

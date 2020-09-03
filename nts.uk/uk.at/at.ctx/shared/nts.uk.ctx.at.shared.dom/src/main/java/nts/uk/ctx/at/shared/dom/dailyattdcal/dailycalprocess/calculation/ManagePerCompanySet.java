@@ -13,12 +13,16 @@ import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexSet;
 import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOT;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calculationsettings.totalrestrainttime.CalculateOfTotalConstraintTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DivergenceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.midnighttime.MidNightTimeSheet;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTime;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
+import nts.uk.ctx.at.shared.dom.workrule.specific.UpperLimitTotalWorkingHour;
 
 /**
  * 会社別設定管理
@@ -38,7 +42,7 @@ public class ManagePerCompanySet {
 	CompensatoryLeaveComSetting compensatoryLeaveComSet;
 	
 	//乖離時間
-	List<DivergenceTime> divergenceTime;
+	List<DivergenceTimeRoot> divergenceTime;
 	
 	//エラーアラームマスタ
 //	List<ErrorAlarmWorkRecord> errorAlarm; 

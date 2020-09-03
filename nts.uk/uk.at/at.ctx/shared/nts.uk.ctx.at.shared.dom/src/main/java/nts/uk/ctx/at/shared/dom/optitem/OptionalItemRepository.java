@@ -7,8 +7,8 @@ package nts.uk.ctx.at.shared.dom.optitem;
 import java.util.List;
 import java.util.Map;
 
-import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemExportData;
-import nts.uk.ctx.at.record.dom.export.optitem.CalFormulasItemTableExportData;
+import nts.uk.ctx.at.shared.dom.optitem.export.CalFormulasItemExportData;
+import nts.uk.ctx.at.shared.dom.optitem.export.CalFormulasItemTableExportData;
 
 /**
  * The Interface OptionalItemRepository.
