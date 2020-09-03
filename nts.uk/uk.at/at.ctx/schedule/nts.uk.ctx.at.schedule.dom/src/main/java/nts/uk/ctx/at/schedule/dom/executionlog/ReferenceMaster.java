@@ -16,7 +16,7 @@ public enum ReferenceMaster {
 
     /** The month pattern. */
     // 月間パターン
-    MONTH_PATTERN(4);
+    MONTH_PATTERN(3);
 
     /** The value. */
     public final int value;
