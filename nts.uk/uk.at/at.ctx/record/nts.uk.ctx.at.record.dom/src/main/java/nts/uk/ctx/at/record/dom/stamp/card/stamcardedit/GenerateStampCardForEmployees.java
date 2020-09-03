@@ -10,6 +10,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 /**
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.勤務実績.打刻管理.打刻カード.指定社員リストの打刻カード番号を生成する
+ * 
  * @author chungnt
  *
  */
@@ -24,25 +25,26 @@ public class GenerateStampCardForEmployees {
 	 * @param companyCd        会社コード
 	 * @param makeEmbossedCard 打刻カード作成方法
 	 * @param targetPersons    対象者リスト
-	 * @return					 打刻カード生成結果リスト
+	 * @return 				       打刻カード生成結果リスト
 	 */
 	public static List<ImprintedCardGenerationResult> generate(Require require, String contractCd, String companyCd,
 			MakeEmbossedCard makeEmbossedCard, List<TargetPerson> targetPersons) {
-		
+
 		List<ImprintedCardGenerationResult> results = targetPersons.stream().map(m -> {
-			Optional<String> stampCard = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard, m.getEmployeeCd());
-			
-			if(!stampCard.isPresent()) {
+			Optional<String> stampCard = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard,
+					m.getEmployeeCd());
+
+			if (!stampCard.isPresent()) {
 				throw new BusinessException("Msg_1756");
 			}
-			
-			StampCard card = new StampCard(companyCd, companyCd, companyCd);
-			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(stampCard.get(), contractCd);
+
+			StampCard card = new StampCard(companyCd, stampCard.get(), companyCd);
+			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(contractCd, stampCard.get());
 			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, duplicateCards);
-			
+
 			return result;
 		}).collect(Collectors.toList());
-		
+
 		return results;
 	}
 
@@ -50,18 +52,18 @@ public class GenerateStampCardForEmployees {
 	 * [prv-1] 打刻カード番号を生成する
 	 * 
 	 * @param require
-	 * @param companyCd			会社コード
-	 * @param makeEmbossedCard	打刻カード作成方法
-	 * @param employeeCd		社員コード
-	 * @return					打刻カード番号
+	 * @param companyCd        会社コード
+	 * @param makeEmbossedCard 打刻カード作成方法
+	 * @param employeeCd       社員コード
+	 * @return 				       打刻カード番号
 	 */
 	private static Optional<String> generateEmbossedCardNumber(Require require, String companyCd,
 			MakeEmbossedCard makeEmbossedCard, String employeeCd) {
-		
+
 		StampCardEditing stampCardEditing = require.get(AppContexts.user().companyId());
-		
-		if(makeEmbossedCard.value == 1) {
-			
+
+		if (makeEmbossedCard.value == 1) {
+
 			return stampCardEditing.createStampCard(companyCd, employeeCd);
 		}
 		return Optional.of(stampCardEditing.editCardNumber(employeeCd));
