@@ -110,7 +110,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 					break;
 				}
 			}
-		} else if (speHoliday.getGrantRegular().getGrantDate() == GrantDate.GRANT_BASE_HOLIDAY){
+		} else if (speHoliday.getGrantRegular().getGrantDate().get().equals(GrantDate.GRANT_BASE_HOLIDAY)){
 			//ドメインモデル「年休社員基本情報」を取得する
 			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = require.employeeAnnualLeaveBasicInfo(employeeId);
 			if(!annualLeaveEmpBasicInfo.isPresent()) {

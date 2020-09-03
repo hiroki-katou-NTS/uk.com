@@ -30,4 +30,16 @@ public class ErrorFlg {
 	 * 分類条件に一致しない
 	 */
 	private boolean classError;
+	
+	/**
+	 * 利用可能か？
+	 * @return
+	 */
+	public boolean canUse(){
+		boolean canUse = (!employmentError
+				&& !genderError
+				&& !ageError
+				&& !classError);
+		return canUse;
+	}
 }
