@@ -24,7 +24,7 @@ module nts.uk.at.view.ksm005.a {
             calendarData: KnockoutObservable<any>;
             yearMonthPicked: KnockoutObservable<number>;
             cssRangerYM: any;
-            optionDates: KnockoutObservableArray<any>;
+            optionDates: KnockoutObservableArray<CalendarItem>;
             firstDay: number;
             yearMonth: KnockoutObservable<number>;
             startDate: number;
@@ -290,12 +290,7 @@ module nts.uk.at.view.ksm005.a {
                 else {
                     textColor = TypeColor.HOLIDAY_COLOR;
                 }
-                return {
-                    start: start,
-                    textColor: textColor,
-                    backgroundColor: 'white',
-                    listText: [row1, row2] //listText
-                };
+                return new CalendarItem(start, textColor, row1, row2);
             }
             
             /**
@@ -703,26 +698,24 @@ module nts.uk.at.view.ksm005.a {
 	        /*
                 setting date Wokring Day Atr event
             */
+
 	        private setWorkingDayAtr(date){
-		        let self = this;
-		        let dataUpdate: Array<WorkMonthlySettingDto> = self.lstWorkMonthlySetting();
-
-		        let i = dataUpdate.findIndex( item => self.convertYMD(item.ymdk) == date);
-		        if( dataUpdate && i > -1 && !empty.isNullOrEmpty(self.typeOfWorkCode()) ) {
-			        dataUpdate[i].workTypeCode = self.typeOfWorkCode();
-			        dataUpdate[i].workTypeName = self.typeOfWorkName();
-			        dataUpdate[i].workingCode  = self.workingHoursCode();
-			        dataUpdate[i].workingName  = self.workingHoursName();
-
-			        if (dataUpdate[i].workTypeCode && dataUpdate[i].workingCode) {
-				        dataUpdate[i].typeColor = TypeColor.ATTENDANCE;
-			        } else {
-				        dataUpdate[i].typeColor = TypeColor.HOLIDAY;
-			        }
+		        let vm = this;
+                let dataUpdate: Array<WorkMonthlySettingDto> = vm.lstWorkMonthlySetting();
+                let i = dataUpdate.findIndex( item => vm.convertYMD(item.ymdk) == date);
+                let optionDates = vm.optionDates;
+                let existItem = _.find(optionDates(), item => item.start == date);
+                if(existItem!=null) {
+                    existItem.changeListText(vm.typeOfWorkName() ? vm.typeOfWorkName() : '', vm.workingHoursName() ? vm.workingHoursName() : '');
                 }
-
-		        self.updateWorkMothlySetting(dataUpdate);
-		        self.lstWorkMonthlySetting(dataUpdate);
+                if( dataUpdate && i > -1 && !empty.isNullOrEmpty(vm.typeOfWorkCode()) ) {
+                    dataUpdate[i].workTypeCode = vm.typeOfWorkCode();
+                    dataUpdate[i].workTypeName = vm.typeOfWorkName();
+                    dataUpdate[i].workingCode  = vm.workingHoursCode();
+                    dataUpdate[i].workingName  = vm.workingHoursName();
+                }
+                vm.lstWorkMonthlySetting(dataUpdate);
+                optionDates.valueHasMutated();
 	        }
 
             private  clearCalendar() {
@@ -829,6 +822,24 @@ module nts.uk.at.view.ksm005.a {
             static ATTENDANCE_COLOR = "#0000ff";
             static HALF_DAY_WORK = 2;
             static HALF_DAY_WORK_COLOR = '#FF7F27';
+        }
+        export class CalendarItem {
+            start: string;
+            textColor: string;
+            backgroundColor: string;
+            listText: Array<any>;
+            insertText: boolean;
+            constructor(start: string, textColor: string, row1: string, row2: string) {
+                this.start = moment(start.toString()).format('YYYY-MM-DD');
+                this.backgroundColor = 'white';
+                this.textColor = textColor;
+                this.listText= [row1, row2];
+                this.insertText = false;
+            }
+            changeListText(row1: string, row2: string){
+                this.listText= [row1, row2];
+                this.insertText = true;
+            }
         }
 
     }
