@@ -1,9 +1,8 @@
-package nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay;
+package nts.uk.ctx.at.schedule.dom.shift.weeklywrkday;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.val;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
@@ -16,12 +15,12 @@ import java.util.stream.Collectors;
  */
 // 週間勤務設定
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 public class WeeklyWorkDayPattern extends AggregateRoot {
 
     /** The company id. */
     // 会社ID
-    private CompanyId companyId;
+    private final CompanyId companyId;
 
     /** The list Workday */
     //曜日勤務設定リスト
@@ -32,10 +31,10 @@ public class WeeklyWorkDayPattern extends AggregateRoot {
      * @param companyId
      * @param listWorkdayPatternItem
      */
-    public WeeklyWorkDayPattern(CompanyId companyId, List<WorkdayPatternItem> listWorkdayPatternItem) {
+    public static WeeklyWorkDayPattern weeklyWorkDayPattern(CompanyId companyId, List<WorkdayPatternItem> listWorkdayPatternItem) {
         // inv-1 曜日勤務設定リスト.size == 7
         if (listWorkdayPatternItem.size() != 7) {
-            throw new BusinessException("");
+            throw new RuntimeException("System Error");
         }
         // 	inv-2	曜日勤務設定の曜日は重複していけない
         boolean hasOverlap = false;
@@ -45,10 +44,9 @@ public class WeeklyWorkDayPattern extends AggregateRoot {
             }
         }
         if (hasOverlap) {
-            throw new BusinessException("");
+            throw new RuntimeException("System Error");
         }
-        this.companyId = companyId;
-        this.listWorkdayPatternItem = listWorkdayPatternItem;
+        return new WeeklyWorkDayPattern(companyId,listWorkdayPatternItem);
     }
 
     /**

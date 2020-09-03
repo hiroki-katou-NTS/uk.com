@@ -11,7 +11,7 @@ module ksm004.d.service{
         
         getAllHoliday : "at/schedule/holiday/getAllHoliday",
 
-        getWeeklyWorkDay : "at/schedule/shift/weeklyworkday/getAll"
+        getWeeklyWorkDay : "at/schedule/shift/weeklywrkday/getAll"
     }    
     /**
      * add new calendar Company
