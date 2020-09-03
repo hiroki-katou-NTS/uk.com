@@ -381,6 +381,7 @@ public class AppContentServiceImpl implements AppContentService {
 					}
 				}
 			}
+			listOfApp.setOpApprovalFrameStatus(Optional.of(frameAtr.value));
 			// 反映状態　＝　反映状態（承認一覧モード）//Trạng thái phản ánh= trạng thái phản ánh(mode danh sách approve)
 			reflectedStateString = this.getReflectStatusApprovalListMode(reflectedState, phaseAtr, frameAtr, device);
 		}

@@ -222,20 +222,30 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		boolean condition = param.getOpListOfAppTypes().map(x -> {
 			return !x.stream().filter(y -> !y.isChoice()).findAny().isPresent();
 		}).orElse(true);
+		List<PrePostAtr> prePostAtrLst = new ArrayList<>();
+		if(param.isPreOutput()) {
+			prePostAtrLst.add(PrePostAtr.PREDICT);
+		}
+		if(param.isPostOutput()) {
+			prePostAtrLst.add(PrePostAtr.POSTERIOR);
+		}
 		if(condition) {
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> allAppTypeLst = new ArrayList<>();
 			for(ApplicationType appType : ApplicationType.values()) {
 				allAppTypeLst.add(appType);
 			} 
-			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), allAppTypeLst);
+			
+			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), 
+					allAppTypeLst, prePostAtrLst);
 		} else {
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> appTypeLst = param.getOpListOfAppTypes().map(x -> {
 				return x.stream().filter(y -> y.isChoice())
 						.map(y -> y.getAppType()).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
-			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), appTypeLst);
+			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), 
+					appTypeLst, prePostAtrLst);
 		}
 		// 承認ルートの内容取得
 		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter
@@ -456,6 +466,13 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		// 承認一覧の申請を取得
 		String companyID = AppContexts.user().companyId();
+		List<PrePostAtr> prePostAtrLst = new ArrayList<>();
+		if(param.isPreOutput()) {
+			prePostAtrLst.add(PrePostAtr.PREDICT);
+		}
+		if(param.isPostOutput()) {
+			prePostAtrLst.add(PrePostAtr.POSTERIOR);
+		}
 		List<Application> lstApp = repoApp.getListAppModeApprCMM045(
 				companyID, 
 				new DatePeriod(param.getPeriodStartDate(), param.getPeriodEndDate()),
@@ -468,7 +485,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				param.getOpCancelStatus().orElse(false), 
 				param.getOpListOfAppTypes().map(x -> {
 					return x.stream().filter(y -> y.isChoice()).map(y -> y.getAppType().value).collect(Collectors.toList());
-				}).orElse(Collections.emptyList()));
+				}).orElse(Collections.emptyList()),
+				prePostAtrLst);
 		// 申請一覧リストのデータを作成
 		appListInfo = appDataCreation.createAppLstData(
 				companyID, 
