@@ -1,6 +1,7 @@
 package nts.uk.screen.at.app.query.kdp.kdps01.a;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,7 +47,7 @@ public class DailyOmissionAttdErrorInfoDto {
 
 		return new DailyOmissionAttdErrorInfoDto(domain.getCheckErrorType().value,
 				PromptingMessageDto.fromDomain(domain.getPromptingMessage()), domain.getLastDateError(),
-				domain.getListRequired());
+				domain.getListRequired().stream().sorted().collect(Collectors.toList()));
 	}
 
 }

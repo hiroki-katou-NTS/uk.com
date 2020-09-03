@@ -25,7 +25,8 @@ const daysColor = [
 	{ day: 6, color: '#0000FF' }
 ]
 
-const STAMP_MEANS_PORTAL= 4;
+const STAMP_MEANS_PORTAL = 4;
+const DEFAULT_PAGE_NO = 1;
 
 const DEFAULT_GRAY = '#E8E9EB';
 @bean()
@@ -74,7 +75,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 		vm.screenMode(!!urlParam ? urlParam : null);
 		this.$blockui("invisible");
-		vm.$ajax(requestUrl.confirmUseOfStampInput, { stampMeans: 4 }).then((result) => {
+		vm.$ajax(requestUrl.confirmUseOfStampInput, { stampMeans: STAMP_MEANS_PORTAL }).then((result) => {
 			this.$blockui("clear");
 			vm.usedSatus(result.used);
 			vm.systemDate(moment(vm.$date.now()));
@@ -306,7 +307,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		});
 		nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 1, buttonDisNo: buttonDisNo }).then((res) => {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: DEFAULT_PAGE_NO, buttonDisNo: buttonDisNo , stampMeans: STAMP_MEANS_PORTAL}).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
@@ -347,7 +348,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 		nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 1, buttonDisNo: buttonDisNo }).then((res) => {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: DEFAULT_PAGE_NO, buttonDisNo: buttonDisNo, stampMeans: STAMP_MEANS_PORTAL }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
@@ -430,23 +431,23 @@ class KDP001AViewModel extends ko.ViewModel {
 
 }
 
-	enum ButtonType {
-		// 系
-	
-		GOING_TO_WORK = 1,
-		// 系
-	
-		WORKING_OUT = 2,
-		// "外出系"
-	
-		GO_OUT = 3,
-		// 戻り系
-	
-		RETURN = 4,
-		// 予約系
-	
-		RESERVATION_SYSTEM = 5
-	}
+enum ButtonType {
+	// 系
+
+	GOING_TO_WORK = 1,
+	// 系
+
+	WORKING_OUT = 2,
+	// "外出系"
+
+	GO_OUT = 3,
+	// 戻り系
+
+	RETURN = 4,
+	// 予約系
+
+	RESERVATION_SYSTEM = 5
+}
 
 interface IStampToSuppress {
 	/**
