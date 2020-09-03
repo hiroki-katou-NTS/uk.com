@@ -230,7 +230,7 @@ module nts.uk.at.view.kmr004.a {
 					vm.$blockui("clear");
 				}).fail((res: any) => {
 					vm.$blockui("clear").then(function () {
-						vm.$dialog.error({messageId: res.messageId});
+						vm.showErrorMessage(res);
 					});
 				});
 			}
@@ -250,14 +250,14 @@ module nts.uk.at.view.kmr004.a {
 					vm.$blockui("clear");
 				}).fail((res: any) => {
 					vm.$blockui("clear").then(function () {
-						vm.$dialog.error({messageId: res.messageId});
+						vm.showErrorMessage(res);
 					});
 				});
 			}
 		}
 
 		checkBeforeExtract(data:any): boolean{
-			if ((data.workplaceIds.length < 1) && (data.workLocationCodes == null)) {
+			if ((data.workplaceIds.length < 1) && (data.workLocationCodes.length < 1)) {
 				return false;
 			}
 			return true;
@@ -369,6 +369,17 @@ module nts.uk.at.view.kmr004.a {
 			//Return Dialog Error
 			if (!res.businessException) {
 				return;
+			}
+
+			let vm = this;
+
+			if (res.messageId == "Msg_1856") {
+
+				if (vm.displayingWorkplaceList == 1) {
+					res.parameterIds = [getText('Com_Workplace')];
+				} else if (vm.displayingWorkplaceList == 2) {
+					res.parameterIds = [getText('KMR004_41')];
+				}
 			}
 
 			// show error message
