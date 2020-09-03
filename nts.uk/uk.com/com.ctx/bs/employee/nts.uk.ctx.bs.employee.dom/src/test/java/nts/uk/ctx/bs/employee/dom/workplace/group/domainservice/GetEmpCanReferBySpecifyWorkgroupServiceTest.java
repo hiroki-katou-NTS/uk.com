@@ -124,7 +124,14 @@ public class GetEmpCanReferBySpecifyWorkgroupServiceTest {
 				
 			}
 		};
-		List<EmployeeAffiliation> listEmployeeAffiliation = Arrays.asList(new EmployeeAffiliation(empId, Optional.empty(), Optional.empty(), "workplaceID", Optional.empty()));
+		String empId2 = "empId2";
+		String empId3 = "empId3";
+		String empId4 = "empId4";
+		List<EmployeeAffiliation> listEmployeeAffiliation = Arrays.asList(
+				new EmployeeAffiliation(empId2, Optional.empty(), Optional.empty(), "workplaceID2", Optional.of(workplaceGroupId)),
+				new EmployeeAffiliation(empId3, Optional.empty(), Optional.empty(), "workplaceID3",  Optional.of(workplaceGroupId)),
+				new EmployeeAffiliation(empId4, Optional.empty(), Optional.empty(), "workplaceID4",  Optional.of(workplaceGroupId))
+				);
 		new MockUp<GetAllEmpWhoBelongWorkplaceGroupService>() {
 			@Mock
 			public  List<EmployeeAffiliation> getAllEmp(GetAllEmpWhoBelongWorkplaceGroupService.Require require ,GeneralDate baseDate , String workplaceGroupId ){
@@ -134,7 +141,7 @@ public class GetEmpCanReferBySpecifyWorkgroupServiceTest {
 		List<String> data = GetEmpCanReferBySpecifyWorkgroupService.getEmpCanRefer(require, date, empId, workplaceGroupId);
 		assertThat(data)
 		.extracting(d->d)
-		.containsExactly(empId);
+		.containsExactly(empId2,empId3,empId4);
 	}
 
 }

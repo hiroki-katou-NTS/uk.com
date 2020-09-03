@@ -148,7 +148,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// 勤務予定.勤務情報.勤務実績の勤務情報
 		WorkInformation workInformation = workInfoOfDaily.getRecordInfo();
 
-		KscdtSchTime kscdtSchTimes = KscdtSchTime.toEntity(workSchedule.getOptAttendanceTime().get().getActualWorkingTimeOfDaily(), sID, yMD, cID);
+		KscdtSchTime kscdtSchTimes = workSchedule.getOptAttendanceTime().isPresent() ? KscdtSchTime.toEntity(workSchedule.getOptAttendanceTime().get().getActualWorkingTimeOfDaily(), sID, yMD, cID) : null;
 
 		// 勤務予定.休憩時間帯
 		List<KscdtSchEditState> kscdtEditStates = workSchedule.getLstEditState().stream()
@@ -238,7 +238,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 			shortWorkingTimeSheets.add(shortWorkingTimeSheet);
 		});
 		
-		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = kscdtSchTime.toDomain(sID, yMD);
+		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = kscdtSchTime != null ? kscdtSchTime.toDomain(sID, yMD) : null;
 		AttendanceTimeOfDailyAttendance attendance = new AttendanceTimeOfDailyAttendance(
 				null, actualWorkingTimeOfDaily, 
 				null, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), null);

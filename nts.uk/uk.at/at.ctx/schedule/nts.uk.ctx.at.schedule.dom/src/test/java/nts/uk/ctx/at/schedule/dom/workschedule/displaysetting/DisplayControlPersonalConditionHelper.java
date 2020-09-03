@@ -81,4 +81,13 @@ public class DisplayControlPersonalConditionHelper {
 			return Optional.ofNullable(qualifi);
 		}
 		
+		public static DisplayControlPersonalCondition getPersonData() {
+			return DisplayControlPersonalCondition.get("companyID",
+					Arrays.asList(new PersonInforDisplayControl(ConditionATRWorkSchedule.TEAM, NotUseAtr.USE),
+							new PersonInforDisplayControl(ConditionATRWorkSchedule.RANK, NotUseAtr.USE),
+							new PersonInforDisplayControl(ConditionATRWorkSchedule.LICENSE_ATR, NotUseAtr.USE)),
+					Optional.of(WorkscheQualifi.workScheduleQualification(new PersonSymbolQualify("〇"),
+							Arrays.asList(new QualificationCD("C1")))));
+		}
+		
 }

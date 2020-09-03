@@ -589,7 +589,10 @@ public class CreateDailyResultDomainServiceNew {
 
 		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
 				.getEmployeeGeneralInfo(Arrays.asList(employeeId), periodTime);
-		
+		List<ExWorkTypeHistoryImport> exWorkTypeHistoryImports = this.businessTypeOfEmpHisAdaptor
+				.findByCidSidBaseDate(companyId, Arrays.asList(employeeId), periodTime).stream()
+				.map(c -> convertToBusinessTypeOfEmpDto(c)).collect(Collectors.toList());
+		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
 		// 社員ID（List）と期間から労働条件を取得する
 		List<WorkingConditionItem> workingConditionItems = this.workingConditionItemRepository
 				.getBySidsAndDatePeriod(Arrays.asList(employeeId), periodTime);
@@ -646,6 +649,19 @@ public class CreateDailyResultDomainServiceNew {
 				empCalAndSumExeLog, dataSetter, employeeGeneralInfoImport, stateHolder, employeeId,
 				stampReflectionManagement, mapWorkingConditionItem, mapDateHistoryItem, periodInMasterList,
 				executionType, checkLock);
+		if (cStatus.getProcessState() == ProcessState.SUCCESS) {
+				for (ErrorMessageInfo errorMessageInfo : cStatus.getListErrorMessageInfo()) {
+					String empCalAndSumExeLogId = empCalAndSumExeLog.isPresent()?empCalAndSumExeLog.get().getEmpCalAndSumExecLogID():null;
+					// 日別実績の作成エラー処理
+					errorHandlingCreateDailyResults.executeCreateError(companyId, errorMessageInfo.getEmployeeID(),
+							errorMessageInfo.getProcessDate(), empCalAndSumExeLogId, errorMessageInfo.getExecutionContent(),
+							errorMessageInfo.getResourceID(), errorMessageInfo.getMessageError());
+				}
+				if(empCalAndSumExeLog.isPresent()) {
+					updateLogInfoWithNewTransaction.updateLogInfo(empCalAndSumExeLog.get().getEmpCalAndSumExecLogID(), 0,
+						ExecutionStatus.DONE.value);
+				}
+		}
 		return cStatus;
 	}
 	
@@ -673,6 +689,10 @@ public class CreateDailyResultDomainServiceNew {
 
 		EmployeeGeneralInfoImport employeeGeneralInfoImport = this.employeeGeneralInfoService
 				.getEmployeeGeneralInfo(Arrays.asList(employeeId), periodTime);
+		List<ExWorkTypeHistoryImport> exWorkTypeHistoryImports = this.businessTypeOfEmpHisAdaptor
+				.findByCidSidBaseDate(companyId, Arrays.asList(employeeId), periodTime).stream()
+				.map(c -> convertToBusinessTypeOfEmpDto(c)).collect(Collectors.toList());
+		employeeGeneralInfoImport.setExWorkTypeHistoryImports(exWorkTypeHistoryImports);
 		
 		// 社員ID（List）と期間から労働条件を取得する
 		List<WorkingConditionItem> workingConditionItems = this.workingConditionItemRepository

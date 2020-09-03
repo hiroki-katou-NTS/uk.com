@@ -21,6 +21,8 @@ import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.GetCombinationrAndWorkHolidayAtrService.Require;
+import static org.assertj.core.api.Assertions.tuple;
+
 @RunWith(JMockit.class)
 public class GetCombinationrAndWorkHolidayAtrServiceTest {
 	@Injectable
@@ -55,8 +57,8 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 			ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name1"),new ColorCodeChar6("color1"), null);
 			ShiftMasterDisInfor displayInfor2 =  new ShiftMasterDisInfor(new ShiftMasterName("name2"),new ColorCodeChar6("color2"), null);
 			
-			ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode("1"), displayInfor, "1","1");
-			ShiftMaster shiftMater2 = new ShiftMaster("companyId",new ShiftMasterCode("2"), displayInfor2, "2","2");
+			ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode("001"), displayInfor, "1","1");
+			ShiftMaster shiftMater2 = new ShiftMaster("companyId",new ShiftMasterCode("002"), displayInfor2, "2","2");
 			
 			listShiftMaster.add(shiftMater);
 			listShiftMaster.add(shiftMater2);
@@ -77,12 +79,11 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 				.getCode(require, companyID, lstShiftMasterCd);
 		assertFalse(datas.isEmpty());
 		
-		assertThat(datas.keySet().stream()
-				.sorted((x,y) -> x.getShiftMasterCode().v().compareTo(y.getShiftMasterCode().v())))
-				.extracting(d -> d.getShiftMasterCode().v())
-				.containsExactly("001", "002");
-		
-		assertThat(datas.values()).extracting(d -> d.get().value).containsExactly(0, 0);
+		assertThat(datas.entrySet())
+		.extracting(d -> d.getKey().getShiftMasterCode().v(), d -> d.getValue().get())
+		.containsExactly(
+				tuple("001", WorkStyle.ONE_DAY_REST), 
+				tuple("002", WorkStyle.ONE_DAY_REST));
 	}
 	
 	/**
@@ -118,8 +119,8 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 			List<ShiftMaster> listShiftMaster = new ArrayList<>();
 			ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(new ShiftMasterName("name1"),new ColorCodeChar6("color1"), null);
 			ShiftMasterDisInfor displayInfor2 =  new ShiftMasterDisInfor(new ShiftMasterName("name2"),new ColorCodeChar6("color2"), null);
-			ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode("1"), displayInfor, "1","1");
-			ShiftMaster shiftMater2 = new ShiftMaster("companyId",new ShiftMasterCode("2"), displayInfor2, "2","2");
+			ShiftMaster shiftMater = new ShiftMaster("companyId",new ShiftMasterCode("001"), displayInfor, "1","1");
+			ShiftMaster shiftMater2 = new ShiftMaster("companyId",new ShiftMasterCode("002"), displayInfor2, "2","2");
 			listShiftMaster.add(shiftMater);
 			listShiftMaster.add(shiftMater2);
 			
@@ -139,12 +140,11 @@ public class GetCombinationrAndWorkHolidayAtrServiceTest {
 				.getbyWorkInfo(require, companyID, lstWorkInformation);
 		assertFalse(datas.isEmpty());
 		
-		assertThat(datas.keySet().stream().sorted((x,y) -> x.getShiftMasterCode().v()
-				.compareTo(y.getShiftMasterCode().v())))
-				.extracting(d -> d.getShiftMasterCode().v())
-				.containsExactly("001", "002");
-		
-		assertThat(datas.values()).extracting(d -> d.get().value).containsExactly(0, 0);
+		assertThat(datas.entrySet())
+		.extracting(d -> d.getKey().getShiftMasterCode().v(), d -> d.getValue().get())
+		.containsExactly(
+				tuple("001", WorkStyle.ONE_DAY_REST), 
+				tuple("002", WorkStyle.ONE_DAY_REST));
 
 	}
 
