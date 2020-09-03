@@ -9,7 +9,8 @@ module nts.uk.com.view.cli003.g {
             addLogDisplaySet: "ctx/sys/log/app/add-log-display-set",
             updateLogDisplaySet: "ctx/sys/log/app/update-log-display-set",
             deleteLogDisplaySet: "ctx/sys/log/app/delete-log-display-set",
-            getLogOutputItemByRecordType: "ctx/sys/log/app/get-log-output-item-by-record-type"
+            getLogOutputItemByRecordType: "ctx/sys/log/app/get-log-output-item-by-record-type",
+            getLogOutputItemBySystemType: "ctx/sys/log/app/get-log-output-item-by-system-type"
         }
 
         export function getAllLogDisplaySet(): JQueryPromise<any> {
@@ -30,6 +31,9 @@ module nts.uk.com.view.cli003.g {
         
         export function getLogOutputItemByRecordType(recordType: string): JQueryPromise<any> {
             return ajax('com', paths.getLogOutputItemByRecordType, recordType);
+        };
+        export function getLogOutputItemBySystemType(systemType: string): JQueryPromise<any> {
+            return ajax('com', paths.getLogOutputItemBySystemType, systemType);
         };
     }
 }
