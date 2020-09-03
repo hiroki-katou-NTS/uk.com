@@ -8,9 +8,10 @@ module nts.uk.com.view.kwr002.c{
             findAllAttendanceRecExportMonthly: "com/function/attendancerecord/export/getAllAttendanceRecordExportMonthly/",
             getAttendanceSingleList: "com/function/attendancerecord/export/getAttendanceListSingle",
             getAttendanceCalculateList: "com/function/attendancerecord/export/getAttendanceListCalculate/",
-            getSealStamp:"com/function/attendancerecord/export/setting/getSealStamp/"
-        };    
-        
+            getSealStamp:"com/function/attendancerecord/export/setting/getSealStamp/",
+            getAttendanceRecordExportSetting: "com/function/attendancerecord/export/setting/getAttendanceRecExpSet/",
+        };
+
         export function findAllAttendanceRecExportDaily(exportCode : number): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>>{
             return nts.uk.request.ajax("at", path.findAllAttendanceRecExportDaily + exportCode);   
         }
@@ -31,5 +32,10 @@ module nts.uk.com.view.kwr002.c{
             return nts.uk.request.ajax("at",path.getSealStamp + exportCode); 
         }
      
+
+        export function getAttendanceRecordExportSetting(code : number): JQueryPromise<Array<String>>{
+            return nts.uk.request.ajax("at",path.getAttendanceRecordExportSetting + code);
+        }
+
     }
 }
