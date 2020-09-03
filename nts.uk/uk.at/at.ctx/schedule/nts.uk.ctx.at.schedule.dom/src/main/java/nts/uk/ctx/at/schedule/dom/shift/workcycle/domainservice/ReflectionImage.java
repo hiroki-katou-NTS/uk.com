@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 /**
  * 	反映イメージ
  */
-@AllArgsConstructor
 public class ReflectionImage {
 
     private HashMap<GeneralDate, RefImageEachDay> day;
@@ -18,6 +17,11 @@ public class ReflectionImage {
     // [C-1] 作る
     public static ReflectionImage create() {
         return new ReflectionImage(new HashMap<>());
+    }
+
+    // Private constructor
+    private ReflectionImage(HashMap<GeneralDate, RefImageEachDay> days){
+        this.day = days;
     }
 
     /**
