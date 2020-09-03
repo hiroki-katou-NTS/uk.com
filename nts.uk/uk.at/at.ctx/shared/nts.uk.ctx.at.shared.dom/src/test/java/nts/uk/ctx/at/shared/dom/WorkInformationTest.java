@@ -446,17 +446,19 @@ public class WorkInformationTest {
 	@Test
 	public void getWorkInfoAndTimeZone_2() {
 		WorkInformation workInformation = new WorkInformation(null, "workTypeCode");
-
+		WorkType workType = new WorkType();
+		workType.setWorkTypeCode(workInformation.getWorkTypeCode());
 		new Expectations() {
 			{
 				require.findByPK(workInformation.getWorkTypeCode().v());
-				result = Optional.of(new WorkType());
+				result = Optional.of(workType);
 
 			}
 		};
-
-		assertThat(workInformation.getWorkInfoAndTimeZone(require).get().getListTimeZone().isEmpty()).isTrue();
-		assertThat(workInformation.getWorkInfoAndTimeZone(require).get().getWorkTime().isPresent()).isFalse();
+		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require);
+		assertThat(result.get().getListTimeZone().isEmpty()).isTrue();
+		assertThat(result.get().getWorkTime().isPresent()).isFalse();
+		assertThat(result.get().getWorkType().getWorkTypeCode()).isEqualTo(workInformation.getWorkTypeCode());
 	}
 
 	@Test
@@ -481,8 +483,9 @@ public class WorkInformationTest {
 		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
 
 		List<TimezoneUse> listTimezoneUse = new ArrayList<>();
-		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(1), new TimeWithDayAttr(2), UseSetting.USE, 1));
-		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(2), new TimeWithDayAttr(3), UseSetting.USE, 0));
+		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(1), new TimeWithDayAttr(2), UseSetting.USE, 2));
+		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(2), new TimeWithDayAttr(3), UseSetting.USE, 1));
+		listTimezoneUse.add(new TimezoneUse(new TimeWithDayAttr(4), new TimeWithDayAttr(5), UseSetting.NOT_USE, 3));
 		new Expectations() {
 			{
 				require.findByPK(workInformation.getWorkTypeCode().v());
@@ -496,8 +499,15 @@ public class WorkInformationTest {
 
 			}
 		};
-
-		assertThat(workInformation.getWorkInfoAndTimeZone(require).isPresent()).isTrue();
+		Optional<WorkInfoAndTimeZone>  result = workInformation.getWorkInfoAndTimeZone(require);
+		assertThat(result.isPresent()).isTrue();
+		assertThat(result.get().getListTimeZone().size()).isEqualTo(listTimezoneUse.size()-1);
+		//workNo 1
+		assertThat(result.get().getListTimeZone().get(0).getStart()).isEqualTo(listTimezoneUse.get(1).getStart());
+		assertThat(result.get().getListTimeZone().get(0).getEnd()).isEqualTo(listTimezoneUse.get(1).getEnd());
+		//workNo 2
+		assertThat(result.get().getListTimeZone().get(1).getStart()).isEqualTo(listTimezoneUse.get(0).getStart());
+		assertThat(result.get().getListTimeZone().get(1).getEnd()).isEqualTo(listTimezoneUse.get(0).getEnd());
 	}
 	
 	/**
@@ -523,28 +533,5 @@ public class WorkInformationTest {
 				.isEqualTo(ErrorStatusWorkInfo.NORMAL);
 	}
 	
-	/**
-	 * test ver 5
-	 * worktimecode not null
-	 */
-	@Test
-	public void testCheckErrorCondition_2() { 
-		WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
-		new Expectations() {
-			{
-
-				require.findByPK(workInformation.getWorkTypeCode().v());
-				result = Optional.of(new WorkType());
-
-				require.checkNeededOfWorkTimeSetting(workInformation.getWorkTypeCode().v());
-				result = SetupType.OPTIONAL;
-				
-				require.findByCode(workInformation.getWorkTimeCode().v());
-			}
-		};
-
-		assertThat(workInformation.checkErrorCondition(require))
-				.isEqualTo(ErrorStatusWorkInfo.WORKTIME_WAS_DELETE);
-	}
 
 }

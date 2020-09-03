@@ -105,7 +105,7 @@ public class WorkInformation {
 		switch (setupType) {
 		case REQUIRED:// 必須
 			// @就業時間帯コード ==null
-			if (this.getWorkTimeCode() == null) {
+			if (!this.workTimeCode.isPresent()) {
 				return ErrorStatusWorkInfo.WORKTIME_ARE_REQUIRE_NOT_SET;
 			}
 			break;
@@ -164,7 +164,7 @@ public class WorkInformation {
 			return Optional.empty();
 		}
 		// @就業時間帯コード.isEmpty()
-		if (this.getWorkTimeCode() == null) {
+		if (!this.workTimeCode.isPresent()) {
 			return Optional.of(new WorkInfoAndTimeZone(workType.get()));
 		}
 		// $就業時間帯の設定 = require.就業時間帯を取得する(@就業時間帯コード )
@@ -179,7 +179,7 @@ public class WorkInformation {
 				.getTimezones();
 		// filter $.使用区分 == するしない区分．使用する
 		// sort $.勤務NO ASC
-		listTimezoneUse.stream().filter(item -> item.isUsed()).sorted((x, y) -> x.getWorkNo() - y.getWorkNo())
+		listTimezoneUse = listTimezoneUse.stream().filter(item -> item.isUsed()).sorted((x, y) -> x.getWorkNo() - y.getWorkNo())
 				.collect(Collectors.toList());
 		// map 時間帯#時間帯を作る( $.開始, $.終了 )
 		List<TimeZone> listTimeZone = listTimezoneUse.stream().map(i -> new TimeZone(i.getStart(), i.getEnd()))
