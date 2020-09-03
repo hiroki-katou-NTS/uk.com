@@ -7,8 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 
 /**
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.アルゴリズム.出向派遣履歴
- * 基準日から受入出向派遣情報を取得する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.アルゴリズム.出向派遣履歴  (History phái cử đi công tác).基準日から出向派遣情報を取得する (Get thông tin phái cử đi công tác từ base date).基準日から出向派遣情報を取得する
  * 
  * @author chungnt
  *
@@ -64,7 +63,7 @@ public class GetDispatchedInformation {
 
 		for (int i = 0; i < employeeIds.size(); i++) {
 			for (int j = 0; j < informations.size(); j++) {
-				if (informations.get(j).getSid().equals(employeeIds.get(i))) {
+				if (informations.get(j).getSid().map(c -> c).orElse(null).equals(employeeIds.get(i))) {
 					informations1.add(informations.get(j));
 					TemporaryDispatchInformation information = new TemporaryDispatchInformation(employeeIds.get(i));
 					information.setTemporaryDispatcher(true);
@@ -88,7 +87,7 @@ public class GetDispatchedInformation {
 		if (employeeCode) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setEmployeeCode(informations.get(i).getScd().map(m -> m).orElse(""));
 					}
 				}
@@ -98,7 +97,7 @@ public class GetDispatchedInformation {
 		if (employeeName) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setEmployeeName(informations.get(i).getPersonName().map(m -> m).orElse(""));
 					}
 				}
@@ -108,7 +107,7 @@ public class GetDispatchedInformation {
 		if (expirationDate) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setExpirationDate(informations.get(i).getDate01().map(m -> m).orElse(null));
 					}
 				}
@@ -118,7 +117,7 @@ public class GetDispatchedInformation {
 		if (classification1) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setClassify(Integer.parseInt(informations.get(i).getSelectCode01().map(m -> m).orElse("")));
 					}
 				}
@@ -128,7 +127,7 @@ public class GetDispatchedInformation {
 		if(nameSelectedMaster && classification1) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setNameClassify(informations.get(i).getSelectName01().map(m -> m).orElse(""));
 					}
 				}
@@ -138,7 +137,7 @@ public class GetDispatchedInformation {
 		if (classification2) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setTemporaryDispatch(informations.get(i).getSelectCode02().map(m -> m).orElse(""));
 					}
 				}
@@ -148,7 +147,7 @@ public class GetDispatchedInformation {
 		if (classification2 && nameSelectedMaster) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setTemporaryDispatchCategory(informations.get(i).getSelectName02().map(m -> m).orElse(""));
 					}
 				}
@@ -158,7 +157,7 @@ public class GetDispatchedInformation {
 		if (classification3) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setTemporaryAssignment(informations.get(i).getSelectCode03().map(m -> m).orElse(""));
 					}
 				}
@@ -168,7 +167,7 @@ public class GetDispatchedInformation {
 		if (classification3 && nameSelectedMaster) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						temporaryDispatchInformations.get(j).setTemporaryAssignmentCategory(informations.get(i).getSelectName03().map(m -> m).orElse(""));
 					}
 				}
@@ -180,7 +179,7 @@ public class GetDispatchedInformation {
 		if (address) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						TemporaryDispatchInformation t = temporaryDispatchInformations.get(j);
 						t.setCountry(informations.get(i).getSelectName06().map(m -> m).orElse(""));
 						t.setPostalCode(informations.get(i).getStr15().map(m -> m).orElse(""));
@@ -196,7 +195,7 @@ public class GetDispatchedInformation {
 		if (addressKana) {
 			for (int i = 0; i < informations.size(); i++) {
 				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid())) {
+					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
 						TemporaryDispatchInformation t = temporaryDispatchInformations.get(j);
 						t.setKanaAddress1(informations.get(i).getStr18().map(m -> m).orElse(""));
 						t.setKanaAddress2(informations.get(i).getStr19().map(m -> m).orElse(""));
