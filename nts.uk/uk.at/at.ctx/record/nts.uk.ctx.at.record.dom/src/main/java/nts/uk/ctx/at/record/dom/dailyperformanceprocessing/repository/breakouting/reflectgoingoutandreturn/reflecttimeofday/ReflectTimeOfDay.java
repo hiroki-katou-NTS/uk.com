@@ -41,15 +41,15 @@ public class ReflectTimeOfDay {
 			if((i+1) < listTimeFrame.size()) {
 				timeFrameNext = Optional.of(listTimeFrame.get(i+1));
 			}
-			//戻りOR終了の場合
+			//戻りOR終了の場合 (臨時退勤)
 			if(stamp.getType().getChangeClockArt() == ChangeClockArt.RETURN || 
-			   stamp.getType().getChangeClockArt() == ChangeClockArt.END_OF_SUPPORT ) {
+			   stamp.getType().getChangeClockArt() == ChangeClockArt.TEMPORARY_LEAVING ) {
 				//打刻反映する
 				TimeActualStamp actualStamp = imprintReflectTimeOfDay.imprint(false, timeFrame, timeFrameNext, stamp, timeFrame.getEnd(),workTimeCode,ymd);
 				listTimeFrame.get(i).setEnd(Optional.ofNullable(actualStamp));
-			//外出OR開始の場合
+			//外出OR開始の場合(臨時出勤 )
 			}else if(stamp.getType().getChangeClockArt() == ChangeClockArt.GO_OUT || 
-					   stamp.getType().getChangeClockArt() == ChangeClockArt.START_OF_SUPPORT ) {
+					   stamp.getType().getChangeClockArt() == ChangeClockArt.TEMPORARY_WORK ) {
 				//打刻反映する
 				TimeActualStamp actualStamp = imprintReflectTimeOfDay.imprint(true, timeFrame, timeFrameNext, stamp, timeFrame.getStart(),workTimeCode,ymd);
 				listTimeFrame.get(i).setStart(Optional.ofNullable(actualStamp));

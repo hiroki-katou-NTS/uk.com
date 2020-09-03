@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflect.ReflectEntranceAndExit;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.reflectondomain.ReflectionInformation;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ReflectStampOuput;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.CheckRangeReflectLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.CheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.OutputCheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
@@ -31,6 +32,9 @@ public class ReflectFrameEntranceAndExit {
 
 	@Inject
 	private ReflectEntranceAndExit reflectEntranceAndExit;
+	
+	@Inject
+	private CheckRangeReflectLeavingWork checkRangeReflectLeavingWork;
 
 	/**
 	 * 
@@ -42,8 +46,17 @@ public class ReflectFrameEntranceAndExit {
 	public List<ReflectionInformation> reflect(List<ReflectionInformation> listReflectionInformation, Stamp stamp,
 			StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily) {
 		// 反映範囲か確認する
-		OutputCheckRangeReflectAttd outputCheckRangeReflectAttd = checkRangeReflectAttd.checkRangeReflectAttd(stamp,
-				stampReflectRangeOutput, integrationOfDaily);
+		OutputCheckRangeReflectAttd outputCheckRangeReflectAttd = OutputCheckRangeReflectAttd.OUT_OF_RANGE;
+		if(stamp.getType().getChangeClockArt() == ChangeClockArt.BRARK || 
+					   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_OFF) {
+			outputCheckRangeReflectAttd = checkRangeReflectLeavingWork.checkRangeReflectAttd(stamp,
+					stampReflectRangeOutput, integrationOfDaily);
+		}else if(stamp.getType().getChangeClockArt() == ChangeClockArt.OVER_TIME ||  //入門ORPCログオンの場合 
+				   stamp.getType().getChangeClockArt() == ChangeClockArt.PC_LOG_ON ) {
+			outputCheckRangeReflectAttd = checkRangeReflectAttd.checkRangeReflectAttd(stamp,
+					stampReflectRangeOutput, integrationOfDaily);
+		}
+				
 
 		switch (outputCheckRangeReflectAttd) {
 		case FIRST_TIME:
