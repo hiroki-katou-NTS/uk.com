@@ -96,39 +96,4 @@ public class WorkCycleReflectionWebService extends WebService {
 		return workCreateMethods;
 	}
 
-	private WorkCycleReflectionDto fakeData(){
-		String cid = AppContexts.user().companyId();
-		GeneralDate start = GeneralDate.ymd(2020,8,1);
-		GeneralDate end = GeneralDate.ymd(2020,8,31);
-
-		List<WorkCycleReflectionDto.WorkTypeDto> pubHoliday = new ArrayList<>();
-		List<WorkCycleReflectionDto.WorkTypeDto> satHoliday = new ArrayList<>();
-		List<WorkCycleReflectionDto.WorkTypeDto> nonSatHoliday = new ArrayList<>();
-		List<WorkCycleReflectionDto.RefImageEachDayDto> reflectionImage = new ArrayList<>();
-		List<WorkCycleDto> workCycleList = new ArrayList<>();
-
-		pubHoliday.add(new WorkCycleReflectionDto.WorkTypeDto( "1-001", "name-1-001"));
-		pubHoliday.add(new WorkCycleReflectionDto.WorkTypeDto( "1-002", "name-1-002"));
-
-		satHoliday.add(new WorkCycleReflectionDto.WorkTypeDto("2-001", "name-2-001"));
-		satHoliday.add(new WorkCycleReflectionDto.WorkTypeDto("2-002", "name-2-002"));
-
-		nonSatHoliday.add(new WorkCycleReflectionDto.WorkTypeDto("3-001", "name-3-001"));
-		nonSatHoliday.add(new WorkCycleReflectionDto.WorkTypeDto("3-002", "name-3-002"));
-
-		for(GeneralDate i = start; i.afterOrEquals(end); i.addDays(1)){
-			int index = i.day();
-			WorkCycleReflectionDto.WorkInformationDto workInfo = new WorkCycleReflectionDto.WorkInformationDto(
-					"type-" + i, "time-" + i
-			);
-			int rand = (int) (Math.random() * 4) + 1;
-			reflectionImage.add(
-					new WorkCycleReflectionDto.RefImageEachDayDto(
-							index % 3, workInfo, i, rand)
-			);
-		}
-		return new WorkCycleReflectionDto(
-				pubHoliday, satHoliday, nonSatHoliday, reflectionImage, workCycleList
-		);
-	}
 }

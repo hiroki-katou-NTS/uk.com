@@ -1,6 +1,5 @@
 module nts.uk.at.view.kdl023.base.service {
 
-	import GetStartupInfoParam = nts.uk.at.view.kdl023.base.service.model.GetStartupInfoParam;
     let servicePath: any = {
         getHoliday: 'at/schedule/holiday/getHolidayByListDate',
         getWorkTime: 'at/shared/worktimesetting/findAll',
@@ -31,13 +30,13 @@ module nts.uk.at.view.kdl023.base.service {
     export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
         return nts.uk.request.ajax(servicePath.getWeeklyWorkSetting);
     }
-    export function registerMonthlyPattern(data: any){
+    export function registerMonthlyPattern(data: model.MonthlyPatternRegisterCommand){
         return nts.uk.request.ajax(servicePath.registerMonthlyPattern)
     }
-    export function startUpWindows(data: GetStartupInfoParam): JQueryPromise<model.WorkCycleReflectionDto>{
+    export function startUpWindows(data: model.GetStartupInfoParam): JQueryPromise<model.WorkCycleReflectionDto>{
         return nts.uk.request.ajax(servicePath.startUp, data)
     }
-    export function getReflectionWorkCycleAppImage( data: any): JQueryPromise<model.WorkCycleReflectionDto>{
+    export function getReflectionWorkCycleAppImage( data: model.GetWorkCycleAppImageParam): JQueryPromise<Array<model.RefImageEachDayDto>>{
         return nts.uk.request.ajax(servicePath.getWorkCycleAppImage)
     }
     export module model {
@@ -121,7 +120,7 @@ module nts.uk.at.view.kdl023.base.service {
             satHoliday: Array<WorkType>;
             nonSatHoliday: Array<WorkType>;
             reflectionImage: Array<RefImageEachDayDto>;
-            workCycleList: Array<any>;
+            workCycleList: Array<WorkCycle>;
         }
 
 		export interface RefImageEachDayDto{
@@ -129,7 +128,9 @@ module nts.uk.at.view.kdl023.base.service {
 			workInformation: WorkInformationDto
 			date: Date;
 			workStyles: number;
-		}		export interface WorkInformationDto{
+		}
+
+		export interface WorkInformationDto{
 			workTypeCode: string;
 			workTimeCode: string;
 		}
@@ -157,6 +158,27 @@ module nts.uk.at.view.kdl023.base.service {
             legalHolidayCd: string;
             nonStatutoryHolidayCd: string;
             holidayCd: string;
+        }
+
+        export interface MonthlyPatternRegisterCommand{
+            isOverWrite: boolean;
+            workMonthlySetting: Array<WorkMonthlySetting>;
+        }
+        export interface WorkMonthlySetting{
+            workInformation: WorkInformationDto;
+            ymk: string;
+            monthlyPatternCode: string;
+        }
+        export interface WorkCycle{
+            code: string;
+            name: string;
+            infos: Array<WorkCycleInfor>
+        }
+        export interface WorkCycleInfor{
+            typeCode: string;
+            timeCode: string;
+            days: number;
+            dispOrder: number;
         }
     }
 }

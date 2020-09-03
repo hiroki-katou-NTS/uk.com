@@ -15,6 +15,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import BootMode = nts.uk.at.view.kdl023.base.service.model.BootMode;
     import WorkCreateMethod = nts.uk.at.view.kdl023.base.service.model.WorkCreateMethod;
     import getText = nts.uk.resource.getText;
+    import RefImageEachDayDto = nts.uk.at.view.kdl023.base.service.RefImageEachDayDto;
     const CONST = {
         DATE_FORMAT: 'yyyy/MM/yy',
         YEAR_MONTH: 'yyyy/MM'
@@ -76,6 +77,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
         isExecMode: KnockoutObservable<boolean> = ko.observable(false);
         loadWindowsParam: GetStartupInfoParamDto;
+        isOverWrite: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -176,15 +178,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         }
                     });
 
-                    self.isExecMode.subscribe(val => {
-                        if(val){
+                    //self.isExecMode.subscribe(val => {
+                        if(self.isExecMode()){
                             $('.exec-mode').show();
                             $('.ref-mode').hide();
                         } else{
                             $('.ref-mode').show();
                             $('.exec-mode').hide();
                         }
-                    })
+                    //})
                     self.reflectionOrder1.subscribe(val =>{
                         if(val === WorkCreateMethod.NON){
                             self.workCycleEnable2(false);
@@ -267,13 +269,19 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         public onBtnApplySettingClicked(): void {
             let self = this;
             nts.uk.ui.block.invisible();
+            service.getReflectionWorkCycleAppImage(null).done( (val) =>{
 
+             }).fail(
+
+            ).always(
+                nts.uk.ui.block.clear();
+            );
             self.setPatternRange() // Set pattern's range
                 .done(() => {
                     self.optionDates(self.getOptionDates()); // Reload calendar
                     $('#component-calendar-kcp006').focus(); // Set focus control
                 }).always(() => {
-                    nts.uk.ui.block.clear();
+
                 });
 
         }
@@ -981,6 +989,32 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
         }
 
+        private setCalendarData(data: Array<RefImageEachDayDto>){
+            const self = this;
+            self.optionDates
+        }
+        private setOptionDate(data: RefImageEachDayDto):OptionDate{
+            let start = data.date;
+            let textColor;
+            if(data.workStyles === 0){
+                textColor = '#ff0000';
+            }else if(data.workStyles === 3){
+                textColor = '#0000ff';
+            } else {
+                textColor = '#FF7F27';
+            }
+
+            let backgroundColor = 'white';
+            let listText: [data.workInformation.workTypeCode, data.workInformation.workTimeCode];
+            return {
+                start: start,
+                textColor: textColor,
+                backgroundColor: backgroundColor,
+                listText: listText
+            }
+        }
+
+
     }
 
     export class ReflectionSetting {
@@ -1078,6 +1112,27 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             model.workCycleCode = ko.observable(data.workCycleCode)
             model.refOrder = ko.observableArray(data.refOrder)
             model.numOfSlideDays = ko.observable(data.numOfSlideDays)
+        }
+    }
+    export class GetWorkCycleAppImageParam{
+        creationPeriodStartDate: KnockoutObservable<string>;
+        creationPeriodEndDate: KnockoutObservable<string>;
+        workCycleCode: KnockoutObservable<string>;
+        refOrder: KnockoutObservableArray<number>;
+        numOfSlideDays: KnockoutObservable<number>;
+        legalHolidayCd: KnockoutObservable<string>;
+        nonStatutoryHolidayCd: KnockoutObservable<string>;
+        holidayCd: KnockoutObservable<string>;
+        constructor(data: GetStartupInfoParamDto){
+            const model = this;
+            model.creationPeriodStartDate = ko.observable(data.creationPeriodStartDate)
+            model.creationPeriodEndDate = ko.observable(data.creationPeriodEndDate)
+            model.workCycleCode = ko.observable(data.workCycleCode)
+            model.refOrder = ko.observableArray(data.refOrder)
+            model.numOfSlideDays = ko.observable(data.numOfSlideDays)
+            model.legalHolidayCd = ko.observable(data.legalHolidayCd)
+            model.nonStatutoryHolidayCd = ko.observable(data.nonStatutoryHolidayCd)
+            model.holidayCd = ko.observable(data.holidayCd)
         }
     }
 }

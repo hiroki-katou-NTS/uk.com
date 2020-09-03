@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
@@ -26,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
 import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
-import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -143,11 +143,9 @@ public class WorkCycleReflectionDialog {
 				publicHolidayRepository,
 				workCycleRepository);
 		val wRequire = new WorkInformationRequire(basicScheduleService);
-		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(cRequire, creationPeriod, workCycleRefSetting);
+		List<RefImageEachDay> refImageEachDayList = CreateWorkCycleAppImage.create(cRequire, creationPeriod, workCycleRefSetting);
 		List<WorkCycleReflectionDto.RefImageEachDayDto> reflectionImage = new ArrayList<>();
-		refImageEachDayList.stream().forEach(ref -> {
-			reflectionImage.add(WorkCycleReflectionDto.RefImageEachDayDto.fromDomain(ref, wRequire));
-		});
+		refImageEachDayList.forEach(ref -> reflectionImage.add(WorkCycleReflectionDto.RefImageEachDayDto.fromDomain(ref, wRequire)));
 
 		return reflectionImage;
 	}
