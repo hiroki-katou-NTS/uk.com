@@ -196,15 +196,17 @@
 							<td style="vertical-align: top">
 								<div data-bind="ntsCheckBox: { text: '事前' }"></div>
 								<!-- <div data-bind="ntsCheckBox: { text: '#[CMM045_92]' }"></div> -->
-								<div style="display: block;" data-bind="ntsCheckBox: { text: '事後' }"></div>
+								<div style="display: block;" data-bind="ntsCheckBox: { text: '#[CMM045_92]' }"></div>
 							</td>
 							<td>
-								<table id="single-list" data-bind="ntsGridList: {
+								<table id="multi-list" data-bind="ntsGridList: {
 									height: 350,
 									columns: apptypeGridColumns,
-									multiple: false,
+									multiple: true,
 									options: itemApplication,
-									value: selectedAppId
+									optionsValue: 'appID',
+									value: selectedAppId,
+									rows: 14
 								}"></table>
 							</td>
 						</tr>

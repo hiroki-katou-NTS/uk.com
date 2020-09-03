@@ -48,7 +48,7 @@ module cmm045.a.viewmodel {
         //ver60
         //Grid list item
         apptypeGridColumns: KnockoutObservable<NtsGridListColumn>;
-        selectedAppId: KnockoutObservable<number> = ko.observable(-1);
+        selectedAppId: KnockoutObservableArray<number> = ko.observableArray([]);
 		orderCD: KnockoutObservable<number> = ko.observable(0);
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
         appList: any = ko.observable(null);
@@ -56,22 +56,9 @@ module cmm045.a.viewmodel {
 
         constructor() {
             let self = this;
-
-            //ver60
-            self.itemApplication = ko.observable([
-                { appID: 0, appName: "残業申請" },
-                { appID: 2, appName: "休暇申請" },
-                { appID: 3, appName: "勤務変更申請" },
-                { appID: 4, appName: "出張申請" },
-                { appID: 6, appName: "休出時間申請" },
-                { appID: 7, appName: "打刻申請" },
-                { appID: 8, appName: "時間休暇申請" },
-                { appID: 9, appName: "遅刻早退取消申請" }
-            ]);
             self.apptypeGridColumns = ko.observable([
-                // { headerText: getText('CMM045_94'), key: 'applicant', width: 100 }
-                { headerText: 'appId', key: 'appId', width: 50, hidden: true},
-                { headerText: '申請種類選択', key: 'appName', width: 125 }
+                { headerText: 'appId', key: 'appID', width: 50, hidden: true},
+                { headerText: '申請種類選択', key: 'appName', width: 125 },
             ])
 
             $(".popup-panel").ntsPopup({
@@ -327,13 +314,21 @@ module cmm045.a.viewmodel {
 //                            };
 				return service.getAppNameInAppList();
 			}).then((data: any) => {
-				self.appListExtractConditionDto.opListOfAppTypes = data;
+                self.appListExtractConditionDto.opListOfAppTypes = data;
+                _.forEach(data, item => {
+                    if(item.appName != "") {
+                        self.itemApplication().push({ appID: item.appType, appName: item.appName });
+                    }
+                });
+                _.uniqBy(self.itemApplication(), ['appID', 'appName']);
 				let newParam = {
 							mode: self.mode(),
 							device: 0,
 							listOfAppTypes: data,
 							appListExtractCondition: self.appListExtractConditionDto
-						};
+                        };
+
+                self.itemList()
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
                 self.appList(data.appListInfo);
@@ -378,7 +373,7 @@ module cmm045.a.viewmodel {
 //                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
 //                self.lstApp(lstData);
 				_.each(data.appListInfo.appLst, item => {
-					self.items.push(new vmbase.DataModeApp(item));	
+					self.items.push(new vmbase.DataModeApp(item));
 				})
                 //mode approval - count
                 if (data.appStatusCount != null) {
@@ -540,7 +535,7 @@ module cmm045.a.viewmodel {
                                 .append($("<input/>")
                                     .attr("id", "batch-check")
                                     .attr("type", "checkbox")
-                                    .addClass(column.key))
+                                    // .addClass(column.key))
                                 .append($("<span/>").addClass("box"))
                                 .change((e) => {
                                     let checked = $(e.target).prop("checked");
@@ -679,6 +674,7 @@ module cmm045.a.viewmodel {
         }
 
 		customContent(key: string, value: any) {
+
 			const self = this;
 			if(key=='appType') {
 				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == value);
@@ -697,7 +693,10 @@ module cmm045.a.viewmodel {
 			}
 			if(key=='appContent') {
 				return value.replace(/\n/g, '<br/>');
-			}
+            }
+            if(key=='inputDate') {
+                return nts.uk.time.formatDate(new Date(value), "yy/MM/ddD hh:mm");
+            }
 			return value;
 		}
 
@@ -718,7 +717,7 @@ module cmm045.a.viewmodel {
                         nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
-                { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
+                { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px',  },
                 { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
                 { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
