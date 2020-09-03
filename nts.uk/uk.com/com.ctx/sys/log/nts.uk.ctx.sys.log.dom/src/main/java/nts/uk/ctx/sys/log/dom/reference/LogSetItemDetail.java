@@ -42,10 +42,14 @@ public class LogSetItemDetail {
 	/** The Symbol Condition */
 	private Optional<SymbolEnum> symbol;
 	
+	/**
+	 * 会社ID
+	 */
+	private String cid;
 	
 	public static LogSetItemDetail createFromJavatype(String logSetId, int itemNo, 
-			int frame, boolean isUseCondFlg, String condition, int symbol) {
+			int frame, boolean isUseCondFlg, String condition, int symbol, String cid) {
 		return new LogSetItemDetail(logSetId, itemNo, frame, isUseCondFlg, 
-				Optional.of(new LogCondition(condition)), Optional.of(SymbolEnum.valueOf(symbol)));
+				Optional.of(new LogCondition(condition)), Optional.of(SymbolEnum.valueOf(symbol)), cid);
 	}
 }
