@@ -53,11 +53,13 @@ module cmm045.a.viewmodel {
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
         appList: any = ko.observable(null);
         appListAtr: number;
+        isBeforeCheck: KnockoutObservable<Boolean> = ko.observable(false);
+        isAfterCheck: KnockoutObservable<Boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
             self.apptypeGridColumns = ko.observable([
-                { headerText: 'appId', key: 'appID', width: 50, hidden: true},
+                { headerText: 'appType', key: 'appType', width: 50, hidden: true},
                 { headerText: '申請種類選択', key: 'appName', width: 125 },
             ])
 
@@ -317,10 +319,10 @@ module cmm045.a.viewmodel {
                 self.appListExtractConditionDto.opListOfAppTypes = data;
                 _.forEach(data, item => {
                     if(item.appName != "") {
-                        self.itemApplication().push({ appID: item.appType, appName: item.appName });
+                        self.itemApplication().push({ appType: item.appType, appName: item.appName });
                     }
                 });
-                _.uniqBy(self.itemApplication(), ['appID', 'appName']);
+                _.uniqBy(self.itemApplication(), ['appType', 'appName']);
 				let newParam = {
 							mode: self.mode(),
 							device: 0,
@@ -731,7 +733,7 @@ module cmm045.a.viewmodel {
                 withCcg001: true,
                 width: widthAuto,
                 height: heightAuto,
-                columns: columns.filter(c => c.hidden !== true)
+                columns: columns.filter(c => c.hidden !== true),
             });
 
 /*
@@ -893,7 +895,7 @@ module cmm045.a.viewmodel {
                     return;
                 }
                 //color text appDate
-                let color = item.appDate.substring(11,12);
+                let color = item.appDate.substring(9,10);
                 if (color == '土') {//土
                     result.push(new vmbase.TextColor(item.appId,'appDate','saturdayCell'));
                 }
@@ -901,7 +903,7 @@ module cmm045.a.viewmodel {
                     result.push(new vmbase.TextColor(item.appId,'appDate','sundayCell'));
                 }
                 //fill color text input date
-                let colorIn = item.inputDate.substring(11,12);
+                let colorIn = item.inputDate.substring(9,10);
                 if (colorIn == '土') {//土
                     result.push(new vmbase.TextColor(item.appId,'inputDate','saturdayCell'));
                 }
@@ -1656,5 +1658,30 @@ module cmm045.a.viewmodel {
             const command = { appListAtr: self.appListAtr, lstApp: self.appList() }
             service.print(command);
         }
+
+        // getNtsFeatures(): Array<any> {
+        //     let self = this;
+
+        //     var features = [
+        //         { name: 'TextColor',
+        //             columns: [
+        //                 {
+        //                     key: 'inputDate',
+        //                     parse: value => { return value; },
+        //                     map: (content: String) => {
+        //                         if(content.includes("土")) {
+        //                             return "#0000ff";
+        //                         }
+        //                         if(content.includes("日")) {
+        //                             return "#ff0000";
+        //                         }
+        //                     }
+        //                 }
+        //             ]
+        //     }
+        //     ];
+
+        //     return features;
+        // }
     }
 }

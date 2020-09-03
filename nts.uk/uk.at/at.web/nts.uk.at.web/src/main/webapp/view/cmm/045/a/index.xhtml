@@ -187,16 +187,13 @@
 				<div class="popup-panel">
 					<table>
 						<tr>
-							<!-- <td>#{i18n.getText('CMM045_91')}</td>
-							<td>#{i18n.getText('CMM045_94')}</td> -->
-							<td>事前事後</td>
-							<td>申請種類選択</td>
+							<td>#{i18n.getText('CMM045_91')}</td>
+							<td>#{i18n.getText('CMM045_94')}</td>
 						</tr>
 						<tr>
 							<td style="vertical-align: top">
-								<div data-bind="ntsCheckBox: { text: '事前' }"></div>
-								<!-- <div data-bind="ntsCheckBox: { text: '#[CMM045_92]' }"></div> -->
-								<div style="display: block;" data-bind="ntsCheckBox: { text: '#[CMM045_92]' }"></div>
+								<div data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_92')}', checked: isBeforeCheck }"></div>
+								<div style="display: block;" data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_93')}', checked: isAfterCheck }"></div>
 							</td>
 							<td>
 								<table id="multi-list" data-bind="ntsGridList: {
@@ -204,7 +201,7 @@
 									columns: apptypeGridColumns,
 									multiple: true,
 									options: itemApplication,
-									optionsValue: 'appID',
+									optionsValue: 'appType',
 									value: selectedAppId,
 									rows: 14
 								}"></table>
