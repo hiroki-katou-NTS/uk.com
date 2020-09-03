@@ -7,6 +7,8 @@ module nts.uk.at.view.ktg029.a.viewmodel {
   @bean()
   export class ViewModel extends ko.ViewModel {
     year: KnockoutObservable<string> = ko.observable('');
+    width: KnockoutObservable<number> = ko.observable(60);
+    width2: KnockoutObservable<number> = ko.observable(70);
     
     created() {
 
