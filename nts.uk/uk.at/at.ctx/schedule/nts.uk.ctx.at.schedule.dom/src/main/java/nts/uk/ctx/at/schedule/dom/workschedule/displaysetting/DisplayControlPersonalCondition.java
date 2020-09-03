@@ -113,7 +113,7 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 		
 		for(String empId : lstEmpId) {
 			Optional<ScheduleTeamName> teamName = mapEmpTeam.get(empId).getOptScheduleTeamName() == null ? Optional.empty() : mapEmpTeam.get(empId).getOptScheduleTeamName();
-			String empRank = mapEmpRankInfor.get(empId).getRankSymbol() == null ? null : mapEmpRankInfor.get(empId).getRankSymbol().get().v();
+			String empRank = mapEmpRankInfor.get(empId).getRankSymbol().isPresent() ? mapEmpRankInfor.get(empId).getRankSymbol().get().v() : null;
 			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId)
 					.getOptLicenseClassification();
 			
@@ -134,11 +134,8 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 		// note $条件表示制御
 		Optional<PersonInforDisplayControl> displayControl = listConditionDisplayControl.stream().filter(x-> x.getConditionATR().equals(atrWorkSchedule)).findFirst();
 		
-		if(displayControl.isPresent()) {
 			return displayControl.get().getDisplayCategory();
-		}
-		
-		return NotUseAtr.NOT_USE;
+
 	}
 
 	public static interface Require extends GetScheduleTeamInfoService.Require, GetEmRankInforService.Require,
