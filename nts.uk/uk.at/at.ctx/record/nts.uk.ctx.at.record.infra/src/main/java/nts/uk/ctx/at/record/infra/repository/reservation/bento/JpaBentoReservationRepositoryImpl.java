@@ -104,7 +104,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		builderString = new StringBuilder();
 		builderString.append(SELECT);
 		builderString.append("WHERE a.CARD_NO IN (cardLst) AND a.RESERVATION_YMD >= 'startDate' AND a.RESERVATION_YMD <= 'endDate'" +
-				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.pk.frameNo = frameNoValue AND a.CID = 'companyID' ");
+				" AND a.RESERVATION_FRAME = closingTimeFrame AND b.MANU_FRAME = frameNoValue AND a.CID = 'companyID' ");
 		FIND_ALL_RESERVATION_OF_A_BENTO = builderString.toString();
 	}
 	
