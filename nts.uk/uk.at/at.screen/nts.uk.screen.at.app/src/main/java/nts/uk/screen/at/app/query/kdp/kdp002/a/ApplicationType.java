@@ -1,9 +1,18 @@
-package nts.uk.screen.at.app.dailyperformance.correction.dto;
+package nts.uk.screen.at.app.query.kdp.kdp002.a;
 
 import java.util.Optional;
 
 import nts.uk.ctx.at.function.dom.adapter.standardmenu.StandardMenuNameQueryImport;
 
+/**
+ * 
+ * @author sonnlb
+ *
+ *         実績で使用する申請種類
+ *
+ *         cái này là enum dành riêng cho KDP002 vì kiểu 13 và 14 được set khác so với
+ *         các kiểu enum khác (buồn cười nhể)
+ */
 public enum ApplicationType {
 	/** 残業申請（早出） */
 	OVER_TIME_APPLICATION(0, "残業申請（早出）","KAF005","A","overworkatr=0"),
@@ -44,20 +53,11 @@ public enum ApplicationType {
 	/** 打刻申請（その他） */
 	REGISTER_TIME_CARD_OTHER(12, "打刻申請（その他）","KAF002","A",null),
 	
-	/** 時間年休申請 */
-	ANNUAL_HD_APPLICATION(13, "時間年休申請",null,null,null),
-	
 	/** 遅刻早退取消申請 */
-	EARLY_LEAVE_CANCEL_APPLICATION(14, "遅刻早退取消申請","KAF004","A",null),
+	EARLY_LEAVE_CANCEL_APPLICATION(13, "遅刻早退取消申請","KAF004","A",null),
 	
 	/** 振休振出申請 */
-	COMPLEMENT_LEAVE_APPLICATION(15, "振休振出申請","KAF011","A",null),
-	
-	/** 連続出張申請 */
-	LONG_BUSINESS_TRIP_APPLICATION(16, "連続出張申請",null,null,null),
-	
-	/** ３６協定時間申請 */
-	APPLICATION36(17, "３６協定時間申請",null,null,null);
+	COMPLEMENT_LEAVE_APPLICATION(14, "振休振出申請","KAF011","A",null);
 
 	public int value;
 
