@@ -48,7 +48,8 @@ public class JpaLogDisplaySettingRepository extends JpaRepository implements Log
 
 	@Override
 	public List<LogDisplaySetting> getAllLogDisplaySet(String cid) {
-		return this.queryProxy().query(SELECT_BY_CID_STRING, SrcdtLogDisplaySetting.class).setParameter("cid", cid)
+		return this.queryProxy().query(SELECT_BY_CID_STRING, SrcdtLogDisplaySetting.class)
+				.setParameter("cid", cid)
 				.getList(c -> c.toDomain()).stream()
 				.sorted(new Comparator<LogDisplaySetting>() {
 					@Override

@@ -38,9 +38,16 @@ public class LogDisplaySettingDto {
 	private List<LogSetOutputItemDto> logSetOutputItems; 
 
 	public static LogDisplaySettingDto fromDomain(LogDisplaySetting domain) {
-		return new LogDisplaySettingDto(domain.getLogSetId(), domain.getCid(), domain.getCode().v(), domain.getName().v(),
-				domain.getDataType()==null?null:domain.getDataType().code, domain.getRecordType().code, domain.getSystemType().code, 
-				domain.getLogSetOutputItems().stream().map(item -> LogSetOutputItemDto.fromDomain(item))
+		return new LogDisplaySettingDto(
+				domain.getLogSetId(), 
+				domain.getCid(), 
+				domain.getCode().v(), 
+				domain.getName().v(),
+				domain.getDataType() == null ? null : domain.getDataType().code, 
+				domain.getRecordType().code, 
+				domain.getSystemType() == null ? null : domain.getSystemType().code, 
+				domain.getLogSetOutputItems().stream()
+					.map(item -> LogSetOutputItemDto.fromDomain(item))
 					.sorted(new Comparator<LogSetOutputItemDto>() {
 						@Override
 						public int compare(LogSetOutputItemDto o1, LogSetOutputItemDto o2) {

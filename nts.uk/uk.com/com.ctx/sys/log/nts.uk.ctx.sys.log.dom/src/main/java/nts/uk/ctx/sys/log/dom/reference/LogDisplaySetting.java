@@ -43,9 +43,16 @@ public class LogDisplaySetting extends AggregateRoot {
 	private List<LogSetOutputItem> logSetOutputItems;
 
 	public static LogDisplaySetting createFromJavatype(String logSetId, String cid, String code, String name,
-			Integer dataType, int recordType, List<LogSetOutputItem> logSetOutputItems, SystemTypeEnum systemType) {
-		return new LogDisplaySetting(logSetId, cid, new LogSettingCode(code), new LogSettingName(name),
-				DataTypeEnum.valueOf(dataType), RecordTypeEnum.valueOf(recordType), systemType);
+			Integer dataType, int recordType, List<LogSetOutputItem> logSetOutputItems, int systemType) {
+		return new LogDisplaySetting(
+				logSetId, 
+				cid, 
+				new LogSettingCode(code), 
+				new LogSettingName(name),
+				DataTypeEnum.valueOf(dataType), 
+				RecordTypeEnum.valueOf(recordType), 
+				SystemTypeEnum.valueOf(systemType),
+				logSetOutputItems);
 	}
 
 	public LogDisplaySetting(String logSetId, String cid, LogSettingCode code, LogSettingName name,
