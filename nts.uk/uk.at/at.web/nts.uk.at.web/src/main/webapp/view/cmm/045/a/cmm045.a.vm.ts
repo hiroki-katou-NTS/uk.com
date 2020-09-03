@@ -52,6 +52,7 @@ module cmm045.a.viewmodel {
 		orderCD: KnockoutObservable<number> = ko.observable(0);
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
         appList: any = ko.observable(null);
+        appListAtr: number;
 
         constructor() {
             let self = this;
@@ -328,7 +329,7 @@ module cmm045.a.viewmodel {
 			}).then((data: any) => {
 				self.appListExtractConditionDto.opListOfAppTypes = data;
 				let newParam = {
-							mode: 0,
+							mode: self.mode(),
 							device: 0,
 							listOfAppTypes: data,
 							appListExtractCondition: self.appListExtractConditionDto
@@ -336,6 +337,7 @@ module cmm045.a.viewmodel {
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
                 self.appList(data.appListInfo);
+                self.appListAtr = data.appListExtractCondition.appListAtr;
 				self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
 				self.appListExtractConditionDto = data.appListExtractCondition;
                 self.lstContentApp(data.lstContentApp);
@@ -1650,7 +1652,7 @@ module cmm045.a.viewmodel {
         print(params: any) {
             let self = this;
 
-            const command = { lstApp: self.appList() }
+            const command = { appListAtr: self.appListAtr, lstApp: self.appList() }
             service.print(command);
         }
     }

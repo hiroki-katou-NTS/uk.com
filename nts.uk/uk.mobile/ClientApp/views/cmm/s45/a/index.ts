@@ -332,7 +332,7 @@ export class CmmS45AComponent extends Vue {
                     appName: self.appTypeName(app.appType),
                     prePostAtr: app.prePostAtr,
                     reflectStatus: app.reflectionStatus,
-                    appStatusNo: 2
+                    appStatusNo: self.convertReflectToInt(app.reflectionStatus)
                 }));
             }
         });
@@ -348,7 +348,27 @@ export class CmmS45AComponent extends Vue {
         //     }));
         // });
     }
+    public convertReflectToInt(value: string) {
+        if (value == '未反映') {
 
+            return 0;
+        } else if (value == '反映待ち') {
+
+            return 1;
+        } else if (value == '反映済') {
+            
+            return 2;
+        } else if (value == '取消済') {
+            
+            return -1;
+        } else if (value == '差し戻し') {
+            
+            return 5;
+        } else if (value == '否認') {
+            
+            return 6;
+        }
+    }
     // 詳細を確認する
     private goToDetail(id: string) {
         let self = this;

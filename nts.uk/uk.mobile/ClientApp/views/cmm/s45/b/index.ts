@@ -346,22 +346,44 @@ export class CmmS45BComponent extends Vue {
     }
 
     private convertLstApp(lstApp: Array<ListOfApplication>) {
+        const self = this;
         let lst = [];
         lstApp.forEach((app: ListOfApplication) => {
             lst.push(new AppInfo({
                 id: app.appID,
-                appDate: this.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
+                appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
                 appType: app.appType,
-                appName: this.appTypeName(app.appType),
+                appName: self.appTypeName(app.appType),
                 prePostAtr: app.prePostAtr,
                 reflectStatus: app.reflectionStatus,
-                appStatusNo: 2,//app.re,
+                appStatusNo: self.convertReflectToInt(app.reflectionStatus),
                 frameStatus: null,//this.getFrameStatus(app.appID),
                 version: null
             }));
         });
 
         return lst;
+    }
+    public convertReflectToInt(value: string) {
+        if (value == '未反映') {
+
+            return 5;
+        } else if (value == '反映待ち') {
+
+            return 4;
+        } else if (value == '反映済') {
+            
+            return -1;
+        } else if (value == '取消済') {
+            
+            return 3;
+        } else if (value == '差し戻し') {
+            
+            return 2;
+        } else if (value == '否認') {
+            
+            return 1;
+        }
     }
 
     // private getFrameStatus(appID: string) {
@@ -430,7 +452,7 @@ export class CmmS45BComponent extends Vue {
             //「D：申請内容確認（承認）」画面へ遷移する
             this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': item.id }).then(() => {
                 //reload
-                self.getData(true, false);
+                self.getData(false, true);
             });
         } else {
             if (!item.frameStatus) {//TH đơn không được approve thì bỏ qua
