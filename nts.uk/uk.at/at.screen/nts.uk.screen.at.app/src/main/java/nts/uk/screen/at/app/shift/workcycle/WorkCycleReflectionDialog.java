@@ -26,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
 import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
+import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -70,6 +71,7 @@ public class WorkCycleReflectionDialog {
 		// 1. 勤務サイクル一覧を取得する [Get a list of work cycles]
 		if (bootMode == BootMode.EXEC_MODE){
 			workCycleDtoList = getWorkCycle.getDataStartScreen();
+			workCycleCode = workCycleDtoList.get(0).getCode();
 		}
 		dto.setWorkCycleList(workCycleDtoList);
 
@@ -77,28 +79,34 @@ public class WorkCycleReflectionDialog {
 		List<WorkType> workTypes = holidayWorkTypeService.acquiredHolidayWorkType();
 
 		// 3. 作成する(Require, 期間, 勤務サイクルの反映設定)
+		Iterator<WorkType> it = workTypes.iterator();
+		dto.setPubHoliday(handle(it, HolidayAtr.PUBLIC_HOLIDAY));
+		dto.setSatHoliday(handle(it, HolidayAtr.STATUTORY_HOLIDAYS));
+		dto.setNonSatHoliday(handle(it, HolidayAtr.NON_STATUTORY_HOLIDAYS));
+
+		String nonSatHoliday = CollectionUtil.isEmpty(dto.getNonSatHoliday()) ? null : dto.getNonSatHoliday().get(0).getWorkTypeCode();
+		String satHoliday = CollectionUtil.isEmpty(dto.getSatHoliday()) ? null : dto.getSatHoliday().get(0).getWorkTypeCode();
+		String pubHoliday = CollectionUtil.isEmpty(dto.getPubHoliday()) ? null : dto.getPubHoliday().get(0).getWorkTypeCode();
+
 		val config = new WorkCycleRefSetting(
 				workCycleCode,
 				refOrder,
 				numOfSlideDays,
-				null,
-				null,
-				null
+				nonSatHoliday,
+				satHoliday,
+				pubHoliday
 		);
 		val cRequire = new CreateWorkCycleAppImageRequire(
 				weeklyWorkDayRepository,
 				publicHolidayRepository,
 				workCycleRepository);
-		List<RefImageEachDay> refImageEachDayList = createWorkCycleAppImage.create(cRequire, creationPeriod, config);
+		List<RefImageEachDay> refImageEachDayList = CreateWorkCycleAppImage.create(cRequire, creationPeriod, config);
 		List<WorkCycleReflectionDto.RefImageEachDayDto> refImageEachDayDtos = new ArrayList<>();
 		val wRequire = new WorkInformationRequire(basicScheduleService);
         for (RefImageEachDay ref : refImageEachDayList)
             refImageEachDayDtos.add(WorkCycleReflectionDto.RefImageEachDayDto.fromDomain(ref, wRequire));
 
-        Iterator<WorkType> it = workTypes.iterator();
-		dto.setPubHoliday(handle(it, HolidayAtr.PUBLIC_HOLIDAY));
-		dto.setSatHoliday(handle(it, HolidayAtr.STATUTORY_HOLIDAYS));
-		dto.setNonSatHoliday(handle(it, HolidayAtr.NON_STATUTORY_HOLIDAYS));
+
 		dto.setReflectionImage(refImageEachDayDtos); // 反映イメージ
 		return dto;
 	}
@@ -146,24 +154,24 @@ public class WorkCycleReflectionDialog {
 
 	@AllArgsConstructor
 	private static class CreateWorkCycleAppImageRequire implements CreateWorkCycleAppImage.Require {
+		private final String cid = AppContexts.user().companyId();
+
 		private WeeklyWorkDayRepository weeklyWorkDayRepository;
 		private PublicHolidayRepository publicHolidayRepository;
 		private WorkCycleRepository workCycleRepository;
 
-		private final String cid = AppContexts.user().companyId();
-
 		@Override
-		public Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting(){
+		public Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting() {
 			return Optional.of(weeklyWorkDayRepository.getWeeklyWorkDayPatternByCompanyId(cid));
 		}
 
 		@Override
-		public List<PublicHoliday> getpHolidayWhileDate(GeneralDate strDate, GeneralDate endDate){
+		public List<PublicHoliday> getpHolidayWhileDate(GeneralDate strDate, GeneralDate endDate) {
 			return publicHolidayRepository.getpHolidayWhileDate(cid, strDate, endDate);
 		}
 
 		@Override
-		public Optional<WorkCycle> getWorkCycle(String code){
+		public Optional<WorkCycle> getWorkCycle(String code) {
 			return workCycleRepository.getByCidAndCode(cid, code);
 		}
 	}

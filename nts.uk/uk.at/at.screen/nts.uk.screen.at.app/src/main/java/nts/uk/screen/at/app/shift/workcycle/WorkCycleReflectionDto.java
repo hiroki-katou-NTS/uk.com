@@ -8,7 +8,6 @@ import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,15 +32,12 @@ public class WorkCycleReflectionDto {
 	@NoArgsConstructor
 	public static class WorkTypeDto{
 
-		private String companyId;
-
 		private String workTypeCode;
 
 		private String name;
 
 		public static WorkTypeDto fromDomain(WorkType workType){
 		    return new WorkTypeDto(
-                    workType.getCompanyId(),
                     workType.getWorkTypeCode().v(),
                     workType.getName().v()
             );

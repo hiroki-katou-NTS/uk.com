@@ -24,11 +24,11 @@
 				<div id="contents-area" data-bind="visible: true" style="display: none">
 					<div class="pull-left reflect-setting bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
-						<div class="control-group cf" data-bind="visible: bootMode">
+						<div class="control-group cf">
 							<!--A1_36-->
 							<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>
 							<!--A1_37-->
-							<div  id="daterangepicker" class="kdl023-daterange pull-left" tabindex="1" data-bind="ntsDateRangePicker: {
+							<div  id="daterangepicker" class="kdl023-daterange pull-left exec-mode" tabindex="1" data-bind="ntsDateRangePicker: {
 								required: true,
 								enable: true,
 								showNextPrevious: false,
@@ -65,7 +65,7 @@
 							<div class="control-group">
 								<label class="ntsRadioBox"><input type="radio"
 																  name="textRadio"
-																  data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+																  data-bind="name:'#[KDL023_10]', checkedValue: 0, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_11')}</span>
 								</label>
 							</div>
@@ -73,7 +73,7 @@
 							<div class="control-group">
 								<label class="ntsRadioBox"><input type="radio"
 																  name="textRadio"
-																  data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+																  data-bind="name:'#[KDL023_10]', checkedValue: 1, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_12')}</span>
 								</label>
 							</div>
@@ -81,7 +81,7 @@
 							<div class="control-group">
 								<label class="ntsRadioBox"><input type="radio"
 																  name="textRadio"
-																  data-bind="name:'#[KDL023_10]', checkedValue: 3, checked: reflectionMethod, enable: $parent.isReflectionMethodEnable" />
+																  data-bind="name:'#[KDL023_10]', checkedValue: 2, checked: $parent.reflectionMethod, enable: $parent.isReflectionMethodEnable" />
 									<span class="box"></span> <span class="label">#{i18n.getText('KDL023_27')}</span>
 								</label>
 							</div>
@@ -92,15 +92,11 @@
 								<div tabindex="3" id="cbb-reflection-order-1" class="cbb-reflection" style="margin-left: 36px"
 									 data-bind="ntsComboBox: {
 										name: '#[KDL023_31]',
-										options: $parent.dailyPatternList,
-										optionsValue: 'patternCode',
-										optionsText: 'patternName',
-										value: selectedPatternCd,
-										enable: true,
-										columns: [
-											{ prop: 'patternCode', length: 3 },
-											{ prop: 'patternName', length: 5 },
-										]}">
+										options: $parent.reflectionOrderList,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $parent.reflectionOrder1,
+										enable: $parent.workCycleEnable1}">
 								</div>
 								<br/>
 								<!--A1_14-->
@@ -109,15 +105,11 @@
 								<div tabindex="4" id="cbb-reflection-order-2" class="cbb-reflection" style="margin-left: 36px"
 									 data-bind="ntsComboBox: {
 										name: '#[KDL023_32]',
-										options: $parent.dailyPatternList,
-										optionsValue: 'patternCode',
-										optionsText: 'patternName',
-										value: selectedPatternCd,
-										enable: true,
-										columns: [
-											{ prop: 'patternCode', length: 3 },
-											{ prop: 'patternName', length: 5 },
-										]}">
+										options: $parent.reflectionOrderList,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $parent.reflectionOrder2,
+										enable: $parent.workCycleEnable2}">
 								</div>
 								<br/>
 								<!--A1_17-->
@@ -126,15 +118,11 @@
 								<div tabindex="5" id="cbb-reflection-order-3" class="cbb-reflection" style="margin-left: 36px"
 									 data-bind="ntsComboBox: {
 										name: '#[KDL023_33]',
-										options: $parent.dailyPatternList,
-										optionsValue: 'patternCode',
-										optionsText: 'patternName',
-										value: selectedPatternCd,
-										enable: true,
-										columns: [
-											{ prop: 'patternCode', length: 3 },
-											{ prop: 'patternName', length: 5 },
-										]}">
+										options: $parent.reflectionOrderList,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: $parent.reflectionOrder3,
+										enable: $parent.workCycleEnable3}">
 								</div>
 							</div>
 						</div>
@@ -156,7 +144,7 @@
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,
-												enable: useClassification,
+												enable: $parents.useClassification,
 												columns: [
 													{ prop: 'workTypeCode', length: 3 },
 													{ prop: 'name', length: 5 },
@@ -174,7 +162,7 @@
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,
-												enable: useClassification,
+												enable: $parents.useClassification,
 												columns: [
 													{ prop: 'workTypeCode', length: 3 },
 													{ prop: 'name', length: 5 },
@@ -192,7 +180,7 @@
 												optionsValue: 'workTypeCode',
 												optionsText: 'name',
 												value: workTypeCode,
-												enable: useClassification,
+												enable: $parents.useClassification,
 												columns: [
 													{ prop: 'workTypeCode', length: 3 },
 													{ prop: 'name', length: 5 },

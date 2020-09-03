@@ -11,7 +11,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import DailyPatternValue = service.model.DailyPatternValue;
     import formatDate = nts.uk.time.formatDate;
     import WorkCycleReflectionDto = nts.uk.at.view.kdl023.base.service.model.WorkCycleReflectionDto;
-    import GetStartupInfoParam = nts.uk.at.view.kdl023.base.service.model.GetStartupInfoParam;
+    import GetStartupInfoParamDto = nts.uk.at.view.kdl023.base.service.model.GetStartupInfoParam;
+    import BootMode = nts.uk.at.view.kdl023.base.service.model.BootMode;
+    import WorkCreateMethod = nts.uk.at.view.kdl023.base.service.model.WorkCreateMethod;
+    import getText = nts.uk.resource.getText;
+    const CONST = {
+        DATE_FORMAT: 'yyyy/MM/yy',
+        YEAR_MONTH: 'yyyy/MM'
+    }
 
     export abstract class BaseScreenModel {
         dailyPatternList: KnockoutObservableArray<DailyPatternSetting>;
@@ -25,8 +32,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         dailyPatternSetting: DailyPatternSetting;
         weeklyWorkSetting: WeeklyWorkSetting;
         listHoliday: Array<any>;
-        isReflectionMethodEnable: KnockoutComputed<boolean>;
-        isOnScreenA: KnockoutObservable<boolean>;
+        isReflectionMethodEnable: KnockoutObservable<boolean> = ko.observable(true);
         isMasterDataUnregisterd: KnockoutObservable<boolean>;
         isOutOfCalendarRange: KnockoutObservable<boolean>;
         isDataEmpty: boolean;
@@ -57,13 +63,26 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         listSatHoliday: KnockoutObservableArray<WorkType> = ko.observableArray([]);
         listNonSatHoliday: KnockoutObservableArray<WorkType> = ko.observableArray([]);
 
+        reflectionMethod: KnockoutObservable<number> = ko.observable(0);
+        useClassification: KnockoutObservable<boolean> = ko.observable(false);
+        workCycleEnable1: KnockoutObservable<boolean> = ko.observable(false);
+        workCycleEnable2: KnockoutObservable<boolean> = ko.observable(false);
+        workCycleEnable3: KnockoutObservable<boolean> = ko.observable(false);
+
+        reflectionOrderList: KnockoutObservableArray<any> = ko.observableArray([]);
+        reflectionOrder1: KnockoutObservable<number> = ko.observable();
+        reflectionOrder2: KnockoutObservable<number> = ko.observable();
+        reflectionOrder3: KnockoutObservable<number> = ko.observable();
+
+        isExecMode: KnockoutObservable<boolean> = ko.observable(false);
+        loadWindowsParam: GetStartupInfoParamDto;
+
         constructor() {
             let self = this;
             self.listHoliday = [];
             self.dailyPatternList = ko.observableArray<DailyPatternSetting>([]);
             self.listWorkType = ko.observableArray<WorkType>([]);
             self.listWorkTime = ko.observableArray<WorkTime>([]);
-            self.isOnScreenA = ko.observable(true);
             self.isMasterDataUnregisterd = ko.observable(false);
             self.isOutOfCalendarRange = ko.observable(false);
             self.buttonReflectPatternText = ko.observable('');
@@ -83,7 +102,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.eventUpdatable = ko.observable(false);
             self.holidayDisplay = ko.observable(true);
             self.cellButtonDisplay = ko.observable(false);
-
+            self.reflectionOrderList([
+                {code: WorkCreateMethod.NON, name: getText('KDL023_39')},
+                {code: WorkCreateMethod.WORK_CYCLE, name: getText('KDL023_3')},
+                {code: WorkCreateMethod.WEEKLY_WORK, name: getText('KDL023_40')},
+                {code: WorkCreateMethod.PUB_HOLIDAY, name: getText('KDL023_8')}
+            ]);
         }
 
         /**
@@ -96,7 +120,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
             // Load data.
             $.when(self.getParamFromCaller(), // Get param from parent screen.
-                self.loadWorktypeList(), // Load worktype list.
+                self.loadWindows(this.loadWindowsParam), // Load windows.
                 self.loadWorktimeList(), // Load worktime list.
                 self.loadDailyPatternHeader(), // Load daily pattern header.
                 self.loadWeeklyWorkSetting()) // Load weekly work setting.
@@ -128,11 +152,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     });
 
                     // Define isReflectionMethodEnable after patternReflection is loaded.
-                    self.isReflectionMethodEnable = ko.computed(() => {
-                        return self.reflectionSetting.statutorySetting.useClassification() ||
-                            self.reflectionSetting.nonStatutorySetting.useClassification() ||
-                            self.reflectionSetting.holidaySetting.useClassification();
-                    }).extend({ notify: 'always' });
+                    // self.isReflectionMethodEnable = ko.computed(() => {
+                    //     return self.reflectionSetting.statutorySetting.useClassification() ||
+                    //         self.reflectionSetting.nonStatutorySetting.useClassification() ||
+                    //         self.reflectionSetting.holidaySetting.useClassification();
+                    // }).extend({ notify: 'always' });
 
                     // Set tabindex.
                     self.isReflectionMethodEnable.subscribe(val => {
@@ -142,6 +166,31 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             $('#reflection-method-radio-group').attr('tabindex', '-1');
                         }
                     });
+                    self.reflectionMethod.subscribe(val => {
+                        if(val === 2){
+                            self.useClassification(true);
+                            self.workCycleEnable1(true);
+                        } else {
+                            self.useClassification(false);
+                            self.workCycleEnable1(false);
+                        }
+                    });
+
+                    self.isExecMode.subscribe(val => {
+                        if(val){
+                            $('.exec-mode').show();
+                            $('.ref-mode').hide();
+                        } else{
+                            $('.ref-mode').show();
+                            $('.exec-mode').hide();
+                        }
+                    })
+                    self.reflectionOrder1.subscribe(val =>{
+                        if(val === WorkCreateMethod.NON){
+                            self.workCycleEnable2(false);
+                            self.reflectionOrder2(WorkCreateMethod.NON);
+                        }
+                    })
 
                     // Force change to set tab index.
                     self.reflectionSetting.holidaySetting.useClassification.valueHasMutated();
@@ -236,7 +285,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             return {
                 selectedPatternCd: '',
-                patternStartDate: self.calendarStartDate.format('YYYY-MM-DD'),
+                patternStartDate: self.calendarStartDate.format(CONST.DATE_FORMAT),
                 reflectionMethod: 0, // Overwrite
                 statutorySetting: {
                     useClassification: false,
@@ -320,33 +369,23 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Load worktype list.
          */
-        private loadWorktypeList(): JQueryPromise<void> {
+        private loadWindows(param?: GetStartupInfoParamDto): JQueryPromise<void> {
             let self = this;
             let dfd = $.Deferred<void>();
-            //let start: Date = new Date();
-            let param:GetStartupInfoParam = {
-                bootMode: 1,
-                creationPeriodStartDate: '2020/08/01',
-                creationPeriodEndDate: '2020/08/31',
-                workCycleCode: 'code-1',
-                refOrder:[0,1,2],
-                numOfSlideDays: 1
-            }
-
-			service.startUpWindows(param).done(function(list: WorkCycleReflectionDto) {
-				if(list){
-					self.listPubHoliday(list.pubHoliday);
-					self.listSatHoliday(list.satHoliday);
-					self.listNonSatHoliday(list.nonSatHoliday);
-				}else {
-					self.isDataEmpty = true;
-				}
-				dfd.resolve();
-			}).fail(() => {
-				self.showErrorThenCloseDialog();
-				dfd.fail();
-			});
-
+            service.startUpWindows(param).done(function(list: WorkCycleReflectionDto) {
+                if(list){
+                    self.listPubHoliday(list.pubHoliday);
+                    self.listSatHoliday(list.satHoliday);
+                    self.listNonSatHoliday(list.nonSatHoliday);
+                    self.isExecMode(param.bootMode === 1);
+                }else {
+                    self.isDataEmpty = true;
+                }
+                dfd.resolve();
+            }).fail(() => {
+                self.showErrorThenCloseDialog();
+                dfd.fail();
+            });
             return dfd.promise();
         }
 
@@ -370,7 +409,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             // Update pattern start date value of reflection setting.
-            self.reflectionSetting.patternStartDate(self.patternStartDate.format('YYYY-MM-DD'));
+            self.reflectionSetting.patternStartDate(self.patternStartDate.format(CONST.DATE_FORMAT));
 
             // Get calendar's range.
             let range = self.calendarEndDate.diff(self.calendarStartDate, 'days') + 1;
@@ -439,7 +478,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         isLoopEnd = currentDate.isAfter(self.calendarEndDate, 'day');
 
                         // If pattern's total days is out of calendar's range.
-                        if (self.isOnScreenA() && self.isOutOfCalendarRange()) {
+                        if (!self.isExecMode() && self.isOutOfCalendarRange()) {
                             isLoopEnd = false; // continue to loop.
                         }
 
@@ -491,7 +530,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 }
 
                 //  When is on screen B: only process in calendar's range.
-                if (!self.isOnScreenA()) {
+                if (self.isExecMode()) {
                     // Skip to previous day if current date is after calendar's end date.
                     if (currentDate.isAfter(self.calendarEndDate, 'day')) {
                         _.remove(result, item => item === optionDate);
@@ -548,18 +587,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Current date reach calendar's end date.
                 if (currentDate.isAfter(self.calendarEndDate, 'day')) {
                     // Break loop if is on screen B
-                    if (!self.isOnScreenA()) {
+                    if (self.isExecMode()) {
                         break;
                     }
                     // Break loop if is on screen A and pattern's total days is in calendar's range.
-                    if (self.isOnScreenA() && !self.isOutOfCalendarRange()) {
+                    if (!self.isExecMode() && !self.isOutOfCalendarRange()) {
                         break;
                     }
                     // Or else continue loop.
                 }
 
                 //  When is on screen B: only process in calendar's range.
-                if (!self.isOnScreenA()) {
+                if (self.isExecMode()) {
                     // Skip to next day if current date is before calendar's start date.
                     if (currentDate.isSameOrBefore(self.calendarStartDate, 'day')) {
                         _.remove(result, item => item === optionDate);
@@ -580,7 +619,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Is holiday
             if (self.isHolidaySettingChecked() && self.isHoliday(currentDate)) {
                 return {
-                    start: currentDate.format('YYYY-MM-DD'),
+                    start: currentDate.format(CONST.DATE_FORMAT),
                     textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
@@ -592,7 +631,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Is statutory holiday
             if (self.isStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayInLaw) {
                 return {
-                    start: currentDate.format('YYYY-MM-DD'),
+                    start: currentDate.format(CONST.DATE_FORMAT),
                     textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
@@ -604,7 +643,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Is non-statutory holiday
             if (self.isNonStatutorySettingChecked() && self.getWorkDayDivision(currentDate.day()) == WorkDayDivision.NonWorkingDayOutrage) {
                 return {
-                    start: currentDate.format('YYYY-MM-DD'),
+                    start: currentDate.format(CONST.DATE_FORMAT),
                     textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
@@ -619,7 +658,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if (!worktype) {
                 self.isMasterDataUnregisterd(true);
                 return {
-                    start: currentDate.format('YYYY-MM-DD'),
+                    start: currentDate.format(CONST.DATE_FORMAT),
                     textColor: '#0000ff',
                     backgroundColor: 'white',
                     listText: [
@@ -628,7 +667,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 }
             } else if (worktime) { // work time is set => work day
                 return {
-                    start: currentDate.format('YYYY-MM-DD'),
+                    start: currentDate.format(CONST.DATE_FORMAT),
                     textColor: '#0000ff',
                     backgroundColor: 'white',
                     listText: [
@@ -638,7 +677,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 }
             } else { // worktime not set => day off
                 return {
-                    start: currentDate.format('YYYY-MM-DD'),
+                    start: currentDate.format(CONST.DATE_FORMAT),
                     textColor: 'red',
                     backgroundColor: 'white',
                     listText: [
@@ -654,14 +693,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private setButtonReflectPatternText(): void {
             let self = this;
 
-            // Is on screen A
-            if (self.isOnScreenA()) {
-                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_13'));
+            // Is exec mode
+            if (self.isExecMode()) {
+                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_20'));
+
             }
 
-            // Is on screen B
+            // Is ref mode
             else {
-                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_20'));
+                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_13'));
             }
 
         }
@@ -800,8 +840,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             let dfd = $.Deferred<void>();
 
-            // Is on screen A.
-            if (self.isOnScreenA()) {
+            // Is ref mode
+            if (!self.isExecMode()) {
                 let parsedYm = nts.uk.time.formatYearMonth(self.yearMonthPicked());
 
                 // Set pattern range.
@@ -813,7 +853,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                 // Set pattern start date if has been set.
                 if (patternStartDate) {
-                    self.patternStartDate = moment(patternStartDate, 'YYYY-MM-DD');
+                    self.patternStartDate = moment(patternStartDate, CONST.DATE_FORMAT);
                 }
 
                 // Load holiday list.
@@ -822,12 +862,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 });
             }
 
-            // Is on screen B.
+            // Is on Exec Mode
             else {
                 // Reset pattern range.
                 self.patternStartDate = moment(self.shared.patternStartDate);
                 if (patternStartDate) {
-                    self.patternStartDate = moment(patternStartDate, 'YYYY-MM-DD');
+                    self.patternStartDate = moment(patternStartDate, CONST.DATE_FORMAT);
                 }
                 dfd.resolve();
             }
@@ -877,13 +917,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Init patternReflection setting.
             self.reflectionSetting = new ReflectionSetting(self.shared);
 
-            // Is on screen B.
+            // Is on Exec Mode
             if (self.shared.calendarStartDate && self.shared.calendarEndDate) {
-                self.isOnScreenA(false);
+                self.isExecMode(true);
 
                 // Set calendar range.
-                self.calendarStartDate = moment(self.shared.calendarStartDate, 'YYYY-MM-DD');
-                self.calendarEndDate = moment(self.shared.calendarEndDate, 'YYYY-MM-DD');
+                self.calendarStartDate = moment(self.shared.calendarStartDate, CONST.DATE_FORMAT);
+                self.calendarEndDate = moment(self.shared.calendarEndDate, CONST.DATE_FORMAT);
 
                 // Date range must <= 31 days
                 // If end date parameter out of range -> set end date to 31 days after start date parameter.
@@ -902,14 +942,43 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.loadHolidayList().done(() => dfd.resolve());
 
             }
-
-            // Is on screen A
+            // Is on Ref Mode
             else {
-                self.isOnScreenA(true);
+                self.isExecMode(false);
                 self.setPatternRange(self.shared.patternStartDate).done(() => dfd.resolve());
             }
-
+            //set data startup windows
+            self.setDataLoadWindows(self.isExecMode());
             return dfd.promise();
+        }
+
+        private setDataLoadWindows(isExecMode: boolean){
+            const self = this;
+            let mode = BootMode.REF_MODE;
+            let defaultStartDate = formatDate(new Date(), CONST.DATE_FORMAT);
+            let defaultEndDate = formatDate(moment(new Date()).endOf('month').toDate(), CONST.DATE_FORMAT);
+            if(isExecMode) {
+                mode =  BootMode.EXEC_MODE;
+                defaultStartDate = self.shared.calendarStartDate;
+                defaultEndDate = self.shared.calendarEndDate;
+            }
+            self.loadWindowsParam = {
+                bootMode : mode,
+                creationPeriodStartDate : defaultStartDate,
+                creationPeriodEndDate : defaultEndDate,
+                workCycleCode : self.shared.selectedPatternCd,
+                refOrder : self.takeRefOrderList(mode),
+                numOfSlideDays : 0
+            }
+        }
+
+        private takeRefOrderList(bootMode: number): Array<number>{
+            if(bootMode === BootMode.REF_MODE){
+                return [WorkCreateMethod.WORK_CYCLE,WorkCreateMethod.PUB_HOLIDAY,WorkCreateMethod.WEEKLY_WORK];
+            }
+            if(bootMode === BootMode.EXEC_MODE){
+                return [WorkCreateMethod.WORK_CYCLE,WorkCreateMethod.PUB_HOLIDAY,WorkCreateMethod.WEEKLY_WORK];
+            }
         }
 
     }
@@ -940,8 +1009,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
         public static newSetting(): ReflectionSetting {
             let newSetting = <service.model.ReflectionSetting>{};
-            newSetting.calendarStartDate = moment().startOf('month').format('YYYY-MM-DD');
-            newSetting.calendarEndDate = moment().endOf('month').format('YYYY-MM-DD');
+            newSetting.calendarStartDate = moment().startOf('month').format(CONST.DATE_FORMAT);
+            newSetting.calendarEndDate = moment().endOf('month').format(CONST.DATE_FORMAT);
             newSetting.selectedPatternCd = '';
             newSetting.patternStartDate = newSetting.calendarStartDate;
             newSetting.reflectionMethod = 0;
@@ -987,7 +1056,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     }
 
     interface OptionDate {
-        start: string; // YYYY-MM-DD
+        start: string; // YYYY/MM/DD
         textColor: string;
         backgroundColor: string;
         listText: Array<string>;
@@ -1001,7 +1070,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         refOrder: KnockoutObservableArray<number>;
         numOfSlideDays: KnockoutObservable<number>;
 
-        constructor(data: service.model.GetStartupInfoParam){
+        constructor(data: GetStartupInfoParamDto){
             const model = this;
             model.bootMode = ko.observable(data.bootMode)
             model.creationPeriodStartDate = ko.observable(data.creationPeriodStartDate)

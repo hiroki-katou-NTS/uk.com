@@ -4,12 +4,13 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.ReflectionImage;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCreateMethod;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleRefSetting;
+import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
 import nts.uk.screen.at.app.shift.workcycle.BootMode;
 import nts.uk.screen.at.app.shift.workcycle.WorkCycleReflectionDialog;
 import nts.uk.screen.at.app.shift.workcycle.WorkCycleReflectionDto;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -62,7 +63,6 @@ public class WorkCycleReflectionWebService extends WebService {
 	 */
 	@POST
 	@Path("get-reflection-image")
-	@Consumes(MediaType.APPLICATION_JSON)
 	public List<WorkCycleReflectionDto.RefImageEachDayDto> getWorkCycleAppImage(GetWorkCycleAppImageParam param){
 
 		List<WorkCreateMethod> refOrder = createFromIntArray(param.getRefOrder());
@@ -94,5 +94,41 @@ public class WorkCycleReflectionWebService extends WebService {
 		}
 
 		return workCreateMethods;
+	}
+
+	private WorkCycleReflectionDto fakeData(){
+		String cid = AppContexts.user().companyId();
+		GeneralDate start = GeneralDate.ymd(2020,8,1);
+		GeneralDate end = GeneralDate.ymd(2020,8,31);
+
+		List<WorkCycleReflectionDto.WorkTypeDto> pubHoliday = new ArrayList<>();
+		List<WorkCycleReflectionDto.WorkTypeDto> satHoliday = new ArrayList<>();
+		List<WorkCycleReflectionDto.WorkTypeDto> nonSatHoliday = new ArrayList<>();
+		List<WorkCycleReflectionDto.RefImageEachDayDto> reflectionImage = new ArrayList<>();
+		List<WorkCycleDto> workCycleList = new ArrayList<>();
+
+		pubHoliday.add(new WorkCycleReflectionDto.WorkTypeDto( "1-001", "name-1-001"));
+		pubHoliday.add(new WorkCycleReflectionDto.WorkTypeDto( "1-002", "name-1-002"));
+
+		satHoliday.add(new WorkCycleReflectionDto.WorkTypeDto("2-001", "name-2-001"));
+		satHoliday.add(new WorkCycleReflectionDto.WorkTypeDto("2-002", "name-2-002"));
+
+		nonSatHoliday.add(new WorkCycleReflectionDto.WorkTypeDto("3-001", "name-3-001"));
+		nonSatHoliday.add(new WorkCycleReflectionDto.WorkTypeDto("3-002", "name-3-002"));
+
+		for(GeneralDate i = start; i.afterOrEquals(end); i.addDays(1)){
+			int index = i.day();
+			WorkCycleReflectionDto.WorkInformationDto workInfo = new WorkCycleReflectionDto.WorkInformationDto(
+					"type-" + i, "time-" + i
+			);
+			int rand = (int) (Math.random() * 4) + 1;
+			reflectionImage.add(
+					new WorkCycleReflectionDto.RefImageEachDayDto(
+							index % 3, workInfo, i, rand)
+			);
+		}
+		return new WorkCycleReflectionDto(
+				pubHoliday, satHoliday, nonSatHoliday, reflectionImage, workCycleList
+		);
 	}
 }

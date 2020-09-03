@@ -102,13 +102,27 @@ module nts.uk.at.view.kdl023.base.service {
             EXEC_MODE = 1
         }
 
-		export interface WorkCycleReflectionDto{
-			pubHoliday: Array<WorkType>;
-			satHoliday: Array<WorkType>;
-			nonSatHoliday: Array<WorkType>;
-			reflectionImage: Array<RefImageEachDayDto>;
-			workCycleList: Array<any>;
-		}
+        export enum WorkStyle{
+            ONE_DAY_REST = 0,
+            MORNING_WORK = 1,
+            AFTERNOON_WORK = 2,
+            ONE_DAY_WORK = 3
+        }
+
+        export enum WorkCreateMethod{
+            NON = -1;
+            WORK_CYCLE = 0,
+            WEEKLY_WORK = 1,
+            PUB_HOLIDAY = 2
+        }
+
+        export interface WorkCycleReflectionDto{
+            pubHoliday: Array<WorkType>;
+            satHoliday: Array<WorkType>;
+            nonSatHoliday: Array<WorkType>;
+            reflectionImage: Array<RefImageEachDayDto>;
+            workCycleList: Array<any>;
+        }
 
 		export interface RefImageEachDayDto{
 			workCreateMethod: number;
@@ -120,13 +134,29 @@ module nts.uk.at.view.kdl023.base.service {
 			workTimeCode: string;
 		}
 
-		export interface GetStartupInfoParam{
-			bootMode: number;
-			creationPeriodStartDate: string;
-			creationPeriodEndDate: string;
-			workCycleCode: string;
-			refOrder: Array<number>;
-			numOfSlideDays: number;
-		}
+        export interface WorkInformationDto{
+            workTypeCode: string;
+            workTimeCode: string;
+        }
+
+        export interface GetStartupInfoParam{
+            bootMode: number;
+            creationPeriodStartDate: string;
+            creationPeriodEndDate: string;
+            workCycleCode: string;
+            refOrder: Array<number>;
+            numOfSlideDays: number;
+        }
+
+        export interface GetWorkCycleAppImageParam{
+            creationPeriodStartDate: string;
+            creationPeriodEndDate: string;
+            workCycleCode: string;
+            refOrder: Array<number>;
+            numOfSlideDays: number;
+            legalHolidayCd: string;
+            nonStatutoryHolidayCd: string;
+            holidayCd: string;
+        }
     }
 }

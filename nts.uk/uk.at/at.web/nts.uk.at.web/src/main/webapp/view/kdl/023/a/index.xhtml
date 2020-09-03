@@ -22,14 +22,14 @@
 			</div>
 		</ui:define>
 		<ui:define name="extended-function">
-			<button id="btnClose" class="large" data-bind="visible: !reflectionSetting.bootMode(), click: closeDialog"
+			<button id="btnClose" class="large ref-mode" data-bind="click: closeDialog, enable: !$parent.isExecMode"
 						tabindex="13">#{i18n.getText('KDL023_16')}</button>
 
-			<div data-bind="ntsCheckBox: { checked: false, style: 'warnpanel'}, visible: reflectionSetting.bootMode">#{i18n.getText('KDL023_37')}</div>
-			<div id="foot-btn" data-bind="visible: reflectionSetting.bootMode">
-                <button tabindex="13" id="btnDecide" class="large proceed" >#{i18n.getText('KDL023_38')}</button>
-                <button tabindex="14" id="btnCancel" class="medium" style="vertical-align: bottom;" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
-            </div>
+			<div class="exec-mode" data-bind="ntsCheckBox: { checked: false, style: 'warnpanel' }">#{i18n.getText('KDL023_37')}</div>
+			<br/><br/>
+			<button tabindex="13" id="btnDecide" class="x-large proceed exec-mode" data-bind="click: decide">#{i18n.getText('KDL023_38')}</button>
+			<button tabindex="14" id="btnCancel" class="large exec-mode" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
+
 		</ui:define>
 	</ui:composition>
 </body>

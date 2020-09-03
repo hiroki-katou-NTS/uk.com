@@ -8,7 +8,6 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.service.WorkMonthlySettingService;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -34,9 +33,6 @@ import java.util.Optional;
 public class MonthlyPatternRegisterCommandHandler extends CommandHandler<MonthlyPatternRegisterCommand> {
 
     @Inject
-    private WorkMonthlySettingService service;
-
-    @Inject
     private WorkMonthlySettingRepository workMonthlySettingRepository;
 
     @Inject
@@ -54,22 +50,30 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
     @Override
     protected void handle(CommandHandlerContext<MonthlyPatternRegisterCommand> commandHandlerContext) {
         MonthlyPatternRegisterCommand command = commandHandlerContext.getCommand();
-        RequireImpl require = new RequireImpl(workMonthlySettingRepository);
-        WorkInformation.Require workRequired = new MonthlyPatternRegisterCommandHandler.WorkInfoRequireImpl(basicScheduleService, workTypeRepo,
-                workTimeSettingRepository, workTimeSettingService, basicScheduleService);
+        RequireImpl require = new RequireImpl(basicScheduleService, workTypeRepo, workTimeSettingRepository,
+                workTimeSettingService, basicScheduleService,workMonthlySettingRepository);
         command.getWorkMonthlySetting().forEach((item) -> {
-                    Optional<AtomTask> persist = service.register(workRequired, require, command.toDomain(item), command.isOverWrite());
-                    if (persist.isPresent()) {
-                        transaction.execute(() -> {
-                            persist.get().run();
-                        });
-                    }
-                }
+            Optional<AtomTask> persist = WorkMonthlySettingService.register(require, command.toDomain(item),
+                    command.isOverWrite());
+            persist.ifPresent(atomTask -> transaction.execute(atomTask::run));
+        }
         );
     }
 
     @AllArgsConstructor
     private static class RequireImpl implements WorkMonthlySettingService.Require{
+
+        private final String companyId = AppContexts.user().companyId();
+
+        private BasicScheduleService service;
+
+        private WorkTypeRepository workTypeRepo;
+
+        private WorkTimeSettingRepository workTimeSettingRepository;
+
+        private WorkTimeSettingService workTimeSettingService;
+
+        private BasicScheduleService basicScheduleService;
 
         private WorkMonthlySettingRepository workMonthlySettingRepository;
 
@@ -92,22 +96,7 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
         public void update(WorkMonthlySetting workMonthlySetting) {
             workMonthlySettingRepository.update(workMonthlySetting);
         }
-    }
 
-    @AllArgsConstructor
-    private static class WorkInfoRequireImpl implements WorkInformation.Require {
-
-        private final String companyId = AppContexts.user().companyId();
-
-        private BasicScheduleService service;
-
-        private WorkTypeRepository workTypeRepo;
-
-        private WorkTimeSettingRepository workTimeSettingRepository;
-
-        private WorkTimeSettingService workTimeSettingService;
-
-        private BasicScheduleService basicScheduleService;
 
         @Override
         public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
