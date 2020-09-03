@@ -64,7 +64,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	 * 勤務予定を実績に移す
 	 */
 	public void shiftFromScheduleToRecord() {
-		recordInfo = scheduleInfo;
+		recordInfo = scheduleInfo.clone();
 	}
 	
 	/** <<Event>> 実績の就業時間帯が変更されたを発行する */

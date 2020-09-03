@@ -56,7 +56,10 @@ export class KdpS01TComponent extends Vue {
 
             let buttons = [];
             _.forEach(_.slice(errorData.listRequired, 0, 6), function (value) {
-                buttons.push(_.find(vm.params.appDispNames, ['appType', value]));
+                let btn = _.find(vm.params.appDispNames, ['appType', value]);
+                if (btn) {
+                    buttons.push(btn);
+                }
             });
             vm.setting.buttons = buttons;
         }
@@ -71,10 +74,12 @@ export class KdpS01TComponent extends Vue {
             let btnFunctions = vm.$refs.functionBtns as HTMLButtonElement[],
                 btnDefault = vm.$refs.functionBtn as HTMLButtonElement;
 
-            if (btnFunctions.length) {
+            if (!!btnFunctions && btnFunctions.length) {
                 btnFunctions[0].focus();
             } else {
-                btnDefault.focus();
+                if (!!btnDefault) {
+                    btnDefault.focus();
+                }
             }
 
         }, 300);
