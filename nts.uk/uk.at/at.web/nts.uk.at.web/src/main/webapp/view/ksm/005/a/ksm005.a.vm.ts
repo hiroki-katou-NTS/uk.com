@@ -6,7 +6,6 @@ module nts.uk.at.view.ksm005.a {
     import WorkMonthlySettingDto = service.model.WorkMonthlySettingDto;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
-	import MonthlyPatternDto = service.model.MonthlyPatternDto;
     import blockUI = nts.uk.ui.block;
     import text = nts.uk.resource;
     import empty = nts.uk.util;
@@ -25,7 +24,7 @@ module nts.uk.at.view.ksm005.a {
             calendarData: KnockoutObservable<any>;
             yearMonthPicked: KnockoutObservable<number>;
             cssRangerYM: any;
-            optionDates: KnockoutObservableArray<any>;
+            optionDates: KnockoutObservableArray<CalendarItem>;
             firstDay: number;
             yearMonth: KnockoutObservable<number>;
             startDate: number;
@@ -56,8 +55,8 @@ module nts.uk.at.view.ksm005.a {
             constructor() {
                 var self = this;
                 self.columnMonthlyPatterns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSM005_13"), key: 'monthlyPatternCode', width: 100 },
-                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'monthlyPatternName', width: 150 ,formatter: _.escape }
+                    { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
+                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'code', width: 150 ,formatter: _.escape }
                 ]);
                 self.isBuild = false;
                 self.lstWorkMonthlySetting = ko.observableArray([]);
@@ -96,7 +95,6 @@ module nts.uk.at.view.ksm005.a {
                     if($('#yMPicker').ntsError('hasError')){
                         return; 
                     }
-
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE
 	                    && self.currentMonthlyPattern() !== month ) {
                         self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
@@ -216,13 +214,19 @@ module nts.uk.at.view.ksm005.a {
 	            nts.uk.ui.block.invisible();
 
 	            service.getMonthlyAll().done( function( data ) {
-	            	let  listMonthlyPattern = data.listMonthlyPattern;
+	            	let listMonthlyPattern = data.listMonthlyPattern;
+                    listMonthlyPattern = listMonthlyPattern && listMonthlyPattern.map(item =>  {
+                        return {
+                            code: item.monthlyPatternCode,
+                            name: item.monthlyPatternName
+                        }
+                    });
 		            self.lstMonthlyPattern(listMonthlyPattern);
 		            if(listMonthlyPattern.length <= 0){
 			            self.enableDelete(false);
 			            self.resetData();
 		            }else {
-			            self.selectMonthlyPattern(listMonthlyPattern[0].monthlyPatternCode);
+			            self.selectMonthlyPattern(listMonthlyPattern[0].code);
 		            }
 
 		            dfd.resolve(self);
@@ -279,15 +283,13 @@ module nts.uk.at.view.ksm005.a {
 
                 if (dto.typeColor == TypeColor.ATTENDANCE) {
                     textColor = TypeColor.ATTENDANCE_COLOR;
-                } else {
+                } else if (dto.typeColor == TypeColor.HALF_DAY_WORK) {
+                    textColor = TypeColor.HALF_DAY_WORK_COLOR;
+                }
+                else {
                     textColor = TypeColor.HOLIDAY_COLOR;
                 }
-                return {
-                    start: start,
-                    textColor: textColor,
-                    backgroundColor: 'white',
-                    listText: [row1, row2] //listText
-                };
+                return new CalendarItem(start, textColor, row1, row2);
             }
             
             /**
@@ -389,11 +391,10 @@ module nts.uk.at.view.ksm005.a {
 	            nts.uk.ui.block.invisible();
 
 	            service.getMonthlyPattern( params ).done( (data) => {
+                    let a = {};
+                    a[Math.floor(self.yearMonthPicked() / 100)] = data.listMonthYear;
+                    self.cssRangerYM(a);
                     if (monthlyPatternCode) {
-	                    let a = {};
-	                    a[Math.floor(self.yearMonthPicked()/100)] = data.listMonthYear;
-	                    self.cssRangerYM(a);
-
                         service.findByIdMonthlyPattern(monthlyPatternCode)
 	                    .done(function(response) {
 	                        self.monthlyPatternModel().updateData( response );
@@ -640,14 +641,14 @@ module nts.uk.at.view.ksm005.a {
 				        self.typeOfWorkCode(childData.selectedWorkTypeCode);
 				        self.typeOfWorkName(childData.selectedWorkTypeName);
 				        if (childData.selectedWorkTypeCode) {
-					        self.typeOfWorkInfo(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+					        self.typeOfWorkInfo(childData.selectedWorkTypeCode + '   ' + childData.selectedWorkTypeName);
 				        } else
 					        self.typeOfWorkInfo('');
 
 				        self.workingHoursCode(childData.selectedWorkTimeCode);
 				        self.workingHoursName(childData.selectedWorkTimeName);
 				        if (childData.selectedWorkTimeCode) {
-					        self.workingHoursInfo(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+					        self.workingHoursInfo(childData.selectedWorkTimeCode + '   ' + childData.selectedWorkTimeName);
 				        } else {
 					        self.workingHoursInfo('');
 				        }
@@ -695,26 +696,24 @@ module nts.uk.at.view.ksm005.a {
 	        /*
                 setting date Wokring Day Atr event
             */
+
 	        private setWorkingDayAtr(date){
-		        let self = this;
-		        let dataUpdate: Array<WorkMonthlySettingDto> = self.lstWorkMonthlySetting();
-
-		        let i = dataUpdate.findIndex( item => self.convertYMD(item.ymdk) == date);
-		        if( dataUpdate && i > -1 && !empty.isNullOrEmpty(self.typeOfWorkCode()) ) {
-			        dataUpdate[i].workTypeCode = self.typeOfWorkCode();
-			        dataUpdate[i].workTypeName = self.typeOfWorkName();
-			        dataUpdate[i].workingCode  = self.workingHoursCode();
-			        dataUpdate[i].workingName  = self.workingHoursName();
-
-			        if (dataUpdate[i].workTypeCode && dataUpdate[i].workingCode) {
-				        dataUpdate[i].typeColor = TypeColor.ATTENDANCE;
-			        } else {
-				        dataUpdate[i].typeColor = TypeColor.HOLIDAY;
-			        }
+		        let vm = this;
+                let dataUpdate: Array<WorkMonthlySettingDto> = vm.lstWorkMonthlySetting();
+                let i = dataUpdate.findIndex( item => vm.convertYMD(item.ymdk) == date);
+                let optionDates = vm.optionDates;
+                let existItem = _.find(optionDates(), item => item.start == date);
+                if(existItem!=null) {
+                    existItem.changeListText(vm.typeOfWorkName() ? vm.typeOfWorkName() : '', vm.workingHoursName() ? vm.workingHoursName() : '');
                 }
-
-		        self.updateWorkMothlySetting(dataUpdate);
-		        self.lstWorkMonthlySetting(dataUpdate);
+                if( dataUpdate && i > -1 && !empty.isNullOrEmpty(vm.typeOfWorkCode()) ) {
+                    dataUpdate[i].workTypeCode = vm.typeOfWorkCode();
+                    dataUpdate[i].workTypeName = vm.typeOfWorkName();
+                    dataUpdate[i].workingCode  = vm.workingHoursCode();
+                    dataUpdate[i].workingName  = vm.workingHoursName();
+                }
+                vm.lstWorkMonthlySetting(dataUpdate);
+                optionDates.valueHasMutated();
 	        }
 
             private  clearCalendar() {
@@ -819,6 +818,26 @@ module nts.uk.at.view.ksm005.a {
             static HOLIDAY_COLOR = "#ff0000";
             static ATTENDANCE = 1;
             static ATTENDANCE_COLOR = "#0000ff";
+            static HALF_DAY_WORK = 2;
+            static HALF_DAY_WORK_COLOR = '#FF7F27';
+        }
+        export class CalendarItem {
+            start: string;
+            textColor: string;
+            backgroundColor: string;
+            listText: Array<any>;
+            insertText: boolean;
+            constructor(start: string, textColor: string, row1: string, row2: string) {
+                this.start = moment(start.toString()).format('YYYY-MM-DD');
+                this.backgroundColor = 'white';
+                this.textColor = textColor;
+                this.listText= [row1, row2];
+                this.insertText = false;
+            }
+            changeListText(row1: string, row2: string){
+                this.listText= [row1, row2];
+                this.insertText = true;
+            }
         }
 
     }

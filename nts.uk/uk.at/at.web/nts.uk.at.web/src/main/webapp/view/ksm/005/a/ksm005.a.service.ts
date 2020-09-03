@@ -106,12 +106,6 @@ module nts.uk.at.view.ksm005.a {
                 code: string;
                 name: string;
             }
-
-            export interface MonthlyPatternDto {
-			    monthlyPatternCode: string;
-			    startDate: string;
-			    endDate: string;
-            }
         }
 
     }

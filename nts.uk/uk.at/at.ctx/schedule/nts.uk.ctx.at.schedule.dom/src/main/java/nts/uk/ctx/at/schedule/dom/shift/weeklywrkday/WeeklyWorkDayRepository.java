@@ -10,7 +10,7 @@ public interface WeeklyWorkDayRepository {
 
     /**
      * get all weekly work day
-     * @param CompanyId
+     * @param companyId
      * @return
      */
     WeeklyWorkDayPattern getWeeklyWorkDayPatternByCompanyId(String companyId);

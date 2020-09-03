@@ -26,10 +26,7 @@ public class WeeklyWorkDayRepositoryImpl extends JpaRepository implements Weekly
                 GET_BY_COMPANY_ID, KscmtWeeklyWorkingdays.class)
                 .setParameter("companyId", companyId)
                 .getList();
-        System.out.println("kscmtWeeklyWorkingdays:  " + kscmtWeeklyWorkingdays);
-        WeeklyWorkDayPattern weeklyWorkDayPattern = KscmtWeeklyWorkingdays.listEntitytoDomain(kscmtWeeklyWorkingdays);
-        System.out.println("weeklyWorkDayPattern "+ weeklyWorkDayPattern);
-        return weeklyWorkDayPattern;
+        return KscmtWeeklyWorkingdays.listEntitytoDomain(kscmtWeeklyWorkingdays);
     }
 
     @Override

@@ -19,7 +19,7 @@
 .ksm005a .wrapper-monthy {
 	display: flex;
 	align-items: flex-end;
-	margin-bottom: 10px;
+	margin-bottom: 1px;
 }
 .ksm005a .wrapper-monthy .monthly-pattern {
 	flex: 1;
@@ -73,4 +73,10 @@
 
 .ksm005a  .fc-row .fc-content-skeleton .fc-content .fc-title {
     line-height: 20px;
+}
+.ksm005a .code-name {
+	display: flex;
+}
+.ksm005a .input-code-name {
+	padding-top: 5px;
 }

@@ -97,11 +97,6 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// get command
 		WorkMonthlySettingBatchSaveCommand command = context.getCommand();
 
-		// check not setting
-		if (CollectionUtil.isEmpty(command.getWorkMonthlySetting())) {
-			throw new BusinessException("Msg_148");
-		}
-
 		// convert to map domain update
 		Map<Integer, WorkMonthlySettingDto> mapWorkMonthlySetting = command
 				.getWorkMonthlySetting().stream().collect(Collectors.toMap((dto) -> {
@@ -118,22 +113,10 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// update begin date
 		toDate = this.toDate(yearMonth * MONTH_MUL + NEXT_DAY);
 
-		// loop year month setting
-		while (this.getYearMonth(toDate) == yearMonth) {
-			if (!mapWorkMonthlySetting.containsKey(this.getYearMonthDate(toDate))) {
-				throw new BusinessException("Msg_148");
-			}
-			toDate = this.nextDay(toDate);
-		}
 		// to list domain
 		List<WorkMonthlySetting> lstDomain = command.toDomainMonth(companyId);
+		lstDomain = lstDomain.stream().filter(x -> !x.getWorkInformation().getWorkTypeCode().equals("000")).collect(Collectors.toList());
 
-		// check not setting
-		lstDomain.forEach(domain -> {
-			if (StringUtil.isNullOrEmpty(domain.getWorkInformation().getWorkTypeCode().v(), true)) {
-				throw new BusinessException("Msg_148");
-			}
-		});
 
 		// check setting work type
 		lstDomain.forEach(domain -> {
@@ -210,7 +193,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// get list domain update
 		List<WorkMonthlySetting> domainUpdates = this.workMonthlySettingRepository.findByYMD(
-				companyId, lstDomain.get(INDEX_FIRST).getMonthlyPatternCode().v(),
+				companyId,lstDomain.size() > 0 ? lstDomain.get(INDEX_FIRST).getMonthlyPatternCode().v() : null,
 				lstDomain.stream().map(domainsetting -> domainsetting.getYmdk())
 						.collect(Collectors.toList()));
 
