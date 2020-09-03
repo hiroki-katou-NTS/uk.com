@@ -118,6 +118,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         listPersonalConditions = [];
         displayControlPersonalCond = {};
         listDateInfo = [];
+        
+        showTeamCol = false;
+        showRankCol = false;
+        showQualificCol = false;
+        widthMid : number = 0;
 
         constructor() {
             let self = this;
@@ -281,14 +286,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 // デフォルト（黒）  Default (black)
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
                             } else {
-                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cellData.shiftCode; });
+                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
                                 if (objShiftMasterWithWorkStyle.length > 0) {
                                     /**
                                      *  1日休日系  ONE_DAY_REST(0)
                                      *  午前出勤系 MORNING_WORK(1)
                                      *  午後出勤系 AFTERNOON_WORK(2)
                                      *  1日出勤系 ONE_DAY_WORK(3)
-                                     */
+                                     **/
                                     let workStyle = objShiftMasterWithWorkStyle[0].workStyle;
                                     if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
                                         detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
@@ -306,7 +311,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                         // デフォルト（黒）  Default (black)
                                         detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
                                     }
-                                }
+                                } 
                             }
                         }
                     };
@@ -730,7 +735,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let listWorkScheduleInforByEmp: Array<IWorkScheduleWorkInforDto> = _.filter(data.listWorkScheduleWorkInfor, function(workSchedul: IWorkScheduleWorkInforDto) { return workSchedul.employeeId === emp.employeeId });
                 let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(data.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
                 // set data middle
-                let personalCond: IPersonalConditions = _.filter(data.listPersonalConditions, function(o) { return o.sid = emp.employeeId; });
+                let personalCond: IPersonalConditions = _.filter(data.listPersonalConditions, function(o) { return o.sid == emp.employeeId; });
                 if(personalCond.length > 0){
                    middleDs.push({ sid: i.toString() , employeeId: emp.employeeId, team: personalCond[0].teamName, rank: personalCond[0].rankName, qualification: personalCond[0].licenseClassification });
                 }
@@ -984,12 +989,34 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (viewMode == 'shift') {
                 widthColumn = 35;
             }
-            
+
             // イベント情報と個人条件のmapping (mapping "thông tin event" và "person condition")
             if (data.displayControlPersonalCond == null) {
                 self.showA9 = false;
             } else {
                 self.showA9 = true;
+                let listConditionDisplayControl = data.displayControlPersonalCond.listConditionDisplayControl;
+                let team = _.filter(listConditionDisplayControl, function(o) { return o.conditionATR == 1; });
+                let rank = _.filter(listConditionDisplayControl, function(o) { return o.conditionATR == 2; });
+                let qual = _.filter(listConditionDisplayControl, function(o) { return o.conditionATR == 3; });
+                if (team.length > 0) {
+                    if (team[0].displayCategory == 1) {
+                        self.showTeamCol = true;
+                    }
+                }
+                if (rank.length > 0) {
+                    if (rank[0].displayCategory == 1) {
+                        self.showRankCol = true;
+                    }
+                }
+                if (qual.length > 0) {
+                    if (qual[0].displayCategory == 1) {
+                        self.showQualificCol = true;
+                    }
+                }
+                if (self.showTeamCol == false && self.showRankCol == false && self.showQualificCol == false) {
+                    self.showA9 = false;
+                }
             }
             
             detailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
@@ -1153,17 +1180,27 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let middleContentDeco = [];
             let middleHeader = {};
             let middleContent = {};
-
+            
             if (self.showA9) {
-                middleColumns = [
-                    { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
-                    { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
-                    { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
-                ];
-
+                let widthMid : number = 0;
+                middleColumns = [];
+                if(self.showTeamCol){
+                    widthMid = widthMid + 40;
+                    middleColumns.push({ headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } });    
+                }
+                if(self.showRankCol){
+                    widthMid = widthMid + 40;
+                    middleColumns.push({ headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } });
+                }
+                if(self.showQualificCol){
+                    widthMid = widthMid + 40;
+                    middleColumns.push({ headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } });
+                }
+                
+                self.widthMid = widthMid;
                 middleHeader = {
                     columns: middleColumns,
-                    width: "120px",
+                    width:   "40px",
                     features: [{
                         name: "HeaderRowHeight",
                         rows: { 0: "60px" }
@@ -1517,7 +1554,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 decorator: detailContentDeco
             }]);
 
-            $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
+           // $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
         }
 
         // save setting hight cua grid vao localStorage
@@ -1559,10 +1596,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     $("#extable").exTable("showMiddle");
                 }
                 $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
-                $(".toLeft").css("margin-left", "310px");
+                let marginleftOfbtnToLeft: number = 190 + self.widthMid;
+                $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleft = $("#extable").width() - 280 - 27 - 27 - 30;
-                $(".toRight").css('margin-left', marginleft + 'px');
+                let marginleftOfbtnToRight = $("#extable").width() - 160- - self.widthMid - 27 - 27 - 30;
+                $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
 
@@ -1594,16 +1632,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             self.indexBtnToLeft = 0; 
             
-            let marginleft: number = 0;
+            let marginleftOfbtnToRight: number = 0;
+            let marginleftOfbtnToLeft: number = 190 + self.widthMid;
             if(self.showA9){
                 $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
-                $(".toLeft").css("margin-left", "310px");
-                marginleft = $("#extable").width() - 280 - 27 - 27 - 32;
+                
+                $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
+                
+                marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32;
             }else{
                 $(".toLeft").css("display", "none");
-                marginleft = $("#extable").width() - 32;
+                marginleftOfbtnToRight = $("#extable").width() - 32;
             }
-            $(".toRight").css('margin-left', marginleft);
+            $(".toRight").css('margin-left', marginleftOfbtnToRight+ 'px');
         }
 
         setPositionButonDownAndHeightGrid() {
@@ -2075,13 +2116,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             service.getListEmpIdSorted(param).done((data) => {
                 // update lai grid
-                if (data.length > 0) {
-                    let listEmpInfo = data;
+                if (data.lstEmp.length > 0) {
+                    self.listEmpInfo = data.lstEmp;
+                    self.listPersonalConditions = data.listPersonalCond;
                     let dataGrid: any = {
-                        listEmpInfo: data,
+                        listEmpInfo: data.lstEmp,
                         listWorkScheduleWorkInfor: self.listWorkScheduleWorkInfor,
                         listWorkScheduleShift: self.listWorkScheduleShift,
-                        listPersonalConditions: self.listPersonalConditions,
+                        listPersonalConditions: data.listPersonalCond,
                         displayControlPersonalCond: self.displayControlPersonalCond,
                         listDateInfo: self.listDateInfo
                     }
