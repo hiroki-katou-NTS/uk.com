@@ -111,10 +111,10 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 		List<PersonalCondition> conditions = new ArrayList<>();
 		
 		for(String empId : lstEmpId) {
-			Optional<ScheduleTeamName> teamName = mapEmpTeam.get(empId).getOptScheduleTeamName().isPresent() ? mapEmpTeam.get(empId).getOptScheduleTeamName() : Optional.empty();
-			String empRank = mapEmpRankInfor.get(empId).getRankSymbol().isPresent() ? mapEmpRankInfor.get(empId).getRankSymbol().get().v() : null;
-			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId)
-					.getOptLicenseClassification();
+			Optional<ScheduleTeamName> teamName = mapEmpTeam.get(empId) != null ? mapEmpTeam.get(empId).getOptScheduleTeamName() : Optional.empty();
+			String empRank = mapEmpRankInfor.get(empId) != null ? mapEmpRankInfor.get(empId).getRankSymbol().get().v() : null;
+			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId) != null ? mapEmpLicenseClassification.get(empId)
+					.getOptLicenseClassification() : Optional.empty();
 			
 			PersonalCondition condition = new PersonalCondition(empId, Optional.ofNullable(teamName.isPresent() ? teamName.get().v() : null),
 					Optional.ofNullable(empRank), mapEmpLicense);
