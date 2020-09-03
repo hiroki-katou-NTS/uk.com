@@ -28,6 +28,7 @@ public class GenerateStampCardForEmployees {
 	 * @return 				       打刻カード生成結果リスト
 	 */
 	public static List<ImprintedCardGenerationResult> generate(Require require, String contractCd, String companyCd,
+<<<<<<< HEAD
 			MakeEmbossedCard makeEmbossedCard, List<TargetPerson> targetPersons, String companyId, String sid ) {
 		
 //		List<Optional<String>> stampCards = targetPersons.stream().map(m -> {
@@ -48,6 +49,20 @@ public class GenerateStampCardForEmployees {
 			StampCard card = new StampCard(companyCd,m.get(), sid);
 //			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(m.get(), contractCd);
 			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, Optional.of(new StampCard(contractCd, "0123456", sid)));
+=======
+			MakeEmbossedCard makeEmbossedCard, List<TargetPerson> targetPersons) {
+		
+		List<ImprintedCardGenerationResult> results = targetPersons.stream().map(m -> {
+			Optional<String> stampCard = generateEmbossedCardNumber(require, companyCd, makeEmbossedCard, m.getEmployeeCd());
+			
+			if(!stampCard.isPresent()) {
+				throw new BusinessException("Msg_1756");
+			}
+			
+			StampCard card = new StampCard(companyCd, companyCd, companyCd);
+			Optional<StampCard> duplicateCards = require.getByCardNoAndContractCode(stampCard.get(), contractCd);
+			ImprintedCardGenerationResult result = new ImprintedCardGenerationResult(companyCd, card, duplicateCards);
+>>>>>>> ada8a756ed3... Create GenerateStampCardForEmployeesTest
 			
 			return result;
 		}).collect(Collectors.toList());
@@ -65,12 +80,21 @@ public class GenerateStampCardForEmployees {
 	 * @return 				       打刻カード番号
 	 */
 	private static Optional<String> generateEmbossedCardNumber(Require require, String companyCd,
+<<<<<<< HEAD
 			MakeEmbossedCard makeEmbossedCard, String employeeCd, String companyId) {
 
 		StampCardEditing stampCardEditing = require.get(companyId);
 
 		if (makeEmbossedCard.value == makeEmbossedCard.COMPANY_CODE_AND_EMPLOYEE_CODE.value) {
 
+=======
+			MakeEmbossedCard makeEmbossedCard, String employeeCd) {
+		
+		StampCardEditing stampCardEditing = require.get(AppContexts.user().companyId());
+		
+		if(makeEmbossedCard.value == 1) {
+			
+>>>>>>> ada8a756ed3... Create GenerateStampCardForEmployeesTest
 			return stampCardEditing.createStampCard(companyCd, employeeCd);
 		}
 		return Optional.of(stampCardEditing.editCardNumber(employeeCd));
