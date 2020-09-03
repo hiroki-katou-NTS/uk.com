@@ -17,6 +17,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.GetEmpLicenseCla
 import nts.uk.ctx.at.schedule.dom.employeeinfo.medicalworkstyle.LicenseClassification;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.EmpRankInfor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.GetEmRankInforService;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankSymbol;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.ScheduleTeamName;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.EmpTeamInfor;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetScheduleTeamInfoService;
@@ -112,12 +113,12 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 		
 		for(String empId : lstEmpId) {
 			Optional<ScheduleTeamName> teamName = mapEmpTeam.get(empId) != null ? mapEmpTeam.get(empId).getOptScheduleTeamName() : Optional.empty();
-			String empRank = mapEmpRankInfor.get(empId) != null ? mapEmpRankInfor.get(empId).getRankSymbol().get().v() : null;
+			Optional<RankSymbol> empRank = mapEmpRankInfor.get(empId) != null ? mapEmpRankInfor.get(empId).getRankSymbol() : Optional.empty();
 			Optional<LicenseClassification> mapEmpLicense = mapEmpLicenseClassification.get(empId) != null ? mapEmpLicenseClassification.get(empId)
 					.getOptLicenseClassification() : Optional.empty();
 			
 			PersonalCondition condition = new PersonalCondition(empId, Optional.ofNullable(teamName.isPresent() ? teamName.get().v() : null),
-					Optional.ofNullable(empRank), mapEmpLicense);
+					Optional.ofNullable(empRank.isPresent() ? empRank.get().v() : null), mapEmpLicense);
 			
 			conditions.add(condition);
 		}
