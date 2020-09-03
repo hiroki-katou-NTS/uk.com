@@ -38,7 +38,7 @@ public class ScheduleCreateContent extends AggregateRoot{
 	//再作成条件
 	private RecreateCondition recreateCondition;
 
-	//TODO: bien tam thoi, se xoa sau khi co tai lieu moi
+//	//TODO: bien tam thoi, se xoa sau khi co tai lieu moi
 	private ImplementAtr implementAtr;
 	private ReCreateContent reCreateContent;
 	private CreateMethodAtr createMethodAtr;
@@ -81,7 +81,7 @@ public class ScheduleCreateContent extends AggregateRoot{
 
 	public void setImplementAtr(ImplementAtr implementAtr) {
 		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
-//		this.implementAtr = implementAtr;
+		this.creationType = implementAtr;
 	}
 
 

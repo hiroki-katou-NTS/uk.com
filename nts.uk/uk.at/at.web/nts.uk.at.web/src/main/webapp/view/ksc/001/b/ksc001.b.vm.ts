@@ -155,8 +155,6 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 self.isFixedSchedules = ko.computed(() => {
-                    /*return self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_TARGET_ONLY
-                        && self.isEnableRadioboxRebuildAtr();*/
                     return self.selectedImplementAtrCode() == ImplementAtr.RECREATE;
                 });
 
@@ -225,41 +223,49 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 self.creationMethodCode.subscribe(( value) => {
-                    if( self.creationMethodCode() != CreationMethodRef.MONTHLY_PATTERN ) {
+	                $('.monthly-pattern-code').focus();
+	                if(self.isInValidCopyPasteSchedule()) return;
+                    /*if( value != CreationMethodRef.MONTHLY_PATTERN ) {
                         nts.uk.ui.errors.clearAll();
-                        //self.monthlyPatternCode(null);
+                        self.monthlyPatternCode(null);
                     } else {
-                        //self.monthlyPatternCode(null);
                         $('.monthly-pattern-code').focus();
-                    }
+                    }*/
                 });
 
                 self.checkCreateMethodAtrPersonalInfo.subscribe(( value ) => {
+	                nts.uk.ui.errors.clearAll();
+
                     if( value === CreateMethodAtr.COPY_PAST_SCHEDULE
                         && nts.uk.util.isNullOrEmpty(self.copyStartDate())) {
                         $('#copy-start-date').focus();
                         if(self.isInValidCopyPasteSchedule()) return;
                     } else {
                         if( value === CreateMethodAtr.PATTERN_SCHEDULE
-                            && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN
-                            && self.monthlyPatternOpts().length <= 0 ) {
-                            let msgError = nts.uk.resource.getText('KSC001_111');
-                            $('.monthly-pattern-code')
-                            .ntsError('clear')
-                            .ntsError('set',{ messageId:'MsgB_2', messageParams: [ msgError ] });
+                            && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN) {
+                            if( self.monthlyPatternOpts().length <= 0 ) {
+	                            let msgError = nts.uk.resource.getText ( 'KSC001_111' );
+	                            $ ( '.monthly-pattern-code' )
+		                            .ntsError ( 'clear' )
+		                            .ntsError ( 'set', { messageId : 'MsgB_2', messageParams : [ msgError ] } );
+                            }
+	                        if(self.isInValidCopyPasteSchedule()) return;
                         }
+                        //let copyStartDate = moment(self.periodStartDate()).format('YYYY/MM/DD');
+                        //self.copyStartDate(copyStartDate);
+                    }
 
-                        nts.uk.ui.errors.clearAll();
-                        let copyStartDate = moment(self.periodStartDate()).format('YYYY/MM/DD');
-                        self.copyStartDate(copyStartDate);
+                    if( value !== CreateMethodAtr.PATTERN_SCHEDULE ) {
+	                    //self.creationMethodCode(0); //default
+	                    self.monthlyPatternCode(null);
                     }
                 });
 
                 self.creationMethodReference([
-                    {code: 0, name: nts.uk.resource.getText('KSC001_108')}, //会社カレンダー
-                    {code: 1, name: nts.uk.resource.getText('KSC001_109')}, //職場カレンダー
-                    {code: 2, name: nts.uk.resource.getText('KSC001_110')}, //分類カレンダー
-                    {code: 3, name: nts.uk.resource.getText('KSC001_111')}, //月間パターン
+                    {code: CreationMethodRef.COMPANY_CALENDAR, name: nts.uk.resource.getText('KSC001_108')}, //会社カレンダー
+                    {code: CreationMethodRef.WORKPLACE_CALENDAR, name: nts.uk.resource.getText('KSC001_109')}, //職場カレンダー
+                    {code: CreationMethodRef.CLASSIFICATION_CALENDAR, name: nts.uk.resource.getText('KSC001_110')}, //分類カレンダー
+                    {code: CreationMethodRef.MONTHLY_PATTERN, name: nts.uk.resource.getText('KSC001_111')}, //月間パターン
                 ]);
 
                 self.monthlyPatternOpts([]);
@@ -436,29 +442,26 @@ module nts.uk.at.view.ksc001.b {
             /**
              * apply ccg001 search data to kcp005
              */
-            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]): void {
+            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]){
                 let self = this,
                     employeeSearchs: UnitModel[] = [],
                     listSelectedEmpCode: any = [],
-	                employeeIds: Array<string> = [] ;
+	                oldListSelectedEmpCode: any = [],
+	                employeeIds: Array<string> = [],
+	                newListEmployees: Array<string> = [];
+
+	            //let dfd = $.Deferred<void>();
 
                 self.employeeList([]);
                 self.selectedEmployeeCode([]);
 	            self.employeeIds([]);
+	            oldListSelectedEmpCode = dataList;
 
                 _.each(dataList, (employeeSearch) => {
-                    employeeSearchs.push({
-                        code: employeeSearch.employeeCode,
-                        name: employeeSearch.employeeName,
-                        affiliationName: employeeSearch.affiliationName
-                    });
-                    listSelectedEmpCode.push(employeeSearch.employeeCode.trim());
 	                employeeIds.push(employeeSearch.employeeId);
                 });
 
                 // update employee list by ccg001 search
-	            self.employeeList(employeeSearchs);
-                self.selectedEmployeeCode(listSelectedEmpCode);
                 self.employeeIds(employeeIds);
 
                 //filter personal with new conditions
@@ -473,21 +476,38 @@ module nts.uk.at.view.ksc001.b {
                     startDate, endDate
                 );
 
-                //pending
-                let newListEmployees = self.listEmployeeFilter(listEmployeeFilter);
+                if( employeeIds.length > 0 ) {
+	                nts.uk.ui.block.grayout(); // block ui
+	                service.getEmployeeListAfterFilter ( listEmployeeFilter )
+		                .done ( ( response ) => {
+			                newListEmployees = response.listEmployeeId;
+			                //reset data listing after filtered
+			                employeeSearchs = [];
+			                listSelectedEmpCode = [];
+			                if ( newListEmployees.length > 0 ) {
+				                for( let i = 0; i < newListEmployees.length; i++ ) {
+					                for( let j= 0; j < oldListSelectedEmpCode.length; j++ ) {
+						                if( oldListSelectedEmpCode[j].employeeId == newListEmployees[i] ) {
+							                employeeSearchs.push ( {
+								                code : oldListSelectedEmpCode[j].employeeCode,
+								                name : oldListSelectedEmpCode[j].employeeName,
+								                affiliationName : oldListSelectedEmpCode[j].affiliationName
+							                } );
+							                listSelectedEmpCode.push ( oldListSelectedEmpCode[j].employeeCode.trim () );
+						                }
+					                }
+				                }
 
-                //reset
-                employeeSearchs = []; listSelectedEmpCode = [];
-                newListEmployees && newListEmployees.map((employeeSearch) => {
-                    employeeSearchs.push({
-                        code: employeeSearch.employeeCode,
-                        name: employeeSearch.employeeName,
-                        affiliationName: employeeSearch.affiliationName
-                    });
-                    listSelectedEmpCode.push(employeeSearch.employeeCode.trim());
-                });
-                //end
+				                self.employeeList ( employeeSearchs );
+				                self.selectedEmployeeCode ( listSelectedEmpCode );
+			                }
 
+			                nts.uk.ui.block.clear ();
+			                //dfd.resolve();
+		                } );
+                }
+
+	            //self.isEnableNextPageD(true);
                 // update kc005
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false, //設定済表示
@@ -506,6 +526,8 @@ module nts.uk.at.view.ksc001.b {
                     maxRows: 10,
                     tabindex: 5
                 };
+
+	            //return dfd.promise();
             }
 
             /**
@@ -521,7 +543,6 @@ module nts.uk.at.view.ksc001.b {
                     var user: any = __viewContext.user;
                     self.findPersonalScheduleByEmployeeId(user.employeeId).done(function (data) {
                         self.updatePersonalScheduleData(data);
-
                         // focus by done
                         self.next().done(function () {
                             $('#inputSelectImplementAtr').focus();
@@ -707,7 +728,12 @@ module nts.uk.at.view.ksc001.b {
                 let self = this;
                 if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE) {
                     $('#copy-start-date').ntsEditor('validate');
-                }
+                } else
+                if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE
+		            && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN
+	                && nts.uk.util.isNullOrEmpty(self.monthlyPatternCode()) ) {
+		            $('.monthly-pattern-code').ntsEditor('validate');
+	            }
                 return $('.nts-input').ntsError('hasError');
             }
 
@@ -734,28 +760,6 @@ module nts.uk.at.view.ksc001.b {
                     self.lengthEmployeeSelected(getText("KSC001_47", [self.selectedEmployeeCode().length]));
                     self.openDialogPageE();
                 }
-                /*if (self.isInValidCopyPasteSchedule()) {
-                    return;
-                }
-                // check D1_4 is checked
-                if (self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE) {
-                    if (self.responeReflectionSetting()) {
-                        // next page E by pattern code of self
-                        self.findByPatternCodeAndOpenPageE(self.responeReflectionSetting().selectedPatternCd);
-                    }
-                    else {
-                        self.findPersonalSchedule().done(function (res) {
-                            if (res && res != null) {
-                                // next page E by pattern code of res
-                                self.findByPatternCodeAndOpenPageE(res.patternCode);
-                            } else {
-                                self.findAllPattern();
-                            }
-                        });
-                    }
-                } else {
-                    self.openDialogPageE();
-                }*/
             }
 
             /**
@@ -924,8 +928,10 @@ module nts.uk.at.view.ksc001.b {
             private createPersonalSchedule(): void {
                 let self = this;
                 nts.uk.ui.dialog.confirm({messageId: 'Msg_569'}).ifYes(function () {
+	                self.savePersonalScheduleData();
                     // C1_5 is check -> B4_5 is checked
-                    if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
+	                //以前作成したスケジュールを無視してスケジュールを作成します。よろしいですか？
+                    /*if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
                         nts.uk.ui.dialog.confirm({messageId: 'Msg_570'}).ifYes(function () {
                             self.savePersonalScheduleData();
                         }).ifNo(function () {
@@ -934,7 +940,7 @@ module nts.uk.at.view.ksc001.b {
                     }
                     else {
                         self.savePersonalScheduleData();
-                    }
+                    }*/
                 }).ifNo(function () {
                     return;
                 });
@@ -948,7 +954,6 @@ module nts.uk.at.view.ksc001.b {
                 let self = this;
                 self.savePersonalSchedule(self.toPersonalScheduleData());
                 service.addScheduleExecutionLog(self.scheduleCollectionData()).done(function (data) {
-                    console.log(data);
                     nts.uk.ui.block.clear();
                     nts.uk.ui.windows.setShared('inputData', data);
                     nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function () {
@@ -1034,16 +1039,16 @@ module nts.uk.at.view.ksc001.b {
                         periodEndDate: self.toDate(self.periodDate().endDate),
                         creationType: data.selectedImplementAtrCode,
                         reTargetAtr: data.selectRebuildAtrCode,
-                        referenceMaster: data.creationMethodCode,
+                        referenceMaster: data.creationMethodCode, //作成方法（参照先）ラベル
                         reTargetTransfer: data.recreateConverter,
                         reTargetLeave: data.recreateEmployeeOffWork,
                         reTargetShortWork: data.recreateShortTimeWorkers,
                         reTargetLaborChange: data.recreateDirectBouncer,
                         reOverwriteConfirmed: data.overwriteConfirmedData,
                         reOverwriteRevised: data.createAfterDeleting,
-                        monthlyPatternId: data.monthlyPatternCode,
+                        monthlyPatternId: data.monthlyPatternCode, //月間パターンラベル
                         beConfirmed: data.confirm, //confirm
-                        creationMethod: data.creationMethodCode,
+                        creationMethod: data.checkCreateMethodAtrPersonalInfo, //作成方法区分
                         copyStartYmd: self.toDate(self.copyStartDate()), //copyStartDate
                         employeeIds: self.employeeIds(),
 	                    employeeIdLogin: user.employeeIdLogin

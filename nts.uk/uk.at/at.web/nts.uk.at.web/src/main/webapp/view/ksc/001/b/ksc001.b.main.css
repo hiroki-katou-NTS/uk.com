@@ -126,9 +126,11 @@ button.nts-switch-button {
 
 .checkboxSetting {
 	margin-top: 10px;
-	margin-left: 25px;
+	margin-left: 30px;
 }
-
+.checkboxSetting  .checkBoxGroup {
+	padding-left: 3px;
+}
 .checkboxSetting-1 {
 	margin-top: 10px;
 	margin-left: 40px;
@@ -301,8 +303,15 @@ button.nts-switch-button {
 	display: flex;
 	align-items: center;
 	margin: 5px 0;
-	padding-left: 25px;
+	padding-left: 28px;
 }
 .comboBoxLists .comboBoxItem .item {
 	width: 150px;
+}
+
+.lableCaseAll .total-employee {
+    margin-top: 2px;
+}
+.radioButtonGroup.comboBoxLists .ntsCheckBox {
+    padding-left: 0;
 }
