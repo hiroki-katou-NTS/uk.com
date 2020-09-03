@@ -146,6 +146,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     }, 1);
                 }
             });
+            
+            self.selectedModeDisplay.subscribe(function(value) { // value = 1 || 2 || 3
+                if (value == null || value == undefined || value == 2)
+                    return;
+                if (value == 3) {
+                    let date = new Date(self.dateTimeAfter());
+                    let firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+                    let lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+                    
+                    let startDate = moment(firstDay).format('YYYY/MM/DD');
+                    let endDate   = moment(lastDay).format('YYYY/MM/DD');
+                    
+                    if ((self.dateTimeAfter() != endDate) || (self.dateTimePrev() != startDate)) {
+                        self.stopRequest(false);
+                        let viewMode = self.selectedModeDisplayInBody();
+                        self.getNewData(viewMode, startDate, endDate);
+                    }
+                }
+            });
 
             self.achievementDisplaySelected.subscribe(function(newValue) {
                 if(newValue == null || newValue == undefined)
@@ -167,28 +186,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 });
                 self.stopRequest(false);
                 let viewMode = self.selectedModeDisplayInBody();
-                if (viewMode == 'shift') { // mode シフト表示   
-                    $("#extable").exTable("stickMode", "multi");
-                    self.shiftModeStart().done(() => {
-                        self.setUpdateMode();
-                        self.setPositionButonToRightToLeft();
-                        self.stopRequest(true);
-                    });
-                } else if (viewMode == 'shortName') { // mode 略名表示
-                    $("#extable").exTable("stickMode", "single");
-                    self.shortNameModeStart().done(() => {
-                        self.setUpdateMode();
-                        self.setPositionButonToRightToLeft();
-                        self.stopRequest(true);
-                    });
-                } else if (viewMode == 'time') {  // mode 勤務表示 
-                    $("#extable").exTable("stickMode", "single");
-                    self.timeModeStart().done(() => {
-                        self.setUpdateMode();
-                        self.setPositionButonToRightToLeft();
-                        self.stopRequest(true);
-                    });
-                }
+                self.getNewData(viewMode, null, null);
             });
 
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
@@ -220,37 +218,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.removeClass();
                 self.stopRequest(false);
                 // close screen O1 when change mode
-                if (viewMode == 'shift') { // mode シフト表示   
-                    $(".settingHeightGrid").css('display', 'none');
-                    $("#extable").exTable("stickMode", "multi");
-                    self.shiftModeStart().done(() => {
-                        self.setPositionButonToRightToLeft();
-                        $(".settingHeightGrid").css('display', '');
-                        self.pasteData();
-                        self.stopRequest(true);
-                    });
-                } else if (viewMode == 'shortName') { // mode 略名表示
-                    $("#extable").width(window.innerWidth - 51);
-                    $(".settingHeightGrid").css('display', 'none');
-                    $("#extable").exTable("stickMode", "single");
-                    self.shortNameModeStart().done(() => {
-                        self.setPositionButonToRightToLeft();
-                        $(".settingHeightGrid").css('display', '');
-                        self.pasteData();
-                        self.stopRequest(true);
-                    });
-                } else if (viewMode == 'time') {  // mode 勤務表示 
-                    $("#extable").width(window.innerWidth - 51);
-                    $(".settingHeightGrid").css('display', 'none');
-                    $("#extable").exTable("stickMode", "single");
-                    self.timeModeStart().done(() => {
-                        self.setPositionButonToRightToLeft();
-                        $(".settingHeightGrid").css('display', '');
-                        self.pasteData();
-                        self.stopRequest(true);
-                    });
-                }
-                
+                self.getNewData(viewMode, null, null);
             });
 
             self.backgroundColorSelected.subscribe((value) => {
@@ -380,8 +348,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             let param = {
                 viewMode: viewMode,
-                startDate: item.isPresent() ? self.dateTimePrev : '',
-                endDate: item.isPresent() ? self.dateTimeAfter : '',
+                startDate: null,
+                endDate  : null,
                 shiftPalletUnit: item.isPresent() ? userInfor.shiftPalletUnit : 1, // 1: company , 2 : workPlace 
                 pageNumberCom: item.isPresent() ? userInfor.shiftPalettePageNumberCom : 1,
                 pageNumberOrg: item.isPresent() ? userInfor.shiftPalettePageNumberOrg : 1,
@@ -430,6 +398,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
+        getNewData(viewMode, startDate, endDate) {
+            let self = this;
+            if (viewMode == 'shift') { // mode シフト表示   
+                $("#extable").exTable("stickMode", "multi");
+                self.shiftModeStart(startDate, endDate).done(() => {
+                    self.setUpdateMode();
+                    self.setPositionButonToRightToLeft();
+                    self.stopRequest(true);
+                });
+            } else if (viewMode == 'shortName') { // mode 略名表示
+                $("#extable").exTable("stickMode", "single");
+                self.shortNameModeStart(startDate, endDate).done(() => {
+                    self.setUpdateMode();
+                    self.setPositionButonToRightToLeft();
+                    self.stopRequest(true);
+                });
+            } else if (viewMode == 'time') {  // mode 勤務表示 
+                $("#extable").exTable("stickMode", "single");
+                self.timeModeStart(startDate, endDate).done(() => {
+                    self.setUpdateMode();
+                    self.setPositionButonToRightToLeft();
+                    self.stopRequest(true);
+                });
+            }
+        }
+
         creatDataLocalStorege(dataBasic: IDataBasicDto) {
             let self = this;
             let item = uk.localStorage.getItem(self.KEY);
@@ -474,14 +468,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
         }
 
-        shiftModeStart(): JQueryPromise<any> {
+        shiftModeStart(startDate : any, endDate : any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
                 viewMode : 'shift',
-                startDate: self.dateTimePrev,
-                endDate  : self.dateTimeAfter,
+                startDate: (startDate == null || startDate == undefined) ?  self.dateTimePrev() : startDate,
+                endDate  : (endDate == null || endDate == undefined)     ?  self.dateTimeAfter(): endDate,
                 shiftPalletUnit : userInfor.shiftPalletUnit, // 1: company , 2 : workPlace 
                 pageNumberCom   : userInfor.shiftPalettePageNumberCom,
                 pageNumberOrg   : userInfor.shiftPalettePageNumberOrg,
@@ -533,17 +527,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
-        shortNameModeStart(): JQueryPromise<any> {
+        shortNameModeStart(startDate : any, endDate : any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
-                    viewMode: 'shortName',
-                    startDate: self.dateTimePrev,
-                    endDate: self.dateTimeAfter,
-                    getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false,
-                    unit: item.isPresent() ? userInfor.unit : 0
-                };
+                viewMode: 'shortName',
+                startDate: (startDate == null || startDate == undefined) ? self.dateTimePrev() : startDate,
+                endDate: (endDate == null || endDate == undefined) ? self.dateTimeAfter() : endDate,
+                getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
+                unit: item.isPresent() ? userInfor.unit : 0
+            };
             self.saveModeGridToLocalStorege('shortName');
             self.visibleShiftPalette(false);
             self.visibleBtnInput(false);
@@ -568,14 +562,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             return dfd.promise();
         }
 
-        timeModeStart(): JQueryPromise<any> {
+        timeModeStart(startDate : any, endDate : any): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
                 viewMode: 'time',
-                startDate: self.dateTimePrev,
-                endDate: self.dateTimeAfter,
+                startDate: (startDate == null || startDate == undefined) ?  self.dateTimePrev() : startDate,
+                endDate  : (endDate == null || endDate == undefined)     ?  self.dateTimeAfter(): endDate,
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 unit: item.isPresent() ? userInfor.unit : 0,
             };

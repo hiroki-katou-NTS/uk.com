@@ -58,7 +58,7 @@ public class StartKSU001 {
 	@Inject
 	private DisplayInShift displayInShift;
 	
-	private static final String DATE_FORMAT = "yyyyMMdd";
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public StartKSU001Dto getData(StartKSU001Param param) {
 		
@@ -68,6 +68,9 @@ public class StartKSU001 {
 		// step 2 start
 		GeneralDate startDate = param.startDate == null || param.startDate == "" ? resultStep1.startDate : GeneralDate.fromString(param.startDate, DATE_FORMAT);
 		GeneralDate endDate = param.endDate == null || param.endDate == "" ? resultStep1.endDate : GeneralDate.fromString(param.endDate, DATE_FORMAT);
+		resultStep1.setStartDate(startDate);
+		resultStep1.setEndDate(endDate);
+		
 		TargetOrgIdenInfor targetOrgIdenInfor = null;
 		if (resultStep1.targetOrgIdenInfor.unit == TargetOrganizationUnit.WORKPLACE.value) {
 			targetOrgIdenInfor = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
