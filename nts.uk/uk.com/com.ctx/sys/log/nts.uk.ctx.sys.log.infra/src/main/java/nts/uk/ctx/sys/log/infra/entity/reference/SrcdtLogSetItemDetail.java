@@ -43,6 +43,13 @@ public class SrcdtLogSetItemDetail extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "SYMBOL")
 	private Integer symbol;
+	
+	/**
+	 * 会社ID
+	 */
+	@Basic(optional=false)
+	@Column(name = "CID")
+    public String cid;
 
 	@ManyToOne
 	@JoinColumns(value={
@@ -60,7 +67,7 @@ public class SrcdtLogSetItemDetail extends UkJpaEntity implements Serializable {
 		boolean isUseCondFlg = this.isUseCondFlg == 1;
 		return LogSetItemDetail.createFromJavatype(this.srcdtLogSetItemDetailPK.logSetId,
 				this.srcdtLogSetItemDetailPK.itemNo, this.srcdtLogSetItemDetailPK.frame,
-				isUseCondFlg, this.condition, this.symbol);
+				isUseCondFlg, this.condition, this.symbol, this.cid);
 	}
 
 	public static SrcdtLogSetItemDetail toEntity(LogSetItemDetail domain) {
@@ -68,15 +75,17 @@ public class SrcdtLogSetItemDetail extends UkJpaEntity implements Serializable {
 		String condition = domain.getCondition().isPresent() ? domain.getCondition().get().v() : null;
 		Integer sybol = domain.getSymbol().isPresent() ? domain.getSymbol().get().code : null;
 		return new SrcdtLogSetItemDetail(new SrcdtLogSetItemDetailPK(domain.getLogSetId(), domain.getItemNo(), domain.getFrame()),
-				isUseCondFlg, condition, sybol);
+				isUseCondFlg, condition, sybol, domain.getCid());
 	}
 
 	public SrcdtLogSetItemDetail(SrcdtLogSetItemDetailPK srcdtLogSetItemDetailPK, int isUseCondFlg, String condition,
-			int symbol) {
+			int symbol, String cid) {
 		super();
 		this.srcdtLogSetItemDetailPK = srcdtLogSetItemDetailPK;
 		this.isUseCondFlg = isUseCondFlg;
 		this.condition = condition;
 		this.symbol = symbol;
+		this.condition = condition;
+		this.cid = cid;
 	}
 }

@@ -41,8 +41,20 @@ public class StandardMenuDto {
 	/** The afterLoginDisplay. */
 	private int afterLoginDisplay;
 	
-	/** The logSettingDisplay. */
-	private int logSettingDisplay;
+	/**
+	 * ログイン履歴表示区分
+	 */
+	private int logLoginDisplay;
+	
+	/**
+	 * 起動履歴表示区分
+	 */
+	private int logStartDisplay;
+	
+	/**
+	 * 修正履歴表示区分
+	 */
+	private int logUpdateDisplay;
 	
 	/**
 	 * From domain.
@@ -73,7 +85,9 @@ public class StandardMenuDto {
 		standardMenuDto.classification = standardMenu.getClassification().value;
 		standardMenuDto.webMenuSetting = standardMenu.getWebMenuSetting().value;
 		standardMenuDto.afterLoginDisplay = standardMenu.getAfterLoginDisplay();
-		standardMenuDto.logSettingDisplay = standardMenu.getLogSettingDisplay();
+		standardMenuDto.logLoginDisplay = standardMenu.getLogLoginDisplay();
+		standardMenuDto.logStartDisplay = standardMenu.getLogStartDisplay();
+		standardMenuDto.logUpdateDisplay = standardMenu.getLogUpdateDisplay();
 		return standardMenuDto;
 	}
 }

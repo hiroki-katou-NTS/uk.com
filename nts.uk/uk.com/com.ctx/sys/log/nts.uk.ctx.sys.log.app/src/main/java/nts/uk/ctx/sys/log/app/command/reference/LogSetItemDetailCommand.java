@@ -30,9 +30,19 @@ public class LogSetItemDetailCommand {
 	/** The Symbol Condition */
 	private int sybol;
 	
+	/**
+	 * 契約コード
+	 */
+	private String contractCd;
+	
+	/**
+	 * 会社ID
+	 */
+	private String cid;
+	
 	public LogSetItemDetail toDomain(String logSetId) {
 		boolean isUseCondFlg = this.isUseCondFlg == 1 ? true : false;
 		return new LogSetItemDetail(logSetId, itemNo, frame, isUseCondFlg, 
-				Optional.of(new LogCondition(condition)), Optional.of(SymbolEnum.valueOf(sybol)));			
+				Optional.of(new LogCondition(condition)), Optional.of(SymbolEnum.valueOf(sybol)), cid);			
 	}
 }
