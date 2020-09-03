@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 300, height: 230 };</script>
+			<script>var dialogSize = { width: 450, height: 400 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 				</com:ValidatorScript>
@@ -20,84 +20,32 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
+        <div class="title-border">
+          <!-- A1_1 -->
+					<label class="bigtext">#{i18n.getText('KTG027_5')}</label>
+				</div>
 				<div class="valign-center control-group"
-					style="margin-top: 5px; margin-bottom: 15px;">
-					<label>#{i18n.getText('KTG027_3')}</label>
-					<div id = "inputYM"
-						data-bind="ntsDatePicker: { name: '#[KTG027_3]',value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true, required: true}"></div>
-				</div>
-				<div class="valign-center control-group">
-					<label>#{i18n.getText('KTG027_4')}</label>
-					<div id="combo-box" style="margin-left: 19px;"
-						data-bind="ntsComboBox: {
-							name: 'Sample List',
-							options: closureResultModel,
-							optionsValue: 'closureId',
-							visibleItemsCount: 5,
-							value: selectedClosureID,
-							optionsText: 'closureName',
-							columns: [
-								{ prop: 'closureName', length: 5},
-							]}"></div>
-					<button class="caret-bottom" style="margin-left: 20px;"
-						data-bind="click : clickExtractionBtn ,enable: $root.errors.isEmpty">#{i18n.getText('KTG027_5')}</button>
-					<button style="margin-left: 100px;"
-						data-bind=" click : printData ,visible : check()  ">#{i18n.getText('KTG027_13')}
-					</button>
-					<div data-bind="visible : !displayEr()">
-						<button
-							data-bind="ntsHelpButton: {textId : 'KTG027_11',textParams:['{#KTG027_7}', '{#KTG027_8}', '{#KTG027_1}', '{#KTG027_9}'], position: 'left bottom'}">?</button>
-					</div>
-					<div data-bind="visible:!displayEr()">
-
-						<table id="fixed-table">
-							<colgroup>	
-								<col width="230px" />
-								<col width="75px" />
-								<col width="105px" />
-								<!-- <col width="70px" />
-								<col width="70px" /> -->
-
-							</colgroup>
-							<thead>
-								<tr>
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('Com_Person')}</th>
-									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KTG027_7')}</th>
-									<th class="ui-widget-header" colspan="3">#{i18n.getText('KTG027_1')}</th>
-
-								</tr>
-
-								<tr>
-									<th class="ui-widget-header">#{i18n.getText('KTG027_8')}</th>
-									<!-- <th class="ui-widget-header">#{i18n.getText('KTG027_9')}</th>
-									<th class="ui-widget-header">#{i18n.getText('KTG027_10')}</th> -->
-								</tr>
-							</thead>
-							
-							<tbody data-bind="foreach : inforOvertime">
-								<tr
-									data-bind="style: { backgroundColor: status !== 0 ? backgroundColor : '', color : status !== 0  ? color : ''}">
-									<td data-bind="text : employee"></td>
-									<td data-bind="text : timeLimit"></td>
-									<td data-bind="text : actualTime"></td>
-									<!-- <td data-bind="text : applicationTime"></td>
-									<td data-bind="text : totalTime"></td> -->
-								</tr>
-							</tbody>
-						</table>
-						<!-- <div class="valign-center control-group" style = "display: inline-flex; margin-top : 2px;"
-						data-bind="style : {backgroundColor : backgroundColor , color : color}">
-						<div class = "row1" style = "width: 250px;">#{i18n.getText('KTG027_10')}</div>
-						<div class = "row2" style = "width: 69px;"></div>
-						<div class = "row3" style = "width: 69px;"  data-bind="text : total1()"></div>
-						<div class = "row4" style = "width: 69px;"	data-bind="text : total2()"></div>
-						<div class = "row5" style = "width: 86px;"	data-bind="text : total3()"></div>
-						 </div> -->
-					</div>
-					
-					<div data-bind="text : msg , visible : displayEr()"
-						class="color-daily-holiday" style="padding-top: 10px;"></div>
-				</div>
+          id="inputYM">
+          <!-- A1_2 -->
+					<div class= "date"
+            data-bind="ntsDatePicker: { name: '#[KTG027_1]',value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true, required: true}"></div>
+           <div class= "label-color">
+             <!-- A1_3 -->
+            <label class="label1">#{i18n.getText('KTG027_2')}</label>
+            <!-- A1_4 -->
+            <label class="label2">#{i18n.getText('KTG027_3')}</label>
+           </div>
+        </div>
+        <div class="header">
+          <!-- A2_1 -->
+          <label class="header1">#{i18n.getText('KTG027_15')}</label>
+          <!-- A2_2 -->
+          <label class="header2">#{i18n.getText('KTG027_4')}</label>
+          <!-- A2_3 -->
+          <label class="header3">45:00</label>
+          <!-- A2_4 -->
+          <label class="header4">80:00</label>
+        </div>
 			</div>
 		</ui:define>
 	</ui:composition>
