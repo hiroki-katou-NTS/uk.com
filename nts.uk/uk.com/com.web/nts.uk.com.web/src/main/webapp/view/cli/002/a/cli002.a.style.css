@@ -1,0 +1,16 @@
+.view-cli .float-left {
+  float: left;
+}
+
+.view-cli .model-component {
+  margin-left: 30px;
+}
+
+.model-component {
+	float: left;
+}
+
+#search-box {
+  width: 100px;
+  margin-left: 320px;
+}

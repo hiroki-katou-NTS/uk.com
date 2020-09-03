@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="../../../../master/base.xhtml">
+      <ui:define name="htmlHead">
+        <script>
+          var dialogSize = { width: 300, height: 200 };
+        </script>
+        <com:stylefile path="cli002.a.style.css" />
+        <com:scriptfile path="cli002.a.service.js" />
+        <com:scriptfile path="cli002.a.vm.js" />
+        <com:scriptfile set="IGNITE" />
+      </ui:define>
+
+      <ui:define name="content">
+        <div style="margin: 10px;">
+          <button
+            class="proceed"
+            data-bind="text: $i18n('CLI002_2')"
+            style="width: 80px;"
+          ></button>
+        </div>
+        <hr />
+        <div id="search-box"></div>
+        <div class="view-cli" style="margin: 5px;">
+          <div class="float-left list-component">
+            <div
+              class="caret-right caret-background bg-green"
+              style="width: 200px; padding: 30px 10px 30px 20px;"
+            >
+              <table id="system-list"></table>
+            </div>
+          </div>
+          <div class="float-left model-component">
+            <div>
+              <div id="item-list"></div>
+            </div>
+          </div>
+        </div>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
