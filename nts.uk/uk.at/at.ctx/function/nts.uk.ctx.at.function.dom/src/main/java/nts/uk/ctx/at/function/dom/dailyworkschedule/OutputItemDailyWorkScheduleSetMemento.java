@@ -53,4 +53,11 @@ public interface OutputItemDailyWorkScheduleSetMemento {
 	 * @param remarkInputNo the new remark input no
 	 */
 	void setRemarkInputNo(RemarkInputContent remarkInputNo);
+	
+	/**
+	 * Sets the font size.
+	 *
+	 * @param fontSize the new font size
+	 */
+	void setFontSize(FontSizeEnum fontSize);
 }

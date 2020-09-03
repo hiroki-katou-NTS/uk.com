@@ -23,8 +23,12 @@ import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatdPK;
@@ -150,12 +154,14 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 				entity.setSid(rec.getString("SID"));
 				entity.setCid(rec.getString("CID"));
 				entity.setItemSelType(rec.getInt("ITEM_SEL_TYPE"));
-				entity.setItemName(rec.getString("ITEM_NAME"));
-				entity.setItemCode(rec.getString("ITEM_CD"));
-				entity.setWorkTypeNameDisplay(rec.getBigDecimal("WORKTYPE_NAME_DISPLAY"));
+				entity.setItemName(new OutputItemSettingName(rec.getString("ITEM_NAME")));
+				entity.setItemCode(new OutputItemSettingCode(rec.getString("ITEM_CD")));
+				entity.setWorkTypeNameDisplay(NameWorkTypeOrHourZone.valueOf(rec.getBigDecimal("WORKTYPE_NAME_DISPLAY").intValue()));
 				entity.setNoteInputNo(rec.getBigDecimal("NOTE_INPUT_NO"));
 				entity.setCharSizeType(rec.getBigDecimal("CHAR_SIZE_TYPE"));
-				return this.toDomain(entity, mapKfnmtAttendanceDisplay.get(entity.getLayoutId()), mapKfnmtPrintRemarkCont.get(entity.getLayoutId()));
+				entity.setLstKfnmtRptWkDaiOutatds(mapKfnmtAttendanceDisplay.get(entity.getLayoutId()));
+				entity.setLstKfnmtRptWkDaiOutnotes(mapKfnmtPrintRemarkCont.get(entity.getLayoutId()));
+				return this.toDomain(entity);
 			});
 		}
 	}
@@ -166,11 +172,8 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 * @param entity the entity
 	 * @return the output item daily work schedule
 	 */
-	private OutputItemDailyWorkSchedule toDomain(KfnmtRptWkDaiOutItem entity
-			, List<KfnmtRptWkDaiOutatd> kfnmtRptWkDaiOutatds
-			, List<KfnmtRptWkDaiOutnote> kfnmtRptWkDaiOutnotes) {
-		return new OutputItemDailyWorkSchedule(
-				new JpaOutputItemDailyWorkScheduleGetMemento(entity, kfnmtRptWkDaiOutatds, kfnmtRptWkDaiOutnotes));
+	private OutputItemDailyWorkSchedule toDomain(KfnmtRptWkDaiOutItem entity) {
+		return new OutputItemDailyWorkSchedule(entity);
 	}
 	
 	/**
@@ -181,7 +184,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	private KfnmtRptWkDaiOutItem toEntity(OutputItemDailyWorkSchedule domain) {
 		KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
-		domain.saveToMemento(new JpaOutputItemDailyWorkScheduleSetMemento(entity));
+		domain.saveToMemento(entity);
 		return entity;
 	}
 	
