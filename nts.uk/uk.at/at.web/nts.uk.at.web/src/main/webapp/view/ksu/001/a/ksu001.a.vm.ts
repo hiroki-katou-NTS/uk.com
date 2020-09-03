@@ -1200,7 +1200,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.widthMid = widthMid;
                 middleHeader = {
                     columns: middleColumns,
-                    width:   "40px",
+                    width:   widthMid+"px",
                     features: [{
                         name: "HeaderRowHeight",
                         rows: { 0: "60px" }
@@ -1402,11 +1402,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let middleContentUpdate = {};
 
             if (self.showA9) {
-                middleColumns = [
-                    { headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } },
-                    { headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } },
-                    { headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } }
-                ];
+                middleColumns = [];
+                if (self.showTeamCol) {
+                    middleColumns.push({ headerText: getText("KSU001_4023"), key: "team", width: "40px", css: { whiteSpace: "none" } });
+                }
+                if (self.showRankCol) {
+                    middleColumns.push({ headerText: getText("KSU001_4024"), key: "rank", width: "40px", css: { whiteSpace: "none" } });
+                }
+                if (self.showQualificCol) {
+                    middleColumns.push({ headerText: getText("KSU001_4025"), key: "qualification", width: "40px", css: { whiteSpace: "none" } });
+                }
             }
 
             middleContentUpdate = {
