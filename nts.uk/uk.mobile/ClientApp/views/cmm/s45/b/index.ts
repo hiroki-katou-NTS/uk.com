@@ -236,7 +236,7 @@ export class CmmS45BComponent extends Vue {
                 if (res) {
                     let paramNew = {
                         listAppType: res.data,
-                        appListExtractConditionDto: self.appListExtractCondition
+                        appListExtractCondition: self.appListExtractCondition
                     };
 
                     return self.$http.post('at', servicePath.getApplicationList, paramNew);
