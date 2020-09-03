@@ -35,190 +35,63 @@ public class WorkMonthlySettingServiceTest {
     private WorkMonthlySettingService.Require require;
 
     @Injectable
-    private WorkInformation.Require requireWorkInfo;
-
     private final String CID = "000-001";
-
-    private final boolean IS_OVER_WRITE_TRUE = true;
-
-    private final boolean IS_OVER_WRITE_FALSE = false;
-
+    private final String WMID = "abc";
     @Rule
     public ExpectedException exceptionRule = ExpectedException.none();
 
     @Test
-    public void test_error_WORKTYPE_WAS_DELETE() {
-        WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
-        WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
-
-        NtsAssert.businessException("Msg_1608", () ->{
-                    new WorkMonthlySettingService()
-                            .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE);
+    public void test_error() {
+        WorkMonthlySetting workMonthlySetting = new WorkMonthlySetting(CID, WMID, GeneralDate.today(), new WorkInformation("123", "1234"));
+        NtsAssert.businessException("Msg_1608", () -> {
+                    WorkMonthlySettingService
+                            .register(require, workMonthlySetting, true);
                 }
         );
     }
-
-    @Test
-    public void test_error_WORKTIME_ARE_REQUIRE_NOT_SET() {
-        WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
-        WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
-        nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode workTypeCode = new nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode("123") ;
-        WorkType workType =  new WorkType(CID, workTypeCode, new WorkTypeName("name"), new WorkTypeAbbreviationName("123"));
-        workMonthlySetting.getWorkInformation().setWorkTimeCode(null);
-        new Expectations(){{
-            requireWorkInfo.findByPK(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = Optional.of(workType);
-            requireWorkInfo.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = SetupType.REQUIRED;
-        }};
-        NtsAssert.businessException("Msg_435", () ->{
-                    new WorkMonthlySettingService()
-                            .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE);
-                }
-        );
-    }
-
-    @Test
-    public void test_error_WORKTIME_ARE_SET_WHEN_UNNECESSARY() {
-        WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
-        WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
-        nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode workTypeCode = new nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode("123") ;
-        WorkType workType =  new WorkType(CID, workTypeCode, new WorkTypeName("name"), new WorkTypeAbbreviationName("123"));
-        new Expectations(){{
-            requireWorkInfo.findByPK(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = Optional.of(workType);
-            requireWorkInfo.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = SetupType.NOT_REQUIRED;
-        }};
-        NtsAssert.businessException("Msg_434", () ->{
-                    new WorkMonthlySettingService()
-                            .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE);
-                }
-        );
-    }
-
-    @Test
-    public void test_error_WORKTIME_WAS_DELETE() {
-        WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
-        WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
-        nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode workTypeCode = new nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode("123") ;
-        WorkType workType =  new WorkType(CID, workTypeCode, new WorkTypeName("name"), new WorkTypeAbbreviationName("123"));
-        new Expectations(){{
-            requireWorkInfo.findByPK(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = Optional.of(workType);
-            requireWorkInfo.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = SetupType.OPTIONAL;
-            requireWorkInfo.findByCode(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
-            result = Optional.empty();
-        }};
-        NtsAssert.businessException("Msg_1609", () ->{
-                    new WorkMonthlySettingService()
-                            .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_FALSE);
-                }
-        );
-    }
-
 
     @Test
     public void test_non_error_condition_non_update() {
-        WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
-        WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
-        nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode workTypeCode = new nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode("123") ;
-        WorkType workType =  new WorkType(CID, workTypeCode, new WorkTypeName("name"), new WorkTypeAbbreviationName("123"));
-        WorkTimeSetting workTimeSetting = new WorkTimeSetting();
+        WorkMonthlySetting workMonthlySetting = new WorkMonthlySetting(CID, WMID, GeneralDate.today(), new WorkInformation("123", "1234"));
         Optional<AtomTask> expected = Optional.empty();
+        new Expectations(WorkMonthlySetting.class) {{
+            workMonthlySetting.checkForErrors(require);
+            require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
+            result = true;
 
-        expectationsDataForUpdateCase(workMonthlySetting, workType, workTimeSetting);
-
-        assertThat(expected.equals(new WorkMonthlySettingService()
-                .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_FALSE)));
+        }};
+        assertThat(expected.equals(WorkMonthlySettingService.register(require, workMonthlySetting, false)));
     }
 
     @Test
     public void test_non_error_condition_update() {
-        WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
-        WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
-        nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode workTypeCode = new nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode("123") ;
-        WorkType workType =  new WorkType(CID, workTypeCode, new WorkTypeName("name"), new WorkTypeAbbreviationName("123"));
-        WorkTimeSetting workTimeSetting = new WorkTimeSetting();
-
-        expectationsDataForUpdateCase(workMonthlySetting, workType, workTimeSetting);
-
-        NtsAssert.atomTask(() -> new WorkMonthlySettingService()
-                .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE).get(),
+        WorkMonthlySetting workMonthlySetting = new WorkMonthlySetting(CID, WMID, GeneralDate.today(), new WorkInformation("123", "1234"));
+        new Expectations(WorkMonthlySetting.class) {{
+            workMonthlySetting.checkForErrors(require);
+            require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
+            result = true;
+        }};
+        NtsAssert.atomTask(() -> WorkMonthlySettingService
+                        .register(require, workMonthlySetting, true).get(),
                 any -> require.update(any.get())
         );
     }
 
     @Test
     public void test_non_error_condition_add() {
-        WorkMonthlySettingGetMemento memento = new WorkMonthlySettingGetMementoImpl(CID);
-        WorkMonthlySetting workMonthlySetting =  new WorkMonthlySetting(memento);
-        nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode workTypeCode = new nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode("123") ;
-        WorkType workType =  new WorkType(CID, workTypeCode, new WorkTypeName("name"), new WorkTypeAbbreviationName("123"));
-        WorkTimeSetting workTimeSetting = new WorkTimeSetting();
+        WorkMonthlySetting workMonthlySetting = new WorkMonthlySetting(CID, WMID, GeneralDate.today(), new WorkInformation("123", "1234"));
 
-        new Expectations(){{
-            //workMonthlySetting.checkForErrors();
-            requireWorkInfo.findByPK(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = Optional.of(workType);
-            requireWorkInfo.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = SetupType.REQUIRED;
-            requireWorkInfo.findByCode(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
-            result = Optional.of(workTimeSetting);
+        new Expectations(WorkMonthlySetting.class) {{
+            workMonthlySetting.checkForErrors(require);
             require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
             result = false;
         }};
 
-        NtsAssert.atomTask(() -> new WorkMonthlySettingService()
-                        .register(requireWorkInfo,require,workMonthlySetting,IS_OVER_WRITE_TRUE).get(),
+        NtsAssert.atomTask(() -> WorkMonthlySettingService
+                        .register(require, workMonthlySetting, true).get(),
                 any -> require.add(any.get())
         );
     }
 
-    private Expectations expectationsDataForUpdateCase(WorkMonthlySetting workMonthlySetting, WorkType workType, WorkTimeSetting workTimeSetting){
-        return new Expectations(){{
-            //workMonthlySetting.checkForErrors();
-            requireWorkInfo.findByPK(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = Optional.of(workType);
-            requireWorkInfo.checkNeededOfWorkTimeSetting(workMonthlySetting.getWorkInformation().getWorkTypeCode().v());
-            result = SetupType.REQUIRED;
-            requireWorkInfo.findByCode(workMonthlySetting.getWorkInformation().getWorkTimeCode().v());
-            result = Optional.of(workTimeSetting);
-            require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
-            result = true;
-        }};
-    }
-
-    @AllArgsConstructor
-    class WorkMonthlySettingGetMementoImpl implements WorkMonthlySettingGetMemento{
-
-        private String cid;
-
-        @Override
-        public CompanyId getCompanyId() {
-            return new CompanyId(cid);
-        }
-
-        @Override
-        public WorkTypeCode getWorkTypeCode() {
-            return new WorkTypeCode("A");
-        }
-
-        @Override
-        public WorkingCode getWorkingCode() {
-            return new WorkingCode("code-1");
-        }
-
-        @Override
-        public GeneralDate getYmdK() {
-            return GeneralDate.today();
-        }
-
-        @Override
-        public MonthlyPatternCode getMonthlyPatternCode() {
-            return new MonthlyPatternCode("COD");
-        }
-    }
 }
 

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
-import mockit.Mocked;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.NumOfWorkingDays;
@@ -18,7 +17,6 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleTestHelper;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
-import nts.uk.shr.com.context.AppContexts;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -433,6 +431,7 @@ public class CreateWorkCycleAppImageTest {
                 require.getpHolidayWhileDate(startDate,endDate);
                 List<PublicHoliday> holidays = new ArrayList<>();
                 holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,1), "Dummy"));
+                holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,4), "Dummy"));
                 result = holidays;
             }
         };
@@ -513,6 +512,7 @@ public class CreateWorkCycleAppImageTest {
                 require.getpHolidayWhileDate(startDate,endDate);
                 List<PublicHoliday> holidays = new ArrayList<>();
                 holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,1), "Dummy"));
+                holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,4), "Dummy"));
                 result = holidays;
             }
         };
@@ -547,7 +547,7 @@ public class CreateWorkCycleAppImageTest {
 
         val day3 = result.get(3);
         Assert.assertEquals(day3.getDate(), GeneralDate.ymd(2020, 1, 4));
-        Assert.assertEquals(day3.getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
+        Assert.assertEquals(day3.getWorkCreateMethod(), WorkCreateMethod.PUB_HOLIDAY);
         Assert.assertEquals(day3.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("dummy"));
         Assert.assertEquals(day3.getWorkInformation().getWorkTimeCode(), null);
 
@@ -594,6 +594,7 @@ public class CreateWorkCycleAppImageTest {
                 require.getpHolidayWhileDate((GeneralDate) any, (GeneralDate) any);
                 List<PublicHoliday> holidays = new ArrayList<>();
                 holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,1), "Dummy"));
+                holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,4), "Dummy"));
                 result = holidays;
             }
         };
@@ -628,7 +629,7 @@ public class CreateWorkCycleAppImageTest {
 
         val day3 = result.get(3);
         Assert.assertEquals(day3.getDate(), GeneralDate.ymd(2020, 1, 4));
-        Assert.assertEquals(day3.getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
+        Assert.assertEquals(day3.getWorkCreateMethod(), WorkCreateMethod.PUB_HOLIDAY);
         Assert.assertEquals(day3.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("dummy"));
         Assert.assertEquals(day3.getWorkInformation().getWorkTimeCode(), null);
 
@@ -675,6 +676,7 @@ public class CreateWorkCycleAppImageTest {
                 require.getpHolidayWhileDate((GeneralDate) any, (GeneralDate) any);
                 List<PublicHoliday> holidays = new ArrayList<>();
                 holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,1), "Dummy"));
+                holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,4), "Dummy"));
                 result = holidays;
             }
         };
@@ -709,7 +711,7 @@ public class CreateWorkCycleAppImageTest {
 
         val day3 = result.get(3);
         Assert.assertEquals(day3.getDate(), GeneralDate.ymd(2020, 1, 4));
-        Assert.assertEquals(day3.getWorkCreateMethod(), WorkCreateMethod.WEEKLY_WORK);
+        Assert.assertEquals(day3.getWorkCreateMethod(), WorkCreateMethod.PUB_HOLIDAY);
         Assert.assertEquals(day3.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("dummy"));
         Assert.assertEquals(day3.getWorkInformation().getWorkTimeCode(), null);
 
@@ -722,14 +724,14 @@ public class CreateWorkCycleAppImageTest {
         val day5 = result.get(5);
         Assert.assertEquals(day5.getDate(), GeneralDate.ymd(2020, 1, 6));
         Assert.assertEquals(day5.getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
-        Assert.assertEquals(day5.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("004"));
-        Assert.assertEquals(day5.getWorkInformation().getWorkTimeCode(), new WorkTimeCode("104"));
+        Assert.assertEquals(day5.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("003"));
+        Assert.assertEquals(day5.getWorkInformation().getWorkTimeCode(), new WorkTimeCode("103"));
 
         val day6 = result.get(6);
         Assert.assertEquals(day6.getDate(), GeneralDate.ymd(2020, 1, 7));
         Assert.assertEquals(day6.getWorkCreateMethod(), WorkCreateMethod.WORK_CYCLE);
-        Assert.assertEquals(day6.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("005"));
-        Assert.assertEquals(day6.getWorkInformation().getWorkTimeCode(), new WorkTimeCode("105"));
+        Assert.assertEquals(day6.getWorkInformation().getWorkTypeCode(), new WorkTypeCode("004"));
+        Assert.assertEquals(day6.getWorkInformation().getWorkTimeCode(), new WorkTimeCode("104"));
 
     }
 
@@ -760,6 +762,7 @@ public class CreateWorkCycleAppImageTest {
                 require.getpHolidayWhileDate((GeneralDate) any, (GeneralDate) any);
                 List<PublicHoliday> holidays = new ArrayList<>();
                 holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,1), "Dummy"));
+                holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,4), "Dummy"));
                 result = holidays;
             }
         };
@@ -842,6 +845,7 @@ public class CreateWorkCycleAppImageTest {
                 require.getpHolidayWhileDate((GeneralDate) any, (GeneralDate) any);
                 List<PublicHoliday> holidays = new ArrayList<>();
                 holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,1), "Dummy"));
+                holidays.add(PublicHoliday.createFromJavaType("0000001", GeneralDate.ymd(2020,1,4), "Dummy"));
                 result = holidays;
             }
         };

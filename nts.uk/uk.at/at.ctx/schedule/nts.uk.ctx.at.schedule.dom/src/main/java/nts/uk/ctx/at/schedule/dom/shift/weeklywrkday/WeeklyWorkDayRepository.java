@@ -1,7 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay;
-
-
-import java.util.List;
+package nts.uk.ctx.at.schedule.dom.shift.weeklywrkday;
 
 /**
  *
@@ -13,6 +10,7 @@ public interface WeeklyWorkDayRepository {
 
     /**
      * get all weekly work day
+     * @param CompanyId
      * @return
      */
     WeeklyWorkDayPattern getWeeklyWorkDayPatternByCompanyId(String companyId);

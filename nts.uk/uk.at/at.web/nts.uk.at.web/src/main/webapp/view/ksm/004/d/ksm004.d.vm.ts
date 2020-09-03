@@ -135,7 +135,7 @@ module ksm004.d.viewmodel {
             endYM.add(1, 'M');
             
             //$('.nts-input').trigger("validate");
-            _.defer(() => {月間パターン
+            _.defer(() => {
                 if (!$('.nts-editor').ntsError("hasError")) {
                     // startYM < endYM
                         while (startYM.format("YYYYMMDD") < endYM.format("YYYYMMDD")) //value : 0-11

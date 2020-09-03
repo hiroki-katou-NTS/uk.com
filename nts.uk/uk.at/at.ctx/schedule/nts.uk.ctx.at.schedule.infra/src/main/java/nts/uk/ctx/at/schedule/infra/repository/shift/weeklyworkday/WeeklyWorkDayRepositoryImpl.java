@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.weeklyworkday;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
-import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayRepository;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.weeklyworkday.KscmtWeeklyWorkingdays;
 
 import javax.ejb.Stateless;

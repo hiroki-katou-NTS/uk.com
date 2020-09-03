@@ -19,27 +19,27 @@ public class WorkCycleInfoTest {
 
     @Test
     public void getWorkCycleInfoTest() {
-        WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(1, new WorkInformation("WTimeC1", "WType1"));
+        WorkCycleInfo info = WorkCycleInfo.create(1, new WorkInformation("WTimeC1", "WType1"));
         NtsAssert.invokeGetters(info);
     }
 
     @Test
     public void getWorkCycleInfoDay_1Test() {
         NtsAssert.businessException("Msg_1689",() -> {
-            WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(0, new WorkInformation("WTimeC1", "WType1"));
+            WorkCycleInfo info = WorkCycleInfo.create(0, new WorkInformation("WTimeC1", "WType1"));
             });
     }
 
     @Test
     public void getWorkCycleInfoDay_2Test() {
         NtsAssert.businessException("Msg_1689",() -> {
-            WorkCycleInfo info = WorkCycleInfo.WorkCycleInfo(100, new WorkInformation("WTimeC1", "WType1"));
+            WorkCycleInfo info = WorkCycleInfo.create(100, new WorkInformation("WTimeC1", "WType1"));
         });
     }
 
     @Test
     public void testCheckError() {
-        WorkCycleInfo workCycleInfo =  WorkCycleInfo.WorkCycleInfo(2, new WorkInformation("WTime001", "WType001"));
+        WorkCycleInfo workCycleInfo =  WorkCycleInfo.create(2, new WorkInformation("WTime001", "WType001"));
 
         new Expectations(WorkInformation.class) {
             {

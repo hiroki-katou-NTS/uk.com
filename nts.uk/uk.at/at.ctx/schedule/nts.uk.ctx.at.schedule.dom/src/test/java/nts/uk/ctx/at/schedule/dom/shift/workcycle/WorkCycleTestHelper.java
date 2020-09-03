@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
-import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.DayOfWeek;
-import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WeeklyWorkDayPattern;
-import nts.uk.ctx.at.schedule.dom.shift.WeeklyWorkDay.WorkdayPatternItem;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WorkdayPatternItem;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -15,7 +15,7 @@ public class WorkCycleTestHelper {
     public static class WorkCycleHelper {
 
         public static WorkCycle createWorkCycleForTest(List<WorkCycleInfo> infos) {
-            return WorkCycle.WorkCycle(
+            return WorkCycle.create(
                     "cid",
                     "cyclecode",
                     "cyclename",
@@ -42,7 +42,7 @@ public class WorkCycleTestHelper {
         public static List<WorkCycleInfo> createListForTest(int size) {
             List<WorkCycleInfo> result = new ArrayList<>();
             for (int i=0 ; i < size ; i++) {
-                WorkCycleInfo item = WorkCycleInfo.WorkCycleInfo(
+                WorkCycleInfo item = WorkCycleInfo.create(
                         i,
                         new WorkInformation("0" + String.valueOf(i),
                                 "0" + String.valueOf(i))
