@@ -648,14 +648,14 @@ module nts.uk.at.view.ksm005.a {
 				        self.typeOfWorkCode(childData.selectedWorkTypeCode);
 				        self.typeOfWorkName(childData.selectedWorkTypeName);
 				        if (childData.selectedWorkTypeCode) {
-					        self.typeOfWorkInfo(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+					        self.typeOfWorkInfo(childData.selectedWorkTypeCode + '   ' + childData.selectedWorkTypeName);
 				        } else
 					        self.typeOfWorkInfo('');
 
 				        self.workingHoursCode(childData.selectedWorkTimeCode);
 				        self.workingHoursName(childData.selectedWorkTimeName);
 				        if (childData.selectedWorkTimeCode) {
-					        self.workingHoursInfo(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+					        self.workingHoursInfo(childData.selectedWorkTimeCode + '   ' + childData.selectedWorkTimeName);
 				        } else {
 					        self.workingHoursInfo('');
 				        }
