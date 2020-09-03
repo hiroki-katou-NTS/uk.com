@@ -1,0 +1,40 @@
+#contents-area {
+	overflow: auto;
+}
+
+#contents-area {
+	overflow: auto;
+	margin-left: 20px;
+}
+
+.contentR {
+	width: 900px;
+	padding-left: 20px;
+}
+.contentR-grid-table {
+	margin-left: 20px;
+}
+
+#bottom td{
+	padding-right: 70px;
+}
+
+#B2_9 {
+	margin-left: 20px;
+}
+
+.table2 {
+	margin-left: 35px;
+	margin-bottom: 13px;
+}
+
+.inline{
+	display: inline-flex;
+}
+.contentR-grid-table td{
+	padding: 0 20px 13px 0;
+}
+
+#B1-panel {
+	margin: 10px 0 10px 0;
+}

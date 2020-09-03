@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:com="http://xmlns.jcp.org/jsf/component"
+  xmlns:h="http://xmlns.jcp.org/jsf/html"
+>
+  <body>
+    <ui:composition template="/master/base.xhtml">
+      <ui:define name="htmlHead">
+        <com:scriptfile set="IGNITE" />
+        <com:scriptfile path="cli003.b.service.js" />
+        <com:scriptfile path="cli003.b.vm.js" />
+        <com:stylefile path="cli003.b.style.css" />
+        <com:ValidatorScript>
+          nts.uk.ctx.sys.log.dom.reference.LogSettingCode
+          nts.uk.ctx.sys.log.dom.reference.LogSettingName
+        </com:ValidatorScript>
+      </ui:define>
+
+      <ui:define name="content">
+        <div id="functions-area">
+          <a class="goback" data-bind="ntsLinkButton: { jump: '/view/cli/003/a/index.xhtml' }">#{i18n.getText('CLI003_2')}</a>
+	      </div>
+        <div id="contents-area">
+          <div class="table valign-top control-group">
+            <div class="contentL cell" data-bind="ntsPanel:{width: 300, height: 400, direction: 'right', showIcon: true, visible: true}">
+              <div id="B1-search-box" data-bind="ntsSearchBox: {
+                mode:'igGrid',
+                searchMode: 'highlight',
+                targetKey:'code', 
+                comId: 'B1', 
+                items: logSets,
+                selectedKey: 'code',
+                fields: ['name', 'code']
+              }"/>
+              <table id="B1" tabindex="1" data-bind="ntsGridList:{
+                height: 600,
+                width: 300,
+                primaryKey: 'code',
+                dataSource: logSets,
+                columns: b1Columns,
+                multiple: false,
+                value: currentCode,
+                selectFirstIfNull: true,
+                }"/>
+            </div>
+            <div class="contentR cell">
+              <div class="B2">
+                <table class="contentR-grid-table">
+                  <!-- B2-start -->
+                  <tr>
+                    <td><div id="B2_1" data-bind="ntsFormLabel:{required: true}">#{i18n.getText('CLI003_73')}</div></td>
+                    <td><div id="B2_2"><span data-bind="{text: currentLogSetCode}"/>&#160;&#160;&#160;<span data-bind="{text: currentLogSetName}"/></div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><div id="B2_3" data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_75')}</div></td>
+                    <td><div id="B2_4" data-bind="{text: currentRecordTypeName}" /></td>
+                  </tr>
+                  <tr>
+                    <td><div id="B2_5"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_71')}</div></td>
+                    <td><div id="B2_6">??????????</div></td>
+                  </tr>
+                  <tr>
+                    <td><div id="B2_7"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_67')}</div></td>
+                    <td><div id="B2_8" data-bind="{text: currentDataTypeName}" /></td>
+                  </tr>
+                </table>
+                <div class="inline">
+                   <div id="B2_9"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_79')}</div>
+                   <div class="table2">
+                    <table id="B2_10" tabindex="2" data-bind="ntsGridList:{
+                      height: 200,
+                      width: 500,
+                      dataSource: b2_10Datasource,
+                      columns: b2_10Columns,
+                      primaryKey: 'displayItem',
+                      value: b2_10CurrentCode,
+                      multiple: false,
+                    }" />
+                   </div>
+                  </div>
+                  <!-- B2-end -->
+                  <!-- B3-start -->
+                  <table class="contentR-grid-table" id="bottom">
+                  <tr>
+                    <td><div id="B3_1"  data-bind="ntsFormLabel:{required: true}">#{i18n.getText('CLI003_22')}</div></td>
+                    <td><div id="B3_2" tabindex="3"  data-bind="ntsDateTimePairRangeEditor: {
+                        value: ko.observable({
+                          start: startDateOperator, 
+                          end: endDateOperator}),
+                        required: true,
+                        enable: true,
+                        name:'#{i18n.getText('CLI003_22')}',
+                        maxRange: 'oneYear',
+                        startName: startDateNameOperator, 
+                        endName:endDateNameOperator,
+                        constraint:'TimeClockWithSeconds'
+                      }" 
+                        /></td>
+                  </tr>
+                  <!-- B3-end -->
+                  <!-- B4-start -->
+                  <tr>
+                    <td><div id="B4_1"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_23')}</div></td>
+                    <td><div id="B4_2" data-bind="ntsSwitchButton: {
+                      options: roundingRules, 
+                      value: b4_2SelectedRuleCode,
+                      optionsValue: 'code',
+                      optionsText: 'name',}" /></td>
+                  </tr>
+                  <com:ko-if bind="b4_2SelectedRuleCode() === 1">					
+                    <tr>
+                      <td></td>
+                      <td>
+                        <button id="B4_3" data-bind="click: openDialogForB4_3 ">#{i18n.getText('CLI003_91')}</button>
+                        &#160;&#160;&#160;&#160;
+                        <span data-bind="text : targetEmployeeCount"></span>
+                      </td>
+                    </tr>	
+                </com:ko-if>	
+                  <!-- B4-end -->
+                  <!-- B5-start -->
+                  <tr>
+                    <td><div id="B5_1"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_15')}</div></td>
+                     <com:ko-if bind="checkFormatDate()=== '1'">	
+                      <td><div id="B5_2" tabindex="4"  data-bind="ntsDateRangePicker: {
+                        type: 'fullDate',
+                        maxRange: 'oneYear',
+                        name:'#{i18n.getText('CLI003_15')}',
+                        startName: startDateNameOperator, 
+                        endName:endDateNameOperator,
+                        value: b5_2dateValue}" /></td>
+                    </com:ko-if>	
+
+                    <com:ko-if bind="checkFormatDate()=== '2'">	
+                      <td><div id="B5_2" tabindex="4"  data-bind="ntsDateRangePicker: {
+                        type: 'yearmonth',
+                        maxRange: 'oneYear',
+                        name:'#{i18n.getText('CLI003_15')}',
+                        startName: startDateNameOperator, 
+                        endName:endDateNameOperator,
+                        value: b5_2dateValue}" /></td>
+                    </com:ko-if>	
+                  </tr>
+                  <!-- B5-end -->
+                  <!-- B6-start -->
+                  <tr>
+                    <td><div id="B6_1"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_16')}</div></td>
+                    <td><div id="B6_2" data-bind="ntsSwitchButton: {
+                      options: roundingRules, 
+                      value: b6_2SelectedRuleCode,
+                      optionsValue: 'code',
+                      optionsText: 'name',}" /></td>
+                  </tr>
+                  <com:ko-if bind="b6_2SelectedRuleCode() === 1">
+                    <tr>
+                      <td></td>
+                      <td>
+                        <button id="B6_3" data-bind="click: openDialogForB6_3 ">#{i18n.getText('CLI003_91')}</button>
+                        &#160;&#160;&#160;&#160;
+                        <span data-bind="text: operatorEmployeeCount"></span>
+                      </td>
+                    </tr>					
+                </com:ko-if>	
+                  <!-- B6-end -->
+                  <!-- B7-start -->
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td><button class="x-large proceed" id="B7" data-bind="click:jumpToScreenF">#{i18n.getText('CLI003_25')}</button></td>
+                  </tr>	
+                  <!-- B7-end -->
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          document.getElementById("B7").addEventListener("click", (event) => {
+            event.preventDefault();
+          });
+        </script>
+      </ui:define>
+    </ui:composition>
+  </body>
+</html>
