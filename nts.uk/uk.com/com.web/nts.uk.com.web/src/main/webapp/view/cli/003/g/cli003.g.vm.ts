@@ -330,7 +330,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.systemType.subscribe(function(newValue) {
                 if (typeof newValue !== "undefined" && newValue !=null ) {
                     if (newValue != '-1') {
-                        self.getLogItemBySystemType(newValue.toString());
+                        // self.getLogItemBySystemType(newValue.toString());
                     }
                 }
             });
@@ -467,62 +467,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 block.clear();
             });
         }
-        getLogItemBySystemType(systemType: string) {
-            const self = this;
-            self.itemsSwap.removeAll();
-            self.selectedCodeList.removeAll();
-            block.grayout();
-            service.getLogOutputItemBySystemType(systemType).done(function(logOutputItems: any) {
-                if (logOutputItems && logOutputItems.length > 0) {
-                    let id : string;
-                    if (self.currentLogDisplaySet()) {
-                        id = self.currentLogDisplaySet().logSetId;
-                    }
-                    
-                    const logItemsTemp = [];
-                    _.forEach(logOutputItems, function(logOutputItem) {
-                        logItemsTemp.push(
-                            new ItemLogSetRecordTypeModel(logOutputItem.itemNo, logOutputItem.itemName, 0,
-                                self.createNewItemDetail(id, logOutputItem.itemNo)));
 
-
-                    });
-                    self.itemsSwap(logItemsTemp);
-//                    self.logItemsFull.removeAll();
-                    self.logItemsFull(logItemsTemp);
-
-                    //check selected code
-                    if (self.currentLogDisplaySet() &&
-                        self.currentLogDisplaySet().systemType == systemType) {
-                        const logSetOutputs = self.currentLogDisplaySet().logSetOutputItems;
-                        if (logSetOutputs) {
-                            const lengthItemSwap = logItemsTemp.length;
-                            let logItemSetted = [];
-                            _.forEach(logSetOutputs, (logSetOutput) => {
-                                let itemNo = logSetOutput.itemNo;
-                                let itemName;
-                                for (var k = 0; k < lengthItemSwap; k++) {
-                                    if (logItemsTemp[k].code == itemNo) {
-                                        itemName = logItemsTemp[k].name;
-                                        logItemSetted.push(
-                                            new ItemLogSetRecordTypeModel(logSetOutput.itemNo, itemName, logSetOutput.isUseFlag,
-                                                logSetOutput.logSetItemDetails));
-                                        break;
-                                    }
-                                }
-                            });
-                            self.selectedCodeList(logItemSetted);
-                        }
-                    }
-                } else {
-                     alertError({ messageId: "Msg_1221" });
-                }    
-            }).fail(function(error) {
-                alertError({ messageId: "Msg_1221" });
-            }).always(() => {
-                block.clear();
-            });
-        }
         obsMode() {
             const self = this;
             self.mode.subscribe(function(newValue) {
