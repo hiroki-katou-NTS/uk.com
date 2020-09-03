@@ -154,7 +154,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
 
         genGrantDate(grantDate, deadline, expiredInCurrentMonthFg){
-          let self = this;
           if (!grantDate && !deadline) {
             return '';
         }
@@ -431,7 +430,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
 
     }
-
 
     export interface IReNumAnnLeaReferenceDateImport {
 
