@@ -293,16 +293,14 @@ public class CreateOrderInfoFileQuery {
         List<DetailOrderInfoDto> result = new ArrayList<>();
         String closedName = closingTimeName.orElse("");
         if(frameNo.isPresent()){
-            Iterator it = reservations.iterator();
+            Iterator<BentoReservation> it = reservations.iterator();
             while (it.hasNext()){
-                Iterator detailIT = ((BentoReservation)it.next()).getBentoReservationDetails().iterator();
+                Iterator<BentoReservationDetail> detailIT = it.next().getBentoReservationDetails().iterator();
                 while (detailIT.hasNext()){
-                    if(((BentoReservationDetail)detailIT.next()).getFrameNo() == frameNo.get())
+                    if(detailIT.next().getFrameNo() == frameNo.get())
                         continue;
                     detailIT.remove();
                 }
-                if(CollectionUtil.isEmpty(((BentoReservation)it.next()).getBentoReservationDetails()))
-                    it.remove();
             }
         }
 
@@ -344,15 +342,15 @@ public class CreateOrderInfoFileQuery {
                                                                  String companyID){
         List<BentoReservedInfoDto> result = new ArrayList<>();
         Map<Bento, List<BentoReservationInfoForEmpDto>> map = new HashMap<>();
-        Iterator reservationInfoForEmpDtoIT = bentoReservationInfoForEmpDtos.iterator();
+        Iterator<BentoReservationInfoForEmpDto> reservationInfoForEmpDtoIT = bentoReservationInfoForEmpDtos.iterator();
 
         while (reservationInfoForEmpDtoIT.hasNext()){
             int quantity = 0;
-            BentoReservationInfoForEmpDto item = (BentoReservationInfoForEmpDto) reservationInfoForEmpDtoIT.next();
+            BentoReservationInfoForEmpDto item = reservationInfoForEmpDtoIT.next();
             List<BentoReservation> handlerReservation = new ArrayList<>();
-            Iterator it = reservations.iterator();
+            Iterator<BentoReservation> it = reservations.iterator();
             while (it.hasNext()){
-                BentoReservation temp = (BentoReservation) it.next();
+                BentoReservation temp = it.next();
                 if(temp.getRegisterInfor().getReservationCardNo().equals(item.getStampCardNo())){
                     handlerReservation.add(temp);
                     it.remove();
@@ -441,9 +439,9 @@ public class CreateOrderInfoFileQuery {
 
     private BentoTotalDto createBentoTotalDto(Bento bento, List<BentoReservationDetail> reservation){
         int quantity = 0;
-        Iterator iterator = reservation.iterator();
+        Iterator<BentoReservationDetail> iterator = reservation.iterator();
         while (iterator.hasNext()){
-            BentoReservationDetail temp = (BentoReservationDetail) iterator.next();
+            BentoReservationDetail temp = iterator.next();
             if(temp.getFrameNo() == bento.getFrameNo()){
                 quantity += temp.getBentoCount().v();
                 iterator.remove();
