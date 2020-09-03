@@ -2,13 +2,14 @@
 
 module nts.uk.com.view.cli002.a {
   import service = nts.uk.com.view.cli002.a.service;
+
   @bean()
   export class ScreenModel extends ko.ViewModel {
     public systemList: KnockoutObservableArray<systemType> = ko.observableArray([
-      new systemType(this.$i18n("Enum_SystemType_PERSON_SYSTEM")),
-      new systemType(this.$i18n("Enum_SystemType_ATTENDANCE_SYSTEM")),
-      new systemType(this.$i18n("Enum_SystemType_PAYROLL_SYSTEM")),
-      new systemType(this.$i18n("Enum_SystemType_OFFICE_HELPER")),
+      new systemType(0, this.$i18n("Enum_SystemType_PERSON_SYSTEM")),
+      new systemType(1, this.$i18n("Enum_SystemType_ATTENDANCE_SYSTEM")),
+      new systemType(2, this.$i18n("Enum_SystemType_PAYROLL_SYSTEM")),
+      new systemType(3, this.$i18n("Enum_SystemType_OFFICE_HELPER")),
     ]);
 
     public dataSourceItem: KnockoutObservableArray<PGList> = ko.observableArray([
@@ -28,7 +29,7 @@ module nts.uk.com.view.cli002.a {
       {displayName: "item1", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
       {displayName: "item1", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false}
     ]);
-    public selectedSystemCode: KnockoutObservable<number>;
+    public selectedSystemCode: KnockoutObservable<number> = ko.observable(0);
 
     public systemColumns = [
       {
@@ -68,14 +69,18 @@ module nts.uk.com.view.cli002.a {
 
     mounted() {
       const vm = this;
+      vm.selectedSystemCode.subscribe((newValue) => {
+        console.log(newValue);
+      }); 
       
       ($("#system-list").ntsGridList as any)({
         height: "120px",
+        // primaryKey: "value",
         dataSource: vm.systemList,
         columns: vm.systemColumns,
-        value: vm.selectedSystemCode
+        value: vm.selectedSystemCode,
+        multiple: false,
       });
-      vm.selectedSystemCode = ko.observable(0);
 
       ($("#search-box").ntsSearchBox as any)({
         searchMode: "filter",
@@ -123,10 +128,6 @@ module nts.uk.com.view.cli002.a {
         ],
         features: []
       }).create();
-      
-      vm.selectedSystemCode.subscribe(function(newValue) {
-        vm.findBySystem(Number(newValue));
-      }); 
     }
 
     private findBySystem(value: number) {
@@ -170,8 +171,10 @@ module nts.uk.com.view.cli002.a {
     // }
   }
   class systemType {
+    value: number;
     localizedName: string;
-    constructor(localizedName: string) {
+    constructor(value: number, localizedName: string) {
+      this.value = value;
       this.localizedName = localizedName;
     }
   }
