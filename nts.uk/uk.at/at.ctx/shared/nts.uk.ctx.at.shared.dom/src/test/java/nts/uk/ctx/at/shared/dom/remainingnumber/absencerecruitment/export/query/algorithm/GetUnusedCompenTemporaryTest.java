@@ -19,7 +19,6 @@ import mockit.integration.junit4.JMockit;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
@@ -28,7 +27,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.Inter
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.DaikyuFurikyuHelper;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.NumberRemainVacationLeaveRangeQueryTest;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
@@ -36,11 +34,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataMana
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.SelectedAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UseDay;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 
 @RunWith(JMockit.class)
 public class GetUnusedCompenTemporaryTest {
@@ -114,17 +107,14 @@ public class GetUnusedCompenTemporaryTest {
 						new DatePeriod(GeneralDate.min(), GeneralDate.max())));
 
 				//締め
-//				require.getClosureDataByEmployee(SID, (GeneralDate) any);
-//				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
-
-				require.getFirstMonth(CID);
-				result = new CompanyDto(11);// 期首月
-
-				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", 
-						new SubstVacationSetting(ManageDistinct.YES,//管理区分
-						ExpirationTime.THIS_MONTH,// 休暇使用期限
-						ApplyPermission.ALLOW)));// 先取り許可
+//				require.getFirstMonth(CID);
+//				result = new CompanyDto(11);// 期首月
+//
+//				require.findEmpById(anyString, anyString);
+//				result = Optional.of(new EmpSubstVacation(CID, "00", 
+//						new SubstVacationSetting(ManageDistinct.YES,//管理区分
+//						ExpirationTime.THIS_MONTH,// 休暇使用期限
+//						ApplyPermission.ALLOW)));// 先取り許可
 
 			}
 
@@ -143,13 +133,13 @@ public class GetUnusedCompenTemporaryTest {
 				.containsExactly(
 						Tuple.tuple("a1",MngDataStatus.SCHEDULE, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 4)),OccurrenceDigClass.OCCURRENCE, 0.0,
-								GeneralDate.ymd(2019, 12, 1), DigestionAtr.USED),
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED),
 						Tuple.tuple("a2", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 7)),OccurrenceDigClass.OCCURRENCE, 1.0,
-								GeneralDate.ymd(2019, 12, 1), DigestionAtr.USED),
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED),
 						Tuple.tuple("a3", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 8)), OccurrenceDigClass.OCCURRENCE, 0.0,
-								GeneralDate.ymd(2019, 12, 1), DigestionAtr.USED));
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));
 
 	}
 
@@ -211,16 +201,15 @@ public class GetUnusedCompenTemporaryTest {
 				//締め
 //				require.getClosureDataByEmployee(SID, (GeneralDate) any);
 //				result = NumberRemainVacationLeaveRangeQueryTest.createClosure();
-
-				require.getFirstMonth(CID);
-				result = new CompanyDto(11);// 期首月
-
-				require.findEmpById(anyString, anyString);
-				result = Optional.of(new EmpSubstVacation(CID, "00", 
-						new SubstVacationSetting(ManageDistinct.YES,//管理区分
-						ExpirationTime.THIS_MONTH,// 休暇使用期限
-						ApplyPermission.ALLOW)));// 先取り許可
-
+//
+//				require.getFirstMonth(CID);
+//				result = new CompanyDto(11);// 期首月
+//
+//				require.findEmpById(anyString, anyString);
+//				result = Optional.of(new EmpSubstVacation(CID, "00", 
+//						new SubstVacationSetting(ManageDistinct.YES,//管理区分
+//						ExpirationTime.THIS_MONTH,// 休暇使用期限
+//						ApplyPermission.ALLOW)));// 先取り許可
 			}
 
 		};
@@ -238,13 +227,13 @@ public class GetUnusedCompenTemporaryTest {
 				.containsExactly(
 						Tuple.tuple("a1",MngDataStatus.SCHEDULE, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 4)), OccurrenceDigClass.OCCURRENCE, 0.0,
-								GeneralDate.ymd(2019, 12, 1), DigestionAtr.USED),
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED),
 						Tuple.tuple("a2", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 7)),OccurrenceDigClass.OCCURRENCE, 1.0,
-								GeneralDate.ymd(2019, 12, 1), DigestionAtr.USED),
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED),
 						Tuple.tuple("a3", MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 8)),  OccurrenceDigClass.OCCURRENCE, 0.0,
-								GeneralDate.ymd(2019, 12, 1), DigestionAtr.USED));
+								GeneralDate.ymd(9999, 12, 31), DigestionAtr.USED));
 
 	}
 
