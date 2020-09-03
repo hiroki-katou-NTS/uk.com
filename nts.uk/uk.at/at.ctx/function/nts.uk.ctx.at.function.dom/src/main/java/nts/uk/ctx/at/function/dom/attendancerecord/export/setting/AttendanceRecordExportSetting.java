@@ -79,6 +79,10 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		this.name = memento.getName();
 		this.sealStamp = memento.getSealStamp();
 		this.nameUseAtr =  NameUseAtr.valueOf(memento.getNameUseAtr());
+		
+		this.exportFontSize = ExportFontSize.valueOf(memento.getExportFontSize());
+
+		this.monthlyConfirmedDisplay = MonthlyConfirmedDisplay.valueOf(memento.getMonthlyConfirmedDisplay());
 
 	}
 
@@ -96,8 +100,16 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		memento.setName(this.name);
 //		memento.setSealStamp(this.sealStamp);
 		memento.setSealUseAtr(this.sealUseAtr);
-		if (this.nameUseAtr != null)
+		if (this.nameUseAtr != null) {
 			memento.setNameUseAtr(this.nameUseAtr.value);
+		}
+		if(this.exportFontSize !=null) {
+			memento.setExportFontSize(this.exportFontSize.value);
+		}
+		if(this.monthlyConfirmedDisplay !=null) {
+			memento.setMonthlyConfirmedDisplay(this.monthlyConfirmedDisplay.value);
+		}
+		
 	}
 
 	/**

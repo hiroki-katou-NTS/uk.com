@@ -47,7 +47,7 @@ public enum MonthlyConfirmedDisplay {
 	public static MonthlyConfirmedDisplay valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
-			return null;
+			return MonthlyConfirmedDisplay.valueOf(0);
 		}
 
 		// Find value.
@@ -59,6 +59,6 @@ public enum MonthlyConfirmedDisplay {
 		}
 
 		// Not found.
-		return null;
+		return MonthlyConfirmedDisplay.valueOf(0);
 	}
 }

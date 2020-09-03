@@ -65,5 +65,21 @@ public interface AttendanceRecordExportSettingGetMemento {
 	 * @return the name use atr
 	 */
 	Integer getNameUseAtr();
+	
+	/**
+	 * KWR002 B - font size
+	 * Gets the export font size.
+	 *
+	 * @return the export font size
+	 */
+	int getExportFontSize(); 
+	
+	/**
+	 * KWR002 F A18_2
+	 * Gets the monthly confirmed display.
+	 *
+	 * @return the monthly confirmed display
+	 */
+	int getMonthlyConfirmedDisplay();
 
 }
