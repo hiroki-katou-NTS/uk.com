@@ -97,10 +97,10 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// get command
 		WorkMonthlySettingBatchSaveCommand command = context.getCommand();
 
-		// check not setting
-		if (CollectionUtil.isEmpty(command.getWorkMonthlySetting())) {
-			throw new BusinessException("Msg_148");
-		}
+//		// check not setting
+//		if (CollectionUtil.isEmpty(command.getWorkMonthlySetting())) {
+//			throw new BusinessException("Msg_148");
+//		}
 
 		// convert to map domain update
 		Map<Integer, WorkMonthlySettingDto> mapWorkMonthlySetting = command
@@ -120,19 +120,20 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// loop year month setting
 		while (this.getYearMonth(toDate) == yearMonth) {
-			if (!mapWorkMonthlySetting.containsKey(this.getYearMonthDate(toDate))) {
-				throw new BusinessException("Msg_148");
-			}
+//			if (!mapWorkMonthlySetting.containsKey(this.getYearMonthDate(toDate))) {
+//				throw new BusinessException("Msg_148");
+//			}
 			toDate = this.nextDay(toDate);
 		}
 		// to list domain
 		List<WorkMonthlySetting> lstDomain = command.toDomainMonth(companyId);
+		lstDomain = lstDomain.stream().filter(x -> !x.getWorkInformation().getWorkTypeCode().equals("000")).collect(Collectors.toList());
 
 		// check not setting
 		lstDomain.forEach(domain -> {
-			if (StringUtil.isNullOrEmpty(domain.getWorkInformation().getWorkTypeCode().v(), true)) {
-				throw new BusinessException("Msg_148");
-			}
+//			if (StringUtil.isNullOrEmpty(domain.getWorkInformation().getWorkTypeCode().v(), true)) {
+//				throw new BusinessException("Msg_148");
+//			}
 		});
 
 		// check setting work type
