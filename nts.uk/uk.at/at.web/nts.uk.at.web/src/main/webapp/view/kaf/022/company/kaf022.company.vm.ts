@@ -86,6 +86,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                 self.viewmodelD.initData(data);
                 self.viewmodelE.initData(data);
                 self.viewmodelF.initData(data);
+                self.viewmodelG.initData(data);
                 self.viewmodelI.initData(data);
                 self.viewmodelJ.initData(data);
                 self.viewmodelQ.initData(data);
@@ -116,6 +117,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             const dataC = self.viewmodelC.collectData();
             const dataD = self.viewmodelD.collectData();
             const dataE = self.viewmodelE.collectData();
+            const dataG = self.viewmodelG.collectData();
             const dataJ = self.viewmodelJ.collectData();
             const dataQ = self.viewmodelQ.collectData();
             const dataY = self.viewmodelY.collectData();
@@ -151,6 +153,8 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             data["appWorkChangeSetting"] = dataD;
             data["tripRequestSetting"] = dataE;
             data["goBackReflectAtr"] = self.viewmodelF.selectedValueF13();
+            data["holidayWorkApplicationSetting"] = dataG.holidayWorkApplicationSetting;
+            data["holidayWorkApplicationReflect"] = dataG.holidayWorkApplicationReflect;
             data["lateEarlyCancelAtr"] = self.viewmodelI.lateEarlyCancelAtr();
             data["lateEarlyClearAlarmAtr"] = self.viewmodelI.lateEarlyClearAlarmAtr();
             data["appStampSetting"] = dataJ.appStampSetting;

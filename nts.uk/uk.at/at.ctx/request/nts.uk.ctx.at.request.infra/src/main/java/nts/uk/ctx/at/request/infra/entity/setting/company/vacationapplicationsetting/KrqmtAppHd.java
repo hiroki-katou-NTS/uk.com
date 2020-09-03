@@ -209,7 +209,7 @@ public class KrqmtAppHd extends ContractUkJpaEntity {
                     this.setAbsenseName(d.getDisplayName().v());
                     break;
                 case SPECIAL_HOLIDAY:
-                    this.setYearHolidayName(d.getDisplayName().v());
+                    this.setSpecialVacationName(d.getDisplayName().v());
                     break;
                 case YEARLY_RESERVE:
                     this.setYearResigName(d.getDisplayName().v());

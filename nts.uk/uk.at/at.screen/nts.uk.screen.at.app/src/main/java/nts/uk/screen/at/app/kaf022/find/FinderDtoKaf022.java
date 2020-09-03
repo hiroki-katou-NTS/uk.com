@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.emailset.AppEmailSetDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.businesstrip.BusinessTripSetDto;
@@ -44,6 +45,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.ApplicationStampSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
@@ -51,6 +53,7 @@ import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.app.find.ot.frame.OvertimeWorkFrameFinder;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectDto;
@@ -76,85 +79,17 @@ public class FinderDtoKaf022 {
 	@Inject
 	private ClosureHistoryFinder closureHistoryFinder;
 	
-//	@Inject 
-//	private ApprovalSetFinder appFinder;
-	
-	@Inject 
-	private AppCommonSetFinder appCommonSetFinder;
-	
-	@Inject 
-	private ProxyAppSetFinder proxyAppSetFinder;
-	
-	@Inject 
-	private MailHdInstructionFinder mailHdInstructionFinder;
-	
-	@Inject 
-	private MailOtInstructionFinder otFinder;
-	
-	@Inject
-	private ApprovalTempFinder tempFinder;
-	
-	@Inject
-	private ApplicationSettingFinder appSetFind;
-	
-	@Inject
-	private AppDispNameFinder dispFinder;
-	
-	@Inject
-	private StampRequestSettingFinder stampRequestSettingFinder;
-	
-	@Inject
-	private GoBackDirectlyCommonSettingFinder goBackSettingFinder;
-	
-	@Inject
-	private AppOvertimeSettingFinder overTimeFinder;
-	@Inject
-	private HdAppSetFinder hdAppFinder;
-
     @Inject
     private AppWorkChangeSetRepository appWorkChangeSetRepo;
 	
 	@Inject
-	private TripRequestSetFinder tripFinder;
-	
-	@Inject
-	private WithdrawalAppSetFinder withFinder;
-	
-	@Inject
-	private TimeHdAppSetFinder timeFinder;
-	
-	@Inject
-	private WithDrawalReqSetFinder withDrawalReqSetFinder;
-	
-	@Inject
-	private LateEarlyRequestFinder lateEarlyRequestFinder;
-	
-	@Inject
-	private AppTypeBfFinder bfreqFinder;
-	
-	@Inject 
 	private JobAssignSettingFinder jobFinder;
 	
 	@Inject
 	private ApprovalSettingFinder approvalSettingFinder;
-	
-	@Inject
-	private OvertimeRestAppCommonSetFinder otRestAppComFinder;
-	
-	@Inject 
-	private ContentOfRemandMailFinder contentMailFinder;
-	
-	@Inject
-	private UrlEmbeddedFinder url;
-	
-	@Inject
-	private DisplayReasonFinder dplReason;
 
 	@Inject
 	private StandardMenuPub menuPub;
-
-	@Inject
-	private GetDataAppCfDetailFinder getDataAppCfDetailFinder;
 
 	@Inject
 	private ApplicationSettingRepository appSettingRepo;
@@ -164,12 +99,6 @@ public class FinderDtoKaf022 {
 
 	@Inject
 	private OvertimeAppSetRepository overtimeAppSetRepo;
-
-	@Inject
-    private OvertimeWorkFrameFinder overtimeFrameFinder;
-
-	@Inject
-    private HolidayApplicationSettingRepository hdAppSettingRepo;
 
 	@Inject
     private AppReflectExeConditionRepository appReflectConditionRepo;
@@ -195,6 +124,9 @@ public class FinderDtoKaf022 {
 	@Inject
 	private HolidayApplicationSettingRepository holidayApplicationSettingRepo;
 
+	@Inject
+	private HolidayWorkAppSetRepository holidayWorkAppSetRepo;
+
 	public DtoKaf022 findDtoKaf022() {
 		String companyId = AppContexts.user().companyId();
 		// TODO: get Application Settings
@@ -207,6 +139,7 @@ public class FinderDtoKaf022 {
         ApprovalListDispSettingDto approvalListDispSetting = approvalListDispSetRepo.findByCID(companyId).map(ApprovalListDispSettingDto::fromDomain).orElse(null);
 		AppEmailSet appEmailSet = appEmailSetRepo.findByCID(companyId);
 		HolidayApplicationSettingDto holidayApplicationSetting = holidayApplicationSettingRepo.findSettingByCompanyId(companyId).map(HolidayApplicationSettingDto::fromDomain).orElse(null);
+		HolidayWorkAppSetDto holidayWorkAppSet = holidayWorkAppSetRepo.findSettingByCompany(companyId).map(HolidayWorkAppSetDto::fromDomain).orElse(null);
 
 		// TODO: get Reflection Settings
         AppReflectExeConditionDto appReflectCondition = appReflectConditionRepo.findByCompanyId(companyId).map(AppReflectExeConditionDto::fromDomain).orElse(null);
@@ -217,6 +150,7 @@ public class FinderDtoKaf022 {
         LateEarlyCancelReflect lateEarlyCancelReflect = lateEarlyCancelRepo.getByCompanyId(companyId);
 		StampAppReflectDto stampAppReflectDto = appStampSettingRepo.findReflectByCompanyId(companyId).map(StampAppReflectDto::fromDomain).orElse(null);
 		HolidayApplicationReflectDto holidayApplicationReflect = holidayApplicationSettingRepo.findReflectByCompanyId(companyId).map(HolidayApplicationReflectDto::fromDomain).orElse(null);
+		HdWorkAppReflectDto hdWorkAppReflectDto = holidayWorkAppSetRepo.findReflectByCompany(companyId).map(HdWorkAppReflectDto::fromDomain).orElse(null);
 
 		// TODO: get menu
 		List<StandardMenuNameQuery> queries = new ArrayList<>();
@@ -238,37 +172,6 @@ public class FinderDtoKaf022 {
 
 		DtoKaf022 result = new DtoKaf022();
 		result.allClosure = closureHistoryFinder.findAll();
-//		result.appSet = appSetFind.getAppRef();
-//		result.appCommon = appCommonSetFinder.findByCom();
-//		result.proxy = proxyAppSetFinder.findAll();
-//		result.mailHd = mailHdInstructionFinder.findByComId();
-//		result.mailOt = otFinder.findByComId();
-//		result.appTemp = tempFinder.findByComId();
-//		result.appliSet = appSetFind.finder();
-//		result.appName = dispFinder.findByCom();
-//		result.stampReq = stampRequestSettingFinder.findByCompanyID();
-
-//		result.hdSet = hdAppFinder.findByApp();
-
-//		result.tripReq = tripFinder.findByCid();
-//		result.wdApp = withFinder.findByCid();
-//		result.timeHd = timeFinder.findByCid();
-//		result.wdReq = withDrawalReqSetFinder.findByCompanyID();
-//		result.lateEarly = lateEarlyRequestFinder.findByCompanyID();
-		// a7, 8
-//		result.appBf = bfreqFinder.findByCom();
-		// A14
-
-		
-		// B8 -> B26
-
-//		result.otRestApp7 = otRestAppComFinder.findByApp7();
-		// A16_14, A16_15
-//		result.contentMail = contentMailFinder.findByCom();
-		// A16_17
-//		result.url = url.findByComId();
-		// A8_36 -> A8_43
-//		result.listDplReason = dplReason.findByCom();
 
 		// refactor 4
 		// A
@@ -297,6 +200,10 @@ public class FinderDtoKaf022 {
 
         // F
 		result.goBackReflect = goBackReflect;
+
+		// G
+		result.setHolidayWorkApplicationSetting(holidayWorkAppSet);
+		result.setHolidayWorkApplicationReflect(hdWorkAppReflectDto);
 
 		// I
         result.lateEarlyCancelAtr = lateEarlyCancelAppSet != null ? lateEarlyCancelAppSet.getCancelAtr().value : 0;
