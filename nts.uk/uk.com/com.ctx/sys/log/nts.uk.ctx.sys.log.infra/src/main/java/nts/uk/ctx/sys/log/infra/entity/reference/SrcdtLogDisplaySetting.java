@@ -63,7 +63,7 @@ public class SrcdtLogDisplaySetting extends UkJpaEntity implements Serializable 
 	 */
 	@Basic(optional = false)
 	@Column(name = "SYSTEM_TYPE")
-	private SystemTypeEnum systemType;
+	private int systemType;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "logDisplaySetCond", orphanRemoval = true)
 	private List<SrcdtLogSetOutputItem> listLogSetOutputItems;
@@ -82,11 +82,12 @@ public class SrcdtLogDisplaySetting extends UkJpaEntity implements Serializable 
 
 	public static SrcdtLogDisplaySetting toEntity(LogDisplaySetting domain) {
 		Optional<DataTypeEnum> optionalDataType = Optional.ofNullable(domain.getDataType());
+		Optional<SystemTypeEnum> optionalSystemType = Optional.ofNullable(domain.getSystemType());
 		return new SrcdtLogDisplaySetting(new SrcdtLogDisplaySettingPK(domain.getLogSetId()), domain.getCid(),
 				domain.getCode().v(), domain.getName().v(),
 				optionalDataType.isPresent() ? domain.getDataType().code : null, domain.getRecordType().code,
-				domain.getSystemType(), domain.getLogSetOutputItems().stream()
-						.map(item -> SrcdtLogSetOutputItem.toEntity(item)).collect(Collectors.toList()));
+				optionalSystemType.isPresent() ? domain.getSystemType().code : null, domain.getLogSetOutputItems().stream()
+				.map(item -> SrcdtLogSetOutputItem.toEntity(item)).collect(Collectors.toList()));
 	}
 
 }
