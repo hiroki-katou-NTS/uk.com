@@ -225,12 +225,6 @@ module nts.uk.at.view.ksc001.b {
                 self.creationMethodCode.subscribe(( value) => {
 	                $('.monthly-pattern-code').focus();
 	                if(self.isInValidCopyPasteSchedule()) return;
-                    /*if( value != CreationMethodRef.MONTHLY_PATTERN ) {
-                        nts.uk.ui.errors.clearAll();
-                        self.monthlyPatternCode(null);
-                    } else {
-                        $('.monthly-pattern-code').focus();
-                    }*/
                 });
 
                 self.checkCreateMethodAtrPersonalInfo.subscribe(( value ) => {
@@ -478,11 +472,13 @@ module nts.uk.at.view.ksc001.b {
 
                 if( employeeIds.length > 0 ) {
 	                nts.uk.ui.block.grayout(); // block ui
+	                self.employeeIds([]);
 	                service.getEmployeeListAfterFilter ( listEmployeeFilter )
 		                .done ( ( response ) => {
 			                newListEmployees = response.listEmployeeId;
 			                //reset data listing after filtered
 			                employeeSearchs = [];
+			                employeeIds = [];
 			                listSelectedEmpCode = [];
 			                if ( newListEmployees.length > 0 ) {
 				                for( let i = 0; i < newListEmployees.length; i++ ) {
@@ -494,12 +490,15 @@ module nts.uk.at.view.ksc001.b {
 								                affiliationName : oldListSelectedEmpCode[j].affiliationName
 							                } );
 							                listSelectedEmpCode.push ( oldListSelectedEmpCode[j].employeeCode.trim () );
+							                employeeIds.push(oldListSelectedEmpCode[j].employeeId);
 						                }
 					                }
 				                }
 
 				                self.employeeList ( employeeSearchs );
 				                self.selectedEmployeeCode ( listSelectedEmpCode );
+				                self.employeeIds( employeeIds );
+				                console.log(employeeIds);
 			                }
 
 			                nts.uk.ui.block.clear ();
@@ -1149,7 +1148,7 @@ module nts.uk.at.view.ksc001.b {
                 .done( ( response ) => {
                     if( typeof response !== 'undefined' && response.listMonthlyPattern.length > 0 ) {
                         let monthlyOptions = [];
-                        monthlyOptions.push( new MonthlyPatternModel());
+                        //monthlyOptions.push( new MonthlyPatternModel());
                         response.listMonthlyPattern.map( ( item, i) => {
                             monthlyOptions.push( new MonthlyPatternModel(
                                 item.monthlyPatternCode, item.monthlyPatternName, item.companyId
