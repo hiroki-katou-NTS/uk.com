@@ -57,7 +57,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			printStyle.getStampStyle().setTextWrapped(false);
 			// 出退勤区分
 			printStyle.setClaStyle(cell.get(4, 2).getStyle());
-			printStyle.getClaStyle().setTextWrapped(false);
+//			printStyle.getClaStyle().setTextWrapped(false);
 			// 打刻手段
 			printStyle.setMeanStyle(cell.get(4, 3).getStyle());
 			printStyle.getMeanStyle().setTextWrapped(false);
@@ -69,7 +69,7 @@ public class AsposeOutputConditionListOfStampGenerator extends AsposeCellsReport
 			printStyle.getInsStyle().setTextWrapped(false);
 			// 位置情報
 			printStyle.setLocStyle(cell.get(4, 6).getStyle());
-			printStyle.getLocStyle().setTextWrapped(false);
+//			printStyle.getLocStyle().setTextWrapped(false);
 			// 応援カード
 			printStyle.setCardStyle(cell.get(4, 7).getStyle());
 			printStyle.getCardStyle().setTextWrapped(false);
