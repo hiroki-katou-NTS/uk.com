@@ -1328,30 +1328,30 @@ module nts.uk.com.view.cli003.b.viewmodel {
             }
 
             let dfd = $.Deferred<any>();
-            nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
-                let dataSelect = nts.uk.ui.windows.getShared("datacli003"),
-                    selectCancel = nts.uk.ui.windows.getShared("selectCancel");
-                paramLog.logDisplaySettingCode = dataSelect;
-                // function get logdisplaysetting by code
-                self.listItemNo = ko.observableArray([]);
-                self.listLogBasicInforAllModel = [];
-                self.listLogSetItemDetailDto = ko.observableArray([]);
-                self.listHeaderSort = ko.observableArray([]);
-                if (selectCancel == false) {
-                    block.grayout();
-                    service.logSettingExportCsvScreenI(paramLog).done(() => {
-                    }).fail(function(error) {
-                        alertError(error);
-                        dfd.resolve();
-                    }).always(() => {
-                        block.clear();
-                        errors.clearAll();
+            // nts.uk.ui.windows.sub.modal("/view/cli/003/i/index.xhtml").onClosed(() => {
+            //     let dataSelect = nts.uk.ui.windows.getShared("datacli003"),
+            //         selectCancel = nts.uk.ui.windows.getShared("selectCancel");
+            //     paramLog.logDisplaySettingCode = dataSelect;
+            //     // function get logdisplaysetting by code
+            //     self.listItemNo = ko.observableArray([]);
+            //     self.listLogBasicInforAllModel = [];
+            //     self.listLogSetItemDetailDto = ko.observableArray([]);
+            //     self.listHeaderSort = ko.observableArray([]);
+            //     if (selectCancel == false) {
+            //         block.grayout();
+            //         service.logSettingExportCsvScreenI(paramLog).done(() => {
+            //         }).fail(function(error) {
+            //             alertError(error);
+            //             dfd.resolve();
+            //         }).always(() => {
+            //             block.clear();
+            //             errors.clearAll();
 
-                    });
-                }
-                errors.clearAll();
-                dfd.resolve();
-            });
+            //         });
+            //     }
+            //     errors.clearAll();
+            //     dfd.resolve();
+            // });
             //  return dfd.promise();  
         }
 
