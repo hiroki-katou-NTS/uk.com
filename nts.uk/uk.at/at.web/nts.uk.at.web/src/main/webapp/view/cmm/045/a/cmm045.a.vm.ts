@@ -55,6 +55,7 @@ module cmm045.a.viewmodel {
         appListAtr: number;
         isBeforeCheck: KnockoutObservable<Boolean> = ko.observable(false);
         isAfterCheck: KnockoutObservable<Boolean> = ko.observable(false);
+        isLimit500: KnockoutObservable<Boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -334,6 +335,10 @@ module cmm045.a.viewmodel {
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
                 self.appList(data.appListInfo);
+                if(self.appList().appLst.length > 500) {
+
+                }
+                self.isLimit500(data.appListInfo.moreThanDispLineNO);
                 self.appListAtr = data.appListExtractCondition.appListAtr;
 				self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
 				self.appListExtractConditionDto = data.appListExtractCondition;
@@ -653,7 +658,7 @@ module cmm045.a.viewmodel {
                                 .append($("<span/>").addClass("box"))
                                 .appendTo($td);
 
-                            if(moment(item.opAppStartDate).add("days", -(self.appList().displaySet.appDateWarningDisp)) <= moment.utc()) {
+                            if(moment(item.opAppStartDate).add(-(self.appList().displaySet.appDateWarningDisp), "days") <= moment.utc()) {
                                 $("<label/>").addClass("approvalCell");
                             }
                         }
