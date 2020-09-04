@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
@@ -28,41 +25,40 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author ken_takasu
  *
  */
-@Setter
-@Getter
-@AllArgsConstructor
 public class WorkInformation {
+
 	private WorkTypeCode workTypeCode;
 	private WorkTimeCode workTimeCode;
 
-	public WorkInformation(String workTypeCode, String workTimeCode) {
-		if (!StringUtils.isEmpty(workTypeCode)) {
-			this.workTypeCode = new WorkTypeCode(workTypeCode);
-		}
+	public WorkInformation(String workTimeCode, String workTypeCode) {
 
-		if (!StringUtils.isEmpty(workTimeCode)) {
-			this.workTimeCode = new WorkTimeCode(workTimeCode);
-		}
+		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? null : new WorkTimeCode(workTimeCode);
+		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
 	}
-	
-	public WorkInformation clone() {
-		if (workTypeCode != null && workTimeCode != null) {
-			return new WorkInformation(workTypeCode, workTimeCode);
-		}
 
-		if (workTypeCode == null && workTimeCode == null) {
-			return new WorkInformation("", "");
-		}
+	public WorkInformation(WorkTimeCode workTimeCode, WorkTypeCode workTypeCode) {
+		this.workTimeCode = workTimeCode;
+		this.workTypeCode = workTypeCode;
+	}
 
-		if (workTypeCode == null) {
-			return new WorkInformation("", workTimeCode.v());
-		}
+	public WorkTimeCode getWorkTimeCode() {
+		return this.workTimeCode;
+	}
 
-		return new WorkInformation(workTypeCode.v(), "");
+	public WorkTypeCode getWorkTypeCode() {
+		return this.workTypeCode;
 	}
 
 	public void removeWorkTimeInHolydayWorkType() {
 		this.workTimeCode = null;
+	}
+
+	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
+		this.workTimeCode = workTimeCode;
+	}
+
+	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+		this.workTypeCode = workTypeCode;
 	}
 
 	/**
@@ -139,11 +135,9 @@ public class WorkInformation {
 	 */
 	public Optional<WorkStyle> getWorkStyle(Require require) {
 		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode.v());
-		
 		if (workStyle == null) {
 			return Optional.empty();
 		}
-		
 		return Optional.of(workStyle);
 	}
 
@@ -156,19 +150,15 @@ public class WorkInformation {
 
 		// $勤務種類 = require.勤務種類を取得する( @勤務種類コード )
 		Optional<WorkType> workType = require.findByPK(this.workTypeCode.v());
-		
 		if (!workType.isPresent()) {
 			return Optional.empty();
 		}
-		
 		// @就業時間帯コード.isEmpty()
 		if (this.getWorkTimeCode() == null) {
 			return Optional.of(new WorkInfoAndTimeZone(workType.get()));
 		}
-		
 		// $就業時間帯の設定 = require.就業時間帯を取得する(@就業時間帯コード )
 		Optional<WorkTimeSetting> workTimeSetting = require.findByCode(this.workTimeCode.v());
-		
 		if (!workTimeSetting.isPresent()) {
 			return Optional.empty();
 		}
@@ -189,6 +179,7 @@ public class WorkInformation {
 	}
 
 	public static interface Require {
+
 		/**
 		 * [R-1] 勤務種類を取得する
 		 * 
