@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 public class SixtyHourHolidayDto {
 
 	/** 60H超休管理区分 */
-	private boolean departmentOvertime60H;
+	private Boolean departmentOvertime60H;
 
 	/** 残数情報 */
 	private List<RemainHourDetailDto> remainHourDetailDtos;

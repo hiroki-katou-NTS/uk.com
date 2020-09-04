@@ -106,3 +106,11 @@ table.usage-date-table tr td {
 .bd-bottom {
   border-bottom: 1px dotted #CCC !important;
 }
+
+.big-text {
+  font-size: 1.75rem;
+}
+
+.nts-fixed-table .scroll-header {
+  background-color: #CFF1A5 !important;
+}

@@ -19,14 +19,16 @@ module nts.uk.at.view.kdl017.test.screenModel {
 
         }
 
-        openKDL020Dialog() {
+        openKDL017Dialog() {
             let self = this,
                 employeeList = _.split(self.selectedCodeList(), ', ');
-            setShared('KDL020A_PARAM', { baseDate: self.baseDate(), employeeIds: employeeList } );
-            modal('/view/kdl/017/a/index.xhtml').onClosed(function(): any {
-
-            });
-
+            let data = {employeeIds: employeeList, baseDate: moment(self.baseDate()).format("YYYYMMDD")}
+            setShared('KDL017_PARAM', data);
+            if(data.employeeIds.length > 1) {
+                modal("/view/kdl/017/a/multiple.xhtml");
+            } else {
+                modal("/view/kdl/017/a/single.xhtml");
+            }
         }
         start(): JQueryPromise<any> {
 

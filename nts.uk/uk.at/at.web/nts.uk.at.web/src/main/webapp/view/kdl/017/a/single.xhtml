@@ -13,7 +13,7 @@
     <ui:define name="htmlHead">
       <script>
         var dialogSize = {
-          width : 510,
+          width : 530,
           height : 620
         };
       </script>
@@ -48,99 +48,104 @@
         <hr/>
 
         <div class="mt-1">
-          <div class="inline">
-            <!-- A3_1 - 凡例 -->
-            <span>#{i18n.getText('KDL017_21')}</span>
-            <span class="ml-2">#{i18n.getText('KDL017_22')}</span>
-          </div>
-
-          <!-- A4_1 -  繰越数 -->
-          <div class="mt-3 table-fixed">
-            <div id="date-fixed-table">
-              <table class="table-60h-detail">
-                <colgroup>
-                  <col width="30px" />
-                  <col width="258px" />
-                  <col width="180px" />
-                </colgroup>
-                <thead>
-                  <tr>
-                    <th class="ui-widget-header"></th>
-                    <th class="ui-widget-header">
-                      <!-- A3_2 -->
-                      <span>#{i18n.getText('KDL017_7')}</span>
-                      <!-- A3_6 -->
-                      <span>#{i18n.getText('KDL017_24')}</span>
-                    </th>
-                    <th class="ui-widget-header">
-                      <!-- A3_3 -->
-                      <span>#{i18n.getText('KDL017_11')}</span>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <com:ko-foreach bind="dataItems">
-                    <tr>
-                      <td class="ui-widget-index">
-                        <span data-bind="text: ($index() + 1)"></span>
-                      </td>
-                      <td>
-                        <!-- A3_2_1 -->
-                        <span data-bind="text: occurrenceMonth"></span>
-                        <!-- A3_2_2 -->
-                        <span class="ml-2" data-bind="text: occurrenceTime"></span>
-                        <!-- A3_6_1 -->
-                        <span data-bind="text: deadline"></span>
-                      </td>
-                      <td class="none-padding">
-                        <table class="usage-date-table">
-                          <tbody>
-                            <com:ko tag="foreach" bind="usageDateDtos">
-                              <tr>
-                                <td data-bind="css: (($parent.usageDateDtos().length - 1) !== $index()) ? 'bd-bottom' : 'none-bd-left-right-top'">
-                                  <!-- A3_3_1 -->
-                                  <span data-bind="text: usageDate"></span>
-                                  <!-- A3_3_2 -->
-                                  <span data-bind="text: usageTime" class="float-right margin-right-2"></span>
-                                </td>
-                              </tr>
-                            </com:ko>
-                          </tbody>
-                        </table>
-                      </td>
-                    </tr>
-                  </com:ko-foreach>
-                </tbody>
-              </table>
+          <com:ko-if bind="isSetting">
+            <div class="inline">
+              <!-- A3_1 - 凡例 -->
+              <span>#{i18n.getText('KDL017_21')}</span>
+              <span class="ml-2">#{i18n.getText('KDL017_22')}</span>
             </div>
-          </div>
 
-          <table class="summary-table">
-            <tr>
-              <!-- A4_1_1 -->
-              <td width="120px">#{i18n.getText('KDL017_14')}</td>
-              <td width="120px">
-                <!-- A4_1_2 -->
-                <span data-bind="text: carryoverNumber"></span>
-              </td>
-            </tr>
-            <tr>
-              <!-- A4_3_1 -->
-              <td>#{i18n.getText('KDL017_18')}</td>
-              <td>
-                <!-- A4_3_2 -->
-                <span data-bind="text: usageNumber"></span>
-              </td>
-            </tr>
-            <tr>
-              <!-- A4_4_1 -->
-              <td>#{i18n.getText('KDL017_19')}</td>
-              <td>
-                <!-- A4_4_2 -->
-                <span data-bind="text: residual"></span>
-              </td>
-            </tr>
-          </table>
+            <!-- A4_1 -  繰越数 -->
+            <div class="mt-3 table-fixed">
+              <div id="date-fixed-table" data-bind="isSetting">
+                <table class="table-60h-detail">
+                  <colgroup>
+                    <col width="30px" />
+                    <col width="258px" />
+                    <col width="180px" />
+                  </colgroup>
+                  <thead>
+                    <tr>
+                      <th class="ui-widget-header"></th>
+                      <th class="ui-widget-header">
+                        <!-- A3_2 -->
+                        <span>#{i18n.getText('KDL017_7')}</span>
+                        <!-- A3_6 -->
+                        <span>#{i18n.getText('KDL017_24')}</span>
+                      </th>
+                      <th class="ui-widget-header">
+                        <!-- A3_3 -->
+                        <span>#{i18n.getText('KDL017_11')}</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <com:ko-foreach bind="dataItems">
+                      <tr>
+                        <td class="ui-widget-index">
+                          <span data-bind="text: ($index() + 1)"></span>
+                        </td>
+                        <td>
+                          <!-- A3_2_1 -->
+                          <span data-bind="text: occurrenceMonth"></span>
+                          <!-- A3_2_2 -->
+                          <span class="ml-2" data-bind="text: occurrenceTime"></span>
+                          <!-- A3_6_1 -->
+                          <span data-bind="text: deadline"></span>
+                        </td>
+                        <td class="none-padding">
+                          <table class="usage-date-table">
+                            <tbody>
+                              <com:ko tag="foreach" bind="usageDateDtos">
+                                <tr>
+                                  <td data-bind="css: (($parent.usageDateDtos().length - 1) !== $index()) ? 'bd-bottom' : 'none-bd-left-right-top'">
+                                    <!-- A3_3_1 -->
+                                    <span data-bind="text: usageDate"></span>
+                                    <!-- A3_3_2 -->
+                                    <span data-bind="text: usageTime" class="float-right margin-right-2"></span>
+                                  </td>
+                                </tr>
+                              </com:ko>
+                            </tbody>
+                          </table>
+                        </td>
+                      </tr>
+                    </com:ko-foreach>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <table class="summary-table">
+              <tr>
+                <!-- A4_1_1 -->
+                <td width="120px">#{i18n.getText('KDL017_14')}</td>
+                <td width="120px">
+                  <!-- A4_1_2 -->
+                  <span data-bind="text: carryoverNumber"></span>
+                </td>
+              </tr>
+              <tr>
+                <!-- A4_3_1 -->
+                <td>#{i18n.getText('KDL017_18')}</td>
+                <td>
+                  <!-- A4_3_2 -->
+                  <span data-bind="text: usageNumber"></span>
+                </td>
+              </tr>
+              <tr>
+                <!-- A4_4_1 -->
+                <td>#{i18n.getText('KDL017_19')}</td>
+                <td>
+                  <!-- A4_4_2 -->
+                  <span data-bind="text: residual"></span>
+                </td>
+              </tr>
+            </table>
+        
+          </com:ko-if>
+          <com:ko tag="ifnot" bind="isSetting">
+            <p class="mt-1 big-text">#{i18n.getText('KDL017_23')}</p>
+          </com:ko>
         </div>
       </div>
 

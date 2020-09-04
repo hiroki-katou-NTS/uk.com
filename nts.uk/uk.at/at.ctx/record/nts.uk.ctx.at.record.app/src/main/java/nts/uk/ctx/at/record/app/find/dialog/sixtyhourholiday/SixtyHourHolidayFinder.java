@@ -69,10 +69,10 @@ public class SixtyHourHolidayFinder {
 		// 10-5.60H超休の設定を取得する
 		SixtyHourSettingOutput settingOutput = this.absenceTenProcessCommon.getSixtyHourSetting(companyId, employeeId, inputDate);
 
+		// 60H超休管理区分　＝　取得した60H超休管理区分
+		result.setDepartmentOvertime60H(settingOutput.isSixtyHourOvertimeMngDistinction());
 		// IF 取得した60H超休管理区分　＝＝　Trueの場合
 		if (!settingOutput.isSixtyHourOvertimeMngDistinction()) {
-			// 60H超休管理区分　＝　取得した60H超休管理区分
-			result.setDepartmentOvertime60H(false);
 			// 他の項目がEmptyを渡す
 			result.setPegManagementDtos(Collections.emptyList());
 			result.setRemainNumberDetailDtos(Collections.emptyList());

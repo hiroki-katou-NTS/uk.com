@@ -29,6 +29,8 @@ module nts.uk.at.view.kdl017.a {
     residual: KnockoutObservable<string> = ko.observable('');
     hint03: KnockoutObservable<string> = ko.observable('');
 
+    isSetting: KnockoutObservable<boolean> = ko.observable(true);
+
     constructor() {
       super();
       let vm = this;
@@ -71,8 +73,6 @@ module nts.uk.at.view.kdl017.a {
             }
         }).fail(vm.onError)
         .always(() => nts.uk.ui.block.clear());
-        // init table
-        $('#date-fixed-table').ntsFixedTable({ height: 250 });
       }
     }
 
@@ -160,46 +160,56 @@ module nts.uk.at.view.kdl017.a {
       nts.uk.ui.block.grayout();
       service.get60hOvertimeDisplayInfoDetail(employeeId, baseDate)
         .done((data: any) => {
-          if (data.remainHourDetailDtos !== null) {
-            data.remainHourDetailDtos.forEach(item => {
-              let kdl017TableDto = new KDL017TableDto();
-              // <!-- A3_6_1 -->
-              if (moment.utc(item.deadline, 'YYYY/MM/DD').isSameOrAfter(moment.utc(data.startDate, 'YYYY/MM/DD'))
-                && moment.utc(item.deadline, 'YYYY/MM/DD').isSameOrBefore(moment.utc(data.endDate, 'YYYY/MM/DD'))) {
-                kdl017TableDto.deadline = nts.uk.resource.getText("KDL005_38", [item.deadline]);
-              } else {
-                kdl017TableDto.deadline = nts.uk.resource.getText("KDL005_37", [item.deadline]);
-              }
-              // <!-- A3_2_1 -->
-              kdl017TableDto.occurrenceMonth = item.occurrenceMonth ? moment.utc(item.occurrenceMonth, 'YYYYMM').format('YYYY/MM') : '';
-              // <!-- A3_2_2 -->
-              kdl017TableDto.occurrenceTime = item.occurrenceTime ? (nts.uk.time as any).format.byId("Time_Short_HM", [item.occurrenceTime]) : '';
-
-              if (item.usageDateDtos !== null) {
-                let usageDateDtos : UsageDateDto[] = [];
-                item.usageDateDtos.forEach(usageDateDto => {
-                  let usageDateItem = new UsageDateDto();
-                  // <!-- A3_3_1 -->
-                  usageDateItem.usageDate = (usageDateDto.creationCategory === CreateAtr["申請(事前)"]
-                                          || usageDateDto.creationCategory === CreateAtr["申請(事後)"]
-                                          || usageDateDto.creationCategory === CreateAtr["予定"])
-                              ? nts.uk.resource.getText("KDL005_36", [(nts.uk.time as any).applyFormat("Short_YMDW", [usageDateDto.usageDate])])
-                              : (nts.uk.time as any).applyFormat("Short_YMDW", [usageDateDto.usageDate]);
-                  // <!-- A3_3_2 -->
-                  usageDateItem.usageTime = usageDateDto.usageTime ? (nts.uk.time as any).format.byId("Time_Short_HM", [usageDateDto.usageTime]) : '';
-                  usageDateItem.creationCategory = usageDateDto.creationCategory;
-                  usageDateDtos.push(usageDateItem);
-                });
-                kdl017TableDto.numberUsageDate = item.usageDateDtos.length;
-                kdl017TableDto.usageDateDtos = usageDateDtos;
-              }
-              let kdl017Model = new KDL017TableModel();
-              vm.dataItems.push(kdl017Model.fromDto(kdl017TableDto));
+          if (!data.departmentOvertime60H) {
+            this.isSetting(false);
+          } else {
+            this.isSetting(false);
+            // init table
+            vm.$nextTick(() => {
+              this.isSetting(true);
+              $('#date-fixed-table').ntsFixedTable({ height: 269.4 });
             });
+            if (data.remainHourDetailDtos !== null) {
+              data.remainHourDetailDtos.forEach(item => {
+                let kdl017TableDto = new KDL017TableDto();
+                // <!-- A3_6_1 -->
+                if (moment.utc(item.deadline, 'YYYY/MM/DD').isSameOrAfter(moment.utc(data.startDate, 'YYYY/MM/DD'))
+                  && moment.utc(item.deadline, 'YYYY/MM/DD').isSameOrBefore(moment.utc(data.endDate, 'YYYY/MM/DD'))) {
+                  kdl017TableDto.deadline = nts.uk.resource.getText("KDL005_38", [item.deadline]);
+                } else {
+                  kdl017TableDto.deadline = nts.uk.resource.getText("KDL005_37", [item.deadline]);
+                }
+                // <!-- A3_2_1 -->
+                kdl017TableDto.occurrenceMonth = item.occurrenceMonth ? moment.utc(item.occurrenceMonth, 'YYYYMM').format('YYYY/MM') : '';
+                // <!-- A3_2_2 -->
+                kdl017TableDto.occurrenceTime = item.occurrenceTime ? (nts.uk.time as any).format.byId("Time_Short_HM", [item.occurrenceTime]) : '';
+  
+                if (item.usageDateDtos !== null) {
+                  let usageDateDtos : UsageDateDto[] = [];
+                  item.usageDateDtos.forEach(usageDateDto => {
+                    let usageDateItem = new UsageDateDto();
+                    // <!-- A3_3_1 -->
+                    usageDateItem.usageDate = (usageDateDto.creationCategory === CreateAtr["申請(事前)"]
+                                            || usageDateDto.creationCategory === CreateAtr["申請(事後)"]
+                                            || usageDateDto.creationCategory === CreateAtr["予定"])
+                                ? nts.uk.resource.getText("KDL005_36", [(nts.uk.time as any).applyFormat("Short_YMDW", [usageDateDto.usageDate])])
+                                : (nts.uk.time as any).applyFormat("Short_YMDW", [usageDateDto.usageDate]);
+                    // <!-- A3_3_2 -->
+                    usageDateItem.usageTime = usageDateDto.usageTime ? (nts.uk.time as any).format.byId("Time_Short_HM", [usageDateDto.usageTime]) : '';
+                    usageDateItem.creationCategory = usageDateDto.creationCategory;
+                    usageDateDtos.push(usageDateItem);
+                  });
+                  kdl017TableDto.numberUsageDate = item.usageDateDtos.length;
+                  kdl017TableDto.usageDateDtos = usageDateDtos;
+                }
+                let kdl017Model = new KDL017TableModel();
+                vm.dataItems.push(kdl017Model.fromDto(kdl017TableDto));
+              });
+            }
+            vm.carryoverNumber(data.carryoverNumber ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.carryoverNumber]) : '');
+            vm.usageNumber(data.usageNumber ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.usageNumber]) : '');
+            vm.residual(data.residual ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.residual]) : '');
           }
-          vm.carryoverNumber(data.carryoverNumber ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.carryoverNumber]) : '');
-          vm.usageNumber(data.usageNumber ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.usageNumber]) : '');
-          vm.residual(data.residual ? (nts.uk.time as any).format.byId("Time_Short_HM", [data.residual]) : '');
         })
         .fail((err) => vm.onError(err))
         .always(() => nts.uk.ui.block.clear());

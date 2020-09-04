@@ -117,35 +117,65 @@ public class JpaTmpHolidayOver60hMngRepository extends JpaRepository implements 
 					, "remainTypeId");
 			tmpHolidayOver60hMng.setUseTime(Optional.of(new UseTime(40)));
 			tmpHolidayOver60hMng.setCreatorAtr(CreateAtr.APPBEFORE);
-			
-			TmpHolidayOver60hMng tmpHolidayOver60hMng3 = new TmpHolidayOver60hMng(
-					"ca294040-910f-4a42-8d90-2bd02772697c"
-					, GeneralDate.ymd(2020, 5, 14)
-					, "remainTypeId");
-			tmpHolidayOver60hMng3.setUseTime(Optional.of(new UseTime(30)));
-			tmpHolidayOver60hMng3.setCreatorAtr(CreateAtr.APPBEFORE);
-			
-			
+
 			TmpHolidayOver60hMng tmpHolidayOver60hMng1 = new TmpHolidayOver60hMng(
 					"ca294040-910f-4a42-8d90-2bd02772697c"
 					, GeneralDate.ymd(2020, 8, 10)
 					, "remainTypeId");
-			tmpHolidayOver60hMng1.setUseTime(Optional.of(new UseTime(60)));
-			tmpHolidayOver60hMng1.setCreatorAtr(CreateAtr.RECORD);
-			
-			
+			tmpHolidayOver60hMng1.setUseTime(Optional.of(new UseTime(30)));
+			tmpHolidayOver60hMng1.setCreatorAtr(CreateAtr.APPBEFORE);
+
 			TmpHolidayOver60hMng tmpHolidayOver60hMng2 = new TmpHolidayOver60hMng(
 					"ca294040-910f-4a42-8d90-2bd02772697c"
 					, GeneralDate.ymd(2020, 7, 11)
 					, "remainTypeId");
 			tmpHolidayOver60hMng2.setUseTime(Optional.of(new UseTime(50)));
 			tmpHolidayOver60hMng2.setCreatorAtr(CreateAtr.FLEXCOMPEN);
+
+			TmpHolidayOver60hMng tmpHolidayOver60hMng3 = new TmpHolidayOver60hMng(
+					"ca294040-910f-4a42-8d90-2bd02772697c"
+					, GeneralDate.ymd(2020, 5, 14)
+					, "remainTypeId");
+			tmpHolidayOver60hMng3.setUseTime(Optional.of(new UseTime(30)));
+			tmpHolidayOver60hMng3.setCreatorAtr(CreateAtr.APPBEFORE);
+
+			TmpHolidayOver60hMng tmpHolidayOver60hMng4 = new TmpHolidayOver60hMng(
+					"ca294040-910f-4a42-8d90-2bd02772697c"
+					, GeneralDate.ymd(2020, 8, 31)
+					, "remainTypeId");
+			tmpHolidayOver60hMng4.setUseTime(Optional.of(new UseTime(40)));
+			tmpHolidayOver60hMng4.setCreatorAtr(CreateAtr.APPBEFORE);
+
+			TmpHolidayOver60hMng tmpHolidayOver60hMng5 = new TmpHolidayOver60hMng(
+					"ca294040-910f-4a42-8d90-2bd02772697c"
+					, GeneralDate.ymd(2020, 8, 2)
+					, "remainTypeId");
+			tmpHolidayOver60hMng5.setUseTime(Optional.of(new UseTime(60)));
+			tmpHolidayOver60hMng5.setCreatorAtr(CreateAtr.SCHEDULE);
+
+			TmpHolidayOver60hMng tmpHolidayOver60hMng6 = new TmpHolidayOver60hMng(
+					"ca294040-910f-4a42-8d90-2bd02772697c"
+					, GeneralDate.ymd(2020, 9, 15)
+					, "remainTypeId");
+			tmpHolidayOver60hMng6.setUseTime(Optional.of(new UseTime(60)));
+			tmpHolidayOver60hMng6.setCreatorAtr(CreateAtr.FLEXCOMPEN);
 			
+			TmpHolidayOver60hMng tmpHolidayOver60hMng7 = new TmpHolidayOver60hMng(
+					"ca294040-910f-4a42-8d90-2bd02772697c"
+					, GeneralDate.ymd(2020, 9, 16)
+					, "remainTypeId");
+			tmpHolidayOver60hMng7.setUseTime(Optional.of(new UseTime(60)));
+			tmpHolidayOver60hMng7.setCreatorAtr(CreateAtr.RECORD);
+
 			List<TmpHolidayOver60hMng> result = new ArrayList<TmpHolidayOver60hMng>();
 			result.add(tmpHolidayOver60hMng);
 			result.add(tmpHolidayOver60hMng1);
 			result.add(tmpHolidayOver60hMng2);
 			result.add(tmpHolidayOver60hMng3);
+			result.add(tmpHolidayOver60hMng4);
+			result.add(tmpHolidayOver60hMng5);
+			result.add(tmpHolidayOver60hMng6);
+			result.add(tmpHolidayOver60hMng7);
 
 			return result;
 		} catch (SQLException e) {

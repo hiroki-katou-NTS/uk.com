@@ -151,7 +151,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 					= new HolidayOver60hGrantRemaining();
 				holidayOver60hGrantRemaining.setEmployeeId("ca294040-910f-4a42-8d90-2bd02772697c");
 				holidayOver60hGrantRemaining.setGrantDate(GeneralDate.ymd(2020, 5, 15));
-				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 8, 15));
+				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 8, 21));
 				holidayOver60hGrantRemaining.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
 				holidayOver60hGrantRemaining.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
 			
@@ -173,7 +173,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 					= new HolidayOver60hGrantRemaining();
 				holidayOver60hGrantRemaining.setEmployeeId("ca294040-910f-4a42-8d90-2bd02772697c");
 				holidayOver60hGrantRemaining.setGrantDate(GeneralDate.ymd(2020, 7, 1));
-				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 10, 1));
+				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 9, 30));
 				holidayOver60hGrantRemaining.setExpirationStatus(LeaveExpirationStatus.AVAILABLE);
 				holidayOver60hGrantRemaining.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
 		
@@ -195,7 +195,7 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 					= new HolidayOver60hGrantRemaining();
 				holidayOver60hGrantRemaining.setEmployeeId("ca294040-910f-4a42-8d90-2bd02772697c");
 				holidayOver60hGrantRemaining.setGrantDate(GeneralDate.ymd(2020, 8, 1));
-				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 11, 1));
+				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 8, 31));
 				holidayOver60hGrantRemaining.setExpirationStatus(LeaveExpirationStatus.AVAILABLE);
 				holidayOver60hGrantRemaining.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
 	
@@ -218,6 +218,28 @@ public class GetHolidayOver60hRemNumWithinPeriodImpl implements GetHolidayOver60
 				holidayOver60hGrantRemaining.setEmployeeId("ca294040-910f-4a42-8d90-2bd02772697c");
 				holidayOver60hGrantRemaining.setGrantDate(GeneralDate.ymd(2020, 1, 1));
 				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 2, 1));
+				holidayOver60hGrantRemaining.setExpirationStatus(LeaveExpirationStatus.AVAILABLE);
+				holidayOver60hGrantRemaining.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
+	
+				// 明細３件目
+				LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
+				//　明細付与数時間
+				leaveNumberInfo.getGrantNumber().setMinutes(Optional.of(new LeaveGrantTime(240)));
+				//　明細使用時間
+				leaveNumberInfo.getUsedNumber().setMinutes(Optional.of(new LeaveUsedTime(0)));
+				//　明細残数時間
+				leaveNumberInfo.getRemainingNumber().setMinutes(Optional.of(new LeaveRemainingTime(240)));
+				// 追加
+				holidayOver60hGrantRemaining.setDetails(leaveNumberInfo);
+				// 追加
+				grantRemainingList.add(holidayOver60hGrantRemaining);
+			}
+			{
+				HolidayOver60hGrantRemaining holidayOver60hGrantRemaining
+					= new HolidayOver60hGrantRemaining();
+				holidayOver60hGrantRemaining.setEmployeeId("ca294040-910f-4a42-8d90-2bd02772697c");
+				holidayOver60hGrantRemaining.setGrantDate(GeneralDate.ymd(2020, 9, 1));
+				holidayOver60hGrantRemaining.setDeadline(GeneralDate.ymd(2020, 9, 1));
 				holidayOver60hGrantRemaining.setExpirationStatus(LeaveExpirationStatus.AVAILABLE);
 				holidayOver60hGrantRemaining.setRegisterType(GrantRemainRegisterType.MONTH_CLOSE);
 	
