@@ -28,14 +28,7 @@ public class LogDisplaySettingFinder {
         String cid = loginUserContext .companyId();
         Optional<LogDisplaySetting> optLogDisplaySetting = this.logDisplaySettingRepository.getLogDisplaySettingByCodeAndCid(code, cid);
 		if (optLogDisplaySetting.isPresent()) {
-			LogDisplaySettingDto logDisplaySetting =LogDisplaySettingDto.fromDomain(optLogDisplaySetting.get());
-			if(logDisplaySetting.getRecordType() == RecordTypeEnum.DATA_STORAGE.code 
-				||	logDisplaySetting.getRecordType() == RecordTypeEnum.DATA_RECOVERY.code 
-				||	logDisplaySetting.getRecordType() == RecordTypeEnum.DATA_DELETION.code ) {
-				return null;
-			}else {
-				return logDisplaySetting;
-			}
+			return LogDisplaySettingDto.fromDomain(optLogDisplaySetting.get());
 		}
 		return null;
     }

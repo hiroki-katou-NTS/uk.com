@@ -7,9 +7,9 @@ import nts.uk.ctx.sys.portal.dom.logsettings.TargetSetting;
 @Data
 public class PGInfomationDto {
 	/**
-	 * プログラムID
+	 * 機能名
 	 */
-	private String programId;
+	private String functionName;
 
 	/**
 	 * ログイン履歴の記録
@@ -22,27 +22,15 @@ public class PGInfomationDto {
 	private TargetSetting editHistoryRecord;
 
 	/**
-	 * 機能名
-	 */
-	private String functionName;
-
-	/**
-	 * 画面ID
-	 */
-	private String screenId;
-
-	/**
 	 * 起動履歴の記録
 	 */
 	private TargetSetting bootHistoryRecord;
 
 	public static PGInfomationDto fromDomain(PGInfomation pgInfomation) {
 		PGInfomationDto pgInfomationDto = new PGInfomationDto();
-		pgInfomationDto.programId = pgInfomation.getProgramId();
 		pgInfomationDto.loginHistoryRecord = pgInfomation.getLoginHistoryRecord();
 		pgInfomationDto.editHistoryRecord = pgInfomation.getEditHistoryRecord();
 		pgInfomationDto.functionName = pgInfomation.getFunctionName();
-		pgInfomationDto.screenId = pgInfomation.getScreenId();
 		pgInfomationDto.bootHistoryRecord = pgInfomation.getBootHistoryRecord();
 		return pgInfomationDto;
 	}
