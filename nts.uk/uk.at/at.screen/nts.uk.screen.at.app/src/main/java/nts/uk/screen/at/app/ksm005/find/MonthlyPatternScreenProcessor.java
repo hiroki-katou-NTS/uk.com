@@ -81,15 +81,7 @@ public class MonthlyPatternScreenProcessor {
             Integer workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
             Integer typeColor = -1;
             //check output for frontend
-            if (workStyle != null){
-                if (workStyle == WorkStyle.ONE_DAY_WORK.value){
-                    typeColor = 0;
-                }else if (workStyle == WorkStyle.ONE_DAY_REST.value){
-                    typeColor = 1;
-                }else {
-                    typeColor = 2;
-                }
-            }
+            typeColor = getInteger(workStyle, typeColor);
             x.setTypeColor(typeColor);
 
             // 3. set work type name
@@ -108,6 +100,31 @@ public class MonthlyPatternScreenProcessor {
         // 5.get yearMonth
         List<Integer> listMonthYear = getYearMonthScreenprocessor.GetYearMonth(cid,requestPrams.getMonthlyPatternCode(),requestPrams.getStartDate().year());
         return new MonthlySettingPatternDto(workMonthlySettings, listMonthYear);
+    }
+
+    public WorkStyleDto findDataWorkStype(WorkTypeRequestPrams requestPrams) {
+
+        WorkInformation.Require require = new RequireImpl(basicScheduleService);
+
+        WorkInformation information = new WorkInformation(requestPrams.getWorkingCode(), requestPrams.getWorkTypeCode());
+        Integer workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
+        Integer typeColor = -1;
+        //check output for frontend
+        typeColor = getInteger(workStyle, typeColor);
+        return new WorkStyleDto(requestPrams.getWorkingCode(), requestPrams.getWorkTypeCode(),typeColor);
+    }
+
+    private Integer getInteger(Integer workStyle, Integer typeColor) {
+        if (workStyle != null) {
+            if (workStyle == WorkStyle.ONE_DAY_WORK.value) {
+                typeColor = 0;
+            } else if (workStyle == WorkStyle.ONE_DAY_REST.value) {
+                typeColor = 1;
+            } else {
+                typeColor = 2;
+            }
+        }
+        return typeColor;
     }
 
     @AllArgsConstructor
