@@ -9,6 +9,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
@@ -43,7 +44,7 @@ public class AttendanceRecordExportSettingSaveCommandHandler
 		domain.setSealStamp(
 				command.getSealStamp().stream().map(item -> new SealColumnName(item)).collect(Collectors.toList()));
 		domain.setSealUseAtr(command.getSealUseAtr());
-
+		domain.setExportFontSize(ExportFontSize.valueOf(command.getExportFontSize()));
 		// update
 		attendanceRecExpSetRepo.updateAttendanceRecExpSet(domain);
 	}

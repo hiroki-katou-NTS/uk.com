@@ -24,6 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KFNST_SEAL_COLUMN")
+// KFNMT_RPT_WK_ATD_OUTSEAL
 public class KfnstSealColumn extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

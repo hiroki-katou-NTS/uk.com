@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -9,9 +10,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingGetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -19,13 +28,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The persistent class for the KFNMT_RPT_WK_ATD_OUT database table.
  * 
  */
+@Data
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name="KFNMT_RPT_WK_ATD_OUT")
-public class KfnmtRptWkAtdOut extends UkJpaEntity implements Serializable {
+@Table(name = "KFNMT_RPT_WK_ATD_OUT")
+public class KfnmtRptWkAtdOut extends UkJpaEntity
+		implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -86,4 +93,117 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity implements Serializable {
 		return this.layoutID;
 	}
 
+//	@Override
+//	public void setCompanyId(String companyId) {
+//		this.cid = companyId;
+//		
+//	}
+//
+//	@Override
+//	public void setDailyExportItem(List<AttendanceRecordExport> attendanceList) {
+//		
+//	}
+//
+//	@Override
+//	public void setMonthlyExportItem(List<AttendanceRecordExport> attendanceList) {
+//		
+//	}
+//
+//	@Override
+//	public void setSealUseAtr(Boolean atr) {
+//		this.sealUseAtr = atr;
+//	}
+//
+//	@Override
+//	public void setCode(ExportSettingCode code) {
+//		this.
+//	}
+//
+//	@Override
+//	public void setName(ExportSettingName name) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void setSealStamp(List<SealColumnName> seal) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void setNameUseAtr(Integer nameUseAtr) {
+//		// TODO Auto-generated method stub
+//		
+//	@Override
+//	public String getCompanyId() {
+//		
+//		return this.cid;
+//	}
+//
+//	@Override
+//	public List<AttendanceRecordExport> getDailyExportItem() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public List<AttendanceRecordExport> getMonthlyExportItem() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public Boolean getSealUseAtr() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public ExportSettingCode getCode() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public ExportSettingName getName() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public List<SealColumnName> getSealStamp() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public Integer getNameUseAtr() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
+//
+//	@Override
+//	public int getExportFontSize() {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
+//
+//	@Override
+//	public int getMonthlyConfirmedDisplay() {
+//		// TODO Auto-generated method stub
+//		return 0;
+//	}
+//
+//	@Override
+//	public void setExportFontSize(ExportFontSize exportFontSize) {
+//		// TODO Auto-generated method stub
+//		
+//	}
+//
+//	@Override
+//	public void setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay monthlyConfirmedDisplay) {
+//		// TODO Auto-generated method stub
+//		
+//	}
 }

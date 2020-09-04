@@ -26,6 +26,8 @@ public class AttendanceRecordExportSettingSaveCommand {
 	/** The seal use atr. */
 	Boolean sealUseAtr;
 	
+	/** The export font size. */
+	Integer exportFontSize;
 	/**
 	 * Instantiates a new attendance record export setting save command.
 	 */
