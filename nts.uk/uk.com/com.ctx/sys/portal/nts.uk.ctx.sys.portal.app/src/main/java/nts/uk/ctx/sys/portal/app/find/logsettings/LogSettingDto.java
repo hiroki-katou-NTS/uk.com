@@ -4,7 +4,6 @@ import lombok.Data;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.ctx.sys.portal.dom.enums.System;
 
 @Data
 public class LogSettingDto implements LogSetting.MementoSetter {
@@ -12,7 +11,7 @@ public class LogSettingDto implements LogSetting.MementoSetter {
 	/**
 	 * システム
 	 */
-	private System system;
+	private int system;
 
 	/** プログラムID **/
 	private String programId;
