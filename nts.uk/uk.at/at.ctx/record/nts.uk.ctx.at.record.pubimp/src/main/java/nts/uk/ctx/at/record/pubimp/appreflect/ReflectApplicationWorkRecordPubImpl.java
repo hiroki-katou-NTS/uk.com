@@ -1,0 +1,250 @@
+package nts.uk.ctx.at.record.pubimp.appreflect;
+
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import org.apache.commons.lang3.tuple.Pair;
+
+import lombok.AllArgsConstructor;
+import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.app.find.dailyperform.ConvertDailyRecordToAd;
+import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCAppReflectionSetting;
+import nts.uk.ctx.at.record.dom.adapter.application.reflect.RequestSettingAdapter;
+import nts.uk.ctx.at.record.dom.applicationcancel.ReflectApplicationWorkRecord;
+import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.CheckRangeReflectLeavingWork;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.CheckRangeReflectAttd;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.OutputCheckRangeReflectAttd;
+import nts.uk.ctx.at.record.dom.dailyresultcreationprocess.creationprocess.creationclass.dailywork.TemporarilyReflectStampDailyAttd;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
+import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
+import nts.uk.ctx.at.record.pub.appreflect.ReflectApplicationWorkRecordPub;
+import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
+import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
+import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ChangeDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.CorrectionAttendanceRule;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.OutputTimeReflectForWorkinfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.TimeReflectFromWorkinfo;
+import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
+
+@Stateless
+public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWorkRecordPub {
+
+	@Inject
+	private StampCardRepository stampCardRepository;
+
+	@Inject
+	private CorrectionAttendanceRule correctionAttendanceRule;
+
+	@Inject
+	private WorkTypeRepository workTypeRepo;
+
+	@Inject
+	private WorkTimeSettingRepository workTimeSettingRepository;
+
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
+
+	@Inject
+	private BasicScheduleService basicScheduleService;
+
+	@Inject
+	private TimeReflectFromWorkinfo timeReflectFromWorkinfo;
+
+	@Inject
+	private CheckRangeReflectAttd checkRangeReflectAttd;
+
+	@Inject
+	private CheckRangeReflectLeavingWork checkRangeReflectLeavingWork;
+
+	@Inject
+	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+
+	@Inject
+	private DailyRecordShareFinder dailyRecordShareFinder;
+
+	@Inject
+	private ConvertDailyRecordToAd convertDailyRecordToAd;
+
+	@Inject
+	private CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
+
+	@Inject
+	private DailyRecordAdUpService dailyRecordAdUpService;
+
+	@Inject
+	private RequestSettingAdapter requestSettingAdapter;
+
+	@Override
+	public Pair<ReflectStatusResultShare, Optional<AtomTask>> process(Object application, GeneralDate date,
+			ReflectStatusResultShare reflectStatus) {
+		RequireImpl impl = new RequireImpl(AppContexts.user().companyId(), stampCardRepository,
+				correctionAttendanceRule, workTypeRepo, workTimeSettingRepository, workTimeSettingService,
+				basicScheduleService, timeReflectFromWorkinfo, checkRangeReflectAttd, checkRangeReflectLeavingWork,
+				temporarilyReflectStampDailyAttd, dailyRecordShareFinder, convertDailyRecordToAd,
+				calculateDailyRecordServiceCenter, dailyRecordAdUpService, requestSettingAdapter);
+		return ReflectApplicationWorkRecord.process(impl, (ApplicationShare) application, date, reflectStatus);
+	}
+
+	@AllArgsConstructor
+	public class RequireImpl implements ReflectApplicationWorkRecord.Require {
+
+		private final String companyId;
+
+		private final StampCardRepository stampCardRepository;
+
+		private final CorrectionAttendanceRule correctionAttendanceRule;
+
+		private final WorkTypeRepository workTypeRepo;
+
+		private final WorkTimeSettingRepository workTimeSettingRepository;
+
+		private final WorkTimeSettingService workTimeSettingService;
+
+		private final BasicScheduleService basicScheduleService;
+
+		private final TimeReflectFromWorkinfo timeReflectFromWorkinfo;
+
+		private final CheckRangeReflectAttd checkRangeReflectAttd;
+
+		private final CheckRangeReflectLeavingWork checkRangeReflectLeavingWork;
+
+		private final TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+
+		private final DailyRecordShareFinder dailyRecordShareFinder;
+
+		private final ConvertDailyRecordToAd convertDailyRecordToAd;
+
+		private final CalculateDailyRecordServiceCenter calculateDailyRecordServiceCenter;
+
+		private final DailyRecordAdUpService dailyRecordAdUpService;
+
+		private final RequestSettingAdapter requestSettingAdapter;
+
+		@Override
+		public List<StampCard> getLstStampCardBySidAndContractCd(String contractCd, String sid) {
+			return stampCardRepository.getLstStampCardBySidAndContractCd(contractCd, sid);
+		}
+
+		@Override
+		public IntegrationOfDaily process(IntegrationOfDaily domainDaily, ChangeDailyAttendance changeAtt) {
+			return correctionAttendanceRule.process(domainDaily, changeAtt);
+		}
+
+		@Override
+		public SetupType checkNeededOfWorkTimeSetting(String workTypeCode) {
+			return basicScheduleService.checkNeededOfWorkTimeSetting(workTypeCode);
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String workTypeCd) {
+			return workTypeRepo.findByPK(companyId, workTypeCd);
+		}
+
+		@Override
+		public Optional<WorkTimeSetting> findByCode(String workTimeCode) {
+			return workTimeSettingRepository.findByCode(companyId, workTimeCode);
+		}
+
+		@Override
+		public PredetermineTimeSetForCalc getPredeterminedTimezone(String workTimeCd, String workTypeCd,
+				Integer workNo) {
+			return workTimeSettingService.getPredeterminedTimezone(companyId, workTimeCd, workTypeCd, workNo);
+		}
+
+		@Override
+		public WorkStyle checkWorkDay(String workTypeCode) {
+			return basicScheduleService.checkWorkDay(workTypeCode);
+		}
+
+		@Override
+		public void insertAppReflectHist(ApplicationReflectHistory hist) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public OutputTimeReflectForWorkinfo getTimeReflect(String companyId, String employeeId, GeneralDate ymd,
+				WorkInfoOfDailyAttendance workInformation) {
+			return timeReflectFromWorkinfo.get(companyId, employeeId, ymd, workInformation);
+		}
+
+		@Override
+		public OutputCheckRangeReflectAttd checkRangeReflectAttd(Stamp stamp,
+				StampReflectRangeOutput stampReflectRangeOutput, IntegrationOfDaily integrationOfDaily) {
+			return checkRangeReflectAttd.checkRangeReflectAttd(stamp, stampReflectRangeOutput, integrationOfDaily);
+		}
+
+		@Override
+		public OutputCheckRangeReflectAttd checkRangeReflectOut(Stamp stamp, StampReflectRangeOutput s,
+				IntegrationOfDaily integrationOfDaily) {
+			return checkRangeReflectLeavingWork.checkRangeReflectAttd(stamp, s, integrationOfDaily);
+		}
+
+		@Override
+		public List<ErrorMessageInfo> reflectStamp(Stamp stamp, StampReflectRangeOutput stampReflectRangeOutput,
+				IntegrationOfDaily integrationOfDaily) {
+			return temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily);
+		}
+
+		@Override
+		public Optional<RCAppReflectionSetting> getAppReflectionSetting(String companyId,
+				ApplicationTypeShare appType) {
+			return requestSettingAdapter.getAppReflectionSetting(companyId);
+		}
+
+		@Override
+		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
+			// TODO: Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public IntegrationOfDaily findDaily(String employeeId, GeneralDate date) {
+			return dailyRecordShareFinder.find(employeeId, date);
+		}
+
+		@Override
+		public DailyRecordToAttendanceItemConverter createDailyConverter() {
+			return convertDailyRecordToAd.createDailyConverter();
+		}
+
+		@Override
+		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
+				List<IntegrationOfDaily> integrationOfDaily, Optional<ManagePerCompanySet> companySet) {
+			return calculateDailyRecordServiceCenter.calculateForSchedule(calcOption, integrationOfDaily, companySet);
+		}
+
+		@Override
+		public void addAllDomain(IntegrationOfDaily domain) {
+			dailyRecordAdUpService.addAllDomain(domain);
+		}
+
+	}
+}

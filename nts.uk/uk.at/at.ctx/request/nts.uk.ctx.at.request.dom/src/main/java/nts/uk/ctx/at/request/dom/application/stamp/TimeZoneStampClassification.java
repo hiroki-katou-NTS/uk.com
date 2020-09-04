@@ -15,4 +15,20 @@ public enum TimeZoneStampClassification {
 	public int value;
 	
 	public String name;
+	
+	private final static TimeZoneStampClassification[] values = TimeZoneStampClassification.values();
+
+	public static TimeZoneStampClassification valueOf(Integer value) {
+		if (value == null) {
+			return null;
+		}
+
+		for (TimeZoneStampClassification val : TimeZoneStampClassification.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		return null;
+	}
 }
