@@ -126,7 +126,7 @@ module nts.uk.at.view.kdl023.base.service {
 		export interface RefImageEachDayDto{
 			workCreateMethod: number;
 			workInformation: WorkInformationDto
-			date: Date;
+			date: string;
 			workStyles: number;
 		}
 

@@ -15,6 +15,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import BootMode = nts.uk.at.view.kdl023.base.service.model.BootMode;
     import WorkCreateMethod = nts.uk.at.view.kdl023.base.service.model.WorkCreateMethod;
     import getText = nts.uk.resource.getText;
+    import GetWorkCycleAppImageParamDto = nts.uk.at.view.kdl023.base.service.model.GetWorkCycleAppImageParam
     import RefImageEachDayDto = nts.uk.at.view.kdl023.base.service.RefImageEachDayDto;
     const CONST = {
         DATE_FORMAT: 'yyyy/MM/yy',
@@ -65,7 +66,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         listNonSatHoliday: KnockoutObservableArray<WorkType> = ko.observableArray([]);
 
         reflectionMethod: KnockoutObservable<number> = ko.observable(0);
-        useClassification: KnockoutObservable<boolean> = ko.observable(false);
         workCycleEnable1: KnockoutObservable<boolean> = ko.observable(false);
         workCycleEnable2: KnockoutObservable<boolean> = ko.observable(false);
         workCycleEnable3: KnockoutObservable<boolean> = ko.observable(false);
@@ -77,7 +77,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
         isExecMode: KnockoutObservable<boolean> = ko.observable(false);
         loadWindowsParam: GetStartupInfoParamDto;
-        isOverWrite: KnockoutObservable<boolean> = ko.observable(false);
+        abstract isOverWrite: KnockoutObservable<boolean> = ko.observable(false);
+        reflectionParam: KnockoutObservable<GetWorkCycleAppImageParamDto> = ko.observable();
+        selectedPatternCd: KnockoutObservable<string> = ko.observable();
+
+        pubHoliday: KnockoutObservable<string> = ko.observable();
+        satHoliday: KnockoutObservable<string> = ko.observable();
+        nonSatHoliday: KnockoutObservable<string> = ko.observable();
+        refImageEachDayDto: KnockoutObservableArray<RefImageEachDayDto> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -168,29 +175,44 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             $('#reflection-method-radio-group').attr('tabindex', '-1');
                         }
                     });
+
+                    if(self.isExecMode()){
+                        $('.exec-mode').show();
+                        $('.ref-mode').hide();
+                    } else{
+                        $('.ref-mode').show();
+                        $('.exec-mode').hide();
+                    }
+
                     self.reflectionMethod.subscribe(val => {
                         if(val === 2){
-                            self.useClassification(true);
+                            self.reflectionSetting.statutorySetting.useClassification(true);
+                            self.reflectionSetting.nonStatutorySetting.useClassification(true);
+                            self.reflectionSetting.holidaySetting.useClassification(true);
                             self.workCycleEnable1(true);
                         } else {
-                            self.useClassification(false);
+                            self.reflectionSetting.statutorySetting.useClassification(false);
+                            self.reflectionSetting.nonStatutorySetting.useClassification(false);
+                            self.reflectionSetting.holidaySetting.useClassification(false);
                             self.workCycleEnable1(false);
+                            self.reflectionOrder1(WorkCreateMethod.NON)
                         }
                     });
 
-                    //self.isExecMode.subscribe(val => {
-                        if(self.isExecMode()){
-                            $('.exec-mode').show();
-                            $('.ref-mode').hide();
-                        } else{
-                            $('.ref-mode').show();
-                            $('.exec-mode').hide();
-                        }
-                    //})
                     self.reflectionOrder1.subscribe(val =>{
                         if(val === WorkCreateMethod.NON){
                             self.workCycleEnable2(false);
                             self.reflectionOrder2(WorkCreateMethod.NON);
+                        }else {
+                            self.workCycleEnable2(true);
+                        }
+                    })
+                    self.reflectionOrder2.subscribe( val => {
+                        if(val === WorkCreateMethod.NON){
+                            self.workCycleEnable3(false);
+                            self.reflectionOrder3(WorkCreateMethod.NON);
+                        }else{
+                            self.workCycleEnable3(true);
                         }
                     })
 
@@ -266,15 +288,64 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Event when click apply button.
          */
-        public onBtnApplySettingClicked(): void {
+        public onBtnApplySettingClicked(slideDay: number): void {
             let self = this;
             nts.uk.ui.block.invisible();
+
+            let dateString = self.yearMonthPicked().toString() + self.startDate.toString();
+            let year:number = +dateString.substring(0,4);
+            let month:number = +dateString.substring(4,6);
+            let day:number = +dateString.substring(6,8);
+            let date = new Date(year, month-1, day);
+            let legalHolidayCd = '';
+            let nonStatutoryHolidayCd = '';
+            let holidayCd = '';
+            let refOrder:Array<number> = [];
+            let defaultStartDate =  moment(date).format(CONST.DATE_FORMAT).toString();
+            let defaultEndDate = formatDate(moment(date).endOf('month').toDate(), CONST.DATE_FORMAT).toDateString();
+
+            if(self.isExecMode){
+                defaultStartDate = self.reflectionSetting.calendarStartDate();
+                defaultEndDate = self.reflectionSetting.calendarEndDate();
+            }
+            if(self.reflectionMethod() === 2){
+                legalHolidayCd = self.reflectionSetting.statutorySetting.workTypeCode();
+                nonStatutoryHolidayCd = self.reflectionSetting.nonStatutorySetting.workTypeCode();
+                holidayCd = self.reflectionSetting.holidaySetting.workTypeCode();
+                if(self.reflectionOrder1() != WorkCreateMethod.NON){
+                    refOrder.push(self.reflectionOrder1());
+                    if(self.reflectionOrder2() != WorkCreateMethod.NON){
+                        refOrder.push(self.reflectionOrder2());
+                        if(self.reflectionOrder3() != WorkCreateMethod.NON){
+                            refOrder.push(self.reflectionOrder3());
+                        }
+                    }
+                }
+            } else if(self.reflectionMethod() === 0){
+                refOrder = [0,2];
+            } else{
+                refOrder = [2,0]
+            }
+            self.reflectionParam = {
+                creationPeriodStartDate : defaultStartDate,
+                creationPeriodEndDate : defaultEndDate,
+                workCycleCode : self.selectedPatternCd(),
+                refOrder : refOrder,
+                numOfSlideDays : slideDay,
+                legalHolidayCd: legalHolidayCd,
+                nonStatutoryHolidayCd: nonStatutoryHolidayCd,
+                holidayCd: holidayCd
+            }
+
             service.getReflectionWorkCycleAppImage(null).done( (val) =>{
+                self.refImageEachDayDto(val);
+                self.setCalendarData(val);
+             }).fail( () => {
 
-             }).fail(
-
-            ).always(
-                nts.uk.ui.block.clear();
+                }
+            ).always(()=>{
+                    nts.uk.ui.block.clear();
+                }
             );
             self.setPatternRange() // Set pattern's range
                 .done(() => {
@@ -386,6 +457,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     self.listSatHoliday(list.satHoliday);
                     self.listNonSatHoliday(list.nonSatHoliday);
                     self.isExecMode(param.bootMode === 1);
+                    self.refImageEachDayDto(list.reflectionImage);
+                    self.setCalendarData(list.reflectionImage);
+
                 }else {
                     self.isDataEmpty = true;
                 }
@@ -991,27 +1065,32 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
         private setCalendarData(data: Array<RefImageEachDayDto>){
             const self = this;
-            self.optionDates
+            let temp:Array<OptionDate> = ([]);
+            data.forEach( (item) => {
+                temp.push(self.setOptionDate(item));}
+            );
+            self.optionDates(temp);
         }
-        private setOptionDate(data: RefImageEachDayDto):OptionDate{
-            let start = data.date;
+        private setOptionDate(refImage: RefImageEachDayDto):OptionDate{
+            let start = refImage.date;
             let textColor;
-            if(data.workStyles === 0){
+            if(refImage.workStyles === 0){
                 textColor = '#ff0000';
-            }else if(data.workStyles === 3){
+            }else if(refImage.workStyles === 3){
                 textColor = '#0000ff';
             } else {
                 textColor = '#FF7F27';
             }
 
             let backgroundColor = 'white';
-            let listText: [data.workInformation.workTypeCode, data.workInformation.workTimeCode];
-            return {
+            let listText: Array<string> = [refImage.workInformation.workTypeCode, refImage.workInformation.workTimeCode];
+            let result:OptionDate = {
                 start: start,
                 textColor: textColor,
                 backgroundColor: backgroundColor,
                 listText: listText
             }
+            return result;
         }
 
 
@@ -1123,7 +1202,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         legalHolidayCd: KnockoutObservable<string>;
         nonStatutoryHolidayCd: KnockoutObservable<string>;
         holidayCd: KnockoutObservable<string>;
-        constructor(data: GetStartupInfoParamDto){
+        constructor(data: GetWorkCycleAppImageParamDto){
             const model = this;
             model.creationPeriodStartDate = ko.observable(data.creationPeriodStartDate)
             model.creationPeriodEndDate = ko.observable(data.creationPeriodEndDate)
