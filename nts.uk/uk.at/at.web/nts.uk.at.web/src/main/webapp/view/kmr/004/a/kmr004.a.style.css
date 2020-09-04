@@ -17,14 +17,17 @@
 #A5_2 label{
 	background-color: #00B050;
 	border-color: #B1B1B1;
-	margin-top: -2px;
-	margin-bottom: -4px;
-	padding-top: 2px;
+	margin-right: 10px;
 	padding: 5px;
-	padding-bottom: 4px;
 	border-radius: 5px;
 	color: #ffffff;
 }
+
+#A5_2 label:last-child{
+	margin-right: 0px;
+}
+
+
 .kmr004-inline{
 	display: inline-block;
 }
@@ -52,10 +55,6 @@
 #A8_6 label {
 	padding-left: 23px;
 	display: inline block;
-}
-
-#A10_2 {
-	align:left;
 }
 
 #A6_5 table.table_content tbody tr td table tbody tr td {
@@ -93,16 +92,21 @@
 	width: 100px;
 }
 
+#A10_2{
+	width: 200px;
+}
+
 #A10_2 label:first-child {
-	padding-bottom: 22px;
+	padding-bottom: 40px;
 }
 
 #A10_5 {
-	display: inline-block;
-    margin-left: 22px;
+	position: absolute;
+    top: 142px;
+    left: 155px;
 }
 
 #A10_6 {
-	padding-left: 26px;
-	padding-top: 4px;
+	margin-left: 30px;
+	margin-top: 10px;
 }
