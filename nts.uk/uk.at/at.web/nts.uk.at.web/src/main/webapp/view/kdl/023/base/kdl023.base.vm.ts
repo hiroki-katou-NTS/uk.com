@@ -17,6 +17,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import getText = nts.uk.resource.getText;
     import GetWorkCycleAppImageParamDto = nts.uk.at.view.kdl023.base.service.model.GetWorkCycleAppImageParam
     import RefImageEachDayDto = nts.uk.at.view.kdl023.base.service.RefImageEachDayDto;
+    import MonthlyPatternRegisterCommand = nts.uk.at.view.kdl023.base.service.MonthlyPatternRegisterCommand;
     const CONST = {
         DATE_FORMAT: 'yyyy/MM/yy',
         YEAR_MONTH: 'yyyy/MM'
@@ -77,7 +78,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
         isExecMode: KnockoutObservable<boolean> = ko.observable(false);
         loadWindowsParam: GetStartupInfoParamDto;
-        abstract isOverWrite: KnockoutObservable<boolean> = ko.observable(false);
+        isOverWrite: KnockoutObservable<boolean> = ko.observable(false);
         reflectionParam: KnockoutObservable<GetWorkCycleAppImageParamDto> = ko.observable();
         selectedPatternCd: KnockoutObservable<string> = ko.observable();
 
@@ -288,7 +289,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Event when click apply button.
          */
-        public onBtnApplySettingClicked(slideDay: number): void {
+        public onBtnApplySettingClicked(){
+            this.onBtnApplySetting(0);
+        }
+
+        public onBtnApplySetting(slideDay: number): void {
             let self = this;
             nts.uk.ui.block.invisible();
 
@@ -326,7 +331,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             } else{
                 refOrder = [2,0]
             }
-            self.reflectionParam = {
+            self.reflectionParam({
                 creationPeriodStartDate : defaultStartDate,
                 creationPeriodEndDate : defaultEndDate,
                 workCycleCode : self.selectedPatternCd(),
@@ -335,9 +340,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 legalHolidayCd: legalHolidayCd,
                 nonStatutoryHolidayCd: nonStatutoryHolidayCd,
                 holidayCd: holidayCd
-            }
+            })
 
-            service.getReflectionWorkCycleAppImage(null).done( (val) =>{
+            service.getReflectionWorkCycleAppImage(reflectionParam).done( (val) =>{
                 self.refImageEachDayDto(val);
                 self.setCalendarData(val);
              }).fail( () => {
@@ -1093,6 +1098,32 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             return result;
         }
 
+        public decide(): void {
+            let self = this;
+            let param : MonthlyPatternRegisterCommand = {
+                isOverWrite : self.isOverWrite(),
+                workMonthlySetting: null
+            }
+            // If calendar's setting is empty.
+            if (self.isOptionDatesEmpty()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_512" });
+                return;
+            }
+
+            if (self.isMasterDataUnregisterd()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_340" }).then(() => {
+                    self.closeDialog();
+                });
+            } else {
+                service.registerMonthlyPattern(param).done(() => {
+                    nts.uk.ui.windows.setShared('returnedData', ko.toJS(self.reflectionSetting));
+                    self.closeDialog();
+                }).fail(() => {
+                    self.closeDialog();
+                });
+
+            }
+        }
 
     }
 
