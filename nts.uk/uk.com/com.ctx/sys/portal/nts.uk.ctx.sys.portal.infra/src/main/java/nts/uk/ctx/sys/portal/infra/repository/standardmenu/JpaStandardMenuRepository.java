@@ -404,9 +404,7 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 	@Override
 	public List<StandardMenu> findByProgram(String companyId, int system, List<MenuClassification> classification, String programId) {
 		List<Integer> menuClassification = new ArrayList<Integer>();
-		menuClassification.add(1);
-		menuClassification.add(2);
-//		classification.stream().forEach(s -> menuClassification.add(s.value));
+		classification.stream().forEach(s -> menuClassification.add(s.value));
 		return this.queryProxy().query(FIND_BY_SYSTEM_MENUCLASSIFICATION_PROGRAMID, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("system", system)
