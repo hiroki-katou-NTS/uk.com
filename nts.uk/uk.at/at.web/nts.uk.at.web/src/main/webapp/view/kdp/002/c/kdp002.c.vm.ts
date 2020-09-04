@@ -134,7 +134,7 @@ module nts.uk.at.view.kdp002.c {
 			public isNoData() {
 				const vm = this;
 				let itemData =  _.filter(vm.items(), 'value');
-				return !vm.timeName1() || !vm.timeName2() || !itemData.length || !vm.workName1() || !vm.workName2();
+				return !vm.timeName1() && !vm.timeName2() && !itemData.length && !vm.workName1() && !vm.workName2();
 			}
 			getEmpInfo(): JQueryPromise<any> {
 				let self = this;
