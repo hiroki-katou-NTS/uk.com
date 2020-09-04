@@ -12,23 +12,7 @@ module nts.uk.com.view.cli002.a {
             new systemType(3, this.$i18n("Enum_SystemType_OFFICE_HELPER")),
         ]);
 
-        public dataSourceItem: KnockoutObservableArray<any> = ko.observableArray([
-            {rowNumber: 1, functionName: "item1", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 2, functionName: "item2", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 3, functionName: "item3", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 4, functionName: "item4", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 5, functionName: "item5", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 6, functionName: "item6", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 7, functionName: "item7", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 8, functionName: "item8", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 9, functionName: "item9", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 10, functionName: "item10", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 11, functionName: "item11", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 12, functionName: "item12", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 13, functionName: "item13", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 14, functionName: "item14", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
-            {rowNumber: 15, functionName: "item15", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false}
-        ]);
+        public dataSourceItem: KnockoutObservableArray<any> = ko.observableArray([]);
         public selectedSystemCode: KnockoutObservable<number> = ko.observable(0);
 
         public systemColumns = [
@@ -85,6 +69,24 @@ module nts.uk.com.view.cli002.a {
                 vm.getData(newValue);
             });
 
+            this.getItemList();
+        }
+
+        private getData(systemType: number) {
+            const vm = this;
+            vm.$blockui("grayout");
+            service.findBySystem(systemType).done((response: PGList[]) => {
+                const pgInfomation: Array<PGInfomation> = [];
+                _.forEach(response, function(item: PGList, index) {
+                    pgInfomation.push(new PGInfomation(index + 1, item.functionName, false, false, false));
+                })
+                vm.dataSourceItem(pgInfomation);
+                this.getItemList();
+            }).always(() => vm.$blockui("clear")); 
+        }
+
+        private getItemList() {
+            const vm = this;
             new nts.uk.ui.mgrid.MGrid($("#item-list")[0], {
                 height: "400px",
                 headerHeight: '60px',
@@ -120,18 +122,6 @@ module nts.uk.com.view.cli002.a {
                 ],
                 features: []
             }).create();
-        }
-
-        private getData(systemType: number) {
-            const vm = this;
-            vm.$blockui("grayout");
-            service.findBySystem(systemType).done((response: PGList[]) => {
-                const pgInfomation: Array<PGInfomation> = [];
-                _.forEach(response, function(item: PGList, index) {
-                    pgInfomation.push(new PGInfomation(index + 1, item.functionName, false, false, false));
-                })
-                vm.dataSourceItem(pgInfomation);
-            }).always(() => vm.$blockui("clear")); 
         }
     }
     class systemType {
