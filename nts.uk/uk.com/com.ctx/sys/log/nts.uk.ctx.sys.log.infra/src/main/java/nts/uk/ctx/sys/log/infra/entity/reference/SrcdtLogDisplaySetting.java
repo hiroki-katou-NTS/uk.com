@@ -15,7 +15,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.sys.log.dom.enums.SystemTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.DataTypeEnum;
 import nts.uk.ctx.sys.log.dom.reference.LogDisplaySetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -82,12 +81,18 @@ public class SrcdtLogDisplaySetting extends UkJpaEntity implements Serializable 
 
 	public static SrcdtLogDisplaySetting toEntity(LogDisplaySetting domain) {
 		Optional<DataTypeEnum> optionalDataType = Optional.ofNullable(domain.getDataType());
-		Optional<SystemTypeEnum> optionalSystemType = Optional.ofNullable(domain.getSystemType());
-		return new SrcdtLogDisplaySetting(new SrcdtLogDisplaySettingPK(domain.getLogSetId()), domain.getCid(),
-				domain.getCode().v(), domain.getName().v(),
-				optionalDataType.isPresent() ? domain.getDataType().code : null, domain.getRecordType().code,
-				optionalSystemType.isPresent() ? domain.getSystemType().code : null, domain.getLogSetOutputItems().stream()
-				.map(item -> SrcdtLogSetOutputItem.toEntity(item)).collect(Collectors.toList()));
+		return new SrcdtLogDisplaySetting(
+				new SrcdtLogDisplaySettingPK(domain.getLogSetId()), 
+				domain.getCid(),
+				domain.getCode().v(), 
+				domain.getName().v(),
+				optionalDataType.isPresent() ? domain.getDataType().code : null, 
+				domain.getRecordType().code,
+				domain.getSystemType().code, 
+				domain.getLogSetOutputItems()
+					.stream()
+					.map(item -> SrcdtLogSetOutputItem.toEntity(item))
+					.collect(Collectors.toList()));
 	}
 
 }
