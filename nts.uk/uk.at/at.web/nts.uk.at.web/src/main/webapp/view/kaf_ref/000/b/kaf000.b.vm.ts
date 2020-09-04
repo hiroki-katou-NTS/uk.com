@@ -70,7 +70,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
-        childUpdateEvent!: () => void;
+        childUpdateEvent!: () => any;
 
         created(listAppMeta: Array<string>, currentApp: string) {
             const vm = this;
@@ -258,7 +258,9 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
             // nếu component con có bind event ra
             if(_.isFunction(vm.childUpdateEvent)) {
-                vm.childUpdateEvent();
+                vm.childUpdateEvent().then(() => {
+					vm.loadData();
+				});
             }
         }
 
