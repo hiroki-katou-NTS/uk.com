@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf000_ref.test.viewmodel {
             const vm = this;
             vm.$jump("/view/kaf_ref/000/b/index.xhtml", {
                 currentApp: vm.simpleValue(),
-                listApp: [vm.simpleValue()]
+                listAppMeta: [vm.simpleValue()]
             });    
         }
     }
