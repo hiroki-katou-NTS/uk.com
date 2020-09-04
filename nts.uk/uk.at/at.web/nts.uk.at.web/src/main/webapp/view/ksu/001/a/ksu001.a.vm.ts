@@ -333,6 +333,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 return self.selectedModeDisplayInBody() == 'shift' && self.mode() == 'edit' ;
             }, this);
             
+            let height = window.innerHeight - 193;
+            $("#content-main").css('height', height+ 'px');
+            
             self.dataCell = {};
             
             $("#extable").on("extablecellupdated", (dataCell) => {
@@ -902,8 +905,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let ymd = time.yearMonthDay;
                         let workTypeName = (cell.workTypeCode != null && cell.workTypeName == null) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
                         let workTimeName = (cell.workTimeCode != null && cell.workTimeName == null) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
-                        let startTime    = cell.startTime == null ? null : formatById("Clock_Short_HM", cell.startTime);
-                        let endTime      = cell.endTime   == null ? null : formatById("Clock_Short_HM", cell.endTime);
+                        let startTime    = cell.startTime == null ? '' : formatById("Clock_Short_HM", cell.startTime);
+                        let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
                         let workTimeCode = cell.workTimeCode;
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime);
@@ -1643,21 +1646,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         setPositionButonToRightToLeft() {
             let self = this;
-            self.indexBtnToLeft = 0; 
-            
+            self.indexBtnToLeft = 0;
+
             let marginleftOfbtnToRight: number = 0;
             let marginleftOfbtnToLeft: number = 190 + self.widthMid;
-            if(self.showA9){
+            if (self.showA9) {
                 $(".toLeft").css("background", "url(../image/toleft.png) no-repeat center");
-                
+
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
-                
+
                 marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 32;
-            }else{
+            } else {
                 $(".toLeft").css("display", "none");
                 marginleftOfbtnToRight = $("#extable").width() - 32;
             }
-            $(".toRight").css('margin-left', marginleftOfbtnToRight+ 'px');
+            $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
         }
         
         setPositionButonToRight() {
