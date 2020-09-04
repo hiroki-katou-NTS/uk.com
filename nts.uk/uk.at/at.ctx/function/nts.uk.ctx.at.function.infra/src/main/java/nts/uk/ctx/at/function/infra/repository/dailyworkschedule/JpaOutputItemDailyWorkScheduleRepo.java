@@ -26,10 +26,12 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 	
 	public static final String GET_FREE_SETTING_BY_EMPLOYEE_AND_COMPANY = "SELECT outItem FROM KfnmtRptWkDaiOutItem outItem"
 			+ "	WHERE outItem.cid = :companyId"
-			+ "		AND outItem.sid = :employeeId";
+			+ "		AND outItem.sid = :employeeId"
+			+ "		AND outItem.itemSelType = :itemSelType";
 
 	public static final String GET_STANDARD_SETTING_BY_COMPANY = "SELECT ot FROM KfnmtRptWkDaiOutItem ot"
-			+ "	WHERE ot.cid = ?";
+			+ "	WHERE ot.cid = ?"
+			+ "		AND ot.itemSelType = :itemSelType";
 
 	@Override
 	public Optional<FreeSettingOfOutputItemForDailyWorkSchedule> getFreeSettingByCompanyAndEmployee(String companyId,

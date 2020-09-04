@@ -112,6 +112,7 @@ import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 import nts.uk.file.at.app.export.dailyschedule.AttendanceResultImportAdapter;
 import nts.uk.file.at.app.export.dailyschedule.FileOutputType;
 import nts.uk.file.at.app.export.dailyschedule.FormOutputType;
+import nts.uk.file.at.app.export.dailyschedule.ItemSelectionType;
 import nts.uk.file.at.app.export.dailyschedule.OutputConditionSetting;
 import nts.uk.file.at.app.export.dailyschedule.PageBreakIndicator;
 import nts.uk.file.at.app.export.dailyschedule.TotalDayCountWs;
@@ -346,9 +347,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		} else {
 			reportContext = this.createContext(TEMPLATE_DATE);
 		}
-		
-		// ドメインモデル「日別勤務表の出力項目」を取得する
-		Optional<OutputItemDailyWorkSchedule> optOutputItemDailyWork = outputItemRepo.findByCidAndCode(AppContexts.user().companyId(), query.getCondition().getCode().v());
+
+		String layoutId = condition.getSelectionType() == ItemSelectionType.FREE_SETTING
+				? condition.getFreeSettingLayoutId()
+				: condition.getStandardSelectionLayoutId();
+
+		// 出力レイアウトIDから勤怠項目IDを取得する(Get attendance item ID from Output layout ID)
+		Optional<OutputItemDailyWorkSchedule> optOutputItemDailyWork = outputItemRepo.findByLayoutId(layoutId);
+
 		if (!optOutputItemDailyWork.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_1141"));
 		}

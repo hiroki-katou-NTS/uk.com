@@ -40,5 +40,14 @@ public interface TotalTimesRepository {
 	 * @return the all total times
 	 */
 	List<TotalTimes> getAllTotalTimes(String companyId);
+	
+	/**
+	 * 対応するドメインモデル「回数集計」を取得する Nhận domain model 「回数集計」tương ứng
+	 *
+	 * @param companyId 会社ID
+	 * @param useCls 使用区分
+	 * @return List＜回数集計＞
+	 */
+	List<TotalTimes> findByCompanyIdAndUseCls(String companyId, int useCls);
 
 }

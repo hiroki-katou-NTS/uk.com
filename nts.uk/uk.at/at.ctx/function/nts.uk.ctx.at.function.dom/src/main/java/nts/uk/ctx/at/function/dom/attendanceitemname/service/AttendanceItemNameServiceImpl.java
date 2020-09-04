@@ -42,15 +42,18 @@ import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrame;
 import nts.uk.ctx.at.shared.dom.ot.frame.OvertimeWorkFrameRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.attendanceitemname.AttItemName;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
+import nts.uk.ctx.at.shared.dom.scherec.totaltimes.UseAtr;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrame;
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrame;
 import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
@@ -551,10 +554,10 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		// 使用不可の時間外超過の内訳項目，超過時間を取得する
 		// List<超過時間>
 		List<Overtime> overtimes = this.outsideOTSettingRepository.getOverTimeByCompanyIdAndUseClassification(companyId,
-				NotUseAtr.NOT_USE.value);
+				UseClassification.UseClass_NotUse.value);
 		// List<時間外超過の内訳項目>
 		List<OutsideOTBRDItem> outsideOTBRDItems = this.outsideOTSettingRepository
-				.getByCompanyIdAndUseClassification(companyId, NotUseAtr.NOT_USE.value);
+				.getByCompanyIdAndUseClassification(companyId, UseClassification.UseClass_NotUse.value);
 		
 		// 使用不可のList<時間外超過の内訳項目＞をチェックする Check list < hạng mục chi tiết tăng ca> không thể sử dụng
 		if (!outsideOTBRDItems.isEmpty()) {
@@ -572,13 +575,62 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 
 				// List<使用不可の超過時間系勤怠項目ID＞を取得する Nhận list <Attendance items ID liên quand đến thời gian OT không thể sử dụng>
 				List<Integer> notUsedTime = this.attendanceItemLinkingRepository
-						.findByFrameNoTypeAndFramCategoryAndBreakdownItemNo(frameNos, type.value, frameCategories, breakdownItemNos)
-						.stream().map(t -> t.getAttendanceItemId())
+						.findByFrameNoTypeAndFramCategoryAndBreakdownItemNo(frameNos, type.value, frameCategories, breakdownItemNos).stream()
+						.map(t -> t.getAttendanceItemId())
 						.collect(Collectors.toList());
 				// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く 
 				attendanceItemIdAvaiable.removeAll(notUsedTime);
 			}
 		}
+		
+		// 使用不可の回数集計を取得する Nhận tính toán số lần không thể sử dụng
+		List<TotalTimes> totalTimes = this.totalTimesRepository.findByCompanyIdAndUseCls(companyId,
+				UseAtr.NotUse.value);
+		
+		if (!totalTimes.isEmpty()) {
+			// List<枠NO>：使用不可のList<回数集計>．回数集計NO
+			List<BigDecimal> frameNos = totalTimes.stream().map(t -> BigDecimal.valueOf(t.getTotalCountNo()))
+					.collect(Collectors.toList());
+
+			// List<枠カテゴリ>：<14：回数集計>
+			List<Integer> frameCategories = Arrays.asList(FrameCategory.TotalCount.value);
+
+			// List<使用不可の回数集計系勤怠項目ID＞を取得する Nhận List <Attendance items ID liên quan đến số lần không thể sử dụng được>
+			List<Integer> notUsedTimeIds = this.attendanceItemLinkingRepository
+					.findByFrameNoTypeAndFramCategory(frameNos, type.value, frameCategories).stream()
+					.map(t -> t.getAttendanceItemId())
+					.collect(Collectors.toList());
+
+			// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く
+			attendanceItemIdAvaiable.removeAll(notUsedTimeIds);
+		}
+		
+		// 使用不可の特別休暇枠を取得する Nhận 休暇枠 (Leave frame) đặc biệt không sử dụng được
+		List<SpecialHolidayFrame> specialHolidayFrames = this.specialHolidayFrameRepo
+				.findByCompanyIdAndUseCls(companyId, DeprecateClassification.NotDeprecated.value);
+		
+		if (!specialHolidayFrames.isEmpty()) {
+			// List<枠NO>：使用不可のList<特別休暇枠>．特別休暇枠NO
+			List<BigDecimal> frameNos = specialHolidayFrames.stream().map(t -> BigDecimal.valueOf(t.getSpecialHdFrameNo()))
+					.collect(Collectors.toList());
+
+			// List<枠カテゴリ>：<13：特別休暇枠>
+			List<Integer> frameCategories = Arrays.asList(FrameCategory.SpecialHolidayFrame.value);
+
+			// List<使用不可の特別休暇枠系勤怠項目ID＞を取得する Nhận List < Attendance items ID liên quan đến nghỉ đặc biệt không khả dụng>
+			List<Integer> specialHolidayNotUsed = this.attendanceItemLinkingRepository
+					.findByFrameNoTypeAndFramCategory(frameNos, type.value, frameCategories).stream()
+					.map(t -> t.getAttendanceItemId())
+					.collect(Collectors.toList());
+			// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く Loại bỏ List <Attendance items ID
+			// không khả dụng> khỏi List <Attendance Items ID khả dụng>
+			attendanceItemIdAvaiable.removeAll(specialHolidayNotUsed);
+		}
+
+		// ドメインモデル「特別休暇」を取得する Nhận domain model 「特別休暇」
+		List<SpecialHoliday> lstSpecialHolidays = this.specialHolidayRepository.findByCompanyId(companyId);
+		
+		
 		
 		return null;
 	}
