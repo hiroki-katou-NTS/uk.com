@@ -1077,7 +1077,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
         /**
          * when click button A1_7: 年休参照ボタン
          */
-        openKDL020(){
+        openKDL020() {
             let self = this;
             let lstid = [];
             _.each(self.employeeList(), function(emp){
@@ -1085,8 +1085,13 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             });
             setShared('KDL020A_PARAM', { baseDate: moment(new Date()).toDate(), 
                                             employeeIds: lstid.length > 0 ? lstid : [self.employeeID()] } );
-            modal('/view/kdl/020/a/index.xhtml')
+            if(lstid.length > 1 ) {
+              modal("/view/kdl/020/a/mutil.xhtml");
+            } else {
+              modal("/view/kdl/020/a/single.xhtml");
+            }
         }
+        
         /**
          * when click button A1_8: 積休参照ボタン
          */
