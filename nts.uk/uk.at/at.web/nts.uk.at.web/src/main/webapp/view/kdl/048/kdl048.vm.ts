@@ -42,7 +42,7 @@ module nts.uk.at.view.kdl048.screenModel {
 
     // A9
     columnSelectedItemList: KnockoutObservableArray<any> = ko.observableArray([
-      { headerText: text('KDL048_11'), prop: 'operator', width: 55, columnCssClass:"text-center" },
+      { headerText: text('KDL048_11'), prop: 'operator', width: 55, columnCssClass:"text-center"},
       { headerText: text('KDL048_6'), prop: 'itemId', width: 70 },
       { headerText: text('KDL048_7'), prop: 'name', width: 200 },
       ]);
@@ -110,13 +110,14 @@ module nts.uk.at.view.kdl048.screenModel {
             { prop: 'attendanceTypeName', length: 10 }
           ]
         }
-      //Columns of table A6
+
+      // Columns of table A6
       vm.columns = ko.observableArray([
         { headerText: text('KDL048_6'), prop: 'id', width: 70 },
         { headerText: text('KDL048_7'), prop: 'name', width: 200 },
       ]);
       
-      //event when change itemCombo
+      // event when change itemCombo
       vm.valueCb.subscribe(function(codeChange) { vm.onChangeItemCombo(codeChange); });
     }
 
@@ -125,8 +126,9 @@ module nts.uk.at.view.kdl048.screenModel {
       const vm = this;
       let list :KnockoutObservableArray<any> = ko.observableArray([]);
       vm.valueCb(vm.attributeObject().selected);
+
       // fill data to table
-      _.each(vm.paramSelectedTimeList(),(item2:SelectedTimeListParam)=>{
+      _.each(vm.paramSelectedTimeList(),(item2:SelectedTimeListParam) => {
         _.each(vm.diligenceData(),(item1: DiligenceProject) => {
         if(parseInt(item1.id) === parseInt(item2.itemId) ){
           let data: SelectedTimeList = new SelectedTimeList();
@@ -140,9 +142,8 @@ module nts.uk.at.view.kdl048.screenModel {
          }
         })
       })
-      // vm.diligenceData().remove(list);
-      _.each(list(), (item) => {
-        vm.diligenceData().filter((items) => {
+      _.each(list(), (item: any) => {
+        vm.diligenceData().filter((items: any) => {
           if (items.id === parseInt(item.id)) {
             vm.diligenceData.remove(items);
           };
@@ -151,15 +152,15 @@ module nts.uk.at.view.kdl048.screenModel {
     }
 
     // event when change item combo box
-    private onChangeItemCombo(codeChange) {
+    private onChangeItemCombo(codeChange: number) {
       const vm = this;
-      if (codeChange === 0) {
+      if(codeChange === 0) {
         return;
       }
       vm.currentCodeList2([]);
       vm.dataSelectedItemList([]);
       let name;
-      _.each(vm.attributeObject().attributeList, (itemcb) => {
+      _.each(vm.attributeObject().attributeList, (itemcb: any) => {
         if(itemcb.attendanceTypeCode === codeChange){
           name = itemcb.attendanceTypeName
         }
@@ -168,7 +169,7 @@ module nts.uk.at.view.kdl048.screenModel {
         vm.tableDataA6.filter(data => data.name.indexOf(name) != -1),
           ['code'], ['asc']
         );
-      if (tableDatas.length === 0) {
+      if(tableDatas.length === 0) {
         vm.diligenceData([]);
       }else{
         vm.diligenceData(tableDatas);
@@ -178,12 +179,12 @@ module nts.uk.at.view.kdl048.screenModel {
     }
   
     // Event when click +
-    onClickPlus (){
+    public onClickPlus () {
       const vm = this;
       vm.currentCodeList2.removeAll();
-      _.each(vm.currentCodeList(), (code) => {
+      _.each(vm.currentCodeList(), (code: any) => {
         vm.diligenceData().filter((e: DiligenceProject) => {
-          if (e.id === parseInt(code)) {
+          if(e.id === parseInt(code)) {
             let data: SelectedTimeList = new SelectedTimeList();
             let dataParam: SelectedTimeListParam = new SelectedTimeListParam();
             data.itemId = e.id;
@@ -202,12 +203,12 @@ module nts.uk.at.view.kdl048.screenModel {
     }
 
      // Event when click -
-     onClickMinus() {
+     public onClickMinus() {
       const vm = this;
       vm.currentCodeList2.removeAll();
-        _.each(vm.currentCodeList(), (code) => {
+        _.each(vm.currentCodeList(), (code: any) => {
           vm.diligenceData().filter((e: DiligenceProject) => {
-            if (e.id === parseInt(code)) {
+            if(e.id === parseInt(code)) {
               let data: SelectedTimeList = new SelectedTimeList();
               let dataParam: SelectedTimeListParam = new SelectedTimeListParam();
               data.itemId = e.id;
@@ -226,9 +227,9 @@ module nts.uk.at.view.kdl048.screenModel {
     }
 
     // Event when click <<
-    onClickPrevAll(){
+    public onClickPrevAll() {
       const vm = this;
-      _.each(vm.currentCodeList2(),(code)=>{
+      _.each(vm.currentCodeList2(),(code: any) => {
         vm.dataSelectedItemList().filter((e: SelectedTimeList) => {
         if(e.itemId === parseInt(code)){
           let data: DiligenceProject = new DiligenceProject();
@@ -250,7 +251,7 @@ module nts.uk.at.view.kdl048.screenModel {
       const vm = this;
       $('#A3_2').trigger('validate');
       _.defer(() => {
-        if (!$('#A3_2').ntsError('hasError')|| vm.attendanceRecordName() === '') {
+        if(!$('#A3_2').ntsError('hasError') || vm.attendanceRecordName() === '') {
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == ２：入力可能
           if (vm.itemNameLine().displayFlag && vm.itemNameLine().displayInputCategory === 2) {
             // shared with value of A3_2, A5_2, A9_2_1, A9_2_2
@@ -261,7 +262,7 @@ module nts.uk.at.view.kdl048.screenModel {
           }
           // 項目名行の表示フラグ == False：表示しない
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == １：表示のみ
-          if (!vm.itemNameLine().displayFlag || vm.itemNameLine().displayInputCategory === 1) {
+          if(!vm.itemNameLine().displayFlag || vm.itemNameLine().displayInputCategory === 1) {
             // shared with value of A5_2, A9_2_1, A9_2_2
             vm.objectDisplay.attribute.selected = vm.valueCb();
             vm.objectDisplay.selectedTimeList   = vm.paramSelectedTimeList();
@@ -279,14 +280,13 @@ module nts.uk.at.view.kdl048.screenModel {
 
   export class ListType {
     static EMPLOYMENT = 1;
-
     static Classification = 2;
     static JOB_TITLE = 3;
     static EMPLOYEE = 4;
   }
 
   export interface UnitModel {
-    id?: string;
+        id?: string;
         code: string;
         name?: string;
         workplaceName?: string;
@@ -314,9 +314,9 @@ module nts.uk.at.view.kdl048.screenModel {
     // List<選択済み勤怠項目>
     selectedTimeList:  SelectedTimeListParam[] = [];
 
-constructor(init?: Partial<Display>) {
-  $.extend(this, init);
-}
+    constructor(init?: Partial<Display>) {
+      $.extend(this, init);
+    }
   }
   
   export class SelectedTimeList {
@@ -353,9 +353,9 @@ export class SelectedTimeListParam {
     // コメント
     directText: String | null = null;
 
-constructor(init?: Partial<TitleLineObject>) {
-  $.extend(this, init);
-}
+    constructor(init?: Partial<TitleLineObject>) {
+      $.extend(this, init);
+    }
   }
 
   // 項目名行
@@ -367,9 +367,9 @@ constructor(init?: Partial<TitleLineObject>) {
     // 名称
     name: string | null = null;
 
-constructor(init?: Partial<ItemNameLineObject>) {
-  $.extend(this, init);
-}
+    constructor(init?: Partial<ItemNameLineObject>) {
+      $.extend(this, init);
+    }
   }
 
   // 属性
@@ -381,18 +381,18 @@ constructor(init?: Partial<ItemNameLineObject>) {
     // 選択済み
     selected: number = 1;
 
-constructor(init?: Partial<AttributeObject>) {
-  $.extend(this, init);
-}
+    constructor(init?: Partial<AttributeObject>) {
+      $.extend(this, init);
+    }
   }
 
   export class Attribute {
     attendanceTypeCode: number;
     attendanceTypeName: string;
 
-constructor(init?: Partial<Attribute>) {
-  $.extend(this, init);
-}
+    constructor(init?: Partial<Attribute>) {
+      $.extend(this, init);
+    }
   }
 
   export class DiligenceProject {
@@ -405,8 +405,8 @@ constructor(init?: Partial<Attribute>) {
     // 表示番号
     indicatesNumber: any;
 
-constructor(init?: Partial<DiligenceProject>) {
-  $.extend(this, init);
-}
+    constructor(init?: Partial<DiligenceProject>) {
+      $.extend(this, init);
+    }
   }
 }

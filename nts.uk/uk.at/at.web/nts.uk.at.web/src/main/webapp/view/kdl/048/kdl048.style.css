@@ -28,14 +28,14 @@
 }
 
 
-.ntsPanel{
+.ntsPanel {
   width: 350px;
   height: 450px;
 }
-.combo{
+.combo {
   height: 55px;
 }
-.combo-box{
+.combo-box {
   float: right;
   width: 140px;
   margin-top: 4px;
