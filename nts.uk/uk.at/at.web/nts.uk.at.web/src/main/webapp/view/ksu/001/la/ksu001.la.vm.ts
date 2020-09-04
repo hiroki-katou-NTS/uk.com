@@ -130,10 +130,10 @@ module nts.uk.at.view.ksu001.la {
                         itemLeft = _.filter(dataAll, x =>{
                             return x.teamCd != self.selectedCode();
                         });
-                        self.itemsLeft(itemLeft);
-                        self.itemsRight(_.difference(dataAll, itemLeft));
+                        self.itemsLeft(_.sortBy(itemLeft,[function(item){return item.employeeCd;}]));
+                        self.itemsRight(_.sortBy(_.difference(dataAll, itemLeft),[function(item){return item.employeeCd;}] ));
                     } else {
-                        self.itemsLeft(dataAll);    
+                        self.itemsLeft(_.sortBy(dataAll, [function(item){return item.employeeCd;}]));    
                     }                                    
                 }).fail((res) => {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
