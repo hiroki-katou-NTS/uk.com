@@ -7,6 +7,7 @@ import nts.uk.shr.com.context.AppContexts;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class BentoMenuSetScreenProcessor {
@@ -40,6 +41,10 @@ public class BentoMenuSetScreenProcessor {
         if (bentomenuJoinBentoDtos.size() == 0){
             throw new BusinessException("Msg_1848");
         }
+
+        bentomenuJoinBentoDtos = reservationSettingDto.operationDistinction == 0 ?
+                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode == null).collect(Collectors.toList()) :
+                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode != null).collect(Collectors.toList());
 
         return BentoJoinReservationSetting.setData(bentomenuJoinBentoDtos,reservationSettingDto);
     }
