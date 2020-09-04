@@ -801,21 +801,22 @@ module nts.uk.at.view.ksu001.u {
             self.isBtnClick(false);
             $('#prev-btn').blur();
         }
-
+        
         public monthPrev(): void {
             const self = this;
             let dates = self.optionDates();
             let basePubDate = self.publicDate();
-            let basePubDateSplit = basePubDate.split('-');
+            let basePubDateSplit = [];
             let publicDate = self.newPublicDate();
-            let publicDateSplit = publicDate.split('-');
+            let publicDateSplit = [];
             let prevMonthPublicDate = "";
-            let editDate = self.editDate();
+            let editDate = self.newEditDate();
             let editDateSplit = [];
-            if (parseInt(publicDateSplit[1]) == parseInt(editDateSplit[1]) && self.publicDate() <= self.editDate()) {
-                self.editDate("");
-                editDate = "";
-            }
+            let size = 0;            
+            if(self.publicDate()){
+                basePubDateSplit = basePubDate.split('-');
+                publicDateSplit = publicDate.split('-');
+            } 
 
             let prevMonth = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 2, parseInt(publicDateSplit[2])));
             let prevMonthSplit = prevMonth.split('-');
@@ -826,117 +827,82 @@ module nts.uk.at.view.ksu001.u {
                 prevMonthPublicDate = self.formatDate(new Date(parseInt(prevMonthSplit[0]), parseInt(prevMonthSplit[1]) - 1, numberDayOfPrevMonth));
             }
             let prevMonthPublicDateSplit = prevMonthPublicDate.split('-');
-            // reset public date and edit    
-            if (editDate && parseInt(basePubDateSplit[0]) == parseInt(prevMonthPublicDateSplit[0])) {
-                if (parseInt(basePubDateSplit[1]) == parseInt(prevMonthPublicDateSplit[1])) {
-                    // self.loadPubDateInfo();
-                    for (let i = 0; i < numberDayOfPrevMonth; i++) {
-                        let date = self.formatDate(new Date(parseInt(basePubDateSplit[0]), parseInt(basePubDateSplit[1]) - 1, numberDayOfPrevMonth - i));
+
+            if(parseInt(basePubDateSplit[0]) == parseInt(prevMonthPublicDateSplit[0])){
+                if (parseInt(basePubDateSplit[1]) == parseInt(prevMonthPublicDateSplit[1])){
+                    size = self.daysDifference(self.newPublicDate(), self.publicDate());
+                    for(let i = 1 ; i <= size; i++ ){
+                        let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) + i));
                         let existDate = self.checkExistDate(date);
+                        if(existDate){
+                            self.removeExistDate(existDate);
+                        }                        
+                    }
+                    self.newPublicDate(prevMonthPublicDate);
+                } else if(parseInt(basePubDateSplit[1]) > parseInt(prevMonthPublicDateSplit[1])){
+                    if(self.newPublicDate() == self.publicDate() && parseInt(basePubDateSplit[1]) > parseInt(prevMonthPublicDateSplit[1]) + 1){
+                        size = self.daysDifference(self.newEditDate(), prevMonthPublicDate) + parseInt(prevMonthPublicDateSplit[2]);
+                    } else {
+                        size = self.daysDifference(self.newPublicDate(), prevMonthPublicDate) + parseInt(prevMonthPublicDateSplit[2]);
+                    }  
+                    for (let i = 1; i <= size; i ++){
+                        let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, i));
+                        let existDate = self.checkExistDate(date); 
                         if (existDate) {
                             self.removeExistDate(existDate);
                         }
-                        if (date >= self.editDate() && date <= self.publicDate()) {
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
-                        } else if (date < self.editDate()) {
+                        if(date <= prevMonthPublicDate){
                             dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                        }
-                    }
-                } else if (parseInt(prevMonthPublicDateSplit[1]) < parseInt(basePubDateSplit[1])) {
-                    for (let i = 0; i < numberDayOfPrevMonth; i++) {
-                        let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, numberDayOfPrevMonth - i));
-                        let existDate = self.checkExistDate(date);
-                        if (i < numberDayOfPrevMonth - parseInt(prevMonthPublicDateSplit[2])) {
-                            self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
                         } else {
+                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
+                        }
+                    }
+                    self.newEditDate(self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) + 1)));
+                    self.newPublicDate(prevMonthPublicDate);
+                } else {
+                    size = self.daysDifference(self.newPublicDate(), prevMonthPublicDate) + parseInt(prevMonthPublicDateSplit[2]);                  
+                    for (let i = 1; i <= size; i ++){
+                        let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, i));
+                        let existDate = self.checkExistDate(date); 
+                        if(existDate){
                             self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                        }
-                    }
-                } else if (parseInt(prevMonthPublicDateSplit[1]) > parseInt(basePubDateSplit[1])) {
-                    for (let i = 0; i < parseInt(prevMonthPublicDateSplit[2]); i++) {
-                        let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) - i));
-                        let existDate = self.checkExistDate(date);
-                        self.removeExistDate(existDate);
-                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
-                    }
-                }
-            } else if (editDate && parseInt(basePubDateSplit[0]) > parseInt(prevMonthPublicDateSplit[0])) {
-                for (let i = 0; i < numberDayOfPrevMonth; i++) {
-                    let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, numberDayOfPrevMonth - i));
-                    let existDate = self.checkExistDate(date);
-                    if (i < numberDayOfPrevMonth - parseInt(prevMonthPublicDateSplit[2])) {
-                        self.removeExistDate(existDate);
-                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
-                    } else {
-                        self.removeExistDate(existDate);
-                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                    }
-                }
-            } else {
-                if (parseInt(basePubDateSplit[0]) == parseInt(prevMonthPublicDateSplit[0])) {
-                    if (parseInt(basePubDateSplit[1]) == parseInt(prevMonthPublicDateSplit[1])) {
-                        for (let i = 0; i < numberDayOfPrevMonth; i++) {
-                            let date = self.formatDate(new Date(parseInt(basePubDateSplit[0]), parseInt(basePubDateSplit[1]) - 1, numberDayOfPrevMonth - i));
-                            let existDate = self.checkExistDate(date);
-                            if (existDate) {
-                                self.removeExistDate(existDate);
-                            }
-                            if (date <= self.publicDate()) {
-                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                            }
-                        }
-                    } else if (parseInt(prevMonthPublicDateSplit[1]) < parseInt(basePubDateSplit[1])) {
-                        for (let i = 0; i < numberDayOfPrevMonth; i++) {
-                            let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, numberDayOfPrevMonth - i));
-                            let existDate = self.checkExistDate(date);
-                            if (i < numberDayOfPrevMonth - parseInt(prevMonthPublicDateSplit[2])) {
-                                self.removeExistDate(existDate);
-                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
-                            } else {
-                                self.removeExistDate(existDate);
-                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                            }
-                        }
-                    } else if (parseInt(prevMonthPublicDateSplit[1]) > parseInt(basePubDateSplit[1])) {
-                        for (let i = 0; i < parseInt(prevMonthPublicDateSplit[2]); i++) {
-                            let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) - i));
-                            let existDate = self.checkExistDate(date);
-                            self.removeExistDate(existDate);
+                        }      
+                        if(date <= prevMonthPublicDate){
                             dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
                         }
                     }
-
-                } else if (parseInt(basePubDateSplit[0]) > parseInt(prevMonthPublicDateSplit[0])) {
-                    for (let i = 0; i < numberDayOfPrevMonth; i++) {
-                        let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, numberDayOfPrevMonth - i));
-                        let existDate = self.checkExistDate(date);
-                        if (i < numberDayOfPrevMonth - parseInt(prevMonthPublicDateSplit[2])) {
-                            self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
-                        } else {
-                            self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                        }
-                    }
-                } else if (parseInt(basePubDateSplit[0]) < parseInt(prevMonthPublicDateSplit[0])) {
-                    for (let i = 0; i < parseInt(prevMonthPublicDateSplit[2]); i++) {
-                        let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) - i));
-                        let existDate = self.checkExistDate(date);
+                    self.newPublicDate(prevMonthPublicDate);
+                }
+            } else if(parseInt(basePubDateSplit[0]) > parseInt(prevMonthPublicDateSplit[0])){
+                size = self.daysDifference(self.newEditDate(), prevMonthPublicDate) + parseInt(prevMonthPublicDateSplit[2]);
+                for (let i = 1; i <= size; i ++){
+                    let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, i));
+                    let existDate = self.checkExistDate(date); 
+                    if (existDate) {
                         self.removeExistDate(existDate);
+                    }
+                    if(date <= prevMonthPublicDate){
+                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                    } else {
+                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT]));
+                    }
+                }
+                self.newEditDate(self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) + 1)));
+            } else {
+                size = self.daysDifference(self.newPublicDate(), prevMonthPublicDate) + parseInt(prevMonthPublicDateSplit[2]);                  
+                for (let i = 1; i <= size; i ++){
+                    let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, i));
+                    let existDate = self.checkExistDate(date); 
+                    if(existDate){
+                        self.removeExistDate(existDate);
+                    }      
+                    if(date <= prevMonthPublicDate){
                         dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
                     }
                 }
-            }
-            self.optionDates(dates);
-            if(prevMonthPublicDate < self.publicDate()){
-                self.newPublicDate(self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, numberDayOfPrevMonth)));
-                self.newEditDate(self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) + 1)));
-            } else {
                 self.newPublicDate(prevMonthPublicDate);
             }
-            
+            self.optionDates(dates);
             self.isBtnClick(true);
             self.yearMonthPicked(parseInt(prevMonthPublicDateSplit[0] + prevMonthPublicDateSplit[1]));
             self.isBtnClick(false);
@@ -947,17 +913,19 @@ module nts.uk.at.view.ksu001.u {
             const self = this;
             let dates = self.optionDates();
             let basePubDate = self.publicDate();
-            let basePubDateSplit = basePubDate.split('-');
+            let basePubDateSplit = [];
             let publicDate = self.newPublicDate();
-            let publicDateSplit = publicDate.split('-');
+            let publicDateSplit = [];
             let nextMonthPublicDate = "";
             let nextMonth = "";
             let nextMonthPublicDateSplit = [];
             let size = 0;
             let offset = 0;
-            let editDate = self.editDate();
-            if (self.publicDate() == self.editDate()) {
-                offset = 1;
+            let editDate = self.newEditDate();
+          
+            if(self.publicDate()){
+                basePubDateSplit = basePubDate.split('-');
+                publicDateSplit = publicDate.split('-');
             }
 
             let numberDayOfNextMonth = 1;
@@ -974,122 +942,90 @@ module nts.uk.at.view.ksu001.u {
             let nextMonthSplit = nextMonth.split('-');
             nextMonthPublicDate = self.formatDate(new Date(parseInt(nextMonthSplit[0]), parseInt(nextMonthSplit[1]) - 1, parseInt(nextMonthSplit[2])));
             nextMonthPublicDateSplit = nextMonthPublicDate.split('-');
-            if (editDate && parseInt(basePubDateSplit[0]) == parseInt(nextMonthPublicDateSplit[0])) {
-                if (parseInt(basePubDateSplit[1]) == parseInt(nextMonthPublicDateSplit[1])) {
-                    for (let i = 0; i < numberDayOfNextMonth; i++) {
-                        let date = self.formatDate(new Date(parseInt(basePubDateSplit[0]), parseInt(basePubDateSplit[1]) - 1, numberDayOfNextMonth - i));
-                        let existDate = self.checkExistDate(date);
-                        if (existDate) {
-                            self.removeExistDate(existDate);
-                        }
-                        if (date >= self.editDate() && date <= self.publicDate()) {
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
-                        } else if (date < self.editDate()) {
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                        }
-                    }
-                } else if (parseInt(basePubDateSplit[1]) > parseInt(nextMonthPublicDateSplit[1])) {
-                    for (let i = 1; i <= parseInt(nextMonthPublicDateSplit[2]) + offset; i++) {
-                        let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
-                        let existDate = self.checkExistDate(date);
-                        if (i <= parseInt(nextMonthPublicDateSplit[2]) - parseInt(publicDateSplit[2])) {
-                            self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
-                        } else {
-                            self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                        }
-                    }
-                } else if (parseInt(basePubDateSplit[1]) < parseInt(nextMonthPublicDateSplit[1])) {
-                    for (let i = 0; i < parseInt(nextMonthPublicDateSplit[2]) + offset; i++) {
-                        let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
-                        let existDate = self.checkExistDate(date);
-                        self.removeExistDate(existDate);
-                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
-                    }
-                }
-            } else if (editDate && parseInt(basePubDateSplit[0]) > parseInt(nextMonthPublicDateSplit[0])) {
-                for (let i = 1; i <= parseInt(nextMonthPublicDateSplit[2]) + offset; i++) {
-                    let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
-                    let existDate = self.checkExistDate(date);
-                    if (i <= parseInt(nextMonthPublicDateSplit[2]) - parseInt(publicDateSplit[2])) {
-                        self.removeExistDate(existDate);
-                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
-                    } else {
-                        self.removeExistDate(existDate);
-                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                    }
-                }
-            } else if (editDate && parseInt(basePubDateSplit[0]) < parseInt(nextMonthPublicDateSplit[0])) {
-                for (let i = 0; i < parseInt(nextMonthPublicDateSplit[2]) + offset; i++) {
-                    let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
-                    let existDate = self.checkExistDate(date);
-                    self.removeExistDate(existDate);
-                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
-                }
-            } else {
-                if (parseInt(basePubDateSplit[0]) == parseInt(nextMonthPublicDateSplit[0])) {
-                    if (parseInt(basePubDateSplit[1]) == parseInt(nextMonthPublicDateSplit[1])) {
-                        for (let i = 0; i < numberDayOfNextMonth; i++) {
-                            let date = self.formatDate(new Date(parseInt(basePubDateSplit[0]), parseInt(basePubDateSplit[1]) - 1, numberDayOfNextMonth - i));
-                            let existDate = self.checkExistDate(date);
-                            if (existDate) {
-                                self.removeExistDate(existDate);
-                            }
-                            if (date <= self.publicDate()) {
-                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                            }
-                        }
-                    } else if (parseInt(basePubDateSplit[1]) > parseInt(nextMonthPublicDateSplit[1])) {
-                        for (let i = 1; i <= parseInt(nextMonthPublicDateSplit[2]) + offset; i++) {
-                            let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
-                            let existDate = self.checkExistDate(date);
-                            if (i <= parseInt(nextMonthPublicDateSplit[2]) - parseInt(publicDateSplit[2])) {
-                                self.removeExistDate(existDate);
-                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
-                            } else {
-                                self.removeExistDate(existDate);
-                                dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
-                            }
-                        }
-                    } else if (parseInt(basePubDateSplit[1]) < parseInt(nextMonthPublicDateSplit[1])) {
-                        for (let i = 0; i < parseInt(nextMonthPublicDateSplit[2]) + offset; i++) {
-                            let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
-                            let existDate = self.checkExistDate(date);
-                            self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
-                        }
-                    }
 
-                } else if (parseInt(basePubDateSplit[0]) > parseInt(nextMonthPublicDateSplit[0])) {
-                    for (let i = 1; i <= parseInt(nextMonthPublicDateSplit[2]) + offset; i++) {
+            if(parseInt(basePubDateSplit[0]) == parseInt(nextMonthPublicDateSplit[0])){
+                if (parseInt(basePubDateSplit[1]) == parseInt(nextMonthPublicDateSplit[1])){
+                    if(self.newPublicDate() == self.publicDate()){
+                        size = self.daysDifference(self.newEditDate(), self.publicDate());
+                    } else {
+                        size = self.daysDifference(self.newPublicDate(), self.publicDate());
+                    }                    
+                    for(let i = 1 ; i <= size; i++ ){
+                        let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) + i));
+                        let existDate = self.checkExistDate(date);
+                        if(existDate){
+                            self.removeExistDate(existDate);
+                        }                        
+                    }
+                    self.newPublicDate(nextMonthPublicDate);
+
+                } else if(parseInt(basePubDateSplit[1]) < parseInt(nextMonthPublicDateSplit[1])){
+                    if(self.newEditDate() && self.newEditDate() != ""){
+                        size = self.daysDifference(self.newEditDate(),nextMonthPublicDate);
+                    } else {
+                        size = self.daysDifference(self.newPublicDate(),nextMonthPublicDate);
+                    }
+                    for(let i = 0 ; i <= size; i++ ){
                         let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
                         let existDate = self.checkExistDate(date);
-                        if (i <= parseInt(nextMonthPublicDateSplit[2]) - parseInt(publicDateSplit[2])) {
+                        if(existDate){
                             self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PUB, [Ksu001u.EDIT]));
+                        }
+                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
+                    }
+                    self.newPublicDate(nextMonthPublicDate);
+                    self.newEditDate("");
+                } else {
+                    if(self.newPublicDate() == self.publicDate() && parseInt(basePubDateSplit[1]) > parseInt(nextMonthPublicDateSplit[1]) + 1){
+                        size = self.daysDifference(self.newPublicDate(),nextMonthPublicDate) + (numberDayOfNextMonth - parseInt(nextMonthPublicDateSplit[2]));
+                    } else {
+                        size = self.daysDifference(self.newEditDate(),nextMonthPublicDate) + (numberDayOfNextMonth - parseInt(nextMonthPublicDateSplit[2]));
+                    }                    
+                    for(let i = 0 ; i < size; i++ ){
+                        let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, numberDayOfNextMonth - i));
+                        let existDate = self.checkExistDate(date);
+                        if(existDate){
+                            self.removeExistDate(existDate);
+                        } 
+                        if(date <= nextMonthPublicDate){
+                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));  
                         } else {
-                            self.removeExistDate(existDate);
-                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                            dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EDIT, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.EDIT])); 
                         }
                     }
-                } else if (parseInt(basePubDateSplit[0]) < parseInt(nextMonthPublicDateSplit[0])) {
-                    for (let i = 0; i < parseInt(nextMonthPublicDateSplit[2]) + offset; i++) {
-                        let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
-                        let existDate = self.checkExistDate(date);
+                    self.newEditDate(self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) + 1)));
+                    self.newPublicDate(nextMonthPublicDate);
+                }
+            } else if (parseInt(basePubDateSplit[0]) < parseInt(nextMonthPublicDateSplit[0])) {            
+                size = self.daysDifference(self.newPublicDate(),nextMonthPublicDate);
+                for(let i = 0 ; i < size; i++ ){
+                    let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
+                    let existDate = self.checkExistDate(date);
+                    if(existDate){
                         self.removeExistDate(existDate);
+                    } 
+                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));  
+                }
+                self.newEditDate("");
+                self.newPublicDate(nextMonthPublicDate);            
+            } else {
+                size = self.daysDifference(self.newEditDate(), nextMonthPublicDate) + (numberDayOfNextMonth - parseInt(nextMonthPublicDateSplit[2]));            
+                for (let i = 0; i < size; i++) {
+                    let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, i));
+                    let existDate = self.checkExistDate(date);
+                    if (existDate) {
+                        self.removeExistDate(existDate);
+                    }
+                    if (date <= nextMonthPublicDate) {
+                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PUB, [Ksu001u.PUBLIC]));
+                    } else {
                         dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_PUB, Ksu001u.BG_COLOR_PRE_PUB, [Ksu001u.PUBLIC]));
                     }
                 }
+                self.newEditDate(self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) + 1)));
+                self.newPublicDate(nextMonthPublicDate);                  
             }
             self.optionDates(dates);
-            if(nextMonthPublicDate > self.publicDate()){
-                self.newPublicDate(nextMonthPublicDate);
-                self.newEditDate("");
-            } else {
-                self.newEditDate(self.formatDate(new Date(parseInt(basePubDateSplit[0]), parseInt(basePubDateSplit[1]) - 1, parseInt(basePubDateSplit[2]) + 1)));
-                self.publicDate(self.formatDate(new Date(parseInt(basePubDateSplit[0]), parseInt(basePubDateSplit[1]) - 1, numberDayOfNextMonth )));
-            }
             self.isBtnClick(true);
             self.yearMonthPicked(parseInt(nextMonthPublicDateSplit[0] + nextMonthPublicDateSplit[1]));
             self.isBtnClick(false);
