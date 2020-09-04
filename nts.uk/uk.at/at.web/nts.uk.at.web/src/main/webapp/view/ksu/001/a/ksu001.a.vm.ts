@@ -998,7 +998,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let listConditionDisplayControl = data.displayControlPersonalCond.listConditionDisplayControl;
                 let team = _.filter(listConditionDisplayControl, function(o) { return o.conditionATR == 1; });
                 let rank = _.filter(listConditionDisplayControl, function(o) { return o.conditionATR == 2; });
-                let qual = _.filter(listConditionDisplayControl, function(o) { return o.conditionATR == 3; });
+                let qual = _.filter(listConditionDisplayControl, function(o) { return o.conditionATR == 4; });
                 if (team.length > 0) {
                     if (team[0].displayCategory == 1) {
                         self.showTeamCol = true;
