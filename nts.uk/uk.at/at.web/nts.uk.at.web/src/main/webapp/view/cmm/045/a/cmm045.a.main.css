@@ -142,3 +142,9 @@ html {
 .reflectionStatus, .opApprovalStatusInquiry {
 	text-align: center;
 }
+.applicantName, .appDate, .appContent, .inputDate {
+	padding-left: 5px !important;
+}
+th.ui-iggrid-rowselector-header> .ui-igcheckbox-normal> span {
+	left: 0;
+}

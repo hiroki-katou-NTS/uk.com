@@ -53,8 +53,9 @@ module cmm045.a.viewmodel {
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
         appList: any = ko.observable(null);
         appListAtr: number;
-        isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
-        isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
+        isBeforeCheck: KnockoutObservable<Boolean> = ko.observable(false);
+        isAfterCheck: KnockoutObservable<Boolean> = ko.observable(false);
+        isLimit500: KnockoutObservable<Boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -189,7 +190,7 @@ module cmm045.a.viewmodel {
 				self.appListExtractConditionDto.opRemandStatus = _.includes(value, 5) ? true : false;
 				self.appListExtractConditionDto.opCancelStatus = _.includes(value, 6) ? true : false;
 			});
-			
+
 			self.selectedAppId.subscribe(value => {
 				let appTypeNumber = _.map(value, (o: any) => parseInt(o));
 				_.each(self.appListExtractConditionDto.opListOfAppTypes, x => {
@@ -200,9 +201,9 @@ module cmm045.a.viewmodel {
 					}
 				});
 			});
-			
+
 			self.isBeforeCheck.subscribe(value => {
-				self.appListExtractConditionDto.preOutput = value;	
+				self.appListExtractConditionDto.preOutput = value;
 			});
         	self.isAfterCheck.subscribe(value => {
 				self.appListExtractConditionDto.postOutput = value;
@@ -281,7 +282,7 @@ module cmm045.a.viewmodel {
             var dfd = $.Deferred();
             //get param url
             let url = $(location).attr('search');
-            let urlParam: number = 0; 
+            let urlParam: number = 0;
 			if(_.isUndefined(url.split("=")[1])) {
 				history.pushState({}, null, "?a=0");
 			} else {
@@ -377,6 +378,10 @@ module cmm045.a.viewmodel {
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
                 self.appList(data.appListInfo);
+                if(self.appList().appLst.length > 500) {
+
+                }
+                self.isLimit500(data.appListInfo.moreThanDispLineNO);
                 // self.appListAtr = data.appListExtractCondition.appListAtr;
 				// self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
 				self.appListExtractConditionDto = data.appListExtractCondition;
@@ -565,7 +570,7 @@ module cmm045.a.viewmodel {
 			self.lstSidFilter(obj.opListEmployeeID);
 			self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
 			self.appListAtr = obj.appListAtr;
-		} 
+		}
 
         setupGrid(options: {
             withCcg001: boolean,
@@ -729,7 +734,7 @@ module cmm045.a.viewmodel {
                                 .append($("<span/>").addClass("box"))
                                 .appendTo($td);
 
-                            if(moment(item.opAppStartDate).add("days", -(self.appList().displaySet.appDateWarningDisp)) <= moment.utc()) {
+                            if(moment(item.opAppStartDate).add(-(self.appList().displaySet.appDateWarningDisp), "days") <= moment.utc()) {
                                 $("<label/>").addClass("approvalCell");
                             }
                         }
@@ -1777,30 +1782,5 @@ module cmm045.a.viewmodel {
             const command = { appListAtr: self.appListAtr, lstApp: self.appList() }
             service.print(command);
         }
-
-        // getNtsFeatures(): Array<any> {
-        //     let self = this;
-
-        //     var features = [
-        //         { name: 'TextColor',
-        //             columns: [
-        //                 {
-        //                     key: 'inputDate',
-        //                     parse: value => { return value; },
-        //                     map: (content: String) => {
-        //                         if(content.includes("土")) {
-        //                             return "#0000ff";
-        //                         }
-        //                         if(content.includes("日")) {
-        //                             return "#ff0000";
-        //                         }
-        //                     }
-        //                 }
-        //             ]
-        //     }
-        //     ];
-
-        //     return features;
-        // }
     }
 }
