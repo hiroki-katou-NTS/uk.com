@@ -403,32 +403,32 @@ public class CreateOrderInfoFileQuery {
                         bentoTotalDtoLst,closedName,workInfoDtos
                 ));
             }
-        }else*/{
-            for(BentoReservation item : reservations){
-                int totalFee = 0;
-                reservationDetails.addAll(item.getBentoReservationDetails());
-                BentoMenu bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
-                List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
-                BentoMenuByClosingTime menu = bentoMenuList.getByClosingTime(workLocationCode);
-                List<BentoItemByClosingTime> bentos;
-                if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1){
-                    bentos = menu.getMenu1();
-                } else {
-                    bentos = menu.getMenu2();
-                }
-                for (BentoItemByClosingTime bento : bentos) {
-                    BentoTotalDto bentoTotalDto = createBentoTotalDto(bento, reservationDetails);
-                    bentoTotalDtoLst.add(bentoTotalDto);
-                    totalFee += bentoTotalDto.getAmount() * bentoTotalDto.getQuantity();
-                }
-                bentoTotalDtoLst = bentoTotalDtoLst.stream()
-                        .sorted(Comparator.comparing(BentoTotalDto::getFrameNo))
-                        .collect(Collectors.toList());
-                result.add(new TotalOrderInfoDto(
-                        item.getReservationDate().getDate(), item.getRegisterInfor().getReservationCardNo(), totalFee,
-                        bentoTotalDtoLst,closedName,workInfoDtos
-                ));
+        }else{*/
+        for(BentoReservation item : reservations){
+            int totalFee = 0;
+            reservationDetails.addAll(item.getBentoReservationDetails());
+            BentoMenu bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
+            List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
+            BentoMenuByClosingTime menu = bentoMenuList.getByClosingTime(workLocationCode);
+            List<BentoItemByClosingTime> bentos;
+            if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1){
+                bentos = menu.getMenu1();
+            } else {
+                bentos = menu.getMenu2();
             }
+            for (BentoItemByClosingTime bento : bentos) {
+                BentoTotalDto bentoTotalDto = createBentoTotalDto(bento, reservationDetails);
+                bentoTotalDtoLst.add(bentoTotalDto);
+                totalFee += bentoTotalDto.getAmount() * bentoTotalDto.getQuantity();
+            }
+            bentoTotalDtoLst = bentoTotalDtoLst.stream()
+                    .sorted(Comparator.comparing(BentoTotalDto::getFrameNo))
+                    .collect(Collectors.toList());
+            result.add(new TotalOrderInfoDto(
+                    item.getReservationDate().getDate(), item.getRegisterInfor().getReservationCardNo(), totalFee,
+                    bentoTotalDtoLst,closedName,workInfoDtos
+            ));
+        }
         //}
         return result.stream().sorted(Comparator.comparing(TotalOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
