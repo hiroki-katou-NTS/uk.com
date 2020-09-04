@@ -835,7 +835,7 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
             ];
-            let heightAuto = window.innerHeight - 280 >= 340 ? 340 : window.innerHeight - 280;
+            let heightAuto = window.innerHeight - 290 >= 330 ? 330 : window.innerHeight - 290;
             this.setupGrid({
                 withCcg001: true,
                 width: widthAuto,
@@ -1091,7 +1091,7 @@ module cmm045.a.viewmodel {
                     }
                 } },
                 { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
-                { headerText: getText('CMM045_52'), key: 'appTye', width: '90px'},
+                { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
                 { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: isHidden},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
                 { headerText: getText('CMM045_55'), key: 'appContent', width: '341px'},
@@ -1099,7 +1099,7 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
             ]
-            let heightAuto = window.innerHeight - 280 >= 310 ? 310 : window.innerHeight - 280;
+            let heightAuto = window.innerHeight - 290 >= 295 ? 295 : window.innerHeight - 290;
             this.setupGrid({
                 withCcg001: false,
                 width: widthAuto,
@@ -1840,8 +1840,8 @@ module cmm045.a.viewmodel {
 
         //     return features;
         // }
-		
-		
+
+
 		appListApprove(isApprovalAll: boolean) {
 			const self = this;
 			block.invisible();
@@ -1852,10 +1852,10 @@ module cmm045.a.viewmodel {
 						currentItem = _.find(self.items(), item => item.appID == appID);
 					if(!_.isUndefined(currentItem)) {
 						if(!currentItem.check) {
-							checkbox.click();	
-						}	
+							checkbox.click();
+						}
 					}
-				});	
+				});
 			}
 			let listOfApplicationCmds = [];
 			_.each(self.items(), function(item) {
@@ -1866,7 +1866,7 @@ module cmm045.a.viewmodel {
 				// INPUT「一括承認」＝True
 				if(!isApprovalAll) {
 					if(!item.check)	{
-						return;	
+						return;
 					}
 				}
 				if(item.appType == 10 && item.appIdSub != null){
@@ -1878,7 +1878,7 @@ module cmm045.a.viewmodel {
             });
 			if(_.isEmpty(listOfApplicationCmds)) {
 				block.clear();
-				return;	
+				return;
 			}
 			let device = 0,
 				command = { isApprovalAll, device, listOfApplicationCmds };
@@ -1886,9 +1886,9 @@ module cmm045.a.viewmodel {
 				if(data) {
 					let comfirmData = [];
 					_.each(Object.keys(data.successMap), (dataAppID: any) => {
-						let obj = _.find(listOfApplicationCmds, o => o.appID == dataAppID);		
+						let obj = _.find(listOfApplicationCmds, o => o.appID == dataAppID);
 						if(!_.isUndefined(obj)) {
-							comfirmData.push(obj);		
+							comfirmData.push(obj);
 						}
 					});
 					return service.approverAfterConfirm(comfirmData);
@@ -1898,7 +1898,7 @@ module cmm045.a.viewmodel {
 					let isInfoDialog = true,
 						displayMsg = "";
 					if(!_.isEmpty(data.successMap)) {
-						displayMsg += nts.uk.resource.getMessage('Msg_220') + "\n";		
+						displayMsg += nts.uk.resource.getMessage('Msg_220') + "\n";
 					} else {
 						isInfoDialog = false;
 					}
@@ -1912,14 +1912,14 @@ module cmm045.a.viewmodel {
 								appName = appInfo.appName;
 							}
 							displayMsg += "\n " + item.applicantName  + " " + item.appDate + " " + appName + ": " + data.failMap[item.appID];
-						});	
+						});
 					}
 					if(isInfoDialog) {
-						nts.uk.ui.dialog.info(displayMsg);	
+						nts.uk.ui.dialog.info(displayMsg);
 					} else {
-						nts.uk.ui.dialog.alertError(displayMsg);	
+						nts.uk.ui.dialog.alertError(displayMsg);
 					}
-				}	
+				}
 			}).always(() => { block.clear(); });
 		}
     }
