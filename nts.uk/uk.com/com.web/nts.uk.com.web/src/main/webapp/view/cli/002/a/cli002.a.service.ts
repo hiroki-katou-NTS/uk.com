@@ -1,12 +1,10 @@
-module nts.uk.com.view.cli002.a {
+module nts.uk.com.view.cli002.a.service {
   import ajax = nts.uk.request.ajax;
-  export module service {
-    const servicePath = {
+    var servicePath: any = {
       findBySystem: "sys/portal/pginfomation/findBySystem",
-    };
+    }
 
-    export function findBySystem(systemType): JQueryPromise<any> {
-      return ajax(servicePath.findBySystem, systemType);
+    export function findBySystem(systemType: number): JQueryPromise<any> {
+      return ajax(`${servicePath.findBySystem}/${systemType}`);
     }
   }
-}
