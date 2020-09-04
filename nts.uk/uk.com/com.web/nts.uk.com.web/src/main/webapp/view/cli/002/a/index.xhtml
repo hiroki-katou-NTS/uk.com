@@ -34,7 +34,13 @@
               class="caret-right caret-background bg-green"
               style="width: 200px; padding: 30px 10px 30px 20px;"
             >
-              <table id="system-list"></table>
+              <table id="system-list" tabindex="1" data-bind="ntsGridList: {
+                height: 120,
+                dataSource: systemList,
+								primaryKey: 'index',
+								columns: systemColumns,						
+								value: selectedSystemCode
+              }"></table>
             </div>
           </div>
           <div class="float-left model-component">

@@ -12,8 +12,8 @@ module nts.uk.com.view.cli002.a {
       new systemType(3, this.$i18n("Enum_SystemType_OFFICE_HELPER")),
     ]);
 
-    public dataSourceItem: KnockoutObservableArray<PGList> = ko.observableArray([
-      {displayName: "item1", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+    public dataSourceItem: KnockoutObservableArray<any> = ko.observableArray([
+      {displayName: "item1"},
       {displayName: "item1", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
       {displayName: "item1", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
       {displayName: "item1", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
@@ -33,10 +33,16 @@ module nts.uk.com.view.cli002.a {
 
     public systemColumns = [
       {
+        headerText: "",
+        prop: "index",
+        width: 160,
+        hidden: true,
+      },
+      {
         headerText: nts.uk.resource.getText("CLI002_2"),
         prop: "localizedName",
         width: 160,
-      },
+      }
     ];
 
     public columnsItem = [
@@ -70,17 +76,18 @@ module nts.uk.com.view.cli002.a {
     mounted() {
       const vm = this;
       vm.selectedSystemCode.subscribe((newValue) => {
-        console.log(newValue);
+        vm.$blockui("grayout");
+        service.findBySystem(Number(newValue)).done().always(() => vm.$blockui("clear"));
       }); 
       
-      ($("#system-list").ntsGridList as any)({
-        height: "120px",
-        // primaryKey: "value",
-        dataSource: vm.systemList,
-        columns: vm.systemColumns,
-        value: vm.selectedSystemCode,
-        multiple: false,
-      });
+      // ($("#system-list").ntsGridList as any)({
+      //   height: "120px",
+      //   // primaryKey: "value",
+      //   dataSource: vm.systemList,
+      //   columns: vm.systemColumns,
+      //   value: vm.selectedSystemCode,
+      //   multiple: false,
+      // });
 
       ($("#search-box").ntsSearchBox as any)({
         searchMode: "filter",
@@ -171,10 +178,10 @@ module nts.uk.com.view.cli002.a {
     // }
   }
   class systemType {
-    value: number;
+    index: number;
     localizedName: string;
-    constructor(value: number, localizedName: string) {
-      this.value = value;
+    constructor(index: number, localizedName: string) {
+      this.index = index;
       this.localizedName = localizedName;
     }
   }
