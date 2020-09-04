@@ -28,4 +28,14 @@ public class BentoReservationInfoForEmpDto {
     /** 社員名 */
     private String empName;
 
+    public static BentoReservationInfoForEmpDto changeQuantity(BentoReservationInfoForEmpDto infoForEmpDto, int quantity){
+        return new BentoReservationInfoForEmpDto(
+                infoForEmpDto.getStampCardNo(),
+                quantity,
+                infoForEmpDto.getEmpId(),
+                infoForEmpDto.getEmpCode(),
+                infoForEmpDto.getEmpCode()
+        );
+    }
+
 }

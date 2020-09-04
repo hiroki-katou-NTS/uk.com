@@ -19,8 +19,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -301,7 +301,10 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             printArea.append("A0:");
             int startIndex = 3;
             printHeadData(cells, exportData);
-            List<TotalOrderInfoDto> dataPrint = orderInfoDto.getTotalOrderInfoDtoList();
+            List<TotalOrderInfoDto> dataRaw = orderInfoDto.getTotalOrderInfoDtoList();
+            Map<GeneralDate, List<TotalOrderInfoDto>> map = dataRaw.stream()
+                    .collect(Collectors.groupingBy(TotalOrderInfoDto::getReservationDate));
+            List<TotalOrderInfoDto> dataPrint = handleDataPrint(map);
             for (TotalOrderInfoDto dataRow : dataPrint)
                 startIndex = handleBodyTotalFormat(worksheet, dataRow, startIndex, cells, tempSheet);
 
@@ -312,6 +315,45 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+    }
+
+    private List<TotalOrderInfoDto> handleDataPrint(Map<GeneralDate, List<TotalOrderInfoDto>> map){
+        List<TotalOrderInfoDto> result = new ArrayList<>();
+        for(Map.Entry me : map.entrySet()){
+            List<TotalOrderInfoDto> totalOrderInfoDtos = (List<TotalOrderInfoDto>) me.getValue();
+            Map<Integer, List<BentoTotalDto>> temp = totalOrderInfoDtos.stream()
+                    .map(TotalOrderInfoDto::getBentoTotalDto)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.groupingBy(BentoTotalDto::getFrameNo));
+            List<BentoTotalDto> bentoTotalDtos = new ArrayList<>();
+            for(Map.Entry totalDtoEntry : temp.entrySet()){
+                List<BentoTotalDto> totalDtos = (List<BentoTotalDto>) totalDtoEntry.getValue();
+                String unit = totalDtos.get(0).getUnit();
+                String name = totalDtos.get(0).getName();
+                int frameNo = totalDtos.get(0).getFrameNo();
+                int quantity = 0;
+                int amount = 0;
+                for(BentoTotalDto totalDto : totalDtos){
+                    quantity += totalDto.getQuantity();
+                    amount += totalDto.getAmount();
+                }
+                bentoTotalDtos.add(new BentoTotalDto(unit, name, frameNo, quantity, amount));
+            }
+            bentoTotalDtos.stream().sorted(Comparator.comparing(BentoTotalDto::getFrameNo).reversed());
+            int totalFee = 0;
+            for(TotalOrderInfoDto item: totalOrderInfoDtos){
+                totalFee += item.getTotalFee();
+            }
+            result.add(new TotalOrderInfoDto(
+                    totalOrderInfoDtos.get(0).getReservationDate(),
+                    null,
+                    totalFee,
+                    bentoTotalDtos,
+                    totalOrderInfoDtos.get(0).getClosedName(),
+                    totalOrderInfoDtos.get(0).getPlaceOfWorkInfoDto()
+            ));
+        }
+        return result;
     }
 
     private void printHeadData(Cells cells, OrderInfoExportData exportData){
@@ -419,11 +461,12 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             StringBuilder printArea = new StringBuilder();
             printArea.append("A0:");
             printHeadData(cells, orderInfoExportData);
-            for (DetailOrderInfoDto detailInfo : orderInfoDto.getDetailOrderInfoDtoList()){
+
+            List<DetailOrderInfoDto> dataPrint = honeDetailData(orderInfoDto.getDetailOrderInfoDtoList());
+            for (DetailOrderInfoDto detailInfo : dataPrint){
                 GeneralDate start = detailInfo.getReservationDate();
                 String timezone = detailInfo.getClosingTimeName();
                 startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString() + " " + timezone);
-
                 for (BentoReservedInfoDto item : detailInfo.getBentoReservedInfoDtos())
                     startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
             }
@@ -434,6 +477,46 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             throw new RuntimeException(e);
         }
     }
+
+    private List<DetailOrderInfoDto> honeDetailData(List<DetailOrderInfoDto> raw){
+        List<DetailOrderInfoDto> result = new ArrayList<>();
+        Map<GeneralDate, List<DetailOrderInfoDto>> map = raw.stream().collect(Collectors.groupingBy(DetailOrderInfoDto::getReservationDate));
+        for(Map.Entry me: map.entrySet()){
+            List<DetailOrderInfoDto> detailOrderInfoDtos = (List<DetailOrderInfoDto>) me.getValue();
+            DetailOrderInfoDto temp = new DetailOrderInfoDto(Collections.emptyList(),
+                    detailOrderInfoDtos.get(0).getReservationDate(), null, detailOrderInfoDtos.get(0).getClosingTimeName(),
+                    detailOrderInfoDtos.get(0).getPlaceOfWorkInfoDtos()
+                    );
+            List<BentoReservedInfoDto> bentoReservedInfoDtos = honeDetailReservationData(
+                    detailOrderInfoDtos.stream().map(DetailOrderInfoDto::getBentoReservedInfoDtos)
+                                                .flatMap(Collection::stream)
+                                                .collect(Collectors.toList())
+            );
+            temp.setBentoReservedInfoDtos(bentoReservedInfoDtos);
+            result.add(temp);
+        }
+        return result;
+    }
+
+    private List<BentoReservedInfoDto> honeDetailReservationData(List<BentoReservedInfoDto> raw){
+        List<BentoReservedInfoDto> result = new ArrayList<>();
+        Map<Integer, List<BentoReservedInfoDto>> map = raw.stream().collect(Collectors.groupingBy(BentoReservedInfoDto::getFrameNo));
+        for(Map.Entry me : map.entrySet()){
+            BentoReservedInfoDto temp = new BentoReservedInfoDto();
+            List<BentoReservedInfoDto> bentoReservedInfoDtos = (List<BentoReservedInfoDto>) me.getValue();
+            temp.setBentoName(bentoReservedInfoDtos.get(0).getBentoName());
+            temp.setFrameNo(bentoReservedInfoDtos.get(0).getFrameNo());
+            temp.setUnit(bentoReservedInfoDtos.get(0).getUnit());
+            temp.setBentoReservationInfoForEmpList(bentoReservedInfoDtos.stream()
+                    .map(BentoReservedInfoDto::getBentoReservationInfoForEmpList)
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toList()));
+            result.add(temp);
+        }
+
+        return result;
+    }
+
 
     private int handleBodyDetailFormat(Worksheet worksheet, BentoReservedInfoDto bentoReservedInfoDto, int startIndex,
                                        Cells cells, boolean isPageBreak, Worksheet tempSheet, OutputExtension outputExtension) {

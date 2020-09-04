@@ -381,7 +381,7 @@ public class JpaBentoReservationRepositoryImpl extends JpaRepository implements 
 		query = query.replaceFirst("startDate", period.start().toString());
 		query = query.replaceFirst("endDate", period.end().toString());
 		query = query.replaceFirst("closingTimeFrame", String.valueOf(closingTimeFrame.value));
-        query = query.replaceFirst("companyID", AppContexts.user().companyId());
+		query = query.replaceFirst("companyID", AppContexts.user().companyId());
 		return getBentoReservations(query);
 	}
 
