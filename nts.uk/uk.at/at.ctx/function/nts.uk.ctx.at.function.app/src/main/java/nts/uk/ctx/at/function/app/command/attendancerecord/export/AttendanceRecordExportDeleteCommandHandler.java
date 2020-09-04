@@ -33,7 +33,7 @@ public class AttendanceRecordExportDeleteCommandHandler extends CommandHandler<A
 	protected void handle(CommandHandlerContext<AttendanceRecordExportDeleteCommand> context) {
 		AttendanceRecordExportDeleteCommand command = context.getCommand();
 		this.attendanceRecExpRepo.deleteAttendanceRecord(AppContexts.user().companyId(),
-				new ExportSettingCode(command.getExportSettingCode()));
+				new ExportSettingCode(String.valueOf(command.getExportSettingCode())));
 	}
 
 }

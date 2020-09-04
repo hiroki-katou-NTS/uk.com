@@ -111,7 +111,7 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	@Override
 	public void setCode(ExportSettingCode code) {
-		this.entity.getId().setExportCd(code.v());
+		this.entity.getId().setExportCd(Long.parseLong(code.v()));
 
 	}
 

@@ -37,7 +37,7 @@ public class CalculateAttendanceRecordFinder {
 		// get domain object
 		Optional<CalculateAttendanceRecord> optionalCalculateAttendanceRecord = this.calculateAttendanceRecordRepository
 				.getCalculateAttendanceRecord(AppContexts.user().companyId(),
-						new ExportSettingCode(attendanceRecordKey.getCode()), attendanceRecordKey.getColumnIndex(),
+						new ExportSettingCode(String.valueOf(attendanceRecordKey.getCode())), attendanceRecordKey.getColumnIndex(),
 						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportAtr());
 		// convert to dto
 		CalculateAttendanceRecord calculateAttendanceRecord = optionalCalculateAttendanceRecord.isPresent()

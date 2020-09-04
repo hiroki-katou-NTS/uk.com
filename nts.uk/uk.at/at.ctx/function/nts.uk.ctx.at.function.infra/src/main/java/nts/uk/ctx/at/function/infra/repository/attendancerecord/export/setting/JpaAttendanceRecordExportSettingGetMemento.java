@@ -99,7 +99,7 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	 */
 	@Override
 	public ExportSettingCode getCode() {
-		return new ExportSettingCode(this.attendanceEntity.getId().getExportCd());
+		return new ExportSettingCode(String.valueOf(this.attendanceEntity.getId().getExportCd()));
 	}
 
 	/*

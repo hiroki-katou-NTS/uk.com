@@ -34,7 +34,7 @@ public class SingleAttendanceRecordFinder {
 		// get domain
 		Optional<SingleAttendanceRecord> optionalSingleAttendanceRecord = this.singleAttendanceRecordRepository
 				.getSingleAttendanceRecord(AppContexts.user().companyId(),
-						new ExportSettingCode(attendanceRecordKey.getCode()), attendanceRecordKey.getColumnIndex(),
+						new ExportSettingCode(String.valueOf(attendanceRecordKey.getCode())), attendanceRecordKey.getColumnIndex(),
 						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportAtr());
 		// convert to Dto
 		if (optionalSingleAttendanceRecord.isPresent()) {

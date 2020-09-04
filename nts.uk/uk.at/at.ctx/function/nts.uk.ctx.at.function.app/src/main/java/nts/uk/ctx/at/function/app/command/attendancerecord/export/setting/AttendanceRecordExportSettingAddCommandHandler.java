@@ -37,7 +37,7 @@ public class AttendanceRecordExportSettingAddCommandHandler
 
 		AttendanceRecordExportSetting domain = new AttendanceRecordExportSetting();
 		domain.setCompanyId(AppContexts.user().companyId());
-		domain.setCode(new ExportSettingCode(command.getCode()));
+		domain.setCode(new ExportSettingCode(String.valueOf(command.getCode())));
 		domain.setName(new ExportSettingName(command.getName()));
 		domain.setNameUseAtr(NameUseAtr.valueOf(command.getNameUseAtr()));
 		if (command.getSealStamp() != null) {
