@@ -63,7 +63,7 @@ public class AppContentServiceImpl implements AppContentService {
 			ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
 		String result = Strings.EMPTY;
 		String paramString = Strings.EMPTY;
-		if(screenAtr == ScreenAtr.KAF018 || screenAtr == ScreenAtr.CMM045) {
+		if(screenAtr != ScreenAtr.KAF018 || screenAtr != ScreenAtr.CMM045) {
 			// @＝改行
 			paramString = "\n";
 		} else {
@@ -91,7 +91,7 @@ public class AppContentServiceImpl implements AppContentService {
 		// アルゴリズム「申請内容の申請理由」を実行する
 		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
-			result += appReasonContent;
+			result += "\n" + appReasonContent;
 		}
 		return result;
 	}
@@ -198,7 +198,7 @@ public class AppContentServiceImpl implements AppContentService {
 			List<StampAppOutputTmp> stampAppOutputTmpLst, ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
 		String result = Strings.EMPTY;
 		String paramString = Strings.EMPTY;
-		if(screenAtr == ScreenAtr.KAF018 || screenAtr == ScreenAtr.CMM045) {
+		if(screenAtr != ScreenAtr.KAF018 || screenAtr != ScreenAtr.CMM045) {
 			// @＝改行
 			paramString = "\n";
 		} else {
@@ -225,7 +225,7 @@ public class AppContentServiceImpl implements AppContentService {
 		// アルゴリズム「申請内容の申請理由」を実行する
 		String appReasonContent = this.getAppReasonContent(appReasonDisAtr, appReason, screenAtr, appStandardReasonCD, appType, Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
-			result += appReasonContent;
+			result += "\n" + appReasonContent;
 		}
 		return result;
 	}
@@ -287,7 +287,7 @@ public class AppContentServiceImpl implements AppContentService {
 				appType, 
 				Optional.empty());
 		if(Strings.isNotBlank(appReasonContent)) {
-			result += appReasonContent;
+			result += "\n" + appReasonContent;
 		}
 		return result;
 	}

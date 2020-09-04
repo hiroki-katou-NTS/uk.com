@@ -67,21 +67,6 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
         businessTrip.setAppID(application.getAppID());
         BusinessTripInfoOutput businessTripInfoOutput = command.getBusinessTripInfoOutputDto().toDomain();
 
-        this.appRepository.insertApp(
-                application,
-                businessTripInfoOutput
-                        .getAppDispInfoStartup()
-                        .getAppDispInfoWithDateOutput()
-                        .getOpListApprovalPhaseState().isPresent() ? businessTripInfoOutput.getAppDispInfoStartup()
-                        .getAppDispInfoWithDateOutput()
-                        .getOpListApprovalPhaseState()
-                        .get() : null);
-
-        // ドメインモデル「出張申請」を追加する
-        this.businessTripRepository.add(businessTrip);
-
-        // ドメインモデル「申請」の新規登録をする
-        this.registerService.newScreenRegisterAtApproveInfoReflect(loginSid, application);
         GeneralDate appStartDate = application.getOpAppStartDate().isPresent() ? application.getOpAppStartDate().get().getApplicationDate() : null;
         GeneralDate appEndDate = application.getOpAppStartDate().isPresent() ? application.getOpAppEndDate().get().getApplicationDate() : null;
         List<GeneralDate> dates = new ArrayList<>();
@@ -92,6 +77,25 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
             dates.add(application.getAppDate().getApplicationDate());
         }
 
+        // ドメインモデル「申請」の新規登録をする
+        this.appRepository.insertApp(
+                application,
+                businessTripInfoOutput
+                        .getAppDispInfoStartup()
+                        .getAppDispInfoWithDateOutput()
+                        .getOpListApprovalPhaseState().isPresent() ? businessTripInfoOutput.getAppDispInfoStartup()
+                        .getAppDispInfoWithDateOutput()
+                        .getOpListApprovalPhaseState()
+                        .get() : null);
+
+        // アルゴリズム「2-2.新規画面登録時承認反映情報の整理」を実行する
+        this.registerService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+
+        // ドメインモデル「出張申請」を追加する
+        this.businessTripRepository.add(businessTrip);
+
+
+        // アルゴリズム「出張申請暫定残数を更新する」を実行する
         // アルゴリズム「暫定データの登録」を実行する
         // Refactor not done
 //        this.interimRemainDataMngRegisterDateChange.registerDateChange(
@@ -99,12 +103,14 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
 //                application.getEmployeeID(),
 //                dates
 //        );
+
         Optional<AppTypeSetting> appTypeSet = businessTripInfoOutput
                 .getAppDispInfoStartup()
                 .getAppDispInfoNoDateOutput()
                 .getApplicationSetting()
                 .getAppTypeSettings().stream().filter(i -> i.getAppType()== ApplicationType.BUSINESS_TRIP_APPLICATION)
                 .findFirst();
+
         if (appTypeSet.isPresent()) {
             // 2-3.新規画面登録後の処理
             return this.newAfterRegister.processAfterRegister(

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -11,16 +12,14 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Workbook;
+import com.aspose.cells.WorkbookDesigner;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.AppScreenGenerator;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.shr.com.company.CompanyAdapter;
@@ -42,19 +41,37 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	private final String OUTPUT_FILE = "申請一覧.xlsx";
 
 	@Override
-	public void generate(FileGeneratorContext context, AppListInfo appLst) {
+	public void generate(FileGeneratorContext context, int appListAtr, AppListInfo appLst) {
 		try {
 			val designer = this.createContext(this.TEMPLATE_FILE);
 
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
-			Worksheet worksheet = worksheets.get(0);
+
+			Worksheet worksheet;
+			if (appListAtr == 0) {
+				worksheet = worksheets.get(1);
+			} else {
+				worksheet = worksheets.get(0);
+			}
 
 			String companyId = AppContexts.user().companyId();
 
 			this.printHeader(worksheet, companyId);
 			this.printTopR1(worksheet, appLst);
-			this.printContent(worksheet, appLst);
+			this.printContent(workbook, appLst);
+
+			worksheet.autoFitColumn(3);
+
+			for (int i = 2; i < appLst.getAppLst().size() + 2; i++) {
+				worksheet.autoFitRow(i);
+			}
+
+			if (appListAtr == 0) {
+				workbook.getWorksheets().removeAt(0);
+			} else {
+				workbook.getWorksheets().removeAt(1);
+			}
 
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
@@ -65,36 +82,53 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 		}
 	}
 
-	private void printContent(Worksheet worksheet, AppListInfo appLst) {
+	private void printContent(Workbook workbook, AppListInfo appLst) {
 		List<ListOfApplication> lstApp = appLst.getAppLst();
-		Cells cells = worksheet.getCells();
+		List<AsposeAppScreenDto> dataSource = lstApp.stream().map(x -> AsposeAppScreenDto.fromDomain(x))
+				.collect(Collectors.toList());
 
-		for(int i = 0; i < lstApp.size(); i++) {
-			// Cell of ApplicantName
-			Cell cellB = cells.get("B" + i + 3);
-			cellB.setValue(lstApp.get(i).getApplicantName());
-			// Cell of Application Name
-			Cell cellC = cells.get("C" + i + 3);
-			cellC.setValue(lstApp.get(i).getAppType().name);
-			// Cell of prepost type
-			Cell cellD = cells.get("D" + i + 3);
-			cellD.setValue(EnumAdaptor.valueOf(lstApp.get(i).getPrePostAtr(), PrePostAtr.class).name);
-			// Cell of start date - end date
-			Cell cellE = cells.get("E" + i + 3);
-			cellE.setValue(lstApp.get(i).getOpAppStartDate());
-			// Cell of application content
-			Cell cellF = cells.get("F" + i + 3);
-			cellF.setValue(lstApp.get(i).getAppContent());
-			// Cell of input date
-			Cell cellG = cells.get("G" + i + 3);
-			cellG.setValue(lstApp.get(i).getInputDate().toString());
-			// Cell approval status
-			Cell cellH = cells.get("H" + i + 3);
-			cellH.setValue(lstApp.get(i).getReflectionStatus());
-			// Cell of phase approval
-			Cell cellI = cells.get("I" + i + 3);
-			cellI.setValue(lstApp.get(i).getOpApprovalStatusInquiry());
+		WorkbookDesigner designer = new WorkbookDesigner();
+		designer.setWorkbook(workbook);
+
+		designer.setDataSource("dataSource", dataSource);
+
+		try {
+			designer.process(true);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		// for(int i = 0; i < lstApp.size(); i++) {
+		// // Cell of ApplicantName
+		// Cell cellB = cells.get("B" + i + 3);
+		// cellB.setValue(lstApp.get(i).getApplicantName());
+		// // Cell of Application Name
+		// Cell cellC = cells.get("C" + i + 3);
+		// cellC.setValue(lstApp.get(i).getAppType().name);
+		// // Cell of prepost type
+		// Cell cellD = cells.get("D" + i + 3);
+		// cellD.setValue(EnumAdaptor.valueOf(lstApp.get(i).getPrePostAtr(),
+		// PrePostAtr.class).name);
+		// // Cell of start date - end date
+		// Cell cellE = cells.get("E" + i + 3);
+		// cellE.setValue(
+		// lstApp.get(i).getOpAppStartDate().isPresent() ?
+		// lstApp.get(i).getOpAppStartDate().get().toString()
+		// : "");
+		// // Cell of application content
+		// Cell cellF = cells.get("F" + i + 3);
+		// cellF.setValue(lstApp.get(i).getAppContent());
+		// // Cell of input date
+		// Cell cellG = cells.get("G" + i + 3);
+		// cellG.setValue(lstApp.get(i).getInputDate().toString());
+		// // Cell approval status
+		// Cell cellH = cells.get("H" + i + 3);
+		// cellH.setValue(lstApp.get(i).getReflectionStatus());
+		// // Cell of phase approval
+		// Cell cellI = cells.get("I" + i + 3);
+		// cellI.setValue(lstApp.get(i).getOpApprovalStatusInquiry().isPresent()
+		// ? lstApp.get(i).getOpApprovalStatusInquiry().get().toString()
+		// : "");
+		// }
 	}
 
 	private void printTopR1(Worksheet worksheet, AppListInfo appLst) {
@@ -104,10 +138,6 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 		Cell cellC1 = cells.get("C1");
 		cellC1.setValue(new StringBuilder().append(appLst.getDisplaySet().getStartDateDisp()).append("～")
 				.append(appLst.getDisplaySet().getEndDateDisp()).toString());
-
-		// Column header background color
-		// Style headerBackground = new Style();
-		// headerBackground.setBackgroundColor(Color.a("#CFF1A5"));
 
 		Cell cellB2 = cells.get("B2");
 		cellB2.setValue(I18NText.getText("CMM045_51"));
@@ -141,6 +171,6 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 
 		pageSetup.setHeader(0, this.companyAdapter.getCurrentCompany().get().getCompanyName());
 		pageSetup.setHeader(1, "applicationName");
-		pageSetup.setHeader(2, GeneralDateTime.now().toString());
+		// pageSetup.setHeader(2, GeneralDateTime.now().toString());
 	}
 }

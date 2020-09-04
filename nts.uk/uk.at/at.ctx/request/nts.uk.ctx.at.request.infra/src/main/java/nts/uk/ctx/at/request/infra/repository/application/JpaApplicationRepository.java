@@ -243,7 +243,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 * @author hoatt get List Application phuc vu CMM045
 	 */
 	@Override
-	public List<Application_New> getListAppModeApprCMM045(String companyId, DatePeriod period, List<String> lstAppId,
+	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
 			boolean remandStatus, boolean cancelStatus, List<Integer> lstType) {
 		if (lstAppId.isEmpty()) {
@@ -267,51 +267,71 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			lstState.add(6);
 		}
 
-		List<Application_New> lstResult = new ArrayList<>();
+		List<Application> lstResult = new ArrayList<>();
 		CollectionUtil.split(lstAppId, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subListId -> {
 			String subListAppId = NtsStatement.In.createParamsString(subListId);
 			String lstTypeString = NtsStatement.In.createParamsString(lstType);
 			String lstStateString = NtsStatement.In.createParamsString(lstState);
 
-			String sql = "SELECT app.EXCLUS_VER, app.CID, app.APP_ID, app.PRE_POST_ATR, app.INPUT_DATE, app.ENTERED_PERSON_SID, app.REASON_REVERSION, app.APP_DATE, app.APP_REASON, "
-					+ "app.APP_TYPE, app.APPLICANTS_SID, app.APP_START_DATE, app.APP_END_DATE, app.REFLECT_PLAN_STATE, app.REFLECT_PER_STATE, app.REFLECT_PLAN_ENFORCE_ATR, "
-					+ "app.REFLECT_PER_ENFORCE_ATR, app.REFLECT_PLAN_SCHE_REASON, app.REFLECT_PER_SCHE_REASON, app.REFLECT_PLAN_TIME, app.REFLECT_PER_TIME "
-					+ "FROM KRQDT_APPLICATION app " + "WHERE app.APP_ID IN (" + subListAppId + ") AND app.APP_TYPE IN ("
-					+ lstTypeString + ") AND app.REFLECT_PER_STATE IN (" + lstStateString + ") AND app.CID = ?";
-
-			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-				int sizeListId = subListId.size();
-				int sizeLstType = lstType.size();
-				int sizeLstState = lstState.size();
-
-				for (int i = 0; i < sizeListId; i++) {
-					stmt.setString(i + 1, subListId.get(i));
-				}
-
-				for (int i = 0; i < sizeLstType; i++) {
-					stmt.setInt(i + sizeListId + 1, lstType.get(i));
-				}
-
-				for (int i = 0; i < sizeLstState; i++) {
-					stmt.setInt(i + sizeListId + sizeLstType + 1, lstState.get(i));
-				}
-
-				stmt.setString(sizeListId + sizeLstType + sizeLstState + 1, companyId);
-
-				lstResult.addAll(new NtsResultSet(stmt.executeQuery()).getList(rs -> new KrqdtApplication_New(
-						new KrqdpApplicationPK_New(rs.getString("CID"), rs.getString("APP_ID")),
-						rs.getLong("EXCLUS_VER"), rs.getInt("PRE_POST_ATR"), rs.getGeneralDateTime("INPUT_DATE"),
-						rs.getString("ENTERED_PERSON_SID"), rs.getString("REASON_REVERSION"),
-						rs.getGeneralDate("APP_DATE"), rs.getString("APP_REASON"), rs.getInt("APP_TYPE"),
-						rs.getString("APPLICANTS_SID"), rs.getGeneralDate("APP_START_DATE"),
-						rs.getGeneralDate("APP_END_DATE"), rs.getInt("REFLECT_PLAN_STATE"),
-						rs.getInt("REFLECT_PER_STATE"), rs.getInt("REFLECT_PLAN_ENFORCE_ATR"),
-						rs.getInt("REFLECT_PER_ENFORCE_ATR"), rs.getInt("REFLECT_PLAN_SCHE_REASON"),
-						rs.getInt("REFLECT_PER_SCHE_REASON"), rs.getGeneralDateTime("REFLECT_PLAN_TIME"),
-						rs.getGeneralDateTime("REFLECT_PER_TIME")).toDomain()));
-			} catch (SQLException e) {
-				e.printStackTrace();
+			String sql = 
+					"select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
+					"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
+					"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +
+					"a.APPLICANTS_SID as aAPPLICANTS_SID, a.APP_START_DATE as aAPP_START_DATE, a.APP_END_DATE as aAPP_END_DATE, a.STAMP_OPTION_ATR as aSTAMP_OPTION_ATR, " +
+					"b.CONTRACT_CD as bCONTRACT_CD, b.CID as bCID, b.APP_ID as bAPP_ID, b.APP_DATE as bAPP_DATE, b.REFLECT_PLAN_STATE as bREFLECT_PLAN_STATE, b.REFLECT_PER_STATE as bREFLECT_PER_STATE, " +
+					"b.REFLECT_PLAN_SCHE_REASON as bREFLECT_PLAN_SCHE_REASON, b.REFLECT_PLAN_TIME as bREFLECT_PLAN_TIME, " +
+					"b.REFLECT_PER_SCHE_REASON as bREFLECT_PER_SCHE_REASON, b.REFLECT_PER_TIME as bREFLECT_PER_TIME, " +
+					"b.CANCEL_PLAN_SCHE_REASON as bCANCEL_PLAN_SCHE_REASON, b.CANCEL_PLAN_TIME as bCANCEL_PLAN_TIME, " +
+					"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME " +
+					"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
+					"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
+					"WHERE a.APP_ID IN @subListId AND a.APP_TYPE IN @lstType AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID";
+			List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+					.paramString("subListId", subListId)
+					.paramInt("lstType", lstType)
+					.paramInt("lstState", lstState)
+					.paramString("companyID", companyID)
+					.getList(rec -> toObject(rec));
+			List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+			if(!CollectionUtil.isEmpty(krqdtApplicationLst)) {
+				List<Application> sublstResult = krqdtApplicationLst.stream().map(i -> i.toDomain()).collect(Collectors.toList());
+				lstResult.addAll(sublstResult);
 			}
+			
+			
+//			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
+//				int sizeListId = subListId.size();
+//				int sizeLstType = lstType.size();
+//				int sizeLstState = lstState.size();
+//
+//				for (int i = 0; i < sizeListId; i++) {
+//					stmt.setString(i + 1, subListId.get(i));
+//				}
+//
+//				for (int i = 0; i < sizeLstType; i++) {
+//					stmt.setInt(i + sizeListId + 1, lstType.get(i));
+//				}
+//
+//				for (int i = 0; i < sizeLstState; i++) {
+//					stmt.setInt(i + sizeListId + sizeLstType + 1, lstState.get(i));
+//				}
+//
+//				stmt.setString(sizeListId + sizeLstType + sizeLstState + 1, companyId);
+//
+//				lstResult.addAll(new NtsResultSet(stmt.executeQuery()).getList(rs -> new KrqdtApplication_New(
+//						new KrqdpApplicationPK_New(rs.getString("CID"), rs.getString("APP_ID")),
+//						rs.getLong("EXCLUS_VER"), rs.getInt("PRE_POST_ATR"), rs.getGeneralDateTime("INPUT_DATE"),
+//						rs.getString("ENTERED_PERSON_SID"), rs.getString("REASON_REVERSION"),
+//						rs.getGeneralDate("APP_DATE"), rs.getString("APP_REASON"), rs.getInt("APP_TYPE"),
+//						rs.getString("APPLICANTS_SID"), rs.getGeneralDate("APP_START_DATE"),
+//						rs.getGeneralDate("APP_END_DATE"), rs.getInt("REFLECT_PLAN_STATE"),
+//						rs.getInt("REFLECT_PER_STATE"), rs.getInt("REFLECT_PLAN_ENFORCE_ATR"),
+//						rs.getInt("REFLECT_PER_ENFORCE_ATR"), rs.getInt("REFLECT_PLAN_SCHE_REASON"),
+//						rs.getInt("REFLECT_PER_SCHE_REASON"), rs.getGeneralDateTime("REFLECT_PLAN_TIME"),
+//						rs.getGeneralDateTime("REFLECT_PER_TIME")).toDomain()));
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
 		});
 
 		return lstResult;

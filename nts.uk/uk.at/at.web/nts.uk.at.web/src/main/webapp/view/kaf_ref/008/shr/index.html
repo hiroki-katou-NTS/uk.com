@@ -5,12 +5,12 @@
             <span  data-bind="text: $i18n('KAF008_21')"></span>
         </div>
         <input tab-index="4" id="A5_3" data-bind="ntsTimeWithDayEditor: {name: '#[KAF008_21]',
-	                    value: departureTime, enable: true, required: true, option: {timeWithDay: true}}"/>
+	                    value: departureTime, enable: true, required: false, option: {timeWithDay: true}}"/>
         <div id="A5_4">
             <span  data-bind="text: $i18n('KAF008_22')"></span>
         </div>
         <input tab-index="5" id="A5_5" data-bind="ntsTimeWithDayEditor: {name: '#[KAF008_22]',
-	                    value: returnTime, enable: true, required: true, option: {timeWithDay: true}}"/>
+	                    value: returnTime, enable: true, required: false, option: {timeWithDay: true}}"/>
     </div>
     <div id="A6_1">
         <div class="label" data-bind="if: comment()">

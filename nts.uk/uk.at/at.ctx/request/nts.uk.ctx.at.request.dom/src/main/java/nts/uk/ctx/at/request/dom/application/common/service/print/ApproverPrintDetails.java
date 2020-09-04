@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.jobtitle.dto.AffJobTitleHistoryImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalBehaviorAtrImport_New;
@@ -42,7 +43,7 @@ public class ApproverPrintDetails {
 	/**
 	 * 承認日
 	 */
-	private Optional<GeneralDate> opApprovalDate;
+	private Optional<GeneralDateTime> opApprovalDate;
 	
 	public ApproverPrintDetails() {
 		this.opApprovalDate = Optional.empty();

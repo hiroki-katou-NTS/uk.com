@@ -53,14 +53,14 @@ export class KafS00CComponent extends Vue {
             appStandardReasonCD: '',
             displayOrder: 0,
             defaultValue: false,
-            opReasonForFixedForm: self.$i18n('KAFS00_23'),   
+            reasonForFixedForm: self.$i18n('KAFS00_23'),   
         }];
         _.forEach(self.$input.reasonTypeItemLst, (value) => {
             self.dropdownList.push({
                 appStandardReasonCD: value.appStandardReasonCD,
                 displayOrder: value.displayOrder,
                 defaultValue: value.defaultValue,
-                opReasonForFixedForm: value.appStandardReasonCD + ' ' + value.opReasonForFixedForm,     
+                reasonForFixedForm: value.appStandardReasonCD + ' ' + value.reasonForFixedForm,     
             });   
         });
 
@@ -134,5 +134,5 @@ interface ReasonTypeItemDto {
     appStandardReasonCD: any;
     displayOrder: number;
     defaultValue: boolean;
-    opReasonForFixedForm?: string;     
+    reasonForFixedForm: string;     
 }

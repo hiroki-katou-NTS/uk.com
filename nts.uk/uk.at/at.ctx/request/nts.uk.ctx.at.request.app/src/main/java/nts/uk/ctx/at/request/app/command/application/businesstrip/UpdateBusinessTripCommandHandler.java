@@ -102,9 +102,9 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 
         //アルゴリズム「出張申請暫定残数を更新する」を実行する
         //アルゴリズム「暫定データの登録」を実行する
-        this.interimRemainDataMngRegisterDateChange.registerDateChange(cid,
-                application.getEmployeeID(),
-                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
+//        this.interimRemainDataMngRegisterDateChange.registerDateChange(cid,
+//                application.getEmployeeID(),
+//                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
 
         // アルゴリズム「4-2.詳細画面登録後の処理」を実行する
         return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID());
@@ -125,13 +125,13 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
             // 申請の矛盾チェック
-            this.commonAlgorithm.appConflictCheck(
-                    cid,
-                    employeeInfoImports.get(0),
-                    Arrays.asList(i.getDate()),
-                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-                    appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
-            );
+//            this.commonAlgorithm.appConflictCheck(
+//                    cid,
+//                    employeeInfoImports.get(0),
+//                    Arrays.asList(i.getDate()),
+//                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+//                    appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
+//            );
         });
     }
 }

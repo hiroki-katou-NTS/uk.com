@@ -349,5 +349,9 @@ public class AppWorkChangeFinder {
 		appWorkChangeOutputDto.setAppWorkChange(appWorkChangeDetailDto.appWorkChange);
 		return appWorkChangeOutputDto;
 	}
+	// check worktime
+	public ChangeWkTypeTimeDto checkWorkTime(CheckWorkTimeParam param) {
+		return ChangeWkTypeTimeDto.fromDomain(appWorkChangeService.changeWorkTypeWorkTime(param.getCompanyId(), param.getWorkType(), Optional.ofNullable(param.getWorkTime()), param.getAppWorkChangeSetDto().toDomain()));
+	}
 
 }
