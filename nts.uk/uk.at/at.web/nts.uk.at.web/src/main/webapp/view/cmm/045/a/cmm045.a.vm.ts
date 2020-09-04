@@ -618,7 +618,7 @@ module cmm045.a.viewmodel {
                                 .append($("<input/>")
                                     .attr("id", "batch-check")
                                     .attr("type", "checkbox")
-                                    // .addClass(column.key))
+                                    .addClass(column.key))
                                 .append($("<span/>").addClass("box"))
                                 .change((e) => {
                                     let checked = $(e.target).prop("checked");
@@ -725,6 +725,12 @@ module cmm045.a.viewmodel {
                     }
 
                     if (column.checkbox !== undefined) {
+                        var extraClass = "";
+                        if(moment(item.opAppStartDate).add(-(self.appList().displaySet.appDateWarningDisp), "days") <= moment.utc()) {
+                            extraClass = "approvalCell";
+                        } else {
+                            extraClass = "";
+                        }
                         if (column.checkbox.visible(item) === true) {
                             $("<label/>")
                                 .addClass("ntsCheckBox")
@@ -732,11 +738,13 @@ module cmm045.a.viewmodel {
                                     .attr("type", "checkbox")
                                     .addClass(column.key))
                                 .append($("<span/>").addClass("box"))
-                                .appendTo($td);
+                                .appendTo($td)
+                                .parent("td")
+                                .addClass(extraClass);
 
-                            if(moment(item.opAppStartDate).add(-(self.appList().displaySet.appDateWarningDisp), "days") <= moment.utc()) {
-                                $("<label/>").addClass("approvalCell");
-                            }
+                            // if(moment(item.opAppStartDate).add(-(self.appList().displaySet.appDateWarningDisp), "days") <= moment.utc()) {
+                            //     $("<label/>").addClass("approvalCell");
+                            // }
                         }
                     }
                     else if (column.button !== undefined) {
@@ -792,7 +800,7 @@ module cmm045.a.viewmodel {
                 var cl = "";
                 var time = nts.uk.time.formatDate(new Date(value), "yy/MM/ddD hh:mm");
 
-                if(time.includes(''))
+                if(_.includes(time, ''))
                 return self.inputDateColor(time, cl);
             }
             if(key == 'reflectionStatus') {
@@ -827,7 +835,7 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
             ];
-            let heightAuto = screen.height - 360 >= 500 ? 500 : screen.height - 360;
+            let heightAuto = window.innerHeight - 280 >= 340 ? 340 : window.innerHeight - 280;
             this.setupGrid({
                 withCcg001: true,
                 width: widthAuto,
@@ -980,32 +988,57 @@ module cmm045.a.viewmodel {
             _.each(self.items(), function(item) {
                 let rowId = item.appId;
                 //fill color in 承認状況
-                if (item.appStatusNo == 5) {//5 -UNAPPROVED 未
-                    item.appStatusName = 'unapprovalCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['unapprovalCell']));
-                }
-                if (item.appStatusNo == 4) {//4 APPROVED 承認済み
+                // if (item.appStatusNo == 5) {//5 -UNAPPROVED 未
+                //     item.appStatusName = 'unapprovalCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['unapprovalCell']));
+                // }
+                // if (item.appStatusNo == 4) {//4 APPROVED 承認済み
+                //     item.appStatusName = 'approvalCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['approvalCell']));
+                // }
+                // if (item.appStatusNo == 3) {//3 CANCELED 取消
+                //     item.appStatusName = 'cancelCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
+                // }
+                // if (item.appStatusNo == 2) {//2 REMAND 差戻
+                //     item.appStatusName = 'remandCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['remandCell']));
+                // }
+                // if (item.appStatusNo == 1) {//1 DENIAL 否
+                //     item.appStatusName = 'denialCell';
+                //     result.push(new vmbase.CellState(rowId,'appStatus',['denialCell']));
+                // }
+                // //fill color in 申請内容
+                // if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
+                //     result.push(new vmbase.CellState(rowId,'appContent',['preAppExcess']));
+                // }
+                // if (item.checkTimecolor == 2) {////2: thuc te < xin sau
+                //     result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
+                // }
+
+                if(item.reflectionStatus === getText('CMM045_63')) {
                     item.appStatusName = 'approvalCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['approvalCell']));
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['approvalCell']));
                 }
-                if (item.appStatusNo == 3) {//3 CANCELED 取消
-                    item.appStatusName = 'cancelCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['cancelCell']));
+                if(item.reflectionStatus === getText('CMM045_64')) {
+                    item.appStatusName = 'reflectCell';
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['reflectCell']));
                 }
-                if (item.appStatusNo == 2) {//2 REMAND 差戻
-                    item.appStatusName = 'remandCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['remandCell']));
-                }
-                if (item.appStatusNo == 1) {//1 DENIAL 否
+                if(item.reflectionStatus === getText('CMM045_65')) {
                     item.appStatusName = 'denialCell';
-                    result.push(new vmbase.CellState(rowId,'appStatus',['denialCell']));
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['denialCell']));
                 }
-                //fill color in 申請内容
-                if (item.checkTimecolor == 1) {//1: xin truoc < xin sau; k co xin truoc; xin truoc bi denail
-                    result.push(new vmbase.CellState(rowId,'appContent',['preAppExcess']));
+                if(item.reflectionStatus === getText('CMM045_62')) {
+                    item.appStatusName = 'unapprovalCell';
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['unapprovalCell']));
                 }
-                if (item.checkTimecolor == 2) {////2: thuc te < xin sau
-                    result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
+                if(item.reflectionStatus === getText('CMM045_66')) {
+                    item.appStatusName = 'remandCell';
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['remandCell']));
+                }
+                if(item.reflectionStatus === getText('CMM045_67')) {
+                    item.appStatusName = 'cancelCell';
+                    result.push(new vmbase.CellState(rowId,'reflectionStatus',['cancelCell']));
                 }
             });
             return result;
@@ -1066,7 +1099,7 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
             ]
-            let heightAuto = screen.height - 435 >= 530 ? 530 : screen.height - 435;
+            let heightAuto = window.innerHeight - 280 >= 310 ? 310 : window.innerHeight - 280;
             this.setupGrid({
                 withCcg001: false,
                 width: widthAuto,
