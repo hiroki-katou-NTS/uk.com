@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
@@ -223,8 +224,9 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			if (CollectionUtil.isEmpty(bentoMenuLst)) return null;
 			return bentoMenuLst.get(0).getMenu().stream()
-					.filter(x -> x.getFrameNo()==frameNo).findAny().get();
+					.filter(x -> x.getFrameNo()==frameNo).findAny().orElse(null);
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}

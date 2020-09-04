@@ -11,6 +11,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
@@ -134,7 +136,8 @@ public class CreateOrderInfoFileQuery {
             closingName = bentoMenuList.stream().filter(i -> i.getClosingTime().getClosingTime2().isPresent())
                     .findFirst().map(i -> i.getClosingTime().getClosingTime2().get().getReservationTimeName().v());
 
-        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(companyId, bentoReservationsTotal, placeOfWorkInfoDtos, frameNo, closingName);
+        Optional<WorkLocationCode> workLocationCode = CollectionUtil.isEmpty(workLocationCodes) ? Optional.empty() : Optional.of(new WorkLocationCode(workLocationCodes.get(0)));
+        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(companyId, bentoReservationsTotal, placeOfWorkInfoDtos, frameNo, closingName, reservationClosingTimeFrame, workLocationCode);
         List<DetailOrderInfoDto> detailOrderInfoDtos = exportDetailOrderInfo(bentoReservationsDetail, companyId, placeOfWorkInfoDtos, bentoReservationInfoForEmpDtos, frameNo, closingName);
         result.setCompanyName(companyName);
         result.setDetailOrderInfoDtoList(detailOrderInfoDtos);
@@ -359,6 +362,7 @@ public class CreateOrderInfoFileQuery {
             for(BentoReservation reservation : handlerReservation){
                 for(BentoReservationDetail detail : reservation.getBentoReservationDetails()){
                     Bento bento = bentoMenuRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
+                    if (bento == null) continue;
                     if(map.get(bento) == null){
                         map.put(bento,new ArrayList<BentoReservationInfoForEmpDto>(){{
                             add(BentoReservationInfoForEmpDto.changeQuantity(item, detail.getBentoCount().v()));
@@ -397,15 +401,18 @@ public class CreateOrderInfoFileQuery {
 
     /** 5.1 */
     private List<TotalOrderInfoDto> exportTotalOrderInfo(String companyId, List<BentoReservation> reservations,
-                                                        List<PlaceOfWorkInfoDto> workInfoDtos, Optional<Integer> frameNo, Optional<String> closingTimeName){
+                                                        List<PlaceOfWorkInfoDto> workInfoDtos, Optional<Integer> frameNo, Optional<String> closingTimeName,
+                                                         ReservationClosingTimeFrame reservationClosingTimeFrame,
+                                                         Optional<WorkLocationCode> workLocationCode){
         List<BentoReservationDetail> reservationDetails = new ArrayList<>();
         List<TotalOrderInfoDto> result = new ArrayList<>();
         String closedName = closingTimeName.orElse("");
-        if(frameNo.isPresent()){
+        /*if(frameNo.isPresent()){
             for(BentoReservation item : reservations){
                 int totalFee = 0;
                 reservationDetails.addAll(item.getBentoReservationDetails());
                 Bento bento = bentoMenuRepository.getBento(companyId, item.getReservationDate().getDate(), frameNo.get());
+                if (bento == null) continue;
                 List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
                     BentoTotalDto bentoTotalDto = createBentoTotalDto(bento, reservationDetails);
                     bentoTotalDtoLst.add(bentoTotalDto);
@@ -415,13 +422,20 @@ public class CreateOrderInfoFileQuery {
                         bentoTotalDtoLst,closedName,workInfoDtos
                 ));
             }
-        }else{
+        }else*/{
             for(BentoReservation item : reservations){
                 int totalFee = 0;
                 reservationDetails.addAll(item.getBentoReservationDetails());
                 BentoMenu bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
                 List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
-                for (Bento bento : bentoMenuList.getMenu()) {
+                BentoMenuByClosingTime menu = bentoMenuList.getByClosingTime(workLocationCode);
+                List<BentoItemByClosingTime> bentos;
+                if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1){
+                    bentos = menu.getMenu1();
+                } else {
+                    bentos = menu.getMenu2();
+                }
+                for (BentoItemByClosingTime bento : bentos) {
                     BentoTotalDto bentoTotalDto = createBentoTotalDto(bento, reservationDetails);
                     bentoTotalDtoLst.add(bentoTotalDto);
                     totalFee += bentoTotalDto.getAmount() * bentoTotalDto.getQuantity();
@@ -438,7 +452,7 @@ public class CreateOrderInfoFileQuery {
         return result.stream().sorted(Comparator.comparing(TotalOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
 
-    private BentoTotalDto createBentoTotalDto(Bento bento, List<BentoReservationDetail> reservation){
+    private BentoTotalDto createBentoTotalDto(BentoItemByClosingTime bento, List<BentoReservationDetail> reservation){
         int quantity = 0;
         Iterator<BentoReservationDetail> iterator = reservation.iterator();
         while (iterator.hasNext()){
