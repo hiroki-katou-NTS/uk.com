@@ -145,7 +145,7 @@ public class CreateOrderInfoFileQuery {
     private Object[] getWorkPlaceAndStampCard(List<String> workplaceIds, List<String> workLocationCodes, boolean isCheckedEmpInfo, DatePeriod period, String companyId) {
         Object[] result = new Object[4];
         List<String> sIds = new ArrayList<>();
-        List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = new ArrayList<>();
+        Set<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = new HashSet<>();
         List<WorkLocation> workLocations = new ArrayList<>();
         List<WorkplaceInformation> workplaceInformations = new ArrayList<>();
         List<PersonEmpBasicInfoDto> personEmpBasicInfoDtos;
@@ -171,7 +171,7 @@ public class CreateOrderInfoFileQuery {
                         stampCardNo, personEmpBasicInfoDto));
             }
         }
-        result[2] = bentoReservationInfoForEmpDtos;
+        result[2] = new ArrayList<>(bentoReservationInfoForEmpDtos);
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = convertToPlaceOfWorkInfoDto(workplaceInformations, workLocations);
         result[3] = placeOfWorkInfoDtos;
         return result;
@@ -299,13 +299,11 @@ public class CreateOrderInfoFileQuery {
         for(Map.Entry<GeneralDate, Map<String ,List<BentoReservation>>> me : map.entrySet()){
             GeneralDate reservationDate = me.getKey();
             Map<String ,List<BentoReservation>> reservationMap = me.getValue();
-            for(Map.Entry<String ,List<BentoReservation>> mapEntry : reservationMap.entrySet()){
-                String registerInfo = mapEntry.getKey();
+            String registerInfo = reservationMap.keySet().toArray()[0].toString();
+            List<BentoReservedInfoDto> bentoReservedInfoDtos = createBentoReservedInfoDto(infoForEmpDtoMap,reservationMap, companyID);
+            result.add(new DetailOrderInfoDto(bentoReservedInfoDtos,reservationDate,registerInfo,
+                    closedName,placeOfWorkInfoDtos));
 
-                List<BentoReservedInfoDto> bentoReservedInfoDtos = createBentoReservedInfoDto(infoForEmpDtoMap,reservationMap, companyID);
-                result.add(new DetailOrderInfoDto(bentoReservedInfoDtos,reservationDate,registerInfo,
-                        closedName,placeOfWorkInfoDtos));
-            }
         }
         return result.stream().sorted(Comparator.comparing(DetailOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
@@ -334,8 +332,7 @@ public class CreateOrderInfoFileQuery {
                         map.put(bento,new ArrayList<BentoReservationInfoForEmpDto>(){{
                             add(BentoReservationInfoForEmpDto.changeQuantity(item, detail.getBentoCount().v()));
                         }});
-                    }
-                    else{
+                    }else{
                         List<BentoReservationInfoForEmpDto> temp = map.get(bento);
                         temp.add(BentoReservationInfoForEmpDto.changeQuantity(item, detail.getBentoCount().v()));
                         map.put(bento,temp);
