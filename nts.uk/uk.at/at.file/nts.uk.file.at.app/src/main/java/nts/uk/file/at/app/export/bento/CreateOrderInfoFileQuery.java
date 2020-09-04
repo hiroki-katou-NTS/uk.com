@@ -299,11 +299,13 @@ public class CreateOrderInfoFileQuery {
         for(Map.Entry<GeneralDate, Map<String ,List<BentoReservation>>> me : map.entrySet()){
             GeneralDate reservationDate = me.getKey();
             Map<String ,List<BentoReservation>> reservationMap = me.getValue();
-            String registerInfo = reservationMap.keySet().toArray()[0].toString();
-            List<BentoReservedInfoDto> bentoReservedInfoDtos = createBentoReservedInfoDto(infoForEmpDtoMap,reservationMap, companyID);
-            result.add(new DetailOrderInfoDto(bentoReservedInfoDtos,reservationDate,registerInfo,
-                    closedName,placeOfWorkInfoDtos));
-
+            for(Map.Entry<String ,List<BentoReservation>> meItem: reservationMap.entrySet()){
+                String registerInfo = meItem.getKey();
+                List<BentoReservation> reservationList = meItem.getValue();
+                List<BentoReservedInfoDto> bentoReservedInfoDtos = createBentoReservedInfoDto(infoForEmpDtoMap,reservationList,registerInfo, companyID);
+                result.add(new DetailOrderInfoDto(bentoReservedInfoDtos,reservationDate,registerInfo,
+                        closedName,placeOfWorkInfoDtos));
+            }
         }
         return result.stream().sorted(Comparator.comparing(DetailOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
@@ -311,20 +313,18 @@ public class CreateOrderInfoFileQuery {
     /**
      * an algorithm of super complexity,
      * @param infoForEmpDtoMap
-     * @param reservations
+     * @param handlerReservation
+     * @param stampCardNo
      * @param companyID
      * @return
      */
-    private List<BentoReservedInfoDto> createBentoReservedInfoDto(Map<String, List<BentoReservationInfoForEmpDto>> infoForEmpDtoMap, Map<String, List<BentoReservation>> reservations,
+    private List<BentoReservedInfoDto> createBentoReservedInfoDto(Map<String, List<BentoReservationInfoForEmpDto>> infoForEmpDtoMap, List<BentoReservation> handlerReservation, String stampCardNo,
                                                                  String companyID){
         List<BentoReservedInfoDto> result = new ArrayList<>();
         Map<Bento, List<BentoReservationInfoForEmpDto>> map = new HashMap<>();
-
-        String stampCardNo = reservations.keySet().toArray()[0].toString();
         List<BentoReservationInfoForEmpDto> items = infoForEmpDtoMap.get(stampCardNo);
         if(!CollectionUtil.isEmpty(items)){
             BentoReservationInfoForEmpDto item = items.get(0);
-            List<BentoReservation> handlerReservation = reservations.get(stampCardNo);
             for(BentoReservation reservation : handlerReservation){
                 for(BentoReservationDetail detail : reservation.getBentoReservationDetails()){
                     Bento bento = bentoMenuRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
@@ -341,12 +341,15 @@ public class CreateOrderInfoFileQuery {
             }
             for(Map.Entry<Bento, List<BentoReservationInfoForEmpDto>> me : map.entrySet()){
                 Bento bentoTemp = me.getKey();
-                List<BentoReservationInfoForEmpDto> listTemp = me.getValue();
+                List<BentoReservationInfoForEmpDto> listTemp = me.getValue().stream()
+                        .sorted(Comparator.comparing(BentoReservationInfoForEmpDto::getEmpCode)).collect(Collectors.toList());
                 result.add(new BentoReservedInfoDto(
                         bentoTemp.getName().v(),bentoTemp.getFrameNo(), bentoTemp.getUnit().v(),listTemp
                 ));
             }
-            return result.stream().sorted(Comparator.comparing(BentoReservedInfoDto::getFrameNo)).collect(Collectors.toList());
+            return result.stream()
+                    .sorted(Comparator.comparing(BentoReservedInfoDto::getFrameNo))
+                    .collect(Collectors.toList());
         }
         return result;
     }

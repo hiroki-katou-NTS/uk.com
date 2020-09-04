@@ -560,8 +560,8 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
                     copyRowFromTemplateSheet(cells, tempSheet, 3, startIndex);
                 else
                     copyRowFromTemplateSheet(cells, tempSheet, 4, startIndex);
-                for (int i = 0; i < mod; ++i)
-                    total += setBodyDataDetailFormat(cells, startIndex + i, i * 4, bodyData.get(modIndex + i));
+                for (int i = 0; i < mod; i++)
+                    total += setBodyDataDetailFormat(cells, startIndex, i * 4, bodyData.get(modIndex + i));
 
                 startIndex += 1;
             }
