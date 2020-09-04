@@ -193,7 +193,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// get list domain update
 		List<WorkMonthlySetting> domainUpdates = this.workMonthlySettingRepository.findByYMD(
-				companyId,lstDomain.size() > 0 ? lstDomain.get(INDEX_FIRST).getMonthlyPatternCode().v() : null,
+				companyId,lstDomain.size() > 0 ? lstDomain.stream().findFirst().get().getMonthlyPatternCode().v() : null,
 				lstDomain.stream().map(domainsetting -> domainsetting.getYmdk())
 						.collect(Collectors.toList()));
 
