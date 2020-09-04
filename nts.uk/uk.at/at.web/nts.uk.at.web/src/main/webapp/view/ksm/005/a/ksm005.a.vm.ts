@@ -52,6 +52,8 @@ module nts.uk.at.view.ksm005.a {
 	        cssRangerYM = ko.observable({});
 			currentMonthlyPattern: KnockoutObservable<number>;
 
+            workStyle: string;
+
             constructor() {
                 var self = this;
                 self.columnMonthlyPatterns = ko.observableArray([
@@ -89,6 +91,7 @@ module nts.uk.at.view.ksm005.a {
                         self.enableDelete(false);
 	                    self.enableUpdate(false);
                     }
+                    $('#inp_monthlyPatternName').focus();
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
@@ -226,6 +229,7 @@ module nts.uk.at.view.ksm005.a {
 			            self.enableDelete(false);
 			            self.resetData();
 		            }else {
+                        $('#inp_monthlyPatternName').focus();
 			            self.selectMonthlyPattern(listMonthlyPattern[0].code);
 		            }
 
@@ -264,7 +268,7 @@ module nts.uk.at.view.ksm005.a {
                     dto.workingName
                 ];
                 //row1
-                if( nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
+                if( nts.uk.util.isNullOrEmpty(dto.workTypeName) && !nts.uk.util.isNullOrEmpty(dto.workTypeCode) ){
 	                row1 = dto.workTypeCode + text.getText('KSM005_84');
                 } else row1 = dto.workTypeName;
 
@@ -273,7 +277,7 @@ module nts.uk.at.view.ksm005.a {
 		            row2 = '';
 	            } else row2 = dto.workingName;
 
-	            if (dto.typeColor == TypeColor.ATTENDANCE) {
+	            if (nts.uk.util.isNullOrEmpty(dto.workTypeName) && !nts.uk.util.isNullOrEmpty(dto.workTypeCode)) {
                     textColor = 'black';
                 }
                 else if (dto.typeColor == TypeColor.ATTENDANCE) {
@@ -284,7 +288,7 @@ module nts.uk.at.view.ksm005.a {
                 else {
                     textColor = TypeColor.HOLIDAY_COLOR;
                 }
-                return new CalendarItem(start, textColor, row1, row2);
+                return new CalendarItem(start, textColor, row1, row2, false);
             }
             
             /**
@@ -447,6 +451,13 @@ module nts.uk.at.view.ksm005.a {
              */
             public convertYMD(ymdk: string): string {
                 return moment(ymdk, "YYYY/MM/DD").format("YYYY-MM-DD");
+            }
+
+            /**
+             * convert date month day => YYYYMMDD
+             */
+            public convertYMDToDate(ymdk: string): string {
+                return moment(ymdk, "YYYY-MM-DD").format("YYYY/MM/DD");
             }
             
             /**
@@ -625,6 +636,15 @@ module nts.uk.at.view.ksm005.a {
 
 		        nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
 			        let childData = nts.uk.ui.windows.getShared('childData');
+			        service.getWorkStyle(childData.selectedWorkTypeCode, childData.selectedWorkTimeCode).done(data => {
+                        if(data.typeColor == TypeColor.HOLIDAY) {
+                            self.workStyle = TypeColor.HOLIDAY_COLOR
+                        } else if(data.typeColor == TypeColor.ATTENDANCE) {
+                            self.workStyle = TypeColor.ATTENDANCE_COLOR
+                        } else {
+                            self.workStyle = TypeColor.HALF_DAY_WORK_COLOR
+                        }
+                    });
 			        if (childData) {
 				        self.typeOfWorkCode(childData.selectedWorkTypeCode);
 				        self.typeOfWorkName(childData.selectedWorkTypeName);
@@ -693,13 +713,37 @@ module nts.uk.at.view.ksm005.a {
                     let optionDates = vm.optionDates;
                     let existItem = _.find(optionDates(), item => item.start == date);
                     if(existItem!=null) {
-                        existItem.changeListText(vm.typeOfWorkName() ? vm.typeOfWorkName() : '', vm.workingHoursName() ? vm.workingHoursName() : '');
+                        existItem.changeListText(
+                            vm.typeOfWorkName() ? vm.typeOfWorkName() : '',
+                            vm.workingHoursName() ? vm.workingHoursName() : '',
+                            vm.workStyle ? vm.workStyle : null
+                        );
+                    } else {
+                        optionDates.push(new CalendarItem(date, vm.workStyle, vm.typeOfWorkName(),  vm.workingHoursName(), true))
                     }
                     if( dataUpdate && i > -1 && !empty.isNullOrEmpty(vm.typeOfWorkCode()) ) {
                         dataUpdate[i].workTypeCode = vm.typeOfWorkCode();
                         dataUpdate[i].workTypeName = vm.typeOfWorkName();
                         dataUpdate[i].workingCode  = vm.workingHoursCode();
                         dataUpdate[i].workingName  = vm.workingHoursName();
+                    } else {
+                        let typeColor: number;
+                        if(vm.workStyle == TypeColor.ATTENDANCE_COLOR) {
+                            typeColor = TypeColor.ATTENDANCE
+                        } else if(vm.workStyle == TypeColor.HOLIDAY_COLOR) {
+                            typeColor = TypeColor.HOLIDAY
+                        } else {
+                            typeColor = TypeColor.HALF_DAY_WORK
+                        }
+                        vm.lstWorkMonthlySetting.push({
+                            workTypeCode: vm.typeOfWorkCode(),
+                            workingCode: vm.workingHoursCode(),
+                            ymdk: vm.convertYMDToDate(date),
+                            monthlyPatternCode: vm.selectMonthlyPattern(),
+                            workTypeName: vm.typeOfWorkName(),
+                            typeColor: typeColor,
+                            workingName: vm.workingHoursName()
+                        })
                     }
                     vm.lstWorkMonthlySetting(dataUpdate);
                     optionDates.valueHasMutated();
@@ -817,14 +861,17 @@ module nts.uk.at.view.ksm005.a {
             backgroundColor: string;
             listText: Array<any>;
             insertText: boolean;
-            constructor(start: string, textColor: string, row1: string, row2: string) {
+            constructor(start: string, textColor: string, row1: string, row2: string, insertText: boolean) {
                 this.start = moment(start.toString()).format('YYYY-MM-DD');
                 this.backgroundColor = 'white';
                 this.textColor = textColor;
                 this.listText= [row1, row2];
-                this.insertText = false;
+                this.insertText = insertText;
             }
-            changeListText(row1: string, row2: string){
+            changeListText(row1: string, row2: string, textColor: string){
+                if (textColor) {
+                    this.textColor = textColor;
+                }
                 this.listText= [row1, row2];
                 this.insertText = true;
             }

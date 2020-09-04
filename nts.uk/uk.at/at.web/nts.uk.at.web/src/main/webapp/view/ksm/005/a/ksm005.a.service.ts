@@ -11,6 +11,7 @@ module nts.uk.at.view.ksm005.a {
             saveMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/saveMonth",
 	        getMonthlyPattern : 'screen/at/schedule/monthly-pattern/get',
 	        getMonthlyAll: 'monthly/get/all'
+            getWorkStyle: 'screen/at/schedule/monthly-pattern/getworkstyle'
         }
         
         /**
@@ -19,7 +20,11 @@ module nts.uk.at.view.ksm005.a {
         export function findAllMonthlyPattern(): JQueryPromise<model.MonthlyPatternDto[]> {
             return nts.uk.request.ajax('at', paths.findAllMonthlyPattern);
         }
-        
+
+        export function getWorkStyle(workTypeCode: string, workingCode: string): JQueryPromise<model.WorkStyleDto> {
+            return nts.uk.request.ajax('at', paths.getWorkStyle, { workTypeCode, workingCode });
+        }
+
          /**
          * call service find by month of work monthly setting
          */
@@ -105,6 +110,11 @@ module nts.uk.at.view.ksm005.a {
             export interface WorkTimeDto {
                 code: string;
                 name: string;
+            }
+            export interface WorkStyleDto {
+                workTypeCode: string;
+                workingCode:string,
+                typeColor: string
             }
         }
 
