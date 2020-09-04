@@ -152,8 +152,9 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
             return self.genDateText(daysUsedNo) + "&nbsp;" + self.genTime(usedMinutes);
         }
-
-       public genGrantDate(grantDate: string, deadline: string, expiredInCurrentMonthFg: boolean){
+        
+        // format data to A11_3
+        public genGrantDate(grantDate: string, deadline: string, expiredInCurrentMonthFg: boolean){
           if (!grantDate && !deadline) {
             return '';
         }
