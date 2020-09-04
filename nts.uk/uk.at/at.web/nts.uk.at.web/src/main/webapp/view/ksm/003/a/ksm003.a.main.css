@@ -107,3 +107,16 @@
 #fixedTable tbody tr td button {
 	margin: 5px 0;
 }
+.work-cycle-header {
+	display: flex;
+	align-items: center;
+	padding-bottom: 10px;
+}
+.work-cycle-header .nts-editor-wrapped {
+    margin: 0 5px;
+}
+
+.ksm003-content-area {
+    overflow: hidden;
+    padding-bottom: 50px;
+}
