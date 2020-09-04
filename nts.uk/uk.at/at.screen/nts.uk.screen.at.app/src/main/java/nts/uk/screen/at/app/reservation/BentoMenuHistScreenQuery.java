@@ -1,15 +1,12 @@
 package nts.uk.screen.at.app.reservation;
 
 import lombok.val;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoMenuHistory;
 import nts.uk.ctx.at.record.dom.reservation.bento.IBentoMenuHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.history.DateHistoryItem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Optional;
 
 /**
  * ScreenQuery :初期起動
