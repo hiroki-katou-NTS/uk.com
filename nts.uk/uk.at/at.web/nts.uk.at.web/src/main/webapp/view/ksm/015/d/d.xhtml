@@ -45,7 +45,7 @@
 							#{i18n.getText('KSM015_18')}</button>
 							<!-- D4_3 -->
 						<button class="small danger" tabindex="9"
-							data-bind="click: removeShift, disable: shiftItems().length == 0">
+							data-bind="click: removeShift, disable: shiftItems().length == 0  || selectedShiftMaster().length == 0">
 							#{i18n.getText('KSM015_31')}</button>
 					</div>
 					<!-- A8 -->
