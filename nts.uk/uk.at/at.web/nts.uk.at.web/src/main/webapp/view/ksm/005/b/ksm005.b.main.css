@@ -7,6 +7,7 @@
 
 .period_labels {
 	margin-top: 10px;
+	display: flex;
 }
 
 .employee_labels {

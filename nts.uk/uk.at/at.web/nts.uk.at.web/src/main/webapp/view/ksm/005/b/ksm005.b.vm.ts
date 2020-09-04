@@ -14,6 +14,7 @@ module nts.uk.at.view.ksm005.b {
     export module viewmodel {
 
         export class ScreenModel {
+            dateValue: KnockoutObservable<any>;
             monthlyPatternCode: string;
             monthlyPatternName: string;
             startYearMonth: KnockoutObservable<number>;
@@ -40,8 +41,10 @@ module nts.uk.at.view.ksm005.b {
 
             constructor() {
                 var self = this;
-                self.startYearMonth = ko.observable(nts.uk.ui.windows.getShared("yearmonth"));
-                self.endYearMonth = ko.observable(nts.uk.ui.windows.getShared("yearmonth"));
+                self.dateValue = ko.observable({
+                    startDate: nts.uk.ui.windows.getShared("yearmonth"),
+                    endDate: nts.uk.ui.windows.getShared("yearmonth")
+                });
 	            self.monthlyPatternCode = nts.uk.ui.windows.getShared("monthlyPatternCode");
 	            self.monthlyPatternName = nts.uk.ui.windows.getShared("monthlyPatternName");
 
@@ -184,17 +187,17 @@ module nts.uk.at.view.ksm005.b {
                    return true;
                 }
                 //check start month and end month
-                if (self.getbetweenMonth(self.endYearMonth(),self.startYearMonth()) > 12) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_149" }).then(function() {
-                    });
-                    return true;
-                }
+                // if (self.getbetweenMonth(self.endYearMonth(),self.startYearMonth()) > 12) {
+                //     nts.uk.ui.dialog.alertError({ messageId: "Msg_149" }).then(function() {
+                //     });
+                //     return true;
+                // }
                 //check start month and end month
-                if (self.startYearMonth() > self.endYearMonth()) {
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_150" }).then(function() {
-                    });
-                    return true;
-                }
+                // if (self.startYearMonth() > self.endYearMonth()) {
+                //     nts.uk.ui.dialog.alertError({ messageId: "Msg_150" }).then(function() {
+                //     });
+                //     return true;
+                // }
                 
                 if(self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchWorkDays())
                 || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchStatutoryHolidays())
@@ -273,8 +276,8 @@ module nts.uk.at.view.ksm005.b {
                     settingNoneStatutoryHolidays: self.monthlyPatternSettingBatchNoneStatutoryHolidays(),
                     settingPublicHolidays: self.monthlyPatternSettingBatchPublicHolidays(),
                     overwrite: self.overwirte(),
-                    startYearMonth: self.startYearMonth(),
-                    endYearMonth: self.endYearMonth(),
+                    startYearMonth: Number(self.dateValue().startDate.toString().substring(0, 6)),
+                    endYearMonth: Number(self.dateValue().endDate.toString().substring(0, 6)),
                     monthlyPatternCode: self.monthlyPatternCode,
                     monthlyPatternName: self.monthlyPatternName
                 };    
