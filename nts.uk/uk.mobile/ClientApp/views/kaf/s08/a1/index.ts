@@ -64,7 +64,7 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
         self.$auth.user.then((usr: any) => {
             self.user = usr;
         }).then(() => {
-            return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
+            return self.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
         }).then((res: any) => {
             // if (!res) {
             //     return;

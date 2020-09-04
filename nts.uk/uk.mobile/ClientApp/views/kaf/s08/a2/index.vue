@@ -68,7 +68,7 @@
               <td class="px-1">@mdo</td>
               <td class="border-right-0 px-1">@kfc</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
+                <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
               </td>
             </tr>
             <tr>
@@ -78,7 +78,7 @@
               <td class="px-1">@fat</td>
               <td class="border-right-0 px-1">@mdo</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font v-bind:size="'1'" icon="angle-right" />
+                <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
               </td>
             </tr>
             <tr>
@@ -88,7 +88,7 @@
               <td class="px-1">@twitter</td>
               <td class="border-right-0 px-1">@mdo</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font v-bind:size="'1'" icon="fas fa-angle-right" />
+                <fa-font class="pr-4" v-bind:size="'1'" icon="fas fa-angle-right" v-click="showModal.bind(this, 'modal')" />
               </td>
             </tr>
             <tr>
@@ -98,7 +98,7 @@
               <td class="px-1">@twitter</td>
               <td class="border-right-0 px-1">@mdo</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font v-bind:size="'1'" icon="fas fa-angle-right" />
+                <fa-font class="pr-4" v-bind:size="'1'" icon="fas fa-angle-right" v-click="showModal.bind(this, 'modal')"/>
               </td>
             </tr>
             <tr>
@@ -108,7 +108,7 @@
               <td class="px-1">@twitter</td>
               <td class="border-right-0 px-1">@mdo</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font v-bind:size="'1'" icon="fas fa-angle-right" />
+                <fa-font class="pr-4" v-bind:size="'1'" icon="fas fa-angle-right" v-click="showModal.bind(this, 'modal') "/>
               </td>
             </tr>
           </tbody>
