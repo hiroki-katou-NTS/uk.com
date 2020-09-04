@@ -1198,6 +1198,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 self.widthMid = widthMid;
+                
+                let key = request.location.current.rawUrl + "/extable/areawidths";
+                uk.localStorage.getItem(key).ifPresent((data) => {
+                    let areawidths = JSON.parse(data);
+                    areawidths["ex-header-middle"] = widthMid;
+                    uk.localStorage.setItemAsJson(key, areawidths);
+                });
+                
                 middleHeader = {
                     columns: middleColumns,
                     width:   widthMid+"px",
@@ -1604,7 +1612,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToLeft: number = 190 + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleftOfbtnToRight = $("#extable").width() - 160- - self.widthMid - 27 - 27 - 30;
+                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
