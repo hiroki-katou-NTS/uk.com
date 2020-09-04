@@ -1,6 +1,6 @@
 
 module nts.uk.at.view.kdl017.a.service {
-  var paths: any = {
+  const paths: any = {
     getEmployee : 'at/request/dialog/employmentsystem/getEmployee',
     get60hOvertimeDisplayInfoDetail : 'at/record/dialog/sixtyhour/get60hOvertimeDisplayInfoDetail/{0}/{1}',
   }
@@ -33,7 +33,7 @@ module nts.uk.at.view.kdl017.a.service {
   }
 
   export interface EmployeeParam {
-    employeeIds: Array<string>,
+    employeeIds: string[],
     baseDate: string
   }
 

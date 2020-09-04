@@ -58,13 +58,13 @@ public class SixtyHourHolidayFinder {
 	 * @param baseDate
 	 * @return
 	 */
-	public OverTimeIndicationInformationDetails getOverTimeIndicationInformationDetails(String employeeId,
+	public OverTimeIndicationInformationDetailsDto getOverTimeIndicationInformationDetails(String employeeId,
 			String baseDate) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
 		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyyMMdd");
-		OverTimeIndicationInformationDetails result = new OverTimeIndicationInformationDetails();
+		OverTimeIndicationInformationDetailsDto result = new OverTimeIndicationInformationDetailsDto();
 
 		// 10-5.60H超休の設定を取得する
 		SixtyHourSettingOutput settingOutput = this.absenceTenProcessCommon.getSixtyHourSetting(companyId, employeeId, inputDate);
@@ -120,7 +120,8 @@ public class SixtyHourHolidayFinder {
 					remainNumberDetailDto.setOccurrenceTime(item.getDetails().getGrantNumber().getMinutes().get().v());
 				}
 				return remainNumberDetailDto;
-			}).collect(Collectors.toList());
+			})
+			.collect(Collectors.toList());
 
 		remainNumberDetailDtos.addAll(lstHolidayOver60hMngs.stream().map(item -> {
 			RemainNumberDetailDto mapResult = new RemainNumberDetailDto();
@@ -134,7 +135,8 @@ public class SixtyHourHolidayFinder {
 			// 残数情報．作成区分　＝　取得した暫定60H超休管理データ．作成元区分
 			mapResult.setCreationCategory(item.getCreatorAtr().value);
 			return mapResult;
-		}).collect(Collectors.toList()));
+		})
+		.collect(Collectors.toList()));
 
 		result.setRemainNumberDetailDtos(remainNumberDetailDtos);
 

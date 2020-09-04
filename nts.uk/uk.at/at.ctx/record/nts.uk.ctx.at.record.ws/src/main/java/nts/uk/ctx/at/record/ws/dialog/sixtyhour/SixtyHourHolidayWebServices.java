@@ -14,7 +14,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.app.find.dialog.sixtyhourholiday.OverTimeIndicationInformationDetails;
+import nts.uk.ctx.at.record.app.find.dialog.sixtyhourholiday.OverTimeIndicationInformationDetailsDto;
 import nts.uk.ctx.at.record.app.find.dialog.sixtyhourholiday.PegManagementDto;
 import nts.uk.ctx.at.record.app.find.dialog.sixtyhourholiday.SixtyHourHolidayFinder;
 import nts.uk.ctx.at.record.ws.dialog.sixtyhour.dto.RemainHourDetailDto;
@@ -45,7 +45,7 @@ public class SixtyHourHolidayWebServices extends WebService {
 									@PathParam("employeeId") String employeeId,
 									@PathParam("baseDate") String baseDate) {
 		// 60H超休の表示
-		OverTimeIndicationInformationDetails details = this.superHolidayFinder.getOverTimeIndicationInformationDetails(employeeId, baseDate);
+		OverTimeIndicationInformationDetailsDto details = this.superHolidayFinder.getOverTimeIndicationInformationDetails(employeeId, baseDate);
 
 		// map year month - list usage date by 紐付け管理
 		Map<YearMonth, List<PegManagementDto>> mapOccurrenceMonthUsageDate = details.getPegManagementDtos()

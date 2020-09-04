@@ -6,7 +6,7 @@ module nts.uk.at.view.kdl017.a {
     //_____KCP005________
     listComponentOption: any;
     kcp005ComponentOption: any;
-    selectedCode: KnockoutObservable<string>;
+    selectedCode: KnockoutObservable<string> = ko.observable('');
     multiSelectedCode: KnockoutObservableArray<string>;
     isShowAlreadySet: KnockoutObservable<boolean>;
     alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -19,9 +19,9 @@ module nts.uk.at.view.kdl017.a {
     employeeList: KnockoutObservableArray<UnitModel>;
 
     // employee info
-    employeeInfo: KnockoutObservable<string>;
+    employeeInfo: KnockoutObservable<string> = ko.observable('');
     // table data
-    dataItems:  KnockoutObservableArray<KDL017TableModel>;
+    dataItems:  KnockoutObservableArray<KDL017TableModel> = ko.observableArray([]);
 
     carryoverNumber: KnockoutObservable<string> = ko.observable('');
     usageNumber: KnockoutObservable<string> = ko.observable('');
@@ -31,25 +31,16 @@ module nts.uk.at.view.kdl017.a {
 
     isSetting: KnockoutObservable<boolean> = ko.observable(true);
 
-    constructor() {
-      super();
-      let vm = this;
-      vm.startPage();
-      vm.dataItems = ko.observableArray([]);
-      vm.employeeInfo = ko.observable('');
-      vm.selectedCode = ko.observable('');
-    }
-
     mounted() {
       const vm = this;
       let params = nts.uk.ui.windows.getShared('KDL017_PARAM');
 
       // 社員ID(List)から個人社員基本情報を取得
       if (params && params.employeeIds && params.employeeIds.length > 0) {
-        nts.uk.ui.block.grayout();
+        vm.$blockui('grayout');
         // Load employee lst by KDL017_PARAM 
         service.getEmployee(params)
-          .done((data: any) => {
+          .then((data: any) => {
 
             // Input．社員IDリストをチェック
             if (data.employeeBasicInfo.length > 1) {
@@ -58,7 +49,7 @@ module nts.uk.at.view.kdl017.a {
               // add selectedCode subscribe event
               vm.onChangeKcp005(data);
               vm.loadKcp005Lst(data.employeeBasicInfo);
-            } else if (data.employeeBasicInfo.length == 1) {
+            } else if (data.employeeBasicInfo.length === 1) {
 
               // 単一モード
               const itemSelected: any = data.employeeBasicInfo[0];
@@ -72,14 +63,8 @@ module nts.uk.at.view.kdl017.a {
               vm.employeeInfo('');
             }
         }).fail(vm.onError)
-        .always(() => nts.uk.ui.block.clear());
+        .always(() => vm.$blockui('clear'));
       }
-    }
-
-    startPage(): JQueryPromise<any> {
-      var dfd = $.Deferred();
-      dfd.resolve();
-      return dfd.promise();
     }
 
     // init KCP005 component
@@ -112,12 +97,13 @@ module nts.uk.at.view.kdl017.a {
         isShowSelectAllButton: vm.isShowSelectAllButton(),
         disableSelection: vm.disableSelection()
       };
-      $('#kcp005-component').ntsListComponent(this.listComponentOption);
+      $('#kcp005-component').ntsListComponent(vm.listComponentOption);
     }
 
     // On error
     onError(res: any) {
-      nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+      const vm = this;
+      vm.$dialog.error({ messageId: res.messageId });
     }
 
     /**
@@ -137,7 +123,7 @@ module nts.uk.at.view.kdl017.a {
       const vm = this;
       vm.employeeInfo(employeeCode + '　' + employeeName);
       // Load data 
-      this.loadExcessHoliday(employeeId, baseDate);
+      vm.loadExcessHoliday(employeeId, baseDate);
     }
 
     // selectedCode subscribe event
@@ -157,16 +143,16 @@ module nts.uk.at.view.kdl017.a {
     loadExcessHoliday(employeeId: string, baseDate: string) {
       const vm = this;
       vm.dataItems([]);
-      nts.uk.ui.block.grayout();
+      vm.$blockui('grayout');
       service.get60hOvertimeDisplayInfoDetail(employeeId, baseDate)
-        .done((data: any) => {
+        .then((data: any) => {
           if (!data.departmentOvertime60H) {
-            this.isSetting(false);
+            vm.isSetting(false);
           } else {
-            this.isSetting(false);
+            vm.isSetting(false);
             // init table
             vm.$nextTick(() => {
-              this.isSetting(true);
+              vm.isSetting(true);
               $('#date-fixed-table').ntsFixedTable({ height: 269.4 });
             });
             if (data.remainHourDetailDtos !== null) {
@@ -189,9 +175,9 @@ module nts.uk.at.view.kdl017.a {
                   item.usageDateDtos.forEach(usageDateDto => {
                     let usageDateItem = new UsageDateDto();
                     // <!-- A3_3_1 -->
-                    usageDateItem.usageDate = (usageDateDto.creationCategory === CreateAtr["申請(事前)"]
-                                            || usageDateDto.creationCategory === CreateAtr["申請(事後)"]
-                                            || usageDateDto.creationCategory === CreateAtr["予定"])
+                    usageDateItem.usageDate = (usageDateDto.creationCategory === CreateAtr.SCHEDULE
+                                            || usageDateDto.creationCategory === CreateAtr.APPAFTER
+                                            || usageDateDto.creationCategory === CreateAtr.APPBEFORE)
                                 ? nts.uk.resource.getText("KDL005_36", [(nts.uk.time as any).applyFormat("Short_YMDW", [usageDateDto.usageDate])])
                                 : (nts.uk.time as any).applyFormat("Short_YMDW", [usageDateDto.usageDate]);
                     // <!-- A3_3_2 -->
@@ -212,7 +198,7 @@ module nts.uk.at.view.kdl017.a {
           }
         })
         .fail((err) => vm.onError(err))
-        .always(() => nts.uk.ui.block.clear());
+        .always(() => vm.$blockui('clear'));
     }
   }
 
@@ -271,11 +257,16 @@ module nts.uk.at.view.kdl017.a {
     creationCategory: number;
   }
 
-  export enum CreateAtr {
-    "予定",//0
-    "実績",//1
-    "申請(事前)",//2
-    "申請(事後)",//3
-    "フレックス補填",//4
+  export class CreateAtr {
+    /**	予定 */
+    static SCHEDULE = 0;
+    /**	実績 */
+    static RECORD = 1;
+    /**	申請(事前) */
+    static APPBEFORE = 2;
+    /**	申請(事後) */
+    static APPAFTER = 3;
+    /**フレックス補填	 */
+    static FLEXCOMPEN = 4;
   }
 }

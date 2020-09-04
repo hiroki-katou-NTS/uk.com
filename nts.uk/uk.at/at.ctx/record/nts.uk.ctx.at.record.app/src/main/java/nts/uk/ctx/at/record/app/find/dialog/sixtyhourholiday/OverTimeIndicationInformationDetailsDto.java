@@ -11,7 +11,7 @@ import nts.arc.time.calendar.period.DatePeriod;
  * @author LienPTK
  */
 @Data
-public class OverTimeIndicationInformationDetails {
+public class OverTimeIndicationInformationDetailsDto {
 
 	/** 60H超休管理区分 */
 	private boolean departmentOvertime60H;
