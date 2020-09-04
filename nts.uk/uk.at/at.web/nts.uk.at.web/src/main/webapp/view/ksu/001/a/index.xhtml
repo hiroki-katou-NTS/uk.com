@@ -395,59 +395,67 @@
 							</div>
 						</div>
 						<div style="clear: left"></div>
-						<div style="white-space: nowrap;">
-							<div id="contain-view-left">
-								<button id="A6_1" class="editMode" style="height: 38px;"
-									data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
-								<br />
-								<button id="A6_2" class="confirmMode"
-									style="height: 38px; margin-top: 6px;"
-									data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
-							</div>
-							<div id="contain-view-right" class="inline">
-								<div id="group-bt">
-									<button id="paste" class="A7_1"
-										data-bind="click: pasteData, enable: enableBtnPaste">貼り付け</button>
-									<button id="coppy" class="A7_2"
-										data-bind="click: coppyData , enable: enableBtnCoppy">コピペ</button>
-									<button id="input" class="A7_3"
-										data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻入力</button>
+						<div id="content-main" style="overflow: scroll; ">
+							<div style="white-space: nowrap;">
+								<div id="contain-view-left">
+									<button id="A6_1" class="editMode" style="height: 38px;"
+										data-bind="click: editMode ">#{i18n.getText('KSU001_140')}</button>
 									<br />
-									<button id="undo" class="size-image-button2 A7_4"
-										data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"></button>
-									<button id="redo" class="size-image-button2 A7_5"
-										data-bind="click: redoData, enable: enableBtnRedo , visible : visibleBtnRedo , timeClick: -1"></button>
-									<button
-										data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}"
-										style="margin-top: 13px;">？</button>
+									<button id="A6_2" class="confirmMode"
+										style="height: 38px; margin-top: 6px;"
+										data-bind="click: confirmMode ">#{i18n.getText('KSU001_141')}</button>
 								</div>
-								<div data-bind="ifnot: visibleShiftPalette">
-									<div id="oViewModel">
-										<div data-bind="with: $parent.viewAB">
-											<ui:include src="../ab/index.xhtml" />
+								<div id="contain-view-right" class="inline">
+									<div id="group-bt">
+										<button id="paste" class="A7_1"
+											data-bind="click: pasteData, enable: enableBtnPaste">貼り付け</button>
+										<button id="coppy" class="A7_2"
+											data-bind="click: coppyData , enable: enableBtnCoppy">コピペ</button>
+										<button id="input" class="A7_3"
+											data-bind="click: inputData, enable: enableBtnInput, visible : visibleBtnInput">時刻入力</button>
+										<br />
+										<button id="undo" class="size-image-button2 A7_4"
+											data-bind="click: undoData, enable: enableBtnUndo , visible : visibleBtnUndo , timeClick: -1"></button>
+										<button id="redo" class="size-image-button2 A7_5"
+											data-bind="click: redoData, enable: enableBtnRedo , visible : visibleBtnRedo , timeClick: -1"></button>
+										<button
+											data-bind="ntsHelpButton: {textId: '', textParams:[], position: 'right center' ,enable: enableHelpBtn}"
+											style="margin-top: 13px;">？</button>
+									</div>
+									<div data-bind="ifnot: visibleShiftPalette">
+										<div id="oViewModel">
+											<div data-bind="with: $parent.viewAB">
+												<ui:include src="../ab/index.xhtml" />
+											</div>
+										</div>
+									</div>
+									<div data-bind="if: visibleShiftPalette">
+										<div id="qViewModel">
+											<div data-bind="with: $parent.viewAC">
+												<ui:include src="../ac/index.xhtml" />
+											</div>
 										</div>
 									</div>
 								</div>
-								<div data-bind="if: visibleShiftPalette">
-									<div id="qViewModel">
-										<div data-bind="with: $parent.viewAC">
-											<ui:include src="../ac/index.xhtml" />
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div style="clear: left"></div>
-						<div>
-							<div>
-								<button class="toLeft inline" data-bind="click : toLeft"></button>
-								<button class="toRight inline" data-bind="click : toRight"></button>
 							</div>
 							<div style="clear: left"></div>
 							<div>
-								<div style="float: left"><button class="toDown inline" data-bind="click : toDown"></button></div>
-								<div id="extableA" style="float: left"><div id="extable"></div></div>
-								<div style="float: left; width: 27px; margin-left: -30px"><button class="settingHeightGrid"></button></div>
+								<div>
+									<button class="toLeft inline" data-bind="click : toLeft"></button>
+									<button class="toRight inline" data-bind="click : toRight"></button>
+								</div>
+								<div style="clear: left"></div>
+								<div>
+									<div style="float: left">
+										<button class="toDown inline" data-bind="click : toDown"></button>
+									</div>
+									<div id="extableA" style="float: left">
+										<div id="extable"></div>
+									</div>
+									<div style="float: left; width: 27px; margin-left: -30px">
+										<button class="settingHeightGrid"></button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
