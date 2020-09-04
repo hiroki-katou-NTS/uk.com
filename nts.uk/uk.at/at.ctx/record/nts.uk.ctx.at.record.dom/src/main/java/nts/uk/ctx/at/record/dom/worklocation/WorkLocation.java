@@ -11,7 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  * @author hieult
  *
  */
-	/**勤務場所 **/
+	/**	勤務場所 **/
 public class WorkLocation extends AggregateRoot {
 	
 	/** Company ID */
