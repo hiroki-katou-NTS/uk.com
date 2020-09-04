@@ -21,8 +21,8 @@ module nts.uk.at.view.kdl020.a.screenModel {
         selectedName: KnockoutObservable<string>;
         multiSelectedCode: KnockoutObservableArray<string>;
         isShowAlreadySet: KnockoutObservable<boolean>;
-        annualLeaveManagementFg:KnockoutObservable<boolean>;
-        closingPeriod:KnockoutObservable<string>;
+        annualLeaveManagementFg: KnockoutObservable<boolean>;
+        closingPeriod: KnockoutObservable<string>;
         alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
         isDialog: KnockoutObservable<boolean>;
         isShowNoSelectRow: KnockoutObservable<boolean>;
@@ -45,7 +45,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 { code: '2', isAlreadySetting: true }
             ]);
             self.annualLeaveManagementFg = ko.observable(false);
-            self.closingPeriod = ko.observable('')
+            self.closingPeriod = ko.observable('');
             self.isDialog = ko.observable(false);
             self.isShowNoSelectRow = ko.observable(false);
             self.isMultiSelect = ko.observable(false);
@@ -153,7 +153,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
             return self.genDateText(daysUsedNo) + "&nbsp;" + self.genTime(usedMinutes);
         }
 
-        genGrantDate(grantDate, deadline, expiredInCurrentMonthFg){
+       public genGrantDate(grantDate: string, deadline: string, expiredInCurrentMonthFg: boolean){
           if (!grantDate && !deadline) {
             return '';
         }
@@ -183,7 +183,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
       
         genScheduleRecordText(scheduleRecordAtr) {
-          
             return CreateAtr[scheduleRecordAtr];
         }
 
@@ -249,7 +248,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         /** 付与年月日 */
         grantDate: KnockoutObservable<String> = ko.observable("");
         /** 付与日数 */
-        grantDays:KnockoutObservable<number> = ko.observable(null);
+        grantDays: KnockoutObservable<number> = ko.observable(null);
         /** 回数 */
         times: KnockoutObservable<number> = ko.observable(null);
         /** 時間年休上限日数 */
@@ -290,7 +289,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 this.annualLeaveManageInfors(_.map(data.annualLeaveManageInforExports, x => {
                     return new AnnualLeaveManageInfor(x);
                 }));
-                
             }
         }
     }
@@ -479,8 +477,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         /* 期限 */
         deadline: Date;
         // で期限切れ
-        expiredInCurrentMonthFg:boolean;
-
+        expiredInCurrentMonthFg: boolean;
     }
 
     export interface IAnnualLeaveManageInforImport {

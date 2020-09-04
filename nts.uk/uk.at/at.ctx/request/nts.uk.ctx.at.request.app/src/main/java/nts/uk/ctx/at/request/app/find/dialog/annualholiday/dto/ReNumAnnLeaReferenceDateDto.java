@@ -2,16 +2,12 @@ package nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveManageInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveRemainingNumberImport;
-
- 
-@Getter
-@Setter
-@NoArgsConstructor
+@Data
+@Builder
 public class ReNumAnnLeaReferenceDateDto {
 
 	/**

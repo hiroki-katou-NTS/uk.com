@@ -1,17 +1,12 @@
 package nts.uk.ctx.at.request.app.find.dialog.annualholiday.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-
-
 @Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class AnnualLeaveGrantDto {
+
 	/**
 	 * 付与日
 	 */
