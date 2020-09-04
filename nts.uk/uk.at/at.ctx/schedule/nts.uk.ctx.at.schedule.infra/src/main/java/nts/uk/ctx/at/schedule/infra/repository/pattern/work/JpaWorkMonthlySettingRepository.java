@@ -217,10 +217,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		}
 		
 		// get company id
-		String companyId = workMonthlySettings.get(INDEX_ONE).getCompanyId().v();
+		String companyId = workMonthlySettings.size() > 0 ? workMonthlySettings.stream().findFirst().get().getCompanyId().v() : null;
 		
 		// get monthly pattern code
-		String monthlyPatternCode = workMonthlySettings.get(INDEX_ONE).getMonthlyPatternCode().v();
+		String monthlyPatternCode = workMonthlySettings.size() > 0 ? workMonthlySettings.stream().findFirst().get().getMonthlyPatternCode().v() : null;
 		
 		// get entity manager
 		EntityManager em = this.getEntityManager();

@@ -56,7 +56,7 @@ module nts.uk.at.view.ksm005.a {
                 var self = this;
                 self.columnMonthlyPatterns = ko.observableArray([
                     { headerText: nts.uk.resource.getText("KSM005_13"), key: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'code', width: 150 ,formatter: _.escape }
+                    { headerText: nts.uk.resource.getText("KSM005_14"), key: 'name', width: 150 ,formatter: _.escape }
                 ]);
                 self.isBuild = false;
                 self.lstWorkMonthlySetting = ko.observableArray([]);
@@ -109,7 +109,7 @@ module nts.uk.at.view.ksm005.a {
                                 item.workTypeName = '';
                                 item.workingCode='';
                                 item.workingName = '';
-                                item.typeColor = TypeColor.HOLIDAY;
+                                item.typeColor = TypeColor.ATTENDANCE;
                                 dataUpdate.push(item);
                             }
                             self.updateWorkMothlySetting(dataUpdate);
@@ -436,7 +436,7 @@ module nts.uk.at.view.ksm005.a {
                     item.workTypeName = '';
                     item.workingCode='';
                     item.workingName = '';
-                    item.typeColor = TypeColor.HOLIDAY;
+                    item.typeColor = TypeColor.ATTENDANCE;
                     dataUpdate.push(item);
                 }
                 self.lstWorkMonthlySetting(dataUpdate);
@@ -510,13 +510,6 @@ module nts.uk.at.view.ksm005.a {
                         dto.workTypeName = childData.selectedWorkTypeName;
                         dto.workingCode = childData.selectedWorkTimeCode;
                         dto.workingName = childData.selectedWorkTimeName;
-
-                        if (dto.workTypeCode && dto.workingCode) {
-                            dto.typeColor = TypeColor.ATTENDANCE;
-                        } else {
-                            dto.typeColor = TypeColor.HOLIDAY;
-                        }
-
                         self.updateWorkMonthlySettingClose(dto);
                     }
                 });
@@ -699,21 +692,23 @@ module nts.uk.at.view.ksm005.a {
 
 	        private setWorkingDayAtr(date){
 		        let vm = this;
-                let dataUpdate: Array<WorkMonthlySettingDto> = vm.lstWorkMonthlySetting();
-                let i = dataUpdate.findIndex( item => vm.convertYMD(item.ymdk) == date);
-                let optionDates = vm.optionDates;
-                let existItem = _.find(optionDates(), item => item.start == date);
-                if(existItem!=null) {
-                    existItem.changeListText(vm.typeOfWorkName() ? vm.typeOfWorkName() : '', vm.workingHoursName() ? vm.workingHoursName() : '');
+		        if (vm.typeOfWorkName() || vm.workingHoursName()) {
+                    let dataUpdate: Array<WorkMonthlySettingDto> = vm.lstWorkMonthlySetting();
+                    let i = dataUpdate.findIndex( item => vm.convertYMD(item.ymdk) == date);
+                    let optionDates = vm.optionDates;
+                    let existItem = _.find(optionDates(), item => item.start == date);
+                    if(existItem!=null) {
+                        existItem.changeListText(vm.typeOfWorkName() ? vm.typeOfWorkName() : '', vm.workingHoursName() ? vm.workingHoursName() : '');
+                    }
+                    if( dataUpdate && i > -1 && !empty.isNullOrEmpty(vm.typeOfWorkCode()) ) {
+                        dataUpdate[i].workTypeCode = vm.typeOfWorkCode();
+                        dataUpdate[i].workTypeName = vm.typeOfWorkName();
+                        dataUpdate[i].workingCode  = vm.workingHoursCode();
+                        dataUpdate[i].workingName  = vm.workingHoursName();
+                    }
+                    vm.lstWorkMonthlySetting(dataUpdate);
+                    optionDates.valueHasMutated();
                 }
-                if( dataUpdate && i > -1 && !empty.isNullOrEmpty(vm.typeOfWorkCode()) ) {
-                    dataUpdate[i].workTypeCode = vm.typeOfWorkCode();
-                    dataUpdate[i].workTypeName = vm.typeOfWorkName();
-                    dataUpdate[i].workingCode  = vm.workingHoursCode();
-                    dataUpdate[i].workingName  = vm.workingHoursName();
-                }
-                vm.lstWorkMonthlySetting(dataUpdate);
-                optionDates.valueHasMutated();
 	        }
 
             private  clearCalendar() {
@@ -731,7 +726,7 @@ module nts.uk.at.view.ksm005.a {
 		                workTypeName : '',
 		                workingCode : '',
 		                workingName : '',
-		                typeColor : (dayName !== 'Sat' && dayName !== 'Sun') ? TypeColor.HOLIDAY : TypeColor.ATTENDANCE,
+		                typeColor : TypeColor.ATTENDANCE,
 		                monthlyPatternCode : '',
 		                ymdk: moment(ymdk, "YYYYMMDD").format("YYYY/MM/DD")
 	                };

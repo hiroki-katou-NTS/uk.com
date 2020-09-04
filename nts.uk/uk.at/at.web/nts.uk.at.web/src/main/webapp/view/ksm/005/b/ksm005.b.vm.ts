@@ -414,9 +414,8 @@ module nts.uk.at.view.ksm005.b {
 		                    let des = ( desPos > -1 ) ? item.workdayDivision.substring(0, desPos) : item.workdayDivision;
 		                    let isSat = day == '土';
                             let isSun = day == '日';
-                            let isHolidayOrWeekend = item.typeColor == 0;
-                            let isHalfDayWork = item.typeColor == 2;
-		                    let dayHoliday = { code: day, name: des, isSat , isSun , isHolidayOrWeekend , isHalfDayWork };
+                            let isHolidayOrWeekend = item.typeColor == 1 || item.typeColor == 2;
+		                    let dayHoliday = { code: day, name: des, isSat , isSun , isHolidayOrWeekend , isHalfDayWork: false };
 		                    self.lstHolidaysPattern.push(dayHoliday);
 	                    });
 
