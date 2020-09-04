@@ -13,8 +13,6 @@ import javax.ws.rs.Produces;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.AcquisitionNumberRestDayDto;
-import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.CofirmDetailsResidualInformationDto;
-import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.DetailConfirmDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmployeeBasicInfoDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder;
 
