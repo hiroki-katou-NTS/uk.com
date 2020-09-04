@@ -41,7 +41,7 @@ public class Krcmt36AgrApvWkpPK implements Serializable {
 
 	@StaticMetamodel(Krcmt36AgrApvWkpPK.class)
 	public static class Meta_ {
-		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, String> companyId;
+		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, String> workplaceId;
 		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, GeneralDate> startDate;
 	}
 }
