@@ -164,15 +164,21 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 			self.registrationForm().trimData();
 
 			$(".nts-input").trigger("validate");
+			
+			// fix bug 111259
+			if (_.isNil(self.registrationForm().color())) {
+				let KSM015_19 = nts.uk.resource.getText('KSM015_19');
+				$('#colorpicker').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_19]), "MsgB_2");
+			};
 
 			if (!self.registrationForm().workTypeCd() || self.registrationForm().workTypeCd().trim() == '') {
 				let KSM015_17 = nts.uk.resource.getText('KSM015_17');
 				$('#worktype-chose').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_17]), "MsgB_2");
-			}
+			};
 
 			if (nts.uk.ui.errors.hasError()) {
 				return;
-			}
+			};
 
 			nts.uk.ui.block.grayout();
 			let param = new RegisterShiftMasterDto(self.registrationForm());
