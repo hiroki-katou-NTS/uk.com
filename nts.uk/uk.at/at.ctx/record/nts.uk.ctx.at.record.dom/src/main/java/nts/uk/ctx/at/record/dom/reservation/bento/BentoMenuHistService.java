@@ -24,29 +24,25 @@ public class BentoMenuHistService {
 
         // Get all list history
         val listBentoMenuHist = require.findByCompanyId(companyId);
-
         // List history
         BentoMenuHistory listHist = new BentoMenuHistory(companyId,new ArrayList<>());
         if (listBentoMenuHist.isPresent()){
             listHist = listBentoMenuHist.get();
         }
-
         // Item need to add
         DateHistoryItem itemToBeAdded = DateHistoryItem.createNewHistory(date);
-
         // Add into old list
-
         listHist.add(itemToBeAdded);
-
+        //  Item to be update.
        val itemToBeUpdated = listHist.immediatelyBefore(itemToBeAdded);
         return AtomTask.of(() -> {
             // Update pre hist
             if (itemToBeUpdated.isPresent()) {
                 require.update(itemToBeUpdated.get());
             }
-            // Add
+            // Add new item
             require.add(itemToBeAdded);
-
+            // Get item last.
             BentoMenu bentomenu = require.getBentoMenu(companyId, GeneralDate.max());
             if (bentomenu != null){
                 require.addBentomenu(itemToBeAdded,bentomenu.getClosingTime(),bentomenu.getMenu());
@@ -56,16 +52,15 @@ public class BentoMenuHistService {
         });
     }
     public static interface Require {
-
-        /** 1. 弁当メニューを取得 */
+        //【R-1】弁当メニュを取得する
         BentoMenu getBentoMenu(String companyID, GeneralDate date);
-
+        // Get list Bentomenuhist by CompanyId
         Optional<BentoMenuHistory> findByCompanyId(String companyId);
-
+        //【R-2】弁当メニュー履歴を更新する
         void update(DateHistoryItem item);
-
+        //【R-3】弁当メニュー履歴を追加
         void add(DateHistoryItem item);
-
+        // Add new Bentomenu.
         void addBentomenu(DateHistoryItem item,BentoReservationClosingTime bentoReservationClosingTime, List<Bento> bentos);
 
     }
