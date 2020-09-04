@@ -227,16 +227,16 @@ module cmm045.a.viewmodel {
                 return false;
             }
             if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
-                nts.uk.ui.dialog.alert({ messageId: "Msg_360" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_360" });
                 return false;
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
-				nts.uk.ui.dialog.alert({ messageId: "Msg_1722" });
+				nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" });
                 return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
-				nts.uk.ui.dialog.alert({ messageId: "Msg_1723" });
+				nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" });
                 return false;
 			}
 			return true;
@@ -1814,7 +1814,15 @@ module cmm045.a.viewmodel {
 			block.invisible();
 			if(isApprovalAll) {
 				let checkBoxList = $("#app-grid-container").find(".nts-fixed-body-wrapper tbody").find("tr").find("td.check").find("span");
-				_.each(checkBoxList, checkbox => checkbox.click());	
+				_.each(checkBoxList, checkbox => {
+					let appID = $(checkbox).closest("td").data("app-id"),
+						currentItem = _.find(self.items(), item => item.appID == appID);
+					if(!_.isUndefined(currentItem)) {
+						if(!currentItem.check) {
+							checkbox.click();	
+						}	
+					}
+				});	
 			}
 			let listOfApplicationCmds = [];
 			_.each(self.items(), function(item) {
@@ -1835,6 +1843,10 @@ module cmm045.a.viewmodel {
                     listOfApplicationCmds.push(item);
                 }
             });
+			if(_.isEmpty(listOfApplicationCmds)) {
+				block.clear();
+				return;	
+			}
 			let device = 0,
 				command = { isApprovalAll, device, listOfApplicationCmds };
 			service.approveCheck(command).then((data: any) => {
@@ -1850,7 +1862,30 @@ module cmm045.a.viewmodel {
 				}
 			}).then((data: any) => {
 				if(data) {
-					console.log(data);
+					let isInfoDialog = true,
+						displayMsg = "";
+					if(!_.isEmpty(data.successMap)) {
+						displayMsg += nts.uk.resource.getMessage('Msg_220') + "\n";		
+					} else {
+						isInfoDialog = false;
+					}
+					if(!_.isEmpty(data.failMap)) {
+						displayMsg += nts.uk.resource.getMessage('Msg_1726');
+						let itemFailMap = _.filter(listOfApplicationCmds, item => _.includes(Object.keys(data.failMap), item.appID));
+						_.each(itemFailMap, item => {
+							let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType),
+								appName = "";
+							if(!_.isUndefined(appInfo)) {
+								appName = appInfo.appName;
+							}
+							displayMsg += "\n " + item.applicantName  + " " + item.appDate + " " + appName + ": " + data.failMap[item.appID];
+						});	
+					}
+					if(isInfoDialog) {
+						nts.uk.ui.dialog.info(displayMsg);	
+					} else {
+						nts.uk.ui.dialog.alertError(displayMsg);	
+					}
 				}	
 			}).always(() => { block.clear(); });
 		}

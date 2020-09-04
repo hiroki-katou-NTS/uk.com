@@ -148,24 +148,11 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 		String companyID = AppContexts.user().companyId();
 		AppListApproveResult result = new AppListApproveResult(new HashMap<String, String>(), new HashMap<String, String>());
 		this.parallel.forEach(listOfApplicationCmds, listOfApplicationCmd -> {
-			try {
-				Application application = listOfApplicationCmd.toDomainApplication();
-				AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
-						companyID, 
-						application.getAppType(), 
-						Collections.emptyList(), 
-						new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()).datesBetween(), 
-						true,
-						Optional.empty(),
-						Optional.empty());
-				ApproveProcessResult approveProcessResult = approveAppHandler.approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, "");
-				if(approveProcessResult.isProcessDone()) {
-					result.getSuccessMap().put(listOfApplicationCmd.getAppID(), "");
-				} else {
-					result.getFailMap().put(listOfApplicationCmd.getAppID(), "");
-				}
-			} catch (Exception e) {
-				result.getFailMap().put(listOfApplicationCmd.getAppID(), e.getMessage());
+			Pair<Boolean, String> pair = this.approveSingleApp(companyID, listOfApplicationCmd);
+			if(pair.getLeft()) {
+				result.getSuccessMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
+			} else {
+				result.getFailMap().put(listOfApplicationCmd.getAppID(), pair.getRight());
 			}
 		});
 		return result;
