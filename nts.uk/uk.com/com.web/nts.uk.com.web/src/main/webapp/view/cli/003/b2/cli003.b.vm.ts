@@ -42,26 +42,7 @@ module nts.uk.com.view.cli003.b {
     EQUAL = 1,
     DIFFERENT = 2,
   }
-  export class RecordTypeModel {
-    code: number;
-    name: string;
-
-    constructor(code: number, name: string) {
-      this.code = code;
-      this.name = name;
-    }
-  }
-
-  export class DataTypeModel {
-    code: number;
-    name: string;
-
-    constructor(code: number, name: string) {
-      this.code = code;
-      this.name = name;
-    }
-  }
-  export class SymbolModel {
+  export class ItemTypeModel {
     code: number;
     name: string;
 
@@ -76,6 +57,7 @@ module nts.uk.com.view.cli003.b {
     name: string;
     recordType: number;
     dataType: number;
+    systemType: number;
     logSetOutputs: any;
 
     constructor(
@@ -84,6 +66,7 @@ module nts.uk.com.view.cli003.b {
       name: string,
       recordType: number,
       dataType: number,
+      systemType: number,
       logSetOutputs: any
     ) {
       this.id = id;
@@ -91,6 +74,7 @@ module nts.uk.com.view.cli003.b {
       this.name = name;
       this.recordType = recordType;
       this.dataType = dataType;
+      this.systemType = systemType;
       this.logSetOutputs = logSetOutputs;
     }
   }
@@ -183,6 +167,8 @@ module nts.uk.com.view.cli003.b {
     currentRecordTypeName: KnockoutObservable<string> = ko.observable("");
     currentDataTypeName: KnockoutObservable<string> = ko.observable("");
     dataType: KnockoutObservable<string> = ko.observable("");
+    systemType: KnockoutObservable<string> = ko.observable("");
+    currentSystemTypeName: KnockoutObservable<string> = ko.observable("");
     targetEmployeeCount:KnockoutObservable<string>  = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
     operatorEmployeeCount:KnockoutObservable<string>  = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
     selectedEmployeeCodeTarget: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -190,42 +176,48 @@ module nts.uk.com.view.cli003.b {
     employeeList : KnockoutObservableArray<any> = ko.observableArray([]);
     logOutputItems: KnockoutObservableArray<any> = ko.observableArray([]);
     recordTypeList: KnockoutObservableArray<
-      RecordTypeModel
+    ItemTypeModel
     > = ko.observableArray([
-      new RecordTypeModel(0, this.$i18n("Enum_RecordType_Login")),
-      new RecordTypeModel(1, this.$i18n("Enum_RecordType_StartUp")),
-      new RecordTypeModel(2, this.$i18n("Enum_RecordType_UpdateMaster")),
-      new RecordTypeModel(3, this.$i18n("Enum_RecordType_UpdatePersionInfo")),
-      new RecordTypeModel(4, this.$i18n("Enum_RecordType_DataReference")),
-      new RecordTypeModel(5, this.$i18n("Enum_RecordType_DataManipulation")),
-      new RecordTypeModel(6, this.$i18n("Enum_RecordType_DataCorrect")),
-      new RecordTypeModel(7, this.$i18n("Enum_RecordType_MyNumber")),
-      new RecordTypeModel(
+      new ItemTypeModel(0, this.$i18n("Enum_RecordType_Login")),
+      new ItemTypeModel(1, this.$i18n("Enum_RecordType_StartUp")),
+      new ItemTypeModel(2, this.$i18n("Enum_RecordType_UpdateMaster")),
+      new ItemTypeModel(3, this.$i18n("Enum_RecordType_UpdatePersionInfo")),
+      new ItemTypeModel(4, this.$i18n("Enum_RecordType_DataReference")),
+      new ItemTypeModel(5, this.$i18n("Enum_RecordType_DataManipulation")),
+      new ItemTypeModel(6, this.$i18n("Enum_RecordType_DataCorrect")),
+      new ItemTypeModel(7, this.$i18n("Enum_RecordType_MyNumber")),
+      new ItemTypeModel(
         8,
         this.$i18n("Enum_RecordType_TerminalCommucationInfo")
       ),
-      new RecordTypeModel(9, this.$i18n("Enum_RecordType_DataStorage")),
-      new RecordTypeModel(10, this.$i18n("Enum_RecordType_DataRecovery")),
-      new RecordTypeModel(11, this.$i18n("Enum_RecordType_DataDeletion")),
+      new ItemTypeModel(9, this.$i18n("Enum_RecordType_DataStorage")),
+      new ItemTypeModel(10, this.$i18n("Enum_RecordType_DataRecovery")),
+      new ItemTypeModel(11, this.$i18n("Enum_RecordType_DataDeletion")),
     ]);
 
-    dataTypeList: KnockoutObservableArray<DataTypeModel> = ko.observableArray([
-      new DataTypeModel(0, this.$i18n("Enum_DataType_Schedule")),
-      new DataTypeModel(1, this.$i18n("Enum_DataType_DailyResults")),
-      new DataTypeModel(2, this.$i18n("Enum_DataType_MonthlyResults")),
-      new DataTypeModel(3, this.$i18n("Enum_DataType_AnyPeriodSummary")),
-      new DataTypeModel(4, this.$i18n("Enum_DataType_ApplicationApproval")),
-      new DataTypeModel(5, this.$i18n("Enum_DataType_Notification")),
-      new DataTypeModel(6, this.$i18n("Enum_DataType_SalaryDetail")),
-      new DataTypeModel(7, this.$i18n("Enum_DataType_BonusDetail")),
-      new DataTypeModel(8, this.$i18n("Enum_DataType_YearEndAdjustment")),
-      new DataTypeModel(9, this.$i18n("Enum_DataType_MonthlyCalculation")),
-      new DataTypeModel(10, this.$i18n("Enum_DataType_RisingSalaryBack")),
+    dataTypeList: KnockoutObservableArray<ItemTypeModel> = ko.observableArray([
+      new ItemTypeModel(0, this.$i18n("Enum_DataType_Schedule")),
+      new ItemTypeModel(1, this.$i18n("Enum_DataType_DailyResults")),
+      new ItemTypeModel(2, this.$i18n("Enum_DataType_MonthlyResults")),
+      new ItemTypeModel(3, this.$i18n("Enum_DataType_AnyPeriodSummary")),
+      new ItemTypeModel(4, this.$i18n("Enum_DataType_ApplicationApproval")),
+      new ItemTypeModel(5, this.$i18n("Enum_DataType_Notification")),
+      new ItemTypeModel(6, this.$i18n("Enum_DataType_SalaryDetail")),
+      new ItemTypeModel(7, this.$i18n("Enum_DataType_BonusDetail")),
+      new ItemTypeModel(8, this.$i18n("Enum_DataType_YearEndAdjustment")),
+      new ItemTypeModel(9, this.$i18n("Enum_DataType_MonthlyCalculation")),
+      new ItemTypeModel(10, this.$i18n("Enum_DataType_RisingSalaryBack")),
     ]);
-    symbolList: KnockoutObservableArray<DataTypeModel> = ko.observableArray([
-      new SymbolModel(0, this.$i18n("Enum_Symbol_Include")),
-      new SymbolModel(1, this.$i18n("Enum_Symbol_Equal")),
-      new SymbolModel(2, this.$i18n("Enum_Symbol_Different")),
+    symbolList: KnockoutObservableArray<ItemTypeModel> = ko.observableArray([
+      new ItemTypeModel(0, this.$i18n("Enum_Symbol_Include")),
+      new ItemTypeModel(1, this.$i18n("Enum_Symbol_Equal")),
+      new ItemTypeModel(2, this.$i18n("Enum_Symbol_Different")),
+    ]);
+    systemTypeList: KnockoutObservableArray<ItemTypeModel> = ko.observableArray([
+      new ItemTypeModel(0, this.$i18n('Enum_SystemType_PERSON_SYSTEM')),
+      new ItemTypeModel(1, this.$i18n('Enum_SystemType_ATTENDANCE_SYSTEM')),
+      new ItemTypeModel(2, this.$i18n('Enum_SystemType_PAYROLL_SYSTEM')),
+      new ItemTypeModel(2, this.$i18n('Enum_SystemType_OFFICE_HELPER')),
     ]);
     currentCode: KnockoutObservable<string> = ko.observable(null);
     b5_2dateValue: KnockoutObservable<any> = ko.observable({});
@@ -317,21 +309,20 @@ module nts.uk.com.view.cli003.b {
 
     created(data :any) {
       const vm = this;
-      console.log(data);
-      if(data){
-        const currentData = data.data;
-        vm.currentCode(currentData.currentCode);
-        vm.checkFormatDate(currentData.checkFormatDate);
-        vm.selectedEmployeeCodeTarget(currentData.targetEmployeeIdList);
-        vm.b5_2dateValue(currentData.dateValue);
-        vm.startDateOperator(currentData.startDateOperator);
-        vm.endDateOperator(currentData.endDateOperator);
-        vm.b4_2SelectedRuleCode(currentData.selectedRuleCode);
-        vm.b6_2SelectedRuleCode(currentData.selectedRuleCodeOperator);
-        vm.selectedEmployeeCodeOperator(currentData.listEmployeeIdOperator);
-        vm.operatorEmployeeCount(currentData.operatorEmployeeCount);
-        vm.targetEmployeeCount(currentData.targetEmployeeCount);
-      }
+      // if(data){
+      //   const currentData = data.data;
+      //   vm.currentCode(currentData.currentCode);
+      //   vm.checkFormatDate(currentData.checkFormatDate);
+      //   vm.selectedEmployeeCodeTarget(currentData.targetEmployeeIdList);
+      //   vm.b5_2dateValue(currentData.dateValue);
+      //   vm.startDateOperator(currentData.startDateOperator);
+      //   vm.endDateOperator(currentData.endDateOperator);
+      //   vm.b4_2SelectedRuleCode(currentData.selectedRuleCode);
+      //   vm.b6_2SelectedRuleCode(currentData.selectedRuleCodeOperator);
+      //   vm.selectedEmployeeCodeOperator(currentData.listEmployeeIdOperator);
+      //   vm.operatorEmployeeCount(currentData.operatorEmployeeCount);
+      //   vm.targetEmployeeCount(currentData.targetEmployeeCount);
+      // }
       vm.getAllLogDisplaySet();
       vm.obsSelectedLogSet();
     }
@@ -368,6 +359,7 @@ module nts.uk.com.view.cli003.b {
                   logDisplaySet.name,
                   logDisplaySet.recordType,
                   logDisplaySet.dataType,
+                  logDisplaySet.systemType,
                   logDisplaySet.logSetOutputItems
                 )
               );
@@ -453,8 +445,11 @@ module nts.uk.com.view.cli003.b {
       vm.currentLogSetName(logSet.name);
       const recordTypeName = vm.getRecordTypeName(logSet.recordType);
       const dataTypeName = vm.getDataTypeName(logSet.dataType);
+      const systemTypeName = vm.getSystemTypeName(logSet.systemType);
       vm.recordType(logSet.recordType);
       vm.currentRecordTypeName(recordTypeName);
+      vm.systemType(logSet.systemType);
+      vm.currentSystemTypeName(systemTypeName);
       if (logSet.recordType === 6) {
         vm.dataType(logSet.dataType);
         vm.currentDataTypeName(dataTypeName);
@@ -470,6 +465,10 @@ module nts.uk.com.view.cli003.b {
     getDataTypeName(currentDataType : number) : string{
       const vm = this;
       return vm.dataTypeList().filter((dataType) => dataType.code === currentDataType)[0].name;
+    }
+    getSystemTypeName(currentSystemType : number) : string{
+      const vm = this;
+      return vm.systemTypeList().filter((systemType) => systemType.code === currentSystemType)[0].name;
     }
     getTargetDate(logSet : any) {
       const vm = this;
