@@ -86,6 +86,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         satHoliday: KnockoutObservable<string> = ko.observable();
         nonSatHoliday: KnockoutObservable<string> = ko.observable();
         refImageEachDayDto: KnockoutObservableArray<RefImageEachDayDto> = ko.observableArray([]);
+        slideDays: KnockoutObservable<number> = ko.observable(0);
 
         constructor() {
             let self = this;
@@ -249,17 +250,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         public forward(): void {
             let self = this;
-
+            let slideDays = self.slideDays() + 1;
             // Do nothing if option dates is empty.
             if (self.isOptionDatesEmpty()) {
                 return;
             }
-
-            // Add 1 day to pattern start date.
-            self.patternStartDate.add(1, 'days');
-
-            // Reload calendar
-            self.optionDates(self.getOptionDates());
+            self.onBtnApplySetting(slideDays);
+            self.slideDays(slideDays)
+            // // Subtract 1 day from pattern start date.
+            // self.patternStartDate.subtract(1, 'days');
+            //
+            // // Reload calendar
+            // self.optionDates(self.getOptionDates());
 
             // Set focus control
             $('#component-calendar-kcp006').focus();
@@ -270,17 +272,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         public backward(): void {
             let self = this;
-
+            let slideDays = self.slideDays() - 1;
             // Do nothing if option dates is empty. 
             if (self.isOptionDatesEmpty()) {
                 return;
             }
-
-            // Subtract 1 day from pattern start date.
-            self.patternStartDate.subtract(1, 'days');
-
-            // Reload calendar
-            self.optionDates(self.getOptionDates());
+            self.onBtnApplySetting(slideDays);
+            self.slideDays(slideDays)
+            // // Subtract 1 day from pattern start date.
+            // self.patternStartDate.subtract(1, 'days');
+            //
+            // // Reload calendar
+            // self.optionDates(self.getOptionDates());
 
             // Set focus control
             $('#component-calendar-kcp006').focus();
@@ -289,7 +292,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         /**
          * Event when click apply button.
          */
-        public onBtnApplySettingClicked(){
+        public onBtnApplySettingClicked(): void{
             this.onBtnApplySetting(0);
         }
 
@@ -342,7 +345,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 holidayCd: holidayCd
             })
 
-            service.getReflectionWorkCycleAppImage(reflectionParam).done( (val) =>{
+            service.getReflectionWorkCycleAppImage(self.reflectionParam).done( (val) =>{
                 self.refImageEachDayDto(val);
                 self.setCalendarData(val);
              }).fail( () => {
