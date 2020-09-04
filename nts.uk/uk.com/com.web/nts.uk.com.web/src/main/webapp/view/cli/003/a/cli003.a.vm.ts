@@ -7,10 +7,6 @@ module nts.uk.com.view.cli003.a.viewmodel {
             /**
              * request to  data screen b
              */
-            func_Screen_b2(): void {
-                nts.uk.request.jump("/view/cli/003/b2/index.xhtml");
-            }
-
             func_Screen_b(): void {
                 nts.uk.request.jump("/view/cli/003/b/index.xhtml");
             }
