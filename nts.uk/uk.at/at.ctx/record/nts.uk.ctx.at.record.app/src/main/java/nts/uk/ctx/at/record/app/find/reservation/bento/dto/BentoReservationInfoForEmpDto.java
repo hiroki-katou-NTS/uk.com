@@ -34,7 +34,7 @@ public class BentoReservationInfoForEmpDto {
                 quantity,
                 infoForEmpDto.getEmpId(),
                 infoForEmpDto.getEmpCode(),
-                infoForEmpDto.getEmpCode()
+                infoForEmpDto.getEmpName()
         );
     }
 
