@@ -174,10 +174,10 @@ public class EmploymentSystemFinder {
 					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
 						// field ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
 						itemDto.setDigestionDate(item.getDateOccur().getDayoffDate().orElse(null));
-						// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
-						itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
-						// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
-						Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
+						// field ・消化数　＝　取得した逐次発生の休暇明細．発生数．日数
+						itemDto.setDigestionNumber(item.getNumberOccurren().getDay().v());
+						// field ・消化時間　＝　取得した逐次発生の休暇明細．発生数．時間
+						Optional<AttendanceTime> oDigestionHour = item.getNumberOccurren().getTime();
 						itemDto.setDigestionHour(oDigestionHour.map(o -> o.v()).orElse(null));
 					}
 					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
