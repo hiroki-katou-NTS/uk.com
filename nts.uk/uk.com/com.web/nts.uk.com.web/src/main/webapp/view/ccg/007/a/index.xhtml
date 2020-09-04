@@ -15,13 +15,13 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="padding: 10px;"
+				<div style="padding: 10px; position: relative;"
 					data-bind="text: '#{i18n.getText('CCG007_10')}'"></div>
 				<div>
 					<table>
 						<tr>
 							<td style="width: 100px; padding: 10px;">
-								<div data-bind="ntsFormLabel: {required: true}">
+								<div data-bind="ntsFormLabel: {required: false}">
 									<label data-bind="text: '#{i18n.getText('CCG007_1')}'"><br /></label>
 								</div>
 							</td>
@@ -41,7 +41,7 @@
 						</tr>
 						<tr>
 							<td style="width: 100px; padding: 10px;">
-								<div data-bind="ntsFormLabel: {required: true}">
+								<div data-bind="ntsFormLabel: {required: false}">
 									<label data-bind="text: '#{i18n.getText('CCG007_2')}'"><br /></label>
 								</div>
 							</td>

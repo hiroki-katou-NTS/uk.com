@@ -9,10 +9,10 @@ import { NavMenu, SideMenu } from '@app/services';
     validations: {
         model: {
             contractCode: {
-                required: true
+                required: false
             },
             password: {
-                required: true
+                required: false
             }
         }
     },
@@ -43,7 +43,7 @@ export class Ccg007AComponent extends Vue {
             storage.local.setItem('contract', { code: this.model.contractCode, password: this.model.password });
             this.$router.go(-1);
         }).catch((error) => {
-            this.$modal.error(error.message);
+            this.$modal.error({ messageId: error.messageId });
         });
     }
 
