@@ -309,37 +309,14 @@ module nts.uk.at.view.ksm005.a {
                         
                         if(self.isLastMonthlyPattern(selectedCode)){
                             self.lstMonthlyPattern(data);
-                             self.monthlyPatternModel().updateEnable(false);
-                            self.selectMonthlyPattern(data[data.length-1].code);   
+                            self.monthlyPatternModel().updateEnable(false);
+                            self.selectMonthlyPattern(data[0].code);
                             return;         
                         }
-                        var dataHistory: MonthlyPatternDto[] = self.lstMonthlyPattern();
-                        // check end visible
-                        var indexSelected: number = 0;
-                        for (var index: number = 0; index < dataHistory.length; index++) {
-                            if (dataHistory[index].code == selectedCode) {
-                                indexSelected = index;
-                                break;
-                            }
-                        }
-
-                        // check next visible
-                        for (var index: number = indexSelected; index < dataHistory.length; index++) {
-                            if (self.isVisibleMonthlyPattern(dataHistory[index].code, data)) {
-                                self.lstMonthlyPattern(data);
-                                self.selectMonthlyPattern(dataHistory[index].code);
-                                return;
-                            }
-                        }
-                        // check previous visible
-                        for (var index: number = indexSelected; index >= 0; index--) {
-                            if (self.isVisibleMonthlyPattern(dataHistory[index].code, data)) {
-                                self.lstMonthlyPattern(data);
-                                self.selectMonthlyPattern(dataHistory[index].code);
-                                return;
-                            }
-                        }
-                       return;  
+                        let i = self.lstMonthlyPattern().findIndex( item => item.code == selectedCode);
+                        self.lstMonthlyPattern(data);
+                        self.selectMonthlyPattern(data[i].code);
+                        return;
                     }
                     self.lstMonthlyPattern(data);
                     self.selectMonthlyPattern(selectedCode);
