@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,8 @@ import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -39,7 +42,7 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	public Optional<TimeLeavingWork> getAttendanceLeavingWork(int workNo) {
 		return this.getTimeLeavingWorks().stream().filter(ts -> ts.getWorkNo().v() == workNo).findFirst();
 	}
-	
+
 	/**
 	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
 	 * @param timeSpan　範囲時間
@@ -48,11 +51,22 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	public List<TimeSpanForCalc> getNotDuplicateSpan(TimeSpanForCalc timeSpan) {
 		if(timeSpan == null) return Collections.emptyList();
 		List<TimeSpanForCalc> returnList = new ArrayList<>();
-		for(TimeLeavingWork tlw : this.timeLeavingWorks ) {
+		for(TimeLeavingWork tlw : this.timeLeavingWorks) {
 			//notDuplicatedRange = tlw.getTimespan().getNotDuplicationWith(notDuplicatedRange.get());
 			returnList.addAll(timeSpan.getNotDuplicationWith(tlw.getTimespan()));
 		}
 		return returnList;
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * @param timeSpan　範囲時間
+	 * @return 重複していない時間
+	 */
+	public List<TimeSpanForDailyCalc> getNotDuplicateSpan(TimeSpanForDailyCalc timeSpan) {
+		return this.getNotDuplicateSpan(timeSpan.getTimeSpan()).stream()
+				.map(forCalc -> new TimeSpanForDailyCalc(forCalc))
+				.collect(Collectors.toList());
 	}
 	
 	/**
@@ -75,6 +89,15 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 				return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * 退勤を返す　　　（勤務回数が2回目の場合は2回目の退勤を返す）
+	 * @return
+	 */
+	public Optional<TimeActualStamp> getLeavingWork() {
+		Optional<TimeLeavingWork> targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.getWorkTimes().v()));
+		return (targetAttendanceLeavingWorkTime.isPresent())?targetAttendanceLeavingWorkTime.get().getLeaveStamp():Optional.empty();
 	}
 	
 	/**

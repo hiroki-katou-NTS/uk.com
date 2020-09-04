@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTimeSheet;
@@ -103,7 +104,7 @@ public class OverTimeWorkDailyPerformDto implements ItemConst {
 	public OverTimeOfDaily toDomain() {
 		return new OverTimeOfDaily(
 				ConvertHelper.mapTo(overTimeFrameTimeSheet,
-						(c) -> new OverTimeFrameTimeSheet(createTimeSheet(c.getTimeSheet()),
+						(c) -> new OverTimeFrameTimeSheet(new TimeSpanForDailyCalc(createTimeSheet(c.getTimeSheet())),
 								new OverTimeFrameNo(c.getOvertimeFrameNo()))),
 				ConvertHelper.mapTo(overTimeFrameTime,
 						(c) -> new OverTimeFrameTime(new OverTimeFrameNo(c.getNo()),

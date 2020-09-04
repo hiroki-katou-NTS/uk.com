@@ -10,8 +10,11 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -33,13 +36,13 @@ public class TimeReflectFromWorkinfo {
 	private WorkTypeRepository workTypeRepo;
 	
 	@Inject
-	private WorkingConditionService workingConditionService;
-	
-	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
 	
 	@Inject
 	private WorkingConditionItemService workingConditionItemService;
+	
+	@Inject
+	private WorkingConditionRepository workingConditionRepo;
 	
 
 	public OutputTimeReflectForWorkinfo get(String companyId, String employeeId, GeneralDate ymd,
@@ -59,8 +62,19 @@ public class TimeReflectFromWorkinfo {
 		//就業時間帯コード = null の場合
 		if(workTimeCode == null) {
 			// 社員の労働条件を取得する
-			Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService
-					.findWorkConditionByEmployee(employeeId, ymd);
+			Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService
+					.findWorkConditionByEmployee(new WorkingConditionService.RequireM1() {
+						
+						@Override
+						public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+							return workingConditionRepo.getWorkingConditionItem(historyId);
+						}
+						
+						@Override
+						public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+							return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
+						}
+					}, employeeId, ymd);
 			if(!workingConditionItem.isPresent()) {
 				outputTimeReflectForWorkinfo.setEndStatus(EndStatus.NO_WORK_CONDITION);
 				return outputTimeReflectForWorkinfo;

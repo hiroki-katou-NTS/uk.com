@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.location.GeoCoordinate;
-import nts.uk.ctx.at.record.dom.employmentinfoterminal.EmpInfoTerminalCode;
+import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminalCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.RefectActualResult;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;

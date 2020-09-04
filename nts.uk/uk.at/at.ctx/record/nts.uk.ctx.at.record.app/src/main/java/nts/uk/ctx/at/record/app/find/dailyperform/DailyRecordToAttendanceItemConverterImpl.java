@@ -24,9 +24,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.specificdatetttr.dto.SpecificD
 import nts.uk.ctx.at.record.app.find.dailyperform.temporarytime.dto.TemporaryTimeOfDailyPerformanceDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workinfo.dto.WorkInformationOfDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.TimeLeavingOfDailyPerformanceDto;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-//import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
@@ -47,6 +44,8 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RemarksOfDa
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 //@Stateless

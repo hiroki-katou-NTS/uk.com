@@ -90,16 +90,15 @@ import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.WkplaceInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod.WkTypeInfoChangePeriod;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultEmployeeDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService.AggregationResult;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -135,6 +134,7 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistIte
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -283,13 +283,13 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 	private CalPeriodTransferAndWorktype calPeriodTransferAndWorktype;
 	
 	@Inject
+	private RecordDomRequireService requireService;
+
+	@Inject
     private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
     
     @Inject
     private GetProcessingDate getProcessingDate;
-	
-	@Inject
-	private RecordDomRequireService requireService;
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
@@ -2559,11 +2559,14 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 					val require = requireService.createRequire();
 					this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 						lstRegulationInfoEmployeeNew, item -> {
+
+							val cacheCarrier = new CacheCarrier();
+
                             Optional<GeneralDate> date = getProcessingDate.getProcessingDate(item, GeneralDate.legacyDate(now.date()));
                             if(!date.isPresent()) {
                                 return;
                             }
-							val cacheCarrier = new CacheCarrier();
+							
 							AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
 							AggregationResult result = MonthlyAggregationEmployeeService.aggregate(require, cacheCarrier, asyContext, companyId,
 									item,

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Setter

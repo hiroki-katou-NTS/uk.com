@@ -8,11 +8,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;

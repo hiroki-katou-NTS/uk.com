@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.Time
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.worktime.TimeLeaveChangeEvent;
 import nts.uk.ctx.at.shared.dom.worktime.common.JustCorrectionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -105,8 +107,7 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public Optional<TimeActualStamp> getLeavingWork() {
-		Optional<TimeLeavingWork> targetAttendanceLeavingWorkTime = this.getAttendanceLeavingWork(new WorkNo(this.attendance.getWorkTimes().v()));
-		return (targetAttendanceLeavingWorkTime.isPresent())?targetAttendanceLeavingWorkTime.get().getLeaveStamp():Optional.empty();
+		return attendance.getLeavingWork();
 	}
 	
 	/**
@@ -151,6 +152,17 @@ public class TimeLeavingOfDailyPerformance extends AggregateRoot {
 			returnList.addAll(timeSpan.getNotDuplicationWith(tlw.getTimespan()));
 		}
 		return returnList;
+	}
+	
+	/**
+	 * 出退勤時刻と渡された範囲時間の重複していない部分の取得
+	 * @param timeSpan　範囲時間
+	 * @return 重複していない時間
+	 */
+	public List<TimeSpanForDailyCalc> getNotDuplicateSpan(TimeSpanForDailyCalc timeSpan) {
+		return this.getNotDuplicateSpan(timeSpan.getTimeSpan()).stream()
+				.map(forCalc -> new TimeSpanForDailyCalc(forCalc))
+				.collect(Collectors.toList());
 	}
 	
 	/**

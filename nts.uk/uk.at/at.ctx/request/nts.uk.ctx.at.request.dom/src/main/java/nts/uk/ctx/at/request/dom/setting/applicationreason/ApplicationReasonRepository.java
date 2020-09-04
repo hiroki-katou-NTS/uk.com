@@ -59,4 +59,11 @@ public interface ApplicationReasonRepository {
 	 * @return
 	 */
 	Optional<ApplicationReason> getReasonById(String companyId, String reasonID);
+	
+	/**
+	 * @param companyId
+	 * @param appTypes
+	 * @return
+	 */
+	List<ApplicationReason> getReasonByAppType(String companyId, List<Integer> appTypes);
 }

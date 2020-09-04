@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.dom.workinformation.enums.ClassificationReflect;
+import nts.uk.ctx.at.shared.dom.workinformation.enums.ClassificationReflect;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.Reflection;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.employmentrules.worktime.CheckWorkDivision;

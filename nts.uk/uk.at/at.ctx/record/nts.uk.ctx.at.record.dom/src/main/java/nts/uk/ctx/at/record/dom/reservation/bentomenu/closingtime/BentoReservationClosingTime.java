@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.Getter;
-import nts.arc.time.clock.ClockHourMinute;
+import nts.arc.time.ClockHourMinute;
 
 /**
  * 弁当の予約締め時刻

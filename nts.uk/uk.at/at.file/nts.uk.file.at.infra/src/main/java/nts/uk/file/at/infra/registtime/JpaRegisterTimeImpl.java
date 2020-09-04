@@ -13,11 +13,11 @@ import javax.persistence.Query;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.ClosingDateType;
-import nts.uk.ctx.at.record.dom.standardtime.enums.StartingMonthType;
-import nts.uk.ctx.at.record.dom.standardtime.enums.TargetSettingAtr;
-import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateType;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.StartingMonthType;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.TargetSettingAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeColumn;
 import nts.uk.file.at.app.export.regisagreetime.RegistTimeRepository;
 import nts.uk.shr.com.context.AppContexts;

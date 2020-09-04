@@ -3,8 +3,10 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 
@@ -33,7 +35,7 @@ public interface CalculateDailyRecordServiceCenter{//
 	public ManageProcessAndCalcStateResult calculateForManageState(List<IntegrationOfDaily> integrationOfDaily,List<ClosureStatusManagement> closureList,ExecutionType reCalcAtr, String empCalAndSumExecLogID);
 	
 	//エラーチェック
-	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList);
+	public List<IntegrationOfDaily> errorCheck(CompanyId companyId, List<IntegrationOfDaily> integrationList);
 
 	//計算(更新処理自動実行用)
 	public ManageProcessAndCalcStateResult calculateForclosure(List<IntegrationOfDaily> integrationOfDaily,ManagePerCompanySet companySet, List<ClosureStatusManagement> closureList,String executeLogId);

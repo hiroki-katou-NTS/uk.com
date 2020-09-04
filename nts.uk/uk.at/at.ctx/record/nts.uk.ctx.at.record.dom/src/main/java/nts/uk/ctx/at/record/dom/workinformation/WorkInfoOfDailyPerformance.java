@@ -91,11 +91,7 @@ public class WorkInfoOfDailyPerformance extends AggregateRoot {
 	 * @return
 	 */
 	public boolean isMatchWorkInfomation() {			
-		if(workInformation.getScheduleInfo().getWorkTypeCode()==workInformation.getRecordInfo().getWorkTypeCode()&&
-				workInformation.getScheduleInfo().getWorkTimeCode()==workInformation.getRecordInfo().getWorkTimeCode()) {
-			return true;
-		}
-		return false;
+		return workInformation.isMatchWorkInfomation();
 	}
 
 	/**

@@ -8,7 +8,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
@@ -26,6 +25,8 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.A
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.timesheet.ouen.OuenWorkTimeSheetOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
@@ -152,6 +153,12 @@ public class IntegrationOfDaily {
 	/**日別実績の勤務種別*/ 
 //	private Optional<WorkTypeOfDailyPerformance> businessType;
 	
+	@Setter
+	/**日別勤怠の応援作業時間 */
+	private List<OuenWorkTimeOfDailyAttendance> ouenTime = new ArrayList<>();
+	@Setter
+	/**日別勤怠の応援作業時間帯 */
+	private List<OuenWorkTimeSheetOfDailyAttendance> ouenTimeSheet = new ArrayList<>();
 
 	
 	

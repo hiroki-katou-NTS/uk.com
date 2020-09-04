@@ -44,15 +44,16 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerform;
 import nts.uk.ctx.at.record.dom.daily.remarks.RemarksOfDailyPerformRepo;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.CheckProcessed;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.OutputCheckProcessed;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.checkprocessed.StatusOutput;
+import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
+import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrOfDailyPerfor;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.shorttimework.ShortTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -60,8 +61,6 @@ import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationReposi
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.DetermineActualResultLock;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.PerformanceType;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.IdentityProcessUseSet;
@@ -74,6 +73,9 @@ import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
+import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
@@ -85,9 +87,8 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDat
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.ErrMessageResource;
-import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -96,7 +97,6 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService.RequireM3;
 import nts.uk.shr.com.context.AppContexts;
@@ -239,16 +239,17 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	@Inject
 	private DetermineActualResultLock lockStatusService;
 	
-	@Inject
-	private ClosureRepository closureRepository;
-	@Inject
-	private ShareEmploymentAdapter shrEmpAdapter;
+//	@Inject
+//	private ClosureService closureService;
 	
 	@Inject
 	private EmploymentAdapter employmentAdapter;
 	
 	@Inject
 	private CheckProcessed checkProcessed;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 	/**
 	 * 社員の日別実績を計算
 	 * @param asyncContext 同期コマンドコンテキスト
@@ -523,7 +524,9 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			}
 						LockStatus lockStatus = LockStatus.UNLOCK;
 						if(isCalWhenLock ==null || isCalWhenLock == false) {
-							Closure closureData = ClosureService.getClosureDataByEmployee(createClosureServiceImp(), cacheCarrier, employeeId, stateInfo.getIntegrationOfDaily().getYmd());
+							Closure closureData = ClosureService.getClosureDataByEmployee(
+									requireService.createRequire(), new CacheCarrier(),
+									employeeId, stateInfo.getIntegrationOfDaily().getYmd());
 							//アルゴリズム「実績ロックされているか判定する」を実行する (Chạy xử lý)
 							//実績ロックされているか判定する
 							lockStatus = lockStatusService.getDetermineActualLocked(cid, 
@@ -556,26 +559,6 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 //			upDateCalcState(stateInfo);
 //		}
 		return afterCalcRecord.getPs();
-	}
-	private RequireM3 createClosureServiceImp() {
-		return new ClosureService.RequireM3() {
-			
-			@Override
-			public Optional<Closure> closure(String companyId, int closureId) {
-				return closureRepository.findById(companyId, closureId);
-			}
-			
-			@Override
-			public Optional<ClosureEmployment> employmentClosure(String companyID, String employmentCD) {
-				return closureEmploymentRepository.findByEmploymentCD(companyID, employmentCD);
-			}
-			
-			@Override
-			public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
-					String employeeId, GeneralDate baseDate) {
-				return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
-			}
-		};
 	}
 
 	/**

@@ -18,12 +18,12 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
 //import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -80,13 +80,10 @@ public class BreakTimeSheet extends DomainObject {
 	 * @return 控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeZoneRounding(this.startTime, this.endTime, new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN)),
-																			  new TimeSpanForCalc(this.startTime, this.endTime),
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(this.startTime, this.endTime),
+																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
 																			  Collections.emptyList(),
 																			  Collections.emptyList(),
-																			  Collections.emptyList(),
-																			  Collections.emptyList(),
-																			  Optional.empty(),
 																			  WorkingBreakTimeAtr.NOTWORKING,
 																			  Finally.empty(),
 																			  Finally.of(BreakClassification.BREAK),

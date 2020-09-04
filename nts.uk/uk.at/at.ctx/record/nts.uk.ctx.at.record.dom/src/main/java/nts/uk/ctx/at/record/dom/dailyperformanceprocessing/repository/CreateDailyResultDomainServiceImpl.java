@@ -22,13 +22,14 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
@@ -72,7 +73,6 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {

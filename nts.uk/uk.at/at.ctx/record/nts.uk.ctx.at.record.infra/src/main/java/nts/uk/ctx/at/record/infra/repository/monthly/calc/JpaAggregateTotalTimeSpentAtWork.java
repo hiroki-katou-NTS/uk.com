@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
-import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWorkRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAggrTotalSpt;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.shared.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
+import nts.uk.ctx.at.shared.dom.monthly.calc.AggregateTotalTimeSpentAtWorkRepository;
 
 /**
  * リポジトリ実装：集計総拘束時間

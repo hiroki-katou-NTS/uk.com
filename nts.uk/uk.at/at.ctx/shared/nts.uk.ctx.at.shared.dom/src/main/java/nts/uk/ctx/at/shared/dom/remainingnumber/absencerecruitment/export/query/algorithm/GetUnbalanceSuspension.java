@@ -7,10 +7,13 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 
 /**
@@ -26,15 +29,18 @@ public class GetUnbalanceSuspension {
 
 	// 1.未相殺の振休(確定)を取得する
 	public static List<AccumulationAbsenceDetail> process(Require require, String cid, String employeeId,
-			GeneralDate ymd) {
+			GeneralDate ymd, FixedManagementDataMonth fixManaDataMonth) {
 
 		List<AccumulationAbsenceDetail> result = new ArrayList<>();
 		// アルゴリズム「確定振休から未相殺の振休を取得する」を実行する
 		List<SubstitutionOfHDManagementData> lstSub = unbalanceHolConfirme(require, cid, employeeId, ymd);
 
+		//追加用確定管理データをリストに追加する
+		addDataFixManaMonth(fixManaDataMonth, lstSub);
+		
 		// アルゴリズム「暫定振出と紐付けをしない確定振休を取得する」を実行する
 		for (SubstitutionOfHDManagementData data : lstSub) {
-			acquireFixedSuspension(employeeId, data).ifPresent(x -> result.add(x));
+			acquireFixedSuspension(require, employeeId, data).ifPresent(x -> result.add(x));
 		}
 
 		return result;
@@ -47,18 +53,19 @@ public class GetUnbalanceSuspension {
 	}
 
 	// 1-3.暫定振出と紐付けをしない確定振休を取得する
-	public static Optional<AccumulationAbsenceDetail> acquireFixedSuspension(String employeeId,
+	public static Optional<AccumulationAbsenceDetail> acquireFixedSuspension(Require require, String employeeId,
 			SubstitutionOfHDManagementData data) {
 
 		// ドメインモデル「暫定振出振休紐付け管理」を取得する REPONSE 対応
-		// List<InterimRecAbsMng> lstInterim =
-		// recAbsRepo.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
-		// confirmAbsData.getSubOfHDID());
+		List<InterimRecAbsMng> lstInterim = require.getBySidMng(DataManagementAtr.INTERIM, DataManagementAtr.CONFIRM,
+				data.getSubOfHDID());
+
 		double unUseDays = data.getRemainDays().v();
-		/*
-		 * for (InterimRecAbsMng interimRecAbsMng : lstInterim) { unUseDays -=
-		 * interimRecAbsMng.getUseDays().v(); }
-		 */
+
+		for (InterimRecAbsMng interimRecAbsMng : lstInterim) {
+			unUseDays -= interimRecAbsMng.getUseDays().v();
+		}
+
 		if (unUseDays <= 0) {
 			return Optional.empty();
 		}
@@ -76,11 +83,21 @@ public class GetUnbalanceSuspension {
 
 	}
 
+	// 追加用確定管理データの振休管理データをリストに追加する
+	public static void addDataFixManaMonth(FixedManagementDataMonth fixManaDataMonth,
+			List<SubstitutionOfHDManagementData> lstData) {
+
+		lstData.addAll(fixManaDataMonth.getSubstitutionHDMagData());
+
+	}
+
 	public static interface Require {
 
 		// SubstitutionOfHDManaDataRepository
 		List<SubstitutionOfHDManagementData> getByYmdUnOffset(String cid, String sid, GeneralDate ymd,
 				double unOffseDays);
+
+		List<InterimRecAbsMng> getBySidMng(DataManagementAtr recAtr, DataManagementAtr absAtr, String absId);
 
 	}
 }

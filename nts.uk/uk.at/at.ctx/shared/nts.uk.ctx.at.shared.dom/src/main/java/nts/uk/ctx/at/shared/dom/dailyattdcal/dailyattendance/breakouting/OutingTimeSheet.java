@@ -10,12 +10,15 @@ import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.TimeSpanForDailyCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.WorkingBreakTimeAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.TimeZoneRounding;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 
@@ -70,31 +73,21 @@ public class OutingTimeSheet extends DomainObject {
 	 * @return 控除項目の時間帯
 	 */
 	public TimeSheetOfDeductionItem toTimeSheetOfDeductionItem() {
-		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(
-			  new TimeZoneRounding(
-						  this.goOut.get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()?
-								  this.goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get():null, 
-						  this.comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()?
-								  this.comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().get():null, 
-						  null),
-			  new TimeSpanForCalc(
-					  this.goOut.get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()?
-					  		this.goOut.get().getStamp().get().getTimeDay().getTimeWithDay().get():null, 
-					  this.comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()?
-							this.comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().get():null),
-			  new ArrayList<>(),
-			  new ArrayList<>(),
-			  new ArrayList<>(),
-			  new ArrayList<>(),
-			  Optional.empty(),
-			  WorkingBreakTimeAtr.NOTWORKING,
-			  Finally.of(this.reasonForGoOut),
-			  Finally.empty(),
-			  Optional.empty(),
-			  DeductionClassification.GO_OUT,
-			  Optional.empty()
-	  );
-}
+		return TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(new TimeSpanForDailyCalc(this.goOut.get().getStamp().get().getTimeDay()
+																											.getTimeWithDay().orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000), 
+																										this.comeBack.get().getStamp().get().getTimeDay()
+																											.getTimeWithDay().orElse(TimeWithDayAttr.THE_PRESENT_DAY_0000)),
+																			  new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN, Rounding.ROUNDING_DOWN),
+																			  new ArrayList<>(),
+																			  new ArrayList<>(),
+																			  WorkingBreakTimeAtr.NOTWORKING,
+																			  Finally.of(this.reasonForGoOut),
+																			  Finally.empty(),
+																			  Optional.empty(),
+																			  DeductionClassification.GO_OUT,
+																			  Optional.empty()
+																			  );
+	}
 	
 	/**
 	 * 自信が計算できる状態か判定うる

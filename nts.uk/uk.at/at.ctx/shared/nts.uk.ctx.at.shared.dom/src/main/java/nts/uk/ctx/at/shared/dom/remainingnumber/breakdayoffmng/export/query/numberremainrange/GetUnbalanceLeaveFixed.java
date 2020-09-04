@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -11,8 +12,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 
 /**
@@ -28,16 +32,18 @@ public class GetUnbalanceLeaveFixed {
 	};
 
 	public static List<AccumulationAbsenceDetail> getUnbalanceUnused(Require require, String companyId,
-			String employeeId, GeneralDate startDateAggr) {
+			String employeeId, GeneralDate startDateAggr, GeneralDate endDateAggr,
+			FixedManagementDataMonth fixManaDataMonth) {
 		// アルゴリズム「確定代休から未相殺の代休を取得する」を実行する
 		List<CompensatoryDayOffManaData> lstUnBalPay = getUnbalancePayment(require, companyId, employeeId,
 				startDateAggr);
+		addDataFixManaMonth(fixManaDataMonth, lstUnBalPay);
 		if (lstUnBalPay.isEmpty())
 			return Collections.emptyList();
 
 		// アルゴリズム「暫定休出と紐付けをしない確定代休を取得する」を実行する
-		return lstUnBalPay.stream().map(x -> acquireTemporaryHoliday(x)).filter(x -> x.isPresent()).map(x -> x.get())
-				.collect(Collectors.toList());
+		return lstUnBalPay.stream().map(x -> acquireTemporaryHoliday(require, x)).filter(x -> x.isPresent())
+				.map(x -> x.get()).collect(Collectors.toList());
 	}
 
 	// 1-1.確定代休から未相殺の代休を取得する
@@ -49,16 +55,28 @@ public class GetUnbalanceLeaveFixed {
 		// 取得した「代休管理データ」をを未相殺のドメインモデル「代休管理データ」として追加する
 		if (lstDayOffConfirm.size() > 0)
 			return lstDayOffConfirm;
-		return Collections.emptyList();
+		return new ArrayList<>();
 
 	}
 
 	// 1-3.暫定休出と紐付けをしない確定代休を取得する
-	public static Optional<AccumulationAbsenceDetail> acquireTemporaryHoliday(CompensatoryDayOffManaData unBalPay) {
-		// ドメインモデル「暫定休出代休紐付け管理」を取得する REPONSE 対応
+	public static Optional<AccumulationAbsenceDetail> acquireTemporaryHoliday(Require require,
+			CompensatoryDayOffManaData unBalPay) {
+		// ドメインモデル「暫定休出代休紐付け管理」を取得する
+		List<InterimBreakDayOffMng> interimTyingData = require.getDayOffByIdAndDataAtr(DataManagementAtr.INTERIM,
+				DataManagementAtr.CONFIRM, unBalPay.getComDayOffID());
+
 		// 未相殺日数と未相殺時間を設定する
 		double unOffsetDays = unBalPay.getRemainDays().v();
 		int unOffsetTimes = unBalPay.getRemainTimes().v();
+
+		// 未相殺日数と未相殺時間を設定する
+		if (!interimTyingData.isEmpty()) {
+			for (InterimBreakDayOffMng dt : interimTyingData) {
+				unOffsetDays -= dt.getUseDays().v();
+				unOffsetTimes -= dt.getUseTimes().v();
+			}
+		}
 		// 未相殺日数と未相殺時間をチェックする
 		if (unOffsetDays <= 0 && unOffsetTimes <= 0) {
 			return Optional.empty();
@@ -70,10 +88,18 @@ public class GetUnbalanceLeaveFixed {
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unBalPay.getRequireDays().v()),
 										Optional.of(new AttendanceTime(unBalPay.getRequiredTimes().v()))))
 						.unbalanceNumber(
-								new NumberConsecuVacation(new ManagementDataRemainUnit(unBalPay.getRemainDays().v()),
-										Optional.of(new AttendanceTime(unBalPay.getRemainTimes().v()))))
+								new NumberConsecuVacation(new ManagementDataRemainUnit(unOffsetDays),
+										Optional.of(new AttendanceTime(unOffsetTimes))))
 						.build();
 		return Optional.of(result);
+	}
+
+	// 追加用確定管理データをリストに追加する
+	public static void addDataFixManaMonth(FixedManagementDataMonth fixManaDataMonth,
+			List<CompensatoryDayOffManaData> lstUnBalPay) {
+		
+		lstUnBalPay.addAll(fixManaDataMonth.getCompenDayOffMagData());
+
 	}
 
 	public static interface Require {
@@ -81,6 +107,9 @@ public class GetUnbalanceLeaveFixed {
 		// ComDayOffManaDataRepository;
 		public List<CompensatoryDayOffManaData> getBySidYmd(String companyId, String employeeId,
 				GeneralDate startDateAggr);
+
+		public List<InterimBreakDayOffMng> getDayOffByIdAndDataAtr(DataManagementAtr breakAtr,
+				DataManagementAtr dayOffAtr, String dayOffId);
 	}
 
 }

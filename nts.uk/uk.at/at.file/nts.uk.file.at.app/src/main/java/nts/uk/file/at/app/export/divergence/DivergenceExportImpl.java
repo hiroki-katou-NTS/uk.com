@@ -37,8 +37,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTy
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeUseSet;
 import nts.uk.shr.com.context.AppContexts;

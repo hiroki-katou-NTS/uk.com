@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOutRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrGoout;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrGooutPK;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.AggregateGoOutRepository;
 
 /**
  * リポジトリ実装：集計外出

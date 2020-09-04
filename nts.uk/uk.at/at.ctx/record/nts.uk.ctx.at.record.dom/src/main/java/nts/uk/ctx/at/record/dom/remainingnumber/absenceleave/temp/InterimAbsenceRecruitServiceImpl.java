@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,12 +16,11 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.shared.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.GetVacationAddSet;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
@@ -70,7 +70,10 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 			targetWorkInfos = workInfoOfDailyList.get();
 		}
 		else {
-			targetWorkInfos = require.dailyWorkInfos(employeeId, period);
+			targetWorkInfos = require.dailyWorkInfos(employeeId, period)
+					.entrySet().stream()
+					.map(c -> new WorkInfoOfDailyPerformance(employeeId, c.getKey(), c.getValue()))
+					.collect(Collectors.toList());
 		}
 		if (targetWorkInfos.size() == 0) return;
 		

@@ -61,16 +61,6 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 		EmployeeReferenceRangeImport reuslt =  EmployeeReferenceRangeImport.valueOf(data.getAsInt());
 		return reuslt;
 	}
-
-	@Override
-	public EmployeeReferenceRangeImport getRangeByRoleID(String roleID) {
-		OptionalInt data = roleExportRepo.findEmpRangeByRoleID(roleID);
-		if(!data.isPresent()){
-			throw new RuntimeException("Can't get Role ID");
-		}
-		EmployeeReferenceRangeImport reuslt =  EmployeeReferenceRangeImport.valueOf(data.getAsInt());
-		return reuslt;
-	}
 	
 	
 

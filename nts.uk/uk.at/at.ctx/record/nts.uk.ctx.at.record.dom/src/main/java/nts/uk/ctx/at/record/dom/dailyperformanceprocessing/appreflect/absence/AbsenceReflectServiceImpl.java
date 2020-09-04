@@ -6,14 +6,16 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonCalculateOfAppReflectParam;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonProcessCheckService;
-import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.CommonReflectParameter;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.PreOvertimeReflectService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.workchange.WorkChangeCommonReflectPara;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
+import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -38,6 +40,8 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 	private JudgmentWorkTypeService judgmentService;
 	@Inject
 	private PreOvertimeReflectService preOTService;
+	@Inject 
+	private RecordDomRequireService requireService;
 
 	@Override
 	public void absenceReflect(WorkChangeCommonReflectPara param, boolean isPre) {
@@ -47,7 +51,8 @@ public class AbsenceReflectServiceImpl implements AbsenceReflectService{
 			WorkInfoOfDailyPerformance workInfor = new WorkInfoOfDailyPerformance(param.getCommon().getEmployeeId(), param.getCommon().getAppDate(), dailyInfor.getWorkInformation());
 			//1日休日の判断
 			if(workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode() != null
-					&& workTypeRepo.checkHoliday(workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode().v())) {
+					&& WorkTypeIsClosedService.checkHoliday(requireService.createRequire(),
+								workInfor.getWorkInformation().getRecordInfo().getWorkTypeCode().v())) {
 				return;
 			}
 			boolean isRecordWorkType = false;

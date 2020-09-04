@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.CarryForwardDayTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 
@@ -51,22 +52,22 @@ public class AcquisitionRemainNumAtStartCountTest {
 			{
 				require.getBySidYmd(anyString, anyString, (GeneralDate) any);
 				result = Arrays.asList(
-						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID, true,
+						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e133", CID, SID, false,
 								GeneralDate.ymd(2019, 11, 9), 1.0, 1, 1.0, 1),
-						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, true,
+						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e134", CID, SID, false,
 								GeneralDate.ymd(2019, 11, 10), 1.0, 1, 1.0, 1),
-						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e135", CID, SID, true,
+						new CompensatoryDayOffManaData("adda6a46-2cbe-48c8-85f8-c04ca554e135", CID, SID, false,
 								GeneralDate.ymd(2019, 11, 11), 1.0, 1, -1.0, -1));
 
 				require.getBySidYmd(anyString, anyString, (GeneralDate) any, (DigestionAtr) any);
 				result = Arrays.asList(
-						new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e136", CID, SID, true,
+						new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e136", CID, SID, false,
 								GeneralDate.ymd(2019, 11, 12), GeneralDate.max(), 1.0, 0, 1.0, 0,
 								DigestionAtr.UNUSED.value, 0, 0),
-						new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e137", CID, SID, true,
+						new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e137", CID, SID, false,
 								GeneralDate.ymd(2019, 11, 13), GeneralDate.max(), 1.0, 0, 1.0, 0,
 								DigestionAtr.UNUSED.value, 0, 0),
-						new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e138", CID, SID, true,
+						new LeaveManagementData("adda6a46-2cbe-48c8-85f8-c04ca554e138", CID, SID, false,
 								GeneralDate.ymd(2019, 11, 14), GeneralDate.max(), 1.0, 0, -1.0, -1,
 								DigestionAtr.UNUSED.value, 0, 0));
 			}
@@ -74,7 +75,8 @@ public class AcquisitionRemainNumAtStartCountTest {
 
 		List<AccumulationAbsenceDetail> lstAccuAbsenDetail = new ArrayList<>();
 		CarryForwardDayTimes resultActual = AcquisitionRemainNumAtStartCount.acquisition(require, CID, SID,
-				GeneralDate.ymd(2019, 11, 01), true, lstAccuAbsenDetail);
+				GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2019, 11, 30), true, lstAccuAbsenDetail,
+				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 		assertThat(resultActual.getCarryForwardDays()).isEqualTo(0.0);
 		assertThat(resultActual.getCarryForwardTime()).isEqualTo(-2);
 
@@ -84,19 +86,19 @@ public class AcquisitionRemainNumAtStartCountTest {
 				x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
 				x -> x.getUnbalanceNumber().getTime()).containsExactly(
 
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.CONFIRMED, true,
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e133", SID, MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 9)), 1.0, Optional.of(new AttendanceTime(1)),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(1))),
 
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e134", SID, MngDataStatus.CONFIRMED, true,
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e134", SID, MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0, Optional.of(new AttendanceTime(1)),
 								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(1))),
 
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, MngDataStatus.CONFIRMED, true,
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e136", SID, MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 12)), 1.0, Optional.of(new AttendanceTime(0)), OccurrenceDigClass.OCCURRENCE,
 								1.0, Optional.of(new AttendanceTime(0))),
 
-						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e137", SID, MngDataStatus.CONFIRMED, true,
+						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e137", SID, MngDataStatus.CONFIRMED, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 13)), 1.0, Optional.of(new AttendanceTime(0)), OccurrenceDigClass.OCCURRENCE,
 								1.0, Optional.of(new AttendanceTime(0))));
 

@@ -30,10 +30,13 @@ public class TimeLeavingWork extends DomainObject{
 	/*
 	 * 勤務NO
 	 */
+	@Getter
 	private WorkNo workNo;
 	//出勤
+	@Getter
 	private Optional<TimeActualStamp> attendanceStamp;
 	//退勤
+	@Getter
 	private Optional<TimeActualStamp> leaveStamp;
 	//遅刻を取り消した
 	private boolean canceledLate;
@@ -43,8 +46,10 @@ public class TimeLeavingWork extends DomainObject{
 	
 	private TimeSpanForCalc timespan;
 	
-
-
+	
+	public TimeSpanForCalc getTimespan() {
+		return this.craeteTimeSpan();
+	}
 	
 	public TimeLeavingWork(WorkNo workNo, TimeActualStamp attendanceStamp, TimeActualStamp leaveStamp) {
 		super();
@@ -186,4 +191,41 @@ public class TimeLeavingWork extends DomainObject{
 		CanceledEarlyLeave = canceledEarlyLeave;
 	}
 	
+	/**
+	 * 打刻（出勤）を取得する
+	 * @return 出勤
+	 */
+	public Optional<WorkStamp> getStampOfAttendanceStamp() {
+		if(!this.attendanceStamp.isPresent()) return Optional.empty();
+		if(!this.attendanceStamp.get().getStamp().isPresent()) return Optional.empty();
+		return Optional.of(this.attendanceStamp.get().getStamp().get());
+	}
+	
+	/**
+	 * 打刻（退勤）を取得する
+	 * @return 退勤
+	 */
+	public Optional<WorkStamp> getStampOfleaveStamp() {
+		if(!this.leaveStamp.isPresent()) return Optional.empty();
+		if(!this.leaveStamp.get().getStamp().isPresent()) return Optional.empty();
+		return Optional.of(this.leaveStamp.get().getStamp().get());
+	}
+	
+	/**
+	 * 出勤時刻（丸め無し）を取得する
+	 * @return 出勤時刻（丸め無し）
+	 */
+	public Optional<TimeWithDayAttr> getAttendanceStampTimeWithDay() {
+		if(!this.getStampOfAttendanceStamp().isPresent()) return Optional.empty();
+		return this.getStampOfAttendanceStamp().get().getTimeDay().getTimeWithDay();
+	}
+	
+	/**
+	 * 退勤時刻（丸め無し）を取得する
+	 * @return 退勤時刻（丸め無し）
+	 */
+	public Optional<TimeWithDayAttr> getleaveStampTimeWithDay() {
+		if(!this.getStampOfleaveStamp().isPresent()) return Optional.empty();
+		return this.getStampOfleaveStamp().get().getTimeDay().getTimeWithDay();
+	}
 }

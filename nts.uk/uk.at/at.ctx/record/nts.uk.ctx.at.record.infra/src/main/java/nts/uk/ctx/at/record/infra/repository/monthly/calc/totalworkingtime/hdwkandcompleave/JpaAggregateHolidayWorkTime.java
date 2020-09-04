@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.hdwkandcompleave.KrcdtMonAggrHdwkTimePK;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTimeRepository;
 
 /**
  * リポジトリ実装：集計休出時間

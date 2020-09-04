@@ -11,7 +11,6 @@ import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.personnelcostsetting.PersonnelCostSettingImport;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.kmk013_splitdomain.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -35,6 +34,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.b
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.SettingOfFlexWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.DeductLeaveEarly;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryOccurrenceSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -366,9 +366,9 @@ public class ActualWorkingTimeOfDaily {
 //		if((recordClass.getPersonalInfo().getWorkingSystem().isRegularWork() || recordClass.getPersonalInfo().getWorkingSystem().isVariableWorkingTimeWork()){
 //			/*緊急対応　固定勤務時　就業時間帯or計算設定で遅刻早退控除しない　なら、休憩未取得処理飛ばす*/
 
-			if(recordClass.getWorkRegularAdditionSet() != null
-			&& recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()){
-				boolean lateEarlyDeductFlag = recordClass.getWorkRegularAdditionSet().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(recordClass.getWorkTimezoneCommonSet());
+			if(recordClass.getIntegrationOfWorkTime().getWorkTimeSetting().getWorkTimeDivision().getWorkTimeForm().isFixed()
+			&& recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()){
+				boolean lateEarlyDeductFlag = recordClass.getAddSetting().getVacationCalcMethodSet().getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(recordClass.getWorkTimezoneCommonSet());
 				if(!lateEarlyDeductFlag) return totalWorkingTime; 
 			}
 		

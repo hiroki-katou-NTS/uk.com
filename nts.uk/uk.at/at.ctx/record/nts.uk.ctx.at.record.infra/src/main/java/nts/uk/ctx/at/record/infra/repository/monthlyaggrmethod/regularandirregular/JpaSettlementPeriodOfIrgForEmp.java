@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriod;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.SettlementPeriodOfIrgForEmpRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employment.KrcstMonsetEmpIrgSetl;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employment.KrcstMonsetEmpIrgSetlPK;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.regularandirregular.KrcstMonsetIrgSetl;
+import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.regularandirregular.SettlementPeriod;
+import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.regularandirregular.SettlementPeriodOfIrgForEmpRepository;
 
 /**
  * リポジトリ実装：雇用の変形労働の精算期間

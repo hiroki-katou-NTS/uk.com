@@ -72,7 +72,8 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 			return true;
 		}
 		//勤務種類が休出振出かの判断
-		if(workTypeService.checkWorkTypeIsClosed(dailyInfor.getWorkInformation().getScheduleInfo().getWorkTypeCode().v())) {
+		if(WorkTypeIsClosedService.checkWorkTypeIsClosed(requireService.createRequire(), 
+				dailyInfor.getWorkInformation().getScheduleInfo().getWorkTypeCode().v())) {
 			return false;
 		} else {
 			return true;

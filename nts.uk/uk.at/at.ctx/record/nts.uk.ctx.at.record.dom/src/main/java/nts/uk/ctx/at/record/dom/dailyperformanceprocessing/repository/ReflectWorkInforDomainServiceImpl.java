@@ -79,14 +79,12 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExEmploymentHistor
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHisItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.specificdatesetting.RecSpecificDateSettingImport;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.enu.DailyDomainGroup;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.WorkingTimesheetCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
@@ -1222,7 +1220,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						affiliationInforOfDailyPerfor.getWplID(),
 						affiliationInforOfDailyPerfor.getClsCode(),
 						affiliationInforOfDailyPerfor.getBusinessTypeCode().isPresent()?affiliationInforOfDailyPerfor.getBusinessTypeCode().get():null,
-						 bonusPaySetting.get().getCode());
+						bonusPaySetting.get().getCode());
 			}
 
 			// 計算区分を日別実績に反映する

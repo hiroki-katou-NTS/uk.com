@@ -16,26 +16,18 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
+import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemService;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
-import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -45,17 +37,24 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
+import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
-import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -119,6 +118,15 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	/** リポジトリ：就業計算と集計実行ログ */
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
+	
+	/** 勤怠項目と勤怠項目の実際の値のマッピング */
+	@Inject
+	private AttendanceItemConvertFactory attendanceItemConvertFactory;
+		
+	/** 社員設定管理ファクトリー */
+	@Inject
+	private FactoryManagePerPersonDailySet factoryManagePerPersonDailySet;
+	
 	
 	private Optional<BsEmploymentHistoryImport> c(String companyId, String employeeId, GeneralDate targetDate) {
 		return this.shareEmploymentAdapter.findEmploymentHistory(companyId, employeeId, targetDate);
@@ -364,7 +372,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 													 List<ClosureStatusManagement> closureList,
 													 Optional<String> logId ) {
 		/***会社共通処理***/
-		if(integrationOfDailys.isEmpty()) return new ManageProcessAndCalcStateResult(ProcessState.SUCCESS, integrationOfDailys.stream().map(tc -> ManageCalcStateAndResult.failCalc(tc)).collect(Collectors.toList()));
+		if(integrationOfDailys.isEmpty()) 
+			return new ManageProcessAndCalcStateResult(ProcessState.SUCCESS, integrationOfDailys.stream().map(tc -> ManageCalcStateAndResult.failCalc(tc, attendanceItemConvertFactory)).collect(Collectors.toList()));
 		//社員毎の実績に纏める
 		Map<String,List<IntegrationOfDaily>> recordPerEmpId = getPerEmpIdRecord(integrationOfDailys);
 		String comanyId = AppContexts.user().companyId();
@@ -385,6 +394,9 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 
 		/***会社共通処理***/
 		List<ManageCalcStateAndResult> returnList = new ArrayList<>();
+		
+		
+		
 		//社員ごとの処理
 		for(Entry<String, List<IntegrationOfDaily>> record: recordPerEmpId.entrySet()) {
 			if(logId.isPresent()) {
@@ -440,7 +452,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @return　実績データ
 	 */
 	@SuppressWarnings("rawtypes")
-	private List<ManageCalcStateAndResult> calcOnePerson(CalculateOption calcOption, String comanyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
+	private List<ManageCalcStateAndResult> calcOnePerson(CalculateOption calcOption, String companyId, List<IntegrationOfDaily> recordList, ManagePerCompanySet companyCommonSetting,
 									List<ClosureStatusManagement> closureByEmpId){
 		
 		//社員の期間取得
@@ -472,24 +484,18 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			//nowIntegrationの労働制取得
 			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(record.getYmd(),record.getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
-				WorkingConditionItem workCondition = correctWorkCondition(record, nowWorkingItem);
 				
-				
-				DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(requireService.createRequire(), new CacheCarrier(), comanyId,
-																		record.getAffiliationInfor().getEmploymentCode().toString(),
-																		record.getEmployeeId(),
-																		record.getYmd(),
-																		workCondition.getLaborSystem(),
-																		companyCommonSetting.getUsageSetting());
-				if(dailyUnit == null || dailyUnit.getDailyTime() == null)
-					dailyUnit = new DailyUnit(new TimeOfDay(0));
+				Optional<ManagePerPersonDailySet> personSetting = factoryManagePerPersonDailySet.create(companyId, companyCommonSetting, record, nowWorkingItem.get().getValue());
+				if(!personSetting.isPresent())
+					continue;
+		
 				//実績計算
 				ManageCalcStateAndResult result = calculate.calculate(calcOption, record, 
-													   companyCommonSetting,
-													   new ManagePerPersonDailySet(Optional.of(workCondition), dailyUnit),
-													   findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
-													   findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
-													   
+													companyCommonSetting,
+													personSetting.get(),
+													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
+													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
+
 				if(result.isCalc()) {
 					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
 				}
@@ -630,7 +636,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @return
 	 */
 	@Override
-	public List<IntegrationOfDaily> errorCheck(List<IntegrationOfDaily> integrationList){
+	public List<IntegrationOfDaily> errorCheck(CompanyId companyId, List<IntegrationOfDaily> integrationList){
 		if(integrationList.isEmpty()) return integrationList;
 		//会社共通の設定を
 		val companyCommonSetting = commonCompanySettingForCalc.getCompanySetting();
@@ -649,28 +655,127 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		//労働制マスタ取得
 		val masterData = workingConditionItemRepository.getBySidAndPeriodOrderByStrDWithDatePeriod(integraListByRecordAndEmpId,maxGeneralDate,minGeneralDate);
 		List<IntegrationOfDaily> returnList = new ArrayList<>();
-		for(IntegrationOfDaily integration : integrationList) {
+		for(IntegrationOfDaily record : integrationList) {
 
 			//nowIntegrationの労働制取得
-			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(integration.getYmd(),integration.getEmployeeId());
+			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(record.getYmd(),record.getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
-				DailyUnit dailyUnit = DailyStatutoryLaborTime.getDailyUnit(requireService.createRequire(), new CacheCarrier(), AppContexts.user().companyId(),
-																		integration.getAffiliationInfor().getEmploymentCode().toString(),
-																		integration.getEmployeeId(),
-																		integration.getYmd(),
-																		nowWorkingItem.get().getValue().getLaborSystem());
-				if(dailyUnit == null || dailyUnit.getDailyTime() == null)
-					dailyUnit = new DailyUnit(new TimeOfDay(0));
-				else {
-					returnList.add(calculationErrorCheckService.errorCheck(integration, 
-																		   new ManagePerPersonDailySet(Optional.of(nowWorkingItem.get().getValue()), dailyUnit),
-																		   companyCommonSetting));
-				}
+				Optional<ManagePerPersonDailySet> personSetting = factoryManagePerPersonDailySet.create(companyId.v(), companyCommonSetting, record, nowWorkingItem.get().getValue());
+				if(!personSetting.isPresent())
+					continue;
+				
+				returnList.add(calculationErrorCheckService.errorCheck(record, 
+																	personSetting.get(),
+																	companyCommonSetting));
 			}
 			else {
-				returnList.add(integration);
+				returnList.add(record);
 			}
 		}
 		return returnList;
 	}
+	
+//	/**
+//	 * 共有コンテナを使った勤務種類の取得
+//	 * 
+//	 * @param shareContainer
+//	 * @param WorkTypeCode
+//	 * @param companyId
+//	 * @return
+//	 */
+//	private Optional<WorkType> getWorkTypeFromShareContainer(MasterShareContainer<String> shareContainer,
+//			String companyId, String WorkTypeCode) {
+//		// val x = shareContainer.getShared("WorkType" + WorkTypeCode);
+//		val workType = shareContainer.getShared("WorkType" + WorkTypeCode,
+//				() -> workTypeRepository.findNoAbolishByPK(companyId, WorkTypeCode));
+//		if (workType.isPresent()) {
+//			return Optional.of(workType.get().clone());
+//		}
+//		return Optional.empty();
+//	}
+//	
+//	/**
+//	 * 就業時間帯コードの取得 勤務情報 > 労働条件 > 就業時間帯無と判定
+//	 * 
+//	 * @param workInfo
+//	 * @param personCommonSetting
+//	 * @param workType
+//	 * @return
+//	 */
+//	private Optional<WorkTimeCode> decisionWorkTimeCode(WorkInfoOfDailyPerformance workInfo,
+//			ManagePerPersonDailySet personCommonSetting, Optional<WorkType> workType) {
+//
+//		if (workInfo == null || workInfo.getRecordInfo() == null
+//				|| workInfo.getRecordInfo().getWorkTimeCode() == null) {
+//			if (personCommonSetting.getPersonInfo().isPresent()) {
+//				return personCommonSetting.getPersonInfo().get().getWorkCategory().getWeekdayTime().getWorkTimeCode();
+//			}
+//			return Optional.empty();
+//		}
+//		return Optional.of(workInfo.getRecordInfo().getWorkTimeCode());
+//	}
+//
+//	private Optional<PredetermineTimeSetForCalc> getPredByPersonInfo(Optional<WorkTimeCode> workTimeCode,
+//			MasterShareContainer<String> shareContainer) {
+//		if (!workTimeCode.isPresent())
+//			return Optional.empty();
+//		// val predSetting =
+//		// predetemineTimeSetRepository.findByWorkTimeCode(AppContexts.user().companyId(),
+//		// workTimeCode.get().toString());
+//		val predSetting = getPredetermineTimeSetFromShareContainer(shareContainer, AppContexts.user().companyId(),
+//				workTimeCode.get().toString());
+//		if (!predSetting.isPresent())
+//			return Optional.empty();
+//		return Optional.of(PredetermineTimeSetForCalc.convertFromAggregatePremiumTime(predSetting.get()));
+//
+//	}
+//	
+//	/**
+//	 * 共有コンテナを使った所定時間帯設定の取得
+//	 * 
+//	 * @param shareContainer
+//	 * @param companyId
+//	 * @param workTimeCode
+//	 * @return
+//	 */
+//	private Optional<PredetemineTimeSetting> getPredetermineTimeSetFromShareContainer(
+//			MasterShareContainer<String> shareContainer, String companyId, String workTimeCode) {
+//		val predSet = shareContainer.getShared("PredetemineSet" + workTimeCode,
+//				() -> predetemineTimeSetRepository.findByWorkTimeCode(companyId, workTimeCode));
+//		if (predSet.isPresent()) {
+//			return Optional.of(predSet.get().clone());
+//		}
+//		return Optional.empty();
+//	}
+//	
+//	/**
+//	 * @param map 各加算設定
+//	 * @param workingSystem 労働制
+//	 * @return 加算設定
+//	 */
+//	private AddSetting getAddSetting(String companyID, Map<String, AggregateRoot> map, WorkingSystem workingSystem) {
+//		
+//		switch(workingSystem) {
+//		case REGULAR_WORK:
+//			AggregateRoot workRegularAdditionSet = map.get("regularWork");
+//			return workRegularAdditionSet != null
+//					?(WorkRegularAdditionSet) workRegularAdditionSet
+//					: new WorkRegularAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+//		
+//		case FLEX_TIME_WORK:
+//			AggregateRoot workFlexAdditionSet = map.get("flexWork");
+//			return workFlexAdditionSet != null
+//					?(WorkFlexAdditionSet) workFlexAdditionSet
+//					: new WorkFlexAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+//			
+//		case VARIABLE_WORKING_TIME_WORK:
+//			AggregateRoot workDeformedLaborAdditionSet = map.get("irregularWork");
+//			return workDeformedLaborAdditionSet != null
+//					? (WorkDeformedLaborAdditionSet) workDeformedLaborAdditionSet
+//					: new WorkDeformedLaborAdditionSet(companyID, HolidayCalcMethodSet.emptyHolidayCalcMethodSet());
+//		
+//		default:
+//			throw new RuntimeException("unknown WorkingSystem");
+//		}
+//	}
 }

@@ -6,16 +6,16 @@ package nts.uk.ctx.at.record.app.find.optitem;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.optitem.CalcResultRange;
-import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemName;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
-import nts.uk.ctx.at.record.dom.optitem.UnitOfOptionalItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.optitem.CalcResultRange;
+import nts.uk.ctx.at.shared.dom.optitem.EmpConditionAtr;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemName;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemNo;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemSetMemento;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemUsageAtr;
+import nts.uk.ctx.at.shared.dom.optitem.PerformanceAtr;
+import nts.uk.ctx.at.shared.dom.optitem.UnitOfOptionalItem;
 
 /**
  * The Class OptionalItemHeaderDto.

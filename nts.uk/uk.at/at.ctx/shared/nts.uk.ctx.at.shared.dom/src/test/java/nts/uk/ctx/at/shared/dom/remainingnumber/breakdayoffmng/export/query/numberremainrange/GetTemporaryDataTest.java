@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.num
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +27,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.BreakDayOffRemainMngRefactParam;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SubstituteHolidayAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.VacationDetails;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakMng;
@@ -114,7 +117,7 @@ public class GetTemporaryDataTest {
 		BreakDayOffRemainMngRefactParam inputParam = new BreakDayOffRemainMngRefactParam(CID, SID,
 				new DatePeriod(GeneralDate.ymd(2019, 11, 01), GeneralDate.ymd(2020, 10, 31)), true,
 				GeneralDate.ymd(2019, 11, 30), false, interimMng, Optional.empty(), Optional.empty(), breakMng,
-				dayOffMng, holidayAggrResult);
+				dayOffMng, holidayAggrResult, new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
 
 		new Expectations() {
 			{
@@ -132,24 +135,24 @@ public class GetTemporaryDataTest {
 				require.getBreakDayOffMng("077a8929-3df0-4fd6-859e-29e615a921ea", anyBoolean, (DataManagementAtr) any);
 				result = Arrays.asList(
 						new InterimBreakDayOffMng("", DataManagementAtr.INTERIM, "077a8929-3df0-4fd6-859e-29e615a921ea",
-								DataManagementAtr.INTERIM, new UseTime(0), new UseDay(0d), SelectedAtr.AUTOMATIC));
+								DataManagementAtr.INTERIM, new UseTime(240), new UseDay(0.5), SelectedAtr.AUTOMATIC));
 
 				require.findComLeavEmpSet(CID, anyString);
-				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.YES, "02");
+				result = NumberRemainVacationLeaveRangeQueryTest.createComLeav(ManageDistinct.YES, ManageDistinct.YES,
+						"02");
 
 			}
 
 		};
 		List<AccumulationAbsenceDetail> resultActual = GetTemporaryData.process(require, inputParam);
 
-		assertThat(resultActual)
-				.extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
-						x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
-						x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
-						x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
-						x -> x.getUnbalanceNumber().getTime(),
-						x -> x.getUnbalanceVacation().isPresent() ? x.getUnbalanceVacation().get().getDeadline()
-								: Optional.empty())
+		assertThat(resultActual).extracting(x -> x.getManageId(), x -> x.getEmployeeId(), x -> x.getDataAtr(),
+				x -> x.getDateOccur().isUnknownDate(), x -> x.getDateOccur().getDayoffDate(),
+				x -> x.getNumberOccurren().getDay().v(), x -> x.getNumberOccurren().getTime(),
+				x -> x.getOccurrentClass(), x -> x.getUnbalanceNumber().getDay().v(),
+				x -> x.getUnbalanceNumber().getTime(),
+				x -> x.getOccurrentClass() == OccurrenceDigClass.OCCURRENCE ? ((UnbalanceVacation) x).getDeadline()
+						: Optional.empty())
 				.containsExactly(Tuple.tuple("62d542c3-4b79-4bf3-bd39-7e7f06711c34", SID, MngDataStatus.RECORD, false,
 						Optional.of(GeneralDate.ymd(2019, 11, 7)), 1.0, Optional.of(new AttendanceTime(0)),
 						OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(0)), Optional.empty()),
@@ -163,16 +166,16 @@ public class GetTemporaryDataTest {
 								Optional.empty()),
 						Tuple.tuple("077a8929-3df0-4fd6-859e-29e615a921ea", SID, MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 10)), 1.0, Optional.of(new AttendanceTime(480)),
-								OccurrenceDigClass.DIGESTION, 1.0, Optional.of(new AttendanceTime(480)),
+								OccurrenceDigClass.DIGESTION, 0.5, Optional.of(new AttendanceTime(240)),
 								Optional.empty()),
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e132", SID, MngDataStatus.SCHEDULE, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 05)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
-								GeneralDate.ymd(2020, 9, 06)),
+								GeneralDate.ymd(2020, 02, 05)),
 						Tuple.tuple("adda6a46-2cbe-48c8-85f8-c04ca554e333", SID, MngDataStatus.RECORD, false,
 								Optional.of(GeneralDate.ymd(2019, 11, 6)), 1.0, Optional.of(new AttendanceTime(480)),
 								OccurrenceDigClass.OCCURRENCE, 1.0, Optional.of(new AttendanceTime(480)),
-								GeneralDate.ymd(2019, 9, 06)));
+								GeneralDate.ymd(2020, 02, 06)));
 
 	}
 

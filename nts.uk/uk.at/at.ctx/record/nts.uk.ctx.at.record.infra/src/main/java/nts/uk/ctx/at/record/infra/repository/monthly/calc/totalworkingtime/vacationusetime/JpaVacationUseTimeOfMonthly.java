@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.vacationusetime.KrcdtMonVactUseTime;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthlyRepository;
 
 /**
  * リポジトリ実装：月別実績の休暇使用時間

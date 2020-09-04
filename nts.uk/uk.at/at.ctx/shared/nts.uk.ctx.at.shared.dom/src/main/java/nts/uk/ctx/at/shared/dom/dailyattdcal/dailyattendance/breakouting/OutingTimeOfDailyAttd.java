@@ -6,8 +6,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.BreakClassification;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.DeductionClassification;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.deductiontime.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezone.other.DeductionAtr;
@@ -74,17 +72,15 @@ public class OutingTimeOfDailyAttd {
 			if((fluidprefixBreakTimeSet.isUsePrivateGoOutRest() && deductionItem.getGoOutReason().get().isPrivate())
 				||(fluidprefixBreakTimeSet.isUseAssoGoOutRest() && deductionItem.getGoOutReason().get().isUnion())) {
 				returnList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed(deductionItem.getTimeSheet(),
-																							  deductionItem.getCalcrange(),
+																							  deductionItem.getRounding(),
 																							  deductionItem.getRecordedTimeSheet(),
 																							  deductionItem.getDeductionTimeSheet(),
-																							  deductionItem.getBonusPayTimeSheet(),
-																							  deductionItem.getSpecBonusPayTimesheet(),
-																							  deductionItem.getMidNightTimeSheet(),
 																							  deductionItem.getWorkingBreakAtr(),
 																							  deductionItem.getGoOutReason(),
-																							  Finally.of(BreakClassification.BREAK_STAMP),
-																							  Optional.empty(),
-																							  DeductionClassification.BREAK,deductionItem.getChildCareAtr()));
+																							  deductionItem.getBreakAtr(),
+																							  deductionItem.getShortTimeSheetAtr(),
+																							  DeductionClassification.BREAK,
+																							  deductionItem.getChildCareAtr()));
 			}
 			//修正しない
 			else {

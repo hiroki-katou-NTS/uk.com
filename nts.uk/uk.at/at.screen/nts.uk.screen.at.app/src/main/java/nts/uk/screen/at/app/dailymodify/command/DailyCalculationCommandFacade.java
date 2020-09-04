@@ -29,22 +29,16 @@ import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.app.service.dailycheck.CheckCalcMonthService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CommonCompanySettingForCalc;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
-
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.AggregateSpecifiedDailys;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.screen.at.app.dailymodify.command.common.ProcessCommonCalc;
 import nts.uk.screen.at.app.dailymodify.query.DailyModifyQuery;
