@@ -492,6 +492,15 @@ public class ProgramsManager {
      */
     public static final Program KDL010A = new Program(WebAppId.AT, ProgramIdConsts.KDL010A, "KDL010_10",
             "/view/kdl/010/a/index.xhtml");
+    
+    /**
+     * KDL017A
+     */
+    public static final Program KDL017A = new Program(WebAppId.AT, ProgramIdConsts.KDL017A, "KDL017_1",
+            "/view/kdl/017/a/single.xhtml");
+    public static final Program KDL017B = new Program(WebAppId.AT, ProgramIdConsts.KDL017B, "KDL017_1",
+            "/view/kdl/017/a/multiple.xhtml");
+
     /**
      * KDL021A
      */
@@ -521,8 +530,11 @@ public class ProgramsManager {
     /**
      * KDL020A
      */
+
     public static final Program KDL020A = new Program(WebAppId.AT, ProgramIdConsts.KDL020A, "KDL020_1",
-            "/view/kdl/020/a/index.xhtml");
+            "/view/kdl/020/a/single.xhtml");
+    public static final Program KDL020B = new Program(WebAppId.AT, ProgramIdConsts.KDL020B, "KDL020_1",
+            "/view/kdl/020/a/mutil.xhtml");
     ////////////////////
     /**
      * KBT002A
