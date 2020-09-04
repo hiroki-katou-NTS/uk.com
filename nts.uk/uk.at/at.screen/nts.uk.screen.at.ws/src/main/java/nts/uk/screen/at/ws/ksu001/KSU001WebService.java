@@ -1,7 +1,5 @@
 package nts.uk.screen.at.ws.ksu001;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -11,14 +9,13 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.ksu001.changepage.ChangePageParam;
 import nts.uk.screen.at.app.ksu001.changepage.GetDataWhenChangePage;
 import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
-import nts.uk.screen.at.app.ksu001.extracttargetemployees.EmployeeInformationDto;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthDto;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthFinder;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteParam;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteResult;
+import nts.uk.screen.at.app.ksu001.orderemployee.DataAfterSortEmpDto;
 import nts.uk.screen.at.app.ksu001.orderemployee.GetDataAfterSortEmp;
-import nts.uk.screen.at.app.ksu001.orderemployee.SortEmployees;
 import nts.uk.screen.at.app.ksu001.start.ChangeMonthParam;
 import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001;
@@ -94,7 +91,7 @@ public class KSU001WebService extends WebService{
 
 	@POST
 	@Path("order-employee")
-	public List<EmployeeInformationDto> orderEmployee(OrderEmployeeParam param) {
+	public DataAfterSortEmpDto orderEmployee(OrderEmployeeParam param) {
 		return sortEmployees.getData(param);
 	}
 }

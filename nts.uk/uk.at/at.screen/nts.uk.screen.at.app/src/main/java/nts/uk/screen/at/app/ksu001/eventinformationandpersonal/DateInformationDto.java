@@ -43,8 +43,8 @@ public class DateInformationDto {
 		this.dayOfWeek = domain.getDayOfWeek().value;
 		this.isHoliday = domain.isHoliday();
 		this.isSpecificDay = domain.isSpecificDay();
-		this.optWorkplaceEventName = domain.getOptWorkplaceEventName().isPresent() ? domain.getOptWorkplaceEventName().get().toString() : "";
-		this.optCompanyEventName = domain.getOptCompanyEventName().isPresent() ? domain.getOptCompanyEventName().get().toString() : "";
+		this.optWorkplaceEventName = domain.getOptWorkplaceEventName().isPresent() ? domain.getOptWorkplaceEventName().get().toString() : I18NText.getText("KSU001_4019");
+		this.optCompanyEventName = domain.getOptCompanyEventName().isPresent() ? domain.getOptCompanyEventName().get().toString() : I18NText.getText("KSU001_4019");
 		this.listSpecDayNameWorkplace = domain.getListSpecDayNameWorkplace().stream().map(x -> {
 			if (x != null) {
 				return x.toString();
@@ -90,7 +90,7 @@ public class DateInformationDto {
 					htmlTooltip.append("</td>");
 
 					htmlTooltip.append("<td>");
-					htmlTooltip.append(I18NText.getText("KSU001_4018") + " ");
+					htmlTooltip.append(I18NText.getText("KSU001_4018") + " " + I18NText.getText("KSU001_4019"));
 					htmlTooltip.append("</td>");
 				htmlTooltip.append("</tr>");
 			} else {
@@ -126,7 +126,7 @@ public class DateInformationDto {
 					htmlTooltip.append("</td>");
 
 					htmlTooltip.append("<td>");
-					htmlTooltip.append(I18NText.getText("KSU001_4018") + " ");
+					htmlTooltip.append(I18NText.getText("KSU001_4018") + " " + I18NText.getText("KSU001_4019"));
 					htmlTooltip.append("</td>");
 				htmlTooltip.append("</tr>");
 			} else {
