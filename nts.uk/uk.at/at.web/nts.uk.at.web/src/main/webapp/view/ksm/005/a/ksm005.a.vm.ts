@@ -614,7 +614,7 @@ module nts.uk.at.view.ksm005.a {
 		        nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
 			        let childData = nts.uk.ui.windows.getShared('childData');
 			        service.getWorkStyle(childData.selectedWorkTypeCode, childData.selectedWorkTimeCode).done(data => {
-                        if(data.typeColor == TypeColor.HOLIDAY) {
+                        if(data.typeColor == TypeColor.HOLIDAY  ) {
                             self.workStyle = TypeColor.HOLIDAY_COLOR
                         } else if(data.typeColor == TypeColor.ATTENDANCE) {
                             self.workStyle = TypeColor.ATTENDANCE_COLOR
@@ -825,9 +825,9 @@ module nts.uk.at.view.ksm005.a {
         }
         
         export class TypeColor {
-            static HOLIDAY = 0;
+            static HOLIDAY = 1;
             static HOLIDAY_COLOR = "#ff0000";
-            static ATTENDANCE = 1;
+            static ATTENDANCE = 0;
             static ATTENDANCE_COLOR = "#0000ff";
             static HALF_DAY_WORK = 2;
             static HALF_DAY_WORK_COLOR = '#FF7F27';
