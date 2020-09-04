@@ -42,10 +42,6 @@ public class BentoMenuSetScreenProcessor {
             throw new BusinessException("Msg_1848");
         }
 
-        bentomenuJoinBentoDtos = reservationSettingDto.operationDistinction == 0 ?
-                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode == null).collect(Collectors.toList()) :
-                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode != null).collect(Collectors.toList());
-
         return BentoJoinReservationSetting.setData(bentomenuJoinBentoDtos,reservationSettingDto);
     }
 

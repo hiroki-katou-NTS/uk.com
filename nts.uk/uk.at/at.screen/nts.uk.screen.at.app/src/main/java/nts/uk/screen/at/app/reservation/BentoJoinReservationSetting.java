@@ -8,6 +8,7 @@ import nts.gul.collection.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -41,7 +42,11 @@ public class BentoJoinReservationSetting {
         if (bentomenuJoinBentoDtos == null || CollectionUtil.isEmpty(bentomenuJoinBentoDtos)) return null;
         List<BentoDto> bentoDtos = new ArrayList<>();
 
-        for(BentomenuJoinBentoDto x : bentomenuJoinBentoDtos){
+        List<BentomenuJoinBentoDto> result = bentoReservationSettingDto.operationDistinction == 0 ?
+                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode == null).collect(Collectors.toList()) :
+                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode != null).collect(Collectors.toList());
+
+        for(BentomenuJoinBentoDto x : result){
             bentoDtos.add(new BentoDto(
                     x.getFrameNo(),
                     x.getBentoName(),
