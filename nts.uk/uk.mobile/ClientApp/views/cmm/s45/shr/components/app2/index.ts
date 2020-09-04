@@ -81,7 +81,7 @@ export class CmmS45ComponentsApp2Component extends Vue {
 
         let workTypeCode = params.appWorkChange.opWorkTypeCD;
         let workType = _.find(params.appWorkChangeDispInfo.workTypeLst, (item: any) => item.workTypeCode == workTypeCode);
-        let workTypeName = workType ? workType.abbreviationName : this.$i18n('KAFS07_10');
+        let workTypeName = workType ? workType.name : this.$i18n('KAFS07_10');
         this.$app().workType = workTypeCode + '  ' + workTypeName;
 
         let workTimeCode = params.appWorkChange.opWorkTimeCD;
