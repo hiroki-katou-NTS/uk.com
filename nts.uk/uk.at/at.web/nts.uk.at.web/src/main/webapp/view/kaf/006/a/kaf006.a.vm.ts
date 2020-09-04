@@ -1097,7 +1097,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 lstid.push(emp.id);
             });
             let param = {employeeIds: lstid.length > 0 ? lstid : [self.employeeID()],
-                        baseDate: moment(new Date()).format("YYYY/MM/DD")}
+                        baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')}
             setShared('KDL029_PARAM', param);
             modal("/view/kdl/029/a/index.xhtml");
         }
@@ -1119,7 +1119,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
                 modal("/view/kdl/005/a/single.xhtml");
             }
         }
-        
+
         checkBeforeRegister() {
             let self = this;
             self.checkDisplayEndDate(self.displayEndDateFlg());
