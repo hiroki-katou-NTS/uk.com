@@ -1,0 +1,13 @@
+.control-label {
+  overflow: hidden;
+  padding-left: unset;
+  max-height: 35px;
+  line-height: 35px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  border-left: unset;
+}
+#bottom-label {
+  line-height: 1em; 
+  height: 2em;
+}

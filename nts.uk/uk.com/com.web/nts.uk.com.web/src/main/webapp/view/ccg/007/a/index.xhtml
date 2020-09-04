@@ -21,7 +21,7 @@
 					<table>
 						<tr>
 							<td style="width: 100px; padding: 10px;">
-								<div data-bind="ntsFormLabel: {required: false}">
+								<div data-bind="ntsLabel">
 									<label data-bind="text: '#{i18n.getText('CCG007_1')}'"><br /></label>
 								</div>
 							</td>
@@ -41,7 +41,7 @@
 						</tr>
 						<tr>
 							<td style="width: 100px; padding: 10px;">
-								<div data-bind="ntsFormLabel: {required: false}">
+								<div data-bind="ntsLabel">
 									<label data-bind="text: '#{i18n.getText('CCG007_2')}'"><br /></label>
 								</div>
 							</td>
@@ -62,8 +62,8 @@
 					</table>
 				</div>
 			</div>
-			<div id="functions-area-bottom">
-				<div style="padding-bottom: 5px;">
+			<div id="functions-area-bottom" style="height: 75px;">
+				<div style="padding: 0px 10px 5px 10px; text-align: left; line-height: 1em; height: 2em;">
 					<div>※#{i18n.getText('CCG007_11')}</div>
 				</div>
 				<button tabindex="3" id="login-btn" data-bind=" click: AuthContract"

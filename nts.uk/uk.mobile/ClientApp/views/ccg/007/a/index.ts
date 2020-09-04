@@ -5,6 +5,7 @@ import { NavMenu, SideMenu } from '@app/services';
 
 @component({
     route: '/ccg/007/a',
+    style: require('./style.scss'),
     template: require('./index.vue'),
     validations: {
         model: {
