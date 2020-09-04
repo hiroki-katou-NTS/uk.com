@@ -34,15 +34,18 @@ public class LogDisplaySettingCommand {
 	/**
 	 * システム種類
 	 */
-	private SystemTypeEnum systemType;
+	private int systemType;
 	
 	/** the list of log setting output item */
 	private List<LogSetOutputItemCommand> logSetOutputItems;
 	
 	public LogDisplaySetting toDomain(String logSetId, String cid) {
-		return new LogDisplaySetting(logSetId, cid, new LogSettingCode(code)
-				, new LogSettingName(name), DataTypeEnum.valueOf(dataType), RecordTypeEnum.valueOf(recordType)
-				,SystemTypeEnum.valueOf(systemType.code)
+		return new LogDisplaySetting(logSetId, cid
+				, new LogSettingCode(code)
+				, new LogSettingName(name)
+				, DataTypeEnum.valueOf(dataType)
+				, RecordTypeEnum.valueOf(recordType)
+				, SystemTypeEnum.valueOf(systemType)
 				,logSetOutputItems.stream().map(item -> item.toDomain(logSetId)).collect(Collectors.toList()));			
 	}
 }
