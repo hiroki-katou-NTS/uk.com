@@ -4,7 +4,6 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.uk.ctx.sys.portal.dom.enums.System;
 
 /**
  * ログ設定
@@ -17,7 +16,7 @@ public class LogSetting extends AggregateRoot {
 	/**
 	 * システム
 	 */
-	private System system;
+	private int system;
 
 	/** プログラムID **/
 	private String programId;
@@ -71,7 +70,7 @@ public class LogSetting extends AggregateRoot {
 	 *                                entity
 	 */
 	public void getMemento(MementoGetter mementoGetter) {
-		this.system = System.valueOf(mementoGetter.getSystem().value);
+		this.system = mementoGetter.getSystem();
 		this.programId = mementoGetter.getProgramId();
 		this.menuClassification = MenuClassification.valueOf(mementoGetter.getMenuClassification().value);
 		this.loginHistoryRecord = NotUseAtr.valueOf(mementoGetter.getLoginHistoryRecord().value);
@@ -89,9 +88,7 @@ public class LogSetting extends AggregateRoot {
 	 *                                được quản lý bởi domain
 	 */
 	public void setMemento(MementoSetter mementoSetter) {
-		if (this.system != null) {
-			mementoSetter.setSystem(this.system);
-		}
+		mementoSetter.setSystem(this.system);
 		mementoSetter.setProgramId(this.programId);
 		if (this.menuClassification != null) {
 			mementoSetter.setMenuClassification(this.menuClassification);
@@ -118,7 +115,7 @@ public class LogSetting extends AggregateRoot {
 	 *
 	 */
 	public static interface MementoSetter {
-		void setSystem(System system);
+		void setSystem(int system);
 
 		void setProgramId(String programId);
 
@@ -142,7 +139,7 @@ public class LogSetting extends AggregateRoot {
 	 *
 	 */
 	public static interface MementoGetter {
-		System getSystem();
+		int getSystem();
 
 		String getProgramId();
 

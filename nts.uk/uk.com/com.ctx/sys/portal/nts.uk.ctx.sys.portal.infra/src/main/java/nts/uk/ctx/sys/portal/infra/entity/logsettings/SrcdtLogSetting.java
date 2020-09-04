@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
-import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
 
 @Data
@@ -50,11 +49,11 @@ public class SrcdtLogSetting extends UkJpaEntity
 	public int updateLogUseAtr;
 
 	@Override
-	public void setSystem(System system) {
+	public void setSystem(int system) {
 		if (this.srcdtLogSettingPK != null) {
 			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
 		}
-		this.srcdtLogSettingPK.setSystem(system.value);
+		this.srcdtLogSettingPK.setSystem(system);
 	}
 
 	@Override
@@ -94,11 +93,11 @@ public class SrcdtLogSetting extends UkJpaEntity
 	}
 
 	@Override
-	public System getSystem() {
+	public int getSystem() {
 		if (this.srcdtLogSettingPK != null) {
-			return System.valueOf(this.srcdtLogSettingPK.getSystem());
+			return this.srcdtLogSettingPK.getSystem();
 		}
-		return null;
+		return 0;
 	}
 
 	@Override
