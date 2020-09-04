@@ -27,4 +27,28 @@ public interface AttendanceRecordOuputItemsRepository {
      * @return
      */
     public Optional<AttendanceRecordOuputItems> getOutputItemsByCompnayAndEmployee(String companyId, String employeeId);
+    
+    
+    /**
+     * Find by company employee and code.
+     * 
+     * @param companyId the company id
+     * @param employeeId the employee id
+     * @param code the code
+     * @return the optional
+     */
+    public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCode(String companyId, String employeeId,String code);
+    
+    
+    /**
+     * Find by company employee code and layout id.
+     *
+     * @param companyId the company id
+     * @param employeeId the employee id
+     * @param code the code
+     * @param layoutId the layout id
+     * @return the optional
+     */
+    public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeCodeAndLayoutId(String companyId, String employeeId, String code, String layoutId);
+    
 }

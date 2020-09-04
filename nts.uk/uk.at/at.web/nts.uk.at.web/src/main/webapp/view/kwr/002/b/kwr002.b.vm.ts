@@ -23,6 +23,7 @@ module nts.uk.com.view.kwr002.b {
         newMode: KnockoutObservable<boolean>;
         fontSizeSwitch: KnockoutObservableArray<SealUseAtrSwitch>;
         inputKWR002B: KnockoutObservable<DataInputScreenB>;
+        selectionType: string = '' ;
 
         constructor() {
             let self = this;
@@ -289,11 +290,9 @@ module nts.uk.com.view.kwr002.b {
 
         public openDialogF() {
             let self = this;
-            let data = new OpenDialogFParam('',self.currentARES().code(),self.currentARES().name(),'');
+            let data = new OpenDialogFParam(self.selectionType,self.currentARES().code(),self.currentARES().name(),'');
             let code = self.currentARES().code();
             let name = self.currentARES().name();
-            setShared("codeScreenB", code, true);
-            setShared("nameScreenB", name, true);
             setShared("dataFromScreenB", data, true);
             modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
 
@@ -304,7 +303,10 @@ module nts.uk.com.view.kwr002.b {
             block.invisible();
             let self = this;
             let dfd = $.Deferred<any>();
-            var dataGetShareFromScreenA = getShared("dataTranferScreenB");
+            let dataFromScreenA = getShared("dataTranferScreenB");
+            self.selectionType = dataFromScreenA.selectionType;
+
+
 //             service.getAllARES().done((data: any) => {
 //                 if (data.length > 0) {
 //                     _.map(data, (item:any) => {
@@ -328,8 +330,7 @@ module nts.uk.com.view.kwr002.b {
 //             }).always(() => {
 //                 block.clear();
 //             });
-            service.startScreenB(dataGetShareFromScreenA).done((data: any) => {
-                console.log(data);
+            service.startScreenB(dataFromScreenA).done((data: any) => {
                 if (data.lstAttendanceRecordExportSetting.length > 0) {
                     _.map(data.lstAttendanceRecordExportSetting, (item:any) => {
                         item.code = _.padStart(item.code, 2, '0');

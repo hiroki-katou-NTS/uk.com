@@ -37,4 +37,17 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 		return null;
 	}
 
+	@Override
+	public Optional<AttendanceRecordStandardSetting> findByCompanyIdAndCode(String compayny, String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<AttendanceRecordStandardSetting> findByCompanyCodeLayoutId(String compayny, String code,
+			String layoutId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

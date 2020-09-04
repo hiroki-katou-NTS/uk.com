@@ -58,4 +58,18 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCode(String companyId, String employeeId,
+			String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeCodeAndLayoutId(String companyId,
+			String employeeId, String code, String layoutId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
