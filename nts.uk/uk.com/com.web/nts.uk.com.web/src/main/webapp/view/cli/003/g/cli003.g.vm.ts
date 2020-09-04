@@ -116,14 +116,17 @@ module nts.uk.com.view.cli003.g.viewmodel {
 //                new ItemTypeModel(5, getText('Enum_RecordType_DataManipulation')),
                 new ItemTypeModel(6, getText('Enum_RecordType_DataCorrect')),
 //                new ItemTypeModel(7, getText('Enum_RecordType_MyNumber')),
-//                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo'))
+//                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo')),
+                new ItemTypeModel(8, getText("Enum_DataType_YearEndAdjustment")),
+                new ItemTypeModel(9, getText("Enum_DataType_MonthlyCalculation")),
+                new ItemTypeModel(10, getText("Enum_DataType_RisingSalaryBack")),
             ]);
 
             self.systemTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_SystemType_PERSON_SYSTEM')),
                 new ItemTypeModel(1, getText('Enum_SystemType_ATTENDANCE_SYSTEM')),
                 new ItemTypeModel(2, getText('Enum_SystemType_PAYROLL_SYSTEM')),
-                new ItemTypeModel(2, getText('Enum_SystemType_OFFICE_HELPER')),
+                new ItemTypeModel(3, getText('Enum_SystemType_OFFICE_HELPER')),
             ]);
             self.dataTypeList = ko.observableArray([
                 new ItemTypeModel(0, getText('Enum_DataType_Schedule')),
