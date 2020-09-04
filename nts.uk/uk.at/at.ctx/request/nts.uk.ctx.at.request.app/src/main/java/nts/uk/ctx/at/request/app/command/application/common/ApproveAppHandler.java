@@ -39,6 +39,15 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
 		return approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, memo);
 	}
 	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.共通ユースケース.承認する
+	 * @param companyID
+	 * @param appID
+	 * @param application
+	 * @param appDispInfoStartupOutput
+	 * @param memo
+	 * @return
+	 */
 	public ApproveProcessResult approve(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
 		//アルゴリズム「排他チェック」を実行する (thực hiện xử lý 「check version」)
         beforeRegisterRepo.exclusiveCheck(companyID, application.getAppID(), application.getVersion());

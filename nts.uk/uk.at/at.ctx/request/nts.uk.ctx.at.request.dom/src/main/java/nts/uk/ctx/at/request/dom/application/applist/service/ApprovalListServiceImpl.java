@@ -7,8 +7,10 @@ import javax.ejb.Stateless;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 
 /**
  * refactor 4
@@ -57,6 +59,16 @@ public class ApprovalListServiceImpl implements ApprovalListService {
 			throw new BusinessException("Msg_1723");
 		}
 		
+	}
+
+	@Override
+	public boolean checkErrorComfirm(ApprovalListDisplaySetting approvalListDisplaySetting,
+			WorkMotionData workMotionData, ApplicationType appType) {
+		// 申請種類
+		if(appType!=ApplicationType.OVER_TIME_APPLICATION && appType!=ApplicationType.HOLIDAY_WORK_APPLICATION) {
+			return true;
+		}
+		return false;
 	}
 	
 }

@@ -139,6 +139,8 @@ public class ListOfApplicationCmd {
 	 */
 	private Boolean opMoreThanDispLineNO;
 	
+	private int version;
+	
 	// AnhNM add to domain
 	public ListOfApplication toDomain() {
 		ListOfApplication lstApp = new ListOfApplication();
@@ -166,12 +168,12 @@ public class ListOfApplicationCmd {
 		lstApp.setOpEntererName(opEntererName == null ? Optional.empty() : Optional.of(opEntererName));
 		lstApp.setOpBackgroundColor(opBackgroundColor == null ? Optional.empty() : Optional.of(opBackgroundColor));
 		lstApp.setOpMoreThanDispLineNO(opMoreThanDispLineNO == null ? Optional.empty() : Optional.of(opMoreThanDispLineNO));
-		
+		lstApp.setVersion(version);
 		return lstApp;
 	}
 	
 	public Application toDomainApplication() {
-		return Application.createFromNew(
+		Application application = Application.createFromNew(
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
 				"", 
 				EnumAdaptor.valueOf(appType, ApplicationType.class), 
@@ -183,5 +185,7 @@ public class ListOfApplicationCmd {
 				opAppEndDate == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(opAppEndDate, "yyyy/MM/dd"))), 
 				Optional.empty(), 
 				Optional.empty());
+		application.setVersion(version);
+		return application;
 	}
 }
