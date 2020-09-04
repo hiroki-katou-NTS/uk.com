@@ -21,16 +21,14 @@ import nts.uk.ctx.at.record.dom.worklocation.WorkLocationRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfo;
-import nts.uk.ctx.bs.employee.dom.employee.mgndata.EmployeeDataMngInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItem;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryItemRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformation;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
-import nts.uk.ctx.bs.employee.pub.employee.EmployeeBasicInfoExport;
-import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
+import nts.uk.ctx.bs.employee.pub.employee.export.dto.PersonEmpBasicInfoDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
 
@@ -70,12 +68,6 @@ public class CreateOrderInfoFileQuery {
     private StampCardRepository stampCardRepository;
 
     @Inject
-    private EmployeeDataMngInfoRepository employeeDataMngInfoRepository;
-
-    @Inject
-    private SyEmployeePub syEmployeePub;
-
-    @Inject
     private BentoReservationRepository bentoReservationRepository;
 
     @Inject
@@ -83,6 +75,9 @@ public class CreateOrderInfoFileQuery {
 
     @Inject
     GetStampCardQuery getStampCardQuery;
+
+    @Inject
+    private PersonEmpBasicInfoPub personEmpBasicInfoPub;
 
     public OrderInfoDto createOrderInfoFileQuery(DatePeriod period, List<String> workplaceId,
                                                  List<String> workLocationCodes, Optional<BentoReservationSearchConditionDto> totalExtractCondition,
@@ -153,7 +148,7 @@ public class CreateOrderInfoFileQuery {
         List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos = new ArrayList<>();
         List<WorkLocation> workLocations = new ArrayList<>();
         List<WorkplaceInformation> workplaceInformations = new ArrayList<>();
-        List<EmployeeBasicInfoExport> empBasicInfoExports;
+        List<PersonEmpBasicInfoDto> personEmpBasicInfoDtos;
         if (!CollectionUtil.isEmpty(workplaceIds)) {
             workplaceInformations = getWorkplaceInfoById(workplaceIds, companyId);
             sIds = getListEmpIdInWorkPlace(workplaceIds, period);
@@ -167,13 +162,13 @@ public class CreateOrderInfoFileQuery {
         Map<String, String> mapStampCardInfo = getStampCardFromSID(sIds);
         result[1] = mapStampCardInfo;
         if (isCheckedEmpInfo) {
-            empBasicInfoExports = getBasicInfo(sIds);
-            for (EmployeeBasicInfoExport empBasicInfoExport : empBasicInfoExports) {
-                String stampCardNo = mapStampCardInfo.get(empBasicInfoExport.getEmployeeId());
+            personEmpBasicInfoDtos = getBasicInfo(sIds);
+            for (PersonEmpBasicInfoDto personEmpBasicInfoDto : personEmpBasicInfoDtos) {
+                String stampCardNo = mapStampCardInfo.get(personEmpBasicInfoDto.getEmployeeId());
                 if (stampCardNo == null | "".equals(stampCardNo))
                     continue;
-                bentoReservationInfoForEmpDtos.add(createBentoReservationInfoForEmpDto(empBasicInfoExport.getEmployeeId(),
-                        stampCardNo, empBasicInfoExport));
+                bentoReservationInfoForEmpDtos.add(createBentoReservationInfoForEmpDto(personEmpBasicInfoDto.getEmployeeId(),
+                        stampCardNo, personEmpBasicInfoDto));
             }
         }
         result[2] = bentoReservationInfoForEmpDtos;
@@ -231,22 +226,8 @@ public class CreateOrderInfoFileQuery {
     }
 
     /** 社員ID(List)から個人社員基本情報を取得 */
-    private List<EmployeeBasicInfoExport> getBasicInfo(List<String> sIds){
-        List<String> personIds = new ArrayList<>();
-        //ドメインモデル「社員データ管理情報」を取得する
-        List<EmployeeDataMngInfo> employeeDataMngInfos = employeeDataMngInfoRepository.findByListEmployeeId(sIds);
-        //ドメインモデル「社員データ管理情報」が取得できたかどうかチェックする
-        if(!CollectionUtil.isEmpty(employeeDataMngInfos)){
-            //ドメインモデル「所属会社履歴（社員別）」を取得する
-            personIds = employeeDataMngInfos.stream()
-                    .map(EmployeeDataMngInfo::getPersonId).collect(Collectors.toList());
-        }
-        //終了状態：成功
-        if(!CollectionUtil.isEmpty(personIds)){
-            return syEmployeePub.findBySIds(employeeDataMngInfos.stream()
-                    .map(EmployeeDataMngInfo::getEmployeeId).collect(Collectors.toList()));
-        }
-        return  Collections.emptyList();
+    private List<PersonEmpBasicInfoDto> getBasicInfo(List<String> sIds){
+        return personEmpBasicInfoPub.getPerEmpBasicInfo(sIds);
     }
 
     /** convert to DTO::職場又は場所情報 */
@@ -331,11 +312,10 @@ public class CreateOrderInfoFileQuery {
 
     /**
      * an algorithm of super complexity,
-     * @param bentoReservationInfoForEmpDtos
+     * @param infoForEmpDtoMap
      * @param reservations
      * @param companyID
      * @return
-     *
      */
     private List<BentoReservedInfoDto> createBentoReservedInfoDto(Map<String, List<BentoReservationInfoForEmpDto>> infoForEmpDtoMap, Map<String, List<BentoReservation>> reservations,
                                                                  String companyID){
@@ -374,10 +354,10 @@ public class CreateOrderInfoFileQuery {
         return result;
     }
 
-    private BentoReservationInfoForEmpDto createBentoReservationInfoForEmpDto(String sid, String stampCardNo, EmployeeBasicInfoExport employeeBasicInfoExport){
+    private BentoReservationInfoForEmpDto createBentoReservationInfoForEmpDto(String sid, String stampCardNo, PersonEmpBasicInfoDto personEmpBasicInfoDto){
         final int QUANTITY = 0;
         return new BentoReservationInfoForEmpDto(stampCardNo, QUANTITY,
-                sid,employeeBasicInfoExport.getEmployeeCode(), employeeBasicInfoExport.getPName());
+                sid,personEmpBasicInfoDto.getEmployeeCode(), personEmpBasicInfoDto.getBusinessName());
     }
 
     /** 5.1 */
