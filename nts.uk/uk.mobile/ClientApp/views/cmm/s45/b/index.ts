@@ -158,7 +158,13 @@ export class CmmS45BComponent extends Vue {
             self.$mask('show');
             self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
             self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
-            self.$http.post('at', servicePath.filterByDate, { applicationListDtoMobile: self.data })
+            let paramCmd = {
+                appAllNumber: self.data.appAllNumber,
+                appPerNumber: self.data.appPerNumber,
+                appListExtractCondition: self.data.appListExtractConditionDto,
+                appListInfo: self.data.appListInfoDto
+            };
+            self.$http.post('at', servicePath.filterByDate, { applicationListCmdMobile: paramCmd })
                 .then((res: any) => {
                     self.$mask('hide');
                     // let data = res.data as ApplicationListDtoMobile;
@@ -605,9 +611,9 @@ export class CmmS45BComponent extends Vue {
         return lstId;
     }
     // create appContent
-    private appContent(appName: string, prePostName: string) {
+    private appContent(appName: string, prePostAtr: number) {
         // return this.isDisPreP == 1 ? appName + ' ' + this.$i18n('CMMS45_24', prePostName) : appName;
-        return 'appContent';
+        return appName + ' ' + this.$i18n('CMMS45_24', prePostAtr == 0 ? '事前' : '事後');
     }
 }
 interface IAppByEmp {

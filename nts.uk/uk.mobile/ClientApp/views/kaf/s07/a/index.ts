@@ -789,7 +789,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     let param = {
                         companyId: self.user.companyId,
                         workType: f.selectedWorkType.workTypeCode,
-                        workTime: f.selectedWorkTime.code ? f.selectedWorkTime.code : null,
+                        workTime: f.selectedWorkTime ? (f.selectedWorkTime.code ? f.selectedWorkTime.code : null) : null,
                         appWorkChangeSetDto: appWorkChangeSet
                     };
                     self.$mask('show');

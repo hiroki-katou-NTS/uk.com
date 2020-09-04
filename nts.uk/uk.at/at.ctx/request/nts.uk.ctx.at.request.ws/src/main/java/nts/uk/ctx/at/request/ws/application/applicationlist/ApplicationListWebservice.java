@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCo
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApplicationListCmdMobile;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommand;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ListOfApplicationCmd;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ReflectAfterApproveAsyncCmdHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.AppScreenExportService;
@@ -177,5 +178,11 @@ public class ApplicationListWebservice extends WebService{
 	@Path("approve")
 	public AppListApproveResult approveAppLst(AppListApproveCommand command) {
 		return appListApproveCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("approverAfterConfirm")
+	public AppListApproveResult approverAfterConfirm(List<ListOfApplicationCmd> listOfApplicationCmds) {
+		return appListApproveCommandHandler.approverAfterConfirm(listOfApplicationCmds);
 	}
 }

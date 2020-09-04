@@ -227,16 +227,16 @@ module cmm045.a.viewmodel {
                 return false;
             }
             if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
-                nts.uk.ui.dialog.alert({ messageId: "Msg_360" });
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_360" });
                 return false;
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
-				nts.uk.ui.dialog.alert({ messageId: "Msg_1722" });
+				nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" });
                 return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
-				nts.uk.ui.dialog.alert({ messageId: "Msg_1723" });
+				nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" });
                 return false;
 			}
 			return true;
@@ -663,7 +663,7 @@ module cmm045.a.viewmodel {
                             let appId = $(e.target).closest("td").data("app-id");
                             let checked = $(e.target).prop("checked");
                             let items = this.items();
-                            items.filter(item => item.appId === appId)[0].check = checked;
+                            items.filter(item => item.appID === appId)[0].check = checked;
 
                             // sync with batch check
                             let allChecked = true;
@@ -822,7 +822,7 @@ module cmm045.a.viewmodel {
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
                         let lstAppId = self.items().map(app => app.appID);
-                        nts.uk.localStorage.setItem('UKProgramParam', 'a=0');
+                        window.localStorage.setItem('UKProgramParam', 'a=0');
                         nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
@@ -901,7 +901,7 @@ module cmm045.a.viewmodel {
             });
             */
         }
-        findDataModeAppByID(appId: string, lstAppCommon: Array<vmbase.DataModeApp>){
+        /*findDataModeAppByID(appId: string, lstAppCommon: Array<vmbase.DataModeApp>){
             return _.find(lstAppCommon, function(app) {
                 return app.appId == appId;
             });
@@ -915,7 +915,7 @@ module cmm045.a.viewmodel {
                 }
             });
             return lstAppId;
-        }
+        }*/
 
         fillColorbackGr(): Array<vmbase.CellState>{
             let self = this;
@@ -1675,7 +1675,7 @@ module cmm045.a.viewmodel {
         /**
          * When click button 承認
          */
-        approval() {
+        /*approval() {
             block.invisible();
             let self = this;
             let data = null;
@@ -1705,7 +1705,7 @@ module cmm045.a.viewmodel {
                 block.clear();
                 nts.uk.ui.dialog.alertError({ messageId: res.messageId });
             });
-        }
+        }*/
         /**
          * When select combo box 申請種類
          */
@@ -1815,5 +1815,112 @@ module cmm045.a.viewmodel {
             const command = { appListAtr: self.appListAtr, lstApp: self.appList() }
             service.print(command);
         }
+
+        // getNtsFeatures(): Array<any> {
+        //     let self = this;
+
+        //     var features = [
+        //         { name: 'TextColor',
+        //             columns: [
+        //                 {
+        //                     key: 'inputDate',
+        //                     parse: value => { return value; },
+        //                     map: (content: String) => {
+        //                         if(content.includes("土")) {
+        //                             return "#0000ff";
+        //                         }
+        //                         if(content.includes("日")) {
+        //                             return "#ff0000";
+        //                         }
+        //                     }
+        //                 }
+        //             ]
+        //     }
+        //     ];
+
+        //     return features;
+        // }
+		
+		
+		appListApprove(isApprovalAll: boolean) {
+			const self = this;
+			block.invisible();
+			if(isApprovalAll) {
+				let checkBoxList = $("#app-grid-container").find(".nts-fixed-body-wrapper tbody").find("tr").find("td.check").find("span");
+				_.each(checkBoxList, checkbox => {
+					let appID = $(checkbox).closest("td").data("app-id"),
+						currentItem = _.find(self.items(), item => item.appID == appID);
+					if(!_.isUndefined(currentItem)) {
+						if(!currentItem.check) {
+							checkbox.click();	
+						}	
+					}
+				});	
+			}
+			let listOfApplicationCmds = [];
+			_.each(self.items(), function(item) {
+				// 対象の申請が未承認の申請の場合
+				if(!item.checkAtr) {
+					return;
+				}
+				// INPUT「一括承認」＝True
+				if(!isApprovalAll) {
+					if(!item.check)	{
+						return;	
+					}
+				}
+				if(item.appType == 10 && item.appIdSub != null){
+                    listOfApplicationCmds.push({ appId: item.appID, version: item.version });
+                    listOfApplicationCmds.push({ appId: item.appIdSub, version: item.version });
+                }else{
+                    listOfApplicationCmds.push(item);
+                }
+            });
+			if(_.isEmpty(listOfApplicationCmds)) {
+				block.clear();
+				return;	
+			}
+			let device = 0,
+				command = { isApprovalAll, device, listOfApplicationCmds };
+			service.approveCheck(command).then((data: any) => {
+				if(data) {
+					let comfirmData = [];
+					_.each(Object.keys(data.successMap), (dataAppID: any) => {
+						let obj = _.find(listOfApplicationCmds, o => o.appID == dataAppID);		
+						if(!_.isUndefined(obj)) {
+							comfirmData.push(obj);		
+						}
+					});
+					return service.approverAfterConfirm(comfirmData);
+				}
+			}).then((data: any) => {
+				if(data) {
+					let isInfoDialog = true,
+						displayMsg = "";
+					if(!_.isEmpty(data.successMap)) {
+						displayMsg += nts.uk.resource.getMessage('Msg_220') + "\n";		
+					} else {
+						isInfoDialog = false;
+					}
+					if(!_.isEmpty(data.failMap)) {
+						displayMsg += nts.uk.resource.getMessage('Msg_1726');
+						let itemFailMap = _.filter(listOfApplicationCmds, item => _.includes(Object.keys(data.failMap), item.appID));
+						_.each(itemFailMap, item => {
+							let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType),
+								appName = "";
+							if(!_.isUndefined(appInfo)) {
+								appName = appInfo.appName;
+							}
+							displayMsg += "\n " + item.applicantName  + " " + item.appDate + " " + appName + ": " + data.failMap[item.appID];
+						});	
+					}
+					if(isInfoDialog) {
+						nts.uk.ui.dialog.info(displayMsg);	
+					} else {
+						nts.uk.ui.dialog.alertError(displayMsg);	
+					}
+				}	
+			}).always(() => { block.clear(); });
+		}
     }
 }

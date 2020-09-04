@@ -132,6 +132,8 @@ public class ListOfApplicationDto {
 	 */
 	private Boolean opMoreThanDispLineNO;
 	
+	private int version;
+	
 	public static ListOfApplicationDto fromDomain(ListOfApplication listOfApplication) {
 		return new ListOfApplicationDto(
 				listOfApplication.getPrePostAtr(), 
@@ -156,6 +158,7 @@ public class ListOfApplicationDto {
 				listOfApplication.getOpAppStandardReason().orElse(null), 
 				listOfApplication.getOpEntererName().orElse(null), 
 				listOfApplication.getOpBackgroundColor().orElse(null), 
-				listOfApplication.getOpMoreThanDispLineNO().orElse(null));
+				listOfApplication.getOpMoreThanDispLineNO().orElse(null),
+				listOfApplication.getVersion());
 	}
 }

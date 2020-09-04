@@ -136,6 +136,8 @@ public class ListOfApplication {
 	 */
 	private Optional<Boolean> opMoreThanDispLineNO;
 	
+	private int version;
+	
 	public ListOfApplication() {
 		this.prePostAtr = 0;
 		this.workplaceName = null;

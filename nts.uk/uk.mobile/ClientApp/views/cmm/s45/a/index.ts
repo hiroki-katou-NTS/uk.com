@@ -71,7 +71,7 @@ export class CmmS45AComponent extends Vue {
         const self = this;  
 
         // return 'AppName';
-        return (_.find(self.data.appListInfoDto.appLst, (item) => item.appType === appType) || { appName: '' }).appName;
+        return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
     }
 
     // 申請を絞り込む
@@ -164,7 +164,13 @@ export class CmmS45AComponent extends Vue {
             self.$mask('show');
             self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
             self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
-            self.$http.post('at', servicePath.filterByDate, {applicationListDtoMobile: self.data})
+            let paramCmd = {
+                appAllNumber: self.data.appAllNumber,
+                appPerNumber: self.data.appPerNumber,
+                appListExtractCondition: self.data.appListExtractConditionDto,
+                appListInfo: self.data.appListInfoDto
+            };
+            self.$http.post('at', servicePath.filterByDate, {applicationListCmdMobile: paramCmd})
                 .then((res: any) => {
                     self.$mask('hide');
                     // let data = res.data as ApplicationListDtoMobile;
@@ -423,7 +429,7 @@ export class CmmS45AComponent extends Vue {
 
     // create appContent
     private appContent(appName: string, prePostAtr: number) {
-        return prePostAtr == 1 ? appName + ' ' + this.$i18n('CMMS45_24', String(prePostAtr)) : appName;
+        return appName + ' ' + this.$i18n('CMMS45_24', prePostAtr == 0 ? '事前' : '事後');
     }
     // Refactor4
     // private appContentNew(isDisPreP: number) {

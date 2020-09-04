@@ -1,18 +1,17 @@
 package nts.uk.ctx.at.request.app.command.application.applicationlist;
 
-import java.util.List;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.ListOfApplicationDto;
 
 @AllArgsConstructor
 @Getter
 @Setter
 public class AppListApproveResult {
 	
-	private List<ListOfApplicationDto> successLst;
+	private Map<String, String> successMap;
 	
-	private List<ListOfApplicationDto> failLst;
+	private Map<String, String> failMap;
 }
