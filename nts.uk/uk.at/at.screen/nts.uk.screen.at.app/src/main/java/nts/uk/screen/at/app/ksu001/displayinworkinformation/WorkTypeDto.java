@@ -29,7 +29,7 @@ public class WorkTypeDto {
 	public WorkTypeDto(WorkType workType) {
 		super();
 		this.workTypeCode = workType.getWorkTypeCode() == null ? null : workType.getWorkTypeCode().v();
-		this.name = workType.getName()  == null ? null :  workType.getName().v();
+		this.name = workType.getAbbreviationName()  == null ? null :  workType.getAbbreviationName().v();
 		this.memo = workType.getMemo() == null ? null : workType.getMemo().v();
 	}
 }
