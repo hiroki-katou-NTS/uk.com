@@ -36,7 +36,7 @@ import {
 })
 export class CmmS45CComponent extends Vue {
     @Prop({ default: () => ({ listAppMeta: [], currentApp: '' }) })
-    public readonly params: { listAppMeta: Array<string>, currentApp: string };
+    public readonly params: { listAppMeta: Array<string>, currentApp: string, action: number };
     public title: string = 'CmmS45C';
     public showApproval: boolean = false;
     public appCount: number = 0;
@@ -53,7 +53,6 @@ export class CmmS45CComponent extends Vue {
     };
     // 差し戻し理由
     public reversionReason: string = '';
-    
     public created() {
         let self = this;
         self.listAppMeta = self.params.listAppMeta;
@@ -241,7 +240,7 @@ export class CmmS45CComponent extends Vue {
     public back(reloadValue?: boolean) {
         let self = this;
         if (self.$router.currentRoute.name == 'cmms45a') {
-            self.$close();
+            self.$close(self.params);
         } else {
             self.$goto('cmms45a', { 'CMMS45_FromMenu': false});   
         }
@@ -258,6 +257,7 @@ export class CmmS45CComponent extends Vue {
                     ).then((resDelete: any) => {
                         self.$mask('hide');
                         self.$modal.info('Msg_16').then(() => {
+                            self.params.action = 1;
                             self.back();
                         });
                     }).catch((res: any) => {

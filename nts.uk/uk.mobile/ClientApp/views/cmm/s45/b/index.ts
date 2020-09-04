@@ -355,40 +355,45 @@ export class CmmS45BComponent extends Vue {
         const self = this;
         let lst = [];
         lstApp.forEach((app: ListOfApplication) => {
-            lst.push(new AppInfo({
-                id: app.appID,
-                appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
-                appType: app.appType,
-                appName: self.appTypeName(app.appType),
-                prePostAtr: app.prePostAtr,
-                reflectStatus: app.reflectionStatus,
-                appStatusNo: self.convertReflectToInt(app.reflectionStatus),
-                frameStatus: null,//this.getFrameStatus(app.appID),
-                version: null
-            }));
+            if (app.appType == 0 || app.appType == 2) {
+                lst.push(new AppInfo({
+                    id: app.appID,
+                    appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
+                    appType: app.appType,
+                    appName: self.appTypeName(app.appType),
+                    prePostAtr: app.prePostAtr,
+                    reflectStatus: app.reflectionStatus,
+                    appStatusNo: self.convertReflectToInt(app.reflectionStatus),
+                    frameStatus: null,//this.getFrameStatus(app.appID),
+                    version: null
+                }));
+            }
         });
 
         return lst;
     }
     public convertReflectToInt(value: string) {
-        if (value == '未反映') {
+        if (value == '未承認') {
 
             return 5;
-        } else if (value == '反映待ち') {
+        } else if (value == '承認済') {
 
             return 4;
-        } else if (value == '反映済') {
-            
-            return -1;
-        } else if (value == '取消済') {
-            
+        } else if (value == '反映済み') {
+
+            return 0;
+        } else if (value == '取消') {
+
             return 3;
         } else if (value == '差し戻し') {
-            
+
             return 2;
         } else if (value == '否認') {
-            
+
             return 1;
+        } else {
+
+            return -1;
         }
     }
 
@@ -418,7 +423,9 @@ export class CmmS45BComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
+            if (appType.appType == 0 || appType.appType == 2) {
+                self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
+            }
         });
         self.lstAppType = _.uniqBy(self.lstAppType, (o: any) => {
             return o.appType;

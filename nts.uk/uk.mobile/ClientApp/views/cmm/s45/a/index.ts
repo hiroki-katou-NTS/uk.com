@@ -53,7 +53,7 @@ export class CmmS45AComponent extends Vue {
         self.$watch('selectedValue', (newV, oldV) => {
             // if (!_.isEmpty(self.lstApp)) {
             //     if (newV == oldV) {
-                    
+
             //         return;
             //     }
             //     self.filterApp();
@@ -68,7 +68,7 @@ export class CmmS45AComponent extends Vue {
 
     // 申請種類名称
     private appTypeName(appType: number) {
-        const self = this;  
+        const self = this;
 
         // return 'AppName';
         return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
@@ -87,7 +87,7 @@ export class CmmS45AComponent extends Vue {
             case '0':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '1':
-                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;    
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '2':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '3':
@@ -97,7 +97,7 @@ export class CmmS45AComponent extends Vue {
             case '5':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '6':
-                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;  
+                return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '7':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '8':
@@ -106,7 +106,7 @@ export class CmmS45AComponent extends Vue {
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             case '10':
                 return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
-                
+
             // case '0':
             //     return self.displayA512 == 2 ? self.lstApp.slice(0, self.appAllNumber) : self.lstApp;
             default:
@@ -170,20 +170,20 @@ export class CmmS45AComponent extends Vue {
                 appListExtractCondition: self.data.appListExtractConditionDto,
                 appListInfo: self.data.appListInfoDto
             };
-            self.$http.post('at', servicePath.filterByDate, {applicationListCmdMobile: paramCmd})
+            self.$http.post('at', servicePath.filterByDate, { applicationListCmdMobile: paramCmd })
                 .then((res: any) => {
                     self.$mask('hide');
                     // let data = res.data as ApplicationListDtoMobile;
                     self.appListExtractCondition = res.data.appListExtractConditionDto;
                     self.data = res.data;
-        
+
                     storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
                     self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
 
                     self.convertAppInfo(self.data.appListInfoDto);
                     // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
-        
-        
+
+
                 }).catch(() => {
                     self.$mask('hide');
                 });
@@ -251,23 +251,23 @@ export class CmmS45AComponent extends Vue {
                         listAppType: res.data,
                         appListExtractCondition: self.appListExtractCondition
                     };
-    
+
                     return self.$http.post('at', servicePath.getApplicationList, paramNew);
                 }
-    
+
             }).then((res: any) => {
                 self.$mask('hide');
                 // let data = res.data as ApplicationListDtoMobile;
                 self.appListExtractCondition = res.data.appListExtractConditionDto;
                 self.data = res.data;
-    
+
                 storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
                 self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
                 // self.isDisPreP = 
                 self.convertAppInfo(self.data.appListInfoDto);
                 self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
-    
-    
+
+
             }).catch(() => {
                 self.$mask('hide');
             });
@@ -283,7 +283,7 @@ export class CmmS45AComponent extends Vue {
         // };
 
         //
-        
+
 
 
 
@@ -331,16 +331,21 @@ export class CmmS45AComponent extends Vue {
         // });
         _.forEach(data.appLst, (app: ListOfApplication) => {
             if (self.selectedValue == '-1' || String(app.appType) == self.selectedValue) {
-                self.lstApp.push(new AppInfo({
-                    id: app.appID,
-                    appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
-                    appType: app.appType,
-                    appName: self.appTypeName(app.appType),
-                    prePostAtr: app.prePostAtr,
-                    reflectStatus: app.reflectionStatus,
-                    appStatusNo: self.convertReflectToInt(app.reflectionStatus)
-                }));
+                if (app.appType == 0 || app.appType == 2) {
+                    self.lstApp.push(new AppInfo({
+                        id: app.appID,
+                        appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
+                        appType: app.appType,
+                        appName: self.appTypeName(app.appType),
+                        prePostAtr: app.prePostAtr,
+                        reflectStatus: app.reflectionStatus,
+                        appStatusNo: self.convertReflectToInt(app.reflectionStatus)
+                    }));
+                }
             }
+        });
+        self.lstApp = _.uniqBy(self.lstApp, (o: any) => {
+            return o.id;
         });
         // data.appLst.array.forEach((app: ListOfApplication) => {
         //     self.lstApp.push(new AppInfo({
@@ -362,16 +367,16 @@ export class CmmS45AComponent extends Vue {
 
             return 1;
         } else if (value == '反映済') {
-            
+
             return 2;
         } else if (value == '取消済') {
-            
+
             return -1;
         } else if (value == '差し戻し') {
-            
+
             return 5;
         } else if (value == '否認') {
-            
+
             return 6;
         }
     }
@@ -383,8 +388,18 @@ export class CmmS45AComponent extends Vue {
             lstAppId.push(app.id);
         });
         // 「C：申請内容確認」画面へ遷移する
-        self.$modal('cmms45c', { 'listAppMeta': lstAppId, 'currentApp': id }).then(() => {
-            self.getData(true, true);
+        let param = {
+            'listAppMeta': lstAppId,
+            'currentApp': id,
+            'action': 0 // delete 1, 
+        };
+        self.$modal('cmms45c', param).then((res: any) => {
+            console.log(res);
+            if (res.action != 0) {
+                self.getData(true, false);
+            } else {
+                self.getData(true, true);
+            }
         });
     }
 
@@ -403,7 +418,9 @@ export class CmmS45AComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
+            if (appType.appType == 0 || appType.appType == 2) {
+                self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
+            }
         });
         self.lstAppType = _.uniqBy(self.lstAppType, (o: any) => {
             return o.appType;
