@@ -73,12 +73,17 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
 
         private WorkMonthlySettingRepository workMonthlySettingRepository;
 
-        @Override
-        public boolean exists(String companyId, String monthlyPatternCode, GeneralDate generalDate) {
-            return workMonthlySettingRepository.exists(companyId, monthlyPatternCode, generalDate);
-        }
+//        @Override
+//        public boolean exists(String companyId, String monthlyPatternCode, GeneralDate generalDate) {
+//            return workMonthlySettingRepository.exists(companyId, monthlyPatternCode, generalDate);
+//        }
 
-        @Override
+		@Override
+		public boolean checkRegister(String companyId, String monthlyPatternCode, GeneralDate generalDate) {
+			return false;
+		}
+
+		@Override
         public void add(WorkMonthlySetting workMonthlySetting) {
             workMonthlySettingRepository.add(workMonthlySetting);
         }

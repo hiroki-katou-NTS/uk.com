@@ -3,8 +3,8 @@ package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -61,10 +61,14 @@ public class CreateWorkCycleAppImage {
                 case WORKINGDAYS:
                     return;
                 case NON_WORKINGDAY_INLAW:
-                    reflectionImage.addByWeeklyWorking(i, new WorkInformation("", config.getLegalHolidayCd().get().v()));
+                    reflectionImage.addByWeeklyWorking(i, new WorkInformation("",
+							config.getLegalHolidayCd().isPresent()?
+									config.getLegalHolidayCd().get().v() : null));
                     break;
                 case NON_WORKINGDAY_EXTRALEGAL:
-                    reflectionImage.addByWeeklyWorking(i, new WorkInformation("", config.getNonStatutoryHolidayCd().get().v()));
+                    reflectionImage.addByWeeklyWorking(i, new WorkInformation("",
+							config.getNonStatutoryHolidayCd().isPresent()?
+									config.getNonStatutoryHolidayCd().get().v():null));
                     break;
             }
         });
