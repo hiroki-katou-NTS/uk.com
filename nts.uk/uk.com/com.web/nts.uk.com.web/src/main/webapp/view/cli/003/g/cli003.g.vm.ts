@@ -806,7 +806,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         dataType: string;
         recordType: string;
         systemType: string;
-        logSetOutputs: Array<LogSetOutputItemModal>;
+        logSetOutputItems: Array<LogSetOutputItemModal>;
 
         constructor(logSetId: string, code: string, name: string, dataType: string, recordType: string,systemType: string,
             logSetOutputs: Array<LogSetOutputItemModal>) {
@@ -816,7 +816,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             this.dataType = dataType;
             this.recordType = recordType;
             this.systemType = systemType;
-            this.logSetOutputs = logSetOutputs;
+            this.logSetOutputItems = logSetOutputs;
         }
     }
 
