@@ -55,20 +55,23 @@ public class ReservationQuery {
 		GeneralDate date = GeneralDate.fromString(param.getDate(), "yyyy/MM/dd");
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
+		// 運用区分＝会社別: 勤務場所コード＝NULL
 		Optional<WorkLocationCode> workLocationCode = Optional.empty();
 
+		//運用区分を取得(会社ID)
 		Optional<BentoReservationSetting> bentoReservationSettings = bentoReservationSettingRepository.findByCId(companyId);
 
-		// get data work place history
+		// 勤務場所を取得 (社員ID,　基準日)
 		Optional<SWkpHistExport> hisItems = this.bentomenuAdapter.findBySid(employeeId,date);
         int checkOperation = -1;
         if(bentoReservationSettings.isPresent())
             checkOperation = bentoReservationSettings.get().getOperationDistinction().value;
-
+		// 運用区分＝職場別
 		if (checkOperation == OperationDistinction.BY_LOCATION.value) {
 			if (!hisItems.isPresent()) {
 				throw new RuntimeException("Invalid workplace history");
 			}
+			// 勤務場所の弁当メニューを取得	(勤務場所コード＝取得した勤務場所)
 			workLocationCode = Optional.ofNullable(hisItems.get().getWorkLocationCd() == null ? null :
 					new WorkLocationCode(hisItems.get().getWorkLocationCd()));
 		}
