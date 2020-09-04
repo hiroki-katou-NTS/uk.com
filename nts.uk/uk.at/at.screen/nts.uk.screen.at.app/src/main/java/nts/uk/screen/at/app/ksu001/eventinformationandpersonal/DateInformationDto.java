@@ -60,7 +60,7 @@ public class DateInformationDto {
 		
 		this.isToday = domain.getYmd().equals(GeneralDate.today());
 		
-		if(this.isHoliday || this.isSpecificDay || optWorkplaceEventName.isEmpty() || optCompanyEventName.isEmpty()){
+		if(this.isSpecificDay){
 			val htmlTooltip = new StringBuilder();
 			htmlTooltip.append("<table>");
 				htmlTooltip.append("<tr>");

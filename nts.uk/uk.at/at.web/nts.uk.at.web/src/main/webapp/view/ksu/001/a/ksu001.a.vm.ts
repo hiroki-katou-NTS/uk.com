@@ -1049,7 +1049,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-weekdays"));
                 }
 
-                if (dateInfo.isSpecificDay || dateInfo.optCompanyEventName != '' || dateInfo.optWorkplaceEventName != '') {
+                if (dateInfo.isSpecificDay) {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-event'></div>";
                     let heightToolTip = 22 + 22 + (dateInfo.listSpecDayNameCompany.length == 0 ? 22 : 22 *dateInfo.listSpecDayNameCompany.length) + (dateInfo.listSpecDayNameWorkplace.length == 0 ? 22 : 22 *dateInfo.listSpecDayNameWorkplace.length) + 5; //22 là chiều cao 1 row của table trong tooltip
                     htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip, heightToolTip));
@@ -1198,6 +1198,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
                 
                 self.widthMid = widthMid;
+                
+                let key = request.location.current.rawUrl + "/extable/areawidths";
+                uk.localStorage.getItem(key).ifPresent((data) => {
+                    let areawidths = JSON.parse(data);
+                    areawidths["ex-header-middle"] = widthMid;
+                    uk.localStorage.setItemAsJson(key, areawidths);
+                });
+                
                 middleHeader = {
                     columns: middleColumns,
                     width:   widthMid+"px",
@@ -1604,7 +1612,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 let marginleftOfbtnToLeft: number = 190 + self.widthMid;
                 $(".toLeft").css("margin-left", marginleftOfbtnToLeft + 'px');
                 
-                let marginleftOfbtnToRight = $("#extable").width() - 160- - self.widthMid - 27 - 27 - 30;
+                let marginleftOfbtnToRight = $("#extable").width() - 160 - self.widthMid - 27 - 27 - 30;
                 $(".toRight").css('margin-left', marginleftOfbtnToRight + 'px');
             }
             self.indexBtnToLeft = self.indexBtnToLeft + 1;
