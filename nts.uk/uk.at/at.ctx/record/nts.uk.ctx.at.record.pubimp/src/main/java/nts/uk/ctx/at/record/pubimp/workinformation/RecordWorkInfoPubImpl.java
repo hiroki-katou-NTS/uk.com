@@ -30,6 +30,7 @@ import nts.uk.ctx.at.record.pub.workinformation.CommonTimeSheet;
 import nts.uk.ctx.at.record.pub.workinformation.InfoCheckNotRegisterPubExport;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport;
+import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport_New;
 import nts.uk.ctx.at.record.pub.workinformation.WorkInfoOfDailyPerExport;
 import nts.uk.ctx.at.record.pub.workinformation.WrScheduleTimeSheetExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrReasonTimeChangeExport;
@@ -327,6 +328,13 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 
 	private WorkInfoOfDailyPerExport convertToWorkInfoOfDailyPerformance(WorkInfoOfDailyPerformance domain) {
 		return new WorkInfoOfDailyPerExport(domain.getEmployeeId(), domain.getYmd());
+	}
+
+	// create rql5
+	@Override
+	public RecordWorkInfoPubExport_New getRecordWorkInfo_New(String employeeId, GeneralDate ymd) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

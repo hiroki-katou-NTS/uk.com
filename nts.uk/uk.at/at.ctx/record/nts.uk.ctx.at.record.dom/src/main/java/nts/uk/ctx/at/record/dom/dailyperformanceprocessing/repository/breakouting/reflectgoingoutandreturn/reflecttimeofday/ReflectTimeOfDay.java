@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakoutin
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.AttendanceAtr;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -40,16 +41,18 @@ public class ReflectTimeOfDay {
 			if((i+1) < listTimeFrame.size()) {
 				timeFrameNext = Optional.of(listTimeFrame.get(i+1));
 			}
-			//戻りOR終了の場合
+			//戻りOR終了の場合 (臨時退勤)
 			if(stamp.getType().getChangeClockArt() == ChangeClockArt.RETURN || 
-			   stamp.getType().getChangeClockArt() == ChangeClockArt.END_OF_SUPPORT ) {
+			   stamp.getType().getChangeClockArt() == ChangeClockArt.TEMPORARY_LEAVING ) {
 				//打刻反映する
-				imprintReflectTimeOfDay.imprint(false, timeFrame, timeFrameNext, stamp, timeFrame.getEnd(),workTimeCode,ymd);
-			//外出OR開始の場合
+				TimeActualStamp actualStamp = imprintReflectTimeOfDay.imprint(false, timeFrame, timeFrameNext, stamp, timeFrame.getEnd(),workTimeCode,ymd);
+				listTimeFrame.get(i).setEnd(Optional.ofNullable(actualStamp));
+			//外出OR開始の場合(臨時出勤 )
 			}else if(stamp.getType().getChangeClockArt() == ChangeClockArt.GO_OUT || 
-					   stamp.getType().getChangeClockArt() == ChangeClockArt.START_OF_SUPPORT ) {
+					   stamp.getType().getChangeClockArt() == ChangeClockArt.TEMPORARY_WORK ) {
 				//打刻反映する
-				imprintReflectTimeOfDay.imprint(true, timeFrame, timeFrameNext, stamp, timeFrame.getEnd(),workTimeCode,ymd);
+				TimeActualStamp actualStamp = imprintReflectTimeOfDay.imprint(true, timeFrame, timeFrameNext, stamp, timeFrame.getStart(),workTimeCode,ymd);
+				listTimeFrame.get(i).setStart(Optional.ofNullable(actualStamp));
 			}
 		}
 		//空っぽの時間帯を削除する

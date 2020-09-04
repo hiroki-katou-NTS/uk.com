@@ -33,6 +33,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  */
 public class InsertShiftPalletComCommand {
 	
+	public int unit;
 	public String workplaceId;
 	public int groupNo;
 	public String groupName;
@@ -55,7 +56,7 @@ public class InsertShiftPalletComCommand {
 	
 	public ShiftPalletsOrg toDom(){	
 		return new ShiftPalletsOrg(
-				new TargetOrgIdenInfor(EnumAdaptor.valueOf(0, TargetOrganizationUnit.class) , Optional.of(workplaceId), Optional.empty()),
+				new TargetOrgIdenInfor(EnumAdaptor.valueOf(unit, TargetOrganizationUnit.class) , Optional.of(workplaceId), Optional.of(workplaceId)),
 				groupNo, new ShiftPallet(
 						new ShiftPalletDisplayInfor(new ShiftPalletName(groupName),
 								EnumAdaptor.valueOf(groupUsageAtr, NotUseAtr.class), new ShiftRemarks(note)),

@@ -24,7 +24,7 @@ public class ScheduleTeamTest {
 		String employeeID = "employeeID";
 		BelongScheduleTeam belongScheduleTeam = scheduleTeam.addEmployee(employeeID);
 		
-		assertThat(employeeID).isEqualTo(belongScheduleTeam.getEmployeeID());
+		assertThat(belongScheduleTeam.getEmployeeID()).isEqualTo(employeeID);
 		assertThat(scheduleTeam.getWKPGRPID()).isEqualTo(belongScheduleTeam.getWKPGRPID());
 		assertThat(scheduleTeam.getScheduleTeamCd().v()).isEqualTo(belongScheduleTeam.getScheduleTeamCd().v());
 		

@@ -24,11 +24,17 @@ public class ShiftPalletsOrgWebservice extends WebService {
 	
 	@Inject
 	private DuplicateOrgShiftPaletHandler duplicateOrgShiftPaletHandler;
-
+	
 	@POST
 	@Path("getbyWorkplaceId")
 	public List<ShiftPalletsOrgDto> getListShijtPalletsOrg(String workplaceId) {
 		return shiftPalletsOrgFinder.getbyWorkPlaceId(workplaceId);
+	}
+	
+	@POST
+	@Path("getbyWorkplaceGrId")
+	public List<ShiftPalletsOrgDto> getListShijtPalletsOrgGr(String workplaceGrId) {
+		return shiftPalletsOrgFinder.getbyWorkPlaceGrId(workplaceGrId);
 	}
 
 	@POST
@@ -40,7 +46,7 @@ public class ShiftPalletsOrgWebservice extends WebService {
 	@POST
 	@Path("getShiftPaletteByWPG")
 	public List<PageDto> getShiftPaletteByWPG(Param param) {
-		return shiftPalletsOrgFinder.getShiftPaletteByWP(param.getId());
+		return shiftPalletsOrgFinder.getShiftPaletteByWPG(param.getId());
 	}
 
 	@POST

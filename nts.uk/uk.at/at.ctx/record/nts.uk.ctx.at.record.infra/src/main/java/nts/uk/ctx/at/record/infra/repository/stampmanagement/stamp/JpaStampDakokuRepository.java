@@ -80,6 +80,13 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 			+ " and s.cid = :cid"
 			+ " and s.pk.cardNumber in :listCard"
 			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
+	private static final String GET_STAMP_BY_DATEPERIOD_AND_CARDS_2 = "select s from KrcdtStamp s "
+			+ " INNER JOIN KwkdtStampCard e ON e.cardNo = s.pk.cardNumber"
+			+ " where s.pk.stampDateTime >= :startStampDate "
+			+ " and s.pk.stampDateTime <= :endStampDate " 
+			+ " and s.cid = :cid"
+			+ " and s.pk.cardNumber in :listCard"
+			+ " order by s.pk.cardNumber asc, s.pk.stampDateTime asc";
 	
 	// [1] insert(打刻)
 	@Override
@@ -280,12 +287,14 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 	}
 	
 	@Override
-	public List<Stamp> getByDateTimeperiod(String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
-		return this.queryProxy().query(GET_STAMP_BY_DATEPERIOD, Object[].class)
+	public List<Stamp> getByDateTimeperiod(List<String> listCard,String companyId, GeneralDateTime startDate, GeneralDateTime endDate) {
+		List<Stamp> data =  this.queryProxy().query(GET_STAMP_BY_DATEPERIOD_AND_CARDS_2, KrcdtStamp.class)
 				.setParameter("startStampDate", startDate)
 				.setParameter("endStampDate", endDate)
 				.setParameter("cid", companyId)
-				.getList(x -> toDomainVer2(x));
+				.setParameter("listCard", listCard)
+				.getList(x -> toDomain(x));
+		return data;
 	}
 
 	@Override

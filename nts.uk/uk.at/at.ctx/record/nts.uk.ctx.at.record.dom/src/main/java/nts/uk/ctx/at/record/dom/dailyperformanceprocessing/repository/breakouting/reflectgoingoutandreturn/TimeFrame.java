@@ -61,8 +61,8 @@ public class TimeFrame {
 	public void setNumberOfReflections(int numberOfReflections) {
 		this.numberOfReflections = numberOfReflections;
 	}
-	
-	
-	
-	
+
+	public void setStart(Optional<TimeActualStamp> start) {
+		this.start = start;
+	}
 }

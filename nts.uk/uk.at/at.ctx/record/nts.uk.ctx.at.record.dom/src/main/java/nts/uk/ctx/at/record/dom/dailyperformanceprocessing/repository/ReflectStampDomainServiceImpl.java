@@ -54,7 +54,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateSetting;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.EndStatus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.OutputTimeReflectForWorkinfo;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectOnHolidayOutPut;
@@ -77,10 +77,11 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -185,6 +186,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 	
 	@Inject
 	private TemporarilyReflectStampDailyAttd temporarilyReflectStampDailyAttd;
+	
+	@Inject
+	private WorkTimeSettingService workTimeSettingService;
 	
 	@Override
 	public NewReflectStampOutput reflectStampInfo(String companyID, String employeeID, GeneralDate processingDate,
@@ -370,55 +374,56 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
 
 		StampReflectRangeOutput stampReflectRangeOutput = new StampReflectRangeOutput();
+		if(workTimeCode == null) {
+			return stampReflectRangeOutput;
+		}
+		 // ドメインモデル「就業時間帯の設定」を取得
+		Optional<WorkTimeSetting> workTimeSetting = workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
+		
+		if (workTimeSetting.isPresent()) {
 
-		// // ドメインモデル「就業時間帯の設定」を取得
-		// Optional<WorkTimeSetting> workTimeSetting =
-		// workTimeSettingRepository.findByCode(companyID, workTimeCode.v());
-		//
-		// // 1日分の打刻反映範囲を取得
-		// if (workTimeSetting.isPresent()) {
-		//
-		// List<ScheduleTimeSheet> scheduleTimeSheets =
-		// workInfoOfDailyPerformance.getScheduleTimeSheets();
-		//
-		// // 打刻反映時間帯を取得する
-		// List<StampReflectTimezone> stampReflectTimezones =
-		// this.workTimeSettingService.getStampReflectTimezone(
-		// companyID, workTimeCode.v(),
-		// (!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null)
-		// ? scheduleTimeSheets.get(0).getAttendance().valueAsMinutes() : null,
-		// (!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null)
-		// ? scheduleTimeSheets.get(0).getLeaveWork().valueAsMinutes() : null,
-		// (scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null)
-		// ? scheduleTimeSheets.get(1).getAttendance().valueAsMinutes() : null,
-		// (scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null)
-		// ? scheduleTimeSheets.get(1).getLeaveWork().valueAsMinutes() : null);
-		//
-		// if (!stampReflectTimezones.isEmpty()) {
-		// List<StampReflectTimezoneOutput> stampReflectRangeOutputs = new
-		// ArrayList<>();
-		// stampReflectTimezones.stream().forEach(timezone -> {
-		// StampReflectTimezoneOutput stampReflectTimezoneOutput = new
-		// StampReflectTimezoneOutput(
-		// timezone.getWorkNo(), timezone.getClassification(),
-		// timezone.getEndTime(),
-		// timezone.getStartTime());
-		// stampReflectRangeOutputs.add(stampReflectTimezoneOutput);
-		// });
-		// stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectRangeOutputs);
-		// } else {
-		// return stampReflectRangeOutput;
-		// }
-		// fake data
-		List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
-		StampReflectTimezoneOutput stampReflectTimezoneOutput1 = new StampReflectTimezoneOutput(new WorkNo(1),
-				GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(1739), new TimeWithDayAttr(300));
-		StampReflectTimezoneOutput stampReflectTimezoneOutput2 = new StampReflectTimezoneOutput(new WorkNo(1),
-				GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1739), new TimeWithDayAttr(300));
-		lstStampReflectTimezone.add(stampReflectTimezoneOutput1);
-		lstStampReflectTimezone.add(stampReflectTimezoneOutput2);
-		stampReflectRangeOutput.setLstStampReflectTimezone(lstStampReflectTimezone);
-		// }
+			List<ScheduleTimeSheet> scheduleTimeSheets = workInfoOfDailyPerformance.getWorkInformation().getScheduleTimeSheets();
+
+			// 打刻反映時間帯を取得する
+			List<StampReflectTimezone> stampReflectTimezones = this.workTimeSettingService.getStampReflectTimezone(
+					companyID, workTimeCode.v(),
+					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null)
+							? scheduleTimeSheets.get(0).getAttendance().valueAsMinutes()
+							: null,
+					(!scheduleTimeSheets.isEmpty() && scheduleTimeSheets.get(0) != null)
+							? scheduleTimeSheets.get(0).getLeaveWork().valueAsMinutes()
+							: null,
+					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null)
+							? scheduleTimeSheets.get(1).getAttendance().valueAsMinutes()
+							: null,
+					(scheduleTimeSheets.size() > 1 && scheduleTimeSheets.get(1) != null)
+							? scheduleTimeSheets.get(1).getLeaveWork().valueAsMinutes()
+							: null);
+
+			if (!stampReflectTimezones.isEmpty()) {
+				List<StampReflectTimezoneOutput> stampReflectRangeOutputs = new ArrayList<>();
+				stampReflectTimezones.stream().forEach(timezone -> {
+					StampReflectTimezoneOutput stampReflectTimezoneOutput = new StampReflectTimezoneOutput(
+							timezone.getWorkNo(), timezone.getClassification(), timezone.getEndTime(),
+							timezone.getStartTime());
+					stampReflectRangeOutputs.add(stampReflectTimezoneOutput);
+				});
+				stampReflectRangeOutput.setLstStampReflectTimezone(stampReflectRangeOutputs);
+			}
+			// fake data
+			// List<StampReflectTimezoneOutput> lstStampReflectTimezone = new ArrayList<>();
+			// StampReflectTimezoneOutput stampReflectTimezoneOutput1 = new
+			// StampReflectTimezoneOutput(new WorkNo(1),
+			// GoLeavingWorkAtr.GO_WORK, new TimeWithDayAttr(1739), new
+			// TimeWithDayAttr(300));
+			// StampReflectTimezoneOutput stampReflectTimezoneOutput2 = new
+			// StampReflectTimezoneOutput(new WorkNo(1),
+			// GoLeavingWorkAtr.LEAVING_WORK, new TimeWithDayAttr(1739), new
+			// TimeWithDayAttr(300));
+			// lstStampReflectTimezone.add(stampReflectTimezoneOutput1);
+			// lstStampReflectTimezone.add(stampReflectTimezoneOutput2);
+			// stampReflectRangeOutput.setLstStampReflectTimezone(lstStampReflectTimezone);
+		}
 		return stampReflectRangeOutput;
 	}
 
@@ -435,18 +440,16 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 
 		// 当日の打刻反映範囲を取得 - 当日の就業時間帯コードを取得
 		// start get data of this day
-		if (workTimeCode != null) {
-			// use workTypeCode
-			WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode();
-			// 休日出勤時の勤務情報を取得する - new wave
-			Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService
-					.getHolidayWorkSchedule(companyID, employeeId, processingDate, workTypeCode.v());
-			if (!singleDaySchedule.isPresent()
-					|| (singleDaySchedule.isPresent() && !singleDaySchedule.get().getWorkTimeCode().isPresent())) {
-				workTimeCode = null;
-			} else {
-				workTimeCode = new WorkTimeCode(singleDaySchedule.get().getWorkTimeCode().get().v());
-			}
+		// use workTypeCode
+		WorkTypeCode workTypeCode = workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode();
+		// 休日出勤時の勤務情報を取得する - new wave
+		Optional<SingleDaySchedule> singleDaySchedule = workingConditionItemService
+				.getHolidayWorkSchedule(companyID, employeeId, processingDate, workTypeCode.v());
+		if (!singleDaySchedule.isPresent()
+				|| (singleDaySchedule.isPresent() && !singleDaySchedule.get().getWorkTimeCode().isPresent())) {
+			workTimeCode = null;
+		} else {
+			workTimeCode = new WorkTimeCode(singleDaySchedule.get().getWorkTimeCode().get().v());
 		}
 
 		// 当日の打刻反映範囲を取得 - end get data of this day
@@ -540,8 +543,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		 * dayAttr 1 : two day before , 2 : previous day 3 : next day
 		 */
 
-		// 打刻反映時の出勤休日扱いチェック
 		// 1日半日出勤・1日休日系の判定
+		// 打刻反映時の出勤休日扱いチェック
 		WorkStyle workStyle = basicScheduleService
 				.checkWorkDay(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 
@@ -1091,6 +1094,13 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				outputTimeReflectForWorkinfo.setStampReflectRangeOutput(outputGetTimeStamReflect.getStampReflectRangeOutput());
 			}
 			listErrorMessageInfo.addAll(outputGetTimeStamReflect.getError());
+		}
+		
+		if(outputGetTimeStamReflect.getStampReflectRangeOutput().getStampRange().getStart() == null ||
+				outputGetTimeStamReflect.getStampReflectRangeOutput().getStampRange().getEnd() == null) {
+			listErrorMessageInfo.add(new ErrorMessageInfo(companyID, employeeID, processingDate, ExecutionContent.DAILY_CREATION,
+					new ErrMessageResource("022"), new ErrMessageContent(TextResource.localize("Msg_591"))));
+			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>());
 		}
 		
 		//打刻を取得する

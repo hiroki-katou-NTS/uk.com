@@ -34,9 +34,9 @@ module nts.uk.at.view.ksu001.la {
                 ]);
 
                 self.columnsLeft = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 100 },
-                    { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 150 },
-                    { headerText: nts.uk.resource.getText('KSU001_3215'), key: 'teamName', width: 90 }
+                    { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 90 },
+                    { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 130 },
+                    { headerText: nts.uk.resource.getText('KSU001_3215'), key: 'teamName', width: 66 }
                 ]);
 
                 self.selectedCode.subscribe((code: string) => {
@@ -92,18 +92,21 @@ module nts.uk.at.view.ksu001.la {
                                 self.selectedCode(listScheduleTeam[0].code);                                
                             } else {
                                 self.isEditing(false);
+                                self.clearData();
                             }
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                            dfd.reject(res);
+                            nts.uk.ui.dialog.alertError({ messageId: res.messageId});
+                            blockUI.clear(); 
                         });
                         self.getEmpOrgInfo();
                     }
                     blockUI.clear();
                     dfd.resolve();
                 }).fail((res) =>{
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                    dfd.reject(res);
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1867" }).then(function(){
+                        self.closeDialog();
+                    });
+                    blockUI.clear(); 
                 }).always(() =>{
                     blockUI.clear();
                 });
@@ -156,8 +159,9 @@ module nts.uk.at.view.ksu001.la {
                             self.listScheduleTeam(listScheduleTeam);
                             self.selectedCode(self.scheduleTeamModel().code());
                             blockUI.clear();
-                            nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                            $('#scheduleTeamCd').focus();
+                            nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function() {
+                                $('#scheduleTeamName').focus();
+                            });                            
                         });
                     }).fail((res) => {
                         blockUI.clear();
@@ -167,21 +171,19 @@ module nts.uk.at.view.ksu001.la {
                         }                        
                     });
                 } else {
-                    //update
-                    // let employeeIds = _.map(self.itemsRight(), item => {
-                    //     return item.employeeId;
-                    // });                   
-                    service.update(ko.toJSON(self.scheduleTeamModel)).done(()=>{
+                    //update      
+                    service.update(ko.toJSON(self.scheduleTeamModel)).done(()=>{                        
                         self.listScheduleTeam(_.map(self.listScheduleTeam(), function(el: ScheduleTeam){
                             if(el.code == self.scheduleTeamModel().code()){
                                 return new ScheduleTeam(self.scheduleTeamModel().code(), self.scheduleTeamModel().name());
                             }
                             return el;
-                        }));
-                                             
+                        }));                                             
+                        self.getEmpOrgInfo();
                         blockUI.clear();
-                        nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                        $('#scheduleTeamName').focus();
+                        nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(function() {
+                            $('#scheduleTeamName').focus();
+                        }); 
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError({messageId: res.messageId});                        
                     }).always (()=>{

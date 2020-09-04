@@ -15,8 +15,8 @@
 			</com:ValidatorScript>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 460,
-					height : 490
+					width : 440,
+					height : 495
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -31,7 +31,8 @@
 			<div id="functions-area">
 				<button class="proceed" tabindex="1"
 					data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KSU001_3702')}</button>
-				<button id="close" tabindex="2" style="margin-left: 270px;"
+				<button id="close" tabindex="3"
+					style="float: right; margin-right: 20px;"
 					data-bind="click: closeDialog">#{i18n.getText('KSU001_3703')}</button>
 			</div>
 			<div id="content-area" style="width: 430px">
@@ -41,7 +42,8 @@
 					</div>
 					<div>
 						<div>
-							<div class="label" style="margin-left: 30px; margin-top: 10px">
+							<div class="label"
+								style="margin-left: 30px; margin-top: 10px; width: 25%">
 								<span data-bind="text: organizationName"></span>
 							</div>
 						</div>
@@ -49,7 +51,7 @@
 						<div style="display: flex;">
 							<div style="margin-left: 40px; margin-top: 10px"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3704')}</div>
-							<div style="margin-left: 30px; margin-top: 20px"
+							<div tabindex="4" style="margin-left: 20px; margin-top: 15px"
 								data-bind="ntsComboBox: {
 										options: externalBudgetModel().externalBudgetItems,
 										optionsValue: 'code',
@@ -70,10 +72,10 @@
 						<div style="display: flex;">
 							<div style="margin-left: 40px; margin-top: 10px"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_3705')}</div>
-							<div style="margin-left: 30px; margin-top: 20px">
+							<div style="margin-left: 20px; margin-top: 15px">
 
-								<table id="wrapper" style="width: 265px;">
-									<thead style="background-color: rgb(234, 230, 233);">
+								<table>
+									<thead>
 										<tr>
 											<th><pre>#{i18n.getText('KSU001_3706')}</pre></th>
 											<th data-bind="text: labelQ32"></th>
@@ -84,8 +86,9 @@
 											<td data-bind="text: date"></td>
 											<td
 												data-bind="visible: $parent.check, with: $parent.yearmontheditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsTimeEditor: {
+													name: '#[KSU001_3707]',
 													value: $parent.value,
 													constraint: 'ExtBudgetTime',
 													option: option,
@@ -96,8 +99,9 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check1, with: $parent.currencyeditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
+													name: '#[KSU001_3708]',
 													value: $parent.value,
 													constraint: 'ExtBudgetMoney',
 													option: option,
@@ -106,8 +110,9 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check2, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
+													name: '#[KSU001_3709]',
 													value: $parent.value,
 													constraint: 'ExtBudgetNumberPerson',
 													option: option,
@@ -116,8 +121,9 @@
 													readonly: false}" /></td>
 											<td
 												data-bind="visible: $parent.check3, with: $parent.numbereditor"><input
-												style="padding-right: 10px; padding-left: 0px; padding: 0px 0px; border: 0px solid #999999; overflow: visible; width: 121px; height: 20px; border-radius: 0px;"
+												style="padding: 0px 2px 0px 0px; border: 0px solid #999999; width: 121px; height: 24px; border-radius: 0px;"
 												data-bind="ntsNumberEditor: {
+													name: '#[KSU001_3710]',
 													value: $parent.value,
 													constraint: 'ExtBudgetNumericalVal',
 													option: option,
