@@ -117,9 +117,9 @@ module nts.uk.com.view.cli003.g.viewmodel {
                 new ItemTypeModel(6, getText('Enum_RecordType_DataCorrect')),
 //                new ItemTypeModel(7, getText('Enum_RecordType_MyNumber')),
 //                new ItemTypeModel(8, getText('Enum_RecordType_TerminalCommucationInfo')),
-                new ItemTypeModel(8, getText("Enum_DataType_YearEndAdjustment")),
-                new ItemTypeModel(9, getText("Enum_DataType_MonthlyCalculation")),
-                new ItemTypeModel(10, getText("Enum_DataType_RisingSalaryBack")),
+                new ItemTypeModel(9, getText("Enum_RecordType_DataStorage")),
+                new ItemTypeModel(10, getText("Enum_RecordType_DataRecovery")),
+                new ItemTypeModel(11, getText("Enum_RecordType_DataDeletion")),
             ]);
 
             self.systemTypeList = ko.observableArray([
@@ -260,7 +260,6 @@ module nts.uk.com.view.cli003.g.viewmodel {
 
         setLogSetInfo(logSet: any) {
             const self = this;
-            console.log(logSet);
             self.currentLogDisplaySet(logSet);
             self.logSetId(logSet.id);
             self.inputCode(self.currentCode());
@@ -442,7 +441,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
                     //check selected code
                     if (self.currentLogDisplaySet() &&
                         self.currentLogDisplaySet().recordType == recordType) {
-                        const logSetOutputs = self.currentLogDisplaySet().logSetOutputItems;
+                        const logSetOutputs = self.currentLogDisplaySet().logSetOutputs;
                         if (logSetOutputs) {
                             const lengthItemSwap = logItemsTemp.length;
                             const logItemSetted = [];
@@ -649,6 +648,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             
             const logDisplaySet = new LogDisplaySetModal(self.logSetId(), self.inputCode(),
                 self.currentName(), dataType, self.recordType(),self.systemType(),  self.logSetOutputItems());
+                console.log(logDisplaySet);
             block.grayout();
 
             service.addLogDisplaySet(logDisplaySet).done(function(id: any) {
@@ -806,17 +806,17 @@ module nts.uk.com.view.cli003.g.viewmodel {
         dataType: string;
         recordType: string;
         systemType: string;
-        logSetOutputItems: Array<LogSetOutputItemModal>;
+        logSetOutputs: Array<LogSetOutputItemModal>;
 
         constructor(logSetId: string, code: string, name: string, dataType: string, recordType: string,systemType: string,
-            logSetOutputItems: Array<LogSetOutputItemModal>) {
+            logSetOutputs: Array<LogSetOutputItemModal>) {
             this.logSetId = logSetId;
             this.code = code;
             this.name = name;
             this.dataType = dataType;
             this.recordType = recordType;
             this.systemType = systemType;
-            this.logSetOutputItems = logSetOutputItems;
+            this.logSetOutputs = logSetOutputs;
         }
     }
 
