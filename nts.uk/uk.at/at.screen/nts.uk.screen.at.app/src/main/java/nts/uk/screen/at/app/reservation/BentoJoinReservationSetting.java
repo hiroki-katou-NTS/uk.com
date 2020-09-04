@@ -48,11 +48,11 @@ public class BentoJoinReservationSetting {
         if (bentomenuJoinBentoDtos == null || CollectionUtil.isEmpty(bentomenuJoinBentoDtos)) return null;
         List<BentoDto> bentoDtos = new ArrayList<>();
 
-        List<BentomenuJoinBentoDto> result = bentoReservationSettingDto.operationDistinction == 0 ?
-                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode == null).collect(Collectors.toList()) :
-                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode != null).collect(Collectors.toList());
+//        List<BentomenuJoinBentoDto> result = bentoReservationSettingDto.operationDistinction == 0 ?
+//                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode == null).collect(Collectors.toList()) :
+//                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode != null).collect(Collectors.toList());
 
-        for(BentomenuJoinBentoDto x : result){
+        for(BentomenuJoinBentoDto x : bentomenuJoinBentoDtos){
             bentoDtos.add(new BentoDto(
                     x.getFrameNo(),
                     x.getBentoName(),
