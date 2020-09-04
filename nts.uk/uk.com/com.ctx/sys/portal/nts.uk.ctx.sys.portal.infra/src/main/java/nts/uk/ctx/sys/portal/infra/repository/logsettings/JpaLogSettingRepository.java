@@ -12,7 +12,8 @@ public class JpaLogSettingRepository extends JpaRepository implements LogSetting
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT s FROM SrcdtLogSetting s ";
 	private static final String SELECT_BY_SYSTEM_TYPE = SELECT_ALL_QUERY_STRING
-			+ "WHERE s.SYSTEM = :systemType AND s.CID = :cid";
+			+ "WHERE s.srcdtLogSettingPK.system = :systemType "
+			+ "AND s.srcdtLogSettingPK.cid = :cid";
 
 	@Override
 	public List<LogSetting> findBySystem(String companyId, int systemType) {
