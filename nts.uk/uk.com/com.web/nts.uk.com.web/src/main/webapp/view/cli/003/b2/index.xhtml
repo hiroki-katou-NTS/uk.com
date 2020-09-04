@@ -27,7 +27,7 @@
         <div id="contents-area">
           <div class="table valign-top control-group">
             <div class="contentL cell" data-bind="ntsPanel:{width: 300, height: 400, direction: 'right', showIcon: true, visible: true}">
-              <div id="B1-search-box" data-bind="ntsSearchBox: {
+              <div id="B1-search-box" tabindex="1" data-bind="ntsSearchBox: {
                 mode:'igGrid',
                 searchMode: 'highlight',
                 targetKey:'code', 
@@ -36,7 +36,7 @@
                 selectedKey: 'code',
                 fields: ['name', 'code']
               }"/>
-              <table id="B1" tabindex="1" data-bind="ntsGridList:{
+              <table id="B1" tabindex="2" data-bind="ntsGridList:{
                 height: 600,
                 width: 300,
                 primaryKey: 'code',
@@ -72,7 +72,7 @@
                 <div class="inline">
                    <div id="B2_9"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_79')}</div>
                    <div class="table2">
-                    <table id="B2_10" tabindex="2" data-bind="ntsGridList:{
+                    <table id="B2_10" tabindex="3" data-bind="ntsGridList:{
                       height: 200,
                       width: 500,
                       dataSource: b2_10Datasource,
@@ -88,7 +88,7 @@
                   <table class="contentR-grid-table" id="bottom">
                   <tr>
                     <td><div id="B3_1"  data-bind="ntsFormLabel:{required: true}">#{i18n.getText('CLI003_22')}</div></td>
-                    <td><div id="B3_2" tabindex="3"  data-bind="ntsDateTimePairRangeEditor: {
+                    <td><div id="B3_2" tabindex="4"  data-bind="ntsDateTimePairRangeEditor: {
                         value: ko.observable({
                           start: startDateOperator, 
                           end: endDateOperator}),
@@ -127,7 +127,7 @@
                   <tr>
                     <td><div id="B5_1"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_15')}</div></td>
                      <com:ko-if bind="checkFormatDate()=== '1'">	
-                      <td><div id="B5_2" tabindex="4"  data-bind="ntsDateRangePicker: {
+                      <td><div id="B5_2" tabindex="5"  data-bind="ntsDateRangePicker: {
                         type: 'fullDate',
                         maxRange: 'oneYear',
                         name:'#{i18n.getText('CLI003_15')}',
@@ -137,7 +137,7 @@
                     </com:ko-if>	
 
                     <com:ko-if bind="checkFormatDate()=== '2'">	
-                      <td><div id="B5_2" tabindex="4"  data-bind="ntsDateRangePicker: {
+                      <td><div id="B5_2" tabindex="5"  data-bind="ntsDateRangePicker: {
                         type: 'yearmonth',
                         maxRange: 'oneYear',
                         name:'#{i18n.getText('CLI003_15')}',

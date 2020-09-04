@@ -217,7 +217,7 @@ module nts.uk.com.view.cli003.b {
       new ItemTypeModel(0, this.$i18n('Enum_SystemType_PERSON_SYSTEM')),
       new ItemTypeModel(1, this.$i18n('Enum_SystemType_ATTENDANCE_SYSTEM')),
       new ItemTypeModel(2, this.$i18n('Enum_SystemType_PAYROLL_SYSTEM')),
-      new ItemTypeModel(2, this.$i18n('Enum_SystemType_OFFICE_HELPER')),
+      new ItemTypeModel(3, this.$i18n('Enum_SystemType_OFFICE_HELPER')),
     ]);
     currentCode: KnockoutObservable<string> = ko.observable(null);
     b5_2dateValue: KnockoutObservable<any> = ko.observable({});
@@ -348,6 +348,7 @@ module nts.uk.com.view.cli003.b {
       service
         .getAllLogDisplaySet()
         .done((logDisplaySets: any) => {
+          console.log(logDisplaySets);
           if (logDisplaySets && logDisplaySets.length > 0) {
             vm.logDisplaySets(logDisplaySets);
             for (let i = 0; i < logDisplaySets.length; i++) {
@@ -439,6 +440,7 @@ module nts.uk.com.view.cli003.b {
     }
     setLogSetInfo(logSet: any) {
       const vm = this;
+      console.log(logSet);
       vm.currentLogDisplaySet(logSet);
       vm.logSetId(logSet.logSetId);
       vm.currentLogSetCode(vm.currentCode());
