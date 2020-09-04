@@ -15,6 +15,20 @@ public interface ScheduleCreateContentGetMemento {
 	public String getExecutionId();
 
 	/**
+	 * Gets the copy start date.
+	 *
+	 * @return the copy start date
+	 */
+	public GeneralDate getCopyStartDate();
+
+	/**
+	 * Gets the creates the method atr.
+	 *
+	 * @return the creates the method atr
+	 */
+	public CreateMethodAtr getCreateMethodAtr();
+
+	/**
 	 * Gets the confirm.
 	 *
 	 * @return the confirm
@@ -22,24 +36,67 @@ public interface ScheduleCreateContentGetMemento {
 	public Boolean getConfirm();
 
 	/**
-	 * Gets the Creation Type.
+	 * Gets the implement atr.
 	 *
 	 * @return the implement atr
 	 */
-	public ImplementAtr getCreationType();
+	public ImplementAtr getImplementAtr();
 
 	/**
-	 * Gets the Specify Creation.
+	 * Gets the process execution atr.
 	 *
-	 * @return the copy Specify Creation
+	 * @return the process execution atr
 	 */
-	public SpecifyCreation getSpecifyCreation();
+	public ProcessExecutionAtr getProcessExecutionAtr();
 
 	/**
-	 * Gets the creates the method atr.
+	 * Gets the re create atr.
 	 *
-	 * @return the creates the method atr
+	 * @return the re create atr
 	 */
-	public RecreateCondition getRecreateCondition();
+	public ReCreateAtr getReCreateAtr();
 
+	/**
+	 * Gets the reset master info.
+	 *
+	 * @return the reset master info
+	 */
+	public Boolean getResetMasterInfo();
+
+	/**
+	 * Gets the reset working hours.
+	 *
+	 * @return the reset working hours
+	 */
+	public Boolean getResetWorkingHours();
+
+	/**
+	 * Gets the reset start-end time.
+	 *
+	 * @return the reset start-end time
+	 */
+	public Boolean getResetStartEndTime();
+
+	/**
+	 * Gets the reset time assignment.
+	 *
+	 * @return the reset time assignment
+	 */
+	public Boolean getResetTimeAssignment();
+
+	// RebuildTargetAtr
+	public RebuildTargetAtr getRebuildTargetAtr();
+
+	// RebuildTargetDetailsAtr
+	public Boolean getRecreateConverter();
+
+	public Boolean getRecreateEmployeeOffWork();
+
+	public Boolean getRecreateDirectBouncer();
+
+	public Boolean getRecreateShortTermEmployee();
+
+	public Boolean getRecreateWorkTypeChange();
+
+	public Boolean getProtectHandCorrection();
 }

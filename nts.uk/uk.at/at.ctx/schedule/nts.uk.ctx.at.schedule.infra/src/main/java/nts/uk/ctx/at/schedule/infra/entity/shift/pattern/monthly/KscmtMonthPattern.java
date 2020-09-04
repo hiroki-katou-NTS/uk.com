@@ -20,11 +20,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KscmtMonthPattern.
  */
-
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_MONTHLY_PATTERN")
+@Table(name = "KSCMT_MONTH_PATTERN")
 public class KscmtMonthPattern extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
@@ -37,14 +36,8 @@ public class KscmtMonthPattern extends UkJpaEntity implements Serializable {
     /** The m pattern name. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "NAME")
+    @Column(name = "M_PATTERN_NAME")
     private String mPatternName;
-
-	/** The contract code. */
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 
     /**
      * Instantiates a new kmpmt month pattern.

@@ -20,12 +20,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KscdtScheErrLog.
  */
-// Entity: 	スケジュール作成エラーログ
-
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCDT_BATCH_ERR_LOG")
+@Table(name = "KSCDT_SCHE_ERR_LOG")
 public class KscdtScheErrLog extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

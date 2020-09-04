@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class WeeklyWorkDay.
+ * The Class WeeklyWorkSetting.
  */
 // 週間勤務設定
 @Getter

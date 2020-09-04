@@ -18,28 +18,17 @@ public class MonthlyPattern extends AggregateRoot {
 
 	/** The company id. */
 	//会社ID
-	private final CompanyId companyId;
+	private CompanyId companyId;
 	
 	/** The monthly pattern code. */
 	//月間パターンコード
-	private final MonthlyPatternCode monthlyPatternCode;
+	private MonthlyPatternCode monthlyPatternCode;
 	
 	/** The monthly pattern name. */
 	// 月間パターン名称
 	private MonthlyPatternName monthlyPatternName;
-
-	/**
-	 * [C-0] 月間パターン(会社ID, 月間パターンコード, 月間パターン名称)
-	 * @param companyId
-	 * @param monthlyPatternCode
-	 * @param monthlyPatternName
-	 */
-	public MonthlyPattern(CompanyId companyId, MonthlyPatternCode monthlyPatternCode, MonthlyPatternName monthlyPatternName) {
-		this.companyId = companyId;
-		this.monthlyPatternCode = monthlyPatternCode;
-		this.monthlyPatternName = monthlyPatternName;
-	}
-
+	
+	
 	/**
 	 * Instantiates a new monthly pattern.
 	 *
