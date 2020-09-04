@@ -12,8 +12,8 @@ module nts.uk.com.view.kwr002.f {
         selectedName: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        F1_5_value: KnockoutObservable<string>;
-        F1_6_value: KnockoutObservable<string>;
+        F1_5_code: KnockoutObservable<string>;
+        F1_6_name: KnockoutObservable<string>;
 
         /**
          * Constructor.
@@ -26,8 +26,8 @@ module nts.uk.com.view.kwr002.f {
             self.selectedCode = ko.observable('');
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            self.F1_5_value = ko.observable('');
-            self.F1_6_value = ko.observable('');
+            self.F1_5_code = ko.observable('');
+            self.F1_6_name = ko.observable('');
 
 
         }
@@ -36,11 +36,13 @@ module nts.uk.com.view.kwr002.f {
             let self = this;
             let code = nts.uk.ui.windows.getShared("codeScreenB");
             let name = nts.uk.ui.windows.getShared("nameScreenB");
+            let dataFromScreenB = nts.uk.ui.windows.getShared("dataFromScreenB");
             self.selectedCode = ko.observable(code);
             self.selectedName = ko.observable(name);
+            console.log(dataFromScreenB);
 
 
-            // vm.F1_5_value = ko.observable(codeName.code());
+            // vm.F1_5_code = ko.observable(codeName.code());
         }
 
         mounted() {

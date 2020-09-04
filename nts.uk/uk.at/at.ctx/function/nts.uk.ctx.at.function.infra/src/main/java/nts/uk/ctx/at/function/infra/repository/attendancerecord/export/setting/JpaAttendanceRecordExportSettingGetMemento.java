@@ -136,4 +136,15 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	public Integer getNameUseAtr() {
 		return this.attendanceEntity.getNameUseAtr().intValue();
 	}
+
+	@Override
+	public int getExportFontSize() {
+		
+		return 1;
+	}
+
+	@Override
+	public int getMonthlyConfirmedDisplay() {
+		return 1;
+	}
 }

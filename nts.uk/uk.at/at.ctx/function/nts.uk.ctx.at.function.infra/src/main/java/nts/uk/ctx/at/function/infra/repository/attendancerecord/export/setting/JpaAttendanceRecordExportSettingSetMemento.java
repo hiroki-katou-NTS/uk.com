@@ -149,4 +149,19 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 		this.entity.setNameUseAtr(new BigDecimal(nameUseAtr));
 	}
 
+	@Override
+	public void setExportFontSize(int exportFontSize) {
+		this.entity.setCharSizeType(exportFontSize);
+		
+	}
+
+	@Override
+	public void setMonthlyConfirmedDisplay(int monthlyConfirmedDisplay) {
+		this.entity.setMonthAppDispAtr(monthlyConfirmedDisplay);
+		
+	}
+
+
+
+
 }

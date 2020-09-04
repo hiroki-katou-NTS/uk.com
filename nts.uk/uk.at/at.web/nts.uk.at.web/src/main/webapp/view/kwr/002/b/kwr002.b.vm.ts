@@ -289,11 +289,12 @@ module nts.uk.com.view.kwr002.b {
 
         public openDialogF() {
             let self = this;
+            let data = new OpenDialogFParam('',self.currentARES().code(),self.currentARES().name(),'');
             let code = self.currentARES().code();
             let name = self.currentARES().name();
             setShared("codeScreenB", code, true);
             setShared("nameScreenB", name, true);
-
+            setShared("dataFromScreenB", data, true);
             modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
 
             });
@@ -496,14 +497,15 @@ module nts.uk.com.view.kwr002.b {
     }
 
     class OpenDialogFParam{
+        itemSelectedType: string;
         code: string;
         name: string;
-        selectedCode: string;
         layoutCode: string;
-        constructor(code: string, name: string, selectedCode: string, layoutCode: string) {
+
+        constructor(itemSelectedType: string, code: string, name: string, layoutCode: string) {
+            this.itemSelectedType = itemSelectedType;
             this.code = code;
             this.name = name;
-            this.selectedCode = selectedCode;
             this.layoutCode = layoutCode;
       }
     }

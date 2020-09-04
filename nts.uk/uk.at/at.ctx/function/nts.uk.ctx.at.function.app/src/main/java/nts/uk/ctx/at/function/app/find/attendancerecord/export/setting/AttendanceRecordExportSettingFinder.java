@@ -104,7 +104,8 @@ public class AttendanceRecordExportSettingFinder {
 			dto.setName(domain.getName().toString());
 			dto.setSealUseAtr(domain.getSealUseAtr());
 			dto.setNameUseAtr(domain.getNameUseAtr().value);
-
+			dto.setExportFontSize(domain.getExportFontSize().value);
+			dto.setMonthlyConfirmedDisplay(domain.getMonthlyConfirmedDisplay().value);
 			return dto;
 		}
 		return new AttendanceRecordExportSettingDto();

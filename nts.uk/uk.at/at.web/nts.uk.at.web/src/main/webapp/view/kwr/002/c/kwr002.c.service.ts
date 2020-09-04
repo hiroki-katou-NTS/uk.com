@@ -8,11 +8,14 @@ module nts.uk.com.view.kwr002.c{
             findAllAttendanceRecExportMonthly: "com/function/attendancerecord/export/getAllAttendanceRecordExportMonthly/",
             getAttendanceSingleList: "com/function/attendancerecord/export/getAttendanceListSingle",
             getAttendanceCalculateList: "com/function/attendancerecord/export/getAttendanceListCalculate/",
-            getSealStamp: "com/function/attendancerecord/export/setting/getSealStamp/",
+            getSealStamp:"com/function/attendancerecord/export/setting/getSealStamp/",
+            getAttendanceRecordExportSetting: "com/function/attendancerecord/export/setting/getAttendanceRecExpSet/",
             getApprovalProcessingUseSetting: "com/function/attendancerecord/export/getApprovalProcessingUseSetting",
-            getDailyAttendanceTtems: "com/function/attendancerecord/export/getDailyAttendanceTtems"
+            getDailyAttendanceTtems: "com/function/attendancerecord/export/getDailyAttendanceTtems",
+            getSingleAttendanceRecord: "com/function/attendancerecord/export/setting/getSingleAttendanceRecord",
+            getCalculateAttendanceRecordDto: "com/function/attendancerecord/export/setting/getCalculateAttendanceRecordDto"
         };
-        
+
         export function findAllAttendanceRecExportDaily(exportCode : number): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>>{
             return nts.uk.request.ajax("at", path.findAllAttendanceRecExportDaily + exportCode);   
         }
@@ -35,11 +38,23 @@ module nts.uk.com.view.kwr002.c{
 
         // Add in ver 25
         export function getApprovalProcessingUseSetting(): JQueryPromise<viewmodel.model.ApprovalProcessingUseSetting> {
-            return nts.uk.request.ajax(path.getApprovalProcessingUseSetting);
+            return nts.uk.request.ajax("at", path.getApprovalProcessingUseSetting);
         }
         // Add in Ver 25
         export function getDailyAttendanceTtem(): JQueryPromise<AttributeOfAttendanceItem> {
-            return nts.uk.request.ajax(path.getDailyAttendanceTtems);
+            return nts.uk.request.ajax("at", path.getDailyAttendanceTtems);
+        }
+        // Add in Ver 25
+        export function getSingleAttendanceRecord(attendanceRecordKey: viewmodel.model.AttendanceRecordKey): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.getSingleAttendanceRecord, attendanceRecordKey);
+        }
+        // Add in Ver 25
+        export function getCalculateAttendanceRecordDto(attendanceRecordKey: viewmodel.model.AttendanceRecordKey): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", path.getCalculateAttendanceRecordDto, attendanceRecordKey);
+        }
+        
+        export function getAttendanceRecordExportSetting(code : number): JQueryPromise<any>{
+            return nts.uk.request.ajax("at",path.getAttendanceRecordExportSetting + code);
         }
 
     }
