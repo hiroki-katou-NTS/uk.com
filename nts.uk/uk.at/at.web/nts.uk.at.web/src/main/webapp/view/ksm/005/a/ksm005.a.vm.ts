@@ -264,24 +264,19 @@ module nts.uk.at.view.ksm005.a {
                     dto.workingName
                 ];
                 //row1
-                if( nts.uk.util.isNullOrEmpty(dto.workTypeCode)
-	                && !nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
+                if( nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
 	                row1 = dto.workTypeCode + text.getText('KSM005_84');
-                } else  if( nts.uk.util.isNullOrEmpty(dto.workTypeCode)
-	                && nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
-	                row1 = '';
                 } else row1 = dto.workTypeName;
 
 	            //row2
-	            if( nts.uk.util.isNullOrEmpty(dto.workingCode)
-		            && !nts.uk.util.isNullOrEmpty(dto.workingName) ){
-		            row2 = dto.workingCode + text.getText('KSM005_84');
-	            } else  if( nts.uk.util.isNullOrEmpty(dto.workingCode)
-		            && nts.uk.util.isNullOrEmpty(dto.workingName) ){
+	            if(nts.uk.util.isNullOrEmpty(dto.workingName) ){
 		            row2 = '';
 	            } else row2 = dto.workingName;
 
-                if (dto.typeColor == TypeColor.ATTENDANCE) {
+	            if (dto.typeColor == TypeColor.ATTENDANCE) {
+                    textColor = 'black';
+                }
+                else if (dto.typeColor == TypeColor.ATTENDANCE) {
                     textColor = TypeColor.ATTENDANCE_COLOR;
                 } else if (dto.typeColor == TypeColor.HALF_DAY_WORK) {
                     textColor = TypeColor.HALF_DAY_WORK_COLOR;
