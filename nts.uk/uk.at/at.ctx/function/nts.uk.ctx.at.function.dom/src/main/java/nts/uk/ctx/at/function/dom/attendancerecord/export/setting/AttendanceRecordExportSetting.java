@@ -104,10 +104,10 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 			memento.setNameUseAtr(this.nameUseAtr.value);
 		}
 		if(this.exportFontSize !=null) {
-			memento.setExportFontSize(this.exportFontSize);
+			memento.setExportFontSize(this.exportFontSize.value);
 		}
 		if(this.monthlyConfirmedDisplay !=null) {
-			memento.setMonthlyConfirmedDisplay(this.monthlyConfirmedDisplay);
+			memento.setMonthlyConfirmedDisplay(this.monthlyConfirmedDisplay.value);
 		}
 		
 	}

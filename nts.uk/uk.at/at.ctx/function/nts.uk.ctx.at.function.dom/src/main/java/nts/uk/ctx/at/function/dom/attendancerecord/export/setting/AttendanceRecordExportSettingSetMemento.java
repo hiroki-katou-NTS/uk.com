@@ -72,7 +72,7 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 *
 	 * @param exportFontSize the new export font size
 	 */
-	void setExportFontSize(ExportFontSize exportFontSize);
+	void setExportFontSize(Integer exportFontSize);
 	
 	/**
 	 * A18_2 - Screen F
@@ -80,5 +80,5 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 *
 	 * @param monthlyConfirmedDisplay the new monthly confirmed display
 	 */
-	void setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay monthlyConfirmedDisplay);
+	void setMonthlyConfirmedDisplay(Integer monthlyConfirmedDisplay);
 }

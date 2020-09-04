@@ -4,9 +4,12 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -21,6 +24,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -84,6 +88,10 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 	@Basic(optional = false)
 	@Column(name="MONTH_APP_DISP_ATR")
 	private int monthAppDispAtr;
+	
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
+	private List<KfnmtRptWkAtdOutframe> lstKfnmtRptWkAtdOutframe;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()

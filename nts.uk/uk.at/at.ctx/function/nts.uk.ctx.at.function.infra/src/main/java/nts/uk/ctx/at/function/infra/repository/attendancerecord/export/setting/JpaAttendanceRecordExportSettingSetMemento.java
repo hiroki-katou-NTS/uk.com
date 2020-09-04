@@ -8,8 +8,11 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSetPK;
 
@@ -31,7 +34,13 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	private List<KfnstSealColumn> sealColumnEntity = new ArrayList<>();
 
 	private List<KfnstAttndRec> attndRecSettingEntity = new ArrayList<>();
-
+	
+	
+	private KfnmtRptWkAtdOut resEntity;
+	
+	private List<KfnmtRptWkAtdOutseal> sealEntity = new ArrayList<>();
+ 	
+	private List<KfnmtRptWkAtdOutframe> outFrameEntity = new ArrayList<>();
 	/**
 	 * Instantiates a new jpa attendance record export setting set memento.
 	 */
