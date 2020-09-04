@@ -359,17 +359,18 @@ public class CreateOrderInfoFileQuery {
             for(BentoReservation reservation : handlerReservation){
                 for(BentoReservationDetail detail : reservation.getBentoReservationDetails()){
                     Bento bento = bentoMenuRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
-                    if(map.get(bento) == null)
-                        map.put(bento,new ArrayList<BentoReservationInfoForEmpDto>(){{add(item);}});
+                    if(map.get(bento) == null){
+                        map.put(bento,new ArrayList<BentoReservationInfoForEmpDto>(){{
+                            add(BentoReservationInfoForEmpDto.changeQuantity(item, detail.getBentoCount().v()));
+                        }});
+                    }
                     else{
                         List<BentoReservationInfoForEmpDto> temp = map.get(bento);
-                        temp.add(item);
+                        temp.add(BentoReservationInfoForEmpDto.changeQuantity(item, detail.getBentoCount().v()));
                         map.put(bento,temp);
                     }
-                    quantity += detail.getBentoCount().v();
                 }
             }
-            item.setQuantity(quantity);
             if(!CollectionUtil.isEmpty(handlerReservation))
                 reservationInfoForEmpDtoIT.remove();
         }
