@@ -337,9 +337,9 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
                     quantity += totalDto.getQuantity();
                     amount += totalDto.getAmount();
                 }
-                bentoTotalDtos.add(new BentoTotalDto(unit, name, frameNo, quantity, amount));
+                bentoTotalDtos.add(new BentoTotalDto(unit, name, quantity, frameNo, amount));
             }
-            bentoTotalDtos.stream().sorted(Comparator.comparing(BentoTotalDto::getFrameNo).reversed());
+            bentoTotalDtos.stream().sorted(Comparator.comparing(BentoTotalDto::getFrameNo));
             int totalFee = 0;
             for(TotalOrderInfoDto item: totalOrderInfoDtos){
                 totalFee += item.getTotalFee();
@@ -353,7 +353,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
                     totalOrderInfoDtos.get(0).getPlaceOfWorkInfoDto()
             ));
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(TotalOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
 
     private void printHeadData(Cells cells, OrderInfoExportData exportData){
@@ -495,7 +495,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             temp.setBentoReservedInfoDtos(bentoReservedInfoDtos);
             result.add(temp);
         }
-        return result;
+        return result.stream().sorted(Comparator.comparing(DetailOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
 
     private List<BentoReservedInfoDto> honeDetailReservationData(List<BentoReservedInfoDto> raw){
@@ -514,7 +514,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             result.add(temp);
         }
 
-        return result;
+        return result.stream().sorted(Comparator.comparing(BentoReservedInfoDto::getFrameNo)).collect(Collectors.toList());
     }
 
 
