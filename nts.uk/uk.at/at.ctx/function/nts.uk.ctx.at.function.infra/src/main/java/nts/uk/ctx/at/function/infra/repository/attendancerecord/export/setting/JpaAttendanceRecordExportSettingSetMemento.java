@@ -3,8 +3,10 @@ package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn;
@@ -149,19 +151,17 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 		this.entity.setNameUseAtr(new BigDecimal(nameUseAtr));
 	}
 
+
 	@Override
-	public void setExportFontSize(int exportFontSize) {
-		this.entity.setCharSizeType(exportFontSize);
+	public void setExportFontSize(ExportFontSize exportFontSize) {
+		this.entity.setCharSizeType(exportFontSize.value);
 		
 	}
 
 	@Override
-	public void setMonthlyConfirmedDisplay(int monthlyConfirmedDisplay) {
-		this.entity.setMonthAppDispAtr(monthlyConfirmedDisplay);
+	public void setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay monthlyConfirmedDisplay) {
+		this.entity.setMonthAppDispAtr(monthlyConfirmedDisplay.value);
 		
 	}
-
-
-
 
 }
