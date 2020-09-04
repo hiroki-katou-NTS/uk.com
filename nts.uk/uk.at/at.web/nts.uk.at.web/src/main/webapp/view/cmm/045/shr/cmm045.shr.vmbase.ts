@@ -211,7 +211,7 @@ module cmm045.shr {
 		        this.details = '';
 		        this.appName = '';
 		        this.appAtr = '';
-		        this.checkAtr = true;
+		        this.checkAtr = this.opApprovalFrameStatus == 0 ? true : false;
 		        this.version = 0;
 		        this.checkTimecolor = 0;
 		        this.appIdSub = '';
@@ -359,10 +359,10 @@ module cmm045.shr {
             }
         }
         export class ChoseApplicationList{
-            appId: number;
+            appType: number;
             appName: string;
-            constructor(appId: number, appName: string){
-                this.appId = appId;
+            constructor(appType: number, appName: string){
+                this.appType = appType;
                 this.appName = appName;
             }    
         }

@@ -18,7 +18,7 @@ module cmm045.a.viewmodel {
         lstListAgent: KnockoutObservableArray<vmbase.ApproveAgent> = ko.observableArray([]);
         lstAppCompltSync: KnockoutObservableArray<vmbase.AppAbsRecSyncData> = ko.observableArray([]);
 
-        approvalMode: KnockoutObservable<boolean> = ko.observable(false);
+        // approvalMode: KnockoutObservable<boolean> = ko.observable(false);
         approvalCount: KnockoutObservable<vmbase.ApplicationStatus> = ko.observable(new vmbase.ApplicationStatus(0, 0, 0, 0, 0, 0));
         itemList: KnockoutObservableArray<any>;
         selectedIds: KnockoutObservableArray<any> = ko.observableArray([1,5]);// check box - ver50
@@ -47,7 +47,7 @@ module cmm045.a.viewmodel {
 
         //ver60
         //Grid list item
-        apptypeGridColumns: KnockoutObservable<NtsGridListColumn>;
+        // apptypeGridColumns: KnockoutObservable<NtsGridListColumn>;
         selectedAppId: KnockoutObservableArray<number> = ko.observableArray([]);
 		orderCD: KnockoutObservable<number> = ko.observable(0);
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
@@ -59,11 +59,10 @@ module cmm045.a.viewmodel {
 
         constructor() {
             let self = this;
-            self.apptypeGridColumns = ko.observable([
+            /*self.apptypeGridColumns = ko.observable([
                 { headerText: 'appType', key: 'appType', width: 50, hidden: true},
                 { headerText: getText('CMM045_94'), key: 'appName', width: 125 },
-            ])
-
+            ])*/
             $(".popup-panel").ntsPopup({
                 trigger: '.hyperlink',
                 position: {
@@ -84,9 +83,9 @@ module cmm045.a.viewmodel {
                 { id: 6, name: getText('CMM045_25') }
             ]);
 
-            self.selectedCode.subscribe(function(codeChanged) {
+            /*self.selectedCode.subscribe(function(codeChanged) {
                 self.filterByAppType(codeChanged);
-            });
+            });*/
 
             //_____CCG001________
             self.selectedEmployee = ko.observableArray([]);
@@ -148,7 +147,11 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
-					self.items(data.appLst);
+					let newItemLst = [];
+					_.each(data.appListInfo.appLst, item => {
+						newItemLst.push(new vmbase.DataModeApp(item));
+					});
+					self.items(newItemLst);
 					if (data.appStatusCount != null) {
                         self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
                             data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
@@ -178,6 +181,33 @@ module cmm045.a.viewmodel {
                     $("#grid2").igGrid("option", "height", window.innerHeight - 270  + "px");
                 }
             }
+
+			self.selectedIds.subscribe(value => {
+				self.appListExtractConditionDto.opUnapprovalStatus = _.includes(value, 1) ? true : false;
+				self.appListExtractConditionDto.opApprovalStatus = _.includes(value, 2) ? true : false;
+				self.appListExtractConditionDto.opDenialStatus = _.includes(value, 3) ? true : false;
+				self.appListExtractConditionDto.opAgentApprovalStatus = _.includes(value, 4) ? true : false;
+				self.appListExtractConditionDto.opRemandStatus = _.includes(value, 5) ? true : false;
+				self.appListExtractConditionDto.opCancelStatus = _.includes(value, 6) ? true : false;
+			});
+
+			self.selectedAppId.subscribe(value => {
+				let appTypeNumber = _.map(value, (o: any) => parseInt(o));
+				_.each(self.appListExtractConditionDto.opListOfAppTypes, x => {
+					if(_.includes(appTypeNumber, x.appType)) {
+						x.choice = true;
+					} else {
+						x.choice = false;
+					}
+				});
+			});
+
+			self.isBeforeCheck.subscribe(value => {
+				self.appListExtractConditionDto.preOutput = value;
+			});
+        	self.isAfterCheck.subscribe(value => {
+				self.appListExtractConditionDto.postOutput = value;
+			});
         }
 
 		checkConditionParam() {
@@ -197,16 +227,16 @@ module cmm045.a.viewmodel {
                 return false;
             }
             if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
-                nts.uk.ui.dialog.error({ messageId: "Msg_360" });
+                nts.uk.ui.dialog.alert({ messageId: "Msg_360" });
                 return false;
             }
 			if (!self.appListExtractConditionDto.preOutput && !self.appListExtractConditionDto.postOutput) {
-				nts.uk.ui.dialog.error({ messageId: "Msg_1722" });
+				nts.uk.ui.dialog.alert({ messageId: "Msg_1722" });
                 return false;
 			}
 			let selectAppTypeLst = _.filter(self.appListExtractConditionDto.opListOfAppTypes, o => o.choice);
 			if (_.isEmpty(selectAppTypeLst)) {
-				nts.uk.ui.dialog.error({ messageId: "Msg_1723" });
+				nts.uk.ui.dialog.alert({ messageId: "Msg_1723" });
                 return false;
 			}
 			return true;
@@ -222,7 +252,11 @@ module cmm045.a.viewmodel {
 
 			block.invisible();
 			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
-				self.items(data.appListInfo.appLst);
+				let newItemLst = [];
+				_.each(data.appListInfo.appLst, item => {
+					newItemLst.push(new vmbase.DataModeApp(item));
+				});
+				self.items(newItemLst);
 				if (data.appStatusCount != null) {
                     self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
                         data.appStatusCount.approvalAgentNumber, data.appStatusCount.cancelNumber, data.appStatusCount.remandNumner,
@@ -248,7 +282,12 @@ module cmm045.a.viewmodel {
             var dfd = $.Deferred();
             //get param url
             let url = $(location).attr('search');
-            let urlParam: number = url.split("=")[1];
+            let urlParam: number = 0;
+			if(_.isUndefined(url.split("=")[1])) {
+				history.pushState({}, null, "?a=0");
+			} else {
+				urlParam = parseInt(url.split("=")[1]);
+			}
             let characterData = null;
             let appCHeck = null;
             if (urlParam !== undefined) {
@@ -269,31 +308,33 @@ module cmm045.a.viewmodel {
             character.restore("AppListExtractCondition").then((obj) => {
 				characterData = obj;
                 if (obj !== undefined && obj !== null && !self.isSpr()) {
-                    let date: vmbase.Date = { startDate: obj.startDate, endDate: obj.endDate }
+					self.updateFromAppListExtractCondition();
+                    /*let date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
                     self.dateValue(date);
                     self.selectedIds([]);
-                    if (obj.unapprovalStatus) {//未承認
+                    if (obj.opUnapprovalStatus) {//未承認
                         self.selectedIds.push(1);
                     }
-                    if (obj.approvalStatus) {//承認済み
+                    if (obj.opApprovalStatus) {//承認済み
                         self.selectedIds.push(2);
                     }
-                    if (obj.denialStatus) {//否認
+                    if (obj.opDenialStatus) {//否認
                         self.selectedIds.push(3);
                     }
-                    if (obj.agentApprovalStatus) {//代行承認済み
+                    if (obj.opAgentApprovalStatus) {//代行承認済み
                         self.selectedIds.push(4);
                     }
-                    if (obj.remandStatus) {//差戻
+                    if (obj.opRemandStatus) {//差戻
                         self.selectedIds.push(5);
                     }
-                    if (obj.cancelStatus) {//取消
+                    if (obj.opCancelStatus) {//取消
                         self.selectedIds.push(6);
-                    }
+                    }*/
 //                    self.selectedRuleCode(obj.appDisplayAtr);
                     //combo box
                     appCHeck = obj.appType;
-                    self.lstSidFilter(obj.listEmployeeId);
+                    // self.lstSidFilter(obj.opListEmployeeID);
+					// self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map((x: any) => x.appType).value());
                 }
                 if (urlParam === undefined && !self.isSpr()) {
                     self.mode(characterData.appListAtr);
@@ -318,9 +359,11 @@ module cmm045.a.viewmodel {
 				return service.getAppNameInAppList();
 			}).then((data: any) => {
                 self.appListExtractConditionDto.opListOfAppTypes = data;
+				self.updateFromAppListExtractCondition();
+				// self.selectedAppId(_.chain(self.appListExtractConditionDto.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
                 _.forEach(data, item => {
                     if(item.appName != "") {
-                        self.itemApplication().push({ appType: item.appType, appName: item.appName });
+                        self.itemApplication().push(new vmbase.ChoseApplicationList(item.appType, item.appName));
                     }
                 });
                 _.uniqBy(self.itemApplication(), ['appType', 'appName']);
@@ -331,7 +374,7 @@ module cmm045.a.viewmodel {
 							appListExtractCondition: self.appListExtractConditionDto
                         };
 
-                self.itemList()
+                // self.itemList()
 				return service.getApplicationList(newParam);
 			}).then((data: any) => {
                 self.appList(data.appListInfo);
@@ -339,9 +382,10 @@ module cmm045.a.viewmodel {
 
                 }
                 self.isLimit500(data.appListInfo.moreThanDispLineNO);
-                self.appListAtr = data.appListExtractCondition.appListAtr;
-				self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
+                // self.appListAtr = data.appListExtractCondition.appListAtr;
+				// self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
 				self.appListExtractConditionDto = data.appListExtractCondition;
+				self.updateFromAppListExtractCondition();
                 self.lstContentApp(data.lstContentApp);
                 let isHidden = data.isDisPreP == 1 ? false : true;
                 self.isHidden(isHidden);
@@ -379,9 +423,11 @@ module cmm045.a.viewmodel {
 //                });
 //                let lstData = self.mapData(self.lstAppCommon(), self.lstAppMaster(), self.lstAppCompltSync());
 //                self.lstApp(lstData);
+				let newItemLst = [];
 				_.each(data.appListInfo.appLst, item => {
-					self.items.push(new vmbase.DataModeApp(item));
-				})
+					newItemLst.push(new vmbase.DataModeApp(item));
+				});
+				self.items(newItemLst);
                 //mode approval - count
                 if (data.appStatusCount != null) {
                     self.approvalCount(new vmbase.ApplicationStatus(data.appStatusCount.unApprovalNumber, data.appStatusCount.approvalNumber,
@@ -495,6 +541,36 @@ module cmm045.a.viewmodel {
 //            });
             return dfd.promise();
         }
+
+		updateFromAppListExtractCondition() {
+			const self = this;
+			let obj = self.appListExtractConditionDto,
+				date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
+            self.dateValue(date);
+            let arraySelectedIds = [];
+            if (obj.opUnapprovalStatus) {//未承認
+                arraySelectedIds.push(1);
+            }
+            if (obj.opApprovalStatus) {//承認済み
+                arraySelectedIds.push(2);
+            }
+            if (obj.opDenialStatus) {//否認
+                arraySelectedIds.push(3);
+            }
+            if (obj.opAgentApprovalStatus) {//代行承認済み
+                arraySelectedIds.push(4);
+            }
+            if (obj.opRemandStatus) {//差戻
+                arraySelectedIds.push(5);
+            }
+            if (obj.opCancelStatus) {//取消
+                arraySelectedIds.push(6);
+            }
+			self.selectedIds(arraySelectedIds);
+			self.lstSidFilter(obj.opListEmployeeID);
+			self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
+			self.appListAtr = obj.appListAtr;
+		}
 
         setupGrid(options: {
             withCcg001: boolean,
@@ -1065,7 +1141,7 @@ module cmm045.a.viewmodel {
          * format data: holiday work before
          * ※申請モード、承認モード(事前)用レイアウト
          */
-        formatHdWorkBf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
+        /*formatHdWorkBf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1078,14 +1154,14 @@ module cmm045.a.viewmodel {
                 app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
                 null, app.reflectPerState);
             return a;
-        }
+        }*/
         /**
          * 残業申請
          * kaf005 - appType = 0
          * format data: over time before
          * ※申請モード、承認モード(事前)用レイアウト
          */
-        formatOverTimeBf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
+        /*formatOverTimeBf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
 //            let applicant: string = masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1098,12 +1174,12 @@ module cmm045.a.viewmodel {
                 app.reflectStatus, masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,null, app.reflectPerState);
             return a;
-        }
+        }*/
         /**
          * ※承認モード(事後)用レイアウト
          * format data: over time after
          */
-        formatHdWorkAf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
+        /*formatHdWorkAf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1115,13 +1191,13 @@ module cmm045.a.viewmodel {
                 app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
                 null, app.reflectPerState);
             return a;
-        }
+        }*/
 
         /**
          * ※承認モード(事後)用レイアウト
          * format data: over time after
          */
-        formatOverTimeAf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
+        /*formatOverTimeAf(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1133,12 +1209,12 @@ module cmm045.a.viewmodel {
                 app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
                 null, app.reflectPerState);
             return a;
-        }
+        }*/
         /**
          * 直行直帰申請
          * kaf009 - appType = 4
          */
-        formatGoBack(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
+        /*formatGoBack(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1150,12 +1226,12 @@ module cmm045.a.viewmodel {
                 app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
                 null, app.reflectPerState);
             return a;
-        }
+        }*/
         /**
          * 勤務変更申請
          * kaf007 - appType = 2
          */
-        formatWorkChange(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
+        /*formatWorkChange(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1168,13 +1244,13 @@ module cmm045.a.viewmodel {
                 self.inputDateColor(self.convertDateTime(app.inputDate), ''), app.reflectStatus, masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null, app.reflectPerState);
             return a;
-        }
+        }*/
         /**
          * 休暇申請
          * kaf006 - appType = 1
          * DOING
          */
-        formatAbsence(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
+        /*formatAbsence(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp {
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1187,12 +1263,12 @@ module cmm045.a.viewmodel {
                 self.inputDateColor(self.convertDateTime(app.inputDate), ''), app.reflectStatus, masterInfo.phaseStatus,
                 masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, null, app.reflectPerState);
             return a;
-        }
+        }*/
         /**
          * 振休振出申請
          * kaf011 - appType = 10
          */
-        formatCompltLeave(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
+        /*formatCompltLeave(app: vmbase.ApplicationDataOutput, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1208,13 +1284,13 @@ module cmm045.a.viewmodel {
                 app.reflectStatus, masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor,
                 null, app.reflectPerState);
             return a;
-        }
+        }*/
         /**
          * 振休振出申請
          * 同期
          * kaf011 - appType = 10
          */
-        formatCompltSync(app: vmbase.ApplicationDataOutput, complt: vmbase.AppAbsRecSyncData, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
+        /*formatCompltSync(app: vmbase.ApplicationDataOutput, complt: vmbase.AppAbsRecSyncData, masterInfo: vmbase.AppMasterInfo): vmbase.DataModeApp{
             let self = this;
             let empNameFull = masterInfo.inpEmpName == null ? masterInfo.empName : masterInfo.empName + getText('CMM045_230', [masterInfo.inpEmpName]);
             let applicant: string = masterInfo.workplaceName == '' ? empNameFull : masterInfo.workplaceName + '<br/>' + empNameFull;
@@ -1244,7 +1320,7 @@ module cmm045.a.viewmodel {
                 '<div class = "rec" >' + app.reflectStatus + '</div>' + '<br/>' + '<div class = "abs" >' + app.reflectStatus + '</div>',
                 masterInfo.phaseStatus, masterInfo.statusFrameAtr, app.version, masterInfo.checkTimecolor, complt.appSubID, app.reflectPerState);
             return a;
-        }
+        }*/
         inputDateColor_Old(input: string, classApp: string): string{
             let inputDate = '<div class = "' + classApp + '" >' + input + '</div>';
             //fill color text input date
@@ -1310,7 +1386,7 @@ module cmm045.a.viewmodel {
         /**
          * map data -> fill in grid list
          */
-        mapData(lstApp: Array<vmbase.ApplicationDataOutput>, lstMaster: Array<vmbase.AppMasterInfo>, lstCompltLeave: Array<vmbase.AppAbsRecSyncData>): Array<vmbase.DataModeApp> {
+        /*mapData(lstApp: Array<vmbase.ApplicationDataOutput>, lstMaster: Array<vmbase.AppMasterInfo>, lstCompltLeave: Array<vmbase.AppAbsRecSyncData>): Array<vmbase.DataModeApp> {
             let self = this;
             let lstData: Array<vmbase.DataModeApp> = [];
             _.each(lstApp, function(app: vmbase.ApplicationDataOutput) {
@@ -1350,7 +1426,7 @@ module cmm045.a.viewmodel {
                 lstData.push(data);
             });
             return lstData;
-        }
+        }*/
         /**
          * find application holiday work by id
          */
@@ -1434,7 +1510,7 @@ module cmm045.a.viewmodel {
         /**
          * when click button 検索
          */
-        filter() {
+        /*filter() {
             block.invisible();
             if (nts.uk.ui.errors.hasError()) {
                 block.clear();
@@ -1532,7 +1608,7 @@ module cmm045.a.viewmodel {
             }).fail(() => {
                 block.clear();
             });
-        }
+        }*/
         findExist(): any{
             let self = this;
             return _.find(self.itemApplication(), function(item){
@@ -1600,7 +1676,7 @@ module cmm045.a.viewmodel {
         /**
          * When select combo box 申請種類
          */
-        filterByAppType(appType: number) {
+        /*filterByAppType(appType: number) {
             let self = this;
             let paramOld = null;
             let paramNew = null;
@@ -1642,7 +1718,7 @@ module cmm045.a.viewmodel {
                 let colorBackGr = self.fillColorbackGr();
                 self.reloadGridApplicaion(colorBackGr, self.isHidden());
             }
-        }
+        }*/
         /**
          * count status when filter by appType
          */
@@ -1706,30 +1782,5 @@ module cmm045.a.viewmodel {
             const command = { appListAtr: self.appListAtr, lstApp: self.appList() }
             service.print(command);
         }
-
-        // getNtsFeatures(): Array<any> {
-        //     let self = this;
-
-        //     var features = [
-        //         { name: 'TextColor',
-        //             columns: [
-        //                 {
-        //                     key: 'inputDate',
-        //                     parse: value => { return value; },
-        //                     map: (content: String) => {
-        //                         if(content.includes("土")) {
-        //                             return "#0000ff";
-        //                         }
-        //                         if(content.includes("日")) {
-        //                             return "#ff0000";
-        //                         }
-        //                     }
-        //                 }
-        //             ]
-        //     }
-        //     ];
-
-        //     return features;
-        // }
     }
 }

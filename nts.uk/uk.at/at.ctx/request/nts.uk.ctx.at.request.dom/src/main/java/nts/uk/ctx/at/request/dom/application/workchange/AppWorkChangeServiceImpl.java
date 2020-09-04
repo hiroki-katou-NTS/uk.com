@@ -155,6 +155,10 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Override
 	public WorkTypeWorkTimeSelect initWorkTypeWorkTime(String companyID, String employeeID, GeneralDate date,
 			List<WorkType> workTypeLst, List<WorkTimeSetting> workTimeLst) {
+		// INPUT．「勤務種類リスト」をチェックする
+		if (CollectionUtil.isEmpty(workTypeLst)) {
+			throw new BusinessException("Msg_43");
+		}
 		WorkTypeWorkTimeSelect result = new WorkTypeWorkTimeSelect();
 		// ドメインモデル「個人労働条件」を取得する(lay dieu kien lao dong ca nhan(個人労働条件))
 		Optional<WorkingConditionItem> personalLablorCodition = workingConditionItemRepository

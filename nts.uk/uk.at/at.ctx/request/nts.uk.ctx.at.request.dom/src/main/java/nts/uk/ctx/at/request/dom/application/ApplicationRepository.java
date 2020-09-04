@@ -66,7 +66,8 @@ public interface ApplicationRepository {
 	 */
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
-			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType);
+			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType,
+			List<PrePostAtr> prePostAtrLst);
 
 	/**
 	 * get List Application Pre
@@ -181,7 +182,8 @@ public interface ApplicationRepository {
 	 */
 	public Optional<Application> findByID(String appID);
 	
-	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst);
+	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, 
+			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst);
 
 	public List<Application> getAppForKAF008(String sID, GeneralDate startDate, GeneralDate endDate);
 }
