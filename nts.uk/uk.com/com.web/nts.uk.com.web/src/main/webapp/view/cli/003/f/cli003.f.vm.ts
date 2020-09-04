@@ -39,7 +39,10 @@ module nts.uk.com.view.cli003.f {
     DATA_MANIPULATION = 5,
     DATA_CORRECT = 6,
     MY_NUMBER = 7,
-    TERMINAL_COMMUNICATION_INFO = 8
+    TERMINAL_COMMUNICATION_INFO = 8,
+    DATA_STORAGE = 9,
+    DATA_RECOVERY = 10,
+    DATA_DELETION = 11,
 }
 
 export enum ITEM_NO {
@@ -548,7 +551,7 @@ class DataCorrectLogModel {
                         } else {
                             
                             vm.$dialog.alert({ messageId: "Msg_1220" }).then(function() {
-                                nts.uk.ui.block.clear();
+                                vm.$blockui('clear');
                             });
                         }
                         dfd.resolve();
@@ -1086,7 +1089,7 @@ class DataCorrectLogModel {
 
     previousScreenB() {
       const vm = this;
-      vm.$jump("/view/cli/003/b2/index.xhtml",{
+      vm.$jump("/view/cli/003/b/index.xhtml",{
           'data':vm.dataFromB.data,
       });
   }

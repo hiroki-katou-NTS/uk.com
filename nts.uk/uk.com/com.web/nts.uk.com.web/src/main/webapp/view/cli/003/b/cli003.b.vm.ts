@@ -500,23 +500,35 @@ module nts.uk.com.view.cli003.b {
     }
     jumpToScreenF() { 
       const vm = this;
-      vm.$jump.self("/view/cli/003/f/index.xhtml",{
-        'data' : {
-          currentCode : vm.currentCode(),
-          operatorEmployeeCount : vm.operatorEmployeeCount(),
-          targetEmployeeCount : vm.targetEmployeeCount(),
-          logTypeSelectedCode : vm.recordType(),
-          dataTypeSelectedCode : vm.dataType(),
-          checkFormatDate : vm.checkFormatDate(),
-          targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
-          dateValue: vm.b5_2dateValue(),
-          startDateOperator: vm.startDateOperator(),
-          endDateOperator: vm.endDateOperator(),
-          selectedRuleCode: vm.b4_2SelectedRuleCode(),
-          selectedRuleCodeOperator: vm.b6_2SelectedRuleCode(),
-          listEmployeeIdOperator: vm.selectedEmployeeCodeOperator(),
-        }
-      });
+      const noOne = nts.uk.text.format(this.$i18n("CLI003_57"), 0);
+      if(vm.b4_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne){
+        vm.$dialog.error({ messageId: "Msg_1718" });
+      }
+      else if(vm.b6_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne){
+        vm.$dialog.error({ messageId: "Msg_1719" });
+      }
+      else if( vm.b4_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne &&
+          vm.b6_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne){
+            vm.$dialog.error({ messageId: "[Msg_1718,Msg_1719]" });
+      }else{
+        vm.$jump.self("/view/cli/003/f/index.xhtml",{
+          'data' : {
+            currentCode : vm.currentCode(),
+            operatorEmployeeCount : vm.operatorEmployeeCount(),
+            targetEmployeeCount : vm.targetEmployeeCount(),
+            logTypeSelectedCode : vm.recordType(),
+            dataTypeSelectedCode : vm.dataType(),
+            checkFormatDate : vm.checkFormatDate(),
+            targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
+            dateValue: vm.b5_2dateValue(),
+            startDateOperator: vm.startDateOperator(),
+            endDateOperator: vm.endDateOperator(),
+            selectedRuleCode: vm.b4_2SelectedRuleCode(),
+            selectedRuleCodeOperator: vm.b6_2SelectedRuleCode(),
+            listEmployeeIdOperator: vm.selectedEmployeeCodeOperator(),
+          }
+        });
+      }
     }
   }
 }
