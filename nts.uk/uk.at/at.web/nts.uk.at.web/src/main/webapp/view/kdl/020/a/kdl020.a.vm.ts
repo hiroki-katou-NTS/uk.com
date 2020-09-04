@@ -64,7 +64,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
                 isShowWorkPlaceName: self.isShowWorkPlaceName(),
                 isShowSelectAllButton: self.isShowSelectAllButton()
             };
-          
+
             self.selectedCode.subscribe((newCode) => {
                 let self = this;
                 if (newCode) {
@@ -81,15 +81,14 @@ module nts.uk.at.view.kdl020.a.screenModel {
                         dialog({ messageId: error.messageId });
                     }).always(() => {
                         block.clear();
-                    });;
+                    });
                 }
-
             });
 
             $("#holiday-info_table").ntsFixedTable({ height: 120, width: 526 });
             $("#holiday-use_table").ntsFixedTable({ height: 110, width: 335 });
-
         }
+
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -152,18 +151,18 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
             return self.genDateText(daysUsedNo) + "&nbsp;" + self.genTime(usedMinutes);
         }
-        
+
         // format data to A11_3
-        public genGrantDate(grantDate: string, deadline: string, expiredInCurrentMonthFg: boolean){
-          if (!grantDate && !deadline) {
-            return '';
+        public genGrantDate(grantDate: string, deadline: string, expiredInCurrentMonthFg: boolean) {
+            if (!grantDate && !deadline) {
+                return '';
+            }
+            if (expiredInCurrentMonthFg) {
+                return grantDate + nts.uk.resource.getText("KDL005_38", [deadline]);
+            }
+            return grantDate + nts.uk.resource.getText("KDL005_37", [deadline]);
         }
-          if(expiredInCurrentMonthFg){
-            return grantDate + nts.uk.resource.getText("KDL005_38", [deadline]);
-          }
-          return grantDate + nts.uk.resource.getText("KDL005_37", [deadline]);
-        }
-      
+
         genUsedNo(daysUsedNo, usedMinutes) {
             let self = this;
             if (daysUsedNo != null) {
@@ -175,14 +174,14 @@ module nts.uk.at.view.kdl020.a.screenModel {
 
             return '';
         }
-      
+
         genTime(data) {
             if (data == null) {
                 return '';
             }
             return formatById("Clock_Short_HM", data);
         }
-      
+
         genScheduleRecordText(scheduleRecordAtr) {
             return CreateAtr[scheduleRecordAtr];
         }
@@ -202,7 +201,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
             }
             return nextHolidayGrantDate + text('KDL020_29');
         }
-      
+
         changeData(data: IAnnualHoliday) {
             let self = this;
             self.reNumAnnLeave(new ReNumAnnLeaReferenceDate(data.reNumAnnLeave));
@@ -271,7 +270,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         }
 
     }
-    
+
     export class ReNumAnnLeaReferenceDate {
         /** 年休残数(仮)*/
         annualLeaveRemainNumber: KnockoutObservable<AnnualLeaveRemainingNumber> = ko.observable(new AnnualLeaveRemainingNumber());
@@ -492,7 +491,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         scheduleRecordAtr: number;
         /* 勤務種類*/
         workTypeCode: string;
-        
+
         workTypeName: string;
     }
 
@@ -502,7 +501,7 @@ module nts.uk.at.view.kdl020.a.screenModel {
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
     }
-    
+
     export enum CreateAtr {
         /** 予定 */
         "予定",
@@ -517,7 +516,6 @@ module nts.uk.at.view.kdl020.a.screenModel {
     }
 
     export interface UnitModel {
-
         code: string;
         id: string;
         name?: string;

@@ -18,21 +18,19 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.request.dom.application.AppReason
 			</com:ValidatorScript>
-      <script>var dialogSize = { width: 750 , height: 610};
-      </script>
+      <script>var dialogSize = { width: 750 , height: 610};</script>
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
 				<div id="content-left" >
         </div>
 				<div id="content-right">
-					<div id="content-right_top">
+          <div id="content-right_top">
             <table id="tbl">
               <tbody>
                 <tr>
                   <!-- A14_1 -->
-                  <td style="padding-top: 0px;
-                              width: 107px;">
+                  <td style="padding-top: 0px; width: 107px;">
                     <div data-bind="ntsFormLabel: {}">#{i18n.getText('CMM007_10')}</div>
                   </td>
                   <td class="back">
@@ -50,7 +48,7 @@
                 <tr>
                   <td style="padding: 0px"></td>
                   <td style="padding: 0px">
-                    <hr style="width: 530px"/>
+                    <hr style="width: 530px" />
                   </td>
                 </tr>
                 <tr>
@@ -63,7 +61,7 @@
                 </tr>
                 <com:ko-if bind="annualLeaveManagementFg()">
                   <tr>
-                    <td style="margin-top: 0px" >
+                    <td style="margin-top: 0px">
                       <!-- A14_2 -->
                       <div style="margin-bottom: 90px" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL020_41')}</div>
                     </td>
@@ -89,18 +87,23 @@
                               <th class="ui-widget-header">#{i18n.getText('KDL020_12')}</th>
                             </tr>
                           </thead>
-          
+
                           <tbody>
                             <com:ko-foreach bind="reNumAnnLeave().annualLeaveGrants()">
                               <tr>
                                 <!-- A11_3 -->
-                                <td><div data-bind="html: $parent.genGrantDate(grantDate(),deadline(),expiredInCurrentMonthFg()) "></div></td>
-                                <td><div
-                                    data-bind="html: $parent.genDateText(grantNumber()) "></div></td>
-                                <td><div
-                                    data-bind="html: $parent.genDaysUsedNo(daysUsedNo(),usedMinutes())"></div></td>
-                                <td><div
-                                    data-bind="html: $parent.genRemainDays(remainDays(),remainMinutes())"></div></td>
+                                <td>
+                                  <div data-bind="html: $parent.genGrantDate(grantDate(),deadline(),expiredInCurrentMonthFg())"></div>
+                                </td>
+                                <td>
+                                  <div data-bind="html: $parent.genDateText(grantNumber())"></div>
+                                </td>
+                                <td>
+                                  <div data-bind="html: $parent.genDaysUsedNo(daysUsedNo(),usedMinutes())"></div>
+                                </td>
+                                <td>
+                                  <div data-bind="html: $parent.genRemainDays(remainDays(),remainMinutes())"></div>
+                                </td>
                               </tr>
                             </com:ko-foreach>
                           </tbody>
@@ -112,47 +115,44 @@
                 <com:ko-if bind="annualLeaveManagementFg()">
                   <tr>
                     <td></td>
-                    <td> <div class="div_line" id="total">
-                          <div>#{i18n.getText('KDL020_15')}</div>
-                          <div id="total-number" data-bind="html:total"></div>
-        
+                    <td>
+                      <div class="div_line" id="total">
+                        <div>#{i18n.getText('KDL020_15')}</div>
+                        <div id="total-number" data-bind="html: total"></div>
+
+                      </div>
+                      <div data-bind="with: reNumAnnLeave().annualLeaveRemainNumber">
+                        <div data-bind="visible: $parent.annualSet().maxManageSemiVacation != 0" class="div_line" id="half-year-rest">
+                          <!-- A5_1_1 -->
+                          <div>
+                            <label>#{i18n.getText('KDL020_16')}</label>
+                          </div>
+                          <!-- A5_1_2-->
+                          <div style="margin-left: 20px;">
+                            <label data-bind="text:numberOfRemainGrant"></label>
+                            <!-- A5_1_3 -->
+                            <label>#{i18n.getText('KDL020_17')}</label>
+                          </div>
                         </div>
-                        <div data-bind="with:reNumAnnLeave().annualLeaveRemainNumber">
-                        <div data-bind="visible:$parent.annualSet().maxManageSemiVacation!=0"
-                        class="div_line" id="half-year-rest">
-                        <!-- A5_1_1 -->
-                        <div>
-                          <label>#{i18n.getText('KDL020_16')}</label>
-                        </div>
-                        <!-- A5_1_2-->
-                        <div style="margin-left: 20px;">
-                          <label data-bind="text:numberOfRemainGrant"></label>
-                          <!-- A5_1_3 -->
-                          <label>#{i18n.getText('KDL020_17')}</label>
+                        <div data-bind="visible:$parent.annualSet().timeManageType != 0" class="div_line" id="time-year-rest">
+                          <!-- A5_2_1 -->
+                          <div>
+                            <label>#{i18n.getText('KDL020_18')}</label>
+                          </div>
+                          <!-- A5_2_2 -->
+                          <div style="margin-left: 20px;">
+                            <label data-bind="text: $parent.genTime(timeAnnualLeaveWithMinusGrant())"></label>
+                          </div>
                         </div>
                       </div>
-                      <div data-bind="visible:$parent.annualSet().timeManageType!=0"
-                        class="div_line" id="time-year-rest">
-                        <!-- A5_2_1 -->
-                        <div>
-                          <label> #{i18n.getText('KDL020_18')}</label>
-                        </div>
-                        <!-- A5_2_2 -->
-                        <div style="margin-left: 20px;">
-                          <label
-                            data-bind="text:$parent.genTime(timeAnnualLeaveWithMinusGrant())">
-                          </label>
-                        </div>
-                      </div>
-                    </div>
                     </td>
                   </tr>
                 </com:ko-if>
                 <com:ko-if bind="annualLeaveManagementFg()">
                   <tr>
-                    <td >
+                    <td>
                       <!-- A14_3 -->
-                      <div style= "margin-bottom: 132px" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL020_42')}</div>
+                      <div style="margin-bottom: 132px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL020_42')}</div>
                     </td>
                     <td>
                       <div id="content-right_bottom">
@@ -163,7 +163,7 @@
                           </div>
                           <div class="div_line" style="margin-top: 25px">
                             <!-- A7 -->
-                            <table id="holiday-use_table" >
+                            <table id="holiday-use_table">
                               <colgroup>
                                 <col width="105px" />
                                 <col width="85px" />
@@ -178,17 +178,22 @@
                                   <th class="ui-widget-header">#{i18n.getText('KDL020_22')}</th>
                                 </tr>
                               </thead>
-            
+
                               <tbody>
-                                <com:ko-foreach
-                                  bind="reNumAnnLeave().annualLeaveManageInfors()">
+                                <com:ko-foreach bind="reNumAnnLeave().annualLeaveManageInfors()">
                                   <tr>
-                                    <td><div data-bind="text: ymd"></div></td>
-                                    <td><div data-bind="text: workTypeName"></div></td>
-                                    <td><div
-                                        data-bind="html: $parent.genUsedNo(daysUsedNo(),usedMinutes()) "></div></td>
-                                    <td><div
-                                        data-bind="html: $parent.genScheduleRecordText(scheduleRecordAtr())"></div></td>
+                                    <td>
+                                      <div data-bind="text: ymd"></div>
+                                    </td>
+                                    <td>
+                                      <div data-bind="text: workTypeName"></div>
+                                    </td>
+                                    <td>
+                                      <div data-bind="html: $parent.genUsedNo(daysUsedNo(),usedMinutes())"></div>
+                                    </td>
+                                    <td>
+                                      <div data-bind="html: $parent.genScheduleRecordText(scheduleRecordAtr())"></div>
+                                    </td>
                                   </tr>
                                 </com:ko-foreach>
                               </tbody>
@@ -198,7 +203,8 @@
                         <div id="content-right_bottom_right">
                           <div class="div_line">
                             <!-- A8_1 -->
-                            <div class="form-label"  style="margin-top: -10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL020_23')}</div>
+                            <div class="form-label" style="margin-top: -9px;" data-bind="ntsFormLabel: {}">
+                              #{i18n.getText('KDL020_23')}</div>
                           </div>
                           <!-- Request List 210 -->
                           <div data-bind="with:displayAnnualLeaveGrant">
@@ -206,52 +212,50 @@
                               <!-- A8_2_1 -->
                               <label> #{i18n.getText('KDL020_24')}</label>
                               <!-- A8_2_2 -->
-                              <label data-bind="text:grantDate" style="margin-left: 20px;">
+                              <label data-bind="text: grantDate" style="margin-left: 20px;">
                               </label>
                             </div>
                             <div class="div_line">
                               <!-- A8_3_1 -->
                               <label>#{i18n.getText('KDL020_25')}</label>
                               <!-- A8_3_2 + A8_3_3 -->
-                              <label data-bind="html:$parent.genDateText(grantDays())"
-                                style="margin-left: 20px;"> </label>
+                              <label data-bind="html: $parent.genDateText(grantDays())" style="margin-left: 20px;"> </label>
                             </div>
                           </div>
                           <!-- Request List 323 -->
-                          <div data-bind="with:attendNextHoliday" style="display: none">
+                          <div data-bind="with: attendNextHoliday" style="display: none;">
                             <div class="div_line" style="margin-top: 30px">
                               <!-- A8_4_1 -->
-                              <label>#{i18n.getText('KDL020_26')} </label>
+                              <label>#{i18n.getText('KDL020_26')}</label>
                               <!-- A8_4_2 + A8_4_3 -->
-                              <label
-                                data-bind="html:$parent.genAttendanceRate(attendanceRate())"></label>
+                              <label data-bind="html: $parent.genAttendanceRate(attendanceRate())"></label>
                             </div>
-            
+
                             <div class="div_line">
                               <!-- A8_5_1 -->
-                              <label> #{i18n.getText('KDL020_28')} </label> <label
-                                data-bind="html:$parent.genNextHolidayGrantDate(nextHolidayGrantDate())">
-                              </label>
+                              <label>#{i18n.getText('KDL020_28')}</label>
+                              <!-- A8_5_2 -->
+                              <label data-bind="html: $parent.genNextHolidayGrantDate(nextHolidayGrantDate())"></label>
                             </div>
                             <div class="div_line">
                               <!-- A8_6_1 -->
-                              <label> #{i18n.getText('KDL020_30')}</label>
+                              <label>#{i18n.getText('KDL020_30')}</label>
                               <!-- A8_6_2 -->
-                              <label data-bind="text:attendanceDays"> </label>
+                              <label data-bind="text: attendanceDays"></label>
                               <!-- A8_6_3 -->
                               <label>#{i18n.getText('KDL020_31')}</label>
                               <!-- A8_6_4 -->
-                              <label data-bind="text:predeterminedDays"> </label>
+                              <label data-bind="text: predeterminedDays"></label>
                               <!-- A8_6_5 -->
-                              <label> #{i18n.getText('KDL020_14')}</label>
+                              <label>#{i18n.getText('KDL020_14')}</label>
                             </div>
                             <div class="div_line">
                               <!-- A8_7_1 -->
-                              <label> #{i18n.getText('KDL020_32')}</label>
+                              <label>#{i18n.getText('KDL020_32')}</label>
                               <!-- A8_7_2 -->
-                              <label data-bind="text:annualPerYearDays"> </label>
+                              <label data-bind="text: annualPerYearDays"></label>
                               <!-- A8_7_3 -->
-                              <label> #{i18n.getText('KDL020_33')}</label>
+                              <label>#{i18n.getText('KDL020_33')}</label>
                             </div>
                             <div class="div_line"></div>
                           </div>
@@ -266,8 +270,7 @@
           <com:ko-if bind="!annualLeaveManagementFg()">
             <div class="div_line_er">
               <!-- A15 -->
-              <label style="font-size:2rem;
-                            font-weight: bold; ">#{i18n.getText('KDL020_43')}</label>
+              <label style="font-size:2rem; font-weight: bold;">#{i18n.getText('KDL020_43')}</label>
             </div>
           </com:ko-if>
         </div>

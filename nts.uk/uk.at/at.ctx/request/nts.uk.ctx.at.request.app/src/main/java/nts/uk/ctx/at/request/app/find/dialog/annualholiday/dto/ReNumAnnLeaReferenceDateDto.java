@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveManageInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnualLeaveRemainingNumberImport;
+
 @Data
 @Builder
 public class ReNumAnnLeaReferenceDateDto {

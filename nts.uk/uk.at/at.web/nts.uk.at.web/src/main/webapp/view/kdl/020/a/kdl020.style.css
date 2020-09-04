@@ -25,10 +25,10 @@
 	margin-left: 395px;
 }
 
-.line_1{
+.line_1 {
 	display: inline-block;
 }
-.column1{
+.column1 {
 	width: 145px;
 }
 
@@ -36,7 +36,7 @@
 	font-size: 1.1em;
 	font-weight: bold;
 }
-#employeeInfo{
+#employeeInfo {
 	margin-top: 0px;
 }
 
@@ -62,14 +62,13 @@
 	display: inline-block;
 	margin-top: 0px;
 }
-#functions-area-bottom button{
+#functions-area-bottom button {
 	margin-left: 0px;
 }
-#functions-area-bottom{
+#functions-area-bottom {
   height: 45px;
-
 }
 
-.div_line{
+.div_line {
 	margin-top: 10px;
 }
