@@ -24,6 +24,8 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 
 	private static final String FIND_DETAIl;
 
+	private static final String FIND_DETAIl_WITHOUT_SHEET_NO;
+
 	private static final String UPDATE_BY_KEY;
 
 	private static final String REMOVE_EXIST_DATA;
@@ -49,12 +51,21 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
 		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		FIND_DETAIl = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessTypeDaily a ");
+		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		FIND_DETAIl_WITHOUT_SHEET_NO = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KrcmtBusinessTypeDaily a ");
 		builderString.append("SET a.order = :order , a.columnWidth = :columnWidth ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
 		builderString.append("AND a.krcmtBusinessTypeDailyPK.attendanceItemId = :attendanceItemId ");
 		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		UPDATE_BY_KEY = builderString.toString();
@@ -97,10 +108,11 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode) {
+	public List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode,
+			BigDecimal sheetNo) {
 
 		return this.queryProxy().query(FIND_DETAIl, KrcmtBusinessTypeDaily.class).setParameter("companyId", companyId)
-				.setParameter("businessTypeCode", businessTypeCode)
+				.setParameter("businessTypeCode", businessTypeCode).setParameter("sheetNo", sheetNo)
 				.getList(f -> toDomain(f));
 	}
 
@@ -194,6 +206,13 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 				.executeUpdate();
 		});
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<BusinessTypeFormatDaily> getBusinessTypeFormatDailyDetail(String companyId, String businessTypeCode) {
+		return this.queryProxy().query(FIND_DETAIl_WITHOUT_SHEET_NO, KrcmtBusinessTypeDaily.class).setParameter("companyId", companyId)
+				.setParameter("businessTypeCode", businessTypeCode)
+				.getList(f -> toDomain(f));
 	}
 	
 }

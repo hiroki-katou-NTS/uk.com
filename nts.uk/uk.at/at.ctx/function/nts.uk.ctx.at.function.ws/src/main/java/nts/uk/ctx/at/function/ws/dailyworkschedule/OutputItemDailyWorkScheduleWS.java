@@ -138,10 +138,10 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
 	}
 	
-	@Path("findByCode/{code}")
+	@Path("findByLayout/{layoutId}")
 	@POST
-	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("code") String code) {
-		return this.outputItemDailyWorkScheduleFinder.findByCodeId(code);
+	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("layoutId") String layoutId) {
+		return this.outputItemDailyWorkScheduleFinder.findByLayoutId(layoutId);
 	}
 
 	/**

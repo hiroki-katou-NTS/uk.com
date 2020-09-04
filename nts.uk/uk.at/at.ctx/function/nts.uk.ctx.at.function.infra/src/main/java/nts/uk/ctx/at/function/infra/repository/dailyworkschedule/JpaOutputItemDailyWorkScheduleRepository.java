@@ -47,59 +47,59 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	 */
 	@Override
 	public void update(OutputItemDailyWorkSchedule domain) {
-		EntityManager em = this.getEntityManager();
-		
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-
-        // create delete
-        CriteriaDelete<KfnmtRptWkDaiOutatd> delete = cb.createCriteriaDelete(KfnmtRptWkDaiOutatd.class);
-
-        // set the root class
-        Root<KfnmtRptWkDaiOutatd> root = delete.from(KfnmtRptWkDaiOutatd.class);
-
-        // set where clause
-        delete.where(cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.cid), domain.getCompanyID()),
-        				cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.itemCode), domain.getItemCode().v()));
-
-        // perform update
-        em.createQuery(delete).executeUpdate();
-		
-		this.commandProxy().update(this.toEntity(domain));
+//		EntityManager em = this.getEntityManager();
+//		
+//		CriteriaBuilder cb = em.getCriteriaBuilder();
+//
+//        // create delete
+//        CriteriaDelete<KfnmtRptWkDaiOutatd> delete = cb.createCriteriaDelete(KfnmtRptWkDaiOutatd.class);
+//
+//        // set the root class
+//        Root<KfnmtRptWkDaiOutatd> root = delete.from(KfnmtRptWkDaiOutatd.class);
+//
+//        // set where clause
+//        delete.where(cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.cid), domain.getCompanyID()),
+//        				cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.itemCode), domain.getItemCode().v()));
+//
+//        // perform update
+//        em.createQuery(delete).executeUpdate();
+//		
+//		this.commandProxy().update(this.toEntity(domain));
 	}
 
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCid(java.lang.String)
-	 */
-	@Override
-	public List<OutputItemDailyWorkSchedule> findByCid(String companyId) {
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-
-		// Create builder
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-
-		// Create query
-		CriteriaQuery<KfnmtRptWkDaiOutItem> cq = builder.createQuery(KfnmtRptWkDaiOutItem.class);
-
-		// From table
-		Root<KfnmtRptWkDaiOutItem> root = cq.from(KfnmtRptWkDaiOutItem.class);
-
-		// Add where condition
-		cq.where(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId));
-		cq.orderBy(builder.asc(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid)));
-		// Get results
-		List<KfnmtItemWorkSchedule> results = em.createQuery(cq).getResultList();
-
-		// Check empty
-		if (CollectionUtil.isEmpty(results)) {
-			return Collections.emptyList();
-		}
-
-		// Return
-		return results.stream().map(item -> new OutputItemDailyWorkSchedule(new JpaOutputItemDailyWorkScheduleGetMemento(item)))
-				.collect(Collectors.toList());
-	}
+//
+//	/* (non-Javadoc)
+//	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCid(java.lang.String)
+//	 */
+//	@Override
+//	public List<OutputItemDailyWorkSchedule> findByCid(String companyId) {
+//		// Get entity manager
+//		EntityManager em = this.getEntityManager();
+//
+//		// Create builder
+//		CriteriaBuilder builder = em.getCriteriaBuilder();
+//
+//		// Create query
+//		CriteriaQuery<KfnmtRptWkDaiOutItem> cq = builder.createQuery(KfnmtRptWkDaiOutItem.class);
+//
+//		// From table
+//		Root<KfnmtRptWkDaiOutItem> root = cq.from(KfnmtRptWkDaiOutItem.class);
+//
+//		// Add where condition
+//		cq.where(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId));
+//		cq.orderBy(builder.asc(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid)));
+//		// Get results
+//		List<KfnmtItemWorkSchedule> results = em.createQuery(cq).getResultList();
+//
+//		// Check empty
+//		if (CollectionUtil.isEmpty(results)) {
+//			return Collections.emptyList();
+//		}
+//
+//		// Return
+//		return results.stream().map(item -> new OutputItemDailyWorkSchedule(new JpaOutputItemDailyWorkScheduleGetMemento(item)))
+//				.collect(Collectors.toList());
+//	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCidAndCode(java.lang.String, int)

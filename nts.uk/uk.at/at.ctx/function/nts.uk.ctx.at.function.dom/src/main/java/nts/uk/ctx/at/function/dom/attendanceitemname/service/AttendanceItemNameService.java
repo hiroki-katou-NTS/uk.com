@@ -21,4 +21,6 @@ public interface AttendanceItemNameService {
 
 	List<AttItemName> getNameOfAttendanceItem(List<AttItemName> attendanceItems,
 			List<AttendanceItemLinking> attendanceItemAndFrameNos);
+	
+	List<AttItemName> getAllNameOfType(String companyId, TypeOfItem type, List<Integer> attendanceItemIds);
 }

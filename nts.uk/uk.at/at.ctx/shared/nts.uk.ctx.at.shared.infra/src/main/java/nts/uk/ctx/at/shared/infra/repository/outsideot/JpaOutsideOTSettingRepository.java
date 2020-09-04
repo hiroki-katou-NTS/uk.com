@@ -56,6 +56,15 @@ import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeSetMe
 public class JpaOutsideOTSettingRepository extends JpaRepository
 		implements OutsideOTSettingRepository {
 	
+	public static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT ost FROM KshstOutsideOtBrd ost"
+			+ "	WHERE ost.useAtr = :useAtr"
+			+ "		AND ost.kshstOutsideOtBrdPK.cid = :cid";
+	
+
+	public static final String FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS = "SELECT ot FROM KshstOverTime ot"
+			+ "	WHERE ot.useAtr = ?"
+			+ "		AND ost.kshstOverTimePK.cid = ?";
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -709,6 +718,54 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		// exclude select
 		return query.getResultList().stream().map(entity -> this.toDomain(entity))
 				.collect(Collectors.toList());
+	}
+
+	@Override
+	@SneakyThrows
+	public List<Overtime> getOverTimeByCompanyIdAndUseClassification(String companyId, int useClassification) {
+		try (PreparedStatement stmt = this.connection().prepareStatement(FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS)) {
+			stmt.setInt(1, useClassification);
+			stmt.setString(2, companyId);
+
+			List<Overtime> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				KshstOverTimePK kshstOverTimePK = new KshstOverTimePK();
+				kshstOverTimePK.setCid(rec.getString("CID"));
+				kshstOverTimePK.setOverTimeNo(rec.getInt("OVER_TIME_NO"));
+
+				KshstOverTime entity = new KshstOverTime();
+				entity.setKshstOverTimePK(kshstOverTimePK);
+				entity.setIs60hSuperHd(rec.getInt("IS_60H_SUPER_HD"));
+				entity.setUseAtr(rec.getInt("USE_ATR"));
+				entity.setName(rec.getString("NAME"));
+				entity.setOverTime(rec.getInt("OVER_TIME"));
+				return this.toDomain(entity);
+			});
+			return result;
+		}
+	}
+
+	@Override
+	@SneakyThrows
+	public List<OutsideOTBRDItem> getByCompanyIdAndUseClassification(String companyId, int useClassification) {
+		try (PreparedStatement stmt = this.connection().prepareStatement(FIND_BY_COMPANY_ID_AND_USE_CLS)) {
+			stmt.setInt(1, useClassification);
+			stmt.setString(2, companyId);
+
+			List<OutsideOTBRDItem> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
+				KshstOutsideOtBrdPK kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK();
+				kshstOutsideOtBrdPK.setCid(rec.getString("CID"));
+				kshstOutsideOtBrdPK.setBrdItemNo(rec.getInt("BRD_ITEM_NO"));
+
+				KshstOutsideOtBrd entity = new KshstOutsideOtBrd();
+				entity.setKshstOutsideOtBrdPK(kshstOutsideOtBrdPK);
+				entity.setName(rec.getString("NAME"));
+				entity.setUseAtr(rec.getInt("USE_ATR"));
+				entity.setProductNumber(rec.getInt("PRODUCT_NUMBER"));
+
+				return toDomain(entity);
+			});
+			return result;
+		}
 	}
 
 

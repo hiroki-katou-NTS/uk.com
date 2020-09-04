@@ -40,24 +40,24 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 
 	@Override
 	public Optional<OutputStandardSettingOfDailyWorkSchedule> getStandardSettingByCompanyId(String companyId) {
-		try (PreparedStatement statement = this.connection().prepareStatement(GET_STANDARD_SETTING_BY_COMPANY)) {
-			statement.setString(1, companyId);
-			return new NtsResultSet(statement.executeQuery()).getSingle((rec -> {
-				KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
-				entity.setLayoutId(rec.getString("LAYOUT_ID"));
-				entity.setSid(rec.getString("SID"));
-				entity.setCid(rec.getString("CID"));
-				entity.setItemSelType(rec.getInt("ITEM_SEL_TYPE"));
-				entity.setItemName(new OutputItemSettingName(rec.getString("ITEM_NAME")));
-				entity.setItemCode(new OutputItemSettingCode(rec.getString("ITEM_CD")));
-				entity.setWorkTypeNameDisplay(NameWorkTypeOrHourZone.valueOf(rec.getBigDecimal("WORKTYPE_NAME_DISPLAY").intValue()));
-				entity.setNoteInputNo(rec.getBigDecimal("NOTE_INPUT_NO"));
-				entity.setCharSizeType(rec.getBigDecimal("CHAR_SIZE_TYPE"));
-				entity.setLstKfnmtRptWkDaiOutatds(mapKfnmtAttendanceDisplay.get(entity.getLayoutId()));
-				entity.setLstKfnmtRptWkDaiOutnotes(mapKfnmtPrintRemarkCont.get(entity.getLayoutId()));
-				return this.toDomain(entity);
-			});
-		}
+//		try (PreparedStatement statement = this.connection().prepareStatement(GET_STANDARD_SETTING_BY_COMPANY)) {
+//			statement.setString(1, companyId);
+//			return new NtsResultSet(statement.executeQuery()).getList((rec -> {
+//				KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
+//				entity.setLayoutId(rec.getString("LAYOUT_ID"));
+//				entity.setSid(rec.getString("SID"));
+//				entity.setCid(rec.getString("CID"));
+//				entity.setItemSelType(rec.getInt("ITEM_SEL_TYPE"));
+//				entity.setItemName(new OutputItemSettingName(rec.getString("ITEM_NAME")));
+//				entity.setItemCode(new OutputItemSettingCode(rec.getString("ITEM_CD")));
+//				entity.setWorkTypeNameDisplay(NameWorkTypeOrHourZone.valueOf(rec.getBigDecimal("WORKTYPE_NAME_DISPLAY").intValue()));
+//				entity.setNoteInputNo(rec.getBigDecimal("NOTE_INPUT_NO"));
+//				entity.setCharSizeType(rec.getBigDecimal("CHAR_SIZE_TYPE"));
+//				entity.setLstKfnmtRptWkDaiOutatds(mapKfnmtAttendanceDisplay.get(entity.getLayoutId()));
+//				entity.setLstKfnmtRptWkDaiOutnotes(mapKfnmtPrintRemarkCont.get(entity.getLayoutId()));
+//				return this.toDomain(entity);
+//			});
+//		}
 		return Optional.empty();
 	}
 
