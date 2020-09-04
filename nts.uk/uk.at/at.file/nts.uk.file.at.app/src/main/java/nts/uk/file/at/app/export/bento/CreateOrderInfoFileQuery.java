@@ -11,6 +11,8 @@ import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.Bento;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
+import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
@@ -107,10 +109,6 @@ public class CreateOrderInfoFileQuery {
         // 3. 弁当予約を取得する
         List<BentoReservation> bentoReservationsTotal = new ArrayList<>();
         List<BentoReservation> bentoReservationsDetail = new ArrayList<>();
-//        if (totalExtractCondition.equals(itemExtractCondition)) {
-//            bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
-//            bentoReservationsDetail = bentoReservationsTotal;
-//        } else {
         if (totalExtractCondition.isPresent())
             bentoReservationsTotal = getListBentoResevation(totalExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
         if (detailTitle.isPresent()) {
@@ -119,9 +117,12 @@ public class CreateOrderInfoFileQuery {
             else if(itemExtractCondition.isPresent())
                 bentoReservationsDetail = getListBentoResevation(itemExtractCondition.get(), period, new ArrayList<>(map.values()), workLocationCodes, reservationClosingTimeFrame);
         }
-        //}
         if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsDetail))
-            throw new BusinessException("Msg_1617");
+        	if (totalTitle.isPresent()) {
+				throw new BusinessException("Msg_6");
+			} else {
+				throw new BusinessException("Msg_1617");
+			}
         //4.
         List<BentoMenu> bentoMenuList = getAllBentoMenu(companyId, period);
         if (CollectionUtil.isEmpty(bentoMenuList))
@@ -134,7 +135,8 @@ public class CreateOrderInfoFileQuery {
             closingName = bentoMenuList.stream().filter(i -> i.getClosingTime().getClosingTime2().isPresent())
                     .findFirst().map(i -> i.getClosingTime().getClosingTime2().get().getReservationTimeName().v());
 
-        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(companyId, bentoReservationsTotal, placeOfWorkInfoDtos, frameNo, closingName);
+        Optional<WorkLocationCode> workLocationCode = CollectionUtil.isEmpty(workLocationCodes) ? Optional.empty() : Optional.of(new WorkLocationCode(workLocationCodes.get(0)));
+        List<TotalOrderInfoDto> totalOrderInfoDtos = exportTotalOrderInfo(companyId, bentoReservationsTotal, placeOfWorkInfoDtos, frameNo, closingName, reservationClosingTimeFrame, workLocationCode);
         List<DetailOrderInfoDto> detailOrderInfoDtos = exportDetailOrderInfo(bentoReservationsDetail, companyId, placeOfWorkInfoDtos, bentoReservationInfoForEmpDtos, frameNo, closingName);
         result.setCompanyName(companyName);
         result.setDetailOrderInfoDtoList(detailOrderInfoDtos);
@@ -292,6 +294,8 @@ public class CreateOrderInfoFileQuery {
                                                           List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos, Optional<Integer> frameNo, Optional<String> closingTimeName){
         List<DetailOrderInfoDto> result = new ArrayList<>();
         String closedName = closingTimeName.orElse("");
+        Map<String, List<BentoReservationInfoForEmpDto>> infoForEmpDtoMap = bentoReservationInfoForEmpDtos.stream()
+                .collect(Collectors.groupingBy(BentoReservationInfoForEmpDto::getStampCardNo));
         if(frameNo.isPresent()){
             Iterator<BentoReservation> it = reservations.iterator();
             while (it.hasNext()){
@@ -304,26 +308,21 @@ public class CreateOrderInfoFileQuery {
             }
         }
 
-        Map<ReservationDate, Map<ReservationRegisterInfo ,List<BentoReservation>>> map = reservations.stream().collect(
+        Map<GeneralDate, Map<String ,List<BentoReservation>>> map = reservations.stream().collect(
                                 Collectors.groupingBy(
-                                        BentoReservation::getReservationDate,
-                                        Collectors.groupingBy(BentoReservation::getRegisterInfor,
+                                        r -> r.getReservationDate().getDate(),
+                                        Collectors.groupingBy(item -> item.getRegisterInfor().getReservationCardNo(),
                                                 Collectors.toList())
                                         )
         );
-        for(Map.Entry me : map.entrySet()){
-            ReservationDate reservationDate = (ReservationDate) me.getKey();
-            @SuppressWarnings("unchecked")
-            Map<ReservationRegisterInfo ,List<BentoReservation>> reservationMap = (Map<ReservationRegisterInfo ,List<BentoReservation>>) me.getValue();
-            for(Map.Entry mapEntry : reservationMap.entrySet()){
-                ReservationRegisterInfo registerInfo = (ReservationRegisterInfo) mapEntry.getKey();
-                List<BentoReservation> bentoReservations = new ArrayList<>();
-                if(mapEntry.getValue() instanceof ArrayList<?>)
-                    for(Object o : (ArrayList<?>)mapEntry.getValue())
-                        bentoReservations.add(BentoReservation.class.cast(o));
+        for(Map.Entry<GeneralDate, Map<String ,List<BentoReservation>>> me : map.entrySet()){
+            GeneralDate reservationDate = me.getKey();
+            Map<String ,List<BentoReservation>> reservationMap = me.getValue();
+            for(Map.Entry<String ,List<BentoReservation>> mapEntry : reservationMap.entrySet()){
+                String registerInfo = mapEntry.getKey();
 
-                List<BentoReservedInfoDto> bentoReservedInfoDtos = createBentoReservedInfoDto(bentoReservationInfoForEmpDtos,bentoReservations, companyID);
-                result.add(new DetailOrderInfoDto(bentoReservedInfoDtos,reservationDate.getDate(),registerInfo.getReservationCardNo(),
+                List<BentoReservedInfoDto> bentoReservedInfoDtos = createBentoReservedInfoDto(infoForEmpDtoMap,reservationMap, companyID);
+                result.add(new DetailOrderInfoDto(bentoReservedInfoDtos,reservationDate,registerInfo,
                         closedName,placeOfWorkInfoDtos));
             }
         }
@@ -338,24 +337,16 @@ public class CreateOrderInfoFileQuery {
      * @return
      *
      */
-    private List<BentoReservedInfoDto> createBentoReservedInfoDto(List<BentoReservationInfoForEmpDto> bentoReservationInfoForEmpDtos, List<BentoReservation> reservations,
+    private List<BentoReservedInfoDto> createBentoReservedInfoDto(Map<String, List<BentoReservationInfoForEmpDto>> infoForEmpDtoMap, Map<String, List<BentoReservation>> reservations,
                                                                  String companyID){
         List<BentoReservedInfoDto> result = new ArrayList<>();
         Map<Bento, List<BentoReservationInfoForEmpDto>> map = new HashMap<>();
-        Iterator<BentoReservationInfoForEmpDto> reservationInfoForEmpDtoIT = bentoReservationInfoForEmpDtos.iterator();
 
-        while (reservationInfoForEmpDtoIT.hasNext()){
-            int quantity = 0;
-            BentoReservationInfoForEmpDto item = reservationInfoForEmpDtoIT.next();
-            List<BentoReservation> handlerReservation = new ArrayList<>();
-            Iterator<BentoReservation> it = reservations.iterator();
-            while (it.hasNext()){
-                BentoReservation temp = it.next();
-                if(temp.getRegisterInfor().getReservationCardNo().equals(item.getStampCardNo())){
-                    handlerReservation.add(temp);
-                    it.remove();
-                }
-            }
+        String stampCardNo = reservations.keySet().toArray()[0].toString();
+        List<BentoReservationInfoForEmpDto> items = infoForEmpDtoMap.get(stampCardNo);
+        if(!CollectionUtil.isEmpty(items)){
+            BentoReservationInfoForEmpDto item = items.get(0);
+            List<BentoReservation> handlerReservation = reservations.get(stampCardNo);
             for(BentoReservation reservation : handlerReservation){
                 for(BentoReservationDetail detail : reservation.getBentoReservationDetails()){
                     Bento bento = bentoMenuRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
@@ -371,22 +362,16 @@ public class CreateOrderInfoFileQuery {
                     }
                 }
             }
-            if(!CollectionUtil.isEmpty(handlerReservation))
-                reservationInfoForEmpDtoIT.remove();
-        }
-        for(Map.Entry me : map.entrySet()){
-            Bento bentoTemp = (Bento) me.getKey();
-            List<BentoReservationInfoForEmpDto> listTemp = new ArrayList<>();
-            if(me.getValue() instanceof ArrayList<?>){
-                for(Object o : (ArrayList<?>)me.getValue()){
-                    listTemp.add(BentoReservationInfoForEmpDto.class.cast(o));
-                }
+            for(Map.Entry<Bento, List<BentoReservationInfoForEmpDto>> me : map.entrySet()){
+                Bento bentoTemp = me.getKey();
+                List<BentoReservationInfoForEmpDto> listTemp = me.getValue();
+                result.add(new BentoReservedInfoDto(
+                        bentoTemp.getName().v(),bentoTemp.getFrameNo(), bentoTemp.getUnit().v(),listTemp
+                ));
             }
-            result.add(new BentoReservedInfoDto(
-                    bentoTemp.getName().v(),bentoTemp.getFrameNo(), bentoTemp.getUnit().v(),listTemp
-            ));
+            return result.stream().sorted(Comparator.comparing(BentoReservedInfoDto::getFrameNo)).collect(Collectors.toList());
         }
-        return result.stream().sorted(Comparator.comparing(BentoReservedInfoDto::getFrameNo)).collect(Collectors.toList());
+        return result;
     }
 
     private BentoReservationInfoForEmpDto createBentoReservationInfoForEmpDto(String sid, String stampCardNo, EmployeeBasicInfoExport employeeBasicInfoExport){
@@ -397,15 +382,18 @@ public class CreateOrderInfoFileQuery {
 
     /** 5.1 */
     private List<TotalOrderInfoDto> exportTotalOrderInfo(String companyId, List<BentoReservation> reservations,
-                                                        List<PlaceOfWorkInfoDto> workInfoDtos, Optional<Integer> frameNo, Optional<String> closingTimeName){
+                                                        List<PlaceOfWorkInfoDto> workInfoDtos, Optional<Integer> frameNo, Optional<String> closingTimeName,
+                                                         ReservationClosingTimeFrame reservationClosingTimeFrame,
+                                                         Optional<WorkLocationCode> workLocationCode){
         List<BentoReservationDetail> reservationDetails = new ArrayList<>();
         List<TotalOrderInfoDto> result = new ArrayList<>();
         String closedName = closingTimeName.orElse("");
-        if(frameNo.isPresent()){
+        /*if(frameNo.isPresent()){
             for(BentoReservation item : reservations){
                 int totalFee = 0;
                 reservationDetails.addAll(item.getBentoReservationDetails());
                 Bento bento = bentoMenuRepository.getBento(companyId, item.getReservationDate().getDate(), frameNo.get());
+                if (bento == null) continue;
                 List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
                     BentoTotalDto bentoTotalDto = createBentoTotalDto(bento, reservationDetails);
                     bentoTotalDtoLst.add(bentoTotalDto);
@@ -415,13 +403,20 @@ public class CreateOrderInfoFileQuery {
                         bentoTotalDtoLst,closedName,workInfoDtos
                 ));
             }
-        }else{
+        }else*/{
             for(BentoReservation item : reservations){
                 int totalFee = 0;
                 reservationDetails.addAll(item.getBentoReservationDetails());
                 BentoMenu bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
                 List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
-                for (Bento bento : bentoMenuList.getMenu()) {
+                BentoMenuByClosingTime menu = bentoMenuList.getByClosingTime(workLocationCode);
+                List<BentoItemByClosingTime> bentos;
+                if (reservationClosingTimeFrame == ReservationClosingTimeFrame.FRAME1){
+                    bentos = menu.getMenu1();
+                } else {
+                    bentos = menu.getMenu2();
+                }
+                for (BentoItemByClosingTime bento : bentos) {
                     BentoTotalDto bentoTotalDto = createBentoTotalDto(bento, reservationDetails);
                     bentoTotalDtoLst.add(bentoTotalDto);
                     totalFee += bentoTotalDto.getAmount() * bentoTotalDto.getQuantity();
@@ -434,11 +429,11 @@ public class CreateOrderInfoFileQuery {
                         bentoTotalDtoLst,closedName,workInfoDtos
                 ));
             }
-        }
+        //}
         return result.stream().sorted(Comparator.comparing(TotalOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
 
-    private BentoTotalDto createBentoTotalDto(Bento bento, List<BentoReservationDetail> reservation){
+    private BentoTotalDto createBentoTotalDto(BentoItemByClosingTime bento, List<BentoReservationDetail> reservation){
         int quantity = 0;
         Iterator<BentoReservationDetail> iterator = reservation.iterator();
         while (iterator.hasNext()){
