@@ -724,10 +724,10 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             let userInfor : IUserInfor = JSON.parse(dataLocal.get());
             
             setShared('dataForJB', {
-                selectedTab: self.selectedpalletUnit() == 1 ? 'company' : 'workplace',
+                selectedTab: self.selectedpalletUnit() == 1 ? 'company' : userInfor.unit == 0 ? 'workplace' : 'workplaceGroup',
                 workplaceName: self.workplaceModeName,
                 workplaceCode: '',
-                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
+                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
                 listWorkType: __viewContext.viewModel.viewAB.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewAB.listWorkTime(),
                 selectedLinkButton: self.selectedpalletUnit() === 1 ? userInfor.shiftPalettePageNumberCom - 1 : userInfor.shiftPalettePageNumberOrg - 1,
