@@ -1,9 +1,12 @@
 #table-top {
     width: 100%;
 }
+#F1_1 {
+    margin-left: 18px;
+}
 #day-off {
     float: right;
-    margin-right: 5px;
+    margin-right: 35px;
 }
 .nts-calendar-container {
     width: 26%;

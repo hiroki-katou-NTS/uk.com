@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.query.reservation;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.query.stamp.GetStampCardQuery;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
@@ -16,7 +17,6 @@ import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClo
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSetting;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.BentoReservationSettingRepository;
 import nts.uk.ctx.at.record.dom.reservation.reservationsetting.OperationDistinction;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.shr.com.context.AppContexts;
@@ -74,7 +74,7 @@ public class ReservationQuery {
 		}
 
 		Map<String, StampNumber> stampCards = getStampCardQuery.getStampNumberBy(Arrays.asList(employeeId));
-		if (!stampCards.containsKey(employeeId)) return null;
+		if (!stampCards.containsKey(employeeId)) throw new BusinessException("Invalid Stamp Number");
 		StampNumber stampNumber = stampCards.get(employeeId);
 		ReservationRegisterInfo reservationRegisterInfo = new ReservationRegisterInfo(stampNumber.toString());
 		//1 get*(予約対象日,カード番号)

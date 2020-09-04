@@ -15,7 +15,7 @@ public class WorkCycleTestHelper {
     public static class WorkCycleHelper {
 
         public static WorkCycle createWorkCycleForTest(List<WorkCycleInfo> infos) {
-            return WorkCycle.WorkCycle(
+            return WorkCycle.create(
                     "cid",
                     "cyclecode",
                     "cyclename",
@@ -42,7 +42,7 @@ public class WorkCycleTestHelper {
         public static List<WorkCycleInfo> createListForTest(int size) {
             List<WorkCycleInfo> result = new ArrayList<>();
             for (int i=0 ; i < size ; i++) {
-                WorkCycleInfo item = WorkCycleInfo.WorkCycleInfo(
+                WorkCycleInfo item = WorkCycleInfo.create(
                         i,
                         new WorkInformation("0" + String.valueOf(i),
                                 "0" + String.valueOf(i))
