@@ -123,7 +123,11 @@ public class CreateOrderInfoFileQuery {
         }
         //}
         if (CollectionUtil.isEmpty(bentoReservationsTotal) & CollectionUtil.isEmpty(bentoReservationsDetail))
-            throw new BusinessException("Msg_1617");
+        	if (totalTitle.isPresent()) {
+				throw new BusinessException("Msg_6");
+			} else {
+				throw new BusinessException("Msg_1617");
+			}
         //4.
         List<BentoMenu> bentoMenuList = getAllBentoMenu(companyId, period);
         if (CollectionUtil.isEmpty(bentoMenuList))
