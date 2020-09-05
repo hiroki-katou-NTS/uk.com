@@ -33,4 +33,6 @@ public class AttendanceRecordRequest {
 	private int mode;
 	
 	private int closureId;
+	
+	private String layoutId;
 }

@@ -68,9 +68,9 @@ public class AttendanceRecordExportSettingWebService {
 	 */
 	@POST
 	@Path("getAttendanceRecExpSet/{code}")
-	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") long code) {
+	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") String layoutId) {
 		String companyId = AppContexts.user().companyId();
-		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(companyId, code);
+		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(layoutId);
 	}
 
 	/**

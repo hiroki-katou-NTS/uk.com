@@ -152,7 +152,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		TaskDataSetter setter = context.getDataSetter();
 		// Get layout info
 		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = attendanceRecExpSetRepo
-				.getAttendanceRecExpSet(companyId, request.getLayout());
+				.getAttendanceRecExpSet(request.getLayoutId());
 
 		List<Employee> unknownEmployeeList = new ArrayList<>();
 		List<Employee> nullDataEmployeeList = new ArrayList<>();

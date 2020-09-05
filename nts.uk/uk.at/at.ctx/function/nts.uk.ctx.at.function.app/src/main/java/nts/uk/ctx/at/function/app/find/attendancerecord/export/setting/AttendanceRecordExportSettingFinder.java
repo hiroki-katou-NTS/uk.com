@@ -91,10 +91,10 @@ public class AttendanceRecordExportSettingFinder {
 	 *            the code
 	 * @return the attendance record export setting dto
 	 */
-	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String companyId, long code) {
+	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String layoutId) {
 
 		Optional<AttendanceRecordExportSetting> optionalDomain = attendanceRecExpSetRepo
-				.getAttendanceRecExpSet(companyId, code);
+				.getAttendanceRecExpSet(layoutId);
 
 		if (optionalDomain.isPresent()) {
 			AttendanceRecordExportSetting domain = optionalDomain.get();
