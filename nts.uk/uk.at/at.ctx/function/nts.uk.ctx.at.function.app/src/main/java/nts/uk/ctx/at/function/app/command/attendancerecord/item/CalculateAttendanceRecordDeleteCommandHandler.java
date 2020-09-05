@@ -40,7 +40,7 @@ public class CalculateAttendanceRecordDeleteCommandHandler
 		//delete
 		this.calculateAttendanceRecordRepository.deleteCalculateAttendanceRecord(
 																			AppContexts.user().companyId(),
-																			new ExportSettingCode(Long.valueOf(command.getExportSettingCode())),
+																			new ExportSettingCode(String.valueOf(command.getExportSettingCode())),
 																			command.getColumnIndex(),
 																			command.getPosition(),
 																			command.getExportAtr(),

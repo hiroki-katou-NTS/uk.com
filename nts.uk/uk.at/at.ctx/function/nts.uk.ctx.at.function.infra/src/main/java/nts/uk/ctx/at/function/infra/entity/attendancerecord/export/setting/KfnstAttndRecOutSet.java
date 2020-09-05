@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -47,6 +48,11 @@ public class KfnstAttndRecOutSet extends UkJpaEntity implements Serializable {
 	@Column(name="NAME_USE_ATR")
 	private BigDecimal nameUseAtr;
 
+	@Column(name="CHAR_SIZE_TYPE")
+	private BigDecimal charSizeType;
+	
+	@Column(name="MONTH_APP_DISP_ATR")
+	private BigDecimal monthAppDispAtr;
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */

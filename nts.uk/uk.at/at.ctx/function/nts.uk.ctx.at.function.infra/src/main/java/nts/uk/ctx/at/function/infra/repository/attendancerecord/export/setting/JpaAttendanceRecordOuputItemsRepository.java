@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
@@ -12,6 +13,8 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.Kfnmt
 @Stateless
 public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 		implements AttendanceRecordOuputItemsRepository {
+	
+	
 	// Select all
 	private static final String QUERY_SELECT_ALL = "SELECT f FROM KfnmtRptWkAtdOut f";
 	// Select one
@@ -31,21 +34,46 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 		// Convert data to entity
 		KfnmtRptWkAtdOut entity = JpaAttendanceRecordOuputItemsRepository.toEntity(domain);
 		KfnmtRptWkAtdOut oldEntity = this.queryProxy().find(entity.getLayoutID(), KfnmtRptWkAtdOut.class).get();
-		oldEntity.setExclusVer(entity.getExclusVer());
-		oldEntity.setContractCD(entity.getContractCD());
-		oldEntity.setItemSelType(entity.getItemSelType());
-		oldEntity.setCid(entity.getCid());
-		oldEntity.setSid(entity.getSid());
-		oldEntity.setExportCD(entity.getExportCD());
-		oldEntity.setName(entity.getName());
-		oldEntity.setSealUseAtr(entity.isSealUseAtr());
-		oldEntity.setNameUseAtr(entity.getNameUseAtr());
-		oldEntity.setCharSizeType(entity.getCharSizeType());
-		oldEntity.setMonthAppDispAtr(entity.getMonthAppDispAtr());
+//		oldEntity.setExclusVer(entity.getExclusVer());
+//		oldEntity.setContractCD(entity.getContractCD());
+//		oldEntity.setItemSelType(entity.getItemSelType());
+//		oldEntity.setCid(entity.getCid());
+//		oldEntity.setSid(entity.getSid());
+//		oldEntity.setExportCD(entity.getExportCD());
+//		oldEntity.setName(entity.getName());
+//		oldEntity.setSealUseAtr(entity.isSealUseAtr());
+//		oldEntity.setNameUseAtr(entity.getNameUseAtr());
+//		oldEntity.setCharSizeType(entity.getCharSizeType());
+//		oldEntity.setMonthAppDispAtr(entity.getMonthAppDispAtr());
 		// update entity
 		this.commandProxy().update(oldEntity);
 	}
 
+	@Override
+	public Optional<AttendanceRecordOuputItems> getOutputItemsByCompnayAndEmployee(String companyId,
+			String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCode(String companyId, String employeeId,
+			String code) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeCodeAndLayoutId(String companyId,
+			String employeeId, String code, String layoutId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	private AttendanceRecordExportSetting toDomain(KfnmtRptWkAtdOut entity) {
+		return new AttendanceRecordExportSetting(entity);
+	}
+	
 	private static KfnmtRptWkAtdOut toEntity(AttendanceRecordOuputItems domain) {
 		KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
 //		domain.setMemento(entity);
@@ -53,9 +81,8 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<AttendanceRecordOuputItems> getOutputItemsByCompnayAndEmployee(String companyId,
-			String employeeId) {
-		// TODO Auto-generated method stub
+	public Optional<AttendanceRecordExportSetting> findByLayoutId(String layoutId) {
+		// 2 list group by;
 		return null;
 	}
 }

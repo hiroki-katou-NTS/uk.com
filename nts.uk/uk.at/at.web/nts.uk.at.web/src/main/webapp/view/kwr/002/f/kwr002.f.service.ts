@@ -1,16 +1,15 @@
-module nts.uk.com.view.kwr002.e {
+module nts.uk.com.view.kwr002.f {
     export module service {
 
-        var path: any = {
-            getAttndRecList: "at/function/attendancerecord/item/getAttndRecItem/",
-            getCalculateAttndRecInfo: "at/function/attendancerecord/item/getCalculateAttndRecInfo",
-            getAllAttndByAtrAndType: "at/function/attendancerecord/item/getAttndRecByAttndTypeKey"
+        const SLASH = "/";
+
+        const paths: any = {
+            executeCopy: "com/function/attendancerecord/duplicate/executeCopy",
+
         }
 
-        export function findAttndRecByScreen(screenUseAtr: number): JQueryPromise<Array<model.AttendanceRecordItemDto>> {
-            return nts.uk.request.ajax("at", path.getAttndRecList + screenUseAtr);
+        export function executeCopy(dataCopy: any): JQueryPromise<any> {
+            return nts.uk.request.ajax("at",paths.executeCopy, dataCopy);
         }
-
-
     }
 }

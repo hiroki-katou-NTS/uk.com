@@ -4,7 +4,8 @@ module nts.uk.com.view.kwr002.b.service {
         getAllARES: "com/function/attendancerecord/export/setting/getAllAttendanceRecExpSet",
         getARESByCode: "com/function/attendancerecord/export/setting/getAttendanceRecExpSet/",
         addARES: "com/function/attendancerecord/export/setting/addAttendanceRecExpSet",
-        delARES: "com/function/attendancerecord/export/setting/deteleAttendanceRecExpSet"
+        delARES: "com/function/attendancerecord/export/setting/deteleAttendanceRecExpSet",
+        startScreen: "com/function/attendancerecord/export/setting/startScreenB"
     };
 
     export function getAllARES(): JQueryPromise<Array<attendanceRecordExportSetting>> {
@@ -21,5 +22,9 @@ module nts.uk.com.view.kwr002.b.service {
 
     export function delARES(command: any): JQueryPromise<void> {
         return nts.uk.request.ajax("at", paths.delARES, command);
+    }
+
+    export function startScreenB(data: any): JQueryPromise<void> {
+        return nts.uk.request.ajax("at", paths.startScreen, data);
     }
 }

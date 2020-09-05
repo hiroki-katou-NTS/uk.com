@@ -23,6 +23,7 @@ module nts.uk.com.view.kwr002.b {
         newMode: KnockoutObservable<boolean>;
         fontSizeSwitch: KnockoutObservableArray<SealUseAtrSwitch>;
         inputKWR002B: KnockoutObservable<DataInputScreenB>;
+        selectionType: string = '' ;
 
         constructor() {
             let self = this;
@@ -39,9 +40,9 @@ module nts.uk.com.view.kwr002.b {
             ]);
 
             self.fontSizeSwitch = ko.observableArray([
-                new SealUseAtrSwitch(1, getText("KWR002_50")),
-                new SealUseAtrSwitch(2, getText("KWR002_51")),
-                new SealUseAtrSwitch(3, getText("KWR002_52")),
+                new SealUseAtrSwitch(2, getText("KWR002_50")),
+                new SealUseAtrSwitch(1, getText("KWR002_51")),
+                new SealUseAtrSwitch(0, getText("KWR002_52")),
             ]);
 
             self.newMode = ko.observable(false);
@@ -55,8 +56,8 @@ module nts.uk.com.view.kwr002.b {
                     service.getARESByCode(value).done((aRESData: any) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
                         // choose default font size large
-                        if (_.isNil(self.currentARES().fontSizeAtr())) {
-                            self.currentARES().fontSizeAtr(1)
+                        if (_.isNil(self.currentARES().exportFontSize())) {
+                            self.currentARES().exportFontSize(2);
                         }
                         self.newMode(false);
                         newModeFlag = false;
@@ -153,7 +154,7 @@ module nts.uk.com.view.kwr002.b {
                 name: "",
                 sealUseAtr: false,
                 nameUseAtr: 1,
-                fontSizeAtr: 1,
+                exportFontSize: 2,
             };
             self.currentARES(new AttendanceRecordExportSetting(params));
             self.currentARESCode("");
@@ -250,7 +251,7 @@ module nts.uk.com.view.kwr002.b {
                 sealUseAtr: rcdExport.useSeal,
                 sealStamp: rcdExport.sealStamp,
                 nameUseAtr: currentData.nameUseAtr(),
-                fontSizeAtr: currentData.fontSizeAtr(),
+                exportFontSize: currentData.exportFontSize(),
             };
 
             let itemCmd = {
@@ -287,15 +288,14 @@ module nts.uk.com.view.kwr002.b {
             return data;
         };
 
-        openKDL002F() {
+        public openDialogF() {
             let self = this;
-            block.grayout();
-            // setShared('inputDialogD',
-            //     { repeatMonthDateList: self.curExecSetting().repeatMonthDateList()
-            //     });
-            modal("/view/kbt/002/d/index.xhtml").onClosed(function(){
+            let data = new OpenDialogFParam(self.selectionType,self.currentARES().code(),self.currentARES().name(),'');
+            let code = self.currentARES().code();
+            let name = self.currentARES().name();
+            setShared("dataFromScreenB", data, true);
+            modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
 
-                block.clear();
             });
         }
 
@@ -303,15 +303,41 @@ module nts.uk.com.view.kwr002.b {
             block.invisible();
             let self = this;
             let dfd = $.Deferred<any>();
-            var dataGetShareFromScreenA = getShared("dataTranferScreenB");
-            service.getAllARES().done((data) => {
-                if (data.length > 0) {
-                    _.map(data, (item:any) => {
+            let dataFromScreenA = getShared("dataTranferScreenB");
+            self.selectionType = dataFromScreenA.selectionType;
+
+
+//             service.getAllARES().done((data: any) => {
+//                 if (data.length > 0) {
+//                     _.map(data, (item:any) => {
+//                         item.code = _.padStart(item.code, 2, '0');
+//                         // new AttendanceRecordExportSetting(item);
+//                     });
+//                     data = _.orderBy(data, [item => item.code], ['asc']);
+//                     self.aRES(data);
+// //                    let firstData = _.first(data);
+//                     self.currentARESCode(getShared("currentARESSelectCode"));
+//                     console.log("1");
+
+//                     console.log(data);
+//                 } else {
+//                     self.onNew(true);
+//                 }
+//                 dfd.resolve();
+//             }).fail(function(error) {
+//                 dfd.reject();
+//                 alert(error.message);
+//             }).always(() => {
+//                 block.clear();
+//             });
+            service.startScreenB(dataFromScreenA).done((data: any) => {
+                if (data.lstAttendanceRecordExportSetting.length > 0) {
+                    _.map(data.lstAttendanceRecordExportSetting, (item:any) => {
                         item.code = _.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
                     });
-                    data = _.orderBy(data, [item => item.code], ['asc']);
-                    self.aRES(data);
+                    data.lstAttendanceRecordExportSetting = _.orderBy(data.lstAttendanceRecordExportSetting, [item => item.code], ['asc']);
+                    self.aRES(data.lstAttendanceRecordExportSetting);
 //                    let firstData = _.first(data);
                     self.currentARESCode(getShared("currentARESSelectCode"));
 
@@ -390,7 +416,7 @@ module nts.uk.com.view.kwr002.b {
         name: string;
         sealUseAtr: boolean;
         nameUseAtr: number;
-        fontSizeAtr: number;
+        exportFontSize: number;
     }
 
     export class AttendanceRecordExportSetting {
@@ -398,7 +424,7 @@ module nts.uk.com.view.kwr002.b {
         name: KnockoutObservable<string>;
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
-        fontSizeAtr: KnockoutObservable<number>;
+        exportFontSize: KnockoutObservable<number>;
 
         constructor(param: IARES) {
             let self = this;
@@ -406,7 +432,7 @@ module nts.uk.com.view.kwr002.b {
             self.name = ko.observable(param.name);
             self.sealUseAtr = ko.observable(param.sealUseAtr);
             self.nameUseAtr = ko.observable(param.nameUseAtr);
-            self.fontSizeAtr = ko.observable(param.fontSizeAtr);
+            self.exportFontSize = ko.observable(param.exportFontSize);
         };
 
 
@@ -456,18 +482,32 @@ module nts.uk.com.view.kwr002.b {
     }
 
     class DataInputScreenB {
-        settingCategory: number; //設定区分（自由設定）
+        selectionType: number; //設定区分（自由設定）
         companyId: string; //会社ID
         employeeId: string; //社員ID
         selectedOutputLayoutId: string; //選択出力レイアウトID
         selectedCode: string;// 選択コード
 
-        constructor(settingCategory: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
-            this.settingCategory = settingCategory;
+        constructor(selectionType: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
+            this.selectionType = selectionType;
             this.companyId = companyId;
             this.employeeId = employeeId;
             this.selectedOutputLayoutId = selectedOutputLayoutId;
             this.selectedCode = selectedCode;
         }
+    }
+
+    class OpenDialogFParam{
+        itemSelectedType: string;
+        code: string;
+        name: string;
+        layoutCode: string;
+
+        constructor(itemSelectedType: string, code: string, name: string, layoutCode: string) {
+            this.itemSelectedType = itemSelectedType;
+            this.code = code;
+            this.name = name;
+            this.layoutCode = layoutCode;
+      }
     }
 }

@@ -25,6 +25,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name="KFNST_ATTND_REC_ITEM")
+// KFNMT_RPT_WK_ATD_OUTATD
 public class KfnstAttndRecItem extends UkJpaEntity implements Serializable {
 	
 	/** The Constant serialVersionUID. */

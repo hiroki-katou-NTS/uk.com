@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 
 import java.util.List;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -12,6 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author nws-ducnt
  *
  */
+@Getter
 public class AttendanceRecordOuputItems extends AggregateRoot {
 
 	/**

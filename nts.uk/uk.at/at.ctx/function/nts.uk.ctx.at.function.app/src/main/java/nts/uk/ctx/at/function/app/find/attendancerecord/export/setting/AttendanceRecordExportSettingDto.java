@@ -28,14 +28,16 @@ public class AttendanceRecordExportSettingDto {
 	List<AttendanceRecordExportDto> monthlyExportItem;
 
 	Integer nameUseAtr;
-
 	/** The seal use atr. */
+	
 	Boolean sealUseAtr;
 	
 	/** The export font size. */
-	String exportFontSize;
+	Integer exportFontSize;
 	
-
+	/** The monthly confirmed display. */
+	Integer monthlyConfirmedDisplay;
+	
 	/**
 	 * Instantiates a new attendance record export setting dto.
 	 */

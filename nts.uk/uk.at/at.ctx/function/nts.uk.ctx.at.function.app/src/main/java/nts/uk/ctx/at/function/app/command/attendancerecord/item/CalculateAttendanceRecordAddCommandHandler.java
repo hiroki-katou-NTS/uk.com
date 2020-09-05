@@ -52,7 +52,7 @@ public class CalculateAttendanceRecordAddCommandHandler extends CommandHandler<C
 				subtractedItems);
 		// update
 		this.calculateAttendanceRecordRepository.updateCalculateAttendanceRecord(AppContexts.user().companyId(),
-				new ExportSettingCode((long) command.getExportSettingCode()), command.getColumnIndex(),
+				new ExportSettingCode(String.valueOf(command.getExportSettingCode())), command.getColumnIndex(),
 				command.getPosition(), command.getExportAtr(),command.isUseAtr(), calculateAttendanceRecord);
 	}
 

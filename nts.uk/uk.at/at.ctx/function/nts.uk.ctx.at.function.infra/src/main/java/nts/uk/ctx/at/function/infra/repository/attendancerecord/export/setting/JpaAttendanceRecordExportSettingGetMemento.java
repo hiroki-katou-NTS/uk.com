@@ -99,7 +99,7 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	 */
 	@Override
 	public ExportSettingCode getCode() {
-		return new ExportSettingCode(this.attendanceEntity.getId().getExportCd());
+		return new ExportSettingCode(String.valueOf(this.attendanceEntity.getId().getExportCd()));
 	}
 
 	/*
@@ -135,5 +135,16 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	@Override
 	public Integer getNameUseAtr() {
 		return this.attendanceEntity.getNameUseAtr().intValue();
+	}
+
+	@Override
+	public Integer getExportFontSize() {
+		
+		return this.attendanceEntity.getCharSizeType().intValue();
+	}
+
+	@Override
+	public Integer getMonthlyConfirmedDisplay() {
+		return this.attendanceEntity.getMonthAppDispAtr().intValue();
 	}
 }

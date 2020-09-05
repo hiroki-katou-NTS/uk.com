@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.export.setting;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 //import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
@@ -62,8 +64,8 @@ public class AttendanceRecordExportSettingFinder {
 	 *            the company id
 	 * @return the all attendance record export setting
 	 */
-	public List<AttendanceRecordExportSettingDto> getAllAttendanceRecordExportSetting(String companyId) {
-
+	public List<AttendanceRecordExportSettingDto> getAllAttendanceRecordExportSetting() {
+		String companyId = AppContexts.user().companyId();
 		// get domain
 		List<AttendanceRecordExportSetting> domainList = attendanceRecExpSetRepo.getAllAttendanceRecExpSet(companyId);
 
@@ -102,7 +104,8 @@ public class AttendanceRecordExportSettingFinder {
 			dto.setName(domain.getName().toString());
 			dto.setSealUseAtr(domain.getSealUseAtr());
 			dto.setNameUseAtr(domain.getNameUseAtr().value);
-
+			dto.setExportFontSize(domain.getExportFontSize().value);
+			dto.setMonthlyConfirmedDisplay(domain.getMonthlyConfirmedDisplay().value);
 			return dto;
 		}
 		return new AttendanceRecordExportSettingDto();
@@ -143,16 +146,20 @@ public class AttendanceRecordExportSettingFinder {
 		String roleId = AppContexts.user().roles().forAttendance();
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
+
 		AttendanceAuthorityOfWorkPerform attendanceDto = new AttendanceAuthorityOfWorkPerform();
+		
 		boolean isFreeSetting = this.dailyPerAuthRepo.getAuthorityOfEmployee(roleId,
 				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
+		
 		if (isFreeSetting) {
 			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo
-													.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+					.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
 		} else {
 			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo
-													.getStandardByCompanyId(companyId);
+					.getStandardByCompanyId(companyId);
 		}
+
 		attendanceDto.setFreeSetting(isFreeSetting);
 		attendanceDto.setCompanyId(companyId);
 		attendanceDto.setRoleId(roleId);
@@ -209,5 +216,37 @@ public class AttendanceRecordExportSettingFinder {
 		domain.setMemento(dto);
 		return dto;
 	}
+	
+	public AttendanceSettingDto startScreenB(ItemSelectedTypeSettingDto itemSelectedTypeSettingDto) {
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		AttendanceSettingDto settingDto = new AttendanceSettingDto();
+		// convert domain to Dto
+//		List<AttendanceRecordExportSettingDto> dtoList = checkSelectionTypeOfInputItem(
+//				itemSelectedTypeSettingDto.getSelectionType(), companyId, employeeId).stream().map(item -> {
+//					AttendanceRecordExportSettingDto dto = new AttendanceRecordExportSettingDto();
+//					dto.setCode(item.getCode().toString());
+//					dto.setName(item.getName().toString());
+//					dto.setSealUseAtr(item.getSealUseAtr());
+//					dto.setNameUseAtr(item.getNameUseAtr().value);
+//					return dto;
+//				}).collect(Collectors.toList());
+		List<AttendanceRecordExportSettingDto> dtoList = this.getAllAttendanceRecordExportSetting();
+		settingDto.setLstAttendanceRecordExportSetting(dtoList);
+		return settingDto;
+	}
+	
+	private List<AttendanceRecordExportSetting> checkSelectionTypeOfInputItem(int selectionType, String companyId, String employeeId) {
+		List<AttendanceRecordExportSetting> lstAttenDanceReportExportDto;
+		if(selectionType == ItemSelectionType.STANDARD_SETTING.value) {
+			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo.getStandardByCompanyId(companyId);
+			lstAttenDanceReportExportDto = standardSetting.isPresent() ? standardSetting.get().getAttendanceRecordExportSettings() : new ArrayList<>();
+		}else {
+			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+			lstAttenDanceReportExportDto = freeSetting.isPresent() ? freeSetting.get().getAttendanceRecordExportSettings() : new ArrayList<>();
+		}
+		return lstAttenDanceReportExportDto;
+	}
+	
 }
 

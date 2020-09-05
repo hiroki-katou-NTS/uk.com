@@ -58,7 +58,7 @@ public enum ExportFontSize {
 	public static ExportFontSize valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
-			return null;
+			return ExportFontSize.valueOf(0);
 		}
 
 		// Find value.
@@ -68,8 +68,8 @@ public enum ExportFontSize {
 				return val;
 			}
 		}
-
+		return ExportFontSize.valueOf(0);
 		// Not found.
-		return null;
 	}
+	
 }
