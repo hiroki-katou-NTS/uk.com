@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
     import ScreenModelH = h.viewmodel.ScreenModelH;
     import ScreenModelI = i.viewmodel.ScreenModelI;
     import ScreenModelJ = j.viewmodel.ScreenModelJ;
+    import ScreenModelN = n.viewmodel.ScreenModelN;
     import ScreenModelQ = q.viewmodel.ScreenModelQ;
     import ScreenModelV = v.viewmodel.ScreenModelV;
     import ScreenModelY = y.viewmodel.ScreenModelY;
@@ -29,6 +30,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         viewmodelH: ScreenModelH;
         viewmodelI: ScreenModelI;
         viewmodelJ: ScreenModelJ;
+        viewmodelN: ScreenModelN;
         viewmodelQ: ScreenModelQ;
         viewmodelV: ScreenModelV;
         viewmodelY: ScreenModelY;
@@ -64,6 +66,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             self.viewmodelH = new ScreenModelH();
             self.viewmodelI = new ScreenModelI();
             self.viewmodelJ = new ScreenModelJ();
+            self.viewmodelN = new ScreenModelN();
             self.viewmodelQ = new ScreenModelQ();
             self.viewmodelV = new ScreenModelV();
             self.viewmodelY = new ScreenModelY();
@@ -90,6 +93,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                 self.viewmodelH.initData(data);
                 self.viewmodelI.initData(data);
                 self.viewmodelJ.initData(data);
+                self.viewmodelN.initData(data);
                 self.viewmodelQ.initData(data);
                 self.viewmodelV.initData(data);
                 self.viewmodelY.initData(data);

@@ -18,9 +18,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
 
         listWTShareKDL002: KnockoutObservableArray<any> = ko.observableArray([]);
         allowRegister: KnockoutObservable<boolean> = ko.observable(true);
-        //previewData: any = null;
-        //previewCode: string = "";
-        //saveNotify:KnockoutObservable<boolean> = ko.observable(false);
+
         itemListD13: KnockoutObservableArray<any> = ko.observableArray([
             {code: 1, name: getText("KAF022_100")},
             {code: 0, name: getText("KAF022_101")}

@@ -5,6 +5,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppTypeBfFinder;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetDto;
+import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetDto;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.emailset.AppEmailSetDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.businesstrip.BusinessTripSetDto;
@@ -46,6 +47,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.optionalitemappsetting.OptionalItemAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.ApplicationStampSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HolidayApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
@@ -132,6 +134,9 @@ public class FinderDtoKaf022 {
 	@Inject
 	private TimeLeaveAppReflectRepository timeLeaveAppReflectRepo;
 
+	@Inject
+	private OptionalItemAppSetRepository optionalItemAppSetRepo;
+
 	public DtoKaf022 findDtoKaf022() {
 		String companyId = AppContexts.user().companyId();
 		// TODO: get Application Settings
@@ -145,6 +150,7 @@ public class FinderDtoKaf022 {
 		AppEmailSet appEmailSet = appEmailSetRepo.findByCID(companyId);
 		HolidayApplicationSettingDto holidayApplicationSetting = holidayApplicationSettingRepo.findSettingByCompanyId(companyId).map(HolidayApplicationSettingDto::fromDomain).orElse(null);
 		HolidayWorkAppSetDto holidayWorkAppSet = holidayWorkAppSetRepo.findSettingByCompany(companyId).map(HolidayWorkAppSetDto::fromDomain).orElse(null);
+		List<OptionalItemAppSetDto> optionalItemAppSetDtos = optionalItemAppSetRepo.findByCompany(companyId).stream().map(OptionalItemAppSetDto::fromDomain).collect(Collectors.toList());
 
 		// TODO: get Reflection Settings
         AppReflectExeConditionDto appReflectCondition = appReflectConditionRepo.findByCompanyId(companyId).map(AppReflectExeConditionDto::fromDomain).orElse(null);
@@ -221,6 +227,9 @@ public class FinderDtoKaf022 {
         // J
         result.appStampSetting = appStampSetting;
         result.appStampReflect = stampAppReflectDto;
+
+        // N
+		result.setOptionalItemApplicationSettings(optionalItemAppSetDtos);
 
         // Q
         result.approvalListDisplaySetting = approvalListDispSetting;
