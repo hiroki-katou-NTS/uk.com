@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class AttendanceRecordExportSetting extends AggregateRoot {
 	
 	/** The layout id. */
-	// 	出力レイアウトID
+	// 出力レイアウトID
 	private String layoutId;
 
 	/** The company id. */
