@@ -51,4 +51,15 @@ public interface AttendanceRecordOuputItemsRepository {
      */
     public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeCodeAndLayoutId(String companyId, String employeeId, String code, String layoutId);
     
+    
+    /**
+     * Find by layout id.
+     *
+     * @param layoutId the layout id
+     * @return the optional
+     */
+    public Optional<AttendanceRecordExportSetting> findByLayoutId(String layoutId);
+    
+    
+    
 }

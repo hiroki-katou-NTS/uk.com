@@ -21,8 +21,8 @@ public class JpaAttendanceRecordStandardSettingSetMemento implements AttendanceR
 	private int itemSelectionType;
 
 	@Override
-	public void setAttendanceRecordExportSettings(List<AttendanceRecordExportSetting> outputItem) {
-		this.kfnmtRptWkAtdOut = outputItem.stream().map(i -> {
+	public void setAttendanceRecordExportSettings(List<AttendanceRecordExportSetting> standardItem) {
+		this.kfnmtRptWkAtdOut = standardItem.stream().map(i -> {
 			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
 //			i.saveToMemento(entity);
 			return entity;

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -36,7 +37,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "KFNMT_RPT_WK_ATD_OUT")
 public class KfnmtRptWkAtdOut extends UkJpaEntity
-		implements Serializable {
+		implements Serializable , AttendanceRecordExportSettingGetMemento, AttendanceRecordExportSettingSetMemento{
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -79,15 +80,15 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 	
 	@Basic(optional = false)
 	@Column(name="NAME_USE_ATR")
-	private int nameUseAtr;
+	private BigDecimal nameUseAtr;
 	
 	@Basic(optional = false)
 	@Column(name="CHAR_SIZE_TYPE")
-	private int charSizeType;
+	private BigDecimal charSizeType;
 	
 	@Basic(optional = false)
 	@Column(name="MONTH_APP_DISP_ATR")
-	private int monthAppDispAtr;
+	private BigDecimal monthAppDispAtr;
 	
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
@@ -101,117 +102,122 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 		return this.layoutID;
 	}
 
-//	@Override
-//	public void setCompanyId(String companyId) {
-//		this.cid = companyId;
-//		
-//	}
-//
-//	@Override
-//	public void setDailyExportItem(List<AttendanceRecordExport> attendanceList) {
-//		
-//	}
-//
-//	@Override
-//	public void setMonthlyExportItem(List<AttendanceRecordExport> attendanceList) {
-//		
-//	}
-//
-//	@Override
-//	public void setSealUseAtr(Boolean atr) {
-//		this.sealUseAtr = atr;
-//	}
-//
-//	@Override
-//	public void setCode(ExportSettingCode code) {
-//		this.
-//	}
-//
-//	@Override
-//	public void setName(ExportSettingName name) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void setSealStamp(List<SealColumnName> seal) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void setNameUseAtr(Integer nameUseAtr) {
-//		// TODO Auto-generated method stub
-//		
-//	@Override
-//	public String getCompanyId() {
-//		
-//		return this.cid;
-//	}
-//
-//	@Override
-//	public List<AttendanceRecordExport> getDailyExportItem() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public List<AttendanceRecordExport> getMonthlyExportItem() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public Boolean getSealUseAtr() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public ExportSettingCode getCode() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public ExportSettingName getName() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public List<SealColumnName> getSealStamp() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public Integer getNameUseAtr() {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-//
-//	@Override
-//	public int getExportFontSize() {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public int getMonthlyConfirmedDisplay() {
-//		// TODO Auto-generated method stub
-//		return 0;
-//	}
-//
-//	@Override
-//	public void setExportFontSize(ExportFontSize exportFontSize) {
-//		// TODO Auto-generated method stub
-//		
-//	}
-//
-//	@Override
-//	public void setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay monthlyConfirmedDisplay) {
-//		// TODO Auto-generated method stub
-//		
-//	}
+	@Override
+	public void setCompanyId(String companyId) {
+		this.cid = companyId;
+	}
+
+	@Override
+	public void setDailyExportItem(List<AttendanceRecordExport> attendanceList) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setMonthlyExportItem(List<AttendanceRecordExport> attendanceList) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSealUseAtr(Boolean atr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCode(ExportSettingCode code) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setName(ExportSettingName name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSealStamp(List<SealColumnName> seal) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setNameUseAtr(Integer nameUseAtr) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setExportFontSize(Integer exportFontSize) {
+		this.charSizeType = BigDecimal.valueOf(exportFontSize);
+		
+	}
+
+	@Override
+	public void setMonthlyConfirmedDisplay(Integer monthlyConfirmedDisplay) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getCompanyId() {
+		return this.cid;
+	}
+
+	@Override
+	public List<AttendanceRecordExport> getDailyExportItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<AttendanceRecordExport> getMonthlyExportItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean getSealUseAtr() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ExportSettingCode getCode() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ExportSettingName getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<SealColumnName> getSealStamp() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer getNameUseAtr() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer getExportFontSize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Integer getMonthlyConfirmedDisplay() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
