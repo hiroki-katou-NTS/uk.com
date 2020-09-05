@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -35,6 +36,8 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	private static final String FIND_BY_ATR;
 	
 	private static final String FIND_BY_ATRS;
+
+	private static final String FIND_BY_ATTENDANCE_IDS;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -78,6 +81,13 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
 		builderString.append("AND a.dailyAttendanceAtr IN :dailyAttendanceAtrs ");
 		FIND_BY_ATRS = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtDailyAttendanceItem a ");
+		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.attendanceItemId IN :dailyAttendanceItemIds ");
+		builderString.append("ORDER BY a.displayNumber ASC ");
+		FIND_BY_ATTENDANCE_IDS = builderString.toString();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -209,6 +219,15 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	@Override
 	public void update(DailyAttendanceItem domain) {
 		this.commandProxy().update(KrcmtDailyAttendanceItem.toEntity(domain));
+	}
+
+	@Override
+	public List<DailyAttendanceItem> findByADailyAttendanceItems(List<Integer> attendanceItemIds) {
+		return this.queryProxy().query(FIND_BY_ATTENDANCE_IDS,	KrcmtDailyAttendanceItem.class)
+			.setParameter("dailyAttendanceItemIds", attendanceItemIds)
+			.getList().stream()
+			.map(t -> toDomain(t))
+			.collect(Collectors.toList());
 	}
 
 }

@@ -923,8 +923,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		WorkScheduleOutputQuery query = queryData.getQuery();
 		GeneralDate endDate = query.getEndDate();
 		WorkScheduleOutputCondition condition = query.getCondition();
+
+		String layoutId = condition.getSelectionType() == ItemSelectionType.FREE_SETTING
+				? condition.getFreeSettingLayoutId()
+				: condition.getStandardSelectionLayoutId();
+
 		// Always has item because this has passed error check
-		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, condition.getCode().v()).get();
+		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByLayoutId(layoutId).get();
 		
 		// Get all data from query data container
 		List<GeneralDate> datePeriod = queryData.getDatePeriod();
@@ -1137,9 +1142,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		WorkScheduleOutputQuery query = queryData.getQuery();
 		GeneralDate endDate = query.getEndDate();
 		WorkScheduleOutputCondition condition = query.getCondition();
-		
+
+		String layoutId = condition.getSelectionType() == ItemSelectionType.FREE_SETTING
+				? condition.getFreeSettingLayoutId()
+				: condition.getStandardSelectionLayoutId();
+
 		// Always has item because this has passed error check
-		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByCidAndCode(companyId, condition.getCode().v()).get();
+		OutputItemDailyWorkSchedule outSche = outputItemRepo.findByLayoutId(layoutId).get();
 		
 		// Get all data from query data container
 		List<AttendanceResultImport> lstAttendanceResultImport = queryData.getLstAttendanceResultImport();

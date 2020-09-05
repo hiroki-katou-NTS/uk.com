@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -491,8 +492,16 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		return name;
 	}
 
+	/**
+	 * 使用不可の勤怠項目を除く
+	 *
+	 * @param companyId the company id
+	 * @param type the type
+	 * @param attendanceItemIds the attendance item ids
+	 * @return the all name of type
+	 */
 	@Override
-	public List<AttItemName> getAllNameOfType(String companyId, TypeOfItem type, List<Integer> attendanceItemIds) {
+	public List<Integer> getAvaiableAttendanceItem(String companyId, TypeOfItem type, List<Integer> attendanceItemIds) {
 		// List＜使用可能な勤怠項目ID＞　←　List＜勤怠項目ID＞
 		List<Integer> attendanceItemIdAvaiable = attendanceItemIds;
 
@@ -630,9 +639,59 @@ public class AttendanceItemNameServiceImpl implements AttendanceItemNameService 
 		// ドメインモデル「特別休暇」を取得する Nhận domain model 「特別休暇」
 		List<SpecialHoliday> lstSpecialHolidays = this.specialHolidayRepository.findByCompanyId(companyId);
 		
+		List<Integer> lstSpCD = lstSpecialHolidays.stream().map(t -> t.getSpecialHolidayCode().v()).collect(Collectors.toList());
 		
+		// 特別休暇コード１～２０のループ(必ず1～20ループする)
+		IntStream.range(0, 20).forEach(sphdCD -> {
+			if (lstSpCD.contains(sphdCD)) {
+				
+				// List<枠NO>：着目している特別休暇コード
+				List<BigDecimal> frameNos = lstSpecialHolidays.stream()
+						.filter(t -> t.getSpecialHolidayCode().v() == sphdCD)
+						.map(r -> BigDecimal.valueOf(r.getSpecialHolidayCode().v()))
+						.collect(Collectors.toList());
+
+				// List<枠カテゴリ>：<15：特別休暇>
+				List<Integer> frameCategories = Arrays.asList(FrameCategory.SpecialHoliday.value);
+
+				// List<使用不可の特別休暇系勤怠項目ID＞を取得する Nhận List < Attendance items ID liên quan đến ngày nghỉ đặc biệt không khả dụng> 
+				List<Integer> attendanceIds = this.attendanceItemLinkingRepository
+						.findByFrameNoTypeAndFramCategory(frameNos, type.value, frameCategories).stream()
+						.map(t -> t.getAttendanceItemId())
+						.collect(Collectors.toList());
+				
+				// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く Loại bỏ List <Attendance items ID
+				// không khả dụng> khỏi List < Attendance items ID khả dụng>
+				attendanceItemIdAvaiable.removeAll(attendanceIds);
+			}
+		});
 		
-		return null;
+		// 使用不可の欠勤枠を取得する Nhận Absence frame không khả dụng
+		List<AbsenceFrame> absenceFrames = this.absenceFrameRepository
+				.findByCompanyIdAndDeprecateClassification(companyId, DeprecateClassification.NotDeprecated.value);
+
+		// 使用不可のList<欠勤枠＞をチェックする Check List  <欠勤枠＞ không khả dụng
+		if (!absenceFrames.isEmpty()) {
+			// List<枠NO>：使用不可のList<欠勤枠>．欠勤枠NO
+			List<BigDecimal> frameNos = absenceFrames.stream()
+					.map(r -> BigDecimal.valueOf(r.getAbsenceFrameNo()))
+					.collect(Collectors.toList());
+
+			// List<枠カテゴリ>：<12：欠勤>
+			List<Integer> frameCategories = Arrays.asList(FrameCategory.Absence.value);
+
+			// List<使用不可の欠勤枠系勤怠項目ID＞を取得する Nhận danh sách <使用不可の欠勤枠系勤怠項目ID＞
+			List<Integer> attendanceNotAvaiable = this.attendanceItemLinkingRepository
+					.findByFrameNoTypeAndFramCategory(frameNos, type.value, frameCategories).stream()
+					.map(t -> t.getAttendanceItemId())
+					.collect(Collectors.toList());
+			
+			// List＜使用可能な勤怠項目ID＞からList<使用不可の勤怠項目ID>を除く Loại bỏ List <Attendance items ID
+			// không khả dụng> khỏi List < Attendance items ID khả dụng>
+			attendanceItemIdAvaiable.removeAll(attendanceNotAvaiable);
+		}
+
+		return attendanceItemIdAvaiable;
 	}
 	
 	private Integer convertTempNoToTimeId(Integer tempAbsenceFrNo) {

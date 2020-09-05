@@ -6,13 +6,14 @@ package nts.uk.ctx.at.function.app.find.dailyworkschedule;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,12 +21,12 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.command.dailyworkschedule.OutputItemDailyWorkScheduleCopyCommand;
-import nts.uk.ctx.at.function.dom.attendancetype.AttendanceItemType;
+import nts.uk.ctx.at.function.dom.attendanceitemframelinking.enums.TypeOfItem;
+import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameService;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
-import nts.uk.ctx.at.function.dom.dailyattendanceitem.ItemDailyId;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
@@ -41,7 +42,6 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepos
 import nts.uk.ctx.at.function.dom.dailyworkschedule.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
@@ -53,6 +53,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesR
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAttendanceItemUsedRepository;
 //import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.CompanyDailyItemService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.service.DailyItemDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -92,6 +93,9 @@ public class OutputItemDailyWorkScheduleFinder {
 	
 	@Inject
 	private CompanyDailyItemService companyDailyItemService;
+	
+	@Inject
+	private AttendanceItemNameService attendanceItemNameService;
 
 	/** The output standard setting repository. */
 	@Inject
@@ -166,29 +170,6 @@ public class OutputItemDailyWorkScheduleFinder {
 				})
 				.sorted(Comparator.comparing(OutputItemSettingDto::getCode)).collect(Collectors.toList()));
 
-		// 選択している項目情報を取得する(Get the selected information item)
-		
-//		List<Integer> lstAttendanceID = lstAttendanceType.stream().map(domain -> domain.getAttendanceItemId()).collect(Collectors.toList());
-// 		
-//		List<DailyAttendanceItemDto> lstDailyAtdItemDto = companyDailyItemService.getDailyItems(companyID, Optional.empty(), lstAttendanceID, new ArrayList<>()).stream()
-//																.map(dto -> { 
-//																	DailyAttendanceItemDto dtoClientReturn = new DailyAttendanceItemDto();
-//																	dtoClientReturn.setCode(dto.getAttendanceItemDisplayNumber());
-//																	dtoClientReturn.setId(dto.getAttendanceItemId());
-//																	dtoClientReturn.setName(dto.getAttendanceItemName());
-//																	return dtoClientReturn;
-//																})
-//																.sorted(Comparator.comparing(DailyAttendanceItemDto::getCode))
-//																.collect(Collectors.toList()); 
-//		
-//		
-//		// ドメインモデル「日次の勤怠項目」をすべて取得する(Acquire all domain model "daily attendance items")
-//		// アルゴリズム「勤怠項目に対応する名称を生成する」
-//		if (!lstAttendanceID.isEmpty()) {
-//			mapDtoReturn.put("dailyAttendanceItem", lstDailyAtdItemDto);
-//		} else {
-//			mapDtoReturn.put("dailyAttendanceItem", Collections.emptyList());
-//		}		
 		
 		// find nothing
 		return mapDtoReturn;
@@ -482,13 +463,78 @@ public class OutputItemDailyWorkScheduleFinder {
 	 * @param type 勤怠項目の種類
 	 * @return the daily attendance items avaiable
 	 */
-	public List<String> getDailyAttendanceItemsAvaiable(String companyId, FormCanUsedForTime formId, AttendanceItemType type) {
+	public List<Integer> getDailyAttendanceItemsAvaiable(String companyId, FormCanUsedForTime formId, TypeOfItem type) {
 		
 		// アルゴリズム「帳票で利用できる日次の勤怠項目を取得する」を実行する Thực hiện thuật toán 「帳票で利用できる日次の勤怠項目を取得する」
 		List<Integer> dailyItemUsed = this.dailyAttendanceItemUsedRepository.getAllDailyItemId(companyId,
 				BigDecimal.valueOf(formId.value));
-		return null;
 		
+		// アルゴリズム「使用不可の勤怠項目を除く」を実行する Thực hiện thuật toán 「使用不可の勤怠項目を除く」
+		List<Integer> avaiableItem = this.attendanceItemNameService.getAvaiableAttendanceItem(companyId, type, dailyItemUsed);
+
+		return avaiableItem;
+		
+	}
+
+	public SelectedInformationItemDto getSlectedInformation(String companyId, Optional<String> layoutId,
+			Optional<OutputItemDailyWorkSchedule> outputItem) {
+		
+		// 画面で使用可能な日次勤怠項目を取得する(Get daily attendance items available on screen)
+		List<Integer> avaiableItems = this.getDailyAttendanceItemsAvaiable(companyId,
+				FormCanUsedForTime.DAILY_WORK_SCHEDULE, TypeOfItem.Daily);
+		
+		// 日次勤怠項目に対応する名称、属性を取得する (Get the name and attribute corresponding to the daily
+		// attendance item)
+		List<DailyItemDto> dailyItemDtos = this.companyDailyItemService.findByAttendanceItems(companyId, avaiableItems);
+		
+		Map<Integer, DailyItemDto> mapAttendanceItem = dailyItemDtos.stream()
+				.collect(Collectors.toMap(DailyItemDto::getTimeId, Function.identity()));
+
+		// Check Input．Optional＜日別勤務表の出力項目＞with Input．Optional＜出力レイアウトID＞
+		// Input．Optional＜出力レイアウトID＞　設定あり　(空ではない)( != Empty)
+		// AND
+		// Input．Optional＜日別勤務表の出力項目＞ 設定なし　(空)( = Empty)
+		if (layoutId.isPresent() && !outputItem.isPresent()) {
+			// Input．Optional＜日別勤務表の出力項目＞　←　ドメインモデル「日別勤務表の出力項目」を取得
+			outputItem = this.outputItemDailyWorkScheduleRepository.findByLayoutId(layoutId.get());
+		}
+
+		if (outputItem.isPresent()) {
+			//  「Input．Optional＜日別勤務表の出力項目＞．表示する勤怠項目」と取得したList＜勤怠項目ID、名称、属性、マスタの種類、表示番号＞を結合してセットす
+			List<InformationItemDto> displayDtos = outputItem.get().getLstDisplayedAttendance().stream()
+					.map(t -> {
+						DailyItemDto item = mapAttendanceItem.get(t.getAttendanceDisplay());
+						if (item != null) {
+							 return InformationItemDto.builder()
+									 .attendanceItemAtt(t.getAttendanceDisplay())
+									 .attendanceItemAtt(item.getAttribute())
+									 .masterType(item.getMasterType())
+									 .name(item.getName())
+									 .orderNo(t.getOrderNo())
+									 .build();
+						}
+						return null;
+					}).filter(Objects::nonNull).collect(Collectors.toList());
+			
+			List<PrintRemarksContentDto> printRemarksContents = this
+					.toDtoPrintRemarksContent(outputItem.get().getLstRemarkContent());
+			
+			List<Integer> attendanceItemFromOutputItem = outputItem.get().getLstDisplayedAttendance().stream()
+					.map(AttendanceItemsDisplay::getAttendanceDisplay)
+					.collect(Collectors.toList());
+
+			List<InformationItemDto> possibleSelectedItem = dailyItemDtos.stream()
+					.filter(t -> !attendanceItemFromOutputItem.contains(t.getTimeId()))
+					.map(item -> InformationItemDto.builder()
+								 .attendanceItemAtt(item.getTimeId())
+								 .attendanceItemAtt(item.getAttribute())
+								 .masterType(item.getMasterType())
+								 .name(item.getName())
+								 .build())
+					.collect(Collectors.toList());
+		}
+		
+		return new SelectedInformationItemDto();
 	}
 
 }
