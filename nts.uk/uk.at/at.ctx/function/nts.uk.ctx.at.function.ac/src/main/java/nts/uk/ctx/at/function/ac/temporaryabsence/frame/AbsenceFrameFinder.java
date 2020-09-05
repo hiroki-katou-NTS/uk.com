@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.employee.pub.temporaryabsence.frame.TempAbsenceFramePub;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
-public class TempAbsenceFrameFinder implements TempAbsenceFrameApdater {
+public class AbsenceFrameFinder implements TempAbsenceFrameApdater {
 	
 	/** The temp absence frame pub. */
 	@Inject

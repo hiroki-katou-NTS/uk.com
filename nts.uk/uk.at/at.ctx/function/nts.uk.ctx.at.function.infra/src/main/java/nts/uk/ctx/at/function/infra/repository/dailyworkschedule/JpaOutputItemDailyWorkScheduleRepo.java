@@ -1,27 +1,25 @@
 package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import javax.ejb.Stateless;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatdPK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnote;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnotePK;
 
+@Stateless
 public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements OutputStandardSettingRepository, FreeSettingOfOutputItemRepository {
 	
 	public static final String GET_FREE_SETTING_BY_EMPLOYEE_AND_COMPANY = "SELECT outItem FROM KfnmtRptWkDaiOutItem outItem"
