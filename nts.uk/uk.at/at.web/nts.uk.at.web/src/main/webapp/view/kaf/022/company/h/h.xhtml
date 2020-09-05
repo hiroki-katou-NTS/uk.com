@@ -173,4 +173,30 @@
             </tr>
         </tbody>
     </table>
+
+    <table id="fixed-table-h3">
+        <colgroup>
+            <col width="260px"/>
+            <col width="630px"/>
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_766')}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_767')}</td>
+                <td class="two-radio">
+                    <div data-bind="ntsRadioBoxGroup: {
+                                        options: itemListH3,
+                                        optionsValue: 'code',
+                                        optionsText: 'name',
+                                        value: reflectActualTimeZone,
+                                        enable: true}">
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </ui:composition>

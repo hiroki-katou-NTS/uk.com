@@ -60,6 +60,9 @@ public class KrqmtAppTimeHd extends ContractUkJpaEntity {
     @Column(name = "OUT_UNION_REFLECT_ATR")
     private int outUnionReflectAtr;
 
+    @Column(name = "WORK_TIME_REFLECT_ATR")
+    private int workTimeReflectAtr;
+
     @Override
     protected Object getKey() {
         return companyId;
@@ -68,7 +71,7 @@ public class KrqmtAppTimeHd extends ContractUkJpaEntity {
     public TimeLeaveApplicationReflect toDomain() {
         return new TimeLeaveApplicationReflect(
                 companyId,
-                EnumAdaptor.valueOf(0, NotUseAtr.class),
+                EnumAdaptor.valueOf(workTimeReflectAtr, NotUseAtr.class),
                 new TimeLeaveDestination(
                         EnumAdaptor.valueOf(beforeWorkReflectAtr1, NotUseAtr.class),
                         EnumAdaptor.valueOf(beforeWorkReflectAtr2, NotUseAtr.class),
@@ -102,7 +105,8 @@ public class KrqmtAppTimeHd extends ContractUkJpaEntity {
                 domain.getDestination().getSecondBeforeWork().value,
                 domain.getDestination().getSecondAfterWork().value,
                 domain.getDestination().getPrivateGoingOut().value,
-                domain.getDestination().getUnionGoingOut().value
+                domain.getDestination().getUnionGoingOut().value,
+                domain.getReflectActualTimeZone().value
         );
     }
 
@@ -119,5 +123,6 @@ public class KrqmtAppTimeHd extends ContractUkJpaEntity {
         this.afterWorkReflectAtr2 = domain.getDestination().getSecondAfterWork().value;
         this.outPrivateReflectAtr = domain.getDestination().getPrivateGoingOut().value;
         this.outUnionReflectAtr = domain.getDestination().getUnionGoingOut().value;
+        this.workTimeReflectAtr = domain.getReflectActualTimeZone().value;
     }
 }

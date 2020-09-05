@@ -10,6 +10,10 @@ module nts.uk.at.view.kaf022.h.viewmodel {
             {code: 1, name: getText('KAF022_75')},
             {code: 0, name: getText('KAF022_82')},
         ]);
+        itemListH3: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            {code: 1, name: getText('KAF022_44')},
+            {code: 0, name: getText('KAF022_396')}
+        ]);
 
         annualVacationTime: KnockoutObservable<number>;
         superHoliday60H: KnockoutObservable<number>;
@@ -24,6 +28,8 @@ module nts.uk.at.view.kaf022.h.viewmodel {
         secondAfterWork: KnockoutObservable<number>;
         privateGoingOut: KnockoutObservable<number>;
         unionGoingOut: KnockoutObservable<number>;
+
+        reflectActualTimeZone: KnockoutObservable<number>;
 
         constructor() {
             const self = this;
@@ -41,14 +47,18 @@ module nts.uk.at.view.kaf022.h.viewmodel {
             self.privateGoingOut = ko.observable(0);
             self.unionGoingOut = ko.observable(0);
 
+            self.reflectActualTimeZone = ko.observable(0);
+
             $("#fixed-table-h1").ntsFixedTable({});
             $("#fixed-table-h2").ntsFixedTable({});
+            $("#fixed-table-h3").ntsFixedTable({});
         }
 
         initData(allData: any): void {
             const self = this;
             const dataReflect = allData.timeLeaveApplicationReflect;
             if (dataReflect) {
+                self.reflectActualTimeZone(dataReflect.reflectActualTimeZone || 0);
                 if (dataReflect.destination) {
                     self.firstBeforeWork(dataReflect.destination.firstBeforeWork || 0);
                     self.secondBeforeWork(dataReflect.destination.secondBeforeWork || 0);
@@ -72,7 +82,7 @@ module nts.uk.at.view.kaf022.h.viewmodel {
         collectData(): any {
             const self = this;
             return {
-                reflectActualTimeZone: 0,
+                reflectActualTimeZone: self.reflectActualTimeZone(),
                 destination: {
                     firstBeforeWork: self.firstBeforeWork(),
                     secondBeforeWork: self.secondBeforeWork(),
