@@ -82,7 +82,7 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
 
     @Override
     public void remove(BusinessTrip domain) {
-
+        this.commandProxy().removeAll(this.toEntity(domain));
     }
 
     private BusinessTrip toDomain(NtsResultRecord res) {

@@ -38,8 +38,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.dataFetch.subscribe(value => {
                 if (value) {
 
-                    const tripOutput = ko.toJS(value.businessTripOutput);
-                    const tripContent = ko.toJS(value.businessTripContent);
+                    const tripOutput = value.businessTripOutput;
+                    const tripContent = value.businessTripContent;
                     const setting = tripOutput.setting;
 
                     vm.businessTripOutput(tripOutput);
@@ -70,6 +70,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         eachContent.wkTimeCd.subscribe(code => {
                             vm.changeWorkTimeCode(tripOutput, content.date, content.opAchievementDetail.workTypeCD, code, index);
                         });
+                        eachContent.start.subscribe(startValue => {
+                            content.opAchievementDetail.opWorkTime = startValue;
+                        });
+                        eachContent.end.subscribe(endValue => {
+                            content.opAchievementDetail.opLeaveTime = endValue;
+                        });
                         return eachContent;
                     });
                     vm.items(lstContent);
@@ -82,8 +88,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             const vm = this;
             vm.dataFetch.subscribe(value => {
                 if(value) {
-                    const tripOutput = ko.toJS(value.businessTripOutput);
-                    const tripContent = ko.toJS(value.businessTripContent);
+                    const tripOutput = value.businessTripOutput;
+                    const tripContent = value.businessTripContent;
                     const setting = tripOutput.setting;
 
                     vm.businessTripOutput(tripOutput);
@@ -117,6 +123,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         });
                         contentTrip.wkTimeCd.subscribe(code => {
                             vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
+                        });
+                        contentTrip.start.subscribe(startValue => {
+                            data.startWorkTime = startValue;
+                        });
+                        contentTrip.end.subscribe(endValue => {
+                            data.endWorkTime = endValue;
                         });
                         return contentTrip;
                     });
@@ -481,11 +493,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             this.wkTypeName = ko.observable(wkTypeName);
             this.wkTimeCd = ko.observable(wkTimeCd);
             this.wkTimeName = ko.observable(wkTimeName || "なし");
-
-            var startTime = start == null ? null : nts.uk.time.format.byId("ClockDay_Short_HM", start);
-            var endTime = end == null ? null : nts.uk.time.format.byId("ClockDay_Short_HM", end);
-            this.start = ko.observable(startTime);
-            this.end = ko.observable(endTime);
+            this.start = ko.observable(start);
+            this.end = ko.observable(end);
         }
     }
 

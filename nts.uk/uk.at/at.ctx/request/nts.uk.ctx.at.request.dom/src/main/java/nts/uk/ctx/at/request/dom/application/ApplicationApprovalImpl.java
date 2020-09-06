@@ -8,6 +8,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
@@ -66,6 +68,9 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 	@Inject
 	private BrkOffSupChangeMngRepository brkOffSupChangeMngRepository;
 
+	@Inject
+    private BusinessTripRepository businessTripRepo;
+
 	@Override
 	public void delete(String appID) {
 		String companyID = AppContexts.user().companyId();
@@ -107,6 +112,12 @@ public class ApplicationApprovalImpl implements ApplicationApprovalService {
 		case ABSENCE_APPLICATION:
 			appAbsenceRepository.delete(companyID, appID);
 			break;
+		case BUSINESS_TRIP_APPLICATION:
+		    Optional<BusinessTrip> businessTrip = businessTripRepo.findByAppId(companyID, appID);
+		    if (businessTrip.isPresent()) {
+		        businessTripRepo.remove(businessTrip.get());
+		    }
+		    break;
 		default:
 			break;
 		}
