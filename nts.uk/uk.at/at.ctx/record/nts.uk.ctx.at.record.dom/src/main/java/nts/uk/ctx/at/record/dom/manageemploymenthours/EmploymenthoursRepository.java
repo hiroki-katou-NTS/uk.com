@@ -1,8 +1,11 @@
-package nts.uk.ctx.at.record.dom.agreedtime;
+package nts.uk.ctx.at.record.dom.manageemploymenthours;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 雇用３６協定時間 IRepository
+ */
 public interface EmploymenthoursRepository {
      void insert(Employmenthours domain);
      void update(Employmenthours domain);
