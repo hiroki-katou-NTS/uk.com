@@ -1,28 +1,30 @@
-package nts.uk.ctx.at.record.infra.entity.monthly.agreement;
+package nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver;
 
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 import javax.persistence.*;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.metamodel.StaticMetamodel;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * エンティティ：職場別の承認者（36協定）
+ * エンティティ：会社別の承認者（36協定）
  *
  * @author khai.dh
  */
 @Entity
-@Table(name = "KRCMT_36AGR_APV_WKP")
+@Table(name = "KRCMT_36AGR_APV_CMP")
 @NoArgsConstructor
-public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
+public class Krcmt36AgrApvCmp extends UkJpaEntity implements Serializable {
 
 	/**
 	 * serialVersionUID
@@ -30,12 +32,7 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public Krcmt36AgrApvWkpPK PK;
-
-	@Basic(optional = false)
-	@NotNull
-	@Column(name = "CID")
-	public String companyID;
+	public Krcmt36AgrApvCmpPK PK;
 
 	@Basic(optional = false)
 	@NotNull
@@ -80,7 +77,7 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 		return this.PK;
 	}
 
-	public Approver36AgrByWorkplace toDomain() {
+	public Approver36AgrByCompany toDomain() {
 		List<String> approverIds = new ArrayList<>();
 		approverIds.add(this.approverSid1);
 		if (!StringUtil.isNullOrEmpty(this.approverSid2, true)) approverIds.add(this.approverSid2);
@@ -95,23 +92,21 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid4, true)) confirmerIds.add(this.confirmerSid4);
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid5, true)) confirmerIds.add(this.confirmerSid5);
 
-		return new Approver36AgrByWorkplace(
-				this.companyID,
-				this.PK.workplaceID,
+		return new Approver36AgrByCompany(
+				this.PK.companyID,
 				new DatePeriod(this.PK.startDate, this.endDate),
 				approverIds,
 				confirmerIds
 		);
 	}
 
-	public void fromDomainForPersist(Approver36AgrByWorkplace domain) {
-		this.PK = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(), domain.getPeriod().start());
-		this.fromDomainForUpdate(domain);
+	public void fromDomain(Approver36AgrByCompany domain) {
+		this.PK = new Krcmt36AgrApvCmpPK(domain.getCompanyId(), domain.getPeriod().start());
+		fromDomainNoPK(domain);
 	}
 
-	public void fromDomainForUpdate(Approver36AgrByWorkplace domain) {
+	private void fromDomainNoPK(Approver36AgrByCompany domain) {
 
-		this.companyID = domain.getCompanyId();
 		this.endDate = domain.getPeriod().end();
 
 		List<String> approverIds = domain.getApproverIds();
@@ -127,5 +122,11 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 		if (confirmerIds.size() > 2) this.confirmerSid3 = confirmerIds.get(2);
 		if (confirmerIds.size() > 3) this.confirmerSid4 = confirmerIds.get(3);
 		if (confirmerIds.size() > 4) this.confirmerSid5 = confirmerIds.get(4);
+	}
+
+	@StaticMetamodel(Krcmt36AgrApvCmp.class)
+	public static class Meta_ {
+		public static volatile SingularAttribute<Krcmt36AgrApvCmp, Krcmt36AgrApvCmpPK> pk;
+		public static volatile SingularAttribute<Krcmt36AgrApvCmp, GeneralDate> endDate;
 	}
 }

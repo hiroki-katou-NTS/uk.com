@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.record.infra.repository.monthly.agreement;
+package nts.uk.ctx.at.record.infra.repository.monthly.agreement.approver;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompanyRepo;
-import nts.uk.ctx.at.record.infra.entity.monthly.agreement.Krcmt36AgrApvCmp;
-import nts.uk.ctx.at.record.infra.entity.monthly.agreement.Krcmt36AgrApvCmpPK;
+import nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver.Krcmt36AgrApvCmp;
+import nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver.Krcmt36AgrApvCmpPK;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -95,13 +95,11 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
 
-		List<Approver36AgrByCompany> resultList = em.createQuery(cq)
+		return em.createQuery(cq)
 				.getResultList()
 				.stream()
-				.map(item -> item.toDomain())
+				.map(Krcmt36AgrApvCmp::toDomain)
 				.collect(Collectors.toList());
-
-		return resultList;
 	}
 
 	@Override
@@ -118,13 +116,11 @@ public class JpaApprover36AgrByCompanyRepo extends JpaRepository implements Appr
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
 
-		List<Approver36AgrByCompany> resultList = em.createQuery(cq)
+		return em.createQuery(cq)
 				.getResultList()
 				.stream()
-				.map(item -> item.toDomain())
+				.map(Krcmt36AgrApvCmp::toDomain)
 				.collect(Collectors.toList());
-
-		return resultList;
 	}
 
 	@Override

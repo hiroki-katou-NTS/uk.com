@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.monthly.agreement;
+package nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -16,22 +16,22 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * プライマリキー：会社別の承認者（36協定）
+ * プライマリキー：職場別の承認者（36協定）
  * @author khai.dh
  */
 @Embeddable
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class Krcmt36AgrApvCmpPK implements Serializable {
+public class Krcmt36AgrApvWkpPK implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CID")
-	public String companyID;
+	@Column(name = "WKP_ID")
+	public String workplaceID;
 
 	@Basic(optional = false)
 	@NotNull
@@ -39,9 +39,9 @@ public class Krcmt36AgrApvCmpPK implements Serializable {
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate startDate;
 
-	@StaticMetamodel(Krcmt36AgrApvCmpPK.class)
+	@StaticMetamodel(Krcmt36AgrApvWkpPK.class)
 	public static class Meta_ {
-		public static volatile SingularAttribute<Krcmt36AgrApvCmpPK, String> companyId;
-		public static volatile SingularAttribute<Krcmt36AgrApvCmpPK, GeneralDate> startDate;
+		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, String> workplaceId;
+		public static volatile SingularAttribute<Krcmt36AgrApvWkpPK, GeneralDate> startDate;
 	}
 }
