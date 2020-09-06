@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.annualworkschedule.EmployeeInformationImport;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -22,13 +21,10 @@ import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.EventInfoAndPerCo
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.EventInfoAndPersonalConditionsPeriod;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ExtractTargetEmployeesParam;
 import nts.uk.screen.at.app.ksu001.extracttargetemployees.ScreenQueryExtractTargetEmployees;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.GetScheduleActualOfShift;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftDataResult;
-import nts.uk.screen.at.app.ksu001.getschedulesbyshift.SchedulesbyShiftParam;
 
 /**
  * @author laitv
- * 表示期間を変更する（シフト）
+ * 表示期間を変更する（勤務情報）
  */
 @Stateless
 public class ChangePeriodInWorkInfomation {
