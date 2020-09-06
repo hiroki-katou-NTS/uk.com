@@ -218,16 +218,16 @@ public class BusinessTripFinder {
         List<GeneralDate> lstDate = period.datesBetween();
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
-        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
-                AppContexts.user().companyId(),
-                EmploymentRootAtr.APPLICATION,
-                true,
-                application,
-                null,
-                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
-                Collections.emptyList(),
-                output.getAppDispInfoStartup()
-        );
+//        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+//                AppContexts.user().companyId(),
+//                EmploymentRootAtr.APPLICATION,
+//                true,
+//                application,
+//                null,
+//                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+//                Collections.emptyList(),
+//                output.getAppDispInfoStartup()
+//        );
 
         BusinessTrip businessTrip = param.getBusinessTripDto().toDomain(application);
 
@@ -245,13 +245,13 @@ public class BusinessTripFinder {
 
                 List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
                 // 申請の矛盾チェック
-                this.commonAlgorithm.appConflictCheck(
-                        cid,
-                        employeeInfoImports.get(0),
-                        lstDate,
-                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-                        output.getActualContentDisplay().get()
-                );
+//                this.commonAlgorithm.appConflictCheck(
+//                        cid,
+//                        employeeInfoImports.get(0),
+//                        lstDate,
+//                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+//                        output.getActualContentDisplay().get()
+//                );
             });
         }
         return confirmMsgOutputs;

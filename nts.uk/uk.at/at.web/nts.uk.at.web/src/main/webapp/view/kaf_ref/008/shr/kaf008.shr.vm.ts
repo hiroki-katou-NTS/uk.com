@@ -18,6 +18,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         businessTripOutput: KnockoutObservable<BusinessTripInfoOutput> = ko.observable(null);
         dataFetch: KnockoutObservable<any> = ko.observable(null);
         mode: number = Mode.New;
+        enableInput: boolean = true;
 
         created(params: any) {
             const vm = this;
