@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @Data
 public class BusinessTripInfoOutputDto {
-
     // 出張申請設定
     private BusinessTripSetDto setting;
 
@@ -53,7 +52,7 @@ public class BusinessTripInfoOutputDto {
                 actualContents,
                 infoBefore,
                 infoAfter
-                );
+        );
     }
 
     public BusinessTripInfoOutput toDomain() {
@@ -68,5 +67,6 @@ public class BusinessTripInfoOutputDto {
         result.setWorkTypeAfterChange(Optional.ofNullable(this.getInfoAfterChange().stream().map(i -> i.toDomain()).collect(Collectors.toList())));
         return result;
     }
+
 
 }

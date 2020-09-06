@@ -120,9 +120,9 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             let dataFetch = ko.toJS(vm.dataFetch);
 
             let command = {
-                businessTripDto : dataFetch.businessTripContent,
-                businessTripInfoOutputDto : dataFetch.businessTripOutput,
-                applicationDto : ko.toJS(vm.application())
+                businessTrip : dataFetch.businessTripContent,
+                businessTripInfoOutput : dataFetch.businessTripOutput,
+                application : ko.toJS(vm.application())
             };
 
             vm.printContent.opBusinessTripInfoOutput = dataFetch.businessTripContent;

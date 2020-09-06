@@ -279,15 +279,15 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         SetupType checkNeededOfWorkTime = basicScheduleService.checkNeededOfWorkTimeSetting(wkTypeCd);
         switch (checkNeededOfWorkTime) {
             case REQUIRED:
-                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+                if (StringUtil.isNullOrEmpty(wkTimeCd, true)) {
                     throw new BusinessException("Msg_24", inputDate.toString());
                 }
                 break;
             case OPTIONAL:
                 break;
             case NOT_REQUIRED:
-                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
-                    throw new BusinessException("23", inputDate.toString());
+                if (StringUtil.isNullOrEmpty(wkTimeCd, true)) {
+                    throw new BusinessException("Msg_24", inputDate.toString());
                 }
                 break;
         }

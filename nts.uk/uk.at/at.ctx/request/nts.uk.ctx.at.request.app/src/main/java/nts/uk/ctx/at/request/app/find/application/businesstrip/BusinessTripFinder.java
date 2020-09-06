@@ -194,7 +194,7 @@ public class BusinessTripFinder {
         String cid = AppContexts.user().companyId();
         List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
 
-        ApplicationDto applicationDto = param.getApplicationDto();
+        ApplicationDto applicationDto = param.getApplication();
 
         Application application = Application.createFromNew(
                 EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
@@ -210,7 +210,7 @@ public class BusinessTripFinder {
                 Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
                 ));
 
-        BusinessTripInfoOutput output = param.getBusinessTripInfoOutputDto().toDomain();
+        BusinessTripInfoOutput output = param.getBusinessTripInfoOutput().toDomain();
 
         Optional<ApplicationDate> appStartDate = application.getOpAppStartDate();
         Optional<ApplicationDate> appEndDate = application.getOpAppEndDate();
@@ -229,7 +229,7 @@ public class BusinessTripFinder {
 //                output.getAppDispInfoStartup()
 //        );
 
-        BusinessTrip businessTrip = param.getBusinessTripDto().toDomain(application);
+        BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
 
         if (confirmMsgOutputs.isEmpty()) {
             // アルゴリズム「出張申請個別エラーチェック」を実行する
@@ -239,7 +239,7 @@ public class BusinessTripFinder {
             // loop 年月日　in　期間
             businessTrip.getInfos().stream().forEach(i -> {
                 String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
-                String wkTimeCd = i.getWorkInformation().getWorkTimeCode().v();
+                String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
                 // アルゴリズム「出張申請就業時間帯チェック」を実行する
                 businessTripService.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
 

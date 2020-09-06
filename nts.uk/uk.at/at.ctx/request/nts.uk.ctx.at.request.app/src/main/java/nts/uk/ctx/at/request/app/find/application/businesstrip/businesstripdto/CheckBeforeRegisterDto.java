@@ -7,11 +7,11 @@ import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 public class CheckBeforeRegisterDto {
 
     // 出張申請
-    private BusinessTripDto businessTripDto;
+    private BusinessTripDto businessTrip;
 
-    private BusinessTripInfoOutputDto businessTripInfoOutputDto;
+    private BusinessTripInfoOutputDto businessTripInfoOutput;
 
     // 申請
-    private ApplicationDto applicationDto;
+    private ApplicationDto application;
 
 }

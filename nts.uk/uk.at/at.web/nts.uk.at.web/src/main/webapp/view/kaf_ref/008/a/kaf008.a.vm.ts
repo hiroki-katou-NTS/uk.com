@@ -147,9 +147,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
             let applicationDto = ko.toJS(vm.application);
             let command = {
-                businessTripDto: businessTripDto,
-                businessTripInfoOutputDto: tripOutput,
-                applicationDto: applicationDto
+                businessTrip: businessTripDto,
+                businessTripInfoOutput: tripOutput,
+                application: applicationDto
             };
 
             vm.$validate([
