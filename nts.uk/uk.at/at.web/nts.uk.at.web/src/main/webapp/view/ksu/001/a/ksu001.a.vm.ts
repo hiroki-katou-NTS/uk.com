@@ -219,13 +219,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if(self.flag == true)
                     return;
                 
-                console.log('mode:  ' + viewMode);
                 nts.uk.ui.errors.clearAll();
                 self.removeClass();
                 self.stopRequest(false);
                 // close screen O1 when change mode
-                self.getNewData(viewMode, null, null);
-                self.editMode2();
+                if (viewMode == 'shift') { // mode シフト表示   
+                    self.shiftModeStart(null, null).done(() => {
+                        self.pasteData();
+                        self.setPositionButonToRightToLeft();
+                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                        self.stopRequest(true);
+                    });
+                } else if (viewMode == 'shortName') { // mode 略名表示
+                    self.shortNameModeStart(null, null).done(() => {
+                        self.pasteData();
+                        self.setPositionButonToRightToLeft();
+                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                        self.stopRequest(true);
+                    });
+                } else if (viewMode == 'time') {  // mode 勤務表示 
+                    self.timeModeStart(null, null).done(() => {
+                        self.pasteData();
+                        self.setPositionButonToRightToLeft();
+                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                        self.stopRequest(true);
+                    });
+                }
             });
 
             self.backgroundColorSelected.subscribe((value) => {
@@ -392,13 +411,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, viewMode);
-                
-                self.setDataWorkType(data.listWorkTypeInfo);
-                
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
                 self.setUpdateMode();
+                self.setDataWorkType(data.listWorkTypeInfo);
                 self.setPositionButonToRightToLeft();
                 self.flag = false;
                 dfd.resolve();
@@ -525,10 +542,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shift');
-                self.setDataWorkType(data.listWorkTypeInfo);
                 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shift');
+                
+                // set lai data stick
+                let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
                 
                 dfd.resolve();
             }).fail(function() {
@@ -560,10 +580,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'shortName');
-                self.setDataWorkType(data.listWorkTypeInfo);
                 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shortName');
+                
+                // set lai data stick
+                let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
                 
                 dfd.resolve();
             }).fail(function() {
@@ -595,11 +618,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.bindingToHeader(data);
                 // set data Grid
                 let dataBindGrid = self.convertDataToGrid(data, 'time');
-                self.setDataWorkType(data.listWorkTypeInfo);
 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'time');
-                
+                // set lai data stick
+                let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -615,11 +639,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.initExTable(dataBindGrid, viewMode, 'stick');
             if (!self.showA9) {
                 $(".toLeft").css("display", "none");
-                
             }
-            $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            self.setUpdateMode();
-            self.setPositionButonToRightToLeft();
         }
         
         saveDataGrid(data: any) {
@@ -1028,7 +1048,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.arrDay.push(new Time(new Date(dateInfo.ymd)));
                 let time = new Time(new Date(dateInfo.ymd));
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", required: true, min: "-12:00", max: "71:59", headerControl: "link"
+                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", required: false, min: "-12:00", max: "71:59", headerControl: "link"
                 });
                 let ymd = time.yearMonthDay;
                 let field = '_' + ymd;
@@ -1841,32 +1861,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }).ifNo(() => {});
         }
         
-        editMode2() {
-            let self = this;
-            self.mode('edit');
-            // set color button
-            $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-
-            self.removeClass();
-
-            // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
-            self.enableBtnPaste(true);
-            self.enableBtnCoppy(true);
-            self.enableHelpBtn(true);
-
-            if (self.selectedModeDisplayInBody() == 'time') {
-                self.visibleBtnInput(true);
-                self.enableBtnInput(true);
-            } else {
-                self.visibleBtnInput(false);
-                self.enableBtnInput(false);
-            }
-
-            self.visibleBtnUndo(true);
-            self.visibleBtnRedo(true);
-        }
-
         confirmMode() {
             let self = this;
             if(self.mode() == 'confirm')
