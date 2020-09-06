@@ -52,7 +52,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         dateTimeAfter: KnockoutObservable<string>;
 
         //Switch  A3_2
-        selectedModeDisplay: KnockoutObservable<number> = ko.observable(1);
+        selectedDisplayPeriod: KnockoutObservable<number> = ko.observable(1);
 
         // A2_2
         targetOrganizationName: KnockoutObservable<string> = ko.observable('');
@@ -152,7 +152,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
             
-            self.selectedModeDisplay.subscribe(function(value) { // value = 1 || 2 || 3
+            self.selectedDisplayPeriod.subscribe(function(value) { // value = 1 || 2 || 3
                 if (value == null || value == undefined || value == 2)
                     return;
                 if (value == 3) {
@@ -228,6 +228,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.pasteData();
                         self.setPositionButonToRightToLeft();
                         $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
@@ -235,6 +236,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.pasteData();
                         self.setPositionButonToRightToLeft();
                         $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
@@ -242,6 +244,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.pasteData();
                         self.setPositionButonToRightToLeft();
                         $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
                         self.stopRequest(true);
                     });
                 }
@@ -414,6 +417,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.initExTable(dataBindGrid, viewMode, updateMode);
                 
                 $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+                $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
                 self.setUpdateMode();
                 self.setDataWorkType(data.listWorkTypeInfo);
                 self.setPositionButonToRightToLeft();
@@ -1407,7 +1411,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
         }
 
-        updateExTable(dataBindGrid: any, viewMode : string , updateLeftMost : boolean, updateMiddle : boolean, updateDetail : boolean): void {
+        updateExTable(dataBindGrid: any, viewMode : string ,updateMode: string, updateLeftMost : boolean, updateMiddle : boolean, updateDetail : boolean): void {
             let self = this;
             self.stopRequest(false);
             
@@ -1539,7 +1543,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             }
             
-            $("#extable").exTable("mode", viewMode, 'edit', null, [{
+            $("#extable").exTable("mode", viewMode, updateMode, null, [{
                     name: "BodyCellStyle",
                     decorator: detailContentDeco
             }]);
@@ -1726,7 +1730,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         nextMonth(): void {
             let self = this;
-            if(self.selectedModeDisplay() == 2)
+            if(self. selectedDisplayPeriod() == 2)
                 return;
             
             self.stopRequest(false);
@@ -1738,7 +1742,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 startDate: self.dateTimePrev(),
                 endDate  : self.dateTimeAfter(),
                 isNextMonth : true,
-                cycle28Day : self.selectedModeDisplay() == 2 ? true : false,
+                cycle28Day : self. selectedDisplayPeriod() == 2 ? true : false,
                 workplaceId     : userInfor.workplaceId,
                 workplaceGroupId: userInfor.workplaceGroupId,
                 unit:             userInfor.unit,
@@ -1755,7 +1759,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
 
-                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
+                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(),userInfor.updateMode, false, true, true);
                 
                 self.stopRequest(true);
             }).fail(function() {
@@ -1768,7 +1772,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         */
         backMonth(): void {
             let self = this;
-            if (self.selectedModeDisplay() == 2)
+            if (self. selectedDisplayPeriod() == 2)
                 return;
 
             self.stopRequest(false);
@@ -1780,7 +1784,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 startDate: self.dateTimePrev(),
                 endDate: self.dateTimeAfter(),
                 isNextMonth: false,
-                cycle28Day: self.selectedModeDisplay() == 2 ? true : false,
+                cycle28Day: self. selectedDisplayPeriod() == 2 ? true : false,
                 workplaceId: userInfor.workplaceId,
                 workplaceGroupId: userInfor.workplaceGroupId,
                 unit: userInfor.unit,
@@ -1797,34 +1801,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
 
-                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), false, true, true);
-
+                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), userInfor.updateMode, false, true, true);
+                
+                self.setUpdateMode();
+                
                 self.stopRequest(true);
             }).fail(function() {
                 self.stopRequest(true);
             });
-        }
-
-        /**
-         * call <<ScreenQuery>> 表示期間を変更する（シフト）
-         */
-        changeDisplayPeriodShift(): JQueryPromise<any> {
-            let self = this, dfd = $.Deferred(),
-                obj = {
-                    startDate: self.dtPrev(),
-                    endDate: self.dtAft(),
-                    days28: self.selectedModeDisplay() == 2 ? true : false,
-                    isNextMonth: isNextMonth
-
-                };
-            service.getSendingPeriod().done((data) => {
-                self.dtAft(data.endDate);
-                self.dtPrev(data.startDate);
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
-            return dfd.promise();
         }
 
         editMode() {
@@ -1923,8 +1907,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
-                console.log(data);
-                console.log(self.dataCell);
                 let workType = self.dataCell.objWorkType;
                 let workTime = self.dataCell.objWorkTime;
                 
@@ -2131,6 +2113,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         getListEmpIdSorted(): JQueryPromise<any> {
             let self = this, dfd = $.Deferred();
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor: IUserInfor = JSON.parse(item.get());
+            
             let param = {
                 endDate: self.dateTimeAfter(),
                 listEmpInfo: self.listEmpInfo
@@ -2151,7 +2136,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                     let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
 
-                    self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), true, true, true);
+                    self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), userInfor.updateMode, true, true, true);
 
                     self.stopRequest(true);
                 }
