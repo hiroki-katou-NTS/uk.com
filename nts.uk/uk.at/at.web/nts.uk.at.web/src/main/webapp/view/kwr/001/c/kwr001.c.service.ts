@@ -4,7 +4,7 @@ module nts.uk.at.view.kwr001.c {
         const SLASH = "/";
         
         var paths = {
-           getDataStartPage: "at/function/dailyworkschedule/find",
+           getDataStartPage: "at/function/dailyworkschedule/find/{0}/{1}",
            save: "at/function/dailyworkschedule/save",
            remove: "at/function/dailyworkschedule/delete/{0}/{1}",
            getEnumName: "at/function/dailyworkschedule/enumName",
@@ -13,8 +13,9 @@ module nts.uk.at.view.kwr001.c {
            findByCode: "at/function/dailyworkschedule/findByCode",
         }
         
-        export function getDataStartPage(): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.getDataStartPage);
+        export function getDataStartPage(selectionType: number, layoutId?: string): JQueryPromise<any> {
+            let _path = nts.uk.text.format(paths.getDataStartPage, selectionType, layoutId);
+            return nts.uk.request.ajax('at', _path);
         }
         
         export function save(command: any): JQueryPromise<any> {

@@ -60,4 +60,11 @@ public interface OutputItemDailyWorkScheduleGetMemento {
 	 * @return the font size
 	 */
 	FontSizeEnum getFontSize();
+	
+	/**
+	 * Gets the layout id.
+	 *
+	 * @return the layout id
+	 */
+	String getLayoutId();
 }

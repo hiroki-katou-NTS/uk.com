@@ -229,15 +229,16 @@ module nts.uk.at.view.kwr001.c {
                 var dfd = $.Deferred<void>();
                 let self = this;
 
+                let dataTransfer = nts.uk.ui.windows.getShared('KWR001_C');
+                self.layoutId = dataTransfer.layoutId ? dataTransfer.layoutId : '';
+                self.selectionType = dataTransfer.selection;
+
                 $.when(self.getDataService(), self.getEnumName(), self.getEnumRemarkContentChoice(), self.getEnumRemarkInputContent()).done(function() {
-                    let dataTransfer = nts.uk.ui.windows.getShared('KWR001_C');
                     if (_.isUndefined(dataTransfer.codeChoose)) {
                         self.currentCodeList(null);
                     } else {
                         self.currentCodeList(dataTransfer.codeChoose);
                     }
-                    self.layoutId = dataTransfer.layoutId;
-                    self.selectionType = dataTransfer.selection;
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -249,7 +250,7 @@ module nts.uk.at.view.kwr001.c {
             private getDataService(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                service.getDataStartPage().done(function(data: any) {
+                service.getDataStartPage(self.selectionType, self.layoutId).done(function(data: any) {
                     // variable global store data from service 
                     self.allMainDom(data.outputItemDailyWorkSchedule);
 

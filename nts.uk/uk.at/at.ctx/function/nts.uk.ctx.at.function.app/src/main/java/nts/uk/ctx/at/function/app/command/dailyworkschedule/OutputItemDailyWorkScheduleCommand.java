@@ -26,6 +26,8 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 @Setter
 @NoArgsConstructor
 public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkScheduleGetMemento {
+	
+	private String layoutId;
 
 	/** The item code. */
 	private String itemCode;
@@ -116,5 +118,10 @@ public class OutputItemDailyWorkScheduleCommand implements OutputItemDailyWorkSc
 	@Override
 	public FontSizeEnum getFontSize() {
 		return FontSizeEnum.valueOf(this.fontSize);
+	}
+
+	@Override
+	public String getLayoutId() {
+		return this.layoutId;
 	}
 }

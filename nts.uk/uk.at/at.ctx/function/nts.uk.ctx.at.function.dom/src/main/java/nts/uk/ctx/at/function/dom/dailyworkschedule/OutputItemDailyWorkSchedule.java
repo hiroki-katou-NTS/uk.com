@@ -50,7 +50,7 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 	// 文字の大きさ
 	private FontSizeEnum fontSize;
 	
-	private static final String MAX_ATTENDANCE_ITEM_BIG_SIZE = "48";
+	private static final String MAX_ATTENDANCE_ITEM_BIG_SIZE = "60";
 	private static final String MAX_ATTENDANCE_ITEM_SMALL_SIZE = "48";
 
 	/**
@@ -65,6 +65,8 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 		this.lstRemarkContent = memento.getLstRemarkContent();
 		this.workTypeNameDisplay = memento.getWorkTypeNameDisplay();
 		this.remarkInputNo = memento.getRemarkInputNo();
+		this.outputLayoutId = memento.getLayoutId();
+		this.fontSize = memento.getFontSize();
 	}
 	
 	/**
@@ -80,6 +82,10 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 		memento.setLstRemarkContent(this.lstRemarkContent);
 		memento.setWorkTypeNameDisplay(this.workTypeNameDisplay);
 		memento.setRemarkInputNo(this.remarkInputNo);
+		memento.setFontSize(this.fontSize);
+		if (this.outputLayoutId != null) {
+			memento.setLayoutId(this.outputLayoutId);
+		}
 	}
 
 	/* (non-Javadoc)

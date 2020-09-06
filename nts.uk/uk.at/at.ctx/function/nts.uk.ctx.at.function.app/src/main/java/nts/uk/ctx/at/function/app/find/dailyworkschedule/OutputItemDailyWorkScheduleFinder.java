@@ -126,12 +126,14 @@ public class OutputItemDailyWorkScheduleFinder {
 	// SettingUnitType.BUSINESS_TYPE.value
 	private static final int BUSINESS_TYPE = 1;
 	
-	/** The Constant SHEET_NO_1. */
-	private static final int SHEET_NO_1 = 1;
-	
 	private static final String AUTHORITY_DEFINE = "権限";
 	private static final String BUSINESS_TYPE_DEFINE = "勤務種別";
 
+	/**
+	 * @param layoutId
+	 * @param selectionType
+	 * @return
+	 */
 	public Map<String, Object> startScreenC(Optional<String> layoutId, int selectionType) {	
 		String companyID = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
@@ -169,7 +171,17 @@ public class OutputItemDailyWorkScheduleFinder {
 					return dto;
 				})
 				.sorted(Comparator.comparing(OutputItemSettingDto::getCode)).collect(Collectors.toList()));
+		
+		Optional<OutputItemDailyWorkSchedule> outputItem = layoutId.isPresent()
+				? lstDomainModel.stream().filter(t -> t.getOutputLayoutId().equals(layoutId.get())).findFirst()
+				: Optional.empty();
 
+		// 選択している項目情報を取得する(Get the selected information item)
+		Optional<SelectedInformationItemDto> selectedItem = this.getSlectedInformation(companyID, layoutId, outputItem);
+
+		if (selectedItem.isPresent()) {
+			mapDtoReturn.put("selectedItem", selectedItem);
+		}
 		
 		// find nothing
 		return mapDtoReturn;
@@ -239,7 +251,6 @@ public class OutputItemDailyWorkScheduleFinder {
 	// algorithm for screen D: copy
 	public DataReturnDto executeCopy(String codeCopy, String codeSourceSerivce, Integer selection, Integer fontSize) {
 		String companyId = AppContexts.user().companyId();
-		
 		// Input．項目選択種類をチェック (Check the selection type of Input.item)
 		// Type: 定型選択の場合
 		if (selection == ItemSelectionType.STANDARD_SELECTION.value) {
@@ -264,6 +275,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				throw new BusinessException("Msg_3");
 			}
 		}
+
 		DataReturnDto dataReturnDto = getDomConvertDailyWork(companyId, codeSourceSerivce, fontSize);
 		//List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce);
 		if (dataReturnDto.getDataInforReturnDtos().isEmpty()) {
@@ -406,7 +418,6 @@ public class OutputItemDailyWorkScheduleFinder {
 	} 
 	
 	public OutputItemDailyWorkScheduleDto findByLayoutId(String layoutId) {
-		String companyId = AppContexts.user().companyId();
 		OutputItemDailyWorkScheduleDto dtoOIDW = new OutputItemDailyWorkScheduleDto();
 		OutputItemDailyWorkSchedule domainOIDW = outputItemDailyWorkScheduleRepository.findByLayoutId(layoutId).get();
 
@@ -476,7 +487,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 	}
 
-	public SelectedInformationItemDto getSlectedInformation(String companyId, Optional<String> layoutId,
+	public Optional<SelectedInformationItemDto> getSlectedInformation(String companyId, Optional<String> layoutId,
 			Optional<OutputItemDailyWorkSchedule> outputItem) {
 		
 		// 画面で使用可能な日次勤怠項目を取得する(Get daily attendance items available on screen)
@@ -532,9 +543,20 @@ public class OutputItemDailyWorkScheduleFinder {
 								 .name(item.getName())
 								 .build())
 					.collect(Collectors.toList());
+			
+			return Optional.of(SelectedInformationItemDto.builder()
+									.code(outputItem.get().getItemCode().v())
+									.name(outputItem.get().getItemName().v())
+									.displayAttendanceItem(displayDtos)
+									.layoutId(outputItem.get().getOutputLayoutId())
+									.lstCanUsed(possibleSelectedItem)
+									.printRemarksContentDtos(printRemarksContents)
+									.fontSize(outputItem.get().getFontSize().value)
+									.remarkInputNo(outputItem.get().getRemarkInputNo().value)
+									.workTypeNameDisplay(outputItem.get().getWorkTypeNameDisplay().value)
+									.build());
 		}
-		
-		return new SelectedInformationItemDto();
+		return Optional.empty();
 	}
 
 }

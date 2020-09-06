@@ -60,4 +60,11 @@ public interface OutputItemDailyWorkScheduleSetMemento {
 	 * @param fontSize the new font size
 	 */
 	void setFontSize(FontSizeEnum fontSize);
+
+	/**
+	 * Sets the layout id.
+	 *
+	 * @param layoutId the new layout id
+	 */
+	void setLayoutId(String layoutId);
 }

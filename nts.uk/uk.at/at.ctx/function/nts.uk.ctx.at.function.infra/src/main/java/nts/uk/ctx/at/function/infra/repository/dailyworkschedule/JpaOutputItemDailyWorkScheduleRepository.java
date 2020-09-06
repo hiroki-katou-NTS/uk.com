@@ -6,29 +6,16 @@ package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatdPK;
@@ -41,74 +28,16 @@ import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnot
  */
 @Stateless
 public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository implements OutputItemDailyWorkScheduleRepository {
+	
+	private static final String SELECT_BY_LAYOUT_ID = "SELECT outItem FROM KfnmtRptWkDaiOutItem outItem"
+			+ "	WHERE outItem.layoutId = ?";
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#update(nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule)
-	 */
-	@Override
-	public void update(OutputItemDailyWorkSchedule domain) {
-//		EntityManager em = this.getEntityManager();
-//		
-//		CriteriaBuilder cb = em.getCriteriaBuilder();
-//
-//        // create delete
-//        CriteriaDelete<KfnmtRptWkDaiOutatd> delete = cb.createCriteriaDelete(KfnmtRptWkDaiOutatd.class);
-//
-//        // set the root class
-//        Root<KfnmtRptWkDaiOutatd> root = delete.from(KfnmtRptWkDaiOutatd.class);
-//
-//        // set where clause
-//        delete.where(cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.cid), domain.getCompanyID()),
-//        				cb.equal(root.get(KfnmtAttendanceDisplay_.id).get(KfnmtAttendanceDisplayPK_.itemCode), domain.getItemCode().v()));
-//
-//        // perform update
-//        em.createQuery(delete).executeUpdate();
-//		
-//		this.commandProxy().update(this.toEntity(domain));
-	}
-
-//
-//	/* (non-Javadoc)
-//	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCid(java.lang.String)
-//	 */
-//	@Override
-//	public List<OutputItemDailyWorkSchedule> findByCid(String companyId) {
-//		// Get entity manager
-//		EntityManager em = this.getEntityManager();
-//
-//		// Create builder
-//		CriteriaBuilder builder = em.getCriteriaBuilder();
-//
-//		// Create query
-//		CriteriaQuery<KfnmtRptWkDaiOutItem> cq = builder.createQuery(KfnmtRptWkDaiOutItem.class);
-//
-//		// From table
-//		Root<KfnmtRptWkDaiOutItem> root = cq.from(KfnmtRptWkDaiOutItem.class);
-//
-//		// Add where condition
-//		cq.where(builder.equal(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid),companyId));
-//		cq.orderBy(builder.asc(root.get(KfnmtItemWorkSchedule_.id).get(KfnmtItemWorkSchedulePK_.cid)));
-//		// Get results
-//		List<KfnmtItemWorkSchedule> results = em.createQuery(cq).getResultList();
-//
-//		// Check empty
-//		if (CollectionUtil.isEmpty(results)) {
-//			return Collections.emptyList();
-//		}
-//
-//		// Return
-//		return results.stream().map(item -> new OutputItemDailyWorkSchedule(new JpaOutputItemDailyWorkScheduleGetMemento(item)))
-//				.collect(Collectors.toList());
-//	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository#findByCidAndCode(java.lang.String, int)
-	 */
 	@Override
 	@SneakyThrows
 	public Optional<OutputItemDailyWorkSchedule> findByLayoutId(String layoutId) {
-		List<KfnmtRptWkDaiOutatd> lstKfnmtRptWkDaiOutatds = new ArrayList<>();
+		String sqlJDBC2 = "select * from KFNMT_RPT_WK_DAI_OUTNOTE where LAYOUT_ID = ?";
 		String sqlJDBC1 = "select * from KFNMT_RPT_WK_DAI_OUTATD where LAYOUT_ID = ? ORDER BY ORDER_NO";
+		List<KfnmtRptWkDaiOutatd> lstKfnmtRptWkDaiOutatds = new ArrayList<>();
 		try (PreparedStatement statement1 = this.connection().prepareStatement(sqlJDBC1)) {
 			statement1.setString(1, layoutId);
 			lstKfnmtRptWkDaiOutatds
@@ -123,9 +52,8 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 						return entity;
 					}));
 		}
-
+		
 		List<KfnmtRptWkDaiOutnote> lstKfnmtRptWkDaiOutnotes = new ArrayList<>();
-		String sqlJDBC2 = "select * from KFNMT_RPT_WK_DAI_OUTNOTE where LAYOUT_ID = ?";
 		try (PreparedStatement statement2 = this.connection().prepareStatement(sqlJDBC2)) {
 			statement2.setString(1, layoutId);
 			lstKfnmtRptWkDaiOutnotes
@@ -140,52 +68,33 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 						return entity;
 					}));
 		}
-
-		Map<String, List<KfnmtRptWkDaiOutatd>> mapKfnmtAttendanceDisplay = lstKfnmtRptWkDaiOutatds
-				.stream().collect(Collectors.groupingBy(item -> item.getId().getLayoutId()));
-		Map<String, List<KfnmtRptWkDaiOutnote>> mapKfnmtPrintRemarkCont = lstKfnmtRptWkDaiOutnotes
-				.stream().collect(Collectors.groupingBy(item -> item.getId().getLayoutId()));
-		String sqlJDBC3 = "select * from KFNMT_RPT_WK_DAI_OUT_ITEM where LAYOUT_ID = ?";
-		try (PreparedStatement statement3 = this.connection().prepareStatement(sqlJDBC3)) {
-			statement3.setString(1, layoutId);
-			return new NtsResultSet(statement3.executeQuery()).getSingle(rec -> {
-				KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
-				entity.setLayoutId(rec.getString("LAYOUT_ID"));
-				entity.setSid(rec.getString("SID"));
-				entity.setCid(rec.getString("CID"));
-				entity.setItemSelType(rec.getInt("ITEM_SEL_TYPE"));
-				entity.setItemName(new OutputItemSettingName(rec.getString("ITEM_NAME")));
-				entity.setItemCode(new OutputItemSettingCode(rec.getString("ITEM_CD")));
-				entity.setWorkTypeNameDisplay(NameWorkTypeOrHourZone.valueOf(rec.getBigDecimal("WORKTYPE_NAME_DISPLAY").intValue()));
-				entity.setNoteInputNo(rec.getBigDecimal("NOTE_INPUT_NO"));
-				entity.setCharSizeType(rec.getBigDecimal("CHAR_SIZE_TYPE"));
-				entity.setLstKfnmtRptWkDaiOutatds(mapKfnmtAttendanceDisplay.get(entity.getLayoutId()));
-				entity.setLstKfnmtRptWkDaiOutnotes(mapKfnmtPrintRemarkCont.get(entity.getLayoutId()));
-				return this.toDomain(entity);
+		try (PreparedStatement statement = this.connection().prepareStatement(SELECT_BY_LAYOUT_ID)) {
+			statement.setString(1, layoutId);
+			Optional<OutputItemDailyWorkSchedule> result = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
+				KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem(rec.getString("LAYOUT_ID")
+						, rec.getInt("ITEM_SEL_TYPE")
+						, rec.getString("CID")
+						, rec.getString("SID")
+						, rec.getString("ITEM_CD")
+						, rec.getString("ITEM_NAME")
+						, rec.getBigDecimal("WORKTYPE_NAME_DISPLAY")
+						, rec.getBigDecimal("NOTE_INPUT_NO")
+						, rec.getBigDecimal("CHAR_SIZE_TYPE")
+						, lstKfnmtRptWkDaiOutatds
+						, lstKfnmtRptWkDaiOutnotes);
+				return new OutputItemDailyWorkSchedule(entity);
 			});
+			return result;
 		}
 	}
-	
-	/**
-	 * To domain.
-	 *
-	 * @param entity the entity
-	 * @return the output item daily work schedule
-	 */
-	private OutputItemDailyWorkSchedule toDomain(KfnmtRptWkDaiOutItem entity) {
-		return new OutputItemDailyWorkSchedule(entity);
-	}
-	
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kfnmt item work schedule
-	 */
-	private KfnmtRptWkDaiOutItem toEntity(OutputItemDailyWorkSchedule domain) {
+
+	@Override
+	public void update(OutputItemDailyWorkSchedule domain, int selectionType, String companyId, String employeeId) {
 		KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
 		domain.saveToMemento(entity);
-		return entity;
+		entity.setItemSelType(selectionType);
+		entity.setCid(companyId);
+		entity.setSid(employeeId);
+		this.commandProxy().update(entity);
 	}
-	
 }

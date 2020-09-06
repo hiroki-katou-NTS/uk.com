@@ -326,9 +326,14 @@ module nts.uk.at.view.kwr001.a {
                 $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                     let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                     self.getDataStartPageService(isExist).done(function(dataService: any) {
-                        self.itemListCodeTemplate(_.sortBy(dataService.standardSetting.outputItemDailyWorkSchedules, (item:any) => item.code));
-                        self.outputItemDailyWorkSchedules(_.sortBy(dataService.freeSetting.outputItemDailyWorkSchedules, (item:any) => item.code));
-                        self.isEmployeeCharge(dataService.employeeCharge);
+                        if (dataService.standardSetting) {
+                            self.itemListCodeTemplate(_.sortBy(dataService.standardSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
+                        }
+                        if (dataService.freeSetting) {
+                            self.outputItemDailyWorkSchedules(_.sortBy(dataService.freeSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
+                        }
+                        self.enableA7_8(dataService.checkFreeSetting);
+                        self.enableA7_2(!dataService.checkFreeSetting);
                         switch (dataService.strReturn) {
                             // return screen A, show data from characteristic
                             case SHOW_CHARACTERISTIC:
