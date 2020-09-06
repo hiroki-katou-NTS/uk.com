@@ -11,12 +11,14 @@ import nts.uk.screen.at.app.ksu001.changepage.GetDataWhenChangePage;
 import nts.uk.screen.at.app.ksu001.changepage.GetShiftPalChangePageResult;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthDto;
 import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangeMonthFinder;
+import nts.uk.screen.at.app.ksu001.getsendingperiod.ChangePeriodModeFinder;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPalette;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteParam;
 import nts.uk.screen.at.app.ksu001.getshiftpalette.GetShiftPaletteResult;
 import nts.uk.screen.at.app.ksu001.orderemployee.DataAfterSortEmpDto;
 import nts.uk.screen.at.app.ksu001.orderemployee.GetDataAfterSortEmp;
 import nts.uk.screen.at.app.ksu001.start.ChangeMonthParam;
+import nts.uk.screen.at.app.ksu001.start.ChangePeriodModeParam;
 import nts.uk.screen.at.app.ksu001.start.OrderEmployeeParam;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001;
 import nts.uk.screen.at.app.ksu001.start.StartKSU001Dto;
@@ -35,6 +37,8 @@ public class KSU001WebService extends WebService{
 	private StartKSU001 startKSU001;
 	@Inject
 	private ChangeMonthFinder changeMonthFinder;
+	@Inject
+	private ChangePeriodModeFinder changePeriodModeFinder;
 	@Inject
 	private GetShiftPalette getShiftPalette;
 	@Inject
@@ -74,6 +78,13 @@ public class KSU001WebService extends WebService{
 	@Path("change-month")
 	public ChangeMonthDto getDataNextMonth(ChangeMonthParam param){
 		ChangeMonthDto data = changeMonthFinder.getData(param);
+		return data;
+	}
+	
+	@POST
+	@Path("change-mode-period")
+	public ChangeMonthDto getDataWhenChangeModePeriod(ChangePeriodModeParam param){
+		ChangeMonthDto data = changePeriodModeFinder.getData(param);
 		return data;
 	}
 

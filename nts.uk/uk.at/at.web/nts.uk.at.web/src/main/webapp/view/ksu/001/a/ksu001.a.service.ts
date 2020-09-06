@@ -21,6 +21,7 @@ module nts.uk.at.view.ksu001.a.service {
         getDataOfShortNameMode: "screen/at/schedule/shortname",
         getDataOfTimeMode: "screen/at/schedule/time",
         getDataChangeMonth: "screen/at/schedule/change-month",
+        getDataWhenChangeModePeriod: "screen/at/schedule/change-mode-period",
         orderEmployee: "screen/at/schedule/order-employee",
     }
     
@@ -46,6 +47,10 @@ module nts.uk.at.view.ksu001.a.service {
 
     export function getDataChangeMonth(obj): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.getDataChangeMonth, obj);
+    }
+    
+       export function getDataWhenChangeModePeriod(obj): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.getDataWhenChangeModePeriod, obj);
     }
 
     export function getListEmpIdSorted(obj): JQueryPromise<any> {
