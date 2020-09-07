@@ -6,13 +6,12 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
     import BusinessTripOutput = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripOutput;
     import BusinessTripContent = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripContent;
 
-
-
     @bean()
     class Kaf008AViewModel extends Kaf000AViewModel {
 
         appType: KnockoutObservable<number> = ko.observable(AppType.BUSINESS_TRIP_APPLICATION);
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
+        mode: number = 1;
 
         businessTripContent: KnockoutObservable<BusinessTripContent> = ko.observable({
             departureTime: null,

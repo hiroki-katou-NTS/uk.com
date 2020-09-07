@@ -51,7 +51,7 @@ module nts.uk.at.view.kaf007_ref.c.viewmodel {
         update() {
             const vm = this;
             vm.$blockui("show");
-            vm.$ajax(API.updateworkchange, {
+            return vm.$ajax(API.updateworkchange, {
                 workChange: ko.toJS(vm.appWorkChange()),
                 application: ko.toJS(vm.application()),
                 appDispInfoStartupOutput: ko.toJS(vm.appDispInfoStartupOutput())

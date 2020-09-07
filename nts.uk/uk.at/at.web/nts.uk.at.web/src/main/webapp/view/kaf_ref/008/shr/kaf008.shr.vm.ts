@@ -27,10 +27,18 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             if (params.mode) {
                 vm.mode = params.mode;
             }
-            if (vm.mode == Mode.New) {
-                vm.startNewMode();
-            } else {
-                vm.startEditMode();
+
+            switch (params.mode) {
+                case Mode.New:
+                    vm.startNewMode();
+                    break;
+                case Mode.Edit:
+                    vm.startEditMode();
+                    break;
+                case Mode.View:
+                    vm.startEditMode();
+                    vm.enableInput = false;
+                    break;
             }
         }
 
@@ -66,9 +74,11 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                             content.opAchievementDetail.opLeaveTime
                         );
                         eachContent.wkTypeCd.subscribe(code => {
+                            nts.uk.ui.errors.clearAll();
                             vm.changeWorkTypeCode(tripOutput, content.date, code, index);
                         });
                         eachContent.wkTimeCd.subscribe(code => {
+                            nts.uk.ui.errors.clearAll();
                             vm.changeWorkTimeCode(tripOutput, content.date, content.opAchievementDetail.workTypeCD, code, index);
                         });
                         eachContent.start.subscribe(startValue => {
@@ -120,9 +130,11 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         );
 
                         contentTrip.wkTypeCd.subscribe(code => {
+                            nts.uk.ui.errors.clearAll();
                             vm.changeTypeCodeScreenB(tripOutput, data, code, index);
                         });
                         contentTrip.wkTimeCd.subscribe(code => {
+                            nts.uk.ui.errors.clearAll();
                             vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
                         });
                         contentTrip.start.subscribe(startValue => {
@@ -170,7 +182,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
             vm.$validate([
                 '#kaf008-share #A10_D2',
-                '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
                 if (valid) {
                     return vm.$ajax(API.changeWorkTypeCode, command);
@@ -215,7 +226,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 date, businessTripInfoOutputDto, wkCode, timeCode
             };
             vm.$validate([
-                '#kaf008-share #A10_D2',
                 '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
                 if (valid) {
@@ -265,8 +275,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             };
 
             vm.$validate([
-                '#kaf008-share #A10_D2',
-                '#kaf008-share #A10_D4'
+                '#kaf008-share #A10_D2'
             ]).then((valid: boolean) => {
                 if (valid) {
                     return vm.$ajax(API.changeWorkTypeCode, command);
@@ -315,7 +324,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             };
 
             vm.$validate([
-                '#kaf008-share #A10_D2',
                 '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
                 if (valid) {
@@ -513,9 +521,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         startKDL003: "at/request/application/businesstrip/startKDL003"
     }
 
-    const Mode = {
+    export const Mode = {
         New: 1,
-        Edit: 2
+        Edit: 2,
+        View: 3
     };
 
 }
