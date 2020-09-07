@@ -15,6 +15,11 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemF
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttributeOfAttendanceItemDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordKeyDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordFinder;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,6 +42,14 @@ public class AttendanceRecordExportWebService {
 	/** The approval processing use setting repository */
 	@Inject
 	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepo;
+	
+	/** The single attendance record finder. */
+	@Inject
+	SingleAttendanceRecordFinder singleAttendanceRecordFinder;
+
+	/** The calculate attendance record finder */
+	@Inject
+	CalculateAttendanceRecordFinder calculateAttendanceRecordFinder;
 
 	/**
 	 * Gets the all attendance record export daily.
@@ -111,6 +124,32 @@ public class AttendanceRecordExportWebService {
 		String companyId = AppContexts.user().companyId();
 		//アルゴリズム「承認処理の利用設定を取得する」を実行する
 		return this.approvalProcessingUseSettingRepo.findByCompanyId(companyId);
+	}
+	
+	/**
+	 * Gets the single attendance record info.
+	 *
+	 * @param attendanceRecordKey
+	 *            the attendance record key
+	 * @return the single attendance record info
+	 */
+	@POST
+	@Path("getSingleAttendanceRecord")
+	public SingleAttendanceRecordDto getSingleAttendanceRecordInfo(AttendanceRecordKeyDto attendanceRecordKey) {
+		return this.singleAttendanceRecordFinder.getSingleAttendanceRecord(attendanceRecordKey);
+	}
+	
+	/**
+	 * Gets the calculate attendance record dto.
+	 *
+	 * @param attendanceRecordKey
+	 *            the attendance record key
+	 * @return the calculate attendance record dto
+	 */
+	@POST
+	@Path("getCalculateAttendanceRecordDto")
+	public CalculateAttendanceRecordDto getCalculateAttendanceRecordDto(AttendanceRecordKeyDto attendanceRecordKey) {
+		return this.calculateAttendanceRecordFinder.getCalculateAttendanceRecordDto(attendanceRecordKey);
 	}
 	
 	/**

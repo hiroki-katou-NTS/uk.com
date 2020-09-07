@@ -41,7 +41,10 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         isSmall: KnockoutObservable<boolean>;
         useMonthApproverConfirm: KnockoutObservable<boolean>;
 
-        attendanceRecordExportSettings: KnockoutObservable<model.AttendanceRecordExportSetting>;
+        action = {
+            ADDITION: getText('KWR002_178'),
+            SUBTRACTION: getText('KWR002_179')
+        }
 
         // End update v25
 
@@ -136,6 +139,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 else position = 2;
 
                 const positionText = position == 1 ? "上" : "下";
+                let attendanceItem: model.AttendanceItemShare = new model.AttendanceItemShare();
                 if (self.selectedTab() == "tab-1") {
                     exportAtr = 1;
                     if (position == 1)
@@ -147,33 +151,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                     attItem = self.attendanceRecExpDaily()[columnIndex];
 
-                    // update ver 25
-                    service.getDailyAttendanceTtem()
-                        .then((response: AttributeOfAttendanceItem) => {
-                            if (response) {
-                                const shareParam: model.AttendanceItemShare = new model.AttendanceItemShare({
-                                    titleFlag: true,
-                                    layoutCode: self.attendanceCode(),
-                                    layoutName: self.attendanceName(),
-                                    directText: getText('KWR002_131')+ columnIndex + getText('KWR002_132') + positionText + getText('KWR002_133'),
-                                    itemNameFlag: true,
-                                    inputCategory: 2,
-                                    attendanceItemName: attendanceItemName,
-                                    selectionCategory: 2,
-                                    attendaceTypes: [
-                                        new model.AttendaceType(1, getText('KWR002_141')),
-                                        new model.AttendaceType(2, getText('KWR002_142')),
-                                        new model.AttendaceType(3, getText('KWR002_143')),
-                                    ],
-                                    selectedAttr: self.attendanceRecordExportSettings().dailyExportItem[0].exportAtr,
-                                    attendanceItemIds: Array<number>,
-                                    attendanceItemNames: Array<AttItemName>,
-                                    attributes: Array<DailyAttendanceAtr>,
-                                    attendaceSelected: number,
-                                    exportItems: Array<any>
-                                });
-                            }
-                        })
                 } else {
                     exportAtr = 2;
                     if (position == 1)
@@ -185,10 +162,76 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                     attItem = self.attendanceRecExpMonthly()[columnIndex];
                 }
 
-                var attendanceItemTemp: model.AttendanceRecItem = new model.AttendanceRecItem("", 0, "", columnIndex, position, exportAtr, null, 0);
+                // update ver 25
+                const attendanceRecordKey: model.AttendanceRecordKey = new model.AttendanceRecordKey(Number(self.attendanceCode()),
+                    columnIndex, position, exportAtr);
 
-                var index: number = self.findAttendanceRecItem(attendanceItemTemp);
-                setShared('attendanceItem', shareParam, true);
+                if (exportAtr === 1) {
+                    
+                }
+                $.when(service.getDailyAttendanceTtem(), service.getSingleAttendanceRecord(attendanceRecordKey), service.getCalculateAttendanceRecordDto(attendanceRecordKey))
+                    .then((dailyAttendanceTtem: AttributeOfAttendanceItem, singleAttendanceRecord: any, calculateAttendanceRecord: any) => {
+                        attendanceItem = new model.AttendanceItemShare({
+                            titleFlag: true,
+                            layoutCode: self.attendanceCode(),
+                            layoutName: self.attendanceName(),
+                            directText: getText('KWR002_131') + columnIndex + getText('KWR002_132') + positionText + getText('KWR002_133'),
+                            itemNameFlag: true,
+                            inputCategory: 2,
+                            attendanceItemName: attendanceItemName,
+                            selectionCategory: 2,
+                            attendaceTypes: columnIndex <= 6 ?
+                                [
+                                    new model.AttendaceType(1, getText('KWR002_141')),
+                                    new model.AttendaceType(2, getText('KWR002_142')),
+                                    new model.AttendaceType(3, getText('KWR002_143'))
+                                ]
+                                :
+                                [
+                                    new model.AttendaceType(4, getText('KWR002_171')),
+                                    new model.AttendaceType(5, getText('KWR002_172')),
+                                    new model.AttendaceType(7, getText('KWR002_173'))
+                                ]
+                            ,
+                            columnIndex: columnIndex,
+                            position: position,
+                            exportAtr: exportAtr
+                        });
+
+                        if (exportAtr === 2) {
+                            attendanceItem.directText = getText('KWR002_161') + columnIndex + getText('KWR002_162') + positionText + getText('KWR002_163');
+                            attendanceItem.attendaceTypes = [
+                                new model.AttendaceType(4, getText('KWR002_180')),
+                                new model.AttendaceType(5, getText('KWR002_181')),
+                                new model.AttendaceType(6, getText('KWR002_182')),
+                                new model.AttendaceType(7, getText('KWR002_183'))
+                            ]
+                        }
+
+                        if (dailyAttendanceTtem !== null || singleAttendanceRecord !== null) {
+                            attendanceItem.attendaceSelected = singleAttendanceRecord.itemId;
+                            attendanceItem.selectedAttr = singleAttendanceRecord ? singleAttendanceRecord.attribute : null;
+                            attendanceItem.attendanceItemIds = dailyAttendanceTtem.attendanceItemIds;
+                            attendanceItem.attendanceItemNames = dailyAttendanceTtem.attendanceItemNames;
+                            attendanceItem.attributes = dailyAttendanceTtem.attributes;
+                            attendanceItem.displayNumbers = dailyAttendanceTtem.displayNumbers;
+                            attendanceItem.exportItems = singleAttendanceRecord ? singleAttendanceRecord.itemId : null;
+                        }
+
+                        if (calculateAttendanceRecord !== null) {
+                            const calculateAttendanceRecordList: Array<model.SelectedItem> = [];
+                            calculateAttendanceRecord.addedItem.forEach(function(item) {
+                                calculateAttendanceRecordList.push(new model.SelectedItem(self.action.ADDITION, item.attendanceItemId));
+                            });
+                            calculateAttendanceRecord.subtractedItem.forEach(function(item) {
+                                calculateAttendanceRecordList.push(new model.SelectedItem(self.action.SUBTRACTION, item.attendanceItemId));
+                            });
+                            calculateAttendanceRecordList.sort((a, b) => { return Number(a.code) - Number(b.code); });
+                            attendanceItem.attendanceId = calculateAttendanceRecordList;
+                        }
+                    });
+
+                setShared('attendanceItem', attendanceItem, true);
                 var link: string;
                 if (exportAtr == 1 && columnIndex <= 6) link = '/view/kdl/047/a/index.xhtml';
                 else link = '/view/kdl/048/index.xhtml';
@@ -210,7 +253,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             self.attendanceRecExpMonthly()[columnIndex].userAtr = false;
 
                         }
-
 
                     }
                     var attendanceItem = getShared('attendanceRecordExport');
@@ -308,68 +350,176 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         }
 
         start_page(): JQueryPromise<any> {
+            
             blockUI.invisible();
-            const vm  = this;
-            const dfd = $.Deferred();
-            service.getApprovalProcessingUseSetting().then(response => {
-                vm.useMonthApproverConfirm(response.useMonthApproverConfirm);
-            })
-            if (vm.useMonthApproverConfirm()) {
-                // C18_2
-                vm.confirmMarkValue = ko.observable(true);
-            }
+            var self = this;
+            var dfd = $.Deferred();
+
+            let attendanceRecExpDaily = getShared('attendanceRecExpDaily');
+            let attendanceRecExpMonthly = getShared('attendanceRecExpMonthly');
+            let attendanceRecItemList = getShared('attendanceRecItemList');
             let attendanceRecExpSetCode: any = getShared('attendanceRecExpSetCode');
             let attendanceRecExpSetName: any = getShared('attendanceRecExpSetName');
-            let attendanceRecordExportSettings = getShared('attendanceRecordExportSettings');
-            vm.attendanceRecordExportSettings = ko.observable(attendanceRecordExportSettings);
-            // Setting C1_2 and C1_3
+            let sealStamp: any = getShared('sealStamp');
+            let useSeal: any = getShared('useSeal');
+            const fontSzie = getShared('exportFontSize');
+            // Update Ver25
+            service.getApprovalProcessingUseSetting().then(response => {
+                self.useMonthApproverConfirm(!!response.useMonthApproverConfirm);
+            })
+            service.getAttendanceRecordExportSetting(attendanceRecExpSetCode).then(response => {
+                if (response) {
+                    self.confirmMarkValue(!!response.monthlyConfirmedDisplay);
+                }
+            })
+            self.isSmallOrMedium(fontSzie === 0 || fontSzie === 1);
+            self.isSmall(fontSzie === 0);
+            // End Update Ver25
             if (!attendanceRecExpSetCode) {
-                vm.attendanceCode('1');
-                vm.attendanceName('デフォルト名');
+                self.attendanceCode('1');
+                self.attendanceName('デフォルト名');
             }
             else {
-                vm.attendanceCode(attendanceRecExpSetCode);
-                vm.attendanceName(attendanceRecExpSetName);
+                self.attendanceCode(attendanceRecExpSetCode);
+                self.attendanceName(attendanceRecExpSetName);
             }
-            // C2_2
-            vm.useSealValue(vm.attendanceRecordExportSettings.sealUseAtr);
-            // C12_1 ~ 13
-            _.each(attendanceRecordExportSettings.dailyExportItem, (item: model.AttendanceRecordExport) => {
-                const columnIndex: number = item.columnIndex;
-                vm.attendanceRecExpDaily()[columnIndex] = new model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.useAtr, item.upperPosition, item.lowerPosition);
-            })
-            for (let i = 1; i <= 13; i++) {
-                if (!vm.attendanceRecExpDaily()[i]) {
-                    vm.attendanceRecExpDaily()[i] = new model.AttendanceRecExp(1, i, false, '', '');
-                }
-            }
-            // C16_1 ~ 16
-            _.each(attendanceRecordExportSettings.monthlyExportItem, item => {
-                const columnIndex: number = item.columnIndex;
-                vm.attendanceRecExpMonthly()[columnIndex] = new model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.useAtr, item.upperPosition, item.lowerPosition);
-            })
-            for (let i = 1; i <= 13; i++) {
-                if (!vm.attendanceRecExpMonthly()[i]) {
-                    vm.attendanceRecExpMonthly()[i] = new model.AttendanceRecExp(1, i, false, '', '');
-                }
-            }
-            // C3_1 ~ 6
-            vm.sealName1(vm.attendanceRecordExportSettings.sealStamp[0]);
-            vm.sealName2(vm.attendanceRecordExportSettings.sealStamp[1]);
-            vm.sealName3(vm.attendanceRecordExportSettings.sealStamp[2]);
-            vm.sealName4(vm.attendanceRecordExportSettings.sealStamp[3]);
-            vm.sealName5(vm.attendanceRecordExportSettings.sealStamp[4]);
-            vm.sealName6(vm.attendanceRecordExportSettings.sealStamp[5]);
 
-            vm.isSmallOrMedium(vm.attendanceRecordExportSettings().exportFontSize === 0 || vm.attendanceRecordExportSettings().exportFontSize === 1);
-            vm.isSmall(vm.attendanceRecordExportSettings().exportFontSize === 0);
-            
+
+            if (attendanceRecExpDaily != null || attendanceRecExpMonthly != null || attendanceRecItemList != null) {
+                self.useSealValue(useSeal);
+                attendanceRecExpDaily.forEach((item: any) => {
+                    var columnIndex: number = item.columnIndex;
+                    self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
+                });
+                
+                for (var i: number = 1; i <= 13; i++) {
+                        if (!self.attendanceRecExpDaily()[i]) {
+                            self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                        }
+                    }
+
+                attendanceRecExpMonthly.forEach((item: any) => {
+                    var columnIndex: number = item.columnIndex;
+                    self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
+
+                });
+                
+                 for (var i: number = 1; i <= 16; i++) {
+                        if (!self.attendanceRecExpMonthly()[i]) {
+                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
+                        }
+                    }
+
+                self.attendanceRecItemList(attendanceRecItemList);
+                self.sealName1(sealStamp[0]);
+                self.sealName2(sealStamp[1]);
+                self.sealName3(sealStamp[2]);
+                self.sealName4(sealStamp[3]);
+                self.sealName5(sealStamp[4]);
+                self.sealName6(sealStamp[5]);
+
+                dfd.resolve();
+            }
+            else {
+                self.useSealValue(useSeal)
+                var code: number = Number(self.attendanceCode());
+                   $.when(service.findAllAttendanceRecExportDaily(code), service.findAllAttendanceRecExportMonthly(code),service.getSealStamp(code)).done((listattendanceRecExpDailyList: Array<model.AttendanceRecExp>, listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>,sealStampList: Array<String>) => {
+                       if (listattendanceRecExpDailyList.length > 0) {
+                           listattendanceRecExpDailyList.forEach(item => {
+                               var columnIndex: number = item.columnIndex;
+                               self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
+                           })
+                       }
+                       for (var i: number = 1; i <= 13; i++) {
+                           if (!self.attendanceRecExpDaily()[i]) {
+                               self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                           }
+                       }
+
+                       if (listattendanceRecExpMonthlyList.length > 0) {
+                           listattendanceRecExpMonthlyList.forEach(item => {
+                               var columnIndex: number = item.columnIndex;
+                               self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
+                           })
+                       }
+                       for (var i: number = 1; i <= 16; i++) {
+                           if (!self.attendanceRecExpMonthly()[i]) {
+                               self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
+                           }
+                       }
+
+                       if (sealStampList.length > 0) {
+                           self.sealName1(sealStampList[0]);
+                           self.sealName2(sealStampList[1]);
+                           self.sealName3(sealStampList[2]);
+                           self.sealName4(sealStampList[3]);
+                           self.sealName5(sealStampList[4]);
+                           self.sealName6(sealStampList[5]);
+
+                       }
+                       
+                       dfd.resolve();
+                })
+
+            }
             blockUI.clear();
             return dfd.promise();
+            //***
+            //            service.getAttendanceSingleList().done(function(listAttendanceItem: Array<model.AttendanceItem>) {
+            //                if (listAttendanceItem.length != 0) {
+            //                    self.attendanceItemListDaily(listAttendanceItem);
+            //                    self.currentCode(1);
+            //                }
+            //
+            //            });
+            //
+            //            service.getAttendanceCalculateList(2).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
+            //                if (listAttendanceItem.length > 0) {
+            //                    self.attendanceItemListMonthly( _.orderBy(listAttendanceItem, [e => Number(e.attendanceItemId)], ['asc']));
+            //                }
+            //            });
+            //
+            //            service.getAttendanceCalculateList(1).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
+            //                if (listAttendanceItem.length > 0) {
+            //
+            //                    listAttendanceItem.forEach(item => {
+            //                        self.attendanceItemListDaily.push(item);
+            //                    })
+            //
+            //                    self.attendanceItemListDaily(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
+            //                    self.attendanceItemList(self.attendanceItemListDaily());
+            //                }
+            //
+            //                
+            //            })
+
         }
     }
 
     export module model {
+
+        export class SelectedItem {
+            action: string;
+            code: string;
+            constructor(action: string, code: string) {
+                this.action = action;
+                this.code = code;
+            }
+        }
+
+        // AttendanceRecordKey - Add in ver 25
+        export class AttendanceRecordKey {
+            code: number;
+            columnIndex: number;
+            position: number;
+            exportAtr: number;
+            constructor(code: number, columnIndex: number, position: number, exportAtr: number) {
+                this.code = code;
+                this.columnIndex = columnIndex;
+                this.position = position;
+                this.exportAtr = exportAtr;
+            }
+        }
 
         export class AttendanceRecExp {
 
@@ -460,63 +610,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             nameId: string;
         }
 
-        // Display object mock (may be dont need)
-        export class SharedParams {
-            // タイトル行
-            titleLine: TitleLineObject = new TitleLineObject();
-            // 項目名行
-            itemNameLine: ItemNameLineObject = new ItemNameLineObject();
-            // 属性
-            attribute: AttributeObject = new AttributeObject();
-            // List<勤怠項目>
-            diligenceProjectList: DiligenceProject[] = [];
-            // 選択済み勤怠項目ID
-            selectedTime: number = 0;
-
-            constructor(init?: Partial<SharedParams>) {
-                (<any>Object).assign(this, init);
-            }
-        }
-        
-        export class TitleLineObject {
-            // 表示フラグ
-            displayFlag: boolean = false;
-            // 出力項目コード
-            layoutCode: String | null = null;
-            // 出力項目名
-            layoutName: String | null = null;
-            // コメント
-            directText: String | null = null;
-
-            constructor(init?: Partial<TitleLineObject>) {
-                (<any>Object).assign(this, init);
-            }
-        }
-        export class ItemNameLineObject {
-            // 表示フラグ
-            displayFlag: boolean = false;
-            // 表示入力区分
-            displayInputCategory: number = 1;
-            // 名称
-            name: String | null = null;
-
-            constructor(init?: Partial<ItemNameLineObject>) {
-                (<any>Object).assign(this, init);
-            }
-        }
-        export class AttributeObject {
-            // 選択区分
-            selectionCategory: number = 2;
-            // List<属性>
-            attributeList: AttendaceType[] = [];
-            // 選択済み
-            selected: number = 1;
-
-            constructor(init?: Partial<AttributeObject>) {
-                (<any>Object).assign(this, init);
-            }
-        }
-
         export class AttendaceType {
             attendanceTypeCode: number;
             attendanceTypeName: string;
@@ -525,43 +618,23 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 this.attendanceTypeName = attendanceTypeName;
             }
         }
-
-        export class DiligenceProject {
-            // ID
-            id: any;
-            // 名称
-            name: any;
-            // 属性
-            attributes: any;
-            // 表示番号
-            indicatesNumber: any;
-
-            constructor(id: any, name: any, attributes: any, indicatesNumber:any) {
-                this.id = id;
-                this.name = name;
-                this.attributes = attributes;
-                this.indicatesNumber = indicatesNumber;
-            }
-        }
             
         // 出勤簿の出力項目設定 Ver25
         export class AttendanceRecordExportSetting {
-            // 会社ID
-            companyId: string;
-            // 日次の出力項目
-            dailyExportItem: Array<AttendanceRecordExport>;
-            // 月次の出力項目
-            monthlyExportItem: Array<AttendanceRecordExport>;
-            // 印鑑欄使用区分
-            sealUseAtr: boolean;
             // コード
             code: any;
             // 名称
             name: any;
             // 印鑑欄
             sealStamp: Array<String>;
+            // 日次の出力項目
+            dailyExportItem: Array<AttendanceRecordExport>;
+            // 月次の出力項目
+            monthlyExportItem: Array<AttendanceRecordExport>;
             // 名称使用区分
             nameUseAtr: any;
+            // 印鑑欄使用区分
+            sealUseAtr: boolean;
             // 文字の大きさ
             exportFontSize: any;
             // 月次確認済表示区分
@@ -613,10 +686,20 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             attendanceItemNames: Array<AttItemName>;
             // 勤怠項目の属性<List>
             attributes: Array<DailyAttendanceAtr>;
+            // 勤怠項目の表示番号<List>
+            displayNumbers: Array<number>;
             // 選択済み勤怠項目ID
             attendaceSelected: number;
             // 選択済み勤怠項目<List>
             exportItems: Array<any>;
+            // columnIndex
+            columnIndex: number;
+            // position
+            position: number;
+            // exportAtr
+            exportAtr: number;
+            // attendanceIds
+            attendanceId: any;
 
             constructor(init?: Partial<AttendanceItemShare>) {
                 $.extend(this, init);

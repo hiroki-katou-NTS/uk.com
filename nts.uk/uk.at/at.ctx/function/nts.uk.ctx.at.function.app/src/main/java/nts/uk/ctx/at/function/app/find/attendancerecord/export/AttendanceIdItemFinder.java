@@ -184,8 +184,6 @@ public class AttendanceIdItemFinder {
 		}
 	}
 	
-	
-	
 	public AttributeOfAttendanceItemDto getDailyAttendanceItemAtrs(String cid, int reportId, int attendanceType) {
 		AttributeOfAttendanceItemDto result = new AttributeOfAttendanceItemDto();
 		// 画面で使用可能な日次勤怠項目を取得する - To do
