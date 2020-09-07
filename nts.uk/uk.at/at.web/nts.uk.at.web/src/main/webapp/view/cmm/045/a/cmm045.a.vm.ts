@@ -741,10 +741,6 @@ module cmm045.a.viewmodel {
                                 .appendTo($td)
                                 .parent("td")
                                 .addClass(extraClass);
-
-                            // if(moment(item.opAppStartDate).add(-(self.appList().displaySet.appDateWarningDisp), "days") <= moment.utc()) {
-                            //     $("<label/>").addClass("approvalCell");
-                            // }
                         }
                     }
                     else if (column.button !== undefined) {
@@ -759,6 +755,26 @@ module cmm045.a.viewmodel {
                             date.concat("－").concat(nts.uk.time.formatDate(new Date(item.opAppEndDate), "MM/ddD"))
                         }
                         $td.html(self.appDateColor(date, "", ""));
+                    }
+                    else if(column.key == 'reflectionStatus' && self.mode() == 0) {
+                        if(item.reflectionStatus === '未反映') {
+                            $td.html('未');
+                        }
+                        if(item.reflectionStatus === '反映待ち') {
+                            $td.html('承認済み');
+                        }
+                        if(item.reflectionStatus === '反映済') {
+                            $td.html('反映済み');
+                        }
+                        if(item.reflectionStatus === '取消済') {
+                            $td.html('取消');
+                        }
+                        if(item.reflectionStatus === '差し戻し') {
+                            $td.html('差戻');
+                        }
+                        if(item.reflectionStatus === '否認') {
+                            $td.html('否');
+                        }
                     }
                     else {
                         $td.html(self.customContent(column.key, item[column.key]));
@@ -803,9 +819,6 @@ module cmm045.a.viewmodel {
                 if(_.includes(time, ''))
                 return self.inputDateColor(time, cl);
             }
-            if(key == 'reflectionStatus') {
-
-            }
 			return value;
 		}
 
@@ -829,13 +842,13 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px',  },
                 { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
                 { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
-                { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
-                { headerText: getText('CMM045_55'), key: 'appContent', width: '408px'},
+                { headerText: getText('CMM045_54'), key: 'appDate', width: '155px'},
+                { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
                 { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
                 { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
             ];
-            let heightAuto = window.innerHeight - 290 >= 330 ? 330 : window.innerHeight - 290;
+            let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
             this.setupGrid({
                 withCcg001: true,
                 width: widthAuto,
@@ -955,7 +968,7 @@ module cmm045.a.viewmodel {
                 //     result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
                 // }
 
-                if(item.reflectionStatus === '承認済') {
+                if(item.reflectionStatus === '反映待ち') {
                     item.appStatusName = 'approvalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['approvalCell']));
                 }
@@ -967,15 +980,15 @@ module cmm045.a.viewmodel {
                     item.appStatusName = 'denialCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['denialCell']));
                 }
-                if(item.reflectionStatus === '未承認') {
+                if(item.reflectionStatus === '未反映') {
                     item.appStatusName = 'unapprovalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['unapprovalCell']));
                 }
-                if(item.reflectionStatus === '差戻') {
+                if(item.reflectionStatus === '差し戻し') {
                     item.appStatusName = 'remandCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['remandCell']));
                 }
-                if(item.reflectionStatus === '取消') {
+                if(item.reflectionStatus === '取消済') {
                     item.appStatusName = 'cancelCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['cancelCell']));
                 }
@@ -1094,12 +1107,12 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
                 { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: isHidden},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
-                { headerText: getText('CMM045_55'), key: 'appContent', width: '341px'},
+                { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
                 { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
                 { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
             ]
-            let heightAuto = window.innerHeight - 290 >= 295 ? 295 : window.innerHeight - 290;
+            let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
             this.setupGrid({
                 withCcg001: false,
                 width: widthAuto,

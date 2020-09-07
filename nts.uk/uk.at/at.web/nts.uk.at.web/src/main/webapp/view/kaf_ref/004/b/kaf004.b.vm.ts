@@ -207,10 +207,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                 }
                             });
                         }
+                        this.afterRegister(application);
                     }
-
-                    this.afterRegister(application);
-
                 }).fail((fail: any) => {
                     if (fail) {
                         vm.$dialog.error({ messageId: fail.messageId });
