@@ -5,6 +5,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.PageSetup;
@@ -288,9 +290,15 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	private void printBottomKAF000(Cell reasonLabel, Cell remarkLabel, Cell reasonContent, PrintContentOfApp printContentOfApp) {
 		reasonLabel.setValue(I18NText.getText("KAF000_52"));
 		remarkLabel.setValue(I18NText.getText("KAF000_59"));
-		String appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
+		String appReasonStandard = Strings.EMPTY; 
+		if(printContentOfApp.getAppReasonStandard() != null) {
+			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
 				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
-		String appReason = printContentOfApp.getOpAppReason().v();
+		}
+		String appReason = Strings.EMPTY;
+		if(printContentOfApp.getOpAppReason() != null) {
+			appReason = printContentOfApp.getOpAppReason().v();
+		} 
 		reasonContent.setValue(appReasonStandard + "\n" + appReason);
 	}
 
