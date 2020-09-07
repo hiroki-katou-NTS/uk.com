@@ -54,6 +54,11 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
         const vm = this;
         vm.seen = !this.seen;
         vm.step = 'KAFS08_11';
+    //check before press next button
+        this.$http.post('at', API.checkBeforeRegister, {
+        // 申請表示情報．申請表示情報(基準日関係あり)．承認ルートエラー情報
+        businessTripInfoOutputDto : vm.data.businessTripInfoOutput,
+    });
     }
 
     public fetchStart() {
@@ -166,13 +171,14 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
             }
         };
     }
-    
+
     public mounted() {
         let vm = this;
     }
 }
 
 const API = {
-    startKAFS08: 'at/request/application/businesstrip/mobile/startMobile'
+    startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
+    checkBeforeRegister: 'at/request/application/businesstrip/mobile/checkBeforeRegister'
 };
 
