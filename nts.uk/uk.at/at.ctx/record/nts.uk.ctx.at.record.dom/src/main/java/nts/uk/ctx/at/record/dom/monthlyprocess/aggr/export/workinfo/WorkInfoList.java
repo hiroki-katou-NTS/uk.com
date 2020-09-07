@@ -67,13 +67,11 @@ public class WorkInfoList {
 	 * @return 勤務情報
 	 */
 	public Optional<WorkInformation> getRecord(GeneralDate ymd) {
-		if (!this.workInfoOfDailyMap.containsKey(ymd)) {
-			 return Optional.empty();
-		}
-		
+
+		if (!this.workInfoOfDailyMap.containsKey(ymd)) return Optional.empty();
 		WorkInformation record = this.workInfoOfDailyMap.get(ymd).getRecordInfo();
-		
-		return Optional.ofNullable(record);
+		if (record == null) return Optional.empty();
+		return Optional.of(new WorkInformation(record.getWorkTimeCode(), record.getWorkTypeCode()));
 	}
 	
 	/**
@@ -82,13 +80,11 @@ public class WorkInfoList {
 	 * @return 勤務情報
 	 */
 	public Optional<WorkInformation> getSchedule(GeneralDate ymd) {
-		if (!this.workInfoOfDailyMap.containsKey(ymd)) {
-			 return Optional.empty();
-		}
 		
+		if (!this.workInfoOfDailyMap.containsKey(ymd)) return Optional.empty();
 		WorkInformation schedule = this.workInfoOfDailyMap.get(ymd).getScheduleInfo();
-		
-		return Optional.ofNullable(schedule);
+		if (schedule == null) return Optional.empty();
+		return Optional.of(new WorkInformation(schedule.getWorkTimeCode(), schedule.getWorkTypeCode()));
 	}
 	
 	/**
@@ -96,13 +92,12 @@ public class WorkInfoList {
 	 * @return 勤務情報マップ
 	 */
 	public Map<GeneralDate, WorkInformation> getRecordMap() {
-		Map<GeneralDate, WorkInformation> results = new HashMap<>();
 		
+		Map<GeneralDate, WorkInformation> results = new HashMap<>();
 		for (val entry : this.workInfoOfDailyMap.entrySet()){
 			if (entry.getValue().getRecordInfo() == null) continue;
 			results.put(entry.getKey(), entry.getValue().getRecordInfo());
 		}
-		
 		return results;
 	}
 	
@@ -111,13 +106,12 @@ public class WorkInfoList {
 	 * @return 勤務情報マップ
 	 */
 	public Map<GeneralDate, WorkInformation> getScheduleMap() {
-		Map<GeneralDate, WorkInformation> results = new HashMap<>();
 		
+		Map<GeneralDate, WorkInformation> results = new HashMap<>();
 		for (val entry : this.workInfoOfDailyMap.entrySet()){
 			if (entry.getValue().getScheduleInfo() == null) continue;
 			results.put(entry.getKey(), entry.getValue().getScheduleInfo());
 		}
-		
 		return results;
 	}
 }
