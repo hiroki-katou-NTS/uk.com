@@ -812,7 +812,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
                         let shiftName = '';
-                        shiftName = (cell.haveData == true && cell.shiftName == null) ? getText("KSU001_94") : cell.shiftName;
+                        shiftName = (cell.haveData == true && (cell.shiftName == null || cell.shiftName == '')) ? getText("KSU001_94") : cell.shiftName;
                         if (cell.needToWork == false)
                             shiftName = '';
                         objDetailContentDs['_' + ymd] = new ExCell('', '', '', '', '', '', shiftName, cell.shiftCode);
@@ -895,8 +895,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     _.each(listWorkScheduleInforByEmpSort, (cell: IWorkScheduleWorkInforDto) => {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && cell.workTypeName == null) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && cell.workTimeName == null) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '') ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
                         objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName);
 
                         // set Deco background
@@ -960,8 +960,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set dataSource
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
-                        let workTypeName = (cell.workTypeCode != null && cell.workTypeName == null) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && cell.workTimeName == null) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
+                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '')) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
                         let startTime    = cell.startTime == null ? '' : formatById("Clock_Short_HM", cell.startTime);
                         let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
