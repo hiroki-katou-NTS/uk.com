@@ -500,6 +500,7 @@ module nts.uk.at.view.ksm003.a {
             let messageIds: Array<string> = ["Msg_23", "Msg_24", , "Msg_25", "Msg_389", "Msg_390",
                 "Msg_416", "Msg_417", "Msg_434", "Msg_435", "Msg_3", "Msg_1608", "Msg_1609"];
 
+	        vm.$blockui('show');
             let detailDto = vm.mainModel().toDto();
             if (!vm.isEditting()) {
                 let selectedCode = vm.selectedCode();
@@ -576,7 +577,7 @@ module nts.uk.at.view.ksm003.a {
 
                 vm.getListWorkingCycle();
                 vm.getPatternValByPatternCd(patternCode);
-
+	            vm.$blockui("hide");
             }).fail(function (res) {
                 let isSetError = messageIds.some(item => item == res.messageId);
                 if (isSetError) {
@@ -584,6 +585,7 @@ module nts.uk.at.view.ksm003.a {
                 } else {
                     nts.uk.ui.dialog.alertError(res.message);
                 }
+	            vm.$blockui("hide");
             }).always(function () {
                 vm.$blockui("hide");
             });
