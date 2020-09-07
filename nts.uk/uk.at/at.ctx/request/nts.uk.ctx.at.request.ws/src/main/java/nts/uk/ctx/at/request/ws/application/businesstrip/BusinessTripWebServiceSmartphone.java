@@ -41,7 +41,7 @@ public class BusinessTripWebServiceSmartphone extends WebService {
 	}
 
 	// B:出張の申請確認（スマホ）.起動する
-	@Path("StartScreenB")
+	@Path("startScreenB")
 	@POST
 	public DetailScreenDto startScreenB(StartScreenBDto param) {
 		return this.businessTripMobileFinder.startScreenB(param);
@@ -49,8 +49,15 @@ public class BusinessTripWebServiceSmartphone extends WebService {
 
 	// B:出張の申請確認（スマホ）.申請を修正する
 	@POST
-	@Path("ApproveTripReq")
+	@Path("approveTripReq")
 	public DetailScreenInfo appoveTripReq(ApproveTripRequestParam param){
 		return this.businessTripMobileFinder.approveTripRequest(param);
+	}
+
+	// A:出張の申請（スマホ）.A2.申請内容を登録する
+	@POST
+	@Path("checkBeforeRegister")
+	public void checkBeforeRegister(DetailScreenDto param){
+		this.businessTripMobileFinder.checkBeforeRegisterMobile(param);
 	}
 }

@@ -1,24 +1,31 @@
 package nts.uk.ctx.at.request.app.find.application.businesstrip;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.ApproveTripRequestParam;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.DetailScreenInfo;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.StartScreenBDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripInfoOutputDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailScreenDto;
 import nts.uk.ctx.at.request.app.find.application.common.AppDispInfoStartupDto;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripService;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.DetailScreenB;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
@@ -53,6 +60,9 @@ public class BusinessTripMobileFinder {
 
     @Inject
     private WorkTypeRepository wkTypeRepo;
+
+    @Inject
+    private AtEmployeeAdapter atEmployeeAdapter;
 
 
     /**
@@ -96,6 +106,43 @@ public class BusinessTripMobileFinder {
         }
         return result;
     }
+
+    /**
+     * アルゴリズム「出張申請個別エラーチェック」を実行する
+     */
+    public void checkBeforeRegisterMobile(DetailScreenDto param) {
+        String sid = AppContexts.user().employeeId();
+        String cid = AppContexts.user().companyId();
+        List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
+
+        BusinessTrip businessTrip = new BusinessTrip();
+        businessTrip.setDepartureTime(param.getBusinessTripDto().getDepartureTime() == null ? Optional.empty() : Optional.of(param.getBusinessTripDto().getDepartureTime()));
+        businessTrip.setReturnTime(param.getBusinessTripDto().getReturnTime() == null ? Optional.empty() : Optional.of(param.getBusinessTripDto().getReturnTime()));
+        businessTrip.setInfos(param.getBusinessTripDto().getTripInfos().stream().map(i -> i.toDomain()).collect(Collectors.toList()));
+
+        if (businessTrip.getInfos().isEmpty()) {
+            throw new BusinessException("Msg_1703");
+        }
+        // loop 年月日　in　期間
+        businessTrip.getInfos().stream().forEach(i -> {
+            String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
+            String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
+            // アルゴリズム「出張申請就業時間帯チェック」を実行する
+            businessTripService.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
+
+            List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
+            // 申請の矛盾チェック
+//                this.commonAlgorithm.appConflictCheck(
+//                        cid,
+//                        employeeInfoImports.get(0),
+//                        lstDate,
+//                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+//                        output.getActualContentDisplay().get()
+//                );
+        });
+    }
+
+
 
     /**
      * アルゴリズム「出張申請画面初期（新規）」を実行する
