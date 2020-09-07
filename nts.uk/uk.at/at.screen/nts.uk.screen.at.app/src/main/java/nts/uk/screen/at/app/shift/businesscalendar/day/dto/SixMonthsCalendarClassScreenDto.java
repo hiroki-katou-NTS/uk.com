@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.shift.sixmonthscalendar.dto;
+package nts.uk.screen.at.app.shift.businesscalendar.day.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +9,17 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @Data
 public class SixMonthsCalendarClassScreenDto {
+    /** company id
+    **/
     private String companyId;
 
+    /** class id**/
     private String classId;
 
+    /** date**/
     private GeneralDate date;
 
+    /** working day**/
     private int workingDayAtr;
 
 }
