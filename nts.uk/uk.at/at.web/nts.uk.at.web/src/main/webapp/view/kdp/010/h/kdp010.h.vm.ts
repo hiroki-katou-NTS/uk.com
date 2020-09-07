@@ -16,16 +16,16 @@ module nts.uk.at.view.kdp010.h {
 
 			// H3_2
 			optionStamping: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.GoingOutReason);
-			selectedStamping: KnockoutObservable<number> = ko.observable();
+			selectedStamping: KnockoutObservable<number> = ko.observable(0);
 
 			// H4_2
 			simpleValue: KnockoutObservable<string> = ko.observable("");
 
 			// H5_2
-			letterColors: KnockoutObservable<string> = ko.observable('#0033cc');
+			letterColors: KnockoutObservable<string> = ko.observable('#000000');
 
 			// H6_2
-			backgroundColors: KnockoutObservable<string> = ko.observable('#ccccff');
+			backgroundColors: KnockoutObservable<string> = ko.observable('#ffffff');
 
 			// H7_2
 			optionAudio: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.AudioType);
@@ -37,7 +37,6 @@ module nts.uk.at.view.kdp010.h {
 			dataStampPage: KnockoutObservableArray<StampPageCommentCommand> = ko.observable(new StampPageCommentCommand({}));
 			dataShare: KnockoutObservableArray<any> = ko.observableArray([]);
 
-
 			lstChangeClock: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeClockArt);
 			lstChangeCalArt: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ChangeCalArt);
 			lstContents: KnockoutObservableArray<any> = ko.observableArray(__viewContext.enums.ContentsStampType);
@@ -45,6 +44,9 @@ module nts.uk.at.view.kdp010.h {
 			lstData: KnockoutObservableArray<StampTypeCommand> = ko.observable(new StampTypeCommand({}));
 			isFocus: KnockoutObservable<boolean> = ko.observable(true);
 			isChange: KnockoutObservable<number> = ko.observable(0);
+			checkGoOut :  KnockoutObservable<number> = ko.observable(0);
+            
+            showSelectedAudio = ko.observable(false);
 			constructor() {
 				let self = this;
 				self.selectedDay.subscribe((newValue) => {
@@ -54,9 +56,14 @@ module nts.uk.at.view.kdp010.h {
 						self.simpleValue(name.name);
 					}
 					
-					if(!_.isNil(newValue) && newValue == 8){
+					if(!_.isNil(newValue) && newValue == 8 && self.checkGoOut() != 1){
 						self.selectedStamping(0);
 					}
+					
+					if(!_.isNil(newValue) && newValue != 8){
+						self.selectedStamping(0);
+					}
+					
 				})
 
 				self.simpleValue.subscribe(function(codeChanged: string) {
@@ -87,14 +94,16 @@ module nts.uk.at.view.kdp010.h {
 
 				let self = this;
 				self.dataShare = nts.uk.ui.windows.getShared('KDP010_G');
+                self.showSelectedAudio(self.dataShare.fromScreen === 'A');
 				self.buttonPositionNo(self.dataShare.buttonPositionNo);
 				if (self.dataShare.dataShare != undefined) {
 					let data = self.dataShare.dataShare.lstButtonSet ? self.dataShare.dataShare.lstButtonSet.filter(x => x.buttonPositionNo == self.dataShare.buttonPositionNo)[0] : self.dataShare.dataShare;
 					if (data) {
+						self.checkGoOut(1);
 						self.letterColors(data.buttonDisSet.buttonNameSet.textColor);
 						self.simpleValue(data.buttonDisSet.buttonNameSet.buttonName);
 						self.backgroundColors(data.buttonDisSet.backGroundColor);
-						self.selectedStamping(data.buttonType.stampType.goOutArt);
+						self.selectedStamping((data.buttonType.stampType == undefined || data.buttonType.stampType.goOutArt == null) ? 0 : data.buttonType.stampType.goOutArt);
 						self.selectedAudio(data.audioType);
 						self.selectedHighlight(data.usrArt);
 						self.getTypeButton(data);
@@ -167,10 +176,10 @@ module nts.uk.at.view.kdp010.h {
 			}
 			public getTypeButton(data): void {
 				let self = this,
-					changeClockArt = data.buttonType.stampType.changeClockArt,
-					changeCalArt = data.buttonType.stampType.changeCalArt,
-					setPreClockArt = data.buttonType.stampType.setPreClockArt,
-					changeHalfDay = data.buttonType.stampType.changeHalfDay,
+					changeClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeClockArt,
+					changeCalArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeCalArt,
+					setPreClockArt = data.buttonType.stampType == null ? null: data.buttonType.stampType.setPreClockArt,
+					changeHalfDay = data.buttonType.stampType == null ? null: data.buttonType.stampType.changeHalfDay,
 					reservationArt = data.buttonType.reservationArt;
 				let typeNumber = self.checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt);
 				self.selectedDay(typeNumber);
@@ -179,7 +188,7 @@ module nts.uk.at.view.kdp010.h {
 
 
 			public checkType(changeClockArt, changeCalArt, setPreClockArt, changeHalfDay, reservationArt): void {
-				if (changeCalArt == 0 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 0) {
+				if (changeCalArt == 0 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
 					if (changeClockArt == 0)
 						return 1;
 
@@ -213,10 +222,10 @@ module nts.uk.at.view.kdp010.h {
 					if (changeClockArt == 12)
 						return 16;
 				}
-				if (changeClockArt == 0 && changeCalArt == 0 && setPreClockArt == 1 && changeHalfDay == 0 && reservationArt == 0)
+				if (changeClockArt == 0 && changeCalArt == 0 && setPreClockArt == 1 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0)
 					return 2;
 
-				if (changeCalArt == 1 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 0) {
+				if (changeCalArt == 1 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
 					if (changeClockArt == 0)
 						return 3;
 
@@ -224,7 +233,7 @@ module nts.uk.at.view.kdp010.h {
 						return 17;
 				}
 
-				if (changeCalArt == 3 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 0) {
+				if (changeCalArt == 3 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0) {
 					if (changeClockArt == 0)
 						return 4;
 
@@ -232,10 +241,10 @@ module nts.uk.at.view.kdp010.h {
 						return 18;
 				}
 
-				if (changeClockArt == 1 && changeCalArt == 0 && setPreClockArt == 2 && changeHalfDay == 0 && reservationArt == 0)
+				if (changeClockArt == 1 && changeCalArt == 0 && setPreClockArt == 2 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0)
 					return 6;
 
-				if (changeClockArt == 1 && changeCalArt == 2 && setPreClockArt == 0 && changeHalfDay == 0 && reservationArt == 0)
+				if (changeClockArt == 1 && changeCalArt == 2 && setPreClockArt == 0 && (changeHalfDay == false || changeHalfDay == 0) && reservationArt == 0)
 					return 7;
 
 				if ((changeClockArt == "" || changeClockArt == null) && (changeCalArt == "" || changeCalArt == null) && (setPreClockArt == "" || setPreClockArt == null) && (changeHalfDay == "" || changeHalfDay == null) && reservationArt == 1)

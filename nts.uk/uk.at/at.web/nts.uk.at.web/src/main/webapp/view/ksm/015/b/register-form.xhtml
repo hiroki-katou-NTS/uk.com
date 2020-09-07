@@ -25,38 +25,44 @@ required: true}" />
     </div>
     <!-- B7_3 -->
     <div class="valign-center control-group">
+    	<!-- B8_2 - ver17 -->
         <div data-bind="ntsFormLabel: {required: true, enable: true}">
             #{i18n.getText('KSM015_17')}</div>
-        <button tabindex="8" class="large" id="worktype-chose" data-bind="click: openDialogKDL003">#{i18n.getText('KSM015_18')}</button>
+        <button tabindex="8" class="large" id="worktype-chose" data-bind="click: openDialogKDL003">#{i18n.getText('KSM015_30')}</button>
         <!-- B8_3_1 -->
         <div class="b73-desc">
             <!-- B8_3_2 -->
-            <div class="table" data-bind="show: registrationForm().workTypeDisplay() != ''">
+            <div class="table-workType">
                 <div class="cell">
                     <span class="work-lable">#{i18n.getText('KSM015_15')}</span>
                     <span data-bind="text: registrationForm().workTypeDisplay()"></span>
                 </div>
             </div>
-
-            <div class="table" data-bind="show: registrationForm().workTimeSetDisplay() != '' ">
+            <div class="table-workTime">
                 <div class="cell">
-                    <span class="work-lable">#{i18n.getText('KSM015_16')}</span>
+                    <span id = "worktime-lable" class="work-lable">#{i18n.getText('KSM015_16')}</span>
                     <span data-bind="text: registrationForm().workTimeSetDisplay()"></span>
                 </div>
             </div>
-
+			
         </div>
     </div>
     <!-- B9 -->
     <div class="valign-center control-group">
         <div data-bind="ntsFormLabel: { required: false, enable: true}">
             色</div>
+        <!-- B9_1_2 -->    
+        <button id="help-button" data-bind="ntsHelpButton: {textId: 'KSM015_35', textParams:['{#KSM015_35}'], position: 'right center' }">？</button>
         <div id="colorpicker" tabindex="9"
             data-bind="ntsColorPicker: {value: registrationForm().color, enable: true, width: 50}" />
+         <!-- B9_2_2 -->
+         <button tabindex="10" data-bind="click: getWorkStyle" class="small" id="test-color">#{i18n.getText('KSM015_36')}</button><span class="caret-right"></span>
+         <!-- B9_2_3 -->
+         <span class="label" id="label-test-color" data-bind= "style:{'background-color' :  workStyle().backGroundColor(), 'color' : workStyle().color(), border : workStyle().borderColor()}, text: workStyle().workTimeSetDisplay()" title=""></span>
     </div>
     <!-- B10 -->
     <div class="valign-center control-group">
-        <div data-bind="ntsFormLabel: {required: false, enable: true}">
+        <div data-bind="ntsFormLabel: {required: false, enable: true, constraint: 'Remarks'}">
             #{i18n.getText('KSM015_20')}</div>
             <input tabindex="10" data-bind="ntsTextEditor: {	
                 name: '#[KSM015_20]',

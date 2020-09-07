@@ -111,6 +111,11 @@ public class LevelOutput {
 				 * 代行者ID
 				 */
 				private String agentID;
+				
+				/**
+				 * 順序
+				 */
+				private Integer approverInListOrder;
 			}
 			
 		}

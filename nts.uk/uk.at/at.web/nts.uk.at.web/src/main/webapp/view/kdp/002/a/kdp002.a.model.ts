@@ -96,7 +96,6 @@ class StampTab {
                             visible: ko.observable(true)});
             }
         };
-        console.log(tabs);
         self.tabs(tabs);
         self.selectedTab('tab-' + layouts[0].pageNo);
         self.selectedTab.valueHasMutated();

@@ -6,12 +6,11 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
-@StringMaxLength(4)
 /**
  * 勤務場所コード
  * @author hieult
- *
  */
+@StringMaxLength(4)
 @StringCharType(CharType.ALPHA_NUMERIC)
 @ZeroPaddedCode
 public class WorkLocationCD extends StringPrimitiveValue<WorkLocationCD>{

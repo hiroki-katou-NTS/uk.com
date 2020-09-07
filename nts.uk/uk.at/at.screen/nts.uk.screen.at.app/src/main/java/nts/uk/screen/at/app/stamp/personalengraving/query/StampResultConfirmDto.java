@@ -36,8 +36,6 @@ public class StampResultConfirmDto {
 			this.stampRecords.addAll(display.getStampDataOfEmployeesDto().getStampRecords());
 		}
 
-//		this.dailyItems = dailyItems;
-		
 		for (AttItemName item : dailyItems) {
 			Optional<ItemValue> oValue = itemValues.stream().filter(a -> a.getItemId() == item.getAttendanceItemId()).findFirst(); 
 			this.itemValues.add(new ItemValueDto(oValue, item));

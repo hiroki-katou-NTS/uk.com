@@ -15,8 +15,11 @@ public class TemporaryTimeOfDailyPerformanceCommand extends DailyWorkCommonComma
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
+		TemporaryTimeOfDailyPerformance temporaryTimeOfDailyPerformance = new TemporaryTimeOfDailyPerformance(
+				getEmployeeId(), getWorkDate(),
+				((TemporaryTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 
-				: Optional.of(((TemporaryTimeOfDailyPerformanceDto) item).toDomain(getEmployeeId(), getWorkDate()));
+				: Optional.of(temporaryTimeOfDailyPerformance);
 	}
 
 	@Override

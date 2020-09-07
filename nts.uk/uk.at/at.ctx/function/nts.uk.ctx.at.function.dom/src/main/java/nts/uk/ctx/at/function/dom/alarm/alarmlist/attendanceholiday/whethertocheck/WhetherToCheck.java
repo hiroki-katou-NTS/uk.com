@@ -21,7 +21,13 @@ public class WhetherToCheck {
 	
 	@Inject
 	private NarrowUntilNext narrowUntilNext;
-	
+	/**
+	 * チェック対象か判断
+	 * @param companyId
+	 * @param employeeId
+	 * @param alCheckConByCategory
+	 * @return
+	 */
 	public boolean whetherToCheck(String companyId,String employeeId,AlarmCheckConditionByCategory alCheckConByCategory) {
 		//ドメインモデル「年休アラームチェック対象者条件」を取得する
 		AnnualHolidayAlarmCondition annualHolidayAlarmCondition = (AnnualHolidayAlarmCondition) alCheckConByCategory.getExtractionCondition();

@@ -410,8 +410,8 @@ module nts.uk.at.view.kaf005.a.viewmodel {
                 self.tmpOverTime.children('colgroup').children()[3].width = '110px';
                 
             } else if (value == 0) {
-                self.tmpOverTime.children('colgroup').children()[2].width = '0px';
-                self.tmpOverTime.children('colgroup').children()[3].width = '0px';
+                self.tmpOverTime.children('colgroup').children()[2].width = '1px';
+                self.tmpOverTime.children('colgroup').children()[3].width = '1px';
             }
             $("#overtime-container").append(self.tmpOverTime.clone(true));
         }

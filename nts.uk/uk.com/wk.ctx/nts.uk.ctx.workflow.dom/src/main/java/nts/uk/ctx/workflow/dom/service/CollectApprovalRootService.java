@@ -9,7 +9,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.SystemAtr;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRootContentOutput;
-import nts.uk.ctx.workflow.dom.service.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.service.output.ErrorFlag;
 import nts.uk.ctx.workflow.dom.service.output.LevelOutput;
 import nts.uk.ctx.workflow.dom.service.output.LevelOutput.LevelInforOutput.LevelApproverList.LevelApproverInfo;
@@ -48,7 +47,7 @@ public interface CollectApprovalRootService {
 	 * @param jobTitleId 職位ID（承認者）
 	 * @return
 	 */
-	public List<ApproverInfo> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId, SystemAtr systemAtr);
+	public List<String> getPersonByWorkplacePosition(String cid, String wkpId, GeneralDate baseDate, String jobTitleId, SystemAtr systemAtr);
 	
 	/**
 	 * 2.承認ルートを整理する（二次開発）
@@ -83,7 +82,7 @@ public interface CollectApprovalRootService {
 	 * @param lowerApprove
 	 * @return
 	 */
-	public List<ApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String paramID, 
+	public List<LevelApproverInfo> getApproverFromGroup(String companyID, String approverGroupCD, String specWkpId, String paramID, 
 			Optional<Integer> opDispOrder, String employeeID, GeneralDate baseDate, SystemAtr systemAtr, Optional<Boolean> lowerApprove);
 	
 	/**
@@ -103,7 +102,7 @@ public interface CollectApprovalRootService {
 	 * @param baseDate
 	 * @return
 	 */
-	public List<LevelApproverInfo> adjustApprover(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID);
+	public List<LevelApproverInfo> adjustApprover(List<LevelApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID, String employeeID);
 	
 	/**
 	 * 指定社員が基準日に承認権限を持っているかチェック
@@ -111,7 +110,7 @@ public interface CollectApprovalRootService {
 	 * @param baseDate
 	 * @return
 	 */
-	public List<ApproverInfo> checkApproverAuthor(List<ApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
+	public List<LevelApproverInfo> checkApproverAuthor(List<LevelApproverInfo> approverInfoLst, GeneralDate baseDate, String companyID);
 	
 	/**
 	 * 上位職場の承認者を探す

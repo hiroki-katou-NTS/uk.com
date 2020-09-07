@@ -29,5 +29,10 @@ public class WorkTimeInformation implements DomainObject {
 		this.timeWithDay = Optional.ofNullable(timeWithDay);
 	}
 	
+	public void setReasonTimeChange(ReasonTimeChange reasonTimeChange) {
+		this.reasonTimeChange = reasonTimeChange;
+	}
+	
+	
 
 }

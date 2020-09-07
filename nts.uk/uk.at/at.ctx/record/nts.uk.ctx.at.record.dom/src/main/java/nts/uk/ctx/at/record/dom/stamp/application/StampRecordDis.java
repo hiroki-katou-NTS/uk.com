@@ -3,9 +3,11 @@ package nts.uk.ctx.at.record.dom.stamp.application;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Value;
 import nts.arc.layer.dom.objecttype.DomainValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -17,6 +19,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Value
 @Getter
+@AllArgsConstructor
 public class StampRecordDis implements DomainValue {
 
 	/** 利用区分 */
@@ -26,22 +29,17 @@ public class StampRecordDis implements DomainValue {
 	private final CheckErrorType checkErrorType;
 
 	/** 促すメッセージ */
-	private PromptingMessage promptingMssage;
-
-	public StampRecordDis(NotUseAtr useArt, CheckErrorType checkErrorType, PromptingMessage promptingMessage) {
-		this.useArt = useArt;
-		this.checkErrorType = Optional.of(checkErrorType).get();
-		this.promptingMssage = promptingMessage;
-		checkErrorType.getErrorAlarm();
-	}
+	private Optional<PromptingMessage> promptingMssage;
 
 	/**
 	 * [1] エラー種類に対応する申請促すエラー情報を取得する
 	 */
 	
 	public ErrorInformationApplication getErrornformation() {
-		List<String> list = this.checkErrorType.getErrorAlarm();
-		return new ErrorInformationApplication(this.checkErrorType, list, this.promptingMssage);
+		//	$エラーコードリスト = @チェックエラー種類.エラー種類に対応するエラーアラームを取得する()
+		List<ErrorAlarmWorkRecordCode> list = this.checkErrorType.getErrorAlarm();
+		
+		//申請促すエラー情報#申請促すエラー情報(@チェックエラー種類,$エラーコードリスト,@促すメッセージ)
+		return new ErrorInformationApplication(this.checkErrorType, list, this.promptingMssage );
 	}
-
 }

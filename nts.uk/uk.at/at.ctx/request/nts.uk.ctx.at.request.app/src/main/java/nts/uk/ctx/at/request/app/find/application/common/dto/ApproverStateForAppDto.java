@@ -32,6 +32,8 @@ public class ApproverStateForAppDto {
 	
 	private String representerMail;
 	
+	private Integer approverInListOrder;
+	
 	public static ApproverStateForAppDto fromDomain(ApproverStateImport_New approverStateImport) {
 		return new ApproverStateForAppDto(
 				approverStateImport.getApproverID(), 
@@ -44,7 +46,8 @@ public class ApproverStateForAppDto {
 				approverStateImport.getApprovalDate() == null ? null : approverStateImport.getApprovalDate().toString("yyyy/MM/dd"), 
 				approverStateImport.getApprovalReason(), 
 				approverStateImport.getApproverEmail(), 
-				approverStateImport.getRepresenterEmail());
+				approverStateImport.getRepresenterEmail(),
+				approverStateImport.getApproverInListOrder());
 	}
 	
 	public ApproverStateImport_New toDomain() {
@@ -58,6 +61,7 @@ public class ApproverStateForAppDto {
 				approvalDate == null ? null : GeneralDate.fromString(approvalDate, "yyyy/MM/dd"), 
 				approvalReason, 
 				approverMail, 
-				representerMail);
+				representerMail,
+				approverInListOrder);
 	}
 }

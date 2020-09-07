@@ -9,8 +9,8 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.SpecificName;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.specificdate.primitives.UseAtr;
 /**
- * 特定日
- *
+ * 
+ * 特定日項目
  */
 @Getter
 @Setter

@@ -137,7 +137,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         getFrameIndex(loopPhase, loopFrame, loopApprover) {
             let self = this;
             if(_.size(loopFrame.listApprover()) > 1) {
-                return _.findIndex(loopFrame.listApprover(), o => o == loopApprover);     
+                return loopApprover.approverInListOrder();     
             }
             return loopFrame.frameOrder(); 
         }
@@ -196,36 +196,36 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                     if(!nts.uk.util.isNullOrEmpty(data.listApprovalPhaseStateDto)){
                         
                         // sort list approval
-                        if(data.listApprovalPhaseStateDto != undefined && data.listApprovalPhaseStateDto.length != 0) {
-                            data.listApprovalPhaseStateDto.forEach((el) => {
-                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
-                                        el.listApprovalFrame.forEach((el1) =>{
-                                               if(el1.listApprover != undefined && el1.listApprover.length != 0) {
-                                                  el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
-                                               }
-                                        });
-                                        if(el.listApprovalFrame.length > 1) {
-                                            let arrayTemp = [];
-                                            arrayTemp.push(el.listApprovalFrame[0]);
-                                            if(el.listApprovalFrame[0].listApprover.length == 0) {   
-                                                _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length), ['listApprover[0].approverName'], ['asc'])
-                                                .forEach(i => arrayTemp.push(i));      
-                                                el.listApprovalFrame = arrayTemp;
-                                            }else {
-                                                el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
-                                                
-                                            }
-                                            let frameOrderTemp = 0;
-                                            el.listApprovalFrame.forEach((el1, index) =>{
-                                                if(el1.listApprover.length != 0) {
-                                                    frameOrderTemp++;
-                                                }
-                                                el1.frameOrder = frameOrderTemp;
-                                            });
-                                        }
-                                }
-                            });  
-                        }
+//                        if(data.listApprovalPhaseStateDto != undefined && data.listApprovalPhaseStateDto.length != 0) {
+//                            data.listApprovalPhaseStateDto.forEach((el) => {
+//                                if(el.listApprovalFrame != undefined && el.listApprovalFrame.length != 0) {
+//                                        el.listApprovalFrame.forEach((el1) =>{
+//                                               if(el1.listApprover != undefined && el1.listApprover.length != 0) {
+//                                                  el1.listApprover = _.orderBy(el1.listApprover, ['approverName'],['asc']);                                   
+//                                               }
+//                                        });
+//                                        if(el.listApprovalFrame.length > 1) {
+//                                            let arrayTemp = [];
+//                                            arrayTemp.push(el.listApprovalFrame[0]);
+//                                            if(el.listApprovalFrame[0].listApprover.length == 0) {   
+//                                                _.orderBy(el.listApprovalFrame.slice(1, el.listApprovalFrame.length), ['listApprover[0].approverName'], ['asc'])
+//                                                .forEach(i => arrayTemp.push(i));      
+//                                                el.listApprovalFrame = arrayTemp;
+//                                            }else {
+//                                                el.listApprovalFrame = _.orderBy(el.listApprovalFrame, ['listApprover[0].approverName'], ['asc']);
+//                                                
+//                                            }
+//                                            let frameOrderTemp = 0;
+//                                            el.listApprovalFrame.forEach((el1, index) =>{
+//                                                if(el1.listApprover.length != 0) {
+//                                                    frameOrderTemp++;
+//                                                }
+//                                                el1.frameOrder = frameOrderTemp;
+//                                            });
+//                                        }
+//                                }
+//                            });  
+//                        }
                         self.approvalRootState(ko.mapping.fromJS(data.listApprovalPhaseStateDto)());    
                     }
                 }
@@ -268,14 +268,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         getApproverLabel(loopPhase, loopFrame, loopApprover) {
             let self = this,
                 index = self.getFrameIndex(loopPhase, loopFrame, loopApprover);
-            // case group approver
-            if(_.size(loopFrame.listApprover()) > 1) {
-                index++;
-            }
-            if(index <= 10){
-                return nts.uk.resource.getText("KAF000_9",[index+'']);    
-            }
-            return "";   
+            return nts.uk.resource.getText("KAF000_9",[index+'']);    
         }
     }
     

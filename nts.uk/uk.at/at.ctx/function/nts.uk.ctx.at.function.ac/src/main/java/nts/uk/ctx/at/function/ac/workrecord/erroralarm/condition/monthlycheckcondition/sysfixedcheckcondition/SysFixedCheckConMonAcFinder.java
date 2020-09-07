@@ -19,12 +19,12 @@ import nts.uk.ctx.at.function.dom.adapter.workrecord.identificationstatus.identi
 import nts.uk.ctx.at.function.dom.alarm.alarmdata.ValueExtractAlarm;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.ErAlConstant;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.enums.SelfConfirmError;
 import nts.uk.ctx.at.record.pub.fixedcheckitem.ValueExtractAlarmWRPubExport;
 import nts.uk.ctx.at.record.pub.workrecord.erroralarm.condition.monthlycheckcondition.sysfixedcheckcondition.SysFixedCheckConMonPub;
 import nts.uk.ctx.at.record.pub.workrecord.identificationstatus.identityconfirmprocess.IdentityConfirmProcessExport;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.workflow.pub.resultrecord.EmpPerformMonthParam;
@@ -179,6 +179,7 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 		//INPUT.承認処理の利用設定.月の承認者確認を利用する＝true
 		approvalProcessRepo.findByCompanyId(AppContexts.user().companyId()).ifPresent(ap -> {
 			if(ap.getUseMonthApproverConfirm() != null && ap.getUseMonthApproverConfirm() == true){
+				//月別実績の勤怠時間
 				List<AttendanceTimeOfMonthly> attendanceTimeOfMonthlys = attendanceTimeOfMonthlyRepo.findBySidsAndYearMonths(employeeID, yearMonth);
 				
 				String classification=TextResource.localize("KAL010_100");
@@ -186,6 +187,7 @@ public class SysFixedCheckConMonAcFinder implements SysFixedCheckConMonAdapter {
 				String alarmValueMessage=TextResource.localize("KAL010_129");
 				//No.533
 				/** TODO: need response */
+				//(中間データ版)承認対象者リストと日付リストから承認状況を取得する（月別）
 				List<AppRootSttMonthExport> appRootStates = intermediateDataPub.getAppRootStatusByEmpsMonth(attendanceTimeOfMonthlys.stream().map(atm -> {
 					return new EmpPerformMonthParam(atm.getYearMonth(), 
 							atm.getClosureId().value,

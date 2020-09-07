@@ -19,8 +19,24 @@ public interface CheckRecordAgreementAdapter {
 	// check for 36協定時間超過回数のチェック条件
 	List<CheckedOvertimeImport> checkNumberOvertime(List<String> employeeIds, List<DatePeriod> periods, List<AgreeCondOt> listCondOt);
 	
-	// check for 36協定実績をチェックする domain
-	List<CheckedAgreementResult> checkArgreementResult(List<String> employeeIds, DatePeriod period, AgreeConditionError agreeConditionError,Optional<AgreementOperationSettingImport> agreementSetObj, List<Closure> closureList, Map<String,Integer> mapEmpIdClosureID,Object objCheckAgreement );
+	/**
+	 * エラーアラームチェック: 36協定実績をチェックする
+	 * @param employeeIds
+	 * @param period
+	 * @param agreeConditionError
+	 * @param agreementSetObj
+	 * @param closureList
+	 * @param mapEmpIdClosureID
+	 * @param objCheckAgreement
+	 * @return
+	 */
+	List<CheckedAgreementResult> checkArgreementResult(List<String> employeeIds,
+			DatePeriod period, 
+			AgreeConditionError agreeConditionError,
+			Optional<AgreementOperationSettingImport> agreementSetObj, 
+			List<Closure> closureList, 
+			Map<String,Integer> mapEmpIdClosureID,
+			Object objCheckAgreement );
 	
 	Object getCommonSetting(String companyId,List<String> employeeIds,DatePeriod period);
 }

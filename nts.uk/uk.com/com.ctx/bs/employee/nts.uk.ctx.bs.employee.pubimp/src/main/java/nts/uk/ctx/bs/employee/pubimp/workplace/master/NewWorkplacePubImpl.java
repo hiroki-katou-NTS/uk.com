@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.inject.New;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -45,6 +46,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
 import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
+import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport2;
 import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
 import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
@@ -808,6 +810,22 @@ public class NewWorkplacePubImpl implements WorkplacePub {
 	public Optional<String> getWkpNewByCdDate(String companyId, String wkpCd, GeneralDate baseDate) {
 		return workplaceInformationRepository.getWkpNewByCdDate(companyId, wkpCd, baseDate)
 				.map(c -> c.getWorkplaceId());
+	}
+
+	@Override
+	public List<AffWorkplaceHistoryItemExport2> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate) {
+		
+		List<AffWorkplaceHistoryItem> affWrkPlcItems = affWkpHistItemRepo.getAffWrkplaHistItemByListWkpIdAndDate(baseDate, Arrays.asList(workPlaceId));
+		
+		if (affWrkPlcItems.isEmpty()) {
+			return new ArrayList<>();
+		}
+		
+		List<AffWorkplaceHistoryItemExport2> result = affWrkPlcItems.stream().map(item -> {
+			return new AffWorkplaceHistoryItemExport2(item.getHistoryId(), item.getEmployeeId(), item.getWorkplaceId(), item.getNormalWorkplaceId()); 
+		}).collect(Collectors.toList());
+		
+		return result;
 	}
 
 }

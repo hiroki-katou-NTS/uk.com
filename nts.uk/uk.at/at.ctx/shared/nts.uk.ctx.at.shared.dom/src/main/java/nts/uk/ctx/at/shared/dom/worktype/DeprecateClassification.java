@@ -15,11 +15,11 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 public enum DeprecateClassification {
 	
 	/** The Deprecated. */
-	// 廃止する
+	/** 廃止する */
 	Deprecated(1), 
 
 	/** The Not deprecated. */
-	// 廃止しない
+	/** 廃止しない */
 	NotDeprecated(0); 
 
 	/** The value. */

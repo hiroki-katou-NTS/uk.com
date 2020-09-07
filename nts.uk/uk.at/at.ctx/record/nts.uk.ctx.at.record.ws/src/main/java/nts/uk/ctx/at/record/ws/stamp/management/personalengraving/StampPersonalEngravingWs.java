@@ -17,12 +17,14 @@ import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.Employee
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeStampDatasFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.EmployeeTimeCardRequest;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.GetOmissionContentsFinder;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampDisplayButtonFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.StampSettingsEmbossFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.TimeCardFinder;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.DailyAttdErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.KDP002AStartPageSettingDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampDataOfEmployeesDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampRecordDto;
+import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.StampToSuppressDto;
 import nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto.TimeCardDto;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.EmployeeStampInfo;
 import nts.uk.shr.com.context.AppContexts;
@@ -45,6 +47,9 @@ public class StampPersonalEngravingWs extends WebService {
 	
 	@Inject
 	private TimeCardFinder timeCardFinder;
+	
+	@Inject
+	private StampDisplayButtonFinder stampDisplayBtnFinder;
 	
 	@POST
 	@Path("startPage")
@@ -82,6 +87,12 @@ public class StampPersonalEngravingWs extends WebService {
 	@Path("stamp/getTimeCard")
 	public TimeCardDto getTimeCard(EmployeeTimeCardRequest request) {
 		return new TimeCardDto(this.timeCardFinder.getTimeCard(AppContexts.user().employeeId(), request.toDatePeriod()));
+	}
+	
+	@POST
+	@Path("stamp/getHighlightSetting")
+	public StampToSuppressDto getHighlightSetting() {
+		return new StampToSuppressDto(stampDisplayBtnFinder.getStampDisplayButton(AppContexts.user().employeeId()));
 	}
 	
 }

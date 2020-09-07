@@ -18,17 +18,17 @@ import nts.uk.ctx.at.record.dom.stamp.application.PromptingMessage;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.application.StampRecordDis;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampHelper;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonType;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.workingcondition.PersonalWorkCategory;
 import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -92,11 +92,11 @@ public class DomainServiceHeplper {
 		return new StampPromptApplication("000000000000-0001",
 				Arrays.asList(
 						new StampRecordDis(NotUseAtr.valueOf(1), CheckErrorType.valueOf(1),
-								new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY"))),
+								Optional.of(new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY")))),
 						new StampRecordDis(NotUseAtr.valueOf(0), CheckErrorType.valueOf(1),
-								new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY"))),
+								Optional.of(new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY")))),
 						new StampRecordDis(NotUseAtr.valueOf(1), CheckErrorType.valueOf(0),
-								new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY")))
+								Optional.of(new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("#DUMMY"))))
 						));
 	}
 
@@ -119,7 +119,7 @@ public class DomainServiceHeplper {
 	}
 	
 	public static ButtonType getButtonTypeDefault() {
-		return new ButtonType(ReservationArt.valueOf(0), StampHelper.getStampTypeDefault());
+		return new ButtonType(ReservationArt.valueOf(0), Optional.of(StampHelper.getStampTypeDefault()));
 		
 	}
 	public static ButtonType getButtonTypeHaveStampTypeNull() {

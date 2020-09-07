@@ -19,11 +19,10 @@ public interface SettingsSmartphoneStampRepository {
 	public void insert(SettingsSmartphoneStamp settingsSmartphoneStamp);
 
 	/**
-	 * [2]  update(スマホ打刻の打刻設定)																									
+	 * [2]  save(スマホ打刻の打刻設定)																									
 	 * @param settingsSmartphoneStamp
 	 */
-	public void update(SettingsSmartphoneStamp settingsSmartphoneStamp);
-	
+	public void save(SettingsSmartphoneStamp settingsSmartphoneStamp);
 	
 	/**
 	 * [3]  取得する

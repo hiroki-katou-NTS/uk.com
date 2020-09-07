@@ -3,6 +3,10 @@ package nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.pre
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 個人利用の打刻設定Repository
+ *
+ */
 public interface StampSetPerRepository {
 	
 	/**

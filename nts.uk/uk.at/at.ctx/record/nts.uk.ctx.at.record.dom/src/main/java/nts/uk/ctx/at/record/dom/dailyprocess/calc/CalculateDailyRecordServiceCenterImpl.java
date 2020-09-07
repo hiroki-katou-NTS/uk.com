@@ -16,8 +16,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.personnelcostsetting.PersonnelCostSettingAdapter;
@@ -25,25 +23,13 @@ import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemService;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.errorcheck.CalculationErrorCheckService;
-import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
-import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
-import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
@@ -51,17 +37,26 @@ import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpConditionRepository;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.history.DateHistoryItem;
-import nts.uk.shr.com.time.TimeWithDayAttr;
-
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -166,7 +161,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 			
 			val itemId = attendanceItemService.getTimeAndCountItem(AttendanceItemType.DAILY_ITEM);//.stream().map(tc -> tc.getItemId()).collect(Collectors.toList());
 			val beforeChangeItemId = new ArrayList<ItemValue>(itemId);
-			List<EditStateOfDailyPerformance> notReCalcItems = new ArrayList<>();
+			List<EditStateOfDailyAttd> notReCalcItems = new ArrayList<>();
 			
 			val optionalItems = getOptionalItemsFromRepository(companySet);
 			val empConds = getEmpConditions(companySet,optionalItems);
@@ -180,7 +175,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				itemId.clear();
 				itemId.addAll(beforeChangeItemId);
 				
-				List<Integer> useOpIds = getUseOpIds(optionalItems, empConds, integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(),formula);
+				List<Integer> useOpIds = getUseOpIds(optionalItems, empConds, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),formula);
 				
 				val itemIdsDeletedEdit = itemId.stream().filter(id ->{
 					return isIncludeId(id,useOpIds);
@@ -308,7 +303,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 
 			val itemId = attendanceItemService.getTimeAndCountItem(AttendanceItemType.DAILY_ITEM);//.stream().map(tc -> tc.getItemId()).collect(Collectors.toList());
 			val beforeChangeItemId = new ArrayList<ItemValue>(itemId);
-			List<EditStateOfDailyPerformance> notReCalcItems = new ArrayList<>();
+			List<EditStateOfDailyAttd> notReCalcItems = new ArrayList<>();
 			
 			val setting = Optional.of(commonCompanySettingForCalc.getCompanySetting());
 			
@@ -321,7 +316,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				itemId.clear();
 				itemId.addAll(beforeChangeItemId);
 				
-				List<Integer> useOpIds = getUseOpIds(optionalItems, empConds, integrationOfDaily.getAffiliationInfor().getEmployeeId(), integrationOfDaily.getAffiliationInfor().getYmd(),formula);
+				List<Integer> useOpIds = getUseOpIds(optionalItems, empConds, integrationOfDaily.getEmployeeId(), integrationOfDaily.getYmd(),formula);
 				
 				val itemIdsDeletedEdit = itemId.stream().filter(id ->{
 					return isIncludeId(id,useOpIds);
@@ -336,8 +331,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				integrationOfDaily.setEditState(notReCalcItems);
 				
 				//時間・回数の勤怠項目だけ　編集状態テーブルから削除
-				editStateOfDailyPerformanceRepository.deleteByListItemId(integrationOfDaily.getAffiliationInfor().getEmployeeId(),
-																		 integrationOfDaily.getAffiliationInfor().getYmd(), 
+				editStateOfDailyPerformanceRepository.deleteByListItemId(integrationOfDaily.getEmployeeId(),
+																		 integrationOfDaily.getYmd(), 
 																		 itemIdsDeletedEdit);
 			});
 
@@ -464,8 +459,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(recordList);
 		val map = convertMap(recordList);
 		List<GeneralDate> sortedymd = recordList.stream()
-								  			.sorted((first,second) -> first.getAffiliationInfor().getYmd().compareTo(second.getAffiliationInfor().getYmd()))
-								  			.map(IntegrationOfDaily -> IntegrationOfDaily.getAffiliationInfor().getYmd())
+								  			.sorted((first,second) -> first.getYmd().compareTo(second.getYmd()))
+								  			.map(IntegrationOfDaily -> IntegrationOfDaily.getYmd())
 								  			.collect(Collectors.toList());
 		//開始日
 		val minGeneralDate = sortedymd.get(0);
@@ -481,13 +476,13 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		for(IntegrationOfDaily record:recordList) {
 			
 			//締め一覧から、ymdが計算可能な日かを判定する
-			if(!isCalc(closureByEmpId, record.getAffiliationInfor().getYmd())) {
+			if(!isCalc(closureByEmpId, record.getYmd())) {
 				returnList.add(ManageCalcStateAndResult.successCalc(record));
 				continue;
 			}
 			
 			//nowIntegrationの労働制取得
-			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(record.getAffiliationInfor().getYmd(),record.getAffiliationInfor().getEmployeeId());
+			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(record.getYmd(),record.getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
 				
 				Optional<ManagePerPersonDailySet> personSetting = factoryManagePerPersonDailySet.create(companyId, companyCommonSetting, record, nowWorkingItem.get().getValue());
@@ -498,8 +493,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 				ManageCalcStateAndResult result = calculate.calculate(calcOption, record, 
 													companyCommonSetting,
 													personSetting.get(),
-													findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(-1)),
-													findAndGetWorkInfo(record.getAffiliationInfor().getEmployeeId(),map,record.getAffiliationInfor().getYmd().addDays(1)));
+													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(-1)),
+													findAndGetWorkInfo(record.getEmployeeId(),map,record.getYmd().addDays(1)));
 				if(result.isCalc()) {
 					result.getIntegrationOfDaily().getWorkInformation().changeCalcState(CalculationState.Calculated);
 				}
@@ -557,10 +552,10 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 
 	//社員毎の実績にまとめる
 	private Map<String, List<IntegrationOfDaily>> getPerEmpIdRecord(List<IntegrationOfDaily> integrationOfDailys) {
-		List<String> empIdList = integrationOfDailys.stream().map(integrationOfDaily -> integrationOfDaily.getAffiliationInfor().getEmployeeId()).distinct().collect(Collectors.toList());
+		List<String> empIdList = integrationOfDailys.stream().map(integrationOfDaily -> integrationOfDaily.getEmployeeId()).distinct().collect(Collectors.toList());
 		Map<String, List<IntegrationOfDaily>> returnMap = new HashMap<>();
 		for(String empId : empIdList) {
-			val integrations = integrationOfDailys.stream().filter(integrationOfDaily -> integrationOfDaily.getAffiliationInfor().getEmployeeId().equals(empId)).collect(Collectors.toList());
+			val integrations = integrationOfDailys.stream().filter(integrationOfDaily -> integrationOfDaily.getEmployeeId().equals(empId)).collect(Collectors.toList());
 			returnMap.put(empId, integrations);
 		}
 		return returnMap;
@@ -575,7 +570,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	private Map<GeneralDate, IntegrationOfDaily> convertMap(List<IntegrationOfDaily> integrationOfDailys) {
 		Map<GeneralDate, IntegrationOfDaily> map = new HashMap<>();
 		integrationOfDailys.forEach(integrationOfDaily ->{
-			map.put(integrationOfDaily.getAffiliationInfor().getYmd(), integrationOfDaily);
+			map.put(integrationOfDaily.getYmd(), integrationOfDaily);
 		});
 		return map;
 	}
@@ -589,7 +584,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 */
 	private Optional<WorkInfoOfDailyPerformance> findAndGetWorkInfo(String empId, Map<GeneralDate, IntegrationOfDaily> mapIntegration, GeneralDate addDays) {
 		if(mapIntegration.containsKey(addDays)) {
-			return Optional.of(mapIntegration.get(addDays).getWorkInformation());
+			WorkInfoOfDailyPerformance data = new WorkInfoOfDailyPerformance(empId, addDays, mapIntegration.get(addDays).getWorkInformation());
+			return Optional.of(data);
 		}
 		else {
 			return workInformationRepository.find(empId, addDays);
@@ -607,7 +603,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		List<String> idList = getAllEmpId(integrationOfDaily);
 		idList.forEach(id -> {
 			//特定の社員IDに一致しているintegrationに絞る
-			val integrationOfDailys = integrationOfDaily.stream().filter(tc -> tc.getAffiliationInfor().getEmployeeId().equals(id)).collect(Collectors.toList());
+			val integrationOfDailys = integrationOfDaily.stream().filter(tc -> tc.getEmployeeId().equals(id)).collect(Collectors.toList());
 			//特定社員の開始～終了を取得する
 			val createdDatePriod = getDateSpan(integrationOfDailys);
 			//Map<特定の社員ID、開始～終了>に追加する
@@ -620,7 +616,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * 社員の一覧取得
 	 */
 	private List<String> getAllEmpId(List<IntegrationOfDaily> integrationOfDailys){
-		return integrationOfDailys.stream().distinct().map(integrationOfDaily->integrationOfDaily.getAffiliationInfor().getEmployeeId()).collect(Collectors.toList());
+		return integrationOfDailys.stream().distinct().map(integrationOfDaily->integrationOfDaily.getEmployeeId()).collect(Collectors.toList());
 	}
 	
 	/**
@@ -629,8 +625,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 	 * @return 開始～終了
 	 */
 	private DatePeriod getDateSpan(List<IntegrationOfDaily> integrationOfDailys) {
-		val sortedIntegration = integrationOfDailys.stream().sorted((first,second) -> first.getAffiliationInfor().getYmd().compareTo(second.getAffiliationInfor().getYmd())).collect(Collectors.toList());
-		return new DatePeriod(sortedIntegration.get(0).getAffiliationInfor().getYmd(), sortedIntegration.get(sortedIntegration.size() - 1).getAffiliationInfor().getYmd());
+		val sortedIntegration = integrationOfDailys.stream().sorted((first,second) -> first.getYmd().compareTo(second.getYmd())).collect(Collectors.toList());
+		return new DatePeriod(sortedIntegration.get(0).getYmd(), sortedIntegration.get(sortedIntegration.size() - 1).getYmd());
 	}
 	
 	/**
@@ -648,8 +644,8 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		val integraListByRecordAndEmpId = getIntegrationOfDailyByEmpId(integrationList);
 		
 		List<GeneralDate> sortedymd = integrationList.stream()
-								  					 	.sorted((first,second) -> first.getAffiliationInfor().getYmd().compareTo(second.getAffiliationInfor().getYmd()))
-								  					 	.map(integrationOfDaily -> integrationOfDaily.getAffiliationInfor().getYmd())
+								  					 	.sorted((first,second) -> first.getYmd().compareTo(second.getYmd()))
+								  					 	.map(integrationOfDaily -> integrationOfDaily.getYmd())
 								  					 	.collect(Collectors.toList());
 		
 		val minGeneralDate = sortedymd.get(0);
@@ -661,7 +657,7 @@ public class CalculateDailyRecordServiceCenterImpl implements CalculateDailyReco
 		for(IntegrationOfDaily record : integrationList) {
 
 			//nowIntegrationの労働制取得
-			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(record.getAffiliationInfor().getYmd(),record.getAffiliationInfor().getEmployeeId());
+			Optional<Entry<DateHistoryItem, WorkingConditionItem>> nowWorkingItem = masterData.getItemAtDateAndEmpId(record.getYmd(),record.getEmployeeId());
 			if(nowWorkingItem.isPresent()) {
 				Optional<ManagePerPersonDailySet> personSetting = factoryManagePerPersonDailySet.create(companyId.v(), companyCommonSetting, record, nowWorkingItem.get().getValue());
 				if(!personSetting.isPresent())

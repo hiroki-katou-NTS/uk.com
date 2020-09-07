@@ -25,7 +25,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampRecord;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ReservationArt;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampTypeDisplay;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -123,8 +123,9 @@ public class EmpInfoTerminal implements DomainAggregate {
 		Relieve relieve = new Relieve(recept.convertAuthcMethod(), StampMeans.TIME_CLOCK);
 
 		// 打刻種類
-		Stamp stamp = new Stamp(new StampNumber(recept.getIdNumber()), recept.getDateTime(), relieve,
-				recept.createStampType(this), refActualResults, false, null);
+		Stamp stamp = new Stamp(contractCode, 
+				new StampNumber(recept.getIdNumber()), recept.getDateTime(), relieve,
+				recept.createStampType(this), refActualResults, Optional.empty());
 		return Pair.of(stamp, stampRecord);
 	}
 
@@ -137,18 +138,18 @@ public class EmpInfoTerminal implements DomainAggregate {
 	}
 
 	// [pvt-1] 打刻の打刻記録を作成
-	private StampRecord createStampRecord(ReservationReceptionData reservReceptData) {
-		// TODO: contractCode
-		return new StampRecord(new StampNumber(reservReceptData.getIdNumber()), reservReceptData.getDateTime(), false,
-				ReservationArt.RESERVATION, Optional.of(empInfoTerCode));
-	}
+		private StampRecord createStampRecord(ReservationReceptionData reservReceptData) {
+			// TODO: contractCode
+			return new StampRecord(new ContractCode(""), new StampNumber(reservReceptData.getIdNumber()),
+					reservReceptData.getDateTime(), new StampTypeDisplay(""), Optional.of(empInfoTerCode));
+		}
 
-	// [pvt-2] 予約の打刻記録を作成
-	private StampRecord createStampRecord(StampReceptionData recept) {
-		// TODO: contractCode
-		return new StampRecord(new StampNumber(recept.getIdNumber()), recept.getDateTime(), true, ReservationArt.NONE,
-				Optional.of(empInfoTerCode));
-	}
+		// [pvt-2] 予約の打刻記録を作成
+		private StampRecord createStampRecord(StampReceptionData recept) {
+			// TODO: contractCode
+			return new StampRecord(new ContractCode(""), new StampNumber(recept.getIdNumber()), recept.getDateTime(),
+					new StampTypeDisplay(""), Optional.of(empInfoTerCode));
+		}
 
 	// [pvt-3] 弁当予約を作成
 	private AtomTask createReserv(ConvertTimeRecordReservationService.Require require,

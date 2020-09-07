@@ -2,18 +2,23 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.Map;
 import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
-import nts.uk.ctx.at.record.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPSettingRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetting;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayCalcMethodSet;
@@ -21,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAd
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
+import nts.uk.ctx.at.shared.dom.statutoryworkinghours.DailyStatutoryLaborTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -61,8 +67,8 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					new CacheCarrier(),
 					companyId,
 					daily.getAffiliationInfor().getEmploymentCode().toString(),
-					daily.getAffiliationInfor().getEmployeeId(),
-					daily.getAffiliationInfor().getYmd(),
+					daily.getEmployeeId(),
+					daily.getYmd(),
 					nowWorkingItem.getLaborSystem(),
 					companySetting.getUsageSetting());
 
@@ -76,10 +82,10 @@ public class FactoryManagePerPersonDailySetImpl implements FactoryManagePerPerso
 					nowWorkingItem.getLaborSystem());
 	
 			/*加給*/
-			Optional<BonusPaySettingCode> bpCode = daily.getAffiliationInfor().getBonusPaySettingCode();
+			BonusPaySettingCode bpCode = daily.getAffiliationInfor().getBonusPaySettingCode();
 			Optional<BonusPaySetting> bonusPaySetting = Optional.empty();
-			if(bpCode.isPresent()) {
-				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, bpCode.get());
+			if(bpCode != null) {
+				bonusPaySetting = this.bPSettingRepository.getBonusPaySetting(companyId, bpCode);
 			}
 		
 			/*平日時*/

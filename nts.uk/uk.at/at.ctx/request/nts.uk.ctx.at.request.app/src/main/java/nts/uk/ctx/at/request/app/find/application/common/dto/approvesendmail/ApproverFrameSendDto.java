@@ -28,7 +28,8 @@ public class ApproverFrameSendDto {
 							x.getRepresenterName(),
 							x.getApprovalReason(),
 							x.getSMail(),
-							x.getSMailAgent()))
+							x.getSMailAgent(),
+							x.getApproverInListOrder()))
 					.collect(Collectors.toList())
 				);
 	}

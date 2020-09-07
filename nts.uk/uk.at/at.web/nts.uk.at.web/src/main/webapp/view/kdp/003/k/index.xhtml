@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script type='text/javascript'>
+				var dialogSize = { width: 470, height: 510 };
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
+			<com:stylefile path="./kdp003.k.style.css" />
+			<com:scriptfile path="./kdp003.k.vm.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div data-bind="i18n: 'KDP003_12'"></div>
+				<div id="tree-grid"></div>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="2" class="proceed x-large" data-bind="click: pushData, i18n: 'KDP003_14'"></button>
+				<button tabindex="3" class="large" data-bind="click: closeDialog, i18n: 'KDP003_15'"></button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

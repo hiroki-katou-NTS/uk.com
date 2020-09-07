@@ -12,5 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteStampSettingCommand {
+	
 	private int pageNo;
+	
+	private Integer mode;
 }

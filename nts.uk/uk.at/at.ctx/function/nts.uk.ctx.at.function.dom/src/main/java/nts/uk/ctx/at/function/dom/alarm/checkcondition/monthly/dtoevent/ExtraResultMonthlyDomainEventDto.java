@@ -30,11 +30,11 @@ public class ExtraResultMonthlyDomainEventDto {
 	private String displayMessage;
 	/**月次のチェック条件*/
 	private AttendanceItemConAdapterDto checkConMonthly;
-	
+	/**所定公休日数チェック条件	 */
 	private SpecHolidayCheckConFunImport specHolidayCheckCon ;
-	
+	/**月別実績の残数チェック	 */
 	private CheckRemainNumberMonFunImport checkRemainNumberMon;
-	
+	/** 36協定チェック条件	 */
 	private AgreementCheckCon36FunImport agreementCheckCon36;
 	
 	public ExtraResultMonthlyDomainEventDto(String errorAlarmCheckID, int sortBy, String nameAlarmExtraCon, boolean useAtr, int typeCheckItem, boolean messageBold, String messageColor, String displayMessage,

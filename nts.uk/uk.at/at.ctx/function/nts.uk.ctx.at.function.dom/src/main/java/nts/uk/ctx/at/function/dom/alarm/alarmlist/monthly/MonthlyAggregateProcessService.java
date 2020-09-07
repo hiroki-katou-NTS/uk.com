@@ -196,10 +196,12 @@ public class MonthlyAggregateProcessService {
 		
 		parallelManager.forEach(CollectionUtil.partitionBySize(employees, 100), emps -> {
 			List<String> employeeIds = emps.stream().map( e ->e.getId()).collect(Collectors.toList());
-			 	
-			Map<String, List<RegulationInfoEmployeeResult>> listTargetMap = erAlWorkRecordCheckAdapter.filterEmployees(period, 
-																														employeeIds, 
-																														monthlyErAl.stream().map(c -> c.getExtractTargetCondition()).collect(Collectors.toList()));
+			//対象者をしぼり込む
+			Map<String, List<RegulationInfoEmployeeResult>> listTargetMap = erAlWorkRecordCheckAdapter
+					.filterEmployees(period, 
+									employeeIds, 
+									monthlyErAl.stream()
+									.map(c -> c.getExtractTargetCondition()).collect(Collectors.toList()));
 			monthlyErAl.stream().forEach(eral -> {
 				synchronized (this) {
 					if(shouldStop.get()) {
@@ -207,21 +209,23 @@ public class MonthlyAggregateProcessService {
 					}
 				}
 				//対象者を絞り込む
-				List<String> listEmployeeID = listTargetMap.get(eral.getExtractTargetCondition().getId()).stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
+				List<String> listEmployeeID = listTargetMap.get(eral.getExtractTargetCondition().getId())
+						.stream().map(c -> c.getEmployeeId())
+						.collect(Collectors.toList());
 				
 				//対象者の件数をチェック : 対象者　≦　0
 				if(!listEmployeeID.isEmpty()) {
+					//月次のアラームチェック条件 
 					MonAlarmCheckCon monAlarmCheckCon = (MonAlarmCheckCon) eral.getExtractionCondition();
-					
+					//月別実績の固定抽出条件
 					List<FixedExtraMonFunImport> listFixed = fixedExtraMonFunAdapter.getByEralCheckID(monAlarmCheckCon.getMonAlarmCheckConID());
+					//月別実績の抽出条件
 					List<ExtraResultMonthlyDomainEventDto> listExtra = extraResultMonthlyFunAdapter.getListExtraResultMonByListEralID(monAlarmCheckCon.getArbExtraCon());
 					
 					List<EmployeeSearchDto> employeesDto = emps.stream().filter(c-> listEmployeeID.contains(c.getId())).collect(Collectors.toList());
-					//tab 2
-					/***/
+					//tab 2　固定抽出条件
 					listValueExtractAlarm.addAll(this.extractMonthlyFixed(listFixed, period, employeesDto, companyID));
-					//tab 3
-					/***/
+					//tab 3　任意抽出条件
 					listValueExtractAlarm.addAll(this.extraResultMonthlyV2(companyID, listExtra, period, employeesDto));
 				}
 				
@@ -234,19 +238,28 @@ public class MonthlyAggregateProcessService {
 		return listValueExtractAlarm;
 	}
 
-	//tab 2
+	/**
+	 * tab 2 固定抽出条件
+	 * @param listFixed
+	 * @param period
+	 * @param employees
+	 * @param companyID
+	 * @return
+	 */
 	private List<ValueExtractAlarm> extractMonthlyFixed(List<FixedExtraMonFunImport> listFixed,
 			DatePeriod period, List<EmployeeSearchDto> employees, String companyID) {
 		List<ValueExtractAlarm> listValueExtractAlarm = new ArrayList<>();
 		List<YearMonth> lstYearMonth = period.yearMonthsBetween();
 		List<String> empIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
 		
-		List<FixedExtraMonFunImport> monUnconfirm = listFixed.stream().filter(f -> f.isUseAtr() && f.getFixedExtraItemMonNo() == SysFixedMonPerEralEnum.MON_UNCONFIRMED.value)
+		List<FixedExtraMonFunImport> monUnconfirm = listFixed.stream()
+				.filter(f -> f.isUseAtr() && f.getFixedExtraItemMonNo() == SysFixedMonPerEralEnum.MON_UNCONFIRMED.value)
 				.collect(Collectors.toList());
 		// FIX_EXTRA_ITEM_MON_NO
 		if(!monUnconfirm.isEmpty()) {
 			//月次未確認
 			String checkedValue = TextResource.localize("KAL010_130");
+			//「月の本人確認」を取得
 			List<ValueExtractAlarm> unconfirmeds = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmeds(empIds,  lstYearMonth);
 			for(ValueExtractAlarm item : unconfirmeds) {
 				item.setCheckedValue(Optional.ofNullable(checkedValue));
@@ -255,12 +268,14 @@ public class MonthlyAggregateProcessService {
 			
 		}
 		
-		List<FixedExtraMonFunImport> monCorrection = listFixed.stream().filter(f -> f.isUseAtr() && f.getFixedExtraItemMonNo() == SysFixedMonPerEralEnum.WITH_MON_CORRECTION.value)
+		List<FixedExtraMonFunImport> monCorrection = listFixed.stream()
+				.filter(f -> f.isUseAtr() && f.getFixedExtraItemMonNo() == SysFixedMonPerEralEnum.WITH_MON_CORRECTION.value)
 				.collect(Collectors.toList());
 		// FIX_EXTRA_ITEM_MON_NO
 		if(!monCorrection.isEmpty()) {
-			//// 2:管理者未承認
+			// 2:管理者未承認
 			String checkedValue = TextResource.localize("KAL010_131");
+			//管理者未確認を取得
 			List<ValueExtractAlarm> corrections = sysFixedCheckConMonAdapter.checkMonthlyUnconfirmedsAdmin(empIds,  lstYearMonth);
 			for(ValueExtractAlarm item : corrections) {
 				item.setCheckedValue(Optional.ofNullable(checkedValue));
@@ -269,7 +284,8 @@ public class MonthlyAggregateProcessService {
 			
 		}
 		
-		List<FixedExtraMonFunImport> deadline = listFixed.stream().filter(f -> f.isUseAtr() && f.getFixedExtraItemMonNo() == SysFixedMonPerEralEnum.CHECK_DEADLINE_HOLIDAY.value)
+		List<FixedExtraMonFunImport> deadline = listFixed.stream()
+				.filter(f -> f.isUseAtr() && f.getFixedExtraItemMonNo() == SysFixedMonPerEralEnum.CHECK_DEADLINE_HOLIDAY.value)
 				.collect(Collectors.toList());
 		if(!deadline.isEmpty()) {
 			//代休の消化期限チェック
@@ -297,8 +313,12 @@ public class MonthlyAggregateProcessService {
 		String KAL010_100 = TextResource.localize("KAL010_100");
 
 		GeneralDate today = GeneralDate.today();
+		//代休管理設定
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
+		
 		int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
+		
+		//社員の締め情報を取得
 		Map<String, Closure> closureMap = ClosureService.getClosureByEmployees(
 				ClosureService.createRequireM7(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
 				cacheCarrier, empIDs, today);
@@ -393,7 +413,14 @@ public class MonthlyAggregateProcessService {
 		}
 	}
 	
-	//tab 3
+	/**
+	 * tab 3 月次のアラームチェック条件．任意抽出条件
+	 * @param companyId
+	 * @param listExtra
+	 * @param period
+	 * @param employees
+	 * @return
+	 */
 		private List<ValueExtractAlarm> extraResultMonthlyV2(String companyId,List<ExtraResultMonthlyDomainEventDto> listExtra,
 				DatePeriod period, List<EmployeeSearchDto> employees) {
 			String KAL010_206 = TextResource.localize("KAL010_206");
@@ -404,8 +431,9 @@ public class MonthlyAggregateProcessService {
 			YearMonthPeriod yearMonthPeriod = new YearMonthPeriod(period.start().yearMonth(), period.end().yearMonth());
 			
 			List<Integer> itemIds = Arrays.asList(202,203,204,205,206);
-			
-			List<ExtraResultMonthlyDomainEventDto> checkRemain = listExtra.stream().filter(c -> c.isUseAtr() && c.getTypeCheckItem() == TypeMonCheckItemImport.CHECK_REMAIN_NUMBER.value).collect(Collectors.toList());
+			//残数チェック
+			List<ExtraResultMonthlyDomainEventDto> checkRemain = listExtra.stream()
+					.filter(c -> c.isUseAtr() && c.getTypeCheckItem() == TypeMonCheckItemImport.CHECK_REMAIN_NUMBER.value).collect(Collectors.toList());
 			if(!checkRemain.isEmpty()){
 				String alarmName = KAL010_100;
 				
@@ -442,8 +470,8 @@ public class MonthlyAggregateProcessService {
 						String checkerValue = null;
 						switch (typeCheckVacation) {
 
-							//ANNUAL_PAID_LEAVE
 						case ANNUAL_PAID_LEAVE:
+							//社員の月毎の確定済み年休を取得する
 							List<AnnualLeaveUsageImport> annualLeaveUsageImports = getConfirmMonthlyAdapter.getListAnnualLeaveUsageImport(sid, yearMonthPeriod);
 							for (AnnualLeaveUsageImport annualLeaveUsageImport : annualLeaveUsageImports) {
 								boolean check = false;
@@ -488,8 +516,8 @@ public class MonthlyAggregateProcessService {
 							}
 							break;
 							
-							//SUB_HOLIDAY
 						case SUB_HOLIDAY:
+							//社員の月毎の確定済み代休を取得する
 							List<DayoffCurrentMonthOfEmployeeImport> dayoffCurrentMonthOfEmployeeImports = getConfirmMonthlyAdapter.lstDayoffCurrentMonthOfEmployee(sid, yearMonthPeriod.start(), yearMonthPeriod.end());
 							for (DayoffCurrentMonthOfEmployeeImport dayoffCurrentMonthOfEmployeeImport : dayoffCurrentMonthOfEmployeeImports) {
 								boolean check = false;
@@ -534,8 +562,8 @@ public class MonthlyAggregateProcessService {
 							}
 							break;
 							
-							//PAUSE
 						case PAUSE:
+							//社員の月毎の確定済み振休を取得する
 							List<StatusOfHolidayImported> statusOfHolidayImporteds = absenceReruitmentManaAdapter.getDataCurrentMonthOfEmployee(sid, yearMonthPeriod.start(), yearMonthPeriod.end());
 							for (StatusOfHolidayImported statusOfHolidayImported : statusOfHolidayImporteds) {
 								boolean check = false;
@@ -580,8 +608,8 @@ public class MonthlyAggregateProcessService {
 							
 							break;
 							
-							//YEARLY_RESERVED
 						case YEARLY_RESERVED:
+							//社員の月毎の確定済み積立年休を取得する
 							List<ReserveLeaveUsageImport> reserveLeaveUsageImports = getConfirmMonthlyAdapter.getListReserveLeaveUsageImport(sid, yearMonthPeriod);
 							for (ReserveLeaveUsageImport reserveLeaveUsageImport : reserveLeaveUsageImports) {
 								boolean check = false;
@@ -625,10 +653,9 @@ public class MonthlyAggregateProcessService {
 								}
 							}
 							break;	
-							
-							//SPECIAL_HOLIDAY
 						case SPECIAL_HOLIDAY:
 							List<Integer> listSpeCode = checkRemainNumberMonFunImport.getListItemID();
+							//社員の月毎の確定済み特別休暇を取得する
 							List<SpecialHolidayImported> specialHolidayImporteds= complileInPeriodOfSpecialLeaveAdapter.getSpeHoliOfConfirmedMonthly(sid, yearMonthPeriod.start(), yearMonthPeriod.end(), listSpeCode);
 							for (SpecialHolidayImported specialHolidayImported : specialHolidayImporteds) {
 								boolean check = false;
@@ -684,6 +711,7 @@ public class MonthlyAggregateProcessService {
 			
 			// 36協定エラー時間  && 36協定アラーム時間 
 			List<String> empIds = employees.stream().map(c -> c.getId()).collect(Collectors.toList());
+			//月別実績データを取得する
 			Map<String, List<MonthlyRecordValuesImport>> monthlyRecords = checkResultMonthlyAdapter.getListMonthlyRecords(empIds, yearMonthPeriod, itemIds);
 			listExtra.stream().filter(c -> c.isUseAtr() && (c.getTypeCheckItem() == 1 || c.getTypeCheckItem() == 2)).forEach(extra -> {
 				//End HoiDD #1000436
@@ -710,7 +738,8 @@ public class MonthlyAggregateProcessService {
 					}
 				}
 			});
-			List<ExtraResultMonthlyDomainEventDto> over3 = listExtra.stream().filter(c -> c.isUseAtr() && c.getTypeCheckItem() > 3).collect(Collectors.toList());
+			List<ExtraResultMonthlyDomainEventDto> over3 = listExtra.stream()
+					.filter(c -> c.isUseAtr() && c.getTypeCheckItem() > 3).collect(Collectors.toList());
 			if(!over3.isEmpty()){
 				Map<String, Map<YearMonth, Map<String,String>>> resultsData = new HashMap<>();
 				//No 257

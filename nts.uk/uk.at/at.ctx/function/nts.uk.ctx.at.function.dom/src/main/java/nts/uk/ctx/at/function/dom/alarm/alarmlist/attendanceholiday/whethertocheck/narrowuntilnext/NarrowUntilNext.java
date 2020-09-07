@@ -19,7 +19,12 @@ public class NarrowUntilNext {
 	
 	@Inject
 	private CheckExistHolidayGrantAdapter checkExistHolidayGrantAdapter;
-	
+	/**
+	 * 次回年休付与日までの期間の条件で絞り込む
+	 * @param employeeId
+	 * @param annualHolidayAlarmCondition
+	 * @return
+	 */
 	public boolean checkNarrowUntilNext(String employeeId,AnnualHolidayAlarmCondition annualHolidayAlarmCondition) {
 		//「次回年休付与日までの期間の条件で絞り込む」をチェックする
 		boolean check = annualHolidayAlarmCondition.getAlarmCheckSubConAgr().isNarrowUntilNext();

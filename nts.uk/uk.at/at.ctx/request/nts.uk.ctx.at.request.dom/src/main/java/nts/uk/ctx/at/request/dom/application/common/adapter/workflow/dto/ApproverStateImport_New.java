@@ -32,4 +32,6 @@ public class ApproverStateImport_New {
 	private String approverEmail;
 	
 	private String representerEmail;
+	
+	private Integer approverInListOrder;
 }

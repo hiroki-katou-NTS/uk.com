@@ -217,8 +217,8 @@ module nts.uk.com.view.cmm018.a {
                             self.cpA([]);
                         }
                     }
-//                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
-//                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);   
+                    __viewContext.viewModel.viewmodelSubA.reloadGridN(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);
+                    vmbase.ProcessHandler.resizeColumn(self.cpA(), self.tabSelected(), vmbase.MODE.MATOME);   
                 });
                 //---subscribe tab selected---
                 self.tabSelected.subscribe(function(codeChanged) {
@@ -1059,7 +1059,7 @@ module nts.uk.com.view.cmm018.a {
                                 lstAppType: lstAppType,
                                 overLap: overLap
                                 }
-                }else{
+                }else {
                     //最新の期間履歴の重なるフラグをチェックする(check 重なるフラグ của period history mới nhất)
                     if(self.listHistory()[0].overLap == '※' || self.listHistory()[0].overLap  == true){
                         overLap = true;
@@ -1227,7 +1227,14 @@ module nts.uk.com.view.cmm018.a {
                                 if(self.currentCode() == -1){
                                     lstCompany = self.findAppIdForCom(self.idOld());
                                 }else{
-                                    lstCompany = self.findAppIdForCom(self.currentCode());    
+                                    if (data.overlap) {
+                                        lstCompany = self.findAppIdForCom(self.currentCode()); 
+                                    }else {
+                                        let index = _.findIndex(self.listHistory(), function(o) { return o.endDate == "9999/12/31"; });
+                                        lstCompany = self.findAppIdForCom(self.listHistory()[index].id); 
+                                    }
+                                    
+                                       
                                 }
                                 
                                _.each(lstCompany.lstCompanyRoot, function(item){
@@ -1243,8 +1250,13 @@ module nts.uk.com.view.cmm018.a {
                                 let lstWorkplace;
                                 if(self.currentCode() == -1){
                                     lstWorkplace = self.findAppIdForWp(self.idOld());
-                                }else{
-                                    lstWorkplace = self.findAppIdForWp(self.currentCode());    
+                                }else{     
+                                    if (data.overlap) {
+                                        lstWorkplace = self.findAppIdForWp(self.currentCode()); 
+                                    }else {
+                                        let index = _.findIndex(self.listHistory(), function(o) { return o.endDate == "9999/12/31"; });
+                                        lstWorkplace = self.findAppIdForWp(self.listHistory()[index].id); 
+                                    }
                                 }
                                 _.each(lstWorkplace.lstWorkplaceRoot, function(item){
                                     let empR = item.workplace.employmentRootAtr;
@@ -1260,7 +1272,12 @@ module nts.uk.com.view.cmm018.a {
                                 if(self.currentCode() == -1){
                                     lstPerson = self.findAppIdForPs(self.idOld());
                                 }else{
-                                    lstPerson = self.findAppIdForPs(self.currentCode());    
+                                    if (data.overlap) {
+                                        lstPerson = self.findAppIdForPs(self.currentCode()); 
+                                    }else {
+                                        let index = _.findIndex(self.listHistory(), function(o) { return o.endDate == "9999/12/31"; });
+                                        lstPerson = self.findAppIdForPs(self.listHistory()[index].id); 
+                                    }
                                 }
                                _.each(lstPerson.lstPersonRoot, function(item){
                                     let empR = item.person.employmentRootAtr;

@@ -10,7 +10,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.EmploymentRoleDataDto;
 import nts.uk.ctx.at.auth.app.find.employmentrole.dto.RoleDto;
-import nts.uk.ctx.at.auth.dom.adapter.RoleAdaptor;
+import nts.uk.ctx.at.auth.dom.adapter.role.RoleAdaptor;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmploymentRoleRepository;
 import nts.uk.shr.com.context.AppContexts;
 

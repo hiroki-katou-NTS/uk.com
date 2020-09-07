@@ -1,0 +1,43 @@
+@import url("base.css");
+
+.failure-message {
+	color: red;
+	font-size: 2.5rem;
+}
+
+.confirm-message {
+	color: #c55a11;
+	font-size: 2.2rem;
+	padding-left: 40px;
+	padding-top: 20px;
+}
+
+.error-content {
+	font-size: 1.5rem;
+	padding-top: 20px;
+}
+
+.retry-btn {
+	width: 180px;
+	height: 120px !important;
+}
+
+.password-login-btn {
+	width: 180px;
+	height: 120px !important;
+	white-space: pre-line !important;
+}
+
+.cancel-btn {
+	height: 85px !important;
+}
+
+.btn-panel {
+	justify-content: space-evenly;
+	width: 550px;
+	align-items: flex-end;
+}
+
+.contents {
+	padding: 20px;
+}

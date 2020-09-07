@@ -12,6 +12,8 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workingcondition.NotUseAtr;
+import nts.uk.ctx.at.shared.dom.workingcondition.TimeZone;
 
 /**
  * The Class KshmtWorkCatTimeZone.
@@ -76,4 +78,23 @@ public class KshmtWorkCatTimeZone extends KshmtTimeZone implements Serializable 
 	protected Object getKey() {
 		return this.kshmtWorkCatTimeZonePK;
 	}
+
+	public KshmtWorkCatTimeZone(KshmtWorkCatTimeZonePK kshmtWorkCatTimeZonePK) {
+		super();
+		this.kshmtWorkCatTimeZonePK = kshmtWorkCatTimeZonePK;
+	}
+	
+	public TimeZone toDomain() {
+		return new TimeZone(NotUseAtr.valueOf(this.getUseAtr()), this.kshmtWorkCatTimeZonePK.getCnt(), this.getStartTime(), this.getEndTime());
+		
+	}
+	
+	public static KshmtWorkCatTimeZone toEntity(TimeZone timeZone,String historyId,int workCategoryAtr) {
+		KshmtWorkCatTimeZone data =  new KshmtWorkCatTimeZone(new KshmtWorkCatTimeZonePK(historyId, workCategoryAtr, timeZone.getCnt()));
+		data.setUseAtr(timeZone.getUseAtr().value);
+		data.setStartTime(timeZone.getStart().valueAsMinutes());
+		data.setEndTime(timeZone.getEnd().valueAsMinutes());
+		return data;
+	}
+	
 }

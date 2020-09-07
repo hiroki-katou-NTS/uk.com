@@ -75,11 +75,11 @@ public class EmployeeInfoFinder {
 		String contractCode = AppContexts.user().contractCode();
 		String companyId = AppContexts.user().companyId();
 		startLetters = startLetters == null ? "" : startLetters;
-		Optional<StampCardEditing> _stamCardEdit = stamCardEditRepo.get(companyId);
-		if (!_stamCardEdit.isPresent()) {
+		StampCardEditing _stamCardEdit = stamCardEditRepo.get(companyId);
+		if (_stamCardEdit == null) {
 			return "";
 		}
-		int maxLengthCardNo = _stamCardEdit.get().getDigitsNumber().v();
+		int maxLengthCardNo = _stamCardEdit.getDigitsNumber().v();
 		Optional<String> lastCardNo = stampCardRepo.getLastCardNo(contractCode, startLetters, maxLengthCardNo);
 		if (!lastCardNo.isPresent()) {
 			throw new BusinessException("Msg_505");

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.app.find.stamp.management.personalengraving.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.StampToSuppress;
 
 /**
@@ -8,6 +9,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.S
  *
  */
 @Data
+@NoArgsConstructor
 public class StampToSuppressDto {
 	private boolean goingToWork;
 	private boolean departure;

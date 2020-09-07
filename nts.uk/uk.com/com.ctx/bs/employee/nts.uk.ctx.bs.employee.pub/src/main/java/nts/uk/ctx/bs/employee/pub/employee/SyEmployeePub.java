@@ -239,5 +239,14 @@ public interface SyEmployeePub {
 	 * @return
 	 */
 	PersonInfoJhn001Export getEmployeeInfo(String sid);
+
+	/**
+	 * request list 515
+	 * 
+	 * @param sid
+	 * @return
+	 */
+	List<EmployeeDataMngInfoExport> findBySidNotDel(List<String> sids);
 	
+	List<ResultRequest596Export> getEmpNotDeletedLstBySids(List<String> sids);
 }

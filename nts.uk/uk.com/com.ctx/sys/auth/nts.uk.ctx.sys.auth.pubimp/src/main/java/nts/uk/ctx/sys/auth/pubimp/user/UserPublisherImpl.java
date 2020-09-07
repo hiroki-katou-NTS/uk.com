@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
+import nts.uk.ctx.sys.auth.dom.algorithm.AcquireUserIDFromEmpIDService;
 import nts.uk.ctx.sys.auth.dom.user.User;
 import nts.uk.ctx.sys.auth.dom.user.UserRepository;
 import nts.uk.ctx.sys.auth.pub.user.UserDto;
@@ -25,6 +26,9 @@ public class UserPublisherImpl implements UserPublisher {
 	
 	@Inject
 	private IPersonInfoPub iPersonInfoPub;
+	
+	@Inject
+	private AcquireUserIDFromEmpIDService getUserIDFromEmpIDService;
 	
 	@Override
 	public Optional<UserDto> getUserInfo(String userId) {
@@ -129,5 +133,10 @@ public class UserPublisherImpl implements UserPublisher {
 			User user = opUser.get();
 			return Optional.of(this.fromDomain(user));
 		}
+	}
+
+	@Override
+	public Optional<String> getUserIDByEmpID(String employeeID) {
+		return getUserIDFromEmpIDService.getUserIDByEmpID(employeeID);
 	}
 }

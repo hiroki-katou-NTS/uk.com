@@ -5,7 +5,6 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 @Getter
 /**　nts.uk.ctx.at.record.dom.premiumtime.PremiumTime　参照 */
-/** TODO: ベトナム製造者がやったシェアコンテキストに日別勤怠を移動するソースをマージしたらこのクラスを消す　*/
 /** 割増時間 */
 public class PremiumTime {
 	// 割増時間NO - primitive value

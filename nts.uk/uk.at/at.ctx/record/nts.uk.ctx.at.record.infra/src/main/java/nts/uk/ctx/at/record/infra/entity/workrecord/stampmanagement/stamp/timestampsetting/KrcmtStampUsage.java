@@ -3,11 +3,14 @@ package nts.uk.ctx.at.record.infra.entity.workrecord.stampmanagement.stamp.times
 import java.io.Serializable;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 /**
@@ -24,8 +27,10 @@ public class KrcmtStampUsage extends ContractUkJpaEntity implements Serializable
 
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public KrcmtStampUsagePk pk;
+	/** 会社ID */
+	@Id
+	@Column(name = "CID")
+	public String companyId;
 
 	/**
 	 * 氏名選択
@@ -67,7 +72,22 @@ public class KrcmtStampUsage extends ContractUkJpaEntity implements Serializable
 
 	@Override
 	protected Object getKey() {
-		return this.pk;
+		return this.companyId;
+	}
+	
+	@PreUpdate
+    private void setUpdateContractInfo() {
+		this.contractCd = AppContexts.user().contractCode();
+	}
+	
+	public void update(SettingsUsingEmbossing domain) {
+		
+		this.nameSelection = domain.isName_selection() ? 1 : 0;
+		this.fingerAuthentication = domain.isFinger_authc() ? 1 : 0;
+		this.ICCardStamp = domain.isIc_card() ? 1 : 0;
+		this.personStamp = domain.isIndivition() ? 1 : 0;
+		this.portalStamp = domain.isPortal() ? 1 : 0;
+		this.smartPhoneStamp = domain.isSmart_phone() ? 1 : 0;
 	}
 
 }

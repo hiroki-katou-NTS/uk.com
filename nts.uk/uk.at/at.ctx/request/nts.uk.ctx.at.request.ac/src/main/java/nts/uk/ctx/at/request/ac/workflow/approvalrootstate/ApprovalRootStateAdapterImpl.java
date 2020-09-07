@@ -123,7 +123,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 										z.getRepresenterID(), 
 										z.getRepresenterName(), 
 										z.getApprovalDate(), 
-										z.getApprovalReason()))
+										z.getApprovalReason(),
+										z.getApproverInListOrder()))
 								.collect(Collectors.toList()), 
 								y.getConfirmAtr(), 
 								y.getAppDate()))
@@ -348,7 +349,8 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 											z.getApprovalDate(),
 											z.getApprovalReason(),
 											approverMail,
-											representerMail);
+											representerMail,
+											z.getApproverInListOrder());
 									}).collect(Collectors.toList()), 
 								y.getConfirmAtr(),
 								y.getAppDate());

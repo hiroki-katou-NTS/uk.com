@@ -3,13 +3,13 @@ package nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.receive;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
 import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.EmpInfoTerminal;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeCalArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SetPreClockArt;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampType;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -177,7 +177,7 @@ public class StampReceptionData implements ReceptionData {
 
 		case GO_OUT:
 			if (empInfo.getCreateStampInfo().getConvertEmbCate().getOutSupport() == NotUseAtr.USE)
-				return ChangeClockArt.FIX;
+				return ChangeClockArt.START_OF_SUPPORT;
 			return ChangeClockArt.GO_OUT;
 
 		case RETURN:
@@ -189,7 +189,7 @@ public class StampReceptionData implements ReceptionData {
 			return ChangeClockArt.TEMPORARY_WORK;
 
 		case RETURN_START:
-			return ChangeClockArt.FIX;
+			return ChangeClockArt.START_OF_SUPPORT;
 
 		case GO_EN:
 			return ChangeClockArt.END_OF_SUPPORT;
@@ -201,7 +201,7 @@ public class StampReceptionData implements ReceptionData {
 
 		case VACATION_ENTRANCE:
 		case EARLY_ENTRANCE:
-			return ChangeClockArt.FIX;
+			return ChangeClockArt.START_OF_SUPPORT;
 
 		case TEMPORARY_ENTRANCE:
 			return ChangeClockArt.TEMPORARY_SUPPORT_WORK;

@@ -65,7 +65,7 @@ module nts.uk.at.view.ksm007.a {
             $(".nts-input").trigger("validate");
 
             if(self.registerForm().workplaces().length === 0) {
-                $('#workplace-list').ntsError('set', resource.getMessage("MsgB_2", resource.getText('Com_Workplace')), "MsgB_2");
+                $('#workplace-list').ntsError('set', resource.getMessage("MsgB_2", [resource.getText('Com_Workplace')]), "MsgB_2");
             }
 
             if (nts.uk.ui.errors.hasError()) {
@@ -104,9 +104,6 @@ module nts.uk.at.view.ksm007.a {
 
         checkWorkplaceGroupRegisterResult(res) {
             let dfd = $.Deferred();
-            dfd.resolve();
-            let self = this;
-            let lstWKPID = res.lstWKPID;
             let resultProcess = res.replaceResult;
             let listWorkplaceInfo = res.listWorkplaceInfo;
             let listWorkplaceGroupInfo = res.workplaceGroupResult;
@@ -125,16 +122,18 @@ module nts.uk.at.view.ksm007.a {
                     }
                 }
             }
-            if( bundledErrors.length > 0) {
-                nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors }).then(() => {
-                   dfd.resolve();
+            if (res.resProcessResult) {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                    if( bundledErrors.length > 0) {
+                        nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
+                    }   
+                    dfd.resolve();
                 });
             } else {
-                if (res.resProcessResult) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                       dfd.resolve();
-                    });
+                if( bundledErrors.length > 0) {
+                    nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
                 }
+                dfd.resolve();
             }
             
             return dfd.promise();
