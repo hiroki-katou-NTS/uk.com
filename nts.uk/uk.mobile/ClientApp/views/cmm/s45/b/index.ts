@@ -465,7 +465,8 @@ export class CmmS45BComponent extends Vue {
             //「D：申請内容確認（承認）」画面へ遷移する
             this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': item.id }).then(() => {
                 //reload
-                self.getData(false, true);
+                // self.getData(false, true);
+                self.getData(true, false);
             });
         } else {
             if (!item.frameStatus) {//TH đơn không được approve thì bỏ qua
