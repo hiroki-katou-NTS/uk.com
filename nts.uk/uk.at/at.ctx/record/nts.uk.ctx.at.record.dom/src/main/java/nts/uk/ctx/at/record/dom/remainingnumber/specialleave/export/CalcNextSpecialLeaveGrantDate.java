@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo;
+package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,9 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonthDayHolder.Difference;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
+import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday.calculateremainnum.RemainSpecialHoidayCalculation;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday.updateremainnum.RemainSpecialHolidayUpdating;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -20,10 +22,11 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnualLeaveEmpBasicInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ErrorFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice.RequireM2;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
+//import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice.RequireM2;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeBaseYear;
@@ -70,7 +73,9 @@ public class CalcNextSpecialLeaveGrantDate {
 				
 				
 				
+				
 			} else { // 使用しないとき
+				
 				
 				
 				
@@ -197,19 +202,61 @@ public class CalcNextSpecialLeaveGrantDate {
 			// ドメインモデル「特別休暇．付与情報．付与基準日」をチェックする
 			Optional<GrantDate> grantDate = specialHolidays.get().getGrantRegular().getGrantDate();
 			
+			ArrayList<String> sids = new ArrayList<String>();
+			sids.add(employeeId);
+			
 			if ( grantDate.isPresent() ){
 				if ( grantDate.get().equals(GrantDate.EMP_GRANT_DATE)){ // 入社日を付与基準日とする
 					
-					// ooooo
+					// 社員ID（List）と指定期間から所属会社履歴項目を取得 【Request：No211】
+					Optional<AffCompanyHistImport> affCompanyHistImportOpt = Optional.empty();
 					
-	//				// 社員ID（List）と指定期間から所属会社履歴項目を取得 【Request：No211】
-	//				List<AffCompanyHistImport> listAffCompanyHistImport = this.syCompanyRecordAdapter
-	//						.getAffCompanyHistByEmployee(new ArrayList<>(listAppId), period);
-	////				if (listAffCompanyHistImport.isEmpty() || listAffCompanyHistImport.stream()
-	////						.flatMap(x -> x.getLstAffComHistItem().stream()).collect(Collectors.toList()).isEmpty()) {
-	////					oneMonthApprovalStatusDto.setMessageID("Msg_875");
-	////					return oneMonthApprovalStatusDto;
-	////				}
+					// ドメインモデル「所属会社履歴（社員別）」を全て取得する
+					List<AffCompanyHistImport> listAffCompanyHistImport 
+						= require.listAffCompanyHistImport(sids, period.get());
+					
+					// 社員で絞込み
+					List<AffCompanyHistImport> listAffCompanyHistImport_employeeId
+						= listAffCompanyHistImport.stream()
+							.filter(x -> x.getEmployeeId().equals(employeeId))
+							.collect(Collectors.toList());
+					
+					if ( !listAffCompanyHistImport_employeeId.isEmpty() ){
+						
+						// 開始日＜＝パラメータ．期間．終了日 (startdate< = param. period. finishdate)
+						// AND パラメータ．期間．開始日 ＜＝ 終了日 (param. period. startdate <= finish date)
+						AffCompanyHistImport affCompanyHistImport
+							= listAffCompanyHistImport_employeeId.stream().findFirst().get();
+						
+						List<AffComHistItemImport> listAffCompanyHistImportList
+							= affCompanyHistImport.getLstAffComHistItem().stream()
+								.filter(x -> x.getDatePeriod().start().beforeOrEquals(period.get().start()))
+								.filter(x -> x.getDatePeriod().end().afterOrEquals(period.get().end()))
+								.collect(Collectors.toList());
+						
+						if ( !listAffCompanyHistImportList.isEmpty()){
+							affCompanyHistImportOpt = Optional.of(new AffCompanyHistImport());
+							affCompanyHistImportOpt.get().setEmployeeId(employeeId);
+							affCompanyHistImportOpt.get().setLstAffComHistItem(listAffCompanyHistImportList);
+						}
+					}
+					
+					// 所得した一番大きい「入社日」をパラメータ「付与基準日」にセットする
+					if ( affCompanyHistImportOpt.isPresent() ){
+						Optional<AffComHistItemImport> affComHistItemImport
+							= affCompanyHistImportOpt.get().getLstAffComHistItem().stream()
+								.sorted((a,b)->a.getDatePeriod().start().compareTo(b.getDatePeriod().start()))
+								.findFirst();
+						if (affComHistItemImport.isPresent()){
+							grantStandardDate = Optional.of(affComHistItemImport.get().getDatePeriod().start());
+						}
+					}
+					
+	//				if (listAffCompanyHistImport.isEmpty() || listAffCompanyHistImport.stream()
+	//						.flatMap(x -> x.getLstAffComHistItem().stream()).collect(Collectors.toList()).isEmpty()) {
+	//					oneMonthApprovalStatusDto.setMessageID("Msg_875");
+	//					return oneMonthApprovalStatusDto;
+	//				}
 				
 				} else if ( grantDate.get().equals(GrantDate.GRANT_BASE_HOLIDAY)){ // 年休付与基準日を付与基準日とする
 					
@@ -511,17 +558,6 @@ public class CalcNextSpecialLeaveGrantDate {
 		return false;		
 	}
 	
-}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 //	/**
 //	 * 次回特休付与を計算
@@ -668,18 +704,18 @@ public class CalcNextSpecialLeaveGrantDate {
 //		return nextAnnualLeaveGrantList;
 //	}
 	
-	public static interface RequireM1 {
-
-		List<AffCompanyHistImport> listAffCompanyHistImport = this.syCompanyRecordAdapter
-				.getAffCompanyHistByEmployee(new ArrayList<>(listAppId), period);
-		
-		
-		Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId);
-		
-		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
-	}
+//	public static interface RequireM1 {
+//		
+//		Optional<AnnualLeaveEmpBasicInfo> employeeAnnualLeaveBasicInfo(String employeeId);
+//		
+//		EmployeeImport employee(CacheCarrier cacheCarrier, String empId);
+//		
+//		List<AffCompanyHistImport> listAffCompanyHistImport(
+//				ArrayList<String> sids, DatePeriod period);
+//	}
 	
-	public static interface RequireM2 extends RequireM1, GetClosureStartForEmployee.RequireM1, GetNextSpecialLeaveGrant.RequireM1 {
-		
-	}
+//	public static interface RequireM2 extends RequireM1, GetClosureStartForEmployee.RequireM1, GetNextSpecialLeaveGrant.RequireM1 {
+//		
+//	}
 }
+

@@ -200,18 +200,13 @@ public class TestAnnualLeave {
 						aggrPeriod,
 						mode,
 						criterialDate,
-						isGetNextMonthData,
+//						isGetNextMonthData,
 						isCalcAttendanceRate,
 						Optional.of(isOverWrite),
 						Optional.of(testDataForOverWriteList),
 						Optional.empty(), 	// 前回の年休の集計結果
-						noCheckStartDate,	// 集計開始日を締め開始日とする　（締め開始日を確認しない）
-						Optional.of(isOutShortRemain), // 不足分付与残数データ出力区分
-						Optional.of(aggrPastMonthMode), // 過去月集計モード
-						Optional.empty(),	// 年月
-						Optional.empty(),
-						Optional.empty(),
-						Optional.empty());
+						Optional.of(aggrPastMonthMode) // 過去月集計モード
+						);
 				
 				if ( aggrResultOfAnnualLeaveOpt.isPresent() ){
 					

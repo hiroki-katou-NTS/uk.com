@@ -82,13 +82,23 @@ public class GetAnnAndRsvRemNumWithinPeriod {
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
 	 * @return 年休積立年休の集計結果
 	 */
-	public static AggrResultOfAnnAndRsvLeave algorithm(RequireM2 require, CacheCarrier cacheCarrier, String companyId, 
-			String employeeId, DatePeriod aggrPeriod, InterimRemainMngMode mode, GeneralDate criteriaDate, 
-			boolean isGetNextMonthData, boolean isCalcAttendanceRate, Optional<Boolean> isOverWrite,
+	public static AggrResultOfAnnAndRsvLeave algorithm(
+			RequireM2 require, 
+			CacheCarrier cacheCarrier, 
+			String companyId, 
+			String employeeId, 
+			DatePeriod aggrPeriod, 
+			InterimRemainMngMode mode, 
+			GeneralDate criteriaDate, 
+			boolean isGetNextMonthData, 
+			boolean isCalcAttendanceRate, 
+			Optional<Boolean> isOverWrite,
 			Optional<List<TmpAnnualLeaveMngWork>> tempAnnDataforOverWriteList,
 			Optional<List<TmpReserveLeaveMngWork>> tempRsvDataforOverWriteList,
-			Optional<Boolean> isOutputForShortage, Optional<Boolean> noCheckStartDate,
-			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, Optional<AggrResultOfReserveLeave> prevReserveLeave,
+			Optional<Boolean> isOutputForShortage, 
+			Optional<Boolean> noCheckStartDate,
+			Optional<AggrResultOfAnnualLeave> prevAnnualLeave, 
+			Optional<AggrResultOfReserveLeave> prevReserveLeave,
 			Optional<MonAggrCompanySettings> companySets,
 			Optional<MonAggrEmployeeSettings> employeeSets,
 			Optional<MonthlyCalculatingDailys> monthlyCalcDailys) {
