@@ -22,26 +22,30 @@
 		<ui:define name="content">
       <div id="contents-area">
 			  <div id="content-top">
-          <div data-bind="visible:titleLine().displayFlag">
-            <!-- A1_1 -->
-            <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL048_2')}</div>
-            <!-- A1_2 -->
-            <label style="margin-left: 20px" data-bind="text: titleLine().layoutCode" ></label>
-            <!-- A1_3 -->
-            <label data-bind="text: titleLine().layoutName"></label>
-            <!-- A1_4 -->
-            <label style="margin-left: 100px" data-bind="text: titleLine().directText">FindText</label>
-			    </div>  
+          <com:ko-if bind="titleLine().displayFlag">
+            <div>
+              <!-- A1_1 -->
+              <div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL048_2')}</div>
+              <!-- A1_2 -->
+              <label style="margin-left: 20px" data-bind="text: titleLine().layoutCode" ></label>
+              <!-- A1_3 -->
+              <label data-bind="text: titleLine().layoutName"></label>
+              <!-- A1_4 -->
+              <label style="margin-left: 100px" data-bind="text: titleLine().directText">FindText</label>
+            </div>
+         </com:ko-if>  
         </div>
         <!-- A2 -->
         <hr/>
         <div>
-          <div data-bind="visible:itemNameLine().displayFlag" class="text-input">
-            <!-- A3_1 -->
-            <div data-bind="ntsFormLabel: {constraint: 'ItemName'}" >#{i18n.getText('KDL048_3')}</div>
-            <!-- A3_2 -->
-            <input id ="A3_2" data-bind="ntsTextEditor: texteditor" class="input"/>
-          </div>
+          <com:ko-if bind="itemNameLine().displayFlag">
+            <div class="text-input">
+              <!-- A3_1 -->
+              <div data-bind="ntsFormLabel: {constraint: 'ItemName'}" >#{i18n.getText('KDL048_3')}</div>
+              <!-- A3_2 -->
+              <input id ="A3_2" data-bind="ntsTextEditor: texteditor" class="input"/>
+            </div>
+          </com:ko-if>
         </div>
         <div id="content-left">
           <!-- A4 -->
@@ -74,7 +78,7 @@
         </div>
         <div id="content-right">
           <!-- A9 -->
-          <table id="table_Hd_Grant"
+          <table id="table-Hd-Grant"
             data-bind="ntsGridList: {
               name: '#{i18n.getText('KDL048_10')}',
               options: dataSelectedItemList,
