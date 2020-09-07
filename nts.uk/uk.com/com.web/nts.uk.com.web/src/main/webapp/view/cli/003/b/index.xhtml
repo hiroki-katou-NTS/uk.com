@@ -123,6 +123,7 @@
                     </tr>	
                 </com:ko-if>	
                   <!-- B4-end -->
+                  <com:ko-if bind="showTarget()">	
                   <!-- B5-start -->
                   <tr>
                     <td><div id="B5_1"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_15')}</div></td>
@@ -165,8 +166,9 @@
                         <span data-bind="text: operatorEmployeeCount"></span>
                       </td>
                     </tr>					
-                </com:ko-if>	
+                  </com:ko-if>	
                   <!-- B6-end -->
+                </com:ko-if>	
                   <!-- B7-start -->
                   <tr>
                     <td></td>

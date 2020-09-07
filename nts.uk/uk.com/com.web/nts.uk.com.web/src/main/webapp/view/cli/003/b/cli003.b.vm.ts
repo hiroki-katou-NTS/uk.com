@@ -162,6 +162,7 @@ module nts.uk.com.view.cli003.b {
     currentLogSetCode: KnockoutObservable<string> = ko.observable("");
     currentLogSetName: KnockoutObservable<string> = ko.observable("");
     recordType: KnockoutObservable<string> = ko.observable("");
+    showTarget: KnockoutObservable<boolean>  =ko.observable(true);
     currentRecordTypeName: KnockoutObservable<string> = ko.observable("");
     currentDataTypeName: KnockoutObservable<string> = ko.observable("");
     dataType: KnockoutObservable<string> = ko.observable("");
@@ -294,12 +295,10 @@ module nts.uk.com.view.cli003.b {
       vm.startDateString.subscribe((value) => {
         vm.b5_2dateValue().startDate = value;
         vm.b5_2dateValue.valueHasMutated();
-        console.log(vm.b5_2dateValue());
     });
     vm.endDateString.subscribe((value) => {
       vm.b5_2dateValue().endDate = value;
       vm.b5_2dateValue.valueHasMutated();
-      console.log(vm.b5_2dateValue());
     });
     vm.b5_2dateValue = ko.observable({
         startDate: moment.utc().format("YYYY/MM/DD"),
@@ -463,6 +462,11 @@ module nts.uk.com.view.cli003.b {
         vm.dataType("");
         vm.currentDataTypeName("");
       }
+      if(logSet.recordType === 9 || logSet.recordType === 10 || logSet.recordType === 11){
+        vm.showTarget(false);
+      }else {
+        vm.showTarget(true);
+      } 
     }
     getRecordTypeName(currentRecordType : number) : string{
       const vm = this;
@@ -519,7 +523,8 @@ module nts.uk.com.view.cli003.b {
                 })
               })
         })
-    }
+    } 
+
     jumpToScreenF() { 
       const vm = this;
       const noOne = nts.uk.text.format(this.$i18n("CLI003_57"), 0);
