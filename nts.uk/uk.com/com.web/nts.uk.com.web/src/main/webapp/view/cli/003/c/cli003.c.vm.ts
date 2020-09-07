@@ -4,8 +4,6 @@ module nts.uk.com.view.cli003.c {
   import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
   import ListType = kcp.share.list.ListType;
   import SelectType = kcp.share.list.SelectType;
-  import setShared = nts.uk.ui.windows.setShared;
-  import getShared = nts.uk.ui.windows.getShared;
 
 
   export class UnitModel {
@@ -182,21 +180,33 @@ module nts.uk.com.view.cli003.c {
 
     closeDialog() {
       const vm = this;
-      vm.$window.close();
+      if(vm.formLabelTitle() === vm.$i18n("CLI003_23")){
+        vm.$window
+        .storage("targetEmployeeCount", undefined)
+        .then(() => vm.$window.storage("selectedEmployeeCodeTarget", undefined))
+        .then( () => vm.$window.close());
+      }
+      if(vm.formLabelTitle() === vm.$i18n("CLI003_16")){
+        vm.$window
+        .storage("operatorEmployeeCount", undefined)
+        .then(() => vm.$window.storage("selectedEmployeeCodeOperator", undefined))
+        .then( () => vm.$window.close());
+      }
     }
 
     setTargetEmployee() {
       const vm = this;
       vm.targetNumber(nts.uk.text.format(vm.$i18n("CLI003_57"), vm.selectedEmployeeCodeTarget().length));
       if(vm.formLabelTitle() === vm.$i18n("CLI003_23")){
-        setShared("targetEmployeeCount", vm.targetNumber());
-        setShared("selectedEmployeeCodeTarget", vm.selectedEmployeeCodeTarget());
+        vm.$window.storage("targetEmployeeCount", vm.targetNumber())
+        .then(() => vm.$window.storage("selectedEmployeeCodeTarget", vm.selectedEmployeeCodeTarget()))
+        .then(() => vm.$window.close());
       }
       if(vm.formLabelTitle() === vm.$i18n("CLI003_16")){
-        setShared("operatorEmployeeCount", vm.targetNumber());
-        setShared("selectedEmployeeCodeOperator", vm.selectedEmployeeCodeTarget());
+        vm.$window.storage("operatorEmployeeCount", vm.targetNumber())
+        .then(() => vm.$window.storage("selectedEmployeeCodeOperator", vm.selectedEmployeeCodeTarget()))
+        .then(() => vm.$window.close());
       }
-      vm.closeDialog();
     }
 
     constructor(params: any) {
@@ -205,10 +215,13 @@ module nts.uk.com.view.cli003.c {
       vm.initComponentC(); 
       vm.initComponentKCP005();
       vm.initComponentCCG001();
-      vm.formLabelTitle(getShared("CLI003_C_FormLabel"));
-      // vm.selectedEmployeeCodeTarget(getShared("oldSelectedEmployeeCodeTarget"));
-      // vm.employeeList(getShared("oldEmployeeList"));
+      vm.$window
+      .storage("CLI003_C_FormLabel")
+      .then((data) =>{
+        vm.formLabelTitle(data);
+      })
     }
+
     created(params: any) {
       const vm = this;
     }

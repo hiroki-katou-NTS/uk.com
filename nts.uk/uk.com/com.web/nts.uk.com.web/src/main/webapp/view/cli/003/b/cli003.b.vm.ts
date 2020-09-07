@@ -1,7 +1,5 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 module nts.uk.com.view.cli003.b {
-  import setShared = nts.uk.ui.windows.setShared;
-  import getShared = nts.uk.ui.windows.getShared;
   import service = nts.uk.com.view.cli003.b.service;
   
   export enum EMPLOYEE_SPECIFIC {
@@ -296,10 +294,12 @@ module nts.uk.com.view.cli003.b {
       vm.startDateString.subscribe((value) => {
         vm.b5_2dateValue().startDate = value;
         vm.b5_2dateValue.valueHasMutated();
+        console.log(vm.b5_2dateValue());
     });
     vm.endDateString.subscribe((value) => {
       vm.b5_2dateValue().endDate = value;
       vm.b5_2dateValue.valueHasMutated();
+      console.log(vm.b5_2dateValue());
     });
     vm.b5_2dateValue = ko.observable({
         startDate: moment.utc().format("YYYY/MM/DD"),
@@ -307,24 +307,30 @@ module nts.uk.com.view.cli003.b {
     });
     }
 
-    created(data :any) {
+    created() {
       const vm = this;
-      // if(data){
-      //   const currentData = data.data;
-      //   vm.currentCode(currentData.currentCode);
-      //   vm.checkFormatDate(currentData.checkFormatDate);
-      //   vm.selectedEmployeeCodeTarget(currentData.targetEmployeeIdList);
-      //   vm.b5_2dateValue(currentData.dateValue);
-      //   vm.startDateOperator(currentData.startDateOperator);
-      //   vm.endDateOperator(currentData.endDateOperator);
-      //   vm.b4_2SelectedRuleCode(currentData.selectedRuleCode);
-      //   vm.b6_2SelectedRuleCode(currentData.selectedRuleCodeOperator);
-      //   vm.selectedEmployeeCodeOperator(currentData.listEmployeeIdOperator);
-      //   vm.operatorEmployeeCount(currentData.operatorEmployeeCount);
-      //   vm.targetEmployeeCount(currentData.targetEmployeeCount);
-      // }
-      vm.getAllLogDisplaySet();
-      vm.obsSelectedLogSet();
+        vm.$window.storage('VIEW_B_DATA')
+        .then((data) =>{
+          if(data !== undefined){
+            vm.currentCode(data.currentCode);
+            vm.checkFormatDate(data.checkFormatDate);
+            vm.selectedEmployeeCodeTarget(data.targetEmployeeIdList);
+            vm.b5_2dateValue(data.dateValue);
+            vm.startDateOperator(data.startDateOperator);
+            vm.endDateOperator(data.endDateOperator);
+            vm.b4_2SelectedRuleCode(data.selectedRuleCode);
+            vm.b6_2SelectedRuleCode(data.selectedRuleCodeOperator);
+            vm.selectedEmployeeCodeOperator(data.listEmployeeIdOperator);
+            vm.operatorEmployeeCount(data.operatorEmployeeCount);
+            vm.targetEmployeeCount(data.targetEmployeeCount);
+          }
+        })
+        .then(() => vm.$window.storage('VIEW_B_DATA', undefined))
+        .then(() => {
+            vm.getAllLogDisplaySet();
+            vm.obsSelectedLogSet();
+        })
+
     }
     mounted() {
       const vm = this;
@@ -348,7 +354,6 @@ module nts.uk.com.view.cli003.b {
       service
         .getAllLogDisplaySet()
         .done((logDisplaySets: any) => {
-          console.log(logDisplaySets);
           if (logDisplaySets && logDisplaySets.length > 0) {
             vm.logDisplaySets(logDisplaySets);
             for (let i = 0; i < logDisplaySets.length; i++) {
@@ -440,7 +445,6 @@ module nts.uk.com.view.cli003.b {
     }
     setLogSetInfo(logSet: any) {
       const vm = this;
-      console.log(logSet);
       vm.currentLogDisplaySet(logSet);
       vm.logSetId(logSet.logSetId);
       vm.currentLogSetCode(vm.currentCode());
@@ -465,8 +469,8 @@ module nts.uk.com.view.cli003.b {
       return vm.recordTypeList().filter((recordType) => recordType.code === currentRecordType)[0].name;
     }
     getDataTypeName(currentDataType : number) : string{
-      const vm = this;
-      return vm.dataTypeList().filter((dataType) => dataType.code === currentDataType)[0].name;
+        const vm = this;
+        return currentDataType === null ? '' : vm.dataTypeList().filter((dataType) => dataType.code === currentDataType)[0].name;
     }
     getSystemTypeName(currentSystemType : number) : string{
       const vm = this;
@@ -484,50 +488,79 @@ module nts.uk.com.view.cli003.b {
     }
     openDialogForB4_3() {
       const vm = this;
-      setShared("CLI003_C_FormLabel", vm.$i18n("CLI003_23"));
-      vm.$window.modal("/view/cli/003/c/index.xhtml").then((result: any) => {
-        vm.targetEmployeeCount(getShared("targetEmployeeCount"));
-        vm.selectedEmployeeCodeTarget(getShared("selectedEmployeeCodeTarget"));
-      });
+      vm.$window
+        .storage("CLI003_C_FormLabel", vm.$i18n("CLI003_23"))
+        .then(() =>{
+            vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
+                vm.$window.storage("targetEmployeeCount").then((data)=>{
+                    if(data !== undefined)
+                    vm.targetEmployeeCount(data);
+                })
+                vm.$window.storage("selectedEmployeeCodeTarget").then((data)=>{
+                    if(data !== undefined)
+                    vm.selectedEmployeeCodeTarget(data);
+                })
+              })
+        })
     }
     openDialogForB6_3() {
       const vm = this;
-      setShared("CLI003_C_FormLabel", vm.$i18n("CLI003_16"));
-      vm.$window.modal("/view/cli/003/c/index.xhtml").then((result: any) => {
-        vm.operatorEmployeeCount(getShared("operatorEmployeeCount"));
-        vm.selectedEmployeeCodeOperator(getShared("selectedEmployeeCodeOperator"));
-      });
+      vm.$window
+        .storage("CLI003_C_FormLabel", vm.$i18n("CLI003_16"))
+        .then(() =>{
+            vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
+                vm.$window.storage("operatorEmployeeCount").then((data)=>{
+                    if(data !== undefined)
+                    vm.operatorEmployeeCount(data);
+                })
+                vm.$window.storage("selectedEmployeeCodeOperator").then((data)=>{
+                    if(data !== undefined)
+                    vm.selectedEmployeeCodeOperator(data);
+                })
+              })
+        })
     }
     jumpToScreenF() { 
       const vm = this;
       const noOne = nts.uk.text.format(this.$i18n("CLI003_57"), 0);
-      if(vm.b4_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne){
+      if(vm.b4_2SelectedRuleCode() === 1 && 
+      (vm.targetEmployeeCount() === noOne || 
+      vm.targetEmployeeCount() === "" || 
+      vm.targetEmployeeCount() === null)){
         vm.$dialog.error({ messageId: "Msg_1718" });
       }
-      else if(vm.b6_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne){
+      else if(vm.b6_2SelectedRuleCode() === 1 && 
+      (vm.operatorEmployeeCount() === noOne || 
+      vm.operatorEmployeeCount() === "" || 
+      vm.operatorEmployeeCount() === null)){
         vm.$dialog.error({ messageId: "Msg_1719" });
       }
-      else if( vm.b4_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne &&
-          vm.b6_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne){
+      else if( vm.b4_2SelectedRuleCode() === 1 &&  (vm.targetEmployeeCount() === noOne || 
+      vm.targetEmployeeCount() === "" || 
+      vm.targetEmployeeCount() === null) &&
+          vm.b6_2SelectedRuleCode() === 1 &&  (vm.operatorEmployeeCount() === noOne || 
+          vm.operatorEmployeeCount() === "" || 
+          vm.operatorEmployeeCount() === null)){
             vm.$dialog.error({ messageId: "[Msg_1718,Msg_1719]" });
       }else{
-        vm.$jump.self("/view/cli/003/f/index.xhtml",{
-          'data' : {
-            currentCode : vm.currentCode(),
-            operatorEmployeeCount : vm.operatorEmployeeCount(),
-            targetEmployeeCount : vm.targetEmployeeCount(),
-            logTypeSelectedCode : vm.recordType(),
-            dataTypeSelectedCode : vm.dataType(),
-            checkFormatDate : vm.checkFormatDate(),
-            targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
-            dateValue: vm.b5_2dateValue(),
-            startDateOperator: vm.startDateOperator(),
-            endDateOperator: vm.endDateOperator(),
-            selectedRuleCode: vm.b4_2SelectedRuleCode(),
-            selectedRuleCodeOperator: vm.b6_2SelectedRuleCode(),
-            listEmployeeIdOperator: vm.selectedEmployeeCodeOperator(),
-          }
-        });
+        const data = {
+          currentCode : vm.currentCode(),
+          operatorEmployeeCount : vm.operatorEmployeeCount(),
+          targetEmployeeCount : vm.targetEmployeeCount(),
+          logTypeSelectedCode : vm.recordType(),
+          dataTypeSelectedCode : vm.dataType(),
+          checkFormatDate : vm.checkFormatDate(),
+          targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
+          dateValue: vm.b5_2dateValue(),
+          startDateOperator: vm.startDateOperator(),
+          endDateOperator: vm.endDateOperator(),
+          selectedRuleCode: vm.b4_2SelectedRuleCode(),
+          selectedRuleCodeOperator: vm.b6_2SelectedRuleCode(),
+          listEmployeeIdOperator: vm.selectedEmployeeCodeOperator(),
+        }
+        vm.$window
+        .storage('VIEW_B_DATA', data)
+        .then(() => vm.$jump.self("/view/cli/003/f/index.xhtml",data));
       }
     }
   }

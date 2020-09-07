@@ -422,7 +422,7 @@ class DataCorrectLogModel {
     selectedRuleCodeOperator: KnockoutObservable<number> = ko.observable(2);
     listEmployeeIdOperator: KnockoutObservableArray<any> = ko.observableArray([]);
 
-    initComponentScreenF({data}:any) {
+    initComponentScreenF(data:any) {
         const vm = this
         if(data){
             vm.logTypeSelectedCode = ko.observable(data.logTypeSelectedCode);
@@ -534,7 +534,6 @@ class DataCorrectLogModel {
                                         vm.listLogBasicInforModel.push(logtemp);
                                     }
                                     countLog++;
-                                    console.log(vm.listLogBasicInforModel);
                                 } else {
                                     return false;
                                 }
@@ -1089,15 +1088,16 @@ class DataCorrectLogModel {
 
     previousScreenB() {
       const vm = this;
-      vm.$jump("/view/cli/003/b/index.xhtml",{
-          'data':vm.dataFromB.data,
-      });
+      vm.$jump("/view/cli/003/b/index.xhtml");
   }
 
     constructor(data: any) {
       super();
       const vm = this;
       vm.dataFromB = data;
+      vm.$window.storage('VIEW_B_DATA').then(data => {
+          console.log(data);
+      })
       vm.initComponentScreenF(vm.dataFromB);
     }
 
