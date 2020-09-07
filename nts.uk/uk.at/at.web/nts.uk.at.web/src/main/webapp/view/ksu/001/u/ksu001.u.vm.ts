@@ -205,12 +205,19 @@ module nts.uk.at.view.ksu001.u {
                 let numberDayOfMonth = self.getNumberOfDays(year, month);
                 for (let i = 1; i <= numberDayOfMonth; i++) {
                     let date = self.formatDate(new Date(year, month - 1, i));
+                    // dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EMPTY, Ksu001u.BG_COLOR_EMPTY, []));
                     let existDate = self.checkExistDate(date);
                     if (existDate) {
-                        self.removeExistDate(existDate);
-                        dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EMPTY, Ksu001u.BG_COLOR_EMPTY, []));
-                        dates.pop();
-                    }                    
+                        self.removeExistDate(existDate);                        
+                        // dates.pop();
+                    }         
+                    self.optionDates.push({
+                                            start: date,
+                                            textColor: '',
+                                            backgroundColor: '#FFFFFF',
+                                            listText: []
+                                        });
+                    self.optionDates.pop();                     
                 }
             }            
            
@@ -687,7 +694,7 @@ module nts.uk.at.view.ksu001.u {
             let basePubDateSplit = [];
             let baseEditDate = self.editDate();
             let publicDate = self.newPublicDate();
-            let publicDateSplit = publicDate.split('-');
+            let publicDateSplit = [];
             let editDate = self.newEditDate();
             let editDateSplit = [];
             let prevWeek = "";
@@ -695,6 +702,9 @@ module nts.uk.at.view.ksu001.u {
             let size = 0;       
             if(self.publicDate()){
                 basePubDateSplit = basePubDate.split('-');
+                publicDateSplit = publicDate.split('-');
+            } else {
+                return;
             }
 
             if ((self.newPublicDate() == self.publicDate()) && self.newEditDate() && self.newEditDate() !="") {
@@ -800,7 +810,9 @@ module nts.uk.at.view.ksu001.u {
             if(self.publicDate()){
                 basePubDateSplit = basePubDate.split('-');
                 publicDateSplit = publicDate.split('-');
-            } 
+            } else {
+                return;
+            }
 
             let prevMonth = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 2, parseInt(publicDateSplit[2])));
             let prevMonthSplit = prevMonth.split('-');
@@ -910,8 +922,9 @@ module nts.uk.at.view.ksu001.u {
             if(self.publicDate()){
                 basePubDateSplit = basePubDate.split('-');
                 publicDateSplit = publicDate.split('-');
+            } else {
+                return;
             }
-
             let numberDayOfNextMonth = 1;
             if (parseInt(publicDateSplit[1]) + 1 > 12) {
                 numberDayOfNextMonth = self.getNumberOfDays(parseInt(publicDateSplit[0]) + 1, 1);
@@ -945,11 +958,11 @@ module nts.uk.at.view.ksu001.u {
 
                 } else if(parseInt(basePubDateSplit[1]) < parseInt(nextMonthPublicDateSplit[1])){
                     if(self.newEditDate() && self.newEditDate() != ""){
-                        size = self.daysDifference(self.newEditDate(),nextMonthPublicDate);
+                        size = self.daysDifference(self.newEditDate(),nextMonthPublicDate) + 1;
                     } else {
                         size = self.daysDifference(self.newPublicDate(),nextMonthPublicDate);
                     }
-                    for(let i = 0 ; i <= size; i++ ){
+                    for(let i = 0 ; i < size; i++ ){
                         let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
                         let existDate = self.checkExistDate(date);
                         if(existDate){
