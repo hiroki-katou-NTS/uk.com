@@ -896,7 +896,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
                         let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
-                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '') ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '')) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
                         objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName);
 
                         // set Deco background
