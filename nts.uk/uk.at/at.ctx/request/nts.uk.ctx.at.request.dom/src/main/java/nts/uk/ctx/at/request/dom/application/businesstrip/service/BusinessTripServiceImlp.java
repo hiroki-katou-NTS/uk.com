@@ -286,8 +286,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             case OPTIONAL:
                 break;
             case NOT_REQUIRED:
-                if (StringUtil.isNullOrEmpty(wkTimeCd, true)) {
-                    throw new BusinessException("Msg_24", inputDate.toString());
+                if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
+                    throw new BusinessException("Msg_23", inputDate.toString());
                 }
                 break;
         }
