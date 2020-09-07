@@ -55,7 +55,7 @@ public class BentoMenuJoinBentoSettingDto {
 
     public static BentoMenuJoinBentoSettingDto setData(BentoMenuDto bentoMenuDto, BentoReservationSettingDto bentoReservationSettingDto){
 
-        if (bentoMenuDto == null){
+        if (bentoMenuDto == null || bentoReservationSettingDto == null){
             return null;
         }
         return new BentoMenuJoinBentoSettingDto(
