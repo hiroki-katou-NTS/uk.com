@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
         <com:ValidatorScript>
-            nts.uk.ctx.at.schedule.dom.shift.pattern.daily.Days
+            nts.uk.ctx.at.schedule.dom.shift.workcycle.NumOfWorkingDays
             nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode
             nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleName
         </com:ValidatorScript>
@@ -118,7 +118,7 @@
                                     <td><span data-bind="text: workTypeInfo"></span></td>
                                     <td><span data-bind="text: workingInfo"></span></td>
                                     <td><input tabindex="-1" class="nts-editor"
-                                               data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'Days', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }"
+                                               data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'NumOfWorkingDays', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }"
                                                style="width: 20px; text-align: center;"/> #{i18n.getText('KSM003_33')}
                                     </td>
                                 </tr>
