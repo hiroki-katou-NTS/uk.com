@@ -85,7 +85,7 @@ module nts.uk.com.view.cli002.a {
                 vm.getData(newValue);
             });
 
-            this.getItemList();
+            vm.getItemList();
         }
 
         private getData(systemType: number) {
@@ -109,7 +109,7 @@ module nts.uk.com.view.cli002.a {
                     pgInfomation.push(new PGInfomation(index + 1, item.functionName, false, false, false));
                 })
                 vm.dataSourceItem(pgInfomation);
-                this.getItemList();
+                vm.getItemList();
             }).always(() => vm.$blockui("clear")); 
         }
 
@@ -148,7 +148,14 @@ module nts.uk.com.view.cli002.a {
                 ntsControls: [
                     { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function() {}}
                 ],
-                features: []
+                features: [
+                    { name: 'ColumnFixing', fixingDirection: 'left',
+                                            showFixButtons: false,
+                                            columnSettings: [
+                                                                { columnKey: 'rowNumber', isFixed: true },
+                                                                { columnKey: 'functionName', isFixed: true }
+                                                            ]}
+                ]
             }).create();
         }
     }
