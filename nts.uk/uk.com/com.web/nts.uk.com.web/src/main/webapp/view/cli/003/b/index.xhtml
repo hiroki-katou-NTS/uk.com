@@ -170,8 +170,7 @@
                   <!-- B7-start -->
                   <tr>
                     <td></td>
-                    <td></td>
-                    <td><button class="x-large proceed" id="B7" data-bind="click:jumpToScreenF">#{i18n.getText('CLI003_25')}</button></td>
+                    <td id="B7-td"><button class="x-large proceed" id="B7" data-bind="click:jumpToScreenF">#{i18n.getText('CLI003_25')}</button></td>
                   </tr>	
                   <!-- B7-end -->
                 </table>
@@ -179,11 +178,6 @@
             </div>
           </div>
         </div>
-        <script>
-          document.getElementById("B7").addEventListener("click", (event) => {
-            event.preventDefault();
-          });
-        </script>
       </ui:define>
     </ui:composition>
   </body>

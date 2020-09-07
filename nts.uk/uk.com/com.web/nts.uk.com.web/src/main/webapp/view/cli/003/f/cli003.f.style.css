@@ -7,7 +7,7 @@
 
 #F2 {
 	width: 100%;
-	height: 100%;
+	height: 90%;
 	
 }
 #F2_2 {
@@ -21,7 +21,9 @@
 	margin-top: 2px;
 }
 
-
+#bottom-button {
+	text-align: center;
+}
 #igGridLog {
 	white-space: nowrap;
 }
