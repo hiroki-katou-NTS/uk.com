@@ -45,6 +45,11 @@ public class ListOfApplicationCmd {
 	private String applicantCD;
 	
 	/**
+	 * 申請者ID
+	 */
+	private String applicantID;	
+	
+	/**
 	 * 申請者名
 	 */
 	private String applicantName;
@@ -149,6 +154,7 @@ public class ListOfApplicationCmd {
 		lstApp.setWorkplaceName(workplaceName);
 		lstApp.setAppID(appID);
 		lstApp.setApplicantCD(applicantCD);
+		lstApp.setApplicantID(applicantID);
 		lstApp.setApplicantName(applicantName);
 		lstApp.setAppType(EnumAdaptor.valueOf(appType, ApplicationType.class));
 		lstApp.setAppContent(appContent);
@@ -175,7 +181,7 @@ public class ListOfApplicationCmd {
 	public Application toDomainApplication() {
 		Application application = Application.createFromNew(
 				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-				"", 
+				applicantID, 
 				EnumAdaptor.valueOf(appType, ApplicationType.class), 
 				new ApplicationDate(GeneralDate.fromString(appDate, "yyyy/MM/dd")), 
 				"", 

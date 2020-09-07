@@ -1140,6 +1140,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// 申請データを作成して申請一覧に追加 ( Tạo data application và thêm vào applicationList)
 		ListOfApplication result = new ListOfApplication();
 		result.setAppID(application.getAppID());
+		result.setApplicantID(application.getEmployeeID());
 		result.setPrePostAtr(application.getPrePostAtr().value);
 		result.setApplicantName(applicant.getBusinessName());
 		// result.setWorkplaceName(workplaceName);

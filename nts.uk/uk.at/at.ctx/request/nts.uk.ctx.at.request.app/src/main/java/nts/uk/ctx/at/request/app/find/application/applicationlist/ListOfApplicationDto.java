@@ -38,6 +38,11 @@ public class ListOfApplicationDto {
 	private String applicantCD;
 	
 	/**
+	 * 申請者ID
+	 */
+	private String applicantID;
+	
+	/**
 	 * 申請者名
 	 */
 	private String applicantName;
@@ -140,6 +145,7 @@ public class ListOfApplicationDto {
 				listOfApplication.getWorkplaceName(), 
 				listOfApplication.getAppID(), 
 				listOfApplication.getApplicantCD(), 
+				listOfApplication.getApplicantID(),
 				listOfApplication.getApplicantName(), 
 				listOfApplication.getAppType().value, 
 				listOfApplication.getAppContent(), 
