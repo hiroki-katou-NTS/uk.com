@@ -590,8 +590,9 @@ public class ApplicationListFinder {
     public ApplicationListDtoMobile getListFilter(ApplicationListCmdMobile applicationListCmdMobile) {
     	AppListExtractCondition appListExtractCondition = applicationListCmdMobile.getAppListExtractCondition().toDomain();
     	int device = MOBILE;
-    	AppListInfo appListInfo = applicationListCmdMobile.getAppListInfo().toDomain();
+    	// AppListInfo appListInfo = applicationListCmdMobile.getAppListInfo().toDomain();
     	// change value of appListExtractCondition and appListInfo
+    	AppListInfo appListInfo = new AppListInfo();
     	AppListInitOutput appListInitOutput = appListInitialRepository.getApplicationList(appListExtractCondition, device, appListInfo);
     	// set value
     	ApplicationListDtoMobile applicationListDtoMobile = new ApplicationListDtoMobile();
