@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Table Design Importer & Exporter</title>
 <link rel="stylesheet" type="text/css" href="main.css">
 <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -13,15 +13,37 @@
 </head>
 
 <body>
-<h1>Table Design Importer</h1>
+<h1>Table Design Importer & Exporter</h1>
 <table>
 	<tr>
-		<td colspan=3><div>import file folder path:</div></td>
+		<td><div>import file folder path:</div></td>
+		<td style="width:30px;"></td>
+		<td><div>export file folder path:</div></td>
 	</tr>
 	<tr>
 		<td>
-			<input type="file" id="folderpath" style="font-size:80%; width:340px;" webkitdirectory/>
+			<input type="text" id="folderpath_import" style="font-size:80%; width:340px;"/>
 			<button id="import">import</button>
+		</td>
+		<td></td>
+		<td>
+			<input type="text" id="folderpath_export" style="font-size:80%; width:340px;"/>
+			<button id="export">export</button>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			RDBMS:
+			<input type="radio" id="uk_import" name="ddl_type_import" value="uk" checked="checked" style="font-size:80%">UK
+			<input type="radio" id="mssql_import" name="ddl_type_import" value="sqlserver" style="font-size:80%">SqlServer
+			<input type="radio" id="pg_import" name="ddl_type_import" value="postgres" style="font-size:80%">Postgres
+		</td>
+		<td></td>
+		<td>
+			RDBMS:
+			<input type="radio" id="uk_export" name="ddl_type_export" value="uk" checked="checked" style="font-size:80%">UK
+			<input type="radio" id="mssql_export" name="ddl_type_export" value="sqlserver" style="font-size:80%">SqlServer
+			<input type="radio" id="pg_export" name="ddl_type_export" value="postgres" style="font-size:80%">Postgres
 		</td>
 	</tr>
 </table>

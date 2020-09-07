@@ -1,5 +1,6 @@
 package nts.uk.cnv.dom.tabledesign;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TableDesignRepository {
@@ -10,4 +11,5 @@ public interface TableDesignRepository {
 	boolean exists(String tableName);
 
 	Optional<TableDesign> find(String tablename);
+	public List<String> getAllTableList();
 }

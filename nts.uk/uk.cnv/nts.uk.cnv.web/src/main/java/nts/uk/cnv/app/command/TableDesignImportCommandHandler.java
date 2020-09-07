@@ -24,9 +24,7 @@ public class TableDesignImportCommandHandler extends CommandHandler<TableDesignI
 	protected void handle(CommandHandlerContext<TableDesignImportCommand> context) {
 
 		TableDesignImportCommand command = context.getCommand();
-
 		RequireImpl require = new RequireImpl(tableDesignRepository);
-
 		transaction.execute(() -> {
 			AtomTask at;
 			try {

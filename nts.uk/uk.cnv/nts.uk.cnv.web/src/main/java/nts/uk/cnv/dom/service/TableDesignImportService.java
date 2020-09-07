@@ -148,6 +148,7 @@ public class TableDesignImportService {
 			case BOOL:
 			case DATE:
 			case DATETIME:
+			case GUID:
 				break;
 			}
 

@@ -1,11 +1,15 @@
 package nts.uk.cnv.infra.repository;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
@@ -97,6 +101,7 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 	}
 
 	@Override
+	@SneakyThrows
 	public Optional<TableDesign> find(String tablename) {
 		String sql = "SELECT td FROM ScvmtTableDesign td WHERE td.name = :name";
 		Optional<ScvmtTableDesign> parent = this.queryProxy().query(sql, ScvmtTableDesign.class)
@@ -108,5 +113,23 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 		if(!parent.isPresent()) return Optional.empty();
 
 		return Optional.of(result.get().toDomain());
+	}
+
+	@Override
+	public List<String> getAllTableList() {
+		String sql = "SELECT td.NAME FROM SCVMT_TABLE_DESIGN td ORDER BY NAME ASC";
+		List<String> tablelist = new ArrayList<>();
+		try(PreparedStatement statement = this.connection().prepareStatement(sql)){
+			tablelist = new NtsResultSet(statement.executeQuery()).getList(rec -> {
+				return rec.getString("NAME");
+			});
+		}
+		 catch (SQLException e) {
+		}
+//		List<String> tablelist = this.queryProxy().query(sql, TableDesign.class).getList().stream()
+//				.map(td -> td.getName())
+//				.collect(Collectors.toList());
+
+		return tablelist;
 	}
 }

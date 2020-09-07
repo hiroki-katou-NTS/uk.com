@@ -17,14 +17,14 @@ public class TableDesign {
 	private String comment;
 	private GeneralDateTime createDate;
 	private GeneralDateTime updateDate;
-	
+
 	private List<ColumnDesign> columns;
 	private List<Indexes> indexes;
 
 	public String createDdl() {
 		return this.createDdl(new UkDataType());
 	}
-	
+
 	public String createDdl(DataTypeDefine datatypedefine) {
 		String index = "";
 		List<Indexes> indexList = indexes.stream().filter(idx -> idx.getConstraintType().equals("INDEX")).collect(Collectors.toList());
@@ -35,14 +35,17 @@ public class TableDesign {
 				indexList.stream()
 				.map(idx -> "CREATE INDEX " + idx.getName() + " ON " + name + " (" + String.join(",", idx.getColmns()) + ")")
 				.collect(Collectors.toList()));
+			index = index + ";";
 		}
-		
+
+		String tableContaint = tableContaint().isEmpty()
+				? ""
+				: ",\r\n" + tableContaint();
 		return "CREATE TABLE " + this.name + "(\r\n" +
 						columnContaint(datatypedefine) +
-						",\r\n"+
-						tableContaint() +
+						tableContaint +
 					");\r\n\r\n" +
-					index + ";";
+					index;
 	}
 
 	private String tableContaint() {

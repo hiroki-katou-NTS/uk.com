@@ -74,13 +74,19 @@ public class SqlServerSpec implements DataBaseSpec{
 		if(type == null)
 			throw new IllegalArgumentException();
 
-		if (type.equals("DECIMAL") && length[0] == 1) {
+		if (type.equals("BIT")) {
 			return DataType.BOOL;
 		}
-		else if(type.equals("DECIMAL") && length.length == 1) {
+		else if ((type.equals("DECIMAL") || type.equals("NUMERIC")) && length[0] == 1 && (length.length <= 1 || length[1] == 0)) {
+			return DataType.BOOL;
+		}
+		else if(type.equals("INT") && length.length == 1) {
 			return DataType.INT;
 		}
-		else if(type.equals("DECIMAL") && length.length == 2) {
+		else if((type.equals("DECIMAL") || type.equals("NUMERIC")) && length.length == 1) {
+			return DataType.INT;
+		}
+		else if((type.equals("DECIMAL") || type.equals("NUMERIC")) && length.length == 2) {
 			return DataType.REAL;
 		}
 		else if(type.equals("NVARCHAR")) {
@@ -98,7 +104,7 @@ public class SqlServerSpec implements DataBaseSpec{
 		else if(type.equals("DATE")) {
 			return DataType.DATE;
 		}
-		else if(type.equals("DATETIME2")) {
+		else if(type.equals("DATETIME") || type.equals("DATETIME2")) {
 			return DataType.DATETIME;
 		}
 

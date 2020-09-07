@@ -9,7 +9,7 @@ public class DefaultEntityManagerLoader implements EntityManagerLoader{
 
     @PersistenceContext(unitName = "UK")
     private EntityManager entityManager;
-    
+
     @Override
     public EntityManager getEntityManager() {
         return this.entityManager;
