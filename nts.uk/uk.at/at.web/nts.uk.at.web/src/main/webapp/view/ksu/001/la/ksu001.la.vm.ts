@@ -233,16 +233,19 @@ module nts.uk.at.view.ksu001.la {
                 let empListRight = ko.toJS(vm.itemsRight);
 
                 // get value and index from gridlist
-                let idAs = $('#emp-list-left').ntsGridList("getSelected");
+                let idAs = $('#emp-list-left').ntsGridList("getSelected");               
                 let itemChosen = [];
+                let employeeCdChosen = [];
                 _.each(idAs, id => {
                     // get item by index from gridlist
                     itemChosen.push(empListLeft[id.index]);
+                    employeeCdChosen.push(id.id);
                 });
 
                 var temp = _.difference(empListLeft, itemChosen);
                 vm.itemsLeft(temp);
                 vm.itemsRight(_.union(empListRight, itemChosen));
+                vm.currentCodeListRight(employeeCdChosen);
             }
 
             public moveItemRightToLeft(): void {
@@ -253,11 +256,14 @@ module nts.uk.at.view.ksu001.la {
                 // get value and index from gridlist
                 let idBs = $('#emp-list-right').ntsGridList("getSelected");
                 let itemChosen = [];
+                let employeeCdChosen = [];
                 _.each(idBs, id => {
                     itemChosen.push(empListRight[id.index]);
+                    employeeCdChosen.push(id.id);
                 });
                 vm.itemsRight(_.difference(empListRight, itemChosen));
                 vm.itemsLeft(_.sortBy(_.union(empListLeft, itemChosen), [function (o) { return o.employeeCd; }]));
+                vm.currentCodeListLeft(employeeCdChosen);
             }
 
             public closeDialog(): void {
