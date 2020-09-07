@@ -2,7 +2,7 @@
   <div id="contract-confirm" style="width: 100%; height: 100%">
     <div
       class="text-center page-title uk-bg-olive"
-      style="margin: -1rem; font-size: 1rem; line-height: 2.5;"
+      style="margin: -1rem; font-size: 1.5rem; line-height: 2.5;"
     >{{'CCGS07_50' | i18n}}</div>
     <div class="text-left page-info mt-3 uk-text-dark-gray" style="margin-top: 2rem !important;">
       <div>{{ 'CCGS07_51' | i18n }}</div>
