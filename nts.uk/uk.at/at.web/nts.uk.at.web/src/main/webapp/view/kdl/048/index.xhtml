@@ -53,6 +53,7 @@
              <!-- A5_1 -->
              <div class="combo">
               <div data-bind="ntsFormLabel: {required: true}" >#{i18n.getText('KDL048_4')}</div>
+              <!-- A5_2 -->
               <div data-bind="ntsComboBox: ntsComboBox" class="combo-box"></div>
              </div>
             <!-- A5_3 -->
@@ -60,6 +61,7 @@
             <!-- A6 -->
         		  <table id="multi-list"
                       data-bind="ntsGridList:{
+                        name: '#[KDL048_5]',
                         height: 300,
                         options: diligenceData,
                         optionsValue: 'id',
@@ -80,7 +82,7 @@
           <!-- A9 -->
           <table id="table-Hd-Grant"
             data-bind="ntsGridList: {
-              name: '#{i18n.getText('KDL048_10')}',
+              name: '#[KDL048_10]',
               options: dataSelectedItemList,
               optionsValue: 'itemId',
               columns: columnSelectedItemList,

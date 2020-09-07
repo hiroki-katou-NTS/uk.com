@@ -64,7 +64,7 @@ module nts.uk.at.view.kdl048.screenModel {
       vm.tableDataA6 = vm.initParam.diligenceProjectList;
       // A3
       vm.texteditor = {
-        name: vm.$i18n("KDL048_3"),
+        name: '#[KDL048_3]',
         value: vm.attendanceRecordName,
         constraint: "ItemName",
         option: ko.mapping.fromJS(
@@ -99,6 +99,7 @@ module nts.uk.at.view.kdl048.screenModel {
 
       // A5_2
       vm.ntsComboBox = {
+        name: '#[KDL048_4]',
         options: vm.attributeObject().attributeList,
         optionsValue: "attendanceTypeCode",
         visibleItemsCount: 4,
