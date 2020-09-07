@@ -40,7 +40,7 @@
 						<div id="A3_1" class="w-85" data-bind="ntsFormLabel: {constraint: 'ItemName'}">#{i18n.getText('KDL047_3')}</div>
 						<!-- A3_2 -->
 						<input id="A3_2" tabindex="1" class="ml-25 mt-5" data-bind="ntsTextEditor: {
-							name: '#{i18n.getText('KDL047_3')}',
+							name: '#[KDL047_3]',
 							value: attendanceRecordName,
 							constraint: 'ItemName',
 							option: {
@@ -73,6 +73,7 @@
 								id="combo-box"
 								tabindex="2"
 								data-bind="ntsComboBox: {
+									name: '#[KDL047_4]',
 									visibleItemsCount: 5,
 									value: selectedCode,
 									enable: isEnableComboBox,
@@ -106,6 +107,7 @@
 							id="single-list"
 							tabindex="4"
 							data-bind="ntsGridList: {
+								name: '#[KDL047_5]',
 								height: 400,
 								width: 400,
 								columns: tableColumns,
