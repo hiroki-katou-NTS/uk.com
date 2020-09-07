@@ -434,8 +434,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE ref"
 				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
 				+ " WHERE  app.APPLICANTS_SID =  @sid "
-				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN (@appType) " 
-				+ " AND ref.REFLECT_PER_STATE IN (@recordStatus)" + " ORDER BY app.INPUT_DATE ASC";
+				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN @appType " 
+				+ " AND ref.REFLECT_PER_STATE IN @recordStatus" + " ORDER BY app.INPUT_DATE ASC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("strData", dateData.start())
@@ -528,9 +528,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE ref"
 				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
 				+ " WHERE  app.APPLICANTS_SID =  @sid "
-				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN (@appType) " 
-				+ " AND (ref.REFLECT_PLAN_STATE IN ( @scheStatus) " 
-				+ " OR ref.REFLECT_PER_STATE IN (@recordStatus))" + " ORDER BY app.INPUT_DATE ASC";
+				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN @appType " 
+				+ " AND (ref.REFLECT_PLAN_STATE IN @scheStatus " 
+				+ " OR ref.REFLECT_PER_STATE IN @recordStatus)" + " ORDER BY app.INPUT_DATE ASC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("strData", dateData.start())
@@ -553,9 +553,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE ref"
 				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
 				+ " WHERE  app.APPLICANTS_SID =  @sid "
-				+ " AND app.APP_DATE IN (@dateData) " + " AND app.APP_TYPE IN (@appType) " 
-				+ " AND (ref.REFLECT_PLAN_STATE IN ( @scheStatus) " 
-				+ " OR ref.REFLECT_PER_STATE IN (@recordStatus))" + " ORDER BY app.INPUT_DATE ASC";
+				+ " AND app.APP_DATE IN @dateData " + " AND app.APP_TYPE IN @appType " 
+				+ " AND (ref.REFLECT_PLAN_STATE IN @scheStatus " 
+				+ " OR ref.REFLECT_PER_STATE IN @recordStatus)" + " ORDER BY app.INPUT_DATE ASC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("dateData", dateData)
