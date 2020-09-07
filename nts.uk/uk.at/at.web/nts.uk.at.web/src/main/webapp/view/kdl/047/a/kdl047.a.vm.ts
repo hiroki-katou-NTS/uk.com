@@ -1,7 +1,6 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.kdl047.a.screenModel {
 
-  import text = nts.uk.resource.getText;
   import setShared = nts.uk.ui.windows.setShared;
   import getShared = nts.uk.ui.windows.getShared;
 
@@ -27,8 +26,8 @@ module nts.uk.at.view.kdl047.a.screenModel {
     // Columns for ntsGridList A6
     tableColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
       { headerText: 'ID', prop: 'id', hidden: true },
-      { headerText: text('KDL047_6'), prop: 'code', width: 100 },
-      { headerText: text('KDL047_7'), prop: 'name', width: 300 }
+      { headerText: this.$i18n('KDL047_6'), prop: 'code', width: 100 },
+      { headerText: this.$i18n('KDL047_7'), prop: 'name', width: 300 }
     ]);
     objectDisplay: Display = new Display();
 
@@ -73,7 +72,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
       tableDatas.unshift(new ItemModel({
         id: -1,
         code: '',
-        name: text('KDL047_10')
+        name: this.$i18n('KDL047_10')
       }));
       vm.tableDatas(tableDatas);
       vm.selectedCode.subscribe((codeChanged) => {
@@ -94,7 +93,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
         tableDatas.unshift(new ItemModel({
           id: -1,
           code: '',
-          name: text('KDL047_10')
+          name: this.$i18n('KDL047_10')
         }));
         vm.tableDatas(tableDatas);
       });
