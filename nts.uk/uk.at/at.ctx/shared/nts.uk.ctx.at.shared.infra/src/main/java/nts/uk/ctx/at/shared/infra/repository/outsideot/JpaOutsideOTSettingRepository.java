@@ -62,8 +62,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	
 
 	public static final String FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS = "SELECT ot FROM KshstOverTime ot"
-			+ "	WHERE ot.useAtr = ?"
-			+ "		AND ost.kshstOverTimePK.cid = ?";
+			+ "	WHERE ot.useAtr = :useAtr"
+			+ "		AND ot.kshstOverTimePK.cid = :cid";
 	
 	/*
 	 * (non-Javadoc)
@@ -721,52 +721,23 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	}
 
 	@Override
-	@SneakyThrows
 	public List<Overtime> getOverTimeByCompanyIdAndUseClassification(String companyId, int useClassification) {
-		try (PreparedStatement stmt = this.connection().prepareStatement(FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS)) {
-			stmt.setInt(1, useClassification);
-			stmt.setString(2, companyId);
-
-			List<Overtime> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				KshstOverTimePK kshstOverTimePK = new KshstOverTimePK();
-				kshstOverTimePK.setCid(rec.getString("CID"));
-				kshstOverTimePK.setOverTimeNo(rec.getInt("OVER_TIME_NO"));
-
-				KshstOverTime entity = new KshstOverTime();
-				entity.setKshstOverTimePK(kshstOverTimePK);
-				entity.setIs60hSuperHd(rec.getInt("IS_60H_SUPER_HD"));
-				entity.setUseAtr(rec.getInt("USE_ATR"));
-				entity.setName(rec.getString("NAME"));
-				entity.setOverTime(rec.getInt("OVER_TIME"));
-				return this.toDomain(entity);
-			});
-			return result;
-		}
+		return this.queryProxy().query(FIND_OVER_TIME_BY_COMPANY_ID_AND_USE_CLS, KshstOverTime.class)
+				.setParameter("useAtr", useClassification)
+				.setParameter("cid", companyId)
+				.getList().stream()
+				.map(t -> toDomain(t))
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	@SneakyThrows
 	public List<OutsideOTBRDItem> getByCompanyIdAndUseClassification(String companyId, int useClassification) {
-		try (PreparedStatement stmt = this.connection().prepareStatement(FIND_BY_COMPANY_ID_AND_USE_CLS)) {
-			stmt.setInt(1, useClassification);
-			stmt.setString(2, companyId);
-
-			List<OutsideOTBRDItem> result = new NtsResultSet(stmt.executeQuery()).getList(rec -> {
-				KshstOutsideOtBrdPK kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK();
-				kshstOutsideOtBrdPK.setCid(rec.getString("CID"));
-				kshstOutsideOtBrdPK.setBrdItemNo(rec.getInt("BRD_ITEM_NO"));
-
-				KshstOutsideOtBrd entity = new KshstOutsideOtBrd();
-				entity.setKshstOutsideOtBrdPK(kshstOutsideOtBrdPK);
-				entity.setName(rec.getString("NAME"));
-				entity.setUseAtr(rec.getInt("USE_ATR"));
-				entity.setProductNumber(rec.getInt("PRODUCT_NUMBER"));
-
-				return toDomain(entity);
-			});
-			return result;
-		}
+		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshstOutsideOtBrd.class)
+				.setParameter("useAtr", useClassification)
+				.setParameter("cid", companyId)
+				.getList().stream()
+				.map(t -> toDomain(t))
+				.collect(Collectors.toList());
 	}
-
 
 }

@@ -332,8 +332,9 @@ module nts.uk.at.view.kwr001.a {
                         if (dataService.freeSetting) {
                             self.outputItemDailyWorkSchedules(_.sortBy(dataService.freeSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
                         }
-                        self.enableA7_8(dataService.checkFreeSetting);
-                        self.enableA7_2(!dataService.checkFreeSetting);
+                        self.selectionType(dataService.selectionType);
+                        self.enableA7_8(dataService.selectionType === ItemSelectionType.FREE_SETTING);
+                        self.enableA7_2(dataService.selectionType === ItemSelectionType.STANDARD_SELECTION);
                         switch (dataService.strReturn) {
                             // return screen A, show data from characteristic
                             case SHOW_CHARACTERISTIC:

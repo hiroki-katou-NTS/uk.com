@@ -256,9 +256,12 @@ module nts.uk.at.view.kwr001.c {
 
                     // variable temporary 
                     let temp: any[] = [];
-                    _.forEach(data.dailyAttendanceItem, function(value) {
-                        temp.push(value);
-                    })
+                    if (data.selectedItem) {
+                        _.forEach(data.selectedItem.lstCanUsed, function(value) {
+                            temp.push(value);
+                        });
+                    }
+
                     self.outputItemPossibleLst(temp);
 
                     let arrCodeName: ItemModel[] = [];
@@ -272,7 +275,7 @@ module nts.uk.at.view.kwr001.c {
                         self.mapIdCodeAtd[value.id] = value.code;
                     })
 
-                    self.items(data.dailyAttendanceItem);
+                    self.items(data.selectedItem ? data.selectedItem.displayAttendanceItem : []);
 
                     dfd.resolve();
                 })

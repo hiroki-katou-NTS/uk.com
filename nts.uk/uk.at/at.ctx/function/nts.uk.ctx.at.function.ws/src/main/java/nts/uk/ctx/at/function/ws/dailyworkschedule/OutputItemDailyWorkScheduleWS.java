@@ -55,10 +55,10 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	 *
 	 * @return the output item daily work schedule dto
 	 */
-	@Path("find/{selectionType}/{layoutId : (/layoutId)?}")
+	@Path("find")
 	@POST
-	public Map<String, Object> find(@PathParam("selectionType") int selectionType, @PathParam("layoutId") String layoutId) {
-		return this.outputItemDailyWorkScheduleFinder.startScreenC(Optional.of(layoutId), selectionType);
+	public Map<String, Object> find(RequestStartScreenCDto dto) {
+		return this.outputItemDailyWorkScheduleFinder.startScreenC(Optional.of(dto.getLayoutId()), dto.getSelectTionType());
 	}
 	
 	/**

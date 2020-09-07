@@ -26,7 +26,7 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 			+"AND a.kshmtAbsenceFramePK.absenceFrameNo IN :frameNos ";
 
 	private static final String FIND_BY_CID_USE_CLS = GET_ALL 
-			+"AND a.abolishAtr IN :abolishAtr ";
+			+ " AND a.abolishAtr = :abolishAtr ";
 
 	private static AbsenceFrame toDomain(KshmtAbsenceFrame entity) {
 		AbsenceFrame domain = AbsenceFrame.createSimpleFromJavaType(entity.kshmtAbsenceFramePK.companyId,

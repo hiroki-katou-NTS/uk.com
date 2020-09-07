@@ -38,7 +38,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	
 	private static final String FIND_BY_COMPANY_ID_AND_USE_CLS = "SELECT a FROM KshstTotalTimes a "
 			+ " WHERE a.kshstTotalTimesPK.cid = :companyId"
-			+ " AND a.useAtr IN :useAtr ";
+			+ " AND a.useAtr = :useAtr ";
 
 	/*
 	 * (non-Javadoc)
@@ -192,7 +192,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	public List<TotalTimes> findByCompanyIdAndUseCls(String companyId, int useCls) {
 		return this.queryProxy().query(FIND_BY_COMPANY_ID_AND_USE_CLS, KshstTotalTimes.class)
 				.setParameter("companyId", companyId)
-				.setParameter("useCls", useCls)
+				.setParameter("useAtr", useCls)
 				.getList().stream()
 				.map(x -> new TotalTimes(new JpaTotalTimesGetMemento(x)))
 				.collect(Collectors.toList());

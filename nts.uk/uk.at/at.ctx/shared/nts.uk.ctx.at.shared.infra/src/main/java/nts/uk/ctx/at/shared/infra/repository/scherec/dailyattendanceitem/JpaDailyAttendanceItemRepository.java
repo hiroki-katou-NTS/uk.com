@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -86,6 +85,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtDailyAttendanceItem a ");
 		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.attendanceItemId IN :dailyAttendanceItemIds ");
+		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
 		builderString.append("ORDER BY a.displayNumber ASC ");
 		FIND_BY_ATTENDANCE_IDS = builderString.toString();
 	}
@@ -222,12 +222,17 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	}
 
 	@Override
-	public List<DailyAttendanceItem> findByADailyAttendanceItems(List<Integer> attendanceItemIds) {
-		return this.queryProxy().query(FIND_BY_ATTENDANCE_IDS,	KrcmtDailyAttendanceItem.class)
-			.setParameter("dailyAttendanceItemIds", attendanceItemIds)
-			.getList().stream()
-			.map(t -> toDomain(t))
-			.collect(Collectors.toList());
+	public List<DailyAttendanceItem> findByADailyAttendanceItems(List<Integer> attendanceItemIds, String companyId) {
+		List<DailyAttendanceItem> result = new ArrayList<>();
+		if (!attendanceItemIds.isEmpty()) {
+			CollectionUtil.split(attendanceItemIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+				result.addAll(this.queryProxy().query(FIND_BY_ATTENDANCE_IDS, KrcmtDailyAttendanceItem.class)
+						.setParameter("dailyAttendanceItemIds", subList)
+						.setParameter("companyId", companyId)
+						.getList(f -> toDomain(f)));
+			});
+		}
+		return result;
 	}
 
 }

@@ -37,8 +37,7 @@ public class WorkScheduleOutputConditionDto {
 	
 	private String msgErrClosingPeriod;
 	
-	/** The is free setting. */
-	private boolean checkFreeSetting;
+	private int selectionType;
 	
 	/** The standard setting. */
 	private OutputStandardSettingOfDailyWorkScheduleDto standardSetting;

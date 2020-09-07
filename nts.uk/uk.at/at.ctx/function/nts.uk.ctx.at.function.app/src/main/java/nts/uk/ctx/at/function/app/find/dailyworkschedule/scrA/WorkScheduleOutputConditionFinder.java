@@ -19,6 +19,7 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.FreeSettingOfOutputItem
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.OutputStandardSettingOfDailyWorkScheduleDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.RoleExportRepoAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
@@ -105,7 +106,7 @@ public class WorkScheduleOutputConditionFinder {
 				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
 
 		// 自由設定(A7_7～A7_12)の活性制御を行う
-		dto.setCheckFreeSetting(isFreeSetting);
+		dto.setSelectionType(isFreeSetting ? ItemSelectionType.FREE_SETTING.value : ItemSelectionType.STANDARD_SELECTION.value);
 
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する(Execute the algorithm "Acquire closing period corresponding to employee")
 		Optional<Closure> optClosure = getDomClosure(employeeId, systemDate);
@@ -141,19 +142,11 @@ public class WorkScheduleOutputConditionFinder {
 
 		if (isFreeSetting) {
 			if (freeSettingDto != null && !freeSettingDto.getOutputItemDailyWorkSchedules().isEmpty()) {
-				if (isExistWorkScheduleOutputCondition) {
-					dto.setStrReturn(SHOW_CHARACTERISTIC);
-				} else {
-					dto.setStrReturn(STRING_EMPTY);
-				}
+				dto.setStrReturn(isExistWorkScheduleOutputCondition ? SHOW_CHARACTERISTIC : STRING_EMPTY);
 			}
 		} else {
 			if (standardSettingDto != null && !standardSettingDto.getOutputItemDailyWorkSchedules().isEmpty()) {
-				if (isExistWorkScheduleOutputCondition) {
-					dto.setStrReturn(SHOW_CHARACTERISTIC);
-				} else {
-					dto.setStrReturn(STRING_EMPTY);
-				}
+				dto.setStrReturn(isExistWorkScheduleOutputCondition ? SHOW_CHARACTERISTIC : STRING_EMPTY);
 			}
 		}
 

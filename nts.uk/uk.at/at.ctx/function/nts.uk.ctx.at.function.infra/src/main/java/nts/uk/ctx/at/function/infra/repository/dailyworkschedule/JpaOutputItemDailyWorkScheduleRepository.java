@@ -4,88 +4,60 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
-import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatdPK;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnote;
-import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnotePK;
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleRepository.
  * author: HoangDD
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository implements OutputItemDailyWorkScheduleRepository {
 	
 	private static final String SELECT_BY_LAYOUT_ID = "SELECT outItem FROM KfnmtRptWkDaiOutItem outItem"
-			+ "	WHERE outItem.layoutId = ?";
+			+ "	WHERE outItem.layoutId = :layoutId";
+	
+	private static final String GET_ATD_BY_LAYOUT_ID = "SELECT atd FROM KfnmtRptWkDaiOutatd atd"
+			+ " WHERE atd.id.layoutId = :layoutId ORDER BY atd.id.orderNo";
 
+	private static final String GET_NOTE_BY_LAYOUT_ID = "SELECT note FROM KfnmtRptWkDaiOutnote note"
+			+ " WHERE note.id.layoutId = :layoutId";
 	@Override
-	@SneakyThrows
 	public Optional<OutputItemDailyWorkSchedule> findByLayoutId(String layoutId) {
-		String sqlJDBC2 = "select * from KFNMT_RPT_WK_DAI_OUTNOTE where LAYOUT_ID = ?";
-		String sqlJDBC1 = "select * from KFNMT_RPT_WK_DAI_OUTATD where LAYOUT_ID = ? ORDER BY ORDER_NO";
-		List<KfnmtRptWkDaiOutatd> lstKfnmtRptWkDaiOutatds = new ArrayList<>();
-		try (PreparedStatement statement1 = this.connection().prepareStatement(sqlJDBC1)) {
-			statement1.setString(1, layoutId);
-			lstKfnmtRptWkDaiOutatds
-					.addAll(new NtsResultSet(statement1.executeQuery()).getList(rec -> {
-						KfnmtRptWkDaiOutatdPK pk = new KfnmtRptWkDaiOutatdPK();
-						pk.setLayoutId(rec.getString("LAYOUT_ID"));
-						pk.setOrderNo(rec.getLong("ORDER_NO"));
-						KfnmtRptWkDaiOutatd entity = new KfnmtRptWkDaiOutatd();
-						entity.setId(pk);
-						entity.setAtdDisplay(rec.getBigDecimal("ATD_DISPLAY"));
-						entity.setCid(rec.getString("CID"));
-						return entity;
-					}));
-		}
+		// get all attendance display item by layoutId
+		List<KfnmtRptWkDaiOutatd> lstKfnmtRptWkDaiOutatds = this.queryProxy()
+				.query(GET_ATD_BY_LAYOUT_ID, KfnmtRptWkDaiOutatd.class)
+				.setParameter("layoutId", layoutId)
+				.getList();
 		
-		List<KfnmtRptWkDaiOutnote> lstKfnmtRptWkDaiOutnotes = new ArrayList<>();
-		try (PreparedStatement statement2 = this.connection().prepareStatement(sqlJDBC2)) {
-			statement2.setString(1, layoutId);
-			lstKfnmtRptWkDaiOutnotes
-					.addAll(new NtsResultSet(statement2.executeQuery()).getList(rec -> {
-						KfnmtRptWkDaiOutnotePK pk = new KfnmtRptWkDaiOutnotePK();
-						pk.setLayoutId(rec.getString("LAYOUT_ID"));
-						pk.setPrintItem(rec.getLong("PRINT_ITEM"));
-						KfnmtRptWkDaiOutnote entity = new KfnmtRptWkDaiOutnote();
-						entity.setId(pk);
-						entity.setUseCls(rec.getBigDecimal("USE_CLS"));
-						entity.setCid(rec.getString("CID"));
-						return entity;
-					}));
-		}
-		try (PreparedStatement statement = this.connection().prepareStatement(SELECT_BY_LAYOUT_ID)) {
-			statement.setString(1, layoutId);
-			Optional<OutputItemDailyWorkSchedule> result = new NtsResultSet(statement.executeQuery()).getSingle(rec -> {
-				KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem(rec.getString("LAYOUT_ID")
-						, rec.getInt("ITEM_SEL_TYPE")
-						, rec.getString("CID")
-						, rec.getString("SID")
-						, rec.getString("ITEM_CD")
-						, rec.getString("ITEM_NAME")
-						, rec.getBigDecimal("WORKTYPE_NAME_DISPLAY")
-						, rec.getBigDecimal("NOTE_INPUT_NO")
-						, rec.getBigDecimal("CHAR_SIZE_TYPE")
-						, lstKfnmtRptWkDaiOutatds
-						, lstKfnmtRptWkDaiOutnotes);
-				return new OutputItemDailyWorkSchedule(entity);
-			});
-			return result;
-		}
+		// get lst KfnmtRptWkDaiOutnote by layoutId
+		List<KfnmtRptWkDaiOutnote> lstKfnmtRptWkDaiOutnotes = this.queryProxy()
+				.query(GET_NOTE_BY_LAYOUT_ID, KfnmtRptWkDaiOutnote.class)
+				.setParameter("layoutId", layoutId)
+				.getList();
+
+		// map to domain
+		Optional<OutputItemDailyWorkSchedule> result = this.queryProxy()
+				.query(SELECT_BY_LAYOUT_ID, KfnmtRptWkDaiOutItem.class)
+				.setParameter("layoutId", layoutId)
+				.getSingle().map(t -> {
+					t.setLstKfnmtRptWkDaiOutatds(lstKfnmtRptWkDaiOutatds);
+					t.setLstKfnmtRptWkDaiOutnotes(lstKfnmtRptWkDaiOutnotes);
+					return new OutputItemDailyWorkSchedule(t);
+				});
+		return result;
 	}
 
 	@Override

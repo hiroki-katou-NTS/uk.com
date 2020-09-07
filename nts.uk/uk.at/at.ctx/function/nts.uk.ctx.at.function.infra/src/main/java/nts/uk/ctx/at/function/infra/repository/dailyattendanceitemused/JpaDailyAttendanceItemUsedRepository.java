@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.infra.entity.dailyattendanceitemused.KfnctAtdIdRptDai;
@@ -15,9 +17,10 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.repository.DailyAtte
  * @author LienPTK
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class JpaDailyAttendanceItemUsedRepository extends JpaRepository implements DailyAttendanceItemUsedRepository {
 
-	private static final String SELECT_DAILY_ATTENDANCE_ITEM = "SELECT d FROM KfnctAtdIdRptDai"
+	private static final String SELECT_DAILY_ATTENDANCE_ITEM = "SELECT d FROM KfnctAtdIdRptDai d"
 			+ " WHERE d.kfnctAtdIdRptDaiPK.companyId = :companyId"
 			+ "		AND (d.workDaily = :reportId"
 			+ "			OR d.workAttendance = :reportId"
