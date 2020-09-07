@@ -1093,7 +1093,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (dateInfo.isToday) {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-that-day"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-that-day"));
-                } else if (dateInfo.isSpecificDay) {
+                } else if (dateInfo.htmlTooltip != null) {
                     detailHeaderDeco.push(new CellColor("_" + ymd, 0, "bg-schedule-specific-date"));
                     detailHeaderDeco.push(new CellColor("_" + ymd, 1, "bg-schedule-specific-date"));
                 } else if (dateInfo.isHoliday) {
