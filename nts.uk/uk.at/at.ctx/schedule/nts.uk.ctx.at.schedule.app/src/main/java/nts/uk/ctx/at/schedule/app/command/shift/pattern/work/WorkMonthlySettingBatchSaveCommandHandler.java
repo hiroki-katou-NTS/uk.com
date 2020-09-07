@@ -115,6 +115,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// to list domain
 		List<WorkMonthlySetting> lstDomain = command.toDomainMonth(companyId);
+        List<GeneralDate> baseDates = lstDomain.stream().map(domainsetting -> domainsetting.getYmdk()).collect(Collectors.toList());
 		lstDomain = lstDomain.stream().filter(x -> !x.getWorkInformation().getWorkTypeCode().equals("000")).collect(Collectors.toList());
 
 
@@ -193,9 +194,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 
 		// get list domain update
 		List<WorkMonthlySetting> domainUpdates = this.workMonthlySettingRepository.findByYMD(
-				companyId,lstDomain.size() > 0 ? lstDomain.stream().findFirst().get().getMonthlyPatternCode().v() : null,
-				lstDomain.stream().map(domainsetting -> domainsetting.getYmdk())
-						.collect(Collectors.toList()));
+				companyId,command.getMonthlyPattern().getCode(), baseDates);
 
 		// convert to map domain update
 		Map<GeneralDate, WorkMonthlySetting> mapDomainUpdate = domainUpdates.stream()
@@ -224,8 +223,18 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 			}
 		});
 		// update all list domain
+
 		this.workMonthlySettingRepository.updateAll(updateAllDomains);
 
+		List<GeneralDate> listYmdk = new ArrayList<>();
+		updateAllDomains.forEach(x -> {
+			listYmdk.add(x.getYmdk());
+		});
+
+		List<WorkMonthlySetting> deleteAllDomains = domainUpdates.stream().filter(x -> !listYmdk.contains(x.getYmdk())).collect(Collectors.toList());
+		deleteAllDomains.forEach(x -> {
+			this.workMonthlySettingRepository.deleteWorkMonthlySettingById(x.getCompanyId().v(),x.getMonthlyPatternCode().v(),x.getYmdk());
+		});
 		// add all list domain
 		this.workMonthlySettingRepository.addAll(addAllDomains);
 	}
