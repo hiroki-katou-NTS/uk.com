@@ -210,7 +210,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		cellB7.setValue(I18NText.getText("KAF000_46"));
 		// value
 		Cell cellC3 = cells.get("C3");
-		cellC3.setValue(printContentOfApp.getCompanyName());
+		cellC3.setValue(printContentOfApp.getWorkPlaceName());
 		Cell cellC4 = cells.get("C4");
 		cellC4.setValue(printContentOfApp.getEmployeeInfoLst().get(0).getBussinessName());
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 1) {
