@@ -2,6 +2,7 @@
 module nts.uk.at.view.kdl048.screenModel {
   import getShared = nts.uk.ui.windows.getShared;
   import setShared = nts.uk.ui.windows.setShared;
+  
   @bean()
   export class ViewModel extends ko.ViewModel {
     initParam: any;
@@ -10,23 +11,15 @@ module nts.uk.at.view.kdl048.screenModel {
     titleLine: KnockoutObservable<TitleLineObject> = ko.observable();
     //A3_1,2
     itemNameLine: KnockoutObservable<ItemNameLineObject> = ko.observable();
-    // A3_2
-    texteditor: any;
     attendanceRecordName: KnockoutObservable<string> = ko.observable("");
-    // A4
-    ntsPanel: any;
-    // A5_2
-    ntsComboBox: any;
     attributeObject: KnockoutObservable<AttributeObject> = ko.observable();
     valueCb: KnockoutObservable<number> = ko.observable(0);
     // A5_3
-    ntsSearchBox: any;
     currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
     headers: any = ko.observableArray([this.$i18n("KDL048_6"), this.$i18n("KDL048_7")]);
     columns: KnockoutObservableArray<any>;
     currentCode: KnockoutObservable<any> = ko.observable();
     // A6
-    ntsTreeGridView: any;
     diligenceData: KnockoutObservableArray<DiligenceProject> = ko.observableArray([]);
     tableDataA6: DiligenceProject[] = [];
 
@@ -62,52 +55,6 @@ module nts.uk.at.view.kdl048.screenModel {
 
       //data for table
       vm.tableDataA6 = vm.initParam.diligenceProjectList;
-      // A3
-      vm.texteditor = {
-        name: '#[KDL048_3]',
-        value: vm.attendanceRecordName,
-        constraint: "ItemName",
-        option: ko.mapping.fromJS(
-          new nts.uk.ui.option.TextEditorOption({
-            textmode: "text",
-            width: "100px",
-            textalign: "left",
-          })
-        ),
-        enable: vm.itemNameLine().displayInputCategory === 2,
-        readonly: vm.itemNameLine().displayInputCategory !== 2,
-      };
-
-      // A4
-      vm.ntsPanel = {
-        direction: "none",
-        showIcon: true,
-        visible: true,
-      };
-
-      // A5_3
-      vm.ntsSearchBox = {
-        searchMode: "filter",
-        targetKey: "id",
-        comId: "multi-list",
-        items: vm.diligenceData,
-        selected: vm.currentCodeList,
-        selectedKey: "id",
-        fields: ["name", "id"],
-        mode: "igGrid",
-      };
-
-      // A5_2
-      vm.ntsComboBox = {
-        name: '#[KDL048_4]',
-        options: vm.attributeObject().attributeList,
-        optionsValue: "attendanceTypeCode",
-        visibleItemsCount: 4,
-        value: vm.valueCb,
-        optionsText: "attendanceTypeName",
-        enable: vm.attributeObject().selectionCategory === 2,
-        columns: [{ prop: "attendanceTypeName", length: 10 }],
-      };
 
       // Columns of table A6
       vm.columns = ko.observableArray([
