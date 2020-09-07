@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.entity.agreedtime;
+package nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -14,14 +14,13 @@ import java.io.Serializable;
  * entity: 雇用３６協定時間
  */
 @Entity
-@Table(name = "KSRMT_36AGR_MGT_EMP")
+@Table(name = "KSRMT_36AGR_MGT_CMP")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Ksrmt36AgrMgtEmp extends UkJpaEntity implements Serializable {
-
+public class Ksrmt36AgrMgtCmp extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    public Ksrmt36AgrMgtEmppK ksrmt36AgrMgtEmppK;
+    public Ksrmt36AgrMgtCmpPk ksrmt36AgrMgtCmpPk;
 
     /** The exclus ver. */
     @Column(name = "EXCLUS_VER")
