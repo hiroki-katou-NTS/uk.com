@@ -76,7 +76,7 @@ public class AppContentServiceImpl implements AppContentService {
 		// ・<List>（項目名、勤務NO、区分（遅刻早退）、時刻、取消）
 		if(!CollectionUtil.isEmpty(itemContentLst)) {
 			for(int i = 0; i < itemContentLst.size(); i++) {
-				ArrivedLateLeaveEarlyItemContent item = itemContentLst.get(0);
+				ArrivedLateLeaveEarlyItemContent item = itemContentLst.get(i);
 				if(i > 0) {
 					// 申請内容＋＝@
 					result += paramString;
@@ -210,7 +210,7 @@ public class AppContentServiceImpl implements AppContentService {
 		}
 		if(!CollectionUtil.isEmpty(stampAppOutputTmpLst)) {
 			for(int i = 0; i < stampAppOutputTmpLst.size(); i++) {
-				StampAppOutputTmp item = stampAppOutputTmpLst.get(0);
+				StampAppOutputTmp item = stampAppOutputTmpLst.get(i);
 				if(i > 0) {
 					// 申請内容＋＝@
 					result += paramString;

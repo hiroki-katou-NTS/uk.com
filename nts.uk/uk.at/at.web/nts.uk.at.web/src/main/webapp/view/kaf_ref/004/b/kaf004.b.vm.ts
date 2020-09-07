@@ -185,7 +185,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             application.opReversionReason = ko.toJS(vm.application().opReversionReason);
 
             vm.$blockui("show");
-            vm.$validate()
+            return vm.$validate()
                 .then((isValid) => {
                     if (isValid) {
                         const command = {

@@ -53,9 +53,9 @@ module cmm045.a.viewmodel {
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
         appList: any = ko.observable(null);
         appListAtr: number;
-        isBeforeCheck: KnockoutObservable<Boolean> = ko.observable(false);
-        isAfterCheck: KnockoutObservable<Boolean> = ko.observable(false);
-        isLimit500: KnockoutObservable<Boolean> = ko.observable(false);
+        isBeforeCheck: KnockoutObservable<boolean> = ko.observable(false);
+        isAfterCheck: KnockoutObservable<boolean> = ko.observable(false);
+        isLimit500: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             let self = this;
@@ -207,6 +207,10 @@ module cmm045.a.viewmodel {
 			});
         	self.isAfterCheck.subscribe(value => {
 				self.appListExtractConditionDto.postOutput = value;
+			});
+			
+			self.orderCD.subscribe(value => {
+				self.appListExtractConditionDto.appDisplayOrder = value;	
 			});
         }
 
@@ -566,6 +570,7 @@ module cmm045.a.viewmodel {
             if (obj.opCancelStatus) {//取消
                 arraySelectedIds.push(6);
             }
+			self.orderCD(obj.appDisplayOrder);
 			self.selectedIds(arraySelectedIds);
 			self.lstSidFilter(obj.opListEmployeeID);
 			self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
@@ -1655,12 +1660,12 @@ module cmm045.a.viewmodel {
                 block.clear();
             });
         }*/
-        findExist(): any{
+        /*findExist(): any{
             let self = this;
             return _.find(self.itemApplication(), function(item){
                 return item.appId == self.selectedCode();
             });
-        }
+        }*/
         /**
          * find row hidden
          */
@@ -1668,7 +1673,7 @@ module cmm045.a.viewmodel {
             let lstHidden = []
             _.each(lstItem, function(item){
                 if(item.appStatusNo != 5){
-                    lstHidden.push(item.appId);
+                    lstHidden.push(item.appID);
                 }
             });
             return lstHidden;
@@ -1777,10 +1782,10 @@ module cmm045.a.viewmodel {
             let remandNumner = 0;
             let denialNumber = 0;
             _.each(lstApp, function(app){
-                let add = self.checkSync(app.appId, self.lstAppCompltSync()) !== undefined ? 2 : 1;
+                let add = self.checkSync(app.appID, self.lstAppCompltSync()) !== undefined ? 2 : 1;
                 if(app.appStatusNo == 5){ unApprovalNumber += add; }//UNAPPROVED:5
                 if(app.appStatusNo == 4){//APPROVED: 4
-                    let agent = self.findAgent(app.appId);
+                    let agent = self.findAgent(app.appID);
                     if(agent != undefined && agent.agentId != null && agent.agentId != '' && agent.agentId.match(/^\s+$/) == null){
                         approvalAgentNumber += add;
                     }else{
@@ -1804,7 +1809,7 @@ module cmm045.a.viewmodel {
             let min1 = Math.floor(time % 60);
             let min = '';
             if (min1 >= 10) {
-                min = min1;
+                min = min1.toString();
             } else {
                 min = '0' + min1;
             }

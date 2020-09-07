@@ -96,7 +96,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                 businessTripInfoOutputDto : ko.toJS(vm.businessTripOutput),
                 applicationDto : ko.toJS(vm.application())
             }
-            vm.$ajax(API.updateBusinessTrip, command).done(res => {
+            return vm.$ajax(API.updateBusinessTrip, command).done(res => {
                 if (res) {
                     vm.$dialog.info({ messageId: "Msg_15" });
                 }
