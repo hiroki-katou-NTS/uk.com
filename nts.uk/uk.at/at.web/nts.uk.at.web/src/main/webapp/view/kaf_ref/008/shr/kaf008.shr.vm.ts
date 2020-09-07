@@ -27,10 +27,18 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             if (params.mode) {
                 vm.mode = params.mode;
             }
-            if (vm.mode == Mode.New) {
-                vm.startNewMode();
-            } else {
-                vm.startEditMode();
+
+            switch (params.mode) {
+                case Mode.New:
+                    vm.startNewMode();
+                    break;
+                case Mode.Edit:
+                    vm.startEditMode();
+                    break;
+                case Mode.View:
+                    vm.startEditMode();
+                    vm.enableInput = false;
+                    break;
             }
         }
 
@@ -513,9 +521,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         startKDL003: "at/request/application/businesstrip/startKDL003"
     }
 
-    const Mode = {
+    export const Mode = {
         New: 1,
-        Edit: 2
+        Edit: 2,
+        View: 3
     };
 
 }

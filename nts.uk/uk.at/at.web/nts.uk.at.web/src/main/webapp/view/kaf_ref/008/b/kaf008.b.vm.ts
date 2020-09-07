@@ -3,6 +3,9 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
 	import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
+    import BusinessTripOutput = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripOutput;
+    import BusinessTripContent = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripContent;
+    import Mode = nts.uk.at.view.kaf008_ref.shr.viewmodel.Mode;
 
     @component({
         name: 'kaf008-b',
@@ -15,11 +18,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
         model: Model;
-        dataFetch: KnockoutObservable<any> = ko.observable(null);
-        mode: string = 'edit';
-
-        businessTripOutput: KnockoutObservable<any> = ko.observable();
-        businessTrip: KnockoutObservable<any> = ko.observable();
+        mode: number = Mode.Edit;
+        businessTripOutput: KnockoutObservable<any> = ko.observable(null);
+        businessTripContent: KnockoutObservable<any> = ko.observable(null);
+        dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable(null);
         printContent: any;
 
         created(params: {
@@ -33,7 +35,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
             if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
-                vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';
+                vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? Mode.Edit : Mode.View;
             }
             vm.createParamKAF008();
             vm.printContent = params.printContentOfEachAppDto;
@@ -46,8 +48,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         mounted() {
             const vm = this;
-            vm.businessTrip.subscribe(value => {
-                vm.printContent.opBusinessTripInfoOutput = value;
+            vm.appDispInfoStartupOutput.subscribe(value => {
+                if(value) {
+                    vm.businessTripOutput().appDispInfoStartup = value;
+                };
             });
         }
 
@@ -59,28 +63,53 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                 applicationId: ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.application.appID
             }).done(res => {
                 if (res) {
-                    let businessTrip = res.businessTripDto;
-                    let eachDetail: Array<TripInfoDetail> = _.map(businessTrip.tripInfos, function (detail) {
+                    let businessTripContent = res.businessTripDto;
+                    let eachDetail: Array<any> = _.map(businessTripContent.tripInfos, function (detail) {
+                        const workInfo = res.businessTripInfoOutputDto.infoBeforeChange;
+                        const timeInfo = res.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
+                        let workName = "";
+                        let timeName = "";
+
+                        if (!workName) {
+                            let wkDayInfo = _.filter(ko.toJS(workInfo), function (item) {
+                                return item.date == detail.date;
+                            });
+                            if (wkDayInfo.length != 0) {
+                                workName = wkDayInfo[0].workTypeDto.name;
+                            }
+                        }
+
+                        if (!timeName) {
+                            let wkTimeInfo = _.filter(ko.toJS(timeInfo), function (item) {
+                                return item.worktimeCode == detail.wkTimeCd;
+                            });
+                            if (wkTimeInfo.length != 0) {
+                                timeName = wkTimeInfo[0].workTimeDisplayName.workTimeName;
+                            }
+                        }
+
                         return {
                             date: detail.date,
-                            wkTimeCd: detail.wkTimeCd,
-                            wkTimeName: null,
-                            wkTypeCd: detail.wkTypeCd,
-                            wkTypeName: null,
+                            wkTimeCd: detail.wkTimeCd == null ? "" : detail.wkTimeCd,
+                            wkTimeName: timeName,
+                            wkTypeCd: detail.wkTypeCd  == null ? "" : detail.wkTypeCd,
+                            wkTypeName: workName,
                             startWorkTime: detail.startWorkTime,
                             endWorkTime: detail.endWorkTime
                         };
                     });
                     let tripInfo: BusinessTripInfo = {
-                        departureTime: businessTrip.departureTime,
-                        returnTime: businessTrip.returnTime,
+                        departureTime: businessTripContent.departureTime,
+                        returnTime: businessTripContent.returnTime,
                         tripInfos: eachDetail
-                    }
-                    vm.businessTrip(tripInfo);
-                    // vm.printContent.opBusinessTripInfoOutput = tripInfo;
+                    };
+                    vm.printContent.opBusinessTripInfoOutput = tripInfo;
+                    vm.businessTripContent(tripInfo);
                     vm.businessTripOutput(res.businessTripInfoOutputDto);
-
-
+                    vm.dataFetch({
+                        businessTripContent: ko.toJS(vm.businessTripContent),
+                        businessTripOutput: ko.toJS(vm.businessTripOutput)
+                    });
                 }
             }).fail(err => {
                 vm.$dialog.error({messageId: err.msgId});
@@ -91,13 +120,18 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
         update() {
             const vm = this;
 
+            let dataFetch = ko.toJS(vm.dataFetch);
+
             let command = {
-                businessTripDto : ko.toJS(vm.businessTrip),
-                businessTripInfoOutputDto : ko.toJS(vm.businessTripOutput),
-                applicationDto : ko.toJS(vm.application())
-            }
+                businessTrip : dataFetch.businessTripContent,
+                businessTripInfoOutput : vm.businessTripOutput(),
+                application : ko.toJS(vm.application())
+            };
+
+            vm.$blockui("show");
             return vm.$ajax(API.updateBusinessTrip, command).done(res => {
                 if (res) {
+                    vm.printContent.opBusinessTripInfoOutput = dataFetch.businessTripContent;
                     vm.$dialog.info({ messageId: "Msg_15" });
                 }
             }).fail(err => {
@@ -120,6 +154,11 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         }
 
+    }
+
+    interface DetailSreenInfo {
+        businessTripContent: BusinessTripContent;
+        businessTripOutput: BusinessTripOutput;
     }
 
     export interface BusinessTripInfo {
