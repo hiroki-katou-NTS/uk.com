@@ -61,7 +61,7 @@ public interface Approver36AgrByWorkplaceRepo {
 	 * 		職場別の承認者（36協定） m
 	 * Where
 	 * 		m.職場ID = 職場ID
-	 * 		m.期間.終了日 = 終了日 TODO https://pro.insight.3si.vn/issues/30261
+	 * 		m.期間.終了日 = 終了日
 	 */
 	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndEndDate(String workplaceId, GeneralDate endDate);
 
