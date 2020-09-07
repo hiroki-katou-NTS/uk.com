@@ -152,7 +152,7 @@ public class GetActualOfShift {
 				if(daily.getWorkInformation() != null){
 					WorkInformation workInformation = daily.getWorkInformation().getRecordInfo();
 
-					String workTypeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString().toString();
+					String workTypeCode = workInformation.getWorkTypeCode() == null ? null : workInformation.getWorkTypeCode().toString().toString();
 					String workTimeCode = workInformation.getWorkTimeCode() == null ? null : workInformation.getWorkTimeCode().toString().toString();
 
 					Optional<ShiftMasterMapWithWorkStyle> shiftMaster = listShiftMaster.stream().filter(x -> {
