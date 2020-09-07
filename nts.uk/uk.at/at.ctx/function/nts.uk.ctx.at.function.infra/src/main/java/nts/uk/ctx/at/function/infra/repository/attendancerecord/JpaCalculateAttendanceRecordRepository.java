@@ -50,7 +50,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 	@Override
 	public Optional<CalculateAttendanceRecord> getCalculateAttendanceRecord(String companyId,
 			ExportSettingCode exportSettingCode, long columnIndex, long position, long exportArt) {
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 		return this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class).map(e -> this.toDomain(e));
 	}
@@ -65,7 +65,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 			int position, long exportArt, boolean useAtr, CalculateAttendanceRecord calculateAttendanceRecord) {
 
 		// check and update AttendanceRecord
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 		Optional<KfnstAttndRec> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
 		if (kfnstAttndRec.isPresent()) {
@@ -207,7 +207,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 			long position, long exportArt, int timeItemId) {
 		UID uid = new UID();
 		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(uid.toString(), AppContexts.user().companyId(),
-				columnIndex, exportSettingCode.v(), new BigDecimal(SUBTRACT_FORMULA_TYPE), exportArt, position,
+				columnIndex, Long.parseLong(exportSettingCode.v()), new BigDecimal(SUBTRACT_FORMULA_TYPE), exportArt, position,
 				timeItemId);
 		return kfnstAttendRecItem;
 	}
@@ -219,7 +219,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		// exportSettingCode.v(), columnIndex, position, exportArt, timeItemId);
 		UID uid = new UID();
 		KfnstAttndRecItem kfnstAttendRecItem = new KfnstAttndRecItem(uid.toString(), AppContexts.user().companyId(),
-				columnIndex, exportSettingCode.v(), new BigDecimal(ADD_FORMULA_TYPE), exportArt, position, timeItemId);
+				columnIndex, Long.parseLong(exportSettingCode.v()), new BigDecimal(ADD_FORMULA_TYPE), exportArt, position, timeItemId);
 		return kfnstAttendRecItem;
 	}
 

@@ -55,7 +55,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	@Override
 	public Optional<SingleAttendanceRecord> getSingleAttendanceRecord(String companyId,
 			ExportSettingCode exportSettingCode, long columnIndex, long position, long exportArt) {
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 		return this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class).map(e -> this.toDomain(e));
 	}
@@ -89,7 +89,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	public void updateSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex,
 			long position, long exportArt, boolean useAtr, SingleAttendanceRecord singleAttendanceRecord) {
 		// update attendanceRecord
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 		// check and update AttendanceRecord
 		Optional<KfnstAttndRec> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
@@ -114,7 +114,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 					singleAttendanceRecord));
 		} else {
 			UID uid = new UID();
-			kfnstAttndRecItem = new KfnstAttndRecItem(uid.toString(), companyId, columnIndex, exportSettingCode.v(),
+			kfnstAttndRecItem = new KfnstAttndRecItem(uid.toString(), companyId, columnIndex, Long.parseLong(exportSettingCode.v()),
 					new BigDecimal(SINGLE_FORMULA_TYPE), exportArt, position, singleAttendanceRecord.getTimeItemId());
 			this.commandProxy().insert(kfnstAttndRecItem);
 		}
@@ -135,7 +135,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	public void deleteSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex,
 			long position, long exportArt, SingleAttendanceRecord singleAttendanceRecord) {
 		// find and delete KfnstAttndRec, KfnstAttndRecItem
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 		Optional<KfnstAttndRec> optionalKfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
 		optionalKfnstAttndRec.ifPresent(kfnstAttndRec -> this.commandProxy().remove(kfnstAttndRec));
@@ -189,7 +189,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 			long exportArt, boolean useAtr, SingleAttendanceRecord singleAttendanceRecord) {
 		// find entity KfnstAttndRec by pk
 		String companyId = AppContexts.user().companyId();
-		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, exportSettingCode.v(), columnIndex, exportArt,
+		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
 				position);
 		KfnstAttndRec kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPk, KfnstAttndRec.class)
 				.orElse(new KfnstAttndRec(kfnstAttndRecPk, new BigDecimal(0), null, new BigDecimal(0)));
@@ -202,7 +202,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 			// set another property for attendanceRecordItem
 			attendanceRecItemEntity.setRecordItemId(uid.toString());
 			attendanceRecItemEntity.setCid(companyId);
-			attendanceRecItemEntity.setExportCd(exportSettingCode.v());
+			attendanceRecItemEntity.setExportCd(Long.parseLong(exportSettingCode.v()));
 			attendanceRecItemEntity.setColumnIndex(columnIndex);
 			attendanceRecItemEntity.setPosition(position);
 			attendanceRecItemEntity.setOutputAtr(exportArt);
@@ -236,7 +236,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		String companyId = AppContexts.user().companyId();
 		UID uid = new UID();
 		KfnstAttndRecItem kfnstAttndRecItem = new KfnstAttndRecItem(uid.toString(), companyId, columnIndex,
-				exportSettingCode.v(), new BigDecimal(SINGLE_FORMULA_TYPE), exportArt, position,
+				Long.parseLong(exportSettingCode.v()), new BigDecimal(SINGLE_FORMULA_TYPE), exportArt, position,
 				singleAttendanceRecord.getTimeItemId());
 		return kfnstAttndRecItem;
 	}

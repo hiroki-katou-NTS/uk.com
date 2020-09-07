@@ -24,7 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "KFNMT_RPT_WK_ATD_OUTFRAME")
-public class KfnmtRptWkAtdOutframe extends UkJpaEntity implements Serializable {
+public class KfnmtRptWkAtdOutframe extends UkJpaEntity implements Serializable  {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

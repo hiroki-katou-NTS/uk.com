@@ -49,10 +49,10 @@ public class KfnstAttndRecOutSet extends UkJpaEntity implements Serializable {
 	private BigDecimal nameUseAtr;
 
 	@Column(name="CHAR_SIZE_TYPE")
-	private int charSizeType;
+	private BigDecimal charSizeType;
 	
 	@Column(name="MONTH_APP_DISP_ATR")
-	private int monthAppDispAtr;
+	private BigDecimal monthAppDispAtr;
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */

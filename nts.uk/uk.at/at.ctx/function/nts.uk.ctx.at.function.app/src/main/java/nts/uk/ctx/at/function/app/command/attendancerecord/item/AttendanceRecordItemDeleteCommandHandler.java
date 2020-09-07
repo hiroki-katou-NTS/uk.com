@@ -34,6 +34,6 @@ public class AttendanceRecordItemDeleteCommandHandler
     protected void handle(CommandHandlerContext<AttendanceRecordItemDeleteCommand> context) {
         AttendanceRecordItemDeleteCommand command = context.getCommand();
         this.attendanceRecordRepositoty.deleteAttendanceRecord(AppContexts.user().companyId(),
-                new ExportSettingCode((long) command.getExportSettingCode()));
+                new ExportSettingCode(String.valueOf(command.getExportSettingCode())));
     }
 }

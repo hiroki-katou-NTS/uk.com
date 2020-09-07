@@ -72,7 +72,7 @@ public interface AttendanceRecordExportSettingGetMemento {
 	 *
 	 * @return the export font size
 	 */
-	int getExportFontSize(); 
+	Integer getExportFontSize(); 
 	
 	/**
 	 * KWR002 F A18_2
@@ -80,6 +80,6 @@ public interface AttendanceRecordExportSettingGetMemento {
 	 *
 	 * @return the monthly confirmed display
 	 */
-	int getMonthlyConfirmedDisplay();
+	Integer getMonthlyConfirmedDisplay();
 
 }

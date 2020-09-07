@@ -101,7 +101,7 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 
 		// Add seal stamp List
 		int order = 1;
-		long expCode = attendanceRecordExpSet.getCode().v();
+		long expCode = Long.parseLong(attendanceRecordExpSet.getCode().v());
 		String cid = attendanceRecordExpSet.getCompanyId();
 		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
 			this.commandProxy().insert(toSealStampEntity(cid, expCode, seal, order++));
@@ -137,7 +137,7 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	 */
 	private void deleteSealStamp(String companyId, ExportSettingCode code) {
 		// Delete seal Stamp list
-		List<KfnstSealColumn> sealStampList = this.findAllSealColumn(companyId, code.v());
+		List<KfnstSealColumn> sealStampList = this.findAllSealColumn(companyId, Long.parseLong(code.v()));
 		this.commandProxy().removeAll(sealStampList);
 		this.getEntityManager().flush();
 	}
@@ -166,14 +166,14 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 		// Insert Seal Stamp List
 		int order = 1;
 		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
-			this.commandProxy().insert(toSealStampEntity(cid, settingCode.v(), seal, order++));
+			this.commandProxy().insert(toSealStampEntity(cid, Long.parseLong(settingCode.v()), seal, order++));
 		}
 		this.getEntityManager().flush();
 	}
 
 	private void addKfnstAttndRecOutSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
 		KfnstAttndRecOutSetPK pk = new KfnstAttndRecOutSetPK(attendanceRecordExpSet.getCompanyId(),
-				attendanceRecordExpSet.getCode().v());
+				Long.parseLong(attendanceRecordExpSet.getCode().v()));
 		Optional<KfnstAttndRecOutSet> entityFromDb = this.queryProxy().find(pk, KfnstAttndRecOutSet.class);
 		if (entityFromDb.isPresent()) {
 			this.commandProxy().update(toEntity(attendanceRecordExpSet));
@@ -259,10 +259,10 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository
 	 */
 	public KfnstAttndRecOutSet toEntity(AttendanceRecordExportSetting domain) {
 
-		KfnstAttndRecOutSetPK PK = new KfnstAttndRecOutSetPK(domain.getCompanyId(), domain.getCode().v());
+		KfnstAttndRecOutSetPK PK = new KfnstAttndRecOutSetPK(domain.getCompanyId(), Long.parseLong(domain.getCode().v()));
 
 		KfnstAttndRecOutSet entity = this.queryProxy().find(PK, KfnstAttndRecOutSet.class)
-				.orElse(new KfnstAttndRecOutSet(PK, null, new BigDecimal(0), new BigDecimal(1),1,1));
+				.orElse(new KfnstAttndRecOutSet(PK, null, new BigDecimal(0), new BigDecimal(1),new BigDecimal(1),new BigDecimal(1)));
 
 		JpaAttendanceRecordExportSettingSetMemento setMemento = new JpaAttendanceRecordExportSettingSetMemento(entity);
 		domain.saveToMemento(setMemento);

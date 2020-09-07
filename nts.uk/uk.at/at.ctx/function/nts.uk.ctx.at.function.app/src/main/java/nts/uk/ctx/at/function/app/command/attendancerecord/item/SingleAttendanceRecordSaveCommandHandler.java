@@ -37,7 +37,7 @@ public class SingleAttendanceRecordSaveCommandHandler extends CommandHandler<Sin
 		//update
 		this.singleAttendanceRecordRepository.updateSingleAttendanceRecord(
 																		AppContexts.user().companyId(),
-																		new ExportSettingCode(Long.valueOf(command.getExportSettingCode())),
+																		new ExportSettingCode(String.valueOf(command.getExportSettingCode())),
 																		command.getColumnIndex(),
 																		command.getPosition(),
 																		command.getExportAtr(),

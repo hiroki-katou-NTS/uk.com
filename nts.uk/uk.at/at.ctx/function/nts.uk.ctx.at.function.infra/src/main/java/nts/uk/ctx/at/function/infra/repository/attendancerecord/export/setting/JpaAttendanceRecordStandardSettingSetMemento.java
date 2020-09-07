@@ -1,36 +1,35 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.Data;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 
-public class JpaAttendanceRecordStandardSettingSetMemento
-		implements AttendanceRecordOuputItems.MementoSetter, AttendanceRecordStandardSetting.MementoSetter {
-
-	@Override
-	public void setCid(String cid) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void setAttendanceRecordExportSettings(List<AttendanceRecordExportSetting> attendanceRecordExportSettings) {
-		// TODO Auto-generated method stub
-
-	}
+@Data
+public class JpaAttendanceRecordStandardSettingSetMemento implements AttendanceRecordStandardSetting.MementoSetter {
+	
+	/** The kfnmt rpt wk atd out. */
+	private List<KfnmtRptWkAtdOut> kfnmtRptWkAtdOut;
+	
+	/** The compnay id. */
+	private String cid;
+	
+	/** The selection. */
+	private int itemSelectionType;
 
 	@Override
-	public void setEmployeeId(String employeeId) {
-		// TODO Auto-generated method stub
-
+	public void setAttendanceRecordExportSettings(List<AttendanceRecordExportSetting> standardItem) {
+		this.kfnmtRptWkAtdOut = standardItem.stream().map(i -> {
+			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
+//			i.saveToMemento(entity);
+			return entity;
+		}).collect(Collectors.toList());
+		
 	}
 
-	@Override
-	public void setItemSelectionType(int itemSelectionType) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 }

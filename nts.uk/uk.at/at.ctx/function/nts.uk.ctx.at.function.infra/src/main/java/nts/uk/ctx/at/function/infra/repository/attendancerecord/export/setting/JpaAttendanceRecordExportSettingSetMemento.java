@@ -3,11 +3,16 @@ package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSetPK;
 
@@ -29,7 +34,13 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	private List<KfnstSealColumn> sealColumnEntity = new ArrayList<>();
 
 	private List<KfnstAttndRec> attndRecSettingEntity = new ArrayList<>();
-
+	
+	
+	private KfnmtRptWkAtdOut resEntity;
+	
+	private List<KfnmtRptWkAtdOutseal> sealEntity = new ArrayList<>();
+ 	
+	private List<KfnmtRptWkAtdOutframe> outFrameEntity = new ArrayList<>();
 	/**
 	 * Instantiates a new jpa attendance record export setting set memento.
 	 */
@@ -111,7 +122,7 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	@Override
 	public void setCode(ExportSettingCode code) {
-		this.entity.getId().setExportCd(code.v());
+		this.entity.getId().setExportCd(Long.parseLong(code.v()));
 
 	}
 
@@ -150,18 +161,14 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	}
 
 	@Override
-	public void setExportFontSize(int exportFontSize) {
-		this.entity.setCharSizeType(exportFontSize);
+	public void setExportFontSize(Integer exportFontSize) {
+		this.entity.setCharSizeType(new BigDecimal(exportFontSize));
 		
 	}
 
 	@Override
-	public void setMonthlyConfirmedDisplay(int monthlyConfirmedDisplay) {
-		this.entity.setMonthAppDispAtr(monthlyConfirmedDisplay);
+	public void setMonthlyConfirmedDisplay(Integer monthlyConfirmedDisplay) {
+		this.entity.setMonthAppDispAtr(new BigDecimal(monthlyConfirmedDisplay));
 		
 	}
-
-
-
-
 }

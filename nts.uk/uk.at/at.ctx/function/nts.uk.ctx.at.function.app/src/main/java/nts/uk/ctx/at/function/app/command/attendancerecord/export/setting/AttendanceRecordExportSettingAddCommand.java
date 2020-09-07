@@ -31,6 +31,9 @@ public class AttendanceRecordExportSettingAddCommand {
 	/** The once update. */
 	boolean onceUpdate;
 	
+	/** The font size. */
+	Integer exportFontSize;
+	
 	/**
 	 * Instantiates a new attendance record export setting add command.
 	 */
