@@ -57,15 +57,27 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }
             }).fail((failData: any) => {
                 console.log(failData);
+            }).then(() =>{
+                vm.focusDate();
             }).always(() => vm.$blockui("hide"));
         }
 
         mounted() {
             const vm = this;
+            vm.application().opAppStartDate.subscribe(value => {
+                if (value && vm.application().opAppEndDate()) {
+                    let date = moment(value);
+                    if (date.isValid()) {
+                        vm.changeAppDate();
+                    }
+                }
+            });
             vm.application().opAppEndDate.subscribe(value => {
-                console.log(value);
-                if (value) {
-                    vm.changeAppDate();
+                if (value && vm.application().opAppStartDate()) {
+                    let date = moment(value);
+                    if (date.isValid()) {
+                        vm.changeAppDate();
+                    }
                 }
             });
         }
@@ -97,8 +109,18 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 } else {
                     console.log(res.confirmMsgOutputs);
                 }
-            }).fail(res => {
-                console.log(res);
+            }).fail(err => {
+                let param;
+                if (err.message && err.messageId) {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
+                }
+                vm.$dialog.error(param);
             }).always(() => vm.$blockui("hide"));
         }
 
@@ -125,9 +147,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
             let applicationDto = ko.toJS(vm.application);
             let command = {
-                businessTripDto: businessTripDto,
-                businessTripInfoOutputDto: tripOutput,
-                applicationDto: applicationDto
+                businessTrip: businessTripDto,
+                businessTripInfoOutput: tripOutput,
+                application: applicationDto
             };
 
             vm.$validate([
@@ -135,14 +157,35 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 '.nts-input'
             ]).then((valid: boolean) => {
                 if (valid) {
-                    return vm.$blockui("show").then(() => vm.$ajax(API.register, command));
+                    return vm.$ajax(API.checkBeforeRegister, command);
                 }
             }).done((res: any) => {
                 if (res) {
-                    vm.$dialog.info({messageId: "Msg_15"});
+                    vm.registerData(command);
+                }
+            }).fail(err => {
+                let param;
+                if (err.message && err.messageId) {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
+                }
+                vm.$dialog.error(param);
+            }).always(() => vm.$blockui("hide"));
+        }
+
+        registerData(command: any) {
+            const vm = this;
+            vm.$blockui("show").then(() => vm.$ajax(API.register, command).done( data => {
+                if (data) {
+                    vm.$dialog.info({messageId: "Msg_15"}).then(() => vm.focusDate());
                 }
             }).fail(res => {
-                console.log(res);
                 let param;
                 if (res.message && res.messageId) {
                     param = {messageId: res.messageId};
@@ -155,7 +198,17 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                     }
                 }
                 vm.$dialog.error(param);
-            }).always(() => vm.$blockui("hide"));
+            }));
+        }
+
+        focusDate() {
+            const vm = this;
+            let dateItem = $(vm.$el).find('#kaf000-a-component4-rangeDate');
+            if (dateItem.length) {
+                dateItem.focus();
+            } else {
+                $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
+            }
         }
     }
 

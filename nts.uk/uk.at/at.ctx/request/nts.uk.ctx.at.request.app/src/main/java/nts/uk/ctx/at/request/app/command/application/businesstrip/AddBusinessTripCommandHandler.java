@@ -49,7 +49,7 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
     protected ProcessResult handle(CommandHandlerContext<AddBusinessTripCommand> context) {
         AddBusinessTripCommand command = context.getCommand();
         String loginSid = AppContexts.user().employeeId();
-        ApplicationDto applicationDto = command.getApplicationDto();
+        ApplicationDto applicationDto = command.getApplication();
         Application application = Application.createFromNew(
                 EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
                 applicationDto.getEmployeeID() == null ? loginSid : applicationDto.getEmployeeID(),
@@ -63,9 +63,9 @@ public class AddBusinessTripCommandHandler extends CommandHandlerWithResult<AddB
                 Optional.of(new AppReason(applicationDto.getOpAppReason())),
                 Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
                 ));
-        BusinessTrip businessTrip = command.getBusinessTripDto().toDomain(application);
+        BusinessTrip businessTrip = command.getBusinessTrip().toDomain(application);
         businessTrip.setAppID(application.getAppID());
-        BusinessTripInfoOutput businessTripInfoOutput = command.getBusinessTripInfoOutputDto().toDomain();
+        BusinessTripInfoOutput businessTripInfoOutput = command.getBusinessTripInfoOutput().toDomain();
 
         GeneralDate appStartDate = application.getOpAppStartDate().isPresent() ? application.getOpAppStartDate().get().getApplicationDate() : null;
         GeneralDate appEndDate = application.getOpAppStartDate().isPresent() ? application.getOpAppEndDate().get().getApplicationDate() : null;
