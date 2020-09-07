@@ -24,16 +24,22 @@ public class BentoJoinReservationSetting {
 
     public GeneralDate endDate;
 
+    //名前
     public String reservationFrameName1;
 
+    //開始
     public Integer reservationStartTime1;
 
+    //終了
     public int reservationEndTime1;
 
+    //名前
     public String reservationFrameName2;
 
+    //開始
     public Integer reservationStartTime2;
 
+    //終了
     public Integer reservationEndTime2;
 
     public List<BentoDto> bentoDtos;
@@ -42,11 +48,11 @@ public class BentoJoinReservationSetting {
         if (bentomenuJoinBentoDtos == null || CollectionUtil.isEmpty(bentomenuJoinBentoDtos)) return null;
         List<BentoDto> bentoDtos = new ArrayList<>();
 
-        List<BentomenuJoinBentoDto> result = bentoReservationSettingDto.operationDistinction == 0 ?
-                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode == null).collect(Collectors.toList()) :
-                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode != null).collect(Collectors.toList());
+//        List<BentomenuJoinBentoDto> result = bentoReservationSettingDto.operationDistinction == 0 ?
+//                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode == null).collect(Collectors.toList()) :
+//                bentomenuJoinBentoDtos.stream().filter(x -> x.workLocationCode != null).collect(Collectors.toList());
 
-        for(BentomenuJoinBentoDto x : result){
+        for(BentomenuJoinBentoDto x : bentomenuJoinBentoDtos){
             bentoDtos.add(new BentoDto(
                     x.getFrameNo(),
                     x.getBentoName(),
