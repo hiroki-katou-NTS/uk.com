@@ -492,24 +492,40 @@ export class CmmS45BComponent extends Vue {
             lstAppID = this.findLstIdDisplay();
         }
         let lstAppr = [];
+        let lstApplicationTemp = self.data.appListInfoDto.appLst as ListOfApplication;
+        let ListOfApplicationCmd = [];
         lstAppID.forEach((id) => {
             lstAppr.push({ appId: id, version: self.findVersion(id) });
+            let object = _.filter(lstApplicationTemp, (item) => item.appID == id);
+            if (object) {
+                ListOfApplicationCmd.push(object[0]);
+            }
+
         });
+
+        let paramCmd = {
+            isApprovalAll: true,
+            device: 1,
+            listOfApplicationCmds: ListOfApplicationCmd
+        };
         self.$modal.confirm({ messageId: 'Msg_1551' }).then((value) => {
             if (value == 'yes') {
-                self.$http.post('at', servicePath.approvalListApp, lstAppr).then((result) => {
-                    self.$modal.info({ messageId: 'Msg_220' }).then(() => {
-                        self.$mask('hide');
-                        self.lstAppr = [];
-                        self.modeAppr = false;
-                        self.getData(false, true);
-                    });
+                self.$http.post('at', servicePath.approvalBatchApp, paramCmd).then((result) => {
+                    self.$mask('hide');
+                    // self.$modal.info({ messageId: 'Msg_220' }).then(() => {
+                    //     self.$mask('hide');
+                    //     self.lstAppr = [];
+                    //     self.modeAppr = false;
+                    //     self.getData(false, true);
+                    // });
                 }).catch(() => {
                     self.$mask('hide');
                 });
             } else {
                 self.$mask('hide');
             }
+        }).catch(() => {
+            self.$mask('hide');
         });
     }
 
@@ -673,5 +689,6 @@ const servicePath = {
     getListApproval: 'at/request/application/applist/getapplistApprovalMobile',
     getApplicationList: 'at/request/application/applist/getapplistMobile',
     getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList',
-    filterByDate: 'at/request/application/applist/getapplistFilterMobile'
+    filterByDate: 'at/request/application/applist/getapplistFilterMobile',
+    approvalBatchApp: 'at/request/application/applist/approve'
 };
