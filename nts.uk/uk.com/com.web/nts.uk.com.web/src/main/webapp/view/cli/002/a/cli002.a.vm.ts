@@ -12,7 +12,23 @@ module nts.uk.com.view.cli002.a {
             new systemType(3, this.$i18n("Enum_SystemType_OFFICE_HELPER")),
         ]);
 
-        public dataSourceItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        public dataSourceItem: KnockoutObservableArray<any> = ko.observableArray([
+            {rowNumber: 1, functionName: "item1", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 2, functionName: "item2", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 3, functionName: "item3", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 4, functionName: "item4", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 5, functionName: "item5", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 6, functionName: "item6", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 7, functionName: "item7", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 8, functionName: "item8", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 9, functionName: "item9", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 10, functionName: "item10", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 11, functionName: "item11", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 12, functionName: "item12", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 13, functionName: "item13", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 14, functionName: "item14", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false},
+            {rowNumber: 15, functionName: "item15", logLoginDisplay: false, logStartDisplay: true, logUpdateDisplay: false}
+        ]);
         public selectedSystemCode: KnockoutObservable<number> = ko.observable(0);
 
         public systemColumns = [
@@ -77,7 +93,19 @@ module nts.uk.com.view.cli002.a {
             vm.$blockui("grayout");
             service.findBySystem(systemType).done((response: PGList[]) => {
                 const pgInfomation: Array<PGInfomation> = [];
-                _.forEach(response, function(item: PGList, index) {
+                var statesTable = [];
+                _.forEach(response, function(item: PGList, index) {                
+                    if(item.loginHistoryRecord.activeCategory == 0) {
+                        statesTable.push(new CellState(index, 'logLoginDisplay', [nts.uk.ui.mgrid.color.Alarm, nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Disable]));
+                    }
+
+                    if(item.bootHistoryRecord.activeCategory == 0) {
+                        statesTable.push(new CellState(index, 'logStartDisplay', [nts.uk.ui.mgrid.color.Alarm, nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Disable]));
+                    }
+
+                    if(item.editHistoryRecord.activeCategory == 0) {
+                        statesTable.push(new CellState(index, 'logUpdateDisplay', [nts.uk.ui.mgrid.color.Alarm, nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Disable]));
+                    }
                     pgInfomation.push(new PGInfomation(index + 1, item.functionName, false, false, false));
                 })
                 vm.dataSourceItem(pgInfomation);
@@ -160,6 +188,17 @@ module nts.uk.com.view.cli002.a {
             this.logLoginDisplay = logLoginDisplay;
             this.logStartDisplay = logStartDisplay;
             this.logUpdateDisplay = logUpdateDisplay;
+        }
+    }
+
+    class CellState {
+        rowId: number;
+        columnKey: string;
+        state: Array<any>
+        constructor(rowId: number, columnKey: string, state: Array<any>) {
+            this.rowId = rowId;
+            this.columnKey = columnKey;
+            this.state = state;
         }
     }
 }
