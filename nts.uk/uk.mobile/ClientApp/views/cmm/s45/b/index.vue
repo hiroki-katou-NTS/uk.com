@@ -85,7 +85,7 @@
                     >{{ item.appDate | date('MM/DD (ddd)')}}</div>
                     <div
                       class="pt-2 pb-2 d-inline-block"
-                    >{{appContent(item.appName, item.prePostName)}}</div>
+                    >{{appContent(item.appName, item.prePostAtr)}}</div>
                   </div>
                 </div>
               </li>

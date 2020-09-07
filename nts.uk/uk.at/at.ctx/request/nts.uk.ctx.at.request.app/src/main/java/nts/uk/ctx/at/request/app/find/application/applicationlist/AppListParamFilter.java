@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListExtractConditionCmd;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ListOfAppTypesCmd;
 
 @Data
 @NoArgsConstructor
@@ -33,7 +35,7 @@ public class AppListParamFilter {
 	/**
 	 * 申請種類リスト情報(LIST)(Optional)
 	 */
-	private List<ListOfAppTypesDto> listOfAppTypes;
+	private List<ListOfAppTypesCmd> listOfAppTypes;
 	
 	/**
 	 * SPR連携用パラメータ(Optional）
@@ -46,7 +48,7 @@ public class AppListParamFilter {
 	/**
 	 * 申請一覧抽出条件
 	 */
-	private AppListExtractConditionDto appListExtractCondition;
+	private AppListExtractConditionCmd appListExtractCondition;
 
 //	private AppListExtractConditionDto condition;
 //	private boolean spr;

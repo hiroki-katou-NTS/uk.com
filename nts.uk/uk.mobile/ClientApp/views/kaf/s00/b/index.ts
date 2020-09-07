@@ -85,8 +85,8 @@ export class KafS00BComponent extends Vue {
             start: null,
             end: null,
         };
-        if (self.$input.newModeContent.appTypeSetting.displayInitialSegment != 2) {
-            self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting.displayInitialSegment;
+        if (self.$input.newModeContent.appTypeSetting[0].displayInitialSegment != 2) {
+            self.$output.prePostAtr = self.$input.newModeContent.appTypeSetting[0].displayInitialSegment;
         } else {
             self.$output.prePostAtr = null;
         }
@@ -132,7 +132,7 @@ export class KafS00BComponent extends Vue {
     get enablePrePost() {
         const self = this;
 
-        return self.$input.newModeContent.appTypeSetting.canClassificationChange;
+        return self.$input.newModeContent.appTypeSetting[0].canClassificationChange;
     }
 
     get displayMultiDaySwitch() {

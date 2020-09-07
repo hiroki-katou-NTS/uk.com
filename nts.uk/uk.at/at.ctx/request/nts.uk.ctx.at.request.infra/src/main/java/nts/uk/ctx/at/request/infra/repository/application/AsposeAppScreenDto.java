@@ -1,9 +1,13 @@
 package nts.uk.ctx.at.request.infra.repository.application;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 
@@ -57,9 +61,32 @@ public class AsposeAppScreenDto {
 				domain.getApplicantName(), 
 				domain.getAppType().name, 
 				domain.getAppContent(), 
-				domain.getInputDate().toString(), 
+				domain.getInputDate().toString("yy/MM/dd(E) HH:mm"), 
 				domain.getReflectionStatus(), 
 				domain.getOpApprovalStatusInquiry().isPresent() ? domain.getOpApprovalStatusInquiry().get().toString() : "", 
-				domain.getOpAppStartDate().isPresent() ? domain.getOpAppStartDate().get().toString() : "");
+				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));
+	}
+	
+	public static String convertStartEndDate(Optional<GeneralDate> startDate, Optional<GeneralDate> endDate, ApplicationType appType, GeneralDate appDate) {
+		String result = "";
+		
+		if(startDate.isPresent() && endDate.isPresent()) {
+			if(startDate.get().toString().equals(endDate.get().toString())) {
+				result = startDate.get().toString("MM/dd(E)");
+			} else {
+				result = new StringBuilder()
+						.append(startDate.get().toString("MM/dd(E)"))
+						.append("ー")
+						.append(endDate.get().toString("MM/dd(E)"))
+						.toString();
+			}
+		}
+		if(appType.value == 10) {
+			result = new StringBuilder(result)
+					.append("\n'")
+					.append(appDate.toString("MM/dd(E)")).toString();
+		}
+		
+		return result;
 	}
 }
