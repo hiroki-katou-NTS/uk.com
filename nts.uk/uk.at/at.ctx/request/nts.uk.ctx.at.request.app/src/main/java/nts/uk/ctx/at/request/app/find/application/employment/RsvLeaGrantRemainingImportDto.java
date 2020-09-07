@@ -1,12 +1,10 @@
 package nts.uk.ctx.at.request.app.find.application.employment;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
+@Builder
 public class RsvLeaGrantRemainingImportDto {
 	/** 付与日1 */
 	private String grantDate;

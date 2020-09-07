@@ -28,16 +28,21 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class EmploymentReserveLeaveInforFinder {
+
 	@Inject
 	private AtEmployeeAdapter atEmployeeAdapter;
+
 	@Inject
 	private ReserveLeaveManagerApdater rsvLeaManaApdater;
+
 	@Inject
 	private HdAppSetRepository repoHdAppSet;
+
 	@Inject
 	private RemainNumberTempRequireService requireService;
+
 	/**
-	 * 1.積休ダイアログ作成（起動用）
+	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL029_積休ダイアログ.アルゴリズム.1.積休ダイアログ作成（起動用）.1.積休ダイアログ作成（起動用）
 	 * @param param
 	 * @return
 	 */
@@ -51,38 +56,44 @@ public class EmploymentReserveLeaveInforFinder {
 		boolean isRetentionManage = true;
 		EmployeeInfoImport firstEmp = lstEmpInfor.get(0);
 		RsvLeaManagerImportDto rsvLeaManaImp = null;
-		if(!CollectionUtil.isEmpty(lstEmpInfor)) {
+		if (!CollectionUtil.isEmpty(lstEmpInfor)) {
 			employeeCode = firstEmp.getScd();
 			employeeName = firstEmp.getBussinessName();
 		}
-		if(param.getInputDate() != null) {
+		if (param.getInputDate() != null) {
 			GeneralDate referDate = GeneralDate.fromString(param.getInputDate(), "yyyy/MM/dd");
 			//3.積立年休取得日一覧の作成, 4.当月以降積休使用状況作成 - RequestList201
 			Optional<RsvLeaManagerImport> rsvLeaManaImport = rsvLeaManaApdater.getRsvLeaveManager(firstEmp.getSid(), referDate);
-			if(rsvLeaManaImport.isPresent()) {
-				RsvLeaveInfoImport reserveLeaveInfo = rsvLeaManaImport.get().getReserveLeaveInfo();
-				List<RsvLeaGrantRemainingImportDto> grantRemainingList = rsvLeaManaImport.get().getGrantRemainingList().stream().map(item-> {
-					return new RsvLeaGrantRemainingImportDto(
-						item.getGrantDate(),
-						item.getDeadline(),
-						item.getGrantNumber(),
-						item.getUsedNumber(),
-						item.getRemainingNumber(),
-						false
-					);
-				}).collect(Collectors.toList());
-				List<TmpRsvLeaveMngImport> tmpManageList = rsvLeaManaImport.get().getTmpManageList();
-				rsvLeaManaImp = new RsvLeaManagerImportDto(reserveLeaveInfo, grantRemainingList, tmpManageList);
+			if (!rsvLeaManaImport.isPresent()) {
+				return new EmpRsvLeaveInforDto(lstEmpInfor, rsvLeaManaImp, employeeCode, employeeName, yearResigName, isRetentionManage);
 			}
+			RsvLeaveInfoImport reserveLeaveInfo = rsvLeaManaImport.get().getReserveLeaveInfo();
+			List<RsvLeaGrantRemainingImportDto> grantRemainingList = rsvLeaManaImport.get().getGrantRemainingList().stream()
+				.map(item-> new RsvLeaGrantRemainingImportDto(
+					item.getGrantDate(),
+					item.getDeadline(),
+					item.getGrantNumber(),
+					item.getUsedNumber(),
+					item.getRemainingNumber(),
+					false
+				))
+				.collect(Collectors.toList());
+			List<TmpRsvLeaveMngImport> tmpManageList = rsvLeaManaImport.get().getTmpManageList();
+			rsvLeaManaImp = new RsvLeaManagerImportDto(reserveLeaveInfo, grantRemainingList, tmpManageList);
 		}
 		//ドメインモデル「休暇申請設定」を取得する (Vacation application setting)
 		Optional<HdAppSet> hdAppSet = repoHdAppSet.getAll();
-		if(hdAppSet.isPresent()) {
+		if (hdAppSet.isPresent()) {
 			yearResigName = hdAppSet.get().getYearResig().v();
 		}
 		return new EmpRsvLeaveInforDto(lstEmpInfor, rsvLeaManaImp, employeeCode, employeeName, yearResigName, isRetentionManage);
 	}
 	
+	/**
+	 * UKDesign.UniversalK.就業.KDL_ダイアログ.KDL029_積休ダイアログ.アルゴリズム.5.積休ダイアログ作成（社員選択用）.5.積休ダイアログ作成（社員選択用）
+	 * @param param
+	 * @return
+	 */
 	public EmpRsvLeaveInforDto getByEmloyee(ParamEmpRsvLeave param) {
 		RsvLeaManagerImportDto rsvLeaManaImp = null;
 		val require = requireService.createRequire();
@@ -95,24 +106,25 @@ public class EmploymentReserveLeaveInforFinder {
 		if (isRetentionManage) {
 			//3.積立年休取得日一覧の作成, 4.当月以降積休使用状況作成
 			Optional<RsvLeaManagerImport> rsvLeaManaImport = rsvLeaManaApdater.getRsvLeaveManager(param.getListSID().get(0), referDate);
-			if(rsvLeaManaImport.isPresent()) {
-				// 社員に対応する締め期間を取得する
-				DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, sId, referDate);
-				RsvLeaveInfoImport reserveLeaveInfo = rsvLeaManaImport.get().getReserveLeaveInfo();
-				List<RsvLeaGrantRemainingImportDto> grantRemainingList = rsvLeaManaImport.get().getGrantRemainingList().stream().map(item-> {
-					GeneralDate deadLine = GeneralDate.fromString(item.getDeadline(), "yyyy/MM/dd");
-					return new RsvLeaGrantRemainingImportDto(
-						item.getGrantDate(),
-						item.getDeadline(),
-						item.getGrantNumber(),
-						item.getUsedNumber(),
-						item.getRemainingNumber(),
-						deadLine.beforeOrEquals(closingPeriod.end())
-					);
-				}).collect(Collectors.toList());
-				List<TmpRsvLeaveMngImport> tmpManageList = rsvLeaManaImport.get().getTmpManageList();
-				rsvLeaManaImp = new RsvLeaManagerImportDto(reserveLeaveInfo, grantRemainingList, tmpManageList);
+			if (!rsvLeaManaImport.isPresent()) {
+				return new EmpRsvLeaveInforDto(new ArrayList<>(), rsvLeaManaImp, "", "", "", isRetentionManage);
 			}
+
+			// 社員に対応する締め期間を取得する
+			DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, sId, referDate);
+			RsvLeaveInfoImport reserveLeaveInfo = rsvLeaManaImport.get().getReserveLeaveInfo();
+			List<RsvLeaGrantRemainingImportDto> grantRemainingList = rsvLeaManaImport.get().getGrantRemainingList().stream()
+				.map(item-> new RsvLeaGrantRemainingImportDto(
+					item.getGrantDate(),
+					item.getDeadline(),
+					item.getGrantNumber(),
+					item.getUsedNumber(),
+					item.getRemainingNumber(),
+					(GeneralDate.fromString(item.getDeadline(), "yyyy/MM/dd")).beforeOrEquals(closingPeriod.end())
+				))
+				.collect(Collectors.toList());
+			List<TmpRsvLeaveMngImport> tmpManageList = rsvLeaManaImport.get().getTmpManageList();
+			rsvLeaManaImp = new RsvLeaManagerImportDto(reserveLeaveInfo, grantRemainingList, tmpManageList);
 		}
 		return new EmpRsvLeaveInforDto(new ArrayList<>(), rsvLeaManaImp, "", "", "", isRetentionManage);
 	}

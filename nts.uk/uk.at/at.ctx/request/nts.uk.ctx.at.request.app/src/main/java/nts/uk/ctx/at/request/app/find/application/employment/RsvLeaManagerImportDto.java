@@ -2,12 +2,13 @@ package nts.uk.ctx.at.request.app.find.application.employment;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaveInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.TmpRsvLeaveMngImport;
-@Getter
-@AllArgsConstructor
+
+@Data
+@Builder
 public class RsvLeaManagerImportDto {
 	/** 積立年休残数 */
 	private RsvLeaveInfoImport reserveLeaveInfo;
