@@ -9,13 +9,13 @@ import java.util.List;
 
 public class Helper {
 
-	public static String companyId = "cid";
+	public static String cid = "cid";
 	public static String workplaceId = "wid";
 	public static DatePeriod period = DatePeriod.daysFirstToLastIn(YearMonth.of(202009));
 
 	public static Approver36AgrByCompany createApprover36AgrByCompany() {
 		return new Approver36AgrByCompany(
-				companyId,
+				cid,
 				period,
 				createApproverIds(5),
 				createConfirmerIds(5)
@@ -24,7 +24,7 @@ public class Helper {
 
 	public static Approver36AgrByWorkplace createApprover36AgrByWorkplace() {
 		return new Approver36AgrByWorkplace(
-				companyId,
+				cid,
 				workplaceId,
 				period,
 				createApproverIds(5),

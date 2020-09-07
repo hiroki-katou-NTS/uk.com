@@ -109,14 +109,14 @@ public class Krcmt36AgrApvCmp extends UkJpaEntity implements Serializable {
 
 		this.endDate = domain.getPeriod().end();
 
-		List<String> approverIds = domain.getApproverIds();
+		List<String> approverIds = domain.getApproverList();
 		this.approverSid1 = approverIds.get(0);
 		if (approverIds.size() > 1) this.approverSid2 = approverIds.get(1);
 		if (approverIds.size() > 2) this.approverSid3 = approverIds.get(2);
 		if (approverIds.size() > 3) this.approverSid4 = approverIds.get(3);
 		if (approverIds.size() > 4) this.approverSid5 = approverIds.get(4);
 
-		List<String> confirmerIds = domain.getConfirmerIds();
+		List<String> confirmerIds = domain.getConfirmerList();
 		if (confirmerIds.size() > 0) this.confirmerSid1 = confirmerIds.get(0);
 		if (confirmerIds.size() > 1) this.confirmerSid2 = confirmerIds.get(1);
 		if (confirmerIds.size() > 2) this.confirmerSid3 = confirmerIds.get(2);

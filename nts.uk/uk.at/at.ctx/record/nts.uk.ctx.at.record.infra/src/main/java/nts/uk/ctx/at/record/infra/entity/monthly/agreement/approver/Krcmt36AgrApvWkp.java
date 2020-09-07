@@ -113,7 +113,7 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 
 	public void fromDomainNoPK(Approver36AgrByWorkplace domain) {
 
-		this.companyID = domain.getCompanyId();
+		this.companyID = domain.getCid();
 		this.endDate = domain.getPeriod().end();
 
 		List<String> approverIds = domain.getApproverIds();

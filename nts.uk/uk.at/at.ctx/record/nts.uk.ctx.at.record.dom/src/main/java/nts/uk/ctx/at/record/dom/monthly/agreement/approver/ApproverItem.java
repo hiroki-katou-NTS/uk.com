@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 承認者項目
+ *   履歴項目
  *
  * @author khai.dh
  *
@@ -19,10 +20,10 @@ public class ApproverItem implements DomainValue {
 	/**
 	 * 承認者リスト
 	 */
-	private List<String> approverIds;
+	private List<String> approverList;
 
 	/**
 	 * 確認者リスト
 	 */
-	private List<String> confirmerIds;
+	private List<String> confirmerList;
 }
