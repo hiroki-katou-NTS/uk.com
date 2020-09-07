@@ -1,9 +1,5 @@
 /// <reference path='../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.kdl048.screenModel {
-  import text = nts.uk.resource.getText;
-  import getShared = nts.uk.ui.windows.getShared;
-  import setShared = nts.uk.ui.windows.setShared;
-
   @bean()
   export class ViewModel extends ko.ViewModel {
     initParam: any;
@@ -24,7 +20,7 @@ module nts.uk.at.view.kdl048.screenModel {
     // A5_3
     ntsSearchBox: any;
     currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
-    headers: any = ko.observableArray([text("KDL048_6"), text("KDL048_7")]);
+    headers: any = ko.observableArray([this.$i18n("KDL048_6"), this.$i18n("KDL048_7")]);
     columns: KnockoutObservableArray<any>;
     currentCode: KnockoutObservable<any> = ko.observable();
     // A6
@@ -35,13 +31,13 @@ module nts.uk.at.view.kdl048.screenModel {
     // A9
     columnSelectedItemList: KnockoutObservableArray<any> = ko.observableArray([
       {
-        headerText: text("KDL048_11"),
+        headerText: this.$i18n("KDL048_11"),
         prop: "operator",
         width: 55,
         columnCssClass: "text-center",
       },
-      { headerText: text("KDL048_6"), prop: "itemId", width: 70 },
-      { headerText: text("KDL048_7"), prop: "name", width: 200 },
+      { headerText: this.$i18n("KDL048_6"), prop: "itemId", width: 70 },
+      { headerText: this.$i18n("KDL048_7"), prop: "name", width: 200 },
     ]);
     paramSelectedTimeList: KnockoutObservableArray<SelectedTimeListParam> = ko.observableArray([]);
     dataSelectedItemList: KnockoutObservableArray<SelectedTimeList> = ko.observableArray([]);
@@ -50,7 +46,7 @@ module nts.uk.at.view.kdl048.screenModel {
     created() {
       const vm = this;
       //get params
-      vm.initParam = getShared("attendanceItem");
+      vm.initParam = vm.$window.storage("attendanceItem");
       vm.objectDisplay = vm.initParam;
       //Setting data
       vm.diligenceData(
@@ -66,7 +62,7 @@ module nts.uk.at.view.kdl048.screenModel {
       vm.tableDataA6 = vm.initParam.diligenceProjectList;
       // A3
       vm.texteditor = {
-        name: text("KDL048_3"),
+        name: vm.$i18n("KDL048_3"),
         value: vm.attendanceRecordName,
         constraint: "ItemName",
         option: ko.mapping.fromJS(
@@ -112,8 +108,8 @@ module nts.uk.at.view.kdl048.screenModel {
 
       // Columns of table A6
       vm.columns = ko.observableArray([
-        { headerText: text("KDL048_6"), prop: "id", width: 70 },
-        { headerText: text("KDL048_7"), prop: "name", width: 200 },
+        { headerText: vm.$i18n("KDL048_6"), prop: "id", width: 70 },
+        { headerText: vm.$i18n("KDL048_7"), prop: "name", width: 200 },
       ]);
 
       // event when change itemCombo
@@ -190,10 +186,10 @@ module nts.uk.at.view.kdl048.screenModel {
             let data: SelectedTimeList = new SelectedTimeList();
             let dataParam: SelectedTimeListParam = new SelectedTimeListParam();
             data.itemId = e.id;
-            data.operator = text("KDL048_8");
+            data.operator = vm.$i18n("KDL048_8");
             data.name = e.name;
             dataParam.itemId = e.id;
-            dataParam.operator = text("KDL048_8");
+            dataParam.operator = vm.$i18n("KDL048_8");
             vm.dataSelectedItemList.push(data);
             vm.paramSelectedTimeList.push(dataParam);
             vm.currentCodeList2().push(e.id);
@@ -216,10 +212,10 @@ module nts.uk.at.view.kdl048.screenModel {
             let data: SelectedTimeList = new SelectedTimeList();
             let dataParam: SelectedTimeListParam = new SelectedTimeListParam();
             data.itemId = e.id;
-            data.operator = text("KDL048_9");
+            data.operator = vm.$i18n("KDL048_9");
             data.name = e.name;
             dataParam.itemId = e.id;
-            dataParam.operator = text("KDL048_9");
+            dataParam.operator = vm.$i18n("KDL048_9");
             vm.dataSelectedItemList.push(data);
             vm.paramSelectedTimeList.push(dataParam);
             vm.currentCodeList2().push(e.id);
@@ -264,7 +260,7 @@ module nts.uk.at.view.kdl048.screenModel {
             vm.objectDisplay.itemNameLine.name = vm.attendanceRecordName();
             vm.objectDisplay.attribute.selected = vm.valueCb();
             vm.objectDisplay.selectedTimeList = vm.paramSelectedTimeList();
-            setShared("attendanceRecordExport", vm.objectDisplay);
+            vm.$window.storage("attendanceRecordExport", vm.objectDisplay);
           }
           // 項目名行の表示フラグ == False：表示しない
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == １：表示のみ
@@ -272,7 +268,7 @@ module nts.uk.at.view.kdl048.screenModel {
             // shared with value of A5_2, A9_2_1, A9_2_2
             vm.objectDisplay.attribute.selected = vm.valueCb();
             vm.objectDisplay.selectedTimeList = vm.paramSelectedTimeList();
-            setShared("attendanceRecordExport", vm.objectDisplay);
+            vm.$window.storage("attendanceRecordExport", vm.objectDisplay);
           }
           vm.$window.close();
         }
