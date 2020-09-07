@@ -14,7 +14,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class OneYearTime extends ValueObject {
 
     /**
@@ -30,7 +29,7 @@ public class OneYearTime extends ValueObject {
     /**
      * [C-1] １ヶ月時間
      */
-    public OneYearTime create(ErrorTimeInYear errorTimeInYear, AgreementOneMonthTime upperLimitTime) {
+    public static OneYearTime create(ErrorTimeInYear errorTimeInYear, AgreementOneMonthTime upperLimitTime) {
         if (upperLimitTime.v() >= errorTimeInYear.getErrorTime().v()) {
             throw new BusinessException("Msg_59", "KMK008_66", "KMK008_129");
         }
