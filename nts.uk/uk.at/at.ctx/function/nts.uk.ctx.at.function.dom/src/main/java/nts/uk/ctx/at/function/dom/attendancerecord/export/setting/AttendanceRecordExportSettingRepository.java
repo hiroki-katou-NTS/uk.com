@@ -23,7 +23,7 @@ public interface AttendanceRecordExportSettingRepository {
 	 * @param code the code
 	 * @return the attendance rec out set
 	 */
-	Optional<AttendanceRecordExportSetting> getAttendanceRecExpSet(String layoutId);
+	Optional<AttendanceRecordExportSetting> getAttendanceRecExpSet(String compnayId, String code);
 
 	/**
 	 * Update attendance rec out set.

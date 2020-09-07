@@ -43,18 +43,21 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	
+	
 	/** The id. */
 	@Id
 	@Column(name = "LAYOUT_ID")
 	@Basic(optional = false)
 	private String layoutID;
-
-	@Column(name="EXCLUS_VER")
-	private String exclusVer;
-
+	
 	@Basic(optional = false)
-	@Column(name="CONTRACT_CD")
-	private String contractCD;
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer;
+	
+	@Basic(optional = false)
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 	
 	@Basic(optional = false)
 	@Column(name="ITEM_SEL_TYPE")

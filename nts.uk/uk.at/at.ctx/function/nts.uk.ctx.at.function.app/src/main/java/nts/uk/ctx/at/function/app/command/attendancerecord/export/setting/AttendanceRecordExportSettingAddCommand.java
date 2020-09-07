@@ -34,6 +34,9 @@ public class AttendanceRecordExportSettingAddCommand {
 	/** The font size. */
 	Integer exportFontSize;
 	
+	/** The monthly display. */
+	Integer monthlyDisplay;
+	
 	/**
 	 * Instantiates a new attendance record export setting add command.
 	 */

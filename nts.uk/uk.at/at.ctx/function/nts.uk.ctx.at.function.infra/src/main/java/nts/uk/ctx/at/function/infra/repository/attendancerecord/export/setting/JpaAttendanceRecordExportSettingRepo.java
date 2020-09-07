@@ -26,6 +26,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaAttendanceRecordExportSettingRepository.
@@ -95,11 +96,14 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	 * String, java.lang.String)
 	 */
 	@Override
-	public Optional<AttendanceRecordExportSetting> getAttendanceRecExpSet(String layoutId) {
+	public Optional<AttendanceRecordExportSetting> getAttendanceRecExpSet(String companyId, String code) {
+		String sql = "SELECT ot FROM KfnmtRptWkAtdOut ot WHERE ot.exportCD = :exportCD AND ot.cid = :companyId ";
+		Optional<AttendanceRecordExportSetting> oKfnmtRptWkAtdOut = this.queryProxy().query(sql, KfnmtRptWkAtdOut.class)
+													.setParameter("exportCD", code)
+													.setParameter("companyId", companyId)
+													.getSingle(c -> this.toDomain(c));
 
-		KfnmtRptWkAtdOut pk = new KfnmtRptWkAtdOut();
-		pk.setLayoutID(layoutId);
-		return this.queryProxy().find(pk, KfnmtRptWkAtdOut.class).map(e -> toDomain(e));
+		return oKfnmtRptWkAtdOut;
 	}
 
 	/*
@@ -144,7 +148,16 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	 */
 	private KfnmtRptWkAtdOutseal toSealStampEntity(String cId, String layoutId, SealColumnName sealName, int order) {
 		UUID columnId = UUID.randomUUID();
-		return new KfnmtRptWkAtdOutseal(columnId.toString(), cId, layoutId, sealName.toString(), new BigDecimal(order));
+		
+		KfnmtRptWkAtdOutseal outseal = new KfnmtRptWkAtdOutseal();
+		outseal.setColumnId(columnId.toString());
+		outseal.setExclusVer(0);
+		outseal.setContractCd("111");
+		outseal.setCid(cId);
+		outseal.setLayoutId(layoutId);
+		outseal.setSealStampName(sealName.toString());
+		outseal.setSealOrder(new BigDecimal(order));
+		return outseal;
 	}
 
 	/**
@@ -195,7 +208,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	private void addKfnmtRptWkAtdOut(AttendanceRecordExportSetting attendanceRecordExpSet) {
 		KfnmtRptWkAtdOut pk = new KfnmtRptWkAtdOut();
 		pk.setLayoutID(attendanceRecordExpSet.getLayoutId());
-		Optional<KfnmtRptWkAtdOut> entityFromDb = this.queryProxy().find(pk, KfnmtRptWkAtdOut.class);
+		Optional<KfnmtRptWkAtdOut> entityFromDb = this.queryProxy().find(pk.getLayoutID(), KfnmtRptWkAtdOut.class);
 		if (entityFromDb.isPresent()) {
 			this.commandProxy().update(toEntity(attendanceRecordExpSet));
 		} else {
@@ -277,11 +290,23 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	 * @return the kfnmtrptwkatdout
 	 */
 	public KfnmtRptWkAtdOut toEntity(AttendanceRecordExportSetting domain) {
-
+		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
 		KfnmtRptWkAtdOut PK = new KfnmtRptWkAtdOut();
 		PK.setLayoutID(domain.getLayoutId());
-		KfnmtRptWkAtdOut entity = this.queryProxy().find(PK, KfnmtRptWkAtdOut.class)
-				.orElse(new KfnmtRptWkAtdOut());
+		PK.setContractCd("1111");
+		PK.setExclusVer(0);
+		PK.setItemSelType(0);
+		PK.setCid(companyId);
+		PK.setSid(employeeId);
+		PK.setExportCD(domain.getCode().v());
+		PK.setName(domain.getName().v());
+		PK.setSealUseAtr(new BigDecimal(0));
+		PK.setNameUseAtr(new BigDecimal(0));
+		PK.setCharSizeType(new BigDecimal(1));
+		PK.setMonthAppDispAtr(new BigDecimal(0));
+		KfnmtRptWkAtdOut entity = this.queryProxy().find(PK.getLayoutID(), KfnmtRptWkAtdOut.class)
+				.orElse(PK);
 		
 		// new decimal 
 
@@ -304,7 +329,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	private List<KfnmtRptWkAtdOutseal> findAllSealColumn(String companyId, String layoutId) {
 
 		List<KfnmtRptWkAtdOutseal> listKfnmtRptWkAtdOutseal = new ArrayList<>();
-		String sql = "SELECT os FROM KfnmtRptWkAtdOutseal os WHERE os.cid = :companyId AND os.layoutId = :layoutId";
+		String sql = "SELECT os FROM KfnmtRptWkAtdOutseal os WHERE os.cid = ? AND os.layoutId = ?";
 		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
 			statement.setString(1, companyId);
 			statement.setString(2, layoutId);

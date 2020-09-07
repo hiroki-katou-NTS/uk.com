@@ -30,8 +30,6 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	/** The employee id. */
 	private String employeeId;
 	
-	/** The export CD. */
-	private String exportCD;
 
 	/** The daily ouput item. */
 	// 日次の出力項目

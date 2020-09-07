@@ -26,15 +26,6 @@ import java.util.List;
  */
 @Getter
 public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRecordExportSettingSetMemento {
-
-//	/** The entity. */
-//	private KfnstAttndRecOutSet entity;
-//
-//	/** The seal column entity. */
-//	private List<KfnstSealColumn> sealColumnEntity = new ArrayList<>();
-//
-//	private List<KfnstAttndRec> attndRecSettingEntity = new ArrayList<>();
-	
 	
 	private KfnmtRptWkAtdOut resEntity;
 	
@@ -134,7 +125,7 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	@Override
 	public void setName(ExportSettingName name) {
-		this.resEntity.setName(name.toString());
+		this.resEntity.setName(name.v());
 
 	}
 
