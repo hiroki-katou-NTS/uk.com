@@ -48,6 +48,8 @@ public class NumberRemainVacationLeaveRangeQuery {
 			calcCarryForwardDays = AcquisitionRemainNumAtStartCount.acquisition(require, inputParam.getCid(),
 					inputParam.getSid(), inputParam.getDateData().start(), inputParam.getDateData().end(),
 					inputParam.isMode(), lstAccTemp, inputParam.getFixManaDataMonth());
+			result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
+			result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
 		} else {
 			// 繰越日数」と「繰越時間」に前回の修正結果の残数を格納
 			SubstituteHolidayAggrResult beforeResult = inputParam.getOptBeforeResult().get();
@@ -58,10 +60,12 @@ public class NumberRemainVacationLeaveRangeQuery {
 				calcCarryForwardDays.setCarryForwardTime(beforeResult.getCarryoverTime().v());
 				// result.setVacationDetails(beforeResult.getVacationDetails());
 				lstAccTemp.addAll(beforeResult.getVacationDetails().getLstAcctAbsenDetail());
+				result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
+				result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
+
 			}
 		}
-		result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
-		result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
+		
 
 		// 今から処理が必要な代休、休出を全て集める
 		lstAccTemp.addAll(GetTemporaryData.process(require, inputParam));

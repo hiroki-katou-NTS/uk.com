@@ -31,25 +31,25 @@ import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.ShortageFlex
 public class FlexMonthWorkTimeAggrSetDto {
 
 	/** The aggr method. */
-	private Integer aggrMethod;
+	private int aggrMethod;
 
 	/** The insuffic set. */
-	private Integer insufficSet;
+	private int insufficSet;
 
 	/** The legal aggr set. */
-	private Integer legalAggrSet;
+	private int legalAggrSet;
 
 	/** The include over time. */
-	private Boolean includeOverTime;
+	private boolean includeOverTime;
 
 	/** The include holiday work. */
-	private Boolean includeHdwk;
+	private boolean includeHdwk;
 
 	/** The settlement period. */
-	private Integer settlePeriod;
+	private int settlePeriod;
 
 	/** The start month. */
-	private Integer startMonth;
+	private int startMonth;
 
 	/** The period. (settlement period months) */
 	private Integer period;
@@ -68,7 +68,8 @@ public class FlexMonthWorkTimeAggrSetDto {
 				EnumAdaptor.valueOf(insufficSet, CarryforwardSetInShortageFlex.class), 
 				EnumAdaptor.valueOf(settlePeriod, SettlePeriod.class), 
 				new Month(startMonth), 
-				EnumAdaptor.valueOf(period, SettlePeriodMonths.class));
+				period == null ? SettlePeriodMonths.TWO 
+						: EnumAdaptor.valueOf(period, SettlePeriodMonths.class));
 	}
 	public AggregateTimeSetting legalAggrSet() {
 		

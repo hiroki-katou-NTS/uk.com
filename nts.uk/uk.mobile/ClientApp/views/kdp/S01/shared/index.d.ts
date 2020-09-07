@@ -70,7 +70,7 @@ export module model {
         /** 背景色 */
         backGroundColor: string;
 
-        displayBackGroundColor:string;
+        displayBackGroundColor: string;
     }
 
     export interface IButtonNameSetDto {
@@ -171,6 +171,8 @@ export module model {
 
         /** ボタン位置NO */
         buttonPositionNo: number;
+
+        stampMeans: number;
     }
     interface IRefectActualResultCommand {
 
@@ -392,8 +394,8 @@ export module model {
         buttonPositionNo: number;
     }
 
-    export interface IGetOmissionContentDto{
-        errorInfo:any;
-        appDispNames:Array<any>;
+    export interface IGetOmissionContentDto {
+        errorInfo: any;
+        appDispNames: Array<any>;
     }
 }
