@@ -2,17 +2,15 @@ package nts.uk.ctx.at.record.dom.reservation.bentomenu;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
-import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
-import nts.uk.ctx.at.record.dom.reservation.bento.ReservationRegisterInfo;
+import nts.uk.ctx.at.record.dom.reservation.bento.*;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoMenuByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoReservationClosingTime;
@@ -42,7 +40,8 @@ public class BentoMenu extends AggregateRoot {
 	 * 締め時刻
 	 */
 	@Getter
-	private final BentoReservationClosingTime closingTime;
+	@Setter
+	private BentoReservationClosingTime closingTime;
 	
 	public BentoMenu(String historyID, List<Bento> menu, BentoReservationClosingTime closingTime) {
 		// inv-1	1 <= ＠メニュー.size <= 40
@@ -61,23 +60,23 @@ public class BentoMenu extends AggregateRoot {
 	 * @param bentoDetails
 	 * @return
 	 */
-	public BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime, 
-			Map<Integer, BentoReservationCount> bentoDetails) {
+	public BentoReservation reserve(ReservationRegisterInfo registerInfor, ReservationDate reservationDate, GeneralDateTime dateTime,
+									Optional<WorkLocationCode> workLocationCode,Map<Integer, BentoReservationCount> bentoDetails) {
 		receptionCheck(dateTime, reservationDate);
 		List<BentoReservationDetail> bentoReservationDetails = bentoDetails.entrySet().stream()
 				.map(x -> createBentoReservationDetail(reservationDate, x.getKey(), x.getValue(), dateTime)).collect(Collectors.toList());
-		return BentoReservation.reserve(registerInfor, reservationDate, bentoReservationDetails);
+		return BentoReservation.reserve(registerInfor, reservationDate,workLocationCode, bentoReservationDetails);
 	}
 	
 	/**
 	 * 締め時刻別のメニュー
 	 * @return
 	 */
-	public BentoMenuByClosingTime getByClosingTime() {
-		List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr())
+	public BentoMenuByClosingTime getByClosingTime(Optional<WorkLocationCode> workLocationCode) {
+		List<BentoItemByClosingTime> menu1 = menu.stream().filter(x -> x.isReservationTime1Atr() && x.getWorkLocationCode().equals(workLocationCode))
 				.map(x -> x.itemByClosingTime())
 				.collect(Collectors.toList());
-		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr())
+		List<BentoItemByClosingTime> menu2 = menu.stream().filter(x -> x.isReservationTime2Atr() && x.getWorkLocationCode().equals(workLocationCode))
 				.map(x -> x.itemByClosingTime())
 				.collect(Collectors.toList());
 		return BentoMenuByClosingTime.createForCurrent(closingTime, menu1, menu2);
@@ -100,8 +99,6 @@ public class BentoMenu extends AggregateRoot {
 	
 	/**
 	 * 合計金額を計算する
-	 * @param frameNo
-	 * @param quantity
 	 * @return
 	 */
 	public BentoAmountTotal calculateTotalAmount(Map<Integer, Integer> bentoDetails) {
@@ -135,4 +132,5 @@ public class BentoMenu extends AggregateRoot {
 					throw new RuntimeException("System Error");
 				});
 	}
+
 }

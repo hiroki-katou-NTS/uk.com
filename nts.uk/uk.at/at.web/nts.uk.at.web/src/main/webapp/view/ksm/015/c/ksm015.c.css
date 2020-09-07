@@ -30,3 +30,7 @@
 .contents-area{
 	    overflow-x: hidden!important;
 }
+
+#nts-component-tree{
+	padding-left: 16px !important;
+}
