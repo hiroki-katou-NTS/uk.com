@@ -161,8 +161,7 @@ public class AttendanceRecordExportWebService {
 	@POST
 	@Path("getDailyAttendanceTtems")
 	public AttributeOfAttendanceItemDto getDailyAttendanceTtems() {
-		String companyId = AppContexts.user().companyId();
 		//アルゴリズム「承認処理の利用設定を取得する」を実行する
-		return this.attendanceItemFinder.getDailyAttendanceItemAtrs(companyId, 2, 1);
+		return this.attendanceItemFinder.getDailyAttendanceItemAtrs();
 	}
 }
