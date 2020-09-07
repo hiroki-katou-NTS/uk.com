@@ -5,9 +5,12 @@ import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationCount;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationDetail;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.BentoItemByClosingTime;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.totalfee.BentoDetailsAmountTotal;
+
+import java.util.Optional;
 
 /**
  * 弁当
@@ -57,9 +60,16 @@ public class Bento {
 	 */
 	@Getter
 	private boolean reservationTime2Atr;
-	
+
+
+	/**
+	 * 勤務場所コード
+	 */
+	@Getter
+	private Optional<WorkLocationCode> workLocationCode;
+
 	public Bento(int frameNo, BentoName name, BentoAmount amount1, BentoAmount amount2,
-			BentoReservationUnitName unit, boolean reservationTime1Atr, boolean reservationTime2Atr) {
+				 BentoReservationUnitName unit, boolean reservationTime1Atr, boolean reservationTime2Atr,Optional<WorkLocationCode> workLocationCode) {
 		this.frameNo = frameNo; 
 		this.name = name; 
 		this.amount1 = amount1; 
@@ -67,6 +77,7 @@ public class Bento {
 		this.unit = unit; 
 		this.reservationTime1Atr = reservationTime1Atr;
 		this.reservationTime2Atr = reservationTime2Atr;
+		this.workLocationCode = workLocationCode;
 	}
 	
 	/**
