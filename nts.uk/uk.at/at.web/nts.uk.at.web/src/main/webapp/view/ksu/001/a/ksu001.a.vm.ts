@@ -779,6 +779,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
             self.listEmpData = [];
+            self.listSid([]);
+            self.arrListCellLock = [];
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -1079,6 +1081,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             detailColumns.push({ key: "sid", width: "5px", headerText: "ABC", visible: false });
             objDetailHeaderDs['sid'] = "";
+            self.arrDay = [];
             _.each(data.listDateInfo, (dateInfo: IDateInfo) => {
                 self.arrDay.push(new Time(new Date(dateInfo.ymd)));
                 let time = new Time(new Date(dateInfo.ymd));
