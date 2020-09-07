@@ -384,7 +384,7 @@ module nts.uk.at.view.ksu001.u {
                                     }
                                 }
                             } else {                              
-                                if (self.newEditDate() && self.newEditDate() != "" && self.newEditDate() < self.newPublicDate()) {
+                                if (self.newEditDate() && self.newEditDate() != "" && self.newEditDate() <= self.newPublicDate()) {
                                     size = self.daysDifference(dateClick, self.newEditDate());
                                     offset = 1;
                                 } else {
