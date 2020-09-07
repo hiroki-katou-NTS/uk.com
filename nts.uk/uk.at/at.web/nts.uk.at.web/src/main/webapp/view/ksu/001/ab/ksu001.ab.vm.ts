@@ -16,20 +16,23 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         isDisableWorkTime : boolean;
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
         workPlaceId: KnockoutObservable<string>;
+        workTimeCode:KnockoutObservable<string>;
 
         constructor() {
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
             self.isDisableWorkTime = false;
-            self.workPlaceId = ko.observable('');
+            self.workPlaceId  = ko.observable('');
+            self.workTimeCode = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
+            
 
             self.listWorkType = ko.observableArray([]);
             self.selectedWorkTypeCode = ko.observable(workTypeCodeSave.isPresent() ? workTypeCodeSave.get() : '');
             self.input = {
                 fillter: false,
                 workPlaceId: self.workPlaceId,
-                initiallySelected: [workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : ''],
+                initiallySelected: [self.workTimeCode()],
                 displayFormat: '',
                 showNone: true,
                 showDeferred: true,

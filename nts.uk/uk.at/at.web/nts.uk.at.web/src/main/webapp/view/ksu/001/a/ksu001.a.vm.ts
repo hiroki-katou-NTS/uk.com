@@ -522,6 +522,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.pasteData();
                 // set lai data stick
                 let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
                 __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
             } else if (updateMode == 'copyPaste') {
                 self.coppyData();
@@ -583,6 +584,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set lai data stick
                 let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
                 __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
                 
                 dfd.resolve();
@@ -621,6 +623,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set lai data stick
                 let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
                 __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
                 
                 dfd.resolve();
@@ -658,6 +661,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.destroyAndCreateGrid(dataBindGrid, 'time');
                 // set lai data stick
                 let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
                 __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
                 dfd.resolve();
             }).fail(function() {

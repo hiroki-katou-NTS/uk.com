@@ -49,7 +49,7 @@ module kcp013.component {
 		constructor(param, callback) {
 			var self = this;
 			self.listWorkHours = ko.observableArray([]);
-			self.selectedCode = ko.observable('');
+			self.selectedCode = ko.observable(param.initiallySelected);
 			self.fillter = param.fillter;
 			self.workPlaceId = ko.observable(param.workPlaceId);
 			self.selectItem = param.initiallySelected;
