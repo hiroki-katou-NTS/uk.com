@@ -1,5 +1,6 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.kdl047.a.screenModel {
+
   import text = nts.uk.resource.getText;
   import setShared = nts.uk.ui.windows.setShared;
   import getShared = nts.uk.ui.windows.getShared;
@@ -25,7 +26,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     tableDatasClone: KnockoutObservableArray<ItemModel> = ko.observableArray([])
     // Columns for ntsGridList A6
     tableColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
-      { headerText: 'ID', prop: 'id', hidden: true},
+      { headerText: 'ID', prop: 'id', hidden: true },
       { headerText: text('KDL047_6'), prop: 'code', width: 100 },
       { headerText: text('KDL047_7'), prop: 'name', width: 300 }
     ]);
@@ -61,11 +62,19 @@ module nts.uk.at.view.kdl047.a.screenModel {
       let tableDatas = [];
 
       _.each(vm.objectDisplay.diligenceProjectList, tmp => {
-        tableDatas.push(new ItemModel(tmp.id, tmp.indicatesNumber, tmp.name));
+        tableDatas.push(new ItemModel({
+          id: tmp.id,
+          code: tmp.indicatesNumber,
+          name: tmp.name
+        }));
       });
       tableDatas = _.orderBy(tableDatas, ['code'], ['asc']);
       vm.tableDatasClone(tableDatas);
-      tableDatas.unshift(new ItemModel(-1, '', text('KDL047_10')));
+      tableDatas.unshift(new ItemModel({
+        id: -1,
+        code: '',
+        name: text('KDL047_10')
+      }));
       vm.tableDatas(tableDatas);
       vm.selectedCode.subscribe((codeChanged) => {
         if (codeChanged === 0) {
@@ -82,7 +91,11 @@ module nts.uk.at.view.kdl047.a.screenModel {
           vm.tableDatasClone().filter(data => data.name.indexOf(name) !== -1),
           ['code'], ['asc']
         );
-        tableDatas.unshift(new ItemModel(-1, '', text('KDL047_10')));
+        tableDatas.unshift(new ItemModel({
+          id: -1,
+          code: '',
+          name: text('KDL047_10')
+        }));
         vm.tableDatas(tableDatas);
       });
       // Selected A5_2
@@ -112,16 +125,17 @@ module nts.uk.at.view.kdl047.a.screenModel {
             // shared with value of A5_2, A6_2_1
             vm.objectDisplay.attribute.selected = vm.selectedCode();
             vm.objectDisplay.selectedTime = vm.currentCode() === -1 ? null : vm.currentCode();
-            setShared('attendanceRecordExport',  vm.objectDisplay);
+            setShared('attendanceRecordExport', vm.objectDisplay);
           }
-          nts.uk.ui.windows.close();
+          vm.$window.close()
         }
       });
     }
 
     // Event on click A8_2 item
     onClickCancel(): void {
-      nts.uk.ui.windows.close();
+      const vm = this;
+      vm.$window.close()
     }
 
   }
@@ -130,14 +144,9 @@ module nts.uk.at.view.kdl047.a.screenModel {
     id: any;
     code: string;
     name: string;
-    other1: string;
-    other2: string;
-    constructor(id: any, code: string, name: string, other1?: string, other2?: string) {
-      this.id = id;
-      this.code = code;
-      this.name = name;
-      this.other1 = other1;
-      this.other2 = other2 || other1;
+
+    constructor(init?: Partial<ItemModel>) {
+      $.extend(this, init);
     }
   }
 
@@ -161,6 +170,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     // 選択済み勤怠項目ID
     selectedTime: number;
   }
+
   export class TitleLineObject {
     // 表示フラグ
     displayFlag: boolean = false;
@@ -171,6 +181,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     // コメント
     directText: string | null = null;
   }
+
   export class ItemNameLineObject {
     // 表示フラグ
     displayFlag: boolean = false;
@@ -179,6 +190,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     // 名称
     name: string | null = null;
   }
+
   export class AttributeObject {
     // 選択区分
     selectionCategory: number = 2;
@@ -191,9 +203,8 @@ module nts.uk.at.view.kdl047.a.screenModel {
   export class AttendaceType {
     attendanceTypeCode: number;
     attendanceTypeName: string;
-    constructor(attendanceTypeCode: number, attendanceTypeName: string) {
-      this.attendanceTypeCode = attendanceTypeCode;
-      this.attendanceTypeName = attendanceTypeName;
+    constructor(init: Partial<AttendaceType>) {
+      $.extend(this, init);
     }
   }
 
