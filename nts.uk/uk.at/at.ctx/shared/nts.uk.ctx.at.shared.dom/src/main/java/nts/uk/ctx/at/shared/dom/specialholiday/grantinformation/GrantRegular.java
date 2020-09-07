@@ -35,7 +35,7 @@ public class GrantRegular extends DomainObject {
 	
 	
 	/** 期間付与 */
-	
+	private PeriodGrantDate periodGrantDate;
 	
 	
 	
