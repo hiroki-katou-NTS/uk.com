@@ -53,6 +53,8 @@ module nts.uk.at.view.ksm003.a {
 
                 vm.dayIsRequired(true);
                 vm.selectedCheckAll(false);
+                vm.enableRemoveItem(false);
+
                 if (codeChanged) {
                     vm.getPatternValByPatternCd(codeChanged);
                 } else {
@@ -804,6 +806,9 @@ module nts.uk.at.view.ksm003.a {
                 selectWorkTypeCode: self.typeCode,
                 selectSiftCode: self.timeCode,
             });
+
+	        nts.uk.ui.errors.clearAll();
+
             nts.uk.ui.windows.sub
                 .modal("/view/kdl/003/a/index.xhtml", {
                     title: nts.uk.resource.getText("KDL003_1"),
