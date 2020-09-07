@@ -42,6 +42,11 @@ public class ListOfApplication {
 	private String applicantCD;
 	
 	/**
+	 * 申請者ID
+	 */
+	private String applicantID;
+	
+	/**
 	 * 申請者名
 	 */
 	private String applicantName;
@@ -143,6 +148,7 @@ public class ListOfApplication {
 		this.workplaceName = null;
 		this.appID = null;
 		this.applicantCD = null;
+		this.applicantID = null;
 		this.applicantName = null;
 		this.appType = null;
 		this.appContent = null;
