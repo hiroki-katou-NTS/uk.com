@@ -29,6 +29,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
@@ -51,6 +52,8 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.Short
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workschedule.WorkScheduleTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.ActualWorkingTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
@@ -239,9 +242,14 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		});
 		
 		ActualWorkingTimeOfDaily actualWorkingTimeOfDaily = kscdtSchTime != null ? kscdtSchTime.toDomain(sID, yMD) : null;
-		AttendanceTimeOfDailyAttendance attendance = new AttendanceTimeOfDailyAttendance(
-				null, actualWorkingTimeOfDaily, 
+		WorkScheduleTimeOfDaily scheduleTimeOfDaily = new WorkScheduleTimeOfDaily(new WorkScheduleTime(new AttendanceTime(0), new AttendanceTime(0), new AttendanceTime(0)), 
+				new AttendanceTime(0), new AttendanceTime(0));
+		AttendanceTimeOfDailyAttendance attendance = null;
+		if(actualWorkingTimeOfDaily != null) {
+		attendance = new AttendanceTimeOfDailyAttendance(
+				scheduleTimeOfDaily, actualWorkingTimeOfDaily, 
 				null, new AttendanceTimeOfExistMinus(0), new AttendanceTimeOfExistMinus(0), null);
+		}
 		optSortTimeWork = new ShortTimeOfDailyAttd(shortWorkingTimeSheets);
 		return new WorkSchedule(sID, yMD, EnumAdaptor.valueOf(confirmedATR ? 1 : 0, ConfirmedATR.class), 
 				workInfo, affInfo, lstBreakTime, lstEditState, Optional.ofNullable(optTimeLeaving), Optional.ofNullable(attendance), Optional.ofNullable(optSortTimeWork));
