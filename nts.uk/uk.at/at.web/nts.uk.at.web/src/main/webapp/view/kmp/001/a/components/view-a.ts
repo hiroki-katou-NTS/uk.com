@@ -4,11 +4,8 @@ module nts.uk.at.view.kmp001.a {
 
 	const template = `
 		<div id="com-ccg001"></div>
-		<div class="sidebar-content-header">
-			<span class="title" data-bind="text: $i18n('KMP001_1')"></span>
-			<!--
-			<button data-bind="text: $i18n('KMP001_4'), click: addNew, enable: mode() == 'update'"></button>
-			-->
+		<div id="functions-area">
+			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/a/index.xhtml' },text: $i18n('KMP001_100')"></a>
 			<button id="add" class="proceed" data-bind="text: $i18n('KMP001_5'), click: addStampCard"></button>
 			<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
 			<!-- ko if: attendance -->
