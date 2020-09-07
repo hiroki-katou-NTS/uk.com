@@ -483,7 +483,6 @@ module nts.uk.at.view.ksm003.a {
 
             //登録の時には勤務内容一覧に一行もない //register & update
             if (workingTimeCycleList.length <= 0) {
-
                 $('#fixed-table-list')
                     .ntsError('clear')
                     .ntsError('set', {
@@ -531,7 +530,6 @@ module nts.uk.at.view.ksm003.a {
                 let infosData = detailDto.infos;
                 if(res.errorStatusList.length > 0 ) {
                     res.errorStatusList.map( (error_type, i) => {
-
                         switch ( error_type ) {
                             case 'WORKTIME_WAS_DELETE':
                                 MsgId = "Msg_1609";
@@ -571,7 +569,7 @@ module nts.uk.at.view.ksm003.a {
                 vm.selectedCheckAll(false);
                 let patternCode = vm.mainModel().patternCode();
                 vm.selectedCode(patternCode);
-
+				vm.enableRemoveItem(false);
                 $("#inpPattern").focus();
 
                 if (!vm.isEditting()) vm.isEditting(true);
