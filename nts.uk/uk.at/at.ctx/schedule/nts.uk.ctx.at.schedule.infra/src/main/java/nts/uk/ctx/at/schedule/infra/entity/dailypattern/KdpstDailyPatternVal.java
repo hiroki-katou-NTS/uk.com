@@ -74,6 +74,7 @@ public class KdpstDailyPatternVal extends UkJpaEntity implements Serializable{
 	public KdpstDailyPatternVal(KdpstDailyPatternValPK kdpstDailyPatternValPK,String contractCD,String workTypeSetCd,
 			String workingHoursCd, Integer days) {
 		this.kdpstDailyPatternValPK = kdpstDailyPatternValPK;
+		this.contractCD = contractCD;
 		this.workTypeSetCd = workTypeSetCd;
 		this.workingHoursCd = workingHoursCd;
 		this.days = days;
