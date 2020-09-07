@@ -7,45 +7,134 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 450, height: 400 };</script>
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
+				nts.uk.shr.com.primitive.PersonId
+			</com:ValidatorScript>
 			<com:stylefile path="ktg027.a.style.css" />
 			<com:scriptfile path="ktg027.a.service.js" />
-			<com:scriptfile path="ktg027.a.vm.js" />
-			<com:scriptfile path="ktg027.a.start.js" />
+      <com:scriptfile path="ktg027.a.vm.js" />
+      <com:scriptfile path="ktg027.a.start.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
-        <div class="title-border">
-          <!-- A1_1 -->
-					<label class="bigtext">#{i18n.getText('KTG027_5')}</label>
+				<div class="title-border">
+					<!-- A1_1 -->
+					<label class="big-text">#{i18n.getText('KTG027_5')}</label>
 				</div>
-				<div class="valign-center control-group"
-          id="inputYM">
-          <!-- A1_2 -->
-					<div class= "date"
-            data-bind="ntsDatePicker: { name: '#[KTG027_1]',value: targetMonth, dateFormat: 'yearmonth', valueFormat: 'YYYYMM',showJumpButtons: true, required: true}"></div>
-           <div class= "label-color">
-             <!-- A1_3 -->
-            <label class="label1">#{i18n.getText('KTG027_2')}</label>
-            <!-- A1_4 -->
-            <label class="label2">#{i18n.getText('KTG027_3')}</label>
-           </div>
-        </div>
-        <div class="header">
-          <!-- A2_1 -->
-          <label class="header1">#{i18n.getText('KTG027_15')}</label>
-          <!-- A2_2 -->
-          <label class="header2">#{i18n.getText('KTG027_4')}</label>
-          <!-- A2_3 -->
-          <label class="header3">45:00</label>
-          <!-- A2_4 -->
-          <label class="header4">80:00</label>
-        </div>
+
+				<table class="flex">
+					<tbody class="flex100">
+						<tr class="flex100">
+							<td class="p-10 left40">
+								<!-- A1_2 -->
+								<div data-bind="ntsDatePicker: {
+									value: year,
+									dateFormat: 'yearmonth',
+									valueFormat: 'YYYYMM',
+									showJumpButtons: true
+								}"></div>
+							</td>
+							<td class="block p-10" style="width: 60%">
+								<div class="right">
+									<!-- A1_3 -->
+									<label class="grid non-statutory-color">#{i18n.getText('KTG027_2')}</label>
+									<!-- A1_4 -->
+									<label class="grid time-outside-color">#{i18n.getText('KTG027_3')}</label>
+								</div>
+							</td>
+						</tr>
+				</tbody>
+				</table>
+				<table class="block pl-10 scroll">
+					<thead>
+						<tr>
+							<!-- A2_1 -->
+							<th>#{i18n.getText('KTG027_7')}</th>
+							<!-- A2_2 -->
+							<th>#{i18n.getText('KTG027_4')}</th>
+							<th class="w-200">
+								<!-- A2_3 -->
+								<span class="fixed45">45:00</span>
+								<!-- A2_4 -->
+								<span class="fixed80">80:00</span>
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="mw-200">
+							<td class="border-bot pr-20 data-text"><a href="#">Transfer</a></td>
+							<td class="border-bot"><a href="#">Transfer</a></td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<span  class="label non-statutory-bg-color"></span>
+								<span class="label time-outside-bg-color"></span>
+							</td>
+						</tr>
+						<tr class="mw-200">
+							<td class="border-bot pr-20"><a href="#">Transfer</a></td>
+							<td class="border-bot"><a href="#">Transfer</a></td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<span class="label non-statutory-bg-color" data-bind="style: { width: width() }"></span>
+								<span class="label time-outside-bg-color"></span>
+							</td>
+						</tr>
+						<tr class="mw-200">
+							<td class="border-bot pr-20"><a href="#">Transfer</a></td>
+							<td class="border-bot"><a href="#">Transfer</a></td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<span class="label non-statutory-bg-color" data-bind="style: { width: width2() }"></span>
+								<span class="label time-outside-bg-color" data-bind="style: { width: width2() }"></span>
+							</td>
+						</tr>
+						<tr class="mw-200">
+							<td class="border-bot pr-20"><a href="#">Transfer</a></td>
+							<td class="border-bot"><a href="#">Transfer</a></td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<span class="label non-statutory-bg-color"></span>
+								<span class="label time-outside-bg-color"></span>
+							</td>
+						</tr>
+						<tr class="mw-200">
+							<td class="border-bot pr-20"><a href="#">Transfer</a></td>
+							<td class="border-bot"><a href="#">Transfer</a></td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<span class="label non-statutory-bg-color"></span>
+								<span class="label time-outside-bg-color"></span>
+							</td>
+						</tr>
+						<tr class="mw-200">
+							<td class="border-bot pr-20"><a href="#">Transfer</a></td>
+							<td class="border-bot"><a href="#">Transfer</a></td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<span class="label non-statutory-bg-color"></span>
+								<span class="label time-outside-bg-color"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<div class="row-inline">
+					<div class="panel gray-bg custom-panel">
+						<div class="addSign"></div>
+					</div>
+					<div class="panel gray-bg custom-panel">
+						<div class="addSign"></div>
+					</div>
+					<div class="panel gray-bg custom-panel">
+						<div class="addSign"></div>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
