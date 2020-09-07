@@ -38,7 +38,7 @@ public class JpaWeeklyWorkSettingRepository extends JpaRepository
 	 */
 	private static final String SELECT_ALL = "SELECT w FROM KscmtWeeklyWorkSet w";
 
-	private static final String GET_BY_COMPANY_ID = SELECT_ALL + " WHERE w.KscmtWeeklyWorkSetPK.cid = :companyId";
+	private static final String GET_BY_COMPANY_ID = SELECT_ALL + " WHERE w.kscmtWeeklyWorkSetPK.cid = :companyId";
 
 	/*
 	 * (non-Javadoc)
