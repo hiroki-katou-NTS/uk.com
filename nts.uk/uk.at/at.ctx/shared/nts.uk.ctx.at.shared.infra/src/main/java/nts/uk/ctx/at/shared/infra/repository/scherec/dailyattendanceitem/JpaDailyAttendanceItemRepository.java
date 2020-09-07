@@ -85,7 +85,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtDailyAttendanceItem a ");
 		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.attendanceItemId IN :dailyAttendanceItemIds ");
-		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
+		builderString.append("AND a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
 		builderString.append("ORDER BY a.displayNumber ASC ");
 		FIND_BY_ATTENDANCE_IDS = builderString.toString();
 	}

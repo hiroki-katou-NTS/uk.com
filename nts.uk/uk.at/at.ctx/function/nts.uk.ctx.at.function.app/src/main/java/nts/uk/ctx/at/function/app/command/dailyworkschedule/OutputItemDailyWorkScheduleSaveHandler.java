@@ -46,6 +46,7 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 	protected void handle(CommandHandlerContext<OutputItemDailyWorkScheduleCommand> context) {
 		OutputItemDailyWorkScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
 		OutputItemDailyWorkSchedule domain = new OutputItemDailyWorkSchedule(command);
 
 		// Step. 画面モードをチェックする(Check screen mode)
@@ -87,7 +88,7 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 				FreeSettingOfOutputItemForDailyWorkScheduleCommand freeSettingCommand = new FreeSettingOfOutputItemForDailyWorkScheduleCommand(
 						command.getSelectionType()
 						, companyId
-						, command.getEmployeeId()
+						, employeeId
 						, Arrays.asList(command));
 				this.freeSettingRepository.add(FreeSettingOfOutputItemForDailyWorkSchedule.createFromMemento(freeSettingCommand));
 			}

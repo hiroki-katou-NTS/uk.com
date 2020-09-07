@@ -275,7 +275,7 @@ module nts.uk.at.view.kwr001.c {
                         self.mapIdCodeAtd[value.id] = value.code;
                     })
 
-                    self.items(data.selectedItem ? data.selectedItem.displayAttendanceItem : []);
+                    self.items(data.selectedItem.displayAttendanceItem);
 
                     dfd.resolve();
                 })

@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.repository.dailyworkschedule;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -122,6 +123,9 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 					KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
 					t.saveToMemento(entity);
 					entity.setItemSelType(ItemSelectionType.FREE_SETTING.value);
+					entity.setLayoutId(UUID.randomUUID().toString());
+					entity.setCid(freeSettingOfOutputItemForDailyWorkSchedule.getCompanyId().v());
+					entity.setSid(freeSettingOfOutputItemForDailyWorkSchedule.getEmployeeId().v());
 					return entity;
 				})
 				.collect(Collectors.toList());
@@ -136,6 +140,8 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 					KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
 					t.saveToMemento(entity);
 					entity.setItemSelType(ItemSelectionType.STANDARD_SELECTION.value);
+					entity.setLayoutId(UUID.randomUUID().toString());
+					entity.setCid(outputStandard.getCompanyId().v());
 					return entity;
 				})
 				.collect(Collectors.toList());

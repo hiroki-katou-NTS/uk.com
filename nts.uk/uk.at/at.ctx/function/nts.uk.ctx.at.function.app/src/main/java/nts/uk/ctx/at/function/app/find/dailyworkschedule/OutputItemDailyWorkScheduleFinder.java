@@ -180,7 +180,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		Optional<SelectedInformationItemDto> selectedItem = this.getSlectedInformation(companyID, layoutId, outputItem);
 
 		if (selectedItem.isPresent()) {
-			mapDtoReturn.put("selectedItem", selectedItem);
+			mapDtoReturn.put("selectedItem", selectedItem.get());
 		}
 		
 		// find nothing
@@ -510,13 +510,24 @@ public class OutputItemDailyWorkScheduleFinder {
 			outputItem = this.outputItemDailyWorkScheduleRepository.findByLayoutId(layoutId.get());
 		}
 
+		List<InformationItemDto> displayDtos = new ArrayList<InformationItemDto>();
+		List<PrintRemarksContentDto> printRemarksContents = new ArrayList<>();
+		List<InformationItemDto> possibleSelectedItem = dailyItemDtos.stream()
+				.map(item -> InformationItemDto.builder()
+							 .code(item.getTimeId())
+							 .attendanceItemAtt(item.getAttribute())
+							 .masterType(item.getMasterType())
+							 .name(item.getName())
+							 .build())
+				.collect(Collectors.toList());
 		if (outputItem.isPresent()) {
 			//  「Input．Optional＜日別勤務表の出力項目＞．表示する勤怠項目」と取得したList＜勤怠項目ID、名称、属性、マスタの種類、表示番号＞を結合してセットす
-			List<InformationItemDto> displayDtos = outputItem.get().getLstDisplayedAttendance().stream()
+			displayDtos = outputItem.get().getLstDisplayedAttendance().stream()
 					.map(t -> {
 						DailyItemDto item = mapAttendanceItem.get(t.getAttendanceDisplay());
 						if (item != null) {
 							 return InformationItemDto.builder()
+									 .code(item.getTimeId())
 									 .attendanceItemAtt(t.getAttendanceDisplay())
 									 .attendanceItemAtt(item.getAttribute())
 									 .masterType(item.getMasterType())
@@ -527,21 +538,14 @@ public class OutputItemDailyWorkScheduleFinder {
 						return null;
 					}).filter(Objects::nonNull).collect(Collectors.toList());
 			
-			List<PrintRemarksContentDto> printRemarksContents = this
-					.toDtoPrintRemarksContent(outputItem.get().getLstRemarkContent());
+			printRemarksContents = this.toDtoPrintRemarksContent(outputItem.get().getLstRemarkContent());
 			
 			List<Integer> attendanceItemFromOutputItem = outputItem.get().getLstDisplayedAttendance().stream()
 					.map(AttendanceItemsDisplay::getAttendanceDisplay)
 					.collect(Collectors.toList());
-
-			List<InformationItemDto> possibleSelectedItem = dailyItemDtos.stream()
-					.filter(t -> !attendanceItemFromOutputItem.contains(t.getTimeId()))
-					.map(item -> InformationItemDto.builder()
-								 .attendanceItemAtt(item.getTimeId())
-								 .attendanceItemAtt(item.getAttribute())
-								 .masterType(item.getMasterType())
-								 .name(item.getName())
-								 .build())
+			
+			possibleSelectedItem = possibleSelectedItem.stream()
+					.filter(t -> !attendanceItemFromOutputItem.contains(t.getCode()))
 					.collect(Collectors.toList());
 			
 			return Optional.of(SelectedInformationItemDto.builder()
@@ -555,8 +559,14 @@ public class OutputItemDailyWorkScheduleFinder {
 									.remarkInputNo(outputItem.get().getRemarkInputNo().value)
 									.workTypeNameDisplay(outputItem.get().getWorkTypeNameDisplay().value)
 									.build());
+
 		}
-		return Optional.empty();
+		
+		return Optional.of(SelectedInformationItemDto.builder()
+								.displayAttendanceItem(displayDtos)
+								.lstCanUsed(possibleSelectedItem)
+								.printRemarksContentDtos(printRemarksContents)
+								.build());
 	}
 
 }

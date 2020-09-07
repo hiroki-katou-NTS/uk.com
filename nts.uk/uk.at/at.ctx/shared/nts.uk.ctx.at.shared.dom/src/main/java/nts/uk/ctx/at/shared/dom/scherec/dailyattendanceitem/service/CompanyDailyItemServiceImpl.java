@@ -117,7 +117,7 @@ public class CompanyDailyItemServiceImpl implements CompanyDailyItemService {
 		
 		// 日次の勤怠項目を取得する Nhận daily Attendance items
 		List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository
-				.findByAtr(companyId, attendanceItems);
+				.findByADailyAttendanceItems(attendanceItems, companyId);
 		
 		// 0件の場合
 		if (dailyAttendanceItems.isEmpty()) {

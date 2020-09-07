@@ -7,15 +7,15 @@ import lombok.Data;
 @Builder
 public class InformationItemDto {
 	// 勤怠項目ID
-	private int attendanceItemId;
+	private int code;
 	// 名称
 	private String name;
 	// 勤怠項目属性
-	private int attendanceItemAtt;
+	private Integer attendanceItemAtt;
 	// 勤怠項目に関連するマスタの種類
-	private int masterType;
+	private Integer masterType;
 	// 画面上の属性
-	private int attOnScreen;
+	private Integer attOnScreen;
 	// 並び順(表示番号)
-	private int orderNo;
+	private Integer orderNo;
 }
