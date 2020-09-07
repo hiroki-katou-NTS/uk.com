@@ -18,12 +18,6 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.Kfnst
  * The Class JpaAttendanceRecordExportSettingGetMemento.
  */
 public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRecordExportSettingGetMemento {
-
-//	/** The attendance entity. */
-//	private KfnstAttndRecOutSet attendanceEntity;
-//
-//	/** The seal column entity. */
-//	private List<KfnstSealColumn> sealColumnEntity;
 	
 	/** The atd entity. */
 	private KfnmtRptWkAtdOut atdEntity;
@@ -37,23 +31,7 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	public JpaAttendanceRecordExportSettingGetMemento() {
 
 	}
-
-	/**
-	 * Instantiates a new jpa attendance record export setting get memento.
-	 *
-	 * @param attendanceEntity
-	 *            the attendance entity
-	 * @param sealColumnEntity
-	 *            the seal column entity
-	 */
-//	public JpaAttendanceRecordExportSettingGetMemento(KfnstAttndRecOutSet attendanceEntity,
-//			List<KfnstSealColumn> sealColumnEntity) {
-//		this.attendanceEntity = attendanceEntity;
-//		this.sealColumnEntity = sealColumnEntity;
-//	}
 	
-	
-	// TODO UPDATE DUCNT
 	/**
 	 * Instantiates a new jpa attendance record export setting get memento.
 	 *
@@ -76,7 +54,7 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	@Override
 	public String getCompanyId() {
 		// No Code
-		return null;
+		return atdEntity.getCid();
 	}
 
 	/*
@@ -113,7 +91,6 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	@Override
 	public Boolean getSealUseAtr() {
 		return this.atdEntity.getSealUseAtr().compareTo(BigDecimal.ONE) == 0 ? true : false;
-//		return this.attendanceEntity.getSealUseAtr().compareTo(BigDecimal.ONE) == 0 ? true : false;
 	}
 	
 	
@@ -128,10 +105,8 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	@Override
 	public ExportSettingCode getCode() {
 		return new ExportSettingCode(this.atdEntity.getExportCD());
-//		return new ExportSettingCode(String.valueOf(this.attendanceEntity.getId().getExportCd()));
 	}
 
-	// TODO UPDATE DUCNT
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -141,10 +116,8 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	@Override
 	public ExportSettingName getName() {
 		return new ExportSettingName(this.atdEntity.getName());
-//		return new ExportSettingName(this.attendanceEntity.getName());
 	}
 
-	// TODO UPDATE DUCNT
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -158,9 +131,6 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 		this.sealEntity.forEach(item -> {
 			list.add(new SealColumnName(item.getSealStampName()));
 		});
-//		this.sealColumnEntity.forEach(item -> {
-//			list.add(new SealColumnName(item.getSealStampName()));
-//		});
 		return list;
 	}
 
@@ -170,18 +140,15 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	@Override
 	public Integer getNameUseAtr() {
 		return this.atdEntity.getNameUseAtr().intValue();
-//		return this.attendanceEntity.getNameUseAtr().intValue();
 	}
 
 	@Override
 	public Integer getExportFontSize() {
 		return this.atdEntity.getCharSizeType().intValue();
-//		return this.attendanceEntity.getCharSizeType().intValue();
 	}
 
 	@Override
 	public Integer getMonthlyConfirmedDisplay() {
 		return this.atdEntity.getMonthAppDispAtr().intValue();
-//		return this.attendanceEntity.getMonthAppDispAtr().intValue();
 	}
 }

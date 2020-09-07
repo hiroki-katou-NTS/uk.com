@@ -27,13 +27,13 @@ import java.util.List;
 @Getter
 public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRecordExportSettingSetMemento {
 
-	/** The entity. */
-	private KfnstAttndRecOutSet entity;
-
-	/** The seal column entity. */
-	private List<KfnstSealColumn> sealColumnEntity = new ArrayList<>();
-
-	private List<KfnstAttndRec> attndRecSettingEntity = new ArrayList<>();
+//	/** The entity. */
+//	private KfnstAttndRecOutSet entity;
+//
+//	/** The seal column entity. */
+//	private List<KfnstSealColumn> sealColumnEntity = new ArrayList<>();
+//
+//	private List<KfnstAttndRec> attndRecSettingEntity = new ArrayList<>();
 	
 	
 	private KfnmtRptWkAtdOut resEntity;
@@ -56,10 +56,10 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 * @param sealColumnNames
 	 *            the seal column entity
 	 */
-	public JpaAttendanceRecordExportSettingSetMemento(KfnstAttndRecOutSet entity) {
-		this.entity = entity;
-		if(this.entity.getId()==null){
-			this.entity.setId(new KfnstAttndRecOutSetPK());
+	public JpaAttendanceRecordExportSettingSetMemento(KfnmtRptWkAtdOut entity) {
+		this.resEntity = entity;
+		if(this.resEntity.getLayoutID() == null){
+			this.resEntity.setLayoutID("");
 		}
 	}
 
@@ -71,7 +71,7 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	@Override
 	public void setCompanyId(String companyId) {
-		this.entity.getId().setCid(companyId);
+		this.resEntity.setCid(companyId);
 
 	}
 
@@ -110,7 +110,7 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	@Override
 	public void setSealUseAtr(Boolean atr) {
         if (atr != null)
-            this.entity.setSealUseAtr(atr ? BigDecimal.ONE : BigDecimal.ZERO);
+            this.resEntity.setSealUseAtr(atr ? BigDecimal.ONE : BigDecimal.ZERO);
     }
 
 	/*
@@ -122,8 +122,7 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	@Override
 	public void setCode(ExportSettingCode code) {
-		this.entity.getId().setExportCd(Long.parseLong(code.v()));
-
+		this.resEntity.setExportCD(code.v());
 	}
 
 	/*
@@ -135,7 +134,7 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	@Override
 	public void setName(ExportSettingName name) {
-		this.entity.setName(name.toString());
+		this.resEntity.setName(name.toString());
 
 	}
 
@@ -157,18 +156,18 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	@Override
 	public void setNameUseAtr(Integer nameUseAtr) {
-		this.entity.setNameUseAtr(new BigDecimal(nameUseAtr));
+		this.resEntity.setNameUseAtr(new BigDecimal(nameUseAtr));
 	}
 
 	@Override
 	public void setExportFontSize(Integer exportFontSize) {
-		this.entity.setCharSizeType(new BigDecimal(exportFontSize));
+		this.resEntity.setCharSizeType(new BigDecimal(exportFontSize));
 		
 	}
 
 	@Override
 	public void setMonthlyConfirmedDisplay(Integer monthlyConfirmedDisplay) {
-		this.entity.setMonthAppDispAtr(new BigDecimal(monthlyConfirmedDisplay));
+		this.resEntity.setMonthAppDispAtr(new BigDecimal(monthlyConfirmedDisplay));
 		
 	}
 }

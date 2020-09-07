@@ -71,7 +71,8 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 	}
 	
 	private AttendanceRecordExportSetting toDomain(KfnmtRptWkAtdOut entity) {
-		return new AttendanceRecordExportSetting(entity);
+		return new AttendanceRecordExportSetting();
+//		return new AttendanceRecordExportSetting(entity);
 	}
 	
 	private static KfnmtRptWkAtdOut toEntity(AttendanceRecordOuputItems domain) {

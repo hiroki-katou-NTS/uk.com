@@ -33,14 +33,6 @@ public class KfnmtRptWkAtdOutseal extends UkJpaEntity implements Serializable {
 	@Id
 	@Column(name = "COLUMN_ID")
 	private String columnId;
-	
-	/** The exclus ver. */
-	@Column(name="EXCLUS_VER")
-	private long exclusVer;
-	
-	/** The contract cd. */
-	@Column(name="CONTRACT_CD")
-	private String contractCd;
 
 	/** The cid. */
 	@Column(name = "CID")

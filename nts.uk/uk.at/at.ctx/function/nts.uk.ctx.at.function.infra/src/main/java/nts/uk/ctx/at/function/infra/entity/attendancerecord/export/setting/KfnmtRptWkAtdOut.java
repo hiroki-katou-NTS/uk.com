@@ -38,7 +38,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @Table(name = "KFNMT_RPT_WK_ATD_OUT")
 public class KfnmtRptWkAtdOut extends UkJpaEntity {
-//		implements Serializable , AttendanceRecordExportSettingGetMemento, AttendanceRecordExportSettingSetMemento{
+//	implements Serializable , AttendanceRecordExportSettingGetMemento, AttendanceRecordExportSettingSetMemento{
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
