@@ -190,9 +190,13 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		String query = FIND_BENTO_MENU_DATE;
 		query = query.replaceFirst("companyID", companyID);
 		query = query.replaceAll("date", date.toString());
+		System.out.println("SQL == "+ query);
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			if (CollectionUtil.isEmpty(bentoMenuLst)){
+				return  null;
+			}
 			return bentoMenuLst.get(0);
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
