@@ -24,6 +24,7 @@ import nts.uk.ctx.at.record.dom.employmentinfoterminal.infoterminal.service.Conv
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservationRepository;
 import nts.uk.ctx.at.record.dom.reservation.bento.ReservationDate;
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenu;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.BentoMenuRepository;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.ContractCode;
@@ -98,12 +99,6 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		private final TopPgAlTrRepository executionLog;
 
 		@Override
-		public BentoMenu getBentoMenu(ReservationDate reservationDate) {
-
-			return bentoMenuRepository.getBentoMenu(companyId, reservationDate.getDate());
-		}
-
-		@Override
 		public void reserve(BentoReservation bentoReservation) {
 
 			bentoReservationRepository.add(bentoReservation);
@@ -153,6 +148,12 @@ public class ConvertTimeRecordReservationPubImpl implements ConvertTimeRecordRes
 		@Override
 		public void insertLogAll(TopPageAlarmEmpInfoTer alEmpInfo) {
 			executionLog.insertLogAll(alEmpInfo);
+
+		}
+
+		@Override
+		public BentoMenu getBentoMenu(ReservationDate reservationDate, Optional<WorkLocationCode> workLocationCode) {
+			return bentoMenuRepository.getBentoMenu(companyId, reservationDate.getDate(), workLocationCode);
 
 		}
 	}

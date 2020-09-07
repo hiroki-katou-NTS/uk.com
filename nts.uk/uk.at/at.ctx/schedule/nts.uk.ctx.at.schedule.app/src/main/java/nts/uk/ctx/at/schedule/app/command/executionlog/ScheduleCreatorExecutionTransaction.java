@@ -1529,7 +1529,7 @@ public class ScheduleCreatorExecutionTransaction {
 			
 			// note xử lý ドメインモデル「全社基本勤務設定」を取得する
 			Optional<CompanyBasicWork> optionalCompanyBasicWork = this.companyBasicWorkRepository
-					.findById(command.getCompanyId(), optionalCalendarCompany.get().getWorkingDayAtr().value);
+					.findById(command.getCompanyId(), optionalCalendarCompany.get().getWorkDayDivision().value);
 			
 			// note if 取得できない
 			if(!optionalCompanyBasicWork.isPresent()) {
@@ -1538,7 +1538,7 @@ public class ScheduleCreatorExecutionTransaction {
 			}
 			BasicWorkSettingByClassificationGetterCommand settingByClassification = new BasicWorkSettingByClassificationGetterCommand(
 					command.getEmployeeId(), geterCommand, null,
-					optionalCalendarCompany.get().getWorkingDayAtr().value);
+					optionalCalendarCompany.get().getWorkDayDivision().value);
 			Optional<BasicWorkSetting> basicWorkSetting = basicWorkSettingHandler
 					.getBasicWorkSettingByClassification(settingByClassification);
 			BasicWorkSetting setting = new BasicWorkSetting(basicWorkSetting.get().getWorktypeCode(), basicWorkSetting.get().getWorkingCode(), basicWorkSetting.get().getWorkdayDivision());

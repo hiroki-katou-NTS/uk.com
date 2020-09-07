@@ -2164,7 +2164,7 @@ public class WithinWorkTimeSheet implements LateLeaveEarlyManagementTimeSheet{
 				NotUseAtr.NOT_USE);
 		
 		//就業時間 >= 法定労働時間
-		if(workTime.getWorkTime().greaterThanOrEqualTo(personDailySetting.getDailyUnit().getDailyTime())) return AttendanceTime.ZERO;
+		if(workTime.getWorkTime().greaterThanOrEqualTo(personDailySetting.getDailyUnit().getDailyTime().v())) return AttendanceTime.ZERO;
 		
 		//法定労働時間不足時間を計算
 		AttendanceTime missingTime = new AttendanceTime(

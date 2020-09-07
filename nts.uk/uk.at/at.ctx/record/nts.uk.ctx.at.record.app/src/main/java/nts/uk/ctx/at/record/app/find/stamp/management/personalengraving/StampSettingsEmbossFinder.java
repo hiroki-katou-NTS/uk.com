@@ -245,6 +245,16 @@ public class StampSettingsEmbossFinder {
 		public Optional<StampSettingPerson> getStampSet(String companyId) {
 			return this.stampSetPerRepo.getStampSet(companyId);
 		}
+		
+		@Override
+		public Optional<SettingsSmartphoneStamp> getSettingsSmartphone(String companyId) {
+			return this.settingsSmartphoneStampRepo.get(companyId);
+		}
+
+		@Override
+		public Optional<PortalStampSettings> getPotalSettings(String comppanyID) {
+			return this.portalStampSettingsrepo.get(comppanyID);
+		}
 
 		@Override
 		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
