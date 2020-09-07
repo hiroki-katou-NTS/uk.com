@@ -10,7 +10,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
  * @author quang.nh1
- * 	１ヶ月時間
+ * 	１年間時間
  */
 @Getter
 @AllArgsConstructor
