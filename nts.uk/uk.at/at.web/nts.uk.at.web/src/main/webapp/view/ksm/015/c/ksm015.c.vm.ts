@@ -101,7 +101,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			nts.uk.ui.block.invisible();
 			service.startPage(TargetUnit.WORKPLACE)
 				.done((data) => {
-					self.forAttendent(!_.isNull(data.forAttendent));
+					self.forAttendent(data.forAttendent);
 					if (data.alreadyConfigWorkplaces) {
 						let alreadySettings = []
 						_.forEach(data.alreadyConfigWorkplaces, (wp) => {
