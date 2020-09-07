@@ -5,6 +5,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import org.apache.logging.log4j.util.Strings;
+
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.PageSetup;
@@ -166,7 +168,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case WORK_CHANGE_APPLICATION:
 			return "KAF007_template.pdf";
 		case BUSINESS_TRIP_APPLICATION:
-			return "KAF008_template.pdf";
+			return "出張申請.pdf";
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			return "";
 		case HOLIDAY_WORK_APPLICATION:
@@ -208,7 +210,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		cellB7.setValue(I18NText.getText("KAF000_46"));
 		// value
 		Cell cellC3 = cells.get("C3");
-		cellC3.setValue(printContentOfApp.getCompanyName());
+		cellC3.setValue(printContentOfApp.getWorkPlaceName());
 		Cell cellC4 = cells.get("C4");
 		cellC4.setValue(printContentOfApp.getEmployeeInfoLst().get(0).getBussinessName());
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 1) {
@@ -288,9 +290,15 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	private void printBottomKAF000(Cell reasonLabel, Cell remarkLabel, Cell reasonContent, PrintContentOfApp printContentOfApp) {
 		reasonLabel.setValue(I18NText.getText("KAF000_52"));
 		remarkLabel.setValue(I18NText.getText("KAF000_59"));
-		String appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
+		String appReasonStandard = Strings.EMPTY; 
+		if(printContentOfApp.getAppReasonStandard() != null) {
+			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
 				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
-		String appReason = printContentOfApp.getOpAppReason().v();
+		}
+		String appReason = Strings.EMPTY;
+		if(printContentOfApp.getOpAppReason() != null) {
+			appReason = printContentOfApp.getOpAppReason().v();
+		} 
 		reasonContent.setValue(appReasonStandard + "\n" + appReason);
 	}
 

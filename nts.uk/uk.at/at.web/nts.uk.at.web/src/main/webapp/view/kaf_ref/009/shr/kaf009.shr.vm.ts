@@ -43,7 +43,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 
                 if (!_.isEmpty(goBackApp.dataWork)) {
                     let codeWorkType = goBackApp.dataWork.workType;
-                    let nameWorkType = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType).abbreviationName;
+                    let nameWorkType = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType).name;
                     vm.model.workTypeCode(codeWorkType);
                     vm.model.workTypeName(nameWorkType);
                     if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
@@ -78,7 +78,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                     vm.model.workTypeCode(codeWorkType);
                     let wt = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType);
                     if (!_.isNull(wt)) {
-                        let nameWorkType = wt.abbreviationName;
+                        let nameWorkType = wt.name;
                         vm.model.workTypeName(nameWorkType);       
                     }
     

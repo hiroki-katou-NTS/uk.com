@@ -133,6 +133,8 @@ module cmm045.shr {
 			appID: string;
 			/** 申請者CD */
 			applicantCD: string;
+			/** 申請者ID */
+			applicantID: string;
 			/** 申請者名 */
 			applicantName: string;
 			/** 申請種類 */
@@ -187,6 +189,7 @@ module cmm045.shr {
 				this.workplaceName = listOfApplicationDto.workplaceName;
 				this.appID = listOfApplicationDto.appID;
 				this.applicantCD = listOfApplicationDto.applicantCD;
+				this.applicantID = listOfApplicationDto.applicantID;
 				this.applicantName = listOfApplicationDto.applicantName;
 				this.appType = listOfApplicationDto.appType;
 				this.appContent = listOfApplicationDto.appContent;
@@ -211,7 +214,7 @@ module cmm045.shr {
 		        this.details = '';
 		        this.appName = '';
 		        this.appAtr = '';
-		        this.checkAtr = false;
+		        this.checkAtr = this.opApprovalFrameStatus == 0 ? true : false;
 		        this.version = 0;
 		        this.checkTimecolor = 0;
 		        this.appIdSub = '';
@@ -228,6 +231,8 @@ module cmm045.shr {
 			appID: string;
 			/** 申請者CD */
 			applicantCD: string;
+			/** 申請者ID */
+			applicantID: string;
 			/** 申請者名 */
 			applicantName: string;
 			/** 申請種類 */
@@ -359,10 +364,10 @@ module cmm045.shr {
             }
         }
         export class ChoseApplicationList{
-            appId: number;
+            appType: number;
             appName: string;
-            constructor(appId: number, appName: string){
-                this.appId = appId;
+            constructor(appType: number, appName: string){
+                this.appType = appType;
                 this.appName = appName;
             }    
         }

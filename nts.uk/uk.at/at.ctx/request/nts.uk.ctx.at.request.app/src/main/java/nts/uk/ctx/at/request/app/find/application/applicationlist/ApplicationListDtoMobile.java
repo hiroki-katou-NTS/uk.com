@@ -1,13 +1,8 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.dom.application.applist.service.AppMasterInfo;
-import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
-import nts.uk.ctx.at.request.dom.application.applist.service.detail.ContentApp;
 
 @AllArgsConstructor
 @NoArgsConstructor

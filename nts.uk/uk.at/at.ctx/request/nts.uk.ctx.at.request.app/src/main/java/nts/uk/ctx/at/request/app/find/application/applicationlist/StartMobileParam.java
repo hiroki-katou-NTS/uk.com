@@ -5,11 +5,13 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListExtractConditionCmd;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ListOfAppTypesCmd;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class StartMobileParam {
-	private List<ListOfAppTypesDto> listAppType;
-	private AppListExtractConditionDto appListExtractConditionDto;
+	private List<ListOfAppTypesCmd> listAppType;
+	private AppListExtractConditionCmd appListExtractCondition;
 }

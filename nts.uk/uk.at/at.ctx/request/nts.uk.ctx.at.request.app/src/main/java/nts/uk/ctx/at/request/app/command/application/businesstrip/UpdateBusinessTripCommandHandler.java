@@ -66,15 +66,15 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
     protected ProcessResult handle(CommandHandlerContext<UpdateBusinessTripCommand> context) {
         UpdateBusinessTripCommand command = context.getCommand();
         String cid = AppContexts.user().companyId();
-        CreateApplicationCommand applicationCommand = command.getApplicationDto();
+        CreateApplicationCommand applicationCommand = command.getApplication();
         Application application = command
-                .getBusinessTripInfoOutputDto().getAppDispInfoStartup().getAppDetailScreenInfo().getApplication().toDomain();
+                .getBusinessTripInfoOutput().getAppDispInfoStartup().getAppDetailScreenInfo().getApplication().toDomain();
         application.setOpAppReason(Strings.isEmpty(applicationCommand.getOpAppReason()) ? Optional.empty() : Optional.of(new AppReason(applicationCommand.getOpAppReason())));
         application.setOpAppStandardReasonCD(applicationCommand.getOpAppStandardReasonCD() == null
                 ? Optional.empty()
                 : Optional.of(new AppStandardReasonCode(applicationCommand.getOpAppStandardReasonCD())));
-        BusinessTrip businessTrip = command.getBusinessTripDto().toDomain(application);
-        BusinessTripInfoOutput infoOutput = command.getBusinessTripInfoOutputDto().toDomain();
+        BusinessTrip businessTrip = command.getBusinessTrip().toDomain(application);
+        BusinessTripInfoOutput infoOutput = command.getBusinessTripInfoOutput().toDomain();
 
         // アルゴリズム「4-1.詳細画面登録前の処理」を実行する
         businessTrip.getInfos().stream().forEach(i -> {

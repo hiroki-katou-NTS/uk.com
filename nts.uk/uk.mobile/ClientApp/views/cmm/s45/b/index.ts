@@ -158,7 +158,13 @@ export class CmmS45BComponent extends Vue {
             self.$mask('show');
             self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
             self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
-            self.$http.post('at', servicePath.filterByDate, { applicationListDtoMobile: self.data })
+            let paramCmd = {
+                appAllNumber: self.data.appAllNumber,
+                appPerNumber: self.data.appPerNumber,
+                appListExtractCondition: self.data.appListExtractConditionDto,
+                appListInfo: self.data.appListInfoDto
+            };
+            self.$http.post('at', servicePath.filterByDate, { applicationListCmdMobile: paramCmd })
                 .then((res: any) => {
                     self.$mask('hide');
                     // let data = res.data as ApplicationListDtoMobile;
@@ -236,7 +242,7 @@ export class CmmS45BComponent extends Vue {
                 if (res) {
                     let paramNew = {
                         listAppType: res.data,
-                        appListExtractConditionDto: self.appListExtractCondition
+                        appListExtractCondition: self.appListExtractCondition
                     };
 
                     return self.$http.post('at', servicePath.getApplicationList, paramNew);
@@ -349,40 +355,45 @@ export class CmmS45BComponent extends Vue {
         const self = this;
         let lst = [];
         lstApp.forEach((app: ListOfApplication) => {
-            lst.push(new AppInfo({
-                id: app.appID,
-                appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
-                appType: app.appType,
-                appName: self.appTypeName(app.appType),
-                prePostAtr: app.prePostAtr,
-                reflectStatus: app.reflectionStatus,
-                appStatusNo: self.convertReflectToInt(app.reflectionStatus),
-                frameStatus: null,//this.getFrameStatus(app.appID),
-                version: null
-            }));
+            if (app.appType == 0 || app.appType == 2) {
+                lst.push(new AppInfo({
+                    id: app.appID,
+                    appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
+                    appType: app.appType,
+                    appName: self.appTypeName(app.appType),
+                    prePostAtr: app.prePostAtr,
+                    reflectStatus: app.reflectionStatus,
+                    appStatusNo: self.convertReflectToInt(app.reflectionStatus),
+                    frameStatus: null,//this.getFrameStatus(app.appID),
+                    version: null
+                }));
+            }
         });
 
         return lst;
     }
     public convertReflectToInt(value: string) {
-        if (value == '未反映') {
+        if (value == '未承認') {
 
             return 5;
-        } else if (value == '反映待ち') {
+        } else if (value == '承認済') {
 
             return 4;
-        } else if (value == '反映済') {
-            
-            return -1;
-        } else if (value == '取消済') {
-            
+        } else if (value == '反映済み') {
+
+            return 0;
+        } else if (value == '取消') {
+
             return 3;
         } else if (value == '差し戻し') {
-            
+
             return 2;
         } else if (value == '否認') {
-            
+
             return 1;
+        } else {
+
+            return -1;
         }
     }
 
@@ -412,7 +423,9 @@ export class CmmS45BComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
+            if (appType.appType == 0 || appType.appType == 2) {
+                self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
+            }
         });
         self.lstAppType = _.uniqBy(self.lstAppType, (o: any) => {
             return o.appType;
@@ -452,7 +465,8 @@ export class CmmS45BComponent extends Vue {
             //「D：申請内容確認（承認）」画面へ遷移する
             this.$modal('cmms45d', { 'listAppMeta': lstAppId, 'currentApp': item.id }).then(() => {
                 //reload
-                self.getData(false, true);
+                // self.getData(false, true);
+                self.getData(true, false);
             });
         } else {
             if (!item.frameStatus) {//TH đơn không được approve thì bỏ qua
@@ -479,24 +493,40 @@ export class CmmS45BComponent extends Vue {
             lstAppID = this.findLstIdDisplay();
         }
         let lstAppr = [];
+        let lstApplicationTemp = self.data.appListInfoDto.appLst as ListOfApplication;
+        let ListOfApplicationCmd = [];
         lstAppID.forEach((id) => {
             lstAppr.push({ appId: id, version: self.findVersion(id) });
+            let object = _.filter(lstApplicationTemp, (item) => item.appID == id);
+            if (object) {
+                ListOfApplicationCmd.push(object[0]);
+            }
+
         });
+
+        let paramCmd = {
+            isApprovalAll: true,
+            device: 1,
+            listOfApplicationCmds: ListOfApplicationCmd
+        };
         self.$modal.confirm({ messageId: 'Msg_1551' }).then((value) => {
             if (value == 'yes') {
-                self.$http.post('at', servicePath.approvalListApp, lstAppr).then((result) => {
-                    self.$modal.info({ messageId: 'Msg_220' }).then(() => {
-                        self.$mask('hide');
-                        self.lstAppr = [];
-                        self.modeAppr = false;
-                        self.getData(false, true);
-                    });
+                self.$http.post('at', servicePath.approvalBatchApp, paramCmd).then((result) => {
+                    self.$mask('hide');
+                    // self.$modal.info({ messageId: 'Msg_220' }).then(() => {
+                    //     self.$mask('hide');
+                    //     self.lstAppr = [];
+                    //     self.modeAppr = false;
+                    //     self.getData(false, true);
+                    // });
                 }).catch(() => {
                     self.$mask('hide');
                 });
             } else {
                 self.$mask('hide');
             }
+        }).catch(() => {
+            self.$mask('hide');
         });
     }
 
@@ -605,9 +635,9 @@ export class CmmS45BComponent extends Vue {
         return lstId;
     }
     // create appContent
-    private appContent(appName: string, prePostName: string) {
+    private appContent(appName: string, prePostAtr: number) {
         // return this.isDisPreP == 1 ? appName + ' ' + this.$i18n('CMMS45_24', prePostName) : appName;
-        return 'appContent';
+        return appName + ' ' + this.$i18n('CMMS45_24', prePostAtr == 0 ? '事前' : '事後');
     }
 }
 interface IAppByEmp {
@@ -660,5 +690,6 @@ const servicePath = {
     getListApproval: 'at/request/application/applist/getapplistApprovalMobile',
     getApplicationList: 'at/request/application/applist/getapplistMobile',
     getAppNameInAppList: 'at/request/application/screen/applist/getAppNameInAppList',
-    filterByDate: 'at/request/application/applist/getapplistFilterMobile'
+    filterByDate: 'at/request/application/applist/getapplistFilterMobile',
+    approvalBatchApp: 'at/request/application/applist/approve'
 };

@@ -11,14 +11,19 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListApproveCommand;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListApproveCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListApproveResult;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListExtractConditionCmd;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.AppTypeBfCommand;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ApplicationListCmdMobile;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommand;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ApprovalListAppCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.ListOfApplicationCmd;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.ReflectAfterApproveAsyncCmdHandler;
 import nts.uk.ctx.at.request.app.command.application.applicationlist.UpdateAppTypeBfCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.AppScreenExportService;
 import nts.uk.ctx.at.request.app.find.application.AppScreenQuery;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListExtractConditionDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInfoDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInitDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListParamFilter;
@@ -57,6 +62,9 @@ public class ApplicationListWebservice extends WebService{
 
 	@Inject
 	private AppScreenExportService exportService;
+	
+	@Inject
+	private AppListApproveCommandHandler appListApproveCommandHandler;
 
 	@POST
 	/**
@@ -82,14 +90,14 @@ public class ApplicationListWebservice extends WebService{
 	@POST
 	@Path("getapplistMobile")
 	public ApplicationListDtoMobile getAppListMobile(StartMobileParam param) {
-		return this.appListFinder.getList(param.getListAppType(), param.getAppListExtractConditionDto());
+		return this.appListFinder.getList(param.getListAppType(), param.getAppListExtractCondition());
 	}
 
 	@POST
 	@Path("getapplistFilterMobile")
 	public ApplicationListDtoMobile getAppListFilterMobille(FilterMobileParam param) {
-		ApplicationListDtoMobile applicationListDtoMobile = param.getApplicationListDtoMobile();
-		return this.appListFinder.getListFilter(applicationListDtoMobile);
+		ApplicationListCmdMobile applicationListCmdMobile = param.getApplicationListCmdMobile();
+		return this.appListFinder.getListFilter(applicationListCmdMobile);
 
 	}
 
@@ -150,13 +158,13 @@ public class ApplicationListWebservice extends WebService{
 
 	@POST
 	@Path("findByPeriod")
-	public AppListInitDto findByPeriod(AppListExtractConditionDto param) {
+	public AppListInitDto findByPeriod(AppListExtractConditionCmd param) {
 		return this.appListFinder.findByPeriod(param);
 	}
 
 	@POST
 	@Path("findByEmpIDLst")
-	public AppListInfoDto findByEmpIDLst(AppListExtractConditionDto param) {
+	public AppListInfoDto findByEmpIDLst(AppListExtractConditionCmd param) {
 		return this.appListFinder.findByEmpIDLst(param);
 	}
 
@@ -164,5 +172,17 @@ public class ApplicationListWebservice extends WebService{
 	@Path("print")
 	public ExportServiceResult print(AppScreenQuery query) {
 		return exportService.start(query);
+	}
+	
+	@POST
+	@Path("approve")
+	public AppListApproveResult approveAppLst(AppListApproveCommand command) {
+		return appListApproveCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("approverAfterConfirm")
+	public AppListApproveResult approverAfterConfirm(List<ListOfApplicationCmd> listOfApplicationCmds) {
+		return appListApproveCommandHandler.approverAfterConfirm(listOfApplicationCmds);
 	}
 }
