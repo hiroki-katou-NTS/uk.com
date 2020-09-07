@@ -554,6 +554,7 @@ module nts.uk.com.view.cli003.b {
           targetEmployeeCount : vm.targetEmployeeCount(),
           logTypeSelectedCode : vm.recordType(),
           dataTypeSelectedCode : vm.dataType(),
+          systemTypeSelectedCode : vm.systemType(),
           checkFormatDate : vm.checkFormatDate(),
           targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
           dateValue: vm.b5_2dateValue(),

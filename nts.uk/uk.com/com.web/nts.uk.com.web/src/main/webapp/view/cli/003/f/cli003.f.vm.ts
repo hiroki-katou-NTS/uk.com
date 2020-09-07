@@ -408,7 +408,8 @@ class DataCorrectLogModel {
     ////just add
     //B
     logTypeSelectedCode: KnockoutObservable<string>= ko.observable('');
-    dataTypeSelectedCode: KnockoutObservable<number>= ko.observable();
+    dataTypeSelectedCode: KnockoutObservable<string>= ko.observable('');
+    systemTypeSelectedCode: KnockoutObservable<string>= ko.observable('');
     checkFormatDate: KnockoutObservable<string>= ko.observable('');
     //C
     targetEmployeeIdList: KnockoutObservableArray<any>= ko.observableArray([]);
@@ -427,6 +428,7 @@ class DataCorrectLogModel {
         if(data){
             vm.logTypeSelectedCode = ko.observable(data.logTypeSelectedCode);
             vm.dataTypeSelectedCode= ko.observable(data.dataTypeSelectedCode);
+            vm.systemTypeSelectedCode= ko.observable(data.systemTypeSelectedCode);
             vm.checkFormatDate= ko.observable(data.checkFormatDate);
             vm.dateValue= ko.observable(data.dateValue);
             vm.startDateOperator= ko.observable(data.startDateOperator);
@@ -441,8 +443,6 @@ class DataCorrectLogModel {
             }
             vm.targetEmployeeIdList= ko.observableArray(data.targetEmployeeIdList);
             vm.listEmployeeIdOperator= ko.observableArray(data.listEmployeeIdOperator);
-        }else{
-
         }
 
         let dfd = $.Deferred<any>();
@@ -1017,7 +1017,8 @@ class DataCorrectLogModel {
             endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
             //CLI003: fix bug #108971, #108970
             recordType: vm.logTypeSelectedCode(),
-            targetDataType: vm.dataTypeSelectedCode()
+            targetDataType: vm.dataTypeSelectedCode(),
+            systemType: vm.systemTypeSelectedCode(),
             };
 
         if (vm.checkFormatDate() === '2') {             
@@ -1095,9 +1096,6 @@ class DataCorrectLogModel {
       super();
       const vm = this;
       vm.dataFromB = data;
-      vm.$window.storage('VIEW_B_DATA').then(data => {
-          console.log(data);
-      })
       vm.initComponentScreenF(vm.dataFromB);
     }
 
