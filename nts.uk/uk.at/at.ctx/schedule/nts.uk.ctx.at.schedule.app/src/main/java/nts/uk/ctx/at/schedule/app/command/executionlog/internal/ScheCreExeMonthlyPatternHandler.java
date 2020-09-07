@@ -202,10 +202,10 @@ public class ScheCreExeMonthlyPatternHandler {
 
 		// set working code to command
 		commandWorkTypeEmploymentStatus
-				.setWorkingCode(workMonthlySet.getWorkInformation().getWorkTimeCode() == null ? null : workMonthlySet.getWorkInformation().getWorkTimeCode().v());
+				.setWorkingCode(workMonthlySet.getWorkingCode() == null ? null : workMonthlySet.getWorkingCode().v());
 
 		// set work type code to command
-		commandWorkTypeEmploymentStatus.setWorkTypeCode(workMonthlySet.getWorkInformation().getWorkTypeCode().v());
+		commandWorkTypeEmploymentStatus.setWorkTypeCode(workMonthlySet.getWorkTypeCode().v());
 
 		return this.scheCreExeWorkTypeHandler.getWorkTypeByEmploymentStatus(commandWorkTypeEmploymentStatus, masterCache);
 	}
@@ -223,9 +223,9 @@ public class ScheCreExeMonthlyPatternHandler {
 			CreateScheduleMasterCache masterCache) {
 		WorkTimeGetterCommand workTimeGetterCommand = commandWorktypeGetter.toWorkTime();
 		WorkTimeZoneGetterCommand commandGetter = workTimeGetterCommand.toWorkTimeZone();
-		commandGetter.setWorkTypeCode(workMonthlySet.getWorkInformation().getWorkTypeCode().v());
+		commandGetter.setWorkTypeCode(workMonthlySet.getWorkTypeCode().v());
 		commandGetter
-				.setWorkingCode(workMonthlySet.getWorkInformation().getWorkTimeCode() == null ? null : workMonthlySet.getWorkInformation().getWorkTimeCode().v());
+				.setWorkingCode(workMonthlySet.getWorkingCode() == null ? null : workMonthlySet.getWorkingCode().v());
 		if (StringUtil.isNullOrEmpty(commandGetter.getWorkingCode(), true)) {
 			commandGetter.setWorkingCode(null);
 		}

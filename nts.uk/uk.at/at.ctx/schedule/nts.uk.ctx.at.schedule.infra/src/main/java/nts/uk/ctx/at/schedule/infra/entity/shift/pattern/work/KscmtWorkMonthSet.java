@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCMT_MONTHLY_PATTERN_DTL")
+@Table(name = "KSCMT_WORK_MONTH_SET")
 public class KscmtWorkMonthSet extends UkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,11 +31,11 @@ public class KscmtWorkMonthSet extends UkJpaEntity implements Serializable {
     protected KscmtWorkMonthSetPK kscmtWorkMonthSetPK;
     
     /** The work type cd. */
-    @Column(name = "WKTP_CD")
+    @Column(name = "WORK_TYPE_CD")
     private String workTypeCd;
     
     /** The working cd. */
-    @Column(name = "WKTM_CD")
+    @Column(name = "WORKING_CD")
     private String workingCd;
 
     /**

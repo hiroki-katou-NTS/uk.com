@@ -241,9 +241,4 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		}
 	}
 
-	@Override
-	public void update(ScheduleErrorLog domain) {
-		this.commandProxy().update(this.toEntity(domain));
-	}
-
 }

@@ -14,6 +14,9 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.Optional;
 
+/**
+ * 予約構成を削除する
+ */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DeleteBentoMenuHistCommandhHandler extends CommandHandler<DeleteBentoMenuHistCommand> {
@@ -22,8 +25,11 @@ public class DeleteBentoMenuHistCommandhHandler extends CommandHandler<DeleteBen
 
     @Override
     protected void handle(CommandHandlerContext<DeleteBentoMenuHistCommand> commandHandlerContext) {
+        // Get command
         val command = commandHandlerContext.getCommand();
+        // Get companyid
         val cid = AppContexts.user().companyId();
+        //Get list old bentomenuhist by companyId
         val listOld = bentoMenuHistoryRepository.findByCompanyId(cid);
 
         if (!listOld.isPresent()){
