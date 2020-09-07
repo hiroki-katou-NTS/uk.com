@@ -65,20 +65,29 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             const vm = this;
             vm.application().opAppStartDate.subscribe(value => {
                 if (value && vm.application().opAppEndDate()) {
-                    let date = moment(value);
-                    if (date.isValid()) {
+                    let checkFormat = vm.validateAppDate(value, vm.application().opAppEndDate());
+                    if (checkFormat) {
                         vm.changeAppDate();
                     }
                 }
             });
             vm.application().opAppEndDate.subscribe(value => {
                 if (value && vm.application().opAppStartDate()) {
-                    let date = moment(value);
-                    if (date.isValid()) {
+                    let checkFormat = vm.validateAppDate(value, vm.application().opAppStartDate());
+                    if (checkFormat) {
                         vm.changeAppDate();
                     }
                 }
             });
+        }
+
+        validateAppDate(start:string , end: string) {
+            let startDate = moment(start);
+            let endDate = moment(end);
+            if (startDate.isValid() && endDate.isValid()) {
+                return true;
+            }
+            return false;
         }
 
         changeAppDate() {
