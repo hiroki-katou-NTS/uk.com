@@ -20,7 +20,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Transactional
 public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehaviorCmd, ApproveProcessResult> {
 
-	// 4-1.詳細画面登録前の処理
 	@Inject
 	private DetailBeforeUpdate beforeRegisterRepo;
 	
@@ -37,8 +36,20 @@ public class ApproveAppHandler extends CommandHandlerWithResult<AppDetailBehavio
 		AppDispInfoStartupOutput appDispInfoStartupOutput = context.getCommand().getAppDispInfoStartupOutput().toDomain();
 		AppDetailScreenInfo appDetailScreenInfo = appDispInfoStartupOutput.getAppDetailScreenInfo().get();
 		Application application = appDetailScreenInfo.getApplication();
-		
-        //アルゴリズム「排他チェック」を実行する (thực hiện xử lý 「check version」)
+		return approve(companyID, application.getAppID(), application, appDispInfoStartupOutput, memo);
+	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KAF_申請.共通ユースケース.承認する
+	 * @param companyID
+	 * @param appID
+	 * @param application
+	 * @param appDispInfoStartupOutput
+	 * @param memo
+	 * @return
+	 */
+	public ApproveProcessResult approve(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
+		//アルゴリズム「排他チェック」を実行する (thực hiện xử lý 「check version」)
         beforeRegisterRepo.exclusiveCheck(companyID, application.getAppID(), application.getVersion());
 		
 		//8-2.詳細画面承認後の処理

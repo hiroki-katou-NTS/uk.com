@@ -1,14 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
-import java.util.Optional;
-
-import org.apache.logging.log4j.util.Strings;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.ListOfAppTypes;
 
 /**
@@ -57,15 +50,5 @@ public class ListOfAppTypesDto {
 				listOfAppTypes.getOpProgramID().orElse(null), 
 				listOfAppTypes.getOpApplicationTypeDisplay().map(x -> x.value).orElse(null), 
 				listOfAppTypes.getOpString().orElse(null));
-	}
-	
-	public ListOfAppTypes toDomain() {
-		return new ListOfAppTypes(
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
-				appName, 
-				choice, 
-				Strings.isNotBlank(opProgramID) ? Optional.of(opProgramID) : Optional.empty(), 
-				opApplicationTypeDisplay != null ? Optional.of(EnumAdaptor.valueOf(opApplicationTypeDisplay, ApplicationTypeDisplay.class)) : Optional.empty(), 
-				Strings.isNotBlank(opString) ? Optional.of(opString) : Optional.empty());
 	}
 }

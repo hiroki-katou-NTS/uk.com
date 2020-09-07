@@ -10,8 +10,8 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
     @bean()
     class Kaf000BViewModel extends ko.ViewModel {
-        listApp: Array<string>;
-        currentApp: string;
+        listApp: KnockoutObservableArray<string> = ko.observableArray([]);
+        currentApp: KnockoutObservable<string> = ko.observable("");
         appType: KnockoutObservable<number>;
         appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(null);
         application: KnockoutObservable<Application> = ko.observable(new Application(0));
@@ -26,6 +26,24 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         childParam: any = {};
 
 		displayGoback: KnockoutObservable<boolean> = ko.observable(false);
+		enableBack: KnockoutObservable<boolean> = ko.pureComputed(() => {
+			const vm = this;
+			let index = _.indexOf(vm.listApp(), vm.currentApp())
+			if(index > 0) {
+				return true;
+			} else {
+				return false;
+			}	
+		});
+		enableNext: KnockoutObservable<boolean> = ko.pureComputed(() => {
+			const vm = this;
+            let index = _.indexOf(vm.listApp(), vm.currentApp());
+			if(index < vm.listApp().length-1) {
+				return true;
+			} else {
+				return false;
+			}
+		});
 
         displayApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
         enableApprovalButton: KnockoutObservable<boolean> = ko.observable(true);
@@ -52,9 +70,9 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
-        childUpdateEvent!: () => void;
+        childUpdateEvent!: () => any;
 
-        created(params: any) {
+        created(listAppMeta: Array<string>, currentApp: string) {
             const vm = this;
 			nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
                 if (nts.uk.util.isNullOrUndefined(obj)) {
@@ -65,8 +83,8 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             }).fail(() => {
                 vm.displayGoback(false);
             });
-            vm.listApp = params.listApp;
-            vm.currentApp = params.currentApp;
+            vm.listApp(__viewContext.transferred.value.listAppMeta);
+            vm.currentApp(__viewContext.transferred.value.currentApp);
             vm.appType = ko.observable(99);
             vm.childParam = {
             	application: vm.application,
@@ -81,7 +99,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         loadData() {
             const vm = this;
             vm.$blockui("show");
-            vm.$ajax(`${API.getDetailPC}/${vm.currentApp}`).done((successData: any) => {
+            vm.$ajax(`${API.getDetailPC}/${vm.currentApp()}`).done((successData: any) => {
             	vm.approvalReason("");
                 vm.appType(successData.appDetailScreenInfo.application.appType);
                 vm.application().appID = successData.appDetailScreenInfo.application.appID;
@@ -161,21 +179,19 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
         back() {
             const vm = this;
-            let index = _.findIndex(vm.listApp, vm.currentApp);
-            if (index >= 0) {
-                if (index > 0) {
-                    vm.currentApp = vm.listApp[index - 1];
-                }
+            let index = _.indexOf(vm.listApp(), vm.currentApp());
+            if (index > 0) {
+                vm.currentApp(vm.listApp()[index - 1]);
+				vm.loadData();
             }
         }
 
         next() {
             const vm = this;
-            let index = _.findIndex(vm.listApp, vm.currentApp);
-            if (index >= 0) {
-                if (index < vm.listApp.length - 1) {
-                    vm.currentApp = vm.listApp[index + 1];
-                }
+            let index = _.indexOf(vm.listApp(), vm.currentApp());
+			if (index < (vm.listApp().length-1)) {
+                vm.currentApp(vm.listApp()[index + 1]);
+				vm.loadData();
             }
         }
 
@@ -242,7 +258,9 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
             // nếu component con có bind event ra
             if(_.isFunction(vm.childUpdateEvent)) {
-                vm.childUpdateEvent();
+                vm.childUpdateEvent().then(() => {
+					vm.loadData();
+				});
             }
         }
 

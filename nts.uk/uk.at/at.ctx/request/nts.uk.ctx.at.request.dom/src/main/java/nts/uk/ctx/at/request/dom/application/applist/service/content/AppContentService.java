@@ -147,5 +147,6 @@ public interface AppContentService {
 	 * @param frameAtr 承認枠の承認区分
 	 * @return
 	 */
-	public String getReflectStatusApprovalListMode(ReflectedState reflectedState, ApprovalBehaviorAtrImport_New phaseAtr, ApprovalBehaviorAtrImport_New frameAtr);
+	public String getReflectStatusApprovalListMode(ReflectedState reflectedState, ApprovalBehaviorAtrImport_New phaseAtr, 
+			ApprovalBehaviorAtrImport_New frameAtr, int device);
 }

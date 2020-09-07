@@ -65,6 +65,8 @@ export class AppInfo {
                 return 'uk-apply-return';//差し戻し　＝　差戻
             case 1:
                 return 'uk-apply-denial';//否認　=　否
+            case 0:
+                return 'uk-apply-reflected';    
             default:
                 return '';
         }

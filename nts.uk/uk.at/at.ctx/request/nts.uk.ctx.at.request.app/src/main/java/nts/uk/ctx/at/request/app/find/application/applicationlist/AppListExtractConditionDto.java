@@ -1,20 +1,12 @@
 package nts.uk.ctx.at.request.app.find.application.applicationlist;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.apache.logging.log4j.util.Strings;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
-import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
-import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationDisplayOrder;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -99,30 +91,6 @@ public class AppListExtractConditionDto {
 	 * 申請種類リスト
 	 */
 	private List<ListOfAppTypesDto> opListOfAppTypes;
-	
-	public AppListExtractCondition convertDtotoDomain(){
-		return new AppListExtractCondition(
-				Strings.isNotBlank(this.getPeriodStartDate()) ? GeneralDate.fromString(this.getPeriodStartDate(), "yyyy/MM/dd") : null, 
-				Strings.isNotBlank(this.getPeriodEndDate()) ? GeneralDate.fromString(this.getPeriodEndDate(), "yyyy/MM/dd") : null, 
-				this.isPostOutput(), 
-				this.isPreOutput(), 
-				EnumAdaptor.valueOf(this.appListAtr, ApplicationListAtr.class), 
-				EnumAdaptor.valueOf(this.appDisplayOrder, ApplicationDisplayOrder.class), 
-				this.isTableWidthRegis(), 
-				CollectionUtil.isEmpty(this.opListEmployeeID) ? Optional.empty() : Optional.of(this.getOpListEmployeeID()), 
-				this.getOpRemandStatus() == null ? Optional.empty() : Optional.of(this.getOpRemandStatus()), 
-				this.getOpCancelStatus() == null ? Optional.empty() : Optional.of(this.getOpCancelStatus()), 
-				this.getOpApprovalStatus() == null ? Optional.empty() : Optional.of(this.getOpApprovalStatus()), 
-				this.getOpAgentApprovalStatus() == null ? Optional.empty() : Optional.of(this.getOpAgentApprovalStatus()), 
-				this.getOpDenialStatus() == null ? Optional.empty() : Optional.of(this.getOpDenialStatus()), 
-				this.getOpUnapprovalStatus() == null ? Optional.empty() : Optional.of(this.getOpUnapprovalStatus()), 
-				CollectionUtil.isEmpty(this.getOpAppTypeLst()) 
-					? Optional.empty()
-					: Optional.of(this.getOpAppTypeLst().stream().map(x -> x.toDomain()).collect(Collectors.toList())), 
-				CollectionUtil.isEmpty(this.getOpListOfAppTypes()) 
-					? Optional.empty() 
-					: Optional.of(this.getOpListOfAppTypes().stream().map(x -> x.toDomain()).collect(Collectors.toList())));
-	}
 	
 	public static AppListExtractConditionDto fromDomain(AppListExtractCondition appListExtractCondition) {
 		return new AppListExtractConditionDto(

@@ -2,6 +2,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
 	import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
+	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
     
     @component({
         name: 'kaf009-b',
@@ -43,7 +44,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         ) {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            vm.application = ko.observable(new Application(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.appID, 1, [], 2, "", "", 0));
+            vm.application = params.application;
             vm.model = new Model(true, true, true, '', '', '', '');
             if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
                 vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';    
@@ -130,7 +131,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             
             vm.$blockui("show");
             
-            vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+            return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then(isValid => {
                     if (isValid) {
                         let param = {

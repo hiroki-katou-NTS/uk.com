@@ -39,11 +39,11 @@ public class BusinessTripWebservice extends WebService {
         return this.businessTripFinder.initKAF008(param);
     }
 
-//    @POST
-//    @Path("checkBeforeRegister")
-//    public List<ConfirmMsgOutput> checkBeforeRegister() {
-//        return this.businessTripFinder.checkBeforeRegister();
-//    }
+    @POST
+    @Path("checkBeforeRegister")
+    public List<ConfirmMsgOutput> checkBeforeRegister(CheckBeforeRegisterDto param) {
+        return this.businessTripFinder.checkBeforeRegister(param);
+    }
 
     @POST
     @Path("register")
