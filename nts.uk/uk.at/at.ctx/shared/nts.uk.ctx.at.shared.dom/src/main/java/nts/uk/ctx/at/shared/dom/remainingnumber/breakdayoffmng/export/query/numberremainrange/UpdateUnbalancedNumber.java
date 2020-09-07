@@ -29,18 +29,20 @@ public class UpdateUnbalancedNumber {
 			}
 
 			if (!timeLap.getManagerTimeCate().get()
-					&& accdigest.getUnbalanceNumber().getDay().v() > occur.getUnbalanceNumber().getDay().v()) {
+					&& accdigest.getUnbalanceNumber().getDay().v() >= occur.getUnbalanceNumber().getDay().v()) {
 				updateValueAcc(accdigest, occur, false);
+				updateValueAcc(accdigest, occur, true);
 				return;
 			}
 
 			if (!timeLap.getManagerTimeCate().get()
 					&& accdigest.getUnbalanceNumber().getDay().v() < occur.getUnbalanceNumber().getDay().v()) {
 				updateValueAcc(occur, accdigest, false);
+				updateValueAcc(occur, accdigest, true);
 				return;
 			}
 
-			if (timeLap.getManagerTimeCate().get() && accdigest.getUnbalanceNumber().getTime().get().v() > occur
+			if (timeLap.getManagerTimeCate().get() && accdigest.getUnbalanceNumber().getTime().get().v() >= occur
 					.getUnbalanceNumber().getTime().get().v()) {
 				updateValueAcc(accdigest, occur, true);
 				return;

@@ -20,7 +20,7 @@
 	overflow: hidden;
 	font-weight: bold;
     color: #fff;
-	background-color: #738088;
+	background-color: #94B7FE;
 	margin-top: 5px;
 }
 
@@ -29,7 +29,7 @@
 }
 
 #stamp-employee-selection .button-group-filter button.selected {
-	background-color: rgb(48, 176, 213);
+	background-color: #a9a9a9;
 }
 
 #stamp-employee-selection .button-group-filter button:focus {
@@ -63,16 +63,30 @@
 	background-color: #007fff;
 }
 
+#stamp-employee-selection .list-group .check-out-of-list:hover {
+	color: #000;
+	background-color: #c5f1f7;
+}
+
+
 #stamp-employee-selection .list-group .list-employee {
 	border-top: 1px solid #ccc;
 }
 
 #stamp-employee-selection .list-group .ui-iggrid table tr {
-	height: 65px;
+	height: 45px;
+}
+
+#stamp-emplouee-selection .ui-tooltip-content {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 200px	
 }
 
 #stamp-employee-selection .list-group .ui-iggrid table tr td {
 	border: 1px solid transparent;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 #stamp-employee-selection .list-group .ui-iggrid table tr:not(:first-child) td {
