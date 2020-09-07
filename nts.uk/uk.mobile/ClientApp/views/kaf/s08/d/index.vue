@@ -46,14 +46,14 @@
     </div>
     <!-- D4_2 -->
     <nts-time-editor
-      v-model="timeWithDay"
+      v-model="model.time1"
       :name="'KAFS08_75'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
     />
     <!-- D4_4 -->
     <nts-time-editor
-      v-model="timeWithDay"
+      v-model="model.time2"
       :name="'KAFS08_76'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
@@ -61,6 +61,6 @@
     <!-- D50_F1 -->
     <button type="button" class="btn btn-success btn-block btn-lg">{{'KAFS08_77' | i18n}}</button>
     <!-- D50_F2 -->
-    <button type="button" class="btn btn-secondary btn-block btn-lg">{{'KAFS08_78' | i18n }}}</button>
+    <button type="button" class="btn btn-secondary btn-block btn-lg" v-on:click="close">{{'KAFS08_78' | i18n }}</button>
   </div>
 </template>

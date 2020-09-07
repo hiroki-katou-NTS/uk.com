@@ -61,17 +61,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td class="px-1">{{"KAFS08_39" | i18n}}</td>
-              <td class="px-1">Mark</td>
-              <td class="px-1">Otto</td>
-              <td class="px-1">@mdo</td>
-              <td class="border-right-0 px-1">@kfc</td>
+            <tr v-for="(data,index) in mtable" v-bind:key="index">
+              <td class="px-1">{{data.date | date('MM/DD(ddd)')}}</td>
+              <td class="px-1">{{data.typeofwork}}</td>
+              <td class="px-1">{{data.workinghours}}</td>
+              <td class="px-1">{{data.timetowork}}</td>
+              <td class="border-right-0 px-1">{{data.leavetime}}</td>
               <td class="text-center px-0 border-left-0">
                 <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
               </td>
             </tr>
-            <tr>
+            <!-- <tr>
               <td class="px-1"></td>
               <td class="px-1">Jacob</td>
               <td class="px-1">Thornton</td>
@@ -109,8 +109,8 @@
               <td class="border-right-0 px-1">@mdo</td>
               <td class="text-center px-0 border-left-0">
                 <fa-font class="pr-4" v-bind:size="'1'" icon="fas fa-angle-right" v-click="showModal.bind(this, 'modal') "/>
-              </td>
-            </tr>
+              </td> -->
+            <!-- </tr> -->
           </tbody>
         </table>
       </div>

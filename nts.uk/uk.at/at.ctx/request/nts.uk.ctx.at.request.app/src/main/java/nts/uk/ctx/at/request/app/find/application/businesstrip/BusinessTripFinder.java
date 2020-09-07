@@ -21,7 +21,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoNoDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.application.workchange.output.AppWorkChangeDispInfo;
@@ -128,49 +130,72 @@ public class BusinessTripFinder {
 		boolean mode = appBusinessParam.getMode();
 		String cid = AppContexts.user().companyId();
 		ApplicationType appType;
-		String employeeID = appBusinessParam.getEmployeeID();
+		String employeeID = null;
+		//Kiểm tra nếu employeeID null thì lấy giá trị lúc login
+		if(appBusinessParam.getEmployeeID() != null) {
+			employeeID = appBusinessParam.getEmployeeID();
+		}
 		List<String> applicantlist = new ArrayList<String>();
 		List<GeneralDate> dateList = appBusinessParam.getListDates().stream()
 				.map(i -> GeneralDate.fromString(i, "yyyy/MM/dd")).collect(Collectors.toList());
 		BusinessTripOutputDto result = new BusinessTripOutputDto();
-		BusinessTripInfoOutput businessTripInfoOutput = appBusinessParam.getBusinessTripInfoOutput();
-		BusinessTrip businessTrip = appBusinessParam.getBusinessTrip();
-		// new mode
+		BusinessTripInfoOutput businessTripInfoOutput = appBusinessParam
+				.getBusinessTripInfoOutput() == null ? null : appBusinessParam.getBusinessTripInfoOutput().toDomain();
+		BusinessTrip businessTrip = appBusinessParam.getBusinessTrip() == null ? null : appBusinessParam.getBusinessTrip().toDomain(businessTripInfoOutput.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication());
+		// new mode thì thực hiện thuật toán 申請共通起動処理
 		if (mode) {
 			AppDispInfoStartupOutput appDispInfoStartupOutput = algorithmMobile.appCommonStartProcess(mode, cid,
-					employeeID, ApplicationType.BUSINESS_TRIP_APPLICATION, Optional.ofNullable(null),
+					AppContexts.user().employeeId(), ApplicationType.BUSINESS_TRIP_APPLICATION, Optional.ofNullable(null),
 			dateList, Optional.ofNullable(null));
 			BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, applicantlist,
 					dateList, appDispInfoStartupOutput);
-			result.setBusinessTripInfoOutput(businessTripInfoOutputDto.toDomain());
+			result.setBusinessTripInfoOutput(businessTripInfoOutputDto);
 			// INPUT「出張申請の表示情報」と「出張申請」を返す
 		} else {
-			result.setBusinessTrip(businessTrip);
-			result.setBusinessTripInfoOutput(businessTripInfoOutput);
+			result.setBusinessTrip(BusinessTripDto.fromDomain(businessTrip));
+			result.setBusinessTripInfoOutput(BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput));
 		}
 		return result;
 	}
 
-	// Start Screen A1
+	// Xử lý A1 (check mess error)
 	public List<ConfirmMsgOutput> checkMessageError(boolean mode, String companyID, ErrorFlagImport errorFlagImport,Application application,
-			BusinessTripInfoOutput businessTripInfoOutput) {
+			BusinessTripInfoOutput businessTripInfoOutput,List<GeneralDate> dates,AppDispInfoNoDateOutput appDispInfoNoDateOutput, AppDispInfoWithDateOutput appDispInfoWithDateOutput,ChangeWorkCodeParam changeWorkCodeParam) {
 		List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
+		String inputCode = changeWorkCodeParam.getTypeCode();
+		String sid = AppContexts.user().employeeId();
+		Optional<List<ActualContentDisplay>> opActualContentDisplayLst;
 		if(mode) {
 			// アルゴリズム「2-1.新規画面登録前の処理」を実行する
 			confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(companyID, EmploymentRootAtr.APPLICATION,false, application, null, errorFlagImport, null, businessTripInfoOutput.getAppDispInfoStartup());
-			
 		}
 		//Nếu không có lỗi thực hiện thuật toán 出張申請期間の勤務内容を取得する 
-		if(errorFlagImport.NO_ERROR != null) {
+		if(confirmMsgOutputs == null) {
+			//出張申請期間の勤務内容を取得する
+			AppDispInfoWithDateOutput appDispInfoWihDay = commonAlgorithm.changeAppDateProcess(
+					companyID, 
+					dates, 
+					ApplicationType.BUSINESS_TRIP_APPLICATION,
+					appDispInfoNoDateOutput,
+					appDispInfoWithDateOutput,
+					Optional.ofNullable(null));
+		}
+		if(dates == null) {
+			//thực hiện thuật toán 出張申請未承認申請を取得
+			List<ActualContentDisplay> appActualContents = businessTripService.getBusinessTripNotApproved(
+					sid, dates, Optional.ofNullable(null));
+			//ドメインモデル「勤務種類」を取得する (Get domain model "work type")
+			Optional<WorkType> getWorkTypeInfo = wkTypeRepo.findByPK(companyID, inputCode);
 			
-		} 
-		//ngược lại hiện msg lỗi
+		}
+		//nếu có một ngày không tồn tại
 		else {
-			
+			throw new BusinessException("Msg_1695");
 		}
 		return confirmMsgOutputs;
 	}
 
+	//check date with content
 	private List<ConfirmMsgOutput> checkDateWithContent(List<BusinessTripActualContentDto> contents) {
 		List<ConfirmMsgOutput> result = new ArrayList<>();
 		if (!contents.isEmpty()) {
@@ -186,6 +211,11 @@ public class BusinessTripFinder {
 		}
 		return result;
 	}
+	
+	//Xử lý dialog màn hình D KAFS08
+	//Thực hiện thuật toán 出張申請勤務変更ダイアログ用情報の取得
+	List<WorkType> workTypesBeforeChange = new ArrayList<>();
+	
 
 	/**
 	 * アルゴリズム「出張申請画面初期（新規）」を実行する
@@ -452,7 +482,7 @@ public class BusinessTripFinder {
 	}
 
 	/**
-	 * アルゴリズム「出張申請勤務種類分類内容取得」を実行する
+	 * アルゴリズム「``」を実行する
 	 * 
 	 * @param workType
 	 * @return

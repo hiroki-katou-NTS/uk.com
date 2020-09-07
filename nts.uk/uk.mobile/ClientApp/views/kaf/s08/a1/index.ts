@@ -28,25 +28,25 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
     public returnTime: number | null = null;
     private seen: boolean = true;
     public step: string = 'KAFS08_10';
+    public mode: Boolean = true;
 
     @Prop({ default: null })
     public params?: any;
 
     public user: any;
     public title: String = 'KafS08A1';
-    public mode: Boolean = true;
     public data: any = 'data';
 
     public created() {
-        const self = this;
+        const vm = this;
 
-        if (self.params) {
-            console.log(self.params);
-            self.mode = false;
-            this.data = self.params;
+        if (vm.params) {
+            console.log(vm.params);
+            vm.mode = false;
+            this.data = vm.params;
         }
 
-        self.fetchStart();
+        vm.fetchStart();
     }
 
     //Nhảy đến step tiếp theo
@@ -57,35 +57,46 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
     }
 
     public fetchStart() {
-        const self = this;
+        const vm = this;
 
-        self.$mask('show');
+        vm.$mask('show');
 
-        self.$auth.user.then((usr: any) => {
-            self.user = usr;
+        vm.$auth.user.then((usr: any) => {
+            vm.user = usr;
         }).then(() => {
-            return self.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
-        }).then((res: any) => {
-            // if (!res) {
-            //     return;
-            // }
-            self.data = res.data;
-            self.createParamsB();
-            self.createParamsC();
-            self.createParamsA();
-            self.$mask('hide');
+            return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
+        }).then((loadData: any) => {
+            if (loadData) {
+                return vm.$http.post('at', API.startKAFS08, {
+                    mode: vm.mode,
+                    companyId: vm.user.companyId,
+                    employeeId: vm.user.employeeId,
+                    listDates: [],
+                    businessTripInfoOutput: vm.mode ? null : vm.data,
+                    businessTrip: vm.mode ? null : vm.data.appWorkChange
+                }).then((res: any) => {
+                    if (!res) {
+                        return;
+                    }
+                    vm.data = res.data;
+                    vm.createParamsB();
+                    vm.createParamsC();
+                    vm.createParamsA();
+                    vm.$mask('hide');
+                });
+            }
         }).catch((err: any) => {
-            self.$mask('hide');
+            vm.$mask('hide');
         });
     }
 
     public createParamsA() {
-        const self = this;
-        let appDispInfoWithDateOutput = self.appDispInfoStartupOutput.appDispInfoWithDateOutput;
-        let appDispInfoNoDateOutput = self.appDispInfoStartupOutput.appDispInfoNoDateOutput;
-        self.kaf000_A_Params = {
-            companyID: self.user.companyId,
-            employeeID: self.user.employeeId,
+        const vm = this;
+        let appDispInfoWithDateOutput = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput;
+        let appDispInfoNoDateOutput = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput;
+        vm.kaf000_A_Params = {
+            companyID: vm.user.companyId,
+            employeeID: vm.user.employeeId,
             // 申請表示情報．申請表示情報(基準日関係あり)．社員所属雇用履歴を取得．雇用コード
             employmentCD: appDispInfoWithDateOutput.empHistImport.employmentCode,
             // 申請表示情報．申請表示情報(基準日関係あり)．申請承認機能設定．申請利用設定
@@ -100,28 +111,11 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
         const vm = this;
         let paramb = {
             input: {
-                // mode: 0,
-
-                // appDisplaySetting: {
-                //     prePostDisplayAtr: 1,
-                //     manualSendMailAtr: 0
-                // },
-                // newModeContent: {
-                //     appTypeSetting: {
-                //         appType: 2,
-                //         sendMailWhenRegister: false,
-                //         sendMailWhenApproval: false,
-                //         displayInitialSegment: 1,
-                //         canClassificationChange: true
-                //     },
-                //     useMultiDaySwitch: true,
-                //     initSelectMultiDay: true
-                // }
                 mode: vm.mode ? 0 : 1,
-                appDisplaySetting: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
+                appDisplaySetting: vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting,
                 newModeContent: {
                     // 申請表示情報．申請表示情報(基準日関係なし)．申請設定．申請表示設定																	
-                    appTypeSetting: vm.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
+                    appTypeSetting: vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.applicationSetting.appTypeSetting,
                     useMultiDaySwitch: true,
                     initSelectMultiDay: false
                 },
@@ -138,27 +132,19 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
         vm.kaf000_B_Params = paramb;
     }
 
-    // onComponentChange(data: any) {
-    //     const vm = this;
-
-    //     console.log(data);
-    // }
 
     public createParamsC() {
         const vm = this;
-
         // KAFS00_C_起動情報
-        const { appDispInfoStartupOutput } = vm;
-        const { appDispInfoNoDateOutput } = appDispInfoStartupOutput;
-
+        let appDispInfoNoDateOutput = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput;
         vm.kaf000_C_Params = {
             input: {
                 // 定型理由の表示
                 // 申請表示情報．申請表示情報(基準日関係なし)．定型理由の表示区分
-                displayFixedReason: appDispInfoNoDateOutput.displayFixedReason,
+                displayFixedReason: appDispInfoNoDateOutput.displayStandardReason,
                 // 申請理由の表示
                 // 申請表示情報．申請表示情報(基準日関係なし)．申請理由の表示区分
-                displayAppReason: true,
+                displayAppReason: appDispInfoNoDateOutput.displayAppReason,
                 // 定型理由一覧
                 // 申請表示情報．申請表示情報(基準日関係なし)．定型理由項目一覧
                 reasonTypeItemLst: appDispInfoNoDateOutput.reasonTypeItemLst,
@@ -174,15 +160,19 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: vm.mode ? 1 : vm.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppStandardReasonCD: vm.mode ? '' : null,
                 // 申請理由
-                opAppReason: vm.mode ? '' : vm.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason
+                opAppReason: vm.mode ? '' : null
             }
         };
     }
+    
     public mounted() {
-        let self = this;
+        let vm = this;
     }
-
 }
+
+const API = {
+    startKAFS08: 'at/request/application/businesstrip/mobile/startMobile'
+};
 

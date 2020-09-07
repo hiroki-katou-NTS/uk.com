@@ -5,6 +5,8 @@ import { FixTableComponent } from '@app/components/fix-table';
 import {KafS08DComponent} from '../../../kaf/s08/d';
 import * as moment from 'moment';
 
+// import abc from './mock_data.json';
+
 @component({
     name: 'kafs08a2',
     route: '/kaf/s08/a2',
@@ -14,8 +16,7 @@ import * as moment from 'moment';
     validations: {},
     components: {
         'step-wizard': StepwizardComponent,
-        'fix-table': FixTableComponent,
-        'showDialog' : KafS08DComponent
+        'fix-table': FixTableComponent
     },
     props: {
         departureTime : {
@@ -42,9 +43,16 @@ export class KafS08A2Component extends Vue {
     public title: string = 'KafS08A2';
     public name: string = 'hello my dialog';
     public date: Date = new Date(2020,2,14);
+
+    public mtable = require('./mock_data.json');
+
     public step = 'KAFS08_11';
+
     public showModal(type) {
         let name = this.name;
-        this.$modal('showDialog', { name }, {type} );
+        this.$modal(KafS08DComponent, {  time1: 120, time2: 188 } )
+        .then((data) => {
+            console.log(data);
+        });
     }
 }

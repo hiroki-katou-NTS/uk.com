@@ -24,14 +24,12 @@ public class AppBusinessParam {
 	private Boolean mode;
 	// 会社ID
 	private String companyId;
-	// 申請種類
-	private int appType;
 	// 申請者ID
 	private String employeeID;
 //	申請対象日リスト
 	private List<String> listDates;
 	// 出張申請の表示情報
-	private BusinessTripInfoOutput businessTripInfoOutput;
+	private BusinessTripInfoOutputDto businessTripInfoOutput;
 	// 出張申請
-	private BusinessTrip businessTrip;
+	private BusinessTripDto businessTrip;
 }
