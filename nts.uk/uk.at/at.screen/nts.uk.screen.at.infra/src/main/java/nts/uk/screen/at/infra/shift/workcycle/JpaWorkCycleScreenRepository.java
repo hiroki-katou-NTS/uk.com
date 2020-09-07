@@ -3,10 +3,8 @@ package nts.uk.screen.at.infra.shift.workcycle;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workcycle.KscmtWorkingCycle;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workcycle.KscmtWorkingCycleDtl;
-import nts.uk.ctx.at.schedule.infra.entity.shift.workcycle.KscmtWorkingCyclePK;
+import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternSet;
+import nts.uk.ctx.at.schedule.infra.entity.dailypattern.KdpstDailyPatternVal;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
 
 import javax.ejb.Stateless;
@@ -17,13 +15,13 @@ import java.util.Optional;
 @Stateless
 public class JpaWorkCycleScreenRepository extends JpaRepository implements WorkCycleQueryRepository {
 
-    private static final String SELECT_ALL = "SELECT f from KscmtWorkingCycle f ";
+    private static final String SELECT_ALL = "SELECT f from KdpstDailyPatternSet f ";
 
-    private static final String GET_ALL_BY_CID = SELECT_ALL + "WHERE f.kscmtWorkingCyclePK.cid = :cid ORDER BY f.kscmtWorkingCyclePK.workCycleCode ASC";
+    private static final String GET_ALL_BY_CID = SELECT_ALL + "WHERE f.kdpstDailyPatternSetPK.cid = :cid ORDER BY f.kdpstDailyPatternSetPK.patternCd ASC";
 
-    private static final String GET_BY_CID_AND_CODE = SELECT_ALL + "WHERE f.kscmtWorkingCyclePK.cid = :cid AND f.kscmtWorkingCyclePK.workCycleCode = :code";
+    private static final String GET_BY_CID_AND_CODE = SELECT_ALL + "WHERE f.kdpstDailyPatternSetPK.cid = :cid AND f.kdpstDailyPatternSetPK.patternCd = :code";
 
-    private static final String GET_INFO_BY_CID_AND_CODE = "SELECT f FROM KscmtWorkingCycleDtl f WHERE f.kscmtWorkingCycleDtlPK.cid = :cid and f.kscmtWorkingCycleDtlPK.workingCycleCode = :code ORDER BY f.kscmtWorkingCycleDtlPK.dispOrder";
+    private static final String GET_INFO_BY_CID_AND_CODE = "SELECT f FROM KdpstDailyPatternVal f WHERE f.kdpstDailyPatternValPK.cid = :cid and f.kdpstDailyPatternValPK.patternCd = :code ORDER BY f.kdpstDailyPatternValPK.dispOrder";
 
     /**
      * [3] get
@@ -33,17 +31,17 @@ public class JpaWorkCycleScreenRepository extends JpaRepository implements WorkC
      */
     @Override
     public Optional<WorkCycle> getByCidAndCode(String cid, String code) {
-        val workCycle = this.queryProxy().query(GET_BY_CID_AND_CODE, KscmtWorkingCycle.class)
+        val workCycle = this.queryProxy().query(GET_BY_CID_AND_CODE, KdpstDailyPatternSet.class)
                 .setParameter("cid", cid)
                 .setParameter("code", code)
                 .getSingle();
         if (workCycle.isPresent()) {
             val workCycleInfos =  this.queryProxy()
-                    .query(GET_INFO_BY_CID_AND_CODE, KscmtWorkingCycleDtl.class)
+                    .query(GET_INFO_BY_CID_AND_CODE, KdpstDailyPatternVal.class)
                     .setParameter("cid", cid)
-                    .setParameter("code", workCycle.get().getKscmtWorkingCyclePK().workCycleCode)
+                    .setParameter("code", workCycle.get().getKdpstDailyPatternSetPK().patternCd)
                     .getList();
-            return Optional.of(KscmtWorkingCycle.toDomain(workCycle.get(), workCycleInfos));
+            return Optional.of(KdpstDailyPatternSet.toDomain(workCycle.get(), workCycleInfos));
         }
         return Optional.empty();
     }
@@ -56,11 +54,11 @@ public class JpaWorkCycleScreenRepository extends JpaRepository implements WorkC
     @Override
     public List<WorkCycle> getByCid(String cid) {
         List<WorkCycle> result = new ArrayList<>();
-        val workCycles = this.queryProxy().query(GET_ALL_BY_CID, KscmtWorkingCycle.class).setParameter("cid", cid).getList();
+        val workCycles = this.queryProxy().query(GET_ALL_BY_CID, KdpstDailyPatternSet.class).setParameter("cid", cid).getList();
         if (!workCycles.isEmpty()) {
             workCycles.stream().forEach(i -> {
-                val workCycleInfos = this.queryProxy().query(GET_INFO_BY_CID_AND_CODE, KscmtWorkingCycleDtl.class).setParameter("cid", cid).setParameter("code", i.getKscmtWorkingCyclePK().workCycleCode).getList();
-                result.add(KscmtWorkingCycle.toDomain(i, workCycleInfos));
+                val workCycleInfos = this.queryProxy().query(GET_INFO_BY_CID_AND_CODE, KdpstDailyPatternVal.class).setParameter("cid", cid).setParameter("code", i.getKdpstDailyPatternSetPK().patternCd).getList();
+                result.add(KdpstDailyPatternSet.toDomain(i, workCycleInfos));
             });
         }
         return result;
