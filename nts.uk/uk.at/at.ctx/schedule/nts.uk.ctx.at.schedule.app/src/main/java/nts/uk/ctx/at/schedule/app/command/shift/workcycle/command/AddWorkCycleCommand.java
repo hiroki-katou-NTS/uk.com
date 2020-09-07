@@ -5,6 +5,7 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,10 @@ public class AddWorkCycleCommand {
     private List<WorkInformation> workInformations;
 
     public static WorkCycle createFromCommand(AddWorkCycleCommand command, String cid) {
+        // Sort list workinformation by display order
+        command.workInformations.sort(Comparator.comparingDouble(WorkInformation::getDispOrder)
+                .reversed());
+
         List<WorkCycleInfo> infos = command.workInformations.stream().map(i -> WorkCycleInfo.create(
                 i.getDays(),
                 new nts.uk.ctx.at.shared.dom.WorkInformation(i.getWorkTimeCode(), i.getWorkTypeCode())
