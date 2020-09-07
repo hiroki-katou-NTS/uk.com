@@ -1,5 +1,7 @@
 /// <reference path='../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.kdl048.screenModel {
+  import getShared = nts.uk.ui.windows.getShared;
+  import setShared = nts.uk.ui.windows.setShared;
   @bean()
   export class ViewModel extends ko.ViewModel {
     initParam: any;
@@ -46,7 +48,7 @@ module nts.uk.at.view.kdl048.screenModel {
     created() {
       const vm = this;
       //get params
-      vm.initParam = vm.$window.storage("attendanceItem");
+      vm.initParam = getShared("attendanceItem");
       vm.objectDisplay = vm.initParam;
       //Setting data
       vm.diligenceData(
@@ -260,7 +262,7 @@ module nts.uk.at.view.kdl048.screenModel {
             vm.objectDisplay.itemNameLine.name = vm.attendanceRecordName();
             vm.objectDisplay.attribute.selected = vm.valueCb();
             vm.objectDisplay.selectedTimeList = vm.paramSelectedTimeList();
-            vm.$window.storage("attendanceRecordExport", vm.objectDisplay);
+            setShared("attendanceRecordExport", vm.objectDisplay);
           }
           // 項目名行の表示フラグ == False：表示しない
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == １：表示のみ
@@ -268,7 +270,7 @@ module nts.uk.at.view.kdl048.screenModel {
             // shared with value of A5_2, A9_2_1, A9_2_2
             vm.objectDisplay.attribute.selected = vm.valueCb();
             vm.objectDisplay.selectedTimeList = vm.paramSelectedTimeList();
-            vm.$window.storage("attendanceRecordExport", vm.objectDisplay);
+            setShared("attendanceRecordExport", vm.objectDisplay);
           }
           vm.$window.close();
         }
