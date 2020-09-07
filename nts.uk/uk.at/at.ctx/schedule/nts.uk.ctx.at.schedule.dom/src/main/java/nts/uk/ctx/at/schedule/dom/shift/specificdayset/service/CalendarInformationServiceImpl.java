@@ -10,13 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassifiBasicWorkRepository;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationBasicWork;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWork;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.CompanyBasicWorkRepository;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
-import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.*;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClass;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarClassRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
@@ -55,7 +49,7 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	@Override
 	public CalendarInformationOutput getCalendarInformation(String companyID, String workplaceID, String classCD, GeneralDate date) {
 		// 稼働日区分を取得する
-		UseSet workingDayAtr = this.getWorkingDayAtr(companyID, workplaceID, classCD, date);
+		WorkdayDivision workingDayAtr = this.getWorkingDayAtr(companyID, workplaceID, classCD, date);
 		if(workingDayAtr != null){
 			// 基本勤務設定を取得する
 			BasicWorkSetting basicWorkSetting = this.getBasicWorkSetting(companyID, workplaceID, classCD, workingDayAtr.value);
@@ -74,20 +68,20 @@ public class CalendarInformationServiceImpl implements ICalendarInformationServi
 	 * @param date
 	 * @return UseSet
 	 */
-	private UseSet getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date){
+	private WorkdayDivision getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date){
 		Optional<CalendarCompany> opCalendarCompany = calendarCompanyRepository.findCalendarCompanyByDate(companyID, date);
 		if(opCalendarCompany.isPresent()){
-			return opCalendarCompany.get().getWorkingDayAtr();
+			return opCalendarCompany.get().getWorkDayDivision();
 		}
 		
 		Optional<CalendarWorkplace> opCalendarWorkplace = calendarWorkPlaceRepository.findCalendarWorkplaceByDate(workplaceID, date);
 		if(opCalendarWorkplace.isPresent()){
-			return opCalendarWorkplace.get().getWorkingDayAtr();
+			return opCalendarWorkplace.get().getWorkDayDivision();
 		}
 		
 		Optional<CalendarClass> opCalendarClass = calendarClassRepository.findCalendarClassByDate(companyID, classCD, date);
 		if(opCalendarClass.isPresent()){
-			return opCalendarClass.get().getWorkingDayAtr();
+			return opCalendarClass.get().getWorkDayDivision();
 		}
 		
 		return null;

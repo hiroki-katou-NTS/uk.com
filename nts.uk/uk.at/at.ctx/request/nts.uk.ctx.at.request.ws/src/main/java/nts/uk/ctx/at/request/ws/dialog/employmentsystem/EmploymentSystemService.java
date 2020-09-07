@@ -10,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Data;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.DetailConfirmDto;
@@ -86,7 +87,7 @@ class DataParam{
 	String baseDate;
 }
 
-@Value
+@Data
 class EmployeeParam{
 	 List<String> employeeIds;
 	 String baseDate;

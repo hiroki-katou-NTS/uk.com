@@ -117,7 +117,9 @@ module nts.uk.at.view.kmp001 {
 
 					if ($grid.length && $grid.data('igGrid')) {
 						$grid.igGridSelection('clearSelection');
-						$grid.igGridSelection('selectRow', 0);
+						
+						// Select first row
+						// $grid.igGridSelection('selectRow', 0);
 					}
 				});
 			}
