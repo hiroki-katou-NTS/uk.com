@@ -48,7 +48,7 @@ public class SrcdtLogSetting extends UkJpaEntity
 
 	@Override
 	public void setSystem(int system) {
-		if (this.srcdtLogSettingPK != null) {
+		if (this.srcdtLogSettingPK == null) {
 			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
 		}
 		this.srcdtLogSettingPK.setSystem(system);
@@ -56,7 +56,7 @@ public class SrcdtLogSetting extends UkJpaEntity
 
 	@Override
 	public void setProgramId(String programId) {
-		if (this.srcdtLogSettingPK != null) {
+		if (this.srcdtLogSettingPK == null) {
 			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
 		}
 		this.srcdtLogSettingPK.setProgramId(programId);
@@ -74,7 +74,7 @@ public class SrcdtLogSetting extends UkJpaEntity
 
 	@Override
 	public void setCompanyId(String companyId) {
-		if (this.srcdtLogSettingPK != null) {
+		if (this.srcdtLogSettingPK == null) {
 			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
 		}
 		this.srcdtLogSettingPK.setCid(companyId);
@@ -122,7 +122,7 @@ public class SrcdtLogSetting extends UkJpaEntity
 	@Override
 	public String getCompanyId() {
 		if (this.srcdtLogSettingPK != null) {
-			this.srcdtLogSettingPK.getCid();
+			return this.srcdtLogSettingPK.getCid();
 		}
 		return null;
 	}
