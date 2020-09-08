@@ -24,8 +24,7 @@ public class AddWorkCycleCommand {
 
     public static WorkCycle createFromCommand(AddWorkCycleCommand command, String cid) {
         // Sort list workinformation by display order
-        command.workInformations.sort(Comparator.comparingDouble(WorkInformation::getDispOrder)
-                .reversed());
+        command.workInformations.sort(Comparator.comparingDouble(WorkInformation::getDispOrder));
 
         List<WorkCycleInfo> infos =command.workInformations.stream().map(i -> WorkCycleInfo.create(
                 i.getDays(),

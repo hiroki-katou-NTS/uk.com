@@ -26,10 +26,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KscdtScheExeLog.
  */
+// Entity: スケジュール作成実行ログ
+
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCDT_SCHE_EXE_LOG")
+@Table(name = "KSCDT_BATCH_EXECUTE_LOG")
 public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */

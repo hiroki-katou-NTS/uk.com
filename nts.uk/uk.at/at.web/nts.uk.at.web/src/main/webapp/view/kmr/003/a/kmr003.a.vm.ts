@@ -302,6 +302,8 @@ module nts.uk.at.kmr003.a {
             self.deleteItems.removeAll();
             self.canDelete(false);
             self.$ajax(API.BENTO_RESERVATTIONS, param).done((res: IReservationModifyDto) => {
+                if (!res) return;
+
                 if (!_.isEmpty(res.bentoClosingTimes)) {
                     self.closingTimeFrames.removeAll();
                 }

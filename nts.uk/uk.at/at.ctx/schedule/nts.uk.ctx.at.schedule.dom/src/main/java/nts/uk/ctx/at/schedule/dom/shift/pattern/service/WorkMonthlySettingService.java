@@ -14,11 +14,11 @@ import java.util.Optional;
 @Stateless
 public class WorkMonthlySettingService {
 
-    public static Optional<AtomTask> register(Require require,WorkMonthlySetting workMonthlySetting, Boolean isOverwrite) {
+    public static Optional<AtomTask> register(Require require, WorkMonthlySetting workMonthlySetting, Boolean isOverwrite) {
 
         workMonthlySetting.checkForErrors(require);
-        if(require.exists(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk())) {
-            if(isOverwrite) {
+        if (require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk())) {
+            if (isOverwrite) {
                 return Optional.of(AtomTask.of(() -> {
                     require.update(workMonthlySetting);
                 }));
@@ -32,8 +32,10 @@ public class WorkMonthlySettingService {
     }
 
     public static interface Require extends WorkInformation.Require {
-        boolean exists(String companyId, String monthlyPatternCode, GeneralDate generalDate);
+        boolean checkRegister(String companyId, String monthlyPatternCode, GeneralDate generalDate);
+
         void add(WorkMonthlySetting workMonthlySetting);
+
         void update(WorkMonthlySetting workMonthlySetting);
     }
 
