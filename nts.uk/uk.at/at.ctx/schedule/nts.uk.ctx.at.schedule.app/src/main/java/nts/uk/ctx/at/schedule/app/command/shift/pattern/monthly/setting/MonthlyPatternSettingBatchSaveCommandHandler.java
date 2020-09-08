@@ -149,11 +149,8 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					updateWorkMonthlySettings.add(dataPublic);
 				}
 			} else {
-
 				// is work day
-				int targetDayOfWeek = toStartDate.dayOfWeek();
-				switch (EnumAdaptor.valueOf(dto.getListWorkdayPatternItem().stream().filter(x -> x.getWorkdayDivision().value == targetDayOfWeek)
-						.findFirst().get().getWorkdayDivision().value, WorkdayDivision.class)) {
+				switch (EnumAdaptor.valueOf(dto.getWorkingDayCtgOfTagertDay(toStartDate).value, WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
 					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, toStartDate);
