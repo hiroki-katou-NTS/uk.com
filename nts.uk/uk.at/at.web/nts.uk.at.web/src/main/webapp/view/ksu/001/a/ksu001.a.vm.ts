@@ -1964,9 +1964,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set lai data stick
                 let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
                 if (objWorkTime != undefined) {
-                    __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
+                    __viewContext.viewModel.viewAB.workTimeCode(objWorkTime.code);
                     __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
+                    
                 }
+                
             } else if (self.selectedModeDisplayInBody() == 'shift') {
                 $("#extable").exTable("stickMode", "multi");
                 // set lai data stick
