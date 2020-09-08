@@ -30,6 +30,7 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -123,7 +124,7 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		// data insert setting batch
 		List<WorkMonthlySetting> addWorkMonthlySettings = new ArrayList<>();
 
-		List<WeeklyWorkSetting> dto = this.weeklyWorkSettingRepository.findAll(companyId);
+		WeeklyWorkDayPattern dto = this.weeklyWorkSettingRepository.getWeeklyWorkDayPatternByCompanyId(companyId);
 
 		// check by next day of begin end
 		while (toStartDate.yearMonth().v() <= command.getEndYearMonth()) {
@@ -148,12 +149,10 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					updateWorkMonthlySettings.add(dataPublic);
 				}
 			} else {
-				WeeklyWorkSettingDto dto1 = this.weeklyWorkSettingFinder
-						.checkWeeklyWorkSetting(toStartDate);
 
 				// is work day
 				int targetDayOfWeek = toStartDate.dayOfWeek();
-				switch (EnumAdaptor.valueOf(dto.stream().filter(x -> x.getWorkdayDivision().value == targetDayOfWeek)
+				switch (EnumAdaptor.valueOf(dto.getListWorkdayPatternItem().stream().filter(x -> x.getWorkdayDivision().value == targetDayOfWeek)
 						.findFirst().get().getWorkdayDivision().value, WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
