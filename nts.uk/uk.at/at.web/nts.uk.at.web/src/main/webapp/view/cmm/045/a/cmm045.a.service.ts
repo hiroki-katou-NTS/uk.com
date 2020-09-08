@@ -11,7 +11,9 @@ module cmm045.a.service {
 		 getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
 		findByPeriod: "at/request/application/applist/findByPeriod",
         findByEmpIDLst: "at/request/application/applist/findByEmpIDLst",
-        print: "at/request/application/applist/print"
+        print: "at/request/application/applist/print",
+		approveCheck: "at/request/application/applist/approve",
+		approverAfterConfirm: "at/request/application/applist/approverAfterConfirm"
     }
 
     /**
@@ -56,14 +58,22 @@ module cmm045.a.service {
 	}
 
 	export function findByPeriod(param: any): JQueryPromise<Array<any>>{
-        return nts.uk.request.ajax("at", paths.findByPeriod,param);
+        return nts.uk.request.ajax("at", paths.findByPeriod, param);
     }
 
 	export function findByEmpIDLst(param: any): JQueryPromise<Array<any>>{
-        return nts.uk.request.ajax("at", paths.findByEmpIDLst,param);
+        return nts.uk.request.ajax("at", paths.findByEmpIDLst, param);
     }
 
     export function print(param: any): JQueryPromise<any> {
         return nts.uk.request.exportFile("at", paths.print, param)
+    }
+
+	export function approveCheck(param: any): JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("at", paths.approveCheck, param);
+    }
+
+	export function approverAfterConfirm(param: any): JQueryPromise<Array<any>>{
+        return nts.uk.request.ajax("at", paths.approverAfterConfirm, param);
     }
 }

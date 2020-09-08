@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.applist.service;
 
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 
 public interface ApprovalListService {
 	
@@ -17,5 +19,7 @@ public interface ApprovalListService {
 	 * @param appListExtractCondition
 	 */
 	public void confirmSearchCondition(AppListExtractCondition appListExtractCondition);
+	
+	public boolean checkErrorComfirm(ApprovalListDisplaySetting approvalListDisplaySetting, WorkMotionData workMotionData, ApplicationType appType);
 	
 }

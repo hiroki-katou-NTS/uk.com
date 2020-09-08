@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.at.request.app.find.application.applicationlist.AppListInfoDto;
+import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListInfoCmd;
 import nts.uk.ctx.at.request.dom.application.AppScreenGenerator;
 
 /**
@@ -23,7 +23,7 @@ public class AppScreenExportService extends ExportService<AppScreenQuery> {
 	protected void handle(ExportServiceContext<AppScreenQuery> context) {
 		AppScreenQuery query = context.getQuery();
 		int appListAtr = query.getAppListAtr();
-		AppListInfoDto lstApp = query.getLstApp();
+		AppListInfoCmd lstApp = query.getLstApp();
 		FileGeneratorContext exportContext = context.getGeneratorContext();
 
 		generator.generate(exportContext, appListAtr, lstApp.toDomain());

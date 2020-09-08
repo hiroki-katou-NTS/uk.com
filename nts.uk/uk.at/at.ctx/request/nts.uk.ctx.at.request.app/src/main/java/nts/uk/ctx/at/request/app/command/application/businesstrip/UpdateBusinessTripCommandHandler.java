@@ -87,7 +87,7 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
                     application.getPrePostAtr(),
                     application.getVersion(),
                     i.getWorkInformation().getWorkTypeCode().v(),
-                    i.getWorkInformation().getWorkTimeCode().v(),
+                    i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v(),
                     infoOutput.getAppDispInfoStartup()
             );
         });
@@ -121,7 +121,9 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
         // loop 年月日　in　期間
         businessTrip.getInfos().stream().forEach(i -> {
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            businessTripService.checkInputWorkCode(i.getWorkInformation().getWorkTypeCode().v(),i.getWorkInformation().getWorkTimeCode().v(), i.getDate());
+            businessTripService.checkInputWorkCode(i.getWorkInformation().getWorkTypeCode().v(),
+                    i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v()
+                    , i.getDate());
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
             // 申請の矛盾チェック

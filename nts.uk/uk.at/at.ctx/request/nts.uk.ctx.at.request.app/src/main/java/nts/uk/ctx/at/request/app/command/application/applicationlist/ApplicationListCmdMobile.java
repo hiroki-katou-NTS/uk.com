@@ -1,13 +1,14 @@
-package nts.uk.ctx.at.request.app.find.application.applicationlist;
+package nts.uk.ctx.at.request.app.command.application.applicationlist;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
+/**
+ * refactor 4
+ * @author Doan Duy Hung
+ *
+ */
 @Data
-public class ApplicationListDtoMobile {
+public class ApplicationListCmdMobile {
 //	private Integer isDisPreP;
 //	private String startDate;
 //	private String endDate;
@@ -27,9 +28,9 @@ public class ApplicationListDtoMobile {
 	/**
 	 * 申請一覧抽出条件
 	 */
-	private AppListExtractConditionDto appListExtractConditionDto;
+	private AppListExtractConditionCmd appListExtractCondition;
 	/**
 	 * 申請一覧情報
 	 */
-	private AppListInfoDto appListInfoDto;
+	private AppListInfoCmd appListInfo;
 }

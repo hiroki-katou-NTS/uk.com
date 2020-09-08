@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
-import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 
 /**
  * refactor 4
@@ -43,18 +42,5 @@ public class AppListInfoDto {
 				appListInfo.getNumberOfApp(), 
 				appListInfo.isMoreThanDispLineNO(), 
 				AppLstApprovalLstDispSetDto.fromDomain(appListInfo.getDisplaySet()));
-	}
-	
-	// AnhNM add to domain
-	public AppListInfo toDomain() {
-		AppListInfo domain = new AppListInfo();
-		List<ListOfApplication> domainLst = this.appLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
-		
-		domain.setAppLst(domainLst);
-		domain.setNumberOfApp(numberOfApp);
-		domain.setMoreThanDispLineNO(moreThanDispLineNO);
-		domain.setDisplaySet(displaySet.toDomain());
-		
-		return domain;
 	}
 }

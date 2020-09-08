@@ -245,7 +245,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
-			boolean remandStatus, boolean cancelStatus, List<Integer> lstType) {
+			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst) {
 		if (lstAppId.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -285,12 +285,14 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 					"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME " +
 					"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
 					"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
-					"WHERE a.APP_ID IN @subListId AND a.APP_TYPE IN @lstType AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID";
+					"WHERE a.APP_ID IN @subListId AND a.APP_TYPE IN @lstType AND b.REFLECT_PER_STATE IN @lstState " +
+					"AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
 			List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 					.paramString("subListId", subListId)
 					.paramInt("lstType", lstType)
 					.paramInt("lstState", lstState)
 					.paramString("companyID", companyID)
+					.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()))
 					.getList(rec -> toObject(rec));
 			List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 			if(!CollectionUtil.isEmpty(krqdtApplicationLst)) {
@@ -432,8 +434,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE ref"
 				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
 				+ " WHERE  app.APPLICANTS_SID =  @sid "
-				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN (@appType) " 
-				+ " AND ref.REFLECT_PER_STATE IN (@recordStatus)" + " ORDER BY app.INPUT_DATE ASC";
+				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN @appType " 
+				+ " AND ref.REFLECT_PER_STATE IN @recordStatus" + " ORDER BY app.INPUT_DATE ASC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("strData", dateData.start())
@@ -526,9 +528,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE ref"
 				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
 				+ " WHERE  app.APPLICANTS_SID =  @sid "
-				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN (@appType) " 
-				+ " AND (ref.REFLECT_PLAN_STATE IN ( @scheStatus) " 
-				+ " OR ref.REFLECT_PER_STATE IN (@recordStatus))" + " ORDER BY app.INPUT_DATE ASC";
+				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE IN @appType " 
+				+ " AND (ref.REFLECT_PLAN_STATE IN @scheStatus " 
+				+ " OR ref.REFLECT_PER_STATE IN @recordStatus)" + " ORDER BY app.INPUT_DATE ASC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("strData", dateData.start())
@@ -551,9 +553,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				+ " join KRQDT_APP_REFLECT_STATE ref"
 				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
 				+ " WHERE  app.APPLICANTS_SID =  @sid "
-				+ " AND app.APP_DATE IN (@dateData) " + " AND app.APP_TYPE IN (@appType) " 
-				+ " AND (ref.REFLECT_PLAN_STATE IN ( @scheStatus) " 
-				+ " OR ref.REFLECT_PER_STATE IN (@recordStatus))" + " ORDER BY app.INPUT_DATE ASC";
+				+ " AND app.APP_DATE IN @dateData " + " AND app.APP_TYPE IN @appType " 
+				+ " AND (ref.REFLECT_PLAN_STATE IN @scheStatus " 
+				+ " OR ref.REFLECT_PER_STATE IN @recordStatus)" + " ORDER BY app.INPUT_DATE ASC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sid)
 				.paramDate("dateData", dateData)
@@ -796,7 +798,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	@Override
-	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, List<ApplicationType> appTypeLst) {
+	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, 
+			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst) {
 		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
 				"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +
@@ -810,12 +813,13 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
 				"where a.APPLICANTS_SID in @employeeLst " +
 				"and a.APP_START_DATE >= @startDate and a.APP_END_DATE <= @endDate " +
-				"and a.APP_TYPE in @appTypeLst";
+				"and a.APP_TYPE in @appTypeLst and a.PRE_POST_ATR in @prePostAtrLst";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("employeeLst", employeeLst)
 				.paramDate("startDate", startDate)
 				.paramDate("endDate", endDate)
 				.paramInt("appTypeLst", appTypeLst.stream().map(x -> x.value).collect(Collectors.toList()))
+				.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()))
 				.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 		if(CollectionUtil.isEmpty(krqdtApplicationLst)) {
