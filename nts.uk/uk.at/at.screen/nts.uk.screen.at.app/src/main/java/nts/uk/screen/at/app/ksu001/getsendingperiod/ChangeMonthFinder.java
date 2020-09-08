@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DateInformationDto;
 import nts.uk.screen.at.app.ksu001.eventinformationandpersonal.DisplayControlPersonalCondDto;
@@ -36,11 +37,24 @@ public class ChangeMonthFinder {
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
 	
 	public ChangeMonthDto getData(ChangeMonthParam param) {
+		
+		DatePeriod datePeriod = null;
+		if (param.modePeriod == 1) {
+			DatePeriod currentPeriod = new DatePeriod(GeneralDate.fromString(param.startDate, DATE_FORMAT),
+					GeneralDate.fromString(param.endDate, DATE_FORMAT));
+			datePeriod = getSendingPeriodScreenQuery.getSendingPeriod(currentPeriod, param.isNextMonth, false);
 
-		DatePeriod currentPeriod = new DatePeriod(GeneralDate.fromString(param.startDate, DATE_FORMAT),
-				GeneralDate.fromString(param.endDate, DATE_FORMAT));
-		DatePeriod datePeriod = getSendingPeriodScreenQuery.getSendingPeriod(currentPeriod, param.isNextMonth, false);
-
+		} else if (param.modePeriod == 3) {
+			GeneralDate startDate = GeneralDate.fromString(param.startDate, DATE_FORMAT);
+			if(param.isNextMonth) {
+				startDate = startDate.addMonths(1);
+    		} else {
+    			startDate = startDate.addMonths(-1);
+    		}
+			YearMonth yearMonth = YearMonth.of(startDate.year(), startDate.month());
+			datePeriod = DatePeriod.daysFirstToLastIn(yearMonth);
+		}
+		
 		if (param.viewMode.equals("time") || param.viewMode.equals("shortName")) {
 			ChangePeriodInWorkInfoParam param1 = new ChangePeriodInWorkInfoParam(datePeriod.start(), datePeriod.end(),
 					param.unit, param.workplaceId, param.workplaceGroupId, param.sids, param.getActualData);
