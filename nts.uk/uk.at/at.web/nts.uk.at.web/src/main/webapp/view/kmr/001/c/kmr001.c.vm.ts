@@ -154,7 +154,6 @@ module nts.uk.at.kmr001.c {
             }).fail(function (error) {
                 vm.$dialog.error({ messageId: error.messageId });
             }).always(() => this.$blockui("clear"));
-
         }
 
         deleteBento() {
@@ -217,6 +216,7 @@ module nts.uk.at.kmr001.c {
                     vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
                         vm.$blockui("clear");
                     });
+                    vm.reloadPage();
                 }).always(() => this.$blockui("clear"));
             } else {
                 const param = {
@@ -234,9 +234,9 @@ module nts.uk.at.kmr001.c {
                     vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
                         vm.$blockui("clear");
                     });
+                    vm.reloadPage();
                 }).always(() => this.$blockui("clear"));
             }
-            vm.reloadPage();
         }
 
         openConfigHisDialog() {
@@ -473,30 +473,5 @@ module nts.uk.at.kmr001.c {
             this.name = name;
         }
     }
-
-    class paramsRegister{
-        histId: any;
-        frameNo: any;
-        benToName: any;
-        workLocationCode: any;
-        amount1: any;
-        amount2: any;
-        Unit: any;
-        canBookClosesingTime1: any;
-        canBookClosesingTime2: any;
-        constructor(histId, frameNo, benToName, workLocationCode, amount1, amount2, Unit,
-                    canBookClosesingTime1, canBookClosesingTime2) {
-            this.histId = histId;
-            this.frameNo = frameNo;
-            this.benToName = benToName;
-            this.workLocationCode = workLocationCode;
-            this.amount1 = amount1;
-            this.amount2 = amount2;
-            this.Unit = Unit;
-            this.canBookClosesingTime1 = canBookClosesingTime1;
-            this.canBookClosesingTime2 = canBookClosesingTime2;
-        }
-    }
-
 }
 
