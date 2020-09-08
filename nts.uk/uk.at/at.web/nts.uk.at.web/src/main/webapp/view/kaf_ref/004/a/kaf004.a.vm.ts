@@ -146,7 +146,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                             vm.lateOrEarlyInfo4().isActive(false);
                         }
 
-                        vm.application().prePostAtr(successData.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.displayInitialSegment);
+                        // vm.application().prePostAtr(successData.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.displayInitialSegment);
                     }
                 }).fail((failData: any) => {
                     console.log(failData);
