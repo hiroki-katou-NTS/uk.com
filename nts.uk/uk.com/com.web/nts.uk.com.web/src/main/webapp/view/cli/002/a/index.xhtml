@@ -22,9 +22,9 @@
         <div style="margin: 10px;">
           <button
             class="proceed"
-            data-bind="text: $i18n('CLI002_2')"
+            data-bind="click: register"
             style="width: 80px;"
-          ></button>
+          >#{i18n.getText('CLI002_2')}</button>
         </div>
         <hr />
         <div id="search-box" data-bind="ntsSearchBox: {searchMode: 'filter', targetKey: 'functionName', comId: 'multi-list1', 

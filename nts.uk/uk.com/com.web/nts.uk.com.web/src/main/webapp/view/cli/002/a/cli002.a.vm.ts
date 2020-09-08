@@ -5,6 +5,8 @@ module nts.uk.com.view.cli002.a {
 
     @bean()
     export class ScreenModel extends ko.ViewModel {
+        public logSettings: KnockoutObservableArray<LogSetting> = ko.observableArray([]);
+
         public systemList: KnockoutObservableArray<systemType> = ko.observableArray([
             new systemType(0, this.$i18n("Enum_SystemType_PERSON_SYSTEM")),
             new systemType(1, this.$i18n("Enum_SystemType_ATTENDANCE_SYSTEM")),
@@ -72,6 +74,10 @@ module nts.uk.com.view.cli002.a {
             vm.getItemList();
         }
 
+        public register() {
+            console.log("register");
+        }
+
         private getData(systemType: number) {
             const vm = this;
             vm.$blockui("grayout");
@@ -94,6 +100,7 @@ module nts.uk.com.view.cli002.a {
                 })
                 vm.dataSourceItem(pgInfomation);
                 vm.getItemList();
+
             }).always(() => vm.$blockui("clear")); 
         }
 
@@ -179,6 +186,31 @@ module nts.uk.com.view.cli002.a {
             this.logLoginDisplay = logLoginDisplay;
             this.logStartDisplay = logStartDisplay;
             this.logUpdateDisplay = logUpdateDisplay;
+        }
+    }
+
+    class LogSetting {
+        system: number;
+        programId: string;
+        menuClassification: number;
+        loginHistoryRecord: number;
+        companyId: string;
+        editHistoryRecord: number;
+        bootHistoryRecord: number;
+        constructor(system: number,
+            programId: string,
+            menuClassification: number,
+            loginHistoryRecord: number,
+            companyId: string,
+            editHistoryRecord: number,
+            bootHistoryRecord: number) {
+                this.system = system;
+                this.programId = programId;
+                this.menuClassification = menuClassification;
+                this.loginHistoryRecord = loginHistoryRecord;
+                this.companyId = companyId;
+                this.editHistoryRecord = editHistoryRecord;
+                this.bootHistoryRecord= bootHistoryRecord;
         }
     }
 
