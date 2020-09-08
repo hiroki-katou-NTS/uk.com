@@ -316,38 +316,32 @@ module nts.uk.at.view.ksm003.a {
          * Remove a/multiple item on grid
          * */
         removeLine() {
-            let vm = this;
-            vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'no' | 'yes' | 'cancel') => {
-                vm.$blockui("show"); //lock screen
-                if (result === 'no' || result === 'cancel') vm.$blockui("hide");
-                if (result === 'yes') {
-                    let currentCodeList = vm.currentCodeList();
-                    let currentDataList = vm.mainModel().dailyPatternVals();
-                    let newDataList = [];
-                    let dailyPatternValModel: Array<DailyPatternValModel> = [];
+            const vm = this;
+                let currentCodeList = vm.currentCodeList();
+                let currentDataList = vm.mainModel().dailyPatternVals();
+                let newDataList = [];
+                let dailyPatternValModel: Array<DailyPatternValModel> = [];
 
-                    currentCodeList && currentDataList && currentDataList.map((item, i) => {
-                        if (!item.isChecked()) {
-                            dailyPatternValModel.push(
-                                new DailyPatternValModel(
-                                    item.dispOrder, item.typeCode(),
-                                    item.timeCode(), item.days()
-                                ));
-                        }
-                    });
-                    //update model
-                    vm.mainModel().dailyPatternVals([]);
-                    vm.mainModel().dailyPatternVals(dailyPatternValModel);
-                    //update data resource
-                    vm.dailyPatternValModel([]);
-                    vm.dailyPatternValModel(dailyPatternValModel);
-                    vm.lessThan99Items(true);
-                    if( dailyPatternValModel.length <= 0 ) vm.selectedCheckAll(false);
+                currentCodeList && currentDataList && currentDataList.map((item, i) => {
+                    if (!item.isChecked()) {
+                        dailyPatternValModel.push(
+                            new DailyPatternValModel(
+                                item.dispOrder, item.typeCode(),
+                                item.timeCode(), item.days()
+                            ));
+                    }
+                });
+                //update model
+                vm.mainModel().dailyPatternVals([]);
+                vm.mainModel().dailyPatternVals(dailyPatternValModel);
+                //update data resource
+                vm.dailyPatternValModel([]);
+                vm.dailyPatternValModel(dailyPatternValModel);
+                vm.lessThan99Items(true);
+                if( dailyPatternValModel.length <= 0 ) vm.selectedCheckAll(false);
 
-                    vm.enableRemoveItem(false);
-                    vm.$blockui("hide");
-                }
-            });
+                vm.enableRemoveItem(false);
+                vm.$blockui("hide");
         }
 
         /*
