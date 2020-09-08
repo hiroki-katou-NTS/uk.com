@@ -19,5 +19,5 @@ public interface LogSettingRepository {
 	 */
 	void deleteLogSetting(String companyId, int systemType);
 
-	void addLogSetting();
+	void addLogSetting(LogSetting logSetting);
 }
