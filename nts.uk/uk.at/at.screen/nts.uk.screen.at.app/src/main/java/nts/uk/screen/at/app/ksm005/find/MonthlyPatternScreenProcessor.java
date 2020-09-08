@@ -2,14 +2,8 @@ package nts.uk.screen.at.app.ksm005.find;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.val;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayRepository;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingSetMemento;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -21,14 +15,11 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSe
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeInfor;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub;
-import nts.uk.screen.at.app.ksm015.find.WorkStyleScreenQuery;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
