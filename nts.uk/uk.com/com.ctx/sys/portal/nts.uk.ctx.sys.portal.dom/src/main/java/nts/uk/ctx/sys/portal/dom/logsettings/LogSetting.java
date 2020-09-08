@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.dom.logsettings;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -12,6 +13,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
+@Setter
 public class LogSetting extends AggregateRoot {
 	/**
 	 * システム
