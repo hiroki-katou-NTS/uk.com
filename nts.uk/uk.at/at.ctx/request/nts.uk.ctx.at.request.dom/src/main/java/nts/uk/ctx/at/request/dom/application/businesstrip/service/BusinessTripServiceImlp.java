@@ -96,6 +96,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     @Override
     public List<ActualContentDisplay> getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst) {
         List<ActualContentDisplay> result = new ArrayList<>();
+
         if(appDate.isEmpty()) {
             return Collections.emptyList();
         }
@@ -111,28 +112,30 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             // Lấy Application có hiệu lực trong từng ngày, sort theo ngày đăng ký AppDate
             List<Application> validApps = apps
                     .stream()
-                    .filter(i -> i.getOpAppStartDate().get().getApplicationDate().afterOrEquals(date) && date.afterOrEquals(i.getOpAppEndDate().get().getApplicationDate()))
+                    .filter(i -> i.getOpAppStartDate().get().getApplicationDate().beforeOrEquals(date) && date.beforeOrEquals(i.getOpAppEndDate().get().getApplicationDate()))
                     .sorted(Comparator.nullsLast((e1, e2) -> e2.getAppDate().getApplicationDate().compareTo(e1.getAppDate().getApplicationDate())))
                     .collect(Collectors.toList());
+
+            // Lấy Content của ngày loop
+            Optional<ActualContentDisplay> currentContent = opActualContentDisplayLst.get().stream().filter(i -> i.getDate().equals(date)).findFirst();
+
             if (validApps.isEmpty()) {
-                result.add(new ActualContentDisplay(date, Optional.empty()));
+                result.add(currentContent.get());
             } else {
                 // 対象年月日を含む申請が存在を確認
                 // Lấy Application có ngày đăng ký mới nhất sau khi sort
                 Application newestApp = validApps.get(0);
-                // Lấy Content của ngày loop
-                Optional<ActualContentDisplay> currentContent = Optional.empty();
-                if (opActualContentDisplayLst.isPresent() && !opActualContentDisplayLst.get().isEmpty()) {
-                    currentContent = opActualContentDisplayLst.get().stream().filter(i -> i.getDate().equals(date)).findFirst();
-                }
+
                 // アルゴリズム「反映状態を取得する」を実行する
-                ReflectedState reflectStatus = this.getRefectionStatus(newestApp.getReflectionStatus());
+                ReflectedState reflectedState = newestApp.getAppReflectedState();
+
                 // 未反映、反映待ちの場合
-                if (reflectStatus != null && reflectStatus.value == ReflectedState.WAITREFLECTION.value) {
-                    val actualReflectStatus = newestApp.getReflectionStatus().getListReflectionStatusOfDay().stream().filter(i -> i.getTargetDate().compareTo(date) == 0).findAny();
-                    if (actualReflectStatus.isPresent() && actualReflectStatus.get().getActualReflectStatus().value == ReflectedState.WAITREFLECTION.value) {
-                        if (currentContent.isPresent() && currentContent.get().getOpAchievementDetail().isPresent()) {
-                            // 表示する実績内容に反映する
+                if (reflectedState == ReflectedState.WAITREFLECTION) {
+                    Optional<ReflectionStatusOfDay> actualReflectStatus = newestApp.getReflectionStatus().getListReflectionStatusOfDay().stream().filter(i -> i.getTargetDate().compareTo(date) == 0).findAny();
+                    if (actualReflectStatus.isPresent()) {
+                        // 未反映、反映待ちの場合
+                        if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION) {
+                            // アルゴリズム「出張申請内容より勤務情報を取得」を実行する
                             this.getWorkInfoFromTripReqContent(newestApp.getAppID(), newestApp.getAppType(), date, currentContent.get());
                             ActualContentDisplay actualContent = new ActualContentDisplay(date, currentContent.get().getOpAchievementDetail());
                             result.add(actualContent);

@@ -160,6 +160,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 application: applicationDto
             };
 
+            vm.$blockui( "show" );
             vm.$validate([
                 '.ntsControl',
                 '.nts-input'
@@ -173,14 +174,20 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }
             }).fail(err => {
                 let param;
-                if (err.message && err.messageId) {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                } else {
-
-                    if (err.message) {
-                        param = {message: err.message, messageParams: err.parameterIds};
-                    } else {
-                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                switch (err.messageId) {
+                    case "Msg_24" :
+                        param = err.parameterIds[0] + err.message;
+                        break;
+                    case "Msg_23" :
+                        param = err.parameterIds[0] + err.message;
+                        break;
+                    default: {
+                        if (err.message) {
+                            param = {message: err.message, messageParams: err.parameterIds};
+                        } else {
+                            param = {messageId: err.messageId, messageParams: err.parameterIds}
+                        }
+                        break;
                     }
                 }
                 vm.$dialog.error(param);
@@ -191,7 +198,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             const vm = this;
             vm.$blockui("show").then(() => vm.$ajax(API.register, command).done( data => {
                 if (data) {
-                    vm.$dialog.info({messageId: "Msg_15"}).then(() => vm.focusDate());
+                    vm.$dialog.info({messageId: "Msg_15"})
+                        .then(() => vm.focusDate());
                 }
             }).fail(res => {
                 let param;

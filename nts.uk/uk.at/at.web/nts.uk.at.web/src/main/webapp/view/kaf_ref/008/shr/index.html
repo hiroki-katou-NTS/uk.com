@@ -83,14 +83,15 @@
                         </div>
                     </td>
                     <td>
-                        <div class="div_line time" id="A10_D6">
+                        <div id="A10_D6" class="div_line time" >
                             <input data-bind="ntsTimeWithDayEditor: {
                                         constraint:'TimeWithDayAttr',
 	                                    value: start,
 	                                    enable: $parent.enableInput,
 	                                    readonly: false,
 	                                    required: false
-	                                    }"/>
+	                                    },
+	                                    attr: {id: id}"/>
                         </div>
                     </td>
                     <td>
