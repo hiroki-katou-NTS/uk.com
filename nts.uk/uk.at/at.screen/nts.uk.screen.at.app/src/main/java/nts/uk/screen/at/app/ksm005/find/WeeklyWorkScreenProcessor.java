@@ -1,7 +1,8 @@
 package nts.uk.screen.at.app.ksm005.find;
 
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
 import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
-import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.pub.worktime.worktimeset.WorkTimeSettingPub;
@@ -19,7 +20,7 @@ public class WeeklyWorkScreenProcessor {
     private WorkTypeRepository workTypeRepository;
 
     @Inject
-    private WeeklyWorkDayRepository weeklyWorkDayRepository;
+    private WeeklyWorkSettingRepository weeklyWorkSettingRepository;
 
     @Inject
     private WorkTimeSettingPub workTimeSettingPub;
@@ -27,11 +28,12 @@ public class WeeklyWorkScreenProcessor {
     public WeeklyWorkDto findDataBentoMenu(RequestPrams requestPrams) {
 
         String cid = AppContexts.user().companyId();
-        WeeklyWorkDayPattern weeklyWorkDayPattern = weeklyWorkDayRepository.getWeeklyWorkDayPatternByCompanyId(cid);
+        List<WeeklyWorkSetting> weeklyWorkDayPattern = this.weeklyWorkSettingRepository.findAll(cid);
+
 
         //get WorkdayPatternDto
         List<WorkdayPatternDto> workdayPatternDtos = new ArrayList<>();
-        weeklyWorkDayPattern.getListWorkdayPatternItem().forEach(x -> {
+        weeklyWorkDayPattern.forEach(x -> {
             workdayPatternDtos.add(new WorkdayPatternDto(
                     x.getDayOfWeek().description,
                     x.getWorkdayDivision().description,
