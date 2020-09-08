@@ -132,7 +132,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             return vm.$ajax(API.updateBusinessTrip, command).done(res => {
                 if (res) {
                     vm.printContent.opBusinessTripInfoOutput = dataFetch.businessTripContent;
-                    vm.$dialog.info({ messageId: "Msg_15" });
+                    vm.$dialog.info({ messageId: "Msg_15" }).then(() => $(vm.$el).find('#A5_3').focus());
                 }
             }).fail(err => {
                 let param;
