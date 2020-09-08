@@ -19,6 +19,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import RefImageEachDayDto = nts.uk.at.view.kdl023.base.service.model.RefImageEachDayDto;
     import MonthlyPatternRegisterCommand = nts.uk.at.view.kdl023.base.service.model.MonthlyPatternRegisterCommand;
     import WorkMonthlySetting = nts.uk.at.view.kdl023.base.service.model.WorkMonthlySetting;
+    import WorkInformationDto = nts.uk.at.view.kdl023.base.service.model.WorkInformationDto;
     const CONST = {
         DATE_FORMAT: 'yyyy-MM-yy',
         YEAR_MONTH: 'yyyy/MM'
@@ -1082,8 +1083,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             );
             self.optionDates(temp);
             let workMonthlySettingTemp: Array<WorkMonthlySetting> = ([]);
-            if(!self.isExecMode()){
-                self.reflectionSetting.monthlyPatternCode('001');
+            if(self.isExecMode()){
+                //self.reflectionSetting.monthlyPatternCode('001');
                 data.forEach( (item) => {
                     workMonthlySettingTemp.push(self.setMonthlySetting(item));}
                 );
@@ -1113,12 +1114,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         private setMonthlySetting(refImage: RefImageEachDayDto):WorkMonthlySetting{
+            let workInformation:WorkInformationDto = {
+                workTypeCode: refImage.workInformation.workTypeCode,
+                workTimeCode: refImage.workInformation.workTimeCode
+            }
             let result:WorkMonthlySetting = {
-                workInformation: {
-                    workTypeCode: refImage.workInformation.workTypeCode,
-                    workTimeCode: refImage.workInformation.workTimeCode
-                },
-                ymk: refImage.date,
+                workInformation: workInformation,
+                ymdk:  moment(refImage.date).format('YYYY-MM-DD'),
                 monthlyPatternCode: this.reflectionSetting.monthlyPatternCode()
             }
             return result;

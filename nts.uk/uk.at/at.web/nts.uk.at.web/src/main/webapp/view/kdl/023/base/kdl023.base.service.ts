@@ -177,7 +177,7 @@ module nts.uk.at.view.kdl023.base.service {
 
         export interface WorkMonthlySetting {
             workInformation: WorkInformationDto;
-            ymk: string;
+            ymdk: string;
             monthlyPatternCode: string;
         }
 

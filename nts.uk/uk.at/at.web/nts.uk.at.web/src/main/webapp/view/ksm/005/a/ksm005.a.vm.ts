@@ -623,7 +623,8 @@ module nts.uk.at.view.ksm005.a {
 			        dataMonthly: ReflectionSetting = {
 				        calendarStartDate: startDate,
 				        calendarEndDate: endDate,
-				        selectedPatternCd: self.selectMonthlyPattern(),
+                        monthlyPatternCode: self.selectMonthlyPattern(),
+				        selectedPatternCd: '',
 				        patternStartDate: startDate,
 				        reflectionMethod: 1,
 				        statutorySetting: self.convertWorktypeSetting(0, ''),

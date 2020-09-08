@@ -20,7 +20,8 @@ public class MonthlyPatternRegisterCommand {
     private List<WorkMonthlySettingDto> workMonthlySetting;
 
     public WorkMonthlySetting toDomain(WorkMonthlySettingDto workMonthlySetting){
-        WorkMonthlySettingGetMementoImpl memento = new WorkMonthlySettingGetMementoImpl(workMonthlySetting.companyId,
+        String companyId = AppContexts.user().companyId();
+        WorkMonthlySettingGetMementoImpl memento = new WorkMonthlySettingGetMementoImpl(companyId,
                 workMonthlySetting.workInformation.workTypeCode, workMonthlySetting.workInformation.workTimeCode,
                 GeneralDate.fromString(workMonthlySetting.ymdk,"yyyy-MM-d"), workMonthlySetting.monthlyPatternCode);
         return new WorkMonthlySetting(memento);
@@ -29,9 +30,7 @@ public class MonthlyPatternRegisterCommand {
     @AllArgsConstructor
     @Data
     @NoArgsConstructor
-    public class WorkMonthlySettingDto{
-
-        private final String companyId = AppContexts.user().companyId();
+    public static class WorkMonthlySettingDto{
 
         private WorkInformationDto workInformation;
 
@@ -43,7 +42,7 @@ public class MonthlyPatternRegisterCommand {
     @AllArgsConstructor
     @Data
     @NoArgsConstructor
-    public class WorkInformationDto{
+    public static class WorkInformationDto{
         private String workTypeCode;
         private String workTimeCode;
     }
@@ -51,7 +50,7 @@ public class MonthlyPatternRegisterCommand {
 
 
     @AllArgsConstructor
-    class WorkMonthlySettingGetMementoImpl implements WorkMonthlySettingGetMemento {
+    static class WorkMonthlySettingGetMementoImpl implements WorkMonthlySettingGetMemento {
 
         private String cid;
 
