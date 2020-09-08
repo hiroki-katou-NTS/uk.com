@@ -389,7 +389,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 holidaySetting: {
                     useClassification: false,
                     workTypeCode: ''
-                },
+                }
             }
         };
 
@@ -1082,7 +1082,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             );
             self.optionDates(temp);
             let workMonthlySettingTemp: Array<WorkMonthlySetting> = ([]);
-            if(self.isExecMode()){
+            if(!self.isExecMode()){
+                self.reflectionSetting.monthlyPatternCode('001');
                 data.forEach( (item) => {
                     workMonthlySettingTemp.push(self.setMonthlySetting(item));}
                 );

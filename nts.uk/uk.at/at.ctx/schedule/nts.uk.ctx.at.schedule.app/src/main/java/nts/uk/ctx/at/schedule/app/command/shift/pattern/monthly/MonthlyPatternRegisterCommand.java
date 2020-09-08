@@ -22,7 +22,7 @@ public class MonthlyPatternRegisterCommand {
     public WorkMonthlySetting toDomain(WorkMonthlySettingDto workMonthlySetting){
         WorkMonthlySettingGetMementoImpl memento = new WorkMonthlySettingGetMementoImpl(workMonthlySetting.companyId,
                 workMonthlySetting.workInformation.workTypeCode, workMonthlySetting.workInformation.workTimeCode,
-                workMonthlySetting.ymdk, workMonthlySetting.monthlyPatternCode);
+                GeneralDate.fromString(workMonthlySetting.ymdk,"yyyy-MM-d"), workMonthlySetting.monthlyPatternCode);
         return new WorkMonthlySetting(memento);
     }
 
@@ -35,7 +35,7 @@ public class MonthlyPatternRegisterCommand {
 
         private WorkInformationDto workInformation;
 
-        private GeneralDate ymdk;
+        private String ymdk;
 
         private String monthlyPatternCode;
     }
