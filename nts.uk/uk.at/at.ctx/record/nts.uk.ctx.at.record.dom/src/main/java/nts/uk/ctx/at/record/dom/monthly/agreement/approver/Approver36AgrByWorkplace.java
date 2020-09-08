@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver; // TODO xem lại package
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -30,6 +31,7 @@ public class Approver36AgrByWorkplace extends AggregateRoot {
 	/**
 	 * 期間
 	 */
+	@Setter
 	private DatePeriod period;
 
 	/**
