@@ -29,7 +29,19 @@ module nts.uk.com.view.cli003.f {
     ITEM_OPERATION_ID = "operationId",
     ITEM_PARRENT_KEY = "parentKey"
 }
-
+    export enum DATA_TYPE {
+        SCHEDULE = 0,
+        DAILY_RESULTS = 1,
+        MONTHLY_RESULTS = 2,
+        ANY_PERIOD_SUMMARY = 3,
+        APPLICATION_APPROVAL = 4,
+        NOTIFICATION = 5,
+        SALARY_DETAIL = 6,
+        BONUS_DETAIL = 7,
+        YEAR_END_ADJUSTMENT = 8,
+        MONTHLY_CALCULATION = 9,
+        RISING_SALARY_BACK = 10,
+    }
    export enum RECORD_TYPE {
     LOGIN = 0,
     START_UP = 1,
@@ -108,6 +120,16 @@ export interface DataCorrectParam {
   remarks: string;
   correctionAttr: string;
 }
+
+export interface LogSettingParam {
+    bootHistoryRecord: string
+    companyId: string
+    editHistoryRecord: string
+    loginHistoryRecord: string
+    menuClassification: string
+    programId: string
+    system: number
+  }
   class IgGridColumnSwitchModel {
     headerText: string;
     key: string;
@@ -444,11 +466,10 @@ class DataCorrectLogModel {
             vm.targetEmployeeIdList= ko.observableArray(data.targetEmployeeIdList);
             vm.listEmployeeIdOperator= ko.observableArray(data.listEmployeeIdOperator);
         }
-        service.getLogSettingsBySystem(parseInt(vm.systemTypeSelectedCode())).then((data) => console.log(data));
         let dfd = $.Deferred<any>();
         //F igGrid
         let recordType = Number(vm.logTypeSelectedCode());
-
+        let dataType = Number(vm.dataTypeSelectedCode())
         // set param log
         const format = 'YYYY/MM/DD HH:mm:ss';
         let paramLog = {
@@ -500,85 +521,123 @@ class DataCorrectLogModel {
         if (checkProcess) {
             // get log out put items
             vm.$blockui('grayout');
-            service.getLogOutputItemsByRecordTypeItemNos(paramOutputItem)
-            .done((dataOutputItems: Array<any>) => {
-                if (dataOutputItems.length > 0) {
-                    // Get Log basic info
-                    service.getLogBasicInfoByModifyDate(paramLog).done(function(data: Array<LogBasicInfoModel>) {
-                        if (data.length > 0) {
-                            // order by list
-                            if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
-                            }
-                            if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
-                                data = _.orderBy(data, ['modifyDateTime', 'employeeCodeTaget'], ['desc', 'asc']);
-                            }
-                            // generate columns header parent
-                            vm.setListColumnHeaderLog(recordType, dataOutputItems);
-                            let countLog = 1;
-                            if (data.length > vm.maxlength()) {
-                                vm.isDisplayText(true);
-                            }
-                            // process sub header with record type = persion info and data correct
-                            _.forEach(data, function(logBasicInfoModel) {
-                                if (countLog <= vm.maxlength()) {
-                                    if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
-                                        vm.listLogBasicInforModel.push(logBasicInfoModel);
-                                    }
-                                    if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                                        const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
-                                        vm.listLogBasicInforModel.push(logtemp);
-                                    }
-                                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                                        const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
-                                        vm.listLogBasicInforModel.push(logtemp);
-                                    }
-                                    countLog++;
-                                } else {
-                                    return false;
+            service.getLogSettingsBySystem(parseInt(vm.systemTypeSelectedCode())).done((logSettings : Array<LogSettingParam>) =>{
+                service.getLogOutputItemsByRecordTypeItemNos(paramOutputItem)
+                .done((dataOutputItems: Array<any>) => {
+                    if (dataOutputItems.length > 0) {
+                        // Get Log basic info
+                        service.getLogBasicInfoByModifyDate(paramLog).done(function(data: Array<LogBasicInfoModel>) {
+                            if (data.length > 0) {
+                                // order by list
+                                if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                                    data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
                                 }
-                            });
-                            // Generate table
-                            if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                                vm.generateDataCorrectLogGrid();
-                            } else if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                                vm.generatePersionInforGrid();
-                            } else {
-                                vm.generateIgGrid();
-                            }
+                                if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
+                                    data = _.orderBy(data, ['modifyDateTime', 'employeeCodeTaget'], ['desc', 'asc']);
+                                }
+                                // generate columns header parent
+                                vm.setListColumnHeaderLog(recordType, dataOutputItems);
+                                let countLog = 1;
+                                if (data.length > vm.maxlength()) {
+                                    vm.isDisplayText(true);
+                                }
+                                // process sub header with record type = persion info and data correct
+                                _.forEach(data, function(logBasicInfoModel) {
+                                    if (countLog <= vm.maxlength()) {
+                                        //Log LOGIN 
+                                        if (recordType == RECORD_TYPE.LOGIN ) {
+                                            vm.listLogBasicInforModel.push(logBasicInfoModel);
+                                        }
 
-                        } else {
-                            
-                            vm.$dialog.alert({ messageId: "Msg_1220" }).then(function() {
-                                vm.$blockui('clear');
-                            });
-                        }
-                        dfd.resolve();
-                    }).always(() => {
+                                        //Log START UP
+                                        if (recordType == RECORD_TYPE.START_UP) {
+                                            logSettings
+                                            .filter(x => x.bootHistoryRecord == 'NOT_USE')
+                                            .map(logSet => {
+                                                logBasicInfoModel.lstLogPerCateCorrectRecordDto
+                                            });
+                                            vm.listLogBasicInforModel.push(logBasicInfoModel);
+                                        }
+
+                                        //Log PERSON INFORMATION UPDATE
+                                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                            logSettings
+                                            .filter(x => x.editHistoryRecord === 'NOT_USE')
+                                            
+                                            .map(logSet => {
+                                                if(vm.validateForPersonUpdateInfo(logSet)){
+                                                    if(logBasicInfoModel.processAttr !== '新規'){
+                                                        const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
+                                                        vm.listLogBasicInforModel.push(logtemp);
+                                                    }
+                                                }
+                                            });
+                                            
+                                        }
+                                        //Log DATA CORRECTION
+                                        if (recordType === RECORD_TYPE.DATA_CORRECT) {
+                                            logSettings
+                                            .filter(x => x.editHistoryRecord === 'NOT_USE')
+                                            .map(logSet => {
+                                                if(vm.validateForDataCorrection(dataType,logSet)){
+                                                    const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
+                                                    vm.listLogBasicInforModel.push(logtemp);
+                                                }
+                                            });
+                                        }
+                                        countLog++;
+                                    } else {
+                                        return false;
+                                    }
+                                });
+                                // Generate table
+                                if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                                    vm.generateDataCorrectLogGrid();
+                                } else if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                    vm.generatePersionInforGrid();
+                                } else {
+                                    vm.generateIgGrid();
+                                }
+    
+                            } else {
+                                
+                                vm.$dialog.alert({ messageId: "Msg_1220" }).then(function() {
+                                    vm.$blockui('clear');
+                                });
+                            }
+                            dfd.resolve();
+                        }).always(() => {
+                            vm.$blockui('clear');
+                            nts.uk.ui.errors.clearAll();
+                        }).fail(function(error) {
+                            vm.$dialog.alert(error);
+                            vm.$blockui('clear');
+                            vm.$errors('clear');
+                            dfd.resolve();
+                        });
+    
+                    } else {
+                        vm.$dialog.alert({ messageId: "Msg_1221" }).then(function() {
                         vm.$blockui('clear');
-                        nts.uk.ui.errors.clearAll();
-                    }).fail(function(error) {
-                        vm.$dialog.alert(error);
+                        });
                         vm.$blockui('clear');
                         vm.$errors('clear');
                         dfd.resolve();
-                    });
-
-                } else {
-                    vm.$dialog.alert({ messageId: "Msg_1221" }).then(function() {
-                    vm.$blockui('clear');
-                    });
+                    }
+                })
+                .fail((error:any) => {
                     vm.$blockui('clear');
                     vm.$errors('clear');
+                    vm.$dialog.alert(error);
                     dfd.resolve();
-                }
-            })
-            .fail((error:any) => {
+                });
+            }).fail((error:any) => {
                 vm.$blockui('clear');
                 vm.$errors('clear');
                 vm.$dialog.alert(error);
                 dfd.resolve();
             });
+            
         }
         return dfd.promise();
     }
@@ -959,6 +1018,27 @@ class DataCorrectLogModel {
         });
     }
 
+    validateForDataCorrection (dataType : number,logSet : LogSettingParam) : boolean {
+        if(dataType === DATA_TYPE.DAILY_RESULTS && logSet.programId === 'KDW003'){
+            return false;
+        }
+        if(dataType === DATA_TYPE.MONTHLY_RESULTS && logSet.programId === 'KDW003'){
+            return false;
+        }
+        if(dataType === DATA_TYPE.SCHEDULE && (logSet.programId === 'KSU007' || logSet.programId === 'KSU001')){
+            return false;
+        }
+        return true;
+    }
+    validateForPersonUpdateInfo (logSet : LogSettingParam) : boolean {
+        if(logSet.programId === 'PS002'){
+            return true;
+        }
+        if(logSet.programId === 'CPS001'){
+            return true;
+        }
+        return false;
+    }
     setListColumnHeaderLog(recordType: number, listOutputItem: Array<any>) {
         const vm = this;
         vm.columnsIgGrid.push(new IgGridColumnSwitchModel("primarykey", -1, recordType));
