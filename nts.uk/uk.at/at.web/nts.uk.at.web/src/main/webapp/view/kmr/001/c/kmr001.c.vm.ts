@@ -149,7 +149,6 @@ module nts.uk.at.kmr001.c {
 
                 vm.$ajax(API.DELETE_BENTO, commandDelete).done(() => {
                     vm.$dialog.info({ messageId: "Msg_16" }).then(function () {
-                        vm.reloadPage();
                         vm.model( new BentoMenuSetting(
                             '',  null,
                             false,  false,
@@ -158,7 +157,7 @@ module nts.uk.at.kmr001.c {
                         ));
                         vm.selectedWorkLocationCode(vm.workLocationList()[0].id);
                         vm.$blockui("clear");
-                    });
+                    }).then(()=> vm.reloadPage());
                 }).fail(function (error) {
                     vm.$dialog.error({ messageId: error.messageId });
                 }).always(() => {
@@ -197,7 +196,7 @@ module nts.uk.at.kmr001.c {
                 vm.$ajax(API.CREATE_BENTO, param).done(() => {
                     vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
                         vm.$blockui("clear");
-                    });
+                    }).then(()=> vm.reloadPage());
                 }).always(() => this.$blockui("clear"));
             } else {
                 const param = {
@@ -214,10 +213,9 @@ module nts.uk.at.kmr001.c {
                 vm.$ajax(API.CREATE_BENTO, param).done(() => {
                     vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
                         vm.$blockui("clear");
-                    });
+                    }).then(()=> vm.reloadPage());
                 }).always(() => this.$blockui("clear"));
             }
-            vm.reloadPage();
         }
 
         openConfigHisDialog() {
