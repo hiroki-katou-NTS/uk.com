@@ -449,10 +449,23 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
+                
+                let dataGrid: any = {
+                    listDateInfo: data.listDateInfo,
+                    listEmpInfo: data.listEmpInfo,
+                    displayControlPersonalCond: data.displayControlPersonalCond,
+                    listPersonalConditions: data.listPersonalConditions,
+                    listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
+                    listWorkScheduleShift: data.listWorkScheduleShift
+                }
+                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
 
-                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
 
-                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), userInfor.updateMode, true, true, true);
+                self.setUpdateMode();
+
+                self.setPositionButonToRightToLeft();
 
                 self.stopRequest(true);
             }).fail(function() {
@@ -522,8 +535,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.pasteData();
                 // set lai data stick
                 let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
-                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
-                __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
+                if (objWorkTime != undefined) {
+                    __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
+                    __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
+                }
             } else if (updateMode == 'copyPaste') {
                 self.coppyData();
             } else if (updateMode == 'edit') {
@@ -1786,7 +1801,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit:             userInfor.unit,
                 getActualData   : item.isPresent() ? userInfor.achievementDisplaySelected : false, 
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst, 
-                listSid: self.listSid() 
+                listSid: self.listSid(),
+                modePeriod : self. selectedDisplayPeriod()
             };
             
             service.getDataChangeMonth(param).done((data: any) => {
@@ -1795,9 +1811,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
                 
-                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
+                let dataGrid: any = {
+                    listDateInfo: data.listDateInfo,
+                    listEmpInfo: data.listEmpInfo,
+                    displayControlPersonalCond: data.displayControlPersonalCond,
+                    listPersonalConditions: data.listPersonalConditions,
+                    listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
+                    listWorkScheduleShift: data.listWorkScheduleShift
+                }
+                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
+                
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
 
-                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(),userInfor.updateMode, false, true, true);
+                self.setUpdateMode();
+                
+                self.setPositionButonToRightToLeft();
                 
                 self.stopRequest(true);
             }).fail(function() {
@@ -1828,7 +1857,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: userInfor.unit,
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 listShiftMasterNotNeedGetNew: userInfor.shiftMasterWithWorkStyleLst,
-                listSid: self.listSid()
+                listSid: self.listSid(),
+                modePeriod : self. selectedDisplayPeriod()
             };
 
             service.getDataChangeMonth(param).done((data: any) => {
@@ -1837,11 +1867,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
 
-                let dataBindGrid = self.convertDataToGrid(data, self.selectedModeDisplayInBody());
-
-                self.updateExTable(dataBindGrid, self.selectedModeDisplayInBody(), userInfor.updateMode, false, true, true);
+                let dataGrid: any = {
+                    listDateInfo: data.listDateInfo,
+                    listEmpInfo: data.listEmpInfo,
+                    displayControlPersonalCond: data.displayControlPersonalCond,
+                    listPersonalConditions: data.listPersonalConditions,
+                    listWorkScheduleWorkInfor: data.listWorkScheduleWorkInfor,
+                    listWorkScheduleShift: data.listWorkScheduleShift
+                }
+                let dataBindGrid = self.convertDataToGrid(dataGrid, self.selectedModeDisplayInBody());
                 
+                // remove va tao lai grid
+                self.destroyAndCreateGrid(dataBindGrid, self.selectedModeDisplayInBody());
+
                 self.setUpdateMode();
+                
+                self.setPositionButonToRightToLeft();
                 
                 self.stopRequest(true);
             }).fail(function() {

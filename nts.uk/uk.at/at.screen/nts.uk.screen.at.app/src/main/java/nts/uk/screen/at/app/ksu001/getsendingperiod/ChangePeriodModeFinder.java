@@ -36,8 +36,6 @@ public class ChangePeriodModeFinder {
 
 		GeneralDate startDate = GeneralDate.fromString(param.startDate, DATE_FORMAT);
 		GeneralDate	endDate   =	GeneralDate.fromString(param.endDate, DATE_FORMAT);
-		
-		
 
 		if (param.viewMode.equals("time") || param.viewMode.equals("shortName")) {
 			ChangePeriodInWorkInfoParam param1 = new ChangePeriodInWorkInfoParam(startDate, endDate,

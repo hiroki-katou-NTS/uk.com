@@ -27,6 +27,7 @@ public class ChangeMonthParam {
 	public String endDate;    	        	 
 	public boolean isNextMonth;            
 	public boolean cycle28Day; 
+	public int modePeriod;
 	
 	public int unit;
 	public String workplaceId;     	         
