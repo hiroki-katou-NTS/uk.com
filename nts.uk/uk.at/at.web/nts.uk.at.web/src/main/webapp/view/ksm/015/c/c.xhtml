@@ -9,7 +9,7 @@
       >#{i18n.getText('KSM015_11')}</a
     >
     <!-- C1 -->
-    <button tabindex="1" class="proceed" id="register-btn" data-bind="click: registerOrd, enable: $root.errors.isEmpty || isEnable()">
+    <button tabindex="1" class="proceed" id="register-btn" data-bind="click: registerOrd, enable: $root.errors.isEmpty ,disable: !isEnable()">
       #{i18n.getText('KSM015_8')}
     </button>
     <!-- C2 -->
