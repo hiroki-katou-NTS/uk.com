@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.BeforeHdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkApplicationReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import org.apache.commons.lang3.BooleanUtils;
 
@@ -29,7 +30,7 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class KrqmtAppHdWork extends UkJpaEntity implements Serializable {
+public class KrqmtAppHdWork extends ContractUkJpaEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -130,20 +131,6 @@ public class KrqmtAppHdWork extends UkJpaEntity implements Serializable {
         );
     }
 
-    public AfterHdWorkAppReflect toAfterHolidayWorkAppReflect() {
-        return AfterHdWorkAppReflect.create(
-                postWorkTimeReflectAtr,
-                postBpTimeReflectAtr,
-                postAnyvTimeReflectAtr,
-                postDvgcReflectAtr,
-                postBreakTimeReflectAtr
-        );
-    }
-
-    public BeforeHdWorkAppReflect toBeforeHolidayWorkAppReflect() {
-        return new BeforeHdWorkAppReflect(EnumAdaptor.valueOf(preInputTimeReflectAtr, NotUseAtr.class));
-    }
-
     public HdWorkApplicationReflect toHolidayWorkAppReflect() {
         return new HdWorkApplicationReflect(
                 new BeforeHdWorkAppReflect(EnumAdaptor.valueOf(preInputTimeReflectAtr, NotUseAtr.class)),
@@ -182,6 +169,33 @@ public class KrqmtAppHdWork extends UkJpaEntity implements Serializable {
                 holidayWorkAppReflect.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value,
                 holidayWorkAppReflect.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value
         );
+    }
+
+    public void updateSettng(HolidayWorkAppSet domain) {
+        stampMissCalAtr = domain.getCalcStampMiss().value;
+        goBackDirectlyAtr = BooleanUtils.toInteger(domain.isUseDirectBounceFunction());
+        preExcessAtr = domain.getOvertimeLeaveAppCommonSet().getPreExcessDisplaySetting().value;
+        extraTimeExcessAtr = domain.getOvertimeLeaveAppCommonSet().getExtratimeExcessAtr().value;
+        extraTimeDisplayAtr = domain.getOvertimeLeaveAppCommonSet().getExtratimeDisplayAtr().value;
+        atdExcessAtr = domain.getOvertimeLeaveAppCommonSet().getPerformanceExcessAtr().value;
+        atdExcessOverrideAtr = domain.getOvertimeLeaveAppCommonSet().getOverrideSet().value;
+        instructExcessAtr = domain.getOvertimeLeaveAppCommonSet().getCheckOvertimeInstructionRegister().value;
+        dvgcExcessAtr = domain.getOvertimeLeaveAppCommonSet().getCheckDeviationRegister().value;
+        instructRequiredAtr = BooleanUtils.toInteger(domain.getApplicationDetailSetting().getRequiredInstruction());
+        preRequiredAtr = domain.getApplicationDetailSetting().getPreRequireSet().value;
+        timeInputUseAtr = domain.getApplicationDetailSetting().getTimeInputUse().value;
+        timeCalUseAtr = domain.getApplicationDetailSetting().getTimeCalUse().value;
+        workTimeIniAtr = domain.getApplicationDetailSetting().getAtworkTimeBeginDisp().value;
+        endWorkTimeIniAtr = BooleanUtils.toInteger(domain.getApplicationDetailSetting().isDispSystemTimeWhenNoWorkTime());
+    }
+
+    public void updateReflect(HdWorkApplicationReflect domain) {
+        preInputTimeReflectAtr = domain.getBefore().getReflectActualHolidayWorkAtr().value;
+        postWorkTimeReflectAtr = domain.getAfter().getWorkReflect().value;
+        postBpTimeReflectAtr = domain.getAfter().getOthersReflect().getReflectPaytimeAtr().value;
+        postAnyvTimeReflectAtr = domain.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value;
+        postDvgcReflectAtr = domain.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value;
+        postBreakTimeReflectAtr = domain.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value;
     }
 }
 

@@ -7,8 +7,10 @@ package nts.uk.ctx.at.request.dom.setting.company.emailset;
  */
 public interface AppEmailSetRepository {
 	
-	public AppEmailSet findByDivision(Division division);
+	AppEmailSet findByDivision(Division division);
 	
-	public AppEmailSet findByCID(String companyID);
+	AppEmailSet findByCID(String companyID);
+
+	void save(AppEmailSet domain);
 	
 }

@@ -12,7 +12,7 @@
 
         <com:scriptfile path="kaf022.company.service.js" />
 
-        <com:scriptfile path="aa/kaf022.a.vm.js" />
+        <com:scriptfile path="a/kaf022.a.vm.js" />
         <com:scriptfile path="b/kaf022.b.vm.js" />
         <com:scriptfile path="c/kaf022.c.vm.js" />
         <com:scriptfile path="d/kaf022.d.vm.js" />
@@ -22,8 +22,10 @@
         <com:scriptfile path="h/kaf022.h.vm.js" />
         <com:scriptfile path="i/kaf022.i.vm.js" />
         <com:scriptfile path="j/kaf022.j.vm.js" />
+        <com:scriptfile path="n/kaf022.n.vm.js" />
         <com:scriptfile path="q/kaf022.q.vm.js" />
         <com:scriptfile path="v/kaf022.v.vm.js" />
+        <com:scriptfile path="y/kaf022.y.vm.js" />
 
         <com:scriptfile path="kaf022.company.vm.js" />
         <com:scriptfile path="kaf022.company.start.js" />
@@ -32,6 +34,8 @@
             nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.ObstacleName
             nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.triprequestsetting.Comment
             nts.uk.shr.com.time.AttendanceClock
+            nts.uk.ctx.at.request.dom.setting.company.emailset.EmailText
+            nts.uk.ctx.at.request.dom.setting.company.emailset.EmailSubject
         </com:ValidatorScript>
 
         <com:EnumScript>
@@ -55,7 +59,7 @@
         <div id="contents-area">
             <div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
                 <div class="tab-content-01" data-bind="with: viewmodelA">
-                    <ui:include src="./aa/a.xhtml" />
+                    <ui:include src="./a/a.xhtml" />
                 </div>
                 <div class="tab-content-02" data-bind="with: viewmodelV">
                     <ui:include src="./v/v.xhtml" />
@@ -90,14 +94,14 @@
                 <div class="tab-content-12">
                     <span>Tab Content K</span><br/>
                 </div>
-                <div class="tab-content-13">
-                    <span>Tab Content N</span><br/>
+                <div class="tab-content-13" data-bind="with: viewmodelN">
+                    <ui:include src="./n/n.xhtml" />
                 </div>
                 <div class="tab-content-14" data-bind="with: viewmodelQ">
                     <ui:include src="./q/q.xhtml" />
                 </div>
-                <div class="tab-content-15">
-                    <span>Tab Content Y</span><br/>
+                <div class="tab-content-15" data-bind="with: viewmodelY">
+                    <ui:include src="./y/y.xhtml" />
                 </div>
             </div>
         </div>

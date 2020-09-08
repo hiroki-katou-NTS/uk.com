@@ -132,17 +132,24 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             return vm.$ajax(API.updateBusinessTrip, command).done(res => {
                 if (res) {
                     vm.printContent.opBusinessTripInfoOutput = dataFetch.businessTripContent;
-                    vm.$dialog.info({ messageId: "Msg_15" });
+                    vm.$dialog.info({ messageId: "Msg_15" }).then(() => $(vm.$el).find('#A5_3').focus());
                 }
             }).fail(err => {
                 let param;
-                if (err.message && err.messageId) {
-                    param = { messageId: err.messageId };
-                } else {
-                    if (err.message) {
-                        param = { message: err.message };
-                    } else {
-                        param = { messageId: err.messageId };
+                switch (err.messageId) {
+                    case "Msg_24" :
+                        param = err.parameterIds[0] + err.message;
+                        break;
+                    case "Msg_23" :
+                        param = err.parameterIds[0] + err.message;
+                        break;
+                    default: {
+                        if (err.message) {
+                            param = {message: err.message, messageParams: err.parameterIds};
+                        } else {
+                            param = {messageId: err.messageId, messageParams: err.parameterIds}
+                        }
+                        break;
                     }
                 }
                 vm.$dialog.error(param);

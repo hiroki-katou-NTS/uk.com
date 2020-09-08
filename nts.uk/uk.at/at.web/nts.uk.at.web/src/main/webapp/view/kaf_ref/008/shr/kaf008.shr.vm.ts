@@ -23,10 +23,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         created(params: any) {
             const vm = this;
             vm.dataFetch = params.dataFetch;
-            
-            if (params.mode) {
-                vm.mode = params.mode;
-            }
+            vm.mode = params.mode;
 
             switch (params.mode) {
                 case Mode.New:
@@ -156,15 +153,11 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             $("#fixed-table").ntsFixedTable({});
 
             vm.departureTime.subscribe(value => {
-                if (value) {
-                  vm.dataFetch().businessTripContent.departureTime = value;
-                };
+                vm.dataFetch().businessTripContent.departureTime = value;
             });
 
             vm.returnTime.subscribe(value => {
-                if (value) {
-                    vm.dataFetch().businessTripContent.returnTime = value;
-                };
+                vm.dataFetch().businessTripContent.returnTime = value;
             });
         }
 
@@ -428,6 +421,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         vm.dataFetch(cloneData);
                     }
                 });
+            }).then(() => {
+                setTimeout(() => {
+                    $('#' + data.id).focus();
+                }, 50);
             });
 
         }
@@ -477,6 +474,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
     }
 
     export class TripContentDisp {
+        id: string;
         date: string;
         dateDisp: string;
         dateColor: string = "initial";
@@ -488,6 +486,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         end: KnockoutObservable<number>;
 
         constructor(date: string, wkTypeCd: string, wkTypeName: string, wkTimeCd: string, wkTimeName: string, start: number, end: number) {
+            this.id = date.replace(/\//g, "");
             this.date = date;
             //  moment(date, "YYYY/MM/DD").format('YYYY-MM-DD(ddd)');
             this.dateDisp = nts.uk.time.applyFormat("Short_YMDW", [date]);

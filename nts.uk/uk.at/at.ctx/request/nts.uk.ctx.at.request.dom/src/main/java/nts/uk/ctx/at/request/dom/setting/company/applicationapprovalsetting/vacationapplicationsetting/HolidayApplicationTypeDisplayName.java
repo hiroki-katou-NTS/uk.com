@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vac
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -26,4 +27,11 @@ public class HolidayApplicationTypeDisplayName extends DomainObject {
      *休暇申請種類
      */
     private HolidayAppType holidayApplicationType;
+
+    public static HolidayApplicationTypeDisplayName create(int holidayAppType, String displayName) {
+        return new HolidayApplicationTypeDisplayName(
+                new ApplicationDisplayName(displayName),
+                EnumAdaptor.valueOf(holidayAppType, HolidayAppType.class)
+        );
+    }
 }

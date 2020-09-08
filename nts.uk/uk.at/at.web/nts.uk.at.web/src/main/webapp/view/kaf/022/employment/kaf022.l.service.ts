@@ -16,6 +16,7 @@ module nts.uk.at.view.kaf022.l.service{
         findBounceKaf022: "at/screen/worktype/find-bounce-kaf022",
         findHdTimeKaf022: "at/screen/worktype/find-hdtime-kaf022",
         findHdShipKaf022: "at/screen/worktype/find-hd-ship-kaf022",
+        findBusinessTrip: "at/screen/worktype/find-business-trip-kaf022"
     };
     
     export function findHdShipKaf022(hdShip: any): JQueryPromise<any> {
@@ -40,8 +41,12 @@ module nts.uk.at.view.kaf022.l.service{
     
     export function findOtKaf022(): JQueryPromise<any> {
         return ajax("at", paths.findOtKaf022); 
-    } 
-    
+    }
+
+    export function findBusinessTripKaf022(command): JQueryPromise<any> {
+        return ajax("at", paths.findBusinessTrip, command);
+    }
+
     export function findAllWorktype(): JQueryPromise<any> {
         return ajax("at", paths.findAllWorktype); 
     }  
