@@ -19,7 +19,7 @@ public class StampSetCommunalDto extends StampSettingDto {
 		this.nameSelectArt = domain.isNameSelectArt();
 		this.passwordRequiredArt = domain.isPasswordRequiredArt();
 		this.employeeAuthcUseArt = domain.isEmployeeAuthcUseArt();
-		this.authcFailCnt = domain.getAuthcFailCnt().isPresent() ? domain.getAuthcFailCnt().get().v() : null;
+		this.authcFailCnt = domain.getAuthcFailCnt().map(m -> m.v()).orElse(null);
 	}
 
 	// 会社ID

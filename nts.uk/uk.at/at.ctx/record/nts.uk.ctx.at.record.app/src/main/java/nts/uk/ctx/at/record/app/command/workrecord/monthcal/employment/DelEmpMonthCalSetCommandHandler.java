@@ -11,12 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.emp.EmpFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.emp.EmpFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.emp.EmpRegulaMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,15 +27,15 @@ public class DelEmpMonthCalSetCommandHandler extends CommandHandler<DelEmpMonthC
 
 	/** The defor labor month act cal set repo. */
 	@Inject
-	private EmpDeforLaborMonthActCalSetRepository deforLaborMonthActCalSetRepo;
+	private EmpDeforLaborMonthActCalSetRepo deforLaborMonthActCalSetRepo;
 
 	/** The flex month act cal set repo. */
 	@Inject
-	private EmpFlexMonthActCalSetRepository flexMonthActCalSetRepo;
+	private EmpFlexMonthActCalSetRepo flexMonthActCalSetRepo;
 
 	/** The regula month act cal set repo. */
 	@Inject
-	private EmpRegulaMonthActCalSetRepository regulaMonthActCalSetRepo;
+	private EmpRegulaMonthActCalSetRepo regulaMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)

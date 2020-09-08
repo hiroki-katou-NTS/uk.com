@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
 
 /**
  * The Class ExcessOutsideTimeSetReg.
@@ -21,14 +22,19 @@ import lombok.Setter;
 public class ExcessOutsideTimeSetRegDto {
 
 	/** The legal over time work. */
-	private Boolean legalOverTimeWork;
+	private boolean legalOverTimeWork;
 
 	/** The legal holiday. */
-	private Boolean legalHoliday;
+	private boolean legalHoliday;
 
 	/** The surcharge week month. */
-	private Boolean surchargeWeekMonth;
+	private boolean surchargeWeekMonth;
 
 	/** The except legal holidaywork. */
-	private Boolean exceptLegalHdwk;
+	private boolean exceptLegalHdwk;
+	
+	public ExcessOutsideTimeSetReg domain() {
+		
+		return new ExcessOutsideTimeSetReg(legalOverTimeWork, legalHoliday, surchargeWeekMonth, exceptLegalHdwk);
+	}
 }

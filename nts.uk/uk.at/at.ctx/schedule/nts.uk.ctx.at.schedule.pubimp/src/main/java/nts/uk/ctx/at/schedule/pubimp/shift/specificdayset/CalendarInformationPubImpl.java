@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.UseSet;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.service.CalendarInformationOutput;
 import nts.uk.ctx.at.schedule.dom.shift.specificdayset.service.ICalendarInformationService;
@@ -29,7 +30,7 @@ public class CalendarInformationPubImpl implements CalendarInformationPub{
 
 	@Override
 	public Integer getWorkingDayAtr(String companyID, String workplaceID, String classCD, GeneralDate date) {
-		UseSet useSet =calendarInformationService.getWorkingDayAtr(companyID, workplaceID, classCD, date);
+		WorkdayDivision useSet =calendarInformationService.getWorkingDayAtr(companyID, workplaceID, classCD, date);
 		if(useSet != null)
 			return useSet.value;
 		return null;

@@ -15,13 +15,15 @@ public interface DailyRecordCreateErrorAlermService {
 
 	//打刻漏れ
 	public List<EmployeeDailyPerError> lackOfTimeLeavingStamping(IntegrationOfDaily integrationOfDaily);
+	//打刻漏れ(出退勤打刻のみ)
+	public List<EmployeeDailyPerError> lackOfTimeLeavingStampingOnlyAttendance(IntegrationOfDaily integrationOfDaily);
 	//入退門打刻漏れ
 	public List<EmployeeDailyPerError> lackOfAttendanceGateStamping(IntegrationOfDaily integrationOfDaily);
 	//PCログオン打刻漏れ
 	public List<EmployeeDailyPerError> lackOfAttendancePCLogOnStamping(IntegrationOfDaily integrationOfDaily);
 	//打刻順序不正
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithm(IntegrationOfDaily integrationOfDaily);
-	//打刻順序不正(出退勤打刻の実)
+	//打刻順序不正(出退勤打刻のみ)
 	public EmployeeDailyPerError stampIncorrect(IntegrationOfDaily integrationOfDaily);
 	//打刻順序不正(出退勤打刻以外)
 	public List<EmployeeDailyPerError> stampIncorrectOrderAlgorithmOtherStamp(IntegrationOfDaily integrationOfDaily);

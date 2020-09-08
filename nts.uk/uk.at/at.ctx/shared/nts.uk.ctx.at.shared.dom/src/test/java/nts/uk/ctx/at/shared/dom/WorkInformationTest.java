@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +85,7 @@ public class WorkInformationTest {
 				result = SetupType.REQUIRED;
 
 				require.findByCode(workInformation.getWorkTimeCode().v());
+				result = Optional.empty();
 				result = Optional.of(workTimeSetting);
 			}
 		};
@@ -247,6 +247,7 @@ public class WorkInformationTest {
 				result = SetupType.OPTIONAL;
 				
 				require.findByCode(workInformation.getWorkTimeCode().v());
+				result = Optional.empty();
 			}
 		};
 

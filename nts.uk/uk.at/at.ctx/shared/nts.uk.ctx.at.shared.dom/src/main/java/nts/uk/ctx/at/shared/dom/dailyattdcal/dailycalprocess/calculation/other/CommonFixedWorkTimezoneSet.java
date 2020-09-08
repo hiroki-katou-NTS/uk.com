@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixHalfDayWorkTimezone;
@@ -68,4 +69,17 @@ public class CommonFixedWorkTimezoneSet {
 	  putMap(AmPmAtr.ONE_DAY,timeList.stream().filter(tc -> tc.getAmpmAtr().equals(AmPmAtr.ONE_DAY)).map(tc -> tc.getWorkTimezone()).findFirst());
 	  return new CommonFixedWorkTimezoneSet(this.fixedWorkTimezoneMap);
 	 }
+	 
+	public CommonFixedWorkTimezoneSet forWorkTime(IntegrationOfWorkTime workTime) {
+		if(workTime.getWorkTimeSetting().getWorkTimeDivision().isFlex()) {
+			CommonFixedWorkTimezoneSet timeZone = new CommonFixedWorkTimezoneSet();
+			return timeZone.forFlex(workTime.getFlexWorkSetting().get().getLstHalfDayWorkTimezone());
+		}
+		if(workTime.getWorkTimeSetting().getWorkTimeDivision().isFixed()) {
+			CommonFixedWorkTimezoneSet timeZone = new CommonFixedWorkTimezoneSet();
+			return timeZone.forFixed(workTime.getFixedWorkSetting().get().getLstHalfDayWorkTimezone());
+		}
+		return null;
+	}
+	 
 }

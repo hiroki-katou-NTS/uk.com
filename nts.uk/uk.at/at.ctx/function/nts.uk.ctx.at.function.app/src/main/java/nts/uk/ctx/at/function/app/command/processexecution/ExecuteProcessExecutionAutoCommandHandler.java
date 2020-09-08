@@ -16,6 +16,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
+import nts.arc.layer.app.cache.CacheCarrier;
 //import lombok.val;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
@@ -28,6 +29,7 @@ import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.error.ThrowableAnalyzer;
 import nts.gul.text.IdentifierUtil;
@@ -37,7 +39,6 @@ import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly
 import nts.uk.ctx.at.function.app.command.processexecution.approuteupdatemonthly.OutputAppRouteMonthly;
 import nts.uk.ctx.at.function.app.command.processexecution.createlogfileexecution.CreateLogFileExecution;
 import nts.uk.ctx.at.function.app.command.processexecution.createschedule.executionprocess.CalPeriodTransferAndWorktype;
-import nts.uk.ctx.at.function.app.command.processexecution.reflectapprovalresult.executionprocess.CalPeriodApprovalResult;
 import nts.uk.ctx.at.function.dom.adapter.WorkplaceWorkRecordAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.AppReflectManagerAdapter;
 import nts.uk.ctx.at.function.dom.adapter.appreflectmanager.ProcessStateReflectImport;
@@ -89,17 +90,17 @@ import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.W
 import nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod.WkTypeInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultEmployeeDomainService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.getprocessingdate.GetProcessingDate;
+import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService.AggregationResult;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionTime;
@@ -131,6 +132,7 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistIte
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
@@ -146,7 +148,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.task.schedule.UkJobScheduler;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @Slf4j
@@ -176,10 +177,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	@Inject
 	private ClosureRepository closureRepo;
 
-	/** The Closure service. */
-	@Inject
-	private ClosureService closureService;
-
 	@Inject
 	private ClosureEmploymentRepository closureEmpRepo;
 
@@ -197,13 +194,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 
 	@Inject
 	private ExecutionLogRepository executionLogRepository;
-
-	@Inject
-	private ErrMessageInfoRepository errMessageInfoRepository;
 //	@Inject
 //	private RegulationInfoEmployeeAdapter regulationInfoEmployeeAdapter;
-	@Inject
-	private MonthlyAggregationEmployeeService monthlyService;
 //	@Inject
 //	private ClosureEmploymentService closureEmploymentService;
 	@Inject
@@ -285,9 +277,6 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
     private ManagedExecutorService executorService;
     
     @Inject
-	private CalPeriodApprovalResult calPeriodApprovalResult;
-    
-    @Inject
 	private CalPeriodTransferAndWorktype calPeriodTransferAndWorktype;
     
     @Inject
@@ -297,6 +286,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
     private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
     
 	public static int MAX_DELAY_PARALLEL = 0;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 	
 	@Override
 	public boolean keepsTrack(){
@@ -1585,8 +1577,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				if (procExec.getProcessExecType() == ProcessExecType.NORMAL_EXECUTION) {
 					// 実行呼び出し処理
 					// 期間の計算
-					DailyCreatAndCalOutput calculateDailyPeriod = this.calculateDailyPeriod(procExec,
-							closure.getClosureId().value, closure.getClosureMonth());
+					DailyCreatAndCalOutput calculateDailyPeriod = this.calculateDailyPeriod(procExec, closure);
 					if (calculateDailyPeriod == null)
 						continue;
 					// 更新処理自動実行の実行対象社員リストを取得する
@@ -1808,8 +1799,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		GeneralDate startYearMonth = null;
 		GeneralDate endYearMonth = null;
 		for (Closure closure : closureList) {
-			DatePeriod datePeriod = this.closureService.getClosurePeriod(closure.getClosureId().value,
-					closure.getClosureMonth().getProcessingYm());
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(closure.getClosureId().value,
+					closure.getClosureMonth().getProcessingYm(), Optional.of(closure));
 
 			if (startYearMonth == null || datePeriod.start().before(startYearMonth)) {
 				startYearMonth = datePeriod.start();
@@ -1965,9 +1956,11 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 	}
 
 	// 期間を求める
-	private DailyCreatAndCalOutput calculateDailyPeriod(ProcessExecution procExec, int closureId,
-			CurrentMonth currentMonth) {
-		DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, currentMonth.getProcessingYm());
+	private DailyCreatAndCalOutput calculateDailyPeriod(ProcessExecution procExec, Closure closure) {
+		int closureId = closure.getClosureId().value;
+		CurrentMonth currentMonth = closure.getClosureMonth();
+		DatePeriod closurePeriod = ClosureService.getClosurePeriod(
+				closureId, currentMonth.getProcessingYm(), Optional.of(closure));
 
 		// ドメインモデル「更新処理自動実行.実行設定.日別実績の作成・計算.作成・計算項目」を元に日別作成の期間を作成する
 		GeneralDate crtStartDate = null;
@@ -2281,8 +2274,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					});
 
 					// 指定した年月の期間を算出する
-					DatePeriod datePeriodClosure = closureService.getClosurePeriod(closure.getClosureId().value,
-							closure.getClosureMonth().getProcessingYm());
+					DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(closure.getClosureId().value,
+							closure.getClosureMonth().getProcessingYm(), Optional.of(closure));
 					// 取得した「締め期間」から「期間」を計算する
 					DatePeriod newDatePeriod = new DatePeriod(datePeriodClosure.start(), GeneralDate.ymd(9999, 12, 31));
 
@@ -2592,8 +2585,8 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				});
 				
 				// 指定した年月の期間を算出する
-				DatePeriod datePeriodClosure = closureService.getClosurePeriod(closure.getClosureId().value,
-						closure.getClosureMonth().getProcessingYm());
+				DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(closure.getClosureId().value,
+						closure.getClosureMonth().getProcessingYm(), Optional.of(closure));
 				// 取得した「締め期間」から「期間」を計算する
 				DatePeriod newDatePeriod = new DatePeriod(datePeriodClosure.start(), GeneralDate.ymd(9999, 12, 31));
 
@@ -2630,6 +2623,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 					}
 				}
 				try {
+					val require = requireService.createRequire();
+					val cacheCarrier = new CacheCarrier();
+					
 					this.managedParallelWithContext.forEach(ControlOption.custom().millisRandomDelay(MAX_DELAY_PARALLEL),
 							lstRegulationInfoEmployeeNew, item -> {
                                 Optional<GeneralDate> date = getProcessingDate.getProcessingDate(item, GeneralDate.legacyDate(now.date()));
@@ -2637,11 +2633,13 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
                                     return;
                                 }
 								AsyncCommandHandlerContext<ExecuteProcessExecutionCommand> asyContext = (AsyncCommandHandlerContext<ExecuteProcessExecutionCommand>) context;
-								ProcessState aggregate = monthlyService.aggregate(asyContext, companyId,
+								AggregationResult result = MonthlyAggregationEmployeeService.aggregate(require, cacheCarrier, asyContext, companyId,
 										item,
                                         date.get(), execId, ExecutionType.NORMAL_EXECUTION);
 								// 中断
-								if (aggregate.value == 0) {
+								transaction.allInOneTransaction(result.getAtomTasks());
+								
+								if (result.getStatus().getState().value == 0) {
 									// endStatusIsInterrupt = true;
 									listCheck.add(true);
 									// break;
@@ -3266,7 +3264,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if (closureOpt.isPresent()) {
 			Closure closure = closureOpt.get();
 			YearMonth processingYm = closure.getClosureMonth().getProcessingYm();
-			DatePeriod closurePeriod = this.closureService.getClosurePeriod(closureId, processingYm);
+			DatePeriod closurePeriod = ClosureService.getClosurePeriod(closureId, processingYm, closureOpt);
 			return closurePeriod.start();
 		}
 		return period.start();

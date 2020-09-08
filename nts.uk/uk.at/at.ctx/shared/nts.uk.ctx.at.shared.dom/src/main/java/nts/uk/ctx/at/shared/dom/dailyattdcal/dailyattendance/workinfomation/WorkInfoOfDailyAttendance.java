@@ -101,6 +101,20 @@ public class WorkInfoOfDailyAttendance implements DomainObject {
 	public Optional<WorkStyle> getWorkStyle(Require require){
 		return this.recordInfo.getWorkStyle(require);
 	}
+
+	/**
+	 * 勤務予定の勤務情報と勤務実績の勤務情報が同じかどうか確認する
+	 * @param workNo
+	 * @param predetermineTimeSheetSetting
+	 * @return
+	 */
+	public boolean isMatchWorkInfomation() {			
+		if(getScheduleInfo().getWorkTypeCode() == getRecordInfo().getWorkTypeCode()&&
+				getScheduleInfo().getWorkTimeCode() == getRecordInfo().getWorkTimeCode()) {
+			return true;
+		}
+		return false;
+	}
 	
 	public static interface Require extends WorkInformation.Require {
 		

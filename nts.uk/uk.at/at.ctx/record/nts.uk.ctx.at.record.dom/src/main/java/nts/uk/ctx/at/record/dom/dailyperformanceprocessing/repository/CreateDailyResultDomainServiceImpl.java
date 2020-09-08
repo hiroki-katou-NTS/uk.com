@@ -22,12 +22,14 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.task.parallel.ManagedParallelWithContext.ControlOption;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordAdapter;
 import nts.uk.ctx.at.record.dom.adapter.employee.EmployeeRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.specificdatesetting.RecSpecificDateSettingAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workplace.WorkPlaceConfig;
 import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.algorithm.CreateEmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ExecutionLog;
@@ -71,7 +73,6 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.shared.dom.workrule.overtime.AutoCalculationSetService;
 import nts.uk.shr.com.history.DateHistoryItem;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDomainService {
@@ -107,9 +108,6 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 	private BPUnitUseSettingRepository bPUnitUseSettingRepository;
 
 	@Inject
-	private WorkingConditionService workingConditionService;
-
-	@Inject
 	private WPBonusPaySettingRepository wPBonusPaySettingRepository;
 
 	@Inject
@@ -138,6 +136,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 
 	@Inject
 	private ManagedParallelWithContext managedParallelWithContext;
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	public static int MAX_DELAY_PARALLEL = 0;
 
@@ -444,8 +444,8 @@ public class CreateDailyResultDomainServiceImpl implements CreateDailyResultDoma
 		// 加給利用単位．個人使用区分
 		if (bPUnitUseSetting.isPresent() && bPUnitUseSetting.get().getPersonalUseAtr() == UseAtr.USE) {
 			// 社員の労働条件を取得する
-			Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService
-					.findWorkConditionByEmployee(employeeId, date);
+			Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService
+					.findWorkConditionByEmployee(requireService.createRequire(), employeeId, date);
 
 			if (workingConditionItem.isPresent() && workingConditionItem.get().getTimeApply().isPresent()) {
 				// ドメインモデル「加給設定」を取得する

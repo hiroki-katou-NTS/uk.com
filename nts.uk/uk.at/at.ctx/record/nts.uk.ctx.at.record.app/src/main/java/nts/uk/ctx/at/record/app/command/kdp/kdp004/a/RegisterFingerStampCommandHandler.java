@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditing;
 import nts.uk.ctx.at.record.dom.stamp.card.stamcardedit.StampCardEditingRepo;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCard;
 import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampCardRepository;
-import nts.uk.ctx.at.record.dom.stamp.card.stampcard.StampNumber;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.AuthcMethod;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.EnterStampForSharedStampService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Relieve;
@@ -92,29 +91,29 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		TimeStampInputResult inputResult = EnterStampForSharedStampService.create(
 																						require
 																						, AppContexts.user().contractCode()
-																						, AppContexts.user().employeeId()
+																						, cmd.getEmployeeId()
 																						, Optional.ofNullable(null)
 																						, new Relieve(EnumAdaptor.valueOf(cmd.getAuthcMethod(), AuthcMethod.class), StampMeans.FINGER_AUTHC)
 																						, cmd.getStampDatetime()
 																						, cmd.getStampButton()
 																						, cmd.getRefActualResult().toDomainValue());
 		//2: not empty
-		if(inputResult!=null && inputResult.at.isPresent()) {
-			
+		if (inputResult != null && inputResult.at.isPresent()) {
+
 			transaction.execute(() -> {
 				inputResult.at.get().run();
 			});
 		}
-		
+
 		StampDataReflectResult stampRefResult = inputResult.getStampDataReflectResult();
-	
-		if(stampRefResult!=null && stampRefResult.getAtomTask()!=null) {
-			
+
+		if (stampRefResult != null && stampRefResult.getAtomTask() != null) {
+
 			transaction.execute(() -> {
 				stampRefResult.getAtomTask().run();
 			});
 		}
-		return stampRefResult.getReflectDate().isPresent() ? stampRefResult.getReflectDate().get() : null;
+		return stampRefResult.getReflectDate().map(x-> x).orElse(null);
 	}
 
 	@AllArgsConstructor
@@ -145,8 +144,8 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		private CreateDailyResultDomainService createDailyResultDomainSv;
 
 		@Override
-		public List<StampCard> getListStampCard(String sid) {
-			return this.stampCardRepo.getListStampCard(sid);
+		public List<StampCard> getLstStampCardBySidAndContractCd(String sid) {
+			return this.stampCardRepo.getLstStampCardBySidAndContractCd(AppContexts.user().contractCode(), sid);
 		}
 
 		@Override
@@ -165,8 +164,8 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 		}
 
 		@Override
-		public Optional<Stamp> get(String contractCode, String stampNumber) {
-			return this.stampDakokuRepo.get(contractCode, new StampNumber(stampNumber));
+		public Optional<StampCard> getByCardNoAndContractCode(String stampNumber, String contractCode) {
+			return this.stampCardRepo.getByCardNoAndContractCode(stampNumber, contractCode);
 		}
 
 		@Override
@@ -185,6 +184,7 @@ public class RegisterFingerStampCommandHandler extends CommandHandlerWithResult<
 			this.stampDakokuRepo.insert(stamp);
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public ProcessState createDailyResult(AsyncCommandHandlerContext asyncContext, List<String> emloyeeIds,
 				DatePeriod periodTime, ExecutionAttr executionAttr, String companyId, String empCalAndSumExecLogID,

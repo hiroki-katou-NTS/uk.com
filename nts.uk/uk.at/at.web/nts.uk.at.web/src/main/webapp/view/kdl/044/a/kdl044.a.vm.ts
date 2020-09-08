@@ -44,10 +44,12 @@ module nts.uk.at.view.kdl044.a {
                         paras = { targetUnit: null, workplaceIds: null, workplaceGroupId: null };
                         break;
                     }
+					// lấy bằng workplaceID
                     case 1: {
                         paras = { targetUnit: 0, workplaceId: data.filterIDs[0], workplaceGroupId: null };
                         break;
                     }
+					// lấy bằng workplaceGroupId
                     case 2: {
                         paras = { targetUnit: 1, workplaceId: null, workplaceGroupId: data.filterIDs[0] };
                         break;

@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
@@ -234,5 +233,12 @@ public class WorkInformation {
 		 */
 		WorkStyle checkWorkDay(String workTypeCode);
 	}
-
+	
+	public boolean isExamWorkTime() {
+		if (workTimeCode == null) {
+			return false;
+		}
+		
+		return workTimeCode.equals("102") || workTimeCode.equals("103");
+	}
 }

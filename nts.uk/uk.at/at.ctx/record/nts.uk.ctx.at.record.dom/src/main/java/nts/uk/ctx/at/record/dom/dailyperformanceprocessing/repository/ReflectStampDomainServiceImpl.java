@@ -713,7 +713,8 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 			AttendanceLeavingGateOfDaily attendanceLeavingGateOfDaily, PCLogOnInfoOfDaily pcLogOnInfoOfDaily) {
 
 		// 出勤系打刻漏れをチェックする
-		this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate, workInfoOfDailyPerformance,
+		this.lackOfStamping.lackOfStamping(companyID, employeeID, processingDate,
+				workInfoOfDailyPerformance,
 				timeLeavingOfDailyPerformance);
 
 		// 出勤系打刻順序不正をチェックする

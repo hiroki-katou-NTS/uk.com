@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.export.GetCalcStartForNextLeaveGrant;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -31,8 +33,8 @@ public class GetYearHolidayInfo {
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
 	
-	@Inject
-	private CalcNextAnnLeaGrantInfo getNextAnnLeaGrantInfo;
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	@Inject
 	private GetCalcStartForNextLeaveGrant getCalcStartForNextLeaveGrant;
@@ -99,7 +101,8 @@ public class GetYearHolidayInfo {
 			}
 		}
 		// 次回年休付与情報を取得する
-		Optional<NextAnnualLeaveGrant> nextAnnualLeave = getNextAnnLeaGrantInfo.algorithm(
+		Optional<NextAnnualLeaveGrant> nextAnnualLeave = CalcNextAnnLeaGrantInfo.algorithm(
+				requireService.createRequire(), new CacheCarrier(),
 				AppContexts.user().companyId(), baseDate, entryDate, annLea.getGrantDate(), annLea.getGrantTable(),
 				contractTime);
 
@@ -177,7 +180,8 @@ public class GetYearHolidayInfo {
 			}
 			
 			// 次回年休付与情報を取得する
-			Optional<NextAnnualLeaveGrant> nextAnnualLeave = getNextAnnLeaGrantInfo.algorithm(
+			Optional<NextAnnualLeaveGrant> nextAnnualLeave = CalcNextAnnLeaGrantInfo.algorithm(
+					requireService.createRequire(), new CacheCarrier(),
 					AppContexts.user().companyId(), baseDate, entryDate, c.getGrantDate(), c.getGrantTable(),
 					contractTime);
 			

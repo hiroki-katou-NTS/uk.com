@@ -6,12 +6,12 @@ package nts.uk.ctx.at.record.infra.repository.optitem;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.optitem.AmountRange;
-import nts.uk.ctx.at.record.dom.optitem.CalcRangeCheck;
-import nts.uk.ctx.at.record.dom.optitem.CalcResultRangeGetMemento;
-import nts.uk.ctx.at.record.dom.optitem.NumberRange;
-import nts.uk.ctx.at.record.dom.optitem.TimeRange;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
+import nts.uk.ctx.at.shared.dom.optitem.AmountRange;
+import nts.uk.ctx.at.shared.dom.optitem.CalcRangeCheck;
+import nts.uk.ctx.at.shared.dom.optitem.CalcResultRangeGetMemento;
+import nts.uk.ctx.at.shared.dom.optitem.NumberRange;
+import nts.uk.ctx.at.shared.dom.optitem.TimeRange;
 
 /**
  * The Class JpaCalcResultRangeGetMemento.

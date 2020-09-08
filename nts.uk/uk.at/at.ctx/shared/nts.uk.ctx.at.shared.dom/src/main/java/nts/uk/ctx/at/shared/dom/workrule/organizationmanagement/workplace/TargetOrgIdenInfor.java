@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+
 import lombok.Getter;
 import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.adapter.WorkplaceGroupImport;
-
 
 /**
  * VO : 対象組織識別情報

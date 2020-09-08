@@ -18,14 +18,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.YearMonth;
 import nts.gul.util.value.MutableValue;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyTempo;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.common.anyitem.AnyTimesMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
@@ -42,6 +36,10 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.O
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimeDivergenceWithCalculationMinusExist;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.FlexTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -216,10 +214,10 @@ public class StoredProcdureProcessing implements StoredProcdureProcess {
 		processCountOptionalItem(() -> dailyTime.value(t -> t.flag36), result, COUNT_ON, COUNT_OFF, 36);
 		
 		/** 任意項目19 */
-		processCountOptionalItem(() -> dailyTime.value(t -> t.flag19) > 0, result, BigDecimal.valueOf((long) dailyTime.value(t -> t.flag19)), COUNT_OFF, 19);
+		processCountOptionalItem(() -> dailyTime.value(t -> t.flag19) > 0, result, BigDecimal.valueOf((long) dailyTime.value(t -> t.flag19).longValue()), COUNT_OFF, 19);
 		
 		/** 任意項目21 */
-		processCountOptionalItem(() -> dailyTime.value(t -> t.flag21) > 0, result, BigDecimal.valueOf((long) dailyTime.value(t -> t.flag21)), COUNT_OFF, 21);
+		processCountOptionalItem(() -> dailyTime.value(t -> t.flag21) > 0, result, BigDecimal.valueOf((long) dailyTime.value(t -> t.flag21).longValue()), COUNT_OFF, 21);
 		
 		/** 任意項目37 processOptionalItem(() -> dailyTime.value(t -> t.flag37) > 0, result, BigDecimal.valueOf(dailyTime.value(t -> t.flag37)), COUNT_OFF, 37); */
 		

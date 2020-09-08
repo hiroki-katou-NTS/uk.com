@@ -105,7 +105,7 @@ public class CreateStampDataForEmployeesService {
 			return new StampCardCreateResult(stampNumber.get().v(), Optional.ofNullable(null));
 		}
 		//$打刻カードリスト = require.打刻カード番号を取得する(社員ID)
-		List<StampCard> listStampCard = require.getListStampCard(employeeId);
+		List<StampCard> listStampCard = require.getLstStampCardBySidAndContractCd(employeeId);
 		//	if not $打刻カードリスト.isEmpty
 		if (!listStampCard.isEmpty()) {
 			// $打刻カード = $打刻カードリスト :map $番号 first
@@ -133,7 +133,7 @@ public class CreateStampDataForEmployeesService {
 		 * @param sid
 		 * @return
 		 */
-		List<StampCard> getListStampCard(String sid);
+		List<StampCard> getLstStampCardBySidAndContractCd(String sid);
 	}
 
 	

@@ -10,6 +10,7 @@ import nts.uk.ctx.at.record.dom.adapter.workschedule.TimeActualStampImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.TimeFrame;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ActualStampAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.AttendanceAtr;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
@@ -37,8 +38,11 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class ReflectActualStampAndStamp {
 	
+//	@Inject
+//	private GetCommonSet getCommonSet;
+	
 	@Inject
-	private GetCommonSet getCommonSet;
+	private RecordDomRequireService requireService;
 	
 	/**
 	 * 
@@ -125,7 +129,8 @@ public class ReflectActualStampAndStamp {
 	}
 	
 	private RoundingSet getRoudingTime(String companyId, String workTimeCode, Superiority superiority) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(
+				requireService.createRequire(), companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?

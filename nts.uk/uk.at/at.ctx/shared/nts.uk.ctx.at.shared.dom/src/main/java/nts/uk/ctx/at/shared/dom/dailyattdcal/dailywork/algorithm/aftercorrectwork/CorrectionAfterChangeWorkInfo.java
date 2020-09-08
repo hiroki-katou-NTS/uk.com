@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import nts.uk.ctx.at.record.dom.workinformation.enums.ClassificationReflect;
+import nts.uk.ctx.at.shared.dom.workinformation.enums.ClassificationReflect;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.Reflection;

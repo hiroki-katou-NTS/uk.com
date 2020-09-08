@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,12 +14,13 @@ import javax.transaction.Transactional.TxType;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.GetVacationAddSet;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VacationAddSet;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
+import nts.uk.ctx.at.shared.dom.monthly.WorkTypeDaysCountTable;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.GetVacationAddSet;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VacationAddSet;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbasMngRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecMng;
@@ -35,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDa
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：暫定振休・振出管理データ
@@ -51,28 +52,28 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 	/** 暫定振休・振出管理データ */
 	@Inject
 	private InterimRecAbasMngRepository interimRecAbsMngRepo;
-	/** 日別実績の勤務情報 */
-	@Inject
-	private WorkInformationRepository workInfoOfDailyRepo;
 	/** 勤務情報の取得 */
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	/** 休暇加算設定の取得 */
+	
 	@Inject
-	private GetVacationAddSet getVacationAddSet;
+	private RecordDomRequireService requireService;
 	
 	/** 作成 */
 	@Override
 	public void create(String companyId, String employeeId, DatePeriod period,
 			Optional<List<WorkInfoOfDailyPerformance>> workInfoOfDailyList) {
-		
+		val require = requireService.createRequire();
 		// 日別実績の勤務情報を取得
 		List<WorkInfoOfDailyPerformance> targetWorkInfos = new ArrayList<>();
 		if (workInfoOfDailyList.isPresent()){
 			targetWorkInfos = workInfoOfDailyList.get();
 		}
 		else {
-			targetWorkInfos = this.workInfoOfDailyRepo.findByPeriodOrderByYmd(employeeId, period);
+			targetWorkInfos = require.dailyWorkInfos(employeeId, period)
+					.entrySet().stream()
+					.map(c -> new WorkInfoOfDailyPerformance(employeeId, c.getKey(), c.getValue()))
+					.collect(Collectors.toList());
 		}
 		if (targetWorkInfos.size() == 0) return;
 		
@@ -85,7 +86,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 		}
 
 		// 休暇加算設定　取得
-		VacationAddSet vacationAddSet = this.getVacationAddSet.get(companyId);
+		VacationAddSet vacationAddSet = GetVacationAddSet.get(require, companyId);
 		
 		for (val targetWorkInfo : targetWorkInfos){
 
@@ -115,7 +116,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						new OccurrenceDay(recruitDays),
 						StatutoryAtr.NONSTATURORY,
 						new UnUsedDay(recruitDays));
-				this.interimRemainRepo.persistAndUpdateInterimRemain(remain);
+				require.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimRecMng(recMng);
 			}
 			
@@ -135,7 +136,7 @@ public class InterimAbsenceRecruitServiceImpl implements InterimAbsenceRecruitSe
 						absenceGuid,
 						new RequiredDay(absenceDays),
 						new UnOffsetDay(absenceDays));
-				this.interimRemainRepo.persistAndUpdateInterimRemain(remain);
+				require.persistAndUpdateInterimRemain(remain);
 				this.interimRecAbsMngRepo.persistAndUpdateInterimAbsMng(absMng);
 			}
 		}

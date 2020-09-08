@@ -12,8 +12,8 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 public class DeductionOffSetTime {
 	//年休
 	private AttendanceTime annualLeave;
-	//積立年休
-	private AttendanceTime retentionYearly;
+	//超過有休
+	private AttendanceTime sixtyHourHoliday;
 	//特別休暇
 	private AttendanceTime SpecialHoliday;
 	//代休
@@ -22,21 +22,29 @@ public class DeductionOffSetTime {
 	/**
 	 * Constructor 
 	 */
-	public DeductionOffSetTime(AttendanceTime annualLeave, AttendanceTime retentionYearly,
+	public DeductionOffSetTime(AttendanceTime annualLeave, AttendanceTime sixtyHourHoliday,
 			AttendanceTime specialHoliday, AttendanceTime compensatoryLeave) {
 		super();
 		this.annualLeave = annualLeave;
-		this.retentionYearly = retentionYearly;
+		this.sixtyHourHoliday = sixtyHourHoliday;
 		SpecialHoliday = specialHoliday;
 		CompensatoryLeave = compensatoryLeave;
-	}	
+	}
+	
+	/**
+	 * 全て0のインスタンスを生成
+	 * @return DeductionOffSetTime （全て０）
+	 */
+	public static DeductionOffSetTime createAllZero() {
+		return new DeductionOffSetTime(AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO, AttendanceTime.ZERO);
+	}
 	
 	/**
 	 * 各相殺時間を合計した時間を返す
 	 * @return
 	 */
 	public int getTotalOffSetTime() {
-		int totalTime = this.annualLeave.valueAsMinutes()+this.retentionYearly.valueAsMinutes()+this.SpecialHoliday.valueAsMinutes()+this.CompensatoryLeave.valueAsMinutes();
+		int totalTime = this.annualLeave.valueAsMinutes()+this.sixtyHourHoliday.valueAsMinutes()+this.SpecialHoliday.valueAsMinutes()+this.CompensatoryLeave.valueAsMinutes();
 		return totalTime;
 	}
 }

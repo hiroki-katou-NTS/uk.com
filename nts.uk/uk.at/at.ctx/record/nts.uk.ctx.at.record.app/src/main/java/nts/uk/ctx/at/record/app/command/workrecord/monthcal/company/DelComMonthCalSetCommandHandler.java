@@ -11,12 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.com.ComRegulaMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,15 +27,15 @@ public class DelComMonthCalSetCommandHandler extends CommandHandler<DelComMonthC
 
 	/** The com defor labor month act cal set repo. */
 	@Inject
-	private ComDeforLaborMonthActCalSetRepository comDeforLaborMonthActCalSetRepo;
+	private ComDeforLaborMonthActCalSetRepo comDeforLaborMonthActCalSetRepo;
 
 	/** The com flex month act cal set repo. */
 	@Inject
-	private ComFlexMonthActCalSetRepository comFlexMonthActCalSetRepo;
+	private ComFlexMonthActCalSetRepo comFlexMonthActCalSetRepo;
 
 	/** The com regula month act cal set repo. */
 	@Inject
-	private ComRegulaMonthActCalSetRepository comRegulaMonthActCalSetRepo;
+	private ComRegulaMonthActCalSetRepo comRegulaMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)

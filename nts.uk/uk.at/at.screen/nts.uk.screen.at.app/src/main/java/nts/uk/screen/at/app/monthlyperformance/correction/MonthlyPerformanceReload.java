@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
@@ -30,10 +31,6 @@ import nts.uk.ctx.at.record.dom.adapter.workplace.affiliate.AffWorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalstatusmonthly.ApprovalStatusMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actualsituation.approvalstatusmonthly.ApprovalStatusMonthly;
@@ -67,8 +64,13 @@ import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.MonthlyItemControlB
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -99,7 +101,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class MonthlyPerformanceReload {
@@ -121,9 +122,6 @@ public class MonthlyPerformanceReload {
 
 	@Inject
 	private MonthlyPerformanceScreenRepo repo;
-	
-	@Inject
-	private ClosureService closureService;
 	
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
@@ -194,6 +192,8 @@ public class MonthlyPerformanceReload {
 	
 	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
 	
 	public MonthlyPerformanceCorrectionDto reloadScreen(MonthlyPerformanceParam param) {
 
@@ -229,7 +229,9 @@ public class MonthlyPerformanceReload {
 		screenDto.setAuthDto(monthlyItemAuthDto);
 		
 		//指定した年月の期間を算出する
-		DatePeriod datePeriodClosure = closureService.getClosurePeriod(screenDto.getClosureId(), new YearMonth(screenDto.getProcessDate()));
+		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+				ClosureService.createRequireM1(closureRepository, closureEmploymentRepo),
+				screenDto.getClosureId(), new YearMonth(screenDto.getProcessDate()));
 		//社員ID（List）と指定期間から所属会社履歴項目を取得
 		// RequestList211
 		List<AffCompanyHistImport> lstAffComHist = syCompanyRecordAdapter

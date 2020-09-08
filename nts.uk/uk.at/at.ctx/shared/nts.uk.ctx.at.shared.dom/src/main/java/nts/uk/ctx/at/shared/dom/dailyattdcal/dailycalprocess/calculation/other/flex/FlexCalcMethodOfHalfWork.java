@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex;
 
+import lombok.AllArgsConstructor;
 import lombok.Value;
 
 /**
@@ -8,6 +9,7 @@ import lombok.Value;
  *
  */
 @Value
+@AllArgsConstructor
 public class FlexCalcMethodOfHalfWork {
 	private FlexCalcMethodOfEachPremiumHalfWork halfHoliday;
 	private FlexCalcMethodOfEachPremiumHalfWork halfCompensatoryHoliday;

@@ -18,9 +18,8 @@ import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeInputMethodFi
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTimeSettingFinder;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceTypeFinder;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetDto;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceTypeDivergenceAdapterDto;
 
 /**
  * The Class DivergenceTimeWebService.
@@ -109,20 +108,6 @@ public class DivergenceTimeWebService extends WebService {
 	@Path("getDivTypeList")
 	public List<DivergenceTypeDto> getDivTime() {
 		return this.divTypeFinder.getDivergenceTypeList();
-	}
-
-	/**
-	 * get item set.
-	 *
-	 * @param divTimeId
-	 *            the div time id
-	 * @return the item set
-	 */
-	@POST
-	@Path("getitemset/{divTimeId}")
-	public List<DivergenceItemSetDto> getItemSet(@PathParam("divTimeId") String divTimeId) {
-		// return this.divTimeAttendanceFinder.getAllDivReasonByCode(divTimeId);
-		return null;
 	}
 
 	/**

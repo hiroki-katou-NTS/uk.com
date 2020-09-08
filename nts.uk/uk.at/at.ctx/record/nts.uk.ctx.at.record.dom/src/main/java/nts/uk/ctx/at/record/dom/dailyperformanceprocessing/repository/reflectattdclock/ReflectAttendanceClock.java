@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.TimePrintDestinationOutput;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWorkInformationDomainService;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -52,8 +52,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 @Stateless
 public class ReflectAttendanceClock {
 	
-	@Inject
-	private GetCommonSet getCommonSet;
+//	@Inject
+//	private GetCommonSet getCommonSet;
 	
 	@Inject
 	private BasicScheduleService basicScheduleService;
@@ -63,6 +63,9 @@ public class ReflectAttendanceClock {
 	
 	@Inject
 	private TimePriorityRepository timePriorityRepository;
+	
+	@Inject 
+	private RecordDomRequireService requireService;
 	/**
 	 * 出退勤打刻を反映する 
 	 * @param attendanceAtr 出退勤区分
@@ -254,7 +257,8 @@ public class ReflectAttendanceClock {
 	}
 	
 	private PrioritySetting getPrioritySetting(String companyId, String workTimeCode, StampPiorityAtr stampPiorityAtr) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(
+				requireService.createRequire(), companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 			if (stampSet.getPrioritySets().stream().filter(item -> item.getStampAtr() == stampPiorityAtr)
@@ -453,7 +457,8 @@ public class ReflectAttendanceClock {
 		}
 	}
 	private RoundingSet getRoudingTime(String companyId, String workTimeCode, Superiority superiority) {
-		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(
+				requireService.createRequire(), companyId, workTimeCode);
 		if (workTimezoneCommonSet.isPresent()) {
 			WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 			return stampSet.getRoundingSets().stream().filter(item -> item.getSection() == superiority).findFirst().isPresent() ?

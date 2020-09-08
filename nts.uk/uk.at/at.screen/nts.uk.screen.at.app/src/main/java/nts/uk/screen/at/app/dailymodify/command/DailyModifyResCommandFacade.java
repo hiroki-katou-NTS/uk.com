@@ -22,6 +22,7 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.AsyncTask;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -44,12 +45,7 @@ import nts.uk.ctx.at.record.dom.daily.DailyRecordTransactionService;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.EmployeeMonthlyPerError;
-import nts.uk.ctx.at.record.dom.monthly.erroralarm.ErrorType;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.IntegrationOfMonthly;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInfor;
 import nts.uk.ctx.at.record.dom.service.TimeOffRemainErrorInputParam;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -66,6 +62,12 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.erroralarm.EmployeeMonthlyPerError;
+import nts.uk.ctx.at.shared.dom.monthly.erroralarm.ErrorType;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.EmpProvisionalInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.RegisterProvisionalData;
@@ -148,9 +150,6 @@ public class DailyModifyResCommandFacade {
 	private DailyPerformanceScreenRepo repo;
 
 	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmployee;
-
-	@Inject
 	private TimeOffRemainErrorInfor timeOffRemainErrorInfor;
 
 	@Inject
@@ -177,6 +176,9 @@ public class DailyModifyResCommandFacade {
 	
 	@Inject
 	private ProcessMonthlyCalc processMonthlyCalc;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 
 	private void processDto(List<DailyRecordDto> dailyOlds, List<DailyRecordDto> dailyEdits, DPItemParent dataParent,
 			List<DailyModifyQuery> querys, Map<Pair<String, GeneralDate>, List<DPItemValue>> mapSidDate,
@@ -855,6 +857,8 @@ public class DailyModifyResCommandFacade {
 		List<EmployeeMonthlyPerError> monthPer = new ArrayList<>();
 		Set<Pair<String, GeneralDate>> detailEmployeeError = new HashSet<>();
 		boolean onlyErrorOld = true;
+		val cacheCarrier = new CacheCarrier();
+		val require = requireService.createRequire();
 		for (String emp : employeeIds) {
 			// employeeIds.stream().forEach(emp -> {
 			List<IntegrationOfDaily> domainDailyEditAll = dailyDtoEditAll.stream()
@@ -874,7 +878,8 @@ public class DailyModifyResCommandFacade {
 					.collect(Collectors.toList()).stream().sorted((x, y) -> x.getYmd().compareTo(y.getYmd()))
 					.collect(Collectors.toList());
 
-			Optional<GeneralDate> date = getClosureStartForEmployee.algorithm(emp);
+			Optional<GeneralDate> date = GetClosureStartForEmployee.algorithm(
+					require, cacheCarrier, emp);
 			List<EmployeeMonthlyPerError> lstEmpMonthError = new ArrayList<>();
 			if (domainMonthNew != null && !domainMonthNew.isEmpty()) {
 				for (IntegrationOfMonthly month : domainMonthNew) {

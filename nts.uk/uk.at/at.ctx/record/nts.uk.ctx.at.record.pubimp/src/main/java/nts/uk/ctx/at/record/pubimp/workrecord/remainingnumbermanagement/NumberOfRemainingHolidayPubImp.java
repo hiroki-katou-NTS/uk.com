@@ -7,42 +7,45 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
-import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveManagement;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.TempReserveLeaveMngRepository;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.ReserveLeaveGrantRemainingData;
 //import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.ReserveLeaveInfo;
 import nts.uk.ctx.at.record.pub.workrecord.remainingnumbermanagement.NumberOfRemainingHolidaysPub;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.GetAnnAndRsvRemNumWithinPeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.export.InterimRemainMngMode;
+import nts.uk.ctx.at.shared.dom.remainingnumber.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class NumberOfRemainingHolidayPubImp implements NumberOfRemainingHolidaysPub {
 	
 	@Inject
-	private GetClosureStartForEmployee closureStartForEmployee;
-	
-	@Inject
-	private GetAnnAndRsvRemNumWithinPeriod getAnnAndRsvRemNumWithinPeriod;
+	private RecordDomRequireService requireService;
 	
 //	@Inject
 //	private TempReserveLeaveMngRepository tempReserveLeaveMngRepo;
 	
 	@Override
 	public int NumberOfRemainingHolidays(String employeeId, GeneralDate referenceDate) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
 
 		String companyId = AppContexts.user().companyId();
-		Optional<GeneralDate> closingDate = closureStartForEmployee.algorithm(employeeId);
+		Optional<GeneralDate> closingDate = GetClosureStartForEmployee.algorithm(
+													require, cacheCarrier, employeeId);
 		
 		if(!closingDate.isPresent()) {
 			throw new RuntimeException("集計開始日 Not Present");
 		}
-		AggrResultOfAnnAndRsvLeave numberOfHolidaysRemaining = getAnnAndRsvRemNumWithinPeriod.algorithm(companyId, employeeId, new DatePeriod(closingDate.get(), referenceDate), 
+		AggrResultOfAnnAndRsvLeave numberOfHolidaysRemaining = GetAnnAndRsvRemNumWithinPeriod.algorithm(require, cacheCarrier, companyId, employeeId, new DatePeriod(closingDate.get(), referenceDate), 
 																										InterimRemainMngMode.OTHER, referenceDate, false, 
 																										false, Optional.empty(), 
 																										Optional.empty(), Optional.empty(), Optional.empty(), 
@@ -57,5 +60,4 @@ public class NumberOfRemainingHolidayPubImp implements NumberOfRemainingHolidays
 		
 		return 0;
 	}
-
 }

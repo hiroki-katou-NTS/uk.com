@@ -135,9 +135,10 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 		GeneralDateTime end = GeneralDateTime.ymdhms(period.end().year(), period.end().month(), period.end().day(), 23,
 				59, 59);
 
-		return this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStamp.class)
+		List<Stamp> list = this.queryProxy().query(GET_NOT_STAMP_NUMBER, KrcdtStamp.class)
 				.setParameter("contractCode", contractCode).setParameter("startStampDate", start)
 				.setParameter("endStampDate", end).getList(x -> toDomain(x));
+		return list;
 	}
 
 	private KrcdtStamp toEntity(Stamp stamp) {
@@ -165,9 +166,12 @@ public class JpaStampDakokuRepository extends JpaRepository implements StampDako
 				stamp.getRefActualResults().getOvertimeDeclaration().isPresent()
 						? stamp.getRefActualResults().getOvertimeDeclaration().get().getOverLateNightTime().v()
 						: null, // lateNightOverTime
-				positionInfor != null ? new BigDecimal(positionInfor.getLongitude()) : null,
-				positionInfor != null ? new BigDecimal(positionInfor.getLatitude()) : null,
+				positionInfor != null? new BigDecimal(positionInfor.getLongitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN): null,
+				positionInfor != null? new BigDecimal(positionInfor.getLatitude()).setScale(6, BigDecimal.ROUND_HALF_DOWN): null,
 				LocationInfoOpt.isPresent() ? stamp.getLocationInfor().get().isOutsideAreaAtr() : null);
+		
+		
+		
 	}
 
 	private Stamp toDomain(KrcdtStamp entity) {
