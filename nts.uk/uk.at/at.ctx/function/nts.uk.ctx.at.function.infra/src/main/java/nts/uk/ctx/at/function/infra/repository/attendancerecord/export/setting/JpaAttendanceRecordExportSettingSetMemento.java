@@ -49,8 +49,8 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	 */
 	public JpaAttendanceRecordExportSettingSetMemento(KfnmtRptWkAtdOut entity) {
 		this.resEntity = entity;
-		if(this.resEntity.getLayoutID() == null){
-			this.resEntity.setLayoutID("");
+		if(this.resEntity.getLayoutId() == null){
+			this.resEntity.setLayoutId("");
 		}
 	}
 
@@ -159,6 +159,10 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	@Override
 	public void setMonthlyConfirmedDisplay(Integer monthlyConfirmedDisplay) {
 		this.resEntity.setMonthAppDispAtr(new BigDecimal(monthlyConfirmedDisplay));
-		
+	}
+
+	@Override
+	public void setLayoutId(String layoutId) {
+		this.resEntity.setLayoutId(layoutId);
 	}
 }

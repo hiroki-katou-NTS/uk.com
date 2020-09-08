@@ -80,6 +80,7 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	 */
 	public AttendanceRecordExportSetting(AttendanceRecordExportSettingGetMemento memento) {
 		this.companyId = AppContexts.user().companyId();
+		this.layoutId = memento.getLayoutId();
 		this.dailyExportItem = memento.getDailyExportItem();
 		this.monthlyExportItem = memento.getMonthlyExportItem();
 		this.sealUseAtr = memento.getSealUseAtr();

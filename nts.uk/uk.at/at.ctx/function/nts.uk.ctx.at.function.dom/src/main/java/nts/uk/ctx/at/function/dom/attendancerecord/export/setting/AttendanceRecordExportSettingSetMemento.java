@@ -81,4 +81,11 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 * @param monthlyConfirmedDisplay the new monthly confirmed display
 	 */
 	void setMonthlyConfirmedDisplay(Integer monthlyConfirmedDisplay);
+	
+	/**
+	 * Sets the layout id.
+	 *
+	 * @param layoutId the new layout id
+	 */
+	void setLayoutId(String layoutId);
 }

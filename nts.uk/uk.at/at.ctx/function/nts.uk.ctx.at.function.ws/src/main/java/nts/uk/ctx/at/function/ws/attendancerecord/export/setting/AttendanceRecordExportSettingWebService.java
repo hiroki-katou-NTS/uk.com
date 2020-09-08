@@ -144,6 +144,13 @@ public class AttendanceRecordExportSettingWebService {
 		return attendanceEcExpSetFinder.getAuthorityOfWorkPerformance();
 	}
 	
+	
+	/**
+	 * Start screen KWR002 - B.
+	 *
+	 * @param dto the dto
+	 * @return the attendance setting dto
+	 */
 	@POST
 	@Path("startScreenB")
 	public AttendanceSettingDto startScreenB(ItemSelectedTypeSettingDto dto) {

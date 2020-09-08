@@ -38,6 +38,9 @@ public class AttendanceRecordExportSettingDto {
 	/** The monthly confirmed display. */
 	Integer monthlyConfirmedDisplay;
 	
+	/** The layout id. */
+	String layoutId;
+	
 	/**
 	 * Instantiates a new attendance record export setting dto.
 	 */

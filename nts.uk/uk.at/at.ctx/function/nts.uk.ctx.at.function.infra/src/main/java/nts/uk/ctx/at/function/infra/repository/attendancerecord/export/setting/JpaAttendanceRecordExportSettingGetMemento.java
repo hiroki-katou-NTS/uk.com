@@ -79,7 +79,6 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 		return null;
 	}
 
-	// TODO UPDATE DUCNT
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -148,5 +147,10 @@ public class JpaAttendanceRecordExportSettingGetMemento implements AttendanceRec
 	@Override
 	public Integer getMonthlyConfirmedDisplay() {
 		return this.atdEntity.getMonthAppDispAtr().intValue();
+	}
+
+	@Override
+	public String getLayoutId() {
+		return this.atdEntity.getLayoutId();
 	}
 }

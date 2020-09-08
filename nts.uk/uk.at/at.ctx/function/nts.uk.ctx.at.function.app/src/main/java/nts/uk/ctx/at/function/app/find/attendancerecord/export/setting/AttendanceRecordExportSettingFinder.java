@@ -101,6 +101,7 @@ public class AttendanceRecordExportSettingFinder {
 			AttendanceRecordExportSetting domain = optionalDomain.get();
 			AttendanceRecordExportSettingDto dto = new AttendanceRecordExportSettingDto();
 
+			dto.setLayoutId(domain.getLayoutId());
 			dto.setCode(domain.getCode().toString());
 			dto.setName(domain.getName().toString());
 			dto.setSealUseAtr(domain.getSealUseAtr());

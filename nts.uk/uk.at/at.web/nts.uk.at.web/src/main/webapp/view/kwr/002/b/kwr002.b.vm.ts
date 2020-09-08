@@ -89,10 +89,11 @@ module nts.uk.com.view.kwr002.b {
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
                 let currentData = self.currentARES();
                 let delARESCmd = {
-                    code: Number(currentData.code()),
-                    exportCode: Number(currentData.code()),
-                    exportSettingCode: Number(currentData.code()),
-                    name: currentData.name()
+                    code: currentData.code(),
+                    exportCode: currentData.code(),
+                    exportSettingCode: currentData.code(),
+                    name: currentData.name(),
+                    layoutId: currentData.layoutId()
                 };
 
                 let cmd = {
@@ -419,6 +420,7 @@ module nts.uk.com.view.kwr002.b {
         sealUseAtr: boolean;
         nameUseAtr: number;
         exportFontSize: number;
+        layoutId: string;
     }
 
     export class AttendanceRecordExportSetting {
@@ -427,6 +429,7 @@ module nts.uk.com.view.kwr002.b {
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
         exportFontSize: KnockoutObservable<number>;
+        layoutId: KnockoutObservable<string>;
 
         constructor(param: IARES) {
             let self = this;
@@ -435,6 +438,7 @@ module nts.uk.com.view.kwr002.b {
             self.sealUseAtr = ko.observable(param.sealUseAtr);
             self.nameUseAtr = ko.observable(param.nameUseAtr);
             self.exportFontSize = ko.observable(param.exportFontSize);
+            self.layoutId = ko.observable(param.layoutId);
         };
 
 

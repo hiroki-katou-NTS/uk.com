@@ -207,8 +207,8 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 
 	private void addKfnmtRptWkAtdOut(AttendanceRecordExportSetting attendanceRecordExpSet) {
 		KfnmtRptWkAtdOut pk = new KfnmtRptWkAtdOut();
-		pk.setLayoutID(attendanceRecordExpSet.getLayoutId());
-		Optional<KfnmtRptWkAtdOut> entityFromDb = this.queryProxy().find(pk.getLayoutID(), KfnmtRptWkAtdOut.class);
+		pk.setLayoutId(attendanceRecordExpSet.getLayoutId());
+		Optional<KfnmtRptWkAtdOut> entityFromDb = this.queryProxy().find(pk.getLayoutId(), KfnmtRptWkAtdOut.class);
 		if (entityFromDb.isPresent()) {
 			this.commandProxy().update(toEntity(attendanceRecordExpSet));
 		} else {
@@ -273,7 +273,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	 * @return the attendance record export setting
 	 */
 	public AttendanceRecordExportSetting toDomain(KfnmtRptWkAtdOut attendanceEntity) {
-		List<KfnmtRptWkAtdOutseal> sealEntity = this.findAllSealColumn(attendanceEntity.getCid(), attendanceEntity.getLayoutID());
+		List<KfnmtRptWkAtdOutseal> sealEntity = this.findAllSealColumn(attendanceEntity.getCid(), attendanceEntity.getLayoutId());
 		
 		AttendanceRecordExportSettingGetMemento memento = new JpaAttendanceRecordExportSettingGetMemento(
 				attendanceEntity, sealEntity);
@@ -293,8 +293,8 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		KfnmtRptWkAtdOut PK = new KfnmtRptWkAtdOut();
-		PK.setLayoutID(domain.getLayoutId());
-		PK.setContractCd("1111");
+		PK.setLayoutId(domain.getLayoutId());
+		PK.setContractCd("1");
 		PK.setExclusVer(0);
 		PK.setItemSelType(0);
 		PK.setCid(companyId);
@@ -305,7 +305,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		PK.setNameUseAtr(new BigDecimal(0));
 		PK.setCharSizeType(new BigDecimal(1));
 		PK.setMonthAppDispAtr(new BigDecimal(0));
-		KfnmtRptWkAtdOut entity = this.queryProxy().find(PK.getLayoutID(), KfnmtRptWkAtdOut.class)
+		KfnmtRptWkAtdOut entity = this.queryProxy().find(PK.getLayoutId(), KfnmtRptWkAtdOut.class)
 				.orElse(PK);
 		
 		// new decimal 

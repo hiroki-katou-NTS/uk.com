@@ -49,7 +49,7 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity {
 	@Id
 	@Column(name = "LAYOUT_ID")
 	@Basic(optional = false)
-	private String layoutID;
+	private String layoutId;
 	
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
@@ -103,7 +103,7 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.layoutID;
+		return this.layoutId;
 	}
 
 //	@Override

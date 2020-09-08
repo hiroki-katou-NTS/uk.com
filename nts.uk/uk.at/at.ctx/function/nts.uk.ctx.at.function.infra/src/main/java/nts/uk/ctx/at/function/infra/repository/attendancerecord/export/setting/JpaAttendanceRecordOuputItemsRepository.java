@@ -33,7 +33,7 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 	public void update(AttendanceRecordOuputItems domain) {
 		// Convert data to entity
 		KfnmtRptWkAtdOut entity = JpaAttendanceRecordOuputItemsRepository.toEntity(domain);
-		KfnmtRptWkAtdOut oldEntity = this.queryProxy().find(entity.getLayoutID(), KfnmtRptWkAtdOut.class).get();
+		KfnmtRptWkAtdOut oldEntity = this.queryProxy().find(entity.getLayoutId(), KfnmtRptWkAtdOut.class).get();
 //		oldEntity.setExclusVer(entity.getExclusVer());
 //		oldEntity.setContractCD(entity.getContractCD());
 //		oldEntity.setItemSelType(entity.getItemSelType());

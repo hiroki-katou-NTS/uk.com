@@ -81,5 +81,13 @@ public interface AttendanceRecordExportSettingGetMemento {
 	 * @return the monthly confirmed display
 	 */
 	Integer getMonthlyConfirmedDisplay();
+	
+	
+	/**
+	 * Gets the layout id.
+	 *
+	 * @return the layout id
+	 */
+	String getLayoutId();
 
 }
