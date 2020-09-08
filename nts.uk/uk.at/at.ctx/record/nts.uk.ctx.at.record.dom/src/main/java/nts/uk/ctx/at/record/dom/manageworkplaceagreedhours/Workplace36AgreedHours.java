@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
  */
 @Getter
 @NoArgsConstructor
-public class WorkplaceAgreedHours extends AggregateRoot {
+public class Workplace36AgreedHours extends AggregateRoot {
     /** The workplaceId. */
     // 職場ID
     private String  workplaceId;
@@ -31,7 +31,7 @@ public class WorkplaceAgreedHours extends AggregateRoot {
      *
      */
     // TODO 時間設定 LÀ ?????
-    public WorkplaceAgreedHours(String  workplaceId,LaborSystemtAtr laborSystemtAtr,BasicAgreementSetting basicAgreementSetting){
+    public Workplace36AgreedHours(String  workplaceId, LaborSystemtAtr laborSystemtAtr, BasicAgreementSetting basicAgreementSetting){
             this.workplaceId = workplaceId;
             this.laborSystemtAtr = laborSystemtAtr;
             this.basicAgreementSetting = basicAgreementSetting;

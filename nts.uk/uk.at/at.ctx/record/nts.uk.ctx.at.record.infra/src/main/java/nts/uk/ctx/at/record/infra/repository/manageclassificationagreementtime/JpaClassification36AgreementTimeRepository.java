@@ -1,16 +1,14 @@
 package nts.uk.ctx.at.record.infra.repository.manageclassificationagreementtime;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.ClassificationAgreementTime;
-import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.ClassificationAgreementTimeRepository;
-import nts.uk.ctx.at.record.dom.manageemploymenthours.Employmenthours;
+import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTime;
+import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
-import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmp;
 
 import java.util.List;
 import java.util.Optional;
 
-public class JpaClassificationAgreementTimeRepository extends JpaRepository implements ClassificationAgreementTimeRepository {
+public class JpaClassification36AgreementTimeRepository extends JpaRepository implements Classification36AgreementTimeRepository {
     private static String FIND_BY_CID;
 
     private static String FIND_BY_CID_AND_CD;
@@ -30,35 +28,35 @@ public class JpaClassificationAgreementTimeRepository extends JpaRepository impl
         FIND_BY_CID = builderString.toString();
     }
     @Override
-    public void insert(ClassificationAgreementTime domain) {
+    public void insert(Classification36AgreementTime domain) {
 
     }
 
     @Override
-    public void update(ClassificationAgreementTime domain) {
+    public void update(Classification36AgreementTime domain) {
 
     }
 
     @Override
-    public void delete(ClassificationAgreementTime domain) {
+    public void delete(Classification36AgreementTime domain) {
 
     }
 
     @Override
-    public List<ClassificationAgreementTime> getByCid(String cid) {
+    public List<Classification36AgreementTime> getByCid(String cid) {
         return this.queryProxy().query(FIND_BY_CID,Ksrmt36AgrMgtCls.class).setParameter("cid",cid).getList(d->convertToDomain(d));
     }
 
     @Override
-    public Optional<ClassificationAgreementTime> getByCidAndClassificationCode(String cid, String classificationCode) {
+    public Optional<Classification36AgreementTime> getByCidAndClassificationCode(String cid, String classificationCode) {
         return this.queryProxy().query(FIND_BY_CID,Ksrmt36AgrMgtCls.class)
                 .setParameter("cid",cid)
                 .setParameter("classificationCode",classificationCode)
                 .getSingle(d->convertToDomain(d));
 
     }
-    private ClassificationAgreementTime convertToDomain(Ksrmt36AgrMgtCls entity) {
-        return new ClassificationAgreementTime();
+    private Classification36AgreementTime convertToDomain(Ksrmt36AgrMgtCls entity) {
+        return new Classification36AgreementTime();
     }
 
 }

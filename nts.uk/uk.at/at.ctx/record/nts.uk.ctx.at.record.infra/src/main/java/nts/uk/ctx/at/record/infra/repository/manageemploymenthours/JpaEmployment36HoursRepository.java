@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.infra.repository.manageemploymenthours;
 
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageemploymenthours.Employmenthours;
-import nts.uk.ctx.at.record.dom.manageemploymenthours.EmploymenthoursRepository;
+import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36Hours;
+import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
 import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmp;
 
 import javax.ejb.Stateless;
@@ -14,7 +14,7 @@ import java.util.Optional;
  * 	Repository: 雇用３６協定時間
  */
 @Stateless
-public class JpaEmploymenthoursRepository extends JpaRepository implements EmploymenthoursRepository {
+public class JpaEmployment36HoursRepository extends JpaRepository implements Employment36HoursRepository {
     private static String FIND_BY_CID;
 
     private static String FIND_BY_CID_AND_CD;
@@ -35,29 +35,29 @@ public class JpaEmploymenthoursRepository extends JpaRepository implements Emplo
     }
 
     @Override
-    public void insert(Employmenthours domain) {
+    public void insert(Employment36Hours domain) {
 
     }
 
     @Override
-    public void update(Employmenthours domain) {
+    public void update(Employment36Hours domain) {
 
     }
 
     @Override
-    public void delete(Employmenthours domain) {
+    public void delete(Employment36Hours domain) {
 
     }
 
     @Override
-    public List<Employmenthours> getByCid(String cid) {
+    public List<Employment36Hours> getByCid(String cid) {
         return this.queryProxy().query(FIND_BY_CID, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
                 .getList(d -> convertToDomain(d));
     }
 
     @Override
-    public Optional<Employmenthours> getByCidAndEmployCode(String cid, String employCode) {
+    public Optional<Employment36Hours> getByCidAndEmployCode(String cid, String employCode) {
 
         return this.queryProxy().query(FIND_BY_CID_AND_CD, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
@@ -65,7 +65,7 @@ public class JpaEmploymenthoursRepository extends JpaRepository implements Emplo
                 .getSingle(d -> convertToDomain(d));
     }
 
-    private Employmenthours convertToDomain(Ksrmt36AgrMgtEmp ksrmt36AgrMgtEmp) {
-        return new Employmenthours();
+    private Employment36Hours convertToDomain(Ksrmt36AgrMgtEmp ksrmt36AgrMgtEmp) {
+        return new Employment36Hours();
     }
 }
