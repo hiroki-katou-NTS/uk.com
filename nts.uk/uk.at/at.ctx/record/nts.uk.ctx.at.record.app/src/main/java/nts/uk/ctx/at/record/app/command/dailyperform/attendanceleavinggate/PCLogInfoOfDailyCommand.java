@@ -15,6 +15,10 @@ public class PCLogInfoOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
+		if (item == null) {
+			this.data = Optional.empty();
+			return;
+		}
 		PCLogOnInfoOfDaily pCLogOnInfoOfDaily = new PCLogOnInfoOfDaily(getEmployeeId(), getWorkDate(), ((PCLogOnInforOfDailyPerformDto) item).toDomain(getEmployeeId(), getWorkDate()));
 		this.data = item == null || !item.isHaveData() ? Optional.empty() 
 				: Optional.of(pCLogOnInfoOfDaily);
