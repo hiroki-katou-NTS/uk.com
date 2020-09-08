@@ -43,13 +43,13 @@ module nts.uk.at.view.kdl023.base.service {
         export interface ReflectionSetting {
             calendarStartDate?: string;
             calendarEndDate?: string;
+            monthlyPatternCode?: string;
             selectedPatternCd: string;
             patternStartDate: string; // 'YYYY-MM-DD'
             reflectionMethod: ReflectionMethod;
             statutorySetting: DayOffSetting;
             nonStatutorySetting: DayOffSetting;
             holidaySetting: DayOffSetting;
-            bootMode: number;
         }
 
         export interface DailyPatternSetting {

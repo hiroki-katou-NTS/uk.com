@@ -20,7 +20,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import MonthlyPatternRegisterCommand = nts.uk.at.view.kdl023.base.service.model.MonthlyPatternRegisterCommand;
     import WorkMonthlySetting = nts.uk.at.view.kdl023.base.service.model.WorkMonthlySetting;
     const CONST = {
-        DATE_FORMAT: 'yyyy/MM/yy',
+        DATE_FORMAT: 'yyyy-MM-yy',
         YEAR_MONTH: 'yyyy/MM'
     }
 
@@ -88,7 +88,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         nonSatHoliday: KnockoutObservable<string> = ko.observable();
         refImageEachDayDto: KnockoutObservableArray<RefImageEachDayDto> = ko.observableArray([]);
         slideDays: KnockoutObservable<number> = ko.observable(0);
-        workMonthlySetting: KnockoutObservableArray<MonthlyPatternRegisterCommand> = ko.observableArray([]);
+        workMonthlySetting: KnockoutObservableArray<WorkMonthlySetting> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -307,8 +307,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let month = dateString.substring(4,6);
             let day = dateString.substring(6,8);
             let endDay = moment(new Date(year, +(month)-1, +(day))).endOf('month').toDate().getDate();
-            let startDate = year+'/'+month+'/'+day;
-            let endDate = year+'/'+month+'/'+endDay;
+            let startDate = year+'-'+month+'-'+day;
+            let endDate = year+'-'+month+'-'+endDay;
             let legalHolidayCd = '';
             let nonStatutoryHolidayCd = '';
             let holidayCd = '';
@@ -390,7 +390,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     useClassification: false,
                     workTypeCode: ''
                 },
-				bootMode: 0
             }
         };
 
@@ -1075,7 +1074,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
         }
 
-        private setCalendarData(data: Array<RefImageEachDayDto>, monthlyPatternCode?: string){
+        private setCalendarData(data: Array<RefImageEachDayDto>){
             const self = this;
             let temp:Array<OptionDate> = ([]);
             data.forEach( (item) => {
@@ -1085,8 +1084,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let workMonthlySettingTemp: Array<WorkMonthlySetting> = ([]);
             if(self.isExecMode()){
                 data.forEach( (item) => {
-                    //workMonthlySettingTemp.push(self.setOptionDate(item));}
+                    workMonthlySettingTemp.push(self.setMonthlySetting(item));}
                 );
+                self.workMonthlySetting(workMonthlySettingTemp);
             }
         }
         private setOptionDate(refImage: RefImageEachDayDto):OptionDate{
@@ -1111,11 +1111,22 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             return result;
         }
 
+        private setMonthlySetting(refImage: RefImageEachDayDto):WorkMonthlySetting{
+            let result:WorkMonthlySetting = {
+                workInformation: {
+                    workTypeCode: refImage.workInformation.workTypeCode,
+                    workTimeCode: refImage.workInformation.workTimeCode
+                },
+                ymk: refImage.date,
+                monthlyPatternCode: this.reflectionSetting.monthlyPatternCode()
+            }
+            return result;
+        }
         public decide(): void {
             let self = this;
             let param : MonthlyPatternRegisterCommand = {
                 isOverWrite : self.isOverWrite(),
-                workMonthlySetting: null
+                workMonthlySetting: self.workMonthlySetting()
             }
             // If calendar's setting is empty.
             if (self.isOptionDatesEmpty()) {
@@ -1143,7 +1154,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         statutorySetting: DayOffSetting;
         nonStatutorySetting: DayOffSetting;
         holidaySetting: DayOffSetting;
-        bootMode: KnockoutObservable<number>;
+        monthlyPatternCode: KnockoutObservable<string>;
 
         constructor(data: service.model.ReflectionSetting) {
             let self = this;
@@ -1155,7 +1166,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.statutorySetting = new DayOffSetting(data.statutorySetting);
             self.nonStatutorySetting = new DayOffSetting(data.nonStatutorySetting);
             self.holidaySetting = new DayOffSetting(data.holidaySetting);
-			self.bootMode = ko.observable(data.bootMode);
+			self.monthlyPatternCode = ko.observable(data.monthlyPatternCode ? data.monthlyPatternCode : '');
         }
 
         public static newSetting(): ReflectionSetting {
@@ -1171,7 +1182,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             newSetting.statutorySetting = dummy;
             newSetting.nonStatutorySetting = dummy;
             newSetting.holidaySetting = dummy;
-			newSetting.bootMode = 0;
+			newSetting.monthlyPatternCode = '';
 
             return new ReflectionSetting(newSetting);
         }
@@ -1181,6 +1192,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if (dto.calendarStartDate && dto.calendarEndDate) {
                 self.calendarStartDate(dto.calendarStartDate);
                 self.calendarEndDate(dto.calendarEndDate);
+                self.monthlyPatternCode = ko.observable(dto.monthlyPatternCode);
             }
             self.selectedPatternCd(dto.selectedPatternCd);
             self.patternStartDate(dto.patternStartDate);
@@ -1188,7 +1200,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.statutorySetting.fromDto(dto.statutorySetting);
             self.nonStatutorySetting.fromDto(dto.nonStatutorySetting);
             self.holidaySetting.fromDto(dto.holidaySetting);
-			self.bootMode = ko.observable(dto.bootMode);
         }
     }
     class DayOffSetting {
