@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity;
+package nts.uk.cnv.infra.entity.uktabledesign;
 
 import java.io.Serializable;
 import java.util.List;
@@ -23,13 +23,13 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SCVMT_INDEX_DESIGN")
-public class ScvmtIndexDesign extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_UK_INDEX_DESIGN")
+public class ScvmtUkIndexDesign extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public ScvmtIndexDesignPk pk;
+	public ScvmtUkIndexDesignPk pk;
 
 	@Column(name = "TYPE")
 	public String type;
@@ -41,15 +41,15 @@ public class ScvmtIndexDesign extends JpaEntity implements Serializable {
 	public boolean clustered;
 
 	@OrderBy(value = "pk.id asc")
-	@OneToMany(targetEntity = ScvmtIndexColumns.class, mappedBy = "indexdesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "SCVMT_COLUMN_DESIGN")
-	public List<ScvmtIndexColumns> columns;
+	@OneToMany(targetEntity = ScvmtUkIndexColumns.class, mappedBy = "indexdesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "SCVMT_UK_COLUMN_DESIGN")
+	public List<ScvmtUkIndexColumns> columns;
 
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID")
     })
-	public ScvmtTableDesign tabledesign;
+	public ScvmtUkTableDesign tabledesign;
 
 	@Override
 	protected Object getKey() {

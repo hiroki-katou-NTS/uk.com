@@ -178,6 +178,7 @@ public class TableDesignImportService {
 		for (Iterator<Index> indexDef =  statement.getIndexes().iterator(); indexDef.hasNext();) {
 			Index index = (Index) indexDef.next();
 			boolean clustered = false;
+			String type = "";
 			if(index.getType().equals("PRIMARY KEY")) {
 				int seq = 1;
 				for(Object colName : index.getColumnsNames()){
@@ -185,18 +186,20 @@ public class TableDesignImportService {
 					seq++;
 				}
 				clustered = isClusteredPK;
+				type = "PRIMARY KEY";
 			}
-			else if(index.getType().equals("UNIQUE")) {
+			else if(index.getType().equals("UNIQUE KEY")) {
 				int seq = 1;
 				for(Object colName : index.getColumnsNames()){
 					uk.put((String)colName, seq);
 					seq++;
 				}
+				type = "UNIQUE";
 			}
 
 			Indexes idx = new Indexes(
 					index.getName(),
-					index.getType(),
+					type,
 					clustered,
 					index.getColumnsNames(),
 					new ArrayList<>()

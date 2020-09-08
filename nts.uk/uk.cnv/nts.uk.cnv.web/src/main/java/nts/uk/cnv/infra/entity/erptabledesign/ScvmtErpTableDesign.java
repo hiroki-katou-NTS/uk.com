@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity;
+package nts.uk.cnv.infra.entity.erptabledesign;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,15 +21,14 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
-import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
 
 @Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_TABLE_DESIGN")
-public class ScvmtTableDesign extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_ERP_TABLE_DESIGN")
+public class ScvmtErpTableDesign extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -48,14 +47,10 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 	@Column(name = "UPDATE_DATE")
 	public GeneralDateTime updateDate;
 
-	@OrderBy(value = "scvmtColumnDesignPk.id asc")
-	@OneToMany(targetEntity = ScvmtColumnDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "SCVMT_COLUMN_DESIGN")
-	private List<ScvmtColumnDesign> columns;
-
-	@OneToMany(targetEntity = ScvmtIndexDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "SCVMT_INDEX_DESIGN")
-	private List<ScvmtIndexDesign> indexes;
+	@OrderBy(value = "scvmtErpColumnDesignPk.id asc")
+	@OneToMany(targetEntity = ScvmtErpColumnDesign.class, mappedBy = "tabledesign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "SCVMT_ERP_COLUMN_DESIGN")
+	private List<ScvmtErpColumnDesign> columns;
 
 	@Override
 	protected Object getKey() {
@@ -67,24 +62,6 @@ public class ScvmtTableDesign extends JpaEntity implements Serializable {
 				.map(col -> col.toDomain())
 				.collect(Collectors.toList());
 
-		List<Indexes> idxs = new ArrayList<>();
-		for (ScvmtIndexDesign index :indexes) {
-			 List<String> colmns = index.columns.stream()
-				.map(col -> col.pk.getColumnName())
-				.collect(Collectors.toList());
-			 List<String> params = new ArrayList<>();
-			 for (String p : index.params.split(",")) {
-				 params.add(p);
-			 }
-			 idxs.add(new Indexes(
-					 index.pk.getName(),
-					 index.type,
-					 index.clustered,
-					 colmns,
-					 params
-			));
-		}
-
-		return new TableDesign(tableId, name, comment, createDate, updateDate, cols, idxs);
+		return new TableDesign(tableId, name, comment, createDate, updateDate, cols, new ArrayList<>());
 	}
 }

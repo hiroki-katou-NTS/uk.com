@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity;
+package nts.uk.cnv.infra.entity.uktabledesign;
 
 import java.io.Serializable;
 
@@ -16,24 +16,24 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "SCVMT_INDEX_COLUMNS")
-public class ScvmtIndexColumns extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_UK_INDEX_COLUMNS")
+public class ScvmtUkIndexColumns extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public ScvmtIndexColumnsPk pk;
-	
+	public ScvmtUkIndexColumnsPk pk;
+
 	@ManyToOne
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID"),
     	@PrimaryKeyJoinColumn(name = "NAME", referencedColumnName = "NAME")
     })
-	public ScvmtIndexDesign indexdesign;
+	public ScvmtUkIndexDesign indexdesign;
 
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
-	
+
 }

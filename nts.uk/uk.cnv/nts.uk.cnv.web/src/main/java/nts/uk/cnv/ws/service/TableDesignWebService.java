@@ -1,14 +1,18 @@
 package nts.uk.cnv.ws.service;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.cnv.app.command.TableDesignImportCommand;
-import nts.uk.cnv.app.command.TableDesignImportCommandHandler;
+import nts.uk.cnv.app.command.UkTableDesignImportCommand;
+import nts.uk.cnv.app.command.UkTableDesignImportCommandHandler;
 import nts.uk.cnv.app.dto.ExportToFileDto;
+import nts.uk.cnv.app.dto.GetUkColumnsDto;
+import nts.uk.cnv.app.dto.GetUkTablesDto;
 import nts.uk.cnv.app.dto.ImportFromFileDto;
 import nts.uk.cnv.app.dto.ImportFromFileResult;
 import nts.uk.cnv.app.dto.TableDesignExportDto;
@@ -19,14 +23,14 @@ import nts.uk.cnv.app.service.TableDesignerService;
 public class TableDesignWebService extends WebService{
 
 	@Inject
-	private TableDesignImportCommandHandler handler;
+	private UkTableDesignImportCommandHandler handler;
 
 	@Inject
 	private TableDesignerService tdService;
 
 	@POST
 	@Path("import")
-	public void importTable(TableDesignImportCommand command) {
+	public void importTable(UkTableDesignImportCommand command) {
 		handler.handle(command);
 	}
 
@@ -46,5 +50,24 @@ public class TableDesignWebService extends WebService{
 	@Path("exporttofile")
 	public void exportToFile(ExportToFileDto param) {
 		tdService.exportToFile(param);
+	}
+
+	@POST
+	@Path("importfromfile_erp")
+	public ImportFromFileResult importErpFromFile(ImportFromFileDto param) {
+		return tdService.importErpFromFile(param);
+	}
+
+
+	@POST
+	@Path("getuktables")
+	public List<GetUkTablesDto> getUkTables() {
+		return tdService.getUkTables();
+	}
+
+	@POST
+	@Path("getukcolumns")
+	public List<GetUkColumnsDto> getUkColumns(String tableName) {
+		return tdService.getUkColumns(tableName);
 	}
 }

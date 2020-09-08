@@ -27,20 +27,20 @@ public class TableDesign {
 
 	public String createDdl(DataTypeDefine datatypedefine) {
 		String index = "";
-		List<Indexes> indexList = indexes.stream().filter(idx -> idx.getConstraintType().equals("INDEX")).collect(Collectors.toList());
+		List<Indexes> indexList = indexes.stream().filter(idx -> idx.isIndex()).collect(Collectors.toList());
 		if(!indexList.isEmpty())
 		{
 			index = String.join(
 				";\r\n",
 				indexList.stream()
-				.map(idx -> "CREATE INDEX " + idx.getName() + " ON " + name + " (" + String.join(",", idx.getColmns()) + ")")
+				.map(idx -> idx.getCreateDdl(name))
 				.collect(Collectors.toList()));
 			index = index + ";";
 		}
 
-		String tableContaint = tableContaint().isEmpty()
-				? ""
-				: ",\r\n" + tableContaint();
+		String tableContaint = indexes.stream().anyMatch(idx -> !idx.isIndex())
+				? ",\r\n" + tableContaint()
+				: "";
 		return "CREATE TABLE " + this.name + "(\r\n" +
 						columnContaint(datatypedefine) +
 						tableContaint +
@@ -52,9 +52,8 @@ public class TableDesign {
 		return String.join(
 					",\r\n",
 					indexes.stream()
-						.filter(idx -> !idx.getConstraintType().equals("INDEX"))
-						.map(idx -> "\tCONSTRAINT " + idx.getName() + " " +
-								  idx.getConstraintType() + " (" + String.join(",", idx.getColmns()) + ")")
+						.filter(idx -> !idx.isIndex())
+						.map(idx -> idx.getTableContaintDdl())
 						.collect(Collectors.toList())
 				) + "\r\n";
 	}
@@ -63,10 +62,7 @@ public class TableDesign {
 		return String.join(
 						",\r\n",
 						columns.stream()
-							.map(col -> "\t" + col.getName() + " " +
-									datatypedefine.dataType(col.getType(), col.getMaxLength(), col.getScale()) +
-								(col.isNullable() ? " NULL " : " NOT NULL") +
-								(col.getDefaultValue() != null && !col.getDefaultValue().isEmpty() ? " DEFAULT " + col.getDefaultValue() : "") )
+							.map(col -> col.getColumnContaintDdl(datatypedefine))
 							.collect(Collectors.toList())
 					);
 	}

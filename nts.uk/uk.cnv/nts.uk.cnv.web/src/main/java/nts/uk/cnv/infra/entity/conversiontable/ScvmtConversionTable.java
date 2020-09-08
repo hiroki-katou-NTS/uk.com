@@ -37,18 +37,12 @@ public class ScvmtConversionTable extends JpaEntity implements Serializable  {
 
 	@Column(name = "TARGET_TBL_NAME")
 	private String targetTableName;
-//
-//	@Column(name = "SOURCE_TBL_NAME")
-//	private String sourceTableName;
-//	
-//	@Column(name = "SOURCE_TBL_ALIAS")
-//	private String sourceTableAlias;
-	
+
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
-	
+
 	public ConversionTable toDomain(ConversionInfo info, List<WhereSentence> where, List<OneColumnConversion> conversionMap) {
 		return new ConversionTable(
 					new TableName(info.getTargetDatabaseName(), info.getTargetSchema(), targetTableName, ""),

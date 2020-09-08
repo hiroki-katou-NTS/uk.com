@@ -1,0 +1,15 @@
+* {
+	font-family: "Meiryo UI";
+}
+
+.tabledesign_uk{
+	background-color: #EEFFEE;
+}
+
+.tabledesign_erp{
+	background-color: #FFEEFF;
+}
+
+textarea {
+	resize: none
+}

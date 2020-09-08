@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity;
+package nts.uk.cnv.infra.entity.uktabledesign;
 
 import java.io.Serializable;
 
@@ -9,18 +9,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @Embeddable
-public class ScvmtColumnDesignPk implements Serializable {
+public class ScvmtUkIndexColumnsPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "TABLE_ID")
 	public String tableId;
+	
+	@Column(name = "NAME")
+	private String name;
 
 	@Column(name = "ID")
-	public int id;
+	private int id;
+	
+	@Column(name = "COLUMN_NAME")
+	private String columnName;
 
 }

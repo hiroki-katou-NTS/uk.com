@@ -11,19 +11,19 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.cnv.dom.service.TableDesignImportService;
+import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
-import nts.uk.cnv.dom.tabledesign.TableDesignRepository;
 
 @Stateless
-public class TableDesignImportCommandHandler extends CommandHandler<TableDesignImportCommand> {
+public class ErpTableDesignImportCommandHandler extends CommandHandler<ErpTableDesignImportCommand> {
 
 	@Inject
-	TableDesignRepository tableDesignRepository;
+	ErpTableDesignRepository tableDesignRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<TableDesignImportCommand> context) {
+	protected void handle(CommandHandlerContext<ErpTableDesignImportCommand> context) {
 
-		TableDesignImportCommand command = context.getCommand();
+		ErpTableDesignImportCommand command = context.getCommand();
 		RequireImpl require = new RequireImpl(tableDesignRepository);
 		transaction.execute(() -> {
 			AtomTask at;
@@ -40,7 +40,7 @@ public class TableDesignImportCommandHandler extends CommandHandler<TableDesignI
 	@RequiredArgsConstructor
 	private static class RequireImpl implements TableDesignImportService.Require {
 
-		private final TableDesignRepository tableDesignRepository;
+		private final ErpTableDesignRepository tableDesignRepository;
 
 		@Override
 		public void regist(TableDesign tableDesign) {

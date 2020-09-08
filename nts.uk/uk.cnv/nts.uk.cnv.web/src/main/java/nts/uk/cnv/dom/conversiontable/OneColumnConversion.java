@@ -1,6 +1,5 @@
 package nts.uk.cnv.dom.conversiontable;
 
-import java.util.List;
 import java.util.Optional;
 
 import lombok.AllArgsConstructor;
@@ -12,7 +11,7 @@ import nts.uk.cnv.dom.pattern.ConversionPattern;
 /**
  * １列分の変換表
  * @author ai_muto
- * 
+ *
  *１列分の変換
  * 変換先の情報をINSERT句に追加する
  */
@@ -20,15 +19,15 @@ import nts.uk.cnv.dom.pattern.ConversionPattern;
 @Getter
 public class OneColumnConversion {
 	private String targetColumn;
-	private List<ConversionPattern> patternList;
-	
+	private String conversionType;
+
+	private ConversionPattern pattern;
+
 	public ConversionSQL apply(ConversionSQL conversionSql) {
-		for (ConversionPattern pattern :patternList) {
-			conversionSql = pattern.apply(conversionSql);
-		}
-		
+		conversionSql = this.pattern.apply(conversionSql);
+
 		conversionSql.getInsert().addExpression(new ColumnExpression(Optional.empty(), targetColumn));
-		
+
 		return conversionSql;
 	}
 }

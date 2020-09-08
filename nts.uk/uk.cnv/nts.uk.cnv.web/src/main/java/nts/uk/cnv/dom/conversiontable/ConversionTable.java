@@ -19,10 +19,10 @@ import nts.uk.cnv.dom.conversionsql.WhereSentence;
 public class ConversionTable {
 
 	private TableName targetTableName;
-	
+
 	private List<WhereSentence> whereList;
 	private List<OneColumnConversion> conversionMap;
-	
+
 	public ConversionSQL createConversionSql() {
 		ConversionSQL result = new ConversionSQL(
 					new InsertSentence(targetTableName, new ArrayList<>()),
@@ -34,7 +34,7 @@ public class ConversionTable {
 		for(OneColumnConversion oneColumnConversion : conversionMap) {
 			result = oneColumnConversion.apply(result);
 		}
-		
+
 		return result;
 	}
 

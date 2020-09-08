@@ -1,4 +1,4 @@
-package nts.uk.cnv.infra.entity;
+package nts.uk.cnv.infra.entity.uktabledesign;
 
 import java.io.Serializable;
 
@@ -21,17 +21,17 @@ import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "SCVMT_COLUMN_DESIGN")
-public class ScvmtColumnDesign extends JpaEntity implements Serializable {
+@Table(name = "SCVMT_UK_COLUMN_DESIGN")
+public class ScvmtUkColumnDesign extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public ScvmtColumnDesignPk scvmtColumnDesignPk;
+	public ScvmtUkColumnDesignPk scvmtUkColumnDesignPk;
 
 	@Column(name = "NAME")
 	public String name;
-	
+
 	@Column(name = "DATA_TYPE")
 	private String dataType;
 
@@ -66,16 +66,16 @@ public class ScvmtColumnDesign extends JpaEntity implements Serializable {
     @PrimaryKeyJoinColumns({
     	@PrimaryKeyJoinColumn(name = "TABLE_ID", referencedColumnName = "TABLE_ID")
     })
-	public ScvmtTableDesign tabledesign;
-	
+	public ScvmtUkTableDesign tabledesign;
+
 	@Override
 	protected Object getKey() {
-		return scvmtColumnDesignPk;
+		return scvmtUkColumnDesignPk;
 	}
 
 	public ColumnDesign toDomain() {
 		return new ColumnDesign(
-				scvmtColumnDesignPk.id,
+				scvmtUkColumnDesignPk.id,
 				name,
 				DataType.valueOf(dataType),
 				maxLength,

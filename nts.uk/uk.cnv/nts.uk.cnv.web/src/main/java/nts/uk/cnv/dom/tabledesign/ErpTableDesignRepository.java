@@ -3,11 +3,10 @@ package nts.uk.cnv.dom.tabledesign;
 import java.util.List;
 import java.util.Optional;
 
-public interface TableDesignRepository {
+public interface ErpTableDesignRepository {
 
 	void insert(TableDesign tableDesign);
 	void update(TableDesign tableDesign);
-	void delete(TableDesign tableDesign);
 	boolean exists(String tableName);
 
 	Optional<TableDesign> find(String tablename);

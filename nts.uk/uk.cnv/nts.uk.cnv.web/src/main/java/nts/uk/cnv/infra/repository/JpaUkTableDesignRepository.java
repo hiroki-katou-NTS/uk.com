@@ -10,19 +10,20 @@ import java.util.stream.Collectors;
 import lombok.SneakyThrows;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.uk.cnv.app.dto.GetUkTablesDto;
 import nts.uk.cnv.dom.tabledesign.ColumnDesign;
 import nts.uk.cnv.dom.tabledesign.Indexes;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
-import nts.uk.cnv.dom.tabledesign.TableDesignRepository;
-import nts.uk.cnv.infra.entity.ScvmtColumnDesign;
-import nts.uk.cnv.infra.entity.ScvmtColumnDesignPk;
-import nts.uk.cnv.infra.entity.ScvmtIndexColumns;
-import nts.uk.cnv.infra.entity.ScvmtIndexColumnsPk;
-import nts.uk.cnv.infra.entity.ScvmtIndexDesign;
-import nts.uk.cnv.infra.entity.ScvmtIndexDesignPk;
-import nts.uk.cnv.infra.entity.ScvmtTableDesign;
+import nts.uk.cnv.dom.tabledesign.UkTableDesignRepository;
+import nts.uk.cnv.infra.entity.uktabledesign.ScvmtUkColumnDesign;
+import nts.uk.cnv.infra.entity.uktabledesign.ScvmtUkColumnDesignPk;
+import nts.uk.cnv.infra.entity.uktabledesign.ScvmtUkIndexColumns;
+import nts.uk.cnv.infra.entity.uktabledesign.ScvmtUkIndexColumnsPk;
+import nts.uk.cnv.infra.entity.uktabledesign.ScvmtUkIndexDesign;
+import nts.uk.cnv.infra.entity.uktabledesign.ScvmtUkIndexDesignPk;
+import nts.uk.cnv.infra.entity.uktabledesign.ScvmtUkTableDesign;
 
-public class JpaTableDesignRepository extends JpaRepository implements TableDesignRepository {
+public class JpaUkTableDesignRepository extends JpaRepository implements UkTableDesignRepository {
 
 	@Override
 	public void insert(TableDesign tableDesign) {
@@ -35,35 +36,30 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 	}
 
 	@Override
-	public void delete(TableDesign tableDesign) {
-		this.commandProxy().remove(toEntity(tableDesign));
-	}
-
-	@Override
 	public boolean exists(String tableName) {
-		String sql = "SELECT td FROM ScvmtTableDesign td WHERE td.name = :name";
-		Optional<ScvmtTableDesign> result = this.queryProxy().query(sql, ScvmtTableDesign.class)
+		String sql = "SELECT td FROM ScvmtUkTableDesign td WHERE td.name = :name";
+		Optional<ScvmtUkTableDesign> result = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 				.setParameter("name", tableName)
 				.getSingle();
 		return result.isPresent();
 	}
 
-	private ScvmtTableDesign toEntity(TableDesign tableDesign) {
-		List<ScvmtColumnDesign> columns = tableDesign.getColumns().stream()
+	private ScvmtUkTableDesign toEntity(TableDesign tableDesign) {
+		List<ScvmtUkColumnDesign> columns = tableDesign.getColumns().stream()
 				.map(cd -> toEntity(tableDesign.getId(), cd))
 				.collect(Collectors.toList());
 
-		List<ScvmtIndexDesign> indexes = new ArrayList<>();
+		List<ScvmtUkIndexDesign> indexes = new ArrayList<>();
 		for (Indexes idx: tableDesign.getIndexes()) {
-			List<ScvmtIndexColumns> indexcolumns = idx.getColmns().stream()
-				.map(col -> new ScvmtIndexColumns(
-						new ScvmtIndexColumnsPk(tableDesign.getId(), idx.getName(), idx.getColmns().indexOf(col), col),
+			List<ScvmtUkIndexColumns> indexcolumns = idx.getColmns().stream()
+				.map(col -> new ScvmtUkIndexColumns(
+						new ScvmtUkIndexColumnsPk(tableDesign.getId(), idx.getName(), idx.getColmns().indexOf(col), col),
 						null)
 					)
 				.collect(Collectors.toList());
 
-			indexes.add(new ScvmtIndexDesign(
-					new ScvmtIndexDesignPk(tableDesign.getId(), idx.getName()),
+			indexes.add(new ScvmtUkIndexDesign(
+					new ScvmtUkIndexDesignPk(tableDesign.getId(), idx.getName()),
 					idx.getConstraintType(),
 					String.join(",", idx.getParams()),
 					idx.getClustered(),
@@ -72,7 +68,7 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 			));
 		}
 
-		return new ScvmtTableDesign(
+		return new ScvmtUkTableDesign(
 				tableDesign.getId(),
 				tableDesign.getName(),
 				tableDesign.getComment(),
@@ -82,9 +78,9 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 				indexes);
 	}
 
-	private ScvmtColumnDesign toEntity(String tableId, ColumnDesign columnDesign) {
-		return new ScvmtColumnDesign(
-					new ScvmtColumnDesignPk(tableId, columnDesign.getId()),
+	private ScvmtUkColumnDesign toEntity(String tableId, ColumnDesign columnDesign) {
+		return new ScvmtUkColumnDesign(
+					new ScvmtUkColumnDesignPk(tableId, columnDesign.getId()),
 					columnDesign.getName(),
 					columnDesign.getType().toString(),
 					columnDesign.getMaxLength(),
@@ -103,32 +99,32 @@ public class JpaTableDesignRepository extends JpaRepository implements TableDesi
 	@Override
 	@SneakyThrows
 	public Optional<TableDesign> find(String tablename) {
-		String sql = "SELECT td FROM ScvmtTableDesign td WHERE td.name = :name";
-		Optional<ScvmtTableDesign> parent = this.queryProxy().query(sql, ScvmtTableDesign.class)
+		String sql = "SELECT td FROM ScvmtUkTableDesign td WHERE td.name = :name";
+		Optional<ScvmtUkTableDesign> parent = this.queryProxy().query(sql, ScvmtUkTableDesign.class)
 				.setParameter("name", tablename)
 				.getSingle();
 		if(!parent.isPresent()) return Optional.empty();
 
-		Optional<ScvmtTableDesign> result = this.queryProxy().find(parent.get().getTableId(), ScvmtTableDesign.class);
+		Optional<ScvmtUkTableDesign> result = this.queryProxy().find(parent.get().getTableId(), ScvmtUkTableDesign.class);
 		if(!parent.isPresent()) return Optional.empty();
 
 		return Optional.of(result.get().toDomain());
 	}
 
 	@Override
-	public List<String> getAllTableList() {
-		String sql = "SELECT td.NAME FROM SCVMT_TABLE_DESIGN td ORDER BY NAME ASC";
-		List<String> tablelist = new ArrayList<>();
+	public List<GetUkTablesDto> getAllTableList() {
+		String sql = "SELECT td.TABLE_ID, td.NAME FROM SCVMT_UK_TABLE_DESIGN td ORDER BY NAME ASC";
+		List<GetUkTablesDto> tablelist = new ArrayList<>();
 		try(PreparedStatement statement = this.connection().prepareStatement(sql)){
 			tablelist = new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				return rec.getString("NAME");
+				return new GetUkTablesDto(
+						rec.getString("TABLE_ID"),
+						rec.getString("NAME")
+					);
 			});
 		}
 		 catch (SQLException e) {
 		}
-//		List<String> tablelist = this.queryProxy().query(sql, TableDesign.class).getList().stream()
-//				.map(td -> td.getName())
-//				.collect(Collectors.toList());
 
 		return tablelist;
 	}

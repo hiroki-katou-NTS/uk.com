@@ -3,7 +3,7 @@ package nts.uk.cnv.app.command;
 import lombok.Value;
 
 @Value
-public class TableDesignImportCommand {
+public class UkTableDesignImportCommand {
 
 	private String createTableSql;
 	private String createIndexSql;

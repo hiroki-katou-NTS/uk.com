@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Table Design Importer & Exporter</title>
-<link rel="stylesheet" type="text/css" href="main.css">
+<link rel="stylesheet" type="text/css" href="cnv000.css">
 <script
   src="https://code.jquery.com/jquery-3.3.1.min.js"
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
@@ -14,6 +14,7 @@
 
 <body>
 <h1>Table Design Importer & Exporter</h1>
+<h2 class="tabledesign_uk">UK</h2>
 <table>
 	<tr>
 		<td><div>import file folder path:</div></td>
@@ -44,6 +45,32 @@
 			<input type="radio" id="uk_export" name="ddl_type_export" value="uk" checked="checked" style="font-size:80%">UK
 			<input type="radio" id="mssql_export" name="ddl_type_export" value="sqlserver" style="font-size:80%">SqlServer
 			<input type="radio" id="pg_export" name="ddl_type_export" value="postgres" style="font-size:80%">Postgres
+		</td>
+	</tr>
+</table>
+<h2 class="tabledesign_erp">ERP</h2>
+<table>
+	<tr>
+		<td><div>import file folder path:</div></td>
+		<td style="width:30px;"></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td>
+			<input type="text" id="folderpath_import_erp" style="font-size:80%; width:340px;"/>
+			<button id="import_erp">import</button>
+		</td>
+		<td></td>
+		<td>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			RDBMS:
+			<input type="radio" id="mssql_import_erp" name="ddl_type_import_erp" value="sqlserver" checked="checked" style="font-size:80%">SqlServer
+		</td>
+		<td></td>
+		<td>
 		</td>
 	</tr>
 </table>
