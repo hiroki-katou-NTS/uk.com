@@ -55,7 +55,7 @@ public class ReflectionImageTest {
 
     @Test
     public void addByWeeklyWorkingTest_3() {
-        WorkInformation workHolidayWorkInfor = new WorkInformation("workCcle-workTimeCode", "workCcle-workTypeCode");
+        WorkInformation workHolidayWorkInfor = new WorkInformation("workholiday-workTimeCode", "workholiday-workTypeCode");
         WorkInformation workInformation = new WorkInformation("weekly-workTimeCode", "weekly-workTypeCode");
 
         ReflectionImage target = ReflectionImage.create();
