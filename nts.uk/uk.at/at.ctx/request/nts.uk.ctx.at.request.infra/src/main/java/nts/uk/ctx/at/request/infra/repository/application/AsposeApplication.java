@@ -215,7 +215,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		Cell cellC4 = cells.get("C4");
 		cellC4.setValue(printContentOfApp.getEmployeeInfoLst().get(0).getBussinessName());
 		ShapeCollection sc = worksheet.getShapes();
-		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 1) {
+		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 0) {
 			sc.get("APPORVAL1").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails1 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(0);
 			Cell cellG1 = cells.get("G1");
@@ -229,7 +229,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		} else {
 			sc.get("APPORVAL1").setPrintable(false);
 		}
-		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 2) {
+		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 1) {
 			sc.get("APPORVAL2").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails2 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(1);
 			Cell cellH1 = cells.get("H1");
@@ -257,7 +257,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		} else {
 			sc.get("APPORVAL3").setPrintable(false);
 		}
-		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 4) {
+		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 3) {
 			sc.get("APPORVAL4").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails4 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(3);
 			Cell cellJ1 = cells.get("J1");
@@ -271,7 +271,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		} else {
 			sc.get("APPORVAL4").setPrintable(false);
 		}
-		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 5) {
+		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 4) {
 			sc.get("APPORVAL5").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails5 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(4);
 			Cell cellK1 = cells.get("K1");
