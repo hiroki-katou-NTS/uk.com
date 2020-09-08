@@ -1,9 +1,9 @@
 package nts.uk.ctx.sys.portal.infra.repository.standardmenu;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -403,8 +403,8 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 
 	@Override
 	public List<StandardMenu> findByProgram(String companyId, int system, List<MenuClassification> classification, String programId) {
-		List<Integer> menuClassification = new ArrayList<Integer>();
-		classification.stream().forEach(s -> menuClassification.add(s.value));
+		List<Integer> menuClassification = classification.stream().map(m -> m.value)
+				.collect(Collectors.toList());
 		return this.queryProxy().query(FIND_BY_SYSTEM_MENUCLASSIFICATION_PROGRAMID, CcgstStandardMenu.class)
 				.setParameter("companyId", companyId)
 				.setParameter("system", system)

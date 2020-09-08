@@ -53,4 +53,24 @@ public class LogSettingDto implements LogSetting.MementoSetter {
 		return logSettingDto;
 	}
 
+	@Override
+	public void setMenuClassification(Integer menuClassification) {
+		this.setMenuClassification(menuClassification);
+	}
+
+	@Override
+	public void setLoginHistoryRecord(Integer loginHistoryRecord) {
+		this.setLoginHistoryRecord(loginHistoryRecord);
+	}
+
+	@Override
+	public void setEditHistoryRecord(Integer editHistoryRecord) {
+		this.setEditHistoryRecord(editHistoryRecord);
+	}
+
+	@Override
+	public void setBootHistoryRecord(Integer bootHistoryRecord) {
+		this.setBootHistoryRecord(bootHistoryRecord);
+	}
+
 }

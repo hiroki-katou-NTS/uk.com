@@ -72,11 +72,11 @@ public class LogSetting extends AggregateRoot {
 	public void getMemento(MementoGetter mementoGetter) {
 		this.system = mementoGetter.getSystem();
 		this.programId = mementoGetter.getProgramId();
-		this.menuClassification = MenuClassification.valueOf(mementoGetter.getMenuClassification().value);
-		this.loginHistoryRecord = NotUseAtr.valueOf(mementoGetter.getLoginHistoryRecord().value);
+		this.menuClassification = MenuClassification.valueOf(mementoGetter.getMenuClassification());
+		this.loginHistoryRecord = NotUseAtr.valueOf(mementoGetter.getLoginHistoryRecord());
 		this.companyId = mementoGetter.getCompanyId();
-		this.editHistoryRecord = NotUseAtr.valueOf(mementoGetter.getEditHistoryRecord().value);
-		this.bootHistoryRecord = NotUseAtr.valueOf(mementoGetter.getBootHistoryRecord().value);
+		this.editHistoryRecord = NotUseAtr.valueOf(mementoGetter.getEditHistoryRecord());
+		this.bootHistoryRecord = NotUseAtr.valueOf(mementoGetter.getBootHistoryRecord());
 	}
 
 	/**
@@ -90,19 +90,11 @@ public class LogSetting extends AggregateRoot {
 	public void setMemento(MementoSetter mementoSetter) {
 		mementoSetter.setSystem(this.system);
 		mementoSetter.setProgramId(this.programId);
-		if (this.menuClassification != null) {
-			mementoSetter.setMenuClassification(this.menuClassification);
-		}
-		if (this.loginHistoryRecord != null) {
-			mementoSetter.setLoginHistoryRecord(this.loginHistoryRecord);
-		}
+		mementoSetter.setMenuClassification(this.menuClassification.value);
+		mementoSetter.setLoginHistoryRecord(this.loginHistoryRecord.value);
 		mementoSetter.setCompanyId(this.companyId);
-		if (this.editHistoryRecord != null) {
-			mementoSetter.setEditHistoryRecord(this.editHistoryRecord);
-		}
-		if (this.bootHistoryRecord != null) {
-			mementoSetter.setBootHistoryRecord(this.bootHistoryRecord);
-		}
+		mementoSetter.setEditHistoryRecord(this.editHistoryRecord.value);
+		mementoSetter.setBootHistoryRecord(this.bootHistoryRecord.value);
 	}
 
 	/**
@@ -119,15 +111,15 @@ public class LogSetting extends AggregateRoot {
 
 		void setProgramId(String programId);
 
-		void setMenuClassification(MenuClassification menuClassification);
+		void setMenuClassification(Integer menuClassification);
 
-		void setLoginHistoryRecord(NotUseAtr loginHistoryRecord);
+		void setLoginHistoryRecord(Integer loginHistoryRecord);
 
 		void setCompanyId(String companyId);
 
-		void setEditHistoryRecord(NotUseAtr editHistoryRecord);
+		void setEditHistoryRecord(Integer editHistoryRecord);
 
-		void setBootHistoryRecord(NotUseAtr bootHistoryRecord);
+		void setBootHistoryRecord(Integer bootHistoryRecord);
 	}
 
 	/**
@@ -143,14 +135,14 @@ public class LogSetting extends AggregateRoot {
 
 		String getProgramId();
 
-		MenuClassification getMenuClassification();
+		Integer getMenuClassification();
 
-		NotUseAtr getLoginHistoryRecord();
+		Integer getLoginHistoryRecord();
 
 		String getCompanyId();
 
-		NotUseAtr getEditHistoryRecord();
+		Integer getEditHistoryRecord();
 
-		NotUseAtr getBootHistoryRecord();
+		Integer getBootHistoryRecord();
 	}
 }
