@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -26,4 +28,21 @@ public interface WeeklyWorkSettingRepository {
 	 * @return the list
 	 */
 	public List<WeeklyWorkSetting> findAll(String companyId);
+
+	/**
+	 * get all weekly work day
+	 * @param companyId
+	 * @return
+	 */
+	WeeklyWorkDayPattern getWeeklyWorkDayPatternByCompanyId(String companyId);
+
+	/**
+	 * insert weekly work day
+	 */
+	void addWeeklyWorkDayPattern(WeeklyWorkDayPattern weeklyWorkDayPattern);
+
+	/**
+	 * update weekly work day
+	 */
+	void updateWeeklyWorkDayPattern(WeeklyWorkDayPattern weeklyWorkDayPattern);
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.app.command.shift.workcycle.command;
 
 import lombok.Value;
+import lombok.val;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 
@@ -12,18 +13,20 @@ import java.util.stream.Collectors;
 @Value
 public class AddWorkCycleCommand {
 
+    // 勤務サイクルコード
     private String workCycleCode;
 
+    // 勤務サイクル名称
     private String workCycleName;
 
+    // 勤務サイクルの勤務情報
     private List<WorkInformation> workInformations;
 
     public static WorkCycle createFromCommand(AddWorkCycleCommand command, String cid) {
         // Sort list workinformation by display order
-        command.workInformations.sort(Comparator.comparingDouble(WorkInformation::getDispOrder)
-                .reversed());
+        command.workInformations.sort(Comparator.comparingDouble(WorkInformation::getDispOrder));
 
-        List<WorkCycleInfo> infos = command.workInformations.stream().map(i -> WorkCycleInfo.create(
+        List<WorkCycleInfo> infos =command.workInformations.stream().map(i -> WorkCycleInfo.create(
                 i.getDays(),
                 new nts.uk.ctx.at.shared.dom.WorkInformation(i.getWorkTimeCode(), i.getWorkTypeCode())
         )).collect(Collectors.toList());

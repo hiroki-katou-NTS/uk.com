@@ -53,6 +53,8 @@ module nts.uk.at.view.ksm003.a {
 
                 vm.dayIsRequired(true);
                 vm.selectedCheckAll(false);
+                vm.enableRemoveItem(false);
+
                 if (codeChanged) {
                     vm.getPatternValByPatternCd(codeChanged);
                 } else {
@@ -481,7 +483,6 @@ module nts.uk.at.view.ksm003.a {
 
             //登録の時には勤務内容一覧に一行もない //register & update
             if (workingTimeCycleList.length <= 0) {
-
                 $('#fixed-table-list')
                     .ntsError('clear')
                     .ntsError('set', {
@@ -499,6 +500,7 @@ module nts.uk.at.view.ksm003.a {
             let messageIds: Array<string> = ["Msg_23", "Msg_24", , "Msg_25", "Msg_389", "Msg_390",
                 "Msg_416", "Msg_417", "Msg_434", "Msg_435", "Msg_3", "Msg_1608", "Msg_1609"];
 
+	        vm.$blockui('show');
             let detailDto = vm.mainModel().toDto();
             if (!vm.isEditting()) {
                 let selectedCode = vm.selectedCode();
@@ -529,7 +531,6 @@ module nts.uk.at.view.ksm003.a {
                 let infosData = detailDto.infos;
                 if(res.errorStatusList.length > 0 ) {
                     res.errorStatusList.map( (error_type, i) => {
-
                         switch ( error_type ) {
                             case 'WORKTIME_WAS_DELETE':
                                 MsgId = "Msg_1609";
@@ -569,14 +570,14 @@ module nts.uk.at.view.ksm003.a {
                 vm.selectedCheckAll(false);
                 let patternCode = vm.mainModel().patternCode();
                 vm.selectedCode(patternCode);
-
+				vm.enableRemoveItem(false);
                 $("#inpPattern").focus();
 
                 if (!vm.isEditting()) vm.isEditting(true);
 
                 vm.getListWorkingCycle();
                 vm.getPatternValByPatternCd(patternCode);
-
+	            vm.$blockui("hide");
             }).fail(function (res) {
                 let isSetError = messageIds.some(item => item == res.messageId);
                 if (isSetError) {
@@ -584,6 +585,7 @@ module nts.uk.at.view.ksm003.a {
                 } else {
                     nts.uk.ui.dialog.alertError(res.message);
                 }
+	            vm.$blockui("hide");
             }).always(function () {
                 vm.$blockui("hide");
             });
@@ -804,6 +806,9 @@ module nts.uk.at.view.ksm003.a {
                 selectWorkTypeCode: self.typeCode,
                 selectSiftCode: self.timeCode,
             });
+
+	        nts.uk.ui.errors.clearAll();
+
             nts.uk.ui.windows.sub
                 .modal("/view/kdl/003/a/index.xhtml", {
                     title: nts.uk.resource.getText("KDL003_1"),
