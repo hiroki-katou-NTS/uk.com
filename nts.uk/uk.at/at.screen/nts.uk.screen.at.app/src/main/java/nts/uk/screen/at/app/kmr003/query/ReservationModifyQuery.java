@@ -261,7 +261,7 @@ public class ReservationModifyQuery {
             reservationModifyEmp.setReservationDate(bentoReservation.getReservationDate().getDate());
 
             Optional<BentoReservationDetail> detailOpt = bentoReservation.getBentoReservationDetails().stream().findFirst();
-            detailOpt.ifPresent(bentoReservationDetail -> reservationModifyEmp.setReservationTime(bentoReservationDetail.getDateTime().toString("hh:mm")));
+            detailOpt.ifPresent(bentoReservationDetail -> reservationModifyEmp.setReservationTime(bentoReservationDetail.getDateTime().toString("HH:mm")));
 
             reservationModifyEmp.setOrdered(bentoReservation.isOrdered());
             reservationModifyEmp.setClosingTimeFrame(bentoReservation.getReservationDate().getClosingTimeFrame().value);

@@ -2,6 +2,9 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsDaysRemain;
@@ -10,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.AbsRecMngInPeriodRefactParamInput;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenSuspensionAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.AccumulationAbsenceDetailComparator;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
@@ -42,7 +46,8 @@ public class NumberCompensatoryLeavePeriodQuery {
 						.get().getNextDay().get().equals(inputParam.getDateData().start()))) {
 			// 月初時点の情報を整える
 			AbsDaysRemain absDaysRemain = PrepareInfoBeginOfMonth.prepare(require, inputParam.getCid(),
-					inputParam.getSid(), inputParam.getDateData().start(), inputParam.isMode(), lstAbsRec);
+					inputParam.getSid(), inputParam.getDateData().start(), inputParam.getDateData().end(),
+					inputParam.isMode(), lstAbsRec, inputParam.getFixManaDataMonth());
 			result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(absDaysRemain.getRemainDays()));
 		} else {
 			// 「繰越日数」に前回の修正結果の残数を格納
@@ -59,9 +64,10 @@ public class NumberCompensatoryLeavePeriodQuery {
 		lstAbsRec.sort(new AccumulationAbsenceDetailComparator());
 
 		// 振出と振休の相殺処理
-		List<SeqVacationAssociationInfo> lstSeqVacation = CompenSuspensionOffsetProcess.process(require,
+		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> lstSeqVacation = CompenSuspensionOffsetProcess.process(require,
 				inputParam.getCid(), inputParam.getSid(), inputParam.getDateData().end(), lstAbsRec);
-		result.setLstSeqVacation(lstSeqVacation);
+		result.setLstSeqVacation(lstSeqVacation.getRight());
+		lstSeqVacation.getLeft().ifPresent(x -> result.getPError().add(PauseError.PREFETCH_ERROR));
 		// 残数と未消化を集計する
 		AbsDaysRemain absRemain = TotalRemainUndigest.process(lstAbsRec, inputParam.getScreenDisplayDate(),
 				inputParam.isMode());

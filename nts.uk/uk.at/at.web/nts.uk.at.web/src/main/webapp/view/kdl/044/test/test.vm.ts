@@ -113,7 +113,6 @@ module test.viewmodel {
 				new BoxModel(2, '職場グループ')
 			]);
 			self.selectedMode = ko.observable(1);
-			
 			self.selectedMode.subscribe((value) => {
 				if (value == 1) {
 					self.isMultiSelect(true);

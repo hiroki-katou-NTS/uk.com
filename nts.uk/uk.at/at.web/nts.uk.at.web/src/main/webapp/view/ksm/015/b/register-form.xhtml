@@ -16,7 +16,7 @@ required: true}" />
     <div class="valign-center control-group">
         <div data-bind="ntsFormLabel: { constraint: 'ShiftMasterName', required: true, enable: true}">
             #{i18n.getText('KSM015_14')}</div>
-        <input tabindex="7" data-bind="ntsTextEditor: {	
+        <input tabindex="7" id ="requiredName" data-bind="ntsTextEditor: {	
 name: '#[KSM015_25]',
 value: registrationForm().shiftMasterName,
 constraint: 'ShiftMasterName',

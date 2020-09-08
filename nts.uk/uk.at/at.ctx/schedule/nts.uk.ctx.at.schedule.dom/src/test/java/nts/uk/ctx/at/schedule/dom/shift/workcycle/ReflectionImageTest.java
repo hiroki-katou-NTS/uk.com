@@ -22,7 +22,7 @@ public class ReflectionImageTest {
     @Test
     public void getters() {
 
-        ReflectionImage target = new ReflectionImage(new HashMap<>());
+        ReflectionImage target = ReflectionImage.create();
         NtsAssert.invokeGetters(target);
     }
 
