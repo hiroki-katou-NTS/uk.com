@@ -1829,8 +1829,13 @@ module cmm045.a.viewmodel {
 
         print(params: any) {
             let self = this;
+            let lstApp = self.appList(),
+            programName = nts.uk.ui._viewModel.kiban.programName().replace('CMM045A ', '');
+            lstApp.appLst = ko.toJS(self.items);
+            lstApp.displaySet.startDateDisp = self.appListExtractConditionDto.periodStartDate;
+            lstApp.displaySet.endDateDisp = self.appListExtractConditionDto.periodEndDate;
 
-            const command = { appListAtr: self.appListAtr, lstApp: self.appList() }
+            const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
             service.print(command);
         }
 
