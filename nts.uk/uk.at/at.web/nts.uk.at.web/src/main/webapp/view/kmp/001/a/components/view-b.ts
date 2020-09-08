@@ -7,16 +7,16 @@ module nts.uk.at.view.kmp001.b {
 			<button class="proceed" data-bind= "text: $i18n('KMP001_5'), click: addStampCard"></button>
 			<button class="danger" data-bind= "text: $i18n('KMP001_6'), click: deleteStamCard"></button>
 		</div>
-		<div class="search_label" style="padding-bottom: 0px">
-			<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
-			<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
-			<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),
-												click: getStampCard">
-			</button>
-			<button id="top_bottom" data-bind= "text: $i18n('KMP001_24'),
-												click: getAllStampCard"></button>
-		</div>
 		<div class="view-kmp">
+			<div class="search_label" style="padding-bottom: 0px">
+				<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
+				<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
+				<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),
+													click: getStampCard">
+				</button>
+				<button id="top_bottom" data-bind= "text: $i18n('KMP001_24'),
+													click: getAllStampCard"></button>
+			</div>
 			<div class="float-left list-component">
 				<div class="caret-right caret-background bg-green" style="padding: 10px;">
 					<table id="card-list" 

@@ -3,14 +3,14 @@ module nts.uk.at.view.kmp001.a {
 	import share = nts.uk.at.view.kmp001;
 
 	const template = `
-		<div id="com-ccg001"></div>
+		<div data-bind="component: { 
+					name: 'ccg001', 
+					params: { employees: employees, baseDate: baseDate, employeeIds: employeeIds}}">
+		</div>
 		<div id="functions-area">
 			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/a/index.xhtml' },text: $i18n('KMP001_100')"></a>
 			<button id="add" class="proceed" data-bind="text: $i18n('KMP001_5'), click: addStampCard"></button>
 			<button class="danger" data-bind="text: $i18n('KMP001_6'), click: deleteStampCard, enable: mode() == 'update'"></button>
-			<!-- ko if: attendance -->
-			<button data-bind="text: $i18n('KMP001_7'), click: showDiaLog"></button>
-			<!-- /ko -->
 		</div>
 		<div class="view-kmp">
 			<div class="list-component float-left viewa">
@@ -19,7 +19,8 @@ module nts.uk.at.view.kmp001.a {
 			<div class="float-left model-component" 
 				data-bind="component: { 
 					name: 'editor-area', 
-					params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}"></div>
+					params: { model: model, stampCardEdit: stampCardEdit, textInput: textInput}}">
+			</div>
 		<div>
 `;
 
@@ -53,10 +54,6 @@ module nts.uk.at.view.kmp001.a {
 
 		created() {
 			const vm = this;
-
-			$(document).ready(function() {
-				$('#com-ccg001').focus();
-			});
 
 			vm.model.code
 				.subscribe((c: string) => {
@@ -152,84 +149,6 @@ module nts.uk.at.view.kmp001.a {
 					maxWidth: 450
 				} as any
 			);
-
-			$('#com-ccg001')
-				.ntsGroupComponent({
-					/** Common properties */
-					systemType: 2, //システム区分	
-					showEmployeeSelection: true,
-					showQuickSearchTab: true, //クイック検索
-					showAdvancedSearchTab: true,
-					showBaseDate: true, //基準日利用
-					showClosure: false, //就業締め日利用
-					showAllClosure: false, //全締め表示
-					showPeriod: false, //対象期間利用
-					periodFormatYM: true, //対象期間精度
-					maxPeriodRange: 'oneMonth', //最長期間
-
-					/** Required parameter */
-					baseDate: ko.observable(moment().format(dataFormate)),
-					periodStartDate: ko.observable(moment.utc('1900/01/01', dataFormate).format(dataFormate)),
-					periodEndDate: ko.observable(moment.utc('9999/12/31', dataFormate).format(dataFormate)),
-					inService: true,
-					leaveOfAbsence: true,
-					closed: true,
-					retirement: true,
-
-					/** Quick search tab options */
-					showAllReferableEmployee: true, //参照可能な社員すべて
-					showOnlyMe: true, //自分だけ
-					showSameDepartment: false,
-					showSameDepartmentAndChild: false,
-					showSameWorkplace: true, //同じ職場の社員
-					showSameWorkplaceAndChild: true, //同じ職場とその配下の社員
-
-					/** Advanced search properties */
-					showEmployment: true, //雇用条件
-					showDepartment: false,
-					showWorkplace: true, //職場条件
-					showClassification: true, //分類条件
-					showJobTitle: true, //職位条件
-					showWorktype: false, //勤種条件
-					isMutipleCheck: true, //選択モード
-
-					/**
-					* Self-defined function: Return data from CCG001
-					* @param: data: the data return from CCG001
-					*/
-					returnDataFromCcg001: function(data: any) {
-						vm.baseDate(moment.utc(data.baseDate, DATE_FORMAT).format("YYYY-MM-DD"));
-
-						vm.employees([]);
-
-						for (var i = 0; i < data.listEmployee.length; i++) {
-							vm.employeeIds.push(data.listEmployee[i].employeeId);
-						}
-
-						const employees = data.listEmployee
-							.map(m => ({
-								affiliationId: m.affiliationId,
-								affiliationName: m.affiliationName,
-								code: m.employeeCode,
-								name: m.employeeName,
-								employeeId: m.employeeId
-							}));
-
-						vm.employees(employees);
-						vm.model.clear();
-						vm.reloadData();
-					}
-				});
-		}
-
-		showDiaLog() {
-			const vm = this;
-
-			vm.$window
-				.modal('/view/kmp/001/d/index.xhtml')
-				.then((data: IStampCardEdit) => {
-					vm.stampCardEdit.update(data);
-				});
 		}
 
 		/*addNew() {
