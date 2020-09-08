@@ -28,12 +28,12 @@ public class WeeklyWorkScreenProcessor {
     public WeeklyWorkDto findDataBentoMenu(RequestPrams requestPrams) {
 
         String cid = AppContexts.user().companyId();
-        List<WeeklyWorkSetting> weeklyWorkDayPattern = this.weeklyWorkSettingRepository.findAll(cid);
+        WeeklyWorkDayPattern weeklyWorkDayPattern = this.weeklyWorkSettingRepository.getWeeklyWorkDayPatternByCompanyId(cid);
 
 
         //get WorkdayPatternDto
         List<WorkdayPatternDto> workdayPatternDtos = new ArrayList<>();
-        weeklyWorkDayPattern.forEach(x -> {
+        weeklyWorkDayPattern.getListWorkdayPatternItem().forEach(x -> {
             workdayPatternDtos.add(new WorkdayPatternDto(
                     x.getDayOfWeek().description,
                     x.getWorkdayDivision().description,
