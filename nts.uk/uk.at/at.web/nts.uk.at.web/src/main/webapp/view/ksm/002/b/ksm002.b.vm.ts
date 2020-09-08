@@ -388,7 +388,7 @@ module ksm002.b.viewmodel {
         setListText(date, data){
             var self = this;
         
-            let dateData = self.calendarPanel.optionDates();
+            let dateData = self.calendarPanel.optionDates();c
             let existItem = _.find(dateData, item => item.start == date);   
             if(existItem != undefined) {
                 existItem.changeListText(data);   
