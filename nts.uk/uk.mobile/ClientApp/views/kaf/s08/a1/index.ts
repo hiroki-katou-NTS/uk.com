@@ -20,17 +20,17 @@ import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
         'kafs08-a2': KafS08A2Component,
     }
 })
-export class KAFS08A1ViewModel extends KafS00ShrComponent {
+export class KAFS08A1Component extends KafS00ShrComponent {
     public kaf000_A_Params: any = null;
     public kaf000_B_Params: any = null;
     public kaf000_C_Params: any = null;
-    public departTureTime: number | null = null;
-    public returnTime: number | null = null;
     private seen: boolean = true;
     public step: string = 'KAFS08_10';
     public mode: Boolean = true;
+    public departureTime: number = null;
+    public returnTime: number = null;
 
-    @Prop({ default: null })
+    @Prop({ default:() => ({}) })
     public params?: any;
 
     public user: any;
@@ -42,7 +42,7 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
 
         if (vm.params) {
             console.log(vm.params);
-            vm.mode = false;
+            //vm.mode = false;
             this.data = vm.params;
         }
 
@@ -52,8 +52,11 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
-        vm.seen = !this.seen;
-        vm.step = 'KAFS08_11';
+        //kiểm tra nghiệp vụ trước khi nhảy đến step tiếp theo
+        //if (vm.params1.derpartureTime == null || vm.params1.returnTime == null ) {
+        //    return ;
+        //}
+        this.$emit('nextToStepTwo',vm.departureTime,vm.returnTime);
     }
 
     public fetchStart() {
@@ -166,13 +169,15 @@ export class KAFS08A1ViewModel extends KafS00ShrComponent {
             }
         };
     }
-    
+
     public mounted() {
         let vm = this;
     }
 }
 
 const API = {
-    startKAFS08: 'at/request/application/businesstrip/mobile/startMobile'
+    startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
+    checkBeforeRegister: 'at/request/application/businesstrip/mobile/checkBeforeRegister'
 };
+
 

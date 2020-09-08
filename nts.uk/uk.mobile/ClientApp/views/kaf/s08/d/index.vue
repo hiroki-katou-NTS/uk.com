@@ -6,7 +6,7 @@
       <span class="mx-1">{{'KAFS08_70' | i18n}}</span>
       <!-- D1_2 -->
       <div>
-        <span class="mx-3">{{date | date('YYYY/MM/DD(ddd)')}}</span>
+        <span class="mx-3">{{model.date | date('YYYY/MM/DD(ddd)')}}</span>
       </div>
     </div>
     <!-- D2_0 -->
@@ -46,14 +46,14 @@
     </div>
     <!-- D4_2 -->
     <nts-time-editor
-      v-model="model.time1"
+      v-model="model.timetowork"
       :name="'KAFS08_75'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
     />
     <!-- D4_4 -->
     <nts-time-editor
-      v-model="model.time2"
+      v-model="model.leavetime"
       :name="'KAFS08_76'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
