@@ -631,7 +631,7 @@ module nts.uk.at.view.ksm005.a {
 				        nonStatutorySetting: self.convertWorktypeSetting(0, '')
 			        };
 		        nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(dataMonthly));
-		        nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
+		        nts.uk.ui.windows.sub.modal('/view/kdl/023/a/index.xhtml').onClosed(() => {
 			        let dto = nts.uk.ui.windows.getShared('returnedData');
 			        console.log(dto);
 			       /* if (dto) {
