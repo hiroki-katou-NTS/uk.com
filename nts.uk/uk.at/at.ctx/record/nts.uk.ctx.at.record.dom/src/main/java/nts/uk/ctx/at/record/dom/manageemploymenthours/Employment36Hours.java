@@ -14,7 +14,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 
 @Getter
 @NoArgsConstructor
-public class Employmenthours extends AggregateRoot {
+public class Employment36Hours extends AggregateRoot {
 
     /** The companyId.
      * 	会社ID
@@ -39,7 +39,7 @@ public class Employmenthours extends AggregateRoot {
      * @param employmentCD
      * @param basicAgreementSetting
      */
-    public Employmenthours(String  companyId,String employmentCD,LaborSystemtAtr laborSystemtAtr,BasicAgreementSetting basicAgreementSetting ){
+    public Employment36Hours(String  companyId, String employmentCD, LaborSystemtAtr laborSystemtAtr, BasicAgreementSetting basicAgreementSetting ){
         this.companyId = companyId;
         this.employmentCD = employmentCD;
         this.laborSystemtAtr = laborSystemtAtr;
