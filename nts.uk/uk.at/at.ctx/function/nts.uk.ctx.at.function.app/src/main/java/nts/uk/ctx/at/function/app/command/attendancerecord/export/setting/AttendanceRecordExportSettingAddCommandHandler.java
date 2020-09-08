@@ -34,11 +34,12 @@ public class AttendanceRecordExportSettingAddCommandHandler
 
 		AttendanceRecordExportSettingAddCommand command = context.getCommand();
 
-		UUID layoutId = UUID.randomUUID(); 
+		UUID genLayoutId = UUID.randomUUID(); 
 		// convert to domain
-
 		AttendanceRecordExportSetting domain = new AttendanceRecordExportSetting();
-		domain.setLayoutId(layoutId.toString());
+		
+		String layoutId = command.getLayoutId() != null ? command.getLayoutId() : genLayoutId.toString();
+		domain.setLayoutId(layoutId);
 		domain.setCompanyId(AppContexts.user().companyId());
 		domain.setCode(new ExportSettingCode(String.valueOf(command.getCode())));
 		domain.setName(new ExportSettingName(command.getName()));

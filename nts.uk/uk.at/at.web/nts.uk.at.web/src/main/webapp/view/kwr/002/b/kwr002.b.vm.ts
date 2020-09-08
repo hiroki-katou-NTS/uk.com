@@ -24,6 +24,7 @@ module nts.uk.com.view.kwr002.b {
         fontSizeSwitch: KnockoutObservableArray<SealUseAtrSwitch>;
         inputKWR002B: KnockoutObservable<DataInputScreenB>;
         selectionType: string = '' ;
+        layoutId: string = '';
 
         constructor() {
             let self = this;
@@ -254,7 +255,8 @@ module nts.uk.com.view.kwr002.b {
                 sealStamp: rcdExport.sealStamp,
                 nameUseAtr: currentData.nameUseAtr(),
                 exportFontSize: currentData.exportFontSize(),
-                itemSelType : self.selectionType
+                itemSelType : self.selectionType,
+                layoutId: currentData.layoutId()
             };
 
             let itemCmd = {

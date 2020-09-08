@@ -41,6 +41,9 @@ public class AttendanceRecordExportSettingAddCommand {
 	/** The item sel type. */
 	Integer itemSelType;
 	
+	/** The layout id. */
+	String layoutId;
+	
 	/**
 	 * Instantiates a new attendance record export setting add command.
 	 */
