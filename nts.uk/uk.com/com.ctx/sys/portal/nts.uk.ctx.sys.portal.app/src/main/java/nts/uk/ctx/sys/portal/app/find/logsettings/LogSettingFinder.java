@@ -47,19 +47,30 @@ public class LogSettingFinder {
 	 * @param logSetting
 	 */
 	public void addLogSetting(LogSetting logSetting) {
-		this.addLogSetting(logSetting);
+		this.logSettingRepository.addLogSetting(logSetting);
 	}
 
 	/**
-	 * 
+	 * ログ設定更新
+	 * アルゴリズム「ログ設定登録」を実行する
 	 * @param logSettings
 	 */
-	public void updateLogsetting(List<LogSetting> logSettings) {
-		if (logSettings.size() > 0) {
-			String companyId = logSettings.get(0).getCompanyId();
-			int systemType = logSettings.get(0).getSystem();
+	public void updateLogsetting(List<LogSettingDto> logSettingDtos) {
+		List<LogSetting> logSettings = logSettingDtos.stream()
+				.map(l -> LogSettingDto.toDomain(l))
+				.collect(Collectors.toList());
+		if (logSettingDtos.size() > 0) {
+			String companyId = logSettingDtos.get(0).getCompanyId();
+			int systemType = logSettingDtos.get(0).getSystem();
 
+			/**
+			 * ドメインモデル「ログ設定」を削除
+			 */
 			this.deleteLogSetting(companyId, systemType);
+			
+			/**
+			 * ドメインモデル「ログ設定」に追加する
+			 */
 			for (LogSetting l : logSettings) {
 				this.addLogSetting(l);
 			}
