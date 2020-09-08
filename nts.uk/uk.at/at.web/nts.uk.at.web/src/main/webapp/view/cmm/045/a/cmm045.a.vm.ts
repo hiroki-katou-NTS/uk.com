@@ -208,9 +208,9 @@ module cmm045.a.viewmodel {
         	self.isAfterCheck.subscribe(value => {
 				self.appListExtractConditionDto.postOutput = value;
 			});
-			
+
 			self.orderCD.subscribe(value => {
-				self.appListExtractConditionDto.appDisplayOrder = value;	
+				self.appListExtractConditionDto.appDisplayOrder = value;
 			});
         }
 
@@ -453,9 +453,9 @@ module cmm045.a.viewmodel {
                     let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
                     self.selectedCode(selectedType);
                 }
-                if(self.mode() == 0){
+                // if(self.mode() == 0){
                     $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-                }
+                // }
                 dfd.resolve();
 			}).always(() => block.clear());
 
@@ -1119,7 +1119,7 @@ module cmm045.a.viewmodel {
             ]
             let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
             this.setupGrid({
-                withCcg001: false,
+                withCcg001: true,
                 width: widthAuto,
                 height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true)
