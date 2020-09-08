@@ -127,18 +127,15 @@ public class ReflectionImageTest {
 
     @Test
     public void addInWorkCycleTest_1() {
-        WorkInformation holidayWorkInfo = new WorkInformation("workTimeCode1", "workTypeCode1");
-        WorkInformation workInformation = new WorkInformation("workTimeCode2", "workTypeCode2");
+        WorkInformation wrkCycleWorkInfo = new WorkInformation("workTimeCode1", "workTypeCode1");
 
         ReflectionImage target = ReflectionImage.create();
-        target.addInWorkCycle(GeneralDate.max(),holidayWorkInfo);
+        val result = target.addInWorkCycle(GeneralDate.max(),wrkCycleWorkInfo);
 
-        val result = target.getListRefOrdByDate().get(0);
-
-        assertThat(target.addInWorkCycle(GeneralDate.today(),workInformation)).isTrue();
-        assertThat(GeneralDate.max()).isEqualByComparingTo(result.getDate());
-        assertThat(WorkCreateMethod.WORK_CYCLE).isEqualByComparingTo(result.getWorkCreateMethod());
-        assertThat(holidayWorkInfo).isEqualTo(result.getWorkInformation());
+        assertThat(result).isEqualTo(true);
+        assertThat(GeneralDate.max()).isEqualByComparingTo(target.getListRefOrdByDate().get(0).getDate());
+        assertThat(WorkCreateMethod.WORK_CYCLE).isEqualByComparingTo(target.getListRefOrdByDate().get(0).getWorkCreateMethod());
+        assertThat(wrkCycleWorkInfo).isEqualTo(target.getListRefOrdByDate().get(0).getWorkInformation());
     }
 
     @Test
