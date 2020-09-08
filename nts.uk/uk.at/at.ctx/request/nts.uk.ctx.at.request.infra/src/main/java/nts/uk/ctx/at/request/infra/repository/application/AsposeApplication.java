@@ -10,6 +10,7 @@ import org.apache.logging.log4j.util.Strings;
 import com.aspose.cells.Cell;
 import com.aspose.cells.Cells;
 import com.aspose.cells.PageSetup;
+import com.aspose.cells.ShapeCollection;
 import com.aspose.cells.TextBox;
 import com.aspose.cells.TextBoxCollection;
 import com.aspose.cells.Workbook;
@@ -213,7 +214,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		cellC3.setValue(printContentOfApp.getWorkPlaceName());
 		Cell cellC4 = cells.get("C4");
 		cellC4.setValue(printContentOfApp.getEmployeeInfoLst().get(0).getBussinessName());
-		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 1) {
+		ShapeCollection sc = worksheet.getShapes();
+		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 0) {
+			sc.get("APPORVAL1").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails1 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(0);
 			Cell cellG1 = cells.get("G1");
 			cellG1.setValue(approverPrintDetails1.getAffJobTitleHistoryImport().getJobTitleName());
@@ -223,8 +226,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			textBoxDate1.setText(approverPrintDetails1.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 			TextBox textBoxStatus1 = textBoxCollection.get("STATUS1");
 			textBoxStatus1.setText(approverPrintDetails1.getApprovalBehaviorAtr().name);
+		} else {
+			sc.get("APPORVAL1").setPrintable(false);
 		}
-		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 2) {
+		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 1) {
+			sc.get("APPORVAL2").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails2 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(1);
 			Cell cellH1 = cells.get("H1");
 			cellH1.setValue(approverPrintDetails2.getAffJobTitleHistoryImport().getJobTitleName());
@@ -234,8 +240,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			textBoxDate2.setText(approverPrintDetails2.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 			TextBox textBoxStatus2 = textBoxCollection.get("STATUS2");
 			textBoxStatus2.setText(approverPrintDetails2.getApprovalBehaviorAtr().name);
+		} else {
+			sc.get("APPORVAL2").setPrintable(false);
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 2) {
+			sc.get("APPORVAL3").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails3 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(2);
 			Cell cellI1 = cells.get("I1");
 			cellI1.setValue(approverPrintDetails3.getAffJobTitleHistoryImport().getJobTitleName());
@@ -245,8 +254,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			textBoxDate3.setText(approverPrintDetails3.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 			TextBox textBoxStatus3 = textBoxCollection.get("STATUS3");
 			textBoxStatus3.setText(approverPrintDetails3.getApprovalBehaviorAtr().name);
+		} else {
+			sc.get("APPORVAL3").setPrintable(false);
 		}
-		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 4) {
+		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 3) {
+			sc.get("APPORVAL4").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails4 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(3);
 			Cell cellJ1 = cells.get("J1");
 			cellJ1.setValue(approverPrintDetails4.getAffJobTitleHistoryImport().getJobTitleName());
@@ -256,8 +268,11 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			textBoxDate4.setText(approverPrintDetails4.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 			TextBox textBoxStatus4 = textBoxCollection.get("STATUS4");
 			textBoxStatus4.setText(approverPrintDetails4.getApprovalBehaviorAtr().name);
+		} else {
+			sc.get("APPORVAL4").setPrintable(false);
 		}
-		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 5) {
+		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 4) {
+			sc.get("APPORVAL5").setPrintable(true);
 			ApproverPrintDetails approverPrintDetails5 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(4);
 			Cell cellK1 = cells.get("K1");
 			cellK1.setValue(approverPrintDetails5.getAffJobTitleHistoryImport().getJobTitleName());
@@ -267,6 +282,8 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			textBoxDate5.setText(approverPrintDetails5.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 			TextBox textBoxStatus5 = textBoxCollection.get("STATUS5");
 			textBoxStatus5.setText(approverPrintDetails5.getApprovalBehaviorAtr().name);
+		} else {
+			sc.get("APPORVAL5").setPrintable(false);
 		}
 
 		Cell cellD6 = cells.get("D6");
