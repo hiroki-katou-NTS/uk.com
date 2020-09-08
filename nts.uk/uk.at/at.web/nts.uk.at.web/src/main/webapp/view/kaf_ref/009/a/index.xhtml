@@ -29,42 +29,43 @@
 			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/009/shr/kaf009.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/009/a/kaf009.a.vm.js" />
-			
+
 			<com:stylefile path="/view/kaf_ref/009/shr/kaf009.share.style.css" />
-			
+
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty, text:this.$i18n('KAF009_3')"></button>
-				
-				<div data-bind="component: { name: 'kaf000-a-component7', 
+
+				<div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
+												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }" style="display: inline-block; margin-left: 15px"></div>
 			</div>
 			<div id="contents-area">
 
-				
 
-				<div data-bind="component: { name: 'kaf000-a-component1', 
+
+				<div data-bind="component: { name: 'kaf000-a-component1',
 											params: {
 												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component2', 
-											params: {
-												appType: appType,
-												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component3', 
+				<div data-bind="component: { name: 'kaf000-a-component2',
 											params: {
 												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component4', 
+				<div data-bind="component: { name: 'kaf000-a-component3',
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf000-a-component4',
 											params: {
 												appType: appType,
 												application: application,
@@ -72,13 +73,13 @@
 											} }"></div>
 				<div
 					data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode }}"></div>
-				<div data-bind="component: { name: 'kaf000-a-component5', 
+				<div data-bind="component: { name: 'kaf000-a-component5',
 											params: {
 												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-				<div data-bind="component: { name: 'kaf000-a-component6', 
+				<div data-bind="component: { name: 'kaf000-a-component6',
 											params: {
 												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
