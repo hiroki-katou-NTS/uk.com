@@ -31,7 +31,7 @@ public class CorrectionContent extends DomainObject {
     private OrderedData orderedData;
 
     /**
-     * 注文済み期限
+     * 注文済みデータ
      */
     // Order deadline.
     private OrderDeadline orderDeadline;

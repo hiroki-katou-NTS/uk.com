@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kdp.kdp002.a;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,12 +10,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.dom.adapter.standardmenu.StandardMenuAdaptor;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptAppRepository;
 import nts.uk.ctx.at.record.dom.stamp.application.StampPromptApplication;
 import nts.uk.ctx.at.record.dom.stamp.card.management.personalengraving.AppDispNameExp;
@@ -22,10 +23,15 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerErrorRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplication;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErAlApplicationRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampMeans;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.CheckAttdErrorAfterStampService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.domainservice.DailyAttdErrorInfo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ButtonPositionNo;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PageNo;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettings;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.PortalStampSettingsRepository;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStamp;
+import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.SettingsSmartphoneStampRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampButton;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSetPerRepository;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.StampSettingPerson;
@@ -37,8 +43,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
-import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuPub;
-import nts.uk.screen.at.app.dailyperformance.correction.dto.ApplicationType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -58,9 +62,9 @@ public class GetOmissionContentsFinder {
 
 	@Inject
 	private StampSetPerRepository stampSetPerRepo;
-	
+
 	@Inject
-	private StandardMenuPub menuPub;
+	private StandardMenuAdaptor menuAdaptor;
 	
 	@Inject
 	private ClosureRepository closureRepository;
@@ -70,28 +74,32 @@ public class GetOmissionContentsFinder {
 	
 	@Inject
 	private ShareEmploymentAdapter shrEmpAdapter;
+	
+	@Inject
+	private SettingsSmartphoneStampRepository settingSmartPhone;
+	
+	@Inject
+	private PortalStampSettingsRepository settingPotal;
 
-	public DailyAttdErrorInfoDto getOmissionContents(int pageNo, int buttonDisNo) {
+	public DailyAttdErrorInfoDto getOmissionContents(int pageNo, int buttonDisNo, int stampMeans) {
 		String employeeId = AppContexts.user().employeeId();
 		CheckAttdErrorAfterStampRequiredImpl required = new CheckAttdErrorAfterStampRequiredImpl();
 		StampButton stampButton = new StampButton(new PageNo(pageNo), new ButtonPositionNo(buttonDisNo));
 
-		List<DailyAttdErrorInfo> errorInfo = CheckAttdErrorAfterStampService.get(required, employeeId, stampButton);
+		List<DailyAttdErrorInfo> errorInfo = CheckAttdErrorAfterStampService.get(required, employeeId,EnumAdaptor.valueOf(stampMeans, StampMeans.class), stampButton);
 
 		// アルゴリズム「メニューの表示名を取得する」を実行する
 
-		
-
 		List<AppDispNameExp> appDispNames = new ArrayList<AppDispNameExp>();
-		
+
 		if (errorInfo.size() > 0) {
-			List<ApplicationType> appTypes = errorInfo.get(0).getListRequired().stream().sorted()
+			List<ApplicationType> appTypes = errorInfo.stream().flatMap(x -> x.getListRequired().stream()).sorted()
 					.map(x -> EnumAdaptor.valueOf(x, ApplicationType.class)).collect(Collectors.toList());
 
 			String companyId = AppContexts.user().companyId();
 			appTypes.forEach(x -> {
 
-				List<AppDispNameExp> appNames = this.menuPub
+				List<AppDispNameExp> appNames = this.menuAdaptor
 						.getMenuDisplayName(companyId, Arrays.asList(x.toStandardMenuNameQuery())).stream()
 						.map(item -> {
 							String screen = item.getProgramId().substring(0, 3).toLowerCase();
@@ -100,13 +108,15 @@ public class GetOmissionContentsFinder {
 									+ "/index.xhtml"
 									+ (item.getQueryString() != null ? "?" + item.getQueryString() : "");
 
-							return new AppDispNameExp(companyId, x.value, item.getDisplayName(), url);
+							return new AppDispNameExp(companyId, x.value, item.getDisplayName(), screen, screenCd,
+									item.getScreenId(), item.getQueryString(), url);
 						}).collect(Collectors.toList());
 				appDispNames.addAll(appNames);
 			});
 		}
 
-		return new DailyAttdErrorInfoDto(errorInfo, appDispNames);
+		return new DailyAttdErrorInfoDto(errorInfo, appDispNames.stream()
+				.sorted(Comparator.comparing(AppDispNameExp::getAppType)).collect(Collectors.toList()));
 	}
 
 	@NoArgsConstructor
@@ -163,6 +173,16 @@ public class GetOmissionContentsFinder {
 		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
 				String employeeId, GeneralDate baseDate) {
 			return shrEmpAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+		}
+
+		@Override
+		public Optional<SettingsSmartphoneStamp> getSettingSmartPhone() {
+			return settingSmartPhone.get(AppContexts.user().companyId());
+		}
+
+		@Override
+		public Optional<PortalStampSettings> getSettingPortal() {
+			return settingPotal.get(AppContexts.user().companyId());
 		}
 
 	}

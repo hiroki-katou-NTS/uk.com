@@ -20,19 +20,6 @@ import java.util.*;
 public class JpaBentoMenuHistotyRepository extends JpaRepository implements IBentoMenuHistoryRepository {
     private static final String QUERY_GET_BYCID = "SELECT  hist FROM  KrcmtBentoMenuHist hist "
             + "WHERE hist.pk.companyID = :cid ORDER BY hist.startDate ASC ";
-    private static final String REMOVE_BY_CID = "delete   FROM  KrcmtBentoMenuHist hist" +
-            " WHERE hist.pk.companyID = :cid ";
-    private static final String REMOVE_BY_CID_HISTID;
-
-    static {
-        StringBuilder builderString = new StringBuilder();
-        builderString.append("DELETE  ");
-        builderString.append("FROM KrcmtBentoMenuHist a ");
-        builderString.append("WHERE a.pk.companyID = :cid ");
-        builderString.append("AND a.pk.histID = :histId ");
-        REMOVE_BY_CID_HISTID = builderString.toString();
-    }
-
     @Override
 
     public Optional<BentoMenuHistory> findByCompanyId(String cid) {

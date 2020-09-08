@@ -23,7 +23,7 @@ public class OrderInfoExportExcelService extends ExportService<CreateOrderInfoDa
     @Inject
     private BentoMakeOrderCommandHandler commandHandler;
 
-    private boolean isWorkLocationExport = false;
+    //private boolean isWorkLocationExport = false;
 
     //private final OutputExtension OUT_PUT_EXT = OutputExtension.EXCEL;
 
@@ -31,8 +31,12 @@ public class OrderInfoExportExcelService extends ExportService<CreateOrderInfoDa
     protected void handle(ExportServiceContext<CreateOrderInfoDataSource> exportServiceContext){
         CreateOrderInfoDataSource dataSource = exportServiceContext.getQuery();
         OrderInfoDto dataGenerator = dataSource.getGeneratorData(createOrderInfoFileQuery, commandHandler);
-        if(CollectionUtil.isEmpty(dataSource.getWorkplaceIds()))
+        boolean isWorkLocationExport;
+        if(!CollectionUtil.isEmpty(dataSource.getWorkLocationCodes())){
             isWorkLocationExport = true;
+        }else{
+            isWorkLocationExport = false;
+        }
         ReservationClosingTimeFrame closingTimeFrame = EnumAdaptor.valueOf(dataSource.getReservationClosingTimeFrame(),
                 ReservationClosingTimeFrame.class);
         generator.generate(exportServiceContext.getGeneratorContext(),new OrderInfoExportData(dataGenerator,

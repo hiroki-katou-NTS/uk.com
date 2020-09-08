@@ -33,9 +33,8 @@ public class UpdateBentoMenuHistService {
         }
         //Update item
          listhist.changeSpan(optionalHisItem.get(), period);
-
+        // get item before
         val itemBefore = listhist.immediatelyBefore(optionalHisItem.get());
-
         val listUpdate = new ArrayList<DateHistoryItem>();
         listUpdate.add(optionalHisItem.get());
         if (itemBefore.isPresent()) {
@@ -45,10 +44,10 @@ public class UpdateBentoMenuHistService {
             require.update(listUpdate);
         });
     }
-
     public static interface Require{
+        // Get list Bentomenuhist by CompanyId
         Optional<BentoMenuHistory> findByCompanyId(String cid);
-
+        //弁当メニュー履歴を更新する
         void update(List<DateHistoryItem> item);
 
     }

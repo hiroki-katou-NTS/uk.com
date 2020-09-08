@@ -78,7 +78,7 @@ public class CheckCanUseSmartPhoneStampCommandHandler extends CommandHandlerWith
 
 		String employeeId = AppContexts.user().employeeId();
 		// 2.1 判断する(@Require, 社員ID, 打刻手段)
-		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, StampMeans.PORTAL);
+		MakeUseJudgmentResults jugResult = StampFunctionAvailableService.decide(require, employeeId, StampMeans.SMART_PHONE);
 		// not 打刻カード作成結果 empty
 		Optional<StampCardCreateResult> cradResultOpt = jugResult.getCardResult();
 		
