@@ -22,8 +22,14 @@
 			</div>
 		</ui:define>
 		<ui:define name="extended-function">
-			<button id="btnClose" class="large" data-bind="click: closeDialog"
+			<button id="btnClose" class="large ref-mode" data-bind="click: closeDialog"
 						tabindex="13">#{i18n.getText('KDL023_16')}</button>
+
+			<div class="" data-bind="ntsCheckBox: { checked: $parent.isOverWrite, style: 'warnpanel' }">#{i18n.getText('KDL023_37')}</div>
+			<br/><br/>
+			<button tabindex="13" id="btnDecide" class="x-large proceed" data-bind="click: decide">#{i18n.getText('KDL023_38')}</button>
+			<button tabindex="14" id="btnCancel" class="large" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
+
 		</ui:define>
 	</ui:composition>
 </body>
