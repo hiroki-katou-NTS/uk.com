@@ -31,13 +31,13 @@ module nts.uk.at.view.kdl023.base.service {
         return nts.uk.request.ajax(servicePath.getWeeklyWorkSetting);
     }
     export function registerMonthlyPattern(data: model.MonthlyPatternRegisterCommand){
-        return nts.uk.request.ajax(servicePath.registerMonthlyPattern)
+        return nts.uk.request.ajax(servicePath.registerMonthlyPattern, data)
     }
     export function startUpWindows(data: model.GetStartupInfoParam): JQueryPromise<model.WorkCycleReflectionDto>{
         return nts.uk.request.ajax(servicePath.startUp, data)
     }
     export function getReflectionWorkCycleAppImage( data: model.GetWorkCycleAppImageParam): JQueryPromise<Array<model.RefImageEachDayDto>>{
-        return nts.uk.request.ajax(servicePath.getWorkCycleAppImage)
+        return nts.uk.request.ajax(servicePath.getWorkCycleAppImage, data)
     }
     export module model {
         export interface ReflectionSetting {
@@ -49,40 +49,48 @@ module nts.uk.at.view.kdl023.base.service {
             statutorySetting: DayOffSetting;
             nonStatutorySetting: DayOffSetting;
             holidaySetting: DayOffSetting;
-			bootMode: number;
+            bootMode: number;
         }
+
         export interface DailyPatternSetting {
             patternCode: string;
             patternName: string;
             dailyPatternVals: Array<DailyPatternValue>;
         }
+
         export interface DailyPatternValue {
             dispOrder: number;
             workTypeSetCd: string;
             workingHoursCd: string;
             days: number;
         }
+
         export interface WorkType {
             workTypeCode: string;
             name: string;
         }
+
         export interface WorkTime {
             code: string;
             name: string;
         }
+
         export interface DayOffSetting {
             useClassification: boolean;
             workTypeCode: string;
         }
+
         export enum ReflectionMethod {
             Overwrite = 0,
             FillInTheBlank = 1
         }
+
         export enum WorkDayDivision {
             WorkingDay = 0,
             NonWorkingDayInLaw = 1,
             NonWorkingDayOutrage = 2
         }
+
         export interface WeeklyWorkSetting {
             monday: WorkDayDivision;
             tuesday: WorkDayDivision;
@@ -92,30 +100,32 @@ module nts.uk.at.view.kdl023.base.service {
             saturday: WorkDayDivision;
             sunday: WorkDayDivision;
         }
+
         export interface PublicHoliday {
             day: number;
             holidayName: string;
         }
-        export enum BootMode{
+
+        export enum BootMode {
             REF_MODE = 0,
             EXEC_MODE = 1
         }
 
-        export enum WorkStyle{
+        export enum WorkStyle {
             ONE_DAY_REST = 0,
             MORNING_WORK = 1,
             AFTERNOON_WORK = 2,
             ONE_DAY_WORK = 3
         }
 
-        export enum WorkCreateMethod{
-            NON = -1;
+        export enum WorkCreateMethod {
+            NON = -1,
             WORK_CYCLE = 0,
             WEEKLY_WORK = 1,
             PUB_HOLIDAY = 2
         }
 
-        export interface WorkCycleReflectionDto{
+        export interface WorkCycleReflectionDto {
             pubHoliday: Array<WorkType>;
             satHoliday: Array<WorkType>;
             nonSatHoliday: Array<WorkType>;
@@ -123,24 +133,24 @@ module nts.uk.at.view.kdl023.base.service {
             workCycleList: Array<WorkCycle>;
         }
 
-		export interface RefImageEachDayDto{
-			workCreateMethod: number;
-			workInformation: WorkInformationDto
-			date: string;
-			workStyles: number;
-		}
+        export interface RefImageEachDayDto {
+            workCreateMethod: number;
+            workInformation: WorkInformationDto
+            date: string;
+            workStyles: number;
+        }
 
-		export interface WorkInformationDto{
-			workTypeCode: string;
-			workTimeCode: string;
-		}
-
-        export interface WorkInformationDto{
+        export interface WorkInformationDto {
             workTypeCode: string;
             workTimeCode: string;
         }
 
-        export interface GetStartupInfoParam{
+        export interface WorkInformationDto {
+            workTypeCode: string;
+            workTimeCode: string;
+        }
+
+        export interface GetStartupInfoParam {
             bootMode: number;
             creationPeriodStartDate: string;
             creationPeriodEndDate: string;
@@ -149,7 +159,7 @@ module nts.uk.at.view.kdl023.base.service {
             numOfSlideDays: number;
         }
 
-        export interface GetWorkCycleAppImageParam{
+        export interface GetWorkCycleAppImageParam {
             creationPeriodStartDate: string;
             creationPeriodEndDate: string;
             workCycleCode: string;
@@ -160,21 +170,24 @@ module nts.uk.at.view.kdl023.base.service {
             holidayCd: string;
         }
 
-        export interface MonthlyPatternRegisterCommand{
+        export interface MonthlyPatternRegisterCommand {
             isOverWrite: boolean;
             workMonthlySetting: Array<WorkMonthlySetting>;
         }
-        export interface WorkMonthlySetting{
+
+        export interface WorkMonthlySetting {
             workInformation: WorkInformationDto;
             ymk: string;
             monthlyPatternCode: string;
         }
-        export interface WorkCycle{
+
+        export interface WorkCycle {
             code: string;
             name: string;
             infos: Array<WorkCycleInfor>
         }
-        export interface WorkCycleInfor{
+
+        export interface WorkCycleInfor {
             typeCode: string;
             timeCode: string;
             days: number;

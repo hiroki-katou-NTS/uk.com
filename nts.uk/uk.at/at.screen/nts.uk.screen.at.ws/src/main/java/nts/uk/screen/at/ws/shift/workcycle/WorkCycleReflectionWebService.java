@@ -30,7 +30,7 @@ import java.util.List;
 @Produces(MediaType.APPLICATION_JSON)
 @Stateless
 public class WorkCycleReflectionWebService extends WebService {
-	private final String DATE_FORMAT_YYYYMMDD = "yyyy/MM/dd";
+	private final String DATE_FORMAT_YYYYMMDD = "yyyy/MM/d";
 
 	@Inject private WorkCycleReflectionDialog wcrdScreenQuery;
 

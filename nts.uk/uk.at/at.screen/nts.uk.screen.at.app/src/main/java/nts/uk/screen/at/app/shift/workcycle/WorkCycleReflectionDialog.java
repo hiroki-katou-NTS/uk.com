@@ -7,10 +7,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
 import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
-import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.CreateWorkCycleAppImage;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RefImageEachDay;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCreateMethod;
@@ -27,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.HolidayWorkTypeService;
 import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;
+import nts.uk.screen.at.app.ksm003.find.WorkCycleQueryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -44,12 +44,11 @@ import java.util.Optional;
 public class WorkCycleReflectionDialog {
 	@Inject private HolidayWorkTypeService holidayWorkTypeService;
 	@Inject private CreateWorkCycleAppImage createWorkCycleAppImage;
-	@Inject private WeeklyWorkDayRepository weeklyWorkDayRepository;
+	@Inject private WeeklyWorkSettingRepository weeklyWorkDayRepository;
 	@Inject private PublicHolidayRepository publicHolidayRepository;
-	@Inject private WorkCycleRepository workCycleRepository;
+	@Inject private WorkCycleQueryRepository workCycleRepository;
 	@Inject private BasicScheduleService basicScheduleService;
 	@Inject private GetWorkCycle getWorkCycle;
-
  	/**
 	 * 起動情報を取得する
 	 * @param bootMode 起動モード
@@ -154,9 +153,9 @@ public class WorkCycleReflectionDialog {
 	private static class CreateWorkCycleAppImageRequire implements CreateWorkCycleAppImage.Require {
 		private final String cid = AppContexts.user().companyId();
 
-		private WeeklyWorkDayRepository weeklyWorkDayRepository;
+		private WeeklyWorkSettingRepository weeklyWorkDayRepository;
 		private PublicHolidayRepository publicHolidayRepository;
-		private WorkCycleRepository workCycleRepository;
+		private WorkCycleQueryRepository workCycleRepository;
 
 		@Override
 		public Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting() {

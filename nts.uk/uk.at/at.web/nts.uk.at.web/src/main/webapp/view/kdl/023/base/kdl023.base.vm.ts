@@ -16,8 +16,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import WorkCreateMethod = nts.uk.at.view.kdl023.base.service.model.WorkCreateMethod;
     import getText = nts.uk.resource.getText;
     import GetWorkCycleAppImageParamDto = nts.uk.at.view.kdl023.base.service.model.GetWorkCycleAppImageParam
-    import RefImageEachDayDto = nts.uk.at.view.kdl023.base.service.RefImageEachDayDto;
-    import MonthlyPatternRegisterCommand = nts.uk.at.view.kdl023.base.service.MonthlyPatternRegisterCommand;
+    import RefImageEachDayDto = nts.uk.at.view.kdl023.base.service.model.RefImageEachDayDto;
+    import MonthlyPatternRegisterCommand = nts.uk.at.view.kdl023.base.service.model.MonthlyPatternRegisterCommand;
+    import WorkMonthlySetting = nts.uk.at.view.kdl023.base.service.model.WorkMonthlySetting;
     const CONST = {
         DATE_FORMAT: 'yyyy/MM/yy',
         YEAR_MONTH: 'yyyy/MM'
@@ -87,6 +88,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         nonSatHoliday: KnockoutObservable<string> = ko.observable();
         refImageEachDayDto: KnockoutObservableArray<RefImageEachDayDto> = ko.observableArray([]);
         slideDays: KnockoutObservable<number> = ko.observable(0);
+        workMonthlySetting: KnockoutObservableArray<MonthlyPatternRegisterCommand> = ko.observableArray([]);
 
         constructor() {
             let self = this;
@@ -302,17 +304,19 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
             let dateString = self.yearMonthPicked().toString() + self.startDate.toString();
             let year:number = +dateString.substring(0,4);
-            let month:number = +dateString.substring(4,6);
-            let day:number = +dateString.substring(6,8);
-            let date = new Date(year, month-1, day);
+            let month = dateString.substring(4,6);
+            let day = dateString.substring(6,8);
+            let endDay = moment(new Date(year, +(month)-1, +(day))).endOf('month').toDate().getDate();
+            let startDate = year+'/'+month+'/'+day;
+            let endDate = year+'/'+month+'/'+endDay;
             let legalHolidayCd = '';
             let nonStatutoryHolidayCd = '';
             let holidayCd = '';
             let refOrder:Array<number> = [];
-            let defaultStartDate =  moment(date).format(CONST.DATE_FORMAT).toString();
-            let defaultEndDate = formatDate(moment(date).endOf('month').toDate(), CONST.DATE_FORMAT).toDateString();
+            let defaultStartDate = startDate;
+            let defaultEndDate = endDate;
 
-            if(self.isExecMode){
+            if(self.isExecMode()){
                 defaultStartDate = self.reflectionSetting.calendarStartDate();
                 defaultEndDate = self.reflectionSetting.calendarEndDate();
             }
@@ -337,7 +341,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             self.reflectionParam({
                 creationPeriodStartDate : defaultStartDate,
                 creationPeriodEndDate : defaultEndDate,
-                workCycleCode : self.selectedPatternCd(),
+                workCycleCode : self.reflectionSetting.selectedPatternCd(),
                 refOrder : refOrder,
                 numOfSlideDays : slideDay,
                 legalHolidayCd: legalHolidayCd,
@@ -345,7 +349,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 holidayCd: holidayCd
             })
 
-            service.getReflectionWorkCycleAppImage(self.reflectionParam).done( (val) =>{
+            service.getReflectionWorkCycleAppImage(self.reflectionParam()).done( (val) =>{
                 self.refImageEachDayDto(val);
                 self.setCalendarData(val);
              }).fail( () => {
@@ -357,7 +361,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             );
             self.setPatternRange() // Set pattern's range
                 .done(() => {
-                    self.optionDates(self.getOptionDates()); // Reload calendar
+                    //self.optionDates(self.getOptionDates()); // Reload calendar
                     $('#component-calendar-kcp006').focus(); // Set focus control
                 }).always(() => {
 
@@ -1071,13 +1075,19 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
         }
 
-        private setCalendarData(data: Array<RefImageEachDayDto>){
+        private setCalendarData(data: Array<RefImageEachDayDto>, monthlyPatternCode?: string){
             const self = this;
             let temp:Array<OptionDate> = ([]);
             data.forEach( (item) => {
                 temp.push(self.setOptionDate(item));}
             );
             self.optionDates(temp);
+            let workMonthlySettingTemp: Array<WorkMonthlySetting> = ([]);
+            if(self.isExecMode()){
+                data.forEach( (item) => {
+                    //workMonthlySettingTemp.push(self.setOptionDate(item));}
+                );
+            }
         }
         private setOptionDate(refImage: RefImageEachDayDto):OptionDate{
             let start = refImage.date;
@@ -1093,7 +1103,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let backgroundColor = 'white';
             let listText: Array<string> = [refImage.workInformation.workTypeCode, refImage.workInformation.workTimeCode];
             let result:OptionDate = {
-                start: start,
+                start: moment(start).format('YYYY-MM-DD'),
                 textColor: textColor,
                 backgroundColor: backgroundColor,
                 listText: listText
@@ -1113,19 +1123,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 return;
             }
 
-            if (self.isMasterDataUnregisterd()) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_340" }).then(() => {
-                    self.closeDialog();
-                });
-            } else {
-                service.registerMonthlyPattern(param).done(() => {
-                    nts.uk.ui.windows.setShared('returnedData', ko.toJS(self.reflectionSetting));
-                    self.closeDialog();
-                }).fail(() => {
-                    self.closeDialog();
-                });
+            service.registerMonthlyPattern(param).done(() => {
+                nts.uk.ui.windows.setShared('returnedData', ko.toJS(self.reflectionSetting));
+                self.closeDialog();
+            }).fail(() => {
+                self.closeDialog();
+            });
 
-            }
         }
 
     }
