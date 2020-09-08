@@ -42,7 +42,27 @@ public class LogSettingFinder {
 		this.logSettingRepository.deleteLogSetting(companyId, systemType);
 	}
 
+	/**
+	 * 
+	 * @param logSetting
+	 */
 	public void addLogSetting(LogSetting logSetting) {
+		this.addLogSetting(logSetting);
+	}
 
+	/**
+	 * 
+	 * @param logSettings
+	 */
+	public void updateLogsetting(List<LogSetting> logSettings) {
+		if (logSettings.size() > 0) {
+			String companyId = logSettings.get(0).getCompanyId();
+			int systemType = logSettings.get(0).getSystem();
+
+			this.deleteLogSetting(companyId, systemType);
+			for (LogSetting l : logSettings) {
+				this.addLogSetting(l);
+			}
+		}
 	}
 }
