@@ -20,7 +20,7 @@ public class ApproverGetDomainService {
 	 */
 	public Optional<ApproverItem> getApproverItem(Require require, String empId){
 
-		Optional<ApproverItem> optWorkplaceApproverItem = require.getWorkplaceApproverItem(empId);
+		Optional<ApproverItem> optWorkplaceApproverItem = require.getWorkplaceApproverItem(empId); // TODO QA
 
 		if (optWorkplaceApproverItem.isPresent()) {
 			return optWorkplaceApproverItem;
