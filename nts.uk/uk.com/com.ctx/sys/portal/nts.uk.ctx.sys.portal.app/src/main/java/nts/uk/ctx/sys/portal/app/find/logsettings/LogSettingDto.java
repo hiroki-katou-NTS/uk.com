@@ -19,12 +19,12 @@ public class LogSettingDto implements LogSetting.MementoSetter {
 	/**
 	 * メニュー分類
 	 */
-	private MenuClassification menuClassification;
+	private int menuClassification;
 
 	/**
 	 * ログイン履歴記録
 	 */
-	private NotUseAtr loginHistoryRecord;
+	private int loginHistoryRecord;
 
 	/**
 	 * 会社ID
@@ -34,23 +34,35 @@ public class LogSettingDto implements LogSetting.MementoSetter {
 	/**
 	 * 修正履歴（データ）記録
 	 */
-	private NotUseAtr editHistoryRecord;
+	private int editHistoryRecord;
 
 	/**
 	 * 起動履歴記録
 	 */
-	private NotUseAtr bootHistoryRecord;
+	private int bootHistoryRecord;
 	
 	public static LogSettingDto fromDomain(LogSetting logSetting) {
 		LogSettingDto logSettingDto = new LogSettingDto();
 		logSettingDto.system = logSetting.getSystem();
 		logSettingDto.programId = logSetting.getProgramId();
-		logSettingDto.menuClassification = logSetting.getMenuClassification();
-		logSettingDto.loginHistoryRecord = logSetting.getLoginHistoryRecord();
+		logSettingDto.menuClassification = logSetting.getMenuClassification().value;
+		logSettingDto.loginHistoryRecord = logSetting.getLoginHistoryRecord().value;
 		logSettingDto.companyId = logSetting.getCompanyId();
-		logSettingDto.editHistoryRecord = logSetting.getEditHistoryRecord();
-		logSettingDto.bootHistoryRecord = logSetting.getBootHistoryRecord();
+		logSettingDto.editHistoryRecord = logSetting.getEditHistoryRecord().value;
+		logSettingDto.bootHistoryRecord = logSetting.getBootHistoryRecord().value;
 		return logSettingDto;
+	}
+	
+	public static LogSetting toDomain(LogSettingDto logSettingDto) {
+		LogSetting logSetting = new LogSetting();
+		logSetting.setSystem(logSettingDto.getSystem());
+		logSetting.setProgramId(logSettingDto.getProgramId());
+		logSetting.setMenuClassification(MenuClassification.valueOf(logSettingDto.getMenuClassification()));
+		logSetting.setLoginHistoryRecord(NotUseAtr.valueOf(logSettingDto.getLoginHistoryRecord()));
+		logSetting.setCompanyId(logSettingDto.getCompanyId());
+		logSetting.setEditHistoryRecord(NotUseAtr.valueOf(logSettingDto.getEditHistoryRecord()));
+		logSetting.setBootHistoryRecord(NotUseAtr.valueOf(logSettingDto.getBootHistoryRecord()));
+		return logSetting;
 	}
 
 	@Override
@@ -72,5 +84,20 @@ public class LogSettingDto implements LogSetting.MementoSetter {
 	public void setBootHistoryRecord(Integer bootHistoryRecord) {
 		this.setBootHistoryRecord(bootHistoryRecord);
 	}
+	
 
+	@Override
+	public void setSystem(int system) {
+		this.setSystem(system);
+	}
+
+	@Override
+	public void setProgramId(String programId) {
+		this.setProgramId(programId);
+	}
+
+	@Override
+	public void setCompanyId(String companyId) {
+		this.setCompanyId(companyId);
+	}
 }
