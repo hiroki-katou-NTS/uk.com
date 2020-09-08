@@ -25,7 +25,7 @@ module nts.uk.at.view.kaf022.p.viewmodel {
 
             self.swapColumns = ko.observableArray([
                 {headerText: getText("KAF022_686"), key: 'no', width: 50, formatter: _.escape},
-                {headerText: getText("KAF022_704"), key: 'name', width: 100, formatter: _.escape}
+                {headerText: getText("KAF022_704"), key: 'name', width: 100, columnCssClass: 'limited-label', formatter: _.escape}
             ]);
 
             self.optionalItems = ko.observableArray([]);
