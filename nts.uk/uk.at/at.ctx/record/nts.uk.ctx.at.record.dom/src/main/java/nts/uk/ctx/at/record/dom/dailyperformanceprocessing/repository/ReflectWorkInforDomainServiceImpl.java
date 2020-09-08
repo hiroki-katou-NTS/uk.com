@@ -1028,12 +1028,10 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				}
 				// 存在する - has data
 				else {
-					workInfoOfDailyPerformanceUpdate
-							.setScheduleInfo(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
-									basicScheduleHasData.get().getWorkTypeCode()));
-					workInfoOfDailyPerformanceUpdate
-							.setRecordInfo(new WorkInformation(basicScheduleHasData.get().getWorkTimeCode(),
-									basicScheduleHasData.get().getWorkTypeCode()));
+					basicScheduleHasData.ifPresent(c -> {
+						workInfoOfDailyPerformanceUpdate.setScheduleInfo(new WorkInformation(c.getWorkTypeCode(), c.getWorkTimeCode()));
+						workInfoOfDailyPerformanceUpdate.setRecordInfo(new WorkInformation(c.getWorkTypeCode(), c.getWorkTimeCode()));
+					});
 
 					// ドメインモデル「勤務種類」を取得する
 					Optional<WorkType> workTypeOpt = this.workTypeRepository.findByDeprecated(companyId,
@@ -1491,17 +1489,19 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						errMesInfos.add(employmentErrMes);
 					}
 				} else {
-					WorkInformation recordInfo = new WorkInformation(
-							workInfoOfDailyPerformance.getRecordInfo().getWorkTimeCode(),
-							workTypeNeed.getWorkTypeCode());
+					WorkInformation recordInfo = workInfoOfDailyPerformance.getRecordInfo().clone();
+					recordInfo.setWorkTypeCode(workTypeNeed.getWorkTypeCode());
+					
 					workInfoOfDailyPerformance.setRecordInfo(recordInfo);
 					WorkTypeClassification oneDay = workTypeNeed.getDailyWork().getOneDay();
+					
 					if (oneDay == WorkTypeClassification.Holiday || oneDay == WorkTypeClassification.Pause
 							|| oneDay == WorkTypeClassification.ContinuousWork
 							|| oneDay == WorkTypeClassification.LeaveOfAbsence
 							|| oneDay == WorkTypeClassification.Closure) {
-						WorkInformation recordWorkInformation = new WorkInformation(null,
-								workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode());
+						
+						WorkInformation recordWorkInformation =  workInfoOfDailyPerformance.getRecordInfo().clone();
+						recordWorkInformation.setWorkTimeCode(null);
 						workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
 					}
 					// to show clear attendance item
@@ -1639,11 +1639,11 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 //	private WorkInformation getWorkInfo(Optional<SingleDaySchedule> workingCondition, SingleDaySchedule category) {
 //		WorkInformation recordWorkInformation;
 //		if (workingCondition.isPresent()) {
-//			recordWorkInformation = new WorkInformation(workingCondition.get().getWorkTimeCode().orElse(null),
-//					workingCondition.get().getWorkTypeCode().orElse(null));
+//			recordWorkInformation = new WorkInformation(workingCondition.get().getWorkTypeCode().orElse(null),
+//					workingCondition.get().getWorkTimeCode().orElse(null));
 //		} else {
-//			recordWorkInformation = new WorkInformation(category.getWorkTimeCode().orElse(null),
-//					category.getWorkTypeCode().orElse(null));
+//			recordWorkInformation = new WorkInformation(category.getWorkTypeCode().orElse(null),
+//					category.getWorkTimeCode().orElse(null));
 //		}
 //		return recordWorkInformation;
 //	}

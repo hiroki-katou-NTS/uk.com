@@ -15,12 +15,12 @@ public class GetListWorkTypeWorkTimeUseDailyAttendanceRecordTest {
 
 	@Test
 	public void testGetdata() {
-		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
-		WorkInformation recordInfo2 = new WorkInformation("ti2", "ty2");
-		WorkInformation recordInfo3 = new WorkInformation(null, "ty3");
-		WorkInformation recordInfo4 = new WorkInformation("ti3", "ty2");
-		WorkInformation recordInfo5 = new WorkInformation("ti2", "ty2");
-		WorkInformation recordInfo6 = new WorkInformation("ti2", "ty3");
+		WorkInformation recordInfo1 = new WorkInformation("ty1", "ti1");
+		WorkInformation recordInfo2 = new WorkInformation("ty2", "ti2");
+		WorkInformation recordInfo3 = new WorkInformation("ty3", null);
+		WorkInformation recordInfo4 = new WorkInformation("ty2", "ti3");
+		WorkInformation recordInfo5 = new WorkInformation("ty2", "ti2");
+		WorkInformation recordInfo6 = new WorkInformation("ty3", "ti2");
 		List<WorkInfoOfDailyAttendance> lstWorkInfoOfDailyAttendance = Arrays.asList(
 				WorkInfoOfDailyAttendanceHelper.getData(recordInfo1),
 				WorkInfoOfDailyAttendanceHelper.getData(recordInfo2),

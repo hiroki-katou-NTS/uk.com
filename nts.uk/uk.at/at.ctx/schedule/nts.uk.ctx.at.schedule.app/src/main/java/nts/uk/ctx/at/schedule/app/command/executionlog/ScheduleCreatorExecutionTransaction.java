@@ -18,7 +18,6 @@ import javax.inject.Inject;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
@@ -92,11 +91,9 @@ import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExEmploymentHistor
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExJobTitleHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkPlaceHistoryImport;
-import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHisItemImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkTypeHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -349,6 +346,7 @@ public class ScheduleCreatorExecutionTransaction {
 	
 	// note 勤務予定削除
 	private void deleteSchedule(String employeeId,DatePeriod period) {
+		@SuppressWarnings("unused")
 		String companyId = AppContexts.user().companyId();
 		// note勤務予定ドメインを削除する (TKT-TQP)
 		// noteTODO: đang đợi Hiểu làm đề gọi vào
@@ -430,6 +428,7 @@ public class ScheduleCreatorExecutionTransaction {
 	/**
 	 * 「パラメータ」 ・社員の在職状態一覧 ・労働条件一覧 ・実施区分 「Output」 ・データ（処理状態付き）
 	 */
+	@SuppressWarnings("unused")
 	private boolean createScheduleBasedPersonOneDate(ScheduleCreatorExecutionCommand command, ScheduleCreator creator,
 			ScheduleExecutionLog domain, CommandHandlerContext<ScheduleCreatorExecutionCommand> context,
 			DatePeriod targetPeriod, GeneralDate dateInPeriod, CreateScheduleMasterCache masterCache, List<BasicSchedule> listBasicSchedule,
@@ -858,7 +857,7 @@ public class ScheduleCreatorExecutionTransaction {
 				createScheduleOneDate = new OutputCreateScheduleOneDate(null, prepareWorkOutput.getExecutionLog().get(),
 						ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
 			} else {
-				WorkInformation information = new WorkInformation(prepareWorkOutput.getInformation().getWorkTimeCode(), prepareWorkOutput.getInformation().getWorkTypeCode());
+				WorkInformation information = prepareWorkOutput.getInformation().clone();
 
 				// note 勤務情報が正常な状態かをチェックする - xử lý tiếp theo call đến method ở dưới
 				createScheduleOneDate = this.putDataWorkschedule(information, prepareWorkOutput, integrationOfDaily, command, dateInPeriod,
@@ -948,7 +947,7 @@ public class ScheduleCreatorExecutionTransaction {
 							&& x.getWorkTypeCd().equals(prepareWorkOutput.getInformation().getWorkTypeCode()))
 					.findFirst() : Optional.empty();
 			// note 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
-			integrationOfDaily.getWorkInformation().setRecordInfo(new WorkInformation(prepareWorkOutput.getInformation().getWorkTimeCode(), prepareWorkOutput.getInformation().getWorkTypeCode()));
+			integrationOfDaily.getWorkInformation().setRecordInfo(prepareWorkOutput.getInformation().clone());
 			// note 出勤打刻自動セット ~ 出勤時刻を直行とする (勤務情報。直行区分＝勤務種類。出勤打刻自動セット)
 			integrationOfDaily.getWorkInformation().setGoStraightAtr(
 					EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getAttendanceTime().value : 0, NotUseAttribute.class));
@@ -1100,7 +1099,10 @@ public class ScheduleCreatorExecutionTransaction {
 				// note 勤務情報を返す
 				// note ・勤務種類コード＝取得した勤務種類コード
 				// note ・就業時間帯コード＝Null
-				WorkInformation workInformation = new WorkInformation(null, lstWorkType.get(0).getWorkTypeCode());
+				WorkInformation workInformation = lstWorkType.stream().findFirst()
+						.map(m -> new WorkInformation(m.getWorkTypeCode(), null))
+						.orElse(null);
+				
 				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 			}
 
@@ -1131,7 +1133,10 @@ public class ScheduleCreatorExecutionTransaction {
 				// note 勤務情報を返す
 				// note ・勤務種類コード＝取得した勤務種類コード
 				// note ・就業時間帯コード＝Null
-				WorkInformation workInformation = new WorkInformation(null, lstWorkType.get(0).getWorkTypeCode());
+				WorkInformation workInformation = lstWorkType.stream().findFirst()
+						.map(m -> new WorkInformation(m.getWorkTypeCode(), null))
+						.orElse(null);
+				
 				return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 			}
 		}
@@ -1208,7 +1213,7 @@ public class ScheduleCreatorExecutionTransaction {
 				return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 			}
 			// note 勤務情報を返す
-			WorkInformation workInformation = new WorkInformation(workTimeCode, worktypeCode);
+			WorkInformation workInformation = new WorkInformation(worktypeCode, workTimeCode);
 			return new PrepareWorkOutput(workInformation, null, null, Optional.empty(), workType);
 
 		}
@@ -1279,9 +1284,8 @@ public class ScheduleCreatorExecutionTransaction {
 					command.getEmployeeId());
 			return new PrepareWorkOutput(null, null, null, Optional.ofNullable(scheExeLog));
 		} else {
-			WorkInformation workInformation = new WorkInformation(
-					workSchedules.get(0).getWorkInfo().getRecordInfo().getWorkTimeCode(),
-					workSchedules.get(0).getWorkInfo().getRecordInfo().getWorkTypeCode());
+			WorkInformation workInformation = workSchedules.stream().findFirst().map(m -> m.getWorkInfo().getRecordInfo().clone()).orElse(null);
+			
 			return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 		}
 	}
@@ -1316,7 +1320,8 @@ public class ScheduleCreatorExecutionTransaction {
 					WorkingCode workTimeCode = this.getWorkingCode(command,masterCache, itemDto, basicWorkSetting.isPresent() ? basicWorkSetting.get().getWorkingCode() : null, workType.isPresent() ? workType.get() : null, dateInPeriod);
 					
 					// note 「勤務種類コード」、「就業時間帯コード」を返す
-					WorkInformation workInformation =  new WorkInformation(workTimeCode == null ? null : workTimeCode.v(), workType.isPresent() ? workType.get().getWorkTypeCode().v() : null);
+					WorkInformation workInformation =  new WorkInformation(workType.map(m -> m.getWorkTypeCode().v()).orElse(""), workTimeCode == null ? null : workTimeCode.v());
+					
 					return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 					
 				// note} 
@@ -1349,7 +1354,7 @@ public class ScheduleCreatorExecutionTransaction {
 						// note 「就業時間帯コード」を取得する
 						WorkingCode workTimeCode = this.getWorkingCode(command, masterCache, itemDto, new WorkingCode(monthlySetting.get().getWorkingCode().v()), workType.isPresent() ? workType.get() : null, dateInPeriod);
 						
-						WorkInformation workInformation =  new WorkInformation(workTimeCode != null ? workTimeCode.v() : null, workType.isPresent() ? workType.get().getWorkTypeCode().v() : null);
+						WorkInformation workInformation =  new WorkInformation(workType.map(m -> m.getWorkTypeCode().v()).orElse(""), workTimeCode != null ? workTimeCode.v() : null);
 						return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 					}
 				}
@@ -1384,12 +1389,22 @@ public class ScheduleCreatorExecutionTransaction {
 					Optional<SingleDaySchedule> daySchedule = this.getDaySchedule(itemDto, dayOfWeek);
 				     // note データある
 				    if (daySchedule.isPresent()) {
-				    	workInformation =  new WorkInformation(daySchedule.get().getWorkTimeCode().get(), daySchedule.get().getWorkTypeCode().get());
+						workInformation = daySchedule.map(m -> {
+							String workTypeCode = m.getWorkTypeCode().map(t -> t.v()).orElse("");
+							String workdTimeCode = m.getWorkTimeCode().map(t -> t.v()).orElse("");
+
+							return new WorkInformation(workTypeCode, workdTimeCode);
+						}).orElse(null);
 				    } else {
 				    	// note データがない
 				    	// note 「個人勤務日区分別勤務」。休日時を取得する
-				    	workInformation =  new WorkInformation(itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().isPresent() ? itemDto.get().getWorkCategory().getHolidayTime().getWorkTimeCode().get() : null, 
-				    			itemDto.get().getWorkCategory().getHolidayTime().getWorkTypeCode().get());
+						workInformation = itemDto.map(m -> {
+							SingleDaySchedule sched = m.getWorkCategory().getHolidayTime();
+							String workTypeCode = sched.getWorkTypeCode().map(t -> t.v()).orElse("");
+							String workdTimeCode = sched.getWorkTimeCode().map(t -> t.v()).orElse("");
+
+							return new WorkInformation(workTypeCode, workdTimeCode);
+						}).orElse(null);
 				    }
 				    return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 				}

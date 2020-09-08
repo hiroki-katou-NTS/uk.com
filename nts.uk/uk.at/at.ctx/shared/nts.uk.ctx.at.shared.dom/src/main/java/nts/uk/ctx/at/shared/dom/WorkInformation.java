@@ -27,34 +27,57 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  *
  */
 public class WorkInformation {
-
 	private WorkTypeCode workTypeCode;
+	
 	private Optional<WorkTimeCode> workTimeCode;
 
-	public WorkInformation(String workTimeCode, String workTypeCode) {
-
-		this.workTimeCode = StringUtils.isEmpty(workTimeCode) ? Optional.empty() : Optional.of(new WorkTimeCode(workTimeCode));
-		this.workTypeCode = workTypeCode == null ? null : new WorkTypeCode(workTypeCode);
-	}
-
-	public WorkInformation(WorkTimeCode workTimeCode, WorkTypeCode workTypeCode) {
-		this.workTimeCode = Optional.ofNullable(workTimeCode);
-		this.workTypeCode = workTypeCode;
-	}
-
-	public WorkTimeCode getWorkTimeCode() {
-		if(this.workTimeCode == null) {
-			return null;
+	public WorkInformation(String workTypeCode, String workTimeCode) {
+		if (!StringUtils.isEmpty(workTypeCode)) {
+			this.setWorkTypeCode(new WorkTypeCode(workTypeCode));
 		}
-		return this.workTimeCode.isPresent()?this.workTimeCode.get():null;
+
+		if (StringUtils.isEmpty(workTimeCode)) {
+			this.setWorkTimeCode(null);
+		} else {
+			this.setWorkTimeCode(new WorkTimeCode(workTimeCode));
+		}
+	}
+
+	public WorkInformation(WorkTypeCode workTypeCode, WorkTimeCode workTimeCode) {
+		this.setWorkTypeCode(workTypeCode);
+		this.setWorkTimeCode(workTimeCode);
 	}
 	
-	public Optional<WorkTimeCode> getWorkTimeCodeNotNull() {
-		return this.workTimeCode;
+	public WorkInformation clone() {
+		if (workTypeCode != null && workTimeCode != null) {
+			return new WorkInformation(workTypeCode, workTimeCode.orElse(null));
+		}
+
+		if (workTypeCode == null && workTimeCode == null) {
+			return new WorkInformation("", "");
+		}
+
+		if (workTypeCode == null) {
+			return new WorkInformation("", workTimeCode.map(wtc -> wtc.v()).orElse(""));
+		}
+
+		return new WorkInformation(workTypeCode.v(), "");
 	}
 
 	public WorkTypeCode getWorkTypeCode() {
 		return this.workTypeCode;
+	}
+
+	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+		this.workTypeCode = workTypeCode;
+	}
+
+	public WorkTimeCode getWorkTimeCode() {
+		return this.workTimeCode.orElse(null);
+	}
+	
+	public Optional<WorkTimeCode> getWorkTimeCodeNotNull() {
+		return this.workTimeCode;
 	}
 
 	public void removeWorkTimeInHolydayWorkType() {
@@ -62,11 +85,7 @@ public class WorkInformation {
 	}
 
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
-		this.workTimeCode = workTimeCode==null?null:Optional.of(workTimeCode);
-	}
-
-	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
-		this.workTypeCode = workTypeCode;
+		this.workTimeCode = Optional.ofNullable(workTimeCode);
 	}
 
 	/**
