@@ -204,9 +204,7 @@ module nts.uk.at.view.ksm005.a {
             public startPage(): JQueryPromise<any> {
                 const self = this;
                 let dfd = $.Deferred();
-
 	            nts.uk.ui.block.invisible();
-
 	            service.getMonthlyAll().done( function( data ) {
 	            	let listMonthlyPattern = data.listMonthlyPattern;
                     listMonthlyPattern = listMonthlyPattern && listMonthlyPattern.map(item =>  {
@@ -220,14 +218,13 @@ module nts.uk.at.view.ksm005.a {
 			            self.enableDelete(false);
 			            self.resetData();
 		            }else {
-                        $('#inp_monthlyPatternName').focus();
 			            self.selectMonthlyPattern(listMonthlyPattern[0].code);
 		            }
-
-		            dfd.resolve(self);
-	            }).then(() => $('.nts-input').ntsError('clear'));
-
-                blockUI.clear();
+                    dfd.resolve(self);
+	            }).always(() => {
+                    blockUI.clear();
+                    $('.nts-input').ntsError('clear');
+                });
                 return dfd.promise();
             }
             
@@ -236,7 +233,6 @@ module nts.uk.at.view.ksm005.a {
              */
             public updateWorkMothlySetting(data: WorkMonthlySettingDto[]): void{
                 const self = this;
-                //nts.uk.ui.block.invisible();
                 let optionDates: any[] = [];
                 for(let settings of data){
                     optionDates.push(self.toOptionDate(settings));      
@@ -299,7 +295,7 @@ module nts.uk.at.view.ksm005.a {
                             self.lstMonthlyPattern(data);
                             self.monthlyPatternModel().updateEnable(false);
                             self.selectMonthlyPattern(data[0].code);
-                            return;         
+                            return;
                         }
                         let i = self.lstMonthlyPattern().findIndex( item => item.code == selectedCode);
                         self.lstMonthlyPattern(data);
