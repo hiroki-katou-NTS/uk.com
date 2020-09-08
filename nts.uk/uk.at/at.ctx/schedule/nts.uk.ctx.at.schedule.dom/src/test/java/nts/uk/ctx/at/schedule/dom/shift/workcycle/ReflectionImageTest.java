@@ -31,8 +31,8 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualByComparingTo(result.getDate());
-        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualByComparingTo(result.getWorkCreateMethod());
+        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
+        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualTo(result.getWorkCreateMethod());
         assertThat(workInformation).isEqualTo(result.getWorkInformation());
     }
 
@@ -48,8 +48,8 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualByComparingTo(result.getDate());
-        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualByComparingTo(result.getWorkCreateMethod());
+        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
+        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualTo(result.getWorkCreateMethod());
         assertThat(workInformation).isEqualTo(result.getWorkInformation());
     }
 
@@ -65,8 +65,8 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualByComparingTo(result.getDate());
-        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualByComparingTo(result.getWorkCreateMethod());
+        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
+        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualTo(result.getWorkCreateMethod());
         assertThat(workHolidayWorkInfor).isEqualTo(result.getWorkInformation());
     }
 
@@ -78,8 +78,8 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualByComparingTo(result.getDate());
-        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualByComparingTo(result.getWorkCreateMethod());
+        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
+        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualTo(result.getWorkCreateMethod());
         assertThat(workInformation).isEqualTo(result.getWorkInformation());
     }
 
@@ -95,8 +95,8 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualByComparingTo(result.getDate());
-        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualByComparingTo(result.getWorkCreateMethod());
+        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
+        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualTo(result.getWorkCreateMethod());
         assertThat(workInformation).isEqualTo(result.getWorkInformation());
     }
 
@@ -112,8 +112,8 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualByComparingTo(result.getDate());
-        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualByComparingTo(result.getWorkCreateMethod());
+        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
+        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualTo(result.getWorkCreateMethod());
         assertThat(workInformation).isEqualTo(result.getWorkInformation());
     }
 
@@ -133,8 +133,8 @@ public class ReflectionImageTest {
         val result = target.addInWorkCycle(GeneralDate.max(),wrkCycleWorkInfo);
 
         assertThat(result).isEqualTo(true);
-        assertThat(GeneralDate.max()).isEqualByComparingTo(target.getListRefOrdByDate().get(0).getDate());
-        assertThat(WorkCreateMethod.WORK_CYCLE).isEqualByComparingTo(target.getListRefOrdByDate().get(0).getWorkCreateMethod());
+        assertThat(GeneralDate.max()).isEqualTo(target.getListRefOrdByDate().get(0).getDate());
+        assertThat(WorkCreateMethod.WORK_CYCLE).isEqualTo(target.getListRefOrdByDate().get(0).getWorkCreateMethod());
         assertThat(wrkCycleWorkInfo).isEqualTo(target.getListRefOrdByDate().get(0).getWorkInformation());
     }
 
@@ -150,10 +150,10 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate();
 
-        assertThat(result.get(0).getDate()).isEqualByComparingTo(GeneralDate.ymd(2020,9,1));
-        assertThat(result.get(1).getDate()).isEqualByComparingTo(GeneralDate.ymd(2020,9,2));
-        assertThat(result.get(2).getDate()).isEqualByComparingTo(GeneralDate.ymd(2020,9,3));
-        assertThat(result.get(3).getDate()).isEqualByComparingTo(GeneralDate.ymd(2020,9,5));
+        assertThat(result.get(0).getDate()).isEqualTo(GeneralDate.ymd(2020,9,1));
+        assertThat(result.get(1).getDate()).isEqualTo(GeneralDate.ymd(2020,9,2));
+        assertThat(result.get(2).getDate()).isEqualTo(GeneralDate.ymd(2020,9,3));
+        assertThat(result.get(3).getDate()).isEqualTo(GeneralDate.ymd(2020,9,5));
     }
 
 
