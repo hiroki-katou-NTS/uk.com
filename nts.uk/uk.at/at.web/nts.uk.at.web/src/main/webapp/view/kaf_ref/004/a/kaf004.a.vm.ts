@@ -402,131 +402,139 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                 return;
             }
+            vm.$validate([
+				'.ntsControl',
+				'.nts-input'
+			]).then((valid: boolean) => {
+                if(valid) {
 
-            vm.application.prototype.inputDate = ko.observable(moment(new Date()).format("yyyy/MM/dd HH:mm:ss"));
+                    vm.application.prototype.inputDate = ko.observable(moment(new Date()).format("yyyy/MM/dd HH:mm:ss"));
 
-            let lateCancelation = [];
-            let lateOrLeaveEarlies = [];
+                    let lateCancelation = [];
+                    let lateOrLeaveEarlies = [];
 
-            if (ko.toJS(vm.workManagement.workTime)) {
-                lateOrLeaveEarlies.push({
-                    workNo: 1,
-                    lateOrEarlyClassification: 0,
-                    timeWithDayAttr: ko.toJS(vm.workManagement.workTime())
-                })
-            }
-            if (ko.toJS(vm.workManagement.leaveTime)) {
-                lateOrLeaveEarlies.push({
-                    workNo: 1,
-                    lateOrEarlyClassification: 1,
-                    timeWithDayAttr: ko.toJS(vm.workManagement.leaveTime())
-                })
-            }
-            if (ko.toJS(vm.workManagement.workTime2)) {
-                lateOrLeaveEarlies.push({
-                    workNo: 2,
-                    lateOrEarlyClassification: 0,
-                    timeWithDayAttr: ko.toJS(vm.workManagement.workTime2())
-                })
-            }
-            if (ko.toJS(vm.workManagement.leaveTime2)) {
-                lateOrLeaveEarlies.push({
-                    workNo: 2,
-                    lateOrEarlyClassification: 1,
-                    timeWithDayAttr: ko.toJS(vm.workManagement.leaveTime2())
-                })
-            }
-            if (ko.toJS(vm.application().prePostAtr) === 1) {
-                if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
-                    lateCancelation.push({
-                        workNo: 1,
-                        lateOrEarlyClassification: 0
-                    }),
-                        _.remove(lateOrLeaveEarlies, (x) => {
-                            return (x.workNo === 1 && x.lateOrEarlyClassification === 0);
-                        });
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
-                    lateCancelation.push({
-                        workNo: 1,
-                        lateOrEarlyClassification: 1
-                    })
-                    _.remove(lateOrLeaveEarlies, (x) => {
-                        return (x.workNo === 1 && x.lateOrEarlyClassification === 1);
-                    });
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
-                    lateCancelation.push({
-                        workNo: 2,
-                        lateOrEarlyClassification: 0
-                    })
-                    _.remove(lateOrLeaveEarlies, (x) => {
-                        return (x.workNo === 2 && x.lateOrEarlyClassification === 0);
-                    });
-                }
-                if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
-                    lateCancelation.push({
-                        workNo: 2,
-                        lateOrEarlyClassification: 1
-                    })
-                    _.remove(lateOrLeaveEarlies, (x) => {
-                        return (x.workNo === 2 && x.lateOrEarlyClassification === 1);
-                    });
-                }
-            }
-            let arrivedLateLeaveEarly = {
-                lateCancelation: lateCancelation,
-                lateOrLeaveEarlies: lateOrLeaveEarlies
-            }
-
-            vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly = arrivedLateLeaveEarly;
-
-            let application: ApplicationDto = new ApplicationDto(null, null, ko.toJS(vm.application().prePostAtr), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].sid,
-                ko.toJS(vm.application().appType), ko.toJS(vm.application().appDate), null, null, null, null, ko.toJS(vm.application().opReversionReason), ko.toJS(vm.application().appDate), ko.toJS(vm.application().appDate), ko.toJS(vm.application().opAppReason), ko.toJS(vm.application().opAppStandardReasonCD));
-            let command = {
-                agentAtr: true,
-                isNew: true,
-                application: application,
-                infoOutput: ko.toJS(vm.arrivedLateLeaveEarlyInfo)
-            };
-
-            vm.$blockui("show");
-            vm.$validate("#kaf000-a-component4-singleDate", ".nts-input", "#kaf000-a-component3-prePost")
-                .then(isValid => {
-                    if (isValid) {
-                        return true;
-                    }
-                }).then(result => {
-                    if (result) {
-                        vm.$ajax(API.getMsgList + "/" + ko.toJS(vm.application().appType), command
-                        ).done((success: any) => {
-                            if (success) {
-                                console.log(success);
-
-                                for (var i = 0; i < success.length; i++) {
-                                    vm.$dialog.confirm({ messageId: success[i] }).then((result: 'no' | 'yes' | 'cancel') => {
-                                        if (result !== 'yes') {
-                                            return;
-                                        }
-                                    });
-                                }
-
-                                this.afterRegister(application);
-                            } else {
-                                this.afterRegister(application);
-                            }
-                        }).fail((fail: any) => {
-                            console.log(fail);
-                            if (fail) {
-                                const message: any = {
-                                    messageId: fail.messageId,
-                                    messageParams: [ko.toJS(vm.application().appDate)]
-                                };
-                                vm.$dialog.error(message);
-                            }
+                    if (ko.toJS(vm.workManagement.workTime)) {
+                        lateOrLeaveEarlies.push({
+                            workNo: 1,
+                            lateOrEarlyClassification: 0,
+                            timeWithDayAttr: ko.toJS(vm.workManagement.workTime())
                         })
                     }
-                }).always(() => vm.$blockui("hide"));
+                    if (ko.toJS(vm.workManagement.leaveTime)) {
+                        lateOrLeaveEarlies.push({
+                            workNo: 1,
+                            lateOrEarlyClassification: 1,
+                            timeWithDayAttr: ko.toJS(vm.workManagement.leaveTime())
+                        })
+                    }
+                    if (ko.toJS(vm.workManagement.workTime2)) {
+                        lateOrLeaveEarlies.push({
+                            workNo: 2,
+                            lateOrEarlyClassification: 0,
+                            timeWithDayAttr: ko.toJS(vm.workManagement.workTime2())
+                        })
+                    }
+                    if (ko.toJS(vm.workManagement.leaveTime2)) {
+                        lateOrLeaveEarlies.push({
+                            workNo: 2,
+                            lateOrEarlyClassification: 1,
+                            timeWithDayAttr: ko.toJS(vm.workManagement.leaveTime2())
+                        })
+                    }
+                    if (ko.toJS(vm.application().prePostAtr) === 1) {
+                        if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
+                            lateCancelation.push({
+                                workNo: 1,
+                                lateOrEarlyClassification: 0
+                            }),
+                                _.remove(lateOrLeaveEarlies, (x) => {
+                                    return (x.workNo === 1 && x.lateOrEarlyClassification === 0);
+                                });
+                        }
+                        if (ko.toJS(vm.lateOrEarlyInfo2().isCheck)) {
+                            lateCancelation.push({
+                                workNo: 1,
+                                lateOrEarlyClassification: 1
+                            })
+                            _.remove(lateOrLeaveEarlies, (x) => {
+                                return (x.workNo === 1 && x.lateOrEarlyClassification === 1);
+                            });
+                        }
+                        if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
+                            lateCancelation.push({
+                                workNo: 2,
+                                lateOrEarlyClassification: 0
+                            })
+                            _.remove(lateOrLeaveEarlies, (x) => {
+                                return (x.workNo === 2 && x.lateOrEarlyClassification === 0);
+                            });
+                        }
+                        if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
+                            lateCancelation.push({
+                                workNo: 2,
+                                lateOrEarlyClassification: 1
+                            })
+                            _.remove(lateOrLeaveEarlies, (x) => {
+                                return (x.workNo === 2 && x.lateOrEarlyClassification === 1);
+                            });
+                        }
+                    }
+                    let arrivedLateLeaveEarly = {
+                        lateCancelation: lateCancelation,
+                        lateOrLeaveEarlies: lateOrLeaveEarlies
+                    }
+
+                    vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly = arrivedLateLeaveEarly;
+
+                    let application: ApplicationDto = new ApplicationDto(null, null, ko.toJS(vm.application().prePostAtr), vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].sid,
+                        ko.toJS(vm.application().appType), ko.toJS(vm.application().appDate), null, null, null, null, ko.toJS(vm.application().opReversionReason), ko.toJS(vm.application().appDate), ko.toJS(vm.application().appDate), ko.toJS(vm.application().opAppReason), ko.toJS(vm.application().opAppStandardReasonCD));
+                    let command = {
+                        agentAtr: true,
+                        isNew: true,
+                        application: application,
+                        infoOutput: ko.toJS(vm.arrivedLateLeaveEarlyInfo)
+                    };
+
+                    vm.$blockui("show");
+                    vm.$validate("#kaf000-a-component4-singleDate", ".nts-input", "#kaf000-a-component3-prePost")
+                        .then(isValid => {
+                            if (isValid) {
+                                return true;
+                            }
+                        }).then(result => {
+                            if (result) {
+                                vm.$ajax(API.getMsgList + "/" + ko.toJS(vm.application().appType), command
+                                ).done((success: any) => {
+                                    if (success) {
+                                        console.log(success);
+
+                                        for (var i = 0; i < success.length; i++) {
+                                            vm.$dialog.confirm({ messageId: success[i] }).then((result: 'no' | 'yes' | 'cancel') => {
+                                                if (result !== 'yes') {
+                                                    return;
+                                                }
+                                            });
+                                        }
+
+                                        this.afterRegister(application);
+                                    } else {
+                                        this.afterRegister(application);
+                                    }
+                                }).fail((fail: any) => {
+                                    console.log(fail);
+                                    if (fail) {
+                                        const message: any = {
+                                            messageId: fail.messageId,
+                                            messageParams: [ko.toJS(vm.application().appDate)]
+                                        };
+                                        vm.$dialog.error(message);
+                                    }
+                                })
+                            }
+                        }).always(() => vm.$blockui("hide"));
+                }
+            });
+
 
         }
 
@@ -563,19 +571,16 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                     if (success) {
                         vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
                             if (ko.toJS(vm.isSendMail)
-                                // && !vm.arrivedLateLeaveEarlyInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister)
-                                && false
+                                && !vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister
+                                // && false
                             ) {
                                 vm.$window.storage("KDL030_PARAM", {
                                     appID: success.appID
                                 });
-                                vm.$window.modal("/view/kdl/030/a/index.xhtml").then((result: any) => {
-                                    vm.$window.storage('childData').then(rs => {
-                                        console.log(rs);
-                                    });
-                                });
+                                nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml")
+                                .onClosed(() => {location.reload()});
                             };
-                        }).then(() => window.location.reload());
+                        });
                     }
                 }).fail((fail: any) => {
                     console.log(fail);
