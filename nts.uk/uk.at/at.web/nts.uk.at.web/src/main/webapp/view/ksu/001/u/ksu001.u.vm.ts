@@ -201,24 +201,21 @@ module nts.uk.at.view.ksu001.u {
                 }                
             } else {
                 self.isEnableBtn(false);
-                let today = new Date();
-                year = today.getFullYear();
-                month = today.getMonth() + 1;             
-                let numberDayOfMonth = self.getNumberOfDays(year, month);
-                for (let i = 1; i <= numberDayOfMonth; i++) {
-                    let date = self.formatDate(new Date(year, month - 1, i));                    
-                    // let existDate = self.checkExistDate(date);
-                    // if (existDate) {
-                    //     self.removeExistDate(existDate);
-                    // }         
-                    self.optionDates.push({
-                                            start: date,
-                                            textColor: '',
-                                            backgroundColor: '#FFFFFF',
-                                            listText: []
-                                        });
-                    self.optionDates.pop();                     
-                }                
+                let newPublicDate = self.newPublicDate();
+                let newPublicDateSplit = [];
+                if(self.newPublicDate()){
+                    newPublicDateSplit = newPublicDate.split('-'); 
+                }                                         
+                year = parseInt(newPublicDateSplit[0]);  
+                month = parseInt(newPublicDateSplit[1]);                
+                for (let i = 1; i <= parseInt(newPublicDateSplit[2]); i++) {                            
+                    let date = self.formatDate(new Date(year,month -1, i)); 
+                    let existDate = self.checkExistDate(date);
+                    if (existDate) {
+                        self.removeExistDate(existDate);
+                    }
+                    dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EMPTY, Ksu001u.BG_COLOR_EMPTY, []));
+                }   
             }            
            
             self.optionDates(dates);
