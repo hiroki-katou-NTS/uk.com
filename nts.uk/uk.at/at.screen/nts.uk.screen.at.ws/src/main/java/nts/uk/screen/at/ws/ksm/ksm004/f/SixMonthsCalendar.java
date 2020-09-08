@@ -2,10 +2,10 @@ package nts.uk.screen.at.ws.ksm.ksm004.f;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.screen.at.app.shift.sixmonthscalendar.SixMonthsCalendarScreenProcessor;
-import nts.uk.screen.at.app.shift.sixmonthscalendar.dto.SixMonthsCalendarClassScreenDto;
-import nts.uk.screen.at.app.shift.sixmonthscalendar.dto.SixMonthsCalendarCompanyScreenDto;
-import nts.uk.screen.at.app.shift.sixmonthscalendar.dto.SixMonthsCalendarWorkPlaceScreenDto;
+import nts.uk.screen.at.app.shift.businesscalendar.day.SixMonthsCalendarScreenProcessor;
+import nts.uk.screen.at.app.shift.businesscalendar.day.dto.SixMonthsCalendarClassScreenDto;
+import nts.uk.screen.at.app.shift.businesscalendar.day.dto.SixMonthsCalendarCompanyScreenDto;
+import nts.uk.screen.at.app.shift.businesscalendar.day.dto.SixMonthsCalendarWorkPlaceScreenDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

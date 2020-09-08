@@ -26,6 +26,8 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -59,6 +61,9 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	/** The Basic schedule service. */
 	@Inject
 	private BasicScheduleService basicScheduleService;
+
+	@Inject
+	private WeeklyWorkSettingRepository weeklyWorkSettingRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -117,8 +122,9 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// data insert setting batch
 		List<WorkMonthlySetting> addWorkMonthlySettings = new ArrayList<>();
-		
-		
+
+		List<WeeklyWorkSetting> dto = this.weeklyWorkSettingRepository.findAll(companyId);
+
 		// check by next day of begin end
 		while (toStartDate.yearMonth().v() <= command.getEndYearMonth()) {
 			
@@ -142,11 +148,13 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					updateWorkMonthlySettings.add(dataPublic);
 				}
 			} else {
-				WeeklyWorkSettingDto dto = this.weeklyWorkSettingFinder
+				WeeklyWorkSettingDto dto1 = this.weeklyWorkSettingFinder
 						.checkWeeklyWorkSetting(toStartDate);
-				
+
 				// is work day
-				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
+				int targetDayOfWeek = toStartDate.dayOfWeek();
+				switch (EnumAdaptor.valueOf(dto.stream().filter(x -> x.getWorkdayDivision().value == targetDayOfWeek)
+						.findFirst().get().getWorkdayDivision().value, WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
 					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, toStartDate);
@@ -280,10 +288,6 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	
 	/**
 	 * To date.
-	 *
-	 * @param year the year
-	 * @param month the month
-	 * @param day the day
 	 * @return the date
 	 */
 	public Date toDate(int yearMonthDate) {
