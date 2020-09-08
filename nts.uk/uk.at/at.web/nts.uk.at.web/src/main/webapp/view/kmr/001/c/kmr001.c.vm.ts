@@ -129,13 +129,31 @@ module nts.uk.at.kmr001.c {
                         vm.itemsBento(array);
                     }
                 } else {
-                    vm.$dialog.error({ messageId: 'Msg_1849'});
+                    if(vm.operationDistinction() == 1) {
+                        let array: Array<any> = [];
+                        _.range(1, 41).forEach(item =>
+                            array.push(new ItemBentoByLocation(
+                                item.toString(),
+                                "",
+                                "",
+                            ))
+                        );
+                        vm.itemsBento(array);
+                    } else {
+                        let array: Array<any> = [];
+                        _.range(1, 41).forEach(item =>
+                            array.push(new ItemBentoByCompany(
+                                item.toString(),
+                                "",
+                            ))
+                        );
+                        vm.itemsBento(array);
+                    }
                 }
                 vm.listData = [...bentoDtos];
             }).fail(function (error) {
                 vm.$dialog.error({ messageId: error.messageId });
             }).always(() => this.$blockui("clear"));
-
         }
 
         deleteBento() {
@@ -198,6 +216,7 @@ module nts.uk.at.kmr001.c {
                     vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
                         vm.$blockui("clear");
                     });
+                    vm.reloadPage();
                 }).always(() => this.$blockui("clear"));
             } else {
                 const param = {
@@ -215,9 +234,9 @@ module nts.uk.at.kmr001.c {
                     vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
                         vm.$blockui("clear");
                     });
+                    vm.reloadPage();
                 }).always(() => this.$blockui("clear"));
             }
-            vm.reloadPage();
         }
 
         openConfigHisDialog() {
@@ -284,8 +303,9 @@ module nts.uk.at.kmr001.c {
                         );
                         vm.itemsBento(array);
                         vm.selectedBentoSetting(bentoDtos[0].frameNo);
-                        vm.selectedWorkLocationCode(bentoDtos[0].workLocationCode);
-
+                        if(vm.workLocationList.length > 0) {
+                            vm.selectedWorkLocationCode(bentoDtos[0].workLocationCode);
+                        }
                     } else {
                         vm.columnBento([
                             { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
@@ -318,7 +338,40 @@ module nts.uk.at.kmr001.c {
                         bentoDtos[0].workLocationCode
                     ));
                 } else {
-                    vm.$dialog.error({ messageId: 'Msg_1849'});
+                    if(dataRes.operationDistinction == 1) {
+                        vm.columnBento([
+                            { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
+                            { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 225 },
+                            { headerText: vm.$i18n('KMR001_50'), key: 'locationName', width: 100 },
+                        ]);
+                        let array: Array<any> = [];
+                        _.range(1, 41).forEach(item =>
+                            array.push(new ItemBentoByLocation(
+                                item.toString(),
+                                "",
+                                "",
+                            ))
+                        );
+                        vm.itemsBento(array);
+                        vm.selectedBentoSetting('1');
+                        if(vm.workLocationList.length > 0) {
+                            vm.selectedWorkLocationCode('0');
+                        }
+                    } else {
+                        vm.columnBento([
+                            { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
+                            { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325 },
+                        ]);
+                        let array: Array<any> = [];
+                        _.range(1, 41).forEach(item =>
+                            array.push(new ItemBentoByCompany(
+                                item.toString(),
+                                "",
+                            ))
+                        );
+                        vm.itemsBento(array);
+                        vm.selectedBentoSetting('1');
+                    }
                 }
             }).then(() => {
                 vm.selectedBentoSetting.subscribe(data => {
@@ -420,30 +473,5 @@ module nts.uk.at.kmr001.c {
             this.name = name;
         }
     }
-
-    class paramsRegister{
-        histId: any;
-        frameNo: any;
-        benToName: any;
-        workLocationCode: any;
-        amount1: any;
-        amount2: any;
-        Unit: any;
-        canBookClosesingTime1: any;
-        canBookClosesingTime2: any;
-        constructor(histId, frameNo, benToName, workLocationCode, amount1, amount2, Unit,
-                    canBookClosesingTime1, canBookClosesingTime2) {
-            this.histId = histId;
-            this.frameNo = frameNo;
-            this.benToName = benToName;
-            this.workLocationCode = workLocationCode;
-            this.amount1 = amount1;
-            this.amount2 = amount2;
-            this.Unit = Unit;
-            this.canBookClosesingTime1 = canBookClosesingTime1;
-            this.canBookClosesingTime2 = canBookClosesingTime2;
-        }
-    }
-
 }
 
