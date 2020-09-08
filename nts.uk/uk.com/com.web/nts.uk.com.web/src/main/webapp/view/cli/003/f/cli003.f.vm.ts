@@ -444,7 +444,7 @@ class DataCorrectLogModel {
             vm.targetEmployeeIdList= ko.observableArray(data.targetEmployeeIdList);
             vm.listEmployeeIdOperator= ko.observableArray(data.listEmployeeIdOperator);
         }
-
+        service.getLogSettingsBySystem(parseInt(vm.systemTypeSelectedCode())).then((data) => console.log(data));
         let dfd = $.Deferred<any>();
         //F igGrid
         let recordType = Number(vm.logTypeSelectedCode());

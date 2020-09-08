@@ -7,6 +7,7 @@ module nts.uk.com.view.cli003.f {
             getLogOutputItemsByRecordTypeItemNos: "ctx/sys/log/app/get-log-output-item-by-record-type-item-no-list",
             getLogBasicInfoByModifyDate: "ctx/sys/log/record-reference/get-log-basic-info-by-modify-date",
             logSettingExportCsv: "ctx/sys/log/record-reference/export-csv",
+            getLogSettingsBySystem: "sys/portal/logsettings/findBySystem",
         }
 
         export function getLogOutputItemsByRecordTypeItemNos(paramOutputItem): JQueryPromise<any> {
@@ -19,6 +20,9 @@ module nts.uk.com.view.cli003.f {
         
         export function logSettingExportCsv(params): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.logSettingExportCsv, params);
+        };
+        export function getLogSettingsBySystem(systemType : number): JQueryPromise<any> {
+            return ajax(`${paths.getLogSettingsBySystem}/${systemType}`);
         };
     }
 }
