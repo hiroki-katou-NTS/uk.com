@@ -48,8 +48,6 @@ public interface WorkScheduleRepository {
 
 	Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo);
 
-	void deleteShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo);
-
 	void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID);
 
 	void deleteAllShortTime(String sid, GeneralDate ymd);
