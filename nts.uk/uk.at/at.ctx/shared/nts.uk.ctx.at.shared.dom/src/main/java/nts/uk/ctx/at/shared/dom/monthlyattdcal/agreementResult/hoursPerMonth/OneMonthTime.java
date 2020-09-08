@@ -14,6 +14,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class OneMonthTime extends ValueObject {
 
     /**
