@@ -3,35 +3,35 @@
       "date": "03/12",
       "typeofwork":"PT",
       "workinghours":"08:00",
-      "timetowork":"08:30",
-      "leavetime":"17:50"
+      "timetowork":120,
+      "leavetime":180
    },
    {
       "date":"03/12",
       "typeofwork":"PT",
       "workinghours":"09:00",
-      "timetowork":"08:30",
-      "leavetime":"17:50"
+      "timetowork":120,
+      "leavetime":180
    },
    {
       "date":"03/17",
       "typeofwork":"FT",
       "workinghours":"10:00",
-      "timetowork":"08:30",
-      "leavetime":"17:50"
+      "timetowork":120,
+      "leavetime":180
    },
    {
       "date":"03/18",
       "typeofwork":"FT",
       "workinghours":"11:00",
-      "timetowork":"08:30",
-      "leavetime":"17:50"
+      "timetowork":120,
+      "leavetime":180
    },
    {
       "date":"03/12",
       "typeofwork":"PT",
       "workinghours":"16:00",
-      "timetowork":"08:30",
-      "leavetime":"17:50"
+      "timetowork":120,
+      "leavetime":180
    }
 ]

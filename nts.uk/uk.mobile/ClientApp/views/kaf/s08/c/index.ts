@@ -1,5 +1,5 @@
 import { Vue } from '@app/provider';
-import { component } from '@app/core/component';
+import { component, Prop } from '@app/core/component';
 import {KafS00DComponent} from '../../s00/d';
 
 @component({
@@ -15,5 +15,6 @@ import {KafS00DComponent} from '../../s00/d';
     constraints: []
 })
 export class KafS08CComponent extends Vue {
+    @Prop({default: () => ({})})
     public title: string = 'KafS08C';
 }

@@ -7,15 +7,6 @@
                 {{ 'KAFS08_13' | i18n }}
               </button>
     </div>
-    <!-- <div class="alert error">
-      <img
-        class="iconWarn"
-        src="https://www.iconsdb.com/icons/preview/red/warning-xxl.png"
-        width="16"
-        height="16"
-      />
-      <div class="contentError">{{'KAFS08_13'| i18n}}</div>
-    </div> -->
     <!-- A7 -->
     <div class="field-set mt-3 ml-3">
       <!-- A7_1 -->
@@ -34,7 +25,7 @@
       <div class="uk-text-dark-gray">
         <label class="a7_5">{{'KAFS08_28' | i18n}}</label>
         <!-- A7_6 -->
-        <label>{{(departureTime || 0) | timewd}}</label>
+        <label>{{(derpartureTime || 0) | timewd}}</label>
       </div>
       <!-- A7_7 -->
       <div class="uk-text-dark-gray">
@@ -65,63 +56,22 @@
               <td class="px-1">{{data.date | date('MM/DD(ddd)')}}</td>
               <td class="px-1">{{data.typeofwork}}</td>
               <td class="px-1">{{data.workinghours}}</td>
-              <td class="px-1">{{data.timetowork}}</td>
-              <td class="border-right-0 px-1">{{data.leavetime}}</td>
+              <td class="px-1">{{data.timetowork | timewd}}</td>
+              <td class="border-right-0 px-1">{{data.leavetime | timewd}}</td>
               <td class="text-center px-0 border-left-0">
                 <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
               </td>
             </tr>
-            <!-- <tr>
-              <td class="px-1"></td>
-              <td class="px-1">Jacob</td>
-              <td class="px-1">Thornton</td>
-              <td class="px-1">@fat</td>
-              <td class="border-right-0 px-1">@mdo</td>
-              <td class="text-center px-0 border-left-0">
-                <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
-              </td>
-            </tr>
-            <tr>
-              <td class="px-1"></td>
-              <td class="px-1">Larry</td>
-              <td class="px-1">The Bird</td>
-              <td class="px-1">@twitter</td>
-              <td class="border-right-0 px-1">@mdo</td>
-              <td class="text-center px-0 border-left-0">
-                <fa-font class="pr-4" v-bind:size="'1'" icon="fas fa-angle-right" v-click="showModal.bind(this, 'modal')" />
-              </td>
-            </tr>
-            <tr>
-              <td class="px-1" v-date="date"></td>
-              <td class="px-1">Larry</td>
-              <td class="px-1">The Bird</td>
-              <td class="px-1">@twitter</td>
-              <td class="border-right-0 px-1">@mdo</td>
-              <td class="text-center px-0 border-left-0">
-                <fa-font class="pr-4" v-bind:size="'1'" icon="fas fa-angle-right" v-click="showModal.bind(this, 'modal')"/>
-              </td>
-            </tr>
-            <tr>
-              <td class="px-1"></td>
-              <td class="px-1">Larry</td>
-              <td class="px-1">The Bird</td>
-              <td class="px-1">@twitter</td>
-              <td class="border-right-0 px-1">@mdo</td>
-              <td class="text-center px-0 border-left-0">
-                <fa-font class="pr-4" v-bind:size="'1'" icon="fas fa-angle-right" v-click="showModal.bind(this, 'modal') "/>
-              </td> -->
-            <!-- </tr> -->
           </tbody>
         </table>
       </div>
       <!-- A50_F2 -->
       <div class="process-button">
         <!-- A50_2 -->
-        <button class="btn btn-primary btn-block">{{'申請する' | i18n}}</button>
+        <button @click="nextToStepThree()" class="btn btn-primary btn-block">{{'申請する' | i18n}}</button>
         <!-- A50_3 -->
-        <button class="btn btn-secondary btn-block">{{'KAFS08_40' | i18n}}</button>
+        <button @click="prevStepOne()" class="btn btn-secondary btn-block">{{'KAFS08_40' | i18n}}</button>
       </div>
-
     </div>
   </div>
 </template>
