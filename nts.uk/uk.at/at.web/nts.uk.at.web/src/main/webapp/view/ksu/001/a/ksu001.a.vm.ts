@@ -591,11 +591,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shift');
                 
-                // set lai data stick
-                let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
-                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
-                __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
-                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -630,11 +625,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shortName');
                 
-                // set lai data stick
-                let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
-                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
-                __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
-                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -668,10 +658,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'time');
-                // set lai data stick
-                let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
-                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
-                __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1975,21 +1961,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").exTable("updateMode", "stick");
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 $("#extable").exTable("stickMode", "single");
+                // set lai data stick
+                let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+                if (objWorkTime != undefined) {
+                    __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
+                    __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
+                }
             } else if (self.selectedModeDisplayInBody() == 'shift') {
                 $("#extable").exTable("stickMode", "multi");
-            }
-            
-            // set lai data stick
-            let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
-            if (objWorkTime != undefined) {
-                __viewContext.viewModel.viewAB.workPlaceId(objWorkTime.code);
-                __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
+                // set lai data stick
+                if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) {
+                    let selectedBtnTblCom = __viewContext.viewModel.viewAC.selectedButtonTableCompany();
+                    if (selectedBtnTblCom.hasOwnProperty('data')) {
+                        __viewContext.viewModel.viewAC.selectedButtonTableCompany(selectedBtnTblCom);
+                    }
+                } else {
+                    let selectedBtnTblWkp = __viewContext.viewModel.viewAC.selectedButtonTableWorkplace();
+                    if (selectedBtnTblWkp.hasOwnProperty('data')) {
+                        __viewContext.viewModel.viewAC.selectedButtonTableWorkplace(selectedBtnTblWkp);
+                    }
+                }
             }
             
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) {
                 let workType = self.dataCell.objWorkType;
                 let workTime = self.dataCell.objWorkTime;
-                
                 if((workType.workTimeSetting == 0 && workTime.code == '') || (workType.workTimeSetting == 0 && workTime.code == ' ')){
                       nts.uk.ui.dialog.alertError({ messageId: 'Msg_435' });
                       return false;
