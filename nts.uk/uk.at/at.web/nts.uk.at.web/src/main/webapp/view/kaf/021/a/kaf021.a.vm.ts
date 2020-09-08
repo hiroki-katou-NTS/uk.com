@@ -26,14 +26,15 @@ module nts.uk.at.kaf021.a {
             self.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
                 systemType: 1,
-                showEmployeeSelection: true,
+                showEmployeeSelection: false,
                 showQuickSearchTab: true,
                 showAdvancedSearchTab: true,
                 showBaseDate: true,
-                showClosure: false,
+                showClosure: true,
                 showAllClosure: false,
                 showPeriod: false,
-                periodFormatYM: null,
+                periodFormatYM: true,
+                maxPeriodRange: 'oneMonth',
 
                 /** Required parameter */
                 baseDate: moment.utc().toISOString(),
@@ -56,9 +57,9 @@ module nts.uk.at.kaf021.a {
                 showWorkplace: true,
                 showClassification: true,
                 showJobTitle: true,
-                showWorktype: true,
-                isMutipleCheck: null,
-                tabindex: 6,
+                showWorktype: false,
+                isMutipleCheck: true,
+                //tabindex: 6,
                 showOnStart: true,
 
                 /**
@@ -73,11 +74,12 @@ module nts.uk.at.kaf021.a {
         }
 
         created(params: any) {
-            let vm = this;
+            let self = this;
+            $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
         }
 
         mounted() {
-            let vm = this;
+            let self = this;
 
             
         }
