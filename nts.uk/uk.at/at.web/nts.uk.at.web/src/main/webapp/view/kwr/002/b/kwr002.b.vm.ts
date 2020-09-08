@@ -245,13 +245,15 @@ module nts.uk.com.view.kwr002.b {
         };
 
         createTransferData(currentData, rcdExport) {
+            let self = this;
             let cmd = {
-                code: Number(currentData.code()),
+                code: currentData.code(),
                 name: currentData.name(),
                 sealUseAtr: rcdExport.useSeal,
                 sealStamp: rcdExport.sealStamp,
                 nameUseAtr: currentData.nameUseAtr(),
                 exportFontSize: currentData.exportFontSize(),
+                itemSelType : self.selectionType
             };
 
             let itemCmd = {
@@ -260,7 +262,7 @@ module nts.uk.com.view.kwr002.b {
             };
 
             _.forEach(rcdExport.attendanceRecItemList, (o) => {
-                let code = Number(currentData.code());
+                let code = currentData.code();
                 let name = o.attendanceItemName;
                 let timeItemIds = o.attendanceId;
                 let columnIndex = Number(o.columnIndex);

@@ -20,7 +20,7 @@ public class AttendanceRecordExportSettingCommand {
 	
 	/** The code. */
 	//	コード	
-	long code;
+	String code;
 
 	/** The name. */
 	//	名称
@@ -40,6 +40,11 @@ public class AttendanceRecordExportSettingCommand {
 	/** The once update. */
 	boolean onceUpdate;
 	
+	/** The monthly display. */
+	Integer monthlyDisplay;
+	
+	/** The item sel type. */
+	Integer itemSelType;
 	/**
 	 * Instantiates a new attendance record export setting add command.
 	 */
