@@ -103,12 +103,15 @@ public class ResultOfSaving extends AggregateRoot
     * ファイルID
     */
     private Optional<String> fileId;
+    
+    //field ログイン情報
+    private LoginInfo loginInfo;
 
 	public ResultOfSaving(String storeProcessingId, String cid, int systemType, Long fileSize,
 			String saveSetCode, String saveFileName, String saveName, int saveForm,
 			GeneralDateTime saveEndDatetime, GeneralDateTime saveStartDatetime, int deletedFiles,
 			String compressedPassword, String practitioner, Integer targetNumberPeople,
-			Integer saveStatus, int saveForInvest, String fileId) {
+			Integer saveStatus, int saveForInvest, String fileId, LoginInfo logInfo) {
 		super();
 		this.storeProcessingId = storeProcessingId;
 		this.cid = cid;
@@ -127,6 +130,7 @@ public class ResultOfSaving extends AggregateRoot
 		this.saveStatus = saveStatus == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(saveStatus, SaveStatus.class));
 		this.saveForInvest = EnumAdaptor.valueOf(saveForInvest, NotUseAtr.class);;
 		this.fileId = Optional.ofNullable(fileId);
+		this.loginInfo = logInfo;
 	}
 	
 	public void setSaveFileName(String saveFileName){
