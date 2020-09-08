@@ -45,7 +45,7 @@
               <!-- A3_2 -->
               <input id ="A3_2" data-bind="ntsTextEditor: {
                 name: '#[KDL048_3]',
-                value: vm.attendanceRecordName,
+                value: attendanceRecordName,
                 constraint: 'ItemName',
                 option: ko.mapping.fromJS(
                   new nts.uk.ui.option.TextEditorOption({
@@ -73,12 +73,12 @@
               <!-- A5_2 -->
               <div data-bind="ntsComboBox: {
                 name: '#[KDL048_4]',
-                options: vm.attributeObject().attributeList,
+                options: attributeObject().attributeList,
                 optionsValue: 'attendanceTypeCode',
                 visibleItemsCount: 4,
-                value: vm.valueCb,
+                value: valueCb,
                 optionsText: 'attendanceTypeName',
-                enable: vm.attributeObject().selectionCategory === 2,
+                enable: attributeObject().selectionCategory === 2,
                 columns: [{ prop: 'attendanceTypeName', length: 10 }],
               }" class="combo-box"></div>
              </div>
@@ -87,8 +87,8 @@
               searchMode: 'filter',
               targetKey: 'id',
               comId: 'multi-list',
-              items: vm.diligenceData,
-              selected: vm.currentCodeList,
+              items: diligenceData,
+              selected: currentCodeList,
               selectedKey: 'id',
               fields: ['name', 'id'],
               mode: 'igGrid',
