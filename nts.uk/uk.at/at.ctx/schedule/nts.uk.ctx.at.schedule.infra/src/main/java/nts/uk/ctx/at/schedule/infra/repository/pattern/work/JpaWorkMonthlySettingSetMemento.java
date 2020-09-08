@@ -5,13 +5,13 @@
 package nts.uk.ctx.at.schedule.infra.repository.pattern.work;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWorkMonthSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMemento {
 	
@@ -61,7 +61,7 @@ public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMem
 	 * shift.pattern.work.WorkingCode)
 	 */
 	@Override
-	public void setWorkingCode(WorkingCode workingCode) {
+	public void setWorkingCode(WorkTimeCode workingCode) {
 		this.entity.setWorkingCd(workingCode == null ? null : workingCode.v());
 		
 	}
@@ -74,7 +74,7 @@ public class JpaWorkMonthlySettingSetMemento implements WorkMonthlySettingSetMem
 	 */
 	@Override
 	public void setYmdK(GeneralDate ymdk) {
-		this.entity.getKscmtWorkMonthSetPK().setYmdK(ymdk);
+		this.entity.getKscmtWorkMonthSetPK().setYmdM(ymdk);
 	}
 
 	/*
