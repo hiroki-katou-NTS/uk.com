@@ -352,14 +352,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }, this);
             
             let height = window.innerHeight - 193;
-            $("#content-main").css('height', height+ 'px');
-            
+            $("#content-main").css('height', height + 'px');
+
             self.dataCell = {};
-            
+
             $("#extable").on("extablecellupdated", (dataCell) => {
-                if(self.selectedModeDisplayInBody() == 'time'){
-                    let dataCell = $("#extable").exTable("updatedCells");
-                }
+                self.checkExitCellUpdated();
             });
         }
         // end constructor
@@ -638,16 +636,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let userInfor: IUserInfor = JSON.parse(item.get());
             let param = {
                 viewMode: 'time',
-                startDate: self.dateTimePrev() ,
-                endDate  : self.dateTimeAfter(),
+                startDate: self.dateTimePrev(),
+                endDate: self.dateTimeAfter(),
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 unit: item.isPresent() ? userInfor.unit : 0,
             };
             self.saveModeGridToLocalStorege('time');
+            
+//            let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
+//            __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
+//                userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId , objWorkTime.code);
+
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
-                
+
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('time');
@@ -1085,7 +1088,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.arrDay.push(new Time(new Date(dateInfo.ymd)));
                 let time = new Time(new Date(dateInfo.ymd));
                 detailColumns.push({
-                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", required: false, min: "-12:00", max: "71:59", headerControl: "link"
+                    key: "_" + time.yearMonthDay, width: widthColumn + "px", handlerType: "input", dataType: "label/label/duration/duration", primitiveValue: "TimeWithDayAttr", headerControl: "link"
                 });
                 let ymd = time.yearMonthDay;
                 let field = '_' + ymd;
@@ -1181,6 +1184,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 } else {
                     self.visibleBtnInput(false);
                 }
+
+                self.enableBtnRedo(false);
+                self.enableBtnUndo(false);
                 
                 // enable| disable combobox workTime
                 let workType = _.filter(__viewContext.viewModel.viewAB.listWorkType(), function(o) { return o.workTypeCode == __viewContext.viewModel.viewAB.selectedWorkTypeCode(); });
@@ -1872,71 +1878,96 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
         editMode() {
             let self = this;
-            if(self.mode() == 'edit')
+            if (self.mode() == 'edit')
                 return;
-            
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-                nts.uk.ui.block.grayout();
-                self.mode('edit');
-                // set color button
-                $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 
-                self.removeClass();
+            let arrCellUpdated = $("#extable").exTable("updatedCells");
+            let arrTmp = _.clone(arrCellUpdated);
+            let arrLockCellAfterSave = $("#extable").exTable("lockCells");
 
-                // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
-                self.enableBtnPaste(true);
-                self.enableBtnCoppy(true);
-                self.enableHelpBtn(true);
-                
-                if (self.selectedModeDisplayInBody() == 'time') {
-                    self.visibleBtnInput(true);
-                    self.enableBtnInput(true);
-                } else {
-                    self.visibleBtnInput(false);
-                    self.enableBtnInput(false);
-                }
+            if (arrCellUpdated.length > 0) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
+                    self.editModeToConfirmMode();
+                    self.enableBtnRedo(true);
+                    self.enableBtnUndo(true);
+                }).ifNo(() => { });
+            } else {
+                self.editModeToConfirmMode();
+                self.enableBtnRedo(false);
+                self.enableBtnUndo(false);
+            }
+        }
+        
+        editModeToConfirmMode() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            self.mode('edit');
+            // set color button
+            $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+            $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 
-                self.visibleBtnUndo(true);
-                self.visibleBtnRedo(true);
+            self.removeClass();
 
-                nts.uk.ui.block.clear();
-            }).ifNo(() => {});
+            // set enable btn A7_1, A7_2, A7_3, A7_4, A7_5
+            self.enableBtnPaste(true);
+            self.enableBtnCoppy(true);
+            self.enableHelpBtn(true);
+
+            if (self.selectedModeDisplayInBody() == 'time') {
+                self.visibleBtnInput(true);
+                self.enableBtnInput(true);
+            } else {
+                self.visibleBtnInput(false);
+                self.enableBtnInput(false);
+            }
+
+            nts.uk.ui.block.clear();
         }
         
         confirmMode() {
             let self = this;
-            if(self.mode() == 'confirm')
+            if (self.mode() == 'confirm')
                 return;
-                
-            nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
-                nts.uk.ui.block.grayout();
-                self.mode('confirm');
-                // set color button
-                $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 
-                self.removeClass();
+            let arrCellUpdated = $("#extable").exTable("updatedCells");
+            let arrTmp = _.clone(arrCellUpdated);
+            let arrLockCellAfterSave = $("#extable").exTable("lockCells");
 
-                // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
-                self.enableBtnPaste(false);
-                self.enableBtnCoppy(false);
-                self.enableHelpBtn(false);
+            if (arrCellUpdated.length > 0) {
+                nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
+                    self.confirmModeToeditMode();
+                }).ifNo(() => { });
+            } else {
+                self.confirmModeToeditMode();
+            }
+        }
+        
+        confirmModeToeditMode() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            self.mode('confirm');
+            // set color button
+            $(".confirmMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
+            $(".editMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
 
-                if (self.selectedModeDisplayInBody() == 'time') {
-                    self.visibleBtnInput(true);
-                    self.enableBtnInput(false);
-                } else {
-                    self.visibleBtnInput(false);
-                    self.enableBtnInput(false);
-                }
+            self.removeClass();
 
-                self.visibleBtnUndo(true);
-                self.visibleBtnRedo(true);
+            // set enable btn A7_1, A7_2,, A7_3, A7_4, A7_5
+            self.enableBtnPaste(false);
+            self.enableBtnCoppy(false);
+            self.enableHelpBtn(false);
 
-                nts.uk.ui.block.clear();
+            self.enableBtnRedo(false);
+            self.enableBtnUndo(false);
 
-            }).ifNo(() => {});
+            if (self.selectedModeDisplayInBody() == 'time') {
+                self.visibleBtnInput(true);
+                self.enableBtnInput(false);
+            } else {
+                self.visibleBtnInput(false);
+                self.enableBtnInput(false);
+            }
+            nts.uk.ui.block.clear();
         }
         
         removeClass() {
@@ -1966,7 +1997,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 if (objWorkTime != undefined) {
                     __viewContext.viewModel.viewAB.workTimeCode(objWorkTime.code);
                     __viewContext.viewModel.viewAB.updateDataCell(objWorkTime);
-                    
                 }
                 
             } else if (self.selectedModeDisplayInBody() == 'shift') {
@@ -2046,11 +2076,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         }
         
         undoData(): void {
+            let self = this;
             $("#extable").exTable("stickUndo");
+            self.checkExitCellUpdated();
         }
 
         redoData(): void {
+            let self = this;
             $("#extable").exTable("stickRedo");
+            self.checkExitCellUpdated();
+        }
+        
+        checkExitCellUpdated() {
+            let self = this;
+            setTimeout(() => {
+                let arrCellUpdated = $("#extable").exTable("updatedCells");
+                if (arrCellUpdated.length > 0) {
+                    self.enableBtnRedo(true);
+                    self.enableBtnUndo(true);
+                } else {
+                    self.enableBtnRedo(false);
+                    self.enableBtnUndo(false);
+                }
+            }, 1);
         }
 
         /**
