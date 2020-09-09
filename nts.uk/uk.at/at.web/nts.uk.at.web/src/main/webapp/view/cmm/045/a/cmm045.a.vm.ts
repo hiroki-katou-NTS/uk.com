@@ -224,12 +224,12 @@ module cmm045.a.viewmodel {
             //check filter
             //check startDate
             if (self.dateValue().startDate == null || self.dateValue().startDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsStartDate').ntsError('set', {messageId:"Msg_359"});
                 return false;
             }
             //check endDate
             if (self.dateValue().endDate == null || self.dateValue().endDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('.ntsDatepicker.nts-input.ntsEndDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsEndDate').ntsError('set', {messageId:"Msg_359"});
                 return false;
             }
             if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
