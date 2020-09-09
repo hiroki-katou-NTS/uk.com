@@ -54,10 +54,10 @@
           <tbody>
             <tr v-for="(data,index) in mtable" v-bind:key="index">
               <td class="px-1">{{data.date | date('MM/DD(ddd)')}}</td>
-              <td class="px-1">{{data.typeofwork}}</td>
+              <td class="px-1">{{data.wkTypeCd}}</td>
               <td class="px-1">{{data.workinghours}}</td>
-              <td class="px-1">{{data.timetowork | timewd}}</td>
-              <td class="border-right-0 px-1">{{data.leavetime | timewd}}</td>
+              <td class="px-1">{{data.wkTimeCd | timewd}}</td>
+              <td class="border-right-0 px-1">{{data.endWorkTime | timewd}}</td>
               <td class="text-center px-0 border-left-0">
                 <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
               </td>

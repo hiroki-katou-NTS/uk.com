@@ -48,7 +48,7 @@ export class KafS08A2Component extends Vue {
     public showModal(type) {
         const vm = this;
         let name = this.name;
-        this.$modal(KafS08DComponent, {  timetowork: vm.mtable.timetowork, leavetime: vm.mtable.leavetime, day : vm.mtable.date} )
+        this.$modal(KafS08DComponent, {  wkTimeCd: vm.mtable.wkTimeCd, endWorkTime: vm.mtable.endWorkTime, day : vm.mtable.date} )
         .then((data) => {
             console.log(data);
         });
