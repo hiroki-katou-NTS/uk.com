@@ -1137,7 +1137,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param dataRowCount the data row count
 	 * @return the employee report data
 	 */
-	private EmployeeReportData collectEmployeePerformanceDataByEmployee(DailyPerformanceReportData reportData, WorkScheduleQueryData queryData, EmployeeDto employeeDto, int dataRowCount) {
+	private EmployeeReportData collectEmployeePerformanceDataByEmployee(DailyPerformanceReportData reportData
+			, WorkScheduleQueryData queryData
+			, EmployeeDto employeeDto
+			, int dataRowCount) {
 		String companyId = AppContexts.user().companyId();
 		WorkScheduleOutputQuery query = queryData.getQuery();
 		GeneralDate endDate = query.getEndDate();
@@ -3406,6 +3409,45 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		if (optErrorHolidayStamp.isPresent() && (choice == RemarksContentChoice.HOLIDAY_STAMP)) {
 			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.HOLIDAY_STAMP.value);
 		}
+		
+		// 乖離エラー
+		Optional<EmployeeDailyPerError> deviationError = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_1.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_2.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_3.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_4.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_5.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_6.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_7.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_8.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_9.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ERROR_10.value)).findFirst();
+		
+		if (deviationError.isPresent() && choice == RemarksContentChoice.DEVIATION_ERROR) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.DEVIATION_ERROR.value);
+		}
+		
+		// 乖離アラーム
+		Optional<EmployeeDailyPerError> deviationAlarm = errorList.stream()
+				.filter(x -> x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_1.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_2.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_3.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_4.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_5.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_6.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_7.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_8.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_9.value)
+						  || x.getErrorAlarmWorkRecordCode().v().contains(SystemFixedErrorAlarm.DIVERGENCE_ALARM_10.value)).findFirst();
+		
+		if (deviationAlarm.isPresent() && choice == RemarksContentChoice.DEVIATION_ALARM) {
+			printRemarksContent = new PrintRemarksContent(1, RemarksContentChoice.DEVIATION_ALARM.value);
+		}
+		
+		// 乖離理由
+		IntStream.range(1, 10).forEach(i -> {
+			// TODO
+		});
 		
 		return Optional.ofNullable(printRemarksContent);
 	}
