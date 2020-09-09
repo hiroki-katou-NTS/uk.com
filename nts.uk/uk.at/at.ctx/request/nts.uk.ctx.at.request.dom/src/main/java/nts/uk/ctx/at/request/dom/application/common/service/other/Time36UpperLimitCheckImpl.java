@@ -68,14 +68,14 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 @Stateless
 public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 
-	@Inject
-	private ClosureService closureService;
+//	@Inject
+//	private ClosureService closureService;
 
 	@Inject
 	SysEmploymentHisAdapter sysEmploymentHisAdapter;
 
-	@Inject
-	private ClosureEmploymentRepository closureEmploymentRepository;
+//	@Inject
+//	private ClosureEmploymentRepository closureEmploymentRepository;
 
 	@Inject
 	private AgreementTimeAdapter agreementTimeAdapter;
@@ -83,20 +83,20 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	@Inject
 	private ExcessTimesYearAdapter excessTimesYearAdapter;
 
-	@Inject
-	private OutsideOTSettingService outsideOTSettingService;
+//	@Inject
+//	private OutsideOTSettingService outsideOTSettingService;
 
 	@Inject
 	private AgreementTimeStatusAdapter agreementTimeStatusAdapter;
 	
-	@Inject
-	private ClosureRepository closureRepository;
+//	@Inject
+//	private ClosureRepository closureRepository;
 	
 	@Inject
 	private OvertimeRestAppCommonSetRepository overtimeRestAppCommonSetRepository;
 	
-	@Inject
-	private AgreementPeriodByYMDAdapter agreementPeriodByYMDAdapter;
+//	@Inject
+//	private AgreementPeriodByYMDAdapter agreementPeriodByYMDAdapter;
 
 	@Override
 	public Time36UpperLimitCheckResult checkRegister(String companyID, String employeeID, GeneralDate appDate,

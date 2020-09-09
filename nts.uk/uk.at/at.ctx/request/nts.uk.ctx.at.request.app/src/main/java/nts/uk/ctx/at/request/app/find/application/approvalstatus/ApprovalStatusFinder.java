@@ -73,8 +73,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 public class ApprovalStatusFinder {
 
-	@Inject
-	private ClosureService closureService;
+//	@Inject
+//	private ClosureService closureService;
 
 	/** The repository. */
 	@Inject

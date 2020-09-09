@@ -94,8 +94,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
-	private ClosureService closureService;
-	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private CompltLeaveSimMngRepository compLeaveRepo;
@@ -114,8 +112,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private IApplicationContentService applicationContentService;
-	@Inject
-	private WorkTypeIsClosedService workTypeRepo;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
@@ -170,10 +166,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		当月の期間を算出する(tính period của tháng hiện tại)
 		Object<String: startDate, String: endDate> obj2 = Period.find(obj1.tightenID, obj1.currentMonth); // obj2 <=> 締め期間(開始年月日,終了年月日) 
 		*/
-//		DatePeriod datePeriod = closureService.getClosurePeriod(closure.get().getClosureId().value,
-//				closure.get().getClosureMonth().getProcessingYm());
-//		return new PeriodCurrentMonth(closure.get().getClosureId(), datePeriod.start(), datePeriod.end());
-		return null;
+		DatePeriod datePeriod = ClosureService.getClosurePeriod(closure.get().getClosureId().value,
+				closure.get().getClosureMonth().getProcessingYm(), Optional.empty());
+		return new PeriodCurrentMonth(closure.get().getClosureId(), datePeriod.start(), datePeriod.end());
 	}
 	/**
 	 * 1.職場別就業時間帯を取得
@@ -496,12 +491,12 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			//実績の取得
 			/*AchievementOutput achInfor = collectAch.getAchievement(cid, sid, loopDate);*/
 			AchievementOutput achInfor = null;
-//			if(achInfor != null 
-//					&& achInfor.getWorkType() != null
-//					&& workTypeRepo.checkHoliday(achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
-//					) {
-//				lstOutput.add(loopDate);
-//			}
+			if(achInfor != null 
+					&& achInfor.getWorkType() != null
+					&& WorkTypeIsClosedService.checkHoliday(createM1(), achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
+					) {
+				lstOutput.add(loopDate);
+			}
 		}
 		return lstOutput;
 	}
@@ -679,5 +674,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			
 		
 		return result;
+	}
+	
+	private WorkTypeIsClosedService.RequireM1 createM1() {
+		return new WorkTypeIsClosedService.RequireM1() {
+			
+			@Override
+			public Optional<WorkType> workType(String companyId, String workTypeCd) {
+				return workTypeRepository.findByPK(companyId, workTypeCd);
+			}
+		};
 	}
 }

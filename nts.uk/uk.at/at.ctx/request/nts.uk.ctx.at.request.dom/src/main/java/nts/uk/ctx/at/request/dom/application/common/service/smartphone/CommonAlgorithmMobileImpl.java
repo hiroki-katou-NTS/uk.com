@@ -69,7 +69,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -131,7 +131,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 	private InitMode initMode;
 	
 	@Inject
-	private ClosureService closureService;
+	private ClosureEmploymentRepository closureEmpRepo;
 
 	@Override
 	public AppDispInfoStartupOutput appCommonStartProcess(boolean mode, String companyID, String employeeID,
@@ -377,8 +377,7 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			ApplicationUseSetting applicationUseSetting, ReceptionRestrictionSetting receptionRestrictionSetting,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		// 雇用に紐づく締めを取得する
-		// int closureID = closureService.getClosureIDByEmploymentCD(employmentCD);
-		int closureID = 0;
+		int closureID = closureEmpRepo.findByEmploymentCD(companyID, employmentCD).get().getClosureId();
 		// 申請締切設定を取得する
 		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureID);
 		// 事前申請がいつから受付可能か確認する

@@ -92,8 +92,8 @@ public class SaveHolidayShipmentCommandHandler
 	
 	@Inject
 	private WithDrawalReqSetRepository withDrawRepo;
-	@Inject
-	private ApplicationRepository appRepo;
+//	@Inject
+//	private ApplicationRepository appRepo;
 	@Inject
 	private WorkTypeRepository wkTypeRepo;
 	@Inject
@@ -106,26 +106,26 @@ public class SaveHolidayShipmentCommandHandler
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
 	@Inject
 	private HolidaySettingRepository holidayRepo;
-	@Inject
-	private NewBeforeRegister processBeforeRegister;
-	@Inject
-	private RegisterAtApproveReflectionInfoService registerAppReplection;
-	@Inject
-	private AbsenceLeaveAppRepository absRepo;
-	@Inject
-	private RecruitmentAppRepository recRepo;
+//	@Inject
+//	private NewBeforeRegister processBeforeRegister;
+//	@Inject
+//	private RegisterAtApproveReflectionInfoService registerAppReplection;
+//	@Inject
+//	private AbsenceLeaveAppRepository absRepo;
+//	@Inject
+//	private RecruitmentAppRepository recRepo;
 	@Inject
 	private CompltLeaveSimMngRepository CompLeaveRepo;
-	@Inject
-	private ApplicationApprovalService appImp;
-	@Inject
-	private IFactoryApplication IfacApp;
-	@Inject
-	private NewAfterRegister newAfterReg;
+//	@Inject
+//	private ApplicationApprovalService appImp;
+//	@Inject
+//	private IFactoryApplication IfacApp;
+//	@Inject
+//	private NewAfterRegister newAfterReg;
 	@Inject
 	private HolidayShipmentScreenAFinder afinder;
-	@Inject
-	private UseDateDeadlineFromDatePeriod dateDeadline;
+//	@Inject
+//	private UseDateDeadlineFromDatePeriod dateDeadline;
 	@Inject
 	private InterimRemainDataMngRegisterDateChange registerDateChange;
 	@Inject

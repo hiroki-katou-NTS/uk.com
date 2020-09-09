@@ -112,8 +112,8 @@ public class HolidayShipmentScreenAFinder {
 	private WorkTimeSettingRepository wkTimeRepo;
 	@Inject
 	private PredetemineTimeSettingRepository preTimeSetRepo;
-	@Inject
-	private CollectAchievement collectAchievement;
+//	@Inject
+//	private CollectAchievement collectAchievement;
 //	@Inject
 //	private RequestOfEachWorkplaceRepository requestWpRepo;
 //	@Inject
@@ -132,14 +132,14 @@ public class HolidayShipmentScreenAFinder {
 	private WorkTimeSettingRepository wkTimeSetRepo;
 	@Inject
 	private AtEmployeeAdapter atEmpAdaptor;
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+//	@Inject
+//	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
 	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
 	
-	@Inject 
-	private WorkingConditionService workingConditionService;
+//	@Inject 
+//	private WorkingConditionService workingConditionService;
 	
 	@Inject
 	private AppAbsenceFinder appAbsenceFinder;
