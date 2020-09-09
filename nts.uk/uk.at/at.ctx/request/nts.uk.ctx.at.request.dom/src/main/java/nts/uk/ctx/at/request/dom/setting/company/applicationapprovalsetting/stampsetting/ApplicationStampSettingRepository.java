@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface ApplicationStampSettingRepository {
     Optional<AppStampSetting> findSettingByCompanyId(String companyId);
-    Optional<StampAppReflect> findReflectByCompanyId(String companyId);
+
     void save(String companyId, AppStampSetting setting, StampAppReflect reflect);
 }

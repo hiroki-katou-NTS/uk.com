@@ -9,11 +9,12 @@ import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.B
 public class AddBusinessTripCommand {
 
     // 出張申請
-    private BusinessTripDto businessTripDto;
+    private BusinessTripCommand businessTrip;
 
-    private BusinessTripInfoOutputDto businessTripInfoOutputDto;
+    // 出張申請の表示情報
+    private BusinessTripInfoOutputCommand businessTripInfoOutput;
 
     // 申請
-    private ApplicationDto applicationDto;
+    private ApplicationDto application;
 
 }

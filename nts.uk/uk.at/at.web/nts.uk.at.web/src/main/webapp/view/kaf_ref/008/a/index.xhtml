@@ -36,11 +36,12 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-            <button class="proceed" data-bind=" click: register, enable: $root.errors.isEmpty, text:this.$i18n('KAF009_3')"></button>
+            <button class="proceed" id="A1" data-bind=" click: register, enable: $root.errors.isEmpty, text:this.$i18n('KAF009_3')"></button>
 
             <div data-bind="component: { name: 'kaf000-a-component7',
 											params: {
 												appType: appType,
+												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }" style="display: inline-block;"></div>
         </div>
@@ -70,8 +71,9 @@
 											} }"></div>
 
             <div data-bind="component: { name: 'kaf008-share', params: {
-                                                businessTripOutput: businessTripOutput,
-                                                businessTripContent: businessTripContent
+                                                mode: mode,
+                                                appType: appType,
+                                                dataFetch: dataFetch
                                             } }"></div>
 
             <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component5',

@@ -1,3 +1,25 @@
+
+#kaf008-share .A5 span {
+    width: 120px;
+}
+
+#kaf008-share #A5_2 span {
+    padding-right: 10px;
+}
+
+#kaf008-share #A5_4 span {
+    padding: 10px;
+}
+
+#kaf008-share .A5 input {
+    width: 30px;
+}
+
+#kaf008-share .A5 #A5_1 {
+    width: 120px
+}
+
+
 #kaf008-share .A5 {
     padding-top: 10px;
     padding-bottom: 10px;
@@ -7,23 +29,9 @@
     width: 100px;
 }
 
-#kaf008-share #A5_1 {
-    width: 111px;
-}
-
-#kaf008-share #A5_2 {
-    width: 80px;
-}
-
-#kaf008-share #A5_4 {
-    width: 80px;
-}
-
 #kaf008-share #A6_1 {
-    width: 300px;
     padding-top: 10px;
     padding-bottom: 10px;
-
 }
 
 #kaf008-share #A6_1 span {
@@ -49,7 +57,7 @@
 }
 
 #kaf008-share #fixed-table .time .nts-input {
-    width: 50px;
+    width: 70px;
 }
 
 #kaf008-share #A10 {
@@ -66,7 +74,7 @@
     font-weight: unset;
 }
 
-#kaf008-share #A10_D3, #A10_D5 {
+#kaf008-share .A10_D3, .A10_D5 {
     text-align: left !important;
 }
 
