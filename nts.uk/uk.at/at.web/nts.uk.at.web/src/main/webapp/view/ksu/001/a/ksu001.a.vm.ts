@@ -1327,7 +1327,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 let objTooltip = _.filter(htmlToolTip, function(o) { return o.key == ui.columnKey; });
                                 if (objTooltip.length > 0) {
                                     let heightToolTip = objTooltip[0].heightToolTip;
-                                    ui.tooltip("show", $("<div/>").css({ width: "200px", height: heightToolTip + "px" }).html(objTooltip[0].value));
+                                    ui.tooltip("show", $("<div/>").css({ width: "275px", height: heightToolTip + "px" }).html(objTooltip[0].value));
                                 } else {
                                     ui.tooltip("show", $("<div/>").css({ width: "60px", height: 60 + "px" }).html(''));
                                 }
