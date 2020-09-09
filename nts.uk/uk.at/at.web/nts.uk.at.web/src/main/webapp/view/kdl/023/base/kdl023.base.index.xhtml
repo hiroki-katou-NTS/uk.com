@@ -86,43 +86,47 @@
 								</label>
 							</div>
 							<div class="margin-left-100">
-								<!--A1_11-->
-								<span class="label">#{i18n.getText('KDL023_28')}</span>
-								<!--A1_12-->
-								<div tabindex="3" id="cbb-reflection-order-1" class="cbb-reflection" style="margin-left: 36px"
-									 data-bind="ntsComboBox: {
-										name: '#[KDL023_31]',
-										options: $parent.reflectionOrderList,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: $parent.reflectionOrder1,
-										enable: $parent.workCycleEnable1}">
+								<div class="kdl023-flex-display margin-bottom-15px">
+									<!--A1_11-->
+									<span class="label">#{i18n.getText('KDL023_28')}</span>
+									<!--A1_12-->
+									<div tabindex="3" id="cbb-reflection-order-1" class="cbb-reflection" style="margin-left: 36px"
+										 data-bind="ntsComboBox: {
+											name: '#[KDL023_31]',
+											options: $parent.reflectionOrderList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: $parent.reflectionOrder1,
+											enable: $parent.workCycleEnable1}">
+									</div>
 								</div>
-								<br/>
+								<div class="kdl023-flex-display margin-bottom-15px">
 								<!--A1_14-->
-								<span class="label">#{i18n.getText('KDL023_29')}</span>
-								<!--A1_15-->
-								<div tabindex="4" id="cbb-reflection-order-2" class="cbb-reflection" style="margin-left: 36px"
-									 data-bind="ntsComboBox: {
-										name: '#[KDL023_32]',
-										options: $parent.reflectionOrderList,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: $parent.reflectionOrder2,
-										enable: $parent.workCycleEnable2}">
+									<span class="label">#{i18n.getText('KDL023_29')}</span>
+									<!--A1_15-->
+									<div tabindex="4" id="cbb-reflection-order-2" class="cbb-reflection" style="margin-left: 36px"
+										 data-bind="ntsComboBox: {
+											name: '#[KDL023_32]',
+											options: $parent.reflectionOrderList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: $parent.reflectionOrder2,
+											enable: $parent.workCycleEnable2}">
+									</div>
 								</div>
-								<br/>
-								<!--A1_17-->
-								<span class="label">#{i18n.getText('KDL023_30')}</span>
-								<!--A1_18-->
-								<div tabindex="5" id="cbb-reflection-order-3" class="cbb-reflection" style="margin-left: 36px"
-									 data-bind="ntsComboBox: {
-										name: '#[KDL023_33]',
-										options: $parent.reflectionOrderList,
-										optionsValue: 'code',
-										optionsText: 'name',
-										value: $parent.reflectionOrder3,
-										enable: $parent.workCycleEnable3}">
+								<div class="kdl023-flex-display">
+									<!--A1_17-->
+									<span class="label">#{i18n.getText('KDL023_30')}</span>
+									<!--A1_18-->
+									<div tabindex="5" id="cbb-reflection-order-3" class="cbb-reflection" style="margin-left: 36px"
+										 data-bind="ntsComboBox: {
+											name: '#[KDL023_33]',
+											options: $parent.reflectionOrderList,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: $parent.reflectionOrder3,
+											enable: $parent.workCycleEnable3}">
+									</div>
 								</div>
 							</div>
 						</div>
@@ -133,7 +137,7 @@
 								<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_25')}</div>
 							</div>
 							<div class="margin-left-30">
-								<div class="control-group" data-bind="with: statutorySetting">
+								<div class="control-group kdl023-flex-display" data-bind="with: statutorySetting">
 									<!--A1_22-->
 									<div class="width-40-sub" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_6')}</div>
 
@@ -151,7 +155,7 @@
 												]}">
 									</div>
 								</div>
-								<div class="control-group" data-bind="with: nonStatutorySetting">
+								<div class="control-group kdl023-flex-display" data-bind="with: nonStatutorySetting">
 									<!--A1_26-->
 									<div class="width-40-sub" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_7')}</div>
 
@@ -169,7 +173,7 @@
 												]}">
 									</div>
 								</div>
-								<div class="control-group" data-bind="with: holidaySetting">
+								<div class="control-group kdl023-flex-display" data-bind="with: holidaySetting">
 									<!--A1_30-->
 									<div class="width-40-sub" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_8')}</div>
 
@@ -193,7 +197,7 @@
 						<!--A1_34-->
 						<div class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
 						</com:ko>
-						<button tabindex="9" class="btn-apply-setting caret-right pull-right" data-bind="text: buttonReflectPatternText(), click: onBtnApplySettingClicked">
+						<button tabindex="9" class="btn-apply-setting caret-right calc-margin" data-bind="text: buttonReflectPatternText(), click: onBtnApplySettingClicked">
 						</button>
 					</div>
 					<!-- Calendar function -->

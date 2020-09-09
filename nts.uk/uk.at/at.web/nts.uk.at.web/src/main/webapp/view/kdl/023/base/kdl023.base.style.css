@@ -68,3 +68,15 @@
 	left: 0;
 	right: 0;
 }
+
+.kdl023-flex-display{
+	display: flex;
+	align-items: center;
+}
+.margin-bottom-15px{
+	margin-bottom: 15px;
+}
+.calc-margin{
+    float: left;
+    margin-left: calc(40% - 10px);
+}
