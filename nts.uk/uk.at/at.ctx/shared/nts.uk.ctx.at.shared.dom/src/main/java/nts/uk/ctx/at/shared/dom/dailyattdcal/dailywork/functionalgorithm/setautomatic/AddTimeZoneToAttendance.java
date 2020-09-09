@@ -38,7 +38,7 @@ public class AddTimeZoneToAttendance {
 
 		// 出勤系時刻を丸める (Làm tròn 出勤系時刻)
 		int leavTime = roundAttendanceTime.process(companyId, timezoneUse.getEnd().v(), workTimeCode,
-				AttLeavAtr.GOING_TO_WORK);
+				AttLeavAtr.LEAVING_WORK);
 		// ドメインモデル「所属職場履歴」を取得する (Lấy dữ liệu)
 
 		// 出退勤 ← 自動打刻セット詳細
