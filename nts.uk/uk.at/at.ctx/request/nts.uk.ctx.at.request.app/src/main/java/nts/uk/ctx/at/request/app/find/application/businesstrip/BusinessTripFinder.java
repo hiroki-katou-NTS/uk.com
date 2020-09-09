@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
@@ -44,6 +45,9 @@ public class BusinessTripFinder {
 
     @Inject
     private CommonAlgorithm commonAlgorithm;
+
+    @Inject
+    private CommonAlgorithmMobile algorithmMobile;
 
     @Inject
     private NewBeforeRegister processBeforeRegister;
@@ -515,5 +519,35 @@ public class BusinessTripFinder {
         return this.getBusinessTripClsContent(selectedWorkType);
     }
 
-
+    public BusinessTripOutputDto startKAFS08(AppBusinessParam appBusinessParam) {
+        boolean mode = appBusinessParam.getMode();
+        String cid = AppContexts.user().companyId();
+        ApplicationType appType;
+        String employeeID = null;
+        //Kiểm tra nếu employeeID null thì lấy giá trị lúc login
+        if(appBusinessParam.getEmployeeID() != null) {
+            employeeID = appBusinessParam.getEmployeeID();
+        }
+        List<String> applicantlist = new ArrayList<String>();
+        List<GeneralDate> dateList = appBusinessParam.getListDates().stream()
+                .map(i -> GeneralDate.fromString(i, "yyyy/MM/dd")).collect(Collectors.toList());
+        BusinessTripOutputDto result = new BusinessTripOutputDto();
+        BusinessTripInfoOutput businessTripInfoOutput = appBusinessParam
+                .getBusinessTripInfoOutput() == null ? null : appBusinessParam.getBusinessTripInfoOutput().toDomain();
+        BusinessTrip businessTrip = appBusinessParam.getBusinessTrip() == null ? null : appBusinessParam.getBusinessTrip().toDomain(businessTripInfoOutput.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication());
+        // new mode thì thực hiện thuật toán 申請共通起動処理
+        if (mode) {
+            AppDispInfoStartupOutput appDispInfoStartupOutput = algorithmMobile.appCommonStartProcess(mode, cid,
+                    AppContexts.user().employeeId(), ApplicationType.BUSINESS_TRIP_APPLICATION, Optional.ofNullable(null),
+                    dateList, Optional.ofNullable(null));
+            BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, applicantlist,
+                    dateList, appDispInfoStartupOutput);
+            result.setBusinessTripInfoOutput(businessTripInfoOutputDto);
+            // INPUT「出張申請の表示情報」と「出張申請」を返す
+        } else {
+            result.setBusinessTrip(BusinessTripDto.fromDomain(businessTrip));
+            result.setBusinessTripInfoOutput(BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput));
+        }
+        return result;
+    }
 }

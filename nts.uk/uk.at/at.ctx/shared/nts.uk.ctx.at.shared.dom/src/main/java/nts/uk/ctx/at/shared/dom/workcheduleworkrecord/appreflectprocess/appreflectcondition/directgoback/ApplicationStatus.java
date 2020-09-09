@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon;
+package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback;
 //従業員が申請時に選択する条件
 public enum ApplicationStatus {
 	

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon;
+package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

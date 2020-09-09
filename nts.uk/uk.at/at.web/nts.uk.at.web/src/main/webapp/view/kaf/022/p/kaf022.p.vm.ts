@@ -197,6 +197,14 @@ module nts.uk.at.view.kaf022.p.viewmodel {
             this.note = ko.observable(param ? param.note : "");
             this.settingItems = ko.observableArray(param ? param.settingItems : []);
         }
+
+        beforeMoveRight(arg1, selected: Array<any>, toBeMoved: Array<any>) {
+            if (selected.length + toBeMoved.length > 10) {
+                dialog.alertError({messageId: "Msg_1741", messageParams: [10]});
+                return false;
+            }
+            return true;
+        }
     }
 
     function makeIcon(value) {

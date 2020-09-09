@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.setting.request.gobackdirectlycommon;
+package nts.uk.ctx.at.shared.infra.repository.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback;
 
 import java.util.Optional;
 
@@ -7,11 +7,12 @@ import javax.ejb.Stateless;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.ApplicationStatus;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflectRepository;
-import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqmtAppGoBackReflect;
-import nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon.KrqmtAppGoBackDirectlyPK;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
+import nts.uk.ctx.at.shared.infra.entity.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.KrqmtAppGoBackDirectlyPK;
+import nts.uk.ctx.at.shared.infra.entity.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.KrqmtAppGoBackReflect;
+
 @Stateless
 public class GoBackReflectRepositoryImp extends JpaRepository implements GoBackReflectRepository {
 

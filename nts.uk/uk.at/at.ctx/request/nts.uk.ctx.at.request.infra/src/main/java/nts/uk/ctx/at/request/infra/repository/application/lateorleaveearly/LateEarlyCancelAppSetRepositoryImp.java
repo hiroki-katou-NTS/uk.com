@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.applicationlatearrival.KrqmtAppLateOrEarly;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.lateearlycancellation.LateEarlyCancelReflectRepository;
 import org.apache.commons.lang3.BooleanUtils;
 
 /**
@@ -17,7 +18,7 @@ import org.apache.commons.lang3.BooleanUtils;
  *
  */
 @Stateless
-public class LateEarlyCancelAppSetRepositoryImp extends JpaRepository implements LateEarlyCancelAppSetRepository {
+public class LateEarlyCancelAppSetRepositoryImp extends JpaRepository implements LateEarlyCancelAppSetRepository, LateEarlyCancelReflectRepository {
 	private final String SELECT_ALL = "SELECT * FROM KRQMT_APP_LATE_OR_LEAVE WHERE CID = @companyId";
 
 	@Override

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.entity.setting.request.gobackdirectlycommon;
+package nts.uk.ctx.at.shared.infra.entity.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

@@ -7,6 +7,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appo
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.appovertime.KrqmtAppOvertime;
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.appovertime.KrqmtAppOvertimeFrame;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflectRepository;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.ejb.Stateless;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Stateless
-public class JpaOvertimeAppSetRepository extends JpaRepository implements OvertimeAppSetRepository {
+public class JpaOvertimeAppSetRepository extends JpaRepository implements OvertimeAppSetRepository, OtWorkAppReflectRepository {
 
     @Override
     public Optional<OvertimeAppSet> findSettingByCompanyId(String companyId) {

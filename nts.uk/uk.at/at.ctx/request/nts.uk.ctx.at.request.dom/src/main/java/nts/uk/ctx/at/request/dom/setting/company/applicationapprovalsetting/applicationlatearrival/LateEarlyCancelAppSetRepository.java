@@ -10,8 +10,6 @@ public interface LateEarlyCancelAppSetRepository {
 
 	LateEarlyCancelAppSet getByCId(String companyId);
 
-	LateEarlyCancelReflect getByCompanyId(String companyId);
-
 	void save(String companyId, LateEarlyCancelAppSet setting, LateEarlyCancelReflect reflect);
 
 }
