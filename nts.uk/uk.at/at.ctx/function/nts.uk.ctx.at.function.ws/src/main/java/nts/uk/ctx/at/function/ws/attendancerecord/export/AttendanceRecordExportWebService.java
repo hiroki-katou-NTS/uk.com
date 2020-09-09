@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.ws.attendancerecord.export;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -15,13 +14,13 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemF
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttributeOfAttendanceItemDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.ApprovalProcessingUseSettingDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.item.ApprovalProcessingUseSettingFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.AttendanceRecordKeyDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.CalculateAttendanceRecordFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.item.SingleAttendanceRecordFinder;
-import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
-import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -41,7 +40,7 @@ public class AttendanceRecordExportWebService {
 	
 	/** The approval processing use setting repository */
 	@Inject
-	private ApprovalProcessingUseSettingRepository approvalProcessingUseSettingRepo;
+	private ApprovalProcessingUseSettingFinder approvalProcessingUseSettingFinder;
 	
 	/** The single attendance record finder. */
 	@Inject
@@ -114,16 +113,15 @@ public class AttendanceRecordExportWebService {
 	}
 	
 	/**
-	 * #3803 アルゴリズム「承認処理の利用設定を取得する」
+	 * #3803 アルゴリズム「承認処理の利用設定を取得する」を実行する Xử lý thuật toán "Nhận cài đặt sử dụng của quy trình phê duyệt"
 	 *
-	 * @return 「承認処理の利用設定」
+	 * @return 承認処理の利用設定
 	 */
 	@POST
 	@Path("getApprovalProcessingUseSetting")
-	public Optional<ApprovalProcessingUseSetting> getApprovalProcessingUseSetting() {
+	public ApprovalProcessingUseSettingDto getApprovalProcessingUseSetting() {
 		String companyId = AppContexts.user().companyId();
-		//アルゴリズム「承認処理の利用設定を取得する」を実行する
-		return this.approvalProcessingUseSettingRepo.findByCompanyId(companyId);
+		return this.approvalProcessingUseSettingFinder.getApprovalProcessingUseSettingDto(companyId);
 	}
 
 	/**

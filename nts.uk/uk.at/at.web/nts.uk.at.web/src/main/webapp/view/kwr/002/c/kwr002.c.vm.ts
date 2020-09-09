@@ -366,6 +366,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             self.sealStamp().push(self.sealName6());
             setShared('sealStamp', _.reject(self.sealStamp(), (it) => _.isEmpty(it)), true);
             setShared('useSeal', self.useSealValue());
+            setShared('monthlyConfirmedDisplay', self.monthlyConfirmedDisplay());
             nts.uk.ui.windows.close();
         }
 
@@ -414,7 +415,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             $.when(service.getApprovalProcessingUseSetting(), service.getAttendanceRecordExportSetting(attendanceRecExpSetCode))
                 .then((aPUS: any, aRES: any) => {
                     if (aPUS !== null) {
-                        self.useMonthApproverConfirm(!!aPUS.useMonthApproverConfirm);
+                        self.useMonthApproverConfirm(aPUS.useMonthApproverConfirm);
                     }
                     if (aRES !== null) {
                         self.monthlyConfirmedDisplay(aRES.monthlyConfirmedDisplay);
@@ -560,7 +561,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             }
         }
 
-        // AttendanceRecordKey - Add in ver 25
+        // attendance record key - Add in ver 25
         export class AttendanceRecordKey {
             code: number;
             columnIndex: number;
@@ -654,8 +655,8 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             companyId: string;
             useDayApproverConfirm: boolean;
             useMonthApproverConfirm: boolean;
-            lstJobTitleNotUse: string[];
-            supervisorConfirmErrorAtr: any;
+            lstJobTitleNotUse: Array<string>;
+            supervisorConfirmErrorAtr: number;
         }
 
         export class AttendaceType {
@@ -712,46 +713,6 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             position: number;
             // exportAtr
             exportAtr: number;
-            // // タイトル行表示フラグ
-            // titleFlag: boolean;
-            // // 出力レイアウトコード
-            // layoutCode: String;
-            // // 出力レイアウト名
-            // layoutName: String;
-            // // コメント
-            // directText: String;
-            // // 項目名行表示フラグ
-            // itemNameFlag: boolean;
-            // // 項目名表示入力区分
-            // inputCategory: number;
-            // // 項目名
-            // attendanceItemName: String;
-            // // 属性選択区分
-            // selectionCategory: number;
-            // // 属性<List>
-            // attendaceTypes: Array<AttendaceType>;
-            // // 選択済み属性
-            // selectedAttr: number;
-            // // 勤怠項目ID<List>
-            // attendanceItemIds: Array<number>;
-            // // 勤怠項目名称 <List>
-            // attendanceItemNames: Array<AttItemName>;
-            // // 勤怠項目の属性<List>
-            // attributes: Array<DailyAttendanceAtr>;
-            // // 勤怠項目の表示番号<List>
-            // displayNumbers: Array<number>;
-            // // 選択済み勤怠項目ID
-            // attendaceSelected: number;
-            // // 選択済み勤怠項目<List>
-            // exportItems: Array<any>;
-            // // columnIndex
-            // columnIndex: number;
-            // // position
-            // position: number;
-            // // exportAtr
-            // exportAtr: number;
-            // // attendanceIds
-            // attendanceId: any;
 
             constructor(init?: Partial<AttendanceItemShare>) {
                 $.extend(this, init);
