@@ -1,20 +1,18 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle;
 
-import lombok.val;
-import mockit.integration.junit4.JMockit;
-import nts.arc.testing.assertion.NtsAssert;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RefImageEachDay;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.ReflectionImage;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCreateMethod;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.HashMap;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import lombok.val;
+import mockit.integration.junit4.JMockit;
+import nts.arc.testing.assertion.NtsAssert;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.ReflectionImage;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCreateMethod;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 
 @RunWith(JMockit.class)
 public class ReflectionImageTest {
@@ -41,8 +39,8 @@ public class ReflectionImageTest {
 
     @Test
     public void addByWeeklyWorkingTest_2() {
-        WorkInformation workCycleWorkInfor = new WorkInformation("workCcle-workTimeCode", "workCcle-workTypeCode");
-        WorkInformation weeklWorkInfor = new WorkInformation("weekly-workTimeCode", "weekly-workTypeCode");
+        WorkInformation workCycleWorkInfor = new WorkInformation("workCcle-workTypeCode", "workCcle-workTimeCode");
+        WorkInformation weeklWorkInfor = new WorkInformation("weekly-workTypeCode", "weekly-workTimeCode");
 
         ReflectionImage target = ReflectionImage.create();
         target.addInWorkCycle(GeneralDate.today(),workCycleWorkInfor);
@@ -58,7 +56,7 @@ public class ReflectionImageTest {
 
     @Test
     public void addByWeeklyWorkingTest_3() {
-        WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+        WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
         ReflectionImage target = ReflectionImage.create();
         target.addHolidays(GeneralDate.today(), workInformation);
@@ -87,8 +85,8 @@ public class ReflectionImageTest {
 
     @Test
     public void addHolidaysTest_2() {
-        WorkInformation workCycleWorkInfor = new WorkInformation("workCcle-workTimeCode", "workCcle-workTypeCode");
-        WorkInformation weeklWorkInfor = new WorkInformation("weekly-workTimeCode", "weekly-workTypeCode");
+        WorkInformation workCycleWorkInfor = new WorkInformation("workCcle-workTypeCode", "workCcle-workTimeCode");
+        WorkInformation weeklWorkInfor = new WorkInformation("weekly-workTypeCode", "weekly-workTimeCode");
 
         ReflectionImage target = ReflectionImage.create();
         target.addInWorkCycle(GeneralDate.today(),workCycleWorkInfor);
@@ -104,7 +102,7 @@ public class ReflectionImageTest {
 
     @Test
     public void addHolidaysTest_3() {
-        WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+        WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
         ReflectionImage target = ReflectionImage.create();
         target.addByWeeklyWorking(GeneralDate.today(),workInformation);
@@ -120,7 +118,7 @@ public class ReflectionImageTest {
 
     @Test
     public void addInWorkCycleTest() {
-        WorkInformation workInformation = new WorkInformation("workTimeCode", "workTypeCode");
+        WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
         ReflectionImage target = ReflectionImage.create();
         target.addInWorkCycle(GeneralDate.today(),workInformation);
         assertThat(target.addInWorkCycle(GeneralDate.today(),workInformation)).isFalse();
@@ -128,8 +126,8 @@ public class ReflectionImageTest {
 
     @Test
     public void addInWorkCycleTest_1() {
-        WorkInformation holidayWorkInfo = new WorkInformation("workTimeCode1", "workTypeCode1");
-        WorkInformation workInformation = new WorkInformation("workTimeCode2", "workTypeCode2");
+        WorkInformation holidayWorkInfo = new WorkInformation("workTypeCode1", "workTimeCode1");
+        WorkInformation workInformation = new WorkInformation("workTypeCode2", "workTimeCode2");
 
         ReflectionImage target = ReflectionImage.create();
         target.addHolidays(GeneralDate.max(),holidayWorkInfo);
@@ -144,7 +142,7 @@ public class ReflectionImageTest {
 
     @Test
     public void getListRefOrdByDateTest() {
-        WorkInformation workInformation = new WorkInformation("workTimeCode","workTypeCode");
+        WorkInformation workInformation = new WorkInformation("workTypeCode", "workTimeCode");
 
         ReflectionImage target = ReflectionImage.create();
         target.addHolidays(GeneralDate.ymd(2020,9,5),workInformation);

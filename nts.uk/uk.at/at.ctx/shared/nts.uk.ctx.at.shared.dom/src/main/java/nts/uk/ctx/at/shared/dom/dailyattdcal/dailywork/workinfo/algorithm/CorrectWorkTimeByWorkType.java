@@ -29,7 +29,7 @@ public class CorrectWorkTimeByWorkType {
 		if (setupType == SetupType.NOT_REQUIRED) {
 
 			// 就業時間帯コード←null
-			workInfo.getRecordInfo().setWorkTimeCode(null);
+			workInfo.getRecordInfo().removeWorkTimeInHolydayWorkType();;
 		}
 
 		if (setupType == SetupType.REQUIRED && workInfo.getRecordInfo().getWorkTimeCode() == null) {
