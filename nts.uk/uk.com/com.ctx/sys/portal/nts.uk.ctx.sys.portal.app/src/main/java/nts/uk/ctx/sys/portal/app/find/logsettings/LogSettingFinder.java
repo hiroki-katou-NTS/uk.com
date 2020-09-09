@@ -60,7 +60,7 @@ public class LogSettingFinder {
 				.map(l -> LogSettingDto.toDomain(l))
 				.collect(Collectors.toList());
 		if (logSettingDtos.size() > 0) {
-			String companyId = logSettingDtos.get(0).getCompanyId();
+			String companyId = AppContexts.user().companyId();
 			int systemType = logSettingDtos.get(0).getSystem();
 
 			/**

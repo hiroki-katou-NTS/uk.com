@@ -7,20 +7,30 @@ import nts.uk.ctx.sys.portal.dom.logsettings.TargetSetting;
 @Data
 public class PGInfomationDto {
 	/**
-	 * 機能名
+	 * プログラムID
 	 */
-	private String functionName;
-
+	private String programId;
+	
 	/**
 	 * ログイン履歴の記録
 	 */
 	private TargetSetting loginHistoryRecord;
-
+	
 	/**
 	 * 修正履歴の記録
 	 */
 	private TargetSetting editHistoryRecord;
-
+	
+	/**
+	 * 機能名
+	 */
+	private String functionName;
+	
+	/**
+	 * メニュー分類
+	 */
+	private Integer menuClassification;
+	
 	/**
 	 * 起動履歴の記録
 	 */
@@ -32,6 +42,8 @@ public class PGInfomationDto {
 		pgInfomationDto.editHistoryRecord = pgInfomation.getEditHistoryRecord();
 		pgInfomationDto.functionName = pgInfomation.getFunctionName();
 		pgInfomationDto.bootHistoryRecord = pgInfomation.getBootHistoryRecord();
+		pgInfomationDto.menuClassification = pgInfomation.getMenuClassification();
+		pgInfomationDto.programId = pgInfomation.getProgramId();
 		return pgInfomationDto;
 	}
 }
