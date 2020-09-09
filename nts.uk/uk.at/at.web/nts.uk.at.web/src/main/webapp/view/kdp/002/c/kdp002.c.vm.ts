@@ -3,7 +3,7 @@
 module nts.uk.at.view.kdp002.c {
 	export module viewmodel {
 		import a = nts.uk.at.view.kdp002.a;
-		
+
 		// display items type (require from other screen)
 		type DISPLAY_ITEM_IDS = number[];
 
@@ -76,7 +76,7 @@ module nts.uk.at.view.kdp002.c {
 
 				service.startScreen(data).done((res) => {
 					console.log(res);
-					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"], itemsFiller = [];
+					let itemIds = ["TIME", "AMOUNT", "TIME_WITH_DAY", "DAYS", "COUNT", "CLOCK"];
 					if (res) {
 						if (_.size(res.stampRecords) > 0) {
 
@@ -116,14 +116,12 @@ module nts.uk.at.view.kdp002.c {
 								});
 							}
 
-							itemsFiller =
-								_.filter(res.itemValues, function(o) { return itemIds.indexOf(o.valueType) != -1 && o.value });
 
 							self.items(res.itemValues);
 						}
 					}
 					if (res.confirmResult) {
-						self.permissionCheck(res.confirmResult.permissionCheck == 1 && itemsFiller.length ? true : false);
+						self.permissionCheck(res.confirmResult.permissionCheck == 1);
 					} else {
 						self.displayButton(false);
 					}
@@ -131,6 +129,12 @@ module nts.uk.at.view.kdp002.c {
 
 				dfd.resolve();
 				return dfd.promise();
+			}
+
+			public isNoData() {
+				const vm = this;
+				let itemData =  _.filter(vm.items(), 'value');
+				return !vm.timeName1() && !vm.timeName2() && !itemData.length && !vm.workName1() && !vm.workName2();
 			}
 			getEmpInfo(): JQueryPromise<any> {
 				let self = this;

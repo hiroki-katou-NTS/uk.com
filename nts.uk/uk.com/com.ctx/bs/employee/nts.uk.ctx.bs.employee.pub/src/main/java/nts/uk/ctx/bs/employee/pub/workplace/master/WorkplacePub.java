@@ -6,17 +6,7 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.bs.employee.pub.workplace.AffAtWorkplaceExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryItemExport2;
-import nts.uk.ctx.bs.employee.pub.workplace.ResultRequest597Export;
-import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WorkPlaceHistExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceExport;
-import nts.uk.ctx.bs.employee.pub.workplace.AffWorkplaceHistoryExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WkpByEmpExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WkpConfigAtTimeExport;
+import nts.uk.ctx.bs.employee.pub.workplace.*;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -167,5 +157,8 @@ public interface WorkplacePub {
 	 * @param baseDate 基準日
 	 */
 	List<AffWorkplaceHistoryItemExport2> getWorkHisItemfromWkpIdAndBaseDate(String workPlaceId, GeneralDate baseDate);
+
+
+	Optional<SWkpHistWrkLocationExport> findBySidWrkLocationCD(String employeeId, GeneralDate baseDate);
 
 }

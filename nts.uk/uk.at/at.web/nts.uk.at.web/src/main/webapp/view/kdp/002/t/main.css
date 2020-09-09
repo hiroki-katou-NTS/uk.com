@@ -39,3 +39,6 @@ body {
 #table-grid {
 	padding: 0px 10px 0px 20px;
 }
+#table-grid btn:not(:first-child) {
+   margin-left: 10px;
+}

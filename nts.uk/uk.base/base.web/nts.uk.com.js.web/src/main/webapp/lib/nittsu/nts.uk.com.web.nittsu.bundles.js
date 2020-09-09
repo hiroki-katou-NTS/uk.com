@@ -226,7 +226,7 @@ var nts;
     (function (uk) {
         var devices;
         (function (devices) {
-            var WS_URI = "ws://localhost:18080/pasori/";
+            var WS_URI = "ws://127.0.0.1:18080/pasori/";
             var instance = null;
             var callback = null;
             var Felica = /** @class */ (function () {
