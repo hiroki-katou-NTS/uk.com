@@ -1325,10 +1325,10 @@ public class ScheduleCreatorExecutionTransaction {
 					return new PrepareWorkOutput(workInformation, null, null, Optional.empty());
 					
 				// note} 
-// note				else {
-// note					// note Emptyじゃない場合 - phần này lần này chưa phải làm
-// note					// note 基本勤務設定を取得する
-// note				}
+				// else {
+				// note Emptyじゃない場合 - phần này lần này chưa phải làm
+				// note 基本勤務設定を取得する
+				// }
 			}
 			
 			// note 月間パターン

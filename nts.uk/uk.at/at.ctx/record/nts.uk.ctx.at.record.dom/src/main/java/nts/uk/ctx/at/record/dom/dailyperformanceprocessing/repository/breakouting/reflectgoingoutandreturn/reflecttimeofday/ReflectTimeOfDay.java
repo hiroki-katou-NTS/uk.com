@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectatt
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -44,15 +45,35 @@ public class ReflectTimeOfDay {
 			//戻りOR終了の場合 (臨時退勤)
 			if(stamp.getType().getChangeClockArt() == ChangeClockArt.RETURN || 
 			   stamp.getType().getChangeClockArt() == ChangeClockArt.TEMPORARY_LEAVING ) {
-				//打刻反映する
-				TimeActualStamp actualStamp = imprintReflectTimeOfDay.imprint(false, timeFrame, timeFrameNext, stamp, timeFrame.getEnd(),workTimeCode,ymd);
-				listTimeFrame.get(i).setEnd(Optional.ofNullable(actualStamp));
+				if(!listTimeFrame.get(i).getEnd().isPresent()
+						|| !timeFrame.getEnd().isPresent()
+						|| !timeFrame.getEnd().get().getStamp().isPresent()
+						|| timeFrame.getEnd().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET
+						|| !timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+						|| timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
+									== stamp.getStampDateTime().clockHourMinute().valueAsMinutes()
+						) {
+					//打刻反映する
+					TimeActualStamp actualStamp = imprintReflectTimeOfDay.imprint(false, timeFrame, timeFrameNext, stamp, timeFrame.getEnd(),workTimeCode,ymd);
+					listTimeFrame.get(i).setEnd(Optional.ofNullable(actualStamp));
+					break;
+				}
 			//外出OR開始の場合(臨時出勤 )
 			}else if(stamp.getType().getChangeClockArt() == ChangeClockArt.GO_OUT || 
 					   stamp.getType().getChangeClockArt() == ChangeClockArt.TEMPORARY_WORK ) {
-				//打刻反映する
-				TimeActualStamp actualStamp = imprintReflectTimeOfDay.imprint(true, timeFrame, timeFrameNext, stamp, timeFrame.getStart(),workTimeCode,ymd);
-				listTimeFrame.get(i).setStart(Optional.ofNullable(actualStamp));
+				if(!listTimeFrame.get(i).getStart().isPresent() 
+						|| !timeFrame.getStart().isPresent()
+						|| !timeFrame.getStart().get().getStamp().isPresent()
+						|| timeFrame.getStart().get().getStamp().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.AUTOMATIC_SET
+						|| !timeFrame.getStart().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+						|| timeFrame.getStart().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
+									== stamp.getStampDateTime().clockHourMinute().valueAsMinutes()
+						) {
+					//打刻反映する
+					TimeActualStamp actualStamp = imprintReflectTimeOfDay.imprint(true, timeFrame, timeFrameNext, stamp, timeFrame.getStart(),workTimeCode,ymd);
+					listTimeFrame.get(i).setStart(Optional.ofNullable(actualStamp));
+					break;
+				}
 			}
 		}
 		//空っぽの時間帯を削除する

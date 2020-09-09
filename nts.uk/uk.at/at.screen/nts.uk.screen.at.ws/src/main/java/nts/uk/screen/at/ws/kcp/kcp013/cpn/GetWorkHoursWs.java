@@ -90,7 +90,7 @@ public class GetWorkHoursWs {
 					? predetemineTimeSettings.get(i.getWorktimeCode().v())
 					: null;
 			if (setting != null) {
-				return new AcquireWorkHours(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v(),
+				return new AcquireWorkHours(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeAbName().v(),
 						setting.getPrescribedTimezoneSetting().getLstTimezone().stream()
 								.filter((x) -> x.getWorkNo() == 1).findFirst().get().getStart().v(),
 						setting.getPrescribedTimezoneSetting().getLstTimezone().stream()
