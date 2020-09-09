@@ -1,10 +1,10 @@
 module nts.uk.at.view.ksc001.b {
 
     import NtsWizardStep = service.model.NtsWizardStep;
-    import PeriodDto = service.model.PeriodDto;
+    /*import PeriodDto = service.model.PeriodDto;
     import UserInfoDto = service.model.UserInfoDto;
+	import ScheduleExecutionLogSaveRespone = service.model.ScheduleExecutionLogSaveRespone;*/
     import ScheduleExecutionLogSaveDto = service.model.ScheduleExecutionLogSaveDto;
-    import ScheduleExecutionLogSaveRespone = service.model.ScheduleExecutionLogSaveRespone;
     import baseService = nts.uk.at.view.kdl023.base.service;
     import DailyPatternSetting = baseService.model.DailyPatternSetting;
     import ReflectionSetting = baseService.model.ReflectionSetting;
@@ -59,9 +59,9 @@ module nts.uk.at.view.ksc001.b {
 
             lstLabelInfomationB: KnockoutObservableArray<string> = ko.observableArray([]);
             lstLabelInfomationC: KnockoutObservableArray<string> = ko.observableArray([]);
-            infoCreateMethod: KnockoutObservable<string> = ko.observable('');
-            infoPeriodDate: KnockoutObservable<string> = ko.observable('');
-            lengthEmployeeSelected: KnockoutObservable<string> = ko.observable('');
+            infoCreateMethod: KnockoutObservable<string> = ko.observable(null);
+            infoPeriodDate: KnockoutObservable<string> = ko.observable(null);
+            lengthEmployeeSelected: KnockoutObservable<string> = ko.observable(null);
 
             // Employee tab
             lstPersonComponentOption: any;
@@ -94,9 +94,9 @@ module nts.uk.at.view.ksc001.b {
             isMonthlyPatternRq: KnockoutObservable<boolean>;
             monthlyPatternCode: KnockoutObservable<number> = ko.observable();
             creationMethodCode: KnockoutObservable<number> = ko.observable();
-            monthlyPatternOpts: KnockoutObservableArray<any> = ko.observable();
-            creationMethodReference: KnockoutObservableArray<any> = ko.observable();
-            isMonthlyPattern: KnockoutObservable<boolean>;
+            monthlyPatternOpts: KnockoutObservableArray<any> = ko.observableArray([]);
+            creationMethodReference: KnockoutObservableArray<any> = ko.observableArray([]);
+            isMonthlyPattern: KnockoutObservable<boolean> = ko.observable(false);
             isCreationMethod: KnockoutObservable<boolean>;
             isEnableNextPageC: KnockoutObservable<boolean> = ko.observable(true);
             isEnableNextPageD: KnockoutObservable<boolean> = ko.observable(true);
@@ -104,7 +104,7 @@ module nts.uk.at.view.ksc001.b {
             isCopyStartDate: KnockoutObservable<boolean> = ko.observable(false);
 	        implementAtr: KnockoutObservable<number> = ko.observable(0);
 	        createMethodAtr: KnockoutObservable<number> = ko.observable(0);
-	        employeeIds: KnockoutObservableArray<string> = ko.observable();
+	        employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
 
             fullSizeSpace: string = "　　";
 
@@ -163,7 +163,6 @@ module nts.uk.at.view.ksc001.b {
                     return self.selectedImplementAtrCode() == ImplementAtr.RECREATE;
                 });
 
-
                 self.periodDate.subscribe((newValue) => {
                     let newDate = ({});
                     if (newValue.startDate) {
@@ -190,10 +189,10 @@ module nts.uk.at.view.ksc001.b {
                 self.isCreationMethod = ko.computed(() => {
                     return self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE;
                 });
-                self.isMonthlyPattern = ko.computed(() => {
+                /*self.isMonthlyPattern = ko.computed(() => {
                     return self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE
                             && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN; //月間パターン
-                });
+                });*/
 
                 self.isCopyStartDate = ko.computed(() => {
                     return self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE;
@@ -209,7 +208,6 @@ module nts.uk.at.view.ksc001.b {
                     }
                 })
                 self.isEnableNextPageC = ko.computed(() => {
-
                     if( self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE
                         && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN
                         && nts.uk.util.isNullOrEmpty(self.monthlyPatternCode()) ) {
@@ -223,34 +221,19 @@ module nts.uk.at.view.ksc001.b {
                 });
 
                 self.creationMethodCode.subscribe(( value) => {
+	                nts.uk.ui.errors.clearAll();
+	                self.isMonthlyPattern( CreationMethodRef.MONTHLY_PATTERN == value );
 	                $('.monthly-pattern-code').focus();
-	                if(self.isInValidCopyPasteSchedule()) return;
                 });
 
                 self.checkCreateMethodAtrPersonalInfo.subscribe(( value ) => {
 	                nts.uk.ui.errors.clearAll();
-
                     if( value === CreateMethodAtr.COPY_PAST_SCHEDULE
                         && nts.uk.util.isNullOrEmpty(self.copyStartDate())) {
                         $('#copy-start-date').focus();
                         if(self.isInValidCopyPasteSchedule()) return;
-                    } else {
-                        if( value === CreateMethodAtr.PATTERN_SCHEDULE
-                            && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN) {
-                            if( self.monthlyPatternOpts().length <= 0 ) {
-	                            let msgError = nts.uk.resource.getText ( 'KSC001_111' );
-	                            $ ( '.monthly-pattern-code' )
-		                            .ntsError ( 'clear' )
-		                            .ntsError ( 'set', { messageId : 'MsgB_2', messageParams : [ msgError ] } );
-                            }
-	                        if(self.isInValidCopyPasteSchedule()) return;
-                        }
-                        //let copyStartDate = moment(self.periodStartDate()).format('YYYY/MM/DD');
-                        //self.copyStartDate(copyStartDate);
                     }
-
                     if( value !== CreateMethodAtr.PATTERN_SCHEDULE ) {
-	                    //self.creationMethodCode(0); //default
 	                    self.monthlyPatternCode(null);
                     }
                 });
@@ -266,6 +249,12 @@ module nts.uk.at.view.ksc001.b {
 	            self.employeeIds([]);
                 //get monthly pattern
                 self.getMonthlyPattern();
+
+                let isAttendance = __viewContext.user.role.isInCharge.attendance;
+	            if( !isAttendance ) {
+	            	self.isConfirmedCreation(false);
+		            $('#confirmedCreation').hide();
+	            }
             }
 
             /**
@@ -405,17 +394,6 @@ module nts.uk.at.view.ksc001.b {
                     dfd = $.Deferred();
                 // block ui
                 nts.uk.ui.block.invisible();
-                // find closure by id = 1
-                /*service.findPeriodById(1).done(function (data) {
-                    // update start date end date to ccg001
-                    self.periodDate({
-                        startDate: data.startDate,
-                        endDate: data.endDate
-                    });
-                    self.reloadCcg001();
-                    dfd.resolve(self);
-                });*/
-
                 //get startdate and enddate for a schedule
                 service.getInitialDate().done( (data) => {
                     // update start date end date to ccg001
@@ -712,12 +690,11 @@ module nts.uk.at.view.ksc001.b {
 
                 if (self.isInValidCopyPasteSchedule()) {
                     return;
+                } else {
+	                self.buildString ();
+	                self.next ().done ( function () {
+	                });
                 }
-
-                self.buildString();
-
-                self.next().done(function () {
-                });
             }
 
             /**
@@ -733,7 +710,7 @@ module nts.uk.at.view.ksc001.b {
 	                && nts.uk.util.isNullOrEmpty(self.monthlyPatternCode()) ) {
 		            $('.monthly-pattern-code').ntsEditor('validate');
 	            }
-                return $('.nts-input').ntsError('hasError');
+                return nts.uk.ui.errors.hasError();
             }
 
             /**
