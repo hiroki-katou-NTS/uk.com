@@ -125,7 +125,7 @@ public class AttendanceRecordExportWebService {
 		//アルゴリズム「承認処理の利用設定を取得する」を実行する
 		return this.approvalProcessingUseSettingRepo.findByCompanyId(companyId);
 	}
-	
+
 	/**
 	 * Gets the single attendance record info.
 	 *
@@ -153,15 +153,24 @@ public class AttendanceRecordExportWebService {
 	}
 	
 	/**
-	 * #3803 アルゴリズム「承認処理の利用設定を取得する」
-	 * 
+	 * #3803 get daily attendance items
 	 * 
 	 * @return List＜勤怠項目ID、名称、属性、マスタの種類、表示番号＞
 	 */
 	@POST
 	@Path("getDailyAttendanceTtems")
-	public AttributeOfAttendanceItemDto getDailyAttendanceTtems() {
-		//アルゴリズム「承認処理の利用設定を取得する」を実行する
+	public List<AttributeOfAttendanceItemDto> getDailyAttendanceTtems() {
 		return this.attendanceItemFinder.getDailyAttendanceItemAtrs();
+	}
+	
+	/**
+	 * #3803 get monthly attendance items
+	 * 
+	 * @return List＜勤怠項目ID、名称、属性、表示番号＞
+	 */
+	@POST
+	@Path("getMonthlyAttendanceTtems")
+	public List<AttributeOfAttendanceItemDto> getMonthlyAttendanceTtems() {
+		return this.attendanceItemFinder.getMonthlyAttendanceItemAtrs();
 	}
 }

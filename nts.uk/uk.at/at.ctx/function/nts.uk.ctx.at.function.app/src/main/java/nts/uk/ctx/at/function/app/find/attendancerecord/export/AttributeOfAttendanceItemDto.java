@@ -1,10 +1,7 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.export;
 
-import java.util.Optional;
-
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 
 /**
  * Attribute of attendance item.
@@ -16,7 +13,7 @@ public class AttributeOfAttendanceItemDto {
 	/**
 	 *	勤怠項目ID
 	 */
-	private Integer attendanceItemId;
+	private int attendanceItemId;
 
 	/**
 	 *	名称
@@ -31,11 +28,11 @@ public class AttributeOfAttendanceItemDto {
 	/**
 	 *	マスタの種類
 	 */
-	private Optional<TypesMasterRelatedDailyAttendanceItem> masterType;
+	private Integer masterType;
 	
 	/**
 	 *	表示番号
 	 */
-	private Integer displayNumber;
+	private int displayNumber;
 
 }

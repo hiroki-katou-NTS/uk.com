@@ -18,10 +18,7 @@ import nts.uk.ctx.at.function.dom.attendanceitemname.AttendanceItemName;
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyattendanceitem.FormCanUsedForTime;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
-import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.TypesMasterRelatedDailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItem;
-import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.DailyAttendanceItemAuthority;
@@ -274,7 +271,7 @@ public class AttendanceIdItemFinder {
 					.attendanceItemId(attendance.getAttendanceItemId())
 					.attendanceItemName(attendance.getAttendanceItemName())
 					.attendanceAtr(item.getDailyAttendanceAtr().value)
-					.masterType(item.getMasterType())
+					.masterType(item.getMasterType().isPresent() ? item.getMasterType().get().value : null)
 					.displayNumber(item.getDisplayNumber())
 					.build());
 			});
@@ -336,7 +333,7 @@ public class AttendanceIdItemFinder {
 		}
 		
 		// アルゴリズム「会社の日次を取得する」を実行する
-		List<AttItemName> dailyItems = companyDailyItemService.getDailyItems(
+		List<AttItemName> monthlyItems = companyMonthlyItemService.getMonthlyItems(
 			companyId,
 			Optional.of(AppContexts.user().roles().forAttendance()),
 			attendanceIdList,
@@ -345,7 +342,7 @@ public class AttendanceIdItemFinder {
 		// 取得したドメインモデル「月次の勤怠項目」（月次項目の属性、表示番号）と取得したList＜勤怠項目ID、名称＞を結合する
 		monthlyAttendanceItemList.stream()
 			.forEach(item -> {
-				AttItemName attendance = dailyItems.stream()
+				AttItemName attendance = monthlyItems.stream()
 					.filter(attd -> attd.getAttendanceItemId() == item.getAttendanceItemId())
 					.findFirst().get();
 
