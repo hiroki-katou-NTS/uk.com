@@ -9,13 +9,19 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
+import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.ClosureHistPeriod;
+import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
@@ -31,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
@@ -39,6 +46,7 @@ import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeList36;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHoursDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimedDisplayForSuperiorsDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -69,6 +77,12 @@ public class KTG027QueryProcessor {
 	
 	@Inject
 	private TempAbsHistRepository  tempAbsHistRepository;
+	
+	@Inject
+	private GetSpecifyPeriod getSpecifyPeriod;
+	
+	@Inject
+	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 
 	public GeneralDate checkSysDateOrCloseEndDate() {
 		// EA luôn trả v�Systemdate
@@ -321,5 +335,31 @@ public class KTG027QueryProcessor {
 		OvertimeHours overtimeHours = buttonPressingProcess(targetMonth, closureIDInit);
 		OvertimeHoursDto reusult = new OvertimeHoursDto(closureIDInit, listClosureResultModel, overtimeHours);
 		return reusult;
+	}
+	
+	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto() {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		String cID = AppContexts.user().companyId();
+		String sID = AppContexts.user().employeeId();
+		GeneralDate baseDate = GeneralDate.today();
+		//	社員に対応する処理締めを取得する
+		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sID, baseDate);
+		DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, sID, baseDate);
+		//	指定した年月の締め期間を取得する
+		List<ClosureHistPeriod> lstClosure = getSpecifyPeriod.getSpecifyPeriod(closure.getClosureMonth().getProcessingYm());
+		//	ユーザー固有情報「トップページ表示年月」を取得する
+		InitDisplayPeriodSwitchSetDto targetDateFromLogin = displayPeriodfinder.targetDateFromLogin();
+		listCheckTargetItem = targetDateFromLogin.getListDateProcessed().stream()
+									.map(x -> new CheckTarget(closureId, x.getTargetDate())).collect(Collectors.toList());
+		
+		if(targetDateFromLogin.getCurrentOrNextMonth() == 1) {
+			
+		}else if(targetDateFromLogin.getCurrentOrNextMonth() == 2 ){
+			
+		}
+		OvertimedDisplayForSuperiorsDto result = OvertimedDisplayForSuperiorsDto.builder().
+				
+		return result
 	}
 }

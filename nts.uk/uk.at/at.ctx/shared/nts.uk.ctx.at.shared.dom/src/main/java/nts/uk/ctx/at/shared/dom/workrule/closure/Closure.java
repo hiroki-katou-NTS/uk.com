@@ -40,7 +40,7 @@ public class Closure extends AggregateRoot {
 	private UseClassification useClassification;
 
 	/** The month. */
-	// 当月
+	// 	当月
 	private CurrentMonth closureMonth;
 
 	/** The closure histories. */
