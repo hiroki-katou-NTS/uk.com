@@ -10,7 +10,6 @@ module nts.uk.at.view.ksm005.a {
             } else {
                 $('#inp_monthlyPatternCode').focus();
             }
-        });
-
+        }).always(() => nts.uk.ui.errors.clearAll());
     });
 }

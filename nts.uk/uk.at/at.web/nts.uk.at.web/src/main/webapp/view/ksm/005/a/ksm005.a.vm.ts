@@ -204,7 +204,7 @@ module nts.uk.at.view.ksm005.a {
             public startPage(): JQueryPromise<any> {
                 const self = this;
                 let dfd = $.Deferred();
-	            nts.uk.ui.block.invisible();
+
 	            service.getMonthlyAll().done( function( data ) {
 	            	let listMonthlyPattern = data.listMonthlyPattern;
                     listMonthlyPattern = listMonthlyPattern && listMonthlyPattern.map(item =>  {
@@ -221,10 +221,7 @@ module nts.uk.at.view.ksm005.a {
 			            self.selectMonthlyPattern(listMonthlyPattern[0].code);
 		            }
                     dfd.resolve(self);
-	            }).always(() => {
-                    blockUI.clear();
-                    $('.nts-input').ntsError('clear');
-                });
+	            });
                 return dfd.promise();
             }
             
@@ -393,9 +390,6 @@ module nts.uk.at.view.ksm005.a {
                 self.updateWorkMothlySetting(dataUpdate);
                 self.enableDelete(false);
 	            self.enableUpdate(false);
-                // focus on code
-                $('#inp_monthlyPatternCode').focus();
-                nts.uk.ui.errors.clearAll();
             }
             /**
              * convert date month day => YYYYMMDD

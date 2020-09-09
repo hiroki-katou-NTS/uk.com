@@ -39,6 +39,10 @@ module nts.uk.at.view.ksm005.b {
             lstHolidaysPattern: KnockoutObservableArray<MonthlyPattern>;
             selectHolidayPattern: KnockoutObservable<string>;
 
+            hasNonStatutoryHolidays: KnockoutObservable<boolean> = ko.observable(false);
+            hasLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);
+            visibleHolidaySetting: KnockoutObservable<boolean> = ko.observable(false);
+
             constructor() {
                 const self = this;
                 self.dateValue = ko.observable({
@@ -70,6 +74,13 @@ module nts.uk.at.view.ksm005.b {
                 ]);
                 self.lstHolidaysPattern = ko.observableArray([]);
                 self.selectHolidayPattern = ko.observable(null);
+                self.settingForHolidays.subscribe(data => {
+                    if (data) {
+                        self.visibleHolidaySetting(true);
+                    } else {
+                        self.visibleHolidaySetting(false);
+                    }
+                });
                 // Init
                 $(".popup-b72").ntsPopup({
                     trigger: ".showDialogB72",
@@ -127,7 +138,6 @@ module nts.uk.at.view.ksm005.b {
 
                     });
                 });
-
                 dfd.resolve(self);
                 return dfd.promise();
             }
@@ -204,11 +214,16 @@ module nts.uk.at.view.ksm005.b {
              * save monthly pattern setting batch when click button
              */
             public saveMonthlyPatternSettingBatch(): void {
+                if(nts.uk.ui.errors.hasError()) {
+                    return;
+                }
                 nts.uk.ui.block.invisible();
                 var self = this;
                 // check error
-                if (self.checkMonthlyPatternSettingBatch()) {
+                if ( self.settingForHolidays() && self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchPublicHolidays())) {
                     nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alertError({messageId: "Msg_151"}).then(function () {
+                    });
                     return;
                 }
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.WORK_DAYS, self.monthlyPatternSettingBatchWorkDays());
@@ -399,7 +414,7 @@ module nts.uk.at.view.ksm005.b {
             }
 
             public showDialogKDL002(i: number): void {
-                var self = this;
+                const self = this;
                 nts.uk.ui.windows.setShared('KDL002_AllItemObj', self.lstSelectableCode(), true);
                 nts.uk.ui.windows.setShared('KDL002_SelectedItemId', null, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', {
@@ -417,8 +432,8 @@ module nts.uk.at.view.ksm005.b {
 
                 service.getWeeklyWork(weeklyWork).done(function (data) {
                     //非稼働日（法内）
-                    if (data) {
-                        data.weeklyWorkDayPatternDtos && data.weeklyWorkDayPatternDtos.map((item) => {
+                    if (data.weeklyWorkDayPatternDtos.length > 0) {
+                        data.weeklyWorkDayPatternDtos.map((item) => {
                             let day = item.dayOfWeek;
                             day = day.substring(0, 1);
                             let des = item.workdayDivision;
@@ -434,10 +449,15 @@ module nts.uk.at.view.ksm005.b {
                                 isHalfDayWork: false
                             };
                             self.lstHolidaysPattern.push(dayHoliday);
+                            if(item.typeColor == 1) {
+                                self.hasLegalHoliday(true);
+                            }
+                            if(item.typeColor == 2) {
+                                self.hasNonStatutoryHolidays(true);
+                            }
                         });
-
-                        self.lstSelectableCode(data.workTypeCode);
                     }
+                    self.lstSelectableCode(data.workTypeCode);
                 });
             }
 
