@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.emailset;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -13,6 +14,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
  *
  */
 @Getter
+@AllArgsConstructor
 public class AppEmailSet implements DomainAggregate {
 	
 	/**
