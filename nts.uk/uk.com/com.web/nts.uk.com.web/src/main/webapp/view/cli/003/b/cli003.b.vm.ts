@@ -462,7 +462,11 @@ module nts.uk.com.view.cli003.b {
         vm.dataType("");
         vm.currentDataTypeName("");
       }
-      if(logSet.recordType === 9 || logSet.recordType === 10 || logSet.recordType === 11){
+      if(logSet.recordType === 0 || 
+        logSet.recordType === 1  || 
+        logSet.recordType === 9  ||
+        logSet.recordType === 10 ||
+        logSet.recordType === 11 ){
         vm.showTarget(false);
       }else {
         vm.showTarget(true);
