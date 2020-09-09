@@ -83,7 +83,7 @@ public class SaveComStatWorkTimeSetCommand{
 	public List<MonthlyWorkTimeSetCom> flex(String cid) {
 		List<MonthlyWorkTimeSetCom> flex = new ArrayList<>();
 		
-		for (int i = 0; i <= 12; i++ ) {
+		for (int i = 1; i <= 12; i++ ) {
 			
 			val sta = find(flexSetting.getStatutorySetting(), i);
 			val spe = find(flexSetting.getSpecifiedSetting(), i);
@@ -94,8 +94,8 @@ public class SaveComStatWorkTimeSetCommand{
 										LaborWorkTypeAttr.FLEX, 
 										YearMonth.of(year, i), 
 										MonthlyLaborTime.of(
-												get(spe), 
-												Optional.of(get(sta)),
+												get(sta), 
+												Optional.of(get(spe)),
 												Optional.of(get(wat)))));
 		}
 		
