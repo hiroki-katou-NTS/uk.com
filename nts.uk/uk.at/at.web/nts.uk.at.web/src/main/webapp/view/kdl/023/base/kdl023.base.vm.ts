@@ -32,7 +32,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         calendarStartDate: moment.Moment = moment();
         calendarEndDate: moment.Moment;
 
-        reflectionSetting: ReflectionSetting = new ReflectionSetting();
+        reflectionSetting: KnockoutObservable<ReflectionSetting> =   ko.observable(new ReflectionSetting());
         dailyPatternSetting: DailyPatternSetting;
         weeklyWorkSetting: WeeklyWorkSetting;
         listHoliday: Array<any>;
@@ -149,19 +149,19 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     // validate selected code
                     // if selected code is not valid, select first item.
                     _.find(vm.dailyPatternList(),
-                        pattern => vm.reflectionSetting.selectedPatternCd() == pattern.patternCode) != undefined ?
-                        vm.reflectionSetting.selectedPatternCd() :
-                        vm.reflectionSetting.selectedPatternCd(vm.dailyPatternList()[0].patternCode);
+                        pattern => vm.reflectionSetting().selectedPatternCd() == pattern.patternCode) != undefined ?
+                        vm.reflectionSetting().selectedPatternCd() :
+                        vm.reflectionSetting().selectedPatternCd(vm.dailyPatternList()[0].patternCode);
 
                     // Load daily pattern detail.
-                    vm.loadDailyPatternDetail(vm.reflectionSetting.selectedPatternCd()).done(() => {
+                    vm.loadDailyPatternDetail(vm.reflectionSetting().selectedPatternCd()).done(() => {
                         // Xu ly hien thi calendar.
                         vm.optionDates(vm.getOptionDates());
                         dfd.resolve();
                     });
 
                     // Init subscribe.
-                    vm.reflectionSetting.selectedPatternCd.subscribe(code => {
+                    vm.reflectionSetting().selectedPatternCd.subscribe(code => {
                         vm.loadDailyPatternDetail(code);
                     });
 
@@ -191,14 +191,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                     vm.reflectionMethod.subscribe(val => {
                         if(val === 2){
-                            vm.reflectionSetting.statutorySetting.useClassification(true);
-                            vm.reflectionSetting.nonStatutorySetting.useClassification(true);
-                            vm.reflectionSetting.holidaySetting.useClassification(true);
+                            vm.reflectionSetting().statutorySetting.useClassification(true);
+                            vm.reflectionSetting().nonStatutorySetting.useClassification(true);
+                            vm.reflectionSetting().holidaySetting.useClassification(true);
                             vm.workCycleEnable1(true);
                         } else {
-                            vm.reflectionSetting.statutorySetting.useClassification(false);
-                            vm.reflectionSetting.nonStatutorySetting.useClassification(false);
-                            vm.reflectionSetting.holidaySetting.useClassification(false);
+                            vm.reflectionSetting().statutorySetting.useClassification(false);
+                            vm.reflectionSetting().nonStatutorySetting.useClassification(false);
+                            vm.reflectionSetting().holidaySetting.useClassification(false);
                             vm.workCycleEnable1(false);
                             vm.reflectionOrder1(WorkCreateMethod.NON)
                         }
@@ -222,7 +222,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     })
 
                     // Force change to set tab index.
-                    vm.reflectionSetting.holidaySetting.useClassification.valueHasMutated();
+                    vm.reflectionSetting().holidaySetting.useClassification.valueHasMutated();
 
                     vm.setCalendarData(vm.refImageEachDayDto());
                 }).fail(res => {
@@ -319,13 +319,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let defaultEndDate = endDate;
 
             if(vm.isExecMode()){
-                defaultStartDate = vm.reflectionSetting.calendarStartDate();
-                defaultEndDate = vm.reflectionSetting.calendarEndDate();
+                defaultStartDate = vm.reflectionSetting().calendarStartDate();
+                defaultEndDate = vm.reflectionSetting().calendarEndDate();
             }
             if(vm.reflectionMethod() === 2){
-                legalHolidayCd = vm.reflectionSetting.statutorySetting.workTypeCode();
-                nonStatutoryHolidayCd = vm.reflectionSetting.nonStatutorySetting.workTypeCode();
-                holidayCd = vm.reflectionSetting.holidaySetting.workTypeCode();
+                legalHolidayCd = vm.reflectionSetting().statutorySetting.workTypeCode();
+                nonStatutoryHolidayCd = vm.reflectionSetting().nonStatutorySetting.workTypeCode();
+                holidayCd = vm.reflectionSetting().holidaySetting.workTypeCode();
                 if(vm.reflectionOrder1() != WorkCreateMethod.NON){
                     refOrder.push(vm.reflectionOrder1());
                     if(vm.reflectionOrder2() != WorkCreateMethod.NON){
@@ -350,7 +350,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 vm.reflectionParam({
                     creationPeriodStartDate : defaultStartDate,
                     creationPeriodEndDate : defaultEndDate,
-                    workCycleCode : vm.reflectionSetting.selectedPatternCd(),
+                    workCycleCode : vm.reflectionSetting().selectedPatternCd(),
                     refOrder : refOrder,
                     numOfSlideDays : slideDay,
                     legalHolidayCd: legalHolidayCd,
@@ -512,7 +512,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private getOptionDates(): Array<OptionDate> {
             let self = this;
             // Update pattern start date value of reflection setting.
-            self.reflectionSetting.patternStartDate(self.patternStartDate.format(CONST.DATE_FORMAT));
+            self.reflectionSetting().patternStartDate(self.patternStartDate.format(CONST.DATE_FORMAT));
 
             // Get calendar's range.
             let range = self.calendarEndDate.diff(self.calendarStartDate, 'days') + 1;
@@ -726,7 +726,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
-                        self.getWorktypeNameByCode(self.reflectionSetting.holidaySetting.workTypeCode())
+                        self.getWorktypeNameByCode(self.reflectionSetting().holidaySetting.workTypeCode())
                     ]
                 }
             }
@@ -738,7 +738,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
-                        self.getWorktypeNameByCode(self.reflectionSetting.statutorySetting.workTypeCode())
+                        self.getWorktypeNameByCode(self.reflectionSetting().statutorySetting.workTypeCode())
                     ]
                 }
             }
@@ -750,7 +750,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     textColor: '#ff0000',
                     backgroundColor: 'white',
                     listText: [
-                        self.getWorktypeNameByCode(self.reflectionSetting.nonStatutorySetting.workTypeCode())
+                        self.getWorktypeNameByCode(self.reflectionSetting().nonStatutorySetting.workTypeCode())
                     ]
                 }
             }
@@ -882,7 +882,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private isStatutorySettingChecked(): boolean {
             let self = this;
-            return self.reflectionSetting.statutorySetting.useClassification();
+            return self.reflectionSetting().statutorySetting.useClassification();
         }
 
         /**
@@ -890,7 +890,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private isNonStatutorySettingChecked(): boolean {
             let self = this;
-            return self.reflectionSetting.nonStatutorySetting.useClassification();
+            return self.reflectionSetting().nonStatutorySetting.useClassification();
         }
 
         /**
@@ -898,7 +898,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private isHolidaySettingChecked(): boolean {
             let self = this;
-            return self.reflectionSetting.holidaySetting.useClassification();
+            return self.reflectionSetting().holidaySetting.useClassification();
         }
 
         /**
@@ -914,7 +914,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private isFillInTheBlankChecked(): boolean {
             let self = this;
-            return ReflectionMethod.FillInTheBlank == self.reflectionSetting.reflectionMethod();
+            return ReflectionMethod.FillInTheBlank == self.reflectionSetting().reflectionMethod();
         }
 
         /**
@@ -1018,7 +1018,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 
             // Init patternReflection setting.
-            self.reflectionSetting = new ReflectionSetting(self.shared);
+            self.reflectionSetting(new ReflectionSetting(self.shared)) ;
 
             // Is on Exec Mode
             if (self.shared.calendarStartDate && self.shared.calendarEndDate) {
@@ -1132,7 +1132,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let result:WorkMonthlySetting = {
                 workInformation: workInformation,
                 ymdk:  moment(refImage.date).format('YYYY-MM-DD'),
-                monthlyPatternCode: this.reflectionSetting.monthlyPatternCode()
+                monthlyPatternCode: this.reflectionSetting().monthlyPatternCode()
             }
             return result;
         }
@@ -1150,7 +1150,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         return;
                     }
                     service.registerMonthlyPattern(param).done(() => {
-                        nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting));
+                        nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
                         vm.closeDialog();
                     }).fail(() => {
                         vm.$dialog.error({ messageId: "Msg_340" }).then(() => {
