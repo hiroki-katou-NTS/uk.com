@@ -29,6 +29,7 @@ public class TimeActualStamp {
 	private Optional<WorkStamp> stamp = Optional.empty();
 	
 	//打刻反映回数
+	@Setter
 	private Integer numberOfReflectionStamp;
 	
 	//時間外の申告
