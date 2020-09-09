@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         appType: KnockoutObservable<number> = ko.observable(AppType.BUSINESS_TRIP_APPLICATION);
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
         mode: number = 1;
+        isSendMail: KnockoutObservable<boolean>;
 
         dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
             businessTripContent: {
@@ -24,6 +25,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
         created(params: any) {
             const vm = this;
+
+            vm.isSendMail = ko.observable(false);
 
             vm.loadData([], [], vm.appType())
                 .then((loadDataFlag: boolean) => {
