@@ -56,18 +56,19 @@
 								</div>
 								<div class="comboBoxItem">
 									<div class="item">#{i18n.getText('KSC001_111')}</div>
-									<div class="monthly-pattern-code" tabindex="3"  data-bind="ntsComboBox: {
-									name: $i18n('KSC001_111'),
-									options: monthlyPatternOpts,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: monthlyPatternCode,
-									editable: false,
-									enable:  isMonthlyPattern,
-									required: isMonthlyPatternRq,
-									selectFirstIfNull: true,
-									visibleItemsCount: 5
-									}"></div>
+									<div class="monthly-pattern-code" tabindex="3"  id="monthlyPatternCode"
+										 data-bind="ntsComboBox: {
+											name: $i18n('KSC001_111'),
+											options: monthlyPatternOpts,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: monthlyPatternCode,
+											editable: false,
+											enable:  isMonthlyPattern,
+											required: isMonthlyPatternRq,
+											selectFirstIfNull: true,
+											visibleItemsCount: 5
+											}"></div>
 								</div>
 							</div>
 						</div>
@@ -91,13 +92,15 @@
 							</div>
 					</div>
 				</div>
-				<div tabindex="-1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_101')}</div>
-				<div class="radioButtonGroup comboBoxLists">
-                    <!-- C3_2 -->
-					<div class="checkBoxItem">
-						<div tabindex="5" data-bind="ntsCheckBox: { checked: isConfirmedCreation, text: $i18n('KSC001_17') }"></div>
-					</div>
-				</div>
+                <!-- C3_2 -->
+                <div id="confirmedCreation">
+                    <div tabindex="-1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_101')}</div>
+                    <div class="radioButtonGroup comboBoxLists">
+                        <div class="checkBoxItem">
+                            <div tabindex="5" data-bind="ntsCheckBox: { checked: isConfirmedCreation, text: $i18n('KSC001_17') }"></div>
+                        </div>
+                    </div>
+                </div>
 			</div>
 			
 			<div class="buttonPrevNext">
@@ -106,7 +109,7 @@
 				</div>
 				<div class="buttonBeginNext">
 					<button tabindex="7" class="proceed x-large"
-						data-bind="click: nextPageC, enable: $root.errors.isEmpty() &amp; isEnableNextPageC() ">#{i18n.getText('KSC001_20')}</button>
+						data-bind="click: nextPageC">#{i18n.getText('KSC001_20')}</button> <!-- , enable: $root.errors.isEmpty() &amp; isEnableNextPageC()  -->
 				</div>
 			</div>
 		</div>
