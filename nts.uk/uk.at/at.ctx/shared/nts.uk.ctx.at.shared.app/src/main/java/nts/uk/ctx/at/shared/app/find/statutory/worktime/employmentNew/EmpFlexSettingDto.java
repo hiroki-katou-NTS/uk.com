@@ -50,9 +50,9 @@ public class EmpFlexSettingDto{
 		
 		workTime.stream().forEach(wt -> {
 			
-			dto.getStatutorySetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getLegalLaborTime().v()));
-			dto.getSpecifiedSetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getWithinLaborTime().get().v()));
-			dto.getWeekAvgSetting().add(new MonthlyUnitDto(wt.getYm().v(), wt.getLaborTime().getWeekAvgTime().get().v()));
+			dto.getStatutorySetting().add(new MonthlyUnitDto(wt.getYm().month(), wt.getLaborTime().getLegalLaborTime().v()));
+			dto.getSpecifiedSetting().add(new MonthlyUnitDto(wt.getYm().month(), wt.getLaborTime().getWithinLaborTime().get().v()));
+			dto.getWeekAvgSetting().add(new MonthlyUnitDto(wt.getYm().month(), wt.getLaborTime().getWeekAvgTime().get().v()));
 		});
 		
 		return dto;
