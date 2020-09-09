@@ -53,8 +53,8 @@ module cmm045.a.viewmodel {
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
         appList: any = ko.observable(null);
         appListAtr: number;
-        isBeforeCheck: KnockoutObservable<boolean> = ko.observable(false);
-        isAfterCheck: KnockoutObservable<boolean> = ko.observable(false);
+        isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
+        isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
