@@ -81,6 +81,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableCompany.subscribe((value) => {
+                if (value == null || value == {})
+                    return;
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStick = [];
 
@@ -151,6 +153,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             });
 
             self.selectedButtonTableWorkplace.subscribe((value) => {
+                if (value == null || value == {})
+                    return;
                 let indexBtnSelected = value.column + value.row * 10;
                 let arrDataToStickWkp = [];
                 // get listShiftMaster luu trong localStorage
