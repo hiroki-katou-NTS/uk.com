@@ -15,11 +15,8 @@ import javax.inject.Inject;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
@@ -34,7 +31,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecAbsHistoryOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecruitmentHistoryOutPara;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -55,19 +51,27 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class EmploymentSystemFinder {	
 	@Inject
-	private BreakDayOffManagementQuery breakDayOffManagementQuery;
+	BreakDayOffManagementQuery breakDayOffManagementQuery;
+	
 	@Inject
-	private EmployeeRequestAdapter employeeRequestAdapter;
+	EmployeeRequestAdapter employeeRequestAdapter;
+	
 	@Inject
-	private AbsenceReruitmentManaQuery absenceReruitmentManaQuery;
+	ClosureService closureService;
+	
 	@Inject
-	private CompensLeaveEmSetRepository compensLeaveEmSetRepository;
+	AbsenceReruitmentManaQuery absenceReruitmentManaQuery;
+	
 	@Inject
-	private ShareEmploymentAdapter employeeAdaptor;
+	CompensLeaveEmSetRepository compensLeaveEmSetRepository;
+	
+	@Inject
+	ShareEmploymentAdapter employeeAdaptor;
 	@Inject
 	private WorkplaceAdapter wpAdapter;
 	@Inject
@@ -75,9 +79,11 @@ public class EmploymentSystemFinder {
 	@Inject
 	private ComSubstVacationRepository comSubrepo;
 	@Inject
+	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	@Inject
-	private RemainNumberTempRequireService requireService;
+	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
 	
 	/** 
 	 * KDL005
@@ -110,8 +116,6 @@ public class EmploymentSystemFinder {
 	 * @return
 	 */
 	public DetailConfirmDto getDetailsConfirm(String employeeId, String baseDate) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
 		
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -125,7 +129,7 @@ public class EmploymentSystemFinder {
 		}
 		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyy/MM/dd");
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
-		DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, inputDate);
+		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 		
 		// アルゴリズム「休出代休発生消化履歴の取得」を実行する
 		Optional<BreakDayOffOutputHisData> data = breakDayOffManagementQuery.getBreakDayOffData(companyId, employeeId, inputDate);
@@ -197,8 +201,7 @@ public class EmploymentSystemFinder {
 		//アルゴリズム「期間内の休出代休残数を取得する」を実行する
 		BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyId, employeeId, getDatePeroid(closingPeriod.start()), 
 				false, inputDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-		BreakDayOffRemainMngOfInPeriod breakDay = BreakDayOffMngInPeriodQuery
-				.getBreakDayOffMngInPeriod(require, cacheCarrier, inputParam);
+		BreakDayOffRemainMngOfInPeriod breakDay = this.breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
 		
 		result.setBreakDay(breakDay);
 		
@@ -269,12 +272,10 @@ public class EmploymentSystemFinder {
 	 * @return
 	 */
 	public NumberRestDaysDto getAcquisitionNumberRestDays(String employeeId, String baseDate) {
-		val require = requireService.createRequire();
-		val cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
 		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyyMMdd");
 		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
-		DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, inputDate);
+		DatePeriod closingPeriod = closureService.findClosurePeriod(employeeId, inputDate);
 		
 		// アルゴリズム「振出振休発生消化履歴の取得」を実行する
 		Optional<AbsRecGenerationDigestionHis> data = absenceReruitmentManaQuery
@@ -345,7 +346,7 @@ public class EmploymentSystemFinder {
 																			Collections.emptyList(),
 																			Collections.emptyList(),
 																			Optional.empty(),Optional.empty(),Optional.empty());
-		AbsRecRemainMngOfInPeriod absRecMng = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, param);
+		AbsRecRemainMngOfInPeriod absRecMng = absRertMngInPeriod.getAbsRecMngInPeriod(param);
 		result.setAbsRecMng(absRecMng);
 		return result;
 	}

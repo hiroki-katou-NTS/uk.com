@@ -1,42 +1,24 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.datawork.DataWork;
 import nts.uk.ctx.at.request.dom.application.common.datawork.IDataWorkService;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InitMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeAppCommonSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
-//import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
-//import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
-import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 @Stateless
 public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 
 	@Inject
-	private ApplicationRepository_New appRepository;
+	private ApplicationRepository appRepository;
 
 	@Inject
 	private EmployeeRequestAdapter employeeAdapter;
@@ -54,8 +36,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	@Inject 
 	private InitMode initMode;
 	
-	@Inject
-	ApplicationReasonRepository appFormReposity;
+//	@Inject
+//	ApplicationReasonRepository appFormReposity;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeRepository;
@@ -77,7 +59,8 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 	
 	@Override
 	public WorkChangeDetail getWorkChangeDetailById(String cid, String appId) {
-		WorkChangeDetail workChangeDetail = new WorkChangeDetail();
+		// error EA refactor 4
+		/*WorkChangeDetail workChangeDetail = new WorkChangeDetail();
 		//15.詳細画面申請データを取得する
 		Optional<Application_New> applicationOpt = appRepository.findByID(cid, appId);		
 		if (!applicationOpt.isPresent()) {
@@ -92,7 +75,7 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		workChangeDetail.setDetailedScreenPreBootModeOutput(preBootOuput);
 		
 		//アルゴリズム「勤務変更申請基本データ（更新）」を実行する
-		AppWorkChange appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();		
+		AppWorkChange_Old appWorkChange = appWorkChangeReposity.getAppworkChangeById(cid, appId).get();		
 		//Get work type name & work time name
 		Optional<WorkTimeSetting> workTime = workTimeRepository.findByCode(cid, appWorkChange.getWorkTimeCd());
 		if (workTime.isPresent()) {
@@ -141,14 +124,15 @@ public class WorkChangeDetailServiceImpl implements IWorkChangeDetailService {
 		GeneralDate appDate = application.getAppDate();
 		String sID = application.getEmployeeID();
 		AppCommonSettingOutput appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(cid,
-				sID, 1, ApplicationType.WORK_CHANGE_APPLICATION, appDate);
+				sID, 1, ApplicationType_Old.WORK_CHANGE_APPLICATION, appDate);
 		//勤務就業ダイアログ用データ取得
-		DataWork dataWork =  dataWorkService.getDataWork(cid, sID, appDate, appCommonSetting, ApplicationType.WORK_CHANGE_APPLICATION.value);
+		DataWork dataWork =  dataWorkService.getDataWork(cid, sID, appDate, appCommonSetting, ApplicationType_Old.WORK_CHANGE_APPLICATION.value);
 		//就業時間帯の必須チェック
 //		SetupType setupType = this.bacsicService
 //				.checkNeededOfWorkTimeSetting(workChangeDetail.getAppWorkChange().getWorkTypeCd());
 		workChangeDetail.setDataWork(dataWork);
-		return workChangeDetail;
+		return workChangeDetail;*/
+		return null;
 	}
 
 }

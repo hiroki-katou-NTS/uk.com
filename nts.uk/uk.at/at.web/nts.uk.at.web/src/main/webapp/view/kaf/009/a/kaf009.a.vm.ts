@@ -168,7 +168,22 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let initialSelection = 1; //1:申請時に決める（初期選択：勤務を変更する）
             let notChange = 2; //2:変更しない
             let change = 3; //3:変更する
-
+            
+            service.getGoBackSettingNew({
+                ApplicantEmployeeID: null, 
+                ApplicantList: null
+            }).done((settingData) => {
+                let A3_1 = settingData.appDispInfoStartupDto.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName;
+                let A4_1;
+                let A5_1 ;
+                let A8 = settingData.gobackDirectCommonDto.workChangeFlg;
+                let A8_2= settingData.workType.workType + ' '+ settingData.workType.nameWorkType;
+                let A8_4 = settingData.workTime.workTime + ' '+ settingData.workTime.nameWorkTime;
+                let A9_1 = settingData.appDispInfoStartupDto.appDispInfoNoDateOutput.appReasonLst;
+                
+                
+            });
+            
             //get Common Setting
             service.getGoBackSetting({
                 employeeIDs: self.employeeIDs(),
@@ -402,25 +417,30 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             let command = self.getCommand();
             command.checkOver1Year = true;
-            service.checkInsertGoBackDirect(command).done(function() {
-                command.checkOver1Year = false;
-                self.registry();
-            }).fail(function(res: any) {
-                if (res.messageId == "Msg_1518") {//confirm
-                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
-                        command.checkOver1Year = false;
-                        service.checkInsertGoBackDirect(command).done(function() {
-                            self.registry();
-                        }).fail(function(res: any) {
-                            self.checkRegFail(res);
-                        })
-                    }).ifNo(() => {
-                        nts.uk.ui.block.clear();
-                    });
-                }else{
-                    self.checkRegFail(res);
-                }
+            nts.uk.request.ajax('at','at/request/application/gobackdirectly/getGoBackCommonSettingNew',{ApplicantEmployeeID: null, ApplicantList: null}).done((data) => {
+                command.inforGoBackCommonDirectDto = data;
+                service.checkInsertGoBackDirect(command).done(result => console.log(result));
+                nts.uk.ui.block.clear();
             });
+//            service.checkInsertGoBackDirect(command).done(function() {
+//                command.checkOver1Year = false;
+//                self.registry();
+//            }).fail(function(res: any) {
+//                if (res.messageId == "Msg_1518") {//confirm
+//                    dialog.confirm({ messageId: res.messageId }).ifYes(() => {
+//                        command.checkOver1Year = false;
+//                        service.checkInsertGoBackDirect(command).done(function() {
+//                            self.registry();
+//                        }).fail(function(res: any) {
+//                            self.checkRegFail(res);
+//                        })
+//                    }).ifNo(() => {
+//                        nts.uk.ui.block.clear();
+//                    });
+//                }else{
+//                    self.checkRegFail(res);
+//                }
+//            });
         }
 
     checkRegFail(res){

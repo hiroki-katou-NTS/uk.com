@@ -1,0 +1,309 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+				xmlns:ui="http://java.sun.com/jsf/facelets"
+				xmlns:com="http://xmlns.jcp.org/jsf/component"
+				xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<table id="fixed-table-c1">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_148')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr class="inline-radio">
+				<td class="color-header" id="c3">#{i18n.getText('KAF022_149')}</td>
+				<td class="three-radio">
+					<div id="c27" data-bind="ntsRadioBoxGroup: {
+								options: itemListC27,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdC27,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c25">#{i18n.getText('KAF022_168')}</td>
+				<td class="two-radio">
+					<div id="c48" data-bind="ntsRadioBoxGroup: {
+								options: itemListC48,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdC48,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c15">#{i18n.getText('KAF022_158')}</td>
+				<td class="two-radio">
+					<div id="c38" data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdC38,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c16">#{i18n.getText('KAF022_159')}</td>
+				<td class="two-radio">
+					<div id="c39" data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdC39,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c17">#{i18n.getText('KAF022_160')}</td>
+				<td class="two-radio">
+					<div class="blockrow" id="c40" data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdC40,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header" id="c181">#{i18n.getText('KAF022_726')}</td>
+				<td class="two-radio">
+					<div id="c182" data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdC182,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_727')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdC51,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_676')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListC51,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdC51,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<table id="fixed-table-c2">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_143')}</th>
+			</tr>
+		</thead>
+		<tbody>
+		<tr class="inline-radio">
+			<td class="color-header" id="c4">#{i18n.getText('KAF022_154')}</td>
+			<td class="two-radio">
+				<div id="c28" data-bind="ntsRadioBoxGroup: {
+                            options: itemListC28,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdC28,
+                            enable: true}">
+				</div>
+			</td>
+		</tr>
+		</tbody>
+	</table>
+
+	<table id="fixed-table-c3">
+		<colgroup>
+			<col width="270px"/>
+			<col width="650px"/>
+		</colgroup>
+		<thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_144')}</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td class="color-header" id="c18">
+					<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true }">#{i18n.getText('KAF022_161')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input id="c41" data-bind="ntsTextEditor: {
+								name: '#[KAF022_177]',
+								value: texteditorC41,
+								constraint: 'ObstacleName',
+								required: false,
+								enable: true
+							}" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-header" id="c19">
+					<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true }">#{i18n.getText('KAF022_162')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input id="c42" data-bind="ntsTextEditor: {
+								name: '#[KAF022_177]',
+								value: texteditorC42,
+								constraint: 'ObstacleName',
+								required: false,
+								enable: true
+							}" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-header" id="c20">
+					<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true }">#{i18n.getText('KAF022_163')}</div>
+				</td>
+				<td >
+					<div class="control-group valign-center">
+						<input id="c43" data-bind="ntsTextEditor: {
+									name: '#[KAF022_177]',
+									value: texteditorC43,
+									constraint: 'ObstacleName',
+									required: false,
+									enable: true
+								}" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-header" id="c21">
+					<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true }">#{i18n.getText('KAF022_164')}</div>
+				</td>
+				<td>
+					<div class="control-group valign-center">
+						<input id="c44" data-bind="ntsTextEditor: {
+									name: '#[KAF022_177]',
+									value: texteditorC44,
+									constraint: 'ObstacleName',
+									required: false,
+									enable: true
+								}" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-header" id="c22">
+					<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true }">#{i18n.getText('KAF022_165')}</div>
+				</td>
+				<td >
+					<div class="control-group valign-center">
+						<input id="c45" data-bind="ntsTextEditor: {
+									name: '#[KAF022_177]',
+									value: texteditorC45,
+									constraint: 'ObstacleName',
+									required: false,
+									enable: true
+								}" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-header" id="c23">
+					<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true }">#{i18n.getText('KAF022_166')}</div>
+				</td>
+				<td >
+					<div class="control-group valign-center">
+						<input id="c46" data-bind="ntsTextEditor: {
+									name: '#[KAF022_177]',
+									value: texteditorC46,
+									constraint: 'ObstacleName',
+									required: false,
+									enable: true
+								}" />
+					</div>
+				</td>
+			</tr>
+			<tr>
+				<td class="color-header" id="c24">
+					<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true }">#{i18n.getText('KAF022_167')}</div>
+				</td>
+				<td >
+					<div class="control-group valign-center">
+						<input id="c47" data-bind="ntsTextEditor: {
+									name: '#[KAF022_177]',
+									value: texteditorC47,
+									constraint: 'ObstacleName',
+									required: false,
+									enable: true
+								}" />
+					</div>
+				</td>
+			</tr>
+			<!--<tr>-->
+				<!--<td class="color-header" id="c50">-->
+					<!--<div data-bind="ntsFormLabel: { constraint: 'ObstacleName', inline: true }">#{i18n.getText('KAF022_364')}</div>-->
+				<!--</td>-->
+				<!--<td >-->
+					<!--<div class="control-group valign-center">-->
+						<!--<input id="c51" data-bind="ntsTextEditor: {-->
+									<!--name: '#[KAF022_177]',-->
+									<!--value: texteditorC51,-->
+									<!--constraint: 'ObstacleName',-->
+									<!--required: false,-->
+									<!--enable: true,-->
+									<!--readonly: false-->
+								<!--}" />-->
+					<!--</div>-->
+				<!--</td>-->
+			<!--</tr>-->
+		</tbody>
+	</table>
+
+    <table id="fixed-table-c4">
+        <colgroup>
+            <col width="270px"/>
+            <col width="650px"/>
+        </colgroup>
+        <thead>
+			<tr>
+				<th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_693')}</th>
+			</tr>
+        </thead>
+        <tbody>
+			<tr class="inline-radio">
+				<td class="color-header">#{i18n.getText('KAF022_728')}</td>
+				<td class="two-radio">
+					<div data-bind="ntsRadioBoxGroup: {
+								options: itemListCC1,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: selectedIdCC1,
+								enable: true}">
+					</div>
+				</td>
+			</tr>
+        </tbody>
+    </table>
+</ui:composition>

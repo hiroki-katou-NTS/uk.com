@@ -1,0 +1,22 @@
+.contents-area {
+    padding: 30px;
+}
+
+.color-header {
+    background-color: #CFF1A5;
+    white-space: normal !important;
+    padding-left: 10px !important;
+}
+
+td .nts-editor-wrapped.ntsControl {
+    display: flex;
+}
+
+th.ui-widget-header .form-label {
+    border: none;
+    padding: 0;
+}
+
+#tabpanel-wkp .ntsRadioBox {
+    display: block;
+}
