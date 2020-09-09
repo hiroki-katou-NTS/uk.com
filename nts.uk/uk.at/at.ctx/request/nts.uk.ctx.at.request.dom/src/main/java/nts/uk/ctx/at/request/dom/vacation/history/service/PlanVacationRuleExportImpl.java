@@ -175,7 +175,8 @@ public class PlanVacationRuleExportImpl implements PlanVacationRuleExport{
 		}
 		Closure closureInfor = optClosureInfor.get();
 		//当月の期間を算出する
-		DatePeriod currentDate = closureService.getClosurePeriod(closureInfor.getClosureId().value, closureInfor.getClosureMonth().getProcessingYm());
+		//DatePeriod currentDate = closureService.getClosurePeriod(closureInfor.getClosureId().value, closureInfor.getClosureMonth().getProcessingYm());
+		DatePeriod currentDate = null;
 		if(currentDate == null) {
 			return null;
 		}

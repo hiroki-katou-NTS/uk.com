@@ -377,7 +377,8 @@ public class CommonAlgorithmMobileImpl implements CommonAlgorithmMobile {
 			ApplicationUseSetting applicationUseSetting, ReceptionRestrictionSetting receptionRestrictionSetting,
 			Optional<OvertimeAppAtr> opOvertimeAppAtr) {
 		// 雇用に紐づく締めを取得する
-		int closureID = closureService.getClosureIDByEmploymentCD(employmentCD);
+		// int closureID = closureService.getClosureIDByEmploymentCD(employmentCD);
+		int closureID = 0;
 		// 申請締切設定を取得する
 		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureID);
 		// 事前申請がいつから受付可能か確認する

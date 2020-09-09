@@ -212,8 +212,8 @@ public class HolidayShipmentScreenAFinder {
 		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 		setWorkTimeInfo(result, wkTimeCD, wkTypeCD, companyID);
 		//[No.506]振休残数を取得する
-		double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today()).getRemainDays();
-		result.setAbsRecMng(absRecMng);
+//		double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today()).getRemainDays();
+//		result.setAbsRecMng(absRecMng);
 		
 		return result;
 	}
@@ -908,8 +908,8 @@ public class HolidayShipmentScreenAFinder {
 		DisplayInformationApplication result = new DisplayInformationApplication();
 		
 		//社員の労働条件を取得する(Lấy điều kiện lao động của employee)
-		Optional<WorkingConditionItem> workingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
-		
+		// Optional<WorkingConditionItem> workingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
+		Optional<WorkingConditionItem> workingConditionItem = null;
 		if(workingConditionItem.isPresent()) {
 			result.setSelectionWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));
 		}else {

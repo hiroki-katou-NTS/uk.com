@@ -79,32 +79,32 @@ public class ConvertTimeRecordApplicationService {
 
 		// 打刻申請
 		case STAMP:
-			if (canCreateData(require, ((AppStamp) object).getApplication_New())) {
-				return Optional.of(AtomTask.of(() -> {
-					require.insert((AppStamp) object);
-				}));
-			}
+//			if (canCreateData(require, ((AppStamp) object).getApplication_New())) {
+//				return Optional.of(AtomTask.of(() -> {
+//					require.insert((AppStamp) object);
+//				}));
+//			}
 			// AppStamp
 			return Optional.empty();
 
 		// 残業申請
 		case OVERTIME:
 			// AppOverTime
-			if (canCreateData(require, ((AppOverTime) object).getApplication())) {
-				return Optional.of(AtomTask.of(() -> {
-					require.insert((AppOverTime) object);
-				}));
-			}
+//			if (canCreateData(require, ((AppOverTime) object).getApplication())) {
+//				return Optional.of(AtomTask.of(() -> {
+//					require.insert((AppOverTime) object);
+//				}));
+//			}
 			return Optional.empty();
 
 		// 休暇申請
 		case VACATION:
 			// AppAbsence
-			if (canCreateData(require, ((AppAbsence) object).getApplication())) {
-				return Optional.of(AtomTask.of(() -> {
-					require.insert((AppAbsence) object);
-				}));
-			}
+//			if (canCreateData(require, ((AppAbsence) object).getApplication())) {
+//				return Optional.of(AtomTask.of(() -> {
+//					require.insert((AppAbsence) object);
+//				}));
+//			}
 			return Optional.empty();
 
 		// 勤務変更申請
@@ -121,21 +121,21 @@ public class ConvertTimeRecordApplicationService {
 		// 休日出勤時間申請
 		case WORK_HOLIDAY:
 			// AppHolidayWork
-			if (canCreateData(require, ((AppHolidayWork) object).getApplication())) {
-				return Optional.of(AtomTask.of(() -> {
-					require.insert((AppHolidayWork) object);
-				}));
-			}
+//			if (canCreateData(require, ((AppHolidayWork) object).getApplication())) {
+//				return Optional.of(AtomTask.of(() -> {
+//					require.insert((AppHolidayWork) object);
+//				}));
+//			}
 			return Optional.empty();
 
 		// 遅刻早退取消申請
 		case LATE:
 			// LateOrLeaveEarly
-			if (canCreateData(require, ((LateOrLeaveEarly) object).getApplication())) {
-				return Optional.of(AtomTask.of(() -> {
-					require.insert((LateOrLeaveEarly) object);
-				}));
-			}
+//			if (canCreateData(require, ((LateOrLeaveEarly) object).getApplication())) {
+//				return Optional.of(AtomTask.of(() -> {
+//					require.insert((LateOrLeaveEarly) object);
+//				}));
+//			}
 			return Optional.empty();
 
 		// 時間年休申請

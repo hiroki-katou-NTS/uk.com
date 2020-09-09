@@ -1233,7 +1233,8 @@ public class RecordDomRequireService {
 		@Override
 		public List<AppRemainCreateInfor> appRemainCreateInfor(CacheCarrier cacheCarrier, String cid, String sid,
 				DatePeriod dateData) {
-			return remainCreateInforByApplicationData.lstRemainDataFromApp(cacheCarrier, cid, sid, dateData);
+			// return remainCreateInforByApplicationData.lstRemainDataFromApp(cacheCarrier, cid, sid, dateData);
+			return null;
 		}
 
 		@Override

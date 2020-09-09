@@ -256,7 +256,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				opOvertimeAppAtr,
 				opReceptionRestrictionSetting.map(x -> x.getOtAppBeforeAccepRestric().orElse(null)).orElse(null));
 		// 雇用に紐づく締めを取得する
-		int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
+		// int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
+		int closureID = 0;
 		// 申請締切設定を取得する
 		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureID);
 		// 取得したした情報をOUTPUT「申請表示情報(基準日関係あり)」にセットする
@@ -444,28 +445,28 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			return;
 		}
 		// 法定区分のチェック
-		HolidayAtrOutput holidayAtrOutput = judgmentOneDayHoliday.checkHolidayAtr(
-				companyID, 
-				actualContentDisplayLst.stream().findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
-				workTypeLst.get(1));
-		if(!holidayAtrOutput.isCheckResult()) {
-			String msgParam = Strings.EMPTY;
-			switch (holidayAtrOutput.getOpActualHolidayAtr().get()) {
-			case STATUTORY_HOLIDAYS:
-				msgParam = "法定内";
-				break;
-			case NON_STATUTORY_HOLIDAYS:
-				msgParam = "法定外";
-				break;
-			case PUBLIC_HOLIDAY:
-				msgParam = "法定外(祝日)";
-				break;
-			default:
-				break;
-			}
-			// エラーメッセージ(#Msg_702#)を表示する
-			throw new BusinessException("Msg_702", employeeInfo.getBussinessName(), dateLst.get(0).toString(), msgParam, dateLst.get(1).toString());
-		}
+//		HolidayAtrOutput holidayAtrOutput = judgmentOneDayHoliday.checkHolidayAtr(
+//				companyID, 
+//				actualContentDisplayLst.stream().findFirst().map(x -> x.getOpAchievementDetail().map(y -> y.getWorkTypeCD()).orElse(null)).orElse(null), 
+//				workTypeLst.get(1));
+//		if(!holidayAtrOutput.isCheckResult()) {
+//			String msgParam = Strings.EMPTY;
+//			switch (holidayAtrOutput.getOpActualHolidayAtr().get()) {
+//			case STATUTORY_HOLIDAYS:
+//				msgParam = "法定内";
+//				break;
+//			case NON_STATUTORY_HOLIDAYS:
+//				msgParam = "法定外";
+//				break;
+//			case PUBLIC_HOLIDAY:
+//				msgParam = "法定外(祝日)";
+//				break;
+//			default:
+//				break;
+//			}
+//			// エラーメッセージ(#Msg_702#)を表示する
+//			throw new BusinessException("Msg_702", employeeInfo.getBussinessName(), dateLst.get(0).toString(), msgParam, dateLst.get(1).toString());
+//		}
 		
 	}
 
@@ -500,7 +501,8 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// 社員の労働条件を取得する(get điiều kiện lao đọng của employee)
 		GeneralDate paramDate = date == null ? GeneralDate.today() : date;
-		Optional<WorkingConditionItem> opWorkingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeID, paramDate);
+		// Optional<WorkingConditionItem> opWorkingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeID, paramDate);
+		Optional<WorkingConditionItem> opWorkingConditionItem = Optional.empty();
 		String processWorkType = null;
 		String processWorkTime = null; 
 		if(opWorkingConditionItem.isPresent()) {

@@ -885,4 +885,44 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("workTypeCodes", workTypeCodes)
 				.getList(x -> toDomain(x));
 	}
+
+	private static final String SELECT_ALL_FOR_KAF008;
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_FROM_WORKTYPE);
+		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
+		builder.append(" AND c.deprecateAtr = :deprecateAtr");
+		builder.append(" AND c.worktypeAtr = :worktypeAtr");
+		builder.append(" AND c.oneDayAtr IN :hdType");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		SELECT_ALL_FOR_KAF008 = builder.toString();
+	}
+
+	public List<WorkType> findForAppKAF008(String companyId, int deprecateAtr, int worktypeAtr, List<Integer> hdType){
+		return this.queryProxy().query(SELECT_ALL_FOR_KAF008, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("deprecateAtr", deprecateAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.setParameter("hdType", hdType)
+				.getList(x -> toDomain(x));
+	}
+
+	private static final String SELECT_BY_DEPRECATE_AND_WORK_ATR;
+	static {
+		StringBuilder builder = new StringBuilder();
+		builder.append(SELECT_FROM_WORKTYPE);
+		builder.append(" WHERE c.kshmtWorkTypePK.companyId = :companyId");
+		builder.append(" AND c.deprecateAtr = :deprecateAtr");
+		builder.append(" AND c.worktypeAtr = :worktypeAtr");
+		builder.append(" ORDER BY c.kshmtWorkTypePK.workTypeCode ASC");
+		SELECT_BY_DEPRECATE_AND_WORK_ATR = builder.toString();
+	}
+
+	public List<WorkType> findByDepreacateAtrAndWorkTypeAtr(String companyId, int deprecateAtr, int worktypeAtr) {
+		return this.queryProxy().query(SELECT_BY_DEPRECATE_AND_WORK_ATR, KshmtWorkType.class)
+				.setParameter("companyId", companyId)
+				.setParameter("deprecateAtr", deprecateAtr)
+				.setParameter("worktypeAtr", worktypeAtr)
+				.getList(x -> toDomain(x));
+	};
 }

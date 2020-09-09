@@ -16,7 +16,7 @@ public class ShortWorkTime {
 	/**
 	 * 短時間勤務枠NO
 	 */
-	private ShortWorkTimeFrameNo shortWorkTimeFrameNo;
+	private ShortWorkTimFrameNo shortWorkTimeFrameNo;
 	
 	/**
 	 * 終了
