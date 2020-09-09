@@ -440,7 +440,10 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		// 最新の締め終了日翌日を取得する
 		Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
 		if (sttMng.isPresent()){
-			closureStart = sttMng.get().getPeriod().end().addDays(1);
+			closureStart = sttMng.get().getPeriod().end();
+			if (closureStart.before(GeneralDate.max())){
+				closureStart = closureStart.addDays(1);
+			}
 			closureStartOpt = Optional.of(closureStart);
 		}
 		else {
@@ -856,6 +859,7 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		
 		List<AnnualLeaveRemainingHistory> annualLeaveRemainingHistory(String sid, YearMonth ym);
 
+		/** 締め状態管理 */
 		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 
 		Optional<AnnualLeaveMaxData> annualLeaveMaxData(String employeeId);

@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.Specia
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveInfo;
 import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveLapsedWork;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employee.AffCompanyHistSharedImport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
@@ -360,14 +361,18 @@ public class SpecialLeaveManagementService {
 ////		if (!noCheckStartDate){
 		
 		boolean isAfterClosureStart = false;
-			
+		Optional<GeneralDate> closureStartOpt = Optional.empty();
+
 		// 休暇残数を計算する締め開始日を取得する
 		GeneralDate closureStart = null;	// 締め開始日
 		{
 			// 最新の締め終了日翌日を取得する
 			Optional<ClosureStatusManagement> sttMng = require.latestClosureStatusManagement(employeeId);
 			if (sttMng.isPresent()){
-				closureStart = sttMng.get().getPeriod().end().addDays(1);
+				closureStart = sttMng.get().getPeriod().end();
+				if (closureStart.before(GeneralDate.max())){
+					closureStart = closureStart.addDays(1);
+				}
 				closureStartOpt = Optional.of(closureStart);
 			}
 			else {
@@ -377,6 +382,13 @@ public class SpecialLeaveManagementService {
 				if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
 			}
 		}
+		
+		
+		
+		
+		
+		
+		
 		
 		// 取得した締め開始日と「集計開始日」を比較
 		if (closureStart != null){
@@ -488,6 +500,7 @@ public class SpecialLeaveManagementService {
 			val nextDayOfDeadLine = deadline;
 			if (deadline.before(GeneralDate.max())){
 				nextDayOfDeadLine = deadline.addDays(1);
+				
 			}
 			
 			
@@ -1881,6 +1894,8 @@ public class SpecialLeaveManagementService {
 		/** 所属会社履歴 */
 		List<AffCompanyHistImport> listAffCompanyHistImport(List listAppId, DatePeriod period);
 		
+		/** 締め状態管理 */
+		Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId);
 	}
 
 	public static RequireM5 createRequireM5(SpecialLeaveGrantRepository specialLeaveGrantRepo,
@@ -1909,6 +1924,7 @@ public class SpecialLeaveManagementService {
 		protected InterimRemainRepository interimRemainRepo;
 		protected SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
 		protected SyCompanyRecordAdapter syCompanyRecordAdapter;
+		protected ClosureStatusManagementRepository closureStatusManagementRepo;
 		
 		/** 特別休暇付与残数データ */
 		@Override
@@ -2001,9 +2017,16 @@ public class SpecialLeaveManagementService {
 		}
 		
 		/** 所属会社履歴 */
+		@Override
 		public List<AffCompanyHistImport> listAffCompanyHistImport(
 				List sids, DatePeriod period){
 			this.syCompanyRecordAdapter.getAffCompanyHistByEmployee(new ArrayList<>(sids), period);
+		}
+
+		/** 締め状態管理 */
+		@Override
+		public Optional<ClosureStatusManagement> latestClosureStatusManagement(String employeeId) {
+			return closureStatusManagementRepo.getLatestByEmpId(employeeId);
 		}
 		
 	}

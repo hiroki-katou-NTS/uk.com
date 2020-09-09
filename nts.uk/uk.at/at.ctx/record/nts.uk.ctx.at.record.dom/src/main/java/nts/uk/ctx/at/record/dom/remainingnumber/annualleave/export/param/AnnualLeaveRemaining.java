@@ -210,6 +210,5 @@ public class AnnualLeaveRemaining implements Cloneable {
 			annualLeaveRemainingNumber.setTotalRemainingTime(Optional.of(new AnnualLeaveRemainingTime(0)));
 		}
 	}
-	
-	
+
 }
