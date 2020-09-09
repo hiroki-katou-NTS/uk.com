@@ -505,6 +505,7 @@ module nts.uk.at.view.ksu001.u {
                     self.isBtnClick(true);  
                     self.yearMonthPicked(parseInt(dateClickSplit[0] + dateClickSplit[1]));  
                     self.isBtnClick(false); 
+                    $('#prev-btn').blur();
                 }        
             });
         }
