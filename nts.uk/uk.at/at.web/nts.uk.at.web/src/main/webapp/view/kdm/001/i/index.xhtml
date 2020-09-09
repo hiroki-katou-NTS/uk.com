@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 535, height: 650 };</script>
+			<script>var dialogSize = { width: 535, height: 700 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.i.vm.js" />
@@ -130,7 +130,7 @@
 						data-bind="ntsCheckBox: { checked: checkedSplit, enable: checkedSubHoliday, text: '#{i18n.getText('KDM001_79')}' }"></div>
 					<div class="down-s flex valign-center" style="margin-left: 35px;">
 						<!-- I12_1 年月日 -->
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_80')}</div>
+						<div class="sub-label-title" data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_80')}</div>
 						<!-- I12_2 年月日 -->
 						<!-- Datepicker -->
 						<div id="I12_2"
@@ -155,6 +155,14 @@
 								{ prop: 'name', length: 5 },
 							]}">
 						</div>
+					</div>
+					<div class="down-s flex valign-center" style="margin-left: 35px;">
+						<!-- I12_5 年月日 -->
+						<div id="I12_5" class="sub-label-title" data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_158')}</div>
+						<!-- I12_6 年月日 -->
+						<button id="I12_6" tabindex="14" data-bind="click: openKDL036">#{i18n.getText('KDM001_159')}</button>
+						<!-- I12_7 -->
+						<span id="I12_7" class="label margin-left-15" data-bind="text: baseDate"></span>
 					</div>
 					<!-- I13 残数 -->
 					<div class="label">#{i18n.getText('KDM001_84')}</div>

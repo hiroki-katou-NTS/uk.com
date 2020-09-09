@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 535, height: 700 };</script>
+			<script>var dialogSize = { width: 535, height: 770 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../share/model.js" />
 			<com:scriptfile path="kdm001.d.vm.js" />
@@ -139,6 +139,7 @@
 					selectFirstIfNull: true,
 					required: pause,
 					columns: [
+					
 						{ prop: 'name', length: 9 },
 					]}">
 					</div>
@@ -149,13 +150,13 @@
 						data-bind="ntsCheckBox: { checked: checkedSplit, enable: enableSplit, text: '#{i18n.getText('KDM001_79')}' }"></div>
 					<div class="down-s flex valign-center" style="margin-left: 35px;">
 						<!-- D12_1 年月日 -->
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_80')}</div>
+						<div class="sub-label-title" data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_80')}</div>
 						<!-- D12_2 年月日 -->
 						<!-- Datepicker -->
-						<div id="D12_2"
+						<div id="D12_2" 
 							data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_81')}',value: holidayDate,required: checkedSplit,dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable}"></div>
 						<!-- D12_3 代休日数 -->
-						<span class="label" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_82')}</span>
+						<span class="label margin-left-15" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_82')}</span>
 						<!-- D12_4 代休日数 -->
 						<!-- Combobox -->
 						<div id="D12_4"
@@ -174,6 +175,14 @@
 								{ prop: 'name', length: 9 },
 							]}">
 						</div>
+					</div>
+					<div class="down-s flex valign-center" style="margin-left: 35px;">
+						<!-- D16_1 -->
+						<div id="D16_1" class="sub-label-title" data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_158')}</div>
+						<!-- D16_2 -->
+						<button id="D16_2" tabindex="14" data-bind="click: openKDL035">#{i18n.getText('KDM001_159')}</button>
+						<!-- D16_3 -->
+						<span id="D16_3" class="label margin-left-15" data-bind="text: baseDate"></span>
 					</div>
 					<!-- D13 残数 -->
 					<div class="label">#{i18n.getText('KDM001_84')}</div>

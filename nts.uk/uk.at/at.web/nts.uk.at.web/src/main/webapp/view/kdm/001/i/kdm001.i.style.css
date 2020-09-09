@@ -34,6 +34,10 @@
 	width: 70px;
 }
 
+.sub-label-title {
+	width: 100px;
+}
+
 .left-s {
 	margin-left: 5px;
 }
@@ -49,4 +53,8 @@
 .nts-datepicker-wrapper .ntsDatepicker {
 	min-width: 110px;
 	width: 110px;
+}
+
+.margin-left-15 {
+	margin-left: 15px;
 }

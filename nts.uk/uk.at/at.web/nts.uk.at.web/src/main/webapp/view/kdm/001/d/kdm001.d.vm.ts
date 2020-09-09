@@ -31,6 +31,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         closureId: KnockoutObservable<number> = ko.observable(0);
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
         unit: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
+        baseDate: KnockoutObservable<string> = ko.observable('');
         constructor() {
             let self = this;
             self.initScreen();
@@ -227,6 +228,12 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                     this.submitForm();
                 }
             }
+        }
+
+        public openKDL035(){
+            // TODO open kdl 035
+            const vm = this;
+            vm.baseDate('Hello cac ban');
         }
     }
 }

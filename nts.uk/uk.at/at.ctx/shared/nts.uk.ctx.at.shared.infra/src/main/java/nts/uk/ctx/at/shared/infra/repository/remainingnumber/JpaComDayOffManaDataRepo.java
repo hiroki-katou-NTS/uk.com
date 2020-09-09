@@ -55,6 +55,8 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 			+ " AND a.sID = :employeeId"
 			+ " AND (a.dayOff < :dayOff OR a.dayOff is null)"
 			+ " AND (a.remainDays > 0 OR a.remainTimes > 0)";
+	private static final String GET_ALL_DATA = "SELECT a FROM KrcmtComDayoffMaData a";
+	
 	@Override
 	public List<CompensatoryDayOffManaData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcmtComDayoffMaData> list = this.queryProxy().query(GET_BY_SID_DATE, KrcmtComDayoffMaData.class)
@@ -387,7 +389,18 @@ public class JpaComDayOffManaDataRepo extends JpaRepository implements ComDayOff
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 		
+		
+	
 	}
+	
+	@Override
+	public List<CompensatoryDayOffManaData> getAllData() {
+		List<KrcmtComDayoffMaData> allData = this.queryProxy().query(GET_ALL_DATA, KrcmtComDayoffMaData.class)
+				.getList();
+
+		return allData.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository#getAllBySidWithReDay(java.lang.String, java.util.List)

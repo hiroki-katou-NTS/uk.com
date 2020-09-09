@@ -71,3 +71,10 @@
 	margin-left: 100px;
 	margin-bottom: 40px;
 }
+.nts-legendbutton-panel {
+	z-index: 1;
+}
+
+.margin-bottom-15{
+	margin-bottom: 15px;
+}

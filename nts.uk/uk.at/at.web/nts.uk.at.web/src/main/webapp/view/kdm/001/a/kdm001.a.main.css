@@ -75,3 +75,11 @@
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
+
+.nts-legendbutton-panel {
+	z-index: 1;
+}
+
+.margin-bottom-15{
+	margin-bottom: 15px;
+}

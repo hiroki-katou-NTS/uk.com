@@ -34,6 +34,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         numberSplitHoliday: KnockoutObservable<string> = ko.observable('');
         totalDay: KnockoutObservable<number> = ko.observable(null);
         unitDay: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
+        baseDate: KnockoutObservable<string> = ko.observable('');
+
         constructor() {
             let self = this;
             self.initScreen();
@@ -257,6 +259,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     //情報メッセージ　Msg_15 登録しました。を表示する。
                     dialog.info({ messageId: "Msg_15" }).then(() => {
                         setShared('KDM001_I_PARAMS_RES', { isChanged: true });
+                        setShared('KDM001_I_SUCCESS', {isSuccess: true})
                         nts.uk.ui.windows.close();
                     });
                 });
@@ -265,6 +268,12 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         }
         public closeDialog() {
             nts.uk.ui.windows.close();
+        }
+
+        public openKDL036() {
+            // TODO open kdl036
+            const vm = this;
+            vm.baseDate('2020/08/01');
         }
     }
 }

@@ -70,6 +70,9 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 			+ " AND (l.dayOff < :dayOff OR l.dayOff is null)"
 			+ " AND (l.unUsedDays > 0 OR l.unUsedTimes >0)"
 			+ " AND l.subHDAtr = :subHDAtr ";
+	
+	// 全ての状況
+	private static final String QUERY_ALL_DATA = "SELECT l FROM KrcmtLeaveManaData l";
  	@Override
 	public Integer getDeadlineCompensatoryLeaveCom(String sID, GeneralDate currentDay, int deadlMonth) {
 		return (Integer) this.getEntityManager()
@@ -467,6 +470,17 @@ public class JpaLeaveManaDataRepo extends JpaRepository implements LeaveManaData
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);
 		
+	}
+	
+	@Override
+	public List<LeaveManagementData> getAllData() {
+		List<KrcmtLeaveManaData> allData = this.queryProxy()
+				.query(QUERY_ALL_DATA, KrcmtLeaveManaData.class)
+				.getList();
+		
+		return allData.stream()
+				.map(i -> toDomain(i))
+				.collect(Collectors.toList());
 	}
 	
 }

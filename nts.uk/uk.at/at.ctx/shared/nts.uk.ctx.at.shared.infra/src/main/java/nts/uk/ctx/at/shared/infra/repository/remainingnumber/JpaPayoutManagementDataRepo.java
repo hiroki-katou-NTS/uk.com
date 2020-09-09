@@ -74,7 +74,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " AND p.unUsedDays > :unUsedDays"
 			+ " AND p.stateAtr = :stateAtr";
 
-
+	private static final String GET_ALL_DATA = "SELECT c FROM KrcmtPayoutManaData c";
 	@Override
 	public List<PayoutManagementData> getSidWithCodDate(String cid, String sid, int state, GeneralDate ymd) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_COND_DATE, KrcmtPayoutManaData.class)
@@ -392,5 +392,11 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		System.out.println(records);
 		
 	}
+	@Override
+	public List<PayoutManagementData> getAllData(){
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(GET_ALL_DATA, KrcmtPayoutManaData.class).getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
+	
 
 }

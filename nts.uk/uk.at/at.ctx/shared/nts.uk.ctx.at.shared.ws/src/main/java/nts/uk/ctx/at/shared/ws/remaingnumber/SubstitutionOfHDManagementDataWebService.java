@@ -40,7 +40,6 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	
 	@Inject
 	private SubstitutionManagementDataFinder subManagementFinder;
-
 	@POST
 	@Path("update")
 	public List<String> update(UpdateSubstitutionOfHDManaDataCommand command){
@@ -90,4 +89,6 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	public ExtraHolidayManagementDataDto getExtraHolidayData(SubDataSearchConditionDto dto){
 		return subManagementFinder.getExtraHolidayManagementData(dto);
 	}
+	
+	
 }

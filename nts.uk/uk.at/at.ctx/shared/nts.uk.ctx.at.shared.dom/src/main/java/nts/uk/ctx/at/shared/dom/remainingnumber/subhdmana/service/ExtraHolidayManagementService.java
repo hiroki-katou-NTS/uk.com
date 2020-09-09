@@ -59,7 +59,7 @@ public class ExtraHolidayManagementService {
 
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
-
+	
 	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId,
 			GeneralDate startDate, GeneralDate endDate) {
 		String cid = AppContexts.user().companyId();
@@ -71,12 +71,17 @@ public class ExtraHolidayManagementService {
 		CompensatoryLeaveEmSetting compenLeaveEmpSetting = null;
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = null;
 		GeneralDate baseDate = GeneralDate.today();
+		System.out.println(searchMode);
+		
+		// 全ての状況
 		if (searchMode == 0) {
+			
 			listLeaveData = leaveManaDataRepository.getBySidNotUnUsed(cid, employeeId);
 			listCompensatoryData = comDayOffManaDataRepository.getBySidWithReDay(cid, employeeId);
-		} else {
-			listLeaveData = leaveManaDataRepository.getByDateCondition(cid, employeeId, startDate, endDate);
-			listCompensatoryData = comDayOffManaDataRepository.getByDateCondition(cid, employeeId, startDate, endDate);
+		} else if (searchMode == 1){
+			
+			listLeaveData = leaveManaDataRepository.getAllData();
+			listCompensatoryData = comDayOffManaDataRepository.getAllData();
 		}
 		if (!listLeaveData.isEmpty()) {
 			List<String> listLeaveID = listLeaveData.stream().map(x -> {

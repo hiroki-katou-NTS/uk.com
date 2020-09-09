@@ -62,6 +62,9 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			+ " AND s.sID = :sid"
 			+ " AND (s.dayOff < :dayOff OR s.dayOff is null)"
 			+ " AND s.remainDays > :remainDays";
+	
+	private static final String QUERY_ALL = "SELECT u FROM KrcmtSubOfHDManaData u ";
+	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
 		List<KrcmtSubOfHDManaData> list = this.queryProxy().query(QUERY_BYSID_DATE, KrcmtSubOfHDManaData.class)
@@ -335,6 +338,13 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 
 		int records = this.getEntityManager().createNativeQuery(sb.toString()).executeUpdate();
 		System.out.println(records);		
+	}
+
+
+	@Override
+	public List<SubstitutionOfHDManagementData> getAllData() {
+		List<KrcmtSubOfHDManaData> listDataResult = this.queryProxy().query(QUERY_ALL, KrcmtSubOfHDManaData.class).getList();
+		return listDataResult.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 
 

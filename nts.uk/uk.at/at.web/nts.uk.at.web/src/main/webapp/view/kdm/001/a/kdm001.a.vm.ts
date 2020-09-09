@@ -1,3 +1,5 @@
+/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+
 module nts.uk.at.view.kdm001.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
@@ -5,21 +7,25 @@ module nts.uk.at.view.kdm001.a.viewmodel {
     import getText = nts.uk.resource.getText;
     import modal = nts.uk.ui.windows.sub.modal;
     import block = nts.uk.ui.block;
+
     export class ScreenModel {
         closureID: string;
         selectedEmployeeObject: any;
-        periodOptionItem: KnockoutObservableArray<ItemModel>;
-        selectedPeriodItem: KnockoutObservable<number>;
-        dateValue: KnockoutObservable<any>;
-        startDateString: KnockoutObservable<string>;
-        endDateString: KnockoutObservable<string>;
+        periodOptionItem: KnockoutObservableArray<ItemModel> = ko.observableArray([
+            new ItemModel(0, getText("KDM001_4")),
+            new ItemModel(1, getText("KDM001_152"))
+        ]);
+        selectedPeriodItem: KnockoutObservable<number> = ko.observable(0);
+        dateValue: KnockoutObservable<any> = ko.observable({});
+        startDateString: KnockoutObservable<string> = ko.observable("");
+        endDateString: KnockoutObservable<string> = ko.observable("");
         dispTotalRemain: KnockoutObservable<string> = ko.observable(null);
         expirationDate: KnockoutObservable<string> = ko.observable(null);
         newDataDisable: KnockoutObservable<boolean> = ko.observable(false);
         //_____CCG001________
         ccgcomponent: GroupOption;
-        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
-        showinfoSelectedEmployee: KnockoutObservable<boolean>;
+        selectedEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
+        showinfoSelectedEmployee: KnockoutObservable<boolean> = ko.observable(false);
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
         //___________KCP009______________
         employeeInputList: KnockoutObservableArray<EmployeeKcp009> = ko.observableArray([]);
@@ -29,35 +35,20 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string> = ko.observable(null);
         tabindex: number = -1;
-        compositePayOutSubMngData: KnockoutObservableArray<CompositePayOutSubMngData>;
+        compositePayOutSubMngData: KnockoutObservableArray<CompositePayOutSubMngData> = ko.observableArray([]);
+        /** A4_3  凡例 */
+        legendOptions: any = {
+            // name: '#[KDM001_153]',
+            items: [
+                { labelText: nts.uk.resource.getText("KDM001_154") },
+                { labelText: nts.uk.resource.getText("KDM001_155") },
+                { labelText: nts.uk.resource.getText("KDM001_156") }
+            ]
+        };
 
         constructor() {
-            let self = this;
-
-            self.compositePayOutSubMngData = ko.observableArray([]);
-            self.periodOptionItem = ko.observableArray([
-                new ItemModel(0, getText("KDM001_4")),
-                new ItemModel(1, getText("KDM001_5"))
-            ]);
-            self.selectedPeriodItem = ko.observable(0);
-            self.startDateString = ko.observable("");
-            self.endDateString = ko.observable("");
-            self.dateValue = ko.observable({});
-
-            self.startDateString.subscribe(function(value) {
-                self.dateValue().startDate = value;
-                self.dateValue.valueHasMutated();
-            });
-
-            self.endDateString.subscribe(function(value) {
-                self.dateValue().endDate = value;
-                self.dateValue.valueHasMutated();
-            });
-
-            //_____CCG001________
-            self.selectedEmployee = ko.observableArray([]);
-            self.showinfoSelectedEmployee = ko.observable(false);
-            self.ccgcomponent = {
+            const vm = this;
+            vm.ccgcomponent = {
                 /** Common properties */
                 systemType: 2,//就業　sửa theo mã bug 102240
                 showEmployeeSelection: true,
@@ -92,36 +83,38 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 showWorktype: true,
                 isMutipleCheck: true,
 
+
                 /**
                 * Self-defined function: Return data from CCG001
                 * @param: data: the data return from CCG001
                 */
-                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                    self.showinfoSelectedEmployee(true);
-                    self.selectedEmployee(data.listEmployee);
-                    self.convertEmployeeCcg01ToKcp009(data.listEmployee);
+                returnDataFromCcg001: function (data: Ccg001ReturnedData) {
+                    vm.showinfoSelectedEmployee(true);
+                    vm.selectedEmployee(data.listEmployee);
+                    vm.convertEmployeeCcg01ToKcp009(data.listEmployee);
                 }
             }
+            window.onresize = function (event) {
+                $("#compositePayOutSubMngDataGrid_scrollContainer").height(window.innerHeight - 513);
+                $("#compositePayOutSubMngDataGrid_displayContainer").height(window.innerHeight - 513);
+                $("#compositePayOutSubMngDataGrid_container").height(window.innerHeight - 400);
+                $("#substituteDataGrid_scrollContainer").height(window.innerHeight - 513);
+                $("#substituteDataGrid_displayContainer").height(window.innerHeight - 513);
+                $("#substituteDataGrid_container").height(window.innerHeight - 400);
+            };
+        }
 
-            self.selectedItem.subscribe(x => {
-                self.updateDataList(false);
-            });
-
-            self.selectedPeriodItem.subscribe(x => {
-                if (x == 0) {
-                    nts.uk.ui.errors.clearAll();
-                }
-            });
-
+        mounted() {
+            const vm = this;
             $("#compositePayOutSubMngDataGrid").ntsGrid({
+                // width: '800px',
                 height: window.innerHeight - 400 + 'px',
-                name: 'Grid name',
-                dataSource: self.compositePayOutSubMngData(),
+                dataSource: vm.compositePayOutSubMngData(),
                 primaryKey: 'id',
                 virtualization: true,
-                hidePrimaryKey: true,
-                rowVirtualization: true,
                 virtualizationMode: 'continuous',
+                // hidePrimaryKey: true,
+                rowVirtualization: true,
                 columns: [
                     { headerText: 'ID', key: 'id', dataType: 'string', width: '0px', hidden: true },
                     { headerText: 'linked', key: 'isLinked', dataType: 'string', width: '0px', hidden: true },
@@ -136,68 +129,132 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     { headerText: '', key: 'unUsedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'expriedDaysInGridText', dataType: 'string', width: '0px', hidden: true },
                     { headerText: '', key: 'dataType', dataType: 'string', width: '0px', hidden: true },
-                    { headerText: getText('KDM001_8'), template: '<div style="float:right"> ${dayoffDatePyout} </div>', key: 'dayoffDatePyout', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_9'), template: '<div style="float:right"> ${occurredDays}${occurredDaysText} </div>', key: 'occurredDays', dataType: 'string', width: '86px' },
-                    { headerText: getText('KDM001_124'), key: 'payoutTied', dataType: 'string', width: '86px' },
-                    { headerText: getText('KDM001_10'), template: '<div style="float:right"> ${dayoffDateSub} </div>', key: 'dayoffDateSub', dataType: 'string', width: '120px' },
-                    { headerText: getText('KDM001_11'), template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', key: 'requiredDays', dataType: 'string', width: '86px' },
-                    { headerText: getText('KDM001_124'), key: 'subTied', dataType: 'string', width: '86px' },
-                    { headerText: getText('KDM001_12'), template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', key: 'unUsedDaysInGrid', dataType: 'string', width: '86px' },
-                    { headerText: getText('KDM001_13'), template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', key: 'expriedDaysInGrid', dataType: 'string', width: '86px' },
-                    { headerText: getText('KDM001_14'), formatter: getLawAtr, key: 'lawAtr', dataType: 'string', width: '100px' },
-                    { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
-                    { headerText: '', key: 'edit', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
+                    { headerText: '', key: 'expiredDateText', dataType: 'string', width: '120px', hidden: true },
+                    {
+                        headerText: `${getText('KDM001_8')} ${getText('KDM001_157')}`,
+                        key: 'dayoffDatePyout',
+                        width: '200px',
+                        template: '<div style="float: right;"> ${dayoffDatePyout} ${expiredDateText}</div>', 
+                        dataType: 'string',
+                    },
+                    {
+                        headerText: getText('KDM001_9'),
+                        key: 'occurredDays',
+                        width: '86px',
+                        template: '<div style="float:right"> ${occurredDays} ${occurredDaysText} </div>',
+                        dataType: 'string',
+                    },
+                    {
+                        headerText: getText('KDM001_10'),
+                        key: 'dayoffDateSub',
+                        width: '120px',
+                        template: '<div style="float:right"> ${dayoffDateSub} </div>', 
+                        dataType: 'string',
+                    },
+                    { 
+                        headerText: getText('KDM001_11'), 
+                        key: 'requiredDays', 
+                        width: '86px',
+                        template: '<div style="float:right"> ${requiredDays}${requiredDaysText} </div>', 
+                        dataType: 'string', 
+                    },
+                    { 
+                        headerText: getText('KDM001_12'), 
+                        key: 'unUsedDaysInGrid', 
+                        width: '86px',
+                        template: '<div style="float:right"> ${unUsedDaysInGrid}${unUsedDaysInGridText} </div>', 
+                        dataType: 'string', 
+                    },
+                    { 
+                        headerText: getText('KDM001_13'), 
+                        key: 'expriedDaysInGrid', 
+                        width: '86px',
+                        template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', 
+                        dataType: 'string', 
+                    },
+                    { 
+                        headerText: getText('KDM001_14'), 
+                        key: 'lawAtr', 
+                        width: '100px',
+                        formatter: getLawAtr, 
+                        dataType: 'string', 
+                    },
+                    /** 
+                        * A4_2_8 紐付設定
+                        * { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },
+                    */
+                    // A4_2_9 削除        
+                    { headerText: '', key: 'delete', dataType: 'string', width: '55px', unbound: true, ntsControl: 'ButtonCorrection' }
                 ],
                 features: [
                     {
                         name: 'Paging',
                         type: "local",
-                        pageSize: 15,
-                        pageSizeList : [15, 50, 100]
+                        pageSize: 100,
+                        pageSizeList: [15, 50, 100]
                     },
-                    {
-                        name: "Resizing",
-                        columnSettings: [
-                            { columnKey: "id", allowResizing: false },
-                            { columnKey: "dayoffDatePyout", allowResizing: false },
-                            { columnKey: "occurredDays", allowResizing: false },
-                            { columnKey: "payoutTied", allowResizing: false },
-                            { columnKey: "dayoffDateSub", allowResizing: false },
-                            { columnKey: "requiredDays", allowResizing: false },
-                            { columnKey: "subTied", allowResizing: false },
-                            { columnKey: "unUsedDaysInGrid", allowResizing: false },
-                            { columnKey: "expriedDaysInGrid", allowResizing: false },
-                            { columnKey: "lawAtr", allowResizing: false },
-                            { columnKey: "link", allowResizing: false },
-                            { columnKey: "edit", allowResizing: false },
-                        ],
-                    }
                 ],
                 ntsControls: [
-                    { name: 'ButtonPegSetting', text: getText('KDM001_22'), click: function(value) { self.pegSetting(value) }, controlType: 'Button' },
-                    { name: 'ButtonCorrection', text: getText('KDM001_23'), click: function(value) { self.doCorrection(value) }, controlType: 'Button' }
+                    { name: 'ButtonCorrection', text: getText('KDM001_100'), click: function (value) { vm.removeData(value) }, controlType: 'Button' }
                 ]
             });
-            
-            window.onresize = function(event) {
-            	$("#compositePayOutSubMngDataGrid_scrollContainer").height(window.innerHeight - 513);
-            	$("#compositePayOutSubMngDataGrid_displayContainer").height(window.innerHeight - 513);
-            	$("#compositePayOutSubMngDataGrid_container").height(window.innerHeight - 400);
-            	$("#substituteDataGrid_scrollContainer").height(window.innerHeight - 513);
-            	$("#substituteDataGrid_displayContainer").height(window.innerHeight - 513);
-            	$("#substituteDataGrid_container").height(window.innerHeight - 400);
-            	
-            };
+            vm.startDateString.subscribe(function (value) {
+                vm.dateValue().startDate = value;
+                vm.dateValue.valueHasMutated();
+            });
+            vm.endDateString.subscribe(function (value) {
+                vm.dateValue().endDate = value;
+                vm.dateValue.valueHasMutated();
+            });
+            vm.selectedItem.subscribe(x => {
+                vm.updateDataList(false);
+            });
+            vm.selectedPeriodItem.subscribe(period => {
+                if (period === 0) {
+                    nts.uk.ui.errors.clearAll();
+                    this.updateDataList(false);
+                } else {
+                    this.updateDataList(false);
+                }
+            });
+        }
+
+        // A4_2_9 削除
+        public removeData(value) {
+            block.invisible();
+            dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                console.log('id: '+value.id);
+                let self = this;
+                let data = {
+                    payoutId: value.id,
+                    employeeId: self.selectedEmployeeObject.employeeId,
+                    dayoffDate: moment.utc(value.dayoffDatePyout, 'YYYY/MM/DD').toISOString()
+                };
+
+                service.removePayout(data).done(() => {
+                    dialog.info({ messageId: "Msg_16" }).then(() => {
+                        nts.uk.ui.windows.close();
+                        self.updateDataList(false);
+                    });
+                }).fail(function (res) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
+                }).always(function () {
+                    block.clear();
+                });
+            }).then(() => {
+                block.clear();
+            });
         }
 
         openNewSubstituteData() {
             let self = this;
             setShared('KDM001_D_PARAMS', { selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
 
-            modal("/view/kdm/001/d/index.xhtml").onClosed(function() {
+            modal("/view/kdm/001/d/index.xhtml").onClosed(function () {
                 let params = getShared('KDM001_A_PARAMS');
 
                 if (params.isSuccess) {
+                    self.selectedPeriodItem(1);
                     self.updateDataList(false);
                 }
 
@@ -222,7 +279,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let self = this;
 
             self.updateDataList(true);
-            
+
             $('#compositePayOutSubMngDataGrid').focus();
         }
 
@@ -238,7 +295,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             }
 
             if (!nts.uk.ui.errors.hasError()) {
-                service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function(res: any) {
+                service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function (res: any) {
+                    console.log(res);
                     if (res.haveEmploymentCode && (res.closureID != null) && (res.closureID != "")) {
                         let arrayResponse = res.compositePayOutSubMngData;
                         let compositePayOutSubMngDataArray: Array<CompositePayOutSubMngData> = [];
@@ -261,7 +319,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         $("#compositePayOutSubMngDataGrid").igGrid("dataSourceObject", self.compositePayOutSubMngData()).igGrid("dataBind");
 
                         // disable edit button
-                        _.forEach(self.compositePayOutSubMngData(), function(value) {
+                        _.forEach(self.compositePayOutSubMngData(), function (value) {
                             let rowId = value.id;
 
                             if (value.isLinked) {
@@ -296,13 +354,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                             workplaceId: res.swkpHistImport.workplaceId, workplaceCode: res.swkpHistImport.workplaceCode, workplaceName: res.swkpHistImport.workplaceName
                         };
                     }
-                }).fail(function(res: any) {
+                }).fail(function (res: any) {
                     console.log(res);
                 });
 
                 $('#compositePayOutSubMngDataGrid').focus();
             } else {
-                service.getFurikyuMngDataExtraction(empId, startDate, endDate, false).done(function(res: any) {
+                service.getFurikyuMngDataExtraction(empId, startDate, endDate, false).done(function (res: any) {
                     if (!res.haveEmploymentCode || (res.closureID == null) || (res.closureID == "")) {
                         // update data to view
                         self.dispTotalRemain(0);
@@ -331,7 +389,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                             workplaceId: res.swkpHistImport.workplaceId, workplaceCode: res.swkpHistImport.workplaceCode, workplaceName: res.swkpHistImport.workplaceName
                         };
                     }
-                }).fail(function(res: any) {
+                }).fail(function (res: any) {
                     console.log(res);
                 });
             }
@@ -340,10 +398,11 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
+            self.mounted();
             block.invisible();
 
-            service.getInfoEmLogin().done(function(emp) {
-                service.getWpName().done(function(wp) {
+            service.getInfoEmLogin().done(function (emp) {
+                service.getWpName().done(function (wp) {
                     if (wp == null || wp.workplaceId == null || wp.workplaceId == "") {
                         dialog.alertError({ messageId: "Msg_504" }).then(() => {
                             nts.uk.request.jump("com", "/view/ccg/008/a/index.xhtml");
@@ -358,12 +417,12 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         self.initKCP009();
                         dfd.resolve();
                     }
-                }).fail(function(result) {
-                    dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });;
+                }).fail(function (result) {
+                    dialog.alertError(result.errorMessage).then(function () { nts.uk.ui.block.clear(); });;
                     dfd.reject();
                 });
-            }).fail(function(result) {
-                dialog.alertError(result.errorMessage).then(function() { nts.uk.ui.block.clear(); });;
+            }).fail(function (result) {
+                dialog.alertError(result.errorMessage).then(function () { nts.uk.ui.block.clear(); });;
                 dfd.reject();
             });
 
@@ -394,7 +453,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             } else {
                 let self = this;
                 self.employeeInputList([]);
-                _.each(dataList, function(item) {
+                _.each(dataList, function (item) {
                     self.employeeInputList.push(new EmployeeKcp009(item.employeeId, item.employeeCode, item.employeeName, item.workplaceName, ""));
                 });
                 $('#emp-componentA').ntsLoadListComponent(self.listComponentOption);
@@ -410,7 +469,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         }
 
         findIdSelected(dataList: Array<any>, selectedItem: string): any {
-            return _.find(dataList, function(obj) {
+            return _.find(dataList, function (obj) {
                 return obj.employeeId == selectedItem;
             })
         }
@@ -421,7 +480,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             if (value.dataType == 1) {
                 if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
-                modal("/view/kdm/001/f/index.xhtml").onClosed(function() {
+                modal("/view/kdm/001/f/index.xhtml").onClosed(function () {
                     let params = getShared('KDM001_A_PARAMS');
                     if (params.isSuccess) {
                         self.updateDataList(false);
@@ -430,7 +489,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             } else {
                 if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
                 setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
-                modal("/view/kdm/001/e/index.xhtml").onClosed(function() {
+                modal("/view/kdm/001/e/index.xhtml").onClosed(function () {
                     let params = getShared('KDM001_A_PARAMS');
                     if (params.isSuccess) {
                         self.updateDataList(false);
@@ -438,32 +497,34 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                 });
             }
         }
+        /** 
+         * A4_2_9 修正
+            doCorrection(value) {
+                let self = this;
+                let selectedRowData = value;
+                if (value.dataType == 0) {
+                    if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
+                    setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
+                    modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
+                        let params = getShared('KDM001_A_PARAMS');
 
-        doCorrection(value) {
-            let self = this;
-            let selectedRowData = value;
-            if (value.dataType == 0) {
-                if (value.dayoffDatePyout.length < 2) value.dayoffDatePyout = "";
-                setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
-                modal("/view/kdm/001/g/index.xhtml").onClosed(function() {
-                    let params = getShared('KDM001_A_PARAMS');
+                        if (params.isSuccess) {
+                            self.updateDataList(false);
+                        }
+                    });
+                } else {
+                    if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
+                    setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
+                    modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
+                        let params = getShared('KDM001_A_PARAMS');
 
-                    if (params.isSuccess) {
-                        self.updateDataList(false);
-                    }
-                });
-            } else {
-                if (value.dayoffDateSub.length < 2) value.dayoffDateSub = "";
-                setShared('KDM001_EFGH_PARAMS', { rowValue: value, selectedEmployee: self.selectedEmployeeObject, closureId: self.closureID });
-                modal("/view/kdm/001/h/index.xhtml").onClosed(function() {
-                    let params = getShared('KDM001_A_PARAMS');
-
-                    if (params.isSuccess) {
-                        self.updateDataList(false);
-                    }
-                });
+                        if (params.isSuccess) {
+                            self.updateDataList(false);
+                        }
+                    });
+                }
             }
-        }
+        */
 
         getExpirationTime(value) {
             if (value == 0) {
@@ -628,7 +689,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         requiredDays: string;
         remainDays: number;
         subTied: string;
-        
+
         //add to fill grid A4_2_5
         unUsedDaysInGrid: string;
 
@@ -643,7 +704,8 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         requiredDaysText: string;
         unUsedDaysInGridText: string;
         expriedDaysInGridText: string;
-        
+        expiredDateText: string;
+
         constructor(params) {
             this.payoutId = params.payoutId;
             if (params.payoutId) this.dataType = 0;
@@ -714,6 +776,16 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                     this.unUsedDaysInGridText = getText("KDM001_27");
                     this.unUsedDaysInGrid = (params.remainDays * (-1)).toFixed(1);
                 }
+            }
+
+            if (params.expiredDate === null) {
+                this.expiredDateText = '';
+            }
+            else if (new Date(params.expiredDate).getMonth() === new Date(params.dayoffDatePyout).getMonth() && new Date(params.expiredDate).getFullYear() === new Date(params.dayoffDatePyout).getFullYear()) {
+                this.expiredDateText = getText('KDM001_161', [params.expiredDate]);
+            }
+            else {
+                this.expiredDateText = getText('KDM001_162', [params.expiredDate]);
             }
 
             this.isLinked = (params.payoutTied || params.subTied) ? true : false;

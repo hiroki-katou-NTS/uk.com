@@ -95,4 +95,6 @@ public interface PayoutManagementDataRepository {
 	 * @return
 	 */
 	List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state);
+	
+	List<PayoutManagementData> getAllData();
 }

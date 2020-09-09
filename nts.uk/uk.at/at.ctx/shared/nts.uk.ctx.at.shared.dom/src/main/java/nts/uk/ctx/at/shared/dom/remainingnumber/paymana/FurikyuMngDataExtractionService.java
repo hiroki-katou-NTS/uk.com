@@ -59,10 +59,10 @@ public class FurikyuMngDataExtractionService {
 		String empCD = null;
 		boolean haveEmploymentCode = false;
 		
-		// select 過去の結果
+		// select 全ての状況
 		if(isPeriod) {
-			payoutManagementData = payoutManagementDataRepository.getBySidPeriodAndInSub(sid, startDate, endDate);
-			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidPeriodAndInPayout(sid, startDate, endDate);
+			payoutManagementData = payoutManagementDataRepository.getAllData();
+			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getAllData();
 		// select 現在の残数状況
 		} else {
 			payoutManagementData = payoutManagementDataRepository.getBySidStateAndInSub(sid);

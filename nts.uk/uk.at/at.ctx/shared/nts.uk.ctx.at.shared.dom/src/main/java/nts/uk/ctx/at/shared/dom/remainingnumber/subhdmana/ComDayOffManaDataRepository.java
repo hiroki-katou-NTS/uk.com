@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 
+import java.awt.Component;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -89,4 +90,6 @@ public interface ComDayOffManaDataRepository {
 	 * @return
 	 */
 	List<CompensatoryDayOffManaData> getBySidYmd(String cid, String sid, GeneralDate ymd);
+	// 全ての状況
+	List<CompensatoryDayOffManaData> getAllData();
 }

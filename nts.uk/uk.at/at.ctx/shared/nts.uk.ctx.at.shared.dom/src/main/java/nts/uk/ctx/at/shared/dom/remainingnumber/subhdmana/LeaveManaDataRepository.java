@@ -109,4 +109,7 @@ public interface LeaveManaDataRepository {
 	 * @return
 	 */
 	List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state);
+	
+	//全ての状況
+	List<LeaveManagementData> getAllData();
 }
