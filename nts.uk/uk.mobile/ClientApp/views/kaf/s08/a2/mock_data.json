@@ -1,37 +1,37 @@
 [
    {
       "date": "03/12",
-      "typeofwork":"PT",
-      "workinghours":"08:00",
-      "timetowork":120,
-      "leavetime":180
+      "wkTypeCd":"PT",
+      "wkTimeCd":"08:00",
+      "startWorkTime":120,
+      "endWorkTime":180
    },
    {
       "date":"03/12",
-      "typeofwork":"PT",
-      "workinghours":"09:00",
-      "timetowork":120,
-      "leavetime":180
+      "wkTypeCd":"PT",
+      "wkTimeCd":"09:00",
+      "startWorkTime":120,
+      "endWorkTime":180
    },
    {
       "date":"03/17",
-      "typeofwork":"FT",
+      "wkTypeCd":"FT",
       "workinghours":"10:00",
-      "timetowork":120,
-      "leavetime":180
+      "wkTimeCd":120,
+      "endWorkTime":180
    },
    {
       "date":"03/18",
-      "typeofwork":"FT",
+      "wkTypeCd":"FT",
       "workinghours":"11:00",
-      "timetowork":120,
-      "leavetime":180
+      "wkTimeCd":120,
+      "endWorkTime":180
    },
    {
       "date":"03/12",
-      "typeofwork":"PT",
+      "wkTypeCd":"PT",
       "workinghours":"16:00",
-      "timetowork":120,
-      "leavetime":180
+      "wkTimeCd":120,
+      "endWorkTime":180
    }
 ]

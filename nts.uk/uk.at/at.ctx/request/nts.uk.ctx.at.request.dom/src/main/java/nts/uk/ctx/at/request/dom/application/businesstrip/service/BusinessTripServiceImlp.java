@@ -10,6 +10,8 @@ import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.*;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeLeaveTime;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -84,6 +86,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
 
     @Inject
     private BasicScheduleService basicScheduleService;
+
+    @Inject
+    private AtEmployeeAdapter atEmployeeAdapter;
 
 
     /**
@@ -294,6 +299,77 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 }
                 break;
         }
+    }
+
+    /**
+     * アルゴリズム「出張申請勤務種類分類内容取得」を実行する
+     * @param workType
+     * @return
+     */
+    @Override
+    public boolean getBusinessTripClsContent(WorkType workType) {
+        Boolean result = true;
+        val workCls = workType.getDailyWork().getWorkTypeUnit();
+        List<WorkTypeClassification> workDays = Arrays.asList(
+                WorkTypeClassification.Attendance, // 出勤
+                WorkTypeClassification.AnnualHoliday, // 年休
+                WorkTypeClassification.YearlyReserved, // 積立年休
+                WorkTypeClassification.SpecialHoliday, // 特別年休
+                WorkTypeClassification.Absence, // 欠勤
+                WorkTypeClassification.SubstituteHoliday, // 代休
+                WorkTypeClassification.Pause, // 振休
+                WorkTypeClassification.TimeDigestVacation // 時間消化休暇
+        );
+        List<WorkTypeClassification> holidays = Arrays.asList(
+                WorkTypeClassification.Holiday, // 休日
+                WorkTypeClassification.HolidayWork, // 休日出勤
+                WorkTypeClassification.Shooting // 振出
+        );
+        switch (workCls) {
+            case OneDay:
+                WorkTypeClassification workTypeClassification = workType.getDailyWork().getOneDay();
+                if (workDays.contains(workTypeClassification)) {
+                    result = true;
+                }
+                if (holidays.contains(workTypeClassification)) {
+                    result = false;
+                }
+                break;
+            case MonringAndAfternoon:
+                WorkTypeClassification afternoonWork = workType.getDailyWork().getAfternoon();
+                WorkTypeClassification morningWork = workType.getDailyWork().getMorning();
+                if (workDays.contains(morningWork) && workDays.contains(afternoonWork)) {
+                    result = false;
+                }
+                if (holidays.contains(morningWork) && holidays.contains(afternoonWork)) {
+                    result = true;
+                }
+                break;
+        }
+        return result;
+    }
+
+    @Override
+    public void businessTripIndividualCheck(List<BusinessTripInfo> infos) {
+        String sid = AppContexts.user().employeeId();
+
+        // loop 年月日　in　期間
+        infos.stream().forEach(i -> {
+            String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
+            String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
+            // アルゴリズム「出張申請就業時間帯チェック」を実行する
+            this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
+
+            List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
+            // 申請の矛盾チェック
+//                this.commonAlgorithm.appConflictCheck(
+//                        cid,
+//                        employeeInfoImports.get(0),
+//                        lstDate,
+//                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+//                        output.getActualContentDisplay().get()
+//                );
+        });
     }
 
     /**

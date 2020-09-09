@@ -7,19 +7,13 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.workchange.AddAppWorkChangeCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.AppBusinessParam;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripFinder;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.ApproveTripRequestParam;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.DetailScreenInfo;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.StartScreenBDto;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileFinder;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripInfoOutputDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripOutputDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailScreenDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeFinder;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeOutputDto;
-import nts.uk.ctx.at.request.app.find.application.workchange.AppWorkChangeParam;
 
 
 @Path("at/request/application/businesstrip/mobile")
@@ -31,8 +25,6 @@ public class BusinessTripWebServiceSmartphone extends WebService {
 	@Inject
 	private BusinessTripFinder businessTripFinder;
 
-	@Inject
-	private BusinessTripMobileFinder businessTripMobileFinder;
 	
 	@Path("startMobile")
 	@POST
@@ -44,20 +36,20 @@ public class BusinessTripWebServiceSmartphone extends WebService {
 	@Path("startScreenB")
 	@POST
 	public DetailScreenDto startScreenB(StartScreenBDto param) {
-		return this.businessTripMobileFinder.startScreenB(param);
+		return this.businessTripFinder.startScreenB(param);
 	}
 
 	// B:出張の申請確認（スマホ）.申請を修正する
 	@POST
 	@Path("approveTripReq")
 	public DetailScreenInfo appoveTripReq(ApproveTripRequestParam param){
-		return this.businessTripMobileFinder.approveTripRequest(param);
+		return this.businessTripFinder.approveTripRequest(param);
 	}
 
 	// A:出張の申請（スマホ）.A2.申請内容を登録する
 	@POST
 	@Path("checkBeforeRegister")
 	public void checkBeforeRegister(DetailScreenDto param){
-		this.businessTripMobileFinder.checkBeforeRegisterMobile(param);
+		this.businessTripFinder.checkBeforeRegisterMobile(param);
 	}
 }

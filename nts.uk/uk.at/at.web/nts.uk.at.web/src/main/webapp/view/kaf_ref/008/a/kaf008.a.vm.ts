@@ -13,13 +13,14 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         application: KnockoutObservable<Application> = ko.observable(new Application(this.appType()));
         mode: number = 1;
 
-        businessTripContent: KnockoutObservable<BusinessTripContent> = ko.observable({
-            departureTime: null,
-            returnTime: null,
-            tripInfos: []
+        dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
+            businessTripContent: {
+                departureTime: ko.observable(null),
+                returnTime: ko.observable(null),
+                tripInfos: []
+            },
+            businessTripOutput: null
         });
-        businessTripOutput: KnockoutObservable<BusinessTripOutput> = ko.observable();
-        dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable(null);
 
         created(params: any) {
             const vm = this;
@@ -42,11 +43,9 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
                     if (result) {
                         if (businessTripInfoOutputDto) {
-                            vm.businessTripOutput(businessTripInfoOutputDto);
-                            vm.dataFetch({
-                                businessTripContent: ko.toJS(vm.businessTripContent),
-                                businessTripOutput: ko.toJS(vm.businessTripOutput)
-                            });
+                            let cloneData = _.clone(vm.dataFetch());
+                            cloneData.businessTripOutput = businessTripInfoOutputDto;
+                            vm.dataFetch(cloneData);
                         }
                     } else {
                         successData.confirmMsgOutputs.forEach(i => {
@@ -94,7 +93,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             const vm = this;
 
             let applicationDto = ko.toJS(vm.application);
-            let businessTripInfoOutputDto = ko.toJS(vm.businessTripOutput());
+            let businessTripInfoOutputDto = ko.toJS(vm.dataFetch().businessTripOutput);
             let command = {
                 businessTripInfoOutputDto, applicationDto
             };
@@ -109,7 +108,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             }).done((res: any) => {
                 if (res.result) {
                     let output = res.businessTripInfoOutputDto;
-                    vm.businessTripOutput(output);
 
                     let dataFetch = _.clone(vm.dataFetch());
                     dataFetch.businessTripOutput = output;
@@ -215,6 +213,14 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 }
                 vm.$dialog.error(param);
             }));
+        }
+
+        clearData() {
+            const vm = this;
+
+            vm.loadData();
+            vm.dataFetch().businessTripContent.departureTime(null);
+            vm.dataFetch().businessTripContent.returnTime(null);
         }
 
         focusDate() {
