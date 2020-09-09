@@ -111,33 +111,32 @@ public class WorkingConditionItemServiceImpl implements WorkingConditionItemServ
 		if (workingDayCategory == WorkingDayCategory.workingDay) {
 			Optional<WorkingConditionItem> optWorkingCondItem = this.repositoryWorkingConditionItem
 					.getBySidAndStandardDate(employeeId, baseDate);
-			if(!optWorkingCondItem.isPresent()) {
+
+			if (!optWorkingCondItem.isPresent()) {
 				return Optional.empty();
 			}
+			
 			// get Working Condition Item
 			WorkingConditionItem domain = optWorkingCondItem.get();
 			// ドメインモデル「個人勤務日区分別勤務」を取得する (Lấy 「個人勤務日区分別勤務」)
 			Optional<SingleDaySchedule> optpublicHoliday = domain.getWorkCategory().getPublicHolidayWork();
-			if(!optpublicHoliday.isPresent()) {
+			
+			if (!optpublicHoliday.isPresent()) {
 				return Optional.empty();
 			}
-			return Optional.of(new WorkInformation(
-					optpublicHoliday.get().getWorkTimeCode().isPresent()
-							? optpublicHoliday.get().getWorkTimeCode().get()
-							: null,
-					optpublicHoliday.get().getWorkTypeCode().isPresent()?optpublicHoliday.get().getWorkTypeCode().get():null)); 
-			
+
+			return optpublicHoliday.map(
+					opt -> new WorkInformation(opt.getWorkTypeCode().orElse(null), opt.getWorkTimeCode().orElse(null)));
 		}
-			
+
 		Optional<SingleDaySchedule> data = getHolidayWorkSchedule(companyId, employeeId, baseDate, workTypeCode);
-		if(!data.isPresent()) {
+
+		if (!data.isPresent()) {
 			return Optional.empty();
 		}
-		return Optional.of(new WorkInformation(
-				data.get().getWorkTimeCode().isPresent()
-						? data.get().getWorkTimeCode().get()
-						: null,
-						data.get().getWorkTypeCode().isPresent()?data.get().getWorkTypeCode().get():null));
+
+		return data.map(
+				opt -> new WorkInformation(opt.getWorkTypeCode().orElse(null), opt.getWorkTimeCode().orElse(null)));
 	}
 
 }

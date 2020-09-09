@@ -848,7 +848,7 @@ public class JpaWorkingConditionRepository extends JpaRepository implements Work
 	
 	private final static String SELECT_BY_HISTID = new StringBuilder("SELECT item FROM KshmtWorkingCondItem item ")
 			.append(" LEFT JOIN  item.kshmtWorkingCond hst ")
-			.append(" WHERE hst.historyId = :histID ").toString();
+			.append(" WHERE item.historyId = :histID ").toString();
 	@Override
 	public Optional<WorkingConditionItem> getWorkingConditionItem(String histID) {
 		Optional<WorkingConditionItem> workSchedules = this.queryProxy().query(SELECT_BY_HISTID, KshmtWorkingCondItem.class)
