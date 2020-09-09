@@ -715,7 +715,7 @@ public class OverTimeSheet {
 		}
 		
 		//時間休暇溢れ分の割り当て
-		List<OverTimeFrameTimeSheetForCalc> afterAllocateVacation = OverTimeSheet.allocateOverflowTimeVacation(
+		List<OverTimeFrameTimeSheetForCalc> afterAllocateVacation = OverTimeSheet.allocateTimeVacationToOverTime(
 				integrationOfWorkTime.getFlowWorkSetting().get(),
 				personDailySetting.getAddSetting(),
 				createdWithinWorkTimeSheet.getTimeVacationAdditionRemainingTime().get(),
@@ -756,7 +756,7 @@ public class OverTimeSheet {
 	 * @param autoCalcSet 残業時間の自動計算設定
 	 * @param overTimeframeTimeSheets 残業枠時間帯(WORK)
 	 */
-	private static List<OverTimeFrameTimeSheetForCalc> allocateOverflowTimeVacation(
+	private static List<OverTimeFrameTimeSheetForCalc> allocateTimeVacationToOverTime(
 			FlowWorkSetting flowWorkSetting,
 			AddSetting addSetting,
 			AttendanceTime timeVacationAdditionRemainingTime,
