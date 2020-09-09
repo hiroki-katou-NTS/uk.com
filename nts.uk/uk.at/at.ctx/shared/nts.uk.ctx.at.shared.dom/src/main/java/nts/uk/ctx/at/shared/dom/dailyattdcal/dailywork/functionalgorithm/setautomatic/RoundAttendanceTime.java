@@ -27,7 +27,7 @@ public class RoundAttendanceTime {
 	public int process(String companyId, int time, String workTimeCode, AttLeavAtr atr) {
 
 		// クラス「就業時間帯の共通設定」を確認する (Xác nhận class 「就業時間帯の共通設定」)
-		Optional<WorkTimezoneCommonSet> commonSet = getCommonSet.get(companyId, workTimeCode);
+		Optional<WorkTimezoneCommonSet> commonSet = Optional.empty();// getCommonSet.get(companyId, workTimeCode);
 
 		if (!commonSet.isPresent())
 			return time;
