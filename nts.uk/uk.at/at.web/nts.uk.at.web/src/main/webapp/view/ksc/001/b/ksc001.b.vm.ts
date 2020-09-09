@@ -233,16 +233,20 @@ module nts.uk.at.view.ksc001.b {
                         $('#copy-start-date').focus();
                         if(self.isInValidCopyPasteSchedule()) return;
                     }
+
                     if( value !== CreateMethodAtr.PATTERN_SCHEDULE ) {
+	                    self.isMonthlyPattern(false);
 	                    self.monthlyPatternCode(null);
+                    } else if ( self.creationMethodCode() === CreationMethodRef.MONTHLY_PATTERN) {
+	                    self.isMonthlyPattern(true);
                     }
                 });
 
                 self.creationMethodReference([
-                    {code: CreationMethodRef.COMPANY_CALENDAR, name: nts.uk.resource.getText('KSC001_108')}, //会社カレンダー
-                    {code: CreationMethodRef.WORKPLACE_CALENDAR, name: nts.uk.resource.getText('KSC001_109')}, //職場カレンダー
-                    {code: CreationMethodRef.CLASSIFICATION_CALENDAR, name: nts.uk.resource.getText('KSC001_110')}, //分類カレンダー
-                    {code: CreationMethodRef.MONTHLY_PATTERN, name: nts.uk.resource.getText('KSC001_111')}, //月間パターン
+                    {code: CreationMethodRef.COMPANY_CALENDAR, name: getText('KSC001_108')}, //会社カレンダー
+                    {code: CreationMethodRef.WORKPLACE_CALENDAR, name: getText('KSC001_109')}, //職場カレンダー
+                    {code: CreationMethodRef.CLASSIFICATION_CALENDAR, name: getText('KSC001_110')}, //分類カレンダー
+                    {code: CreationMethodRef.MONTHLY_PATTERN, name: getText('KSC001_111')}, //月間パターン
                 ]);
 
                 self.monthlyPatternOpts([]);
@@ -254,6 +258,9 @@ module nts.uk.at.view.ksc001.b {
 	            if( !isAttendance ) {
 	            	self.isConfirmedCreation(false);
 		            $('#confirmedCreation').hide();
+
+		            self.overwriteConfirmedData(false);
+		            $('#overwriteConfirmedData').hide();
 	            }
             }
 
@@ -408,6 +415,13 @@ module nts.uk.at.view.ksc001.b {
                 //init Schedule for personal
                 self.displayPersonalInfor();
 
+	            //fix screen on 1280
+	            if( window.outerWidth <= 1280 ) {
+		            $('#contents-area').addClass('fix-2180');
+	            }
+	            //remove tab index
+	            $('.steps .nts-step-contents').attr('tabindex', '-1');
+
                 return dfd.promise();
             }
 
@@ -481,7 +495,7 @@ module nts.uk.at.view.ksc001.b {
 
 			                nts.uk.ui.block.clear ();
 			                //dfd.resolve();
-		                } );
+		                });
                 }
 
 	            //self.isEnableNextPageD(true);
@@ -678,7 +692,7 @@ module nts.uk.at.view.ksc001.b {
             /**
              * function previous page by selection employee goto page (B)
              */
-            private previousPageC(): void {
+            private previousPageB(): void {
                 var self = this;
                 self.previous();
             }
@@ -794,14 +808,14 @@ module nts.uk.at.view.ksc001.b {
              */
             private previousPageE(): void {
                 var self = this;
+	            self.previous();
 
-                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkCreateMethodAtrPersonalInfo() ==  CreateMethodAtr.PATTERN_SCHEDULE) { //checkProcessExecutionAtrRebuild == ProcessExecutionAtr.RECONFIG
-                    //back screen C
-                    self.previousTwo();
+                /*if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
+                    && self.checkCreateMethodAtrPersonalInfo() ==  CreateMethodAtr.PATTERN_SCHEDULE) {
+                    self.previousTwo(); //back screen C
                 } else {
                     self.previous();
-                }
+                }*/
             }
 
             /**
@@ -1078,6 +1092,12 @@ module nts.uk.at.view.ksc001.b {
             private displayPersonalInfor() {
                 let self = this;
                 let user: any = __viewContext.user;
+	            /*let isAttendance = user.role.isInCharge.attendance;
+	            if( !isAttendance ) {
+		            self.isConfirmedCreation(false);
+		            self.overwriteConfirmedData(false);
+	            }*/
+
                 self.findPersonalScheduleByEmployeeId(user.employeeId).done((data) => {
                     if( typeof data !=='undefined' && data ) {
                         self.recreateConverter(data.recreateConverter);//異動者
@@ -1099,20 +1119,20 @@ module nts.uk.at.view.ksc001.b {
                         self.confirm(data.confirm);
                         self.createMethodAtr(data.createMethodAtr);
                         self.employeeId(data.employeeId);
+	                    self.implementAtr(data.implementAtr);
+	                    self.resetMasterInfo(data.resetMasterInfo);
+	                    self.resetStartEndTime(data.resetStartEndTime);
+	                    self.resetTimeAssignment(data.resetTimeAssignment);
+	                    self.resetWorkingHours(data.resetWorkingHours);
                         //self.holidayReflect(data.holidayReflect);
                         ///self.holidayUseAtr(data.holidayUseAtr);
                         //self.holidayWorkType(data.holidayWorkType);
-                        self.implementAtr(data.implementAtr);
                         //self.legalHolidayUseAtr(data.legalHolidayUseAtr);
                         //self.legalHolidayWorkType(data.legalHolidayWorkType);
                         //self.patternCode(data.patternCode);
                         //self.patternStartDate(data.patternStartDate);
                         //self.processExecutionAtr(data.processExecutionAtr);
                         //self.reCreateAtr(data.reCreateAtr);
-                        self.resetMasterInfo(data.resetMasterInfo);
-                        self.resetStartEndTime(data.resetStartEndTime);
-                        self.resetTimeAssignment(data.resetTimeAssignment);
-                        self.resetWorkingHours(data.resetWorkingHours);
                         //self.statutoryHolidayUseAtr(data.statutoryHolidayUseAtr);
                         //self.statutoryHolidayWorkType(data.statutoryHolidayWorkType);
                     }
