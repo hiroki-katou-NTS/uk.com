@@ -56,6 +56,15 @@ public class SpecialLeaveRemainingNumber {
 	}
 	
 	/**
+	 * クリア
+	 */
+	public void clear(){
+		dayNumberOfRemain = new DayNumberOfRemain(0.0);
+		timeOfRemain = Optional.empty();
+		clearDetails();
+	}
+	
+	/**
 	 * 明細をクリア（要素数を０にする）
 	 */
 	public void clearDetails(){

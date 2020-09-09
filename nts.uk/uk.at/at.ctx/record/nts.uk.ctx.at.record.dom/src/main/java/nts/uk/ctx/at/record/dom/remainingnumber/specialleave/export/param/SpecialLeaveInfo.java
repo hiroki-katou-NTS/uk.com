@@ -42,7 +42,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	/** 年月日 */
 	private GeneralDate ymd;
 	/** 残数 */
-	private SpecialLeaveRemainingNumber remainingNumber;
+	private SpecialLeaveRemaining remainingNumber;
 	/** 付与残数データ */
 	private List<SpecialLeaveGrantRemaining> grantRemainingList;
 	
@@ -52,7 +52,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	public SpecialLeaveInfo(){
 		
 		this.ymd = GeneralDate.min();
-		this.remainingNumber = new SpecialLeaveRemainingNumber();
+		this.remainingNumber = new SpecialLeaveRemaining();
 		this.grantRemainingList = new ArrayList<>();
 		
 		//this.annualPaidLeaveSet = null;
@@ -67,7 +67,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	 */
 	public static SpecialLeaveInfo of(
 			GeneralDate ymd,
-			SpecialLeaveRemainingNumber remainingNumber,
+			SpecialLeaveRemaining remainingNumber,
 			List<SpecialLeaveGrantRemaining> grantRemainingNumberList
 			){
 	
@@ -151,8 +151,8 @@ public class SpecialLeaveInfo implements Cloneable {
 		return cloned;
 	}
 
-	public List<AnnualLeaveGrantRemainingData> getGrantRemainingNumberList(){
-		return this.grantRemainingList.stream().map(c -> (AnnualLeaveGrantRemainingData)c)
+	public List<SpecialLeaveGrantRemainingData> getGrantRemainingNumberList(){
+		return this.grantRemainingList.stream().map(c -> (SpecialLeaveGrantRemainingData)c)
 				.collect(Collectors.toList());
 	}
 	

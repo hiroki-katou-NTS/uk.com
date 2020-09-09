@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
  * @author shuichu_ishida
  */
 @Getter
-public class AnnualLeaveRemainingNumber implements Cloneable {
+public class AnnualLeaveRemaining implements Cloneable {
 
 	/** 年休（マイナスなし） */
 	private AnnualLeave annualLeaveNoMinus;
@@ -34,7 +34,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	/**
 	 * コンストラクタ
 	 */
-	public AnnualLeaveRemainingNumber(){
+	public AnnualLeaveRemaining(){
 		
 		this.annualLeaveNoMinus = new AnnualLeave();
 		this.annualLeaveWithMinus = new AnnualLeave();
@@ -56,7 +56,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	 * @param annualLeaveUndigestNumber 年休未消化数
 	 * @return 年休情報残数
 	 */
-	public static AnnualLeaveRemainingNumber of(
+	public static AnnualLeaveRemaining of(
 			AnnualLeave annualLeaveNoMinus,
 			Optional<HalfDayAnnualLeave> halfDayAnnualLeaveNoMinus,
 			Optional<HalfDayAnnualLeave> halfDayAnnualLeaveWithMinus,
@@ -64,7 +64,7 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 			Optional<AnnualLeaveMaxRemainingTime> timeAnnualLeaveWithMinus,
 			Optional<AnnualLeaveUndigestNumber> annualLeaveUndigestNumber){
 		
-		AnnualLeaveRemainingNumber domain = new AnnualLeaveRemainingNumber();
+		AnnualLeaveRemaining domain = new AnnualLeaveRemaining();
 		domain.annualLeaveNoMinus = annualLeaveNoMinus;
 		domain.halfDayAnnualLeaveNoMinus = halfDayAnnualLeaveNoMinus;
 		domain.halfDayAnnualLeaveWithMinus = halfDayAnnualLeaveWithMinus;
@@ -75,8 +75,8 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 	}
 	
 	@Override
-	public AnnualLeaveRemainingNumber clone() {
-		AnnualLeaveRemainingNumber cloned = new AnnualLeaveRemainingNumber();
+	public AnnualLeaveRemaining clone() {
+		AnnualLeaveRemaining cloned = new AnnualLeaveRemaining();
 		try {
 			cloned.annualLeaveNoMinus = this.annualLeaveNoMinus.clone();
 			cloned.annualLeaveWithMinus = this.annualLeaveWithMinus.clone();
@@ -116,5 +116,12 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		// 年休（マイナスなし）を年休（マイナスあり）で上書き　＆　年休からマイナスを削除
 		//this.annualLeaveNoMinus.setValueFromAnnualLeave(this.annualLeaveWithMinus);
 		this.annualLeaveNoMinus = this.annualLeaveWithMinus.clone();
+		
+		
+		
+		
+		
+		
+		
 	}
 }

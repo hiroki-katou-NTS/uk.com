@@ -148,10 +148,11 @@ public class SpecialLeaveManagementService {
 						param.getComplileDate(),
 						interimRemainMngMode,
 						Optional.of(param.isOverwriteFlg()),
-						Optional.of(param.getRemainData()),  // 要キャスト？Optional<List<SpecialHolidayInterimMngData>>
+						Optional.of(param.getRemainData()),  // ooooo 要キャスト？Optional<List<SpecialHolidayInterimMngData>>
 						param.getOptBeforeResult(),
 						param.getSpecialLeaveCode());
 
+		
 		// 次回特休付与日を計算
 		CalcNextSpecialLeaveGrantDate calcNextSpecialLeaveGrantDate
 			= new CalcNextSpecialLeaveGrantDate();
@@ -304,7 +305,6 @@ public class SpecialLeaveManagementService {
 		
 		// 集計開始日時点の前回の特休の集計結果が存在するかチェック
 		// 「前回の特休情報」を確認　（前回の特休の集計結果．特休情報（期間終了日の翌日開始時点））
-		
 		SpecialLeaveInfo prevSpecialLeaveInfo 
 			= inPeriodOfSpecialLeaveResultInfor.map(c -> c.getAsOfStartNextDayOfPeriodEnd()).orElse(null);
 		
@@ -316,6 +316,7 @@ public class SpecialLeaveManagementService {
 			}
 		}
 		if (isSameInfo){
+			// 特別休暇付与残数データをもとに特別休暇情報を作成
 			// 「前回の特休情報」を取得　→　取得内容をもとに特休情報を作成
 			return createInfoFromRemainingData(
 					companyId,
@@ -470,11 +471,7 @@ public class SpecialLeaveManagementService {
 		// 処理単位分割日リスト
 		Map<GeneralDate, SpecialLeaveDividedDayEachProcess> dividedDayMap = new HashMap<>();
 		
-		sortedLstSpeData.forEach( c -> {
-			
-//			// 処理単位分割日
-//			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
-//				= new SpecialLeaveAggregatePeriodWork(); 
+		sortedLstSpeData.forEach( c->{
 			
 			// 消滅情報WORKを作成
 			SpecialLeaveLapsedWork specialLeaveLapsedWork = new SpecialLeaveLapsedWork();
@@ -494,8 +491,8 @@ public class SpecialLeaveManagementService {
 			}
 			
 			
-			// ※既に同じ年月日がある場合は、追加せずに消滅情報WORKのみセット
-			if ( dividedDayMap.
+//			// ※既に同じ年月日がある場合は、追加せずに消滅情報WORKのみセット
+//			if ( dividedDayMap.
 			
 					
 					
@@ -763,14 +760,14 @@ public class SpecialLeaveManagementService {
 			List<SpecialLeaveGrantRemaining> grantRemainingDataList
 			){
 		
-		SpecialLeaveInfo returnInfo = new SpecialLeaveInfo();
+		SpecialLeaveInfo specialLeaveInfo = new SpecialLeaveInfo();
 		
 		// 特別休暇情報．年月日←パラメータ「年月日」
 //		returnInfo.setYmd(aggrPeriod.start());
-		returnInfo.setYmd(ymd);
+		specialLeaveInfo.setYmd(ymd);
 		
 		// 残数．特別休暇(マイナスあり)をクリア。（Listの要素数を０にする）
-		returnInfo.getRemainingNumber().getSpecialLeaveWithMinus().getRemainingNumberInfo().clearDetails();
+		specialLeaveInfo.getRemainingNumber().getSpecialLeaveWithMinus().clear();
 		
 		// 特休情報．特休付与情報　←　パラメータ「付与残数データ」
 		List<SpecialLeaveGrantRemaining> targetDatas = new ArrayList<>();
@@ -780,10 +777,7 @@ public class SpecialLeaveManagementService {
 			employeeId = grantRemainingData.getEmployeeId();
 		}
 		targetDatas.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
-		returnInfo.setGrantRemainingList(targetDatas);
-		
-		
-
+		specialLeaveInfo.setGrantRemainingList(targetDatas);
 		
 //		// 特休情報．上限データ　←　パラメータ「上限データ」
 //		if (!maxDataOpt.isPresent()) {
@@ -797,10 +791,10 @@ public class SpecialLeaveManagementService {
 //		}
 		
 		// 特休情報残数を更新 
-		returnInfo.updateRemainingNumber(false);
+		specialLeaveInfo.updateRemainingNumber(false);
 		
 		// 特休情報を返す
-		return returnInfo;
+		return specialLeaveInfo;
 	}
 	
 	

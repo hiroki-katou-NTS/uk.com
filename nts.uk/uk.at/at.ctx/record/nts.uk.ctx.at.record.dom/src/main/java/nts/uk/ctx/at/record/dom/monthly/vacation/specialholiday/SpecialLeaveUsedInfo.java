@@ -40,6 +40,7 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 	/** 付与後 */
 	private Optional<SpecialLeaveUseNumber> usedNumberAfterGrantOpt;
 	
+	
 	/**
 	 * ファクトリ
 	 * @param usedNumber 合計
@@ -131,6 +132,17 @@ public class SpecialLeaveUsedInfo implements Cloneable, SerializableWithOptional
 			this.usedNumberBeforeGrant.addUsedNumber(usedNumber);
 			
 		}
+	}
+	
+	/**
+	 * クリア
+	 */
+	public void clear(){
+		usedNumber = new SpecialLeaveUseNumber();
+		usedNumberBeforeGrant = new SpecialLeaveUseNumber();
+		specialLeaveUsedTimes = new UsedTimes(0);
+		specialLeaveUsedDayTimes = new UsedTimes(0);
+		usedNumberAfterGrantOpt = Optional.empty();
 	}
 	
 	/**

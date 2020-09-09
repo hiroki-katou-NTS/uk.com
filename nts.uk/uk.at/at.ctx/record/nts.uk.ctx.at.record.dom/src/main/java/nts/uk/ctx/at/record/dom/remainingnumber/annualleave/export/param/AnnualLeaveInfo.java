@@ -42,7 +42,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	/** 年月日 */
 	private GeneralDate ymd;
 	/** 残数 */
-	private AnnualLeaveRemainingNumber remainingNumber;
+	private AnnualLeaveRemaining remainingNumber;
 	/** 付与残数データ */
 	private List<AnnualLeaveGrantRemaining> grantRemainingList;
 	/** 上限データ */
@@ -65,7 +65,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	public AnnualLeaveInfo(){
 		
 		this.ymd = GeneralDate.min();
-		this.remainingNumber = new AnnualLeaveRemainingNumber();
+		this.remainingNumber = new AnnualLeaveRemaining();
 		this.grantRemainingList = new ArrayList<>();
 		this.maxData = new AnnualLeaveMaxData();
 		this.grantInfo = Optional.empty();
@@ -90,7 +90,7 @@ public class AnnualLeaveInfo implements Cloneable {
 	 */
 	public static AnnualLeaveInfo of(
 			GeneralDate ymd,
-			AnnualLeaveRemainingNumber remainingNumber,
+			AnnualLeaveRemaining remainingNumber,
 			List<AnnualLeaveGrantRemaining> grantRemainingNumberList,
 			AnnualLeaveMaxData maxData,
 			Optional<AnnualLeaveGrant> grantInfo,

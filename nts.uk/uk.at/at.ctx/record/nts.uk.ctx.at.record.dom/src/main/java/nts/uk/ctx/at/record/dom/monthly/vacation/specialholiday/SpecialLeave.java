@@ -96,19 +96,7 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 			List<SpecialLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
 		// 特休付与残数データから残数を作成
-		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
-		
-		// 「付与後フラグ」をチェック
-		if (afterGrantAtr){
-			
-			// 残数付与後　←　残数
-			this.remainingNumberAfterGrant = Optional.of(this.remainingNumberInfo.clone());
-		}
-		else {
-			
-			// 残数付与前　←　残数
-			this.remainingNumberBeforeGrant = this.remainingNumberInfo.clone();
-		}
+		this.remainingNumberInfo.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);	
 	}
 	
 	/**
@@ -120,7 +108,6 @@ public class SpecialLeave extends DomainObject implements Cloneable, Serializabl
 	
 		this.usedNumberInfo.addUsedNumber(usedNumber, afterGrantAtr);
 		
-
 	}
 	
 //	/**

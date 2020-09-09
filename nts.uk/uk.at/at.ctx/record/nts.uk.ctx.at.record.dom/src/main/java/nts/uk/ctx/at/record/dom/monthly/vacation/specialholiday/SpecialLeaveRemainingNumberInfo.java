@@ -98,6 +98,15 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 		}
 		return cloned;
 	}
+	
+	/**
+	 * クリア
+	 */
+	public void clear(){
+		remainingNumber.clear();
+		remainingNumberBeforeGrant.clear();
+		remainingNumberAfterGrantOpt = Optional.empty();
+	}
 
 	/**
 	 * 付与前退避処理

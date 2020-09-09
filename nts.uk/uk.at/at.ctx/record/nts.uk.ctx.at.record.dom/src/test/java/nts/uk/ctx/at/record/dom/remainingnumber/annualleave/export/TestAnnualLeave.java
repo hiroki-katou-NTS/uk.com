@@ -266,7 +266,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -357,7 +357,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -450,7 +450,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -542,7 +542,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -635,7 +635,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 半日年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					
@@ -727,7 +727,7 @@ public class TestAnnualLeave {
 			if ( asOfPeriodEnd != null ){
 				
 				// 半日年休情報残数
-				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemainingNumber remainingNumber 
+				nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveRemaining remainingNumber 
 					= asOfPeriodEnd.getRemainingNumber();
 				if ( remainingNumber != null ){
 					

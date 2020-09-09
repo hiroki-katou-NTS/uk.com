@@ -63,6 +63,9 @@ public class SpecialLeaveManagementService {
 	
 	/**
 	 * RequestList273 期間内の特別休暇残を集計する
+	 * 
+	 * 以下に移動（神野）
+	　 * 　nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export
 	 * @return
 	 */
 	public static InPeriodOfSpecialLeaveResultInfor complileInPeriodOfSpecialLeave(RequireM5 require, 
