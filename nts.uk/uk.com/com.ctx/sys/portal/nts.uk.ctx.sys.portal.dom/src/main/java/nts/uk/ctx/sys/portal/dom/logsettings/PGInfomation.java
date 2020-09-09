@@ -29,9 +29,9 @@ public class PGInfomation {
 	private String functionName;
 	
 	/**
-	 * 画面ID
+	 * メニュー分類
 	 */
-	private String screenId;
+	private Integer menuClassification;
 	
 	/**
 	 * 起動履歴の記録

@@ -9,7 +9,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.find.logsettings.LogSettingDto;
 import nts.uk.ctx.sys.portal.app.find.logsettings.LogSettingFinder;
-
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("sys/portal/logsettings")
 @Produces("application/json")
@@ -23,11 +23,15 @@ public class LogSettingService extends WebService {
 	public List<LogSettingDto> findBySystem(@PathParam("systemType") int systemType) {
 		return this.logSettingFinder.findBySystem(systemType);
 	}
-	
+
 	@POST
 	@Path("update")
-	public void updateLogSetting(List<LogSettingDto> logSettings) {
-		this.logSettingFinder.updateLogsetting(logSettings);
+	public void updateLogSetting(List<LogSettingDto> logSettingDtos) {
+		String companyId = AppContexts.user().companyId();
+		for (LogSettingDto l : logSettingDtos) {
+			l.setCompanyId(companyId);
+		}
+		this.logSettingFinder.updateLogsetting(logSettingDtos);
 	}
 
 }

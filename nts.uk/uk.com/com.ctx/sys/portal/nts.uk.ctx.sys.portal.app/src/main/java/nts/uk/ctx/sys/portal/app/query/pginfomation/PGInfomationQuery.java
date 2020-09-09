@@ -38,7 +38,7 @@ public class PGInfomationQuery {
 
 		List<MenuClassification> menuClassifications = logSettings.stream().map(s -> s.getMenuClassification())
 				.collect(Collectors.toList());
-		
+
 		/**
 		 * コード一覧から標準メニューを取得
 		 */
@@ -93,6 +93,12 @@ public class PGInfomationQuery {
 
 			// record edit history
 			pgInfomation.setEditHistoryRecord(editHistoryRecord);
+
+			// menuClassification
+			pgInfomation.setMenuClassification(s.getClassification().value);
+
+			// programId
+			pgInfomation.setProgramId(s.getProgramId());
 
 			pgInfomations.add(pgInfomation);
 		}
