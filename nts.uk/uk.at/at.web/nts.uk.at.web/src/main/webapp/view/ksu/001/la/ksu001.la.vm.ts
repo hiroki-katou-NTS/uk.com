@@ -279,7 +279,7 @@ module nts.uk.at.view.ksu001.la {
                 self.isEditing(false);
                 self.scheduleTeamModel().resetData(); 
                 let temp = _.union(self.itemsLeft(), self.itemsRight());
-                self.itemsLeft(temp);
+                self.itemsLeft(_.sortBy(temp, [function (o) { return o.employeeCd; }]));
                 
                 self.itemsRight([]); 
                 self.currentCodeListLeft([]);
