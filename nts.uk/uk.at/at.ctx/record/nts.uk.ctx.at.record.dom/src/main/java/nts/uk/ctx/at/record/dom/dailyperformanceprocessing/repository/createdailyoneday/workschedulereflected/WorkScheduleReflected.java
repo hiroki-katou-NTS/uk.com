@@ -30,11 +30,9 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -65,7 +63,9 @@ public class WorkScheduleReflected {
 					new ErrMessageResource("006"), new ErrMessageContent(TextResource.localize("Msg_431"))));
 			return listErrorMessageInfo;
 		}
-		WorkInformation wi = new WorkInformation(scheduleWorkInfor.get().getWorkTime() ==null?null: new WorkTimeCode(scheduleWorkInfor.get().getWorkTime()), new WorkTypeCode(scheduleWorkInfor.get().getWorkTyle())); 
+		
+		WorkInformation wi =  scheduleWorkInfor.map(m -> new WorkInformation(m.getWorkTyle(), m.getWorkTime())).orElse(new WorkInformation("", ""));
+		
 		//勤務情報をコピーする (Copy thông tin 勤務)
 		workInformation.setRecordInfo(wi);
 		workInformation.setScheduleInfo(wi);

@@ -1,14 +1,13 @@
 package nts.uk.ctx.at.schedule.app.command.shift.workcycle.command;
 
-import lombok.Value;
-import lombok.val;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import lombok.Value;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 
 @Value
 public class AddWorkCycleCommand {
@@ -29,7 +28,7 @@ public class AddWorkCycleCommand {
 
         List<WorkCycleInfo> infos =command.workInformations.stream().map(i -> WorkCycleInfo.create(
                 i.getDays(),
-                new nts.uk.ctx.at.shared.dom.WorkInformation(i.getWorkTimeCode(), i.getWorkTypeCode())
+                new nts.uk.ctx.at.shared.dom.WorkInformation(i.getWorkTypeCode(), i.getWorkTimeCode())
         )).collect(Collectors.toList());
         return WorkCycle.create(
                 cid,
