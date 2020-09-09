@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.infra.repository.manageemploymenthours;
 
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36Hours;
 import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmp;
 
 import javax.ejb.Stateless;
@@ -35,29 +35,29 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
     }
 
     @Override
-    public void insert(Employment36Hours domain) {
+    public void insert(AgreementTimeOfEmployment domain) {
 
     }
 
     @Override
-    public void update(Employment36Hours domain) {
+    public void update(AgreementTimeOfEmployment domain) {
 
     }
 
     @Override
-    public void delete(Employment36Hours domain) {
+    public void delete(AgreementTimeOfEmployment domain) {
 
     }
 
     @Override
-    public List<Employment36Hours> getByCid(String cid) {
+    public List<AgreementTimeOfEmployment> getByCid(String cid) {
         return this.queryProxy().query(FIND_BY_CID, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
                 .getList(d -> convertToDomain(d));
     }
 
     @Override
-    public Optional<Employment36Hours> getByCidAndEmployCode(String cid, String employCode) {
+    public Optional<AgreementTimeOfEmployment> getByCidAndEmployCode(String cid, String employCode) {
 
         return this.queryProxy().query(FIND_BY_CID_AND_CD, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
@@ -65,7 +65,7 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
                 .getSingle(d -> convertToDomain(d));
     }
 
-    private Employment36Hours convertToDomain(Ksrmt36AgrMgtEmp ksrmt36AgrMgtEmp) {
-        return new Employment36Hours();
+    private AgreementTimeOfEmployment convertToDomain(Ksrmt36AgrMgtEmp ksrmt36AgrMgtEmp) {
+        return new AgreementTimeOfEmployment();
     }
 }

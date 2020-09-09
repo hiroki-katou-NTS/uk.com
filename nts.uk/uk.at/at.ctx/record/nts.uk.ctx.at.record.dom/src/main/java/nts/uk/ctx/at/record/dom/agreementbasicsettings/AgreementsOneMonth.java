@@ -31,11 +31,11 @@ public class AgreementsOneMonth extends ValueObject{
       this.basicSetting = basicSetting;
       this.upperLimitDueToSpecialProvisions = upperLimitDueToSpecialProvisions;
   }
- // 	[1] エラーチェック TODO
+ // 	[1] エラーチェック TODO : đang check EA
   public AgreementTimeStatusOfMonthly checkError(AttendanceTimeMonth agreementTargetTime,
                                                  AttendanceTimeMonth hoursSubjectToLegalUpperLimit,
                                                  ErrorTimeInMonth applicationTime ){
-        return AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY;
+        return null;
   }
   //	[2] 特例条項による上限のエラー時間を超えているか
   public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime){

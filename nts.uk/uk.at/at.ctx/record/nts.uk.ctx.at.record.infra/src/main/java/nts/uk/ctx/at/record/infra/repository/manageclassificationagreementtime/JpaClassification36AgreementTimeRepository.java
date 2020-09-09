@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.manageclassificationagreementtime;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTime;
 import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
 
 import java.util.List;
@@ -28,35 +28,35 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
         FIND_BY_CID = builderString.toString();
     }
     @Override
-    public void insert(Classification36AgreementTime domain) {
+    public void insert(AgreementTimeOfClassification domain) {
 
     }
 
     @Override
-    public void update(Classification36AgreementTime domain) {
+    public void update(AgreementTimeOfClassification domain) {
 
     }
 
     @Override
-    public void delete(Classification36AgreementTime domain) {
+    public void delete(AgreementTimeOfClassification domain) {
 
     }
 
     @Override
-    public List<Classification36AgreementTime> getByCid(String cid) {
+    public List<AgreementTimeOfClassification> getByCid(String cid) {
         return this.queryProxy().query(FIND_BY_CID,Ksrmt36AgrMgtCls.class).setParameter("cid",cid).getList(d->convertToDomain(d));
     }
 
     @Override
-    public Optional<Classification36AgreementTime> getByCidAndClassificationCode(String cid, String classificationCode) {
+    public Optional<AgreementTimeOfClassification> getByCidAndClassificationCode(String cid, String classificationCode) {
         return this.queryProxy().query(FIND_BY_CID,Ksrmt36AgrMgtCls.class)
                 .setParameter("cid",cid)
                 .setParameter("classificationCode",classificationCode)
                 .getSingle(d->convertToDomain(d));
 
     }
-    private Classification36AgreementTime convertToDomain(Ksrmt36AgrMgtCls entity) {
-        return new Classification36AgreementTime();
+    private AgreementTimeOfClassification convertToDomain(Ksrmt36AgrMgtCls entity) {
+        return new AgreementTimeOfClassification();
     }
 
 }
