@@ -41,6 +41,8 @@ public class GrantRegular extends DomainObject {
 	
 	
 	
+	
+	
 	/** 会社ID */
 	private String companyId;
 	

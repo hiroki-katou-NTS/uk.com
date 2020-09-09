@@ -9,6 +9,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
+import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
+import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AnnualLeaveGrantRemaining;
+import nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param.SpecialLeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.DayNumberOfRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.remainingnumber.TimeOfRemain;
 
@@ -55,4 +62,75 @@ public class SpecialLeaveRemainingNumber {
 		details = new ArrayList<SpecialLeaveRemainingDetail>();
 	}
 
+	/**
+	 * クローン
+	 */
+	@Override
+	protected SpecialLeaveRemainingNumber clone() {
+		SpecialLeaveRemainingNumber cloned = new SpecialLeaveRemainingNumber();
+		try {
+			cloned = (SpecialLeaveRemainingNumber)super.clone();
+			cloned.dayNumberOfRemain = new DayNumberOfRemain(this.dayNumberOfRemain.v());
+			if (this.timeOfRemain.isPresent()){
+				cloned.timeOfRemain = Optional.of(new TimeOfRemain(this.timeOfRemain.get().v()));
+				if ( !this.details.isEmpty() ){
+					ArrayList<SpecialLeaveRemainingDetail> list
+						= new ArrayList<SpecialLeaveRemainingDetail>();
+					this.details.stream().forEach(c->{
+						list.add(c.clone());
+					});
+					cloned.details = list;
+				}
+			}
+		}
+		catch (Exception e){
+			throw new RuntimeException("SpecialLeaveRemainingDetail clone error.");
+		}
+		return cloned;
+	}
+	
+	/**
+	 * 特休付与残数データから特休残数を作成
+	 * @param remainingDataList 年休付与残数データリスト
+	 */
+	public void createRemainingNumberFromGrantRemaining(
+			List<SpecialLeaveGrantRemaining> remainingDataList){
+
+		// 明細、合計残日数をクリア
+		this.details = new ArrayList<>();
+		this.dayNumberOfRemain = new DayNumberOfRemain(0.0);
+		this.timeOfRemain = Optional.of( new TimeOfRemain(0));
+		
+		// 「年休付与残数データ」を取得  ooooo 順序を考慮する
+		remainingDataList.sort((a, b) -> a.getGrantDate().compareTo(b.getGrantDate()));
+		
+		for (val remainingData : remainingDataList){
+			if (remainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
+			val remainingNumber = remainingData.getDetails().getRemainingNumber();
+			
+			// 「年休不足ダミーフラグ」をチェック
+			if (remainingData.isDummyAtr() == false){
+				
+				// 明細に年休付与残数データ．明細．残数を追加
+				TimeOfRemain remainingTime = null;
+				if (remainingNumber.getMinutes().isPresent()){
+					remainingTime = new TimeOfRemain(remainingNumber.getMinutes().get().v());
+				}
+				this.details.add(SpecialLeaveRemainingDetail.of(
+						remainingData.getGrantDate(),
+						new DayNumberOfRemain(remainingNumber.getDays().v()),
+						Optional.ofNullable(remainingTime)));
+			}
+			
+			// 合計残日数　←　「明細．日数」の合計
+			this.dayNumberOfRemain = new DayNumberOfRemain(
+					this.dayNumberOfRemain.v() + remainingNumber.getDays().v());
+			
+			// 合計残時間　←　「明細．時間」の合計
+			if ( remainingNumber.getMinutes().isPresent() ){
+				this.timeOfRemain = Optional.of( new TimeOfRemain(
+					this.timeOfRemain.get().v() + remainingNumber.getMinutes().get().v()));
+			}
+		}
+	}
 }

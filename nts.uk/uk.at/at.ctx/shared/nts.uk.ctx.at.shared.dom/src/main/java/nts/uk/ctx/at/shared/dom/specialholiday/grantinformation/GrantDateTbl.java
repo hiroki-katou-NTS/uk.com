@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 //import nts.uk.ctx.at.shared.dom.yearholidaygrant.YearMonthHoliday;
 
 /**
- * 特別休暇付与テーブル
+ * 特別休暇付与日数テーブル
  * 
  * @author tanlv
  *
@@ -45,10 +45,10 @@ public class GrantDateTbl extends AggregateRoot {
 	/** テーブル以降の固定付与をおこなう */
 	private boolean fixedAssign;
 	
-	/** テーブル以降の毎年付与日数 */
+	/** テーブル以降の付与日数 */
 	private Integer numberOfDays;
 	
-	/** 経過年数に対する付与日数 */
+	/** 経過年数に対する付与日数  */
 	private List<ElapseYear> elapseYear;
 	
 	@Override

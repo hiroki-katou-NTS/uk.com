@@ -59,6 +59,9 @@ public class AnnualLeaveRemainingNumber implements Cloneable {
 		return domain;
 	}
 	
+	/**
+	 * クローン
+	 */
 	@Override
 	public AnnualLeaveRemainingNumber clone() {
 		AnnualLeaveRemainingNumber cloned = new AnnualLeaveRemainingNumber();

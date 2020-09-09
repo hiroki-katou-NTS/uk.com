@@ -87,7 +87,8 @@ public class SpecialLeaveRemainingNumber implements Cloneable {
 			List<SpecialLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
 		// 特休付与残数データから特休（マイナスあり）を作成
-		this.specialLeaveWithMinus.createRemainingNumberFromGrantRemaining(remainingDataList, afterGrantAtr);
+		this.specialLeaveWithMinus.createRemainingNumberFromGrantRemaining(
+				remainingDataList, afterGrantAtr);
 		
 		// 特休（マイナスなし）を特休（マイナスあり）で上書き　＆　特休からマイナスを削除
 		//this.specialLeaveNoMinus.setValueFromSpecialLeave(this.specialLeaveWithMinus);
