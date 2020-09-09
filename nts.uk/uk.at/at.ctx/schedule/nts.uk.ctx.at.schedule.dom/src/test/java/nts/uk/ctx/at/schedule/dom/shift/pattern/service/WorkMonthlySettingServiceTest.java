@@ -66,7 +66,7 @@ public class WorkMonthlySettingServiceTest {
             result = true;
 
         }};
-        assertThat((WorkMonthlySettingService.register(require, workMonthlySetting, false)).equals(expected));
+        assertThat(WorkMonthlySettingService.register(require, workMonthlySetting, false)).isEqualTo(expected);
     }
 
     @Test
