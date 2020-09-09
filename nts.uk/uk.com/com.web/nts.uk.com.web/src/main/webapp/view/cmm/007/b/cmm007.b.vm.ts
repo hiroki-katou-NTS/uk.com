@@ -32,6 +32,7 @@ module nts.uk.com.view.cmm007.b {
             com_compensationHoliday:  KnockoutObservable<string>;                              
             com_exsessHoliday:  KnockoutObservable<string>;                                
             com_planedPaidHoliday:  KnockoutObservable<string>; 
+            com_workplaceGroup: KnockoutObservable<string>;
 
             constructor(){
                 let _self = this;
@@ -65,7 +66,7 @@ module nts.uk.com.view.cmm007.b {
                 _self.com_compensationHoliday = ko.observable("");                              
                 _self.com_exsessHoliday = ko.observable("");                                
                 _self.com_planedPaidHoliday = ko.observable("");
-            
+                _self.com_workplaceGroup = ko.observable("");
             }
             
             /**
@@ -144,6 +145,9 @@ module nts.uk.com.view.cmm007.b {
                              case SystemResourceId.Com_PlanedPaidHoliday:
                                _self.com_planedPaidHoliday(e.resourceContent);
                                break; 
+                           case SystemResourceId.Com_WorkplaceGroup:
+                              _self.com_workplaceGroup(e.resourceContent);
+                              break; 
                         }
                     });
                     dfd.resolve();
@@ -209,7 +213,8 @@ module nts.uk.com.view.cmm007.b {
                                          new SystemResourceDto(SystemResourceId.Com_SubstituteHoliday, _self.com_substituteHoliday()),
                                          new SystemResourceDto(SystemResourceId.Com_CompensationHoliday, _self.com_compensationHoliday()),
                                          new SystemResourceDto(SystemResourceId.Com_ExsessHoliday, _self.com_exsessHoliday()),
-                                         new SystemResourceDto(SystemResourceId.Com_PlanedPaidHoliday, _self.com_planedPaidHoliday())];
+                                         new SystemResourceDto(SystemResourceId.Com_PlanedPaidHoliday, _self.com_planedPaidHoliday()),
+                                         new SystemResourceDto(SystemResourceId.Com_WorkplaceGroup, _self.com_workplaceGroup())];
                 return data;
             }
             
@@ -241,6 +246,7 @@ module nts.uk.com.view.cmm007.b {
                 $('#com_compensationHoliday').ntsEditor("validate");
                 $('#com_exsessHoliday').ntsEditor("validate");
                 $('#com_planedPaidHoliday').ntsEditor("validate");
+                $('#com_workplaceGroup').ntsEditor("validate");
                
                 if ($('.nts-input').ntsError('hasError')) {
                     return true;
@@ -276,6 +282,7 @@ module nts.uk.com.view.cmm007.b {
                 $('#com_compensationHoliday').ntsEditor("clear");
                 $('#com_exsessHoliday').ntsEditor("clear");
                 $('#com_planedPaidHoliday').ntsEditor("clear");
+                $('#com_workplaceGroup').ntsEditor("clear");
                 // Clear error inputs
                 $('.nts-input').ntsError('clear');
             }
@@ -306,5 +313,6 @@ module nts.uk.com.view.cmm007.b {
         export const Com_CompensationHoliday = "Com_CompensationHoliday";                              
         export const Com_ExsessHoliday = "Com_ExsessHoliday";                               
         export const Com_PlanedPaidHoliday = "Com_PlanedPaidHoliday"; 
+        export const Com_WorkplaceGroup = "Com_WorkplaceGroup";
     }
 }
