@@ -18,9 +18,13 @@
 .margin-left-100 {
 	margin-left: 80px;
 }
-.margin-left-300 {
-	margin-left: 300px;
+.width-40 {
+    width: 40%;
 }
+.width-40-sub{
+    width: calc(40% - 30px);
+}
+
 .btn-apply-setting {
 	height: 70px;
 	border-radius: 7px;
