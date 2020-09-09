@@ -3,7 +3,6 @@ module nts.uk.com.view.cli002.a.service {
         var servicePath: any = {
             findBySystem: "sys/portal/pginfomation/findBySystem",
             servicePath: "sys/portal/logsettings/update",
-            findLogSettingBySystem: "sys/portal/logsettings/findBySystem"
         }
 
         export function findBySystem(systemType: number): JQueryPromise<any> {
@@ -12,9 +11,5 @@ module nts.uk.com.view.cli002.a.service {
 
         export function updateLogSetting(logSettings: any): JQueryPromise<any> {
             return ajax(servicePath.servicePath, logSettings);
-        }
-
-        export function findLogSettingBySystem(systemType: number): JQueryPromise<any> {
-            return ajax(`${servicePath.findLogSettingBySystem}/${systemType}`);
         }
   }

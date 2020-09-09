@@ -62,7 +62,7 @@ module nts.uk.com.view.cli002.a {
         constructor() {
             super();
             const vm = this;
-            vm.getData(0);
+            vm.getData(vm.selectedSystemCode());
         }
 
         mounted() {
@@ -75,7 +75,13 @@ module nts.uk.com.view.cli002.a {
         }
 
         public register() {
-            console.log("register");
+            const vm = this;
+            vm.logSettings = ko.observableArray([]);
+            _.forEach(vm.dataSourceItem, function(item: PGList) {
+                vm.logSettings.push(new LogSetting(vm.selectedSystemCode(), item.programId, item.menuClassification, item.loginHistoryRecord.usageCategory,
+                    item.editHistoryRecord.usageCategory, item.bootHistoryRecord.usageCategory));
+            });
+            service.updateLogSetting(vm.logSettings);
         }
 
         private getData(systemType: number) {
@@ -96,7 +102,7 @@ module nts.uk.com.view.cli002.a {
                     if(item.editHistoryRecord.activeCategory == 0) {
                         statesTable.push(new CellState(index, 'logUpdateDisplay', [nts.uk.ui.mgrid.color.Alarm, nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Disable]));
                     }
-                    pgInfomation.push(new PGInfomation(index + 1, item.functionName, false, false, false));
+                    pgInfomation.push(new PGInfomation(index + 1, item.functionName, false, false, false, item.programId, item.menuClassification));
                 })
                 vm.dataSourceItem(pgInfomation);
                 vm.getItemList();
@@ -172,7 +178,9 @@ module nts.uk.com.view.cli002.a {
         functionName: string,
         loginHistoryRecord: TargetSetting,
         bootHistoryRecord: TargetSetting,
-        editHistoryRecord: TargetSetting
+        editHistoryRecord: TargetSetting,
+        programId: string,
+        menuClassification: number
     }
 
     class PGInfomation {
@@ -181,11 +189,15 @@ module nts.uk.com.view.cli002.a {
         logLoginDisplay: boolean;
         logStartDisplay: boolean;
         logUpdateDisplay: boolean;
-        constructor(rowNumber: number, functionName: string, logLoginDisplay: boolean, logStartDisplay: boolean, logUpdateDisplay: boolean) {
+        programId: string;
+        menuClassification: number;
+        constructor(rowNumber: number, functionName: string, logLoginDisplay: boolean, logStartDisplay: boolean, logUpdateDisplay: boolean, programId: string, menuClassification: number) {
             this.functionName = functionName;
             this.logLoginDisplay = logLoginDisplay;
             this.logStartDisplay = logStartDisplay;
             this.logUpdateDisplay = logUpdateDisplay;
+            this.programId = programId;
+            this.menuClassification = menuClassification;
         }
     }
 
@@ -194,21 +206,18 @@ module nts.uk.com.view.cli002.a {
         programId: string;
         menuClassification: number;
         loginHistoryRecord: number;
-        companyId: string;
         editHistoryRecord: number;
         bootHistoryRecord: number;
         constructor(system: number,
             programId: string,
             menuClassification: number,
             loginHistoryRecord: number,
-            companyId: string,
             editHistoryRecord: number,
             bootHistoryRecord: number) {
                 this.system = system;
                 this.programId = programId;
                 this.menuClassification = menuClassification;
                 this.loginHistoryRecord = loginHistoryRecord;
-                this.companyId = companyId;
                 this.editHistoryRecord = editHistoryRecord;
                 this.bootHistoryRecord= bootHistoryRecord;
         }
