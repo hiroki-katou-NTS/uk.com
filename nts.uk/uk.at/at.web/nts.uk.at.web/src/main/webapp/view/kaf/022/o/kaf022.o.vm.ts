@@ -75,7 +75,7 @@ module nts.uk.at.view.kaf022.o.viewmodel {
         startPage(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
             $.when(service.getOTFrames(), service.getOTQuota())
                 .done((otFrames, otQuotaSettings) => {
                     self.overTimeQuotaSettings(otQuotaSettings.map(q => new OTQuota(q.overtimeAtr, q.flexAtr, q.overTimeFrame)));
@@ -95,7 +95,7 @@ module nts.uk.at.view.kaf022.o.viewmodel {
 
         saveOTQuotaSet() {
             const self = this;
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
             service.registerOTQuota(ko.toJS(self.overTimeQuotaSettings)).done(() => {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     // self.closeDialog();

@@ -19,6 +19,7 @@
                     </nts-dropdown>
                 </div>
             </div>
+            <template v-else />
             <div v-if="displayAppReason">
                 <div class="mb-1">
                     <span class="small-header">{{'KAFS00_18' | i18n}}</span>
@@ -27,7 +28,9 @@
                     <nts-text-area　v-model="params.output.opAppReason" />
                 </div>
             </div>
+            <template v-else />
         </div>
     </div>
+    <template v-else />
 </div>
 </template>

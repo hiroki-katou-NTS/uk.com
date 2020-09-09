@@ -1,15 +1,7 @@
-.A5 span {
-    padding: 0px 10px;
-}
-
-.A5 input {
-    width: 30px;
-}
-
-.A5 #A5_1 {
-    width: 120px
-}
-
 button.nts-switch-button {
     min-width: 100px;
+}
+
+#A1 {
+    margin-right: 550px;
 }

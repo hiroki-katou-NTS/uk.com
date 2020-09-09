@@ -14,12 +14,12 @@ public enum BusinessTripAppWorkType {
 	/**
 	 * 出勤日
 	 */
-	WORK_DAY(0, "振休"),
+	WORK_DAY(0, "出勤日"),
 	
 	/**
 	 * 休日
 	 */
-	HOLIDAY(1, "振出");
+	HOLIDAY(1, "休日");
 
 	public final int value;
 	

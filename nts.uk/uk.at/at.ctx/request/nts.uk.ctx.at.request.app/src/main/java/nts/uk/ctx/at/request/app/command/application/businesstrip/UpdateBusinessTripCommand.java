@@ -14,11 +14,11 @@ import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.B
 public class UpdateBusinessTripCommand {
 
     // 出張申請
-    private BusinessTripDto businessTripDto;
+    private BusinessTripCommand businessTrip;
 
-    private BusinessTripInfoOutputDto businessTripInfoOutputDto;
+    private BusinessTripInfoOutputCommand businessTripInfoOutput;
 
     // 申請
-    private CreateApplicationCommand applicationDto;
+    private CreateApplicationCommand application;
 
 }

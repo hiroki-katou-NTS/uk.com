@@ -10,6 +10,8 @@ import nts.uk.ctx.at.request.dom.application.*;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.*;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeLeaveTime;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -85,6 +87,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     @Inject
     private BasicScheduleService basicScheduleService;
 
+    @Inject
+    private AtEmployeeAdapter atEmployeeAdapter;
+
 
     /**
      * アルゴリズム「出張申請未承認申請を取得」を実行する
@@ -96,6 +101,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     @Override
     public List<ActualContentDisplay> getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst) {
         List<ActualContentDisplay> result = new ArrayList<>();
+
         if(appDate.isEmpty()) {
             return Collections.emptyList();
         }
@@ -111,28 +117,30 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             // Lấy Application có hiệu lực trong từng ngày, sort theo ngày đăng ký AppDate
             List<Application> validApps = apps
                     .stream()
-                    .filter(i -> i.getOpAppStartDate().get().getApplicationDate().afterOrEquals(date) && date.afterOrEquals(i.getOpAppEndDate().get().getApplicationDate()))
+                    .filter(i -> i.getOpAppStartDate().get().getApplicationDate().beforeOrEquals(date) && date.beforeOrEquals(i.getOpAppEndDate().get().getApplicationDate()))
                     .sorted(Comparator.nullsLast((e1, e2) -> e2.getAppDate().getApplicationDate().compareTo(e1.getAppDate().getApplicationDate())))
                     .collect(Collectors.toList());
+
+            // Lấy Content của ngày loop
+            Optional<ActualContentDisplay> currentContent = opActualContentDisplayLst.get().stream().filter(i -> i.getDate().equals(date)).findFirst();
+
             if (validApps.isEmpty()) {
-                result.add(new ActualContentDisplay(date, Optional.empty()));
+                result.add(currentContent.get());
             } else {
                 // 対象年月日を含む申請が存在を確認
                 // Lấy Application có ngày đăng ký mới nhất sau khi sort
                 Application newestApp = validApps.get(0);
-                // Lấy Content của ngày loop
-                Optional<ActualContentDisplay> currentContent = Optional.empty();
-                if (opActualContentDisplayLst.isPresent() && !opActualContentDisplayLst.get().isEmpty()) {
-                    currentContent = opActualContentDisplayLst.get().stream().filter(i -> i.getDate().equals(date)).findFirst();
-                }
+
                 // アルゴリズム「反映状態を取得する」を実行する
-                ReflectedState reflectStatus = this.getRefectionStatus(newestApp.getReflectionStatus());
+                ReflectedState reflectedState = newestApp.getAppReflectedState();
+
                 // 未反映、反映待ちの場合
-                if (reflectStatus != null && reflectStatus.value == ReflectedState.WAITREFLECTION.value) {
-                    val actualReflectStatus = newestApp.getReflectionStatus().getListReflectionStatusOfDay().stream().filter(i -> i.getTargetDate().compareTo(date) == 0).findAny();
-                    if (actualReflectStatus.isPresent() && actualReflectStatus.get().getActualReflectStatus().value == ReflectedState.WAITREFLECTION.value) {
-                        if (currentContent.isPresent() && currentContent.get().getOpAchievementDetail().isPresent()) {
-                            // 表示する実績内容に反映する
+                if (reflectedState == ReflectedState.WAITREFLECTION) {
+                    Optional<ReflectionStatusOfDay> actualReflectStatus = newestApp.getReflectionStatus().getListReflectionStatusOfDay().stream().filter(i -> i.getTargetDate().compareTo(date) == 0).findAny();
+                    if (actualReflectStatus.isPresent()) {
+                        // 未反映、反映待ちの場合
+                        if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION) {
+                            // アルゴリズム「出張申請内容より勤務情報を取得」を実行する
                             this.getWorkInfoFromTripReqContent(newestApp.getAppID(), newestApp.getAppType(), date, currentContent.get());
                             ActualContentDisplay actualContent = new ActualContentDisplay(date, currentContent.get().getOpAchievementDetail());
                             result.add(actualContent);
@@ -272,24 +280,96 @@ public class BusinessTripServiceImlp implements BusinessTripService {
      * アルゴリズム「出張申請就業時間帯チェック」を実行する
      * @param wkTypeCd
      * @param wkTimeCd
+     * @param inputDate
      */
     @Override
     public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate) {
         SetupType checkNeededOfWorkTime = basicScheduleService.checkNeededOfWorkTimeSetting(wkTypeCd);
         switch (checkNeededOfWorkTime) {
             case REQUIRED:
-                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
+                if (StringUtil.isNullOrEmpty(wkTimeCd, true)) {
                     throw new BusinessException("Msg_24", inputDate.toString());
                 }
                 break;
             case OPTIONAL:
                 break;
             case NOT_REQUIRED:
-                if (StringUtil.isNullOrEmpty(wkTypeCd, true)) {
-                    throw new BusinessException("23", inputDate.toString());
+                if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
+                    throw new BusinessException("Msg_23", inputDate.toString());
                 }
                 break;
         }
+    }
+
+    /**
+     * アルゴリズム「出張申請勤務種類分類内容取得」を実行する
+     * @param workType
+     * @return
+     */
+    @Override
+    public boolean getBusinessTripClsContent(WorkType workType) {
+        Boolean result = true;
+        val workCls = workType.getDailyWork().getWorkTypeUnit();
+        List<WorkTypeClassification> workDays = Arrays.asList(
+                WorkTypeClassification.Attendance, // 出勤
+                WorkTypeClassification.AnnualHoliday, // 年休
+                WorkTypeClassification.YearlyReserved, // 積立年休
+                WorkTypeClassification.SpecialHoliday, // 特別年休
+                WorkTypeClassification.Absence, // 欠勤
+                WorkTypeClassification.SubstituteHoliday, // 代休
+                WorkTypeClassification.Pause, // 振休
+                WorkTypeClassification.TimeDigestVacation // 時間消化休暇
+        );
+        List<WorkTypeClassification> holidays = Arrays.asList(
+                WorkTypeClassification.Holiday, // 休日
+                WorkTypeClassification.HolidayWork, // 休日出勤
+                WorkTypeClassification.Shooting // 振出
+        );
+        switch (workCls) {
+            case OneDay:
+                WorkTypeClassification workTypeClassification = workType.getDailyWork().getOneDay();
+                if (workDays.contains(workTypeClassification)) {
+                    result = true;
+                }
+                if (holidays.contains(workTypeClassification)) {
+                    result = false;
+                }
+                break;
+            case MonringAndAfternoon:
+                WorkTypeClassification afternoonWork = workType.getDailyWork().getAfternoon();
+                WorkTypeClassification morningWork = workType.getDailyWork().getMorning();
+                if (workDays.contains(morningWork) && workDays.contains(afternoonWork)) {
+                    result = false;
+                }
+                if (holidays.contains(morningWork) && holidays.contains(afternoonWork)) {
+                    result = true;
+                }
+                break;
+        }
+        return result;
+    }
+
+    @Override
+    public void businessTripIndividualCheck(List<BusinessTripInfo> infos) {
+        String sid = AppContexts.user().employeeId();
+
+        // loop 年月日　in　期間
+        infos.stream().forEach(i -> {
+            String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
+            String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
+            // アルゴリズム「出張申請就業時間帯チェック」を実行する
+            this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
+
+            List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
+            // 申請の矛盾チェック
+//                this.commonAlgorithm.appConflictCheck(
+//                        cid,
+//                        employeeInfoImports.get(0),
+//                        lstDate,
+//                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+//                        output.getActualContentDisplay().get()
+//                );
+        });
     }
 
     /**

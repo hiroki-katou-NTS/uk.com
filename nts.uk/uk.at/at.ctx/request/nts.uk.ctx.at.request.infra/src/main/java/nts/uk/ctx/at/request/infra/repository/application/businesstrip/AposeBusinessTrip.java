@@ -91,7 +91,7 @@ public class AposeBusinessTrip {
         Cell cellD10_H3 = cells.get("H9");
         cellD10_H3.setValue(I18NText.getText("KAF008_24"));
 
-        Cell cellD10_H4 = cells.get("I9");
+        Cell cellD10_H4 = cells.get("J9");
         cellD10_H4.setValue(I18NText.getText("KAF008_23"));
 
     }

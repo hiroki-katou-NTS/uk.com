@@ -66,15 +66,15 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
     protected ProcessResult handle(CommandHandlerContext<UpdateBusinessTripCommand> context) {
         UpdateBusinessTripCommand command = context.getCommand();
         String cid = AppContexts.user().companyId();
-        CreateApplicationCommand applicationCommand = command.getApplicationDto();
+        CreateApplicationCommand applicationCommand = command.getApplication();
         Application application = command
-                .getBusinessTripInfoOutputDto().getAppDispInfoStartup().getAppDetailScreenInfo().getApplication().toDomain();
+                .getBusinessTripInfoOutput().getAppDispInfoStartup().getAppDetailScreenInfo().getApplication().toDomain();
         application.setOpAppReason(Strings.isEmpty(applicationCommand.getOpAppReason()) ? Optional.empty() : Optional.of(new AppReason(applicationCommand.getOpAppReason())));
         application.setOpAppStandardReasonCD(applicationCommand.getOpAppStandardReasonCD() == null
                 ? Optional.empty()
                 : Optional.of(new AppStandardReasonCode(applicationCommand.getOpAppStandardReasonCD())));
-        BusinessTrip businessTrip = command.getBusinessTripDto().toDomain(application);
-        BusinessTripInfoOutput infoOutput = command.getBusinessTripInfoOutputDto().toDomain();
+        BusinessTrip businessTrip = command.getBusinessTrip().toDomain(application);
+        BusinessTripInfoOutput infoOutput = command.getBusinessTripInfoOutput().toDomain();
 
         // アルゴリズム「4-1.詳細画面登録前の処理」を実行する
         businessTrip.getInfos().stream().forEach(i -> {
@@ -87,7 +87,7 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
                     application.getPrePostAtr(),
                     application.getVersion(),
                     i.getWorkInformation().getWorkTypeCode().v(),
-                    i.getWorkInformation().getWorkTimeCode().v(),
+                    i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v(),
                     infoOutput.getAppDispInfoStartup()
             );
         });
@@ -102,9 +102,9 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 
         //アルゴリズム「出張申請暫定残数を更新する」を実行する
         //アルゴリズム「暫定データの登録」を実行する
-        this.interimRemainDataMngRegisterDateChange.registerDateChange(cid,
-                application.getEmployeeID(),
-                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
+//        this.interimRemainDataMngRegisterDateChange.registerDateChange(cid,
+//                application.getEmployeeID(),
+//                businessTrip.getInfos().stream().map(i -> i.getDate()).collect(Collectors.toList()));
 
         // アルゴリズム「4-2.詳細画面登録後の処理」を実行する
         return detailAfterUpdate.processAfterDetailScreenRegistration(cid, application.getAppID());
@@ -121,17 +121,19 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
         // loop 年月日　in　期間
         businessTrip.getInfos().stream().forEach(i -> {
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            businessTripService.checkInputWorkCode(i.getWorkInformation().getWorkTypeCode().v(),i.getWorkInformation().getWorkTimeCode().v(), i.getDate());
+            businessTripService.checkInputWorkCode(i.getWorkInformation().getWorkTypeCode().v(),
+                    i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v()
+                    , i.getDate());
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
             // 申請の矛盾チェック
-            this.commonAlgorithm.appConflictCheck(
-                    cid,
-                    employeeInfoImports.get(0),
-                    Arrays.asList(i.getDate()),
-                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-                    appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
-            );
+//            this.commonAlgorithm.appConflictCheck(
+//                    cid,
+//                    employeeInfoImports.get(0),
+//                    Arrays.asList(i.getDate()),
+//                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+//                    appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
+//            );
         });
     }
 }

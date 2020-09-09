@@ -28,9 +28,10 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             ]);
 
             // list enum apptype get to combobox
-            let listApplicationType = __viewContext.enums.ApplicationType;
-            _.forEach(listApplicationType, (obj) => {
-                self.listAppType.push(new ItemModel(obj.value, obj.name))
+            const labels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_11", "KAF022_707", "KAF022_10", "KAF022_12", "KAF022_705"];
+            const listApplicationType = __viewContext.enums.ApplicationType;
+            listApplicationType.forEach( (obj, index) => {
+                self.listAppType.push(new ItemModel(obj.value, getText(labels[index])))
             });
 
             // subscribe a item in the list
@@ -55,7 +56,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             self.selectedAppType.subscribe((value) => {
                 if (!_.isNil(value)) {
                     nts.uk.ui.errors.clearAll();
-                    self.listReasonByAppType(self.listReason().filter(r => r.appType == value));
+                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == value), ['reasonCode']));
                     if (self.listReasonByAppType().length > 0) {
                         if (self.selectedReasonCode() == self.listReasonByAppType()[0].reasonCode)
                             self.selectedReasonCode.valueHasMutated();
@@ -150,12 +151,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     d.dispOrder = i;
                 });
                 service.saveReason(data).done(() => {
-                    self.getData(current.reasonCode).done(() => {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }).fail(error => {
-                        alert(error);
-                    }).always(() => {
-                        nts.uk.ui.block.clear();
+                    dialogInfo({ messageId: "Msg_15" }).then(() => {
+                        self.getData(current.reasonCode);
                     });
                 }).fail(error => {
                     alert(error);
@@ -182,12 +179,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     });
                     service.saveReason(data).done(() => {
                         const nextReasonCode = nextIndex > data.length || nextIndex < 0 ? null : data[nextIndex].reasonCode;
-                        self.getData(nextReasonCode).done(() => {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        }).fail(error => {
-                            alert(error);
-                        }).always(() => {
-                            nts.uk.ui.block.clear();
+                        dialogInfo({ messageId: "Msg_16" }).then(() => {
+                            self.getData(nextReasonCode)
                         });
                     }).fail(error => {
                         alert(error);
@@ -237,10 +230,6 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             self.dispOrder = ko.observable(param ? param.dispOrder : 0);
             self.reasonTemp = ko.observable(param ? param.reasonTemp : "");
             self.defaultFlg = ko.observable(param ? param.defaultFlg : false);
-
-            self.defaultFlg.subscribe(value => {
-                console.log(value);
-            })
         }
     }
 
@@ -256,7 +245,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
 
     function makeIcon(value) {
         if (value == "true") {
-            return '<i class="icon icon-dot"></i>';
+            return '<i class="icon icon-dot" style="margin: auto; display: block;"/>';
         }
         return '';
     }

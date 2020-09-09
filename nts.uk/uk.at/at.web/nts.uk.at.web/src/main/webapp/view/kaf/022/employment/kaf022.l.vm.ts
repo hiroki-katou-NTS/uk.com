@@ -18,9 +18,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
 
         listWTShareKDL002: KnockoutObservableArray<any> = ko.observableArray([]);
         allowRegister: KnockoutObservable<boolean> = ko.observable(true);
-        //previewData: any = null;
-        //previewCode: string = "";
-        //saveNotify:KnockoutObservable<boolean> = ko.observable(false);
+
         itemListD13: KnockoutObservableArray<any> = ko.observableArray([
             {code: 1, name: getText("KAF022_100")},
             {code: 0, name: getText("KAF022_101")}
@@ -618,6 +616,21 @@ module nts.uk.at.view.kaf022.l.viewmodel {
             return dfd.promise();
         }
 
+        // get work type if app type = 3
+        findBusinessTripKaf022(command): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred();
+            service.findBusinessTripKaf022(command).done(data => {
+                //Find already setting list
+                self.listWTShareKDL002(data || []);
+                dfd.resolve();
+            }).fail(error => {
+                dfd.reject();
+                nts.uk.ui.dialog.alertError(error);
+            });
+            return dfd.promise();
+        }
+
         // get work type if app type = 4
         findBounceKaf022(): JQueryPromise<any> {
             let self = this;
@@ -728,8 +741,19 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                     return self.findAbsenceKaf022(absenceKAF022);
                 case ApplicationType.WORK_CHANGE_APPLICATION:
                     return self.findWkChangeKaf022();
-                // case ApplicationType.BUSINESS_TRIP_APPLICATION:
-                //     break;
+                case ApplicationType.BUSINESS_TRIP_APPLICATION:
+                    let command;
+                    switch (holidayOrPauseType) {
+                        case 0:
+                            command = [0];
+                            break;
+                        case 1:
+                            command = [1, 7, 11];
+                            break;
+                        default:
+                            break;
+                    }
+                    return self.findBusinessTripKaf022(command);
                 case ApplicationType.GO_RETURN_DIRECTLY_APPLICATION:
                     return self.findBounceKaf022();
                 case ApplicationType.BREAK_TIME_APPLICATION:
@@ -991,7 +1015,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                 businessTripSet: KnockoutObservableArray<DataSetting> = ko.observableArray([]);
             let resId: Array<string> = ["KAF022_737", "KAF022_738"];
             for (let i = 0; i < 2; i++) {
-                let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.BUSINESS_TRIP_APPLICATION, (resId.length - (i + 1)));
+                let dataSetting = self.initDefauleDataSetting(employmentCode, ApplicationType.BUSINESS_TRIP_APPLICATION, i);
                 dataSetting.optionName(getText(resId[i]));
                 businessTripSet.push(dataSetting);
             }
