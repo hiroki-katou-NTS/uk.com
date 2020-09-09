@@ -262,11 +262,6 @@ module nts.uk.at.view.ksc001.b {
 		            self.overwriteConfirmedData(false);
 		            $('#overwriteConfirmedData').hide();
 	            }
-
-	            //fix screen on 1280
-	            if( window.outerWidth <= 1280 ) {
-	            	$('#contents-area').addClass('fix-2180');
-	            }
             }
 
             /**
@@ -419,6 +414,13 @@ module nts.uk.at.view.ksc001.b {
 
                 //init Schedule for personal
                 self.displayPersonalInfor();
+
+	            //fix screen on 1280
+	            if( window.outerWidth <= 1280 ) {
+		            $('#contents-area').addClass('fix-2180');
+	            }
+	            //remove tab index
+	            $('.steps .nts-step-contents').attr('tabindex', '-1');
 
                 return dfd.promise();
             }
@@ -806,14 +808,14 @@ module nts.uk.at.view.ksc001.b {
              */
             private previousPageE(): void {
                 var self = this;
+	            self.previous();
 
-                if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkCreateMethodAtrPersonalInfo() ==  CreateMethodAtr.PATTERN_SCHEDULE) { //checkProcessExecutionAtrRebuild == ProcessExecutionAtr.RECONFIG
-                    //back screen C
-                    self.previousTwo();
+                /*if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
+                    && self.checkCreateMethodAtrPersonalInfo() ==  CreateMethodAtr.PATTERN_SCHEDULE) {
+                    self.previousTwo(); //back screen C
                 } else {
                     self.previous();
-                }
+                }*/
             }
 
             /**
