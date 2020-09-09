@@ -78,8 +78,10 @@ public class ReflectActualStampAndStamp {
 			}
 			timeActualStamp = timeStampCopy;
 		}
+		int number = timeFrame.getNumberOfReflections()+1;
 		//打刻反映回数を＋１する
-		timeFrame.setNumberOfReflections(timeFrame.getNumberOfReflections()+1);
+		timeFrame.setNumberOfReflections(number);
+		timeActualStamp.setNumberOfReflectionStamp(number);
 		//反映済み区分　←　true
 		stamp.setReflectedCategory(true);
 		
