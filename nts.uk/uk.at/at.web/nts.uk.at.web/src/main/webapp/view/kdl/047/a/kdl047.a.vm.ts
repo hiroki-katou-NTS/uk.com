@@ -29,7 +29,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
       { headerText: this.$i18n('KDL047_6'), prop: 'code', width: 100 },
       { headerText: this.$i18n('KDL047_7'), prop: 'name', width: 300 }
     ]);
-    objectDisplay: Display = new Display();
+    objectDisplay: AttendanceItemShare = new AttendanceItemShare();
 
     isVisibleA1: KnockoutObservable<boolean> = ko.observable(false);
     isVisibleA2: KnockoutObservable<boolean> = ko.observable(false);
@@ -60,11 +60,11 @@ module nts.uk.at.view.kdl047.a.screenModel {
       // For Table
       let tableDatas = [];
 
-      _.each(vm.objectDisplay.diligenceProjectList, tmp => {
+      _.each(vm.objectDisplay.attendanceItems, tmp => {
         tableDatas.push(new ItemModel({
-          id: tmp.id,
-          code: tmp.indicatesNumber,
-          name: tmp.name
+          id: tmp.attendanceItemId,
+          code: tmp.displayNumbers.toString(),
+          name: tmp.attendanceItemName
         }));
       });
       tableDatas = _.orderBy(tableDatas, ['code'], ['asc']);
@@ -110,25 +110,45 @@ module nts.uk.at.view.kdl047.a.screenModel {
       $('#A3_2').trigger('validate');
       _.defer(() => {
         if (!$('#A3_2').ntsError('hasError')) {
+          let attendanceRecord: AttendanceRecordExport = new AttendanceRecordExport();
+
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == ２：入力可能
           if (vm.objectDisplay.itemNameLine.displayFlag && vm.objectDisplay.itemNameLine.displayInputCategory === 2) {
-            // shared with value of A3_2, A5_2, A6_2_1
-            vm.objectDisplay.itemNameLine.name = vm.attendanceRecordName();
-            vm.objectDisplay.attribute.selected = vm.selectedCode();
-            vm.objectDisplay.selectedTime = vm.currentCode();
-            setShared('attendanceRecordExport', vm.objectDisplay);
+
+            attendanceRecord = new AttendanceRecordExport({
+              attendanceItemName: vm.attendanceRecordName(),
+              layoutCode: vm.objectDisplay.titleLine.layoutCode,
+              layoutName: vm.objectDisplay.titleLine.layoutName,
+              columnIndex: vm.objectDisplay.columnIndex,
+              position: vm.objectDisplay.position,
+              exportAtr: vm.objectDisplay.exportAtr,
+              attendanceId: vm.currentCode() === -1 ? null : vm.currentCode(),
+              attribute: vm.selectedCode()
+            });
+
           }
           // 項目名行の表示フラグ == False：表示しない
           // 項目名行の表示フラグ == True：表示すると表示入力区分 == １：表示のみ
           if (!vm.objectDisplay.itemNameLine.displayFlag || vm.objectDisplay.itemNameLine.displayInputCategory === 1) {
-            // shared with value of A5_2, A6_2_1
-            vm.objectDisplay.attribute.selected = vm.selectedCode();
-            vm.objectDisplay.selectedTime = vm.currentCode() === -1 ? null : vm.currentCode();
-            setShared('attendanceRecordExport', vm.objectDisplay);
+
+            attendanceRecord = new AttendanceRecordExport({
+              attendanceItemName: vm.objectDisplay.itemNameLine.name,
+              layoutCode: vm.objectDisplay.titleLine.layoutCode,
+              layoutName: vm.objectDisplay.titleLine.layoutName,
+              columnIndex: vm.objectDisplay.columnIndex,
+              position: vm.objectDisplay.position,
+              exportAtr: vm.objectDisplay.exportAtr,
+              attendanceId: vm.currentCode() === -1 ? null : vm.currentCode(),
+              attribute: vm.selectedCode()
+            });
+
           }
+
+          setShared('attendanceRecordExport', vm.objectDisplay);
           vm.$window.close()
         }
       });
+
     }
 
     // Event on click A8_2 item
@@ -149,6 +169,21 @@ module nts.uk.at.view.kdl047.a.screenModel {
     }
   }
 
+  export class AttendanceRecordExport {
+    attendanceItemName: string;
+    layoutCode: string;
+    layoutName: string;
+    columnIndex: number;
+    position: number;
+    exportAtr: number;
+    attendanceId: number;
+    attribute: number;
+  
+    constructor(init?: Partial<AttendanceRecordExport>) {
+      $.extend(this, init);
+    }
+  }
+
   export class NtsGridListColumn {
     headerText?: string;
     prop?: string;
@@ -156,45 +191,56 @@ module nts.uk.at.view.kdl047.a.screenModel {
     hidden?: boolean
   }
 
-  // Display object mock
-  export class Display {
+  export class AttendanceItemShare {
     // タイトル行
-    titleLine: TitleLineObject = new TitleLineObject();
+    titleLine: TitleLine;
     // 項目名行
-    itemNameLine: ItemNameLineObject = new ItemNameLineObject();
+    itemNameLine: ItemNameLine;
     // 属性
-    attribute: AttributeObject = new AttributeObject();
+    attribute: Attribute;
     // List<勤怠項目>
-    diligenceProjectList: DiligenceProject[] = [];
+    attendanceItems: Array<AttributeOfAttendanceItem>;
     // 選択済み勤怠項目ID
     selectedTime: number;
+    // 加減算する項目
+    attendanceIds: Array<any>;
+    // columnIndex
+    columnIndex: number;
+    // position
+    position: number;
+    // exportAtr
+    exportAtr: number;
+
+    constructor(init?: Partial<AttendanceItemShare>) {
+        $.extend(this, init);
+    }
   }
 
-  export class TitleLineObject {
+  export class TitleLine {
     // 表示フラグ
     displayFlag: boolean = false;
     // 出力項目コード
-    layoutCode: string | null = null;
+    layoutCode: string;
     // 出力項目名
-    layoutName: string | null = null;
+    layoutName: string;
     // コメント
-    directText: string | null = null;
+    directText: string;
   }
 
-  export class ItemNameLineObject {
+  export class ItemNameLine {
     // 表示フラグ
-    displayFlag: boolean = false;
+    displayFlag: boolean;
     // 表示入力区分
-    displayInputCategory: number = 1;
+    displayInputCategory: number;
     // 名称
-    name: string | null = null;
+    name: string;
   }
 
-  export class AttributeObject {
+  export class Attribute {
     // 選択区分
-    selectionCategory: number = 2;
+    selectionCategory: number;
     // List<属性>
-    attributeList: AttendaceType[] = [];
+    attributeList: Array<AttendaceType>;
     // 選択済み
     selected: number = 1;
   }
@@ -207,14 +253,16 @@ module nts.uk.at.view.kdl047.a.screenModel {
     }
   }
 
-  export class DiligenceProject {
-    // ID
-    id: any;
-    // 名称
-    name: any;
-    // 属性
-    attributes: any;
-    // 表示番号
-    indicatesNumber: any;
+  export class AttributeOfAttendanceItem {
+    /** 勤怠項目ID */
+    attendanceItemId: number;
+    /** 勤怠項目名称 */
+    attendanceItemName: string;
+    /** 勤怠項目の属性 */
+    attributes: number;
+    /** マスタの種類 */
+    masterTypes: number | null;
+    /** 表示番号 */
+    displayNumbers: number;
   }
 }
