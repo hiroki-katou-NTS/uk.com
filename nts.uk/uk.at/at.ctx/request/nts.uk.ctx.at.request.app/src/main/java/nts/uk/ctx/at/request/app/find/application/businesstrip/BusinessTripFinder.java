@@ -123,8 +123,9 @@ public class BusinessTripFinder {
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Holiday, WorkTypeClassification.HolidayWork, WorkTypeClassification.Shooting))
         );
         // アルゴリズム「出張申請未承認申請を取得」を実行する
-        List<ActualContentDisplay> actualContentDisplays = businessTripService.getBusinessTripNotApproved(sid, appDate, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst());
-
+//        List<ActualContentDisplay> actualContentDisplays = businessTripService.getBusinessTripNotApproved(sid, appDate, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst());
+        List<ActualContentDisplay> actualContentDisplays = Collections.EMPTY_LIST;
+        
         // Actual content get từ AppDispInfoStartupOutput đang default là optional empty
          Optional<List<ActualContentDisplay>> appActualContent = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
 
@@ -456,6 +457,26 @@ public class BusinessTripFinder {
                     dateList, Optional.ofNullable(null));
             BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, applicantlist,
                     dateList, appDispInfoStartupOutput);
+            
+            // Fake data
+            List<BusinessTripActualContentDto> dummy = new ArrayList<BusinessTripActualContentDto>();
+            
+            dateList.stream().forEach(i -> {
+            	BusinessTripActualContentDto eachContent = new BusinessTripActualContentDto();
+            	eachContent.setDate(i.toString());
+            	AchievementDetailDto detail = new AchievementDetailDto();
+            	detail.setWorkTypeCD("001");
+            	detail.setWorkTimeCD("001");
+            	detail.setOpWorkTypeName("type name");
+            	detail.setOpWorkTimeName("time name");
+            	detail.setOpWorkTime(100);
+            	detail.setOpLeaveTime(100);
+            	
+            	dummy.add(eachContent);
+            });
+            
+            businessTripInfoOutputDto.setBusinessTripActualContent(dummy);
+            
             result.setBusinessTripInfoOutput(businessTripInfoOutputDto);
             // INPUT「出張申請の表示情報」と「出張申請」を返す
         } else {

@@ -36,6 +36,8 @@ import {KafS08DComponent} from '../../../kaf/s08/d';
     },
     constraints: [],
 })
+
+
 export class KafS08A2Component extends Vue {
     @Prop({default : () => ({})})
     //public params: string = 'KafS08A2';
@@ -57,6 +59,8 @@ export class KafS08A2Component extends Vue {
     //nhảy đến step three
     public nextToStepThree() {
         const vm = this;
+        //check trước khi apply
+
         this.$emit('nextToStepThree');
     }
 
@@ -64,7 +68,6 @@ export class KafS08A2Component extends Vue {
     public prevStepOne() {
         this.$emit('prevStepOne',{});
     }
-
 }
 
 const API = {

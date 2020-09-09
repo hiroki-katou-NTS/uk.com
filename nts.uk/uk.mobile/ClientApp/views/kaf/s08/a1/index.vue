@@ -13,7 +13,7 @@
       </div>
       <div>
         <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
-        <template v-else />
+        <!-- <template v-else /> -->
       </div>
       <!-- A5 -->
       <div class="field-set">

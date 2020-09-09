@@ -55,7 +55,7 @@
             <tr v-for="(data,index) in mtable" v-bind:key="index">
               <td class="px-1">{{data.date | date('MM/DD(ddd)')}}</td>
               <td class="px-1">{{data.wkTypeCd}}</td>
-              <td class="px-1">{{data.workinghours}}</td>
+              <td class="px-1">{{data.wkTimeCd}}</td>
               <td class="px-1">{{data.wkTimeCd | timewd}}</td>
               <td class="border-right-0 px-1">{{data.endWorkTime | timewd}}</td>
               <td class="text-center px-0 border-left-0">

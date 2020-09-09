@@ -24,7 +24,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public kaf000_A_Params: any = null;
     public kaf000_B_Params: any = null;
     public kaf000_C_Params: any = null;
-    private seen: boolean = true;
+    //private seen: boolean = true;
     public step: string = 'KAFS08_10';
     public mode: Boolean = true;
     public departureTime: number = null;
@@ -74,9 +74,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                     mode: vm.mode,
                     companyId: vm.user.companyId,
                     employeeId: vm.user.employeeId,
-                    listDates: [],
+                    listDates: ['2020/03/12','2020/03/13','2020/03/14','2020/03/15','2020/03/16'],
                     businessTripInfoOutput: vm.mode ? null : vm.data,
-                    businessTrip: vm.mode ? null : vm.data.appWorkChange
+                    //businessTrip: vm.mode ? null : vm.data.appWorkChange
                 }).then((res: any) => {
                     if (!res) {
                         return;
