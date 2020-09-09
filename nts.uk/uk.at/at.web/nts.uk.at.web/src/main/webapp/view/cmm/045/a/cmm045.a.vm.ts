@@ -244,7 +244,11 @@ module cmm045.a.viewmodel {
 			if (_.isEmpty(selectAppTypeLst)) {
 				nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" });
                 return false;
-			}
+            }
+            if(!self.isBeforeCheck() && !self.isAfterCheck()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" });
+                return false;
+            }
 			return true;
 		}
 
