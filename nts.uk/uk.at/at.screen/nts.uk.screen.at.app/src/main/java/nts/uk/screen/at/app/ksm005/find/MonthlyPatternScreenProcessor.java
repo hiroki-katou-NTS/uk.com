@@ -69,10 +69,8 @@ public class MonthlyPatternScreenProcessor {
         workMonthlySettings.forEach(x -> {
             // 2. set WorkStyle
             WorkInformation information = new WorkInformation(x.getWorkingCode(), x.getWorkTypeCode());
-            Integer workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
-            Integer typeColor = -1;
-            //check output for frontend
-            typeColor = getInteger(workStyle, typeColor);
+            int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
+            int typeColor = getInteger(workStyle);
             x.setTypeColor(typeColor);
 
             // 3. set work type name
@@ -98,24 +96,19 @@ public class MonthlyPatternScreenProcessor {
         WorkInformation.Require require = new RequireImpl(basicScheduleService);
 
         WorkInformation information = new WorkInformation(requestPrams.getWorkingCode(), requestPrams.getWorkTypeCode());
-        Integer workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
-        Integer typeColor = -1;
-        //check output for frontend
-        typeColor = getInteger(workStyle, typeColor);
+        int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
+        int typeColor = getInteger(workStyle);
         return new WorkStyleDto(requestPrams.getWorkingCode(), requestPrams.getWorkTypeCode(),typeColor);
     }
 
-    private Integer getInteger(Integer workStyle, Integer typeColor) {
-        if (workStyle != null) {
-            if (workStyle == WorkStyle.ONE_DAY_WORK.value) {
-                typeColor = 0;
-            } else if (workStyle == WorkStyle.ONE_DAY_REST.value) {
-                typeColor = 1;
-            } else {
-                typeColor = 2;
-            }
-        }
-        return typeColor;
+    private int getInteger(int workStyle) {
+        if(workStyle < 0)
+            return -1;
+        if (workStyle == WorkStyle.ONE_DAY_WORK.value)
+            return 0;
+        if (workStyle == WorkStyle.ONE_DAY_REST.value)
+            return 1;
+        return 2;
     }
 
     @AllArgsConstructor
