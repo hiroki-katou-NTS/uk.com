@@ -198,30 +198,33 @@ public class GetScheduleOfWorkInfo {
 				}
 				
 				Integer startTime = null;
-				if (workSchedule.getOptTimeLeaving().isPresent()) {
-					Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
-					if (timeLeavingWork.isPresent()) {
-						if(timeLeavingWork.get().getAttendanceStamp().isPresent()){
-							if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()){
-								if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null){
-									if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
-										startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+				Integer endtTime = null;
+				
+				if (workTimeCode != null) {
+					if (workSchedule.getOptTimeLeaving().isPresent()) {
+						Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
+						if (timeLeavingWork.isPresent()) {
+							if(timeLeavingWork.get().getAttendanceStamp().isPresent()){
+								if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()){
+									if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null){
+										if(timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
+											startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+										}
 									}
 								}
 							}
 						}
 					}
-				}
-				
-				Integer endtTime = null;
-				if (workSchedule.getOptTimeLeaving().isPresent()) {
-					Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
-					if (timeLeavingWork.isPresent()) {
-						if(timeLeavingWork.get().getLeaveStamp().isPresent()){
-							if(timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()){
-								if(timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null){
-									if(timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
-										endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+					
+					if (workSchedule.getOptTimeLeaving().isPresent()) {
+						Optional<TimeLeavingWork> timeLeavingWork = workSchedule.getOptTimeLeaving().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
+						if (timeLeavingWork.isPresent()) {
+							if(timeLeavingWork.get().getLeaveStamp().isPresent()){
+								if(timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()){
+									if(timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null){
+										if(timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()){
+											endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+										}
 									}
 								}
 							}
