@@ -28,7 +28,7 @@
                 <div style="margin-left: 6%; margin-top: 20px;" data-bind="text: workplaceName"></div>
                 <hr style="margin: 10px 5%;" />                
                     <div class="container-custom">
-                        <button id ="prev-btn" tabindex="4" class="auto-height" data-bind="click: Prev">
+                        <button id ="prev-btn" tabindex="4" class="auto-height"  data-bind="click: Prev, enable: isEnableBtn">
                             <div class="flex valign-center" ><img src="img/prev.png" /> #{i18n.getText('KSU001_4008')}</div>                    
                         </button>                   
                         <div data-bind="ntsPanel:{width: '129px', height: '15px', direction: 'bottom', showIcon: false, visible: true}" style="margin: 0px 10px;">
@@ -43,7 +43,7 @@
                                                 enable: true  }">
                             </div>
                         </div>               
-                        <button tabindex="7" class="auto-height" data-bind="click: Forward">                           
+                        <button tabindex="7" class="auto-height" data-bind="click: Forward, enable: isEnableBtn">                           
                             <div class="flex valign-center" >#{i18n.getText('KSU001_4012')} <img src="img/next.png" /></div>
                         </button>                           
                     </div>  
