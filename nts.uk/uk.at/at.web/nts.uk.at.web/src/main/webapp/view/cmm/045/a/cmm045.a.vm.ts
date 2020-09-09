@@ -162,11 +162,13 @@ module cmm045.a.viewmodel {
                         $("#grid1").ntsGrid("destroy");
                         let colorBackGr = self.fillColorbackGrAppr();
                         let lstHidden: Array<any> = self.findRowHidden(self.items());
-                        self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                        self.reloadGridApproval(lstHidden,colorBackGr, false);
+                        // self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
                     } else {
                         let colorBackGr = self.fillColorbackGr();
                         $("#grid2").ntsGrid("destroy");
-                        self.reloadGridApplicaion(colorBackGr, self.isHidden());
+                        self.reloadGridApplicaion(colorBackGr, false);
+                        // self.reloadGridApplicaion(colorBackGr, self.isHidden());
                     }
 				}).always(() => block.clear());
                 // self.filter();
@@ -271,11 +273,13 @@ module cmm045.a.viewmodel {
                     $("#grid1").ntsGrid("destroy");
                     let colorBackGr = self.fillColorbackGrAppr();
                     let lstHidden: Array<any> = self.findRowHidden(self.items());
-                    self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                    self.reloadGridApproval(lstHidden,colorBackGr, false);
+                    // self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
                 } else {
                     let colorBackGr = self.fillColorbackGr();
                     $("#grid2").ntsGrid("destroy");
-                    self.reloadGridApplicaion(colorBackGr, self.isHidden());
+                    self.reloadGridApplicaion(colorBackGr, false);
+                    // self.reloadGridApplicaion(colorBackGr, self.isHidden());
               	}
 			}).always(() => block.clear());
 		}
@@ -391,7 +395,7 @@ module cmm045.a.viewmodel {
 				self.appListExtractConditionDto = data.appListExtractCondition;
 				self.updateFromAppListExtractCondition();
                 self.lstContentApp(data.lstContentApp);
-                let isHidden = data.isDisPreP == 1 ? false : true;
+                let isHidden = data.isDisPreP == 1 ? true : true;
                 self.isHidden(isHidden);
 //                        self.selectedRuleCode.subscribe(function(codeChanged) {
 //                            self.filter();
@@ -441,7 +445,8 @@ module cmm045.a.viewmodel {
                 if (self.mode() == 1) {
                     let colorBackGr = self.fillColorbackGrAppr();
                      let lstHidden: Array<any> = self.findRowHidden(self.items());
-                     self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                    //  self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                     self.reloadGridApproval(lstHidden,colorBackGr, false);
                 } else {
                     let colorBackGr = self.fillColorbackGr();
                     self.reloadGridApplicaion(colorBackGr, self.isHidden());
