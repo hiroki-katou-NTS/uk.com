@@ -7,4 +7,5 @@ import nts.uk.ctx.at.request.app.command.application.applicationlist.AppListInfo
 public class AppScreenQuery {
 	public int appListAtr;
 	public AppListInfoCmd lstApp;
+	public String programName;
 }

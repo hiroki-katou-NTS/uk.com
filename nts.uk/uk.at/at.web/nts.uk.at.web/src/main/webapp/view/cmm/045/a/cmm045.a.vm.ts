@@ -53,8 +53,8 @@ module cmm045.a.viewmodel {
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
         appList: any = ko.observable(null);
         appListAtr: number;
-        isBeforeCheck: KnockoutObservable<boolean> = ko.observable(false);
-        isAfterCheck: KnockoutObservable<boolean> = ko.observable(false);
+        isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
+        isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
@@ -162,11 +162,13 @@ module cmm045.a.viewmodel {
                         $("#grid1").ntsGrid("destroy");
                         let colorBackGr = self.fillColorbackGrAppr();
                         let lstHidden: Array<any> = self.findRowHidden(self.items());
-                        self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                        self.reloadGridApproval(lstHidden,colorBackGr, false);
+                        // self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
                     } else {
                         let colorBackGr = self.fillColorbackGr();
                         $("#grid2").ntsGrid("destroy");
-                        self.reloadGridApplicaion(colorBackGr, self.isHidden());
+                        self.reloadGridApplicaion(colorBackGr, false);
+                        // self.reloadGridApplicaion(colorBackGr, self.isHidden());
                     }
 				}).always(() => block.clear());
                 // self.filter();
@@ -208,9 +210,9 @@ module cmm045.a.viewmodel {
         	self.isAfterCheck.subscribe(value => {
 				self.appListExtractConditionDto.postOutput = value;
 			});
-			
+
 			self.orderCD.subscribe(value => {
-				self.appListExtractConditionDto.appDisplayOrder = value;	
+				self.appListExtractConditionDto.appDisplayOrder = value;
 			});
         }
 
@@ -222,12 +224,12 @@ module cmm045.a.viewmodel {
             //check filter
             //check startDate
             if (self.dateValue().startDate == null || self.dateValue().startDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('.ntsDatepicker.nts-input.ntsStartDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsStartDate').ntsError('set', {messageId:"Msg_359"});
                 return false;
             }
             //check endDate
             if (self.dateValue().endDate == null || self.dateValue().endDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('.ntsDatepicker.nts-input.ntsEndDatePicker.ntsDateRange_Component').ntsError('set', {messageId:"Msg_359"});
+                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsEndDate').ntsError('set', {messageId:"Msg_359"});
                 return false;
             }
             if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
@@ -242,7 +244,11 @@ module cmm045.a.viewmodel {
 			if (_.isEmpty(selectAppTypeLst)) {
 				nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" });
                 return false;
-			}
+            }
+            if(!self.isBeforeCheck() && !self.isAfterCheck()) {
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" });
+                return false;
+            }
 			return true;
 		}
 
@@ -271,11 +277,13 @@ module cmm045.a.viewmodel {
                     $("#grid1").ntsGrid("destroy");
                     let colorBackGr = self.fillColorbackGrAppr();
                     let lstHidden: Array<any> = self.findRowHidden(self.items());
-                    self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                    self.reloadGridApproval(lstHidden,colorBackGr, false);
+                    // self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
                 } else {
                     let colorBackGr = self.fillColorbackGr();
                     $("#grid2").ntsGrid("destroy");
-                    self.reloadGridApplicaion(colorBackGr, self.isHidden());
+                    self.reloadGridApplicaion(colorBackGr, false);
+                    // self.reloadGridApplicaion(colorBackGr, self.isHidden());
               	}
 			}).always(() => block.clear());
 		}
@@ -391,7 +399,7 @@ module cmm045.a.viewmodel {
 				self.appListExtractConditionDto = data.appListExtractCondition;
 				self.updateFromAppListExtractCondition();
                 self.lstContentApp(data.lstContentApp);
-                let isHidden = data.isDisPreP == 1 ? false : true;
+                let isHidden = data.isDisPreP == 1 ? true : true;
                 self.isHidden(isHidden);
 //                        self.selectedRuleCode.subscribe(function(codeChanged) {
 //                            self.filter();
@@ -441,7 +449,8 @@ module cmm045.a.viewmodel {
                 if (self.mode() == 1) {
                     let colorBackGr = self.fillColorbackGrAppr();
                      let lstHidden: Array<any> = self.findRowHidden(self.items());
-                     self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                    //  self.reloadGridApproval(lstHidden,colorBackGr, self.isHidden());
+                     self.reloadGridApproval(lstHidden,colorBackGr, false);
                 } else {
                     let colorBackGr = self.fillColorbackGr();
                     self.reloadGridApplicaion(colorBackGr, self.isHidden());
@@ -453,9 +462,9 @@ module cmm045.a.viewmodel {
                     let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
                     self.selectedCode(selectedType);
                 }
-                if(self.mode() == 0){
+                // if(self.mode() == 0){
                     $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-                }
+                // }
                 dfd.resolve();
 			}).always(() => block.clear());
 
@@ -1119,7 +1128,7 @@ module cmm045.a.viewmodel {
             ]
             let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
             this.setupGrid({
-                withCcg001: false,
+                withCcg001: true,
                 width: widthAuto,
                 height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true)
@@ -1829,8 +1838,13 @@ module cmm045.a.viewmodel {
 
         print(params: any) {
             let self = this;
+            let lstApp = self.appList(),
+            programName = nts.uk.ui._viewModel.kiban.programName().replace('CMM045A ', '');
+            lstApp.appLst = ko.toJS(self.items);
+            lstApp.displaySet.startDateDisp = self.appListExtractConditionDto.periodStartDate;
+            lstApp.displaySet.endDateDisp = self.appListExtractConditionDto.periodEndDate;
 
-            const command = { appListAtr: self.appListAtr, lstApp: self.appList() }
+            const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
             service.print(command);
         }
 

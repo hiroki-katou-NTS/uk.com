@@ -26,18 +26,18 @@
 			<div id="functions-area">
 				<div>
 					<!-- A1_1: Button 承認 -->
-					<button class="proceed" tabindex = "1" data-bind = "click: function(){ return appListApprove(false); }, visible: mode()==1">#{i18n.getText('CMM045_3')}</button>
+					<button class="proceed" tabindex = "1" data-bind = "click: function(){ return appListApprove(false); }, visible: mode()==1, enable: items().length > 0">#{i18n.getText('CMM045_3')}</button>
 					<!-- A1_3 -->
-					<button class="proceed" tabindex="2" data-bind = "click: function(){ appListApprove(true); }, visible: mode()==1">#{i18n.getText('CMM045_80')}</button>
+					<button class="proceed" tabindex="2" data-bind = "click: function(){ appListApprove(true); }, visible: mode()==1, enable: items().length > 0">#{i18n.getText('CMM045_80')}</button>
 					<!-- A1_2: Button 印刷 -->
-					<button tabindex="3" data-bind="click: print">#{i18n.getText('CMM045_4')}</button>
+					<button tabindex="3" data-bind="click: print, enable: items().length > 0">#{i18n.getText('CMM045_4')}</button>
 				</div>
 			</div>
 			<div id="content-area">
 				<!-- Mode Application -->
 				<!-- CCG_001 -->
 				<div id="ccgcomponent"></div>
-				<div style="width:950px; margin-top: 12px; margin-left: 20px; display:none" data-bind="visible: true">
+				<div style="width:950px; margin-top: 12px; margin-left: 90px; display:none" data-bind="visible: true">
 					<!-- A3 -->
 					<div style="width: 150px; display: inline-block; float: left" data-bind="visible: mode()==1">
 						<div data-bind="with: approvalCount" class="table-number">
@@ -197,7 +197,7 @@
 					</div>
 				</div>
 
-				<div style="display: block; margin: 7px; overflow: auto; max-width: 1100px;">
+				<div style="display: block; margin: 7px; overflow: auto; max-width: 1100px; padding-left: 70px;">
 					<div data-bind="visible: mode() == 1" style="float: left; margin: 10px;">
 						<span style="color: #BFEA60">■</span>
 						<span data-bind="text: '#{i18n.getText('CMM045_89')}'"></span>

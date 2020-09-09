@@ -45,7 +45,7 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	private CompanyAdapter companyAdapter;
 
 	private final String TEMPLATE_FILE = "application/CMM045_template.xlsx";
-	private final String OUTPUT_FILE = "申請一覧.xlsx";
+	private final String OUTPUT_FILE_EXTENSION = ".xlsx";
 
 	/*
 	 * (non-Javadoc)
@@ -56,7 +56,7 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	 * nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo)
 	 */
 	@Override
-	public void generate(FileGeneratorContext context, int appListAtr, AppListInfo appLst) {
+	public void generate(FileGeneratorContext context, int appListAtr, AppListInfo appLst, String programName) {
 		try {
 			val designer = this.createContext(this.TEMPLATE_FILE);
 
@@ -93,13 +93,14 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 
 			String companyId = AppContexts.user().companyId();
 
-			this.printHeader(worksheet, companyId);
+			this.printHeader(worksheet, companyId, programName);
 			this.printTopR1(worksheet, appLst);
 			this.printContent(workbook, appLst);
 			this.applyStyle(worksheet, appLst);
 
 			for (int i = 2; i < appLst.getAppLst().size() + 2; i++) {
 				worksheet.autoFitRow(i);
+				worksheet.getCells().deleteRow(appLst.getAppLst().size() + 2);
 			}
 
 			if (appListAtr == 0) {
@@ -111,7 +112,7 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 
-			designer.saveAsExcel(this.createNewFile(context, this.getReportName(OUTPUT_FILE)));
+			designer.saveAsExcel(this.createNewFile(context, this.getReportName(programName + OUTPUT_FILE_EXTENSION)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -212,10 +213,10 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			}
 		} else {
 			if (content.contains("土")) {
-				cell.characters(0, content.length() - 1).getFont().setColor(colorSaturday);
+				cell.characters(0, content.length()).getFont().setColor(colorSaturday);
 			}
 			if (content.contains("日")) {
-				cell.characters(0, content.length() - 1).getFont().setColor(colorSunday);
+				cell.characters(0, content.length()).getFont().setColor(colorSunday);
 			}
 		}
 	}
@@ -279,12 +280,12 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 		// cellI2.setStyle(headerBackground);
 	}
 
-	private void printHeader(Worksheet worksheet, String cID) {
+	private void printHeader(Worksheet worksheet, String cID, String programName) {
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 
 		pageSetup.setHeader(0, this.companyAdapter.getCurrentCompany().get().getCompanyName());
-		pageSetup.setHeader(1, "applicationName");
+		pageSetup.setHeader(1, programName);
 		// pageSetup.setHeader(2, GeneralDateTime.now().toString());
 	}
 }
