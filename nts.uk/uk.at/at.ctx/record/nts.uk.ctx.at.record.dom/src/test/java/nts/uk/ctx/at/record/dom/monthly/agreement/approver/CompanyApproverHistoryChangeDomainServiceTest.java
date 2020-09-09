@@ -3,13 +3,13 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
+import mockit.Verifications;
 import mockit.integration.junit4.JMockit;
-import nts.arc.testing.assertion.AtomTaskAssert;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import java.util.function.Consumer;
 
 import java.util.Optional;
 
@@ -23,7 +23,6 @@ public class CompanyApproverHistoryChangeDomainServiceTest {
 	public void test01() {
 		val histToChange 	= Helper.createApprover36AgrByCompanyWithPeriod("2020/09/11", "2020/09/15");
 		val prevHist 		= Helper.createApprover36AgrByCompanyWithPeriod("2020/09/01", "2020/09/05");
-		val modPrevHist 	= Helper.createApprover36AgrByCompanyWithPeriod("2020/09/01", "2020/09/10");
 		val startDateBeforeChange = GeneralDate.fromString("2020/09/06", Helper.DATE_FORMAT_YYYYMMDD);
 
 		new Expectations() {{
@@ -33,11 +32,18 @@ public class CompanyApproverHistoryChangeDomainServiceTest {
 
  		val service = new CompanyApproverHistoryChangeDomainService();
 
-		NtsAssert.atomTask(
-				() -> service.changeApproverHistory(require, startDateBeforeChange, histToChange),
-				any1 -> require.changeHistory(any1.get()),
-				any2 -> require.changeHistory(any2.get())
-		);
+		AtomTask persist = service.changeApproverHistory(require, startDateBeforeChange, histToChange);
+		new Verifications() {{
+			require.changeHistory((Approver36AgrByCompany)any);
+			times = 0;
+		}};
+
+		persist.run();
+
+		val a = new Verifications() {{
+			require.changeHistory((Approver36AgrByCompany)any);
+			times = 2;
+		}};
 	}
 
 	@Test
