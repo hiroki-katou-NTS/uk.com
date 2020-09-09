@@ -135,7 +135,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Load data.
             $.when(self.getParamFromCaller(), // Get param from parent screen.
                 self.loadWindows(this.loadWindowsParam), // Load windows.
-                self.loadWorktimeList(), // Load worktime list.
+                //self.loadWorktimeList(),  Load worktime list.
                 self.loadDailyPatternHeader(), // Load daily pattern header.
                 self.loadWeeklyWorkSetting()) // Load weekly work setting.
                 .done(() => {
@@ -339,35 +339,42 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             } else{
                 refOrder = [2,0]
             }
-            self.reflectionParam({
-                creationPeriodStartDate : defaultStartDate,
-                creationPeriodEndDate : defaultEndDate,
-                workCycleCode : self.reflectionSetting.selectedPatternCd(),
-                refOrder : refOrder,
-                numOfSlideDays : slideDay,
-                legalHolidayCd: legalHolidayCd,
-                nonStatutoryHolidayCd: nonStatutoryHolidayCd,
-                holidayCd: holidayCd
-            })
+            if(refOrder.length === 0){
+                nts.uk.ui.dialog.error({ messageId: "MsgB_2", messageParams: [getText('KDL023_31')] });
+                nts.uk.ui.block.clear();
+                $('cbb-reflection-order-1').focus()
+                return;
+            }
+            else{
+                self.reflectionParam({
+                    creationPeriodStartDate : defaultStartDate,
+                    creationPeriodEndDate : defaultEndDate,
+                    workCycleCode : self.reflectionSetting.selectedPatternCd(),
+                    refOrder : refOrder,
+                    numOfSlideDays : slideDay,
+                    legalHolidayCd: legalHolidayCd,
+                    nonStatutoryHolidayCd: nonStatutoryHolidayCd,
+                    holidayCd: holidayCd
+                })
 
-            service.getReflectionWorkCycleAppImage(self.reflectionParam()).done( (val) =>{
-                self.refImageEachDayDto(val);
-                self.setCalendarData(val);
-             }).fail( () => {
+                service.getReflectionWorkCycleAppImage(self.reflectionParam()).done( (val) =>{
+                    self.refImageEachDayDto(val);
+                    self.setCalendarData(val);
+                }).fail( () => {
 
-                }
-            ).always(()=>{
-                    nts.uk.ui.block.clear();
-                }
-            );
-            self.setPatternRange() // Set pattern's range
-                .done(() => {
-                    //self.optionDates(self.getOptionDates()); // Reload calendar
-                    $('#component-calendar-kcp006').focus(); // Set focus control
-                }).always(() => {
+                    }
+                ).always(()=>{
+                        nts.uk.ui.block.clear();
+                    }
+                );
+                self.setPatternRange() // Set pattern's range
+                    .done(() => {
+                        //self.optionDates(self.getOptionDates()); // Reload calendar
+                        $('#component-calendar-kcp006').focus(); // Set focus control
+                    }).always(() => {
 
                 });
-
+            }
         }
 
         /**
@@ -1103,7 +1110,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
 
             let backgroundColor = 'white';
-            let listText: Array<string> = [refImage.workInformation.workTypeCode, refImage.workInformation.workTimeCode];
+            let listText: Array<string> = [
+                refImage.workInformation.workTypeCode ? refImage.workInformation.workTypeCode : '',
+                refImage.workInformation.workTimeCode ? refImage.workInformation.workTimeCode : ''];
             let result:OptionDate = {
                 start: moment(start).format('YYYY-MM-DD'),
                 textColor: textColor,
@@ -1127,25 +1136,29 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
         public decide(): void {
             let self = this;
-            let param : MonthlyPatternRegisterCommand = {
-                isOverWrite : self.isOverWrite(),
-                workMonthlySetting: self.workMonthlySetting()
-            }
-            // If calendar's setting is empty.
-            if (self.isOptionDatesEmpty()) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_512" });
-                return;
-            }
+            const result = nts.uk.ui.dialog.confirm({ messageId: "Msg_1738" });
+            result.ifYes(() => {
 
-            service.registerMonthlyPattern(param).done(() => {
-                nts.uk.ui.windows.setShared('returnedData', ko.toJS(self.reflectionSetting));
-                self.closeDialog();
-            }).fail(() => {
-                self.closeDialog();
-            });
+                let param : MonthlyPatternRegisterCommand = {
+                    isOverWrite : self.isOverWrite(),
+                    workMonthlySetting: self.workMonthlySetting()
+                }
+                // If calendar's setting is empty.
+                if (self.isOptionDatesEmpty()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_512" });
+                    return;
+                }
 
+                service.registerMonthlyPattern(param).done(() => {
+                    nts.uk.ui.windows.setShared('returnedData', ko.toJS(self.reflectionSetting));
+                    self.closeDialog();
+                }).fail(() => {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_340" }).then(() => {
+                        self.closeDialog();
+                    });
+                });
+            })
         }
-
     }
 
     export class ReflectionSetting {
