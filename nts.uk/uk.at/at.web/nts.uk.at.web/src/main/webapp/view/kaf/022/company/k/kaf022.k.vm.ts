@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf022.k.viewmodel {
         oneDayLeaveDeleteAttendance: KnockoutObservable<number>;
 
         simultaneousApplyRequired: KnockoutObservable<number>;
-        allowanceForAbsence: KnockoutObservable<number>;
+        // allowanceForAbsence: KnockoutObservable<number>;
 
         reflectAttendanceAtr: KnockoutObservable<number>;
 
@@ -57,7 +57,7 @@ module nts.uk.at.view.kaf022.k.viewmodel {
             self.reflectWorkHour = ko.observable(0);
             
             self.simultaneousApplyRequired = ko.observable(0);
-            self.allowanceForAbsence = ko.observable(0);
+            // self.allowanceForAbsence = ko.observable(0);
 
             self.reflectAttendanceAtr = ko.observable(0);
 
@@ -88,7 +88,7 @@ module nts.uk.at.view.kaf022.k.viewmodel {
             if (allData.substituteHdWorkApplicationSetting) {
                 const data = allData.substituteHdWorkApplicationSetting;
                 self.simultaneousApplyRequired(data.simultaneousApplyRequired || 0);
-                self.allowanceForAbsence(data.allowanceForAbsence || 0);
+                // self.allowanceForAbsence(data.allowanceForAbsence || 0);
 
                 self.texteditorD9(data.subHolidayComment || "");
                 self.valueD10(data.subHolidayColor);
@@ -113,7 +113,7 @@ module nts.uk.at.view.kaf022.k.viewmodel {
                 },
                 suspenseDrawOutApplicationSetting: {
                     simultaneousApplyRequired: self.simultaneousApplyRequired(),
-                    allowanceForAbsence: self.allowanceForAbsence(),
+                    // allowanceForAbsence: self.allowanceForAbsence(),
                     subHolidayComment: self.texteditorD12(),
                     subHolidayColor: self.valueD10_1(),
                     subHolidayBold: self.enableD11_1(),

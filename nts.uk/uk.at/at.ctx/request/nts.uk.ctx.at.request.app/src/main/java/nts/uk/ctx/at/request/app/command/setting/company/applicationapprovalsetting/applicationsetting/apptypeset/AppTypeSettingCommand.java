@@ -46,7 +46,7 @@ public class AppTypeSettingCommand {
 		return new AppTypeSetting(
 				EnumAdaptor.valueOf(appType, ApplicationType.class),
 				sendMailWhenRegister == null ? false : sendMailWhenRegister,
-				sendMailWhenRegister == null ? false : sendMailWhenRegister,
+				sendMailWhenApproval == null ? false : sendMailWhenApproval,
 				displayInitialSegment == null ? null : EnumAdaptor.valueOf(displayInitialSegment, PrePostInitAtr.class),
 				canClassificationChange
 		);

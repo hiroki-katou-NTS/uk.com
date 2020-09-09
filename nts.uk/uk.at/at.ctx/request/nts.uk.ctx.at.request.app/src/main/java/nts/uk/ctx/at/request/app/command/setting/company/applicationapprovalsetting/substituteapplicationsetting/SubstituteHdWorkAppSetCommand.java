@@ -31,8 +31,8 @@ public class SubstituteHdWorkAppSetCommand {
         return new SubstituteHdWorkAppSet(
                 companyId,
                 new SubstituteSimultaneousAppSet(
-                        BooleanUtils.toBoolean(simultaneousApplyRequired),
-                        EnumAdaptor.valueOf(allowanceForAbsence, ApplyPermission.class)
+                        BooleanUtils.toBoolean(simultaneousApplyRequired)
+//                        EnumAdaptor.valueOf(allowanceForAbsence, ApplyPermission.class)
                 ),
                 new SubstituteHolidayAppSet(
                         new AppCommentSet(

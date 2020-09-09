@@ -6,14 +6,14 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.subs
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.substituteapplicationsetting.KrqmtAppHdsubRec;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.substituteleaveapplication.SubstituteLeaveAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.substituteleaveapplication.SubstituteLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
 
 @Stateless
-public class JpaSubstituteHdWorkAppSetRepository extends JpaRepository implements SubstituteHdWorkAppSetRepository, SubstituteLeaveAppReflectRepository, SubstituteWorkAppReflectRepository {
+public class JpaSubHdWorkAppSetRepository extends JpaRepository implements SubstituteHdWorkAppSetRepository, SubLeaveAppReflectRepository, SubstituteWorkAppReflectRepository {
     @Override
     public Optional<SubstituteHdWorkAppSet> findSettingByCompany(String companyId) {
         return this.queryProxy().find(companyId, KrqmtAppHdsubRec.class).map(KrqmtAppHdsubRec::toSetting);

@@ -26,7 +26,7 @@ import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.app
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.substituteleaveapplication.SubstituteLeaveAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
 import nts.uk.ctx.workflow.app.find.approvermanagement.setting.ApprovalSettingDto;
@@ -71,7 +71,7 @@ public class DtoKaf022 {
 	private StampAppReflectDto appStampReflect;
 
 	private SubstituteHdWorkAppSetDto substituteHdWorkApplicationSetting;
-	private SubstituteLeaveAppReflectDto substituteLeaveApplicationReflect;
+	private SubLeaveAppReflectDto substituteLeaveApplicationReflect;
 	private SubstituteWorkAppReflectDto substituteWorkApplicationReflect;
 
 	private List<OptionalItemAppSetDto> optionalItemApplicationSettings;

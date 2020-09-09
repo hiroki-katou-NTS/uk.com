@@ -93,3 +93,7 @@ td .form-label {
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav > li {
     height: 31px;
 }
+
+.grid-col-text-right {
+    text-align: right;
+}

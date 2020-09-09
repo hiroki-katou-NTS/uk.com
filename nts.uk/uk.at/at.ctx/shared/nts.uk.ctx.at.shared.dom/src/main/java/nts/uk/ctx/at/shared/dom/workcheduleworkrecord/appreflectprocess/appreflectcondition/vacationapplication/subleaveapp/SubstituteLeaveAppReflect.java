@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.substituteleaveapplication;
+package nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

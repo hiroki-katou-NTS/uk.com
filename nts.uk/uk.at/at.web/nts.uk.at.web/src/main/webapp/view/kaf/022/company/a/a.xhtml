@@ -83,16 +83,16 @@
                 <td>
                     <div class="control-group valign-center">
                         <div class="control-group valign-center">
-                            <label class="ntsRadioBox overtime-method">
+                            <div class="ntsRadioBox overtime-method">
                                 <input
                                     type="radio"
                                     name="textRadioA7_18"
                                     data-bind="checkedValue: 1, checked: methodCheck, enable: true"/>
                                 <span class="box"/>
                                 <span class="label">#{i18n.getText('KAF022_63')}</span>
-                            </label>
-                            <div class="ntsControl valign-center">
-                                <div id="a7_row1" class="a4_8" style="margin-left: 29px"
+                            </div>
+                            <div style="display: inline-block;">
+                                <div class="a4_8" style="margin-left: 30px"
                                       data-bind="ntsComboBox: {
                                             options: $parent.itemListA7_20,
                                             optionsValue: 'code',
@@ -104,20 +104,20 @@
                                             columns: [
                                                 { prop: 'name', length: 4 }
                                             ]}" />
-                                <span class="label" id="a7_21" style="padding-left: 5px">#{i18n.getText('KAF022_65')}</span>
+                                <span class="label" id="a7_21" style="padding-left: 3px; position: relative; bottom: 12px;">#{i18n.getText('KAF022_65')}</span>
                             </div>
                         </div>
                         <div class="control-group valign-center" style="padding-bottom: 5px">
-                            <label class="ntsRadioBox overtime-method">
+                            <div class="ntsRadioBox overtime-method">
                                 <input
                                     type="radio"
                                     name="textRadioA7_18"
                                     data-bind="checkedValue: 0, checked: methodCheck, enable: true"/>
                                 <span class="box"/>
                                 <span class="label">#{i18n.getText('KAF022_66')}</span>
-                            </label>
-                            <div class="ntsControl" style="padding-left: 54px">
-                                <span class="label" style="margin-left: -44px; width: 80px">#{i18n.getText('KAF022_374')}</span>
+                            </div>
+                            <div style="padding-left: 54px; display: inline-block">
+                                <span class="label" style="margin-left: -45px; width: 80px">#{i18n.getText('KAF022_374')}</span>
                                 <input class="time-input"
                                     id="a7_23"
                                     data-bind="ntsTimeEditor: {
@@ -135,7 +135,7 @@
                         </div>
                         <div class="control-group valign-center" style="padding-bottom: 5px">
                             <div>
-                                <span class="label" id="a7_22_2" style="margin-left: 90px; width: 80px">#{i18n.getText('KAF022_375')}</span>
+                                <span class="label" id="a7_22_2" style="margin-left: 88px; width: 80px">#{i18n.getText('KAF022_375')}</span>
                                 <input class="time-input"
                                     id="a7_23_2"
                                     data-bind="ntsTimeEditor: {
@@ -152,8 +152,8 @@
                         </div>
                         <div class="control-group valign-center" style="padding-bottom: 5px">
                             <div>
-                                <span class="label" id="a7_22_3" style="margin-left: 90px;">#{i18n.getText('KAF022_376')}</span>
-                                <input class="time-input" style="padding-left: 10px; margin-left: 10px"
+                                <span class="label" id="a7_22_3" style="margin-left: 88px; width: 80px">#{i18n.getText('KAF022_376')}</span>
+                                <input class="time-input"
                                     id="a7_23_3"
                                     data-bind="ntsTimeEditor: {
                                         name:'#[KAF022_656]',

@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectDto;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.substituteleaveapplication.SubstituteLeaveAppReflectDto;
+import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectDto;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflectRepository;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
 import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectDto;
@@ -50,7 +50,7 @@ import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.apprefle
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.VacationApplicationReflectRepository;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.substituteleaveapplication.SubstituteLeaveAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectRepository;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.workchangeapp.ReflectWorkChangeApp;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameExport;
 import nts.uk.ctx.sys.portal.pub.standardmenu.StandardMenuNameQuery;
@@ -135,7 +135,7 @@ public class FinderDtoKaf022 {
 	private AppReflectOtHdWorkRepository otHdWorkAppReflectRepo;
 
 	@Inject
-	private SubstituteLeaveAppReflectRepository substituteLeaveAppReflectRepo;
+	private SubLeaveAppReflectRepository substituteLeaveAppReflectRepo;
 
 	@Inject
 	private SubstituteWorkAppReflectRepository substituteWorkAppReflectRepo;
@@ -172,7 +172,7 @@ public class FinderDtoKaf022 {
 		StampAppReflectDto stampAppReflectDto = stampAppReflectRepo.findReflectByCompanyId(companyId).map(StampAppReflectDto::fromDomain).orElse(null);
 		HolidayApplicationReflectDto holidayApplicationReflect = holidayApplicationReflectRepo.findReflectByCompanyId(companyId).map(HolidayApplicationReflectDto::fromDomain).orElse(null);
 		TimeLeaveAppReflectDto timeLeaveAppReflectDto = timeLeaveAppReflectRepo.findByCompany(companyId).map(TimeLeaveAppReflectDto::fromDomain).orElse(null);
-		SubstituteLeaveAppReflectDto substituteLeaveAppReflectDto = substituteLeaveAppReflectRepo.findSubLeaveAppReflectByCompany(companyId).map(SubstituteLeaveAppReflectDto::fromDomain).orElse(null);
+		SubLeaveAppReflectDto substituteLeaveAppReflectDto = substituteLeaveAppReflectRepo.findSubLeaveAppReflectByCompany(companyId).map(SubLeaveAppReflectDto::fromDomain).orElse(null);
 		SubstituteWorkAppReflectDto substituteWorkAppReflectDto = substituteWorkAppReflectRepo.findSubWorkAppReflectByCompany(companyId).map(SubstituteWorkAppReflectDto::fromDomain).orElse(null);
 
 		// get menu

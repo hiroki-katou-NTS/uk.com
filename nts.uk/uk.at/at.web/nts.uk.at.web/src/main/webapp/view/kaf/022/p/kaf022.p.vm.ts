@@ -18,13 +18,13 @@ module nts.uk.at.view.kaf022.p.viewmodel {
         constructor() {
             let self = this;
             self.columns = ko.observableArray([
-                {headerText: getText("KAF022_681"), key: 'code', width: 30, formatter: _.escape},
+                {headerText: getText("KAF022_681"), key: 'code', width: 30, columnCssClass: "grid-col-text-right", formatter: _.escape},
                 {headerText: getText("KAF022_629"), key: 'name', width: 200, formatter: _.escape},
                 {headerText: getText("KAF022_99"), key: 'useAtr', width: 70, formatter: makeIcon}
             ]);
 
             self.swapColumns = ko.observableArray([
-                {headerText: getText("KAF022_686"), key: 'no', width: 50, formatter: _.escape},
+                {headerText: getText("KAF022_686"), key: 'no', width: 50, columnCssClass: "grid-col-text-right", formatter: _.escape},
                 {headerText: getText("KAF022_704"), key: 'name', width: 100, columnCssClass: 'limited-label', formatter: _.escape}
             ]);
 
@@ -64,7 +64,7 @@ module nts.uk.at.view.kaf022.p.viewmodel {
                             }
                         });
                     });
-                    self.settings(lstData);
+                    self.settings(_.sortBy(lstData, [function(o) { return parseInt(o.code); }]));
                     if (!isNullOrEmpty(currentCode)) {
                         if (currentCode == self.selectedCode())
                             self.selectedCode.valueHasMutated();

@@ -11,7 +11,7 @@ import org.apache.commons.lang3.BooleanUtils;
 @Data
 public class SubstituteHdWorkAppSetDto {
     private int simultaneousApplyRequired;
-    private int allowanceForAbsence;
+//    private int allowanceForAbsence;
     private String subHolidayComment;
     private String subHolidayColor;
     private boolean subHolidayBold;
@@ -22,7 +22,7 @@ public class SubstituteHdWorkAppSetDto {
     public static SubstituteHdWorkAppSetDto fromDomain(SubstituteHdWorkAppSet domain) {
         return new SubstituteHdWorkAppSetDto(
                 BooleanUtils.toInteger(domain.getSimultaneousSetting().isSimultaneousApplyRequired()),
-                domain.getSimultaneousSetting().getAllowanceForAbsence().value,
+//                domain.getSimultaneousSetting().getAllowanceForAbsence().value,
                 domain.getSubstituteHolidaySetting().getComment().getComment().v(),
                 domain.getSubstituteHolidaySetting().getComment().getColorCode().v(),
                 domain.getSubstituteHolidaySetting().getComment().isBold(),

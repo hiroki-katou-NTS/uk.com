@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf022.n.viewmodel {
 
     export class ScreenModelN {
         columns = ko.observableArray([
-            {headerText: getText("KAF022_681"), key: 'code', width: 30, formatter: _.escape},
+            {headerText: getText("KAF022_681"), key: 'code', width: 30, columnCssClass: "grid-col-text-right", formatter: _.escape},
             {headerText: getText("KAF022_629"), key: 'name', width: 200, formatter: _.escape},
             {headerText: getText("KAF022_99"), key: 'useAtr', width: 70, formatter: makeIcon}
         ]);
@@ -19,7 +19,8 @@ module nts.uk.at.view.kaf022.n.viewmodel {
 
         initData(allData: any): void {
             const self = this;
-            self.settings(allData.optionalItemApplicationSettings || []);
+            const listData = allData.optionalItemApplicationSettings || [];
+            self.settings(_.sortBy(listData, [function(o) { return parseInt(o.code); }]));
         }
 
         openScreenP(): void {
@@ -27,7 +28,7 @@ module nts.uk.at.view.kaf022.n.viewmodel {
             modal('/view/kaf/022/p/index.xhtml').onClosed(() => {
                 nts.uk.ui.block.invisible();
                 nts.uk.request.ajax("at", "at/request/setting/company/applicationapproval/optionalitem/findall").done(data => {
-                    this.settings(data);
+                    self.settings(_.sortBy(data, [function(o) { return parseInt(o.code); }]));
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(() => {

@@ -11,11 +11,10 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.subs
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHolidayAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteHdWorkAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.substituteapplicationsetting.SubstituteSimultaneousAppSet;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ApplyPermission;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.VacationAppReflectOption;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.ReflectWorkHourCondition;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.substituteleaveapplication.SubstituteLeaveAppReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubstituteLeaveAppReflect;
 import nts.uk.shr.com.color.ColorCode;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -40,8 +39,8 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
     @Column(name = "MULTI_REQUIRE_ATR")
     private Integer multiRequireAtr;
 
-    @Column(name = "HD_SUB_BEFORE_ATR")
-    private int hdSubBeforeAtr;
+//    @Column(name = "HD_SUB_BEFORE_ATR")
+//    private int hdSubBeforeAtr;
 
     @Column(name = "HD_SUB_CMT_FONT_COLOR")
     private String hdSubCmtFontColor;
@@ -96,8 +95,8 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
         return new SubstituteHdWorkAppSet(
                 companyId,
                 new SubstituteSimultaneousAppSet(
-                        BooleanUtils.toBoolean(multiRequireAtr),
-                        EnumAdaptor.valueOf(hdSubBeforeAtr, ApplyPermission.class)
+                        BooleanUtils.toBoolean(multiRequireAtr)
+//                        EnumAdaptor.valueOf(hdSubBeforeAtr, ApplyPermission.class)
                 ),
                 new SubstituteHolidayAppSet(
                         new AppCommentSet(
@@ -120,7 +119,7 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
         return new KrqmtAppHdsubRec(
                 setting.getCompanyId(),
                 BooleanUtils.toInteger(setting.getSimultaneousSetting().isSimultaneousApplyRequired()),
-                setting.getSimultaneousSetting().getAllowanceForAbsence().value,
+//                setting.getSimultaneousSetting().getAllowanceForAbsence().value,
                 setting.getSubstituteHolidaySetting().getComment().getColorCode().v(),
                 setting.getSubstituteHolidaySetting().getComment().getComment().v(),
                 BooleanUtils.toInteger(setting.getSubstituteHolidaySetting().getComment().isBold()),
@@ -136,7 +135,7 @@ public class KrqmtAppHdsubRec extends ContractUkJpaEntity {
 
     public void updateSetting(SubstituteHdWorkAppSet setting) {
         this.multiRequireAtr = BooleanUtils.toInteger(setting.getSimultaneousSetting().isSimultaneousApplyRequired());
-        this.hdSubBeforeAtr = setting.getSimultaneousSetting().getAllowanceForAbsence().value;
+//        this.hdSubBeforeAtr = setting.getSimultaneousSetting().getAllowanceForAbsence().value;
         this.hdSubCmtFontColor = setting.getSubstituteHolidaySetting().getComment().getColorCode().v();
         this.hdSubCmtContent = setting.getSubstituteHolidaySetting().getComment().getComment().v();
         this.hdSubCmtFontWeight = BooleanUtils.toInteger(setting.getSubstituteHolidaySetting().getComment().isBold());

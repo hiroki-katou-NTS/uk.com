@@ -22,5 +22,5 @@ public class SubstituteSimultaneousAppSet {
     /**
      * 振休先取許可
      */
-    private ApplyPermission allowanceForAbsence;
+//    private ApplyPermission allowanceForAbsence;
 }

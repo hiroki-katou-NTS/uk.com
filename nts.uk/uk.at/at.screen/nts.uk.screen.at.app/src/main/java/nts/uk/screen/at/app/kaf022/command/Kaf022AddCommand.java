@@ -17,15 +17,13 @@ import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsett
 import nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.appovertime.OvertimeAppSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.company.emailset.AppEmailSetCommand;
 import nts.uk.ctx.at.request.app.command.setting.request.application.businesstrip.BusinessTripSetCommand;
-import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetDto;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.otworkapply.OtWorkAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.substituteworkapplication.SubstituteWorkAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.timeleaveapplication.TimeLeaveAppReflectCommand;
 import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.leaveapplication.HolidayApplicationReflectCommand;
-import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.substituteleaveapplication.SubstituteLeaveAppReflectCommand;
-import nts.uk.ctx.at.shared.app.find.workcheduleworkrecord.appreflectprocess.appreflectcondition.othdwork.hdworkapply.HdWorkAppReflectDto;
+import nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess.appreflectcondition.vacationapplication.subleaveapp.SubLeaveAppReflectCommand;
 
 @Data
 @AllArgsConstructor
@@ -65,7 +63,7 @@ public class Kaf022AddCommand {
 	private StampAppReflectCommand appStampReflect;
 
 	private SubstituteHdWorkAppSetCommand substituteHdWorkAppSetting;
-	private SubstituteLeaveAppReflectCommand substituteLeaveAppReflect;
+	private SubLeaveAppReflectCommand substituteLeaveAppReflect;
 	private SubstituteWorkAppReflectCommand substituteWorkAppReflect;
 
 	private ApprovalListDispSettingCommand approvalListDisplaySetting;
