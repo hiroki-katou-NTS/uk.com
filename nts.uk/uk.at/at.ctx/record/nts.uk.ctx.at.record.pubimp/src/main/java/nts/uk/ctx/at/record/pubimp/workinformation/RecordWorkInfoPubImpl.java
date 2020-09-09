@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.pubimp.workinformation;
 
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,7 +10,16 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang3.BooleanUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.util.value.Finally;
@@ -38,15 +49,36 @@ import nts.uk.ctx.at.record.pub.workinformation.export.WrTimeActualStampExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrTimeLeavingWorkExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrWorkStampExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrWorkTimeInformationExport;
+import nts.uk.ctx.at.shared.dom.breakorgoout.primitivevalue.BreakFrameNo;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimFrameNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DeductionTotalTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.GoOutReason;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.overtimedeclaration.OvertimeDeclaration;
+import nts.uk.ctx.at.shared.dom.worktime.common.TimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Stateless
 public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
@@ -333,8 +365,1263 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	// create rql5
 	@Override
 	public RecordWorkInfoPubExport_New getRecordWorkInfo_New(String employeeId, GeneralDate ymd) {
-		// TODO Auto-generated method stub
-		return null;
+		RecordWorkInfoPubExport_New record = new RecordWorkInfoPubExport_New();
+		try {
+			String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
+			File fXmlFile = new File(currentPath + "\\datatest\\staff1.xml");
+			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+			Document doc = dBuilder.parse(fXmlFile);
+			
+			doc.getDocumentElement().normalize();
+			
+			String testXml = doc.getDocumentElement().getNodeName();
+			Element eElement = (Element) doc.getElementsByTagName("data").item(0);
+			
+			
+			{
+				// startTime1
+				Element startTime1Element = (Element) eElement.getElementsByTagName("startTime1").item(0);
+				// create ReasonTimeChange
+				Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+				Integer timeChangeMeans = Integer.parseInt(
+						reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+				TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+				// Optional engravingMethod
+				Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+				Element engravingMethodElement = (Element) reasonTimeChangeElement
+						.getElementsByTagName("engravingMethod").item(0);
+				if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+					Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+					EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+							EngravingMethod.class);
+					engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+				}
+				ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+						engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+				// create timeWithDay
+				Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+				Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+				if (timeWithDayElement != null) {
+					Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+					timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+				}
+				WorkTimeInformation startTime1 = new WorkTimeInformation(reasonTimeChangeSet,
+						timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+
+				record.setStartTime1(startTime1);
+			}
+
+			{
+				// endTime1
+				Element startTime1Element = (Element) eElement.getElementsByTagName("endTime1").item(0);
+				// create ReasonTimeChange
+				Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+				Integer timeChangeMeans = Integer.parseInt(
+						reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+				TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+				// Optional engravingMethod
+				Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+				Element engravingMethodElement = (Element) reasonTimeChangeElement
+						.getElementsByTagName("engravingMethod").item(0);
+				if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+					Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+					EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+							EngravingMethod.class);
+					engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+				}
+				ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+						engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+				// create timeWithDay
+				Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+				Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+				if (timeWithDayElement != null) {
+					Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+					timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+				}
+				WorkTimeInformation endTime1 = new WorkTimeInformation(reasonTimeChangeSet,
+						timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+
+				record.setEndTime1(endTime1);
+			}
+
+			{
+				// startTime2
+				Element startTime1Element = (Element) eElement.getElementsByTagName("startTime2").item(0);
+				// create ReasonTimeChange
+				Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+				Integer timeChangeMeans = Integer.parseInt(
+						reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+				TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+				// Optional engravingMethod
+				Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+				Element engravingMethodElement = (Element) reasonTimeChangeElement
+						.getElementsByTagName("engravingMethod").item(0);
+				if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+					Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+					EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+							EngravingMethod.class);
+					engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+				}
+				ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+						engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+				// create timeWithDay
+				Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+				Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+				if (timeWithDayElement != null) {
+					Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+					timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+				}
+				WorkTimeInformation startTime2 = new WorkTimeInformation(reasonTimeChangeSet,
+						timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+
+				record.setStartTime2(startTime2);
+			}
+			
+			{
+				// endTime2
+				Element startTime1Element = (Element) eElement.getElementsByTagName("endTime2").item(0);
+				// create ReasonTimeChange
+				Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+				Integer timeChangeMeans = Integer.parseInt(
+						reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+				TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+				// Optional engravingMethod
+				Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+				Element engravingMethodElement = (Element) reasonTimeChangeElement
+						.getElementsByTagName("engravingMethod").item(0);
+				if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+					Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+					EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+							EngravingMethod.class);
+					engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+				}
+				ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+						engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+				// create timeWithDay
+				Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+				Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+				if (timeWithDayElement != null) {
+					Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+					timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+				}
+				WorkTimeInformation endTime2 = new WorkTimeInformation(reasonTimeChangeSet,
+						timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+
+				record.setEndTime2(endTime2);
+			}
+			
+			{
+				// lateTime1
+				Element rootElement = (Element) eElement.getElementsByTagName("lateTime1").item(0);
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				AttendanceTime timeSet = new AttendanceTime(time);
+				record.setLateTime1(timeSet);
+			}
+			
+			{
+				// earlyLeaveTime1
+				Element rootElement = (Element) eElement.getElementsByTagName("earlyLeaveTime1").item(0);
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				AttendanceTime timeSet = new AttendanceTime(time);
+				record.setEarlyLeaveTime1(timeSet);
+			}
+			
+			{
+				// lateTime2
+				Element rootElement = (Element) eElement.getElementsByTagName("lateTime2").item(0);
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				AttendanceTime timeSet = new AttendanceTime(time);
+				record.setLateTime2(timeSet);
+			}
+			
+			{
+				// earlyLeaveTime2
+				Element rootElement = (Element) eElement.getElementsByTagName("earlyLeaveTime2").item(0);
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				AttendanceTime timeSet = new AttendanceTime(time);
+				record.setEarlyLeaveTime2(timeSet);
+			}
+			
+			{
+				// outTime1
+				Element rootElement = (Element) eElement.getElementsByTagName("outTime1").item(0);
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				AttendanceTime timeSet = new AttendanceTime(time);
+				record.setOutTime1(timeSet);
+			}
+			
+			{
+				// outTime2
+				Element rootElement = (Element) eElement.getElementsByTagName("outTime2").item(0);
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				AttendanceTime timeSet = new AttendanceTime(time);
+				record.setOutTime2(timeSet);
+			}
+			
+			{
+				// totalTime
+				Element rootElement = (Element) eElement.getElementsByTagName("totalTime").item(0);
+				TimeWithCalculation totalTime;
+				TimeWithCalculation withinStatutoryTotalTime;
+				TimeWithCalculation excessOfStatutoryTotalTime;
+				{
+					Element totalTimeElement = (Element) rootElement.getElementsByTagName("totalTime");
+					Integer time = Integer.parseInt(totalTimeElement.getElementsByTagName("time").item(0).getTextContent());
+					AttendanceTime timeSet = new AttendanceTime(time);
+					
+					Integer calcTime = Integer.parseInt(totalTimeElement.getElementsByTagName("calcTime").item(0).getTextContent());
+					AttendanceTime calcTimeSet = new AttendanceTime(calcTime);
+					TimeWithCalculation timeWithCalculation = TimeWithCalculation.createTimeWithCalculation(timeSet, calcTimeSet);
+					totalTime = timeWithCalculation;
+				}
+				{
+					Element totalTimeElement = (Element) rootElement.getElementsByTagName("withinStatutoryTotalTime");
+					Integer time = Integer.parseInt(totalTimeElement.getElementsByTagName("time").item(0).getTextContent());
+					AttendanceTime timeSet = new AttendanceTime(time);
+					
+					Integer calcTime = Integer.parseInt(totalTimeElement.getElementsByTagName("calcTime").item(0).getTextContent());
+					AttendanceTime calcTimeSet = new AttendanceTime(calcTime);
+					TimeWithCalculation timeWithCalculation = TimeWithCalculation.createTimeWithCalculation(timeSet, calcTimeSet);
+					withinStatutoryTotalTime = timeWithCalculation;
+				}
+				{
+					Element totalTimeElement = (Element) rootElement.getElementsByTagName("excessOfStatutoryTotalTime");
+					Integer time = Integer.parseInt(totalTimeElement.getElementsByTagName("time").item(0).getTextContent());
+					AttendanceTime timeSet = new AttendanceTime(time);
+					
+					Integer calcTime = Integer.parseInt(totalTimeElement.getElementsByTagName("calcTime").item(0).getTextContent());
+					AttendanceTime calcTimeSet = new AttendanceTime(calcTime);
+					TimeWithCalculation timeWithCalculation = TimeWithCalculation.createTimeWithCalculation(timeSet, calcTimeSet);
+					excessOfStatutoryTotalTime = timeWithCalculation;
+				}
+				DeductionTotalTime duDeductionTotalTime = DeductionTotalTime.of(totalTime, withinStatutoryTotalTime, excessOfStatutoryTotalTime);
+				record.setTotalTime(duDeductionTotalTime);
+			}
+			
+			{
+//				calculateFlex
+				Element rootElement = (Element)eElement.getElementsByTagName("calculateFlex");
+				
+				Integer calculateFlex = Integer.parseInt(rootElement.getTextContent());
+				AttendanceTimeOfExistMinus calculateFlexSet = new AttendanceTimeOfExistMinus(calculateFlex);
+				
+				record.setCalculateFlex(calculateFlexSet);
+			}
+			
+			{
+				//overTimeLst
+				List<AttendanceTime> overTimeLstSet = new ArrayList<>();
+				Element rootElement = (Element)eElement.getElementsByTagName("overTimeLst");
+				NodeList nodes = rootElement.getElementsByTagName("AttendanceTime");
+				for (int itr = 0; itr < nodes.getLength(); itr++) {
+					Node node = nodes.item(itr);
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) node;
+						Integer time = Integer.parseInt(e.getTextContent());
+						AttendanceTime timeSet = new AttendanceTime(time);
+						overTimeLstSet.add(timeSet);
+					}
+				}
+				record.setOverTimeLst(overTimeLstSet);
+				
+			}
+			
+			{
+				//calculateTransferOverTimeLst
+				List<AttendanceTime> calculateTransferOverTimeLstSet = new ArrayList<>();
+				Element rootElement = (Element)eElement.getElementsByTagName("calculateTransferOverTimeLst");
+				NodeList nodes = rootElement.getElementsByTagName("AttendanceTime");
+				for (int itr = 0; itr < nodes.getLength(); itr++) {
+					Node node = nodes.item(itr);
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) node;
+						Integer time = Integer.parseInt(e.getTextContent());
+						AttendanceTime timeSet = new AttendanceTime(time);
+						calculateTransferOverTimeLstSet.add(timeSet);
+					}
+				}
+				record.setCalculateTransferOverTimeLst(calculateTransferOverTimeLstSet);
+				
+			}
+			
+			{
+				//calculateHolidayLst
+				List<AttendanceTime> calculateHolidayLstSet = new ArrayList<>();
+				Element rootElement = (Element)eElement.getElementsByTagName("calculateHolidayLst");
+				NodeList nodes = rootElement.getElementsByTagName("AttendanceTime");
+				for (int itr = 0; itr < nodes.getLength(); itr++) {
+					Node node = nodes.item(itr);
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) node;
+						Integer time = Integer.parseInt(e.getTextContent());
+						AttendanceTime timeSet = new AttendanceTime(time);
+						calculateHolidayLstSet.add(timeSet);
+					}
+				}
+				record.setCalculateHolidayLst(calculateHolidayLstSet);
+				
+			}
+			
+			{
+				//calculateTransferLst
+				List<AttendanceTime> calculateTransferLstSet = new ArrayList<>();
+				Element rootElement = (Element)eElement.getElementsByTagName("calculateTransferLst");
+				NodeList nodes = rootElement.getElementsByTagName("AttendanceTime");
+				for (int itr = 0; itr < nodes.getLength(); itr++) {
+					Node node = nodes.item(itr);
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) node;
+						Integer time = Integer.parseInt(e.getTextContent());
+						AttendanceTime timeSet = new AttendanceTime(time);
+						calculateTransferLstSet.add(timeSet);
+					}
+				}
+				record.setCalculateTransferLst(calculateTransferLstSet);
+				
+			}
+			
+			{
+				// scheduledAttendence1
+				Element rootElement = (Element)eElement.getElementsByTagName("scheduledAttendence1");
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				TimeWithDayAttr timeSet = new TimeWithDayAttr(time);
+				record.setScheduledAttendence1(timeSet);
+			}
+			
+			{
+				// scheduledDeparture1
+				Element rootElement = (Element)eElement.getElementsByTagName("scheduledDeparture1");
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				TimeWithDayAttr timeSet = new TimeWithDayAttr(time);
+				record.setScheduledDeparture1(timeSet);
+			}
+			
+			{
+				// scheduledAttendence2
+				Element rootElement = (Element)eElement.getElementsByTagName("scheduledAttendence2");
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				TimeWithDayAttr timeSet = new TimeWithDayAttr(time);
+				record.setScheduledAttendence2(timeSet);
+			}
+			
+			{
+				// scheduledDeparture2
+				Element rootElement = (Element)eElement.getElementsByTagName("scheduledDeparture2");
+				Integer time = Integer.parseInt(rootElement.getTextContent());
+				TimeWithDayAttr timeSet = new TimeWithDayAttr(time);
+				record.setScheduledDeparture2(timeSet);
+			}
+			
+			
+			{
+				// timeLeavingWorks
+				List<TimeLeavingWork> timeLeavingWorks = new ArrayList<>();
+				Element rootElement = (Element)eElement.getElementsByTagName("timeLeavingWorks");
+				NodeList nodes = rootElement.getElementsByTagName("TimeLeavingWork");
+				for (int itr = 0; itr < nodes.getLength(); itr++) {
+					Node node = nodes.item(itr);
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) node;
+						Integer workNo = Integer.parseInt(e.getElementsByTagName("workNo").item(0).getTextContent());
+						WorkNo workNoSet = new WorkNo(workNo);
+						Optional<TimeActualStamp> attendanceStampSet = Optional.empty();
+						// Optional 
+						{
+							// attendanceStamp
+							if (e.getElementsByTagName("attendanceStamp").item(0) != null) {
+								Element element = (Element) e.getElementsByTagName("attendanceStamp").item(0);
+								Optional<WorkStamp> actualStampSet = Optional.empty();
+								// Optional 
+								{
+									// actualStamp
+									if (element.getElementsByTagName("actualStamp").item(0) != null) {
+										Element actualStampElement = (Element) element.getElementsByTagName("actualStamp").item(0);
+										Integer afterRoundingTime = Integer.parseInt(actualStampElement.getElementsByTagName("afterRoundingTime").item(0).getTextContent());
+										TimeWithDayAttr afterRoundingTimeSet = new TimeWithDayAttr(afterRoundingTime);
+										WorkTimeInformation timeDaySet;
+										{
+											// timeDay
+											Element startTime1Element = (Element) actualStampElement.getElementsByTagName("timeDay").item(0);
+											// create ReasonTimeChange
+											Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+											Integer timeChangeMeans = Integer.parseInt(
+													reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+											TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+											// Optional engravingMethod
+											Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+											Element engravingMethodElement = (Element) reasonTimeChangeElement
+													.getElementsByTagName("engravingMethod").item(0);
+											if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+												Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+												EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+														EngravingMethod.class);
+												engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+											}
+											ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+													engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+											// create timeWithDay
+											Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+											Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+											if (timeWithDayElement != null) {
+												Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+												timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+											}
+											timeDaySet = new WorkTimeInformation(reasonTimeChangeSet,
+													timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+										}
+										
+										// Optional
+										Optional<WorkLocationCD> locationCodeSet = Optional.empty();
+										{
+											// locationCode
+											if (actualStampElement.getElementsByTagName("locationCode").item(0) != null) {
+												Element locationCodeElement = (Element)actualStampElement.getElementsByTagName("locationCode").item(0);
+												String locationCode = locationCodeElement.getTextContent();
+												WorkLocationCD locationCodeTemp = new WorkLocationCD(locationCode);
+												locationCodeSet = Optional.of(locationCodeTemp);
+											}
+										}
+										
+										actualStampSet = Optional.of(new WorkStamp(afterRoundingTimeSet, timeDaySet, locationCodeSet));
+										
+									}
+								}
+								
+								Optional<WorkStamp> stampSet = Optional.empty();
+								// Optional 
+								{
+									// actualStamp
+									if (element.getElementsByTagName("stamp").item(0) != null) {
+										Element actualStampElement = (Element) element.getElementsByTagName("stamp").item(0);
+										Integer afterRoundingTime = Integer.parseInt(actualStampElement.getElementsByTagName("afterRoundingTime").item(0).getTextContent());
+										TimeWithDayAttr afterRoundingTimeSet = new TimeWithDayAttr(afterRoundingTime);
+										WorkTimeInformation timeDaySet;
+										{
+											// timeDay
+											Element startTime1Element = (Element) actualStampElement.getElementsByTagName("timeDay").item(0);
+											// create ReasonTimeChange
+											Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+											Integer timeChangeMeans = Integer.parseInt(
+													reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+											TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+											// Optional engravingMethod
+											Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+											Element engravingMethodElement = (Element) reasonTimeChangeElement
+													.getElementsByTagName("engravingMethod").item(0);
+											if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+												Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+												EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+														EngravingMethod.class);
+												engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+											}
+											ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+													engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+											// create timeWithDay
+											Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+											Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+											if (timeWithDayElement != null) {
+												Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+												timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+											}
+											timeDaySet = new WorkTimeInformation(reasonTimeChangeSet,
+													timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+										}
+										
+										// Optional
+										Optional<WorkLocationCD> locationCodeSet = Optional.empty();
+										{
+											// locationCode
+											if (actualStampElement.getElementsByTagName("locationCode").item(0) != null) {
+												Element locationCodeElement = (Element)actualStampElement.getElementsByTagName("locationCode").item(0);
+												String locationCode = locationCodeElement.getTextContent();
+												WorkLocationCD locationCodeTemp = new WorkLocationCD(locationCode);
+												locationCodeSet = Optional.of(locationCodeTemp);
+											}
+										}
+										
+										stampSet = Optional.of(new WorkStamp(afterRoundingTimeSet, timeDaySet, locationCodeSet));
+										
+									}
+								}
+								
+								Integer numberOfReflectionStampSet = Integer.parseInt(element.getElementsByTagName("numberOfReflectionStamp").item(0).getTextContent());
+
+								Optional<OvertimeDeclaration> overtimeDeclarationSet = Optional.empty();
+								// Optional
+								{
+									if (element.getElementsByTagName("overtimeDeclaration").item(0) != null) {
+										Element overtimeDeclarationElement = (Element) element.getElementsByTagName("overtimeDeclaration").item(0);
+										Integer overTime = Integer.parseInt(overtimeDeclarationElement.getElementsByTagName("overTime").item(0).getTextContent());
+										AttendanceTime overTimeSet = new AttendanceTime(overTime);
+										
+										Integer overLateNightTime = Integer.parseInt(overtimeDeclarationElement.getElementsByTagName("overLateNightTime").item(0).getTextContent());
+										AttendanceTime overLateNightTimeSet = new AttendanceTime(overLateNightTime);
+										
+										Optional.of(new OvertimeDeclaration(overTimeSet, overLateNightTimeSet));
+									}									
+								}
+								Optional<TimeZone> timeVacationSet = Optional.empty();
+								//Optional 
+								{
+									if (element.getElementsByTagName("timeVacation").item(0) != null) {
+										Element timeVacationElement = (Element) element.getElementsByTagName("timeVacation").item(0);
+										Integer start = Integer.parseInt(timeVacationElement.getElementsByTagName("start").item(0).getTextContent());
+										Integer end = Integer.parseInt(timeVacationElement.getElementsByTagName("end").item(0).getTextContent());
+										TimeZone timeVacationTemp = new TimeZone(new TimeWithDayAttr(start), new TimeWithDayAttr(end));
+										timeVacationSet = Optional.of(timeVacationTemp);
+									}
+								}
+
+								attendanceStampSet = Optional.of(new TimeActualStamp(
+										actualStampSet,
+										stampSet,
+										numberOfReflectionStampSet,
+										overtimeDeclarationSet,
+										timeVacationSet));
+								
+								
+							}
+							
+					
+						}
+						
+						
+						Optional<TimeActualStamp> leaveStampSet = Optional.empty();
+						// Optional 
+						{
+							// attendanceStamp
+							if (e.getElementsByTagName("leaveStamp").item(0) != null) {
+								Element element = (Element) e.getElementsByTagName("leaveStamp").item(0);
+								Optional<WorkStamp> actualStampSet = Optional.empty();
+								// Optional 
+								{
+									// actualStamp
+									if (element.getElementsByTagName("actualStamp").item(0) != null) {
+										Element actualStampElement = (Element) element.getElementsByTagName("actualStamp").item(0);
+										Integer afterRoundingTime = Integer.parseInt(actualStampElement.getElementsByTagName("afterRoundingTime").item(0).getTextContent());
+										TimeWithDayAttr afterRoundingTimeSet = new TimeWithDayAttr(afterRoundingTime);
+										WorkTimeInformation timeDaySet;
+										{
+											// timeDay
+											Element startTime1Element = (Element) actualStampElement.getElementsByTagName("timeDay").item(0);
+											// create ReasonTimeChange
+											Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+											Integer timeChangeMeans = Integer.parseInt(
+													reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+											TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+											// Optional engravingMethod
+											Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+											Element engravingMethodElement = (Element) reasonTimeChangeElement
+													.getElementsByTagName("engravingMethod").item(0);
+											if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+												Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+												EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+														EngravingMethod.class);
+												engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+											}
+											ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+													engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+											// create timeWithDay
+											Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+											Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+											if (timeWithDayElement != null) {
+												Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+												timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+											}
+											timeDaySet = new WorkTimeInformation(reasonTimeChangeSet,
+													timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+										}
+										
+										// Optional
+										Optional<WorkLocationCD> locationCodeSet = Optional.empty();
+										{
+											// locationCode
+											if (actualStampElement.getElementsByTagName("locationCode").item(0) != null) {
+												Element locationCodeElement = (Element)actualStampElement.getElementsByTagName("locationCode").item(0);
+												String locationCode = locationCodeElement.getTextContent();
+												WorkLocationCD locationCodeTemp = new WorkLocationCD(locationCode);
+												locationCodeSet = Optional.of(locationCodeTemp);
+											}
+										}
+										
+										actualStampSet = Optional.of(new WorkStamp(afterRoundingTimeSet, timeDaySet, locationCodeSet));
+										
+									}
+								}
+								
+								Optional<WorkStamp> stampSet = Optional.empty();
+								// Optional 
+								{
+									// actualStamp
+									if (element.getElementsByTagName("stamp").item(0) != null) {
+										Element actualStampElement = (Element) element.getElementsByTagName("stamp").item(0);
+										Integer afterRoundingTime = Integer.parseInt(actualStampElement.getElementsByTagName("afterRoundingTime").item(0).getTextContent());
+										TimeWithDayAttr afterRoundingTimeSet = new TimeWithDayAttr(afterRoundingTime);
+										WorkTimeInformation timeDaySet;
+										{
+											// timeDay
+											Element startTime1Element = (Element) actualStampElement.getElementsByTagName("timeDay").item(0);
+											// create ReasonTimeChange
+											Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+											Integer timeChangeMeans = Integer.parseInt(
+													reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+											TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+											// Optional engravingMethod
+											Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+											Element engravingMethodElement = (Element) reasonTimeChangeElement
+													.getElementsByTagName("engravingMethod").item(0);
+											if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+												Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+												EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+														EngravingMethod.class);
+												engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+											}
+											ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+													engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+											// create timeWithDay
+											Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+											Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+											if (timeWithDayElement != null) {
+												Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+												timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+											}
+											timeDaySet = new WorkTimeInformation(reasonTimeChangeSet,
+													timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+										}
+										
+										// Optional
+										Optional<WorkLocationCD> locationCodeSet = Optional.empty();
+										{
+											// locationCode
+											if (actualStampElement.getElementsByTagName("locationCode").item(0) != null) {
+												Element locationCodeElement = (Element)actualStampElement.getElementsByTagName("locationCode").item(0);
+												String locationCode = locationCodeElement.getTextContent();
+												WorkLocationCD locationCodeTemp = new WorkLocationCD(locationCode);
+												locationCodeSet = Optional.of(locationCodeTemp);
+											}
+										}
+										
+										stampSet = Optional.of(new WorkStamp(afterRoundingTimeSet, timeDaySet, locationCodeSet));
+										
+									}
+								}
+								
+								Integer numberOfReflectionStampSet = Integer.parseInt(element.getElementsByTagName("numberOfReflectionStamp").item(0).getTextContent());
+
+								Optional<OvertimeDeclaration> overtimeDeclarationSet = Optional.empty();
+								// Optional
+								{
+									if (element.getElementsByTagName("overtimeDeclaration").item(0) != null) {
+										Element overtimeDeclarationElement = (Element) element.getElementsByTagName("overtimeDeclaration").item(0);
+										Integer overTime = Integer.parseInt(overtimeDeclarationElement.getElementsByTagName("overTime").item(0).getTextContent());
+										AttendanceTime overTimeSet = new AttendanceTime(overTime);
+										
+										Integer overLateNightTime = Integer.parseInt(overtimeDeclarationElement.getElementsByTagName("overLateNightTime").item(0).getTextContent());
+										AttendanceTime overLateNightTimeSet = new AttendanceTime(overLateNightTime);
+										
+										Optional.of(new OvertimeDeclaration(overTimeSet, overLateNightTimeSet));
+									}									
+								}
+								Optional<TimeZone> timeVacationSet = Optional.empty();
+								//Optional 
+								{
+									if (element.getElementsByTagName("timeVacation").item(0) != null) {
+										Element timeVacationElement = (Element) element.getElementsByTagName("timeVacation").item(0);
+										Integer start = Integer.parseInt(timeVacationElement.getElementsByTagName("start").item(0).getTextContent());
+										Integer end = Integer.parseInt(timeVacationElement.getElementsByTagName("end").item(0).getTextContent());
+										TimeZone timeVacationTemp = new TimeZone(new TimeWithDayAttr(start), new TimeWithDayAttr(end));
+										timeVacationSet = Optional.of(timeVacationTemp);
+									}
+								}
+
+								leaveStampSet = Optional.of(new TimeActualStamp(
+										actualStampSet,
+										stampSet,
+										numberOfReflectionStampSet,
+										overtimeDeclarationSet,
+										timeVacationSet));
+								
+								
+							}
+							
+					
+						}
+						// canceledLate
+						Boolean canceledLateSet;
+						{
+							Element root = (Element)e.getElementsByTagName("canceledLate").item(0);
+							canceledLateSet = BooleanUtils.toBoolean(Integer.parseInt(root.getTextContent()));
+						}
+						
+						// CanceledEarlyLeave
+						Boolean CanceledEarlyLeaveSet;
+						{
+							Element root = (Element)e.getElementsByTagName("CanceledEarlyLeave").item(0);
+							CanceledEarlyLeaveSet = BooleanUtils.toBoolean(Integer.parseInt(root.getTextContent()));
+						}
+						
+						// timespan
+						TimeSpanForCalc timespanSet;
+						{
+							Element timespanElement = (Element)e.getElementsByTagName("timespan").item(0);
+							Integer start = Integer.parseInt(timespanElement.getElementsByTagName("start").item(0).getTextContent());
+							Integer end = Integer.parseInt(timespanElement.getElementsByTagName("end").item(0).getTextContent());
+							timespanSet = new TimeSpanForCalc(new TimeWithDayAttr(start), new TimeWithDayAttr(end));
+							
+						}
+						
+						TimeLeavingWork timeLeavingWork = new TimeLeavingWork(
+								workNoSet,
+								attendanceStampSet,
+								leaveStampSet,
+								canceledLateSet,
+								CanceledEarlyLeaveSet);
+						timeLeavingWorks.add(timeLeavingWork);
+						
+						
+					}
+				}
+				
+				record.setTimeLeavingWorks(timeLeavingWorks);
+			}
+			
+			{
+				// outHoursLst
+				List<OutingTimeSheet> outHoursLst = new ArrayList<>();
+				Element rootElement = (Element)eElement.getElementsByTagName("outHoursLst");
+				NodeList nodes = rootElement.getElementsByTagName("OutingTimeSheet");
+				
+				for (int itr = 0; itr < nodes.getLength(); itr++) {
+					Node node = nodes.item(itr);
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) node;
+						Integer outingFrameNo = Integer.parseInt(e.getElementsByTagName("outingFrameNo").item(0).getTextContent());
+						OutingFrameNo outingFrameNoSet = new OutingFrameNo(outingFrameNo);
+						
+						
+						Optional<TimeActualStamp> goOutSet = Optional.empty();
+						// Optional 
+						{
+							// attendanceStamp
+							if (e.getElementsByTagName("goOut").item(0) != null) {
+								Element element = (Element) e.getElementsByTagName("goOut").item(0);
+								Optional<WorkStamp> actualStampSet = Optional.empty();
+								// Optional 
+								{
+									// actualStamp
+									if (element.getElementsByTagName("actualStamp").item(0) != null) {
+										Element actualStampElement = (Element) element.getElementsByTagName("actualStamp").item(0);
+										Integer afterRoundingTime = Integer.parseInt(actualStampElement.getElementsByTagName("afterRoundingTime").item(0).getTextContent());
+										TimeWithDayAttr afterRoundingTimeSet = new TimeWithDayAttr(afterRoundingTime);
+										WorkTimeInformation timeDaySet;
+										{
+											// timeDay
+											Element startTime1Element = (Element) actualStampElement.getElementsByTagName("timeDay").item(0);
+											// create ReasonTimeChange
+											Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+											Integer timeChangeMeans = Integer.parseInt(
+													reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+											TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+											// Optional engravingMethod
+											Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+											Element engravingMethodElement = (Element) reasonTimeChangeElement
+													.getElementsByTagName("engravingMethod").item(0);
+											if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+												Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+												EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+														EngravingMethod.class);
+												engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+											}
+											ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+													engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+											// create timeWithDay
+											Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+											Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+											if (timeWithDayElement != null) {
+												Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+												timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+											}
+											timeDaySet = new WorkTimeInformation(reasonTimeChangeSet,
+													timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+										}
+										
+										// Optional
+										Optional<WorkLocationCD> locationCodeSet = Optional.empty();
+										{
+											// locationCode
+											if (actualStampElement.getElementsByTagName("locationCode").item(0) != null) {
+												Element locationCodeElement = (Element)actualStampElement.getElementsByTagName("locationCode").item(0);
+												String locationCode = locationCodeElement.getTextContent();
+												WorkLocationCD locationCodeTemp = new WorkLocationCD(locationCode);
+												locationCodeSet = Optional.of(locationCodeTemp);
+											}
+										}
+										
+										actualStampSet = Optional.of(new WorkStamp(afterRoundingTimeSet, timeDaySet, locationCodeSet));
+										
+									}
+								}
+								
+								Optional<WorkStamp> stampSet = Optional.empty();
+								// Optional 
+								{
+									// actualStamp
+									if (element.getElementsByTagName("stamp").item(0) != null) {
+										Element actualStampElement = (Element) element.getElementsByTagName("stamp").item(0);
+										Integer afterRoundingTime = Integer.parseInt(actualStampElement.getElementsByTagName("afterRoundingTime").item(0).getTextContent());
+										TimeWithDayAttr afterRoundingTimeSet = new TimeWithDayAttr(afterRoundingTime);
+										WorkTimeInformation timeDaySet;
+										{
+											// timeDay
+											Element startTime1Element = (Element) actualStampElement.getElementsByTagName("timeDay").item(0);
+											// create ReasonTimeChange
+											Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+											Integer timeChangeMeans = Integer.parseInt(
+													reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+											TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+											// Optional engravingMethod
+											Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+											Element engravingMethodElement = (Element) reasonTimeChangeElement
+													.getElementsByTagName("engravingMethod").item(0);
+											if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+												Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+												EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+														EngravingMethod.class);
+												engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+											}
+											ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+													engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+											// create timeWithDay
+											Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+											Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+											if (timeWithDayElement != null) {
+												Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+												timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+											}
+											timeDaySet = new WorkTimeInformation(reasonTimeChangeSet,
+													timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+										}
+										
+										// Optional
+										Optional<WorkLocationCD> locationCodeSet = Optional.empty();
+										{
+											// locationCode
+											if (actualStampElement.getElementsByTagName("locationCode").item(0) != null) {
+												Element locationCodeElement = (Element)actualStampElement.getElementsByTagName("locationCode").item(0);
+												String locationCode = locationCodeElement.getTextContent();
+												WorkLocationCD locationCodeTemp = new WorkLocationCD(locationCode);
+												locationCodeSet = Optional.of(locationCodeTemp);
+											}
+										}
+										
+										stampSet = Optional.of(new WorkStamp(afterRoundingTimeSet, timeDaySet, locationCodeSet));
+										
+									}
+								}
+								
+								Integer numberOfReflectionStampSet = Integer.parseInt(element.getElementsByTagName("numberOfReflectionStamp").item(0).getTextContent());
+
+								Optional<OvertimeDeclaration> overtimeDeclarationSet = Optional.empty();
+								// Optional
+								{
+									if (element.getElementsByTagName("overtimeDeclaration").item(0) != null) {
+										Element overtimeDeclarationElement = (Element) element.getElementsByTagName("overtimeDeclaration").item(0);
+										Integer overTime = Integer.parseInt(overtimeDeclarationElement.getElementsByTagName("overTime").item(0).getTextContent());
+										AttendanceTime overTimeSet = new AttendanceTime(overTime);
+										
+										Integer overLateNightTime = Integer.parseInt(overtimeDeclarationElement.getElementsByTagName("overLateNightTime").item(0).getTextContent());
+										AttendanceTime overLateNightTimeSet = new AttendanceTime(overLateNightTime);
+										
+										Optional.of(new OvertimeDeclaration(overTimeSet, overLateNightTimeSet));
+									}									
+								}
+								Optional<TimeZone> timeVacationSet = Optional.empty();
+								//Optional 
+								{
+									if (element.getElementsByTagName("timeVacation").item(0) != null) {
+										Element timeVacationElement = (Element) element.getElementsByTagName("timeVacation").item(0);
+										Integer start = Integer.parseInt(timeVacationElement.getElementsByTagName("start").item(0).getTextContent());
+										Integer end = Integer.parseInt(timeVacationElement.getElementsByTagName("end").item(0).getTextContent());
+										TimeZone timeVacationTemp = new TimeZone(new TimeWithDayAttr(start), new TimeWithDayAttr(end));
+										timeVacationSet = Optional.of(timeVacationTemp);
+									}
+								}
+
+								goOutSet = Optional.of(new TimeActualStamp(
+										actualStampSet,
+										stampSet,
+										numberOfReflectionStampSet,
+										overtimeDeclarationSet,
+										timeVacationSet));
+								
+								
+							}
+							
+					
+						}
+						
+						Integer outingTimeCalculation = Integer.parseInt(e.getElementsByTagName("outingTimeCalculation").item(0).getTextContent());
+						AttendanceTime outingTimeCalculationSet = new AttendanceTime(outingTimeCalculation);
+						
+						Integer outingTime = Integer.parseInt(e.getElementsByTagName("outingTime").item(0).getTextContent());
+						AttendanceTime outingTimeSet = new AttendanceTime(outingTime);
+						
+						Integer reasonForGoOut = Integer.parseInt(e.getElementsByTagName("reasonForGoOut").item(0).getTextContent());
+						GoingOutReason reasonForGoOutSet = EnumAdaptor.valueOf(reasonForGoOut, GoingOutReason.class);
+						
+						Optional<TimeActualStamp> comeBackSet = Optional.empty();
+						// Optional 
+						{
+							// attendanceStamp
+							if (e.getElementsByTagName("comeBack").item(0) != null) {
+								Element element = (Element) e.getElementsByTagName("comeBack").item(0);
+								Optional<WorkStamp> actualStampSet = Optional.empty();
+								// Optional 
+								{
+									// actualStamp
+									if (element.getElementsByTagName("actualStamp").item(0) != null) {
+										Element actualStampElement = (Element) element.getElementsByTagName("actualStamp").item(0);
+										Integer afterRoundingTime = Integer.parseInt(actualStampElement.getElementsByTagName("afterRoundingTime").item(0).getTextContent());
+										TimeWithDayAttr afterRoundingTimeSet = new TimeWithDayAttr(afterRoundingTime);
+										WorkTimeInformation timeDaySet;
+										{
+											// timeDay
+											Element startTime1Element = (Element) actualStampElement.getElementsByTagName("timeDay").item(0);
+											// create ReasonTimeChange
+											Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+											Integer timeChangeMeans = Integer.parseInt(
+													reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+											TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+											// Optional engravingMethod
+											Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+											Element engravingMethodElement = (Element) reasonTimeChangeElement
+													.getElementsByTagName("engravingMethod").item(0);
+											if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+												Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+												EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+														EngravingMethod.class);
+												engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+											}
+											ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+													engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+											// create timeWithDay
+											Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+											Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+											if (timeWithDayElement != null) {
+												Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+												timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+											}
+											timeDaySet = new WorkTimeInformation(reasonTimeChangeSet,
+													timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+										}
+										
+										// Optional
+										Optional<WorkLocationCD> locationCodeSet = Optional.empty();
+										{
+											// locationCode
+											if (actualStampElement.getElementsByTagName("locationCode").item(0) != null) {
+												Element locationCodeElement = (Element)actualStampElement.getElementsByTagName("locationCode").item(0);
+												String locationCode = locationCodeElement.getTextContent();
+												WorkLocationCD locationCodeTemp = new WorkLocationCD(locationCode);
+												locationCodeSet = Optional.of(locationCodeTemp);
+											}
+										}
+										
+										actualStampSet = Optional.of(new WorkStamp(afterRoundingTimeSet, timeDaySet, locationCodeSet));
+										
+									}
+								}
+								
+								Optional<WorkStamp> stampSet = Optional.empty();
+								// Optional 
+								{
+									// actualStamp
+									if (element.getElementsByTagName("stamp").item(0) != null) {
+										Element actualStampElement = (Element) element.getElementsByTagName("stamp").item(0);
+										Integer afterRoundingTime = Integer.parseInt(actualStampElement.getElementsByTagName("afterRoundingTime").item(0).getTextContent());
+										TimeWithDayAttr afterRoundingTimeSet = new TimeWithDayAttr(afterRoundingTime);
+										WorkTimeInformation timeDaySet;
+										{
+											// timeDay
+											Element startTime1Element = (Element) actualStampElement.getElementsByTagName("timeDay").item(0);
+											// create ReasonTimeChange
+											Element reasonTimeChangeElement = (Element) startTime1Element.getElementsByTagName("reasonTimeChange");
+											Integer timeChangeMeans = Integer.parseInt(
+													reasonTimeChangeElement.getElementsByTagName("timeChangeMeans").item(0).getTextContent());
+											TimeChangeMeans timeChangeMeansSet = EnumAdaptor.valueOf(timeChangeMeans, TimeChangeMeans.class);
+											// Optional engravingMethod
+											Optional<EngravingMethod> engravingMethodSet = Optional.empty();
+											Element engravingMethodElement = (Element) reasonTimeChangeElement
+													.getElementsByTagName("engravingMethod").item(0);
+											if (reasonTimeChangeElement.getElementsByTagName("engravingMethod").item(0) != null) {
+												Integer engravingMethod = Integer.parseInt(engravingMethodElement.getTextContent());
+												EngravingMethod engravingMethodSetTemp = EnumAdaptor.valueOf(engravingMethod,
+														EngravingMethod.class);
+												engravingMethodSet = Optional.ofNullable(engravingMethodSetTemp);
+											}
+											ReasonTimeChange reasonTimeChangeSet = new ReasonTimeChange(timeChangeMeansSet,
+													engravingMethodSet.isPresent() ? engravingMethodSet.get() : null);
+											// create timeWithDay
+											Element timeWithDayElement = (Element) startTime1Element.getElementsByTagName("timeWithDay").item(0);
+											Optional<TimeWithDayAttr> timeWithDaySet = Optional.empty();
+											if (timeWithDayElement != null) {
+												Integer timeWithDay = Integer.parseInt(timeWithDayElement.getTextContent());
+												timeWithDaySet = Optional.of(new TimeWithDayAttr(timeWithDay));
+											}
+											timeDaySet = new WorkTimeInformation(reasonTimeChangeSet,
+													timeWithDaySet.isPresent() ? timeWithDaySet.get() : null);
+										}
+										
+										// Optional
+										Optional<WorkLocationCD> locationCodeSet = Optional.empty();
+										{
+											// locationCode
+											if (actualStampElement.getElementsByTagName("locationCode").item(0) != null) {
+												Element locationCodeElement = (Element)actualStampElement.getElementsByTagName("locationCode").item(0);
+												String locationCode = locationCodeElement.getTextContent();
+												WorkLocationCD locationCodeTemp = new WorkLocationCD(locationCode);
+												locationCodeSet = Optional.of(locationCodeTemp);
+											}
+										}
+										
+										stampSet = Optional.of(new WorkStamp(afterRoundingTimeSet, timeDaySet, locationCodeSet));
+										
+									}
+								}
+								
+								Integer numberOfReflectionStampSet = Integer.parseInt(element.getElementsByTagName("numberOfReflectionStamp").item(0).getTextContent());
+
+								Optional<OvertimeDeclaration> overtimeDeclarationSet = Optional.empty();
+								// Optional
+								{
+									if (element.getElementsByTagName("overtimeDeclaration").item(0) != null) {
+										Element overtimeDeclarationElement = (Element) element.getElementsByTagName("overtimeDeclaration").item(0);
+										Integer overTime = Integer.parseInt(overtimeDeclarationElement.getElementsByTagName("overTime").item(0).getTextContent());
+										AttendanceTime overTimeSet = new AttendanceTime(overTime);
+										
+										Integer overLateNightTime = Integer.parseInt(overtimeDeclarationElement.getElementsByTagName("overLateNightTime").item(0).getTextContent());
+										AttendanceTime overLateNightTimeSet = new AttendanceTime(overLateNightTime);
+										
+										Optional.of(new OvertimeDeclaration(overTimeSet, overLateNightTimeSet));
+									}									
+								}
+								Optional<TimeZone> timeVacationSet = Optional.empty();
+								//Optional 
+								{
+									if (element.getElementsByTagName("timeVacation").item(0) != null) {
+										Element timeVacationElement = (Element) element.getElementsByTagName("timeVacation").item(0);
+										Integer start = Integer.parseInt(timeVacationElement.getElementsByTagName("start").item(0).getTextContent());
+										Integer end = Integer.parseInt(timeVacationElement.getElementsByTagName("end").item(0).getTextContent());
+										TimeZone timeVacationTemp = new TimeZone(new TimeWithDayAttr(start), new TimeWithDayAttr(end));
+										timeVacationSet = Optional.of(timeVacationTemp);
+									}
+								}
+
+								comeBackSet = Optional.of(new TimeActualStamp(
+										actualStampSet,
+										stampSet,
+										numberOfReflectionStampSet,
+										overtimeDeclarationSet,
+										timeVacationSet));
+								
+								
+							}
+							
+					
+						}
+						OutingTimeSheet outingTimeSheet = new OutingTimeSheet(
+								outingFrameNoSet,
+								goOutSet,
+								outingTimeCalculationSet,
+								outingTimeSet,
+								reasonForGoOutSet,
+								comeBackSet);	
+						
+						outHoursLst.add(outingTimeSheet);
+					}
+				}
+				record.setOutHoursLst(outHoursLst);
+			}
+			
+			
+			{
+				// shortWorkingTimeSheets
+				List<ShortWorkingTimeSheet> shortWorkingTimeSheets = new ArrayList<>();
+				Element rootElement = (Element)eElement.getElementsByTagName("shortWorkingTimeSheets");
+				NodeList nodes = rootElement.getElementsByTagName("ShortWorkingTimeSheet");
+				for (int itr = 0; itr < nodes.getLength(); itr++) {
+					Node node = nodes.item(itr);
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) node;
+						Integer shortWorkTimeFrameNo = Integer.parseInt(e.getElementsByTagName("shortWorkTimeFrameNo").item(0).getTextContent());
+						ShortWorkTimFrameNo shortWorkTimeFrameNoSet = new ShortWorkTimFrameNo(shortWorkTimeFrameNo);
+						Integer childCareAttr = Integer.parseInt(e.getElementsByTagName("childCareAttr").item(0).getTextContent());
+						ChildCareAttribute childCareAttrSet = EnumAdaptor.valueOf(childCareAttr, ChildCareAttribute.class);
+						Integer startTime = Integer.parseInt(e.getElementsByTagName("startTime").item(0).getTextContent());
+						TimeWithDayAttr startTimeSet = new TimeWithDayAttr(startTime);
+						Integer endTime = Integer.parseInt(e.getElementsByTagName("endTime").item(0).getTextContent());
+						TimeWithDayAttr endTimeSet = new TimeWithDayAttr(endTime);
+						Integer deductionTime = Integer.parseInt(e.getElementsByTagName("deductionTime").item(0).getTextContent());
+						TimeWithDayAttr deductionTimeSet = new TimeWithDayAttr(deductionTime);
+						Integer shortTime = Integer.parseInt(e.getElementsByTagName("shortTime").item(0).getTextContent());
+						TimeWithDayAttr shortTimeSet = new TimeWithDayAttr(shortTime);
+						
+						ShortWorkingTimeSheet sheet = new ShortWorkingTimeSheet(
+								shortWorkTimeFrameNoSet,
+								childCareAttrSet,
+								startTimeSet,
+								endTimeSet);
+						shortWorkingTimeSheets.add(sheet);
+						
+					}
+				}
+				record.setShortWorkingTimeSheets(shortWorkingTimeSheets);
+				
+			}
+			
+			
+			{
+				// breakTimeSheets
+				List<BreakTimeSheet> breakTimeSheets = new ArrayList<>();
+				Element rootElement = (Element)eElement.getElementsByTagName("breakTimeSheets");
+				NodeList nodes = rootElement.getElementsByTagName("BreakTimeSheet");
+				for (int itr = 0; itr < nodes.getLength(); itr++) {
+					Node node = nodes.item(itr);
+					if (node.getNodeType() == Node.ELEMENT_NODE) {
+						Element e = (Element) node;
+						Integer breakFrameNo = Integer.parseInt(e.getElementsByTagName("breakFrameNo").item(0).getTextContent());
+						BreakFrameNo breakFrameNoSet = new BreakFrameNo(breakFrameNo);
+						
+						Integer startTime = Integer.parseInt(e.getElementsByTagName("startTime").item(0).getTextContent());
+						TimeWithDayAttr startTimeSet = new TimeWithDayAttr(startTime);
+						
+						Integer endTime = Integer.parseInt(e.getElementsByTagName("endTime").item(0).getTextContent());
+						TimeWithDayAttr endTimeSet = new TimeWithDayAttr(endTime);
+						
+						Integer breakTime = Integer.parseInt(e.getElementsByTagName("breakTime").item(0).getTextContent());
+						AttendanceTime breakTimeSet = new AttendanceTime(breakTime);
+						
+						BreakTimeSheet breakTimeSheet = new BreakTimeSheet(
+								breakFrameNoSet,
+								startTimeSet,
+								endTimeSet,
+								breakTimeSet);
+						breakTimeSheets.add(breakTimeSheet);
+					}
+				}
+				record.setBreakTimeSheets(breakTimeSheets);
+			}
+			
+			{
+				// overTimeMidnight
+				Element rootElement = (Element)eElement.getElementsByTagName("overTimeMidnight");
+				AttendanceTime timeSet;
+				AttendanceTime calcTimeSet;
+				AttendanceTime divergenceTimeset;
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("time").item(0).getTextContent());
+					timeSet = new AttendanceTime(time);
+				}
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("calcTime").item(0).getTextContent());
+					calcTimeSet = new AttendanceTime(time);
+				}
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("divergenceTime").item(0).getTextContent());
+					divergenceTimeset = new AttendanceTime(time);
+				}
+				TimeDivergenceWithCalculation timeDivergenceWithCalculation = new TimeDivergenceWithCalculation(
+						timeSet,
+						calcTimeSet,
+						divergenceTimeset);
+				record.setOverTimeMidnight(timeDivergenceWithCalculation);
+			}
+			
+			{
+				// midnightOnHoliday
+				Element rootElement = (Element)eElement.getElementsByTagName("midnightOnHoliday");
+				AttendanceTime timeSet;
+				AttendanceTime calcTimeSet;
+				AttendanceTime divergenceTimeset;
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("time").item(0).getTextContent());
+					timeSet = new AttendanceTime(time);
+				}
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("calcTime").item(0).getTextContent());
+					calcTimeSet = new AttendanceTime(time);
+				}
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("divergenceTime").item(0).getTextContent());
+					divergenceTimeset = new AttendanceTime(time);
+				}
+				TimeDivergenceWithCalculation timeDivergenceWithCalculation = new TimeDivergenceWithCalculation(
+						timeSet,
+						calcTimeSet,
+						divergenceTimeset);
+				record.setMidnightOnHoliday(timeDivergenceWithCalculation);
+			}
+			
+			{
+				// outOfMidnight
+				Element rootElement = (Element)eElement.getElementsByTagName("outOfMidnight");
+				AttendanceTime timeSet;
+				AttendanceTime calcTimeSet;
+				AttendanceTime divergenceTimeset;
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("time").item(0).getTextContent());
+					timeSet = new AttendanceTime(time);
+				}
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("calcTime").item(0).getTextContent());
+					calcTimeSet = new AttendanceTime(time);
+				}
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("divergenceTime").item(0).getTextContent());
+					divergenceTimeset = new AttendanceTime(time);
+				}
+				TimeDivergenceWithCalculation timeDivergenceWithCalculation = new TimeDivergenceWithCalculation(
+						timeSet,
+						calcTimeSet,
+						divergenceTimeset);
+				record.setOutOfMidnight(timeDivergenceWithCalculation);
+			}
+			
+			
+			{
+				// midnightPublicHoliday
+				Element rootElement = (Element)eElement.getElementsByTagName("midnightPublicHoliday");
+				AttendanceTime timeSet;
+				AttendanceTime calcTimeSet;
+				AttendanceTime divergenceTimeset;
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("time").item(0).getTextContent());
+					timeSet = new AttendanceTime(time);
+				}
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("calcTime").item(0).getTextContent());
+					calcTimeSet = new AttendanceTime(time);
+				}
+				{
+					Integer time = Integer.parseInt(rootElement.getElementsByTagName("divergenceTime").item(0).getTextContent());
+					divergenceTimeset = new AttendanceTime(time);
+				}
+				TimeDivergenceWithCalculation timeDivergenceWithCalculation = new TimeDivergenceWithCalculation(
+						timeSet,
+						calcTimeSet,
+						divergenceTimeset);
+				record.setMidnightPublicHoliday(timeDivergenceWithCalculation);
+			}
+			
+			
+			
+			
+			
+		} catch (Exception e) {
+			return null;
+		}
+		return record;
 	}
 
 }
