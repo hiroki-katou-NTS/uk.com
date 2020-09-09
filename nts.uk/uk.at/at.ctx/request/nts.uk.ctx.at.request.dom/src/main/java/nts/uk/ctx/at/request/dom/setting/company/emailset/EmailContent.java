@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.setting.company.emailset;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@AllArgsConstructor
 public class EmailContent {
 	
 	/**
