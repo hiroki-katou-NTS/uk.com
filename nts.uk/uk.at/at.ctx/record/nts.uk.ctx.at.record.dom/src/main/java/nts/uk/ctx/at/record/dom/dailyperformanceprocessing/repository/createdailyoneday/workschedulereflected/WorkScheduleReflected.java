@@ -100,18 +100,18 @@ public class WorkScheduleReflected {
 					new ErrMessageResource("016"), new ErrMessageContent(TextResource.localize("Msg_591"))));
 			return listErrorMessageInfo;
 		}
-		// 予定時間帯をコピーする(Copy 予定時間帯)
+		// 予定時間帯をコピーする(Copy 予定時間帯) (lấy từ Stamp chứ kp actualStamp, do bên schedule k có actualStamp)
 		List<ScheduleTimeSheet> listScheduleTimeSheet = new ArrayList<>();
 		for (TimeLeavingWorkImport timeLeavingWorkImport : scheduleWorkInfor.get().getTimeLeavingOfDailyAttd().get()
 				.getTimeLeavingWorks()) {
 			listScheduleTimeSheet.add(
 				new ScheduleTimeSheet(
 					timeLeavingWorkImport.getWorkNo(),
-					timeLeavingWorkImport.getAttendanceStamp().get().getActualStamp().isPresent() 
-					?timeLeavingWorkImport.getAttendanceStamp().get().getActualStamp().get().getTimeDay()
+					timeLeavingWorkImport.getAttendanceStamp().get().getStamp().isPresent() 
+					?timeLeavingWorkImport.getAttendanceStamp().get().getStamp().get().getTimeDay()
 							.getTimeWithDay():0,
-					timeLeavingWorkImport.getLeaveStamp().get().getActualStamp().isPresent()?
-					timeLeavingWorkImport.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay():0
+					timeLeavingWorkImport.getLeaveStamp().get().getStamp().isPresent()?
+					timeLeavingWorkImport.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay():0
 				)
 			);
 		}

@@ -244,7 +244,7 @@ module nts.uk.at.view.ksu001.la {
 
                 var temp = _.difference(empListLeft, itemChosen);
                 vm.itemsLeft(temp);
-                vm.itemsRight(_.union(empListRight, itemChosen));
+                vm.itemsRight(_.union(empListRight, _.sortBy(itemChosen, [function (o) { return o.employeeCd; }])) );
                 vm.currentCodeListRight(employeeCdChosen);
             }
 
