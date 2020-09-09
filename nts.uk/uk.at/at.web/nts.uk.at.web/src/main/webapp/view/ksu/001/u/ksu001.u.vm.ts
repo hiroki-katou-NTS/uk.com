@@ -206,10 +206,15 @@ module nts.uk.at.view.ksu001.u {
                 let newPublicDateSplit = [];
                 if(self.newPublicDate()){
                     newPublicDateSplit = newPublicDate.split('-'); 
-                }                                         
-                year = parseInt(newPublicDateSplit[0]);  
-                month = parseInt(newPublicDateSplit[1]);                
-                for (let i = 1; i <= parseInt(newPublicDateSplit[2]); i++) {                            
+                }            
+                let today = new Date();
+                year = today.getFullYear();
+                month = today.getMonth() + 1;                                          
+                // year = parseInt(newPublicDateSplit[0]);  
+                // month = parseInt(newPublicDateSplit[1]);    
+                let numberDayOfMonth = self.getNumberOfDays(year, month);
+                for (let i = 1; i <= numberDayOfMonth; i++) {            
+                // for (let i = 1; i <= parseInt(newPublicDateSplit[2]); i++) {                            
                     let date = self.formatDate(new Date(year,month -1, i)); 
                     let existDate = self.checkExistDate(date);
                     if (existDate) {
@@ -217,6 +222,7 @@ module nts.uk.at.view.ksu001.u {
                     }
                     dates.push(new CalendarItem(date, Ksu001u.TEXT_COLOR_EMPTY, Ksu001u.BG_COLOR_EMPTY, []));
                 }   
+
             }            
            
             self.optionDates(dates);
@@ -768,7 +774,15 @@ module nts.uk.at.view.ksu001.u {
                 self.isBtnClick(false);
                 return;           
             }
-
+            if(self.newEditDate() == self.editDate() && self.newPublicDate() == self.publicDate()){
+                let date = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2])));
+                let existDate = self.checkExistDate(date);
+                if(existDate.backgroundColor == Ksu001u.BG_COLOR_PRE_PUB) {
+                    self.isDoubleEdiDate(true);
+                } else {
+                    self.isDoubleEdiDate(false);
+                }
+            }             
             if(self.isDoubleEdiDate()){
                 prevWeek = self.formatDate(new Date(parseInt(editDateSplit[0]), parseInt(editDateSplit[1]) - 1, parseInt(editDateSplit[2]) - 8));
                 prevWeekEditDate = self.formatDate(new Date(parseInt(editDateSplit[0]), parseInt(editDateSplit[1]) - 1, parseInt(editDateSplit[2]) - 7));
@@ -781,7 +795,7 @@ module nts.uk.at.view.ksu001.u {
                     prevWeek = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 7));
                     prevWeekEditDate = self.formatDate(new Date(parseInt(publicDateSplit[0]), parseInt(publicDateSplit[1]) - 1, parseInt(publicDateSplit[2]) - 6));
                 }
-            }    
+            }
             if(self.newEditDate() == self.editDate() && self.newEditDate() == prevWeekEditDate){
                 self.isDoubleEdiDate(true);
             }
