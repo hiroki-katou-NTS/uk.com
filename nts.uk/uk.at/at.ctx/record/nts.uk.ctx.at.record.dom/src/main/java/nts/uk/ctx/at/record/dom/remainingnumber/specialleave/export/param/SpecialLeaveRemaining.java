@@ -32,7 +32,6 @@ public class SpecialLeaveRemaining implements Cloneable {
 	 * コンストラクタ
 	 */
 	public SpecialLeaveRemaining(){
-		
 		this.specialLeaveNoMinus = new SpecialLeave();
 		this.specialLeaveWithMinus = new SpecialLeave();
 		this.specialLeaveUndigestNumber = Optional.empty();
@@ -45,12 +44,12 @@ public class SpecialLeaveRemaining implements Cloneable {
 	 * @param specialLeaveUndigestNumber 特休未消化数
 	 * @return 特休情報残数
 	 */
-	public static SpecialLeaveRemainingNumber of(
+	public static SpecialLeaveRemaining of(
 			SpecialLeave specialLeaveNoMinus,
 			SpecialLeave specialLeaveWithMinus,
 			Optional<SpecialLeaveUndigestNumber> specialLeaveUndigestNumber){
 		
-		SpecialLeaveRemainingNumber domain = new SpecialLeaveRemainingNumber();
+		SpecialLeaveRemaining domain = new SpecialLeaveRemaining();
 		domain.specialLeaveNoMinus = specialLeaveNoMinus;
 		domain.specialLeaveWithMinus = specialLeaveWithMinus;
 		domain.specialLeaveUndigestNumber = specialLeaveUndigestNumber;
@@ -58,8 +57,8 @@ public class SpecialLeaveRemaining implements Cloneable {
 	}
 	
 	@Override
-	public SpecialLeaveRemainingNumber clone() {
-		SpecialLeaveRemainingNumber cloned = new SpecialLeaveRemainingNumber();
+	public SpecialLeaveRemaining clone() {
+		SpecialLeaveRemaining cloned = new SpecialLeaveRemaining();
 		try {
 			cloned.specialLeaveNoMinus = this.specialLeaveNoMinus.clone();
 			cloned.specialLeaveWithMinus = this.specialLeaveWithMinus.clone();
@@ -80,7 +79,7 @@ public class SpecialLeaveRemaining implements Cloneable {
 			}
 		}
 		catch (Exception e){
-			throw new RuntimeException("SpecialLeaveRemainingNumber clone error.");
+			throw new RuntimeException("SpecialLeaveRemaining clone error.");
 		}
 		return cloned;
 	}
@@ -112,16 +111,33 @@ public class SpecialLeaveRemaining implements Cloneable {
 		SpecialLeave specialLeaveNoMinus = this.specialLeaveWithMinus.clone();
 		
 		// 特休からマイナスを削除
-		specialLeaveNoMinus
+		// 「特別休暇．残数」「特別休暇．残数付与前」「特別休暇．残数付与後」をそれぞれ処理
 		
+		// 残数
+		updateRemainingNumberWithMinusToNoMinus(
+				specialLeaveNoMinus.getRemainingNumberInfo().getRemainingNumber(),
+				specialLeaveNoMinus.getUsedNumberInfo().getUsedNumber());
+		
+		// 残数付与前
+		updateRemainingNumberWithMinusToNoMinus(
+				specialLeaveNoMinus.getRemainingNumberInfo().getRemainingNumberBeforeGrant(),
+				specialLeaveNoMinus.getUsedNumberInfo().getUsedNumberBeforeGrant());
+		
+		// 残数付与後
+		if ( specialLeaveNoMinus.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().isPresent()
+				&& specialLeaveNoMinus.getUsedNumberInfo().getUsedNumberAfterGrantOpt().isPresent() ){
+			updateRemainingNumberWithMinusToNoMinus(
+				specialLeaveNoMinus.getRemainingNumberInfo().getRemainingNumberAfterGrantOpt().get(),
+				specialLeaveNoMinus.getUsedNumberInfo().getUsedNumberAfterGrantOpt().get());
+		}
 		
 		return specialLeaveNoMinus;
 	}
 	
 	/**
 	 * 特休（マイナスあり）を特休（マイナスなし）に変換
-	 * @param specialLeaveRemainingNumber
-	 * @param SpecialLeaveUseNumber
+	 * @param specialLeaveRemainingNumber　特別休暇残数
+	 * @param SpecialLeaveUseNumber　特別休暇使用数
 	 */
 	private void updateRemainingNumberWithMinusToNoMinus(
 			SpecialLeaveRemainingNumber specialLeaveRemainingNumber,

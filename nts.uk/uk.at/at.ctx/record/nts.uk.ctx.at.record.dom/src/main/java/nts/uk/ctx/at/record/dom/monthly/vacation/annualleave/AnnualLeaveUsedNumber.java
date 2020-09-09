@@ -5,6 +5,7 @@ import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.gul.serialize.binary.SerializableWithOptional;
 
 /**
@@ -12,6 +13,7 @@ import nts.gul.serialize.binary.SerializableWithOptional;
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class AnnualLeaveUsedNumber implements Cloneable, SerializableWithOptional {
 
 	/**

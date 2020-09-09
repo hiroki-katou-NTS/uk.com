@@ -18,6 +18,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
  * @author shuichu_ishida
  */
 @Getter
+@Setter
 public class AnnualLeaveRemainingNumber implements Cloneable {
 
 	/** 合計残日数 */
