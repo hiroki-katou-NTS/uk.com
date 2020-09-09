@@ -10,6 +10,8 @@ module nts.uk.at.view.ksm005.a {
 
     export module viewmodel {
 
+        import getText = nts.uk.resource.getText;
+
         export class ScreenModel {
             columnMonthlyPatterns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             lstMonthlyPattern: KnockoutObservableArray<MonthlyPatternDto>;
@@ -646,16 +648,16 @@ module nts.uk.at.view.ksm005.a {
 
 	        private setWorkingDayAtr(date){
 		        let vm = this;
-		        if (vm.typeOfWorkName() || vm.workingHoursName()) {
+		        if(vm.typeOfWorkCode()) {
                     let dataUpdate: Array<WorkMonthlySettingDto> = vm.lstWorkMonthlySetting();
                     let i = dataUpdate.findIndex( item => vm.convertYMD(item.ymdk) == date);
                     let optionDates = vm.optionDates;
                     let existItem = _.find(optionDates(), item => item.start == date);
-                    if(existItem!=null) {
+                    if(existItem != null) {
                         existItem.changeListText(
-                            vm.typeOfWorkName() ? vm.typeOfWorkName() : '',
-                            vm.workingHoursName() ? vm.workingHoursName() : '',
-                            vm.workStyle ? vm.workStyle : null
+                            vm.typeOfWorkName() ? vm.typeOfWorkName() : vm.typeOfWorkCode()+getText('KSM005_84'),
+                            vm.workingHoursName() ? vm.workingHoursName() : vm.workingHoursCode() ? vm.workingHoursCode()+getText('KSM005_84') : '',
+                            !vm.typeOfWorkName() ? TypeColor.NOT_EXIST_COLOR : vm.workStyle ? vm.workStyle : null
                         );
                     } else {
                         optionDates.push(new CalendarItem(date, vm.workStyle, vm.typeOfWorkName(),  vm.workingHoursName(), true))
@@ -792,6 +794,7 @@ module nts.uk.at.view.ksm005.a {
             static ATTENDANCE_COLOR = "#0000ff";
             static HALF_DAY_WORK = 2;
             static HALF_DAY_WORK_COLOR = '#FF7F27';
+            static NOT_EXIST_COLOR = 'black';
         }
         export class CalendarItem {
             start: string;
