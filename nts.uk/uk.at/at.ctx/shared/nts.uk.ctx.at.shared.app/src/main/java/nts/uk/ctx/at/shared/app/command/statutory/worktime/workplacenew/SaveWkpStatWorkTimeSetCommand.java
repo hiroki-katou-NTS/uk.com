@@ -90,19 +90,25 @@ public class SaveWkpStatWorkTimeSetCommand{
 			val spe = find(flexSetting.getSpecifiedSetting(), i);
 			val wat = find(flexSetting.getWeekAveSetting(), i);
 			
-			if (sta.isPresent() || spe.isPresent() || wat.isPresent()) {
-				flex.add(MonthlyWorkTimeSetWkp.of(cid, workplaceId,
-											LaborWorkTypeAttr.FLEX, 
-											YearMonth.of(year, i), 
-											MonthlyLaborTime.of(new MonthlyEstimateTime(0))));
-			}
+			flex.add(MonthlyWorkTimeSetWkp.of(cid, workplaceId,
+										LaborWorkTypeAttr.FLEX, 
+										YearMonth.of(year, i), 
+										MonthlyLaborTime.of(
+												get(spe), 
+												Optional.of(get(sta)),
+												Optional.of(get(wat)))));
 		}
 		
 		return flex;
 	}
 	
-	private Optional<MonthlyUnitDto> find(List<MonthlyUnitDto> s, int m) {
+	private MonthlyEstimateTime get(Optional<MonthlyUnitDto> data) {
 		
+		return data.map(c -> new MonthlyEstimateTime(c.getMonthlyTime()))
+				.orElseGet(() -> new MonthlyEstimateTime(0));
+	}
+	
+	private Optional<MonthlyUnitDto> find(List<MonthlyUnitDto> s, int m) {
 		if (s == null) {
 			return Optional.of(new MonthlyUnitDto(m, 0));
 		}
