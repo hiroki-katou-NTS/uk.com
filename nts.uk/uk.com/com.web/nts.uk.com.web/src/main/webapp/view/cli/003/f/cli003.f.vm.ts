@@ -55,7 +55,11 @@ module nts.uk.com.view.cli003.f {
     DATA_STORAGE = 9,
     DATA_RECOVERY = 10,
     DATA_DELETION = 11,
-}
+    }
+    export enum USE_STAGE{
+        NOT_USE = 0,
+        USE = 1,
+    }
 
 export enum ITEM_NO {
     ITEM_NO1 = 1,
@@ -122,11 +126,11 @@ export interface DataCorrectParam {
 }
 
 export interface LogSettingParam {
-    bootHistoryRecord: string
+    bootHistoryRecord: number
     companyId: string
-    editHistoryRecord: string
-    loginHistoryRecord: string
-    menuClassification: string
+    editHistoryRecord: number
+    loginHistoryRecord: number
+    menuClassification: number
     programId: string
     system: number
   }
@@ -365,6 +369,7 @@ class LogBasicInfoModel {
   methodName: string;
   loginStatus: string;
   processAttr: string;
+  programId : String;
   lstLogDataCorrectRecordRefeDto: KnockoutObservableArray<DataCorrectLogModel>;
   lstLogLoginDto: KnockoutObservableArray<any>;
   lstLogOutputItemDto: KnockoutObservableArray<LogOutputItemDto>;
@@ -385,6 +390,7 @@ class LogBasicInfoModel {
       this.note = param.loginBasicInfor.note;
       this.methodName = param.loginBasicInfor.methodName;
       this.loginStatus = param.loginBasicInfor.loginStatus;
+      this.programId = param.loginBasicInfor.programId;
       this.lstLogDataCorrectRecordRefeDto = param.lstLogDataCorrectRecordRefeDto ? param.lstLogDataCorrectRecordRefeDto : [];
       this.lstLogPerCateCorrectRecordDto = param.lstLogPerCateCorrectRecordDto ? param.lstLogPerCateCorrectRecordDto : [];
   }
@@ -552,32 +558,35 @@ class DataCorrectLogModel {
                                         //Log START UP
                                         if (recordType == RECORD_TYPE.START_UP) {
                                             logSettings
-                                            .filter(x => x.bootHistoryRecord == 'NOT_USE')
+                                            .filter(x => x.bootHistoryRecord == USE_STAGE.NOT_USE)
                                             .map(logSet => {
-                                                logBasicInfoModel.lstLogPerCateCorrectRecordDto
+                                                if(logSet.programId !== logBasicInfoModel.programId){
+                                                    vm.listLogBasicInforModel.push(logBasicInfoModel);
+                                                };
                                             });
-                                            vm.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
 
                                         //Log PERSON INFORMATION UPDATE
                                         if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
                                             logSettings
-                                            .filter(x => x.editHistoryRecord === 'NOT_USE')
-                                            
+                                            .filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE)
                                             .map(logSet => {
                                                 if(vm.validateForPersonUpdateInfo(logSet)){
                                                     if(logBasicInfoModel.processAttr !== '新規'){
                                                         const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
                                                         vm.listLogBasicInforModel.push(logtemp);
-                                                    }
+                                                    };
+                                                }else{
+                                                    const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
+                                                        vm.listLogBasicInforModel.push(logtemp);
                                                 }
                                             });
-                                            
                                         }
+
                                         //Log DATA CORRECTION
                                         if (recordType === RECORD_TYPE.DATA_CORRECT) {
                                             logSettings
-                                            .filter(x => x.editHistoryRecord === 'NOT_USE')
+                                            .filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE)
                                             .map(logSet => {
                                                 if(vm.validateForDataCorrection(dataType,logSet)){
                                                     const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
