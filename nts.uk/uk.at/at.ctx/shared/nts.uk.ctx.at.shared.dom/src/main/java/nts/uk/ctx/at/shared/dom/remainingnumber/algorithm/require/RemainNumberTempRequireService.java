@@ -555,8 +555,8 @@ public class RemainNumberTempRequireService {
 
 		@Override
 		public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
-
-			return remainCreateInforByApplicationData.excludeHolidayAtr(cacheCarrier, cid, appID);
+			return null;
+			// return remainCreateInforByApplicationData.excludeHolidayAtr(cacheCarrier, cid, appID);
 		}
 		@Override
 		public Optional<EmpSubstVacation> empSubstVacation(String companyId, String contractTypeCode) {

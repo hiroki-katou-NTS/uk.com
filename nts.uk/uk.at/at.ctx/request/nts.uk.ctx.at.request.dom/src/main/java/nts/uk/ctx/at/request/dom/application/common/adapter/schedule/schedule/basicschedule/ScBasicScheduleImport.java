@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
@@ -29,19 +31,7 @@ public class ScBasicScheduleImport {
 	// 就業時間帯
 	private String workTimeCode;
 	
-	/** The schedule start clock. */
-	// 予定開始時刻1
-	private int scheduleStartClock1;
-
-	/** The schedule end clock. */
-	// 予定終了時刻1
-	private int scheduleEndClock1;
-	
-	/** The schedule start clock. */
-	// 予定開始時刻2
-	private int scheduleStartClock2;
-
-	/** The schedule end clock. */
-	// 予定終了時刻2
-	private int scheduleEndClock2;
+	/** The work schedule time zones. */
+	// 勤務予定時間帯
+	private List<WorkScheduleTimeZoneImport> workScheduleTimeZones;
 }

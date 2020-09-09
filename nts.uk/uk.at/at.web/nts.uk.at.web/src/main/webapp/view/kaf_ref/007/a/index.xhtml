@@ -7,26 +7,73 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.application.AppReason
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
-			<com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
+			<com:stylefile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.css" />
+			<com:stylefile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.css" />
+			<com:stylefile path="/view/kaf_ref/007/shr/kaf007.shr.css" />
 			<com:scriptfile path="/view/kaf_ref/000/shr/kaf000.shr.vm.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component1/kaf000.a.component1.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component2/kaf000.a.component2.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component3/kaf000.a.component3.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component4/kaf000.a.component4.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/component7/kaf000.a.component7.js" />
+			<com:scriptfile path="/view/kaf_ref/000/a/kaf000.a.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/shr/kaf007.shr.vm.js" />
 			<com:scriptfile path="/view/kaf_ref/007/a/kaf007.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: register">Register</button>
+				<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF007_54')}</button>
+				<div data-bind="component: { name: 'kaf000-a-component7', 
+											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }" style="display: inline-block;"></div>
 			</div>
 			<div id="contents-area">
 				<div data-bind="component: { name: 'kaf000-a-component1', 
 											params: {
+												appType: appType,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf000-a-component2', 
+											params: {
+												appType: appType,
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-				<div data-bind="component: { name: 'kaf007-share', params: appWorkChange }"></div>
 				<div data-bind="component: { name: 'kaf000-a-component3', 
 											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf000-a-component4', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf007-share', 
+											params: appWorkChange }"></div>
+				<div data-bind="component: { name: 'kaf000-a-component5', 
+											params: {
+												appType: appType,
+												application: application,
+												appDispInfoStartupOutput: appDispInfoStartupOutput
+											} }"></div>
+				<div data-bind="component: { name: 'kaf000-a-component6', 
+											params: {
+												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
 			</div>

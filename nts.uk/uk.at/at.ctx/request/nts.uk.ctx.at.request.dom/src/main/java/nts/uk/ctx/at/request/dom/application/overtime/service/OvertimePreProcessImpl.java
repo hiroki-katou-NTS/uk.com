@@ -95,37 +95,37 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	public OvertimeInstructInfomation getOvertimeInstruct(AppCommonSettingOutput appCommonSettingOutput, String appDate,
 			String employeeID) {
 		OvertimeInstructInfomation overtimeInstructInformation = new OvertimeInstructInfomation();
-		if (appCommonSettingOutput != null) {
-			if(appCommonSettingOutput.approvalFunctionSetting != null){
-				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
-				if (useAtr == UseAtr.USE.value) {
-					if (appDate != null) {
-						overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
-						OverTimeInstruct overtimeInstruct = overtimeInstructRepository
-								.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
-						if (overtimeInstruct != null) {
-							TimeWithDayAttr startTime = new TimeWithDayAttr(
-									overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
-							TimeWithDayAttr endTime = new TimeWithDayAttr(
-									overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
-							overtimeInstructInformation
-									.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
-											+ startTime.getDayDivision().description + " "
-											+ convert(overtimeInstruct.getStartClock().v()) + "~"
-											+ endTime.getDayDivision().description + " "
-											+ convert(overtimeInstruct.getEndClock().v()) + " "
-											+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
-											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
-						} else {
-							overtimeInstructInformation.setOvertimeInstructInfomation(
-									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
-						}
-					}
-				} else {
-					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
-				}
-			}
-		}
+//		if (appCommonSettingOutput != null) {
+//			if(appCommonSettingOutput.approvalFunctionSetting != null){
+//				int useAtr = appCommonSettingOutput.approvalFunctionSetting.getInstructionUseSetting().getInstructionUseDivision().value;
+//				if (useAtr == UseAtr.USE.value) {
+//					if (appDate != null) {
+//						overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(true);
+//						OverTimeInstruct overtimeInstruct = overtimeInstructRepository
+//								.getOvertimeInstruct(GeneralDate.fromString(appDate, DATE_FORMAT), employeeID);
+//						if (overtimeInstruct != null) {
+//							TimeWithDayAttr startTime = new TimeWithDayAttr(
+//									overtimeInstruct.getStartClock() == null ? -1 : overtimeInstruct.getStartClock().v());
+//							TimeWithDayAttr endTime = new TimeWithDayAttr(
+//									overtimeInstruct.getEndClock() == null ? -1 : overtimeInstruct.getEndClock().v());
+//							overtimeInstructInformation
+//									.setOvertimeInstructInfomation(overtimeInstruct.getInstructDate().toString() + " "
+//											+ startTime.getDayDivision().description + " "
+//											+ convert(overtimeInstruct.getStartClock().v()) + "~"
+//											+ endTime.getDayDivision().description + " "
+//											+ convert(overtimeInstruct.getEndClock().v()) + " "
+//											+ employeeAdapter.getEmployeeName(overtimeInstruct.getTargetPerson()) + " ("
+//											+ employeeAdapter.getEmployeeName(overtimeInstruct.getInstructor()) + ")");
+//						} else {
+//							overtimeInstructInformation.setOvertimeInstructInfomation(
+//									GeneralDate.fromString(appDate, DATE_FORMAT) + "の残業指示はありません。");
+//						}
+//					}
+//				} else {
+//					overtimeInstructInformation.setDisplayOvertimeInstructInforFlg(false);
+//				}
+//			}
+//		}
 		return overtimeInstructInformation;
 	}
 
@@ -208,11 +208,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		if(recordWorkInfoImport.getWorkTimeCode().equals(workTime)){
 			// Input．実績内容.就業時間帯コード=Input．就業時間帯コード
 			result.setWorkClockFromTo1Refer(convertWorkClockFromTo(recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst()));
-			overTimeInputsRefer.stream().forEach(x -> {
+			/*overTimeInputsRefer.stream().forEach(x -> {
 				x.setApplicationTime(recordWorkInfoImport.getOvertimeCaculation().stream()
 						.filter(y -> y.getFrameNo()==x.getFrameNo()).findAny()
 						.map(z -> z.getResultCaculation()).orElse(null));
-			});
+			});*/
 			result.setOverTimeInputsRefer(overTimeInputsRefer);
 			return result;
 		}
@@ -249,11 +249,11 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		if(recordWorkInfoImport.getWorkTimeCode().equals(workTime)){
 			// Input．実績内容.就業時間帯コード=Input．就業時間帯コード
 			result.setWorkClockFromTo1Refer(convertWorkClockFromTo(recordWorkInfoImport.getAttendanceStampTimeFirst(), recordWorkInfoImport.getLeaveStampTimeFirst()));
-			overTimeInputsRefer.stream().forEach(x -> {
+			/*overTimeInputsRefer.stream().forEach(x -> {
 				x.setApplicationTime(recordWorkInfoImport.getOvertimeCaculation().stream()
 						.filter(y -> y.getFrameNo()==x.getFrameNo()).findAny()
 						.map(z -> z.getResultCaculation()).orElse(null));
-			});
+			});*/
 			result.setOverTimeInputsRefer(overTimeInputsRefer);
 			return result;
 		}
@@ -272,9 +272,9 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	
 	private List<OvertimeRefer> convertOTReferFromReal(RecordWorkInfoImport recordWorkInfoImport){
 		List<OvertimeRefer> overtimeReferLst = new ArrayList<>();
-		overtimeReferLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream().map(x -> new OvertimeRefer(x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
+		/*overtimeReferLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream().map(x -> new OvertimeRefer(x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
 		overtimeReferLst.add(new OvertimeRefer(11, recordWorkInfoImport.getShiftNightCaculation()));
-		overtimeReferLst.add(new OvertimeRefer(12, recordWorkInfoImport.getFlexCaculation()));
+		overtimeReferLst.add(new OvertimeRefer(12, recordWorkInfoImport.getFlexCaculation()));*/
 		return overtimeReferLst;
 	}
 	

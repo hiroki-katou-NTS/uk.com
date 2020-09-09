@@ -35,23 +35,17 @@ public class ScBasicScheduleAdapterImpl implements ScBasicScheduleAdapter {
 	}
 
 	private ScBasicScheduleImport convertTo(ScBasicScheduleExport x) {
-		WorkScheduleTimeZoneImport workScheduleTimeZoneImport1 = x.getWorkScheduleTimeZones().stream()
-			.filter(y -> y.getScheduleCnt()==1).findAny()
-			.map(z -> new WorkScheduleTimeZoneImport(z.getScheduleStartClock(), z.getScheduleEndClock()))
-			.orElse(new WorkScheduleTimeZoneImport(-1, -1));
-		WorkScheduleTimeZoneImport workScheduleTimeZoneImport2 = x.getWorkScheduleTimeZones().stream()
-				.filter(y -> y.getScheduleCnt()==2).findAny()
-				.map(z -> new WorkScheduleTimeZoneImport(z.getScheduleStartClock(), z.getScheduleEndClock()))
-				.orElse(new WorkScheduleTimeZoneImport(-1, -1));
 		return new ScBasicScheduleImport(
 				x.getEmployeeId(), 
 				x.getDate(), 
 				x.getWorkTypeCode(), 
 				x.getWorkTimeCode(), 
-				workScheduleTimeZoneImport1.getScheduleStartClock(), 
-				workScheduleTimeZoneImport1.getScheduleEndClock(), 
-				workScheduleTimeZoneImport2.getScheduleStartClock(), 
-				workScheduleTimeZoneImport2.getScheduleEndClock());
+				x.getWorkScheduleTimeZones().stream().map(y -> new WorkScheduleTimeZoneImport(
+						y.getScheduleCnt(), 
+						y.getScheduleStartClock(), 
+						y.getScheduleEndClock(), 
+						y.getBounceAtr()))
+				.collect(Collectors.toList()));
 	}
 
 	@Override

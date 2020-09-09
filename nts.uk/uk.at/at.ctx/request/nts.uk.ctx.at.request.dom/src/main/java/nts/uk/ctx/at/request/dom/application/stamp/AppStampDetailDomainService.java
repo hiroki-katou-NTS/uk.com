@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
 public interface AppStampDetailDomainService {
 	
 	// 打刻申請（詳細）起動前処理
-	public void appStampPreProcess(AppStamp appStamp);
+	public void appStampPreProcess(AppStamp_Old appStamp);
 	
-	public ProcessResult appStampUpdate(String applicationReason, AppStamp appStamp);
+	public ProcessResult appStampUpdate(String applicationReason, AppStamp_Old appStamp);
 }

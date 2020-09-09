@@ -1,0 +1,357 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:com="http://xmlns.jcp.org/jsf/component"
+                xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <table id="fixed-table-g1">
+        <colgroup>
+            <col width="260px"/>
+            <col width="630px"/>
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="ui-widget-header" colspan="2">#{i18n.getText('KAF022_520')}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="inline-radio">
+                <td class="color-header" id="b3">#{i18n.getText('KAF022_724')}</td>
+                <td class="two-radio">
+                    <div tabindex="1" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB4,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB4,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_430')}</td>
+                <td class="two-radio">
+                    <div id="b6" tabindex="2" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB6,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB6,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b7">#{i18n.getText('KAF022_641')}</td>
+                <td class="two-radio">
+                    <div class="blockrow" id="b8" tabindex="3" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB8,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB8,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-header" id="f6">#{i18n.getText('KAF022_714')}</td>
+                <td>
+                    <div tabindex="4">
+                        <div class="ntsControl blockrow">
+                            <label  class="ntsRadioBox" >
+                                <input type="radio" name="textRadioF" data-bind="
+											checkedValue: 1,
+											checked: selectedValueF13,
+											enable: true
+										" />
+                                <span class="box"/>
+                                <span class="label">#{i18n.getText('KAF022_37')}</span>
+                            </label>
+                        </div>
+                        <div class="ntsControl blockrow">
+                            <label  class="ntsRadioBox">
+                                <input type="radio" name="textRadioF" data-bind="
+											checkedValue: 0,
+											checked: selectedValueF13,
+											enable: true
+										" />
+                                <span class="box"/>
+                                <span class="label">#{i18n.getText('KAF022_301')}</span>
+                            </label>
+                        </div>
+                        <div class="ntsControl blockrow">
+                            <label class="ntsRadioBox">
+                                <input type="radio" name="textRadioF" data-bind="
+											  checkedValue: 3,
+											  checked: selectedValueF13,
+											  enable: true
+										  " />
+                                <span class="box"/>
+                                <span class="label">#{i18n.getText('KAF022_302')}</span>
+                            </label>
+                        </div>
+                        <div class="ntsControl blockrow">
+                            <label class="ntsRadioBox">
+                                <input type="radio" name="textRadioF" data-bind="
+											   checkedValue: 2,
+											   checked: selectedValueF13,
+											   enable: true
+											" />
+                                <span class="box"/>
+                                <span class="label">#{i18n.getText('KAF022_303')}</span>
+                            </label>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b9">#{i18n.getText('KAF022_715')}</td>
+                <td class="two-radio">
+                    <div class="blockrow" id="b10" tabindex="4" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB242,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB10,
+                            enable: true }">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b11">#{i18n.getText('KAF022_308')}</td>
+                <td class="two-radio">
+                    <div class="blockrow" id="b12" tabindex="5" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB242,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB12,
+                            enable: true }">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_762')}</td>
+                <td class="two-radio">
+                    <div class="blockrow" tabindex="5" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB242,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB12,
+                            enable: true }">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_763')}</td>
+                <td class="two-radio">
+                    <div class="blockrow" tabindex="5" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB242,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB12,
+                            enable: true }">
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table id="fixed-table-g3">
+        <colgroup>
+            <col width="260px"/>
+            <col width="630px"/>
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="ui-widget-header" id="b22" colspan="2">#{i18n.getText('KAF022_143')}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="inline-radio">
+                <td class="color-header" id="b23">#{i18n.getText('KAF022_433')}</td>
+                <td class="two-radio">
+                    <div id="b24" tabindex="10" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB24,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB24,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b25">#{i18n.getText('KAF022_423')}</td>
+                <td class="three-radio">
+                    <div id="b26" tabindex="11" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB26,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB26,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b27">#{i18n.getText('KAF022_121')}</td>
+                <td class="two-radio">
+                    <div id="b28" tabindex="12" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB28,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB28,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 45px">
+                <td class="color-header" id="b29">#{i18n.getText('KAF022_431')}</td>
+                <td class="three-radio">
+                    <div id="b30" tabindex="13" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB30,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB30,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" >#{i18n.getText('KAF022_711')}</td>
+                <td class="two-radio">
+                    <div tabindex="14" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB362,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB32,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b31">#{i18n.getText('KAF022_713')}</td>
+                <td class="two-radio">
+                    <div id="b32" tabindex="14" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB372,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB32,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table id="fixed-table-g5">
+        <colgroup>
+            <col width="260px"/>
+            <col width="630px"/>
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="ui-widget-header" id="b13" colspan="2">#{i18n.getText('KAF022_410')}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="color-header">#{i18n.getText('KAF022_622')}</td>
+                <td/>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_717')}</td>
+                <td class="two-radio">
+                    <div tabindex="7" data-bind="ntsRadioBoxGroup: {
+                                options: itemListB5,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedIdB17,
+                                enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_718')}</td>
+                <td class="two-radio">
+                    <div tabindex="8" data-bind="ntsRadioBoxGroup: {
+                                options: itemListB5,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedIdB19,
+                                enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_719')}</td>
+                <td class="two-radio">
+                    <div tabindex="9" data-bind="ntsRadioBoxGroup: {
+                                options: itemListB5,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: selectedIdB21,
+                                enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="color-header" id="b14">#{i18n.getText('KAF022_611')}</td>
+                <td/>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b16">#{i18n.getText('KAF022_720')}</td>
+                <td class="two-radio">
+                    <div tabindex="7" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB5,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB17,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b18">#{i18n.getText('KAF022_719')}</td>
+                <td class="two-radio">
+                    <div tabindex="8" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB5,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB19,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b20">#{i18n.getText('KAF022_721')}</td>
+                <td class="two-radio">
+                    <div tabindex="9" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB5,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB21,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_722')}</td>
+                <td class="two-radio">
+                    <div tabindex="9" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB5,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB21,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_723')}</td>
+                <td class="two-radio">
+                    <div tabindex="9" data-bind="ntsRadioBoxGroup: {
+                            options: itemListB5,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: selectedIdB21,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</ui:composition>
