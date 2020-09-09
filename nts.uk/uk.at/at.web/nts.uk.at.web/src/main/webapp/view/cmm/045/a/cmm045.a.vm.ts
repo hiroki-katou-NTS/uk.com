@@ -148,7 +148,7 @@ module cmm045.a.viewmodel {
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
 					let newItemLst = [];
-					_.each(data.appListInfo.appLst, item => {
+					_.each(data.appLst, item => {
 						newItemLst.push(new vmbase.DataModeApp(item));
 					});
 					self.items(newItemLst);
