@@ -15,7 +15,7 @@ module nts.uk.at.view.ksc001.b {
 
     export module viewmodel {
 
-        export class ScreenModel {
+        export class ScreenModel extends ko.ViewModel {
 
             // step setup
             stepList: Array<NtsWizardStep>;
@@ -94,7 +94,7 @@ module nts.uk.at.view.ksc001.b {
             isMonthlyPatternRq: KnockoutObservable<boolean>;
             monthlyPatternCode: KnockoutObservable<number> = ko.observable();
             creationMethodCode: KnockoutObservable<number> = ko.observable();
-            monthlyPatternOpts: KnockoutObservableArray<any> = ko.observableArray([]);
+            monthlyPatternOpts: KnockoutObservableArray<MonthlyPatternModel> = ko.observableArray([]);
             creationMethodReference: KnockoutObservableArray<any> = ko.observableArray([]);
             isMonthlyPattern: KnockoutObservable<boolean> = ko.observable(false);
             isCreationMethod: KnockoutObservable<boolean>;
@@ -105,10 +105,13 @@ module nts.uk.at.view.ksc001.b {
 	        implementAtr: KnockoutObservable<number> = ko.observable(0);
 	        createMethodAtr: KnockoutObservable<number> = ko.observable(0);
 	        employeeIds: KnockoutObservableArray<string> = ko.observableArray([]);
+	        kcp005EmployeeList : KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
 
             fullSizeSpace: string = "　　";
 
             constructor() {
+            	super();
+
                 let self = this;
                 let lstRadioBoxModelImplementAtr: RadioBoxModel[] = [];
                 let lstRadioBoxModelRebuildAtr: RadioBoxModel[] = [];
@@ -189,10 +192,6 @@ module nts.uk.at.view.ksc001.b {
                 self.isCreationMethod = ko.computed(() => {
                     return self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE;
                 });
-                /*self.isMonthlyPattern = ko.computed(() => {
-                    return self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE
-                            && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN; //月間パターン
-                });*/
 
                 self.isCopyStartDate = ko.computed(() => {
                     return self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE;
@@ -207,6 +206,7 @@ module nts.uk.at.view.ksc001.b {
                         $('.monthly-pattern-code').focus();
                     }
                 })
+
                 self.isEnableNextPageC = ko.computed(() => {
                     if( self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE
                         && self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN
@@ -253,15 +253,6 @@ module nts.uk.at.view.ksc001.b {
 	            self.employeeIds([]);
                 //get monthly pattern
                 self.getMonthlyPattern();
-
-                let isAttendance = __viewContext.user.role.isInCharge.attendance;
-	            if( !isAttendance ) {
-	            	self.isConfirmedCreation(false);
-		            $('#confirmedCreation').hide();
-
-		            self.overwriteConfirmedData(false);
-		            $('#overwriteConfirmedData').hide();
-	            }
             }
 
             /**
@@ -415,12 +406,19 @@ module nts.uk.at.view.ksc001.b {
                 //init Schedule for personal
                 self.displayPersonalInfor();
 
+	            let isAttendance = __viewContext.user.role.isInCharge.attendance;
+	            if( !isAttendance ) {
+		            self.isConfirmedCreation(false);
+		            $('#confirmedCreation').hide();
+
+		            self.overwriteConfirmedData(false);
+		            $('#overwriteConfirmedData').hide();
+	            }
+
 	            //fix screen on 1280
 	            if( window.outerWidth <= 1280 ) {
 		            $('#contents-area').addClass('fix-2180');
 	            }
-	            //remove tab index
-	            $('.steps .nts-step-contents').attr('tabindex', '-1');
 
                 return dfd.promise();
             }
@@ -428,7 +426,7 @@ module nts.uk.at.view.ksc001.b {
             /**
              * apply ccg001 search data to kcp005
              */
-            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]){
+            public applyKCP005ContentSearch(dataList: EmployeeSearchDto[]) : JQueryPromise<void> {
                 let self = this,
                     employeeSearchs: UnitModel[] = [],
                     listSelectedEmpCode: any = [],
@@ -436,12 +434,15 @@ module nts.uk.at.view.ksc001.b {
 	                employeeIds: Array<string> = [],
 	                newListEmployees: Array<string> = [];
 
-	            //let dfd = $.Deferred<void>();
-
+	            let dfd = $.Deferred<void>();
+	            nts.uk.ui.block.grayout(); // block ui
+	            //self.$blockui("grayout");
                 self.employeeList([]);
                 self.selectedEmployeeCode([]);
 	            self.employeeIds([]);
 	            oldListSelectedEmpCode = dataList;
+	            //save to reload
+				self.kcp005EmployeeList(dataList);
 
                 _.each(dataList, (employeeSearch) => {
 	                employeeIds.push(employeeSearch.employeeId);
@@ -463,7 +464,6 @@ module nts.uk.at.view.ksc001.b {
                 );
 
                 if( employeeIds.length > 0 ) {
-	                nts.uk.ui.block.grayout(); // block ui
 	                self.employeeIds([]);
 	                service.getEmployeeListAfterFilter ( listEmployeeFilter )
 		                .done ( ( response ) => {
@@ -490,15 +490,19 @@ module nts.uk.at.view.ksc001.b {
 				                self.employeeList ( employeeSearchs );
 				                self.selectedEmployeeCode ( listSelectedEmpCode );
 				                self.employeeIds( employeeIds );
-				                console.log(employeeIds);
 			                }
-
-			                nts.uk.ui.block.clear ();
-			                //dfd.resolve();
+			                dfd.resolve();
+		                })
+		                .fail( () => {
+		                	nts.uk.ui.block.clear();
+			                dfd.resolve();
+		                })
+		                .always( () => {
+		                	nts.uk.ui.block.clear();
+			                dfd.resolve();
 		                });
                 }
 
-	            //self.isEnableNextPageD(true);
                 // update kc005
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: false, //設定済表示
@@ -518,7 +522,7 @@ module nts.uk.at.view.ksc001.b {
                     tabindex: 5
                 };
 
-	            //return dfd.promise();
+	            return dfd.promise();
             }
 
             /**
@@ -706,7 +710,10 @@ module nts.uk.at.view.ksc001.b {
                     return;
                 } else {
 	                self.buildString ();
-	                self.next ().done ( function () {
+	                self.next().done ( function () {
+	                	if( self.kcp005EmployeeList().length > 0 ) {
+	                		self.applyKCP005ContentSearch(self.kcp005EmployeeList());
+		                }
 	                });
                 }
             }
@@ -809,13 +816,6 @@ module nts.uk.at.view.ksc001.b {
             private previousPageE(): void {
                 var self = this;
 	            self.previous();
-
-                /*if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
-                    && self.checkCreateMethodAtrPersonalInfo() ==  CreateMethodAtr.PATTERN_SCHEDULE) {
-                    self.previousTwo(); //back screen C
-                } else {
-                    self.previous();
-                }*/
             }
 
             /**
@@ -919,18 +919,6 @@ module nts.uk.at.view.ksc001.b {
                 let self = this;
                 nts.uk.ui.dialog.confirm({messageId: 'Msg_569'}).ifYes(function () {
 	                self.savePersonalScheduleData();
-                    // C1_5 is check -> B4_5 is checked
-	                //以前作成したスケジュールを無視してスケジュールを作成します。よろしいですか？
-                    /*if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
-                        nts.uk.ui.dialog.confirm({messageId: 'Msg_570'}).ifYes(function () {
-                            self.savePersonalScheduleData();
-                        }).ifNo(function () {
-                            return;
-                        });
-                    }
-                    else {
-                        self.savePersonalScheduleData();
-                    }*/
                 }).ifNo(function () {
                     return;
                 });
@@ -1072,7 +1060,7 @@ module nts.uk.at.view.ksc001.b {
 				        protectHandCorrect: null,
 				        confirm: data.confirm,
 				        createMethodAtr: data.createMethodAtr,
-				        copyStartDate: self.toDate(self.copyStartDate()),
+				        copyStartYmd: self.toDate(self.copyStartDate()),
 				        employeeIds: self.findEmployeeIdsByCode(self.selectedEmployeeCode())
 			        };
 		        return dto;
