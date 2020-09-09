@@ -1,6 +1,6 @@
 module nts.uk.at.view.kdl023.base.service {
 
-    let servicePath: any = {
+    const servicePath: any = {
         getHoliday: 'at/schedule/holiday/getHolidayByListDate',
         getWorkTime: 'at/shared/worktimesetting/findAll',
         getWorkType: 'at/share/worktype/findAll',
@@ -15,30 +15,39 @@ module nts.uk.at.view.kdl023.base.service {
     export function findAllPattern(): JQueryPromise<Array<model.DailyPatternSetting>> {
         return nts.uk.request.ajax(servicePath.getAllPattern);
     }
+
     export function findPatternByCode(code: string): JQueryPromise<model.DailyPatternSetting> {
         return nts.uk.request.ajax(servicePath.findPatternByCode + '/' + code);
     }
+
     export function getHolidayByListDate(dates: Array<string>): JQueryPromise<Array<any>> {
         return nts.uk.request.ajax(servicePath.getHoliday, dates);
     }
+
     export function getAllWorkType(): JQueryPromise<Array<model.WorkType>> {
         return nts.uk.request.ajax(servicePath.getWorkType);
     }
+
     export function getAllWorkTime(): JQueryPromise<Array<model.WorkTime>> {
         return nts.uk.request.ajax(servicePath.getWorkTime);
     }
+
     export function findWeeklyWorkSetting(): JQueryPromise<model.WeeklyWorkSetting> {
         return nts.uk.request.ajax(servicePath.getWeeklyWorkSetting);
     }
+
     export function registerMonthlyPattern(data: model.MonthlyPatternRegisterCommand){
         return nts.uk.request.ajax(servicePath.registerMonthlyPattern, data)
     }
+
     export function startUpWindows(data: model.GetStartupInfoParam): JQueryPromise<model.WorkCycleReflectionDto>{
         return nts.uk.request.ajax(servicePath.startUp, data)
     }
+
     export function getReflectionWorkCycleAppImage( data: model.GetWorkCycleAppImageParam): JQueryPromise<Array<model.RefImageEachDayDto>>{
         return nts.uk.request.ajax(servicePath.getWorkCycleAppImage, data)
     }
+
     export module model {
         export interface ReflectionSetting {
             calendarStartDate?: string;

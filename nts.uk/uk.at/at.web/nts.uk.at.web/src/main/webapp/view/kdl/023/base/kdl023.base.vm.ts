@@ -29,10 +29,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         listWorkType: KnockoutObservableArray<WorkType>;
         listWorkTime: KnockoutObservableArray<WorkTime>;
         patternStartDate: moment.Moment;
-        calendarStartDate: moment.Moment;
+        calendarStartDate: moment.Moment = moment();
         calendarEndDate: moment.Moment;
 
-        reflectionSetting: ReflectionSetting;
+        reflectionSetting: ReflectionSetting = new ReflectionSetting();
         dailyPatternSetting: DailyPatternSetting;
         weeklyWorkSetting: WeeklyWorkSetting;
         listHoliday: Array<any>;
@@ -224,6 +224,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     // Force change to set tab index.
                     vm.reflectionSetting.holidaySetting.useClassification.valueHasMutated();
 
+                    vm.setCalendarData(vm.refImageEachDayDto());
                 }).fail(res => {
                     vm.$dialog.alert(res.message)
                     dfd.fail();
@@ -295,7 +296,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          * Event when click apply button.
          */
         public onBtnApplySettingClicked(): void{
-            this.onBtnApplySetting(0);
+            this.slideDays(0);
+            this.onBtnApplySetting(this.slideDays());
         }
 
         public onBtnApplySetting(slideDay: number): void {
@@ -341,7 +343,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             if(refOrder.length === 0){
                 vm.$dialog.error({ messageId: "MsgB_2", messageParams: [vm.$i18n('KDL023_31')]});
                 vm.$blockui('clear');
-                $('cbb-reflection-order-1').focus();
+                $('#cbb-reflection-order-1').focus();
                 return;
             }
             else{
@@ -476,7 +478,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     self.listNonSatHoliday(list.nonSatHoliday);
                     self.isExecMode(param.bootMode === 1);
                     self.refImageEachDayDto(list.reflectionImage);
-                    self.setCalendarData(list.reflectionImage);
                     if(param.bootMode === 1){
                         $('#daterangepicker').focus();
                     }
@@ -1163,27 +1164,29 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     }
 
     export class ReflectionSetting {
-        calendarStartDate: KnockoutObservable<string>;
-        calendarEndDate: KnockoutObservable<string>;
-        selectedPatternCd: KnockoutObservable<string>;
-        patternStartDate: KnockoutObservable<string>;
-        reflectionMethod: KnockoutObservable<ReflectionMethod>;
-        statutorySetting: DayOffSetting;
-        nonStatutorySetting: DayOffSetting;
-        holidaySetting: DayOffSetting;
-        monthlyPatternCode: KnockoutObservable<string>;
+        calendarStartDate: KnockoutObservable<string> = ko.observable('');
+        calendarEndDate: KnockoutObservable<string> = ko.observable('');
+        selectedPatternCd: KnockoutObservable<string> = ko.observable('');
+        patternStartDate: KnockoutObservable<string> = ko.observable('');
+        reflectionMethod: KnockoutObservable<ReflectionMethod> = ko.observable(ReflectionMethod.Overwrite);
+        statutorySetting: DayOffSetting = new DayOffSetting();
+        nonStatutorySetting: DayOffSetting = new DayOffSetting();
+        holidaySetting: DayOffSetting = new DayOffSetting();
+        monthlyPatternCode: KnockoutObservable<string> = ko.observable('');
 
-        constructor(data: service.model.ReflectionSetting) {
+        constructor(data?: service.model.ReflectionSetting) {
             let self = this;
-            self.calendarStartDate = ko.observable(data.calendarStartDate ? data.calendarStartDate : '');
-            self.calendarEndDate = ko.observable(data.calendarEndDate ? data.calendarEndDate : '');
-            self.patternStartDate = ko.observable(data.patternStartDate);
-            self.selectedPatternCd = ko.observable(data.selectedPatternCd);
-            self.reflectionMethod = ko.observable(data.reflectionMethod);
-            self.statutorySetting = new DayOffSetting(data.statutorySetting);
-            self.nonStatutorySetting = new DayOffSetting(data.nonStatutorySetting);
-            self.holidaySetting = new DayOffSetting(data.holidaySetting);
-			self.monthlyPatternCode = ko.observable(data.monthlyPatternCode ? data.monthlyPatternCode : '');
+            if(data) {
+                self.calendarStartDate = ko.observable(data.calendarStartDate ? data.calendarStartDate : '');
+                self.calendarEndDate = ko.observable(data.calendarEndDate ? data.calendarEndDate : '');
+                self.patternStartDate = ko.observable(data.patternStartDate);
+                self.selectedPatternCd = ko.observable(data.selectedPatternCd);
+                self.reflectionMethod = ko.observable(data.reflectionMethod);
+                self.statutorySetting = new DayOffSetting(data.statutorySetting);
+                self.nonStatutorySetting = new DayOffSetting(data.nonStatutorySetting);
+                self.holidaySetting = new DayOffSetting(data.holidaySetting);
+                self.monthlyPatternCode = ko.observable(data.monthlyPatternCode ? data.monthlyPatternCode : '');
+            }
         }
 
         public static newSetting(): ReflectionSetting {
@@ -1220,11 +1223,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
     }
     class DayOffSetting {
-        useClassification: KnockoutObservable<boolean>;
-        workTypeCode: KnockoutObservable<string>;
-        constructor(data: service.model.DayOffSetting) {
-            this.useClassification = ko.observable(data.useClassification);
-            this.workTypeCode = ko.observable(data.workTypeCode);
+        useClassification: KnockoutObservable<boolean> = ko.observable(false);
+        workTypeCode: KnockoutObservable<string>= ko.observable('');
+        constructor(data?: service.model.DayOffSetting) {
+            if(data){
+                this.useClassification = ko.observable(data.useClassification);
+                this.workTypeCode = ko.observable(data.workTypeCode);
+            }
         }
 
         public fromDto(dto: service.model.DayOffSetting) {
