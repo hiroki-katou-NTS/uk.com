@@ -20,11 +20,13 @@ public class TimeStartCanAddHistory {
      */
     public static boolean checkAdd(Require require, Unit unit, String workplaceId, GeneralDate startDate){
 
+        // 1:指定日以降の履歴を取得する(年月日)
         if (unit.value == EnumAdaptor.valueOf(Unit.WORKPLACE.value, Unit.class).value){
             List<Approver36AgrByCompany> agrByCompany = require.getByCompanyIdFromDate(startDate);
             return agrByCompany.size() != 0;
         }
 
+        // 1.1:指定日以降の履歴を取得する(職場ID,年月日)
         List<Approver36AgrByWorkplace> agrByWorkplaces = require.getByWorkplaceIdFromDate(workplaceId,startDate);
 
         return agrByWorkplaces.size() != 0;
