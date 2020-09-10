@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -90,7 +91,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	private RecordDomRequireService requireService;
 	@Override
 	public void updateWorkTimeType(ReflectParameter para, boolean scheUpdate, IntegrationOfDaily dailyInfo) {
-		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
+		WorkInformation workInfor = new WorkInformation(para.getWorkTypeCode(), para.getWorkTimeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			if(para.isWorkChange()) {
@@ -413,10 +414,16 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInfoOfDailyAttendance workInformation = dailyPerfor.getWorkInformation();
 		if(scheUpdate) {
 			lstItem.add(1);
-			dailyPerfor.getWorkInformation().setScheduleInfo(new WorkInformation(workInformation.getScheduleInfo().getWorkTimeCode() == null ? null : workInformation.getScheduleInfo().getWorkTimeCode().v(), workTypeCode));
+			WorkInformation sched = workInformation.getScheduleInfo().clone();
+			sched.setWorkTypeCode(new WorkTypeCode(workTypeCode));
+			
+			dailyPerfor.getWorkInformation().setScheduleInfo(sched);
 		} else {
 			lstItem.add(28);
-			dailyPerfor.getWorkInformation().setRecordInfo(new WorkInformation(workInformation.getRecordInfo().getWorkTimeCode() == null ? null : workInformation.getRecordInfo().getWorkTimeCode().v(), workTypeCode));			
+			WorkInformation record = workInformation.getRecordInfo().clone();
+			record.setWorkTypeCode(new WorkTypeCode(workTypeCode));
+			
+			dailyPerfor.getWorkInformation().setRecordInfo(record);			
 		}
 		//日別実績の編集状態
 		this.editStateOfDailyPerformance(employeeId, dateData, dailyPerfor.getEditState(), lstItem);
@@ -679,7 +686,7 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 	public IntegrationOfDaily updateWorkTimeTypeHoliwork(ReflectParameter para, boolean scheUpdate,
 			IntegrationOfDaily dailyData) {		
 		WorkInfoOfDailyAttendance dailyPerfor = dailyData.getWorkInformation();
-		WorkInformation workInfor = new WorkInformation(para.getWorkTimeCode(), para.getWorkTypeCode());
+		WorkInformation workInfor = new WorkInformation(para.getWorkTypeCode(), para.getWorkTimeCode());
 		List<Integer> lstItem = new ArrayList<>();
 		if(scheUpdate) {
 			this.dailyInfo(para.getWorkTimeCode(), para.getWorkTypeCode(), dailyPerfor);
@@ -788,13 +795,18 @@ public class WorkUpdateServiceImpl implements WorkUpdateService{
 		WorkInfoOfDailyAttendance workInformation = dailyPerfor.getWorkInformation();
 		if(scheUpdate) {
 			lstItem.add(2);
-			dailyPerfor.getWorkInformation().setScheduleInfo(new WorkInformation(workTimeCode, workInformation.getScheduleInfo().getWorkTypeCode() == null 
-					? null : workInformation.getScheduleInfo().getWorkTypeCode().v()));
+			WorkInformation sched = workInformation.getScheduleInfo().clone();
+			
+			sched.setWorkTimeCode(workTimeCode);
+			
+			dailyPerfor.getWorkInformation().setScheduleInfo(sched);
 			//workRepository.updateByKeyFlush(dailyPerfor);
 		} else {
 			lstItem.add(29);
-			dailyPerfor.getWorkInformation().setRecordInfo(new WorkInformation(workTimeCode, workInformation.getRecordInfo().getWorkTypeCode() == null 
-					? null : workInformation.getRecordInfo().getWorkTypeCode().v()));
+			WorkInformation record = workInformation.getRecordInfo();
+			record.setWorkTimeCode(workTimeCode);
+			
+			dailyPerfor.getWorkInformation().setRecordInfo(record);
 			//workRepository.updateByKeyFlush(dailyPerfor);
 		}
 		//日別実績の編集状態

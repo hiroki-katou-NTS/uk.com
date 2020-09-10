@@ -16,15 +16,14 @@ public class CopyActualToScheduleWorkInfo {
 
 	// 実績の勤務情報を予定の勤務情報へコピー
 	public static void copy(WorkInfoOfDailyAttendance workInformation, List<EditStateOfDailyAttd> editState) {
-
+		WorkInformation record = workInformation.getRecordInfo();
+		
 		// 勤務情報の値をコピー
-		if (workInformation.getScheduleInfo() == null) {
-			workInformation.setScheduleInfo(new WorkInformation(workInformation.getRecordInfo().getWorkTimeCode() == null ? null :workInformation.getRecordInfo().getWorkTimeCode().v()
-					,workInformation.getRecordInfo().getWorkTypeCode().v()
-					));
+		if (workInformation.getScheduleInfo() == null) {	
+			workInformation.setScheduleInfo(new WorkInformation(record.getWorkTypeCode().v(), record.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null)));
 		} else {
-			workInformation.getScheduleInfo().setWorkTypeCode(workInformation.getRecordInfo().getWorkTypeCode());
-			workInformation.getScheduleInfo().setWorkTimeCode(workInformation.getRecordInfo().getWorkTimeCode());
+			workInformation.getScheduleInfo().setWorkTypeCode(record.getWorkTypeCode().v());
+			workInformation.getScheduleInfo().setWorkTimeCode(record.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null));
 		}
 
 		// 実績の勤務情報の編集状態を予定の勤務情報へ引き継ぐ

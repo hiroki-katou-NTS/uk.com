@@ -52,7 +52,7 @@ public class KscmtWorkingCycleDtl extends UkJpaEntity implements Serializable {
                 new KscmtWorkingCycleDtlPK(domain.getCid(), domain.getCode().v(), index.incrementAndGet()),
                 AppContexts.user().contractCode(),
                 i.getWorkInformation().getWorkTypeCode().v(),
-                i.getWorkInformation().getWorkTimeCode() != null? i.getWorkInformation().getWorkTimeCode().v():null,
+                i.getWorkInformation().getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null),
                 i.getDays().v()
         )).collect(Collectors.toList());
         return result;
@@ -61,7 +61,7 @@ public class KscmtWorkingCycleDtl extends UkJpaEntity implements Serializable {
     public static WorkCycleInfo toDomain(KscmtWorkingCycleDtl entity) {
         return WorkCycleInfo.create(
                 entity.days,
-                new WorkInformation(entity.workTimeCode, entity.workTypeCode)
+                new WorkInformation(entity.workTypeCode, entity.workTimeCode)
         );
     }
 }

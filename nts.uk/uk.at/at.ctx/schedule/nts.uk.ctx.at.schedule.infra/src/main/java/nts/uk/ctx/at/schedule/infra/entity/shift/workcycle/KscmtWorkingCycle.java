@@ -44,7 +44,7 @@ public class KscmtWorkingCycle extends UkJpaEntity implements Serializable {
         entityValues.stream().forEach(item -> {
             WorkCycleInfo info = WorkCycleInfo.create(
                     item.days,
-                    new WorkInformation(item.workTimeCode, item.workTypeCode)
+                    new WorkInformation(item.workTypeCode, item.workTimeCode)
             );
             infos.add(info);
         });

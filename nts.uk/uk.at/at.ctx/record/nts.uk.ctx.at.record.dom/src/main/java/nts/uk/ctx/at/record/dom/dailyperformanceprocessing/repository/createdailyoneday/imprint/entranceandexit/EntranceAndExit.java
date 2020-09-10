@@ -15,7 +15,10 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGateOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
 
 /**
  * 入退門反映する
@@ -41,17 +44,14 @@ public class EntranceAndExit {
 		listReflectionInformation = reflectFrameEntranceAndExit.reflect(listReflectionInformation, stamp, stampReflectRangeOutput, integrationOfDaily);
 		
 		//反映済みの反映情報（Temporary）を日別実績の入退門にコピーする
-		if (attendanceLeavingGate.isPresent()) {
-			for(AttendanceLeavingGate attdLeavingGate :attendanceLeavingGate.get().getAttendanceLeavingGates()) {
-				for(ReflectionInformation ri :listReflectionInformation) {
-					if(attdLeavingGate.getWorkNo().v().intValue() == ri.getFrameNo()) {
-						attdLeavingGate.setAttendance(ri.getStart());
-						attdLeavingGate.setLeaving(ri.getEnd());
-						break;
-					}
-				}
-			}
+		List<AttendanceLeavingGate> attendanceLeavingGates = new ArrayList<>();
+		for(ReflectionInformation  reflectionInfor : listReflectionInformation) {
+			attendanceLeavingGates.add(new AttendanceLeavingGate(new WorkNo(reflectionInfor.getFrameNo()),
+					reflectionInfor.getStart().isPresent()?reflectionInfor.getStart().get():null,
+					reflectionInfor.getEnd().isPresent()?reflectionInfor.getEnd().get():null));
 		}
+		integrationOfDaily.setAttendanceLeavingGate(Optional.of(new AttendanceLeavingGateOfDailyAttd(attendanceLeavingGates)));
+		
 		return reflectStampOuput;
 		
 	}

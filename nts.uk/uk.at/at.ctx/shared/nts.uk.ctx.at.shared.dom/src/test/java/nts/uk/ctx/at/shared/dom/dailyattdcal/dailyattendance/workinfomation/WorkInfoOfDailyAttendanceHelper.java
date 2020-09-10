@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.Da
 
 public class WorkInfoOfDailyAttendanceHelper {
 	public static WorkInfoOfDailyAttendance getWorkInfoOfDailyAttendanceDefault() {
-		WorkInformation recordInfo1 = new WorkInformation("ti1", "ty1");
+		WorkInformation recordInfo1 = new WorkInformation("ty1", "ti1");
 		WorkInfoOfDailyAttendance workInfoOfDailyAttendance = new WorkInfoOfDailyAttendance(recordInfo1, null, null, NotUseAttribute.Not_use, NotUseAttribute.Not_use,
 				DayOfWeek.FRIDAY, new ArrayList<>());
 		return workInfoOfDailyAttendance;

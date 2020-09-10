@@ -37,8 +37,7 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 			if (oneDay == WorkTypeClassification.Holiday || oneDay == WorkTypeClassification.Pause
 					|| oneDay == WorkTypeClassification.ContinuousWork
 					|| oneDay == WorkTypeClassification.LeaveOfAbsence || oneDay == WorkTypeClassification.Closure) {
-				WorkInformation recordWorkInformation = new WorkInformation(null,
-						workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
+				WorkInformation recordWorkInformation = new WorkInformation(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode(), null);
 				workInfoOfDailyPerformance.getWorkInformation().setRecordInfo(recordWorkInformation);
 			}
 			
