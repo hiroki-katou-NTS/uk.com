@@ -32,15 +32,8 @@ public class WorkInformation {
 	private Optional<WorkTimeCode> workTimeCode;
 
 	public WorkInformation(String workTypeCode, String workTimeCode) {
-		if (!StringUtils.isEmpty(workTypeCode)) {
-			this.setWorkTypeCode(new WorkTypeCode(workTypeCode));
-		}
-
-		if (StringUtils.isEmpty(workTimeCode)) {
-			this.setWorkTimeCode(null);
-		} else {
-			this.setWorkTimeCode(new WorkTimeCode(workTimeCode));
-		}
+		this.setWorkTypeCode(workTypeCode);
+		this.setWorkTimeCode(workTimeCode);
 	}
 
 	public WorkInformation(WorkTypeCode workTypeCode, WorkTimeCode workTimeCode) {
@@ -68,6 +61,12 @@ public class WorkInformation {
 		return this.workTypeCode;
 	}
 
+	public void setWorkTypeCode(String workTypeCode) {
+		if (!StringUtils.isEmpty(workTypeCode)) {
+			this.setWorkTypeCode(new WorkTypeCode(workTypeCode));
+		}
+	}
+
 	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
 		this.workTypeCode = workTypeCode;
 	}
@@ -81,7 +80,15 @@ public class WorkInformation {
 	}
 
 	public void removeWorkTimeInHolydayWorkType() {
-		this.workTimeCode = null;
+		this.workTimeCode = Optional.empty();
+	}
+
+	public void setWorkTimeCode(String workTimeCode) {
+		if (!StringUtils.isEmpty(workTimeCode)) {
+			this.workTimeCode = Optional.empty();
+		} else {
+			this.workTimeCode = Optional.of(new WorkTimeCode(workTimeCode));
+		}
 	}
 
 	public void setWorkTimeCode(WorkTimeCode workTimeCode) {
@@ -258,6 +265,8 @@ public class WorkInformation {
 			return false;
 		}
 		
-		return workTimeCode.equals("102") || workTimeCode.equals("103");
+		return workTimeCode
+				.map(m -> m.equals(new WorkTimeCode("102")) || m.equals(new WorkTimeCode("103")))
+				.orElse(false);
 	}
 }

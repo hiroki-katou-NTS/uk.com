@@ -120,6 +120,8 @@ module nts.uk.at.view.ksu001.la {
                 request.baseDate = self.baseDate();
                 request.workplaceGroupId = self.workplaceGroupId(); 
 
+                self.currentCodeListRight([]);
+                self.currentCodeListLeft([]);
                 service.findEmpOrgInfo(request).done((dataAll: Array<ItemModel>)=>{
                     _.each(dataAll, x =>{
                         if(x.teamName === ""){
@@ -277,9 +279,11 @@ module nts.uk.at.view.ksu001.la {
                 self.isEditing(false);
                 self.scheduleTeamModel().resetData(); 
                 let temp = _.union(self.itemsLeft(), self.itemsRight());
-                self.itemsLeft(temp);
+                self.itemsLeft(_.sortBy(temp, [function (o) { return o.employeeCd; }]));
                 
                 self.itemsRight([]); 
+                self.currentCodeListLeft([]);
+                self.currentCodeListRight([]);
                 self.clearError(); 
                 // self.getEmpOrgInfo();
                 $('#scheduleTeamCd').focus();              

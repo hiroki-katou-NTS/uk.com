@@ -39,7 +39,7 @@ public class AddWorkCycleCommand {
     }
 
     public static WorkCycle createTemp(String cid) {
-        WorkInformation info = new WorkInformation("code","timeCd", 1, 2);
+        WorkInformation info = new WorkInformation("code", "timeCd", 1, 2);
         List<WorkInformation> infos = new ArrayList<>();
         infos.add(info);
         AddWorkCycleCommand workCycle = new AddWorkCycleCommand(

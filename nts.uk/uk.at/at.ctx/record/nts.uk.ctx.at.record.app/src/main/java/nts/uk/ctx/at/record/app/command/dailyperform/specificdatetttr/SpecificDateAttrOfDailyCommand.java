@@ -15,10 +15,14 @@ public class SpecificDateAttrOfDailyCommand extends DailyWorkCommonCommand {
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = new SpecificDateAttrOfDailyPerfor(getEmployeeId(),
-				getWorkDate(), ((SpecificDateAttrOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate()));
-		this.data = item == null || !item.isHaveData() ? Optional.empty() 
-				: Optional.of(specificDateAttrOfDailyPerfor);
+		if(item == null) {
+			this.data = Optional.empty(); 
+		}else {
+			SpecificDateAttrOfDailyPerfor specificDateAttrOfDailyPerfor = new SpecificDateAttrOfDailyPerfor(getEmployeeId(),
+					getWorkDate(), ((SpecificDateAttrOfDailyPerforDto) item).toDomain(getEmployeeId(), getWorkDate()));
+			this.data = item == null || !item.isHaveData() ? Optional.empty() 
+					: Optional.of(specificDateAttrOfDailyPerfor);
+		}
 	}
 
 	@Override
