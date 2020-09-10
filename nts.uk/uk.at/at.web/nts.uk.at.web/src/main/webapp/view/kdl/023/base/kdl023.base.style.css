@@ -80,3 +80,7 @@
     float: left;
     margin-left: calc(40% - 10px);
 }
+
+.fc-row .fc-content-skeleton td.fc-event-container {
+	text-align: center;
+}
