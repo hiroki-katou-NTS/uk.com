@@ -26,12 +26,13 @@
 }
 
 .btn-apply-setting {
-	height: 70px;
+	min-height: 70px;
 	border-radius: 7px;
 	padding-left: 30px;
 	padding-right: 30px;
 	margin-top: 18px;
 	margin-right: 5px;
+	max-width: 250px;
 }
 .priority {
 	margin-top: 20px;
@@ -83,4 +84,7 @@
 
 .fc-row .fc-content-skeleton td.fc-event-container {
 	text-align: center;
+}
+.reflection-btn-text{
+	white-space: pre-wrap;
 }
