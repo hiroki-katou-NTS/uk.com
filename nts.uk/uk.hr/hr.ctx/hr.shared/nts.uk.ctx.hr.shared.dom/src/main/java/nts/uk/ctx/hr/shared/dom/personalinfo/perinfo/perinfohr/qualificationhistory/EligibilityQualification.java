@@ -1,9 +1,8 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -14,8 +13,7 @@ import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class EligibilityQualification {
 
 	// 資格CD

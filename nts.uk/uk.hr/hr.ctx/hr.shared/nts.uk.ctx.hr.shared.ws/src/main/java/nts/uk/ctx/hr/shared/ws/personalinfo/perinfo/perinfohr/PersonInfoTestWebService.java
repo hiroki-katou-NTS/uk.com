@@ -22,12 +22,12 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetP
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.GetPersonInfoHROutput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHR;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHRInput;
-import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.EligibilityQualification;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeApp;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.Holder;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationApp;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationInput;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationOutput;
 
 /**
  * 
@@ -101,7 +101,7 @@ public class PersonInfoTestWebService extends WebService {
 
 	@POST
 	@Path("getHoldingQualification")
-	public HashMap<String, List<EligibilityQualification>> testHoldingQualification(HoldingQualificationInput input) {
+	public List<HoldingQualificationOutput> testHoldingQualification(HoldingQualificationInput input) {
 		return holdingQualification.getHoldingQualification(input);
 	}
 	

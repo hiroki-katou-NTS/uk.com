@@ -1,6 +1,5 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -17,7 +16,7 @@ public class HoldingQualificationApp {
 	@Inject
 	private PersonalInformationRepository recordRepo;
 	
-	public HashMap<String, List<EligibilityQualification>> getHoldingQualification(HoldingQualificationInput input){
+	public List<HoldingQualificationOutput> getHoldingQualification(HoldingQualificationInput input){
 		
 		HoldingQualificationRequireImpl require = new HoldingQualificationRequireImpl(recordRepo);
 		
