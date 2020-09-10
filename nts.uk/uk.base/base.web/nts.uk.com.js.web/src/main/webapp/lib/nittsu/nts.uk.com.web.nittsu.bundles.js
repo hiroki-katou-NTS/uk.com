@@ -18055,10 +18055,24 @@ var nts;
                                 var $message = $("<div></div>");
                                 $dialog.html("");
                                 $dialog.append($errorboard).append($message);
-                                $dialog.closest("[role='dialog']").show();
-                                // hide "x" button
-                                $dialog.closest("[role='dialog']").find(".ui-dialog-titlebar-close").hide();
-                                //$dialog.dialog("open");    
+                                var $container = $dialog.closest("[role='dialog']");
+                                $container
+                                    .show()
+                                    // hide "x" button
+                                    .find(".ui-dialog-titlebar-close").hide();
+                                //$dialog.dialog("open");
+                                var $dialogs = window.top.$('body>[role="dialog"]').toArray();
+                                var zIndex = _.chain($dialogs)
+                                    .map(function (el) { return document.defaultView.getComputedStyle(el, null).getPropertyValue('z-index'); })
+                                    .filter(function (index) { return index.match(/^\d+$/); })
+                                    .map(function (index) { return parseInt(index); })
+                                    .orderBy(function (index) { return index; })
+                                    .last();
+                                // fixbug show error dialog after main modal
+                                if (!$container.data('ziv')) {
+                                    var zIdx = zIndex.value() || 10000001;
+                                    $container.data('ziv', zIdx).css('z-index', zIdx);
+                                }
                             }
                             else {
                                 $dialog.closest("[role='dialog']").hide();
