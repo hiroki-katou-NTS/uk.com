@@ -29,14 +29,14 @@ module nts.uk.at.view.ksu001.la {
                 ]);
 
                 self.columnsRight = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 91 },
-                    { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 148 }
+                    { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 105 },
+                    { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 160 }
                 ]);
 
                 self.columnsLeft = ko.observableArray([
-                    { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 85 },
-                    { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 130 },
-                    { headerText: nts.uk.resource.getText('KSU001_3215'), key: 'teamName', width: 60 }
+                    { headerText: nts.uk.resource.getText('KSU001_3208'), key: 'employeeCd', width: 90 },
+                    { headerText: nts.uk.resource.getText('KSU001_3209'), key: 'businessName', width: 145 },
+                    { headerText: nts.uk.resource.getText('KSU001_3215'), key: 'teamName', width: 65 }
                 ]);
 
                 self.selectedCode.subscribe((code: string) => {

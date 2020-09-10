@@ -26,7 +26,7 @@
                     <button tabindex="1" data-bind="click: clearData">#{i18n.getText('KSU001_3202')}</button>
                     <button class="proceed" tabindex="2" data-bind="click: registerOrUpdate">#{i18n.getText('KSU001_3203')}</button>
                     <button class="danger" tabindex="3" data-bind="click: remove, enable: enableDelete()">#{i18n.getText('KSU001_3204')}</button>
-                    <button style="margin-right: 5%; float:right" data-bind="click: closeDialog" tabindex="5">#{i18n.getText('KSU001_3206')}</button>
+                    <button style="margin-right: 6%; float:right" data-bind="click: closeDialog" tabindex="5">#{i18n.getText('KSU001_3206')}</button>
                 </div>
             </div>
             <div id="contents-area" class="fixed-flex-layout">
@@ -78,7 +78,7 @@
                                             value: scheduleTeamModel().name
                                         }" tabindex="7" />
                         </div>
-                        <div style="margin-left: 120px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
+                        <div style="margin-left: 79px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
                         </div>
                         <div class="input">
                             <input id="scheduleTeamRemarks" data-bind="ntsTextEditor:{
@@ -119,7 +119,7 @@
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
-                        <div style="width: 266px;"
+                        <div style="width: 266px;" class = "nts-searchbox-custom"
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-right', searchMode: 'highlight',
                                             items: itemsRight, selected: currentCodeListRight, selectedKey: 'employeeCd', fields: ['employeeCd','businessName'], mode: 'igGrid'}" />
                     </div>

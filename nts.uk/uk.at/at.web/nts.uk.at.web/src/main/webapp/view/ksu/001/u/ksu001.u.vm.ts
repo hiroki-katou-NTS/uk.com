@@ -594,7 +594,7 @@ module nts.uk.at.view.ksu001.u {
             if (parseInt(forwardWeekSplit[0]) == parseInt(basePubDateSplit[0])) {
                 if (parseInt(forwardWeekSplit[1]) == parseInt(basePubDateSplit[1])) {
                     if (self.editDate()) {
-                        let size = self.daysDifference(self.editDate(), forwardWeek) >= 7 ? self.daysDifference(self.editDate(), forwardWeek) + 1 : 7;                        
+                        let size = self.daysDifference(self.newEditDate(), forwardWeek) >= 7 ? self.daysDifference(self.newEditDate(), forwardWeek) + 1 : 7;                        
                         if (forwardWeekPublicDate <= self.publicDate()) {
                             for (let i = 1; i <= size; i++) {
                                 date = self.formatDate(new Date(parseInt(forwardWeekSplit[0]), parseInt(forwardWeekSplit[1]) - 1, parseInt(forwardWeekSplit[2]) + offset - i));

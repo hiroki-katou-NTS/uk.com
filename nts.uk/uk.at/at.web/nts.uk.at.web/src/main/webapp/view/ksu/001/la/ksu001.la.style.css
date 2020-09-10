@@ -23,7 +23,7 @@
 	left: 16px;
 }
 .arrow-button{	
-	padding: 80px 50px;	
+	padding: 80px 37px;	
 	margin: 2px;
 }
 
@@ -54,12 +54,10 @@
 .lblForm{
 	margin-right: 313px;
 }
-.nts-searchbox-custom{
-	width: ;
-}
+
 #line {
 	margin: 5px 0px 10px 0px;
-	width: 830px;
+	width: 810px;
 	border:none;
 	display: block;
 	height: 0.1px;
