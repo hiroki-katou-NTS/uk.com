@@ -527,7 +527,10 @@ module nts.uk.at.view.ksc001.b {
 								self.employeeList( employeeSearchs );
 								self.selectedEmployeeCode( listSelectedEmpCode );
 								self.employeeIds( employeeIds );
+							} else {
+								nts.uk.ui.dialog.error({ messageId: "Msg_1779"});
 							}
+
 							dfd.resolve();
 						} )
 						.fail(() => {
@@ -754,12 +757,14 @@ module nts.uk.at.view.ksc001.b {
 				} else {
 					self.buildString();
 					self.next().done( function() {
-						$('.ccg-lbl-search-drawer').click();
+
+						if( self.kcp005EmployeeList().length <= 0 )
+							$('.ccg-lbl-search-drawer').click();
+
 						if( self.kcp005EmployeeList().length > 0 && self.hasChangedCondition() ) {
-							self.hasChangedCondition(false);
 							self.applyKCP005ContentSearch( self.kcp005EmployeeList() );
-						} else
-							self.hasChangedCondition(false);
+						}
+						self.hasChangedCondition(false);
 					} );
 				}
 			}
