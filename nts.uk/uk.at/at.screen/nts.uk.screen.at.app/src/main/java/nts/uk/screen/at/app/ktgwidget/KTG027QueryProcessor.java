@@ -14,17 +14,20 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.auth.app.find.employmentrole.InitDisplayPeriodSwitchSetFinder;
-import nts.uk.ctx.at.auth.app.find.employmentrole.dto.InitDisplayPeriodSwitchSetDto;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.AuthWorkPlaceAdapter;
 import nts.uk.ctx.at.auth.dom.adapter.workplace.WorkplaceInfoImport;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
+import nts.uk.ctx.at.function.dom.adapter.employeebasic.SyEmployeeFnAdapter;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.ClosureHistPeriod;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.CheckTarget;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriod;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -40,15 +43,17 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHist;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
+import nts.uk.ctx.bs.employee.dom.employee.service.SearchEmployeeService;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsHistRepository;
 import nts.uk.ctx.bs.employee.dom.temporaryabsence.TempAbsenceHistory;
+import nts.uk.ctx.bs.employee.pub.workplace.master.WorkplacePub;
+import nts.uk.screen.at.app.ktgwidget.find.dto.AcquisitionOfOvertimeHoursOfEmployeesDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeList36;
 import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHoursDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimedDisplayForSuperiorsDto;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class KTG027QueryProcessor {
@@ -65,6 +70,9 @@ public class KTG027QueryProcessor {
 
 	@Inject
 	private ClosureRepository closureRepository;
+	
+	@Inject
+	private SearchEmployeeService searchEmployeeService;
 
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
@@ -83,6 +91,15 @@ public class KTG027QueryProcessor {
 	
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
+	
+	@Inject
+	private EmployeeRequestAdapter employeeAdapter;
+	
+	@Inject
+	private WorkplacePub workplacePub;
+	
+	@Inject
+	private SyEmployeeFnAdapter syEmployeeFnAdapter;
 
 	public GeneralDate checkSysDateOrCloseEndDate() {
 		// EA luôn trả v�Systemdate
@@ -337,6 +354,10 @@ public class KTG027QueryProcessor {
 		return reusult;
 	}
 	
+	/**
+	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).ユースケース.起動する(Khởi động).システム.起動する
+	 * @return
+	 */
 	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto() {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
@@ -345,21 +366,51 @@ public class KTG027QueryProcessor {
 		GeneralDate baseDate = GeneralDate.today();
 		//	社員に対応する処理締めを取得する
 		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sID, baseDate);
-		DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, sID, baseDate);
+		OvertimedDisplayForSuperiorsDto result = OvertimedDisplayForSuperiorsDto.builder().build();
 		//	指定した年月の締め期間を取得する
 		List<ClosureHistPeriod> lstClosure = getSpecifyPeriod.getSpecifyPeriod(closure.getClosureMonth().getProcessingYm());
+		CurrentClosingPeriod closingInformationForCurrentMonth = CurrentClosingPeriod.builder()
+				.processingYm(closure.getClosureMonth().getProcessingYm())
+				.closureEndDate(lstClosure.get(0).getPeriod().end())
+				.closureStartDate(lstClosure.get(0).getPeriod().start()).build();
+		result.builder()
+			.closingInformationForCurrentMonth(closingInformationForCurrentMonth)
+			.closureId(closure.getClosureId().value).build();
+						
 		//	ユーザー固有情報「トップページ表示年月」を取得する
-		InitDisplayPeriodSwitchSetDto targetDateFromLogin = displayPeriodfinder.targetDateFromLogin();
-		listCheckTargetItem = targetDateFromLogin.getListDateProcessed().stream()
-									.map(x -> new CheckTarget(closureId, x.getTargetDate())).collect(Collectors.toList());
-		
-		if(targetDateFromLogin.getCurrentOrNextMonth() == 1) {
-			
-		}else if(targetDateFromLogin.getCurrentOrNextMonth() == 2 ){
-			
-		}
-		OvertimedDisplayForSuperiorsDto result = OvertimedDisplayForSuperiorsDto.builder().
 				
-		return result
+		return result;
+	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).アルゴリズム.起動する.対象年月を指定するログイン者の配下社員の時間外時間の取得
+	 * @param closureId
+	 * @param targetDate
+	 * @param referencePeriod
+	 * @return
+	 */
+	 public AcquisitionOfOvertimeHoursOfEmployeesDto getAcquisitionOfOvertimeHoursOfEmployeesDto(int closureId, YearMonth
+	 targetDate, Optional<DatePeriod> referencePeriodParam) {
+		String cID = AppContexts.user().companyId();
+		String sID = AppContexts.user().employeeId();
+		Optional<DatePeriod> referencePeriod;
+	 if(referencePeriodParam.isPresent()) { 
+		referencePeriod = referencePeriodParam;
+	 }else {
+		 
+		//	指定した年月の期間を算出する
+		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(requireService.createRequire(),closureId,targetDate);
+		referencePeriod = Optional.ofNullable(datePeriodClosure);
+	 }
+	 //	アルゴリズム「社員所属職場履歴を取得」を実行する
+	SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriodParam.get().end());
+	
+	//[No.573]職場の下位職場を基準職場を含めて取得する
+	List<String> lstWorkPlaceId = workplacePub.getAllChildrenOfWorkplaceId(cID, referencePeriodParam.get().end(),sWkpHistImport.getWorkplaceId());
+	
+	//	期間内に特定の職場（List）に所属している社員一覧を取得
+	List<String> lstEmployeeId = syEmployeeFnAdapter.getListEmployeeId(lstWorkPlaceId, referencePeriodParam.get());
+	List<PersonEmpBasicInfoImport> listPersonEmp = empEmployeeAdapter.getPerEmpBasicInfo(lstEmployeeId);
+	
 	}
 }

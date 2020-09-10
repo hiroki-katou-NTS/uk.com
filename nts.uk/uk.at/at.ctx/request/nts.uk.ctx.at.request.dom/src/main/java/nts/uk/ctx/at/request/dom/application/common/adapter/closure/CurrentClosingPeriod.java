@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.closure;
 
+import lombok.Builder;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 //現在の締め期間
 @Value
+@Builder
 public class CurrentClosingPeriod {
 	// 処理年月
 	private YearMonth processingYm;
@@ -15,8 +16,5 @@ public class CurrentClosingPeriod {
 
 	// 締め終了日
 	private GeneralDate closureEndDate;
-	
-	//	締め期間
-	private ClosurePeriod closurePeriod;
 	
 	}

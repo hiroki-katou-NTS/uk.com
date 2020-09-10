@@ -1,5 +1,6 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Builder;
@@ -15,17 +16,14 @@ public class OvertimedDisplayForSuperiorsDto {
 	//	ログイン者の締めID
 	private Integer closureId;
 
-	//	名称
-	private String name;
-
 	//	当月の締め情報
 	private CurrentClosingPeriod closingInformationForCurrentMonth;
 	
 	//	配下社員の個人情報
-	private EmployeeBasicInfoExport personalInformationOfSubordinateEmployees;
+	private List<EmployeeBasicInfoExport> personalInformationOfSubordinateEmployees;
 	
 	//	配下社員の時間外時間
-	private AgreementTimeDetail OvertimeOfSubordinateEmployees;
+	private List<AgreementTimeDetail> OvertimeOfSubordinateEmployees;
 	
 	//	翌月の締め情報
 	private Optional<CurrentClosingPeriod> ClosingInformationForNextMonth;
@@ -34,7 +32,7 @@ public class OvertimedDisplayForSuperiorsDto {
 		return closureId;
 	}
 	
-	private void setClosureId(Integer closureId) {
+	private void Integer(Integer closureId) {
 		this.closureId = closureId;
 	}
 	
