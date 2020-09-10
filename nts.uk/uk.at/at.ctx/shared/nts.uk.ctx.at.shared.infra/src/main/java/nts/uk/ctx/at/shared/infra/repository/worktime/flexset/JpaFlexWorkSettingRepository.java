@@ -11,12 +11,15 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexset.FlexWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.common.KshmtWorktimeCommonSetPK;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflect;
+import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.flexset.KshmtFlexWorkSetPK;
 
@@ -74,8 +77,34 @@ public class JpaFlexWorkSettingRepository extends JpaRepository
 		domain.saveToMemento(new JpaFlexWorkSettingSetMemento(entity, entityCommon));
 		this.commandProxy().update(entity);
 		this.commandProxy().update(entityCommon);
+		removeRefTimeNo2(entity);
 	}
 	
+	private void removeRefTimeNo2(KshmtFlexWorkSet entity) {		
+		// this algorithm for remove RefTimeNo2 if not Use
+				boolean notUseRefTimeNo2 = !entity.getKshmtFlexStampReflects().stream()
+						.filter(x -> x.getKshmtFlexStampReflectPK().getWorkNo() == 2).findAny().isPresent();
+				if (notUseRefTimeNo2) {
+					entity.getKshmtFlexStampReflects().stream().filter(x -> x.getKshmtFlexStampReflectPK().getWorkNo() == 1)
+					.findFirst().ifPresent(x -> {
+						KshmtFlexStampReflectPK pk = x.getKshmtFlexStampReflectPK();
+						String SEL_REF_TIME_NO_2 = "SELECT a FROM KshmtFlexStampReflect a WHERE "
+								+ "a.kshmtFlexStampReflectPK.cid= :cid "
+								+ "AND a.kshmtFlexStampReflectPK.worktimeCd = :worktimeCd "
+								+ "AND a.kshmtFlexStampReflectPK.workNo = 2";
+						// get No 2
+						List<KshmtFlexStampReflect> no2Items = this.queryProxy()
+								.query(SEL_REF_TIME_NO_2, KshmtFlexStampReflect.class)
+								.setParameter("cid", pk.getCid())
+								.setParameter("worktimeCd", pk.getWorktimeCd()).getList();
+
+						if (!no2Items.isEmpty()) {
+							this.commandProxy().removeAll(no2Items);
+						}
+					});
+				}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

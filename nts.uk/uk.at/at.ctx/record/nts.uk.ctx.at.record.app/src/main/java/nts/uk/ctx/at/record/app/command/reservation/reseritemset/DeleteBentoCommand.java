@@ -6,6 +6,7 @@ public class DeleteBentoCommand {
 
     private String histId;
 
+    // 枠番
     private int frameNo;
 
 }

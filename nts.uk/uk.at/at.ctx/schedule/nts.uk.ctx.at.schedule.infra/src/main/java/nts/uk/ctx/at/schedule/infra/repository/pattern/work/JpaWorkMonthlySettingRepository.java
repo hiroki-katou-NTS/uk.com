@@ -52,7 +52,12 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 			+ " AND w.kscmtWorkMonthSetPK.mPatternCd = :mPatternCd"
 			+ " AND w.kscmtWorkMonthSetPK.ymdM >= :startDate "
 			+ " AND w.kscmtWorkMonthSetPK.ymdM <= :endDate"
-			+ " w.kscmtWorkMonthSetPK.ymdM ASC";
+			+ " ORDER BY w.kscmtWorkMonthSetPK.ymdM ASC";
+
+	private final String SELECT_BY_YEAR = SELECT_BY_CID
+			+ " AND w.kscmtWorkMonthSetPK.mPatternCd = :mPatternCd"
+			+ " AND  EXTRACT(Year FROM w.kscmtWorkMonthSetPK.ymdM)  = :year "
+			+ " ORDER BY w.kscmtWorkMonthSetPK.ymdM ASC";
 
 	private static final String DELETE_BY_WORK_MONTHLY_ID_AND_DATE = "DELETE from KscmtWorkMonthSet c "
 			+ " WHERE c.kscmtWorkMonthSetPK.cid = :cid"
@@ -212,10 +217,10 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		}
 		
 		// get company id
-		String companyId = workMonthlySettings.get(INDEX_ONE).getCompanyId().v();
+		String companyId = workMonthlySettings.size() > 0 ? workMonthlySettings.stream().findFirst().get().getCompanyId().v() : null;
 		
 		// get monthly pattern code
-		String monthlyPatternCode = workMonthlySettings.get(INDEX_ONE).getMonthlyPatternCode().v();
+		String monthlyPatternCode = workMonthlySettings.size() > 0 ? workMonthlySettings.stream().findFirst().get().getMonthlyPatternCode().v() : null;
 		
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -361,6 +366,14 @@ public class JpaWorkMonthlySettingRepository extends JpaRepository
 		this.commandProxy().update(toEntity(workMonthlySetting));
 	}
 
+	@Override
+	public List<WorkMonthlySetting> findByYear(String companyId, String monthlyPatternCode, int year) {
+		return this.queryProxy().query(SELECT_BY_YEAR, KscmtWorkMonthSet.class)
+				.setParameter("cid", companyId)
+				.setParameter("mPatternCd", monthlyPatternCode)
+				.setParameter("year", year)
+				.getList(x -> this.toDomain(x));
+	}
 	@Override
 	public void deleteWorkMonthlySettingById(String companyId,String mPatternCd,GeneralDate date) {
 		this.getEntityManager().createQuery(DELETE_BY_WORK_MONTHLY_ID_AND_DATE, KscmtWorkMonthSet.class)

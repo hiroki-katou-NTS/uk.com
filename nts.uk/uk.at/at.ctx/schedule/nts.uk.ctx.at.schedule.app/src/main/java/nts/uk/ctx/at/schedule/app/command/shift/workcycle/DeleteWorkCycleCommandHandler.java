@@ -3,8 +3,8 @@ package nts.uk.ctx.at.schedule.app.command.shift.workcycle;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.command.DeleteWorkCycleCommand;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.DailyPatternRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class DeleteWorkCycleCommandHandler extends CommandHandler<DeleteWorkCycleCommand> {
 
     @Inject
-    private WorkCycleRepository workCycleRepository;
+    private DailyPatternRepository workCycleRepository;
 
     @Override
     protected void handle(CommandHandlerContext<DeleteWorkCycleCommand> context) {
