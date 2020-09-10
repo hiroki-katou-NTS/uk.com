@@ -34,13 +34,15 @@ public class WeeklyWorkScreenProcessor {
         // 1.get WorkdayPatternDto
         // 1:ログイン会社ID、月間パターンコード、年(ログイン会社ID)
         List<WorkdayPatternDto> workdayPatternDtos = new ArrayList<>();
-        weeklyWorkDayPattern.getListWorkdayPatternItem().forEach(x -> {
-            workdayPatternDtos.add(new WorkdayPatternDto(
-                    x.getDayOfWeek().description,
-                    x.getWorkdayDivision().description,
-                    x.getWorkdayDivision().value
-            ));
-        });
+        if (weeklyWorkDayPattern != null){
+            weeklyWorkDayPattern.getListWorkdayPatternItem().forEach(x -> {
+                workdayPatternDtos.add(new WorkdayPatternDto(
+                        x.getDayOfWeek().description,
+                        x.getWorkdayDivision().description,
+                        x.getWorkdayDivision().value
+                ));
+            });
+        }
 
         // 2.get workTypeCodes
         // 2:勤務種類名称を取得する
