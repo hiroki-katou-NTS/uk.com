@@ -70,19 +70,19 @@ module cmm045.a.viewmodel {
                     at: "left bottom",
                     of: ".hyperlink"
                 },
-                showOnStart: true,
-                dismissible: false
+                showOnStart: false,
+                dismissible: true
             });
 
             // $('.hyperlink').click(() => {var vis = $(".popup-panel").css("visibility") == "hidden" ? "visible" : "hidden";$(".popup-panel").css("visibility", vis);});
 
-            $('.hyperLink').bind("click", () => {
-                if($(".popup-panel").css("visibility") == "hidden") {
-                    $(".popup-panel").css("visibility", "visible");
-                } else {
-                    $(".popup-panel").css("visibility", "hidden");
-                }
-            });
+            // $('.hyperLink').bind("click", () => {
+            //     if($(".popup-panel").css("visibility") == "hidden") {
+            //         $(".popup-panel").css("visibility", "visible");
+            //     } else {
+            //         $(".popup-panel").css("visibility", "hidden");
+            //     }
+            // });
 
             self.itemList = ko.observableArray([
                 { id: 1, name: getText('CMM045_20') },
