@@ -19,6 +19,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import MonthlyPatternRegisterCommand = nts.uk.at.view.kdl023.base.service.model.MonthlyPatternRegisterCommand;
     import WorkMonthlySetting = nts.uk.at.view.kdl023.base.service.model.WorkMonthlySetting;
     import WorkInformationDto = nts.uk.at.view.kdl023.base.service.model.WorkInformationDto;
+    import WorkInformationToRegis = nts.uk.at.view.kdl023.base.service.model.WorkInformationToRegis;
     const CONST = {
         DATE_FORMAT: 'yyyy-MM-yy',
         YEAR_MONTH: 'yyyy/MM'
@@ -92,6 +93,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         slideDays: KnockoutObservable<number> = ko.observable(0);
         workMonthlySetting: KnockoutObservableArray<WorkMonthlySetting> = ko.observableArray([]);
 
+        promise: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             super();
             let vm = this;
@@ -159,9 +162,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         vm.reflectionSetting().selectedPatternCd(vm.dailyPatternList()[0].patternCode);
 
                     // Load daily pattern detail.
-                    vm.loadDailyPatternDetail(vm.reflectionSetting().selectedPatternCd()).done(() => {
+                    vm.loadDailyPatternDetail(
+                        vm.reflectionSetting().selectedPatternCd()).done(() => {
                         // Xu ly hien thi calendar.
-                        vm.optionDates(vm.getOptionDates());
+                        //vm.optionDates(vm.getOptionDates());
                         dfd.resolve();
                     });
 
@@ -293,6 +297,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     vm.reflectionSetting().holidaySetting.useClassification.valueHasMutated();
 
                     vm.setCalendarData(vm.refImageEachDayDto());
+
+                    vm.reflectionSetting().selectedPatternCd.subscribe(() => {
+                        vm.promise(true);
+                    });
                 }).fail(res => {
                     vm.$dialog.alert(res.message)
                     dfd.fail();
@@ -390,10 +398,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 defaultStartDate = vm.reflectionSetting().calendarStartDate();
                 defaultEndDate = vm.reflectionSetting().calendarEndDate();
             }
+
+            legalHolidayCd = vm.reflectionSetting().statutorySetting.workTypeCode();
+            nonStatutoryHolidayCd = vm.reflectionSetting().nonStatutorySetting.workTypeCode();
+            holidayCd = vm.reflectionSetting().holidaySetting.workTypeCode();
+
             if(vm.reflectionMethod() === 2){
-                legalHolidayCd = vm.reflectionSetting().statutorySetting.workTypeCode();
-                nonStatutoryHolidayCd = vm.reflectionSetting().nonStatutorySetting.workTypeCode();
-                holidayCd = vm.reflectionSetting().holidaySetting.workTypeCode();
                 if(vm.reflectionOrder1() != WorkCreateMethod.NON){
                     refOrder.push(vm.reflectionOrder1());
                     if(vm.reflectionOrder2() != WorkCreateMethod.NON){
@@ -404,9 +414,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     }
                 }
             } else if(vm.reflectionMethod() === 0){
-                refOrder = [0,2];
+                refOrder = [WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WEEKLY_WORK];
             } else{
-                refOrder = [2,0]
+                refOrder = [WorkCreateMethod.PUB_HOLIDAY, WorkCreateMethod.WORK_CYCLE, WorkCreateMethod.WEEKLY_WORK];
             }
             if(refOrder.length === 0){
                 vm.$dialog.error({ messageId: "MsgB_2", messageParams: [vm.$i18n('KDL023_31')]});
@@ -429,6 +439,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 service.getReflectionWorkCycleAppImage(vm.reflectionParam()).done( (val) =>{
                     vm.refImageEachDayDto(val);
                     vm.setCalendarData(val);
+                    vm.promise(false);
                 }).fail( () => {
 
                     }
@@ -1117,6 +1128,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             else {
                 self.isExecMode(false);
                 self.setPatternRange(self.shared.patternStartDate).done(() => dfd.resolve());
+                self.loadHolidayList().done(() => dfd.resolve());
             }
             //set data startup windows
             self.setDataLoadWindows(self.isExecMode());
@@ -1181,8 +1193,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
             let backgroundColor = 'white';
             let listText: Array<string> = [
-                refImage.workInformation.workTypeCode ? refImage.workInformation.workTypeCode : '',
-                refImage.workInformation.workTimeCode ? refImage.workInformation.workTimeCode : ''];
+                refImage.workInformation.workTypeName ? refImage.workInformation.workTypeName : '',
+                refImage.workInformation.workTimeName ? refImage.workInformation.workTimeName : ''];
             let result:OptionDate = {
                 start: moment(start).format('YYYY-MM-DD'),
                 textColor: textColor,
@@ -1193,7 +1205,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         private setMonthlySetting(refImage: RefImageEachDayDto):WorkMonthlySetting{
-            let workInformation:WorkInformationDto = {
+            let workInformation:WorkInformationToRegis = {
                 workTypeCode: refImage.workInformation.workTypeCode,
                 workTimeCode: refImage.workInformation.workTimeCode
             }
@@ -1206,28 +1218,37 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
         public decide(): void {
             let vm = this;
-            vm.$dialog.confirm({ messageId: "Msg_1738" }).then((result: 'yes' | 'no') => {
-                if(result === 'yes'){
-                    let param : MonthlyPatternRegisterCommand = {
-                        isOverWrite : vm.isOverWrite(),
-                        workMonthlySetting: vm.workMonthlySetting()
+            if(vm.promise()){
+                vm.$dialog.confirm({ messageId: "Msg_1738" }).then((result: 'yes' | 'no') => {
+                    if(result === 'yes'){
+                        vm.register();
                     }
-                    // If calendar's setting is empty.
-                    if (vm.isOptionDatesEmpty()) {
-                        vm.$dialog.error({ messageId: "Msg_512" });
-                        return;
-                    }
-                    service.registerMonthlyPattern(param).done(() => {
-                        nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
-                        vm.closeDialog();
-                    }).fail(() => {
-                        vm.$dialog.error({ messageId: "Msg_340" }).then(() => {
-                            vm.closeDialog();
-                        });
-                    });
-                }
-
+                });
+            }else{
+                vm.register();
             }
+
+        }
+
+        private register(): void{
+            const vm = this;
+            let param : MonthlyPatternRegisterCommand = {
+                isOverWrite : vm.isOverWrite(),
+                workMonthlySetting: vm.workMonthlySetting()
+            }
+            // If calendar's setting is empty.
+            if (vm.isOptionDatesEmpty()) {
+                vm.$dialog.error({ messageId: "Msg_512" });
+                return;
+            }
+            service.registerMonthlyPattern(param).done(() => {
+                nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
+                vm.closeDialog();
+            }).fail(() => {
+                vm.$dialog.error({ messageId: "Msg_340" }).then(() => {
+                    vm.closeDialog();
+                });
+            });
         }
     }
 
