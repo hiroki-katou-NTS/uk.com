@@ -72,7 +72,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         workCycleEnable2: KnockoutObservable<boolean> = ko.observable(false);
         workCycleEnable3: KnockoutObservable<boolean> = ko.observable(false);
 
-        reflectionOrderList: KnockoutObservableArray<any> = ko.observableArray([]);
+        reflectionOrderList1: KnockoutObservableArray<any> = ko.observableArray([]);
+        reflectionOrderList2: KnockoutObservableArray<any> = ko.observableArray([]);
+        reflectionOrderList3: KnockoutObservableArray<any> = ko.observableArray([]);
         reflectionOrder1: KnockoutObservable<number> = ko.observable();
         reflectionOrder2: KnockoutObservable<number> = ko.observable();
         reflectionOrder3: KnockoutObservable<number> = ko.observable();
@@ -116,11 +118,14 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             vm.eventUpdatable = ko.observable(false);
             vm.holidayDisplay = ko.observable(true);
             vm.cellButtonDisplay = ko.observable(false);
-            vm.reflectionOrderList([
+            vm.reflectionOrderList1([
                 {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
-                {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
-                {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
-                {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+            ]);
+            vm.reflectionOrderList2([
+                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+            ]);
+            vm.reflectionOrderList3([
+                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
             ]);
         }
 
@@ -195,24 +200,68 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             vm.reflectionSetting().nonStatutorySetting.useClassification(true);
                             vm.reflectionSetting().holidaySetting.useClassification(true);
                             vm.workCycleEnable1(true);
+                            vm.reflectionOrderList1([
+                                {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+                                {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+                                {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+                            ]);
                         } else {
                             vm.reflectionSetting().statutorySetting.useClassification(false);
                             vm.reflectionSetting().nonStatutorySetting.useClassification(false);
                             vm.reflectionSetting().holidaySetting.useClassification(false);
+                            vm.reflectionOrderList1([
+                                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')}
+                            ]);
                             vm.workCycleEnable1(false);
                             vm.reflectionOrder1(WorkCreateMethod.NON)
                         }
                     });
 
                     vm.reflectionOrder1.subscribe(val =>{
+                        let array2 = ([
+                            {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+                            {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+                            {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+                            {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+                        ]);
+                        let array3 = ([
+                            {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+                            {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+                            {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+                            {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+                        ]);
+
+                        let remove2 =  array2.indexOf(array2.filter(e => e.code === val)[0]);
+                        if(remove2 > -1){
+                            array2.splice(remove2, 1);
+                        }
+                        let remove3 = array3.indexOf(array3.filter(e => e.code === val)[0]);
+                        if(remove3 > -1){
+                            array3.splice(remove3, 1);
+                        }
+                        vm.reflectionOrderList2(array2);
+                        vm.reflectionOrderList3(array3);
+
                         if(val === WorkCreateMethod.NON){
                             vm.workCycleEnable2(false);
                             vm.reflectionOrder2(WorkCreateMethod.NON);
                         }else {
+                            if(vm.reflectionOrder2() === val){
+                                vm.reflectionOrder2(WorkCreateMethod.NON);
+                            }
+                            if(vm.reflectionOrder3() === val){
+                                vm.reflectionOrder2(WorkCreateMethod.NON);
+                            }
                             vm.workCycleEnable2(true);
                         }
                     })
                     vm.reflectionOrder2.subscribe( val => {
+                        let array3 = vm.reflectionOrderList2();
+                        let remove3 = array3.indexOf(array3.filter(e => e.code === val)[0]);
+                        if(remove3 > -1){
+                            array3.splice(remove3, 1);
+                        }
+                        vm.reflectionOrderList3(array3);
                         if(val === WorkCreateMethod.NON){
                             vm.workCycleEnable3(false);
                             vm.reflectionOrder3(WorkCreateMethod.NON);
@@ -220,6 +269,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             vm.workCycleEnable3(true);
                         }
                     })
+
 
                     // Force change to set tab index.
                     vm.reflectionSetting().holidaySetting.useClassification.valueHasMutated();

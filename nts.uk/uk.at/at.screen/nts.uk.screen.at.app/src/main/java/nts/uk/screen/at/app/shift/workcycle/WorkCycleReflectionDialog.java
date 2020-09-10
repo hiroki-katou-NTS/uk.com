@@ -112,9 +112,11 @@ public class WorkCycleReflectionDialog {
 	}
 
 	public List<WorkCycleReflectionDto.WorkTypeDto> convertToDomain(List<WorkType> list){
-        List<WorkCycleReflectionDto.WorkTypeDto> result = new ArrayList<>();
+        Set<WorkCycleReflectionDto.WorkTypeDto> result = new HashSet<>();
         list.forEach( i -> result.add(WorkCycleReflectionDto.WorkTypeDto.fromDomain(i)));
-        return result;
+        return new ArrayList<>(result).stream()
+                .sorted(Comparator.comparing(WorkCycleReflectionDto.WorkTypeDto::getWorkTypeCode))
+                .collect(Collectors.toList());
     }
 
 	/**
