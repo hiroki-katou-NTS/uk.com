@@ -49,16 +49,8 @@ module nts.uk.at.view.kdl009.a {
             mounted() {
                 const vm = this;
                 vm.$blockui('grayout');
-                // Render table
-                vm.isManagementSection.subscribe((value) => {
-                    if (value) {
-                        vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
-                    }
-                });
-                vm.isFirstLoaded(false);
                 service.getEmployee(vm.kdl009Data)
                     .then((data: any) => {
-                        vm.isFirstLoaded(true);
                         if (data.employeeBasicInfo.length > 1) {
                             vm.selectedCode.subscribe((value) => {
                                 const itemSelected: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
@@ -93,12 +85,18 @@ module nts.uk.at.view.kdl009.a {
                 vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
                 vm.$blockui('grayout');
                 // アルゴリズム「振休残数情報の取得」を実行する(thực hiện thuật toán 「振休残数情報の取得」)
+                vm.isFirstLoaded(false);
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
                     .then((data) => {
+                        vm.isFirstLoaded(true);
                         vm.isManagementSection(data.isManagementSection);
                         vm.expirationDateText(ExpirationDate[data.expiredDay]);
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
+                        // Render table
+                        if (data.isManagementSection) {
+                            vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
+                        }
                     })
                     .fail(vm.onError)
                     .always(() => vm.$blockui('clear'));
