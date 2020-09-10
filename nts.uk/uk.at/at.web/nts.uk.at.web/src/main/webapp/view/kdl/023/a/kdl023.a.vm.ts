@@ -12,7 +12,7 @@ module nts.uk.at.view.kdl023.a.viewmodel {
         mounted(){
             const vm = this;
             vm.startPage().done(() => {
-                $('#cbb-daily-work-pattern').focus();
+
             });
         }
     }

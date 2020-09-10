@@ -22,7 +22,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import WorkInformationToRegis = nts.uk.at.view.kdl023.base.service.model.WorkInformationToRegis;
     const CONST = {
         DATE_FORMAT: 'yyyy-MM-yy',
-        YEAR_MONTH: 'yyyy/MM'
+        YEAR_MONTH: 'yyyy/MM',
+        MOMENT_DATE_FORMAT: 'YYYY-MM-DD'
     }
 
     export abstract class BaseScreenModel extends ko.ViewModel{
@@ -156,6 +157,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                     // validate selected code
                     // if selected code is not valid, select first item.
+                    vm.reflectionSetting().fromDto(vm.shared);
                     _.find(vm.dailyPatternList(),
                         pattern => vm.reflectionSetting().selectedPatternCd() == pattern.patternCode) != undefined ?
                         vm.reflectionSetting().selectedPatternCd() :
@@ -209,15 +211,17 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                                 {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
                                 {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
                             ]);
+                            $('#kdl023-holiday-warning-label').hide();
                         } else {
-                            vm.reflectionSetting().statutorySetting.useClassification(true);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(true);
-                            vm.reflectionSetting().holidaySetting.useClassification(true);
                             vm.reflectionOrderList1([
                                 {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')}
                             ]);
                             vm.workCycleEnable1(false);
                             vm.reflectionOrder1(WorkCreateMethod.NON)
+                            $('#kdl023-holiday-warning-label').show();
+                            vm.reflectionSetting().statutorySetting.useClassification(true);
+                            vm.reflectionSetting().nonStatutorySetting.useClassification(true);
+                            vm.reflectionSetting().holidaySetting.useClassification(true);
                         }
                     });
 
@@ -351,6 +355,12 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     vm.reflectionSetting().selectedPatternCd.subscribe(() => {
                         vm.promise(true);
                     });
+
+                    if(vm.isExecMode()){
+                        $('.ntsStartDatePicker').focus();
+                    }else{
+                        $('#cbb-daily-work-pattern').focus();
+                    }
                 }).fail(res => {
                     vm.$dialog.alert(res.message)
                     dfd.fail();
@@ -1153,7 +1163,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
 
             // Init patternReflection setting.
-            self.reflectionSetting(new ReflectionSetting(self.shared)) ;
+            self.reflectionSetting().fromDto(self.shared);
 
             // Is on Exec Mode
             if (self.shared.calendarStartDate && self.shared.calendarEndDate) {
@@ -1194,8 +1204,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         private setDataLoadWindows(isExecMode: boolean){
             const self = this;
             let mode = BootMode.REF_MODE;
-            let defaultStartDate = formatDate(new Date(), CONST.DATE_FORMAT);
-            let defaultEndDate = formatDate(moment(new Date()).endOf('month').toDate(), CONST.DATE_FORMAT);
+            let defaultStartDate = moment(new Date()).startOf('month').format(CONST.MOMENT_DATE_FORMAT).toString();
+            let defaultEndDate = moment(new Date()).endOf('month').format(CONST.MOMENT_DATE_FORMAT).toString();
             if(isExecMode) {
                 mode =  BootMode.EXEC_MODE;
                 defaultStartDate = self.shared.calendarStartDate;
