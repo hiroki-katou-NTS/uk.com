@@ -22,6 +22,7 @@ import org.w3c.dom.NodeList;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -593,6 +594,12 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 			record.setShortWorkingTimeSheets(shOptional.get().getShortWorkingTimeSheets());
 		}
 //		breakTimeSheets do not repo
+		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformanceLst =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
+		if (!CollectionUtil.isEmpty(breakTimeOfDailyPerformanceLst)) {
+			List<BreakTimeSheet> breakTimeSheetsSet = 
+					breakTimeOfDailyPerformanceLst.get(0).getTimeZone().getBreakTimeSheets();
+			record.setBreakTimeSheets(breakTimeSheetsSet);
+		}
 		return record;
 	}
 
