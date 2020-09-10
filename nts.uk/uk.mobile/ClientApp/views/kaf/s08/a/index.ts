@@ -26,12 +26,21 @@ export class KafS08AComponent extends Vue {
     //public paramsFromA1: any | null = null;
     public departureTime: number = null;
     public returnTime: number = null;
+    public table: [] = [] ;
+    public comment: Object = {};
+
    
     //thực hiện emit từ component con A1
-    public ProcessNextToStepTwo(departureTime: number,returnTime: number) {
+    public ProcessNextToStepTwo(departureTime: number,returnTime: number,achievementDetails,comment) {
         const vm = this;
+        //departureTime và returnTime có được ở màn hình A1
         vm.departureTime = departureTime;
         vm.returnTime = returnTime;
+        //table có được ở màn hình A1 chuyển lên.
+        vm.table = achievementDetails;
+        //lấy giá trị comment set ở A1
+        vm.comment = comment;
+        //nhảy sang step A2 
         vm.step = 'KAFS08_11';
     }
 

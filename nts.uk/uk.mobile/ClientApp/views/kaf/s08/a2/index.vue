@@ -36,7 +36,7 @@
       <!-- A6 -->
       <div class="field-set">
         <!-- A6_1 -->
-        <span class="a6_1">コメント１</span>
+        <span v-bind:style="{color: comment.colorCode,fontWeight : comment.bold ? 'bold' : 'normal'}" class="a6_1">{{comment.comment}}</span>
       </div>
       <!-- A_10 -->
       <div class="mx-n2">
@@ -52,14 +52,14 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data,index) in mtable" v-bind:key="index">
-              <td class="px-1">{{data.date | date('MM/DD(ddd)')}}</td>
-              <td class="px-1">{{data.wkTypeCd}}</td>
-              <td class="px-1">{{data.wkTimeCd}}</td>
-              <td class="px-1">{{data.wkTimeCd | timewd}}</td>
-              <td class="border-right-0 px-1">{{data.endWorkTime | timewd}}</td>
+            <tr v-for="(data,index) in table" v-bind:key="index">
+              <td class="px-1" v-date="data.date">{{data.date }}</td>
+              <td class="px-1">{{data.opAchievementDetail.opWorkTypeName}}</td>
+              <td class="px-1">{{data.opAchievementDetail.opWorkTimeName}}</td>
+              <td class="px-1">{{data.opAchievementDetail.opLeaveTime | timewd}}</td>
+              <td class="border-right-0 px-1">{{data.opAchievementDetail.opWorkTime | timewd}}</td>
               <td class="text-center px-0 border-left-0">
-                <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showModal.bind(this, 'modal')" />
+                <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showDialog.bind(this, 'modal')"/>
               </td>
             </tr>
           </tbody>
@@ -68,9 +68,9 @@
       <!-- A50_F2 -->
       <div class="process-button">
         <!-- A50_2 -->
-        <button @click="nextToStepThree()" class="btn btn-primary btn-block">{{'申請する' | i18n}}</button>
+        <button @click="nextToStepThree()" class="btn btn-primary btn-lg btn-block">{{'申請する' | i18n}}</button>
         <!-- A50_3 -->
-        <button @click="prevStepOne()" class="btn btn-secondary btn-block">{{'KAFS08_40' | i18n}}</button>
+        <button @click="prevStepOne()" class="btn btn-secondary btn-lg btn-block">{{'KAFS08_40' | i18n}}</button>
       </div>
     </div>
   </div>

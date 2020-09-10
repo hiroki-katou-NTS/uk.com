@@ -467,11 +467,11 @@ public class BusinessTripFinder {
             	AchievementDetailDto detail = new AchievementDetailDto();
             	detail.setWorkTypeCD("001");
             	detail.setWorkTimeCD("001");
-            	detail.setOpWorkTypeName("type name");
-            	detail.setOpWorkTimeName("time name");
-            	detail.setOpWorkTime(100);
-            	detail.setOpLeaveTime(100);
-            	
+            	detail.setOpWorkTypeName("空の");
+            	detail.setOpWorkTimeName("データなし");
+            	detail.setOpWorkTime(-110);
+            	detail.setOpLeaveTime(-1050);
+            	eachContent.setOpAchievementDetail(detail);
             	dummy.add(eachContent);
             });
             

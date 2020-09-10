@@ -56,7 +56,11 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         //if (vm.params1.derpartureTime == null || vm.params1.returnTime == null ) {
         //    return ;
         //}
-        this.$emit('nextToStepTwo',vm.departureTime,vm.returnTime);
+        //gửi table sang màn hình A2
+        let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
+        //gửi comment sang màn hình A2
+        let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
+        this.$emit('nextToStepTwo',vm.departureTime,vm.returnTime,achievementDetails,commentSet);
     }
 
     public fetchStart() {

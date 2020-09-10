@@ -6,7 +6,7 @@
       <span class="mx-1">{{'KAFS08_70' | i18n}}</span>
       <!-- D1_2 -->
       <div>
-        <span class="mx-3">{{model.date | date('YYYY/MM/DD(ddd)')}}</span>
+        <span class="mx-3">{{name}}</span>
       </div>
     </div>
     <!-- D2_0 -->

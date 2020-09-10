@@ -10,8 +10,10 @@ import { Kdl001Component } from '../../../kdl/001';
     template: require('./index.vue')
 })
 export class KafS08DComponent extends Vue {
-    @Prop({ default: (): Params => ({ timetowork: null, leavetime: null,date : null}) })
+    @Prop({ default: (): Params => ({ timetowork: null, leavetime: null,date : null,title: null}) })
     public readonly params!: Params;
+    @Prop({default: () => '' })
+    public readonly name: String;
 
     //public name: string = 'Nittsu System Viet Nam';
     public title: string = 'KafS08D';
@@ -32,6 +34,7 @@ export class KafS08DComponent extends Vue {
         timetowork: null,
         leavetime: null,
         date : null,
+        title: null,
     };
 
     public created() {
@@ -39,6 +42,7 @@ export class KafS08DComponent extends Vue {
         vm.model.timetowork = vm.params.timetowork;
         vm.model.leavetime = vm.params.leavetime;
         vm.model.date = vm.params.date;
+        console.log(name);
     }
 
 
@@ -53,4 +57,5 @@ interface Params {
     timetowork: number | null;
     leavetime: number | null;
     date: string | null;
+    title: string;
 }
