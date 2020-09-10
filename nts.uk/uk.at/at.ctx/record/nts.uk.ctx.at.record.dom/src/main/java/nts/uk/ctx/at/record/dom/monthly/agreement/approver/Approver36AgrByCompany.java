@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.monthly.agreement.approver; // TODO xem lại package
+package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.Getter;
 import lombok.Setter;

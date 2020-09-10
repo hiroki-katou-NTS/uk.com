@@ -10,9 +10,6 @@ import java.util.List;
 
 /**
  * 職場別の承認者（36協定）
- *
- * 36協定特別条項の適用申請の職場別の承認者の履歴を管理する
- *
  * @author khai.dh
  */
 @Getter
