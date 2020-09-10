@@ -12,6 +12,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import com.aspose.cells.Font;
 import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageOrientationType;
 import com.aspose.cells.PageSetup;
@@ -21,7 +22,9 @@ import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
+import com.aspose.pdf.Document;
 
+import aspose.pdf.Cell;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportDatasource;
@@ -176,7 +179,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			reportContext.setDataSource("exportDateTime", dataSource.getData().getExportDateTime());
 			reportContext.setDataSource("reportMonthHead", dataSource.getData().getMonthlyHeader());
 			reportContext.setDataSource("reportDayHead", dataSource.getData().getDailyHeader());
-
 			// process data binginds in template
 			reportContext.processDesigner();
 
@@ -220,8 +222,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					
 					// Set header value
 					pageSetup.setHeader(0, "&\"ＭＳ ゴシック\"&9 " + dataSource.getData().getCompanyName());
-					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&16 " + dataSource.getData().getReportName());
-					
+					pageSetup.setHeader(1, "&\"ＭＳ ゴシック\"&"+ dataSource.getData().getFontSize() + " " + dataSource.getData().getReportName());
 					// Get current date and format it
 					DateTimeFormatter fullDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy/M/d  H:mm", Locale.JAPAN);
 					String currentFormattedDate = LocalDateTime.now().format(fullDateTimeFormatter);
@@ -324,7 +325,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				(startNewPage + START_EMPLOYEE_BOTTOM_DATA_ROW), (startNewPage + START_EMPLOYEE_BOTTOM_DATA_ROW)));
 
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
-				.setValue(TextResource.localize("KWR002_212") + " " + employeeData.getInvidual());
+				.setValue(TextResource.localize("KWR002_212") + employeeData.getInvidual());
 		employeeInfoL.get(0, EMPL_WORKPLACE_INDEX)
 				.setValue(TextResource.localize("KWR002_213", "#Com_Workplace") + " " + employeeData.getWorkplace());
 		employeeInfoR.get(0, EMPL_EMPLOYMENT_INDEX)
