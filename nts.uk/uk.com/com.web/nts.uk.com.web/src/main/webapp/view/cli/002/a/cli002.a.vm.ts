@@ -86,25 +86,41 @@ module nts.uk.com.view.cli002.a {
 
         private getData(systemType: number) {
             const vm = this;
+            vm.dataSourceItem = ko.observableArray([]);
             vm.$blockui("grayout");
-            service.findBySystem(systemType).done((response: PGList[]) => {
-                const pgInfomation: Array<PGInfomation> = [];
+            service.findBySystem(systemType).done((response: Array<PGList>) => {
                 var statesTable = [];
-                _.forEach(response, function(item: PGList, index) {                
-                    if(item.loginHistoryRecord.activeCategory == 0) {
-                        statesTable.push(new CellState(index, 'logLoginDisplay', [nts.uk.ui.mgrid.color.Alarm, nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Disable]));
+                let listPG: any[] = response.map((item, index) => {
+                    if (item.loginHistoryRecord.activeCategory == 0) {
+                      statesTable.push(
+                        new CellState(index, "logLoginDisplay", [
+                          (nts.uk.ui as any).mgrid.color.Alarm,
+                          (nts.uk.ui as any).mgrid.color.Reflect,
+                          (nts.uk.ui as any).mgrid.color.Disable,
+                        ])
+                      );
                     }
-
-                    if(item.bootHistoryRecord.activeCategory == 0) {
-                        statesTable.push(new CellState(index, 'logStartDisplay', [nts.uk.ui.mgrid.color.Alarm, nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Disable]));
+                    if (item.bootHistoryRecord.activeCategory == 0) {
+                      statesTable.push(
+                        new CellState(index, "logStartDisplay", [
+                          (nts.uk.ui as any).mgrid.color.Alarm,
+                          (nts.uk.ui as any).mgrid.color.Reflect,
+                          (nts.uk.ui as any).mgrid.color.Disable,
+                        ])
+                      );
                     }
-
-                    if(item.editHistoryRecord.activeCategory == 0) {
-                        statesTable.push(new CellState(index, 'logUpdateDisplay', [nts.uk.ui.mgrid.color.Alarm, nts.uk.ui.mgrid.color.Reflect, nts.uk.ui.mgrid.color.Disable]));
+                    if (item.editHistoryRecord.activeCategory == 0) {
+                      statesTable.push(
+                        new CellState(index, "logUpdateDisplay", [
+                          (nts.uk.ui as any).mgrid.color.Alarm,
+                          (nts.uk.ui as any).mgrid.color.Reflect,
+                          (nts.uk.ui as any).mgrid.color.Disable,
+                        ])
+                      );
                     }
-                    pgInfomation.push(new PGInfomation(index + 1, item.functionName, false, false, false, item.programId, item.menuClassification));
-                })
-                vm.dataSourceItem(pgInfomation);
+                    return new PGInfomation(index + 1, item.functionName, false, false, false, item.programId, item.menuClassification);
+                });
+                vm.dataSourceItem(listPG);
                 vm.getItemList();
 
             }).always(() => vm.$blockui("clear")); 
@@ -112,11 +128,12 @@ module nts.uk.com.view.cli002.a {
 
         private getItemList() {
             const vm = this;
-            new nts.uk.ui.mgrid.MGrid($("#item-list")[0], {
+            if ($("#item-list").data("mGrid")) $("#item-list").mGrid("destroy");
+            new (nts.uk.ui as any).mgrid.MGrid($("#item-list")[0], {
                 height: "400px",
                 headerHeight: '60px',
-                primaryKey: "number",
-                primaryKeyDataType: "displayName",
+                primaryKey: "displayName",
+                primaryKeyDataType: "number",
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -165,13 +182,9 @@ module nts.uk.com.view.cli002.a {
         }
     }
 
-    class TargetSetting {
-        usageCategory: number;
-        activeCategory: number;
-        constructor(usageCategory: number, activeCategory: number) {
-            this.usageCategory = usageCategory;
-            this.activeCategory = activeCategory;
-        }
+    export interface TargetSetting {
+        usageCategory: number,
+        activeCategory: number
     }
 
     export interface PGList {
@@ -192,6 +205,7 @@ module nts.uk.com.view.cli002.a {
         programId: string;
         menuClassification: number;
         constructor(rowNumber: number, functionName: string, logLoginDisplay: boolean, logStartDisplay: boolean, logUpdateDisplay: boolean, programId: string, menuClassification: number) {
+            this.rowNumber = rowNumber;
             this.functionName = functionName;
             this.logLoginDisplay = logLoginDisplay;
             this.logStartDisplay = logStartDisplay;
