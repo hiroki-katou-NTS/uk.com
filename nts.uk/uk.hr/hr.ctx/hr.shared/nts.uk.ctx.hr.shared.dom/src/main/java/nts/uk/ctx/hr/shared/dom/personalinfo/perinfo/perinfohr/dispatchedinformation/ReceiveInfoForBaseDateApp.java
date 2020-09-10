@@ -50,11 +50,11 @@ public class ReceiveInfoForBaseDateApp {
 
 		@Inject
 		private PersonalInformationRepository recordRepo;
-
+		
 		@Override
-		public List<PersonalInformation> getDispatchedInfoByStr10s(String contractCd, String cId,
-				GeneralDate baseDate) {
-			return recordRepo.getDispatchedInfoByStr10s(contractCd, cId, baseDate);
+		public List<PersonalInformation> getDispatchedInfoByStr10s(String contractCd, String cId, GeneralDate baseDate,
+				boolean include) {
+			return recordRepo.getDispatchedInfoByStr10s(contractCd, cId, baseDate, include);
 		}
 	}
 }
