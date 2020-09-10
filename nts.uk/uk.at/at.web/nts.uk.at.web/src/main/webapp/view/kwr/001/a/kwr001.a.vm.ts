@@ -45,11 +45,11 @@ module nts.uk.at.view.kwr001.a {
             selectedDataDisplayItemType: KnockoutObservable<number> = ko.observable(0);
 
             // dropdownlist A7_3
-            itemListCodeTemplate: KnockoutObservableArray<ItemModel>;
+            itemListCodeTemplate: KnockoutObservableArray<OutputItemSettingDto>;
             selectedCodeA7_3: KnockoutObservable<string>;
 
             // dropdownlist A7_8
-            outputItemDailyWorkSchedules: KnockoutObservableArray<ItemModel>;
+            outputItemDailyWorkSchedules: KnockoutObservableArray<OutputItemSettingDto>;
             selectedCodeA7_8: KnockoutObservable<string>;
 
             // dropdownlist A9_2
@@ -523,7 +523,17 @@ module nts.uk.at.view.kwr001.a {
                 }
                 return codeChoose.code;
             }
-            
+
+            private getLayoutIdFromLst(pos: string, lstCode: ItemModel[]): string {
+                let self = this;
+                let codeChoose = _.find(lstCode, function(o) { 
+                    return pos == o.code; 
+                });
+                if (_.isUndefined(codeChoose)) {
+                    return null;
+                }
+                return codeChoose.layoutId;
+            }
             /**
              * find employee id in selected
              */
@@ -814,8 +824,8 @@ module nts.uk.at.view.kwr001.a {
                     
                     errorAlarmCode = data.errorAlarmCode;
                     let selectionType = self.selectionType();
-                    let standardSelectionLayoutId = self.selectedCodeA7_3();
-                    let freeSettingLayoutId = self.selectedCodeA7_8();
+                    let standardSelectionLayoutId = self.getLayoutIdFromLst(self.selectedCodeA7_3(), self.outputItemDailyWorkSchedules());
+                    let freeSettingLayoutId = self.getLayoutIdFromLst(self.selectedCodeA7_8(), self.outputItemDailyWorkSchedules());
                     let freeSettingCode = self.getCodeFromListCode(self.selectedCodeA7_8(), self.outputItemDailyWorkSchedules());
                     let zeroDisplayType = self.selectedDataZeroDisplayType();
                     let switchItemDisplay = self.selectedDataDisplayItemType();
@@ -824,7 +834,8 @@ module nts.uk.at.view.kwr001.a {
                     let workScheduleOutputCondition = new WorkScheduleOutputConditionDto(companyId
                                                                                         , userId
                                                                                         , self.selectedDataOutputType()
-                                                                                        , codeChoose, self.selectedCodeA9_2()
+                                                                                        , codeChoose
+                                                                                        , self.selectedCodeA9_2()
                                                                                         , workScheduleSettingTotalOutput
                                                                                         , self.selectedCodeA13_1()
                                                                                         , selectionType
@@ -875,6 +886,17 @@ module nts.uk.at.view.kwr001.a {
             constructor(code: string, name: string) {
                 this.code = code;
                 this.name = name;
+            }
+        }
+        class OutputItemSettingDto {
+            code: string;
+            name: string;
+            layoutId: string;
+        
+            constructor(code: string, name: string, layoutId: string) {
+                this.code = code;
+                this.name = name;
+                this.layoutId = layoutId;
             }
         }
         

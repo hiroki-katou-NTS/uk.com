@@ -80,7 +80,7 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 						.getFreeSettingByCompanyAndEmployee(companyId, command.getEmployeeId());
 				
 				// エラーメッセージ（ID:Msg_3）を表示する(Display error message (ID: Msg_3))
-				if (!freeSettingDomain.isPresent()) {
+				if (freeSettingDomain.isPresent()) {
 					throw new BusinessException("Msg_3");
 				}
 				

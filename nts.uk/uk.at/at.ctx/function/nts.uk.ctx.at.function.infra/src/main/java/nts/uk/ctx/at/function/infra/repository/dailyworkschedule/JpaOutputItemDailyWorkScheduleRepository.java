@@ -34,6 +34,10 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 
 	private static final String GET_NOTE_BY_LAYOUT_ID = "SELECT note FROM KfnmtRptWkDaiOutnote note"
 			+ " WHERE note.id.layoutId = :layoutId";
+	
+	private static final String SELECT_BY_CODE = "SELECT outItem FROM KfnmtRptWkDaiOutItem outItem"
+			+ "	WHERE outItem.itemCode = :itemCode"
+			+ " AND outItem.cid = :companyId";
 	@Override
 	public Optional<OutputItemDailyWorkSchedule> findByLayoutId(String layoutId) {
 		// get all attendance display item by layoutId
@@ -68,5 +72,16 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 		entity.setCid(companyId);
 		entity.setSid(employeeId);
 		this.commandProxy().update(entity);
+	}
+
+	@Override
+	public Optional<OutputItemDailyWorkSchedule> findByCode(String code, String companyId) {
+
+		// map to domain
+		return this.queryProxy()
+				.query(SELECT_BY_CODE, KfnmtRptWkDaiOutItem.class)
+				.setParameter("itemCode", code)
+				.setParameter("companyId", companyId)
+				.getSingle(t -> new OutputItemDailyWorkSchedule(t));
 	}
 }

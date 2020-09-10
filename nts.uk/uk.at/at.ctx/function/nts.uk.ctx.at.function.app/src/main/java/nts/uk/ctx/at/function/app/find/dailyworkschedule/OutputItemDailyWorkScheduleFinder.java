@@ -167,13 +167,13 @@ public class OutputItemDailyWorkScheduleFinder {
 					OutputItemSettingDto dto = new OutputItemSettingDto();
 					dto.setCode(String.valueOf(domain.getItemCode().v()));
 					dto.setName(domain.getItemName().v());
-					dto.setLayoutId(domain.getOutputLayoutId());
+					dto.setLayoutId(domain.getLayoutId());
 					return dto;
 				})
 				.sorted(Comparator.comparing(OutputItemSettingDto::getCode)).collect(Collectors.toList()));
 		
 		Optional<OutputItemDailyWorkSchedule> outputItem = layoutId.isPresent()
-				? lstDomainModel.stream().filter(t -> t.getOutputLayoutId().equals(layoutId.get())).findFirst()
+				? lstDomainModel.stream().filter(t -> t.getLayoutId().equals(layoutId.get())).findFirst()
 				: Optional.empty();
 
 		// 選択している項目情報を取得する(Get the selected information item)
@@ -417,9 +417,10 @@ public class OutputItemDailyWorkScheduleFinder {
 								.collect(Collectors.toList());
 	} 
 	
-	public OutputItemDailyWorkScheduleDto findByLayoutId(String layoutId) {
+	public OutputItemDailyWorkScheduleDto findByCode(String code) {
+		String companyId = AppContexts.user().companyId();
 		OutputItemDailyWorkScheduleDto dtoOIDW = new OutputItemDailyWorkScheduleDto();
-		OutputItemDailyWorkSchedule domainOIDW = outputItemDailyWorkScheduleRepository.findByLayoutId(layoutId).get();
+		OutputItemDailyWorkSchedule domainOIDW = outputItemDailyWorkScheduleRepository.findByCode(code, companyId).get();
 
 		Map<Integer, String> mapIdNameAttendance = dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(domainOIDW.getLstDisplayedAttendance()
 																					.stream()
@@ -434,6 +435,8 @@ public class OutputItemDailyWorkScheduleFinder {
 		dtoOIDW.setLstRemarkContent(toDtoPrintRemarksContent(domainOIDW.getLstRemarkContent()));
 		dtoOIDW.setWorkTypeNameDisplay(domainOIDW.getWorkTypeNameDisplay().value);
 		dtoOIDW.setRemarkInputNo(domainOIDW.getRemarkInputNo().value);
+		dtoOIDW.setLayoutId(domainOIDW.getLayoutId());
+		dtoOIDW.setFontSize(domainOIDW.getFontSize().value);
 		return dtoOIDW;
 	}
 	
@@ -514,7 +517,8 @@ public class OutputItemDailyWorkScheduleFinder {
 		List<PrintRemarksContentDto> printRemarksContents = new ArrayList<>();
 		List<InformationItemDto> possibleSelectedItem = dailyItemDtos.stream()
 				.map(item -> InformationItemDto.builder()
-							 .code(item.getTimeId())
+							 .id(item.getTimeId())
+							 .code(item.getDisplayNumber())
 							 .attendanceItemAtt(item.getAttribute())
 							 .masterType(item.getMasterType())
 							 .name(item.getName())
@@ -527,9 +531,10 @@ public class OutputItemDailyWorkScheduleFinder {
 						DailyItemDto item = mapAttendanceItem.get(t.getAttendanceDisplay());
 						if (item != null) {
 							 return InformationItemDto.builder()
-									 .code(item.getTimeId())
+									 .id(item.getTimeId())
+									 .code(item.getDisplayNumber())
 									 .attendanceItemAtt(t.getAttendanceDisplay())
-									 .attendanceItemAtt(item.getAttribute())
+									 .attOnScreen(item.getAttribute())
 									 .masterType(item.getMasterType())
 									 .name(item.getName())
 									 .orderNo(t.getOrderNo())
@@ -552,7 +557,7 @@ public class OutputItemDailyWorkScheduleFinder {
 									.code(outputItem.get().getItemCode().v())
 									.name(outputItem.get().getItemName().v())
 									.displayAttendanceItem(displayDtos)
-									.layoutId(outputItem.get().getOutputLayoutId())
+									.layoutId(outputItem.get().getLayoutId())
 									.lstCanUsed(possibleSelectedItem)
 									.printRemarksContentDtos(printRemarksContents)
 									.fontSize(outputItem.get().getFontSize().value)

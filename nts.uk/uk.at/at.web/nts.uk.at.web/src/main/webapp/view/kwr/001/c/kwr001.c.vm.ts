@@ -110,7 +110,7 @@ module nts.uk.at.view.kwr001.c {
 
                 self.currentCodeList.subscribe(function(value) {
                     let codeChoose = _.find(self.allMainDom(), function(o: any) {
-                        return value == o.itemCode;
+                        return value == o.code;
                     });
                     if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
                         blockUI.grayout();
@@ -197,10 +197,10 @@ module nts.uk.at.view.kwr001.c {
                     if (value.attendanceName) {
                         temp1.push({ code: self.mapIdCodeAtd[value.attendanceDisplay], name: value.attendanceName, id: value.attendanceDisplay });
                     }
-                })
+                });
                 _.forEach(self.outputItemPossibleLst(), function(value) {
                     temp2.push(value);
-                })
+                });
                 // refresh data for C7_2
                 self.items(temp2);
                 // refresh data for C7_8
@@ -218,7 +218,12 @@ module nts.uk.at.view.kwr001.c {
                     self.checkedManualInput(self.convertNumToBool(data.lstRemarkContent[8].usedClassification));
                     self.checkedNotCalculated(self.convertNumToBool(data.lstRemarkContent[9].usedClassification));
                     self.checkedExceedByApplication(self.convertNumToBool(data.lstRemarkContent[10].usedClassification));
+                    self.checkReasonForDivergence(self.convertNumToBool(data.lstRemarkContent[11].usedClassification));
+                    self.checkDeviationError(self.convertNumToBool(data.lstRemarkContent[12].usedClassification));
+                    self.checkDeviationAlarm(self.convertNumToBool(data.lstRemarkContent[13].usedClassification));
                     self.selectedRuleCode(data.workTypeNameDisplay);
+                    self.selectedSizeClassificationType(data.fontSize);
+                    self.layoutId = data.layoutId;
                 } else {
                     self.setRemarksContentDefault();
                 }
@@ -266,11 +271,11 @@ module nts.uk.at.view.kwr001.c {
 
                     let arrCodeName: ItemModel[] = [];
                     _.forEach(data.outputItemDailyWorkSchedule, function(value, index) {
-                        arrCodeName.push({ code: value.itemCode + "", name: value.itemName, id: "" });
+                        arrCodeName.push({ code: value.code + "", name: value.name, id: "" });
                     });
                     self.outputItemList(arrCodeName);
 
-                    _.forEach(data.dailyAttendanceItem, (value) => {
+                    _.forEach(data.selectedItem.lstCanUsed, (value) => {
                         self.mapCodeIdAtd[value.code] = value.id;
                         self.mapIdCodeAtd[value.id] = value.code;
                     })
@@ -416,8 +421,14 @@ module nts.uk.at.view.kwr001.c {
                 command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkedManualInput()), printItem: 8 });
                 command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkedNotCalculated()), printItem: 9 });
                 command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkedExceedByApplication()), printItem: 10 });
+                command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkReasonForDivergence()), printItem: 11 });
+                command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkDeviationError()), printItem: 12 });
+                command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkDeviationAlarm()), printItem: 13 });
                 command.workTypeNameDisplay = self.selectedRuleCode();
                 command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList()) || _.isEmpty(self.currentCodeList())) ? true : false;
+                command.fontSize = self.selectedSizeClassificationType;
+                command.selectionType = self.selectionType;
+                command.layoutId = self.layoutId;
 
                 // check to get data old from DB or current interface when it was disable
                 if (self.checkedRemarksInput()) {

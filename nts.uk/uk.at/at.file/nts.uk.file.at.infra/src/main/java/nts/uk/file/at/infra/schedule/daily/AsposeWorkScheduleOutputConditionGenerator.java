@@ -52,12 +52,14 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringLength;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceItemValueImport;
 import nts.uk.ctx.at.function.dom.adapter.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.FontSizeEnum;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
@@ -121,6 +123,7 @@ import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleSettingTotalOutput;
+import nts.uk.file.at.app.export.dailyschedule.ZeroDisplayType;
 import nts.uk.file.at.app.export.dailyschedule.data.DailyPerformanceHeaderData;
 import nts.uk.file.at.app.export.dailyschedule.data.DailyPerformanceReportData;
 import nts.uk.file.at.app.export.dailyschedule.data.DailyPersonalPerformanceData;
@@ -149,7 +152,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.Calcu
 import nts.uk.screen.at.app.dailyperformance.correction.dto.workinfomation.WorkInfoOfDailyPerformanceDetailDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -262,8 +264,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
 	
-	/** The Constant CHUNK_SIZE. */
-	private static final int CHUNK_SIZE = 16;
+	/** The Constant CHUNK_SIZE. for font size large */
+	private static final int CHUNK_SIZE_BIG = 16;
+
+	/** The Constant CHUNK_SIZE_SMALL. for font size small */
+	private static final int CHUNK_SIZE_SMALL = 20;
 	
 	/** The Constant LIMIT_DATA_PACK. */
 	private static final int LIMIT_DATA_PACK = 5;
@@ -377,15 +382,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					.map(x -> x.getAttendanceDisplay()).collect(Collectors.toList());
 			String companyID = AppContexts.user().companyId();
 			String roleId = AppContexts.user().roles().forAttendance();
+			
+			// アルゴリズム「会社の日次項目を取得する」を実行 (Get the algorithm 「会社の日次項目を取得する」)
 			List<AttItemName> lstDailyAttendanceItem = companyDailyItemService.getDailyItems(companyID, Optional.of(roleId),
 					lstAttendanceId, Arrays.asList(DailyAttendanceAtr.values()));
 			int nListOutputCode = lstDailyAttendanceItem.size();
 			int nSize;
-			if (nListOutputCode % CHUNK_SIZE == 0) {
-				nSize = nListOutputCode / CHUNK_SIZE;
+			int chunkSize = outputItemDailyWork.getFontSize() == FontSizeEnum.BIG ? CHUNK_SIZE_BIG : CHUNK_SIZE_SMALL;
+			if (nListOutputCode % chunkSize == 0) {
+				nSize = nListOutputCode / chunkSize;
 			}
 			else {
-				nSize = nListOutputCode / CHUNK_SIZE + 1;
+				nSize = nListOutputCode / chunkSize + 1;
 			}
 			
 			/**
@@ -439,7 +447,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			setFixedData(condition, sheet, reportData, currentRow);
 			
 			// Write display map
-			writeDisplayMap(sheet.getCells(),reportData, currentRow, nSize);
+			writeDisplayMap(sheet.getCells(),reportData, currentRow, nSize, chunkSize);
 			
 			currentRow+=nSize*2;
 			
@@ -464,10 +472,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Write detailed work schedule
 			if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE)
-				currentRow = writeDetailedWorkSchedule(currentRow, sheetCollection, sheetInfo, reportData.getWorkplaceReportData(), nSize, condition, rowPageTracker);
+				currentRow = writeDetailedWorkSchedule(currentRow, sheetCollection, sheetInfo, reportData.getWorkplaceReportData(), nSize, condition, rowPageTracker, chunkSize, condition.getZeroDisplayType());
 			else {
 				DailyReportData dailyReportData = reportData.getDailyReportData();
-				currentRow = writeDetailedDailySchedule(currentRow, sheetCollection, sheetInfo, dailyReportData, nSize, condition, rowPageTracker);
+				currentRow = writeDetailedDailySchedule(currentRow, sheetCollection, sheetInfo, dailyReportData, nSize, condition, rowPageTracker, chunkSize, condition.getZeroDisplayType());
 			}
 			
 			// Delete footer if user doesn't set remark content
@@ -494,9 +502,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Save workbook
 			if (query.getFileType() == FileOutputType.FILE_TYPE_EXCEL) {
-				reportContext.saveAsExcel(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + "_" + currentFormattedDate + ".xlsx"));
+				
+				// set file name
+				reportContext.saveAsExcel(this.createNewFile(generatorContext, outputItemDailyWork.getItemName().v() + "_" + currentFormattedDate + ".xlsx"));
 			} else {
-				reportContext.saveAsPdf(this.createNewFile(generatorContext, WorkScheOutputConstants.SHEET_FILE_NAME + "_" + currentFormattedDate + ".pdf"));
+				reportContext.saveAsPdf(this.createNewFile(generatorContext, outputItemDailyWork.getItemName().v() + "_" + currentFormattedDate + ".pdf"));
 			}
 			
 		} catch (Exception e) {
@@ -527,7 +537,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param dataRowCount the data row count
 	 * @param setter the setter
 	 */
-	private void collectData(DailyPerformanceReportData reportData, WorkScheduleOutputQuery query, WorkScheduleOutputCondition condition, OutputItemDailyWorkSchedule outputItem, int dataRowCount, TaskDataSetter setter) {
+	private void collectData(DailyPerformanceReportData reportData
+			, WorkScheduleOutputQuery query
+			, WorkScheduleOutputCondition condition
+			, OutputItemDailyWorkSchedule outputItem
+			, int dataRowCount
+			, TaskDataSetter setter) {
 		String companyId = AppContexts.user().companyId();
 		String roleId = AppContexts.user().roles().forAttendance();
 		
@@ -597,6 +612,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             lstEmployeePrintOrder.add(new EmployeePrintOrder(order++, key));
         }
 
+        // 職場情報がない社員の職場エラーリストを作成する
 		if (!lstEmployeeNoWorkplace.isEmpty()) {
 			List<EmployeeDto> lstEmployeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeNoWorkplace);
 			int numOfChunks = (int)Math.ceil((double)lstEmployeeDto.size() / LIMIT_DATA_PACK);
@@ -1020,7 +1036,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								}
 								else {
 									// Get possible content based on remark choice
-									Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId, workingDate, remark.getPrintItem(), lstErAlCode, queryData.getRemarkDataContainter());
+									Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId // 社員ID
+											, workingDate // 期間(年月日)
+											, remark.getPrintItem() // 日別勤務表の出力項目.備考内容
+											, lstErAlCode // 日別勤務表の出力条件.エラーアラームコード
+											, queryData.getRemarkDataContainter()); // 
 									if (optContent.isPresent()) {
 										// Add to remark
 										lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().shortName));
@@ -1247,7 +1267,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					}
 					else {
 						// Get other possible content based on remark choice
-						Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId, workingDate, remark.getPrintItem(), lstErAlCode, queryData.getRemarkDataContainter());
+						Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId
+								, workingDate
+								, remark.getPrintItem() // 日別勤務表の出力項目.備考内容
+								, lstErAlCode 
+								, queryData.getRemarkDataContainter());
 						if (optContent.isPresent()) {
 							// Add to remark
 							lstRemarkContentStr.add(TextResource.localize(optContent.get().getPrintItem().shortName));
@@ -2078,18 +2102,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param currentRow the current row
 	 * @param nSize the n size
 	 */
-	private void writeDisplayMap(Cells cells, DailyPerformanceReportData reportData, int currentRow, int nSize) {
+	private void writeDisplayMap(Cells cells, DailyPerformanceReportData reportData, int currentRow, int nSize, int chunkSize) {
 		List<OutputItemSetting> lstItem = reportData.getHeaderData().getLstOutputItemSettingCode();
 		
 		// Divide list into smaller lists (max 16 items)
-		int numOfChunks = (int)Math.ceil((double)lstItem.size() / CHUNK_SIZE);
+		int numOfChunks = (int)Math.ceil((double)lstItem.size() / chunkSize);
 
 		int start, length;
 		List<OutputItemSetting> lstItemRow;
 		
         for(int i = 0; i < numOfChunks; i++) {
-            start = i * CHUNK_SIZE; 
-            length = Math.min(lstItem.size() - start, CHUNK_SIZE);
+            start = i * chunkSize; 
+            length = Math.min(lstItem.size() - start, chunkSize);
 
             lstItemRow = lstItem.subList(start, start + length);
             
@@ -2122,7 +2146,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @throws Exception the exception
 	 */
 	private int writeDetailedWorkSchedule(int currentRow, WorksheetCollection templateSheetCollection, WorkSheetInfo sheetInfo, WorkplaceReportData workplaceReportData,
-			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker) throws Exception {
+			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker, int chunkSize, ZeroDisplayType zeroDisplayType) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		
 		WorkScheduleSettingTotalOutput totalOutput = condition.getSettingDetailTotalOutput();
@@ -2135,21 +2159,28 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			while (iteratorEmployee.hasNext()) {
 				EmployeeReportData employeeReportData = iteratorEmployee.next();
 
-                if (!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isDetails() && !condition.getSettingDetailTotalOutput().isGrossTotal() && !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
-                String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
-                // A3_1
-                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
-                departmentCode.add(workplaceReportData.getWorkplaceCode());
+                if (!departmentCode.contains(workplaceReportData.getWorkplaceCode())
+            		&& !condition.getSettingDetailTotalOutput().isDetails()
+            		&& !condition.getSettingDetailTotalOutput().isGrossTotal()
+            		&& !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
+	                String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
+	                // A3_1
+	                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
+	                departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
-                if(!departmentCode.contains(workplaceReportData.getWorkplaceCode()) && !condition.getSettingDetailTotalOutput().isDetails() && !condition.getSettingDetailTotalOutput().isWorkplaceTotal() 
-                		&& !condition.getSettingDetailTotalOutput().isCumulativeWorkplace()&& !condition.getSettingDetailTotalOutput().isGrossTotal() && !condition.getSettingDetailTotalOutput().isPersonalTotal()){
-                String personalTitle = WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
-                        + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
-                        + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
-                        + employeeReportData.position;
-                // A4_1
-                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
-                departmentCode.add(workplaceReportData.getWorkplaceCode());
+				if (!departmentCode.contains(workplaceReportData.getWorkplaceCode())
+                		&& !condition.getSettingDetailTotalOutput().isDetails()
+                		&& !condition.getSettingDetailTotalOutput().isWorkplaceTotal() 
+                		&& !condition.getSettingDetailTotalOutput().isCumulativeWorkplace()
+                		&& !condition.getSettingDetailTotalOutput().isGrossTotal()
+                		&& !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
+	                String personalTitle = WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
+	                        + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
+	                        + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
+	                        + employeeReportData.position;
+	                // A4_1
+	                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
+	                departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
 				if (rowPageTracker.checkRemainingRowSufficient(3) <= 0) {
 					if (this.checkLimitPageBreak(templateSheetCollection, sheetInfo, currentRow)) {
@@ -2255,15 +2286,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						List<ActualValue> lstItem = detailedDailyPerformanceReportData.getActualValue();
 						
 						// Divide list into smaller lists (max 16 items)
-						int numOfChunks = (int)Math.ceil((double)lstItem.size() / CHUNK_SIZE);
+						int numOfChunks = (int)Math.ceil((double)lstItem.size() / chunkSize);
 	
 						int curRow = currentRow;
 						int start, length;
 						List<ActualValue> lstItemRow;
 						
 				        for(int i = 0; i < numOfChunks; i++) {
-				            start = i * CHUNK_SIZE;
-				            length = Math.min(lstItem.size() - start, CHUNK_SIZE);
+				            start = i * chunkSize;
+				            length = Math.min(lstItem.size() - start, chunkSize);
 	
 				            lstItemRow = lstItem.subList(start, start + length);
 				            
@@ -2271,7 +2302,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	// Column 4, 6, 8,...
 				            	ActualValue actualValue = lstItemRow.get(j);
 				            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2);
-				            	writeDetailValue(actualValue, cell);
+				            	writeDetailValue(actualValue, cell, zeroDisplayType);
 				            }
 				            
 				            curRow++;
@@ -2342,20 +2373,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					
 					// A6_2
 					Map<Integer, TotalValue> mapPersonalTotal = employeeReportData.getMapPersonalTotal();
-					int numOfChunks = (int) Math.ceil( (double) mapPersonalTotal.size() / CHUNK_SIZE);
+					int numOfChunks = (int) Math.ceil( (double) mapPersonalTotal.size() / chunkSize);
 					int start, length;
 					List<TotalValue> lstItemRow;
 					
 			        for(int i = 0; i < numOfChunks; i++) {
-			            start = i * CHUNK_SIZE;
-			            length = Math.min(mapPersonalTotal.size() - start, CHUNK_SIZE);
+			            start = i * chunkSize;
+			            length = Math.min(mapPersonalTotal.size() - start, chunkSize);
 			            
 			            lstItemRow = mapPersonalTotal.values().stream().collect(Collectors.toList()).subList(start, start + length);
 			            
 			            for (int j = 0; j < length; j++) {
 			            	TotalValue totalValue = lstItemRow.get(j);
 			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2);
-			            	writeTotalValue(totalValue, cell);
+			            	writeTotalValue(totalValue, cell, zeroDisplayType);
 			            }
 			            currentRow++;
 			        }
@@ -2447,19 +2478,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// A8_2
 			WorkplaceTotal workplaceTotal = workplaceReportData.getWorkplaceTotal();
-			int numOfChunks = (int) Math.ceil( (double) workplaceTotal.getTotalWorkplaceValue().size() / CHUNK_SIZE);
+			int numOfChunks = (int) Math.ceil( (double) workplaceTotal.getTotalWorkplaceValue().size() / chunkSize);
 			int start, length;
 			List<TotalValue> lstItemRow;
 			
 	        for(int i = 0; i < numOfChunks; i++) {
-	            start = i * CHUNK_SIZE;
-	            length = Math.min(workplaceTotal.getTotalWorkplaceValue().size() - start, CHUNK_SIZE);
+	            start = i * chunkSize;
+	            length = Math.min(workplaceTotal.getTotalWorkplaceValue().size() - start, chunkSize);
 	            lstItemRow = workplaceTotal.getTotalWorkplaceValue().subList(start, start + length);
 	            
 	            for (int j = 0; j < length; j++) {
 	            	TotalValue totalValue = lstItemRow.get(j);
 	            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2);
-	            	writeTotalValue(totalValue, cell);
+	            	writeTotalValue(totalValue, cell, zeroDisplayType);
 	            }
 	            currentRow++;
 	        }
@@ -2491,20 +2522,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + levelIterator.next());
 			
 			// A9_2 - A13_2
-			int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
+			int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / chunkSize);
 			int start, length;
 			List<TotalValue> lstItemRow;
 			
 	        for(int i = 0; i < numOfChunks; i++) {
-	            start = i * CHUNK_SIZE;
-	            length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
+	            start = i * chunkSize;
+	            length = Math.min(workplaceReportData.getGrossTotal().size() - start, chunkSize);
 	
 	            lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
 	            
 	            for (int j = 0; j < length; j++) {
 	            	TotalValue totalValue = lstItemRow.get(j);
 	            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
-	            	writeTotalValue(totalValue, cell);
+	            	writeTotalValue(totalValue, cell, zeroDisplayType);
 	            }
 	            currentRow++;
 	        }
@@ -2528,7 +2559,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Iterator<Map.Entry<String, WorkplaceReportData>> it = mapChildWorkplace.entrySet().iterator();
 		while (it.hasNext()) {
 			Map.Entry<String, WorkplaceReportData> entry = it.next();
-			currentRow = writeDetailedWorkSchedule(currentRow, templateSheetCollection, sheetInfo, entry.getValue(), dataRowCount, condition, rowPageTracker);
+			currentRow = writeDetailedWorkSchedule(currentRow
+					, templateSheetCollection
+					, sheetInfo
+					, entry.getValue()
+					, dataRowCount
+					, condition
+					, rowPageTracker
+					, chunkSize
+					, zeroDisplayType);
 			
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE)
@@ -2611,20 +2650,20 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						workplaceTotalCellTag.setValue(tagStr);
 						
 						// A9_2 - A13_2
-						int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / CHUNK_SIZE);
+						int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / chunkSize);
 						int start, length;
 						List<TotalValue> lstItemRow;
 						
 				        for(int i = 0; i < numOfChunks; i++) {
-				            start = i * CHUNK_SIZE;
-				            length = Math.min(workplaceReportData.getGrossTotal().size() - start, CHUNK_SIZE);
+				            start = i * chunkSize;
+				            length = Math.min(workplaceReportData.getGrossTotal().size() - start, chunkSize);
 				
 				            lstItemRow = workplaceReportData.getGrossTotal().subList(start, start + length);
 				            
 				            for (int j = 0; j < length; j++) {
 				            	TotalValue totalValue = lstItemRow.get(j);
 				            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2);
-				            	writeTotalValue(totalValue, cell);
+				            	writeTotalValue(totalValue, cell, zeroDisplayType);
 				            }
 				        }
 				        currentRow += dataRowCount;
@@ -2646,16 +2685,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param actualValue the actual value
 	 * @param cell the cell
 	 */
-	private void writeDetailValue(ActualValue actualValue, Cell cell) {
+	private void writeDetailValue(ActualValue actualValue, Cell cell, ZeroDisplayType zeroDisplayType) {
 		Style style = cell.getStyle();
 		ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
 		if (valueTypeEnum.isTime()) {
 			String value = actualValue.getValue();
 			if (value != null) {
 				if (valueTypeEnum == ValueType.TIME) {
-					cell.setValue(getTimeAttr(value, false));
+					cell.setValue(getTimeAttr(value, false, zeroDisplayType));
 				} else {
-					cell.setValue(getTimeAttr(value, true));
+					cell.setValue(getTimeAttr(value, true, zeroDisplayType));
 				}
 			}
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
@@ -2685,7 +2724,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @throws Exception the exception
 	 */
 	private int writeDetailedDailySchedule(int currentRow, WorksheetCollection templateSheetCollection, WorkSheetInfo sheetInfo, DailyReportData dailyReport,
-			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker) throws Exception {
+			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker, int chunkSize, ZeroDisplayType zeroDisplayType) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
 		
@@ -2715,7 +2754,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 //			dateCell.setValue(date);
 
 			
-			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheetInfo, templateSheetCollection, rootWorkplace, dataRowCount, condition, rowPageTracker, titleDate);
+			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow
+					, sheetInfo
+					, templateSheetCollection
+					, rootWorkplace
+					, dataRowCount
+					, condition
+					, rowPageTracker
+					, titleDate
+					, chunkSize
+					, zeroDisplayType);
 		
 			if (iteratorWorkplaceData.hasNext()) {
 				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
@@ -2752,7 +2800,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell grossTotalCellTag = cells.get(currentRow, 0);
 			grossTotalCellTag.setValue(WorkScheOutputConstants.GROSS_TOTAL);
 			
-			currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), sheetInfo.getSheet(), dataRowCount, rowPageTracker);
+			currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), sheetInfo.getSheet(), dataRowCount, rowPageTracker, chunkSize, condition.getZeroDisplayType());
 		}
 		
 		return currentRow;
@@ -2771,7 +2819,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @return the int
 	 * @throws Exception the exception
 	 */
-	private int writeDailyDetailedPerformanceDataOnWorkplace(int currentRow, WorkSheetInfo sheetInfo, WorksheetCollection templateSheetCollection, DailyWorkplaceData rootWorkplace, int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker, String titleDate) throws Exception {
+	private int writeDailyDetailedPerformanceDataOnWorkplace(int currentRow
+			, WorkSheetInfo sheetInfo
+			, WorksheetCollection templateSheetCollection
+			, DailyWorkplaceData rootWorkplace
+			, int dataRowCount
+			, WorkScheduleOutputCondition condition
+			, RowPageTracker rowPageTracker
+			, String titleDate
+			, int chunkSize
+			, ZeroDisplayType zeroDisplayType) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
         String workplaceTitle = WorkScheOutputConstants.WORKPLACE +"　"+ rootWorkplace.getWorkplaceCode() +"　"+ rootWorkplace.getWorkplaceName();
 
@@ -2852,22 +2909,22 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					// B5_3
 					// Divide list into smaller lists (max 16 items)
 					int size = lstItem.size();
-					int numOfChunks = (int)Math.ceil((double)size / CHUNK_SIZE);
+					int numOfChunks = (int)Math.ceil((double)size / chunkSize);
 					int start, length;
 					List<ActualValue> lstItemRow;
 					
 					int curRow = currentRow;
 		
 			        for(int i = 0; i < numOfChunks; i++) {
-			            start = i * CHUNK_SIZE;
-			            length = Math.min(size - start, CHUNK_SIZE);
+			            start = i * chunkSize;
+			            length = Math.min(size - start, chunkSize);
 		
 			            lstItemRow = lstItem.subList(start, start + length);
 			            for (int j = 0; j < length; j++) {
 			            	// Column 4, 6, 8,...
 			            	ActualValue actualValue = lstItemRow.get(j);
 			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
-			            	writeDetailValue(actualValue, cell);
+			            	writeDetailValue(actualValue, cell, zeroDisplayType);
 			            }
 			            
 			            curRow++;
@@ -2957,7 +3014,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_TOTAL);
 			
 			// B6_2
-			currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, true);
+			currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, true, chunkSize, zeroDisplayType);
 		}
 		
 		boolean firstWorkplace = true;
@@ -2991,7 +3048,16 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 
 			firstWorkplace = false;
 
-			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow, sheetInfo, templateSheetCollection, entry.getValue(), dataRowCount, condition, rowPageTracker, titleDate);
+			currentRow = writeDailyDetailedPerformanceDataOnWorkplace(currentRow
+					, sheetInfo
+					, templateSheetCollection
+					, entry.getValue()
+					, dataRowCount
+					, condition
+					, rowPageTracker
+					, titleDate
+					, chunkSize
+					, zeroDisplayType);
 
 		}
 		
@@ -3038,7 +3104,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + level);
 				
 				// B7_2 - B11_2
-				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false);
+				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false, chunkSize, zeroDisplayType);
 			} while (levelIterator != null && levelIterator.hasNext());
 		}
 		
@@ -3055,7 +3121,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param totalType the total type
 	 * @return the int
 	 */
-	private int writeWorkplaceTotal(int currentRow, DailyWorkplaceData rootWorkplace, Worksheet sheet, int dataRowCount, boolean totalType) {
+	private int writeWorkplaceTotal(int currentRow
+			, DailyWorkplaceData rootWorkplace
+			, Worksheet sheet
+			, int dataRowCount
+			, boolean totalType
+			, int chunkSize
+			, ZeroDisplayType zeroDisplayType) {
 		List<TotalValue> totalWorkplaceValue;
 		if (!totalType)
 			totalWorkplaceValue = rootWorkplace.getWorkplaceTotal().getTotalWorkplaceValue();
@@ -3069,13 +3141,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			Cells cells = sheet.getCells(); 	
 			
-			int numOfChunks = (int) Math.ceil( (double) size / CHUNK_SIZE);
+			int numOfChunks = (int) Math.ceil( (double) size / chunkSize);
 			int start, length;
 			List<TotalValue> lstItemRow;
 			
 			for(int i = 0; i < numOfChunks; i++) {
-			    start = i * CHUNK_SIZE;
-			    length = Math.min(size - start, CHUNK_SIZE);
+			    start = i * chunkSize;
+			    length = Math.min(size - start, chunkSize);
 
 			    lstItemRow = totalWorkplaceValue.stream().collect(Collectors.toList()).subList(start, start + length);
 			    TotalValue totalValue;
@@ -3083,7 +3155,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    for (int j = 0; j < length; j++) {
 			    	totalValue = lstItemRow.get(j);
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	writeTotalValue(totalValue, cell);
+		        	writeTotalValue(totalValue, cell, zeroDisplayType);
 			    }
 			    currentRow++;
 			}
@@ -3100,19 +3172,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param totalValue the total value
 	 * @param cell the cell
 	 */
-	private void writeTotalValue(TotalValue totalValue, Cell cell) {
+	private void writeTotalValue(TotalValue totalValue, Cell cell, ZeroDisplayType zeroDisplayType) {
 		Style style = cell.getStyle();
 		String value = totalValue.getValue();
     	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
     	if (valueTypeEnum.isIntegerCountable()) {
     		if ((valueTypeEnum == ValueType.COUNT) && value != null) {
     			cell.putValue(value, true);
-    		}
-    		else {
+    		} else {
     			if (value != null)
-					cell.setValue(getTimeAttr(value, false));
+					cell.setValue(getTimeAttr(value, false, zeroDisplayType));
 				else
-					cell.setValue(getTimeAttr("0", false));
+					cell.setValue(getTimeAttr("0", false, zeroDisplayType));
     		}
 			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		}
@@ -3136,7 +3207,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param rowPageTracker the row page tracker
 	 * @return the int
 	 */
-	private int writeGrossTotal(int currentRow, List<TotalValue> lstGrossTotal, Worksheet sheet, int dataRowCount, RowPageTracker rowPageTracker) {
+	private int writeGrossTotal(int currentRow
+			, List<TotalValue> lstGrossTotal
+			, Worksheet sheet
+			, int dataRowCount
+			, RowPageTracker rowPageTracker
+			, int chunkSize
+			, ZeroDisplayType zeroDisplayType) {
 		int size = lstGrossTotal.size();
 		if (size == 0) {
 			currentRow += dataRowCount;
@@ -3144,13 +3221,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		else {
 			Cells cells = sheet.getCells();
 			
-			int numOfChunks = (int) Math.ceil( (double) size / CHUNK_SIZE);
+			int numOfChunks = (int) Math.ceil( (double) size / chunkSize);
 			int start, length;
 			List<TotalValue> lstItemRow;
 			
 			for(int i = 0; i < numOfChunks; i++) {
-			    start = i * CHUNK_SIZE;
-			    length = Math.min(lstGrossTotal.size() - start, CHUNK_SIZE);
+			    start = i * chunkSize;
+			    length = Math.min(lstGrossTotal.size() - start, chunkSize);
 
 			    lstItemRow = lstGrossTotal.stream().collect(Collectors.toList()).subList(start, start + length);
 			    
@@ -3159,7 +3236,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    for (int j = 0; j < length; j++) {
 			    	totalValue =lstItemRow.get(j);
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	writeTotalValue(totalValue, cell);
+		        	writeTotalValue(totalValue, cell, zeroDisplayType);
 			    }
 			    currentRow++;
 			}
@@ -3206,15 +3283,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param isConvertAttr the is convert attr
 	 * @return the time attr
 	 */
-	private String getTimeAttr(String rawValue, boolean isConvertAttr) {
+	private String getTimeAttr(String rawValue, boolean isConvertAttr, ZeroDisplayType displayType) {
 		int value = Integer.parseInt(rawValue);
 		TimeDurationFormatExtend timeFormat = new TimeDurationFormatExtend(value);
 		if (isConvertAttr) {
 			//AttendanceTimeOfExistMinus time = new AttendanceTimeOfExistMinus(value);
 			return timeFormat.getFullText();
-		}
-		else {
-			return timeFormat.getTimeText();
+		} else {
+			return (displayType == ZeroDisplayType.DISPLAY && timeFormat.isZero()) ? timeFormat.getTimeText() : "";
 		}
 	}
 	
@@ -3297,15 +3373,18 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/**
 	 * Gets the remark content.
 	 *
-	 * @param employeeId the employee id
-	 * @param currentDate the current date
+	 * @param employeeId 社員ID
+	 * @param currentDate 期間(年月日)
 	 * @param choice the choice
 	 * @param lstOutputErrorCode the lst output error code
 	 * @param remarkDataContainer the remark data container
 	 * @return the remark content
 	 */
-	public Optional<PrintRemarksContent> getRemarkContent(String employeeId, GeneralDate currentDate,
-			RemarksContentChoice choice, List<ErrorAlarmWorkRecordCode> lstOutputErrorCode, RemarkQueryDataContainer remarkDataContainer) {
+	public Optional<PrintRemarksContent> getRemarkContent(String employeeId
+			, GeneralDate currentDate
+			, RemarksContentChoice choice
+			, List<ErrorAlarmWorkRecordCode> lstOutputErrorCode
+			, RemarkQueryDataContainer remarkDataContainer) {
 		PrintRemarksContent printRemarksContent = null;
 		List<EmployeeDailyPerError> errorList = remarkDataContainer.getErrorList();
 		//List<String> errorCodeList = lstOutputErrorCode.stream().map(x -> x.v()).collect(Collectors.toList());

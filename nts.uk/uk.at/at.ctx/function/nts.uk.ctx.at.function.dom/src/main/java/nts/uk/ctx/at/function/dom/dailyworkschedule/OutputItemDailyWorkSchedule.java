@@ -21,7 +21,7 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 	/**
 	 * 出力レイアウトID
 	 */
-	private String outputLayoutId;
+	private String layoutId;
 	
 	/** The item code. */
 	// コード
@@ -65,7 +65,7 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 		this.lstRemarkContent = memento.getLstRemarkContent();
 		this.workTypeNameDisplay = memento.getWorkTypeNameDisplay();
 		this.remarkInputNo = memento.getRemarkInputNo();
-		this.outputLayoutId = memento.getLayoutId();
+		this.layoutId = memento.getLayoutId();
 		this.fontSize = memento.getFontSize();
 	}
 	
@@ -83,9 +83,7 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 		memento.setWorkTypeNameDisplay(this.workTypeNameDisplay);
 		memento.setRemarkInputNo(this.remarkInputNo);
 		memento.setFontSize(this.fontSize);
-		if (this.outputLayoutId != null) {
-			memento.setLayoutId(this.outputLayoutId);
-		}
+		memento.setLayoutId(this.layoutId);
 	}
 
 	/* (non-Javadoc)

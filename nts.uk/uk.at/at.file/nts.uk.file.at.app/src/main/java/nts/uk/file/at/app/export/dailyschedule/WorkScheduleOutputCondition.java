@@ -71,7 +71,9 @@ public class WorkScheduleOutputCondition  {
 		condition.setFreeSettingCode(new OutputItemSettingCode(dto.getFreeSettingCode()));
 		condition.setZeroDisplayType(ZeroDisplayType.valueOf(dto.getZeroDisplayType()));
 		condition.setSwitchItemDisplay(SwitchItemDisplay.valueOf(dto.getSwitchItemDisplay()));
-		condition.setOutputConditionSpecification(Optional.of(dto.getOutputConditionSpecification()));
+		if (dto.getOutputConditionSpecification() != null) {
+			condition.setOutputConditionSpecification(Optional.of(dto.getOutputConditionSpecification()));
+		}
 		return condition;
 	}
 	

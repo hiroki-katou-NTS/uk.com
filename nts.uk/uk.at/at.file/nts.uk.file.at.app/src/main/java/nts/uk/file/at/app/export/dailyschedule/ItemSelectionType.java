@@ -7,9 +7,9 @@ package nts.uk.file.at.app.export.dailyschedule;
  */
 public enum ItemSelectionType {
 	/** 定型選択 */
-	STANDARD_SELECTION(1),
+	STANDARD_SELECTION(0),
 	/** 目由設定 */
-	FREE_SETTING(0);
+	FREE_SETTING(1);
 	
 	private final int selectionValue;
 

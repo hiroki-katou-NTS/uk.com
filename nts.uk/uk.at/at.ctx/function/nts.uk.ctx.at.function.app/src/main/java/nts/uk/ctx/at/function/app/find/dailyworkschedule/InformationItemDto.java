@@ -18,4 +18,6 @@ public class InformationItemDto {
 	private Integer attOnScreen;
 	// 並び順(表示番号)
 	private Integer orderNo;
+	
+	private int id;
 }

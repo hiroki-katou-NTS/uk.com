@@ -91,7 +91,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 
 	@Override
 	protected Object getKey() {
-		return layoutId;
+		return null;
 	}
 
 	@Override
@@ -113,6 +113,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			key.setOrderNo(obj.getOrderNo());
 			entity.setId(key);
 			entity.setAtdDisplay(new BigDecimal(obj.getAttendanceDisplay()));
+			entity.setCid(this.cid);
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -125,6 +126,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			key.setLayoutId(this.layoutId);
 			key.setPrintItem(obj.getPrintItem().value);
 			entity.setId(key);
+			entity.setCid(this.cid);
 			entity.setUseCls(new BigDecimal(obj.isUsedClassification() ? 1 : 0));
 			return entity;
 		}).collect(Collectors.toList());
@@ -184,6 +186,14 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 	@Override
 	public FontSizeEnum getFontSize() {
 		return FontSizeEnum.valueOf(this.charSizeType.intValue());
+	}
+	
+	public String getLayoutId() {
+		return this.layoutId;
+	}
+	
+	public void setLayoutId(String layoutId) {
+		this.layoutId = layoutId;
 	}
 
 }

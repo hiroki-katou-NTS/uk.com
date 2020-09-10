@@ -64,7 +64,9 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("itemSelType", ItemSelectionType.FREE_SETTING.value)
-				.getList().stream()
+				.getList();
+		
+		lstResult = lstResult.stream()
 				.map(t -> {
 					t.setLstKfnmtRptWkDaiOutatds(mapAtd.get(t.getLayoutId()));
 					t.setLstKfnmtRptWkDaiOutnotes(mapNote.get(t.getLayoutId()));
@@ -121,11 +123,11 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 		List<KfnmtRptWkDaiOutItem> entities = freeSettingOfOutputItemForDailyWorkSchedule.getOutputItemDailyWorkSchedules().stream()
 				.map(t -> {
 					KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
-					t.saveToMemento(entity);
 					entity.setItemSelType(ItemSelectionType.FREE_SETTING.value);
-					entity.setLayoutId(UUID.randomUUID().toString());
 					entity.setCid(freeSettingOfOutputItemForDailyWorkSchedule.getCompanyId().v());
 					entity.setSid(freeSettingOfOutputItemForDailyWorkSchedule.getEmployeeId().v());
+					entity.setLayoutId(UUID.randomUUID().toString());
+					t.saveToMemento(entity);
 					return entity;
 				})
 				.collect(Collectors.toList());
@@ -138,10 +140,10 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 		List<KfnmtRptWkDaiOutItem> entities = outputStandard.getOutputItems().stream()
 				.map(t -> {
 					KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
-					t.saveToMemento(entity);
 					entity.setItemSelType(ItemSelectionType.STANDARD_SELECTION.value);
-					entity.setLayoutId(UUID.randomUUID().toString());
 					entity.setCid(outputStandard.getCompanyId().v());
+					entity.setLayoutId(UUID.randomUUID().toString());
+					t.saveToMemento(entity);
 					return entity;
 				})
 				.collect(Collectors.toList());
@@ -154,7 +156,7 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 		Optional<FreeSettingOfOutputItemForDailyWorkSchedule> domain = this.getFreeSettingByCompanyAndEmployee(companyId, employeeId);
 		// get all free setting id
 		List<String> layoutIds = domain.get().getOutputItemDailyWorkSchedules().stream()
-				.map(OutputItemDailyWorkSchedule::getOutputLayoutId)
+				.map(OutputItemDailyWorkSchedule::getLayoutId)
 				.collect(Collectors.toList());
 		// if layoutId is exist
 		if (domain.isPresent() && layoutIds.contains(layoutId)) {
@@ -203,7 +205,7 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 	public void deleteStandardSetting(String companyId, String layoutId) {
 		Optional<OutputStandardSettingOfDailyWorkSchedule> domain = this.getStandardSettingByCompanyId(companyId);
 		// get all standard setting id
-		List<String> layoutIds = domain.get().getOutputItems().stream().map(OutputItemDailyWorkSchedule::getOutputLayoutId).collect(Collectors.toList());
+		List<String> layoutIds = domain.get().getOutputItems().stream().map(OutputItemDailyWorkSchedule::getLayoutId).collect(Collectors.toList());
 		// if layoutId is exist
 		if (domain.isPresent() && layoutIds.contains(layoutId)) {
 			// remove setting
