@@ -50,16 +50,8 @@ module nts.uk.at.view.kdl005.a {
             mounted() {
                 const vm = this;
                 vm.$blockui('grayout');
-                // Render table
-                vm.isManagementSection.subscribe((value) => {
-                    if (value) {
-                        vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
-                    }
-                });
-                vm.isFirstLoaded(false);
                 service.getEmployeeList(vm.kdl005Data)
                     .then((data: any) => {
-                        vm.isFirstLoaded(true);
                         if (data.employeeBasicInfo.length > 1) {
                             vm.selectedCode.subscribe((value) => {
                                 let itemData: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
@@ -130,14 +122,20 @@ module nts.uk.at.view.kdl005.a {
                 vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
                 vm.$blockui('grayout');
                 // Get employee data
+                vm.isFirstLoaded(false);
                 service.getDetailsConfirm(id, baseDate)
                     .then((data) => {
+                        vm.isFirstLoaded(true);
                         if (data.deadLineDetails && data.deadLineDetails.isManaged) {
                             vm.expirationDateText(ExpirationDate[data.deadLineDetails.expirationTime]);
                         }
                         vm.isManagementSection(data.isManagementSection);
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
+                        // Render table
+                        if (data.isManagementSection) {
+                            vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
+                        }
                     })
                     .always(() => vm.$blockui('clear'));
             }
