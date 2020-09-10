@@ -186,7 +186,7 @@ public class KrqmtAppApvEmp extends ContractUkJpaEntity implements Serializable 
 
     public void update(TargetWorkTypeByApp target) {
         this.displayFlag = BooleanUtils.toInteger(target.isDisplayWorkType());
-        this.holidayTypeUseFlg = target.getOpHolidayTypeUse().map(BooleanUtils::toInteger).orElse(null);
+        this.holidayTypeUseFlg = target.getAppType() == ApplicationType.ABSENCE_APPLICATION ? target.getOpHolidayTypeUse().map(BooleanUtils::toInteger).orElse(null) : null;
         this.krqdtAppEmployWorktype.clear();
         this.krqdtAppEmployWorktype.addAll(target.getWorkTypeLst().stream().map(c -> new KrqmtAppWorktypeEmp(
                 this.pk.getCid(),
