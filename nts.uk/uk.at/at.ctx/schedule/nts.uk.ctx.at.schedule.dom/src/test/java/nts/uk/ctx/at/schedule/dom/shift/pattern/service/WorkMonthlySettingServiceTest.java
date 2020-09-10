@@ -59,14 +59,13 @@ public class WorkMonthlySettingServiceTest {
     @Test
     public void test_non_error_condition_non_update() {
         WorkMonthlySetting workMonthlySetting = new WorkMonthlySetting(CID, WMID, GeneralDate.today(), new WorkInformation("123", "1234"));
-        Optional<AtomTask> expected = Optional.empty();
         new Expectations(WorkMonthlySetting.class) {{
             workMonthlySetting.checkForErrors(require);
             require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
             result = true;
 
         }};
-        assertThat(WorkMonthlySettingService.register(require, workMonthlySetting, false)).isEqualTo(expected);
+        assertThat(WorkMonthlySettingService.register(require, workMonthlySetting, false)).isEqualTo(Optional.empty());
     }
 
     @Test
