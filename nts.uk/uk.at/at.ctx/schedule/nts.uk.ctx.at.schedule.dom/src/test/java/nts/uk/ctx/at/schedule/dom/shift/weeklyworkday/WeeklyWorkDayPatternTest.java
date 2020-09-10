@@ -1,10 +1,14 @@
-package nts.uk.ctx.at.schedule.dom.shift.weeklywrkday;
+package nts.uk.ctx.at.schedule.dom.shift.weeklyworkday;
 
 import lombok.val;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.DayOfWeek;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WorkdayPatternItem;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -86,7 +90,7 @@ public class WeeklyWorkDayPatternTest {
 
 		val result = weeklyWorkDayPattern.getWorkingDayCtgOfTagertDay(GeneralDate.ymd(2020,8,22));
 
-		assertThat(result).isEqualTo(WorkdayDivision.NON_WORKINGDAY_EXTRALEGAL);
+		Assertions.assertThat(result).isEqualTo(WorkdayDivision.NON_WORKINGDAY_EXTRALEGAL);
 	}
 
 	@Test
@@ -104,7 +108,7 @@ public class WeeklyWorkDayPatternTest {
 
 		val result = weeklyWorkDayPattern.getWorkingDayCtgOfTagertDay(GeneralDate.ymd(2020,8,23));
 
-		assertThat(result).isEqualTo(WorkdayDivision.NON_WORKINGDAY_INLAW);
+		Assertions.assertThat(result).isEqualTo(WorkdayDivision.NON_WORKINGDAY_INLAW);
 	}
 
 	@Test
@@ -122,7 +126,7 @@ public class WeeklyWorkDayPatternTest {
 
 		val result = weeklyWorkDayPattern.getWorkingDayCtgOfTagertDay(GeneralDate.ymd(2020,8,24));
 
-		assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
+		Assertions.assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
 	}
 
 	@Test
@@ -140,7 +144,7 @@ public class WeeklyWorkDayPatternTest {
 
 		val result = weeklyWorkDayPattern.getWorkingDayCtgOfTagertDay(GeneralDate.ymd(2020,8,25));
 
-		assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
+		Assertions.assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
 	}
 
 	@Test
@@ -158,7 +162,7 @@ public class WeeklyWorkDayPatternTest {
 
 		val result = weeklyWorkDayPattern.getWorkingDayCtgOfTagertDay(GeneralDate.ymd(2020,8,26));
 
-		assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
+		Assertions.assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
 	}
 
 	@Test
@@ -176,7 +180,7 @@ public class WeeklyWorkDayPatternTest {
 
 		val result = weeklyWorkDayPattern.getWorkingDayCtgOfTagertDay(GeneralDate.ymd(2020,8,27));
 
-		assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
+		Assertions.assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
 	}
 
 	@Test
@@ -194,7 +198,7 @@ public class WeeklyWorkDayPatternTest {
 
 		val result = weeklyWorkDayPattern.getWorkingDayCtgOfTagertDay(GeneralDate.ymd(2020,8,28));
 
-		assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
+		Assertions.assertThat(result).isEqualTo(WorkdayDivision.WORKINGDAYS);
 	}
 
 	@Test

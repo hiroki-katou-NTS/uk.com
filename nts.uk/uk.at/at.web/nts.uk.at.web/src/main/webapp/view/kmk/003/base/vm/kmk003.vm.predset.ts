@@ -80,14 +80,20 @@ module nts.uk.at.view.kmk003.a {
                 constructor() {
                     this.useAtr = ko.observable(false);
                     this.workNo = ko.observable(0);
-                    this.start = ko.observable(0);
-                    this.end = ko.observable(0);
+                    this.start = ko.observable(null);
+                    this.end = ko.observable(null);
                     this.valueChangedNotifier = ko.observable();
                     this.start.subscribe(() => {
                         this.valueChangedNotifier.valueHasMutated();
                     });
                     this.end.subscribe(() => {
                         this.valueChangedNotifier.valueHasMutated();
+                    });
+					this.useAtr.subscribe((useAtr) => {
+						if(!useAtr){
+                        this.start(null);
+						this.end(null);
+						}
                     });
                 }
 
@@ -106,17 +112,19 @@ module nts.uk.at.view.kmk003.a {
                 resetData(): void {
                     let self = this;
                     self.useAtr(false);
-                    self.start(0);
-                    self.end(0);
+                    self.start(null);
+                    self.end(null);
                 }
 
                 updateData(data: TimezoneDto) {
                     this.useAtr(data.useAtr);
                     this.workNo(data.workNo);
-                    this.end(data.end);
-                    this.start(data.start);
-                }
-
+					if(data.useAtr){
+		                    this.end(data.end);
+		                    this.start(data.start);
+		            }
+				}
+				
                 toDto(): TimezoneDto {
                     var dataDTO: TimezoneDto = {
                         useAtr: this.useAtr(),
