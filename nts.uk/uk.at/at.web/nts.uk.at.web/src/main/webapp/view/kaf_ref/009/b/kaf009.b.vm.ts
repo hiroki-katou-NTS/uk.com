@@ -77,7 +77,18 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                     });
                 }
             }).fail(err => {
-                vm.handleError(err);
+                let param;
+                if (err.message && err.messageId) {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+                    
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
+                }
+                vm.$dialog.error(param);
             }).always(() => vm.$blockui('hide'));
         }
         
@@ -149,7 +160,18 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                     
                 })
                 .fail(err => {
-                    vm.handleError(err);
+                    let param;
+                    if (err.message && err.messageId) {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    } else {
+                        
+                        if (err.message) {
+                            param = {message: err.message, messageParams: err.parameterIds};
+                        } else {
+                            param = {messageId: err.messageId, messageParams: err.parameterIds};
+                        }
+                    }
+                    vm.$dialog.error(param);
                 })
                 .always(() => vm.$blockui("hide"))
              
@@ -190,29 +212,22 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                     } );
                 })
             .fail(err => {
-                vm.handleError(err);
-                
-            });
-        }
-        public handleError(err: any) {
-            const vm = this;
-            let param;
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
-                
-                if (err.message) {
-                    param = {message: err.message, messageParams: err.parameterIds};
-                } else {
+                let param;
+                if (err.message && err.messageId) {
                     param = {messageId: err.messageId, messageParams: err.parameterIds};
+                } else {
+                    
+                    if (err.message) {
+                        param = {message: err.message, messageParams: err.parameterIds};
+                    } else {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    }
                 }
-            }
-            vm.$dialog.error(param).then(res => {
-                if (err.messageId == 'Msg_197') {
-                    location.reload();
-                }
+                vm.$dialog.error(param);
+                
             });
         }
+        
         
         
         
