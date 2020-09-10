@@ -1,7 +1,7 @@
 /// <reference path="./viewcontext.d.ts" />
 
 const prefix = 'nts.uk.storage'
-	, OPENWD = `${prefix}.OPEN_WINDOWS_DATA`
+	, OPENWD = 'OPEN_WINDOWS_DATA'
 	, { ui, request, resource } = nts.uk
 	, { windows, block, dialog } = ui
 	, $storeSession = function (name: string, params?: any) {
@@ -40,7 +40,7 @@ const prefix = 'nts.uk.storage'
 			return $.Deferred().resolve()
 				.then(() => $storeSession(OPENWD))
 				.then((value: any) => {
-					nts.uk.localStorage.removeItem(OPENWD);
+					nts.uk.localStorage.removeItem(`${prefix}.${OPENWD}`);
 
 					return value;
 				});
