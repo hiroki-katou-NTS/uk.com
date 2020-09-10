@@ -95,7 +95,10 @@ module nts.uk.at.view.ksu001.la {
                                 self.clearData();
                             }
                         }).fail((res) => {
-                            nts.uk.ui.dialog.alertError({ messageId: res.messageId});
+                            // nts.uk.ui.dialog.alertError({ messageId: res.messageId});
+                            nts.uk.ui.dialog.info({ messageId: "Msg_1867" }).then(function(){
+                                self.closeDialog();
+                            });
                             blockUI.clear(); 
                         });
                         self.getEmpOrgInfo();
@@ -103,7 +106,7 @@ module nts.uk.at.view.ksu001.la {
                     blockUI.clear();
                     dfd.resolve();
                 }).fail((res) =>{
-                    nts.uk.ui.dialog.alertError({ messageId: "Msg_1867" }).then(function(){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_1867" }).then(function(){
                         self.closeDialog();
                     });
                     blockUI.clear(); 
