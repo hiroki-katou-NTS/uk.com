@@ -63,4 +63,3 @@ public interface SyClassificationPub {
 	List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate , List<String> listempID);
 	
 }
-

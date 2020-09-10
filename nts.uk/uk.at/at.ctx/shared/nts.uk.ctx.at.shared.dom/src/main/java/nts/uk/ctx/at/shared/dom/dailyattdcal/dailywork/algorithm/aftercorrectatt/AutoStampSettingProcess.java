@@ -38,7 +38,7 @@ public class AutoStampSettingProcess {
 
 		// 所定時間帯をセットするか確認する
 		ConfirmSetSpecifiResult confirmSetSpecifiResult = confirmSetSpecifiTimeZone.confirmset(companyId, workingCond,
-				workInfo, Optional.of(timeLeavingOptional), date);
+				workInfo, Optional.ofNullable(timeLeavingOptional), date);
 
 		// 返ってきた「時刻セット区分」を確認する
 		if (!confirmSetSpecifiResult.isTimeSetClassification()) {

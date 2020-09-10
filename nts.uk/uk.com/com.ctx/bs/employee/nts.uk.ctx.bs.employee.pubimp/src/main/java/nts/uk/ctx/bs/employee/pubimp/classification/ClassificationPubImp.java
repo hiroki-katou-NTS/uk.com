@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.arc.layer.app.cache.CacheCarrier;
@@ -172,8 +171,6 @@ public class ClassificationPubImp implements SyClassificationPub {
 		}).collect(Collectors.toList());
 	}
 
-	
-	
 	@Override
 	public List<AffCompanyHistItemExport> getByIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
 		List<AffCompanyHistItemDto> listAffCompanyHistItem = this.affiliatedCompanyHistoryFinder.getByIDAndBasedate( baseDate , listempID);
@@ -192,6 +189,17 @@ public class ClassificationPubImp implements SyClassificationPub {
 		}).collect(Collectors.toList());
 		
 		return result;
+	}
+	
+	@Override
+	public List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
+		List<AffClassHistItem> listAffClassHistItem = affClassHistItemRepository.searchClassification(listempID, baseDate, new ArrayList<>());
+		if (listAffClassHistItem.isEmpty()) {
+			return new ArrayList<>();
+		}
+		return listAffClassHistItem.stream().map(mapper -> {
+			return new EmpClassifiExport(mapper.getEmployeeId(), mapper.getClassificationCode().toString());
+		}).collect(Collectors.toList());
 	}
 
 	@Override
