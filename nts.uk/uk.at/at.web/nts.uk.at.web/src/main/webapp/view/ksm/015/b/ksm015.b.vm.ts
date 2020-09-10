@@ -31,6 +31,11 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				self.clearPreviewColor();
 				self.getWorkStyle();
 			});
+			
+			self.registrationForm().color.subscribe((value) => {
+				if(value)
+				nts.uk.ui.errors.clearAll();
+			})
 
 			/*	self.registrationForm().workTypeCd.subscribe((value) => {
 					if(!value){
