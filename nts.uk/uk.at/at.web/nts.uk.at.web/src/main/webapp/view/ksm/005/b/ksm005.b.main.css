@@ -44,7 +44,7 @@
     margin-bottom: 5px;
 }
 .workday_labels .hr {
-	width: 100%;
+	width: 101%;
 	padding: 10px 0 0;
 	clear: left;
 	border-bottom: solid 1px #b1b1b1;
@@ -58,7 +58,7 @@
 	align-items: center;
 }
 .hr-line {
-	margin: 5px 0 0;
+	margin: 5px 0 0 20px;
 }
 
 .popup-b72 .sat{
@@ -74,9 +74,15 @@
 .popup-b72 .halfDayWork{
 	color: #FF7F27;
 }
+.popup-b72 {
+	top: 125px !important;
+}
 
 #checkOverWriteSetting .ntsCheckBox-label {
     background: #ffc0cb;
     padding: 5px;
     border-radius: 5px;
+}
+.popup-b72 .nts-fixed-body-wrapper {
+	height: 162px !important;
 }

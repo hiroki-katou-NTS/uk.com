@@ -299,11 +299,10 @@ module nts.uk.at.view.ksm005.a {
                             self.resetData();
                             return; 
                         }
-                        
                         if(self.isLastMonthlyPattern(selectedCode)){
                             self.lstMonthlyPattern(data);
                             self.monthlyPatternModel().updateEnable(false);
-                            self.selectMonthlyPattern(data[0].code);
+                            self.selectMonthlyPattern(data[data.length-1].code);
                             return;
                         }
                         let i = _.findIndex(self.lstMonthlyPattern(), item => item.code == selectedCode);

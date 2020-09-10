@@ -36,6 +36,7 @@ module nts.uk.at.view.ksm005.b {
             lstHolidaysPattern: KnockoutObservableArray<MonthlyPattern>;
             selectHolidayPattern: KnockoutObservable<string>;
 
+            hasWorkingDays: KnockoutObservable<boolean> = ko.observable(false);
             hasNonStatutoryHolidays: KnockoutObservable<boolean> = ko.observable(false);
             hasLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);
             visibleHolidaySetting: KnockoutObservable<boolean> = ko.observable(false);
@@ -482,6 +483,9 @@ module nts.uk.at.view.ksm005.b {
                             }
                             if(item.typeColor == 2) {
                                 self.hasNonStatutoryHolidays(true);
+                            }
+                            if(item.typeColor == 0) {
+                                self.hasWorkingDays(true);
                             }
                         });
                     }
