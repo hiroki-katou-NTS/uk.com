@@ -5,8 +5,6 @@ module nts.uk.at.view.ksc001.b {
 	import baseService = nts.uk.at.view.kdl023.base.service;
 	import DailyPatternSetting = baseService.model.DailyPatternSetting;
 	import ReflectionSetting = baseService.model.ReflectionSetting;
-	import getText = nts.uk.resource.getText;
-	// 休日反映方法
 	import ReflectionMethod = baseService.model.ReflectionMethod;
 	import DayOffSetting = baseService.model.DayOffSetting;
 
@@ -89,7 +87,7 @@ module nts.uk.at.view.ksc001.b {
 			isFixedSchedules: KnockoutObservable<boolean> = ko.observable( false );
 			isHandleUpdateSchedule: KnockoutObservable<boolean> = ko.observable( false );
 			isMonthlyPatternRq: KnockoutObservable<boolean> = ko.observable( false );
-			isHasChangeConditions: KnockoutObservable<boolean> = ko.observable( false );
+			hasChangedCondition: KnockoutObservable<boolean> = ko.observable( false );
 			monthlyPatternCode: KnockoutObservable<number> = ko.observable();
 			creationMethodCode: KnockoutObservable<number> = ko.observable();
 			monthlyPatternOpts: KnockoutObservableArray<MonthlyPatternModel> = ko.observableArray( [] );
@@ -175,7 +173,7 @@ module nts.uk.at.view.ksc001.b {
 						self.periodStartDate( newDate.startDate );
 						self.periodEndDate( newDate.endDate );
 					}
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				} );
 
 				self.lstCreateMethod = ko.observableArray( __viewContext.enums.CreateMethodAtr );
@@ -213,69 +211,70 @@ module nts.uk.at.view.ksc001.b {
 				} );
 
 				self.creationMethodCode.subscribe(( value ) => {
-					self.$errors('clear').then((valid: boolean) => {
-						self.isMonthlyPattern( CreationMethodRef.MONTHLY_PATTERN == value );
-						$( '.monthly-pattern-code' ).focus();
-					});
-					self.isHasChangeConditions(true);
+					//self.$errors('clear').then((valid: boolean) => {});
+					nts.uk.ui.errors.clearAll()
+					self.isMonthlyPattern( CreationMethodRef.MONTHLY_PATTERN == value );
+					$( '.monthly-pattern-code' ).focus();
+
+					self.hasChangedCondition(true);
 				} );
 
 				//update emplyees listing if has any changed conditions
 				self.selectedImplementAtrCode.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.selectRebuildAtrCode.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.recreateConverter.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.recreateEmployeeOffWork.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.recreateShortTimeWorkers.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.recreateDirectBouncer.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.overwriteConfirmedData.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.createAfterDeleting.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.monthlyPatternCode.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.copyStartDate.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 				self.isConfirmedCreation.subscribe(( value ) => {
-					self.isHasChangeConditions(true);
+					self.hasChangedCondition(true);
 				});
 
 				self.checkCreateMethodAtrPersonalInfo.subscribe(( value ) => {
+					nts.uk.ui.errors.clearAll();
+					if( value === CreateMethodAtr.COPY_PAST_SCHEDULE
+						&& nts.uk.util.isNullOrEmpty( self.copyStartDate() ) ) {
+						$( '#copy-start-date' ).focus();
+						if( self.isInValidCopyPasteSchedule() ) return;
+					}
 
-					self.$errors('clear').then((valid: boolean) => {
-						if( value === CreateMethodAtr.COPY_PAST_SCHEDULE
-							&& nts.uk.util.isNullOrEmpty( self.copyStartDate() ) ) {
-							$( '#copy-start-date' ).focus();
-							if( self.isInValidCopyPasteSchedule() ) return;
+					if( value !== CreateMethodAtr.PATTERN_SCHEDULE ) {
+						self.isMonthlyPattern( false );
+						self.monthlyPatternCode( null );
+					} else {
+						$( '.monthly-pattern-code' ).focus();
+						if( self.creationMethodCode() === CreationMethodRef.MONTHLY_PATTERN ) {
+							self.isMonthlyPattern( true );
 						}
+					}
 
-						if( value !== CreateMethodAtr.PATTERN_SCHEDULE ) {
-							self.isMonthlyPattern( false );
-							self.monthlyPatternCode( null );
-						} else {
-							$( '.monthly-pattern-code' ).focus();
-							if( self.creationMethodCode() === CreationMethodRef.MONTHLY_PATTERN ) {
-								self.isMonthlyPattern( true );
-							}
-						}
+					self.hasChangedCondition(true);
 
-						self.isHasChangeConditions(true);
-					});
+					//self.$errors('clear').then((valid: boolean) => {});
 				} );
 
 				self.creationMethodReference( [
@@ -644,7 +643,9 @@ module nts.uk.at.view.ksc001.b {
 			 */
 			private previousPageC(): void {
 				var self = this;
+				nts.uk.ui.errors.clearAll();
 				self.previous();
+				$('.ntsStartDatePicker').focus();
 			}
 
 			/**
@@ -655,32 +656,31 @@ module nts.uk.at.view.ksc001.b {
 
 				self.builDataForScreenC();
 
-				if(( self.selectedImplementAtrCode() == ImplementAtr.RECREATE )
-					&& self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_TARGET_ONLY ) {
-					if( !self.recreateConverter() && !self.recreateEmployeeOffWork()
-						&& !self.recreateDirectBouncer() && !self.recreateShortTimeWorkers() ) {
-						self.$dialog.error( { messageId : "Msg_1734" } ).then(() => {
-							$( '#checkBoxGroup' ).focus();
-							return;
-						});
+				if ((self.selectedImplementAtrCode() == ImplementAtr.RECREATE)
+					&& self.selectRebuildAtrCode() == ReBuildAtr.REBUILD_TARGET_ONLY) {
+					if (!self.recreateConverter() && !self.recreateEmployeeOffWork()
+						&& !self.recreateDirectBouncer() && !self.recreateShortTimeWorkers()) {
+						nts.uk.ui.dialog.error({messageId: "Msg_1734"});
+						$('.checkboxSetting').focus();
+						return;
 					}
 				}
 
-				if( self.selectedImplementAtrCode() == ImplementAtr.RECREATE
-					&& self.createAfterDeleting() ) {
-					self.$dialog.confirm({ messageId: "Msg_1735" }).then((result: 'no' | 'yes' | 'cancel') => {
-						// bussiness logic after confirmed
-						if (result === 'no') {
-							return;
-						}
-
-						if (result === 'yes') {
-							self.next().done( () => {} );
-						}
+				if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE
+					&& self.createAfterDeleting()) {
+					nts.uk.ui.dialog.confirmDanger({messageId: "Msg_1735"})
+						.ifYes(() => {
+							//goto screen C
+							self.next().done(function () {
+								$('#inputCreateMethodAtr').focus();
+							});
+						}).ifNo(() => {
+						return;
 					});
 				} else {
 					//goto screen C
-					self.next().done( function() {
+					self.next ().done ( function () {
+						$('#inputCreateMethodAtr').focus();
 					} );
 				}
 			}
@@ -754,11 +754,12 @@ module nts.uk.at.view.ksc001.b {
 				} else {
 					self.buildString();
 					self.next().done( function() {
-						if( self.kcp005EmployeeList().length > 0 && self.isHasChangeConditions() ) {
-							self.isHasChangeConditions(false);
+						$('.ccg-lbl-search-drawer').click();
+						if( self.kcp005EmployeeList().length > 0 && self.hasChangedCondition() ) {
+							self.hasChangedCondition(false);
 							self.applyKCP005ContentSearch( self.kcp005EmployeeList() );
 						} else
-							self.isHasChangeConditions(false);
+							self.hasChangedCondition(false);
 					} );
 				}
 			}
@@ -770,10 +771,18 @@ module nts.uk.at.view.ksc001.b {
 				let self = this;
 				if( self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE ) {
 					$( '#copy-start-date' ).ntsEditor( 'validate' );
+					/*self.$validate('#copy-start-date')
+					.then((valid: boolean) => {
+						return valid;
+					});*/
 				} else if( self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE
 					&& self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN
 					&& nts.uk.util.isNullOrEmpty( self.monthlyPatternCode() ) ) {
 					$( '.monthly-pattern-code' ).ntsEditor( 'validate' );
+					/*self.$validate('.monthly-pattern-code')
+					.then((valid: boolean) => {
+						return valid;
+					});*/
 				}
 				return nts.uk.ui.errors.hasError();
 			}
@@ -786,7 +795,9 @@ module nts.uk.at.view.ksc001.b {
 				if( self.isInValidCopyPasteSchedule() ) {
 					return;
 				}
-				self.previous();
+				self.previous().then( () => {
+					$('#inputCreateMethodAtr').focus();
+				});
 			}
 
 			/**
@@ -801,11 +812,12 @@ module nts.uk.at.view.ksc001.b {
 				} else {
 					let totalEmployees = self.selectedEmployeeCode().length,
 						newEmployeesIds : Array<string> = [];
+
 					_.forEach(self.selectedEmployeeCode(), (item) => {
 						let foundEmployee = _.find( self.kcp005EmployeeList(), (x) => { return x.employeeCode === item });
 						if( !_.isNil(foundEmployee) ) newEmployeesIds.push( foundEmployee.employeeId ) ;
 					});
-					console.log(newEmployeesIds);
+
 					self.employeeIds(newEmployeesIds);
 					self.lengthEmployeeSelected( self.$i18n( "KSC001_47", [ totalEmployees.toString() ] ) );
 					self.openDialogPageE();
@@ -887,14 +899,10 @@ module nts.uk.at.view.ksc001.b {
 						if( check ) {
 							// show message confirm 567
 							self.$dialog.confirm({ messageId: "Msg_567" }).then((result: 'no' | 'yes' | 'cancel') => {
-								// bussiness logic after confirmed
-								if (result === 'no') {
-									return;
-								}
-
 								if (result === 'yes') {
 									self.createByCheckMaxMonth();
-								}
+								} else
+									return;
 							});
 						} else {
 							self.createByCheckMaxMonth();
@@ -940,7 +948,7 @@ module nts.uk.at.view.ksc001.b {
 							lstLabelInfomation.push( self.$i18n( "KSC001_37" ) + self.$i18n( "KSC001_113" ) + self.$i18n( "KSC001_114" ) + self.$i18n( "KSC001_111" ) );
 							//#KSC001_37+#KSC001_111+#KSC001_114+「C2_12」+「▲」+「C2_13」
 							let monthlyPattern = self.monthlyPatternOpts().find( element => element.code == self.monthlyPatternCode() );
-							let monthlyPatternText = self.monthlyPatternCode() + self.fullSizeSpace + monthlyPattern.name;
+							let monthlyPatternText = self.monthlyPatternCode() + self.fullSizeSpace + (!_.isNil(monthlyPattern) ? monthlyPattern.name : '');
 							lstLabelInfomation.push( self.$i18n( "KSC001_37" ) + self.$i18n( "KSC001_111" ) + self.$i18n( "KSC001_114" ) + monthlyPatternText );
 							break;
 					}
@@ -965,11 +973,15 @@ module nts.uk.at.view.ksc001.b {
 					service.checkMonthMax( self.toDate( self.periodDate().startDate ) ).done( checkMax => {
 						self.$blockui("hide");
 						if( checkMax ) {
-							nts.uk.ui.dialog.confirm( { messageId : 'Msg_568' } ).ifYes( function() {
-								self.createPersonalSchedule();
-							} ).ifNo( function() {
-								return;
-							} );
+							this.$dialog.confirm({ messageId: "Msg_568" }).then((result: 'no' | 'yes' | 'cancel') => {
+								if (result === 'no') {
+									return;
+								}
+
+								if (result === 'yes') {
+									self.createPersonalSchedule();
+								}
+							});
 						} else {
 							self.createPersonalSchedule();
 						}
@@ -1000,10 +1012,8 @@ module nts.uk.at.view.ksc001.b {
 				let self = this;
 				self.savePersonalSchedule( self.toPersonalScheduleData() );
 				service.addScheduleExecutionLog( self.scheduleCollectionData() ).done( function( data ) {
-					nts.uk.ui.block.clear();
-					nts.uk.ui.windows.setShared( 'inputData', data );
-					nts.uk.ui.windows.sub.modal( "/view/ksc/001/f/index.xhtml" ).onClosed( function() {
-					} );
+					self.$window.storage( 'inputData', data );
+					self.$window.modal( "/view/ksc/001/f/index.xhtml" ).then( () => {});
 				} );
 			}
 
@@ -1017,9 +1027,9 @@ module nts.uk.at.view.ksc001.b {
 					if( dataInfo && dataInfo != null ) {
 						data = dataInfo;
 					}
-					nts.uk.ui.windows.setShared( 'reflectionSetting', self.convertPersonalScheduleToReflectionSetting( data ) );
-					nts.uk.ui.windows.sub.modal( '/view/kdl/023/b/index.xhtml' ).onClosed(() => {
-						let dto = nts.uk.ui.windows.getShared( 'returnedData' );
+					self.$window.storage( 'reflectionSetting', self.convertPersonalScheduleToReflectionSetting( data ) );
+					self.$window.modal( '/view/kdl/023/b/index.xhtml' ).then(() => {
+						let dto = self.$window.storage( 'returnedData' );
 						self.responeReflectionSetting( dto );
 					} );
 				} );
@@ -1078,24 +1088,24 @@ module nts.uk.at.view.ksc001.b {
 			 */
 			private scheduleCollectionData(): ScheduleExecutionLogSaveDto {
 				var self = this,
-					user: any = __viewContext.user,
+					user: any = self.$user,//__viewContext.user,
 					data: PersonalSchedule = self.toPersonalScheduleData(),
 					dto: ScheduleExecutionLogSaveDto = {
 						periodStartDate : self.toDate( self.periodDate().startDate ),
 						periodEndDate : self.toDate( self.periodDate().endDate ),
-						creationType : data.selectedImplementAtrCode,
-						reTargetAtr : data.selectRebuildAtrCode,
-						referenceMaster : data.creationMethodCode, //作成方法（参照先）ラベル
-						reTargetTransfer : data.recreateConverter,
-						reTargetLeave : data.recreateEmployeeOffWork,
-						reTargetShortWork : data.recreateShortTimeWorkers,
-						reTargetLaborChange : data.recreateDirectBouncer,
-						reOverwriteConfirmed : data.overwriteConfirmedData,
-						reOverwriteRevised : data.createAfterDeleting,
-						monthlyPatternId : data.monthlyPatternCode, //月間パターンラベル
-						beConfirmed : data.confirm, //confirm
+						creationType : data.selectedImplementAtrCode, //実施区分
+						reTargetAtr : data.selectRebuildAtrCode, //作り直す対象区分
+						referenceMaster : data.creationMethodCode, //作成方法ドロップダウンリスト
+						reTargetTransfer : data.recreateConverter, //異動者（指定期間で職場異動がある人）
+						reTargetLeave : data.recreateEmployeeOffWork, //休職休業者（指定期間に休職休業期間が１日でもある人）
+						reTargetShortWork : data.recreateShortTimeWorkers, //短時間勤務者
+						reTargetLaborChange : data.recreateDirectBouncer, //労働条件変更者
+						reOverwriteConfirmed : data.overwriteConfirmedData, //確定済みのスケジュールも対象とする
+						reOverwriteRevised : data.createAfterDeleting, //手修正・申請反映した日のスケジュールも対象とする
+						monthlyPatternId : data.monthlyPatternCode, //月間パターンコード
+						beConfirmed : data.confirm, //作成時の同時確定
 						creationMethod : data.checkCreateMethodAtrPersonalInfo, //作成方法区分
-						copyStartYmd : self.toDate( self.copyStartDate() ), //copyStartDate
+						copyStartYmd : self.toDate( self.copyStartDate() ), //コピー開始日
 						employeeIds : self.employeeIds(),
 						employeeIdLogin : user.employeeIdLogin
 					};
@@ -1148,12 +1158,7 @@ module nts.uk.at.view.ksc001.b {
 			//get personal infor from local storage
 			private displayPersonalInfor() {
 				let self = this;
-				let user: any = __viewContext.user;
-				/*let isAttendance = user.role.isInCharge.attendance;
-				if( !isAttendance ) {
-					self.isConfirmedCreation(false);
-					self.overwriteConfirmedData(false);
-				}*/
+				let user: any = self.$user;//__viewContext.user;
 
 				self.findPersonalScheduleByEmployeeId( user.employeeId ).done(( data ) => {
 					if( typeof data !== 'undefined' && data ) {
