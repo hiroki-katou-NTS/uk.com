@@ -91,12 +91,16 @@ module nts.uk.at.view.ksm005.a {
 		                self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked());
                         self.enableDelete(true);
 	                    self.enableUpdate(true);
+                        $('#inp_monthlyPatternName').focus();
                     } else {
-                        self.resetData().then(() => blockUI.invisible());
+                        self.resetData().then(() => {
+                            blockUI.clear();
+                            self.clearValiate();
+                        });
                         self.enableDelete(false);
 	                    self.enableUpdate(false);
+                        $('#inp_monthlyPatternCode').focus();
                     }
-                    $('#inp_monthlyPatternName').focus();
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
@@ -374,13 +378,16 @@ module nts.uk.at.view.ksm005.a {
              */
             public resetData(): JQueryPromise<any> {
                 const self = this;
+                if(self.selectMonthlyPattern() == '') {
+                    $('#inp_monthlyPatternCode').focus();
+                }
                 if (self.isBuild) {
                     self.clearValiate();
                 }
                 let dfd = $.Deferred();
                 self.modeMonthlyPattern(ModeMonthlyPattern.ADD);
                 self.yearMonthPicked(self.getMonth());
-                self.monthlyPatternModel().resetData();   
+                self.monthlyPatternModel().resetData();
                 let dataUpdate: WorkMonthlySettingDto[] = [];
                 for (let item of self.lstWorkMonthlySetting()) {
                     item.workTypeCode='';
