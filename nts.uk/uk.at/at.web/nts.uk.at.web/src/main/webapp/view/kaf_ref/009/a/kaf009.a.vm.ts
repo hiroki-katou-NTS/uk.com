@@ -228,6 +228,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             let dataClone = _.clone(vm.dataFetch());
             if (!_.isNull(dataClone)) {
                 vm.dataFetch(dataClone);
+                vm.dataFetch().appDispInfoStartup = vm.appDispInfoStartupOutput;
                 return;
             }
             vm.$blockui( "show" );
