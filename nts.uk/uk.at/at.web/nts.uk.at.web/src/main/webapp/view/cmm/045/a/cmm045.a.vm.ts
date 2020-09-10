@@ -24,14 +24,14 @@ module cmm045.a.viewmodel {
         selectedIds: KnockoutObservableArray<any> = ko.observableArray([1,5]);// check box - ver50
         dateValue: KnockoutObservable<vmbase.Date> = ko.observable({ startDate: '', endDate: '' });
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
+        // selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
         mode: KnockoutObservable<number> = ko.observable(1);
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
 
         //spr
         isSpr: KnockoutObservable<boolean> = ko.observable(false);
-        extractCondition: KnockoutObservable<number> = ko.observable(0);
+        // extractCondition: KnockoutObservable<number> = ko.observable(0);
         //ver33
         isHidden: KnockoutObservable<boolean> = ko.observable(false);
         //_______CCG001____
@@ -157,6 +157,8 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
+					self.appListExtractConditionDto = data.appListExtractCondition;
+					self.updateFromAppListExtractCondition();
 					let newItemLst = [];
 					_.each(data.appLst, item => {
 						newItemLst.push(new vmbase.DataModeApp(item));
@@ -268,6 +270,8 @@ module cmm045.a.viewmodel {
 
 			block.invisible();
 			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
+				self.appListExtractConditionDto = data.appListExtractCondition;
+				self.updateFromAppListExtractCondition();
 				let newItemLst = [];
 				_.each(data.appListInfo.appLst, item => {
 					newItemLst.push(new vmbase.DataModeApp(item));
@@ -299,33 +303,34 @@ module cmm045.a.viewmodel {
             let self = this;
             var dfd = $.Deferred();
             //get param url
-            let url = $(location).attr('search');
-            let urlParam: number = 0;
+            /*let url = $(location).attr('search');
+            let urlParam: number = undefined;
 			if(_.isUndefined(url.split("=")[1])) {
 				history.pushState({}, null, "?a=0");
 			} else {
 				urlParam = parseInt(url.split("=")[1]);
-			}
-            let characterData = null;
-            let appCHeck = null;
-            if (urlParam !== undefined) {
+			}*/
+            // let characterData = null;
+            // let appCHeck = null;
+            /*if (urlParam !== undefined) {
                 character.save('AppListExtractCondition', null);
-            }
+            }*/
             //get param spr
             let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ?
                     null : __viewContext.transferred.value.PARAM_SPR_CMM045;
             //spr call
             if(paramSprCmm045 !== undefined && paramSprCmm045 !== null){
-                character.save('AppListExtractCondition', null);
+                // character.save('AppListExtractCondition', null);
                 let date: vmbase.Date = { startDate: paramSprCmm045.startDate, endDate: paramSprCmm045.endDate }
                 self.dateValue(date);
                 self.mode(paramSprCmm045.mode);
                 self.isSpr(true);
-                self.extractCondition(paramSprCmm045.extractCondition);
+                // self.extractCondition(paramSprCmm045.extractCondition);
             }
             character.restore("AppListExtractCondition").then((obj) => {
-				characterData = obj;
+				// characterData = obj;
                 if (obj !== undefined && obj !== null && !self.isSpr()) {
+					self.appListExtractConditionDto = obj;
 					self.updateFromAppListExtractCondition();
                     /*let date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
                     self.dateValue(date);
@@ -350,12 +355,23 @@ module cmm045.a.viewmodel {
                     }*/
 //                    self.selectedRuleCode(obj.appDisplayAtr);
                     //combo box
-                    appCHeck = obj.appType;
+                    // appCHeck = obj.appType;
                     // self.lstSidFilter(obj.opListEmployeeID);
 					// self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map((x: any) => x.appType).value());
+					character.remove('AppListExtractCondition');
                 }
+				let url = $(location).attr('search');
+	            let urlParam: number = undefined;
+				if(!_.isUndefined(url.split("=")[1])) {
+					urlParam = parseInt(url.split("=")[1]);
+				}
                 if (urlParam === undefined && !self.isSpr()) {
-                    self.mode(characterData.appListAtr);
+					if (obj !== undefined && obj !== null) {
+						self.mode(obj.appListAtr);	
+					} else {
+						self.mode(1);
+					}
+					history.pushState({}, null, "?a="+self.mode());
                 }
                 if(urlParam !== undefined && !self.isSpr()){
                     self.mode(urlParam);
@@ -376,7 +392,9 @@ module cmm045.a.viewmodel {
 //                            };
 				return service.getAppNameInAppList();
 			}).then((data: any) => {
-                self.appListExtractConditionDto.opListOfAppTypes = data;
+				if(_.isEmpty(self.appListExtractConditionDto.opListOfAppTypes)) {
+					self.appListExtractConditionDto.opListOfAppTypes = data;	
+				}
 				self.updateFromAppListExtractCondition();
 				// self.selectedAppId(_.chain(self.appListExtractConditionDto.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
                 _.forEach(data, item => {
@@ -386,11 +404,11 @@ module cmm045.a.viewmodel {
                 });
                 _.uniqBy(self.itemApplication(), ['appType', 'appName']);
 				let newParam = {
-							mode: self.mode(),
-							device: 0,
-							listOfAppTypes: data,
-							appListExtractCondition: self.appListExtractConditionDto
-                        };
+					mode: self.mode(),
+					device: 0,
+					listOfAppTypes: data,
+					appListExtractCondition: self.appListExtractConditionDto
+                };
 
                 // self.itemList()
 				return service.getApplicationList(newParam);
@@ -418,7 +436,7 @@ module cmm045.a.viewmodel {
 //                let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
 //                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
 //                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-                character.save('AppListExtractCondition', self.appListExtractConditionDto);
+                // character.save('AppListExtractCondition', self.appListExtractConditionDto);
 //                _.each(data.lstApp, function(app) {
 //                    self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
 //                        app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
@@ -461,13 +479,13 @@ module cmm045.a.viewmodel {
                     let colorBackGr = self.fillColorbackGr();
                     self.reloadGridApplicaion(colorBackGr, self.isHidden());
                 }
-                if(appCHeck != null){
+                /*if(appCHeck != null){
                     self.selectedCode(appCHeck);
                 }
                 if(self.isSpr()){
                     let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
                     self.selectedCode(selectedType);
-                }
+                }*/
                 // if(self.mode() == 0){
                     $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                 // }
@@ -855,7 +873,8 @@ module cmm045.a.viewmodel {
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
                         let lstAppId = self.items().map(app => app.appID);
-                        window.localStorage.setItem('UKProgramParam', 'a=0');
+                        // window.localStorage.setItem('UKProgramParam', 'a=0');
+						character.save('AppListExtractCondition', self.appListExtractConditionDto);
                         nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
@@ -954,7 +973,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let result = [];
             _.each(self.items(), function(item) {
-                let rowId = item.appId;
+                let rowId = item.appID;
                 // //fill color in 承認状況
                 // if (item.appStatusNo == 0) {//0 下書き保存/未反映　=　未
                 //     item.appStatusName = 'unapprovalCell';
@@ -1019,7 +1038,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let result = [];
             _.each(self.items(), function(item) {
-                let rowId = item.appId;
+                let rowId = item.appID;
                 //fill color in 承認状況
                 // if (item.appStatusNo == 5) {//5 -UNAPPROVED 未
                 //     item.appStatusName = 'unapprovalCell';
@@ -1087,18 +1106,18 @@ module cmm045.a.viewmodel {
                 //color text appDate
                 let color = item.appDate.substring(9,10);
                 if (color == '土') {//土
-                    result.push(new vmbase.TextColor(item.appId,'appDate','saturdayCell'));
+                    result.push(new vmbase.TextColor(item.appID,'appDate','saturdayCell'));
                 }
                 if (color == '日') {//日
-                    result.push(new vmbase.TextColor(item.appId,'appDate','sundayCell'));
+                    result.push(new vmbase.TextColor(item.appID,'appDate','sundayCell'));
                 }
                 //fill color text input date
                 let colorIn = item.inputDate.substring(9,10);
                 if (colorIn == '土') {//土
-                    result.push(new vmbase.TextColor(item.appId,'inputDate','saturdayCell'));
+                    result.push(new vmbase.TextColor(item.appID,'inputDate','saturdayCell'));
                 }
                 if (colorIn == '日') {//日
-                    result.push(new vmbase.TextColor(item.appId,'inputDate','sundayCell'));
+                    result.push(new vmbase.TextColor(item.appID,'inputDate','sundayCell'));
                 }
              });
             return result;
@@ -1119,7 +1138,8 @@ module cmm045.a.viewmodel {
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
                         let lstAppId = self.items().map(app => app.appID);
-                        nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+                        // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+						character.save('AppListExtractCondition', self.appListExtractConditionDto);
                         nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },

@@ -74,14 +74,12 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
         created(listAppMeta: Array<string>, currentApp: string) {
             const vm = this;
-			nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
+			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
                 if (nts.uk.util.isNullOrUndefined(obj)) {
                     vm.displayGoback(false);
                 } else {
                     vm.displayGoback(true);
                 }
-            }).fail(() => {
-                vm.displayGoback(false);
             });
             vm.listApp(__viewContext.transferred.value.listAppMeta);
             vm.currentApp(__viewContext.transferred.value.currentApp);
@@ -354,14 +352,16 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         }
 
 		backtoCMM045() {
-			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+			const vm = this;
+			vm.$jump("at", "/view/cmm/045/a/index.xhtml");
+			/*nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
                 let paramUrl = 0;
                 if (obj !== undefined && obj !== null){
                     paramUrl = obj.appListAtr;
                 }
                 nts.uk.localStorage.setItem('UKProgramParam', 'a=' + paramUrl);
                 nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-            });	
+            });	*/
 		}
     }
 
