@@ -183,11 +183,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             self.bindStart();
             self.$mask('hide');
         }).catch((err: any) => {
-            self.handleErrorMessage(err).then((res: any) => {
-                if (err.messageId == 'Msg_43') {
-                    self.$goto('ccg008a');
-                }
-            });
+            self.handleErrorMessage(err);
         });
     }
 
