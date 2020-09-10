@@ -41,11 +41,13 @@ public class CompanyApproverHistoryChangeDomainService {
 	public static interface Require {
 		/**
 		 * [R-1] 直前の履歴を取得する Get previous history
+		 * 会社別の承認者（36協定）Repository.指定終了日の履歴を取得する(会社ID,終了日)
 		 */
 		Optional<Approver36AgrByCompany> getPrevHistory(GeneralDate endDate);
 
 		/**
 		 * [R-2] 履歴を変更する Change history
+		 * 会社別の承認者（36協定）Repository.Update(会社別の承認者（36協定）)
 		 */
 		void changeHistory(Approver36AgrByCompany hist);
 	}
