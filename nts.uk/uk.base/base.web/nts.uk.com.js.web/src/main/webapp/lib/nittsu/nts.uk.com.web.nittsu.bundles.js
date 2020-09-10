@@ -48695,7 +48695,7 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
-var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
+var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
     if (arguments.length === 2) {
         // setter method
         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
@@ -48727,7 +48727,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         return $.Deferred().resolve()
             .then(function () { return $storeSession(OPENWD); })
             .then(function (value) {
-            nts.uk.localStorage.removeItem(OPENWD);
+            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
             return value;
         });
     }

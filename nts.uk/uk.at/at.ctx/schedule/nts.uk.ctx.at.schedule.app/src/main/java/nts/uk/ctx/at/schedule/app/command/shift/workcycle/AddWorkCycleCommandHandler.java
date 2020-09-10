@@ -6,11 +6,10 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.command.AddWorkCycleCommand;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.DailyPatternRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RegisterWorkCycleService;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleCreateResult;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
@@ -33,7 +32,7 @@ import java.util.Optional;
 public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWorkCycleCommand, WorkCycleCreateResult> {
 
     @Inject
-    private WorkCycleRepository workCycleRepository;
+    private DailyPatternRepository workCycleRepository;
 
     @Inject
     private BasicScheduleService basicScheduleService;
@@ -67,7 +66,7 @@ public class AddWorkCycleCommandHandler extends CommandHandlerWithResult<AddWork
     private class RegisterWorkCycleServiceImlp implements RegisterWorkCycleService.Require {
         private final String companyId = AppContexts.user().companyId();
 
-        WorkCycleRepository workCycleRepository;
+        DailyPatternRepository workCycleRepository;
 
         private BasicScheduleService service;
 

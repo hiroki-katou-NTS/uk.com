@@ -328,6 +328,10 @@ public class CreateOrderInfoFileQuery {
             for(BentoReservation reservation : handlerReservation){
                 for(BentoReservationDetail detail : reservation.getBentoReservationDetails()){
                     Bento bento = bentoMenuRepository.getBento(companyID, reservation.getReservationDate().getDate(), detail.getFrameNo());
+
+                    // Bento is deleted
+                    if (bento == null) continue;
+
                     if(map.get(bento) == null){
                         map.put(bento,new ArrayList<BentoReservationInfoForEmpDto>(){{
                             add(BentoReservationInfoForEmpDto.changeQuantity(item, detail.getBentoCount().v()));

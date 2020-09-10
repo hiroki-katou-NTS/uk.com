@@ -13,6 +13,7 @@ import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 
+
 /**
  *  勤務サイクルの適用イメージを作成する
  */

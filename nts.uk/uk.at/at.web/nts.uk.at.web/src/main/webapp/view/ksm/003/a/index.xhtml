@@ -9,7 +9,7 @@
     <ui:define name="htmlHead">
         <com:scriptfile set="IGNITE"/>
         <com:ValidatorScript>
-            nts.uk.ctx.at.schedule.dom.shift.pattern.daily.Days
+            nts.uk.ctx.at.schedule.dom.shift.workcycle.NumOfWorkingDays
             nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode
             nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleName
         </com:ValidatorScript>
@@ -25,7 +25,7 @@
             <!-- B1_2: Button Registration -->
             <button tabindex="2" id="btn_002"
                     class="button proceed separate-button fix-button"
-                    data-bind="click:saveWorking, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
+                    data-bind="click: saveWorking, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_21')}</button>
             <!-- B1_3: Button Display pattern -->
             <button tabindex="3" id="btn_005"
                     class="button separate-button fix-button"
@@ -40,8 +40,6 @@
         <div id="content-area" class="ksm003-content-area">
             <div id="left-content" style="float: left" class="bg-green caret-right caret-background">
                 <div style="float: left; margin: 20px">
-                    <!-- B3_1: Label -->
-                    <div style="margin-bottom: 20px" data-bind="ntsFormLabel: {}">#{i18n.getText('KSM003_23')}</div>
                     <!-- B2_2: List Divergence Reason -->
                     <table tabindex="6" id="single-list"
                            data-bind="ntsGridList:{
@@ -118,7 +116,7 @@
                                     <td><span data-bind="text: workTypeInfo"></span></td>
                                     <td><span data-bind="text: workingInfo"></span></td>
                                     <td><input tabindex="-1" class="nts-editor"
-                                               data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'Days', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }"
+                                               data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: {value: days, constraint: 'NumOfWorkingDays', required: $parent.dayIsRequired(), name: '#[KSM003_3]' }"
                                                style="width: 20px; text-align: center;"/> #{i18n.getText('KSM003_33')}
                                     </td>
                                 </tr>
