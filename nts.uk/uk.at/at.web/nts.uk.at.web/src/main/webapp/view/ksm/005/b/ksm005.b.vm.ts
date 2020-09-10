@@ -40,6 +40,7 @@ module nts.uk.at.view.ksm005.b {
             hasNonStatutoryHolidays: KnockoutObservable<boolean> = ko.observable(false);
             hasLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);
             visibleHolidaySetting: KnockoutObservable<boolean> = ko.observable(false);
+            visibleHrLine: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 const self = this;
@@ -76,6 +77,7 @@ module nts.uk.at.view.ksm005.b {
                         self.visibleHolidaySetting(false);
                     }
                 });
+
                 // Init
                 $(".popup-b72").ntsPopup({
                     trigger: ".showDialogB72",

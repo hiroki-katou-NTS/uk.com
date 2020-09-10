@@ -23,7 +23,7 @@ module nts.uk.at.view.ksm005.a {
 
             yearMonthPicked: KnockoutObservable<number>;
             cssRangerYM: any;
-            optionDates: KnockoutObservableArray<CalendarItem>;
+            optionDates: KnockoutObservableArray<CalendarItem> = ko.observableArray([]);
             firstDay: number;
             yearMonth: KnockoutObservable<number>;
             startDate: number;
@@ -73,7 +73,7 @@ module nts.uk.at.view.ksm005.a {
                 self.yearMonthPicked.extend({ notify: 'always' });
                 self.currentMonthlyPattern = ko.observable(0); //keep before change
 
-                self.monthlyPatternModel().name.subscribe((value: string) => {
+                self.monthlyPatternModel().name.subscribe(() => {
                     const mvm = new ko.ViewModel();
 
                     mvm.$validate('#inp_monthlyPatternName');
@@ -102,6 +102,10 @@ module nts.uk.at.view.ksm005.a {
                         $('#inp_monthlyPatternCode').focus();
                     }
                 });
+
+                self.optionDates.subscribe((data) => {
+                    console.log(data)
+                });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
                     if($('#yMPicker').ntsError('hasError')){
@@ -115,8 +119,8 @@ module nts.uk.at.view.ksm005.a {
 
                     if (self.modeMonthlyPattern() == ModeMonthlyPattern.ADD){
                         service.getItemOfMonth(self.selectMonthlyPattern(), month).done(function(data) {
-                            var dataUpdate: WorkMonthlySettingDto[] = [];
-                            for (var item of data) {
+                            let dataUpdate: WorkMonthlySettingDto[] = [];
+                            for (let item of data) {
                                 item.workTypeCode='';
                                 item.workTypeName = '';
                                 item.workingCode='';
@@ -181,19 +185,19 @@ module nts.uk.at.view.ksm005.a {
                 // mode ADD
                 if(self.modeMonthlyPattern() == ModeMonthlyPattern.ADD){
                     service.findByIdMonthlyPattern(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3)).done(function(data){
-                       if(data && data.code){
-                           $('#inp_monthlyPatternCode').ntsError('set', {messageId: 'Msg_3'});
-                           return;
-                       }else {
-                           self.openDialogBacthSetting();
-                       }
+                        if(data && data.code){
+                            $('#inp_monthlyPatternCode').ntsError('set', {messageId: 'Msg_3'});
+                            return;
+                        }else {
+                            self.openDialogBacthSetting();
+                        }
                     });
                 } else {
                     self.openDialogBacthSetting();
                 }
-                
+
             }
-            
+
             /**
              * open batch setting E
              */
@@ -447,55 +451,7 @@ module nts.uk.at.view.ksm005.a {
                 };
                 return dto;
             }
-            /**
-             * open dialog KDL003 by find date
-             */
-            public openDialogByFindDate(date: string): void {
-                const self = this;
-                let dto: WorkMonthlySettingDto = self.findByDate(date);
-                if (dto != null) {
-                    nts.uk.ui.windows.setShared('parentCodes', {
-                        selectedWorkTypeCode: dto.workTypeCode,
-                        selectedWorkTimeCode: dto.workingCode
-                    }, true);
-                } else {
-                    dto = self.toDefaultWorkMonthlySetting(date);
-                    nts.uk.ui.windows.setShared('parentCodes', {
-                        selectedWorkTypeCode: '',
-                        selectedWorkTimeCode: ''
-                    }, true);
-                }
 
-                nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
-                    let childData = nts.uk.ui.windows.getShared('childData');
-                    if (childData) {
-                        dto.workTypeCode = childData.selectedWorkTypeCode;
-                        dto.workTypeName = childData.selectedWorkTypeName;
-                        dto.workingCode = childData.selectedWorkTimeCode;
-                        dto.workingName = childData.selectedWorkTimeName;
-                        self.updateWorkMonthlySettingClose(dto);
-                    }
-                });
-            }
-
-            
-            /**
-             * update work monthly setting by close dialog KDL003
-             */
-            public updateWorkMonthlySettingClose(setting: WorkMonthlySettingDto): void{
-                const self = this;
-                let dataUpdate: WorkMonthlySettingDto[] = [];
-                for(let item of self.lstWorkMonthlySetting()){
-                    if(item.ymdk == moment(setting.ymdk, "YYYY-MM-DD").format("YYYY/MM/DD")){
-                        setting.ymdk = moment(setting.ymdk, "YYYY-MM-DD").format("YYYY/MM/DD");
-                        dataUpdate.push(setting);
-                    } else {
-                        dataUpdate.push(item);
-                    }
-                }
-                self.lstWorkMonthlySetting(dataUpdate);
-                self.updateWorkMothlySetting(dataUpdate);
-            } 
              /**
              * clear validate client
              */
@@ -509,7 +465,7 @@ module nts.uk.at.view.ksm005.a {
              * validate client by action click
              */
             public validateClient(): boolean {
-                var self = this;
+                const self = this;
                 self.clearValiate();
                 $("#inp_monthlyPatternCode").ntsEditor("validate");
                 $("#inp_monthlyPatternName").ntsEditor("validate");
@@ -557,6 +513,7 @@ module nts.uk.at.view.ksm005.a {
              */
             public deleteMonthlyPattern(): void {
                 const self = this;
+
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     service.deleteMonthlyPattern(self.monthlyPatternModel().code()).done(function() {
                          nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function(){
@@ -581,6 +538,7 @@ module nts.uk.at.view.ksm005.a {
 	         */
 	        public openDialogKDL03(): void {
 		        const self = this;
+
 		        nts.uk.ui.windows.setShared('parentCodes', {
 			        selectedWorkTypeCode: self.typeOfWorkCode(),
 			        selectedWorkTimeCode: self.workingHoursCode()
@@ -588,6 +546,7 @@ module nts.uk.at.view.ksm005.a {
 
 		        nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
 			        let childData = nts.uk.ui.windows.getShared('childData');
+
 			        service.getWorkStyle(childData.selectedWorkTypeCode, childData.selectedWorkTimeCode).done(data => {
                         if(data.typeColor == TypeColor.HOLIDAY  ) {
                             self.workStyle = TypeColor.HOLIDAY_COLOR
@@ -597,6 +556,7 @@ module nts.uk.at.view.ksm005.a {
                             self.workStyle = TypeColor.HALF_DAY_WORK_COLOR
                         }
                     });
+
 			        if (childData) {
 				        self.typeOfWorkCode(childData.selectedWorkTypeCode);
 				        self.typeOfWorkName(childData.selectedWorkTypeName);
@@ -643,20 +603,35 @@ module nts.uk.at.view.ksm005.a {
 		        });
 	        }
 
-	        private clearWorkMothly() {
-	            let self = this;
-		        nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-		            if (self.isBuild)  self.clearValiate();
-		            self.clearCalendar();
-		        }).ifNo(function() {
-			        return;
-		        })
-	        }
+            private clearWorkMothly() {
+                let self = this;
+
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+
+                    if (self.isBuild)  self.clearValiate();
+
+                    let dataUpdate: WorkMonthlySettingDto[] = [];
+                    for (let item of self.lstWorkMonthlySetting()) {
+                        item.workTypeCode ='';
+                        item.workTypeName = '';
+                        item.workingCode ='';
+                        item.workingName = '';
+                        item.typeColor = TypeColor.HOLIDAY;
+                        dataUpdate.push(item);
+                    }
+                    self.lstWorkMonthlySetting(dataUpdate);
+                    self.updateWorkMothlySetting(dataUpdate);
+                    //self.enableDelete(false);
+                    //self.enableUpdate(false);
+
+                }).ifNo(function() {
+                    return;
+                })
+            }
 
 	        /*
                 setting date Wokring Day Atr event
             */
-
 	        private setWorkingDayAtr(date){
 		        let vm = this;
 		        if(vm.typeOfWorkCode()) {
@@ -673,6 +648,7 @@ module nts.uk.at.view.ksm005.a {
                     } else {
                         optionDates.push(new CalendarItem(date, vm.workStyle, vm.typeOfWorkName(),  vm.workingHoursName(), true))
                     }
+
                     if( dataUpdate && i > -1 && !empty.isNullOrEmpty(vm.typeOfWorkCode()) ) {
                         dataUpdate[i].workTypeCode = vm.typeOfWorkCode();
                         dataUpdate[i].workTypeName = vm.typeOfWorkName();
@@ -697,6 +673,7 @@ module nts.uk.at.view.ksm005.a {
                             workingName: vm.workingHoursName()
                         })
                     }
+
                     vm.lstWorkMonthlySetting(dataUpdate);
                     optionDates.valueHasMutated();
                 }
@@ -731,7 +708,7 @@ module nts.uk.at.view.ksm005.a {
 	         */
 	        private convertWorktypeSetting(use: number, worktypeCode: string): DayOffSetting {
 		        let data: DayOffSetting = {
-			        useClassification: use,
+			        useClassification: !!use,
 			        workTypeCode: worktypeCode
 		        };
 		        return data;
