@@ -627,9 +627,9 @@ module nts.uk.at.view.ksm005.a {
 				        selectedPatternCd: '',
 				        patternStartDate: startDate,
 				        reflectionMethod: 1,
-				        statutorySetting: self.convertWorktypeSetting(0, ''),
-				        holidaySetting: self.convertWorktypeSetting(0, ''),
-				        nonStatutorySetting: self.convertWorktypeSetting(0, '')
+				        statutorySetting: self.convertWorktypeSetting(true, ''),
+				        holidaySetting: self.convertWorktypeSetting(true, ''),
+				        nonStatutorySetting: self.convertWorktypeSetting(true, '')
 			        };
 		        nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(dataMonthly));
 		        nts.uk.ui.windows.sub.modal('/view/kdl/023/a/index.xhtml').onClosed(() => {
@@ -727,7 +727,7 @@ module nts.uk.at.view.ksm005.a {
             /**
 	         * convert work type setting
 	         */
-	        private convertWorktypeSetting(use: number, worktypeCode: string): DayOffSetting {
+	        private convertWorktypeSetting(use: boolean, worktypeCode: string): DayOffSetting {
 		        let data: DayOffSetting = {
 			        useClassification: use,
 			        workTypeCode: worktypeCode

@@ -29,6 +29,7 @@
 							<div class="pull-left width-40 exec-mode" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>
 							<!--A1_37-->
 							<div  id="daterangepicker" class="kdl023-daterange pull-left exec-mode" tabindex="1" data-bind="ntsDateRangePicker: {
+								name: 'kdl023-daterangepicker',
 								required: true,
 								enable: true,
 								showNextPrevious: false,
@@ -150,7 +151,7 @@
 												value: workTypeCode,
 												enable: useClassification,
 												columns: [
-													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'workTypeCode', length: 4 },
 													{ prop: 'name', length: 5 },
 												]}">
 									</div>
@@ -168,7 +169,7 @@
 												value: workTypeCode,
 												enable: useClassification,
 												columns: [
-													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'workTypeCode', length: 4 },
 													{ prop: 'name', length: 5 },
 												]}">
 									</div>
@@ -186,7 +187,7 @@
 												value: workTypeCode,
 												enable: useClassification,
 												columns: [
-													{ prop: 'workTypeCode', length: 3 },
+													{ prop: 'workTypeCode', length: 4 },
 													{ prop: 'name', length: 5 },
 												]}">
 									</div>
@@ -195,7 +196,7 @@
 								<!--p class="control-group priority">#{i18n.getText('KDL023_9')}</p-->
 							</div>
 						<!--A1_34-->
-						<div class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
+						<div id="kdl023-holiday-warning-label" class="label warning kdl023-warning" style="font-size: 14px">#{i18n.getText('KDL023_9')}</div>
 						</com:ko>
 						<button tabindex="9" class="btn-apply-setting caret-right calc-margin auto-height" data-bind="click: onBtnApplySettingClicked">
 							<span class="reflection-btn-text" data-bind="text: buttonReflectPatternText()"></span>
