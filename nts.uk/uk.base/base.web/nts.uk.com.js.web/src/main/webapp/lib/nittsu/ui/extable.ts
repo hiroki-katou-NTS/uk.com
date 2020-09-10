@@ -3965,7 +3965,11 @@ module nts.uk.ui.exTable {
                 || minute > MINUTE_MAX) return false;
             let targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
             if (!targetTime) return false;
-            if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0) return false;
+            let compareMax = compare(targetTime, maxTime);
+            let compareMin = compare(targetTime, minTime);
+            if (compareMax > 0 || compareMin < 0) return false;
+            if ((targetTime.negative && maxTime.negative && compareMax === 0)
+                || (targetTime.negative && minTime.negative && compareMin === 0)) return false;
             return true; 
         }
         
@@ -5321,7 +5325,11 @@ module nts.uk.ui.exTable {
         export function setHeight($container: HTMLElement, height: any) {
             selector.queryAll($container, "div[class*='" + BODY_PRF + "']").forEach(function(e) {
                 if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)) return;
-                e.style.height = height + "px";
+                if (e.classList.contains(BODY_PRF + LEFTMOST)) {
+                    e.style.height = `${height - helper.getScrollWidth()}px`;
+                } else {
+                    e.style.height = height + "px";
+                }
             });
             
             let cHeight = 0, showCount = 0;
