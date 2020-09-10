@@ -133,17 +133,6 @@ module nts.uk.at.view.ksu001.jb.viewmodel {
             let self = this, index: number = param();
 
             self.selectedLinkButton(index);
-            //             if (self.isAllowCheckChanged && self.isChanged()) {
-            //                 nts.uk.ui.dialog.confirm({ messageId: "Msg_447" }).ifYes(() => {
-            //                     $.when(self.saveData()).done(() => {
-            //                         self.handleClickButton(index);
-            //                     });
-            //                 }).ifNo(() => {
-            //                     self.handleClickButton(index);
-            //                 });
-            //             } else {
-            //                 self.handleClickButton(index);
-            //            } 
             self.handleClickButton(index);
             self.isAllowCheckChanged = true;
             if (self.dataSource()[self.selectedLinkButton()] == null) {

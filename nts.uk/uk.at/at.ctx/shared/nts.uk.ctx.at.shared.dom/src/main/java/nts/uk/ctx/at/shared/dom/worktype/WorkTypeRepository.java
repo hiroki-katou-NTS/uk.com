@@ -349,5 +349,7 @@ public interface WorkTypeRepository {
 	
 	List<WorkType> findByCidAndWorkTypeCodes(String companyId, List<String> workTypeCodes);
 	
+	List<WorkType> getAllWorkTypeNotAbolished(String companyId);
+	
 	
 }

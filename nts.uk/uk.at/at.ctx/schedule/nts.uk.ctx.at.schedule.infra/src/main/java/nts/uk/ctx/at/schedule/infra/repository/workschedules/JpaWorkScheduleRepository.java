@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.workschedules;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -30,6 +32,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 
 	private static final String SELECT_BY_KEY = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
+	private static final String SELECT_BY_LIST = "SELECT c FROM KscdtSchBasicInfo c WHERE c.pk.sid IN :sids AND (c.pk.ymd >= :startDate AND c.pk.ymd <= :endDate) ";
+	
 	private static final String SELECT_CHECK_UPDATE = "SELECT count (c) FROM KscdtSchBasicInfo c WHERE c.pk.sid = :employeeID AND c.pk.ymd = :ymd";
 
 	@Override
@@ -40,6 +44,15 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 		return workSchedule;
 	}
 
+	@Override
+	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
+		List<WorkSchedule> result = this.queryProxy().query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
+				.setParameter("sids", sids)
+				.setParameter("startDate", period.start())
+				.setParameter("endDate", period.end()).getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
+		return result;
+	}
+	
 	@Override
 	public boolean checkExits(String employeeID, GeneralDate ymd) {
 		return this.queryProxy().query(SELECT_CHECK_UPDATE, Long.class).setParameter("employeeID", employeeID)

@@ -44,6 +44,8 @@ public interface WorkScheduleRepository {
 
 	boolean checkExits(String employeeID, GeneralDate ymd);
 
+	List<WorkSchedule> getList(List<String> sids, DatePeriod period);
+
 	Optional<ShortTimeOfDailyAttd> getShortTime(String sid, GeneralDate ymd, int childCareAtr, int frameNo);
 
 	void insert(ShortWorkingTimeSheet shortWorkingTimeSheets, String sID, GeneralDate yMD, String cID);

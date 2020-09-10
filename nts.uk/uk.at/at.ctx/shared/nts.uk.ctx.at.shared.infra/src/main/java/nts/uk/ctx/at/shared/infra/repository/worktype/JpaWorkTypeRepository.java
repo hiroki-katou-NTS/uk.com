@@ -45,6 +45,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
+	
+	private static final String SELECT_ALL_WORKTYPE_BY_CID = SELECT_FROM_WORKTYPE
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.deprecateAtr = 0"
+			+ " ORDER BY c.kshmtWorkTypePK.workTypeCode ASC";
 
 	private static final String SELECT_WORKTYPE_BY_LEAVE_ABSENCE = SELECT_FROM_WORKTYPE
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId AND c.oneDayAtr=12"
@@ -884,5 +888,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				.setParameter("companyId", companyId)
 				.setParameter("workTypeCodes", workTypeCodes)
 				.getList(x -> toDomain(x));
+	}
+
+	@Override
+	public List<WorkType> getAllWorkTypeNotAbolished(String companyId) {
+		return this.queryProxy().query(SELECT_ALL_WORKTYPE_BY_CID, KshmtWorkType.class).setParameter("companyId", companyId)
+				.getList(c -> toDomain(c));
 	}
 }
