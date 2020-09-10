@@ -584,10 +584,29 @@ export class KafS07AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
+                self.$mask('hide');
                 self.data.appWorkChangeDispInfo = res.data;
                 self.bindStart();
-                let opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
+                let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
+                recordDate = self.appDispInfoStartupOutput.appDispInfoNoDateOutput.applicationSetting.recordDate,
+                opErrorFlag = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag,
                 msgID = '';
+                if (useDivision == 0) {
+                    self.$modal.error('Msg_323').then(() => {
+                        if (recordDate == 0) {
+                            self.$goto('ccg008a');   
+                        }
+                    });
+                    if (recordDate == 0) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            
+                if (_.isNull(opErrorFlag)) {
+                    return true;    
+                }
                 switch (opErrorFlag) {
                     case 1:
                         msgID = 'Msg_324';
@@ -600,11 +619,18 @@ export class KafS07AComponent extends KafS00ShrComponent {
                         break;
                     default: 
                         break;
-                }  
-                if (!_.isEmpty(msgID)) { 
-                    self.$modal.error({ messageId: msgID });
                 }
-                self.$mask('hide');
+                if (_.isEmpty(msgID)) { 
+                    return true;
+                }
+                self.$modal.error({ messageId: msgID }).then(() => {
+                    if (recordDate == 0) {
+                        self.$goto('ccg008a');    
+                    }    
+                });
+
+                return false;
+                
             })
             .catch((res: any) => {
                 self.handleErrorMessage(res).then((msgId: any) => {
