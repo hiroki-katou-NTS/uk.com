@@ -584,6 +584,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
+                self.$mask('hide');
                 self.data.appWorkChangeDispInfo = res.data;
                 self.bindStart();
                 let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
@@ -619,7 +620,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     default: 
                         break;
                 }
-                self.$mask('hide');
                 if (_.isEmpty(msgID)) { 
                     return true;
                 }
