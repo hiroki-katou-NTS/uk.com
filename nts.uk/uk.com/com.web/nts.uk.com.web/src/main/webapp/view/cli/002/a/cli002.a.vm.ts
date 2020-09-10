@@ -70,8 +70,6 @@ module nts.uk.com.view.cli002.a {
             vm.selectedSystemCode.subscribe((newValue) => {
                 vm.getData(newValue);
             });
-
-            vm.getItemList();
         }
 
         public register() {
@@ -81,7 +79,9 @@ module nts.uk.com.view.cli002.a {
                 vm.logSettings.push(new LogSetting(vm.selectedSystemCode(), item.programId, item.menuClassification, item.loginHistoryRecord.usageCategory,
                     item.editHistoryRecord.usageCategory, item.bootHistoryRecord.usageCategory));
             });
-            service.updateLogSetting(vm.logSettings);
+            service.updateLogSetting(vm.logSettings).then(() => {
+                vm.$dialog.alert({ messageId: 'Msg_15' });
+            });
         }
 
         private getData(systemType: number) {
@@ -89,56 +89,41 @@ module nts.uk.com.view.cli002.a {
             vm.dataSourceItem = ko.observableArray([]);
             vm.$blockui("grayout");
             service.findBySystem(systemType).done((response: Array<PGList>) => {
-                var statesTable = [];
                 let listPG: any[] = response.map((item, index) => {
-                    if (item.loginHistoryRecord.activeCategory == 0) {
-                      statesTable.push(
-                        new CellState(index, "logLoginDisplay", [
-                          (nts.uk.ui as any).mgrid.color.Alarm,
-                          (nts.uk.ui as any).mgrid.color.Reflect,
-                          (nts.uk.ui as any).mgrid.color.Disable,
-                        ])
-                      );
-                    }
-                    if (item.bootHistoryRecord.activeCategory == 0) {
-                      statesTable.push(
-                        new CellState(index, "logStartDisplay", [
-                          (nts.uk.ui as any).mgrid.color.Alarm,
-                          (nts.uk.ui as any).mgrid.color.Reflect,
-                          (nts.uk.ui as any).mgrid.color.Disable,
-                        ])
-                      );
-                    }
-                    if (item.editHistoryRecord.activeCategory == 0) {
-                      statesTable.push(
-                        new CellState(index, "logUpdateDisplay", [
-                          (nts.uk.ui as any).mgrid.color.Alarm,
-                          (nts.uk.ui as any).mgrid.color.Reflect,
-                          (nts.uk.ui as any).mgrid.color.Disable,
-                        ])
-                      );
-                    }
                     return new PGInfomation(index + 1, item.functionName, false, false, false, item.programId, item.menuClassification);
                 });
                 vm.dataSourceItem(listPG);
-                vm.getItemList();
+                vm.getItemList(response);
 
             }).always(() => vm.$blockui("clear")); 
         }
 
-        private getItemList() {
+        private getItemList(response: Array<PGList>) {
             const vm = this;
+            const statesTable = [];
+            statesTable.push(new CellState(1, "functionName", [(nts.uk.ui as any).mgrid.color.Disable]));
+            response.forEach((item: PGList, index) => {
+                if (item.loginHistoryRecord.activeCategory == 0) {
+                    statesTable.push(new CellState(index, "logLoginDisplay", [(nts.uk.ui as any).mgrid.color.Disable]));
+                }
+                if (item.bootHistoryRecord.activeCategory == 0) {
+                    statesTable.push(new CellState(index, "logStartDisplay", [(nts.uk.ui as any).mgrid.color.Disable]));
+                }
+                if (item.editHistoryRecord.activeCategory == 0) {
+                    statesTable.push(new CellState(index, "logUpdateDisplay", [(nts.uk.ui as any).mgrid.color.Disable]));
+                }
+            })
             if ($("#item-list").data("mGrid")) $("#item-list").mGrid("destroy");
             new (nts.uk.ui as any).mgrid.MGrid($("#item-list")[0], {
                 height: "400px",
                 headerHeight: '60px',
-                primaryKey: "displayName",
-                primaryKeyDataType: "number",
+                primaryKey: "functionName",
+                primaryKeyDataType: "rowNumber",
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
-                autoFitWindow: false,
+                autoFitWindow: true,
                 dataSource: vm.dataSourceItem(),
                 columns: [
                     { headerText: "", key: "rowNumber", dataType: "number", width: "30px"},
@@ -159,17 +144,25 @@ module nts.uk.com.view.cli002.a {
                         ]
                     },
                 ],
-                ntsControls: [
-                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function() {}}
-                ],
+                
                 features: [
-                    { name: 'ColumnFixing', fixingDirection: 'left',
-                                            showFixButtons: false,
-                                            columnSettings: [
-                                                                { columnKey: 'rowNumber', isFixed: true },
-                                                                { columnKey: 'functionName', isFixed: true }
-                                                            ]}
-                ]
+                    {   
+                        name: 'ColumnFixing',
+                        fixingDirection: 'left',
+                        showFixButtons: false,
+                        columnSettings: [
+                            { columnKey: 'rowNumber', isFixed: true }
+                        ]
+                    },
+                    { 
+                        name: 'CellStyles',
+                        states: statesTable
+                    }
+                ],
+
+                ntsControls: [
+                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true}
+                ],
             }).create();
         }
     }
