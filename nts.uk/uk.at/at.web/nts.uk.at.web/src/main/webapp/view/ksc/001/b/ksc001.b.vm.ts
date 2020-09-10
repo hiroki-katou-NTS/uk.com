@@ -216,9 +216,44 @@ module nts.uk.at.view.ksc001.b {
 					self.$errors('clear').then((valid: boolean) => {
 						self.isMonthlyPattern( CreationMethodRef.MONTHLY_PATTERN == value );
 						$( '.monthly-pattern-code' ).focus();
-						self.isHasChangeConditions(true);
 					});
+					self.isHasChangeConditions(true);
 				} );
+
+				//update emplyees listing if has any changed conditions
+				self.selectedImplementAtrCode.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.selectRebuildAtrCode.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.recreateConverter.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.recreateEmployeeOffWork.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.recreateShortTimeWorkers.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.recreateDirectBouncer.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.overwriteConfirmedData.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.createAfterDeleting.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.monthlyPatternCode.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.copyStartDate.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
+				self.isConfirmedCreation.subscribe(( value ) => {
+					self.isHasChangeConditions(true);
+				});
 
 				self.checkCreateMethodAtrPersonalInfo.subscribe(( value ) => {
 
@@ -408,7 +443,8 @@ module nts.uk.at.view.ksc001.b {
 				//init Schedule for personal
 				self.displayPersonalInfor();
 
-				let isAttendance = __viewContext.user.role.isInCharge.attendance;
+				let isAttendance = self.$user.role.isInCharge.attendance;
+					//__viewContext.user.role.isInCharge.attendance;
 				if( !isAttendance ) {
 					self.isConfirmedCreation( false );
 					$( '#confirmedCreation' ).hide();
@@ -537,7 +573,7 @@ module nts.uk.at.view.ksc001.b {
 				}
 				// check selection employee
 				if( self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0 ) {
-					var user: any = __viewContext.user;
+					var user: any = self.$user;//__viewContext.user;
 					self.findPersonalScheduleByEmployeeId( user.employeeId ).done( function( data ) {
 						self.updatePersonalScheduleData( data );
 						// focus by done
@@ -569,7 +605,7 @@ module nts.uk.at.view.ksc001.b {
 			 */
 			private toPersonalScheduleData(): PersonalSchedule {
 				var self = this;
-				var user: any = __viewContext.user;
+				var user: any = self.$user; // __viewContext.user;
 				var data: PersonalSchedule = new PersonalSchedule();
 
 				data.employeeId = user.employeeId;
@@ -632,14 +668,16 @@ module nts.uk.at.view.ksc001.b {
 
 				if( self.selectedImplementAtrCode() == ImplementAtr.RECREATE
 					&& self.createAfterDeleting() ) {
-					nts.uk.ui.dialog.confirmDanger( { messageId : "Msg_1735" } )
-						.ifYes(() => {
-							//goto screen C
-							self.next().done( function() {
-							} );
-						} ).ifNo(() => {
-						return;
-					} );
+					self.$dialog.confirm({ messageId: "Msg_1735" }).then((result: 'no' | 'yes' | 'cancel') => {
+						// bussiness logic after confirmed
+						if (result === 'no') {
+							return;
+						}
+
+						if (result === 'yes') {
+							self.next().done( () => {} );
+						}
+					});
 				} else {
 					//goto screen C
 					self.next().done( function() {
@@ -717,9 +755,10 @@ module nts.uk.at.view.ksc001.b {
 					self.buildString();
 					self.next().done( function() {
 						if( self.kcp005EmployeeList().length > 0 && self.isHasChangeConditions() ) {
-							self.isHasChangeConditions(false); //reset status
+							self.isHasChangeConditions(false);
 							self.applyKCP005ContentSearch( self.kcp005EmployeeList() );
-						}
+						} else
+							self.isHasChangeConditions(false);
 					} );
 				}
 			}
@@ -760,7 +799,14 @@ module nts.uk.at.view.ksc001.b {
 						return;
 					} );
 				} else {
-					let totalEmployees = self.selectedEmployeeCode().length;
+					let totalEmployees = self.selectedEmployeeCode().length,
+						newEmployeesIds : Array<string> = [];
+					_.forEach(self.selectedEmployeeCode(), (item) => {
+						let foundEmployee = _.find( self.kcp005EmployeeList(), (x) => { return x.employeeCode === item });
+						if( !_.isNil(foundEmployee) ) newEmployeesIds.push( foundEmployee.employeeId ) ;
+					});
+					console.log(newEmployeesIds);
+					self.employeeIds(newEmployeesIds);
 					self.lengthEmployeeSelected( self.$i18n( "KSC001_47", [ totalEmployees.toString() ] ) );
 					self.openDialogPageE();
 				}
@@ -840,11 +886,16 @@ module nts.uk.at.view.ksc001.b {
 						self.$blockui( "hide" );
 						if( check ) {
 							// show message confirm 567
-							nts.uk.ui.dialog.confirm( { messageId : 'Msg_567' } ).ifYes( function() {
-								self.createByCheckMaxMonth();
-							} ).ifNo( function() {
-								return;
-							} );
+							self.$dialog.confirm({ messageId: "Msg_567" }).then((result: 'no' | 'yes' | 'cancel') => {
+								// bussiness logic after confirmed
+								if (result === 'no') {
+									return;
+								}
+
+								if (result === 'yes') {
+									self.createByCheckMaxMonth();
+								}
+							});
 						} else {
 							self.createByCheckMaxMonth();
 						}
@@ -910,9 +961,9 @@ module nts.uk.at.view.ksc001.b {
 			private createByCheckMaxMonth(): void {
 				let self = this;
 				_.defer(() => {
-					nts.uk.ui.block.invisible();
+					self.$blockui("show");
 					service.checkMonthMax( self.toDate( self.periodDate().startDate ) ).done( checkMax => {
-						nts.uk.ui.block.clear();
+						self.$blockui("hide");
 						if( checkMax ) {
 							nts.uk.ui.dialog.confirm( { messageId : 'Msg_568' } ).ifYes( function() {
 								self.createPersonalSchedule();
@@ -922,7 +973,7 @@ module nts.uk.at.view.ksc001.b {
 						} else {
 							self.createPersonalSchedule();
 						}
-					} );
+					}).always( () => { self.$blockui("hide"); } );
 				} );
 			}
 
@@ -931,12 +982,15 @@ module nts.uk.at.view.ksc001.b {
 			 */
 			private createPersonalSchedule(): void {
 				let self = this;
-				nts.uk.ui.dialog.confirm( { messageId : 'Msg_569' } ).ifYes( function() {
-					self.savePersonalScheduleData();
-				} ).ifNo( function() {
-					return;
-				} );
+				self.$dialog.confirm({ messageId: "Msg_569" }).then((result: 'no' | 'yes' | 'cancel') => {
+					if (result === 'no') {
+						return;
+					}
 
+					if (result === 'yes') {
+						self.savePersonalScheduleData();
+					}
+				});
 			}
 
 			/**

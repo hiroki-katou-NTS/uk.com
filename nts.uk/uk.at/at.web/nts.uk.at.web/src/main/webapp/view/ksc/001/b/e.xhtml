@@ -41,17 +41,16 @@
 						data-bind="text: lengthEmployeeSelected"></label>
 				</div>
 			</div>
+            <div class="buttonPrevNext">
+                <div class="buttonBeginPrevious" tabindex="-1">
+                    <button data-bind="click: previousPageE" class="large"
+                            tabindex="1">#{i18n.getText('KSC001_102')}</button>
+                </div>
+                <div class="buttonBeginNext">
+                    <button class="proceed x-large" id="buttonFinishPageE"
+                            data-bind="click: finish" tabindex="2">#{i18n.getText('KSC001_34')}</button></div>
+            </div>
 		</div>
-		<div class="buttonPrevNext">
-			<div class="buttonBeginPrevious" tabindex="-1">
-			<button data-bind="click: previousPageE" class="large"
-				tabindex="1">#{i18n.getText('KSC001_102')}</button>
-			</div>
-			<div class="buttonBeginNext">	
-			<button class="proceed x-large" id="buttonFinishPageE"
-				data-bind="click: finish" tabindex="2">#{i18n.getText('KSC001_34')}</button></div>
-		</div>
-
 	</ui:composition>
 </body>
 </html>
