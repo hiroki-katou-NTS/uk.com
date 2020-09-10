@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.app.command.dailyperform.workinfo;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -20,10 +22,14 @@ public class WorkInformationOfDailyPerformCommand extends DailyWorkCommonCommand
 
 	@Override
 	public void setRecords(ConvertibleAttendanceItem item) {
-		WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance(getEmployeeId(),
-				getWorkDate(), ((WorkInformationOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
-		this.data = item == null || !item.isHaveData() ? null
-				:workInfoOfDailyPerformance ;
+		if(item == null) {
+			this.data = null; 
+		}else {
+			WorkInfoOfDailyPerformance workInfoOfDailyPerformance = new WorkInfoOfDailyPerformance(getEmployeeId(),
+					getWorkDate(), ((WorkInformationOfDailyDto) item).toDomain(getEmployeeId(), getWorkDate()));
+			this.data = item == null || !item.isHaveData() ? null
+					:workInfoOfDailyPerformance ;
+		}
 	}
 
 	@Override

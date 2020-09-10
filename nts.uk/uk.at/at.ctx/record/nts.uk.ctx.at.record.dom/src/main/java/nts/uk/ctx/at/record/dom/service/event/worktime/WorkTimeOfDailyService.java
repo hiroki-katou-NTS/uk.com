@@ -33,7 +33,7 @@ public class WorkTimeOfDailyService {
 		//就業時間帯の必須チェック
 		SetupType checkNeededOfWorkTime = basicService.checkNeededOfWorkTimeSetting(workType);
 		if(checkNeededOfWorkTime == SetupType.NOT_REQUIRED) {
-			working.getWorkInformation().getRecordInfo().setWorkTimeCode(null);
+			working.getWorkInformation().getRecordInfo().removeWorkTimeInHolydayWorkType();
 		} else if(checkNeededOfWorkTime == SetupType.REQUIRED) {
 			if(working.getWorkInformation().getRecordInfo().getWorkTimeCode() == null) {
 				List<EditStateOfDailyPerformance> lstEditWorktime = working.getEditState().stream().filter(x -> x.getAttendanceItemId() == 29)

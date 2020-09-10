@@ -1500,8 +1500,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 							|| oneDay == WorkTypeClassification.LeaveOfAbsence
 							|| oneDay == WorkTypeClassification.Closure) {
 						
-						WorkInformation recordWorkInformation =  workInfoOfDailyPerformance.getRecordInfo().clone();
-						recordWorkInformation.setWorkTimeCode(null);
+						WorkInformation recordWorkInformation = workInfoOfDailyPerformance.getRecordInfo().clone();
+						recordWorkInformation.removeWorkTimeInHolydayWorkType();
 						workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
 					}
 					// to show clear attendance item
