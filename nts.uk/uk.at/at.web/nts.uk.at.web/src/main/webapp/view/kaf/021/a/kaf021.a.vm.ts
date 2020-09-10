@@ -1,15 +1,19 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.kaf021.a {
+    import textFormat = nts.uk.text.format;
 
     const API = {
-        BENTO_RESERVATTIONS: 'screen/at/record/reservation/bento_modify/getReservations',
+        INIT: 'screen/at/kaf021/init',
     };
 
     @bean()
     class ViewModel extends ko.ViewModel {
         ccg001ComponentOption: GroupOption = null;
         empSearchItems: Array<EmployeeSearchDto> = [];
+
+        appTypes: Array<AppType> = [];
+        appTypeSelected: KnockoutObservable<AppTypeEnum> = ko.observable(null);
 
         items: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedCode: KnockoutObservable<string> = ko.observable("");
@@ -21,9 +25,8 @@ module nts.uk.at.kaf021.a {
 
         constructor() {
             super();
-
-            let self = this;
-            self.ccg001ComponentOption = <GroupOption>{
+            const vm = this;
+            vm.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
                 systemType: 1,
                 showEmployeeSelection: false,
@@ -60,37 +63,62 @@ module nts.uk.at.kaf021.a {
                 showWorktype: false,
                 isMutipleCheck: true,
                 //tabindex: 6,
-                showOnStart: true,
+                showOnStart: false,
 
                 /**
                  * Self-defined function: Return data from CCG001
                  * @param: data: the data return from CCG001
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
-                    self.empSearchItems = data.listEmployee;
-                    self.initData();
+                    vm.empSearchItems = data.listEmployee;
+                    vm.fetchData();
                 }
             }
+
+            vm.appTypes.push(new AppType(AppTypeEnum.CURRENT_MONTH, textFormat("{0}月度", 1)));
+            vm.appTypes.push(new AppType(AppTypeEnum.NEXT_MONTH,  textFormat("{0}月度", 2)));
+            vm.appTypes.push(new AppType(AppTypeEnum.YEARLY, this.$i18n("KAF021_4")));
         }
 
-        created(params: any) {
-            let self = this;
-            $('#com-ccg001').ntsGroupComponent(self.ccg001ComponentOption);
+        created() {
+            const vm = this;
+            $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
+            //vm.loadMGrid();
+            vm.initData();
+
+            vm.appTypeSelected.subscribe((value: AppTypeEnum) => {
+                console.log(value)
+            })
         }
 
         mounted() {
-            let self = this;
+            const vm = this;
 
             
         }
 
         initData(): JQueryPromise<any> {
-            let self = this,
+            const vm = this,
             dfd = $.Deferred();
+
+            vm.$ajax(API.INIT, (data: any) => {
+                console.log(data)
+            })
+
             dfd.resolve();
             return dfd.promise();
         }
 
+        fetchData(): JQueryPromise<any> {
+            const vm = this,
+                dfd = $.Deferred();
+            dfd.resolve();
+            return dfd.promise();
+        }
+
+        nextScreen(){
+
+        }
     }
 
     interface GroupOption {
@@ -149,5 +177,21 @@ module nts.uk.at.kaf021.a {
         affiliationCode: string;
         affiliationId: string;
         affiliationName: string;
+    }
+
+    class AppType{
+        value: AppTypeEnum;
+        name: string;
+
+        constructor (value: AppTypeEnum, name: string){
+            this.value = value;
+            this.name = name;
+        }
+    }
+
+    enum AppTypeEnum{
+        CURRENT_MONTH = 1,
+        NEXT_MONTH = 2,
+        YEARLY = 3
     }
 }
