@@ -104,7 +104,7 @@ module nts.uk.at.view.ksm005.b {
                         self.getMonthlyPatternSettingBatch(BusinessDayClassification.WORK_DAYS).done(function (monthlyBatch) {
                             if (monthlyBatch != undefined && monthlyBatch != null) {
                                 self.worktypeInfoWorkDays(monthlyBatch.workTypeCode ? monthlyBatch.workTypeCode + '   ' + self.findNameByWorktypeCode(monthlyBatch.workTypeCode, dataWorkType) : '');
-                                self.worktimeInfoWorkDays(monthlyBatch.workingCode ? monthlyBatch.workingCode + '   ' + self.findNameWorkTimeCode(monthlyBatch.workingCode, dataWorkTime) : '');
+                                self.worktimeInfoWorkDays(monthlyBatch.workingCode + '   ' + self.findNameWorkTimeCode(monthlyBatch.workingCode, dataWorkTime) );
                                 self.monthlyPatternSettingBatchWorkDays(monthlyBatch);
                             }
                         });
@@ -140,7 +140,7 @@ module nts.uk.at.view.ksm005.b {
              * find by work type code of data
              */
             public findNameByWorktypeCode(workTypeCode: string, data: WorkTypeDto[]) {
-                let workTypeName: string = getText('KSM005_43');
+                let workTypeName: string = '';
                 for (let worktype of data) {
                     if (workTypeCode == worktype.workTypeCode) {
                         workTypeName = worktype.name;
@@ -160,13 +160,10 @@ module nts.uk.at.view.ksm005.b {
                 var worktype = _.find(data, function (item) {
                     return item.code == worktimeCode;
                 });
-                if (!worktype) {
-                    return getText('KSM005_43');
+                if(worktype && worktype.name) {
+                    return worktype.name;
                 }
-                if(nts.uk.util.isNullOrEmpty(worktype.name)) {
-                    return getText('KSM005_84');
-                }
-                return worktype.name;
+                return getText('KSM005_84');
             }
 
             /**
@@ -341,14 +338,10 @@ module nts.uk.at.view.ksm005.b {
                         }
                         self.monthlyPatternSettingBatchWorkDays().workingCode = childData.selectedWorkTimeCode;
 
-                        if (childData.selectedWorkTimeCode) {
-                            if(childData.selectedWorkTimeName) {
-                                self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + '   ' + childData.selectedWorkTimeName);
-                            } else {
-                                self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + '   ' + getText('KSM005_84'));
-                            }
+                        if(childData.selectedWorkTimeName) {
+                            self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + '   ' + childData.selectedWorkTimeName);
                         } else {
-                            self.worktimeInfoWorkDays('');
+                            self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + '   ' + getText('KSM005_84'));
                         }
                     }
                 });
