@@ -6,11 +6,13 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 
+import javax.ejb.Stateless;
 import java.util.Optional;
 
 /**
  * 	DomainService: 職場の承認者履歴を削除する
  */
+@Stateless
 public class DeleteWorkplaceApproverHistoryDomainService {
     // 	[1] 変更する
     public AtomTask changeHistory(Requeire requeire,Approver36AgrByWorkplace deleteHist){

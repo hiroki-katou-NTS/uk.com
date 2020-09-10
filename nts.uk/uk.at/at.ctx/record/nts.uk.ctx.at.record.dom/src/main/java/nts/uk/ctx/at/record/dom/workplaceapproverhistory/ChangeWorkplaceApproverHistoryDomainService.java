@@ -6,6 +6,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 
+import javax.ejb.Stateless;
 import java.util.Optional;
 
 /**
@@ -13,6 +14,7 @@ import java.util.Optional;
  *
  * @author chinh.hm
  */
+@Stateless
 public class ChangeWorkplaceApproverHistoryDomainService {
     /**
      * [1] 変更する

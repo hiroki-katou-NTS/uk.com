@@ -6,12 +6,14 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 
+import javax.ejb.Stateless;
 import java.util.Optional;
 
 /**
  * 	DomainService:	職場の承認者履歴を追加する
  * 	@author chinh.hm
  */
+@Stateless
 public class AddWorkplaceApproverHistoryDomainService {
     //		[1] 追加する : 	職場別の承認者（36協定）の履歴を追加して、直前の履歴の終了日を変更する
     public AtomTask addNewWorkplaceApproverHistory(Requeire requeire,Approver36AgrByWorkplace histTobeAdd){
