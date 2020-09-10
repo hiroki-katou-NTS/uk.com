@@ -70,7 +70,7 @@ module nts.uk.at.view.ksm005.a {
 
                 // now month setting kcp006
                 self.yearMonthPicked = ko.observable(0); //monthlyPatternCode
-                self.yearMonthPicked.extend({ notify: 'always' });
+                //self.yearMonthPicked.extend({ notify: 'always' });
                 self.currentMonthlyPattern = ko.observable(0); //keep before change
 
                 self.monthlyPatternModel().name.subscribe(() => {
