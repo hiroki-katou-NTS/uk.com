@@ -21,6 +21,7 @@ module nts.uk.at.view.kdl005.a {
             kdl005Data: any;
             employeeInfo: KnockoutObservable<string> = ko.observable("");
 
+            isFirstLoaded: KnockoutObservable<boolean> = ko.observable(false);
             isManagementSection: KnockoutObservable<boolean> = ko.observable(null);
             dataItems: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -55,68 +56,71 @@ module nts.uk.at.view.kdl005.a {
                         vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
                     }
                 });
-                service.getEmployeeList(vm.kdl005Data).done((data: any) => {
-                    if (data.employeeBasicInfo.length > 1) {
-                        vm.selectedCode.subscribe((value) => {
-                            let itemData: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
-                            vm.onSelectEmployee(
-                                itemData.employeeId,
-                                vm.kdl005Data.baseDate,
-                                itemData.employeeCode,
-                                itemData.businessName,
-                            );
-                        });
+                vm.isFirstLoaded(false);
+                service.getEmployeeList(vm.kdl005Data)
+                    .then((data: any) => {
+                        vm.isFirstLoaded(true);
+                        if (data.employeeBasicInfo.length > 1) {
+                            vm.selectedCode.subscribe((value) => {
+                                let itemData: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
+                                vm.onSelectEmployee(
+                                    itemData.employeeId,
+                                    vm.kdl005Data.baseDate,
+                                    itemData.employeeCode,
+                                    itemData.businessName,
+                                );
+                            });
 
-                        // vm.baseDate = ko.observable(new Date());
-                        vm.selectedCode(data.employeeBasicInfo[0].employeeCode);
-                        vm.multiSelectedCode = ko.observableArray([]);
-                        vm.isShowAlreadySet = ko.observable(false);
-                        vm.alreadySettingList = ko.observableArray([
-                            {code: '1', isAlreadySetting: true},
-                            {code: '2', isAlreadySetting: true}
-                        ]);
-                        vm.isDialog = ko.observable(false);
-                        vm.isShowNoSelectRow = ko.observable(false);
-                        vm.isMultiSelect = ko.observable(false);
-                        vm.isShowWorkPlaceName = ko.observable(false);
-                        vm.isShowSelectAllButton = ko.observable(false);
-                        vm.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,
-                            (x: any) => {
-                                return {code:x.employeeCode ,name:x.businessName};
-                            }));
-                        vm.listComponentOption = {
-                            isShowAlreadySet: vm.isShowAlreadySet(),
-                            isMultiSelect: vm.isMultiSelect(),
-                            listType: ListType.EMPLOYEE,
-                            employeeInputList: vm.employeeList,
-                            selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                            selectedCode: vm.selectedCode,
-                            isDialog: vm.isDialog(),
-                            isShowNoSelectRow: vm.isShowNoSelectRow(),
-                            alreadySettingList: vm.alreadySettingList,
-                            isShowWorkPlaceName: vm.isShowWorkPlaceName(),
-                            isShowSelectAllButton: vm.isShowSelectAllButton(),
-                            maxRows: 12
-                        };
-                        $('#component-items-list').ntsListComponent(vm.listComponentOption)
-                        .done(() => {
-                            $('#component-items-list').focusComponent();
-                            // Employment List
-                            vm.employeeList($('#component-items-list').getDataList());
-                        });
-                    } else if (data.employeeBasicInfo.length == 1) {
-                        // vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
-                        vm.onSelectEmployee(
-                            data.employeeBasicInfo[0].employeeId,
-                            vm.kdl005Data.baseDate,
-                            data.employeeBasicInfo[0].employeeCode,
-                            data.employeeBasicInfo[0].businessName,
-                        );
-                    } else {
-                        vm.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
-                    }
-                })
-                .always(() => vm.$blockui('clear'));
+                            // vm.baseDate = ko.observable(new Date());
+                            vm.selectedCode(data.employeeBasicInfo[0].employeeCode);
+                            vm.multiSelectedCode = ko.observableArray([]);
+                            vm.isShowAlreadySet = ko.observable(false);
+                            vm.alreadySettingList = ko.observableArray([
+                                {code: '1', isAlreadySetting: true},
+                                {code: '2', isAlreadySetting: true}
+                            ]);
+                            vm.isDialog = ko.observable(false);
+                            vm.isShowNoSelectRow = ko.observable(false);
+                            vm.isMultiSelect = ko.observable(false);
+                            vm.isShowWorkPlaceName = ko.observable(false);
+                            vm.isShowSelectAllButton = ko.observable(false);
+                            vm.employeeList = ko.observableArray<UnitModel>(_.map(data.employeeBasicInfo,
+                                (x: any) => {
+                                    return {code:x.employeeCode ,name:x.businessName};
+                                }));
+                            vm.listComponentOption = {
+                                isShowAlreadySet: vm.isShowAlreadySet(),
+                                isMultiSelect: vm.isMultiSelect(),
+                                listType: ListType.EMPLOYEE,
+                                employeeInputList: vm.employeeList,
+                                selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                                selectedCode: vm.selectedCode,
+                                isDialog: vm.isDialog(),
+                                isShowNoSelectRow: vm.isShowNoSelectRow(),
+                                alreadySettingList: vm.alreadySettingList,
+                                isShowWorkPlaceName: vm.isShowWorkPlaceName(),
+                                isShowSelectAllButton: vm.isShowSelectAllButton(),
+                                maxRows: 12
+                            };
+                            $('#component-items-list').ntsListComponent(vm.listComponentOption)
+                            .done(() => {
+                                $('#component-items-list').focusComponent();
+                                // Employment List
+                                vm.employeeList($('#component-items-list').getDataList());
+                            });
+                        } else if (data.employeeBasicInfo.length == 1) {
+                            // vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [data.employeeBasicInfo[0].employeeCode, data.employeeBasicInfo[0].businessName]));
+                            vm.onSelectEmployee(
+                                data.employeeBasicInfo[0].employeeId,
+                                vm.kdl005Data.baseDate,
+                                data.employeeBasicInfo[0].employeeCode,
+                                data.employeeBasicInfo[0].businessName,
+                            );
+                        } else {
+                            vm.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
+                        }
+                    })
+                    .always(() => vm.$blockui('clear'));
             }
 
             // 社員リストの先頭を選択

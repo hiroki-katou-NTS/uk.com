@@ -249,9 +249,9 @@ public class ProgramIdConsts {
 	
 	public static final String KDL009A = "KDL009A";
 	
-	public static final String KDL005B = "KDL005A";
+	public static final String KDL005B = "KDL005B";
 	
-	public static final String KDL009B = "KDL009A";
+	public static final String KDL009B = "KDL009B";
 
 	public static final String KDL003A = "KDL003A";
 
