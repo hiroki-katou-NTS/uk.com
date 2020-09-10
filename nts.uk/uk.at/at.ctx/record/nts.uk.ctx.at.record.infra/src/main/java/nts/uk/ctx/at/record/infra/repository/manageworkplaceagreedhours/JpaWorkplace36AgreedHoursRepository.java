@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.infra.repository.manageworkplaceagreedhours;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.manageworkplaceagreedhours.Workplace36AgreedHours;
 import nts.uk.ctx.at.record.dom.manageworkplaceagreedhours.Workplace36AgreedHoursRepository;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.record.infra.entity.manageworkplaceagreedhours.Ksrmt36AgrMgtWkp;
 
 import javax.ejb.Stateless;
@@ -32,34 +32,34 @@ public class JpaWorkplace36AgreedHoursRepository extends JpaRepository implement
         FIND_BY_WKP = builderString.toString();
     }
     @Override
-    public void insert(Workplace36AgreedHours domain) {
+    public void insert(AgreementTimeOfWorkPlace domain) {
 
     }
 
     @Override
-    public void update(Workplace36AgreedHours domain) {
+    public void update(AgreementTimeOfWorkPlace domain) {
 
     }
 
     @Override
-    public void delete(Workplace36AgreedHours domain) {
+    public void delete(AgreementTimeOfWorkPlace domain) {
 
     }
 
     @Override
-    public List<Workplace36AgreedHours> getByListWorkplaceId(List<String> listWorkplaceId) {
+    public List<AgreementTimeOfWorkPlace> getByListWorkplaceId(List<String> listWorkplaceId) {
 
         return this.queryProxy().query(FIND_BY_LIST_WKP, Ksrmt36AgrMgtWkp.class)
                 .getList(d -> convertToDomain(d));
     }
 
     @Override
-    public Optional<Workplace36AgreedHours> getByWorkplaceId(String workplaceId) {
+    public Optional<AgreementTimeOfWorkPlace> getByWorkplaceId(String workplaceId) {
 
         return this.queryProxy().query(FIND_BY_WKP, Ksrmt36AgrMgtWkp.class)
                 .getSingle(d -> convertToDomain(d));
     }
-    private Workplace36AgreedHours convertToDomain(Ksrmt36AgrMgtWkp entity) {
-        return new Workplace36AgreedHours();
+    private AgreementTimeOfWorkPlace convertToDomain(Ksrmt36AgrMgtWkp entity) {
+        return new AgreementTimeOfWorkPlace();
     }
 }

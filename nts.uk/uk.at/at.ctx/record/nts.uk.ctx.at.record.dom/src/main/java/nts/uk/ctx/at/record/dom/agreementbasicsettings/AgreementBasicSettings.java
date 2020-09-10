@@ -4,7 +4,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
- * ValueObject:３６協定基本設定 TODO
+ * ValueObject:３６協定基本設定
  */
 public class AgreementBasicSettings extends ValueObject {
 
