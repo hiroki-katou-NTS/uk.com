@@ -20,6 +20,7 @@ module nts.uk.at.view.kdl009.a {
             kdl009Data: any;
             employeeInfo: KnockoutObservable<string>;
 
+            isFirstLoaded: KnockoutObservable<boolean> = ko.observable(false);
             isManagementSection: KnockoutObservable<boolean> = ko.observable(null);
             dataItems: KnockoutObservableArray<DataItems>;
 
@@ -54,8 +55,10 @@ module nts.uk.at.view.kdl009.a {
                         vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
                     }
                 });
+                vm.isFirstLoaded(false);
                 service.getEmployee(vm.kdl009Data)
                     .then((data: any) => {
+                        vm.isFirstLoaded(true);
                         if (data.employeeBasicInfo.length > 1) {
                             vm.selectedCode.subscribe((value) => {
                                 const itemSelected: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
