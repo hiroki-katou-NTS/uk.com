@@ -368,7 +368,9 @@ module nts.uk.at.view.ksm005.a {
 		                        self.clearCalendar();
 	                        }
                         });
+                        $('#inp_monthlyPatternName').focus();
                     } else {
+                        $('#inp_monthlyPatternCode').focus();
 	                    self.clearCalendar();
                     }
                 }).fail((response) => {
@@ -596,7 +598,11 @@ module nts.uk.at.view.ksm005.a {
 		        nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(dataMonthly));
 		        nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
 			        let dto = nts.uk.ui.windows.getShared('returnedData');
-			        console.log(dto);
+			        if(self.selectMonthlyPattern()) {
+                        $('#inp_monthlyPatternName').focus();
+                    } else {
+                        $('#inp_monthlyPatternCode').focus();
+                    }
 			       /* if (dto) {
 				        self.returnedSetting.fromDto(dto);
 			        }*/
