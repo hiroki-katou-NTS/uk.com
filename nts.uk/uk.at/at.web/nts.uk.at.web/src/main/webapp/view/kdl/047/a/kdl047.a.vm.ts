@@ -144,7 +144,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
 
           }
 
-          setShared('attendanceRecordExport', vm.objectDisplay);
+          setShared('attendanceRecordExport', attendanceRecord);
           vm.$window.close()
         }
       });
