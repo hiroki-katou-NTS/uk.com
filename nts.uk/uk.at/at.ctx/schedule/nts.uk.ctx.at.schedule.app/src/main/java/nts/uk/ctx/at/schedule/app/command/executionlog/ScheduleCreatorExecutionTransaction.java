@@ -948,6 +948,7 @@ public class ScheduleCreatorExecutionTransaction {
 					.findFirst() : Optional.empty();
 			// note 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
 			integrationOfDaily.getWorkInformation().setRecordInfo(prepareWorkOutput.getInformation().clone());
+			integrationOfDaily.getWorkInformation().setScheduleInfo(prepareWorkOutput.getInformation().clone());
 			// note 出勤打刻自動セット ~ 出勤時刻を直行とする (勤務情報。直行区分＝勤務種類。出勤打刻自動セット)
 			integrationOfDaily.getWorkInformation().setGoStraightAtr(
 					EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getAttendanceTime().value : 0, NotUseAttribute.class));
