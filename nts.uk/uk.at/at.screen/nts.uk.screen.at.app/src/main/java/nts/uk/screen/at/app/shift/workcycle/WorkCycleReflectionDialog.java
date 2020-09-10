@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.shift.workcycle;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
@@ -73,6 +74,8 @@ public class WorkCycleReflectionDialog {
 		// 1. 勤務サイクル一覧を取得する [Get a list of work cycles]
 		if (bootMode == BootMode.EXEC_MODE){
 			workCycleDtoList = getWorkCycle.getDataStartScreen();
+			if(CollectionUtil.isEmpty(workCycleDtoList))
+				throw new BusinessException("Msg_37");
 			workCycleCode = workCycleDtoList.get(0).getCode();
 		}
 		dto.setWorkCycleList(workCycleDtoList);
