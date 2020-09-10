@@ -70,8 +70,18 @@ module cmm045.a.viewmodel {
                     at: "left bottom",
                     of: ".hyperlink"
                 },
-                showOnStart: false,
-                dismissible: true
+                showOnStart: true,
+                dismissible: false
+            });
+
+            // $('.hyperlink').click(() => {var vis = $(".popup-panel").css("visibility") == "hidden" ? "visible" : "hidden";$(".popup-panel").css("visibility", vis);});
+
+            $('.hyperLink').bind("click", () => {
+                if($(".popup-panel").css("visibility") == "hidden") {
+                    $(".popup-panel").css("visibility", "visible");
+                } else {
+                    $(".popup-panel").css("visibility", "hidden");
+                }
             });
 
             self.itemList = ko.observableArray([
@@ -229,7 +239,7 @@ module cmm045.a.viewmodel {
             }
             //check endDate
             if (self.dateValue().endDate == null || self.dateValue().endDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsStartDate input').ntsError('set', {messageId:"Msg_359"});
+                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsEndDate input').ntsError('set', {messageId:"Msg_359"});
                 return false;
             }
             if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
