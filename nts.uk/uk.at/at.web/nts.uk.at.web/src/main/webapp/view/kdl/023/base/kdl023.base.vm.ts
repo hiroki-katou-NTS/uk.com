@@ -218,34 +218,39 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     });
 
                     vm.reflectionOrder1.subscribe(val =>{
-                        let array2 = ([
-                            {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
-                            {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
-                            {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
-                            {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
-                        ]);
-                        let array3 = ([
-                            {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
-                            {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
-                            {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
-                            {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
-                        ]);
-
-                        let remove2 =  array2.indexOf(array2.filter(e => e.code === val)[0]);
-                        if(remove2 > -1){
-                            array2.splice(remove2, 1);
-                        }
-                        let remove3 = array3.indexOf(array3.filter(e => e.code === val)[0]);
-                        if(remove3 > -1){
-                            array3.splice(remove3, 1);
-                        }
-                        vm.reflectionOrderList2(array2);
-                        vm.reflectionOrderList3(array3);
 
                         if(val === WorkCreateMethod.NON){
                             vm.workCycleEnable2(false);
                             vm.reflectionOrder2(WorkCreateMethod.NON);
                         }else {
+                            let array2 = ([
+                                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+                                {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+                                {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+                                {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+                            ]);
+                            let array3 = ([
+                                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+                                {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+                                {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+                                {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+                            ]);
+
+                            let remove2 =  array2.indexOf(array2.filter(e => e.code === val)[0]);
+                            if(remove2 > -1){
+                                array2.splice(remove2, 1);
+                            }
+                            let remove3 = array3.indexOf(array3.filter(e => e.code === val)[0]);
+                            if(remove3 > -1){
+                                array3.splice(remove3, 1);
+                            }
+                            let remove4 = array3.indexOf(array3.filter(e => e.code === vm.reflectionOrder2())[0]);
+                            if(remove4 > -1 && vm.reflectionOrder2() > -1){
+                                array3.splice(remove4, 1);
+                            }
+                            vm.reflectionOrderList2(array2);
+                            vm.reflectionOrderList3(array3);
+
                             if(vm.reflectionOrder2() === val){
                                 vm.reflectionOrder2(WorkCreateMethod.NON);
                             }
@@ -256,16 +261,29 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         }
                     })
                     vm.reflectionOrder2.subscribe( val => {
-                        let array3 = vm.reflectionOrderList2();
-                        let remove3 = array3.indexOf(array3.filter(e => e.code === val)[0]);
-                        if(remove3 > -1){
-                            array3.splice(remove3, 1);
-                        }
-                        vm.reflectionOrderList3(array3);
                         if(val === WorkCreateMethod.NON){
-                            vm.workCycleEnable3(false);
                             vm.reflectionOrder3(WorkCreateMethod.NON);
+                            vm.workCycleEnable3(false);
                         }else{
+                            let array3 = ([
+                                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+                                {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+                                {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+                                {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+                            ]);
+                            let remove3 = array3.indexOf(array3.filter(e => e.code === vm.reflectionOrder1())[0]);
+                            if(remove3 > -1){
+                                array3.splice(remove3, 1);
+                            }
+                            let remove4 = array3.indexOf(array3.filter(e => e.code === val)[0]);
+                            if(remove4 > -1){
+                                array3.splice(remove4, 1);
+                            }
+                            vm.reflectionOrderList3(array3);
+
+                            if(vm.reflectionOrder3() === val){
+                                vm.reflectionOrder3(WorkCreateMethod.NON);
+                            }
                             vm.workCycleEnable3(true);
                         }
                     })
