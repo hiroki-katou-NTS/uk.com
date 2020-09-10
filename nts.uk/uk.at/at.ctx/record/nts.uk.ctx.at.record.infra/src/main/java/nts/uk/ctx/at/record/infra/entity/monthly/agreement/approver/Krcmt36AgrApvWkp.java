@@ -36,11 +36,6 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@NotNull
-	@Column(name = "CID")
-	public String companyID;
-
-	@Basic(optional = false)
-	@NotNull
 	@Column(name = "END_DATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate endDate;
@@ -98,7 +93,7 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 		if (!StringUtil.isNullOrEmpty(this.confirmerSid5, true)) confirmerIds.add(this.confirmerSid5);
 
 		return new Approver36AgrByWorkplace(
-				this.companyID,
+				this.PK.cid,
 				this.PK.workplaceID,
 				new DatePeriod(this.PK.startDate, this.endDate),
 				approverIds,
@@ -107,13 +102,13 @@ public class Krcmt36AgrApvWkp extends UkJpaEntity implements Serializable {
 	}
 
 	public void fromDomain(Approver36AgrByWorkplace domain) {
-		this.PK = new Krcmt36AgrApvWkpPK(domain.getWorkplaceId(), domain.getPeriod().start());
+		this.PK = new Krcmt36AgrApvWkpPK(domain.getCid(), domain.getWorkplaceId(), domain.getPeriod().start());
 		this.fromDomainNoPK(domain);
 	}
 
 	public void fromDomainNoPK(Approver36AgrByWorkplace domain) {
 
-		this.companyID = domain.getCid();
+		this.PK.cid = domain.getCid();
 		this.endDate = domain.getPeriod().end();
 
 		List<String> approverIds = domain.getApproverIds();

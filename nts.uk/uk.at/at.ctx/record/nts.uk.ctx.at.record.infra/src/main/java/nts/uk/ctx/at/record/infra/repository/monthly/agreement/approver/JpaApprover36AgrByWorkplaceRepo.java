@@ -7,6 +7,7 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkpl
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver.Krcmt36AgrApvWkp;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.approver.Krcmt36AgrApvWkpPK;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -83,7 +84,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 	}
 
 	@Override
-	public List<Approver36AgrByWorkplace> getByWorkplaceId(String workplaceId) {
+	public List<Approver36AgrByWorkplace> getByWorkplaceId(String wkpId) {
+		String cid = AppContexts.user().companyId();
 		val em = this.getEntityManager();
 		val cb = em.getCriteriaBuilder();
 		CriteriaQuery<Krcmt36AgrApvWkp> cq = cb.createQuery(Krcmt36AgrApvWkp.class);
@@ -91,7 +93,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceId), workplaceId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
 
@@ -103,7 +106,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 	}
 
 	@Override
-	public List<Approver36AgrByWorkplace> getByWorkplaceIdFromDate(String workplaceId, GeneralDate date) {
+	public List<Approver36AgrByWorkplace> getByWorkplaceIdFromDate(String wkpId, GeneralDate date) {
+		String cid = AppContexts.user().companyId();
 		val em = this.getEntityManager();
 		val cb = em.getCriteriaBuilder();
 		CriteriaQuery<Krcmt36AgrApvWkp> cq = cb.createQuery(Krcmt36AgrApvWkp.class);
@@ -111,7 +115,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceId), workplaceId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
 			add(cb.lessThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.startDate), date));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
@@ -124,7 +129,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 	}
 
 	@Override
-	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndEndDate(String workplaceId, GeneralDate endDate) {
+	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndEndDate(String wkpId, GeneralDate endDate) {
+		String cid = AppContexts.user().companyId();
 		val em = this.getEntityManager();
 		val cb = em.getCriteriaBuilder();
 		CriteriaQuery<Krcmt36AgrApvWkp> cq = cb.createQuery(Krcmt36AgrApvWkp.class);
@@ -132,7 +138,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceId), workplaceId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
 			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.endDate), endDate));
 		}};
 		cq.where(wherePredicate.toArray(new Predicate[] {}));
@@ -146,7 +153,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 	}
 
 	@Override
-	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndDate(String workplaceId, GeneralDate refDate) {
+	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndDate(String wkpId, GeneralDate refDate) {
+		String cid = AppContexts.user().companyId();
 		val em = this.getEntityManager();
 		val cb = em.getCriteriaBuilder();
 		CriteriaQuery<Krcmt36AgrApvWkp> cq = cb.createQuery(Krcmt36AgrApvWkp.class);
@@ -154,7 +162,8 @@ public class JpaApprover36AgrByWorkplaceRepo extends JpaRepository implements Ap
 		cq.select(root);
 
 		val wherePredicate = new ArrayList<Predicate>(){{
-			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.workplaceId), workplaceId));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.cid), cid));
+			add(cb.equal(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.wkpId), wkpId));
 			add(cb.lessThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.pk).get(Krcmt36AgrApvWkpPK.Meta_.startDate), refDate));
 			add(cb.greaterThanOrEqualTo(root.get(Krcmt36AgrApvWkp.Meta_.endDate), refDate));
 		}};
