@@ -2,6 +2,10 @@ package nts.uk.ctx.at.record.dom.standardtime;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.agreementbasicsettings.AgreementsMultipleMonthsAverage;
+import nts.uk.ctx.at.record.dom.agreementbasicsettings.AgreementsOneMonth;
+import nts.uk.ctx.at.record.dom.agreementbasicsettings.AgreementsOneYear;
+import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmFourWeeks;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
@@ -31,7 +35,7 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitWeek;
  */
 @Getter
 public class BasicAgreementSetting extends AggregateRoot {
-
+    // TODO KO CÓ TRONG CMM024 39-82
 	private String basicSettingId;
 
 	private AlarmWeek alarmWeek;
@@ -76,6 +80,32 @@ public class BasicAgreementSetting extends AggregateRoot {
 	private ErrorOneYear errorOneYear;
 
 	private LimitOneYear limitOneYear;
+
+
+	// 	1ヶ月 TODO BỔ SUNG CMM024
+	private AgreementsOneMonth oneMonth;
+	// 	1年間 TODO BỔ SUNG CMM024
+	private AgreementsOneYear oneYear;
+	// 複数月平均 TODO BỔ SUNG CMM024
+	private AgreementsMultipleMonthsAverage multipleMonthsAverage;
+	// 超過上限回数 TODO BỔ SUNG CMM024
+	private TimeOverLimitType numberTimesOverLimitType;
+
+	/** TODO BỔ SUNG CMM024
+	 * 	[C-0] ３６協定基本設定(1ヶ月,1年間,複数月平均,超過上限回数)
+	 * @param oneMonth
+	 * @param oneYear
+	 * @param multipleMonthsAverage
+	 * @param numberTimesOverLimitType
+	 */
+
+	public BasicAgreementSetting(AgreementsOneMonth oneMonth,AgreementsOneYear oneYear,
+								  AgreementsMultipleMonthsAverage multipleMonthsAverage,TimeOverLimitType numberTimesOverLimitType){
+		this.oneMonth = oneMonth;
+		this.oneYear = oneYear;
+		this.multipleMonthsAverage = multipleMonthsAverage;
+		this.numberTimesOverLimitType = numberTimesOverLimitType;
+	}
 
 	public BasicAgreementSetting(String basicSettingId, AlarmWeek alarmWeek, ErrorWeek errorWeek, LimitWeek limitWeek,
 			AlarmTwoWeeks alarmTwoWeeks, ErrorTwoWeeks errorTwoWeeks, LimitTwoWeeks limitTwoWeeks,
