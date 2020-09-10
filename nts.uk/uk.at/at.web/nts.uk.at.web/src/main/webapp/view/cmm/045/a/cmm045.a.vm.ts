@@ -59,30 +59,25 @@ module cmm045.a.viewmodel {
 
         constructor() {
             let self = this;
-            /*self.apptypeGridColumns = ko.observable([
-                { headerText: 'appType', key: 'appType', width: 50, hidden: true},
-                { headerText: getText('CMM045_94'), key: 'appName', width: 125 },
-            ])*/
             $(".popup-panel").ntsPopup({
-                trigger: '.hyperlink',
                 position: {
                     my: "left top",
                     at: "left bottom",
                     of: ".hyperlink"
                 },
                 showOnStart: false,
-                dismissible: true
+                dismissible: false
             });
 
-            // $('.hyperlink').click(() => {var vis = $(".popup-panel").css("visibility") == "hidden" ? "visible" : "hidden";$(".popup-panel").css("visibility", vis);});
-
-            // $('.hyperLink').bind("click", () => {
-            //     if($(".popup-panel").css("visibility") == "hidden") {
-            //         $(".popup-panel").css("visibility", "visible");
-            //     } else {
-            //         $(".popup-panel").css("visibility", "hidden");
-            //     }
-            // });
+            $("a.hyperlink").click(() => {$(".popup-panel").ntsPopup("toggle");});
+            $(window).on("mousedown.popup", function(e) {
+                let control = $(".popup-panel");
+                if (!$(e.target).is(control)
+                    && control.has(e.target).length === 0
+                    && !$(e.target).is($(".hyperlink"))) {
+                    $(".popup-panel").ntsPopup("hide");
+                }
+            });
 
             self.itemList = ko.observableArray([
                 { id: 1, name: getText('CMM045_20') },
