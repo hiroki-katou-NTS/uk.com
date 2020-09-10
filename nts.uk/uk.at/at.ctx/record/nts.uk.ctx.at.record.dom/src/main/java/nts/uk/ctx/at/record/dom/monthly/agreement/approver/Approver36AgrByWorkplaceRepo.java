@@ -39,7 +39,7 @@ public interface Approver36AgrByWorkplaceRepo {
 	 * Where
 	 * 		m.職場ID = 職場ID
 	 */
-	public List<Approver36AgrByWorkplace> getByWorkplaceId(String workplaceId);
+	public List<Approver36AgrByWorkplace> getByWorkplaceId(String wkpId);
 
 	/**
 	 * [5] 指定日以降の履歴を取得する
@@ -51,7 +51,7 @@ public interface Approver36AgrByWorkplaceRepo {
 	 * 		m.職場ID = 職場ID
 	 * 		m.期間.開始日 >= 年月日
 	 */
-	public List<Approver36AgrByWorkplace> getByWorkplaceIdFromDate(String workplaceId, GeneralDate date);
+	public List<Approver36AgrByWorkplace> getByWorkplaceIdFromDate(String wkpId, GeneralDate date);
 
 	/**
 	 * [6] 指定終了日の履歴を取得する
@@ -63,7 +63,7 @@ public interface Approver36AgrByWorkplaceRepo {
 	 * 		m.職場ID = 職場ID
 	 * 		m.期間.終了日 = 終了日
 	 */
-	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndEndDate(String workplaceId, GeneralDate endDate);
+	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndEndDate(String wkpId, GeneralDate endDate);
 
 	/**
 	 * [7] get
@@ -75,5 +75,5 @@ public interface Approver36AgrByWorkplaceRepo {
 	 * 		m.職場ID = 職場ID
 	 * 		m.期間.開始日 <= 基準日 <= m.期間.終了日
 	 */
-	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndDate(String workplaceId, GeneralDate refDate);
+	public Optional<Approver36AgrByWorkplace> getByWorkplaceIdAndDate(String wkpId, GeneralDate refDate);
 }

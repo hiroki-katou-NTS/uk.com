@@ -29,8 +29,8 @@ public class Approver36AgrByWorkplaceTest {
 				Helper.cid,
 				Helper.workplaceId,
 				Helper.period,
-				Helper.createApproverIds(1),
-				Helper.createConfirmerIds(1)
+				Helper.createApproverList(1),
+				Helper.createConfirmerList(1)
 		));
 	}
 
@@ -40,8 +40,8 @@ public class Approver36AgrByWorkplaceTest {
 				Helper.cid,
 				Helper.workplaceId,
 				Helper.period,
-				Helper.createApproverIds(0),
-				Helper.createConfirmerIds(1)
+				Helper.createApproverList(0),
+				Helper.createConfirmerList(1)
 		));
 	}
 
@@ -51,8 +51,8 @@ public class Approver36AgrByWorkplaceTest {
 				Helper.cid,
 				Helper.workplaceId,
 				Helper.period,
-				Helper.createApproverIds(6),
-				Helper.createConfirmerIds(1)
+				Helper.createApproverList(6),
+				Helper.createConfirmerList(1)
 		));
 	}
 
@@ -62,8 +62,8 @@ public class Approver36AgrByWorkplaceTest {
 				Helper.cid,
 				Helper.workplaceId,
 				Helper.period,
-				Helper.createApproverIds(1),
-				Helper.createConfirmerIds(6)
+				Helper.createApproverList(1),
+				Helper.createConfirmerList(6)
 		));
 	}
 
@@ -73,8 +73,8 @@ public class Approver36AgrByWorkplaceTest {
 				null,
 				null,
 				null,
-				Helper.createApproverIds(1),
-				Helper.createConfirmerIds(1)
+				Helper.createApproverList(1),
+				Helper.createConfirmerList(1)
 		));
 	}
 }
