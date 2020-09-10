@@ -48,46 +48,56 @@
                             <label data-bind="text: worktimeInfoWorkDays()"></label>
                         </div>
                     </div>
-                </div>
-                <div class="pull-left workday_labels">
-                    <div class="pull-left">
-                        <div tabindex="5"
-                             data-bind="ntsCheckBox: { checked: settingForHolidays }">#{i18n.getText('KSM005_85')}</div>
+                    <div class="pull-left workday_labels">
+                        <div class="pull-left">
+                            <div tabindex="5"
+                                 data-bind="ntsCheckBox: { checked: settingForHolidays }">#{i18n.getText('KSM005_85')}</div>
+                        </div>
+                    </div>
+                    <div class="pull-left workday_labels d-flex">
+                        <div class="pull-left lableData"></div>
+                        <button tabindex="6" class="pull-left large"
+                                data-bind="click: openDialogPublicHolidays, enable: visibleHolidaySetting()">#{i18n.getText('KSM005_23')}</button>
+                        <div class="pull-left contentDetail">
+                            <label data-bind="text: worktypeInfoPublicHolidays() "></label>
+                        </div>
                     </div>
                 </div>
-                <div class="pull-left workday_labels d-flex">
-                    <div class="pull-left lableData"></div>
-                    <button tabindex="6" class="pull-left large"
-                            data-bind="click: openDialogPublicHolidays, enable: visibleHolidaySetting()">#{i18n.getText('KSM005_23')}</button>
-                    <div class="pull-left contentDetail">
-                        <label data-bind="text: worktypeInfoPublicHolidays() "></label>
+                <com:ko-if bind=" hasWorkingDays() &amp;&amp; (hasNonStatutoryHolidays() || hasLegalHoliday())">
+                    <div class="pull-left workday_labels hr-line" >
+                        <div class="hr"></div>
+                    </div>
+                </com:ko-if>
+
+
+                <div data-bind="if: hasLegalHoliday()">
+                    <div class="pull-left workday_labels d-flex">
+                        <div class="pull-left lableData"
+                             data-bind="ntsFormLabel: {required: true}">
+                            <label>#{i18n.getText('KSM005_30')}</label>
+                        </div>
+                        <button tabindex="7" class="pull-left large"
+                                data-bind="click: openDialogStatutoryHolidays">#{i18n.getText('KSM005_23')}</button>
+                        <div class="pull-left contentDetail">
+                            <label data-bind="text: worktypeInfoStatutoryHolidays()"></label>
+                        </div>
                     </div>
                 </div>
-                <div class="pull-left workday_labels hr-line">
-                    <div class="hr"></div>
-                </div>
-                <div class="pull-left workday_labels d-flex">
-                    <div class="pull-left lableData"
-                         data-bind="ntsFormLabel: {required: true}">
-                        <label>#{i18n.getText('KSM005_30')}</label>
-                    </div>
-                    <button tabindex="7" class="pull-left large"
-                            data-bind="click: openDialogStatutoryHolidays, enable: hasLegalHoliday()">#{i18n.getText('KSM005_23')}</button>
-                    <div class="pull-left contentDetail">
-                        <label data-bind="text: worktypeInfoStatutoryHolidays()"></label>
-                    </div>
-                </div>
-                <div class="pull-left workday_labels d-flex">
-                    <div class="pull-left lableData"
-                         data-bind="ntsFormLabel: {required: true}">
-                        <label>#{i18n.getText('KSM005_31')}</label>
-                    </div>
-                    <button tabindex="8" class="pull-left large"
-                            data-bind="click: openDialogNoneStatutoryHolidays, enable: hasNonStatutoryHolidays()">#{i18n.getText('KSM005_23')}</button>
-                    <div class="pull-left contentDetail">
-                        <label data-bind="text: worktypeInfoNoneStatutoryHolidays()"></label>
+
+                <div data-bind="if: hasNonStatutoryHolidays()">
+                    <div class="pull-left workday_labels d-flex">
+                        <div class="pull-left lableData"
+                             data-bind="ntsFormLabel: {required: true}">
+                            <label>#{i18n.getText('KSM005_31')}</label>
+                        </div>
+                        <button tabindex="8" class="pull-left large"
+                                data-bind="click: openDialogNoneStatutoryHolidays">#{i18n.getText('KSM005_23')}</button>
+                        <div class="pull-left contentDetail">
+                            <label data-bind="text: worktypeInfoNoneStatutoryHolidays()"></label>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
 

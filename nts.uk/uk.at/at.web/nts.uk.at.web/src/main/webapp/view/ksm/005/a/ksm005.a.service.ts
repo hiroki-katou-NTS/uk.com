@@ -10,7 +10,7 @@ module nts.uk.at.view.ksm005.a {
             getItemOfMonth: "ctx/at/schedule/pattern/work/monthly/setting/getItemOfMonth",
             saveMonthWorkMonthlySetting: "ctx/at/schedule/pattern/work/monthly/setting/saveMonth",
 	        getMonthlyPattern : 'screen/at/schedule/monthly-pattern/get',
-	        getMonthlyAll: 'monthly/get/all'
+	        getMonthlyAll: 'monthly/get/all',
             getWorkStyle: 'screen/at/schedule/monthly-pattern/getworkstyle'
         }
         
