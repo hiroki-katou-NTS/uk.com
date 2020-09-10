@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -25,7 +25,7 @@ public class AppReflectOtHdWork extends AggregateRoot {
     /**
      * 休日出勤申請
      */
-    private HdWorkApplicationReflect holidayWorkAppReflect;
+    private HdWorkAppReflect holidayWorkAppReflect;
 
     /**
      * 残業申請

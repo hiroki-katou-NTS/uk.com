@@ -5,3 +5,7 @@
 #swap-up-down {
     height: 198px !important;
 }
+
+.grid-col-text-right {
+    text-align: right;
+}

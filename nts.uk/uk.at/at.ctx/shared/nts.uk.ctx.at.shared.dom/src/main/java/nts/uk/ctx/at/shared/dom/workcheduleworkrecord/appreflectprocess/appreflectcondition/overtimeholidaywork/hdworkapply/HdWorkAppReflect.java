@@ -4,10 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.AfterOtWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.BeforeOtWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -16,7 +12,7 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class HdWorkApplicationReflect extends AggregateRoot {
+public class HdWorkAppReflect {
     /**
      * 事前
      */
@@ -27,8 +23,8 @@ public class HdWorkApplicationReflect extends AggregateRoot {
      */
     private AfterHdWorkAppReflect after;
 
-    public static HdWorkApplicationReflect create(int reflectActualHolidayWorkAtr, int workReflect, int reflectPaytime, int reflectOptional, int reflectDivergence, int reflectBreakOuting) {
-        return new HdWorkApplicationReflect(
+    public static HdWorkAppReflect create(int reflectActualHolidayWorkAtr, int workReflect, int reflectPaytime, int reflectOptional, int reflectDivergence, int reflectBreakOuting) {
+        return new HdWorkAppReflect(
                 new BeforeHdWorkAppReflect(EnumAdaptor.valueOf(reflectActualHolidayWorkAtr, NotUseAtr.class)),
                 AfterHdWorkAppReflect.create(workReflect, reflectPaytime, reflectOptional, reflectDivergence, reflectBreakOuting)
         );

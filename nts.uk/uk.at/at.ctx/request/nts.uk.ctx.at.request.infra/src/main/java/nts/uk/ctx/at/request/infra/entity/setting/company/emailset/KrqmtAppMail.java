@@ -1,21 +1,26 @@
 package nts.uk.ctx.at.request.infra.entity.setting.company.emailset;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.primitive.PrimitiveValue;
-import nts.uk.ctx.at.request.dom.setting.company.emailset.*;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.AppEmailSet;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.Division;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.EmailContent;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.EmailSubject;
+import nts.uk.ctx.at.request.dom.setting.company.emailset.EmailText;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import java.util.Arrays;
-import java.util.Optional;
 
 @Entity
 @Table(name = "KRQMT_APP_MAIL")
@@ -76,7 +81,7 @@ public class KrqmtAppMail extends ContractUkJpaEntity {
                                 contentOTInstruction == null ? Optional.empty() : Optional.of(new EmailText(contentOTInstruction))
                         ),
                         new EmailContent(
-                                Division.LEAVE_INSTRUCTION,
+                                Division.HOLIDAY_WORK_INSTRUCTION,
                                 subjectHDInstruction == null ? Optional.empty() : Optional.of(new EmailSubject(subjectHDInstruction)),
                                 contentHDInstruction == null ? Optional.empty() : Optional.of(new EmailText(contentHDInstruction))
                         )
@@ -102,7 +107,7 @@ public class KrqmtAppMail extends ContractUkJpaEntity {
                     entity.subjectOTInstruction = email.getOpEmailSubject().map(PrimitiveValue::v).orElse(null);
                     entity.contentOTInstruction = email.getOpEmailText().map(PrimitiveValue::v).orElse(null);
                     break;
-                case LEAVE_INSTRUCTION:
+                case HOLIDAY_WORK_INSTRUCTION:
                     entity.subjectHDInstruction = email.getOpEmailSubject().map(PrimitiveValue::v).orElse(null);
                     entity.contentHDInstruction = email.getOpEmailText().map(PrimitiveValue::v).orElse(null);
                     break;
@@ -127,7 +132,7 @@ public class KrqmtAppMail extends ContractUkJpaEntity {
                     this.subjectOTInstruction = email.getOpEmailSubject().map(PrimitiveValue::v).orElse(null);
                     this.contentOTInstruction = email.getOpEmailText().map(PrimitiveValue::v).orElse(null);
                     break;
-                case LEAVE_INSTRUCTION:
+                case HOLIDAY_WORK_INSTRUCTION:
                     this.subjectHDInstruction = email.getOpEmailSubject().map(PrimitiveValue::v).orElse(null);
                     this.contentHDInstruction = email.getOpEmailText().map(PrimitiveValue::v).orElse(null);
                     break;

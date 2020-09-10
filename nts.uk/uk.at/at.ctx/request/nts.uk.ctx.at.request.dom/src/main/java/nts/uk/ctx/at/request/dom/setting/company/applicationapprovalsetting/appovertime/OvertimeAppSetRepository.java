@@ -7,7 +7,6 @@ import java.util.Optional;
 
 public interface OvertimeAppSetRepository {
     Optional<OvertimeAppSet> findSettingByCompanyId(String companyId);
-    Optional<OtWorkAppReflect> findReflectByCompanyId(String companyId);
     void saveOvertimeAppSet(OvertimeAppSet overtimeAppSet, OtWorkAppReflect overtimeWorkAppReflect);
     List<OvertimeQuotaSetUse> getOvertimeQuotaSetting(String companyId);
     void saveOvertimeQuotaSet(String companyId, List<OvertimeQuotaSetUse> overtimeQuotaSet);

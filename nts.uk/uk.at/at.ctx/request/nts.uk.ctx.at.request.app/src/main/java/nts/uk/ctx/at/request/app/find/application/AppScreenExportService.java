@@ -24,9 +24,10 @@ public class AppScreenExportService extends ExportService<AppScreenQuery> {
 		AppScreenQuery query = context.getQuery();
 		int appListAtr = query.getAppListAtr();
 		AppListInfoCmd lstApp = query.getLstApp();
+		String programName = query.getProgramName();
 		FileGeneratorContext exportContext = context.getGeneratorContext();
 
-		generator.generate(exportContext, appListAtr, lstApp.toDomain());
+		generator.generate(exportContext, appListAtr, lstApp.toDomain(), programName);
 	}
 
 }

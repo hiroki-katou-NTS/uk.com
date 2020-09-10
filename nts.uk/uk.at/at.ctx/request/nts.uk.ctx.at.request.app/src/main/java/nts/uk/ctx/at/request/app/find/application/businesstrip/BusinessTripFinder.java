@@ -527,5 +527,4 @@ public class BusinessTripFinder {
         businessTripService.businessTripIndividualCheck(businessTrip.getInfos());
     }
 
-
 }

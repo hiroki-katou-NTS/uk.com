@@ -72,7 +72,7 @@ export class CmmS45CComponent extends Vue {
                 }
             }
         });
-        
+
         Object.defineProperty(self.appState, 'getClass', {
             get() {
                 switch (this.appStatus) {
@@ -115,42 +115,42 @@ export class CmmS45CComponent extends Vue {
         let self = this;
         self.selected = 0;
         self.$http.post('at', API.getDetailMob, self.currentApp)
-        .then((successData: any) => {
-            self.appTransferData.appDispInfoStartupOutput = successData.data;
-            let appDetailScreenInfoDto: AppDetailScreenInfo = successData.data.appDetailScreenInfo;
-            self.createPhaseLst(appDetailScreenInfoDto.approvalLst);
-            self.appState.appStatus = appDetailScreenInfoDto.reflectPlanState;
-            self.appState.reflectStatus = appDetailScreenInfoDto.reflectPlanState;
-            self.appState.version = appDetailScreenInfoDto.application.version;
-            self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
-            self.appType = appDetailScreenInfoDto.application.appType;
-            self.$mask('hide');
-        }).catch((res: any) => {
-            self.$mask('hide');
-            if (res.messageId == 'Msg_426') {
-                self.$modal.error('Msg_426').then(() => {
-                    self.back();
-                });    
-            } else {
-                // self.$modal.error(res.message).then(() => {
-                //     self.back();
-                // }); 
-                let promise ;
-                if (res.messageId) {
-                    promise = self.$modal.error({ messageId: res.messageId });
+            .then((successData: any) => {
+                self.appTransferData.appDispInfoStartupOutput = successData.data;
+                let appDetailScreenInfoDto: AppDetailScreenInfo = successData.data.appDetailScreenInfo;
+                self.createPhaseLst(appDetailScreenInfoDto.approvalLst);
+                self.appState.appStatus = appDetailScreenInfoDto.reflectPlanState;
+                self.appState.reflectStatus = appDetailScreenInfoDto.reflectPlanState;
+                self.appState.version = appDetailScreenInfoDto.application.version;
+                self.reversionReason = appDetailScreenInfoDto.application.opReversionReason;
+                self.appType = appDetailScreenInfoDto.application.appType;
+                self.$mask('hide');
+            }).catch((res: any) => {
+                self.$mask('hide');
+                if (res.messageId == 'Msg_426') {
+                    self.$modal.error('Msg_426').then(() => {
+                        self.back();
+                    });
                 } else {
-
-                    if (_.isArray(res.errors)) {
-                        promise = self.$modal.error({ messageId: res.errors[0].messageId });
+                    // self.$modal.error(res.message).then(() => {
+                    //     self.back();
+                    // }); 
+                    let promise;
+                    if (res.messageId) {
+                        promise = self.$modal.error({ messageId: res.messageId });
                     } else {
-                        promise = self.$modal.error({ messageId: res.errors.messageId });
+
+                        if (_.isArray(res.errors)) {
+                            promise = self.$modal.error({ messageId: res.errors[0].messageId });
+                        } else {
+                            promise = self.$modal.error({ messageId: res.errors.messageId });
+                        }
                     }
+                    promise.then(() => {
+                        self.back();
+                    });
                 }
-                promise.then(() => {
-                    self.back();
-                });
-            }
-        });
+            });
     }
 
     // tạo dữ liệu người phê duyệt
@@ -176,7 +176,7 @@ export class CmmS45CComponent extends Vue {
         if (returnPhase) {
             return returnPhase.phaseOrder - 1;
         }
-        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst, 
+        let unapprovePhaseLst: Array<Phase> = _.filter(self.phaseLst,
             (phase: Phase) => phase.approvalAtrValue == 0 || phase.approvalAtrValue == 4);
         if (unapprovePhaseLst.length > 0) {
             return _.sortBy(unapprovePhaseLst, 'phaseOrder').reverse()[0].phaseOrder - 1;
@@ -242,7 +242,7 @@ export class CmmS45CComponent extends Vue {
         if (self.$router.currentRoute.name == 'cmms45a') {
             self.$close(self.params);
         } else {
-            self.$goto('cmms45a', { 'CMMS45_FromMenu': false});   
+            self.$goto('cmms45a', { 'CMMS45_FromMenu': false });
         }
     }
 
@@ -265,14 +265,14 @@ export class CmmS45CComponent extends Vue {
                         self.$modal.error(res.messageId).then(() => {
                             self.back();
                         });
-                    });               
+                    });
                 }
             });
     }
 
     // hiển thị nút xóa đơn
     public get displayDeleteButton() {
-        let self  = this;
+        let self = this;
 
         return self.appState.reflectStatus == 0 || self.appState.reflectStatus == 5;
     }
@@ -288,16 +288,19 @@ export class CmmS45CComponent extends Vue {
     public get displayEditFloat() {
         let self = this;
 
-        return self.displayDeleteButton || self.displayUpdateButton;    
+        return self.displayDeleteButton || self.displayUpdateButton;
     }
-    
+
     // tiến tới màn chi tiết KAF005
     public updateApp(): void {
         const self = this;
         switch (self.appType) {
-            case 2: 
-                self.$goto('kafs07a', self.appTransferData.appDetail); 
+            case 2:
+                self.$goto('kafs07a', self.appTransferData.appDetail);
                 break;
+            // case 3:
+            //     self.$goto('kafs08a', self.appTransferData.appDetail);
+            //     break;
             case 4:
                 self.$goto('kafs09a', self.appTransferData.appDetail);
                 break;
@@ -338,7 +341,7 @@ export class CmmS45CComponent extends Vue {
             return false;
         } else {
             return true;
-        } 
+        }
     }
 
     get representer() {
@@ -347,7 +350,7 @@ export class CmmS45CComponent extends Vue {
             return false;
         }
         if (vm.representerDisp) {
-            return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.opEmployeeInfo.bussinessName;      
+            return vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.opEmployeeInfo.bussinessName;
         }
 
         return '';
@@ -402,7 +405,7 @@ export class CmmS45CComponent extends Vue {
             case AppType.OPTIONAL_ITEM_APPLICATION:
                 return AppTypeName.OPTIONAL_ITEM_APPLICATION;
                 break;
-            default: 
+            default:
                 return '';
                 break;
         }
@@ -431,7 +434,7 @@ export class CmmS45CComponent extends Vue {
         }
         let appDate = vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.inputDate;
 
-        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm'); 
+        return vm.$dt(new Date(appDate), 'YYYY/MM/DD hh:mm');
     }
 
     get comboReasonDisp() {
@@ -459,8 +462,8 @@ export class CmmS45CComponent extends Vue {
         }
         let dropdownList = vm.appTransferData.appDispInfoStartupOutput.appDispInfoNoDateOutput.reasonTypeItemLst,
             opComboReason = _.find(dropdownList, (o: any) => {
-            return o.appStandardReasonCD == vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD;
-        });
+                return o.appStandardReasonCD == vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD;
+            });
         if (opComboReason) {
             return opComboReason.opReasonForFixedForm;
         }

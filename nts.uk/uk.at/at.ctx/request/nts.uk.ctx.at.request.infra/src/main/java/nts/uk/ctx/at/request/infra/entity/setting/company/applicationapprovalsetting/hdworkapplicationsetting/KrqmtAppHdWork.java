@@ -11,10 +11,9 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.over
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeLeaveAppCommonSet;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.AfterHdWorkAppReflect;
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.BeforeHdWorkAppReflect;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import org.apache.commons.lang3.BooleanUtils;
 
 import javax.persistence.*;
@@ -131,8 +130,8 @@ public class KrqmtAppHdWork extends ContractUkJpaEntity implements Serializable 
         );
     }
 
-    public HdWorkApplicationReflect toHolidayWorkAppReflect() {
-        return new HdWorkApplicationReflect(
+    public HdWorkAppReflect toHolidayWorkAppReflect() {
+        return new HdWorkAppReflect(
                 new BeforeHdWorkAppReflect(EnumAdaptor.valueOf(preInputTimeReflectAtr, NotUseAtr.class)),
                 AfterHdWorkAppReflect.create(
                         postWorkTimeReflectAtr,
@@ -144,7 +143,7 @@ public class KrqmtAppHdWork extends ContractUkJpaEntity implements Serializable 
         );
     }
 
-    public static KrqmtAppHdWork create(HolidayWorkAppSet holidayWorkAppSet, HdWorkApplicationReflect holidayWorkAppReflect) {
+    public static KrqmtAppHdWork create(HolidayWorkAppSet holidayWorkAppSet, HdWorkAppReflect holidayWorkAppReflect) {
         return new KrqmtAppHdWork(
                 holidayWorkAppSet.getCompanyID(),
                 holidayWorkAppSet.getCalcStampMiss().value,
@@ -189,7 +188,7 @@ public class KrqmtAppHdWork extends ContractUkJpaEntity implements Serializable 
         endWorkTimeIniAtr = BooleanUtils.toInteger(domain.getApplicationDetailSetting().isDispSystemTimeWhenNoWorkTime());
     }
 
-    public void updateReflect(HdWorkApplicationReflect domain) {
+    public void updateReflect(HdWorkAppReflect domain) {
         preInputTimeReflectAtr = domain.getBefore().getReflectActualHolidayWorkAtr().value;
         postWorkTimeReflectAtr = domain.getAfter().getWorkReflect().value;
         postBpTimeReflectAtr = domain.getAfter().getOthersReflect().getReflectPaytimeAtr().value;

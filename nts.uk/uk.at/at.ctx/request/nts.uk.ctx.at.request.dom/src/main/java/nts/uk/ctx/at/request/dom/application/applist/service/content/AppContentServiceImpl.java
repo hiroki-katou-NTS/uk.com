@@ -66,7 +66,7 @@ public class AppContentServiceImpl implements AppContentService {
 			ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
 		String result = Strings.EMPTY;
 		String paramString = Strings.EMPTY;
-		if(screenAtr != ScreenAtr.KAF018 || screenAtr != ScreenAtr.CMM045) {
+		if(screenAtr != ScreenAtr.KAF018 && screenAtr != ScreenAtr.CMM045) {
 			// @＝改行
 			paramString = "\n";
 		} else {
@@ -201,7 +201,7 @@ public class AppContentServiceImpl implements AppContentService {
 			List<StampAppOutputTmp> stampAppOutputTmpLst, ApplicationType appType, AppStandardReasonCode appStandardReasonCD) {
 		String result = Strings.EMPTY;
 		String paramString = Strings.EMPTY;
-		if(screenAtr != ScreenAtr.KAF018 || screenAtr != ScreenAtr.CMM045) {
+		if(screenAtr != ScreenAtr.KAF018 && screenAtr != ScreenAtr.CMM045) {
 			// @＝改行
 			paramString = "\n";
 		} else {
@@ -258,7 +258,7 @@ public class AppContentServiceImpl implements AppContentService {
 				result += workTimeStart1.getInDayTimeWithFormat();
 			} else if(appType == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
 				// 申請内容　+＝#CMM045_259＋’　’ ( Nội dung đơn xin　+＝#CMM045_259)
-				result += I18NText.getText("CMM045_259");
+				result += I18NText.getText("CMM045_259") + " ";
 			}
 		}
 		// Input．勤務直帰1をチェック
@@ -333,6 +333,15 @@ public class AppContentServiceImpl implements AppContentService {
 						ScreenAtr.CMM045, 
 						companyID);
 				listOfApp.setAppContent(contentArrivedLateLeaveEarly);
+				break;
+			case BUSINESS_TRIP_APPLICATION:
+				// 出張申請データを作成(Tạo data của 出張申請 )
+				String contentBusinessTrip = appContentDetailCMM045.createBusinessTripData(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						ScreenAtr.CMM045, 
+						companyID);
+				listOfApp.setAppContent(contentBusinessTrip);
 				break;
 			default:
 				listOfApp.setAppContent("-1");
