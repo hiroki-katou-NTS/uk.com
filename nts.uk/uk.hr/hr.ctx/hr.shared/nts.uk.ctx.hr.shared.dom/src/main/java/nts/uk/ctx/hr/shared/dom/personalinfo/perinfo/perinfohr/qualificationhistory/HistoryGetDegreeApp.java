@@ -1,6 +1,5 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -23,7 +22,7 @@ public class HistoryGetDegreeApp {
 	@Inject
 	private PersonalInformationRepository recordRepo;
 	
-	public HashMap<Long, List<Holder>> get(HistoryGetDegreeInput input) {
+	public List<HistoryGetDegreeOutput> get(HistoryGetDegreeInput input) {
 		
 		HistoryGetDegreeRequireImpl require = new HistoryGetDegreeRequireImpl(recordRepo);
 		

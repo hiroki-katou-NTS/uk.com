@@ -1,6 +1,5 @@
 package nts.uk.ctx.hr.shared.ws.personalinfo.perinfo.perinfohr;
 
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -24,7 +23,7 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.Upda
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo.UpdatePersonInfoHRInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeApp;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeInput;
-import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.Holder;
+import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HistoryGetDegreeOutput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationApp;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationInput;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory.HoldingQualificationOutput;
@@ -107,7 +106,7 @@ public class PersonInfoTestWebService extends WebService {
 	
 	@POST
 	@Path("getHistoryGetDegree")
-	public HashMap<Long, List<Holder>> testHistoryGetDegree(HistoryGetDegreeInput input) {
+	public List<HistoryGetDegreeOutput> testHistoryGetDegree(HistoryGetDegreeInput input) {
 		return historyGetDegreeApp.get(input);
 	}
 }

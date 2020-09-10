@@ -99,58 +99,6 @@ public class HoldingQualification {
 			}
 		}
 
-//		informations.stream()
-//			.forEach(m -> {
-//				String key = m.getSid().map(c -> c).orElse("");
-//				
-//				if (!hashList.containsKey(key)) {
-//					hashList.put(key, new ArrayList<EligibilityQualification>());
-//				}
-//				
-//				List<EligibilityQualification> eligibilities = hashList.get(key);
-//				
-//				EligibilityQualification eligibility = new EligibilityQualification();
-//				
-//				eligibility.setQualificationCd(String.valueOf(m.getSelectId01()));
-//				eligibility.setQualificationId(m.getSelectCode01().map(s -> s).orElse(""));
-//				
-//				if (getEndDate) {
-//					eligibility.setEndDate(m.getEndDate());
-//				}	
-//				
-//				if (category && getNameMaster) {
-//					eligibility.setDivisionName(m.getSelectName02().map(c -> c).orElse(""));
-//					eligibility.setQualificationName(m.getSelectName01().map(c -> c).orElse(""));
-//					eligibility.setCategoryCd(m.getSelectCode02().map(c -> c).orElse(""));
-//	
-//				} else {
-//		
-//					if (getNameMaster) {
-//						eligibility.setQualificationName(m.getSelectName01().map(c -> c).orElse(""));
-//					}
-//		
-//					if (category) {
-//						eligibility.setCategoryCd(m.getSelectCode02().map(c -> c).orElse(""));
-//					}
-//				}
-//				
-//				
-//				if (getRank) {
-//					eligibility.setQualificationRank(m.getStr03().map(c -> c).orElse(""));
-//				}
-//
-//				if (getnumber) {
-//					eligibility.setQualificationNumber(m.getStr04().map(c -> c).orElse(""));
-//				}
-//
-//				if (getQualifiedOrganization) {
-//					eligibility.setQualificationOrganization(m.getStr05().map(c -> c).orElse(""));
-//				}
-//				
-//				eligibilities.add(eligibility);
-//				
-//			});
-
 		return outputs;
 	}
 

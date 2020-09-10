@@ -1,7 +1,6 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.qualificationhistory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
@@ -16,76 +15,55 @@ import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
  */
 public class HistoryGetDegree {
 
-	public static HashMap<Long, List<Holder>> get(Require require, GeneralDate baseDate, String cId,
+	public static List<HistoryGetDegreeOutput> get(Require require, GeneralDate baseDate, String cId,
 			List<String> qualificationIds, boolean getEmployeeCode, boolean getEmployeeName) {
 
-		HashMap<Long, List<Holder>> hashList = new HashMap<Long, List<Holder>>();
+		List<HistoryGetDegreeOutput> outputs = new ArrayList<>();
 
-		List<PersonalInformation> informations1 = require.getLstPersonInfoByQualificationIds(cId, qualificationIds, 8,
+		List<PersonalInformation> informations = require.getLstPersonInfoByQualificationIds(cId, qualificationIds, 8,
 				baseDate);
 
-		if (informations1 == null) {
-			return hashList;
+		if (informations == null) {
+			return outputs;
 		}
 
-		boolean check = false;
+		if (!qualificationIds.isEmpty()) {
+			for (int i = 0; i < qualificationIds.size(); i++) {
+				String qualificationId = qualificationIds.get(i);
+				List<Holder> holders = new ArrayList<>();
+				for (int j = 0; j < informations.size(); j++) {
+					PersonalInformation information = informations.get(j);
+					if (information.getSelectId01() != null) {
+						if (qualificationId.equals(String.valueOf(information.getSelectId01()))) {
 
-		List<PersonalInformation> informations = new ArrayList<>();
+							Holder holder = new Holder();
 
-		for (int i = 0; i < qualificationIds.size(); i++) {
-			for (int j = 0; j < informations1.size(); j++) {
-				if (String.valueOf(informations1.get(j).getSelectId01()).equals(qualificationIds.get(i))) {
-					informations.add(informations1.get(j));
-					check = true;
-				}
-				if (j == informations1.size() - 1) {
-					if (!check) {
-						PersonalInformation information = new PersonalInformation();
-						information.setSelectId01(Long.valueOf(qualificationIds.get(i)));
-						informations.add(information);
-						check = false;
-					} else {
-						check = false;
+							if (information.getSid() != null) {
+								holder.setEmployeeId(information.getSid().map(c -> c).orElse(""));
+							}
+
+							if (getEmployeeCode) {
+								if (information.getScd() != null) {
+									holder.setEmployeeCd(information.getScd().map(c -> c).orElse(""));
+								}
+							}
+
+							if (getEmployeeName) {
+								if (information.getPersonName() != null) {
+									holder.setEmployeeName(information.getPersonName().map(c -> c).orElse(""));
+								}
+							}
+
+							holders.add(holder);
+						}
 					}
 				}
+				HistoryGetDegreeOutput historyGetDegreeOutput = new HistoryGetDegreeOutput(qualificationId, holders);
+				outputs.add(historyGetDegreeOutput);
 			}
 		}
 
-		if (informations == null) {
-			return hashList;
-		}
-
-		informations.stream().forEach(m -> {
-			Long key = m.getSelectId01();
-
-			if (!hashList.containsKey(key)) {
-				hashList.put(key, new ArrayList<Holder>());
-			}
-
-			List<Holder> holders = hashList.get(key);
-
-			Holder holder = new Holder();
-
-			if (m.getSid() != null) {
-				holder.setEmployeeId(m.getSid().map(c -> c).orElse(""));
-			}
-
-			if (getEmployeeCode) {
-				if (m.getScd() != null) {
-					holder.setEmployeeCd(m.getScd().map(c -> c).orElse(""));
-				}
-			}
-
-			if (getEmployeeName) {
-				if (m.getPersonName() != null) {
-					holder.setEmployeeName(m.getPersonName().map(c -> c).orElse(""));
-				}
-			}
-			holders.add(holder);
-
-		});
-
-		return hashList;
+		return outputs;
 	}
 
 	public static interface Require {

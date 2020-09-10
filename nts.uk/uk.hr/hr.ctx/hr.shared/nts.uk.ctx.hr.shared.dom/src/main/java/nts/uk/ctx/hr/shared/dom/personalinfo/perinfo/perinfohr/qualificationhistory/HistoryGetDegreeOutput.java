@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
  *
  */
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class HoldingQualificationOutput {
+public class HistoryGetDegreeOutput {
+
+	private String qualificationId;
 	
-	private String sid;
-	
-	private List<EligibilityQualification> eligibilityQualifications;
+	private List<Holder> holers;
 	
 }
