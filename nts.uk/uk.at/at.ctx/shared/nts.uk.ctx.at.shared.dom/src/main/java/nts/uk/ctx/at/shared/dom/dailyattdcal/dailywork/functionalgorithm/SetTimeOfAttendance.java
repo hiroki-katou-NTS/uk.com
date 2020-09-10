@@ -82,7 +82,7 @@ public class SetTimeOfAttendance {
 
 	private boolean compareWorkInfo(WorkInformation recordInfo, WorkInformation scheduleInfo) {
 
-		if (recordInfo.getWorkTypeCode().v() == scheduleInfo.getWorkTimeCode().v()
+		if (recordInfo.getWorkTypeCode().v() == scheduleInfo.getWorkTypeCode().v()
 				&& ((recordInfo.getWorkTimeCode() == null && scheduleInfo.getWorkTimeCode() == null)
 						|| (recordInfo.getWorkTimeCode() != null && scheduleInfo.getWorkTimeCode() != null)
 								&& recordInfo.getWorkTimeCode().v().equals(scheduleInfo.getWorkTimeCode().v()))) {
