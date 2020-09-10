@@ -174,7 +174,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 //			勤務予定基本情報.勤務予定時間帯
 			List<WorkScheduleTimeZone> workScheduleTimeZones = x.getWorkScheduleTimeZones();
 			Optional<WorkScheduleTimeZone> with1 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 1).findFirst();
-			Optional<WorkScheduleTimeZone> with2 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 1).findFirst();
+			Optional<WorkScheduleTimeZone> with2 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 2).findFirst();
 			with1.ifPresent(a -> {
 				record.setScheduleStartClock1(a.getScheduleStartClock());
 				record.setScheduleEndClock1(a.getScheduleEndClock());
