@@ -31,9 +31,9 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
-        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualTo(result.getWorkCreateMethod());
-        assertThat(workInformation).isEqualTo(result.getWorkInformation());
+        assertThat(result.getDate()).isEqualTo(GeneralDate.today());
+        assertThat(result.getWorkCreateMethod()).isEqualTo(WorkCreateMethod.WEEKLY_WORK);
+        assertThat(result.getWorkInformation()).isEqualTo(workInformation);
     }
 
     @Test
@@ -48,9 +48,9 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
-        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualTo(result.getWorkCreateMethod());
-        assertThat(workInformation).isEqualTo(result.getWorkInformation());
+        assertThat(result.getDate()).isEqualTo(GeneralDate.today());
+        assertThat(result.getWorkCreateMethod()).isEqualTo(WorkCreateMethod.WEEKLY_WORK);
+        assertThat(result.getWorkInformation()).isEqualTo(workInformation);
     }
 
     @Test
@@ -65,9 +65,9 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
-        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualTo(result.getWorkCreateMethod());
-        assertThat(workHolidayWorkInfor).isEqualTo(result.getWorkInformation());
+        assertThat(result.getDate()).isEqualTo(GeneralDate.today());
+        assertThat(result.getWorkCreateMethod()).isEqualTo(WorkCreateMethod.PUB_HOLIDAY);
+        assertThat(result.getWorkInformation()).isEqualTo(workHolidayWorkInfor);
     }
 
     @Test
@@ -78,9 +78,9 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
-        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualTo(result.getWorkCreateMethod());
-        assertThat(workInformation).isEqualTo(result.getWorkInformation());
+        assertThat(result.getDate()).isEqualTo(GeneralDate.today());
+        assertThat(result.getWorkCreateMethod()).isEqualTo(WorkCreateMethod.PUB_HOLIDAY);
+        assertThat(result.getWorkInformation()).isEqualTo(workInformation);
     }
 
     @Test
@@ -95,9 +95,9 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
-        assertThat(WorkCreateMethod.PUB_HOLIDAY).isEqualTo(result.getWorkCreateMethod());
-        assertThat(workInformation).isEqualTo(result.getWorkInformation());
+        assertThat(result.getDate()).isEqualTo(GeneralDate.today());
+        assertThat(result.getWorkCreateMethod()).isEqualTo(WorkCreateMethod.PUB_HOLIDAY);
+        assertThat(result.getWorkInformation()).isEqualTo(workInformation);
     }
 
     @Test
@@ -112,9 +112,9 @@ public class ReflectionImageTest {
 
         val result = target.getListRefOrdByDate().get(0);
 
-        assertThat(GeneralDate.today()).isEqualTo(result.getDate());
-        assertThat(WorkCreateMethod.WEEKLY_WORK).isEqualTo(result.getWorkCreateMethod());
-        assertThat(workInformation).isEqualTo(result.getWorkInformation());
+        assertThat(result.getDate()).isEqualTo(GeneralDate.today());
+        assertThat(result.getWorkCreateMethod()).isEqualTo(WorkCreateMethod.WEEKLY_WORK);
+        assertThat(result.getWorkInformation()).isEqualTo(workInformation);
     }
 
     @Test
@@ -133,9 +133,9 @@ public class ReflectionImageTest {
         val result = target.addInWorkCycle(GeneralDate.max(),wrkCycleWorkInfo);
 
         assertThat(result).isEqualTo(true);
-        assertThat(GeneralDate.max()).isEqualTo(target.getListRefOrdByDate().get(0).getDate());
-        assertThat(WorkCreateMethod.WORK_CYCLE).isEqualTo(target.getListRefOrdByDate().get(0).getWorkCreateMethod());
-        assertThat(wrkCycleWorkInfo).isEqualTo(target.getListRefOrdByDate().get(0).getWorkInformation());
+        assertThat(target.getListRefOrdByDate().get(0).getDate()).isEqualTo(GeneralDate.max());
+        assertThat(target.getListRefOrdByDate().get(0).getWorkCreateMethod()).isEqualTo(WorkCreateMethod.WORK_CYCLE);
+        assertThat(target.getListRefOrdByDate().get(0).getWorkInformation()).isEqualTo(wrkCycleWorkInfo);
     }
 
     @Test
