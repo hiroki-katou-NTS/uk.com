@@ -1114,8 +1114,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 if (dateInfo.htmlTooltip != null) {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-event'></div>";
-                    let heightToolTip = 22 + 22 + (dateInfo.listSpecDayNameCompany.length == 0 ? 22 : 22 *dateInfo.listSpecDayNameCompany.length) + (dateInfo.listSpecDayNameWorkplace.length == 0 ? 22 : 22 *dateInfo.listSpecDayNameWorkplace.length) + 5; //22 là chiều cao 1 row của table trong tooltip
-                    htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip, heightToolTip));
+                    htmlToolTip.push(new HtmlToolTip('_' + ymd, dateInfo.htmlTooltip));
                 } else {
                     objDetailHeaderDs['_' + ymd] = "<div class='header-image-no-event'></div>";
                 }
@@ -1327,9 +1326,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                                 let objTooltip = _.filter(htmlToolTip, function(o) { return o.key == ui.columnKey; });
                                 if (objTooltip.length > 0) {
                                     let heightToolTip = objTooltip[0].heightToolTip;
-                                    ui.tooltip("show", $("<div/>").css({ width: "200px", height: heightToolTip + "px" }).html(objTooltip[0].value));
+                                    ui.tooltip("show", $("<div/>").css({ width: "max-content", height: "max-content" }).html(objTooltip[0].value));
                                 } else {
-                                    ui.tooltip("show", $("<div/>").css({ width: "60px", height: 60 + "px" }).html(''));
+                                    ui.tooltip("show", $("<div/>").css({ width: "60px", height: "60px" }).html(''));
                                 }
                             }
                         },
@@ -2464,11 +2463,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
     class HtmlToolTip {
         key: string;
         value: string;
-        heightToolTip: number;
-        constructor(key: string, value: string, heightToolTip: number) {
+        constructor(key: string, value: string) {
             this.key = key;
             this.value = value;
-            this.heightToolTip = heightToolTip;
         }
     }
 
