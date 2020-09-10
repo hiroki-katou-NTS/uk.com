@@ -190,17 +190,6 @@ public class ClassificationPubImp implements SyClassificationPub {
 		
 		return result;
 	}
-	
-	@Override
-	public List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
-		List<AffClassHistItem> listAffClassHistItem = affClassHistItemRepository.searchClassification(listempID, baseDate, new ArrayList<>());
-		if (listAffClassHistItem.isEmpty()) {
-			return new ArrayList<>();
-		}
-		return listAffClassHistItem.stream().map(mapper -> {
-			return new EmpClassifiExport(mapper.getEmployeeId(), mapper.getClassificationCode().toString());
-		}).collect(Collectors.toList());
-	}
 
 	@Override
 	public List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
