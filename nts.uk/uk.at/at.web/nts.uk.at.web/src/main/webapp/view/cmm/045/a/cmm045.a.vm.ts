@@ -403,12 +403,16 @@ module cmm045.a.viewmodel {
                     }
                 });
                 _.uniqBy(self.itemApplication(), ['appType', 'appName']);
-				let newParam = {
+				let newParam: any = {
 					mode: self.mode(),
 					device: 0,
 					listOfAppTypes: data,
 					appListExtractCondition: self.appListExtractConditionDto
                 };
+				if(paramSprCmm045 !== undefined && paramSprCmm045 !== null) {
+					newParam.startDate = paramSprCmm045.startDate;
+					newParam.endDate = paramSprCmm045.endDate;
+				}
 
                 // self.itemList()
 				return service.getApplicationList(newParam);
