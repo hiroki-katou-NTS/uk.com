@@ -151,10 +151,11 @@ module nts.uk.at.view.kdl023.base.service {
 
         export interface WorkInformationDto {
             workTypeCode: string;
+            workTypeName: string;
             workTimeCode: string;
+            workTimeName: string;
         }
-
-        export interface WorkInformationDto {
+        export interface WorkInformationToRegis {
             workTypeCode: string;
             workTimeCode: string;
         }
@@ -185,7 +186,7 @@ module nts.uk.at.view.kdl023.base.service {
         }
 
         export interface WorkMonthlySetting {
-            workInformation: WorkInformationDto;
+            workInformation: WorkInformationToRegis;
             ymdk: string;
             monthlyPatternCode: string;
         }

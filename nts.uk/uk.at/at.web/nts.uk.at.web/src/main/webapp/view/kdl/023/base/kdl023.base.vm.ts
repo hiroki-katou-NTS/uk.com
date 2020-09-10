@@ -19,6 +19,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import MonthlyPatternRegisterCommand = nts.uk.at.view.kdl023.base.service.model.MonthlyPatternRegisterCommand;
     import WorkMonthlySetting = nts.uk.at.view.kdl023.base.service.model.WorkMonthlySetting;
     import WorkInformationDto = nts.uk.at.view.kdl023.base.service.model.WorkInformationDto;
+    import WorkInformationToRegis = nts.uk.at.view.kdl023.base.service.model.WorkInformationToRegis;
     const CONST = {
         DATE_FORMAT: 'yyyy-MM-yy',
         YEAR_MONTH: 'yyyy/MM'
@@ -1117,6 +1118,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             else {
                 self.isExecMode(false);
                 self.setPatternRange(self.shared.patternStartDate).done(() => dfd.resolve());
+                self.loadHolidayList().done(() => dfd.resolve());
             }
             //set data startup windows
             self.setDataLoadWindows(self.isExecMode());
@@ -1181,8 +1183,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
             let backgroundColor = 'white';
             let listText: Array<string> = [
-                refImage.workInformation.workTypeCode ? refImage.workInformation.workTypeCode : '',
-                refImage.workInformation.workTimeCode ? refImage.workInformation.workTimeCode : ''];
+                refImage.workInformation.workTypeName ? refImage.workInformation.workTypeName : '',
+                refImage.workInformation.workTimeName ? refImage.workInformation.workTimeName : ''];
             let result:OptionDate = {
                 start: moment(start).format('YYYY-MM-DD'),
                 textColor: textColor,
@@ -1193,7 +1195,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         private setMonthlySetting(refImage: RefImageEachDayDto):WorkMonthlySetting{
-            let workInformation:WorkInformationDto = {
+            let workInformation:WorkInformationToRegis = {
                 workTypeCode: refImage.workInformation.workTypeCode,
                 workTimeCode: refImage.workInformation.workTimeCode
             }
@@ -1227,7 +1229,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     });
                 }
 
-            }
+            });
         }
     }
 
