@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
  * The primary key class for the KFNMT_RPT_WK_ATD_OUTFRAME database table.
  * 
  */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
@@ -74,5 +75,13 @@ public class KfnmtRptWkAtdOutframePK implements Serializable {
 		hash = hash * prime + ((int) (this.position ^ (this.position >>> 32)));
 
 		return hash;
+	}
+
+	public String getLayoutId() {
+		return layoutId;
+	}
+
+	public void setLayoutId(String layoutId) {
+		this.layoutId = layoutId;
 	}
 }

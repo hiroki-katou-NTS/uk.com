@@ -423,6 +423,7 @@ module nts.uk.com.view.kwr002.b {
         nameUseAtr: number;
         exportFontSize: number;
         layoutId: string;
+        itemSelType: number;
     }
 
     export class AttendanceRecordExportSetting {
@@ -432,6 +433,7 @@ module nts.uk.com.view.kwr002.b {
         nameUseAtr: KnockoutObservable<number>;
         exportFontSize: KnockoutObservable<number>;
         layoutId: KnockoutObservable<string>;
+        itemSelType: KnockoutObservable<number>;
 
         constructor(param: IARES) {
             let self = this;
@@ -441,6 +443,7 @@ module nts.uk.com.view.kwr002.b {
             self.nameUseAtr = ko.observable(param.nameUseAtr);
             self.exportFontSize = ko.observable(param.exportFontSize);
             self.layoutId = ko.observable(param.layoutId);
+            self.itemSelType = ko.observable(param.itemSelType);
         };
 
 

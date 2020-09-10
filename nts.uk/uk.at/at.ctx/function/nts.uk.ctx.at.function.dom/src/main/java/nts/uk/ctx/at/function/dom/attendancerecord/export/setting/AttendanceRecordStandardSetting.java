@@ -4,7 +4,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 
 /**
@@ -19,7 +19,7 @@ public class AttendanceRecordStandardSetting extends AggregateRoot{
 	/**
 	 * 会社ID
 	 */
-	private String cid;
+	private CompanyId cid;
 	
 	/**
 	 * 出力項目: 出勤簿の出力項目設定 (List)
@@ -57,11 +57,7 @@ public class AttendanceRecordStandardSetting extends AggregateRoot{
 	 * @return the memento
 	 */
 	public void getMemento(MementoGetter memento) {
-		if (memento.getCid() == null) {
-			this.cid = AppContexts.user().companyId();
-		} else {
-			this.cid = memento.getCid();
-		}
+		this.cid = new CompanyId(memento.getCid());
 		this.attendanceRecordExportSettings = memento.getAttendanceRecordExportSettings();
 		this.itemSelectionType = ItemSelectionType.valueOf(memento.getItemSelectionType());
 	}
@@ -73,7 +69,7 @@ public class AttendanceRecordStandardSetting extends AggregateRoot{
 	 * @param memento the new memento
 	 */
 	public void setMemento(MementoSetter memento) {
-		memento.setCid(cid);
+		memento.setCid(this.cid.v());
 		if (this.attendanceRecordExportSettings != null) {
 			memento.setAttendanceRecordExportSettings(this.attendanceRecordExportSettings);
 		}

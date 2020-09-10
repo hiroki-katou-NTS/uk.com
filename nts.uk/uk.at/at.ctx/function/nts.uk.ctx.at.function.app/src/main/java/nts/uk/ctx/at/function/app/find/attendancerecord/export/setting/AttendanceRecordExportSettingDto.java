@@ -41,6 +41,9 @@ public class AttendanceRecordExportSettingDto {
 	/** The layout id. */
 	String layoutId;
 	
+	/** The item sel type. */
+	Integer itemSelType;
+	
 	/**
 	 * Instantiates a new attendance record export setting dto.
 	 */

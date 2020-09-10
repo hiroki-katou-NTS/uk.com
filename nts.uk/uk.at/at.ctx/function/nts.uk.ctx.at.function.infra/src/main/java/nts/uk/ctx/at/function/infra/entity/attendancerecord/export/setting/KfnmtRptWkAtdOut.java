@@ -24,6 +24,8 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
@@ -42,8 +44,6 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
-	
 	
 	/** The id. */
 	@Id
@@ -97,6 +97,14 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity {
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
 	private List<KfnmtRptWkAtdOutframe> lstKfnmtRptWkAtdOutframe;
+	
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
+	private List<KfnmtRptWkAtdOutatd> lstKfnmtRptWkAtdOutatd;
+	
+	@OneToMany(cascade=CascadeType.ALL)
+	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
+	private List<KfnmtRptWkAtdOutseal> lstKfnmtRptWkAtdOutseal;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
@@ -109,47 +117,45 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity {
 //	@Override
 //	public void setCompanyId(String companyId) {
 //		this.cid = companyId;
+//		
 //	}
 //
 //	@Override
 //	public void setDailyExportItem(List<AttendanceRecordExport> attendanceList) {
-//		// TODO Auto-generated method stub
 //		
 //	}
 //
 //	@Override
 //	public void setMonthlyExportItem(List<AttendanceRecordExport> attendanceList) {
-//		// TODO Auto-generated method stub
 //		
 //	}
 //
 //	@Override
 //	public void setSealUseAtr(Boolean atr) {
-//		// TODO Auto-generated method stub
+////		this.sealUseAtr = BigDecimal.valueOf(atr)
 //		
 //	}
 //
 //	@Override
 //	public void setCode(ExportSettingCode code) {
-//		// TODO Auto-generated method stub
-//		
+//		this.exportCD = String.valueOf(code.v());
 //	}
 //
 //	@Override
 //	public void setName(ExportSettingName name) {
-//		// TODO Auto-generated method stub
-//		
+//		this.name = String.valueOf(name.v());
 //	}
 //
 //	@Override
 //	public void setSealStamp(List<SealColumnName> seal) {
-//		// TODO Auto-generated method stub
-//		
+////		this.lstKfnmtRptWkAtdOutseal = seal.stream().map(obj -> {
+////			KfnmtRptWkAtdOutseal entity = new KfnmtRptWkAtdOutseal();
+////			entity.setColumnId();
+////		})
 //	}
 //
 //	@Override
 //	public void setNameUseAtr(Integer nameUseAtr) {
-//		// TODO Auto-generated method stub
 //		
 //	}
 //
@@ -161,66 +167,57 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity {
 //
 //	@Override
 //	public void setMonthlyConfirmedDisplay(Integer monthlyConfirmedDisplay) {
-//		// TODO Auto-generated method stub
+//		this.monthAppDispAtr = BigDecimal.valueOf(monthlyConfirmedDisplay);
 //		
 //	}
 //
 //	@Override
 //	public String getCompanyId() {
-//		return this.cid;
+//		return null;
 //	}
 //
 //	@Override
 //	public List<AttendanceRecordExport> getDailyExportItem() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	@Override
 //	public List<AttendanceRecordExport> getMonthlyExportItem() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	@Override
 //	public Boolean getSealUseAtr() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	@Override
 //	public ExportSettingCode getCode() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	@Override
 //	public ExportSettingName getName() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	@Override
 //	public List<SealColumnName> getSealStamp() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	@Override
 //	public Integer getNameUseAtr() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	@Override
 //	public Integer getExportFontSize() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 //
 //	@Override
 //	public Integer getMonthlyConfirmedDisplay() {
-//		// TODO Auto-generated method stub
 //		return null;
 //	}
 
