@@ -211,19 +211,22 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                     }
                 }).fail((fail: any) => {
                     if (fail) {
-                        vm.$dialog.error({ messageId: fail.messageId });
-                        let command = {
-                            appId: ko.toJS(vm.application.appID),
-                            infoStartup: ko.toJS(vm.appDispInfoStartupOutput)
-                        };
+                        vm.$dialog.error({ messageId: fail.messageId })
+                        .then(() => {
+                            let command = {
+                                appId: ko.toJS(vm.application().appID),
+                                infoStartup: ko.toJS(vm.appDispInfoStartupOutput)
+                            };
 
-                        vm.$ajax(API.initPageB, command)
-                            .done((res: any) => {
-                                this.fetchData(res);
-                            }).fail((err: any) => {
-                                console.log()
-                                vm.$dialog.error({ messageId: err.messageId });
-                            });
+                            return vm.$ajax(API.initPageB, command)
+                                .done((res: any) => {
+                                    this.fetchData(res);
+                                })
+                                .fail((err: any) => {
+                                    console.log()
+                                    vm.$dialog.error({ messageId: err.messageId });
+                                });
+                        })
                     }
                 }).always(() => vm.$blockui('hide'));
         }
