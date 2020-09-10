@@ -362,7 +362,7 @@ module cmm045.a.viewmodel {
 				}
                 if (urlParam === undefined && !self.isSpr()) {
 					if (obj !== undefined && obj !== null) {
-						self.mode(obj.appListAtr);	
+						self.mode(obj.appListAtr);
 					} else {
 						self.mode(1);
 					}
@@ -388,7 +388,7 @@ module cmm045.a.viewmodel {
 				return service.getAppNameInAppList();
 			}).then((data: any) => {
 				if(_.isEmpty(self.appListExtractConditionDto.opListOfAppTypes)) {
-					self.appListExtractConditionDto.opListOfAppTypes = data;	
+					self.appListExtractConditionDto.opListOfAppTypes = data;
 				}
 				self.updateFromAppListExtractCondition();
 				// self.selectedAppId(_.chain(self.appListExtractConditionDto.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
@@ -1972,12 +1972,14 @@ module cmm045.a.viewmodel {
 						});
 					}
 					if(isInfoDialog) {
-						nts.uk.ui.dialog.info(displayMsg);
+						return nts.uk.ui.dialog.info(displayMsg);
 					} else {
-						nts.uk.ui.dialog.alertError(displayMsg);
+						return nts.uk.ui.dialog.alertError(displayMsg);
 					}
 				}
-			}).always(() => { block.clear(); });
+            })
+            .always(() => window.location.reload());
+            // .always(() => { block.clear(); });
 		}
     }
 }
