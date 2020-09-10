@@ -7,7 +7,9 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.PersonalInformation;
 
 /**
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.アルゴリズム.出向派遣履歴  (History phái cử đi công tác).基準日から出向派遣情報を取得する (Get thông tin phái cử đi công tác từ base date).基準日から出向派遣情報を取得する
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.人事.shared.個人情報（人事）.個人情報.アルゴリズム.出向派遣履歴
+ * (History phái cử đi công tác).基準日から出向派遣情報を取得する (Get thông tin phái cử đi công
+ * tác từ base date).基準日から出向派遣情報を取得する
  * 
  * @author chungnt
  *
@@ -39,171 +41,266 @@ public class GetDispatchedInformation {
 			GeneralDate baseDate, boolean employeeCode, boolean employeeName, boolean expirationDate,
 			boolean nameSelectedMaster, boolean classification1, boolean classification2, boolean classification3,
 			boolean nameCompany, boolean address, boolean addressKana, boolean include, List<String> employeeIds) {
-		
+
 		List<TemporaryDispatchInformation> temporaryDispatchInformations = new ArrayList<>();
-		List<PersonalInformation> informations = require.getdDispatchedInformation(contractCode, companyId, baseDate);
-		List<PersonalInformation> informations1 = new ArrayList<>();
-		boolean checkfinal = false;
+		List<PersonalInformation> informations = require.getDispatchedInfos(contractCode, companyId, baseDate,
+				include);
 
-		if (employeeIds.isEmpty()) {
-			
-			for (int i = 0 ; i < informations.size() ; i++) {
-				if (informations.get(i).getSid().isPresent()) {
-					informations1.add(informations.get(i));
-					TemporaryDispatchInformation information = new TemporaryDispatchInformation(employeeIds.get(i));
-					information.setTemporaryDispatcher(true);
-					temporaryDispatchInformations.add(information);
+		boolean check = false;
+
+		if (!employeeIds.isEmpty()) {
+			for (int i = 0; i < employeeIds.size(); i++) {
+				if (!informations.isEmpty()) {
+					for (int j = 0; j < informations.size(); j++) {
+						if (informations.get(j).getSid() != null) {
+							if (informations.get(j).getSid().isPresent()) {
+								if (employeeIds.get(i).equals(informations.get(j).getSid().get())) {
+									check = true;
+									TemporaryDispatchInformation t = new TemporaryDispatchInformation();
+									PersonalInformation p = informations.get(j);
+
+									t.setTemporaryDispatcher(check);
+
+									if (p.getSid() != null) {
+										t.setEmployeeId(p.getSid().map(m -> m).orElse(""));
+									}
+
+									if (employeeCode) {
+										if (p.getScd() != null) {
+											t.setEmployeeCode(p.getScd().map(m -> m).orElse(""));
+										}
+									}
+
+									if (employeeName) {
+										if (p.getPersonName() != null) {
+											t.setEmployeeName(p.getPersonName().map(m -> m).orElse(""));
+										}
+									}
+
+									if (expirationDate) {
+										if (p.getDate01() != null) {
+											t.setExpirationDate(p.getDate01().map(m -> m).orElse(null));
+										}
+									}
+
+									if (classification1) {
+										if (p.getSelectCode01() != null) {
+											t.setClassify(Integer.parseInt(p.getSelectCode01().map(m -> m).orElse("")));
+										}
+									}
+
+									if (classification1 && nameSelectedMaster) {
+										if (p.getSelectName01() != null) {
+											t.setNameClassify(p.getSelectName01().map(m -> m).orElse(""));
+										}
+									}
+
+									if (classification2) {
+										if (p.getSelectCode02() != null) {
+											t.setTemporaryDispatch(p.getSelectCode02().map(m -> m).orElse(""));
+										}
+									}
+
+									if (classification2 && nameSelectedMaster) {
+										if (p.getSelectName02() != null) {
+											t.setTemporaryDispatchCategory(p.getSelectName02().map(m -> m).orElse(""));
+										}
+									}
+
+									if (classification3) {
+										if (p.getSelectCode03() != null) {
+											t.setTemporaryAssignment(p.getSelectCode03().map(m -> m).orElse(""));
+										}
+									}
+
+									if (classification3 && nameSelectedMaster) {
+										if (p.getSelectName03() != null) {
+											t.setTemporaryAssignmentCategory(
+													p.getSelectName03().map(m -> m).orElse(""));
+										}
+									}
+
+									if (nameCompany) {
+										if (p.getStr12() != null) {
+											t.setSecondedCompanyName(p.getStr12().map(m -> m).orElse(""));
+										}
+									}
+
+									if (address) {
+										if (p.getSelectName06() != null) {
+											t.setCountry(p.getSelectName06().map(m -> m).orElse(""));
+										}
+
+										if (p.getStr15() != null) {
+											t.setPostalCode(p.getStr15().map(m -> m).orElse(""));
+										}
+
+										if (p.getSelectName07() != null) {
+											t.setPrefectures(p.getSelectName07().map(m -> m).orElse(""));
+										}
+
+										if (p.getStr16() != null) {
+											t.setAddress1(p.getStr16().map(m -> m).orElse(""));
+										}
+
+										if (p.getStr17() != null) {
+											t.setAddress2(p.getStr17().map(m -> m).orElse(""));
+										}
+
+										if (p.getStr20() != null) {
+											t.setPhoneNumber(p.getStr20().map(m -> m).orElse(""));
+										}
+									}
+
+									if (addressKana) {
+										if (p.getStr18() != null) {
+											t.setKanaAddress1(p.getStr18().map(m -> m).orElse(""));
+										}
+
+										if (p.getStr19() != null) {
+											t.setKanaAddress2(p.getStr19().map(m -> m).orElse(""));
+										}
+									}
+
+									temporaryDispatchInformations.add(t);
+								}
+							}
+						}
+
+						if (j == informations.size() - 1) {
+							if (!check) {
+								check = false;
+								TemporaryDispatchInformation t = new TemporaryDispatchInformation();
+
+								t.setTemporaryDispatcher(check);
+								t.setEmployeeId(employeeIds.get(i));
+
+								temporaryDispatchInformations.add(t);
+							} else {
+								check = false;
+							}
+						}
+					}
+				} else {
+					check = false;
+					TemporaryDispatchInformation t = new TemporaryDispatchInformation();
+
+					t.setTemporaryDispatcher(check);
+					t.setEmployeeId(employeeIds.get(i));
+
+					temporaryDispatchInformations.add(t);
+
 				}
 			}
-			
-			informations = informations1;
-			
-			return temporaryDispatchInformations;
+		} else {
+			for (PersonalInformation p : informations) {
+				TemporaryDispatchInformation t = new TemporaryDispatchInformation();
+				t.setTemporaryDispatcher(true);
+
+				if (p.getSid() != null) {
+					t.setEmployeeId(p.getSid().map(m -> m).orElse(""));
+				}
+
+				if (employeeCode) {
+					if (p.getScd() != null) {
+						t.setEmployeeCode(p.getScd().map(m -> m).orElse(""));
+					}
+				}
+
+				if (employeeName) {
+					if (p.getPersonName() != null) {
+						t.setEmployeeName(p.getPersonName().map(m -> m).orElse(""));
+					}
+				}
+
+				if (expirationDate) {
+					if (p.getDate01() != null) {
+						t.setExpirationDate(p.getDate01().map(m -> m).orElse(null));
+					}
+				}
+
+				if (classification1) {
+					if (p.getSelectCode01() != null) {
+						t.setClassify(Integer.parseInt(p.getSelectCode01().map(m -> m).orElse("")));
+					}
+				}
+
+				if (classification1 && nameSelectedMaster) {
+					if (p.getSelectName01() != null) {
+						t.setNameClassify(p.getSelectName01().map(m -> m).orElse(""));
+					}
+				}
+
+				if (classification2) {
+					if (p.getSelectCode02() != null) {
+						t.setTemporaryDispatch(p.getSelectCode02().map(m -> m).orElse(""));
+					}
+				}
+
+				if (classification2 && nameSelectedMaster) {
+					if (p.getSelectName02() != null) {
+						t.setTemporaryDispatchCategory(p.getSelectName02().map(m -> m).orElse(""));
+					}
+				}
+
+				if (classification3) {
+					if (p.getSelectCode03() != null) {
+						t.setTemporaryAssignment(p.getSelectCode03().map(m -> m).orElse(""));
+					}
+				}
+
+				if (classification3 && nameSelectedMaster) {
+					if (p.getSelectName03() != null) {
+						t.setTemporaryAssignmentCategory(p.getSelectName03().map(m -> m).orElse(""));
+					}
+				}
+
+				if (nameCompany) {
+					if (p.getStr12() != null) {
+						t.setSecondedCompanyName(p.getStr12().map(m -> m).orElse(""));
+					}
+				}
+
+				if (address) {
+					if (p.getSelectName06() != null) {
+						t.setCountry(p.getSelectName06().map(m -> m).orElse(""));
+					}
+
+					if (p.getStr15() != null) {
+						t.setPostalCode(p.getStr15().map(m -> m).orElse(""));
+					}
+
+					if (p.getSelectName07() != null) {
+						t.setPrefectures(p.getSelectName07().map(m -> m).orElse(""));
+					}
+
+					if (p.getStr16() != null) {
+						t.setAddress1(p.getStr16().map(m -> m).orElse(""));
+					}
+
+					if (p.getStr17() != null) {
+						t.setAddress2(p.getStr17().map(m -> m).orElse(""));
+					}
+
+					if (p.getStr20() != null) {
+						t.setPhoneNumber(p.getStr20().map(m -> m).orElse(""));
+					}
+				}
+
+				if (addressKana) {
+					if (p.getStr18() != null) {
+						t.setKanaAddress1(p.getStr18().map(m -> m).orElse(""));
+					}
+
+					if (p.getStr19() != null) {
+						t.setKanaAddress2(p.getStr19().map(m -> m).orElse(""));
+					}
+				}
+
+				temporaryDispatchInformations.add(t);
+			}
 		}
 
-		for (int i = 0; i < employeeIds.size(); i++) {
-			for (int j = 0; j < informations.size(); j++) {
-				if (informations.get(j).getSid().map(c -> c).orElse(null).equals(employeeIds.get(i))) {
-					informations1.add(informations.get(j));
-					TemporaryDispatchInformation information = new TemporaryDispatchInformation(employeeIds.get(i));
-					information.setTemporaryDispatcher(true);
-					temporaryDispatchInformations.add(information);
-					checkfinal = true;
-				}
-
-				if (j == informations.size() - 1) {
-					
-					if (!checkfinal) {
-						TemporaryDispatchInformation information = new TemporaryDispatchInformation(employeeIds.get(i));
-						information.setTemporaryDispatcher(false);
-					}
-					checkfinal = false;
-				}
-			}
-		}
-
-		informations = informations1;
-
-		if (employeeCode) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setEmployeeCode(informations.get(i).getScd().map(m -> m).orElse(""));
-					}
-				}
-			}
-		}
-		
-		if (employeeName) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setEmployeeName(informations.get(i).getPersonName().map(m -> m).orElse(""));
-					}
-				}
-			}
-		}
-		
-		if (expirationDate) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setExpirationDate(informations.get(i).getDate01().map(m -> m).orElse(null));
-					}
-				}
-			}
-		}
-		
-		if (classification1) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setClassify(Integer.parseInt(informations.get(i).getSelectCode01().map(m -> m).orElse("")));
-					}
-				}
-			}
-		}
-		
-		if(nameSelectedMaster && classification1) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setNameClassify(informations.get(i).getSelectName01().map(m -> m).orElse(""));
-					}
-				}
-			}
-		}
-		
-		if (classification2) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setTemporaryDispatch(informations.get(i).getSelectCode02().map(m -> m).orElse(""));
-					}
-				}
-			}
-		}
-		
-		if (classification2 && nameSelectedMaster) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setTemporaryDispatchCategory(informations.get(i).getSelectName02().map(m -> m).orElse(""));
-					}
-				}
-			}
-		}
-		
-		if (classification3) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setTemporaryAssignment(informations.get(i).getSelectCode03().map(m -> m).orElse(""));
-					}
-				}
-			}	
-		}
-		
-		if (classification3 && nameSelectedMaster) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						temporaryDispatchInformations.get(j).setTemporaryAssignmentCategory(informations.get(i).getSelectName03().map(m -> m).orElse(""));
-					}
-				}
-			}
-		}
-		
-		// QA *8
-		
-		if (address) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						TemporaryDispatchInformation t = temporaryDispatchInformations.get(j);
-						t.setCountry(informations.get(i).getSelectName06().map(m -> m).orElse(""));
-						t.setPostalCode(informations.get(i).getStr15().map(m -> m).orElse(""));
-						t.setPrefectures(informations.get(i).getSelectName15().map(m -> m).orElse(""));
-						t.setAddress1(informations.get(i).getStr16().map(m -> m).orElse(""));
-						t.setAddress2(informations.get(i).getStr17().map(m -> m).orElse(""));
-						t.setPhoneNumber(informations.get(i).getStr20().map(m -> m).orElse(""));
-					}
-				}
-			}
-		}
-		
-		if (addressKana) {
-			for (int i = 0; i < informations.size(); i++) {
-				for (int j = 0 ; j < temporaryDispatchInformations.size() ; j++) {
-					if (temporaryDispatchInformations.get(j).getEmployeeId().equals(informations.get(i).getSid().map(c -> c).orElse(null))) {
-						TemporaryDispatchInformation t = temporaryDispatchInformations.get(j);
-						t.setKanaAddress1(informations.get(i).getStr18().map(m -> m).orElse(""));
-						t.setKanaAddress2(informations.get(i).getStr19().map(m -> m).orElse(""));
-					}
-				}
-			}
-		}
-		
 		return temporaryDispatchInformations;
 	}
 
@@ -216,7 +313,7 @@ public class GetDispatchedInformation {
 		 * @param baseDate
 		 * @return
 		 */
-		List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId,
-				GeneralDate baseDate);
+		List<PersonalInformation> getDispatchedInfos(String contractCd, String cId, GeneralDate baseDate,
+				boolean include);
 	}
 }

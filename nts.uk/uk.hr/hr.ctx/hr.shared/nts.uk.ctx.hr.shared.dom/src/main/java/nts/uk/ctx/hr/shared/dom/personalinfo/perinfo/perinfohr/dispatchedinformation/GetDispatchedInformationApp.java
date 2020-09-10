@@ -50,9 +50,9 @@ public class GetDispatchedInformationApp {
 		private PersonalInformationRepository recordRepo;
 
 		@Override
-		public List<PersonalInformation> getdDispatchedInformation(String contractCd, String cId,
-				GeneralDate baseDate) {
-			return recordRepo.getDispatchedInfos(contractCd, cId, baseDate);
+		public List<PersonalInformation> getDispatchedInfos(String contractCd, String cId, GeneralDate baseDate,
+				boolean include) {
+			return recordRepo.getDispatchedInfos(contractCd, cId, baseDate, include);
 		}
 	}
 }

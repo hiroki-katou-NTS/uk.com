@@ -16,9 +16,9 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @Data
 public class HistoryGetDegreeInput {
-	GeneralDate baseDate;
-	String cId;
-	List<String> qualificationIds;
-	boolean getEmployeeCode;
-	boolean getEmployeeName;
+	 GeneralDate baseDate;
+	 String cId;
+	 List<String> qualificationIds;
+	 boolean getEmployeeCode;
+	 boolean getEmployeeName;
 }

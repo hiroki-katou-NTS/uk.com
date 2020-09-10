@@ -17,20 +17,20 @@ import lombok.NoArgsConstructor;
 public class GetPersonInfoHRInput {
 	
 	// 会社ID
-	private String companyId;
+	String companyId;
 	
 	// 業務ID
-	private String businessId;
+	String businessId;
 	
 	// （Option）List<個人ID>
-	private List<String> personalId;
+	List<String> personalId;
 	
 	// （Option）List<社員ID>
-	private List<String> employeeId;
+	List<String> employeeId;
 	
 	// （Option）ソートカラム名
-	private String columnName;
+	String columnName;
 	
 	// （Option）ソート昇順降順
-	private String typeSort;
+	String typeSort;
 }

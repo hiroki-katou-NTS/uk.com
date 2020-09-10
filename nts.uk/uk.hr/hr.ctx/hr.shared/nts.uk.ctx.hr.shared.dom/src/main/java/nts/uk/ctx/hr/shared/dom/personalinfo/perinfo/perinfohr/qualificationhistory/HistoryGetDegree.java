@@ -21,37 +21,69 @@ public class HistoryGetDegree {
 
 		HashMap<Long, List<Holder>> hashList = new HashMap<Long, List<Holder>>();
 
-		List<PersonalInformation> informations = require.getLstPersonInfoByQualificationIds(cId, qualificationIds, 8,
+		List<PersonalInformation> informations1 = require.getLstPersonInfoByQualificationIds(cId, qualificationIds, 8,
 				baseDate);
-		
+
+		if (informations1 == null) {
+			return hashList;
+		}
+
+		boolean check = false;
+
+		List<PersonalInformation> informations = new ArrayList<>();
+
+		for (int i = 0; i < qualificationIds.size(); i++) {
+			for (int j = 0; j < informations1.size(); j++) {
+				if (String.valueOf(informations1.get(j).getSelectId01()).equals(qualificationIds.get(i))) {
+					informations.add(informations1.get(j));
+					check = true;
+				}
+				if (j == informations1.size() - 1) {
+					if (!check) {
+						PersonalInformation information = new PersonalInformation();
+						information.setSelectId01(Long.valueOf(qualificationIds.get(i)));
+						informations.add(information);
+						check = false;
+					} else {
+						check = false;
+					}
+				}
+			}
+		}
+
 		if (informations == null) {
 			return hashList;
 		}
 
-		informations.stream()
-			.forEach(m -> {
-				Long key = m.getSelectId01();
-	
-				if (!hashList.containsKey(key)) {
-					hashList.put(key, new ArrayList<Holder>());
-				}
-	
-				List<Holder> holders = hashList.get(key);
-	
-				Holder holder = new Holder();
-	
+		informations.stream().forEach(m -> {
+			Long key = m.getSelectId01();
+
+			if (!hashList.containsKey(key)) {
+				hashList.put(key, new ArrayList<Holder>());
+			}
+
+			List<Holder> holders = hashList.get(key);
+
+			Holder holder = new Holder();
+
+			if (m.getSid() != null) {
 				holder.setEmployeeId(m.getSid().map(c -> c).orElse(""));
-	
-				if (getEmployeeCode) {
+			}
+
+			if (getEmployeeCode) {
+				if (m.getScd() != null) {
 					holder.setEmployeeCd(m.getScd().map(c -> c).orElse(""));
 				}
-	
-				if (getEmployeeName) {
+			}
+
+			if (getEmployeeName) {
+				if (m.getPersonName() != null) {
 					holder.setEmployeeName(m.getPersonName().map(c -> c).orElse(""));
 				}
-	
-				holders.add(holder);
-			});
+			}
+			holders.add(holder);
+
+		});
 
 		return hashList;
 	}

@@ -25,7 +25,7 @@ public interface PersonalInformationRepository {
 	// 個人情報を取得する
 	List<PersonalInformation> get(GetPersonInfoHRInput input);
 	
-	List<PersonalInformation> getDispatchedInfos(String contractCd, String cId, GeneralDate baseDate);
+	List<PersonalInformation> getDispatchedInfos(String contractCd, String cId, GeneralDate baseDate, boolean include);
 	
 	List<PersonalInformation> getDispatchedInfoByStr10s(String contractCd, String cId, GeneralDate baseDate);
 	

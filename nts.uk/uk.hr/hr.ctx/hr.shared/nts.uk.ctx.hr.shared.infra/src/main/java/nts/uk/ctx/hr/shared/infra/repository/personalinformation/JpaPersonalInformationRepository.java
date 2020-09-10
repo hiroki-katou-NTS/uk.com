@@ -26,10 +26,6 @@ import nts.uk.ctx.hr.shared.infra.entity.personalinformation.PpedtData;
 public class JpaPersonalInformationRepository extends JpaRepository implements PersonalInformationRepository {
 	private PpedtData entity = new PpedtData();
 	
-	public static final String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
-			+ " AND a.cId = :cId" + " AND a.workId = :workId"
-			+ " AND a.startDate <= :baseDate AND a.endDate >= :baseDate ";
-	
 	public static final String GET_DISPATCHED_INFORMATION_BY_STR10 = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
 			+ " AND a.str10 = :cId" + " AND a.workId = :workId"
 			+ " AND a.startDate <= :baseDate AND a.endDate >= :baseDate ";
@@ -123,12 +119,32 @@ public class JpaPersonalInformationRepository extends JpaRepository implements P
 	}
 
 	@Override
-	public List<PersonalInformation> getDispatchedInfos(String contractCd, String cId,
-			GeneralDate baseDate) {
+	public List<PersonalInformation> getDispatchedInfos(String contractCd, String cId, GeneralDate baseDate,
+			boolean include) {
 
-		List<PpedtData> personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
-				.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
-				.setParameter("baseDate", baseDate).getList();
+		List<PpedtData> personalInformations = new ArrayList<>();
+
+		if (include) {
+			
+			String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
+					+ " AND a.cId = :cId" + " AND a.workId = :workId"
+					+ " AND a.startDate <= :baseDate AND a.endDate >= :baseDate";
+
+			personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
+					.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
+					.setParameter("baseDate", baseDate).getList();
+			
+		} else {
+
+			String GET_DISPATCHED_INFORMATION = "SELECT a FROM PpedtData a WHERE a.contractCd = :contractCd"
+					+ " AND a.cId = :cId" + " AND a.workId = :workId"
+					+ " AND a.startDate <= :baseDate AND a.endDate >= :baseDate "
+					+ " AND	a.selectCode05 = :selectCode05";
+
+			personalInformations = this.queryProxy().query(GET_DISPATCHED_INFORMATION, PpedtData.class)
+					.setParameter("contractCd", contractCd).setParameter("cId", cId).setParameter("workId", 6)
+					.setParameter("baseDate", baseDate).setParameter("selectCode05", "0").getList();
+		}
 
 		return personalInformations.stream().map(m -> m.toDomain()).collect(Collectors.toList());
 	}

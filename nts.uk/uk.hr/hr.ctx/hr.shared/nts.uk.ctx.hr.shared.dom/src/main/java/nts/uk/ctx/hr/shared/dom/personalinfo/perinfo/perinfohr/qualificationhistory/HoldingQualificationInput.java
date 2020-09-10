@@ -10,13 +10,13 @@ import nts.arc.time.GeneralDate;
 @Data
 public class HoldingQualificationInput {
 
-	private GeneralDate baseDate;
-	private String cId;
-	private List<String> sIds;
-	private boolean getEndDate;
-	private boolean getNameMaster;
-	private boolean category;
-	private boolean getRank;
-	private boolean getnumber;
-	private boolean getQualifiedOrganization;
+	GeneralDate baseDate;
+	String cId;
+	List<String> sIds;
+	boolean getEndDate;
+	boolean getNameMaster;
+	boolean category;
+	boolean getRank;
+	boolean getnumber;
+	boolean getQualifiedOrganization;
 }
