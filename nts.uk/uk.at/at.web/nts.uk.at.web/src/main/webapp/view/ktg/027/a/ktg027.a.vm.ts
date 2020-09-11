@@ -17,8 +17,8 @@ module nts.uk.at.view.ktg027.a.viewmodel {
         displayEr: KnockoutObservable<boolean>;
         msg: KnockoutObservable<String>;
         year: KnockoutObservable<string> = ko.observable('');
-        width: KnockoutObservable<string> = ko.observable('60px');
-        width2: KnockoutObservable<string> = ko.observable('100px');
+        width: KnockoutObservable<string> = ko.observable('90px');
+        width2: KnockoutObservable<string> = ko.observable('30px');
         constructor() {
             var self = this;
             var today = moment();
