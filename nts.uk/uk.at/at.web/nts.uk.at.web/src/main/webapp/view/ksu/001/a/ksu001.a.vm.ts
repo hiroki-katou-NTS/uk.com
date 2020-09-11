@@ -607,14 +607,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 unit: item.isPresent() ? userInfor.unit : 0
             };
-            self.saveModeGridToLocalStorege('shortName');
             
-            let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
-            __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
-                userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+            if (userInfor.disPlayFormat == 'shift') {
+                let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
+                __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
+                    userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+            }
             
             self.visibleShiftPalette(false);
             self.visibleBtnInput(false);
+            self.saveModeGridToLocalStorege('shortName');
+            
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
                 
                 self.saveDataGrid(data);
@@ -646,14 +649,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 getActualData: item.isPresent() ? userInfor.achievementDisplaySelected : false,
                 unit: item.isPresent() ? userInfor.unit : 0,
             };
-            self.saveModeGridToLocalStorege('time');
             
-            let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
-            __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
-                userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+            if (userInfor.disPlayFormat == 'shift') {
+                let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
+                __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
+                    userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+            }
 
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
+            self.saveModeGridToLocalStorege('time');
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
 
                 self.saveDataGrid(data);
