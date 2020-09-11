@@ -1,7 +1,32 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.com.view.cli002.a {
-    import service = nts.uk.com.view.cli002.a.service;
+
+    const mgrid = nts.uk.ui.mgrid as any;
+    const { MGrid, color } = mgrid as Mgrid;
+
+    interface Mgrid {
+        color: COLOR;
+        MGrid: { new (el: HTMLElement, option: any): { create: () => void } };
+    }
+
+    const API = {
+        findBySystem: "sys/portal/pginfomation/findBySystem",
+        updateLogSetting: "sys/portal/logsettings/update"
+    }
+    interface COLOR {
+        ALL: string[];
+        Alarm: "mgrid-alarm";
+        Calculation: "mgrid-calc";
+        Disable: "mgrid-disable";
+        Error: "mgrid-error";
+        HOVER: "ui-state-hover";
+        Hide: "mgrid-hide";
+        Lock: "mgrid-lock";
+        ManualEditOther: "mgrid-manual-edit-other";
+        ManualEditTarget: "mgrid-manual-edit-target";
+        Reflect: "mgrid-reflect";
+    }
 
     @bean()
     export class ScreenModel extends ko.ViewModel {
@@ -40,6 +65,9 @@ module nts.uk.com.view.cli002.a {
         mounted() {
             const vm = this;
             vm.selectedSystemCode.subscribe((newValue) => {
+                if ($("#item-list").data("mGrid")) {
+                    $("#item-list").mGrid("destroy");
+                }
                 vm.getData(newValue);
             });
         }
@@ -51,16 +79,15 @@ module nts.uk.com.view.cli002.a {
                 vm.logSettings.push(new LogSetting(vm.selectedSystemCode(), item.programId, item.menuClassification, item.loginHistoryRecord.usageCategory,
                     item.editHistoryRecord.usageCategory, item.bootHistoryRecord.usageCategory));
             });
-            service.updateLogSetting(vm.logSettings).then(() => {
+            vm.$ajax(API.updateLogSetting, vm.logSettings).then(() => {
                 vm.$dialog.alert({ messageId: 'Msg_15' });
             });
         }
 
         private getData(systemType: number) {
             const vm = this;
-            vm.dataSourceItem = ko.observableArray([]);
             vm.$blockui("grayout");
-            service.findBySystem(systemType).done((response: Array<PGList>) => {
+            vm.$ajax(`${API.findBySystem}/${systemType}`).done((response: Array<PGList>) => {
                 let listPG: any[] = response.map((item, index) => {
                     return new PGInfomation(index + 1, item.functionName, false, false, false, item.programId, item.menuClassification);
                 });
@@ -72,30 +99,30 @@ module nts.uk.com.view.cli002.a {
 
         private getItemList(response: Array<PGList>) {
             const vm = this;
+            const $mgrid = $("#item-list");
             const statesTable = [];
+
             response.forEach((item: PGList, index) => {
                 if (item.loginHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index, "logLoginDisplay", [(nts.uk.ui as any).mgrid.color.Lock]));
+                    statesTable.push(new CellState(index + 1, "logLoginDisplay", [color.Lock]));
                 }
                 if (item.bootHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index, "logStartDisplay", [(nts.uk.ui as any).mgrid.color.Lock]));
+                    statesTable.push(new CellState(index + 1, "logStartDisplay", [color.Lock]));
                 }
                 if (item.editHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index, "logUpdateDisplay", [(nts.uk.ui as any).mgrid.color.Lock]));
+                    statesTable.push(new CellState(index + 1, "logUpdateDisplay", [color.Lock]));
                 }
-            })
-            console.log(statesTable);
-            if ($("#item-list").data("mGrid")) $("#item-list").mGrid("destroy");
-            new (nts.uk.ui as any).mgrid.MGrid($("#item-list")[0], {
+            });
+
+            new MGrid($mgrid.get(0), {
                 subHeight: "450px",
                 headerHeight: '60px',
-                primaryKey: "functionName",
-                primaryKeyDataType: "string",
+                primaryKey: "rowNumber",
+                primaryKeyDataType: "number",
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
-                autoFitWindow: true,
                 dataSource: vm.dataSourceItem(),
                 columns: [
                     { headerText: "", key: "rowNumber", dataType: "number", width: "30px"},
