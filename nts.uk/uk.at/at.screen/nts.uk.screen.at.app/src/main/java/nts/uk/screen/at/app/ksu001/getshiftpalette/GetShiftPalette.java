@@ -151,7 +151,12 @@ public class GetShiftPalette {
 	public GetShiftPaletteResult getShiftPalletWkp(GetShiftPaletteParam param) {
 		// 0 = work place
 		// step 1.2
-		List<ShiftPalletsOrg> listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(0, param.unit == 0 ? param.workplaceId : param.workplaceGroupId );
+		List<ShiftPalletsOrg> listShiftPalletsOrg = new ArrayList<>();
+		if (param.unit == 0) {
+			listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(0, param.workplaceId );
+		}else{
+			listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(1, param.workplaceGroupId );
+		}
 		
 		List<PageInfo> listPageInfo = new ArrayList<>(); // List<ページ, 名称>
 		TargetShiftPalette targetShiftPalette = new TargetShiftPalette(param.shiftPaletteWantGet.getPageNumberOrg(), new ArrayList<>(), new ArrayList<>());; // 対象のシフトパレット： Optional<ページ, シフトパレット>
