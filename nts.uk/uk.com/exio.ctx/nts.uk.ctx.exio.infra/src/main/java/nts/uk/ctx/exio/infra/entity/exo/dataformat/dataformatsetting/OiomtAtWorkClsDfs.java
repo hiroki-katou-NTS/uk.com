@@ -14,12 +14,12 @@ import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.AwDataFormatSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 在職区分型データ形式設定
+ * 外部出力在職区分型データ形式設定（項目単位）
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_AT_WORK_CLS_DFS")
+@Table(name = "OIOMT_EX_OUT_FM_STAT")
 public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -28,6 +28,20 @@ public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 	 */
 	@EmbeddedId
 	public OiomtAtWorkClsDfsPk atWorkClsDfsPk;
+
+	/**
+	 * 固定値
+	 */
+	@Basic(optional = false)
+	@Column(name = "FIXED_VAL_ATR")
+	public int fixedValue;
+
+	/**
+	 * 固定値の値
+	 */
+	@Basic(optional = true)
+	@Column(name = "FIXED_VAL")
+	public String valueOfFixedValue;
 
 	/**
 	 * 休業時出力
@@ -42,20 +56,6 @@ public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "ABSENCE_OUTPUT")
 	public String absenceOutput;
-
-	/**
-	 * 固定値
-	 */
-	@Basic(optional = false)
-	@Column(name = "FIXED_VALUE")
-	public int fixedValue;
-
-	/**
-	 * 固定値の値
-	 */
-	@Basic(optional = true)
-	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
 
 	/**
 	 * 在職時出力
@@ -84,12 +84,14 @@ public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 
 	public static OiomtAtWorkClsDfs toEntity(AwDataFormatSetting domain) {
 		return new OiomtAtWorkClsDfs(
-				new OiomtAtWorkClsDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
+				new OiomtAtWorkClsDfsPk(
+						domain.getCid(), 
+						domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),
-				domain.getClosedOutput().isPresent() ? domain.getClosedOutput().get().v() : null,
-				domain.getAbsenceOutput().isPresent() ? domain.getAbsenceOutput().get().v() : null,
 				domain.getFixedValue().value,
 				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getClosedOutput().isPresent() ? domain.getClosedOutput().get().v() : null,
+				domain.getAbsenceOutput().isPresent() ? domain.getAbsenceOutput().get().v() : null,
 				domain.getAtWorkOutput().isPresent() ? domain.getAtWorkOutput().get().v() : null,
 				domain.getRetirementOutput().isPresent() ? domain.getRetirementOutput().get().v() : null);
 	}

@@ -17,12 +17,12 @@ import nts.uk.ctx.exio.dom.exo.outcnddetail.SearchCodeList;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 検索コードリスト
+ * 外部出力検索コードリスト
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_SEARCH_CODE_LIST")
+@Table(name = "OIOMT_EX_OUT_SEARCH_CDS")
 public class OiomtSearchCodeList extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -54,9 +54,9 @@ public class OiomtSearchCodeList extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-		@PrimaryKeyJoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD"),
-		@PrimaryKeyJoinColumn(name = "CATEGORY_ID", referencedColumnName = "CATEGORY_ID"),
-		@PrimaryKeyJoinColumn(name = "CATEGORY_ITEM_NO", referencedColumnName = "CATEGORY_ITEM_NO"),
+		@PrimaryKeyJoinColumn(name = "CND_SET_CD", referencedColumnName = "CND_SET_CD"),
+		@PrimaryKeyJoinColumn(name = "CTG_ID", referencedColumnName = "CTG_ID"),
+		@PrimaryKeyJoinColumn(name = "CTG_ITEM_NO", referencedColumnName = "CTG_ITEM_NO"),
 		@PrimaryKeyJoinColumn(name = "SERI_NUM", referencedColumnName = "SERI_NUM")
 	})
 	public OiomtOutCndDetailItem oiomtOutCndDetailItem;
