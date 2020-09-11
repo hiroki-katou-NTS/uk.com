@@ -56,6 +56,7 @@ module cmm045.a.viewmodel {
         isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
         isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
+		approvalLstDispSet: any = null;
 
         constructor() {
             let self = this;
@@ -152,8 +153,7 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
-					self.appListExtractConditionDto = data.appListExtractCondition;
-					self.updateFromAppListExtractCondition();
+					self.approvalLstDispSet = data.displaySet;
 					let newItemLst = [];
 					_.each(data.appLst, item => {
 						newItemLst.push(new vmbase.DataModeApp(item));
@@ -267,6 +267,7 @@ module cmm045.a.viewmodel {
 			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
 				self.appListExtractConditionDto = data.appListExtractCondition;
 				self.updateFromAppListExtractCondition();
+				self.approvalLstDispSet = data.appListInfo.displaySet;
 				let newItemLst = [];
 				_.each(data.appListInfo.appLst, item => {
 					newItemLst.push(new vmbase.DataModeApp(item));
@@ -421,6 +422,7 @@ module cmm045.a.viewmodel {
 				// self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
 				self.appListExtractConditionDto = data.appListExtractCondition;
 				self.updateFromAppListExtractCondition();
+				self.approvalLstDispSet = data.appListInfo.displaySet;
                 self.lstContentApp(data.lstContentApp);
                 let isHidden = data.isDisPreP == 1 ? true : true;
                 self.isHidden(isHidden);
@@ -814,7 +816,7 @@ module cmm045.a.viewmodel {
                         }
                     }
                     else {
-                        $td.html(self.customContent(column.key, item[column.key]));
+                        $td.html(self.customContent(column.key, item));
                     }
 
                     $td.appendTo($tr);
@@ -828,11 +830,22 @@ module cmm045.a.viewmodel {
                 $container.find(".nts-fixed-body-wrapper table"));
         }
 
-		customContent(key: string, value: any) {
+		customContent(key: string, item: any) {
 
 			const self = this;
+			if(key=='applicantName') {
+				let nameStr = '';
+				if(self.approvalLstDispSet.workplaceNameDisp==1) {
+					//if(!nts.uk.util.isNullOrEmpty(item.workplaceName)) {
+					nameStr += item.workplaceName + '<br/>';		
+					//}	
+				}
+				nameStr += item[key];
+				return nameStr;
+			}
+			
 			if(key=='appType') {
-				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == value);
+				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key]);
 				if(_.isUndefined(appInfo)) {
 					return '';
 				} else {
@@ -840,23 +853,23 @@ module cmm045.a.viewmodel {
 				}
 			}
 			if(key=='prePostAtr') {
-				if(value==0) {
+				if(item[key]==0) {
 					return nts.uk.resource.getText('KAF000_47');
 				} else {
 					return nts.uk.resource.getText('KAF000_48');
 				}
 			}
 			if(key=='appContent') {
-				return value.replace(/\n/g, '<br/>');
+				return item[key].replace(/\n/g, '<br/>');
             }
             if(key=='inputDate') {
                 var cl = "";
-                var time = nts.uk.time.formatDate(new Date(value), "yy/MM/ddD hh:mm");
+                var time = nts.uk.time.formatDate(new Date(item[key]), "yy/MM/ddD hh:mm");
 
                 if(_.includes(time, ''))
                 return self.inputDateColor(time, cl);
             }
-			return value;
+			return item[key];
 		}
 
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
