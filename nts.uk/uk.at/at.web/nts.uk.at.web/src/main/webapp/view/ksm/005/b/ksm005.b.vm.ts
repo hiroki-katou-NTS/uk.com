@@ -99,12 +99,13 @@ module nts.uk.at.view.ksm005.b {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                nts.uk.ui.block.invisible();
                 service.findAllWorkType().done(function (dataWorkType) {
                     service.findAllWorkTime().done(function (dataWorkTime) {
                         self.getMonthlyPatternSettingBatch(BusinessDayClassification.WORK_DAYS).done(function (monthlyBatch) {
                             if (monthlyBatch != undefined && monthlyBatch != null) {
                                 self.worktypeInfoWorkDays(monthlyBatch.workTypeCode ? monthlyBatch.workTypeCode + '   ' + self.findNameByWorktypeCode(monthlyBatch.workTypeCode, dataWorkType) : '');
-                                self.worktimeInfoWorkDays(monthlyBatch.workingCode + '   ' + self.findNameWorkTimeCode(monthlyBatch.workingCode, dataWorkTime) );
+                                self.worktimeInfoWorkDays(monthlyBatch.workingCode ? monthlyBatch.workingCode + '   ' + self.findNameWorkTimeCode(monthlyBatch.workingCode, dataWorkTime) : '');
                                 self.monthlyPatternSettingBatchWorkDays(monthlyBatch);
                             }
                         });
@@ -132,6 +133,7 @@ module nts.uk.at.view.ksm005.b {
 
                     });
                 });
+                nts.uk.ui.block.clear();
                 dfd.resolve(self);
                 return dfd.promise();
             }
@@ -236,7 +238,9 @@ module nts.uk.at.view.ksm005.b {
                     });
 
                 }).fail(function (error) {
-                    nts.uk.ui.dialog.alertError(error);
+                    nts.uk.ui.dialog.info({messageId: error.messageId}).then(function () {
+                        nts.uk.ui.windows.close();
+                    });
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -282,7 +286,7 @@ module nts.uk.at.view.ksm005.b {
                 var dto: MonthlyPatternSettingBatchDto;
                 var self = this;
                 dto = {
-                    settingWorkDays: self.monthlyPatternSettingBatchWorkDays(),
+                    settingWorkDays: self.lstHolidaysPattern.length > 0 ? self.monthlyPatternSettingBatchWorkDays() : null,
                     settingStatutoryHolidays: self.monthlyPatternSettingBatchStatutoryHolidays(),
                     settingNoneStatutoryHolidays: self.monthlyPatternSettingBatchNoneStatutoryHolidays(),
                     settingPublicHolidays: self.monthlyPatternSettingBatchPublicHolidays(),

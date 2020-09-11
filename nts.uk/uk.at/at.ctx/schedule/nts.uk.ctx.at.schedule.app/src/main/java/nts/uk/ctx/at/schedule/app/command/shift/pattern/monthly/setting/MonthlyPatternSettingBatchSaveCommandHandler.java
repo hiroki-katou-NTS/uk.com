@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -81,7 +82,10 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// get command
 		MonthlyPatternSettingBatchSaveCommand command = context.getCommand();
-		
+
+		if (command.getSettingWorkDays() == null){
+			throw new BusinessException("Msg_151");
+		}
 
 		// check pair work days
 		basicScheduleService.checkPairWorkTypeWorkTime(command.getSettingWorkDays().getWorkTypeCode(),
