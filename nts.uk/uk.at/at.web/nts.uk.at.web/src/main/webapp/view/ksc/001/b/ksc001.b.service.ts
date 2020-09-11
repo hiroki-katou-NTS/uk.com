@@ -94,10 +94,10 @@ module nts.uk.at.view.ksc001.b {
 	            copyStartYmd: Date; //copyStartDate
                 employeeIds: string[];
 	            employeeIdLogin: string
-	            /*implementAtr: number;
-				reCreateAtr: number;
+	            implementAtr: number;
+	            reCreateAtr: number;
 				processExecutionAtr: number;
-				reTargetAtr: number;
+	            confirm: boolean,
 				resetWorkingHours: boolean;
 				resetMasterInfo: boolean;
 				reTimeAssignment: boolean;
@@ -107,8 +107,8 @@ module nts.uk.at.view.ksc001.b {
 				reShortTermEmp: boolean;
 				reWorkTypeChange: boolean;
 				reDirectBouncer: boolean;
-	            protectHandCorrect: boolean;
-	            */
+				protectHandCorrect: boolean;
+	            createMethodAtr: number;
             }
 
             export interface ScheduleExecutionLogSaveRespone {

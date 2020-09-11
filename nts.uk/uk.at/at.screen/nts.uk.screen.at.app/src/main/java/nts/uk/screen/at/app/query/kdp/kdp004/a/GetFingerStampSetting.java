@@ -26,18 +26,30 @@ public class GetFingerStampSetting {
 	private StampResultDisplayRepository stampResulRepo;
 
 	public GetFingerStampSettingDto getFingerStampSetting() {
+		String companyId = AppContexts.user().companyId();
+		return getFingerStampSetting(companyId);
+	}
+
+	/**
+	 * Get stamp setting with companyId
+	 * @param companyId
+	 * @return
+	 */
+	public GetFingerStampSettingDto getFingerStampSetting(String companyId) {
 		GetFingerStampSettingDto result = new GetFingerStampSettingDto();
-		String comppanyID = AppContexts.user().companyId();
+		
 		// 1:get 会社ID
-		this.stampSetCommunalRepo.gets(comppanyID).ifPresent(setComu -> {
-			result.setStampSetting(new StampSetCommunalDto(setComu));
-		});
+		this.stampSetCommunalRepo.gets(companyId)
+			.ifPresent(setComu -> {
+				result.setStampSetting(new StampSetCommunalDto(setComu));
+			});
+		
 		// 2:get 会社ID
-		this.stampResulRepo.getStampSet(comppanyID).ifPresent(stampRes -> {
-			result.setStampResultDisplay(new StampResultDisplayDto(Optional.ofNullable(stampRes)));
-		});
+		this.stampResulRepo.getStampSet(companyId)
+			.ifPresent(stampRes -> {
+				result.setStampResultDisplay(new StampResultDisplayDto(Optional.ofNullable(stampRes)));
+			});
 
 		return result;
-
-	}
+	}	
 }

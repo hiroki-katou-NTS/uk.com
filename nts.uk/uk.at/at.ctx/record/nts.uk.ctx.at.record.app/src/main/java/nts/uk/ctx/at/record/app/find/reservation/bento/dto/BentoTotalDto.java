@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.app.find.reservation.bento.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,6 +12,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class BentoTotalDto {
 
     /** 単位 */

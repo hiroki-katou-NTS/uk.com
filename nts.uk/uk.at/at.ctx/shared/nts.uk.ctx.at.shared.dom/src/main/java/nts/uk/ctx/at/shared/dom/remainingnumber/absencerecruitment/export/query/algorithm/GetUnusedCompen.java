@@ -9,11 +9,13 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.interim.InterimRecAbsMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 
@@ -23,8 +25,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
  *         2.未使用の振出(確定)を取得する
  */
 public class GetUnusedCompen {
-	
-	private GetUnusedCompen() {};
+
+	private GetUnusedCompen() {
+	};
 
 	// 2.未使用の振出(確定)を取得する
 	public static List<AccumulationAbsenceDetail> process(Require require, String cid, String employeeId,
@@ -35,7 +38,8 @@ public class GetUnusedCompen {
 		List<PayoutManagementData> lstPayout = unbalanceHolConfirme(require, cid, employeeId, ymd);
 
 		// アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
-		lstPayout.stream().forEach(x -> acquireFixedSuspension(employeeId, ymd, x).ifPresent(data -> result.add(data)));
+		lstPayout.stream()
+				.forEach(x -> acquireFixedSuspension(require, employeeId, ymd, x).ifPresent(data -> result.add(data)));
 		return result;
 
 	}
@@ -47,23 +51,18 @@ public class GetUnusedCompen {
 	}
 
 	// 2-3.暫定振休と紐付けをしない確定振出を取得する
-	public static Optional<AccumulationAbsenceDetail> acquireFixedSuspension(String employeeId, GeneralDate ymd,
-			PayoutManagementData data) {
+	public static Optional<AccumulationAbsenceDetail> acquireFixedSuspension(Require require, String employeeId,
+			GeneralDate ymd, PayoutManagementData data) {
 
-		if (data.getPayoutDate().getDayoffDate().isPresent()
-				&& data.getPayoutDate().getDayoffDate().get().afterOrEquals(ymd)) {
-			return Optional.empty();
-		}
 		// アルゴリズム「暫定振休と紐付けをしない確定振出を取得する」を実行する
-		// ドメインモデル「暫定振出振休紐付け管理」を取得する REPONSE 対応
-		// List<InterimRecAbsMng> lstInterim =
-		// recAbsRepo.getRecBySidMngAtr(DataManagementAtr.CONFIRM,
-		// DataManagementAtr.INTERIM, confirmRecData.getPayoutId());
+		List<InterimRecAbsMng> lstInterim = require.getRecBySidMngAtr(DataManagementAtr.CONFIRM,
+				DataManagementAtr.INTERIM, data.getPayoutId());
 		double unUseDays = data.getUnUsedDays().v();
-		/*
-		 * for (InterimRecAbsMng interimData : lstInterim) { unUseDays -=
-		 * interimData.getUseDays().v(); }
-		 */
+
+		for (InterimRecAbsMng interimData : lstInterim) {
+			unUseDays -= interimData.getUseDays().v();
+		}
+
 		// 未使用日数をチェックする
 		if (unUseDays <= 0) {
 			return Optional.empty();
@@ -71,16 +70,15 @@ public class GetUnusedCompen {
 
 		// 「逐次発生の休暇明細」．未相殺数=未相殺数
 
-		AccumulationAbsenceDetail result = new AccuVacationBuilder(data.getSID(), data.getPayoutDate(),
+		AccumulationAbsenceDetail detail = new AccuVacationBuilder(data.getSID(), data.getPayoutDate(),
 				OccurrenceDigClass.OCCURRENCE, MngDataStatus.CONFIRMED, data.getPayoutId())
 						.numberOccurren(new NumberConsecuVacation(
 								new ManagementDataRemainUnit(data.getOccurredDays().v()), Optional.empty()))
 						.unbalanceNumber(
 								new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays), Optional.empty()))
-						.unbalanceCompensation(
-								new UnbalanceCompensation(data.getExpiredDate(), data.getStateAtr(), data.getDisapearDate(),
-										EnumAdaptor.valueOf(data.getLawAtr().value, StatutoryAtr.class)))
 						.build();
+		UnbalanceCompensation result = new UnbalanceCompensation(detail, data.getExpiredDate(), data.getStateAtr(),
+				data.getDisapearDate(), EnumAdaptor.valueOf(data.getLawAtr().value, StatutoryAtr.class));
 		return Optional.of(result);
 
 	}
@@ -90,6 +88,8 @@ public class GetUnusedCompen {
 		// PayoutManagementDataRepository
 		List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse,
 				DigestionAtr state);
+
+		List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr, String recId);
 
 	}
 

@@ -1,6 +1,8 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
 module nts.uk.at.kdp003.f {
+	import a = nts.uk.at.kdp003.a;
+
 	export interface CodeNameData {
 		id?: string;
 		code?: string;
@@ -38,11 +40,12 @@ module nts.uk.at.kdp003.f {
 		LOGIN_ADMIN: '/ctx/sys/gateway/kdp/login/adminmode',
 		LOGIN_EMPLOYEE: '/ctx/sys/gateway/kdp/login/employeemode',
 		COMPANIES: '/ctx/sys/gateway/kdp/login/getLogginSetting',
+		FINGER_STAMP_SETTING: 'at/record/stamp/finger/get-finger-stamp-setting',
 		CONFIRM_STAMP_INPUT: '/at/record/stamp/employment/system/confirm-use-of-stamp-input'
 	};
 
 	@bean()
-	export class Kdp003FViewModel extends ko.ViewModel {
+	export class ViewModel extends ko.ViewModel {
 		mode: KnockoutObservable<MODE> = ko.observable(null);
 		message: KnockoutObservable<Message | null> = ko.observable(null);
 
@@ -50,7 +53,7 @@ module nts.uk.at.kdp003.f {
 
 		listCompany: KnockoutObservableArray<CompanyItem> = ko.observableArray([]);
 
-		parentName: KnockoutObservable<SCREEN_NAME> = ko.observable('KDP003'); 
+		parentName: KnockoutObservable<SCREEN_NAME> = ko.observable('KDP003');
 
 		constructor(private params?: AdminModeParam | EmployeeModeParam | FingerVeinModeParam) {
 			super();
@@ -247,9 +250,33 @@ module nts.uk.at.kdp003.f {
 						valueHasMutated();
 					}
 				})
+				.then(() => vm.$ajax('at', API.FINGER_STAMP_SETTING, params))
+				.then((data: a.FingerStampSetting) => {
+					_.extend(vm.params, {
+						passwordRequired: !!((data || {}).stampSetting || {}).passwordRequiredArt
+					});
+				})
+				.then(() => {
+					if (vm.params.mode === 'admin') {
+						vm.$window.size.height(270);
+					} else if (vm.params.mode === 'employee') {
+						if (!vm.params.passwordRequired) {
+							vm.$window.size.height(225);
+						} else {
+							vm.$window.size.height(270);
+						}
+					}
+				})
 				// get mode from params or set default
 				.always(() => {
-					vm.$blockui('clear').then(() => vm.mode(vm.params.mode || 'admin'));
+					vm.$blockui('clear')
+						.then(() => vm.mode(vm.params.mode || 'admin'))
+						.then(() => {
+							const cbi = '.ui-igcombo-field';
+							const cbw = '.ui-igcombo-wrapper';
+							
+							$(vm.$el).find(`[tabindex]:not(${cbw}):not(${cbi})`).first().focus();
+						});
 				});
 		}
 

@@ -12,7 +12,7 @@
 			nts.uk.ctx.at.schedule.dom.executionlog.RebuildTargetAtr
 		</com:EnumScript>
 
-		<div class="contentB"><!-- C ===> B-->
+		<div class="contentB panel-content"><!-- C ===> B-->
 			<div class="periodCovered" tabindex="-1">
                 <div class="labelRangeDate" tabindex="-1" 
                     data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KSC001_31')}</div>
@@ -82,7 +82,7 @@
 								</div>
 								<!-- B6_3,4 -->
                                 <div class="checkBoxGroup">
-                                    <div class="checkboxOne" tabindex="10"
+                                    <div class="checkboxOne" tabindex="10" id="overwriteConfirmedData"
                                         data-bind="ntsCheckBox: { checked: overwriteConfirmedData,
                                         enable: isFixedSchedules }">#{i18n.getText('KSC001_105')}</div>
                                     <div class="checkboxOne" tabindex="11"

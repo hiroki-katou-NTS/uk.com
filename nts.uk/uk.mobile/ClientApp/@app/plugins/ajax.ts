@@ -180,8 +180,8 @@ const WEB_APP_NAME = {
                                     {
                                         message: xhr.response
                                     }, {
-                                        title: 'Business exception'
-                                    })
+                                    title: 'Business exception'
+                                })
                                     .then(() => {
                                         reject(xhr);
                                     });
@@ -196,12 +196,7 @@ const WEB_APP_NAME = {
             });
         };
 
-        fetch({ pg: 'at', url: '/server/time/now', method: 'post' })
-            .then((time: string) => {
-                Object.defineProperty(vue, '$sdt', {
-                    value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
-                });
-            });
+        Object.defineProperty(vue, 'fetch', { value: fetch });
 
         vue.mixin({
             beforeCreate() {

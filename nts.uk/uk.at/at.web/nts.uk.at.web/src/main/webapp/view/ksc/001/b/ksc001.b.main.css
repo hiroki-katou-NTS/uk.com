@@ -1,5 +1,5 @@
 
-#contents-area {
+#contents-area.fix-2180 {
 	/*height: 100vh !important;*/
 }
 
@@ -156,7 +156,7 @@ button.nts-switch-button {
 }
 
 .nts-wizard{
-	overflow: hidden;
+	overflow: auto;
 }
 
 .nts-wizard.vertical>.steps {
@@ -170,8 +170,9 @@ button.nts-switch-button {
 	max-width: 800px;
 }
 
-.nts-wizard>.content>.body {
+.nts-wizard.ksc001 > .content > .body {
 	padding: 0;
+    min-height: 100vh;
 }
 
 .buttonBeginNext {
@@ -314,4 +315,25 @@ button.nts-switch-button {
 }
 .radioButtonGroup.comboBoxLists .ntsCheckBox {
     padding-left: 0;
+}
+#contents-area.fix-2180 .nts-wizard {
+    overflow: hidden;
+}
+#contents-area.fix-2180 .nts-wizard.vertical>.content {
+    overflow: hidden;
+    width: calc(100% - 300px);
+    max-width: 100%;
+    min-height: 0;
+}
+#contents-area.fix-2180 .nts-wizard.ksc001 > .content > .body {
+    width: 100%;
+    overflow-y: auto;
+    padding-bottom: 25px;
+    min-height: 0;
+}
+#contents-area.fix-2180 .nts-wizard.ksc001 > .content > #wizard-p-2 {
+    overflow: hidden;
+}
+#contents-area.fix-2180 .nts-wizard.vertical .panel-content {
+    max-width: 75%;
 }

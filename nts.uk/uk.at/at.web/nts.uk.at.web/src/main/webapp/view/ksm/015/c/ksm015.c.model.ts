@@ -20,24 +20,24 @@ class Ksm015Data {
 	
         this.shiftGridColumns = [
 			// ver 17
-            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 40,  },
-            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 40,}, 
+            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 40, formatter: _.escape  },
+            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 40, formatter: _.escape}, 
             /*{ headerText: nts.uk.resource.getText('KSM015_15'), key: 'workTypeName', width: 100, hidden: true }, 
             { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workTimeName', width: 100, hidden: true},*/
-            { headerText: nts.uk.resource.getText('KSM015_32'), key: 'workTime1', width: 163 },
-            { headerText: nts.uk.resource.getText('KSM015_33'), key: 'workTime2', width: 170 },
-            { headerText: nts.uk.resource.getText('KSM015_20'), key: 'remark', width: 150 }
+            { headerText: nts.uk.resource.getText('KSM015_32'), key: 'workTime1', width: 167, formatter: _.escape },
+            { headerText: nts.uk.resource.getText('KSM015_33'), key: 'workTime2', width: 174, formatter: _.escape },
+            { headerText: nts.uk.resource.getText('KSM015_20'), key: 'remark', width: 154, formatter: _.escape }
         ];
 
 		 this.shiftGridColumnsD = [
 			// ver 17
-            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 40,  },
-            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 40,}, 
+            { headerText: nts.uk.resource.getText('KSM015_13'), key: 'shiftMasterCode', width: 40, formatter: _.escape  },
+            { headerText: nts.uk.resource.getText('KSM015_14'), key: 'shiftMasterName', width: 40, formatter: _.escape}, 
 /*            { headerText: nts.uk.resource.getText('KSM015_15'), key: 'workTypeName', width: 100, hidden: true }, 
             { headerText: nts.uk.resource.getText('KSM015_16'), key: 'workTimeName', width: 100, hidden: true},*/
-            { headerText: nts.uk.resource.getText('KSM015_32'), key: 'workTime1', width: 163 },
-            { headerText: nts.uk.resource.getText('KSM015_33'), key: 'workTime2', width: 170 },
-            { headerText: nts.uk.resource.getText('KSM015_20'), key: 'remark', width: 150 }
+            { headerText: nts.uk.resource.getText('KSM015_32'), key: 'workTime1', width: 167, formatter: _.escape },
+            { headerText: nts.uk.resource.getText('KSM015_33'), key: 'workTime2', width: 174, formatter: _.escape },
+            { headerText: nts.uk.resource.getText('KSM015_20'), key: 'remark', width: 154, formatter: _.escape }
         ];
     
 }

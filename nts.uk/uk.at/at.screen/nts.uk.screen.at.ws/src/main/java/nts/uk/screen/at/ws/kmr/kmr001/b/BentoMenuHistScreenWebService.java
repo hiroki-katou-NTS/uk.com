@@ -25,11 +25,4 @@ public class BentoMenuHistScreenWebService extends WebService {
          return   bentoMenuHistScreenQuery.getListBentoMenuHist();
 
     }
-    @Path("get/{histId}")
-    @POST
-    public DateHistoryItemDto GetBentoMenuHist(@PathParam("histId") String histId){
-        return bentoMenuHistScreenQuery.getBentoMenuHist(histId);
-
-    }
-
 }

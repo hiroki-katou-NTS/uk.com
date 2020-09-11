@@ -16,6 +16,11 @@ public enum PauseError {
 	/**
 	 * 相殺できないエラー
 	 */
-	OFFSETNUMBER(1);
+	OFFSETNUMBER(1),
+	
+	/**
+	 * 先取り制限エラー
+	 */
+	PREFETCH_ERROR(2);
 	public final Integer value;
 }

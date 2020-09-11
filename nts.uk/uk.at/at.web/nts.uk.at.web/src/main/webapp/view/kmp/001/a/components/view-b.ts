@@ -96,8 +96,11 @@ module nts.uk.at.view.kmp001.b {
 		GET_ALL_STAMPCARD: 'screen/pointCardNumber/getAllEmployeeFromCardNo/',
 		GET_INFO_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInformationViewB/',
 		ADD_STAMP: 'at/record/register-stamp-card/view-b/save',
-		DELETE_STAMP: 'at/record/register-stamp-card/view-b/delete'
+		DELETE_STAMP: 'at/record/register-stamp-card/view-b/delete',
+		GET_SETTING: 'screen/pointCardNumber/getStampCardDigit/'
 	};
+
+	const DATE_FORMAT = 'YYYY/MM/DD';
 
 	@component({
 		name: 'view-b',
@@ -112,6 +115,7 @@ module nts.uk.at.view.kmp001.b {
 		public employee: EmployeeVIewB = new EmployeeVIewB();
 		public mode: KnockoutObservable<MODE> = ko.observable('all');
 		public stampCardBackSelect: string = '';
+		public editting: StampCardEdit = new StampCardEdit();
 
 		created(params: Params) {
 			const vm = this;
@@ -140,33 +144,72 @@ module nts.uk.at.view.kmp001.b {
 					if (c != '') {
 						vm.$ajax(KMP001B_API.GET_INFO_EMPLOYEE + ko.toJS(c))
 							.then((data: IEmployeeVIewB[]) => {
+
+								if (moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31") {
+									data.retiredDate = null;
+								}
+
 								vm.employee.update(ko.toJS(data));
 							})
 					}
 				})
+
+			vm.$ajax(KMP001B_API.GET_SETTING)
+				.then((data: StampCardEdit) => {
+					vm.editting = data;
+				});
+
 		}
 
 		mounted() {
 			const vm = this;
-			
+
 			$(document).ready(function() {
 				$('#input-stamp-card').focus();
 			});
 		}
-		
+
 		getStampCard() {
 			const vm = this;
-			vm.$blockui("invisible");
-			const stampInput: string = ko.toJS(vm.inputStampCard);
+			var stampInput: string = ko.toJS(vm.inputStampCard);
 			vm.mode("one");
-			vm.stampCardBackSelect = stampInput;
+			
+			var s = (ko.toJS(vm.editting.stampCardDigitNumber) - stampInput.length);
 
-			if (stampInput == '') {
-				vm.$dialog.info({ messageId: "Msg_1679" });
-			} else {
-				vm.reloadAllStampCard(0);
+			if (s > 0) {
+				switch (ko.toJS(vm.editting.stampCardEditMethod)) {
+					case 1:
+						for (var i = 0; i < s; i++) {
+							stampInput = "0" + stampInput;
+						}
+						break;
+					case 2:
+						for (var i = 0; i < s; i++) {
+							stampInput = stampInput + "0";
+						}
+						break;
+					case 3:
+						for (var i = 0; i < s; i++) {
+							stampInput = " " + stampInput;
+						}
+						break;
+					case 4:
+						for (var i = 0; i < s; i++) {
+							stampInput = stampInput + " ";
+						}
+						break;
+				}
+
+				vm.stampCardBackSelect = stampInput;
+				
+				vm.inputStampCard(vm.stampCardBackSelect);
+				
+				if (stampInput == '') {
+					vm.$dialog.info({ messageId: "Msg_1679" });
+				} else {
+					vm.reloadAllStampCard(0);
+				}
 			}
-			vm.$blockui("clear")
 		}
 
 		getAllStampCard() {
@@ -217,8 +260,10 @@ module nts.uk.at.view.kmp001.b {
 							}
 						});
 
-						vm.items(stampCardList);
-						const record = stampCardList[selectedIndex];
+						const dataSort: IStampCard[] = _.orderBy(stampCardList, ['stampNumber'], ['asc']);
+
+						vm.items(dataSort);
+						const record = dataSort[selectedIndex];
 
 						if (record) {
 							vm.model.stampNumber(record.stampNumber);
@@ -285,7 +330,7 @@ module nts.uk.at.view.kmp001.b {
 						vm.$ajax(KMP001B_API.DELETE_STAMP, command)
 							.done(() => vm.$dialog.info({ messageId: "Msg_16" }))
 							.then(() => vm.model.clear())
-							.then(() => vm.reloadAllStampCard(0));
+							.then(() => vm.reloadAllStampCard(newIndex));
 					})
 			}
 			vm.$blockui("clear");

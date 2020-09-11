@@ -32,20 +32,32 @@ public class ReservationConfirmationListScreenQuery {
     @Inject
     private BentoMenuRepository bentoMenuRepo;
 
+    /**
+     * 社員参照範囲を取得する
+     * @param companyId
+     * @return
+     */
     public ReservationConfirmationListDto getReservationConfirmationListStartupInfo(String companyId) {
         ReservationConfirmationListDto dto = new ReservationConfirmationListDto();
 
+        // 取得する(会社ID)
         Optional<BentoReservationSetting> optBentoReservationSetting = bentoReservationSettingRepository.findByCId(companyId);
+        //    取得したドメインモデル「弁当予約設定」がないの場合
+        //　　エラーメッセージ「Msg_1847」を表示、A画面へ戻る
         if (optBentoReservationSetting.isPresent()) {
             BentoReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
             dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
         } else {
-        	throw new BusinessException("Msg_1847");
+            throw new BusinessException("Msg_1847");
         }
 
+        // 取得する(会社ID、年月日) 会社ID＝ログイン会社ID,年月日＝9999/12/31
         BentoMenu bentoMenu = bentoMenuRepo.getBentoMenuByEndDate(companyId, GeneralDate.max());
-		if (bentoMenu == null) {
-        	throw new BusinessException("Msg_1848");
+
+        // 取得したドメインモデル「弁当メニュー」がないの場合
+        //　　エラーメッセージ「Msg_1848」を表示、A画面へ戻る
+        if (bentoMenu == null) {
+            throw new BusinessException("Msg_1848");
         }
 
         List<Bento> menu = bentoMenu.getMenu();
