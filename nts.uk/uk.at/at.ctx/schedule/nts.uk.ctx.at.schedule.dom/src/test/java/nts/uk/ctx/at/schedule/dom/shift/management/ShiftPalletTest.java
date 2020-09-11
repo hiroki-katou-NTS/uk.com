@@ -2,8 +2,6 @@ package nts.uk.ctx.at.schedule.dom.shift.management;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,7 +27,7 @@ public class ShiftPalletTest {
 	public void create_shiftPallet_size0_fail() {
 
 		NtsAssert.businessException("Msg_1616", () -> {
-			new ShiftPallet(
+			ShiftPallet.create(
 					new ShiftPalletDisplayInfor(
 							new ShiftPalletName("shpaName"), // dummy
 							NotUseAtr.USE, // dummy
@@ -41,7 +39,7 @@ public class ShiftPalletTest {
 	public void create_shiftPallet_size21_fail() {
 
 		NtsAssert.businessException("Msg_1616", () -> {
-			new ShiftPallet(
+			ShiftPallet.create(
 					new ShiftPalletDisplayInfor(
 							new ShiftPalletName("shpaName"), // dummy
 							NotUseAtr.USE, // dummy
@@ -75,7 +73,7 @@ public class ShiftPalletTest {
 	public void create_shiftPallet_duplicate() {
 
 		NtsAssert.businessException("Msg_1616", () -> {
-			new ShiftPallet(
+			ShiftPallet.create(
 					new ShiftPalletDisplayInfor(
 							new ShiftPalletName("shpaName"), // dummy
 							NotUseAtr.USE, // dummy
@@ -117,7 +115,7 @@ public class ShiftPalletTest {
 		
 		assertThat(target.getCombinations())
 			.extracting(d->d.getPositionNumber(), d->d.getCombinationName().v())
-			.containsExactly(tuple(1,"combiNam1"), tuple(3,"combiNam3"), tuple(5,"combiNam5"));
+			.containsExactly(tuple(3,"combiNam3"), tuple(5,"combiNam5"), tuple(1,"combiNam1"));
 	}
 	
 	@Test
