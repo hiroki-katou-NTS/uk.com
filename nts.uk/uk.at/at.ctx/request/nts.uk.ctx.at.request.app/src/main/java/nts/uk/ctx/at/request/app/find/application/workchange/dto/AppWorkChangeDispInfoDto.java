@@ -25,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.worktime.predset.PrescribedTimezoneSetting;
 import nts.uk.ctx.at.shared.dom.worktime.predset.TimezoneUse;
 import nts.uk.ctx.at.shared.dom.worktime.predset.UseSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
-import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data

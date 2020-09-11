@@ -281,8 +281,15 @@ public class AppWorkChangeFinder {
 					.collect(Collectors.toList());
 		}
 		AppWorkChangeDispInfo appWorkChangeDispInfo = null;
-		if (appWorkChangeParam.getAppWorkChangeOutputDto() != null) {
-			appWorkChangeDispInfo = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo().toDomain();
+		if (appWorkChangeParam.getMode()) {
+			if (appWorkChangeParam.getAppWorkChangeOutputDto() != null) {
+				appWorkChangeDispInfo = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo().toDomain();									
+			}
+			
+		} else {
+			if (appWorkChangeParam.getAppWorkChangeOutputCmd() != null) {
+				appWorkChangeDispInfo = appWorkChangeParam.getAppWorkChangeOutputCmd().getAppWorkChangeDispInfo().toDomain();							
+			}
 		}
 		AppWorkChange appWorkChange = null;
 		if (appWorkChangeParam.getAppWorkChangeDto() != null) {
