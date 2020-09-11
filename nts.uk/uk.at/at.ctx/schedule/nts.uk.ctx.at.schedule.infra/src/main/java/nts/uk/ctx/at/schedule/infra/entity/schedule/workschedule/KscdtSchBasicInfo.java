@@ -191,7 +191,7 @@ public class KscdtSchBasicInfo extends ContractUkJpaEntity {
 		// create WorkInfoOfDailyAttendance
 		WorkInformation recordInfo = new WorkInformation(wktpCd, wktmCd);
 		WorkInfoOfDailyAttendance workInfo = new WorkInfoOfDailyAttendance(recordInfo, null, CalculationState.No_Calculated, EnumAdaptor.valueOf(goStraightAtr ? 1 : 0, NotUseAttribute.class), 
-				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek(), DayOfWeek.class), new ArrayList<>());
+				EnumAdaptor.valueOf(backStraightAtr ? 1 : 0, NotUseAttribute.class), EnumAdaptor.valueOf(GeneralDate.today().dayOfWeek() - 1, DayOfWeek.class), new ArrayList<>());
 		
 		// create AffiliationInforOfDailyAttd
 		AffiliationInforOfDailyAttd affInfo = new AffiliationInforOfDailyAttd(new EmploymentCode(empCd), jobId, wkpId, new ClassificationCode(clsCd),

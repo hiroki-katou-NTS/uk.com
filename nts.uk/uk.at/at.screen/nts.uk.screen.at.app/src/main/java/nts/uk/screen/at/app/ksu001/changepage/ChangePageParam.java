@@ -18,6 +18,8 @@ public class ChangePageParam {
 	public int shiftPalletUnit;             
 	public int pageNumberCom;                   
 	public int pageNumberOrg; 
-	public String workplaceId;     	         
+	public String workplaceId; 
+	public String workplaceGroupId; 	     // ・対象組織：対象組織識別情報
+	public int unit;
 	public List<ShiftMasterMapWithWorkStyle> listShiftMasterNotNeedGetNew; // ・新たに取得する必要のないシフト一覧：List<シフトマスタ>
 }

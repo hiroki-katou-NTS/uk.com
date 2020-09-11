@@ -149,7 +149,13 @@ public class GetDataWhenChangePage {
 	public GetShiftPalChangePageResult getShiftPalletWkp(ChangePageParam param) {
 		
 		//ShiftPalletsOrg shiftPalletsOrg = getShiftPalettebyOrgAndSpePage.getShiftPalletOrg(param.pageNumberOrg, param.workplaceId);
-		List<ShiftPalletsOrg> listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceId(0, param.getWorkplaceId());
+		List<ShiftPalletsOrg> listShiftPalletsOrg = new ArrayList<>();
+		if (param.unit == 0) {
+			listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(0, param.workplaceId );
+		}else{
+			listShiftPalletsOrg = shiftPalletsOrgRepository.findbyWorkPlaceIdUse(1, param.workplaceGroupId );
+		}
+		
 		ShiftPalletsOrg shiftPalletsOrg = listShiftPalletsOrg.stream().filter(item -> item.getPage() == param.pageNumberCom).findFirst().get();
 			
 		
