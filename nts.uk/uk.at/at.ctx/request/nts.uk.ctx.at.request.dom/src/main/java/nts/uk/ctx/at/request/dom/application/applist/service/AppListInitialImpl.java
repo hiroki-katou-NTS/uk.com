@@ -1140,9 +1140,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				device == PC) {
 			// 所属職場履歴Listのキャッシュがあるかチェックする(Check xem có cache List lịch sử nơi làm việc)
 			Optional<Pair<String, DatePeriod>> containKey = mapWkpInfo.keySet().stream().filter(x -> {
-				return x.getLeft().equals(application.getEmployeeID()) &&
-				x.getRight().start().beforeOrEquals(application.getOpAppStartDate().get().getApplicationDate()) &&
-				x.getRight().end().afterOrEquals(application.getOpAppEndDate().get().getApplicationDate());
+				boolean employeeCondition = x.getLeft().equals(application.getEmployeeID());
+				boolean startDateCondition = x.getRight().start().beforeOrEquals(
+						application.getOpAppStartDate().map(y -> y.getApplicationDate()).orElse(application.getAppDate().getApplicationDate()));
+				boolean endDateCondition = x.getRight().end().afterOrEquals(
+						application.getOpAppEndDate().map(y -> y.getApplicationDate()).orElse(application.getAppDate().getApplicationDate()));
+				return employeeCondition && startDateCondition && endDateCondition;
 			}).findAny();
 			if(containKey.isPresent()) {
 				// 申請一覧リスト.職場名をキャッシュからセットする(applicationList.Set workPlace từ cache)
@@ -1151,8 +1154,11 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				// 社員指定期間所属職場履歴を取得  (Lấy lịch sử nơi làm việc period chỉ định nhân viên)
 				WorkPlaceHistBySIDImport wkp = wkpAdapter.findWpkBySIDandPeriod(application.getEmployeeID(), period);
 				Optional<WkpInfo> opWkpInfo = wkp.getLstWkpInfo().stream().filter(x -> {
-					return x.getDatePeriod().start().beforeOrEquals(application.getOpAppStartDate().get().getApplicationDate()) &&
-					x.getDatePeriod().end().afterOrEquals(application.getOpAppEndDate().get().getApplicationDate());
+					boolean startDateCondition = x.getDatePeriod().start().beforeOrEquals(
+							application.getOpAppStartDate().map(y -> y.getApplicationDate()).orElse(application.getAppDate().getApplicationDate()));
+					boolean endDateCondition = x.getDatePeriod().end().afterOrEquals(
+							application.getOpAppEndDate().map(y -> y.getApplicationDate()).orElse(application.getAppDate().getApplicationDate()));
+					return startDateCondition && endDateCondition;
 				}).findFirst();
 				if(opWkpInfo.isPresent()) {
 					workplaceName = opWkpInfo.get().getWpkName();
