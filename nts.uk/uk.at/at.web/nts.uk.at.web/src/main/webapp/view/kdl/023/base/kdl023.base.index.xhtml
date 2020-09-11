@@ -24,19 +24,21 @@
 				<div id="contents-area" data-bind="visible: true" style="display: none">
 					<div class="pull-left reflect-setting bg-green caret-right caret-background">
 					<com:ko tag="with" bind="reflectionSetting">
-						<div class="control-group cf">
-							<!--A1_36-->
-							<div class="pull-left width-40 exec-mode" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>
-							<!--A1_37-->
-							<div  id="daterangepicker" class="kdl023-daterange pull-left exec-mode" tabindex="1" data-bind="ntsDateRangePicker: {
-								name: 'kdl023-daterangepicker',
-								required: true,
-								enable: true,
-								showNextPrevious: false,
-								value: $parent.dateValue,
-								maxRange: 'oneYear',
-								type: 'yearmonth'}"/>
-						</div>
+                        <div class="control-group cf">
+                            <com:ko-if bind="$parent.isExecMode">
+                                <!--A1_36-->
+                                <div class="pull-left width-40 exec-mode" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KDL023_23')}</div>
+                                <!--A1_37-->
+                                <div  id="daterangepicker" class="kdl023-daterange pull-left exec-mode" tabindex="1" data-bind="ntsDateRangePicker: {
+                                    name: 'kdl023-daterangepicker',
+                                    required: true,
+                                    enable: true,
+                                    showNextPrevious: false,
+                                    value: $parent.dateValue,
+                                    maxRange: 'oneYear',
+                                    type: 'yearmonth'}"/>
+                            </com:ko-if>
+                        </div>
 						<div class="control-group cf">
 
 							<!--A1_2-->

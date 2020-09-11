@@ -192,14 +192,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         }
                     });
 
-                    if(vm.isExecMode()){
-                        $('.exec-mode').show();
-                        $('.ref-mode').hide();
-                    } else{
-                        $('.ref-mode').show();
-                        $('.exec-mode').hide();
-                    }
-
                     vm.reflectionMethod.subscribe(val => {
                         if(val === 2){
                             vm.reflectionSetting().statutorySetting.useClassification(false);
@@ -1140,10 +1132,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          * Show error then close dialog.
          */
         private showErrorThenCloseDialog(): void {
-            let self = this;
+            let vm = this;
             nts.uk.ui.dialog.alertError({ messageId: "Msg_37" }).then(() => {
-                self.closeDialog();
-            });
+				vm.$blockui("clear");
+			});
         }
 
         /**
