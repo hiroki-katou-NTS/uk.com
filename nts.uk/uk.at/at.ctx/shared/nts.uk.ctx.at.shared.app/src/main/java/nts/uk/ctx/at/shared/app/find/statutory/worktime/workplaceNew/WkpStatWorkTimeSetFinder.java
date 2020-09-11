@@ -65,17 +65,17 @@ public class WkpStatWorkTimeSetFinder {
 			dtoBuilder.regularLaborTime(WorkingTimeSettingDto.fromDomain(optComRegular.get()));
 		}
 
-		val regularSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.REGULAR_LABOR, year);
+		val regularSet = monthlyWorkTimeSetRepo.findWorkplace(companyId, wkpId, LaborWorkTypeAttr.REGULAR_LABOR, year);
 		if (!regularSet.isEmpty()) {
 			dtoBuilder.normalSetting(WkpNormalSettingDto.with(companyId, wkpId, year, regularSet));
 		}
 		
-		val flexSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.FLEX, year);
+		val flexSet = monthlyWorkTimeSetRepo.findWorkplace(companyId, wkpId, LaborWorkTypeAttr.FLEX, year);
 		if (!flexSet.isEmpty()) {
 			dtoBuilder.flexSetting(WkpFlexSettingDto.with(companyId, wkpId, year, flexSet));
 		}
 
-		val deforSet = monthlyWorkTimeSetRepo.findCompany(companyId, LaborWorkTypeAttr.DEFOR_LABOR, year);
+		val deforSet = monthlyWorkTimeSetRepo.findWorkplace(companyId, wkpId, LaborWorkTypeAttr.DEFOR_LABOR, year);
 		if (!deforSet.isEmpty()) {
 			dtoBuilder.deforLaborSetting(WkpDeforLaborSettingDto.with(year, companyId, wkpId, deforSet));
 		}

@@ -510,6 +510,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             temp.setBentoReservationInfoForEmpList(bentoReservedInfoDtos.stream()
                     .map(BentoReservedInfoDto::getBentoReservationInfoForEmpList)
                     .flatMap(Collection::stream)
+                    .sorted(Comparator.comparing(BentoReservationInfoForEmpDto::getEmpCode))
                     .collect(Collectors.toList()));
             result.add(temp);
         }

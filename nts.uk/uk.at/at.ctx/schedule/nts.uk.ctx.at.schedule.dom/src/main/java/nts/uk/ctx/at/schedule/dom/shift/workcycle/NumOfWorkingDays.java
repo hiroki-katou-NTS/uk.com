@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 /*
     勤務の日数
  */
-@IntegerRange(max = 31, min = 1)
+@IntegerRange(max = 99, min = 1)
 public class NumOfWorkingDays extends IntegerPrimitiveValue<NumOfWorkingDays> {
 
     /** The Constant serialVersionUID. */
