@@ -118,6 +118,7 @@ module nts.uk.at.view.ksc001.b {
 					{ content : '.step-3' },
 					{ content : '.step-4' }
 				];
+
 				self.reloadCcg001();
 
 				self.stepSelected = ko.observable( { id : 'step-1', content : '.step-1' } );
@@ -435,7 +436,7 @@ module nts.uk.at.view.ksc001.b {
 						startDate : data.startDate,
 						endDate : data.endDate
 					} );
-					self.reloadCcg001();
+					//self.reloadCcg001();
 					dfd.resolve( self );
 				}).always( () => self.$blockui("hide") );
 
@@ -530,17 +531,17 @@ module nts.uk.at.view.ksc001.b {
 							} else {
 								nts.uk.ui.dialog.error({ messageId: "Msg_1779"});
 							}
-
-							dfd.resolve();
-						} )
-						.fail(() => {
 							nts.uk.ui.block.clear();
 							dfd.resolve();
-						} )
+						})
+						.fail(() => {
+							nts.uk.ui.block.clear();
+							dfd.reject();
+						})
 						.always(() => {
 							nts.uk.ui.block.clear();
 							dfd.resolve();
-						} );
+						});
 				}
 
 				// update kc005
@@ -773,22 +774,17 @@ module nts.uk.at.view.ksc001.b {
 			 * Validate copy paste schedule
 			 */
 			private isInValidCopyPasteSchedule(): boolean {
-				let self = this;
+				let self = this,
+					hasError : boolean = false;
+
 				if( self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.COPY_PAST_SCHEDULE ) {
 					$( '#copy-start-date' ).ntsEditor( 'validate' );
-					/*self.$validate('#copy-start-date')
-					.then((valid: boolean) => {
-						return valid;
-					});*/
 				} else if( self.checkCreateMethodAtrPersonalInfo() == CreateMethodAtr.PATTERN_SCHEDULE
 					&& self.creationMethodCode() == CreationMethodRef.MONTHLY_PATTERN
 					&& nts.uk.util.isNullOrEmpty( self.monthlyPatternCode() ) ) {
 					$( '.monthly-pattern-code' ).ntsEditor( 'validate' );
-					/*self.$validate('.monthly-pattern-code')
-					.then((valid: boolean) => {
-						return valid;
-					});*/
 				}
+
 				return nts.uk.ui.errors.hasError();
 			}
 
