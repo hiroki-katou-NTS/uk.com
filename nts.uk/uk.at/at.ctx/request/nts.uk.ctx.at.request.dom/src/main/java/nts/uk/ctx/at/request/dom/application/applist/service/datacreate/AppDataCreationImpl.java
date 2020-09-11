@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -24,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -75,6 +78,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 		}
 		
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
+		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
 		for(Application app : appLst) {
 			// 申請一覧リスト取得マスタ情報 ( Thông tin master lấy applicationLisst)
 			AppInfoMasterOutput appInfoMasterOutput = appListInitialRepository.getListAppMasterInfo(
@@ -82,6 +86,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 					period, 
 					opApprovalListDisplaySetting.get().getDisplayWorkPlaceName(), 
 					mapEmpInfo, 
+					mapWkpInfo,
 					device);
 			mapEmpInfo.putAll(appInfoMasterOutput.getMapEmpInfo());
 			// 各申請データを作成 ( Tạo data tên application)
