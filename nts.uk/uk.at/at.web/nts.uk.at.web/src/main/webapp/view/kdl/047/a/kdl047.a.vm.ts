@@ -63,7 +63,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
       _.each(vm.objectDisplay.attendanceItems, tmp => {
         tableDatas.push(new ItemModel({
           id: tmp.attendanceItemId,
-          code: tmp.displayNumbers.toString(),
+          code: tmp.displayNumbers,
           name: tmp.attendanceItemName
         }));
       });
@@ -161,7 +161,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
 
   export class ItemModel {
     id: any;
-    code: string;
+    code: any;
     name: string;
 
     constructor(init?: Partial<ItemModel>) {
