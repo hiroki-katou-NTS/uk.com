@@ -506,6 +506,7 @@ module nts.uk.at.view.ksu001.u {
                     self.yearMonthPicked(parseInt(dateClickSplit[0] + dateClickSplit[1]));  
                     self.isBtnClick(false); 
                     $('#prev-btn').blur();
+                    $('#next-btn').blur();
                 }        
             });
         }
@@ -593,7 +594,7 @@ module nts.uk.at.view.ksu001.u {
             if (parseInt(forwardWeekSplit[0]) == parseInt(basePubDateSplit[0])) {
                 if (parseInt(forwardWeekSplit[1]) == parseInt(basePubDateSplit[1])) {
                     if (self.editDate()) {
-                        let size = self.daysDifference(self.editDate(), forwardWeek) >= 7 ? self.daysDifference(self.editDate(), forwardWeek) + 1 : 7;                        
+                        let size = self.daysDifference(self.newEditDate(), forwardWeek) >= 7 ? self.daysDifference(self.newEditDate(), forwardWeek) + 1 : 7;                        
                         if (forwardWeekPublicDate <= self.publicDate()) {
                             for (let i = 1; i <= size; i++) {
                                 date = self.formatDate(new Date(parseInt(forwardWeekSplit[0]), parseInt(forwardWeekSplit[1]) - 1, parseInt(forwardWeekSplit[2]) + offset - i));
@@ -686,6 +687,8 @@ module nts.uk.at.view.ksu001.u {
             if(forwardWeek >= self.publicDate()){
                 self.newPublicDate(forwardWeek);
                 self.newEditDate("");
+            } else if(forwardWeek >= self.editDate() && forwardWeek < self.publicDate()){
+                self.newEditDate(self.editDate());
             } else {
                 self.newEditDate(self.formatDate(new Date(parseInt(forwardWeekSplit[0]), parseInt(forwardWeekSplit[1]) - 1, parseInt(forwardWeekSplit[2]) + 1)));
             }  
@@ -940,14 +943,20 @@ module nts.uk.at.view.ksu001.u {
             if(parseInt(basePubDateSplit[0]) == parseInt(prevMonthPublicDateSplit[0])){
                 if (parseInt(basePubDateSplit[1]) == parseInt(prevMonthPublicDateSplit[1])){
                     size = self.daysDifference(self.newPublicDate(), self.publicDate());
+                    let date = "";
                     for(let i = 1 ; i <= size; i++ ){
-                        let date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) + i));
+                        if(prevMonthPublicDate < self.publicDate()){
+                            date = self.formatDate(new Date(parseInt(basePubDateSplit[0]), parseInt(basePubDateSplit[1]) - 1, parseInt(basePubDateSplit[2]) + i));                           
+                        } else {
+                            date = self.formatDate(new Date(parseInt(prevMonthPublicDateSplit[0]), parseInt(prevMonthPublicDateSplit[1]) - 1, parseInt(prevMonthPublicDateSplit[2]) + i));
+                        }
+                        
                         let existDate = self.checkExistDate(date);
                         if(existDate){
                             self.removeExistDate(existDate);
                         }                        
                     }
-                    self.newPublicDate(prevMonthPublicDate);
+                    self.newPublicDate(self.publicDate());
                 } else if(parseInt(basePubDateSplit[1]) > parseInt(prevMonthPublicDateSplit[1])){
                     if(self.newPublicDate() == self.publicDate() && parseInt(basePubDateSplit[1]) > parseInt(prevMonthPublicDateSplit[1]) + 1){
                         size = self.daysDifference(self.newEditDate(), prevMonthPublicDate) + parseInt(prevMonthPublicDateSplit[2]);
@@ -1128,8 +1137,12 @@ module nts.uk.at.view.ksu001.u {
                     self.newEditDate(self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) + 1)));
                     self.newPublicDate(nextMonthPublicDate);
                 }
-            } else if (parseInt(basePubDateSplit[0]) < parseInt(nextMonthPublicDateSplit[0])) {            
-                size = self.daysDifference(self.newPublicDate(),nextMonthPublicDate);
+            } else if (parseInt(basePubDateSplit[0]) < parseInt(nextMonthPublicDateSplit[0])) {           
+                if(self.newEditDate() && self.newEditDate() != "") {
+                    size = self.daysDifference(self.newEditDate(),nextMonthPublicDate) + 1;
+                } else {
+                    size = self.daysDifference(self.newPublicDate(),nextMonthPublicDate);
+                }                
                 for(let i = 0 ; i < size; i++ ){
                     let date = self.formatDate(new Date(parseInt(nextMonthPublicDateSplit[0]), parseInt(nextMonthPublicDateSplit[1]) - 1, parseInt(nextMonthPublicDateSplit[2]) - i));
                     let existDate = self.checkExistDate(date);

@@ -190,7 +190,7 @@ public class ClassificationPubImp implements SyClassificationPub {
 		
 		return result;
 	}
-	
+
 	@Override
 	public List<EmpClassifiExport> getByListSIDAndBasedate(GeneralDate baseDate, List<String> listempID) {
 		List<AffClassHistItem> listAffClassHistItem = affClassHistItemRepository.searchClassification(listempID, baseDate, new ArrayList<>());
@@ -233,4 +233,3 @@ public class ClassificationPubImp implements SyClassificationPub {
 		List<Classification> getClassificationByCodes(String companyId, List<String> codes);
 	}
 }
-
