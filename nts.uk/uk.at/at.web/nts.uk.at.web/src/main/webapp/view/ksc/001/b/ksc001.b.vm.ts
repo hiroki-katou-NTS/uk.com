@@ -560,7 +560,7 @@ module nts.uk.at.view.ksc001.b {
 					isSelectAllAfterReload : true,
 					maxWidth : 550,
 					maxRows : 10,
-					tabindex : 5
+					tabindex : -1
 				};
 
 				return dfd.promise();
@@ -758,7 +758,7 @@ module nts.uk.at.view.ksc001.b {
 				} else {
 					self.buildString();
 					self.next().done( function() {
-
+						$('#employeeSearch .nts-gridlist').attr('tabindex', '-1');
 						if( self.kcp005EmployeeList().length <= 0 )
 							$('.ccg-lbl-search-drawer').click();
 
