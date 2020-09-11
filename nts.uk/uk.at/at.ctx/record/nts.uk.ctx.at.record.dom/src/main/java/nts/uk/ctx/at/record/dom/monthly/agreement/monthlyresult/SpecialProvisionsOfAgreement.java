@@ -37,12 +37,15 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
     private ReasonsForAgreement reasonsForAgreement;
 
     /** 承認者リスト*/
-    private List<String> listApproverSID;
+    private final List<String> listApproverSID;
+
+    /** 承認状況詳細*/
+    private ApprovalStatusDetails confirmationStatus;
+
+    /** 確認状況詳細*/
+    private List<ConfirmationStatus> confirmationStatuses;
 
     /** 画面表示情報*/
     private ScreenDisplayInfo screenDisplayInfo;
-
-    /** 確認状況詳細*/
-    private List<ConfirmationStatus> confirmationStatus;
 
 }
