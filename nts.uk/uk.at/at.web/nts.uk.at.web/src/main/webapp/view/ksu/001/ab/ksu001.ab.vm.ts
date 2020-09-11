@@ -15,19 +15,22 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         dataCell: any; // data để paste vào grid
         isDisableWorkTime : boolean;
         enableWorkTime : KnockoutObservable<boolean> = ko.observable(true);
-        workPlaceId: KnockoutObservable<string>;
+        workPlaceId: KnockoutObservable<string>      = ko.observable('');
         workTimeCode:KnockoutObservable<string>;
+        reInit =  false;
 
-        constructor() {
+        constructor(id, listWorkType) { //id : workplaceId || workplaceGroupId; 
             let self = this;
             let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
             let workTimeCodeSave = uk.localStorage.getItem('workTimeCodeSelected');
             self.isDisableWorkTime = false;
-            self.workPlaceId  = ko.observable('');
             self.workTimeCode = ko.observable(workTimeCodeSave.isPresent() ? workTimeCodeSave.get() : '');
-            
-
             self.listWorkType = ko.observableArray([]);
+            if (id != undefined) {
+                self.workPlaceId(id);
+                self.listWorkType(listWorkType);
+                self.reInit = true;
+            }
             self.selectedWorkTypeCode = ko.observable(workTypeCodeSave.isPresent() ? workTypeCodeSave.get() : '');
             self.input = {
                 fillter: false,
@@ -53,13 +56,15 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                     // check workTimeSetting 
                     if (workType[0].workTimeSetting == 2) {
                         self.isDisableWorkTime = true;
-                        $("#listWorkType").addClass("disabledWorkTime");
+                        $("#listWorkTime").addClass("disabledWorkTime");
                     } else {
                         self.isDisableWorkTime = false;
-                        $("#listWorkType").removeClass("disabledWorkTime");
+                        $("#listWorkTime").removeClass("disabledWorkTime");
                     }
+                 }
+                if (self.reInit == false) {
+                    self.updateDataCell(self.objWorkTime);
                 }
-                self.updateDataCell(self.objWorkTime);
             });
         }
 
