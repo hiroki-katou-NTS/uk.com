@@ -953,7 +953,8 @@ module nts.uk.at.view.ksc001.b {
 							lstLabelInfomation.push( self.$i18n( "KSC001_37" ) + self.$i18n( "KSC001_113" ) + self.$i18n( "KSC001_114" ) + self.$i18n( "KSC001_111" ) );
 							//#KSC001_37+#KSC001_111+#KSC001_114+「C2_12」+「▲」+「C2_13」
 							let monthlyPattern = self.monthlyPatternOpts().find( element => element.code == self.monthlyPatternCode() );
-							let monthlyPatternText = self.monthlyPatternCode() + self.fullSizeSpace + (!_.isNil(monthlyPattern) ? monthlyPattern.name : '');
+							//let monthlyPatternText = self.monthlyPatternCode() + self.fullSizeSpace + (!_.isNil(monthlyPattern) ? monthlyPattern.name : '');
+							let monthlyPatternText = !_.isNil(monthlyPattern) ? monthlyPattern.name : '';
 							lstLabelInfomation.push( self.$i18n( "KSC001_37" ) + self.$i18n( "KSC001_111" ) + self.$i18n( "KSC001_114" ) + monthlyPatternText );
 							break;
 					}
