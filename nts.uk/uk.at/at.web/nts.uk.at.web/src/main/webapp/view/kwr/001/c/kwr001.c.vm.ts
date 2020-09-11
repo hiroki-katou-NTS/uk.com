@@ -469,8 +469,10 @@ module nts.uk.at.view.kwr001.c {
                 self.C3_2_value('');
                 self.C3_3_value('');
                 $('#C3_2').focus();
+                self.selectedSizeClassificationType(FontSizeEnum.BIG);
                 self.getOutputItemDailyWorkSchedule([]);
                 self.enableBtnDel(false);
+                self.layoutId  = null;
                 self.selectedRuleCode(0);
                 _.delay(() => {
                     nts.uk.ui.errors.clearAll();
@@ -508,6 +510,9 @@ module nts.uk.at.view.kwr001.c {
                 self.checkedManualInput(false);
                 self.checkedNotCalculated(false);
                 self.checkedExceedByApplication(false);
+                self.checkReasonForDivergence(false);
+                self.checkDeviationError(false);
+                self.checkDeviationAlarm(false);
             }
 
             /*
@@ -571,6 +576,11 @@ module nts.uk.at.view.kwr001.c {
                 this.name = name;
                 this.id = id;
             }
+        }
+
+        class FontSizeEnum {
+            static BIG = 0;
+            static SMALL = 1;
         }
     }
 }

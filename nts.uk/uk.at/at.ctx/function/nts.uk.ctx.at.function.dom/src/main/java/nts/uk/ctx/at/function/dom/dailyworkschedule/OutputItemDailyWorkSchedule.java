@@ -75,7 +75,9 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(OutputItemDailyWorkScheduleSetMemento memento) {
-
+		if (!this.layoutId.isEmpty()) {
+			memento.setLayoutId(this.layoutId);
+		}
 		memento.setItemCode(this.itemCode);
 		memento.setItemName(this.itemName);
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
@@ -83,7 +85,6 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 		memento.setWorkTypeNameDisplay(this.workTypeNameDisplay);
 		memento.setRemarkInputNo(this.remarkInputNo);
 		memento.setFontSize(this.fontSize);
-		memento.setLayoutId(this.layoutId);
 	}
 
 	/* (non-Javadoc)

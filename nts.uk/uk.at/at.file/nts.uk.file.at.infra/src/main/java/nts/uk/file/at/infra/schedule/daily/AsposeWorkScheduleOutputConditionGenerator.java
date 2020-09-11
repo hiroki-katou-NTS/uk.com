@@ -801,8 +801,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			data.workplaceCode = "";
 			reportData.setWorkplaceReportData(data);
 			
-			DatePeriod datePeriod = new DatePeriod(query.getStartDate(), query.getEndDate());
-			
 			analyzeInfoExportByEmployee(lstWorkplace, data);
 			
 			List<EmployeeDto> lstEmloyeeDto = employeeAdapter.findByEmployeeIds(lstEmployeeWithData).stream().sorted((o1, o2)->o1.getEmployeeCode().

@@ -67,10 +67,10 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 	@Override
 	public void update(OutputItemDailyWorkSchedule domain, int selectionType, String companyId, String employeeId) {
 		KfnmtRptWkDaiOutItem entity = new KfnmtRptWkDaiOutItem();
-		domain.saveToMemento(entity);
 		entity.setItemSelType(selectionType);
 		entity.setCid(companyId);
 		entity.setSid(employeeId);
+		domain.saveToMemento(entity);
 		this.commandProxy().update(entity);
 	}
 
