@@ -18055,10 +18055,24 @@ var nts;
                                 var $message = $("<div></div>");
                                 $dialog.html("");
                                 $dialog.append($errorboard).append($message);
-                                $dialog.closest("[role='dialog']").show();
-                                // hide "x" button
-                                $dialog.closest("[role='dialog']").find(".ui-dialog-titlebar-close").hide();
-                                //$dialog.dialog("open");    
+                                var $container = $dialog.closest("[role='dialog']");
+                                $container
+                                    .show()
+                                    // hide "x" button
+                                    .find(".ui-dialog-titlebar-close").hide();
+                                //$dialog.dialog("open");
+                                var $dialogs = window.top.$('body>[role="dialog"]').toArray();
+                                var zIndex = _.chain($dialogs)
+                                    .map(function (el) { return document.defaultView.getComputedStyle(el, null).getPropertyValue('z-index'); })
+                                    .filter(function (index) { return index.match(/^\d+$/); })
+                                    .map(function (index) { return parseInt(index); })
+                                    .orderBy(function (index) { return index; })
+                                    .last();
+                                // fixbug show error dialog after main modal
+                                if (!$container.data('ziv')) {
+                                    var zIdx = zIndex.value() || 10000001;
+                                    $container.data('ziv', zIdx).css('z-index', zIdx);
+                                }
                             }
                             else {
                                 $dialog.closest("[role='dialog']").hide();
@@ -47786,7 +47800,7 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
-var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
+var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
     if (arguments.length === 2) {
         // setter method
         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
@@ -47818,7 +47832,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         return $.Deferred().resolve()
             .then(function () { return $storeSession(OPENWD); })
             .then(function (value) {
-            nts.uk.localStorage.removeItem(OPENWD);
+            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
             return value;
         });
     }
