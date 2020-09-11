@@ -687,6 +687,8 @@ module nts.uk.at.view.ksu001.u {
             if(forwardWeek >= self.publicDate()){
                 self.newPublicDate(forwardWeek);
                 self.newEditDate("");
+            } else if(forwardWeek >= self.editDate() && forwardWeek < self.publicDate()){
+                self.newEditDate(self.editDate());
             } else {
                 self.newEditDate(self.formatDate(new Date(parseInt(forwardWeekSplit[0]), parseInt(forwardWeekSplit[1]) - 1, parseInt(forwardWeekSplit[2]) + 1)));
             }  

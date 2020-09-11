@@ -120,8 +120,8 @@ module nts.uk.at.view.ksu001.la {
                 request.baseDate = self.baseDate();
                 request.workplaceGroupId = self.workplaceGroupId(); 
 
-                self.currentCodeListRight([]);
-                self.currentCodeListLeft([]);
+                // self.currentCodeListRight([]);
+                // self.currentCodeListLeft([]);
                 service.findEmpOrgInfo(request).done((dataAll: Array<ItemModel>)=>{
                     _.each(dataAll, x =>{
                         if(x.teamName === ""){
