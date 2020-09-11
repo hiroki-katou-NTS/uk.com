@@ -51,6 +51,7 @@ module cmm045.a.viewmodel {
         selectedAppId: KnockoutObservableArray<number> = ko.observableArray([]);
 		orderCD: KnockoutObservable<number> = ko.observable(0);
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
+        columnWidth: vmbase.columnWidth = new vmbase.columnWidth(true, 340);
         appList: any = ko.observable(null);
         appListAtr: number;
         isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
@@ -132,6 +133,7 @@ module cmm045.a.viewmodel {
             * @param dataList: list employee returned from component.
             * Define how to use this list employee by yourself in the function's body.
             */
+
             returnDataFromCcg001: function(data: any){
                 self.showinfoSelectedEmployee(true);
                 self.selectedEmployee(data.listEmployee);
@@ -221,6 +223,30 @@ module cmm045.a.viewmodel {
 			self.orderCD.subscribe(value => {
 				self.appListExtractConditionDto.appDisplayOrder = value;
 			});
+        }
+
+        saveContentWidth() {
+            let self = this;
+            var contentWidth = $(".appContent").outerWidth();
+
+            if(self.mode() == 0) {
+                self.columnWidth.appLstAtr = true;
+                self.columnWidth.width = contentWidth;
+            } else {
+                self.columnWidth.appLstAtr = false;
+                self.columnWidth.width = contentWidth;
+            }
+            console.log(contentWidth);
+
+            character.restore('TableColumnWidth').then((obj) => {
+                if(obj !== undefined) {
+                    if(contentWidth !== obj.width) {
+                        character.save('TableColumnWidth', self.columnWidth).then(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                        });
+                    }
+                }
+            });
         }
 
 		checkConditionParam() {
@@ -887,36 +913,46 @@ module cmm045.a.viewmodel {
             // widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
             widthAuto = window.innerWidth - 130;
 
-            let columns = [
-                { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
-                    text: getText('CMM045_50'),
-                    click: (e) => {
-                        let targetAppId = $(e.target).closest("td").data("app-id");
-                        let lstAppId = self.items().map(app => app.appID);
-                        // window.localStorage.setItem('UKProgramParam', 'a=0');
-						character.save('AppListExtractCondition', self.appListExtractConditionDto);
-                        nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+            var contentWidth = 340;
+            character.restore('TableColumnWidth').then((obj) => {
+                if(obj !== undefined) {
+                    if(self.mode() === 0 && obj.appLstAtr === true) {
+                        contentWidth = obj.width;
                     }
-                } },
-                { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px',  },
-                { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
-                { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
-                { headerText: getText('CMM045_54'), key: 'appDate', width: '155px'},
-                { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
-                // { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
-                { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
-                { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
-                { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
-            ];
-            let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
-            this.setupGrid({
-                withCcg001: true,
-                width: widthAuto,
-                height: heightAuto,
-                columns: columns.filter(c => c.hidden !== true),
+                }
+            }).then(() => {
+                let columns = [
+                    { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
+                        text: getText('CMM045_50'),
+                        click: (e) => {
+                            let targetAppId = $(e.target).closest("td").data("app-id");
+                            let lstAppId = self.items().map(app => app.appID);
+                            // window.localStorage.setItem('UKProgramParam', 'a=0');
+                            character.save('AppListExtractCondition', self.appListExtractConditionDto);
+                            nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                        }
+                    } },
+                    { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px',  },
+                    { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
+                    { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
+                    { headerText: getText('CMM045_54'), key: 'appDate', width: '155px'},
+                    { headerText: getText('CMM045_55'), key: 'appContent', width: contentWidth},
+                    // { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
+                    { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
+                    { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
+                    { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
+                ];
+                let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
+                this.setupGrid({
+                    withCcg001: true,
+                    width: widthAuto,
+                    height: heightAuto,
+                    columns: columns.filter(c => c.hidden !== true),
+                });
+
+                $("#app-resize").css("width", widthAuto);
             });
 
-            $("#app-resize").css("width", widthAuto);
 
 /*
             $("#grid2").ntsGrid({
@@ -1152,39 +1188,49 @@ module cmm045.a.viewmodel {
             // widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
             widthAuto = window.innerWidth - 130;
 
-            let columns = [
-                { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', checkbox: {
-                    visible: item => item.checkAtr === true,
-                    applyToProperty: "check"
-                } },
-                { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
-                    text: getText('CMM045_50'),
-                    click: (e) => {
-                        let targetAppId = $(e.target).closest("td").data("app-id");
-                        let lstAppId = self.items().map(app => app.appID);
-                        // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
-						character.save('AppListExtractCondition', self.appListExtractConditionDto);
-                        nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+            var contentWidth = 340;
+            character.restore('TableColumnWidth').then((obj) => {
+                if(obj !== undefined) {
+                    if(self.mode() === 1 && obj.appLstAtr === false) {
+                        contentWidth = obj.width;
                     }
-                } },
-                { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
-                { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
-                { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: isHidden},
-                { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
-                { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
-                { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
-                { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
-                { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
-            ]
-            let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
-            this.setupGrid({
-                withCcg001: true,
-                width: widthAuto,
-                height: heightAuto,
-                columns: columns.filter(c => c.hidden !== true)
+                }
+            }).then(() => {
+                let columns = [
+                    { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', checkbox: {
+                        visible: item => item.checkAtr === true,
+                        applyToProperty: "check"
+                    } },
+                    { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
+                        text: getText('CMM045_50'),
+                        click: (e) => {
+                            let targetAppId = $(e.target).closest("td").data("app-id");
+                            let lstAppId = self.items().map(app => app.appID);
+                            // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+                            character.save('AppListExtractCondition', self.appListExtractConditionDto);
+                            nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                        }
+                    } },
+                    { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
+                    { headerText: getText('CMM045_52'), key: 'appType', width: '90px'},
+                    { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: isHidden},
+                    { headerText: getText('CMM045_54'), key: 'appDate', width: '157px'},
+                    { headerText: getText('CMM045_55'), key: 'appContent', width: contentWidth},
+                    { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
+                    { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
+                    { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
+                ]
+                let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
+                this.setupGrid({
+                    withCcg001: true,
+                    width: widthAuto,
+                    height: heightAuto,
+                    columns: columns.filter(c => c.hidden !== true)
+                });
+
+                $("#app-resize").css("width", widthAuto);
             });
 
-            $("#app-resize").css("width", widthAuto - 20);
 /*
             $("#grid1").ntsGrid({
                 width: widthAuto,
@@ -2007,6 +2053,6 @@ module cmm045.a.viewmodel {
             })
             .always(() => window.location.reload());
             // .always(() => { block.clear(); });
-		}
+        }
     }
 }
