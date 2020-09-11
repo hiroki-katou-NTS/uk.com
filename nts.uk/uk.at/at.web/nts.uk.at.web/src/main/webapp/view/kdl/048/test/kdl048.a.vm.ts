@@ -96,11 +96,11 @@ module nts.uk.at.view.kdl047.test.screenModel {
         new DiligenceProject(645, '出有ｵﾝ有ｵﾌ無ｶｳﾝﾄ（日次ﾄﾘｶﾞ）（bb）回数', '出有ｵﾝ有ｵﾌ無ｶｳﾝﾄ（日次ﾄﾘｶﾞ）（bb）回数', 645),
         new DiligenceProject(680, '任意項目４０回数', '任意項目４０回数', 680),
         new DiligenceProject(681, '任意項目４１回数', '任意項目４１回数', 681),
-        new DiligenceProject(682, '任意項目４２月別', '任意項目４２月別', 682),
+        new DiligenceProject(682, '任意項目４２月別回数', '任意項目４２月別回数', 682),
         new DiligenceProject(683, '任意項目４３回数', '任意項目４３回数', 683),
         new DiligenceProject(267, '振替休日１', '振替休日１', 267),
-        new DiligenceProject(268, '計算休日出勤１', '計算休日出勤１', 268),
-        new DiligenceProject(269, '計算振替休日１', '計算振替休日１', 269),
+        new DiligenceProject(268, '計算休日出勤１回数', '計算休日出勤１回数', 268),
+        new DiligenceProject(269, '計算振替休日１回数', '計算振替休日１回数', 269),
         new DiligenceProject(270, '事前休日出勤１', '事前休日出勤１', 270)
       ];
       

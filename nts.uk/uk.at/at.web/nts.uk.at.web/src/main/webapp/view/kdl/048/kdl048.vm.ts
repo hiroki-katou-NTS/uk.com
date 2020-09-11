@@ -79,7 +79,7 @@ module nts.uk.at.view.kdl048.screenModel {
       // fill data to table
       _.each(vm.paramSelectedTimeList(), (item2: SelectedTimeListParam) => {
         _.each(vm.diligenceData(), (item1: DiligenceProject) => {
-          if (parseInt(item1.id) === parseInt(item2.itemId)) {
+          if (parseInt(item1.id) === item2.itemId) {
             let data: SelectedTimeList = new SelectedTimeList();
             let data1: DiligenceProject = new DiligenceProject();
             data.name = item1.name;
@@ -143,10 +143,7 @@ module nts.uk.at.view.kdl048.screenModel {
             data.operator = vm.$i18n("KDL048_8");
             data.name = e.name;
             data.indicatesNumber = e.indicatesNumber;
-            dataParam.itemId = e.id;
-            dataParam.operator = vm.$i18n("KDL048_8");
             vm.dataSelectedItemList.push(data);
-            vm.paramSelectedTimeList.push(dataParam);
             vm.currentCodeList2().push(e.id);
             vm.diligenceData.remove(e);
           }
@@ -170,10 +167,7 @@ module nts.uk.at.view.kdl048.screenModel {
             data.operator = vm.$i18n("KDL048_9");
             data.name = e.name;
             data.indicatesNumber = e.indicatesNumber;
-            dataParam.itemId = e.id;
-            dataParam.operator = vm.$i18n("KDL048_9");
             vm.dataSelectedItemList.push(data);
-            vm.paramSelectedTimeList.push(dataParam);
             vm.currentCodeList2().push(e.id);
             vm.diligenceData.remove(e);
           }
@@ -191,15 +185,11 @@ module nts.uk.at.view.kdl048.screenModel {
         vm.dataSelectedItemList().filter((e: SelectedTimeList) => {
           if (e.itemId === parseInt(code)) {
             let data: DiligenceProject = new DiligenceProject();
-            let dataParam: SelectedTimeListParam = new SelectedTimeListParam();
             data.id = e.itemId;
             data.name = e.name;
             data.indicatesNumber = e.indicatesNumber;
-            dataParam.itemId = e.itemId;
-            dataParam.operator = e.operator;
             vm.diligenceData.push(data);
             vm.dataSelectedItemList.remove(e);
-            vm.paramSelectedTimeList.remove(dataParam);
           }
         });
       });
@@ -216,7 +206,7 @@ module nts.uk.at.view.kdl048.screenModel {
             // shared with value of A3_2, A5_2, A9_2_1, A9_2_2
             vm.objectDisplay.itemNameLine.name = vm.attendanceRecordName();
             vm.objectDisplay.attribute.selected = vm.valueCb();
-            vm.objectDisplay.selectedTimeList = vm.paramSelectedTimeList();
+            vm.objectDisplay.selectedTimeList = vm.dataSelectedItemList();
             setShared("attendanceRecordExport", vm.objectDisplay);
           }
           // 項目名行の表示フラグ == False：表示しない
@@ -224,7 +214,7 @@ module nts.uk.at.view.kdl048.screenModel {
           if (!vm.itemNameLine().displayFlag || vm.itemNameLine().displayInputCategory === 1) {
             // shared with value of A5_2, A9_2_1, A9_2_2
             vm.objectDisplay.attribute.selected = vm.valueCb();
-            vm.objectDisplay.selectedTimeList = vm.paramSelectedTimeList();
+            vm.objectDisplay.selectedTimeList = vm.dataSelectedItemList();
             setShared("attendanceRecordExport", vm.objectDisplay);
           }
           vm.$window.close();
@@ -256,7 +246,7 @@ module nts.uk.at.view.kdl048.screenModel {
     // List<勤怠項目>
     diligenceProjectList: DiligenceProject[] = [];
     // List<選択済み勤怠項目>
-    selectedTimeList: SelectedTimeListParam[] = [];
+    selectedTimeList: SelectedTimeList[] = [];
 
     constructor(init?: Partial<Display>) {
       $.extend(this, init);
