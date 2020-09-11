@@ -495,7 +495,9 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             temp.setBentoReservedInfoDtos(bentoReservedInfoDtos);
             result.add(temp);
         }
-        return result.stream().sorted(Comparator.comparing(DetailOrderInfoDto::getReservationDate)).collect(Collectors.toList());
+        return result.stream().sorted(
+                Comparator.comparing(DetailOrderInfoDto::getReservationDate))
+                .collect(Collectors.toList());
     }
 
     private List<BentoReservedInfoDto> honeDetailReservationData(List<BentoReservedInfoDto> raw){
