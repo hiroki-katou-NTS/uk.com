@@ -104,7 +104,7 @@ module nts.uk.at.view.ksm015 {
                 functionArea = $("<div id='functions-area-bottom'/>"),
 				span = $(`<span id = 'span-info'>`+ nts.uk.resource.getMessage('Msg_15') + `</span>`),
                 errorBoard = $(`<div id='error-board' style='margin-top: 10px;'>    <table > <thead> <tr>    <th style='width: auto;'>`
-                     + nts.uk.resource.getText('KSM015_102') + `</th><th style='display: none;'/>    <th style='width: 60px; text-align: center'>`
+                     + nts.uk.resource.getText('KSM015_102') + `</th><th style='display: none;'/>    <th style='width: 60px; text-align: left'>`
                      + nts.uk.resource.getText('KSM015_103') + `</th>   </tr>   </thead>    <tbody/>    </table> </div>`),
                 closeButton = $("<button class='ntsButton ntsClose large' style='margin-left: 0px !important;'/>");
             
