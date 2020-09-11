@@ -85,7 +85,7 @@ module nts.uk.at.view.kdl048.screenModel {
             data.name = item1.name;
             data.itemId = item2.itemId;
             data.operator = item2.operator;
-            data.indicatesNumber = item1.indicatesNumber
+            data.indicatesNumber = item1.indicatesNumber;
             data1.id = item1.id;
             vm.dataSelectedItemList.push(data);
             list.push(data1);
@@ -169,7 +169,7 @@ module nts.uk.at.view.kdl048.screenModel {
             data.itemId = e.id;
             data.operator = vm.$i18n("KDL048_9");
             data.name = e.name;
-            data.indicatesNumber = e.indicatesNumber
+            data.indicatesNumber = e.indicatesNumber;
             dataParam.itemId = e.id;
             dataParam.operator = vm.$i18n("KDL048_9");
             vm.dataSelectedItemList.push(data);
@@ -194,7 +194,7 @@ module nts.uk.at.view.kdl048.screenModel {
             let dataParam: SelectedTimeListParam = new SelectedTimeListParam();
             data.id = e.itemId;
             data.name = e.name;
-            data.indicatesNumber = e.indicatesNumber
+            data.indicatesNumber = e.indicatesNumber;
             dataParam.itemId = e.itemId;
             dataParam.operator = e.operator;
             vm.diligenceData.push(data);
@@ -267,9 +267,9 @@ module nts.uk.at.view.kdl048.screenModel {
     // 項目ID
     itemId: any | null = null;
     // 演算子
-    operator: String | null = null;
+    operator: string | null = null;
 
-    name: String | null = null;
+    name: string | null = null;
 
     indicatesNumber: any | null = null;
     constructor(init?: Partial<TitleLineObject>) {
@@ -281,7 +281,7 @@ module nts.uk.at.view.kdl048.screenModel {
     // 項目ID
     itemId: any | null = null;
     // 演算子
-    operator: String | null = null;
+    operator: string | null = null;
 
     constructor(init?: Partial<TitleLineObject>) {
       $.extend(this, init);
@@ -293,11 +293,11 @@ module nts.uk.at.view.kdl048.screenModel {
     // 表示フラグ
     displayFlag: boolean = false;
     // 出力項目コード
-    layoutCode: String | null = null;
+    layoutCode: string | null = null;
     // 出力項目名
-    layoutName: String | null = null;
+    layoutName: string | null = null;
     // コメント
-    directText: String | null = null;
+    directText: string | null = null;
 
     constructor(init?: Partial<TitleLineObject>) {
       $.extend(this, init);
