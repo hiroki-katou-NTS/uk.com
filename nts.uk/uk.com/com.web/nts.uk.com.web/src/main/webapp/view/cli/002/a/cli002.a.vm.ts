@@ -31,34 +31,6 @@ module nts.uk.com.view.cli002.a {
             }
         ];
 
-        public columnsItem = [
-            {
-                headerText: this.$i18n(""),
-                prop: "index",
-                width: 30,
-            },
-            {
-                headerText: this.$i18n("CLI002_7"),
-                prop: "functionName",
-                width: 180,
-            },
-            {
-                headerText: this.$i18n("CLI002_4"),
-                prop: "loginHistory",
-                width: 180,
-            },
-            {
-                headerText: this.$i18n("CLI002_5"),
-                prop: "bootHistory",
-                width: 180,
-            },
-            {
-                headerText: this.$i18n("CLI002_6"),
-                prop: "revisionHistory",
-                width: 180,
-            },
-        ];
-
         constructor() {
             super();
             const vm = this;
@@ -101,24 +73,24 @@ module nts.uk.com.view.cli002.a {
         private getItemList(response: Array<PGList>) {
             const vm = this;
             const statesTable = [];
-            statesTable.push(new CellState(1, "functionName", [(nts.uk.ui as any).mgrid.color.Disable]));
             response.forEach((item: PGList, index) => {
                 if (item.loginHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index, "logLoginDisplay", [(nts.uk.ui as any).mgrid.color.Disable]));
+                    statesTable.push(new CellState(index, "logLoginDisplay", [(nts.uk.ui as any).mgrid.color.Lock]));
                 }
                 if (item.bootHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index, "logStartDisplay", [(nts.uk.ui as any).mgrid.color.Disable]));
+                    statesTable.push(new CellState(index, "logStartDisplay", [(nts.uk.ui as any).mgrid.color.Lock]));
                 }
                 if (item.editHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index, "logUpdateDisplay", [(nts.uk.ui as any).mgrid.color.Disable]));
+                    statesTable.push(new CellState(index, "logUpdateDisplay", [(nts.uk.ui as any).mgrid.color.Lock]));
                 }
             })
+            console.log(statesTable);
             if ($("#item-list").data("mGrid")) $("#item-list").mGrid("destroy");
             new (nts.uk.ui as any).mgrid.MGrid($("#item-list")[0], {
-                height: "400px",
+                subHeight: "450px",
                 headerHeight: '60px',
                 primaryKey: "functionName",
-                primaryKeyDataType: "rowNumber",
+                primaryKeyDataType: "string",
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
@@ -130,22 +102,26 @@ module nts.uk.com.view.cli002.a {
                     { headerText: this.$i18n("CLI002_7"), key: "functionName", dataType: "string", width: "180px"},
                     { headerText: this.$i18n("CLI002_4"),
                         group: [
-                            {headerText: "", key: "logLoginDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, border: false}
+                            {headerText: "", key: "logLoginDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, hidden: false}
                         ] 
                     },
                     { headerText: this.$i18n("CLI002_5"),
                         group: [
-                            {headerText: "", key: "logStartDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, border: false}
+                            {headerText: "", key: "logStartDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, hidden: false}
                         ] 
                     },
                     { headerText: this.$i18n("CLI002_6"),
                         group: [
-                            {headerText: "", key: "logUpdateDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, border: false}
+                            {headerText: "", key: "logUpdateDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, hidden: false}
                         ]
                     },
                 ],
                 
                 features: [
+                    { 
+                        name: 'CellStyles',
+                        states: statesTable
+                    },
                     {   
                         name: 'ColumnFixing',
                         fixingDirection: 'left',
@@ -153,15 +129,13 @@ module nts.uk.com.view.cli002.a {
                         columnSettings: [
                             { columnKey: 'rowNumber', isFixed: true }
                         ]
-                    },
-                    { 
-                        name: 'CellStyles',
-                        states: statesTable
                     }
                 ],
 
+                ntsFeatures: [],
+
                 ntsControls: [
-                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true}
+                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function() {}}
                 ],
             }).create();
         }
