@@ -9,7 +9,6 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.Err
 /**
  * ３６協定年月設定
  * @author quang.nh1
- *
  */
 @Getter
 @AllArgsConstructor

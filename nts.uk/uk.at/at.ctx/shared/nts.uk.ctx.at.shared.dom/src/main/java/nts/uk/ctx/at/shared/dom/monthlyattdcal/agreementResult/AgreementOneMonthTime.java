@@ -5,9 +5,7 @@ import nts.arc.primitive.constraint.TimeRange;
 
 /**
  * ３６協定１ヶ月時間
- * 
  * @author quang.nh1
- *
  */
 
 @TimeRange(max = "744:00", min = "00:00")

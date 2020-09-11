@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.specialsetting;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.shared.dom.common.Year;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,5 +33,5 @@ public interface AgreementYearSettingRepo {
      * [4] get
      * 指定社員の全ての３６協定年月設定を取得する
      */
-    Optional<AgreementYearSetting> getByEmployeeIdAndYm(String employeeId, YearMonth yearMonth);
+    Optional<AgreementYearSetting> getByEmployeeIdAndYm(String employeeId, Year year);
 }

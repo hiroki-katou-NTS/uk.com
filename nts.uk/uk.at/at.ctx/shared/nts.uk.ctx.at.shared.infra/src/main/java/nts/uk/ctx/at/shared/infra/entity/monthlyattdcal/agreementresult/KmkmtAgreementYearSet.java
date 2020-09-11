@@ -24,12 +24,12 @@ public class KmkmtAgreementYearSet extends UkJpaEntity implements Serializable {
     public KmkmtAgreementYearSetPK pk;
 
     /** エラー時間 */
-    @Column(name = "ERROR_ONE_MONTH")
-    public int errorOneMonth;
+    @Column(name = "ERROR_YEARLY")
+    public int errorOneYear;
 
     /** アラーム時間 */
-    @Column(name = "ERROR_ONE_MONTH")
-    public int alarmOneMonth;
+    @Column(name = "ALARM_YEARLY")
+    public int alarmOneYear;
 
     @Override
     protected Object getKey() {
@@ -42,7 +42,7 @@ public class KmkmtAgreementYearSet extends UkJpaEntity implements Serializable {
     }
 
     public static AgreementYearSetting toDomain(KmkmtAgreementYearSet entity) {
-        ErrorTimeInYear oneMonthTime = new ErrorTimeInYear(new AgreementOneMonthTime(entity.errorOneMonth),new AgreementOneMonthTime(entity.alarmOneMonth));
+        ErrorTimeInYear oneMonthTime = new ErrorTimeInYear(new AgreementOneMonthTime(entity.errorOneYear),new AgreementOneMonthTime(entity.alarmOneYear));
         return new AgreementYearSetting(entity.pk.sId,new Year(entity.pk.year),oneMonthTime);
     }
 }
