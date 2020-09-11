@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.predeterminetimezone.ConfirmSetSpecifiTimeZone;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.predeterminetimezone.ConfirmSetSpecifiTimeZone.ConfirmSetSpecifiResult;
@@ -55,8 +56,13 @@ public class AutoStampSettingProcess {
 				timeLeavingOptional == null ? new ArrayList<>() : timeLeavingOptional.getTimeLeavingWorks());
 
 		// 返ってきた「日別実績の出退勤」を返す
-		timeLeavingOptional.setTimeLeavingWorks(lstTimeLeavResult);
-		return timeLeavingOptional;
+		if (lstTimeLeavResult != null) {
+			timeLeavingOptional.setTimeLeavingWorks(lstTimeLeavResult);
+			return timeLeavingOptional;
+		}
+		TimeLeavingOfDailyAttd attd = new TimeLeavingOfDailyAttd(lstTimeLeavResult, new WorkTimes(0));
+		attd.setCountWorkTime();
+		return attd;
 	}
 
 }
