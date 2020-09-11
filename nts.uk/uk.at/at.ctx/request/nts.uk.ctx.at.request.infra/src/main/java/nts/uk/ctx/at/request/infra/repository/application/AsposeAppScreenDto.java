@@ -61,7 +61,7 @@ public class AsposeAppScreenDto {
 				domain.getApplicantName(), 
 				domain.getAppType().name, 
 				domain.getAppContent(), 
-				domain.getInputDate().toString("yy/MM/dd(E) HH:mm"), 
+				domain.getInputDate().toString("MM/dd(E) HH:mm"), 
 				domain.getReflectionStatus(), 
 				domain.getOpApprovalStatusInquiry().isPresent() ? domain.getOpApprovalStatusInquiry().get().toString() : "", 
 				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));

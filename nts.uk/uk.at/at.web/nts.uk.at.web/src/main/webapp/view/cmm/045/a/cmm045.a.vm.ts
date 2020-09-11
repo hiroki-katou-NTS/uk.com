@@ -632,6 +632,7 @@ module cmm045.a.viewmodel {
 
                 if (options.withCcg001) {
                     $container.addClass("with-ccg001");
+                    $("#app-resize").addClass("with-ccg001");
                 }
 
                 // header
@@ -730,6 +731,8 @@ module cmm045.a.viewmodel {
                     $container.find(".nts-fixed-body-container table"));
             }
 
+            // $("#app-resize").css("width", options.width - 20);
+
             this.loadGridData(options.columns);
 
             $container.show();
@@ -817,6 +820,8 @@ module cmm045.a.viewmodel {
                         $td.html(self.customContent(column.key, item[column.key]));
                     }
 
+                    $("td.appType").css("white-space", "normal")
+
                     $td.appendTo($tr);
                 });
                 $tr.appendTo($tbody);
@@ -851,7 +856,7 @@ module cmm045.a.viewmodel {
             }
             if(key=='inputDate') {
                 var cl = "";
-                var time = nts.uk.time.formatDate(new Date(value), "yy/MM/ddD hh:mm");
+                var time = nts.uk.time.formatDate(new Date(value), "MM/ddD hh:mm");
 
                 if(_.includes(time, ''))
                 return self.inputDateColor(time, cl);
@@ -864,7 +869,8 @@ module cmm045.a.viewmodel {
             var self = this;
             let widthAuto = isHidden == false ? 1175 : 1110;
             // let widthAuto = isHidden == false ? 1250 : 1185;
-            widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
+            // widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
+            widthAuto = window.innerWidth - 130;
 
             let columns = [
                 { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
@@ -882,6 +888,7 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '155px'},
                 { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
+                // { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
                 { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
                 { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
@@ -893,6 +900,8 @@ module cmm045.a.viewmodel {
                 height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true),
             });
+
+            $("#app-resize").css("width", widthAuto);
 
 /*
             $("#grid2").ntsGrid({
@@ -1125,7 +1134,8 @@ module cmm045.a.viewmodel {
 
             var self = this;
             let widthAuto = isHidden == false ? 1175 : 1110;
-            widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
+            // widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
+            widthAuto = window.innerWidth - 130;
 
             let columns = [
                 { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', checkbox: {
@@ -1158,6 +1168,8 @@ module cmm045.a.viewmodel {
                 height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true)
             });
+
+            $("#app-resize").css("width", widthAuto - 20);
 /*
             $("#grid1").ntsGrid({
                 width: widthAuto,
