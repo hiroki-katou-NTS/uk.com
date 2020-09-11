@@ -57,8 +57,8 @@ public class ConfirmSetSpecifiTimeZone {
 			return new ConfirmSetSpecifiResult();
 		}
 
-		if (!attendanceLeave.isPresent())
-			return new ConfirmSetSpecifiResult();
+//		if (!attendanceLeave.isPresent())
+//			return new ConfirmSetSpecifiResult();
 //		// SPR連携の自動打刻条件を判断
 //		boolean checkSpr = DetermineAutoStampCondSPR.determine(attendanceLeave.get());
 //		if (!checkSpr)
