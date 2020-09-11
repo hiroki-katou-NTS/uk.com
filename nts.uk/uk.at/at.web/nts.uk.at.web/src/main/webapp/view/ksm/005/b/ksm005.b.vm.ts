@@ -238,9 +238,7 @@ module nts.uk.at.view.ksm005.b {
                     });
 
                 }).fail(function (error) {
-                    nts.uk.ui.dialog.info({messageId: error.messageId}).then(function () {
-                        nts.uk.ui.windows.close();
-                    });
+                    nts.uk.ui.dialog.info({messageId: error.messageId});
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
