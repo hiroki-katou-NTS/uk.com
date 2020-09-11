@@ -10,7 +10,6 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.StartingMonthType
 /**
  * ３６協定運用設定
  * @author quang.nh1
- *
  */
 @Getter
 @AllArgsConstructor

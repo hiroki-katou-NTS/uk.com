@@ -9,9 +9,8 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.Err
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 
 /**
- * ３６協定年月設定
+ * ３６協定年度設定
  * @author quang.nh1
- *
  */
 @Getter
 @AllArgsConstructor

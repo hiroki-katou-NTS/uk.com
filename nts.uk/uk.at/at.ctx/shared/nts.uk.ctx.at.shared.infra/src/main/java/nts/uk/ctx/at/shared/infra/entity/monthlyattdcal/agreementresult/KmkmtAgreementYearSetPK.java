@@ -15,6 +15,6 @@ public class KmkmtAgreementYearSetPK {
     public String sId;
 
     /** 年月 */
-    @Column(name = "YM_K")
+    @Column(name = "Y_K")
     public int year;
 }
