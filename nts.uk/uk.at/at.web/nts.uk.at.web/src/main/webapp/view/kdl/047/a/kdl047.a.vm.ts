@@ -22,7 +22,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     currentCode: KnockoutObservable<any> = ko.observable('');
     // Datas for ntsGridList A6 and ntsSearchBox A5_3
     tableDatas: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-    tableDatasClone: KnockoutObservableArray<ItemModel> = ko.observableArray([])
+    tableDatasClone: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
     // Columns for ntsGridList A6
     tableColumns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
       { headerText: 'ID', prop: 'id', hidden: true },
@@ -145,7 +145,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
           }
 
           setShared('attendanceRecordExport', attendanceRecord);
-          vm.$window.close()
+          vm.$window.close();
         }
       });
 
@@ -154,7 +154,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     // Event on click A8_2 item
     onClickCancel(): void {
       const vm = this;
-      vm.$window.close()
+      vm.$window.close();
     }
 
   }
@@ -188,7 +188,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
     headerText?: string;
     prop?: string;
     width?: number;
-    hidden?: boolean
+    hidden?: boolean;
   }
 
   export class AttendanceItemShare {
@@ -248,6 +248,7 @@ module nts.uk.at.view.kdl047.a.screenModel {
   export class AttendaceType {
     attendanceTypeCode: number;
     attendanceTypeName: string;
+
     constructor(init: Partial<AttendaceType>) {
       $.extend(this, init);
     }
