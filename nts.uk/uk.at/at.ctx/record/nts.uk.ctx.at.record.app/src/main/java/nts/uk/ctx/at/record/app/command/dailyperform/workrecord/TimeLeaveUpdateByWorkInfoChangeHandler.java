@@ -41,7 +41,7 @@ public class TimeLeaveUpdateByWorkInfoChangeHandler extends CommandHandlerWithRe
 		
 		String companyId = getWithDefaul(command.companyId, () -> AppContexts.user().companyId());
 		Optional<TimeLeavingOfDailyPerformance> timeLeavingOfDailyPerformance = command.cachedTimeLeave;
-		Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd = timeLeavingOfDailyPerformance.isPresent()?Optional.of(timeLeavingOfDailyPerformance.get().getAttendance()):Optional.empty();
+		Optional<TimeLeavingOfDailyAttd> timeLeavingOfDailyAttd = timeLeavingOfDailyPerformance.isPresent() || timeLeavingOfDailyPerformance.get().getAttendance() !=null?Optional.of(timeLeavingOfDailyPerformance.get().getAttendance()):Optional.empty();
 		IntegrationOfDaily working = new IntegrationOfDaily(
 				wi.getWorkInformation(), //workInformation
 				null, //calAttr
