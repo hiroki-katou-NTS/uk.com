@@ -17,11 +17,15 @@ public class EmployeeBasicInfoDto {
      */
     private String employeeName;
     /**
+     * 所属CD
+     */
+    private String affiliationCode;
+    /**
      * 所属ID
      */
-    private String affId;
+    private String affiliationId;
     /**
      * 所属名称
      */
-    private String affName;
+    private String affiliationName;
 }

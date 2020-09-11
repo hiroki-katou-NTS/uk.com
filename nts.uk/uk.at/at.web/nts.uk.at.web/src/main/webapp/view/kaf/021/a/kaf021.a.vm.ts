@@ -5,6 +5,9 @@ module nts.uk.at.kaf021.a {
 
     const API = {
         INIT: 'screen/at/kaf021/init',
+        CURRENT_MONTH: 'screen/at/kaf021/get-current-month',
+        NEXT_MONTH: 'screen/at/kaf021/get-next-month',
+        YEAR: 'screen/at/kaf021/get-year',
     };
 
     @bean()
@@ -76,7 +79,7 @@ module nts.uk.at.kaf021.a {
             }
 
             vm.appTypes.push(new AppType(AppTypeEnum.CURRENT_MONTH, textFormat("{0}月度", 1)));
-            vm.appTypes.push(new AppType(AppTypeEnum.NEXT_MONTH,  textFormat("{0}月度", 2)));
+            vm.appTypes.push(new AppType(AppTypeEnum.NEXT_MONTH, textFormat("{0}月度", 2)));
             vm.appTypes.push(new AppType(AppTypeEnum.YEARLY, this.$i18n("KAF021_4")));
         }
 
@@ -87,19 +90,35 @@ module nts.uk.at.kaf021.a {
             vm.initData();
 
             vm.appTypeSelected.subscribe((value: AppTypeEnum) => {
-                console.log(value)
+                switch (value) {
+                    case AppTypeEnum.CURRENT_MONTH:
+                        vm.$ajax(API.CURRENT_MONTH, {employees: vm.empSearchItems}).done((data: any) => {
+                            console.log(data)
+                        });
+                        break;
+                    case AppTypeEnum.NEXT_MONTH:
+                        vm.$ajax(API.NEXT_MONTH, {employees: vm.empSearchItems}).done((data: any) => {
+                            console.log(data)
+                        });
+                        break;
+                    case AppTypeEnum.YEARLY:
+                        vm.$ajax(API.YEAR, {employees: vm.empSearchItems}).done((data: any) => {
+                            console.log(data)
+                        });
+                        break;
+                }
             })
         }
 
         mounted() {
             const vm = this;
 
-            
+
         }
 
         initData(): JQueryPromise<any> {
             const vm = this,
-            dfd = $.Deferred();
+                dfd = $.Deferred();
 
             vm.$ajax(API.INIT, (data: any) => {
                 console.log(data)
@@ -116,7 +135,7 @@ module nts.uk.at.kaf021.a {
             return dfd.promise();
         }
 
-        nextScreen(){
+        nextScreen() {
 
         }
     }
@@ -179,17 +198,17 @@ module nts.uk.at.kaf021.a {
         affiliationName: string;
     }
 
-    class AppType{
+    class AppType {
         value: AppTypeEnum;
         name: string;
 
-        constructor (value: AppTypeEnum, name: string){
+        constructor(value: AppTypeEnum, name: string) {
             this.value = value;
             this.name = name;
         }
     }
 
-    enum AppTypeEnum{
+    enum AppTypeEnum {
         CURRENT_MONTH = 1,
         NEXT_MONTH = 2,
         YEARLY = 3
