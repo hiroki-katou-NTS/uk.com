@@ -1503,7 +1503,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				//・確定済みも対象とする←false
                 //・手修正・申請反映も対象とする←false
 				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false, Optional.of(narrowing));
-				s.setRecreateCondition(recreateCondition);
+				s.setRecreateCondition(Optional.of(recreateCondition));
 			} else if (checkReTarget == ProcessExecType.RE_CREATE.value) {
 				val reTargetAtr = true;
 				//・対象者の条件{
@@ -1516,7 +1516,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 				//・確定済みも対象とする←false
 				//・手修正・申請反映も対象とする←false
 				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false, Optional.of(narrowing));
-				s.setRecreateCondition(recreateCondition);
+				s.setRecreateCondition(Optional.of(recreateCondition));
 			}
 		}
 		return s;

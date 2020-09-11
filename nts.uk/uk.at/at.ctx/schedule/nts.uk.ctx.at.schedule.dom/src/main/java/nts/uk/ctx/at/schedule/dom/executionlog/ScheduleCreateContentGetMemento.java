@@ -2,6 +2,8 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import nts.arc.time.GeneralDate;
 
+import java.util.Optional;
+
 /**
  * The Interface ExecutionContentGetMemento.
  */
@@ -40,6 +42,6 @@ public interface ScheduleCreateContentGetMemento {
 	 *
 	 * @return the creates the method atr
 	 */
-	public RecreateCondition getRecreateCondition();
+	public Optional<RecreateCondition> getRecreateCondition();
 
 }

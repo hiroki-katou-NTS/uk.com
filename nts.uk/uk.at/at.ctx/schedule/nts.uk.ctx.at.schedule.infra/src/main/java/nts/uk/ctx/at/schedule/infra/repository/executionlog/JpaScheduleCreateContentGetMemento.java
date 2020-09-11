@@ -54,8 +54,8 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	 * getCreateMethodAtr()
 	 */
 	@Override
-	public RecreateCondition getRecreateCondition() {
-		return new RecreateCondition(
+	public Optional<RecreateCondition> getRecreateCondition() {
+		return Optional.of(new RecreateCondition(
 				this.entity.getReTargetAtr(),
 				this.entity.getReOverwriteConfirmed(),
 				this.entity.getReOverwriteRevised(),
@@ -65,7 +65,7 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 						this.entity.getReTargetShortWork(),
 						this.entity.getReTargetLaborChange()
 				))
-		);
+		));
 	}
 
 	/*

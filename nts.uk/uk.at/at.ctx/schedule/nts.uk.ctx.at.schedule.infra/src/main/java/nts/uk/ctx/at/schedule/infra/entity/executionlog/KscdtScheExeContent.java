@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
@@ -153,6 +154,21 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
     }
 
     public  KscdtScheExeContent toEntityNew(ScheduleCreateContent domain, String companyId, String contractCode) {
+        Boolean isTransfer = null;
+        Boolean isLeaveOfAbsence = null;
+        Boolean isShortWorkingHours = null;
+        Boolean isChangedWorkingConditions = null;
+        val getRecreateConditionOpt =  domain.getRecreateCondition();
+        if(getRecreateConditionOpt.isPresent()){
+            val getRecreateCondition = getRecreateConditionOpt.get();
+            val getNarrowingEmployeesOpt = getRecreateCondition.getNarrowingEmployees();
+            if(getNarrowingEmployeesOpt.isPresent()){
+                isTransfer = getNarrowingEmployeesOpt.get().isTransfer();
+                isLeaveOfAbsence = getNarrowingEmployeesOpt.get().isLeaveOfAbsence();
+                isShortWorkingHours = getNarrowingEmployeesOpt.get().isShortWorkingHours();
+                isChangedWorkingConditions = getNarrowingEmployeesOpt.get().isChangedWorkingConditions();
+            }
+        }
         return new KscdtScheExeContent(
                 domain.getExecutionId(),
                 contractCode,
@@ -163,13 +179,13 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
                 domain.getSpecifyCreation().getCopyStartDate().isPresent()? domain.getSpecifyCreation().getCopyStartDate().get():null,
                 domain.getSpecifyCreation().getReferenceMaster().isPresent()?domain.getSpecifyCreation().getReferenceMaster().get().value:null,
                 domain.getSpecifyCreation().getMonthlyPatternCode().isPresent()? domain.getSpecifyCreation().getMonthlyPatternCode().get().toString():null,
-                domain.getRecreateCondition().getReTargetAtr(),
-                domain.getRecreateCondition().getNarrowingEmployees().isPresent()?domain.getRecreateCondition().getNarrowingEmployees().get().isTransfer():null,
-                domain.getRecreateCondition().getNarrowingEmployees().isPresent()?domain.getRecreateCondition().getNarrowingEmployees().get().isLeaveOfAbsence():null,
-                domain.getRecreateCondition().getNarrowingEmployees().isPresent()?domain.getRecreateCondition().getNarrowingEmployees().get().isShortWorkingHours():null,
-                domain.getRecreateCondition().getNarrowingEmployees().isPresent()?domain.getRecreateCondition().getNarrowingEmployees().get().isChangedWorkingConditions():null,
-                domain.getRecreateCondition().getReOverwriteConfirmed(),
-                domain.getRecreateCondition().getReOverwriteRevised());
+                domain.getRecreateCondition().isPresent()?domain.getRecreateCondition().get().getReTargetAtr():null,
+                isTransfer,
+                isLeaveOfAbsence,
+                isShortWorkingHours,
+                isChangedWorkingConditions,
+                domain.getRecreateCondition().isPresent()?domain.getRecreateCondition().get().getReOverwriteConfirmed():null,
+                domain.getRecreateCondition().isPresent()?domain.getRecreateCondition().get().getReOverwriteRevised():null);
     }
 
     /**
