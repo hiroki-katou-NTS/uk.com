@@ -4669,11 +4669,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
             };
             setShared('KDL009_DATA', param);
-            //            if(param.employeeIds.length > 1) {
-            //                modal("/view/kdl/009/a/multi.xhtml");
-            //            } else {
-            modal("/view/kdl/009/a/single.xhtml");
-            //            }
+            if (param.employeeIds.length > 1) {
+                modal("/view/kdl/009/a/multi.xhtml");
+            } else {
+                modal("/view/kdl/009/a/single.xhtml");
+            }
         }
 
         openkdl029Dialog() {
@@ -4688,58 +4688,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         openKDL005Dialog() {
             var self = this;
-            // var param = {
-            //     employeeIds: [self.selectedEmployee()],
-            //     baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
-            // };
             var param = {
-                employeeIds: ['0117dcfc-200b-46e8-a734-d87f1d563b82',
-                '06267669-e4a9-4ada-bee4-aef5d8629568',
-                '09b8c28d-31c0-4fc2-a66a-e337172449d4',
-                '0c3e640c-7acc-43b1-b672-56f49654297c',
-                '10571a81-c816-45e0-bf27-eb82b29340eb',
-                '183e1e0b-3145-465a-a95f-000de086b51d',
-                '184c5ba0-2840-47de-9421-2f5dd62ce991',
-                '1ea599bd-04b1-4973-8e85-ca609c1e8443',
-                '1febc8f1-ac4e-4407-8b5b-344c0c9ae24c',
-                '202701d5-4fe1-41d0-8dae-32f6f6d47017',
-                '2270eaf5-ff29-4253-bf6a-4c761b8c6fd4',
-                '255a984a-4467-4159-9707-d9a003f2a572',
-                '291a8c53-ea4b-4597-aa19-d0d7816815db',
-                '2e2d0f5c-82d7-4da4-87c8-52afd63b0338',
-                '2f4dd263-dad0-439d-95ac-7f8175fd457b',
-                '335f20c9-9740-43c3-87f2-80e5fa6aa7d5',
-                '401d0028-b735-4f86-8714-7374a98e97c5',
-                '465854ac-96d0-4b38-a9f7-16c6346b620d',
-                '4f0b31c3-9ac3-4cce-a68c-41f524a7619b',
-                '5364eedf-c423-4b52-865b-acb4e3e8ae08',
-                '5e392e39-d5ce-434d-a010-fc6f0c983ff5',
-                '62688cef-ed10-42bb-b63f-2c5a0adfe68c',
-                '67107229-64e2-4335-9d1a-94ad48cd0476',
-                '6948ef14-2f09-4af8-a289-bc07ee0baf1c',
-                '69730cc2-29ed-4364-992a-d2490a6c3d22',
-                '7199535f-e5c2-48a3-bea4-b74b38865dec',
-                '86b54db7-826d-4084-b4c3-3bb4200fd19f',
-                '8bed1434-c2bb-44c6-bf31-8fb2a8a577f3',
-                '8e5e1421-88c7-4ff4-b10f-9ff95cbbaa2f',
-                '8fb90bfe-5965-494b-bf28-7583792d2949',
-                '973b68a2-ef37-4c71-8bba-9ea204c7cbd6',
-                'b9586429-09e7-4045-bc72-ed84e0302aea',
-                'ba4d5d23-6ac6-4c88-ae4a-758b479d3206',
-                'bb0f6ae7-2e24-45db-ac2b-2c545002cd77',
-                'c17bf41b-4ce6-4f60-86ad-d3e942e9347f',
-                'c7feeb6b-7f4c-4a9f-a4f9-3d4ae3d07e2e',
-                'cb0187d9-b010-4ff8-bd6a-f46714ad424c',
-                'd3191da9-b6ad-475b-b219-3d961fb86e13',
-                'd526be15-ae8d-45d8-a95e-d412ccdf51dd',
-                'd9ca27b3-6a04-445d-8323-bb8090c879a2',
-                'da830ec1-c347-4cdc-8aaf-74dd14c66f74',
-                'e0f48223-7669-434f-8a95-c5385d5ccf5c',
-                'e4eb5553-ae49-45f8-90bb-bb4f7372a9c4',
-                'e9533e49-931f-434f-9bdf-26123c5a3a1a',
-                'f0cbaa71-5af6-44e2-9f37-cd71b3fd07da',
-                'f2a989d8-cc68-4b77-a13a-54217e3b85e3',
-                'f8ed7b9d-3e20-4efb-bba1-67ba043202d3'],
+                employeeIds: [self.selectedEmployee()],
                 baseDate: moment(new Date()).toISOString().split("T")[0].replace('-', '').replace('-', '')
             };
             setShared('KDL005_DATA', param);
