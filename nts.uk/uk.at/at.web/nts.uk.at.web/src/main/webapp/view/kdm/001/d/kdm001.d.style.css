@@ -15,6 +15,16 @@
 	padding: 20px;
 }
 
+.combo-box-payout-date{
+	min-width: 95px;
+	width: 95px;
+}
+
+.combo-legal-classification{
+	min-width: 132px;
+	width: 132px;
+}
+
 .combo-box-holiday {
 	min-width: 95px;
 	width: 95px;

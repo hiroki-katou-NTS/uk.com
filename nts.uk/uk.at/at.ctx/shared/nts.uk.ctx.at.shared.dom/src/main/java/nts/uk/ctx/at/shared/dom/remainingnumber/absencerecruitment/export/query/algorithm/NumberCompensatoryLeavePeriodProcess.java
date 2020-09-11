@@ -190,18 +190,11 @@ public class NumberCompensatoryLeavePeriodProcess {
 			return interimRecAbasMngRepository.getRecBySidMngAtr(recAtr, absAtr, recId);
 		}
 
-		}
-
-		@Override
-		public List<InterimRecAbsMng> getRecBySidMngAtr(DataManagementAtr recAtr, DataManagementAtr absAtr,
-				String recId) {
-			return interimRecAbasMngRepository.getRecBySidMngAtr(recAtr, absAtr, recId);
-		}
-
 		@Override
 		public Optional<BsEmploymentHistoryImport> employmentHistory(CacheCarrier cacheCarrier, String companyId,
 				String employeeId, GeneralDate baseDate) {
-			return shareEmploymentAdapter.findEmploymentHistoryRequire(cacheCarrier, companyId, employeeId, baseDate);
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 		@Override

@@ -144,6 +144,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         template: '<div style="float:right"> ${occurredDays} ${occurredDaysText} </div>',
                         dataType: 'string',
                     },
+                    { 
+                        headerText: getText('KDM001_14'), 
+                        key: 'lawAtr', 
+                        width: '100px',
+                        formatter: getLawAtr, 
+                        dataType: 'string', 
+                    },
                     {
                         headerText: getText('KDM001_10'),
                         key: 'dayoffDateSub',
@@ -171,14 +178,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         width: '86px',
                         template: '<div style="float:right"> ${expriedDaysInGrid}${expriedDaysInGridText} </div>', 
                         dataType: 'string', 
-                    },
-                    { 
-                        headerText: getText('KDM001_14'), 
-                        key: 'lawAtr', 
-                        width: '100px',
-                        formatter: getLawAtr, 
-                        dataType: 'string', 
-                    },
+                    },                  
                     /** 
                         * A4_2_8 紐付設定
                         * { headerText: '', key: 'link', dataType: 'string', width: '85px', unbound: true, ntsControl: 'ButtonPegSetting' },

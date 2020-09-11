@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
@@ -46,6 +47,9 @@ public class FurikyuMngDataExtractionService {
 	
 	@Inject 
 	private ClosureEmploymentRepository closureEmploymentRepository;
+	
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 	
 	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, GeneralDate startDate, GeneralDate endDate, boolean isPeriod) {
 		List<PayoutManagementData> payoutManagementData;
@@ -111,6 +115,9 @@ public class FurikyuMngDataExtractionService {
 		
 		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
 	}
+	
+	// Step 社員IDから全ての雇用履歴を取得
+	// this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate();
 	
 	public Double getNumberOfDayLeft(String sID) {
 		String cid = AppContexts.user().companyId();
