@@ -36,20 +36,20 @@ module nts.uk.at.view.ksm005.a {
             cellButtonDisplay: KnockoutObservable<boolean>;
             workplaceName: KnockoutObservable<string>;
 
-	        typeOfWorkCode: KnockoutObservable<string>;
-	        typeOfWorkName: KnockoutObservable<string>;
-	        typeOfWorkInfo: KnockoutObservable<string>;
-	        workingHoursCode: KnockoutObservable<string>;
-	        workingHoursName: KnockoutObservable<string>;
-	        workingHoursInfo: KnockoutObservable<string>;
+            typeOfWorkCode: KnockoutObservable<string>;
+            typeOfWorkName: KnockoutObservable<string>;
+            typeOfWorkInfo: KnockoutObservable<string>;
+            workingHoursCode: KnockoutObservable<string>;
+            workingHoursName: KnockoutObservable<string>;
+            workingHoursInfo: KnockoutObservable<string>;
 
-	        enableUpdate: KnockoutObservable<boolean>;
-	        typeOfWorkLabel: KnockoutObservable<string>;
-	        workingHoursLabel: KnockoutObservable<string>;
-	        reflectionSetting: ReflectionSetting;
+            enableUpdate: KnockoutObservable<boolean>;
+            typeOfWorkLabel: KnockoutObservable<string>;
+            workingHoursLabel: KnockoutObservable<string>;
+            reflectionSetting: ReflectionSetting;
             calendarOptions: KnockoutObservableArray<any>;
-	        cssRangerYM = ko.observable({});
-			currentMonthlyPattern: KnockoutObservable<number>;
+            cssRangerYM = ko.observable({});
+            currentMonthlyPattern: KnockoutObservable<number>;
 
             workStyle: string;
 
@@ -101,10 +101,6 @@ module nts.uk.at.view.ksm005.a {
 	                    self.enableUpdate(false);
                         $('#inp_monthlyPatternCode').focus();
                     }
-                });
-
-                self.optionDates.subscribe((data) => {
-                    console.log(data)
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
@@ -211,6 +207,12 @@ module nts.uk.at.view.ksm005.a {
                     if (isCancelSave != null && isCancelSave != undefined && !isCancelSave) {
                         self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     }
+                    if(self.selectMonthlyPattern()) {
+                        $('#inp_monthlyPatternName').focus();
+
+                    } else {
+                        $('#inp_monthlyPatternCode').focus();
+                    }
                 });    
             }
 
@@ -265,16 +267,18 @@ module nts.uk.at.view.ksm005.a {
 	            let row2: string = '';
 
                 //row1
-                if( nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
+                if( nts.uk.util.isNullOrEmpty(dto.workTypeCode) ){
+                    row1 = '';
+                } else if( nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
 	                row1 = dto.workTypeCode + text.getText('KSM005_84');
                 } else row1 = dto.workTypeName;
 
 	            //row2
-                if(dto.workingCode && nts.uk.util.isNullOrEmpty(dto.workingName) ){
+                if(nts.uk.util.isNullOrEmpty(dto.workingCode)){
+                    row2 = '';
+                }else if(dto.workingCode && nts.uk.util.isNullOrEmpty(dto.workingName) ){
                     row2 = dto.workingCode + text.getText('KSM005_84');
-                } else if(dto.workingCode && dto.workingName) {
-                    row2 = dto.workingName;
-                } else row2 = '';
+                } else row2 = dto.workingName;
 
 	            if (nts.uk.util.isNullOrEmpty(dto.workTypeName) && !nts.uk.util.isNullOrEmpty(dto.workTypeCode)) {
                     textColor = 'black';
@@ -603,7 +607,7 @@ module nts.uk.at.view.ksm005.a {
 			        let dto = nts.uk.ui.windows.getShared('returnedData');
 
 			        if(dto) {
-                        self.reloadPage(self.selectMonthlyPattern(), true);
+                        self.reloadPage(self.selectMonthlyPattern(), false);
                     }
 
 			        if(self.selectMonthlyPattern()) {
