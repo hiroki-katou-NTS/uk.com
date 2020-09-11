@@ -35,4 +35,22 @@ public class ProcessExecutionSetting extends DomainObject {
 	
 	/* 承認ルート更新（月次） */
 	private NotUseAtr appRouteUpdateMonthly;
+	
+	/* データの削除 */
+	private DeleteData deleteData;
+	
+	/* データの保存 */
+	private SaveData saveData;
+	
+	/* 外部受入 */
+	private ExternalAcceptance externalAcceptance;
+	
+	/* 外部出力 */
+	private ExternalOutput externalOutput;
+	
+	/* 任意期間の集計 */
+	private AggregationOfArbitraryPeriod aggregationOfArbitraryPeriod;
+	
+	/* インデックス再構成 */
+	private IndexReconstruction indexReconstruction;
 }

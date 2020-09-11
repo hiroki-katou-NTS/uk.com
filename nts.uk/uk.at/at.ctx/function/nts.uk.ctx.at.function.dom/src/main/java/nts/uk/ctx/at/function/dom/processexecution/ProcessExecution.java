@@ -24,14 +24,17 @@ public class ProcessExecution extends AggregateRoot {
 	/* 名称 */
 	private ExecutionName execItemName;
 	
-	/* 実行範囲 */
+	/*A 実行範囲 */
 	private ProcessExecutionScope execScope;
 	
-	/* 実行設定 */
+	/*A 実行設定 */
 	private ProcessExecutionSetting execSetting;
 	
-	/* 実行種別*/
+	/*A 実行種別*/
 	private ProcessExecType processExecType;
+	
+	/*A クラウド作成フラグ  */
+	private boolean cloudCreationFlag;
 	
 	public void validateVer2() {
 //		List<String> listError = new ArrayList<>();

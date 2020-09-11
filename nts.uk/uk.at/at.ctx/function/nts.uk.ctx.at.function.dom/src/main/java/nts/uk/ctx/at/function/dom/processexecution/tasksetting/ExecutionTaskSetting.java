@@ -51,8 +51,8 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	/* 終了時刻 */
 	private TaskEndTime endTime;
 	
-	/* 繰り返しする */
-	private boolean repeat;
+//	/* 繰り返しする */
+//	private boolean repeat;
 	
 	/* 繰り返し内容 */
 	private RepeatContentItem content;
@@ -150,21 +150,21 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		GeneralDate today = GeneralDate.today();
 		GeneralDateTime now = GeneralDateTime.now();
 		if (this.isEnabledSetting()) {
-			if (this.repeat) {
-				// ・毎日のパターン
-				if (this.content.value == RepeatContentItem.DAILY.value) {
-					// 画面から実行タスク設定の登録時
-					this.nextExecDateTime = Optional.ofNullable(getNextExecDateTimeByDay(today, now));
-				}
-				// ・毎週のパターン
-				else if (this.content.value == RepeatContentItem.WEEKLY.value) {
-					this.nextExecDateTime = Optional.ofNullable(getNextExecDateTimeByWeek(this.startDate, now));
-				}
-				// ・毎月のパターン
-				else if (this.content.value == RepeatContentItem.MONTHLY.value) {
-					this.nextExecDateTime = Optional.ofNullable(getNextExecDateTimeByMonth(this.startDate, now));
-				}
-			}
+//			if (this.repeat) {
+//				// ・毎日のパターン
+//				if (this.content.value == RepeatContentItem.DAILY.value) {
+//					// 画面から実行タスク設定の登録時
+//					this.nextExecDateTime = Optional.ofNullable(getNextExecDateTimeByDay(today, now));
+//				}
+//				// ・毎週のパターン
+//				else if (this.content.value == RepeatContentItem.WEEKLY.value) {
+//					this.nextExecDateTime = Optional.ofNullable(getNextExecDateTimeByWeek(this.startDate, now));
+//				}
+//				// ・毎月のパターン
+//				else if (this.content.value == RepeatContentItem.MONTHLY.value) {
+//					this.nextExecDateTime = Optional.ofNullable(getNextExecDateTimeByMonth(this.startDate, now));
+//				}
+//			}
 		} else {
 			this.nextExecDateTime = null;
 		}
@@ -299,7 +299,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		this.nextExecDateTime = Optional.ofNullable(nextExecDateTime);
 		this.endDate = endDate;
 		this.endTime = endTime;
-		this.repeat = repeat;
+//		this.repeat = repeat;
 		this.content = content;
 		this.detailSetting = detailSetting;
 		this.startDate = startDate;
@@ -319,7 +319,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		this.nextExecDateTime = Optional.ofNullable(nextExecDateTime);
 		this.endDate = endDate;
 		this.endTime = endTime;
-		this.repeat = repeat;
+//		this.repeat = repeat;
 		this.content = content;
 		this.detailSetting = detailSetting;
 		this.startDate = startDate;
@@ -357,9 +357,9 @@ public class ExecutionTaskSetting extends AggregateRoot {
 		this.endTime = endTime;
 	}
 
-	public void setRepeat(boolean repeat) {
-		this.repeat = repeat;
-	}
+//	public void setRepeat(boolean repeat) {
+//		this.repeat = repeat;
+//	}
 
 	public void setContent(RepeatContentItem content) {
 		this.content = content;
