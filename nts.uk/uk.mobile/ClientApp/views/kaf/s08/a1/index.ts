@@ -29,6 +29,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public mode: Boolean = true;
     public departureTime: number = null;
     public returnTime: number = null;
+    public isVisible: boolean = false;
 
     @Prop({ default:() => ({}) })
     public params?: any;
@@ -39,7 +40,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
-
         if (vm.params) {
             console.log(vm.params);
             //vm.mode = false;
