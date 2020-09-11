@@ -24,7 +24,7 @@ public class AlarmExtraction extends DomainObject {
 	/**トップページに表示(本人)*/
 	private Optional<Boolean> displayOnTopPageAdministrator;
 	/**トップページに表示(管理者)*/
-	private Optional<Boolean> displayOnTopPagePerson;
+	private Optional<Boolean> displayOnTopPagePrincipal;
 
 	public AlarmExtraction(boolean alarmAtr, AlarmPatternCode alarmCode,Boolean mailPrincipal,
 			Boolean mailAdministrator) {
