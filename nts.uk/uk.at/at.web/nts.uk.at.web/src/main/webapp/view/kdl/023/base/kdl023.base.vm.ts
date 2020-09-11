@@ -1170,8 +1170,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.isExecMode(true);
 
                 // Set calendar range.
-                self.calendarStartDate = moment(self.shared.calendarStartDate, CONST.DATE_FORMAT);
-                self.calendarEndDate = moment(self.shared.calendarEndDate, CONST.DATE_FORMAT);
+                self.calendarStartDate = moment(self.shared.calendarStartDate, CONST.MOMENT_DATE_FORMAT);
+                self.calendarEndDate = moment(self.shared.calendarEndDate, CONST.MOMENT_DATE_FORMAT);
 
                 // Date range must <= 31 days
                 // If end date parameter out of range -> set end date to 31 days after start date parameter.
@@ -1309,7 +1309,9 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             }
             service.registerMonthlyPattern(param).done(() => {
                 nts.uk.ui.windows.setShared('returnedData', ko.toJS(vm.reflectionSetting()));
-                vm.closeDialog();
+                vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                    vm.closeDialog();
+                });
             }).fail(() => {
                 vm.$dialog.error({ messageId: "Msg_340" }).then(() => {
                     vm.closeDialog();
