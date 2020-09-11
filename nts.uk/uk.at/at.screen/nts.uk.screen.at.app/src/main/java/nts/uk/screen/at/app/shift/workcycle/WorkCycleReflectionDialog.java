@@ -154,7 +154,7 @@ public class WorkCycleReflectionDialog {
 
 		@Override
 		public Optional<WeeklyWorkDayPattern> getWeeklyWorkSetting() {
-			return Optional.of(weeklyWorkDayRepository.getWeeklyWorkDayPatternByCompanyId(cid));
+			return Optional.ofNullable(weeklyWorkDayRepository.getWeeklyWorkDayPatternByCompanyId(cid));
 		}
 
 		@Override
