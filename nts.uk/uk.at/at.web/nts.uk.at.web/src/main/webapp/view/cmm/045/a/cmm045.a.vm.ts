@@ -792,9 +792,10 @@ module cmm045.a.viewmodel {
                             .appendTo($td);
                     }
                     else if(column.key == 'appDate') {
-                        var date = nts.uk.time.formatDate(new Date(item.opAppStartDate), "MM/ddD");
+                        // var date = nts.uk.time.formatDate(new Date(item.opAppStartDate), "M/dD");
+                        var date = moment(item.opAppStartDate).format("M/D(ddd)");
                         if(item.opAppStartDate !== item.opAppEndDate) {
-                            date.concat("－").concat(nts.uk.time.formatDate(new Date(item.opAppEndDate), "MM/ddD"))
+                            date.concat("－").concat(moment(item.opAppEndDate).format("M/D(ddd)"))
                         }
                         $td.html(self.appDateColor(date, "", ""));
                     }
@@ -869,7 +870,8 @@ module cmm045.a.viewmodel {
             }
             if(key=='inputDate') {
                 var cl = "";
-                var time = nts.uk.time.formatDate(new Date(value), "MM/ddD hh:mm");
+                var time = moment(item[key]).format("M/D(ddd) h:mm");
+                // var time = nts.uk.time.formatDate(new Date(item[key]), "m/dD hh:mm");
 
                 if(_.includes(time, ''))
                 return self.inputDateColor(time, cl);
