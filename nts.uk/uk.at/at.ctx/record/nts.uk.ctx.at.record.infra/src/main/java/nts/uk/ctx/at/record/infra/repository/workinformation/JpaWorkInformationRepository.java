@@ -301,9 +301,33 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 								st.leaveWork = dst.getLeaveWork().valueAsMinutes();
 							});
 				});
-			}        
-			
-			this.commandProxy().updateAll(data.scheduleTimes);
+			}   
+			List<KrcdtWorkScheduleTime> schedules = new ArrayList<>();
+			try (PreparedStatement stmtSche = this.connection().prepareStatement(
+					"select * from KRCDT_WORK_SCHEDULE_TIME"
+					+ " where SID = ? and YMD = ?")) {
+				stmtSche.setString(1, domain.getEmployeeId());
+				stmtSche.setDate(2, Date.valueOf(domain.getYmd().localDate()));
+				schedules = new NtsResultSet(stmtSche.executeQuery()).getList(rs -> {
+					KrcdtWorkScheduleTimePK pks = new KrcdtWorkScheduleTimePK();
+					pks.employeeId = rs.getString("SID");
+					pks.ymd = rs.getGeneralDate("YMD");
+					pks.workNo = rs.getInt("WORK_NO");
+							
+					KrcdtWorkScheduleTime es = new KrcdtWorkScheduleTime();
+					es.krcdtWorkScheduleTimePK = pks;
+					es.attendance = rs.getInt("ATTENDANCE");
+					es.leaveWork = rs.getInt("LEAVE_WORK");
+					
+					return es;
+				});
+			} catch (SQLException e) {
+			}
+			if(schedules.isEmpty()) {
+				this.commandProxy().insertAll(data.scheduleTimes);
+			}else {
+				this.commandProxy().updateAll(data.scheduleTimes);
+			}
 		}
 
 		this.commandProxy().update(data);
