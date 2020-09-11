@@ -535,6 +535,8 @@ public class ProgramsManager {
             "/view/kdl/020/a/single.xhtml");
     public static final Program KDL020B = new Program(WebAppId.AT, ProgramIdConsts.KDL020B, "KDL020_1",
             "/view/kdl/020/a/mutil.xhtml");
+    public static final Program KDL048 = new Program(WebAppId.AT, ProgramIdConsts.KDL048, "KDL048_1",
+            "/view/kdl/048/index.xhtml");
     ////////////////////
     /**
      * KBT002A
