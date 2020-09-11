@@ -330,7 +330,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     });
 
                     vm.reflectionOrder3.subscribe(val => {
-                        let arrCheck = ([vm.reflectionOrder1(), val, vm.reflectionOrder3()]);
+                        let arrCheck = ([vm.reflectionOrder1(), vm.reflectionOrder2(), val]);
                         let weeklyEnable = arrCheck.filter(e => e === WorkCreateMethod.WEEKLY_WORK).length;
                         let holidayEnable = arrCheck.filter(e => e === WorkCreateMethod.PUB_HOLIDAY).length;
                         if(weeklyEnable > 0){
@@ -942,15 +942,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
 
             // Is exec mode
-            if (self.isExecMode()) {
-                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_20'));
-
-            }
+            // if (self.isExecMode()) {
+            //     self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_20'));
+            //
+            // }
 
             // Is ref mode
-            else {
+            //else {
                 self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_13'));
-            }
+            //}
 
         }
 
