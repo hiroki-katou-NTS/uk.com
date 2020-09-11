@@ -24,6 +24,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.at.request.dom.application.AppScreenGenerator;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppLstApprovalLstDispSet;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -227,7 +228,12 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	 */
 	private void printContent(Workbook workbook, AppListInfo appLst) {
 		List<ListOfApplication> lstApp = appLst.getAppLst();
-		List<AsposeAppScreenDto> dataSource = lstApp.stream().map(x -> AsposeAppScreenDto.fromDomain(x))
+
+		AppLstApprovalLstDispSet dispSet = appLst.getDisplaySet();
+		int dispWplName = dispSet.getWorkplaceNameDisp();
+
+		List<AsposeAppScreenDto> dataSource = lstApp.stream()
+				.map(x -> AsposeAppScreenDto.fromDomainPrint(x, dispWplName))
 				.collect(Collectors.toList());
 
 		WorkbookDesigner designer = new WorkbookDesigner();
