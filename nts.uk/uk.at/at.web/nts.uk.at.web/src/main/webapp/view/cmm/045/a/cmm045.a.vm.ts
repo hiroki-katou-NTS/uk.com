@@ -245,6 +245,12 @@ module cmm045.a.viewmodel {
                             nts.uk.ui.dialog.info({ messageId: "Msg_357" });
                         });
                     }
+                } else {
+                    if(contentWidth !== 340) {
+                        character.save('TableColumnWidth', self.columnWidth).then(() => {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_357" });
+                        });
+                    }
                 }
             });
         }
