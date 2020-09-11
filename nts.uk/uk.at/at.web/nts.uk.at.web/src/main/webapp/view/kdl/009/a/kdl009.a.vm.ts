@@ -20,7 +20,8 @@ module nts.uk.at.view.kdl009.a {
             kdl009Data: any;
             employeeInfo: KnockoutObservable<string>;
 
-            isManagementSection: KnockoutObservable<boolean> = ko.observable(true);
+            isFirstLoaded: KnockoutObservable<boolean> = ko.observable(false);
+            isManagementSection: KnockoutObservable<boolean> = ko.observable(null);
             dataItems: KnockoutObservableArray<DataItems>;
 
             value01: KnockoutObservable<string> = ko.observable("");
@@ -84,13 +85,18 @@ module nts.uk.at.view.kdl009.a {
                 vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
                 vm.$blockui('grayout');
                 // アルゴリズム「振休残数情報の取得」を実行する(thực hiện thuật toán 「振休残数情報の取得」)
+                vm.isFirstLoaded(false);
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
                     .then((data) => {
+                        vm.isFirstLoaded(true);
                         vm.isManagementSection(data.isManagementSection);
                         vm.expirationDateText(ExpirationDate[data.expiredDay]);
                         vm.bindTimeData(data);
                         vm.bindSummaryData(data);
-                        vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
+                        // Render table
+                        if (data.isManagementSection) {
+                            vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
+                        }
                     })
                     .fail(vm.onError)
                     .always(() => vm.$blockui('clear'));
