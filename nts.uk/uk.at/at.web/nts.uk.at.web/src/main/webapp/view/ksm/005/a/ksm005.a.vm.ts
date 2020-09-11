@@ -265,14 +265,16 @@ module nts.uk.at.view.ksm005.a {
 	            let row2: string = '';
 
                 //row1
-                if( nts.uk.util.isNullOrEmpty(dto.workTypeName) && !nts.uk.util.isNullOrEmpty(dto.workTypeCode) ){
+                if( nts.uk.util.isNullOrEmpty(dto.workTypeName) ){
 	                row1 = dto.workTypeCode + text.getText('KSM005_84');
                 } else row1 = dto.workTypeName;
 
 	            //row2
-	            if(nts.uk.util.isNullOrEmpty(dto.workingName) ){
-		            row2 = '';
-	            } else row2 = dto.workingName;
+                if(dto.workingCode && nts.uk.util.isNullOrEmpty(dto.workingName) ){
+                    row2 = dto.workingCode + text.getText('KSM005_84');
+                } else if(dto.workingCode && dto.workingName) {
+                    row2 = dto.workingName;
+                } else row2 = '';
 
 	            if (nts.uk.util.isNullOrEmpty(dto.workTypeName) && !nts.uk.util.isNullOrEmpty(dto.workTypeCode)) {
                     textColor = 'black';
@@ -598,8 +600,14 @@ module nts.uk.at.view.ksm005.a {
 		        nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(dataMonthly));
 		        nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
 			        let dto = nts.uk.ui.windows.getShared('returnedData');
+
+			        if(dto) {
+                        self.reloadPage(self.selectMonthlyPattern(), true);
+                    }
+
 			        if(self.selectMonthlyPattern()) {
                         $('#inp_monthlyPatternName').focus();
+
                     } else {
                         $('#inp_monthlyPatternCode').focus();
                     }
@@ -645,10 +653,11 @@ module nts.uk.at.view.ksm005.a {
                     let i = _.findIndex(dataUpdate, (item) => vm.convertYMD(item.ymdk) == date);
                     let optionDates = vm.optionDates;
                     let existItem = _.find(optionDates(), item => item.start == date);
+
                     if(existItem != null) {
                         existItem.changeListText(
                             vm.typeOfWorkName() ? vm.typeOfWorkName() : vm.typeOfWorkCode()+getText('KSM005_84'),
-                            vm.workingHoursName() ? vm.workingHoursName() : vm.workingHoursCode() ? vm.workingHoursCode()+getText('KSM005_84') : '',
+                            vm.workingHoursCode() ?  vm.workingHoursName() ? vm.workingHoursName() : vm.workingHoursCode()+getText('KSM005_84') : '',
                             !vm.typeOfWorkName() ? TypeColor.NOT_EXIST_COLOR : vm.workStyle ? vm.workStyle : null
                         );
                     } else {

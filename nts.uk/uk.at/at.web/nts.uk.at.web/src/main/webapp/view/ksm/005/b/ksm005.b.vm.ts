@@ -40,7 +40,7 @@ module nts.uk.at.view.ksm005.b {
             hasNonStatutoryHolidays: KnockoutObservable<boolean> = ko.observable(false);
             hasLegalHoliday: KnockoutObservable<boolean> = ko.observable(false);
             visibleHolidaySetting: KnockoutObservable<boolean> = ko.observable(false);
-            visibleHrLine: KnockoutObservable<boolean> = ko.observable(false);
+            visibleRegister: KnockoutObservable<boolean> = ko.observable(false);
 
             constructor() {
                 const self = this;
