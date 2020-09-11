@@ -1,11 +1,10 @@
-package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementResult.hoursPerYear;
+package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementResult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.persistence.internal.xr.ValueObject;

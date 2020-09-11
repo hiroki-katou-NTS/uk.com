@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.agreementbasicsettings;
 
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementResult.hoursPerMonth.ErrorTimeInMonth;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
 
 /**
  * ３６協定複数月平均
