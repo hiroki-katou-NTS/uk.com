@@ -159,13 +159,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
             $("#fixed-table").ntsFixedTable({});
 
-            // vm.departureTime.subscribe(value => {
-            //     vm.dataFetch().businessTripContent.departureTime = value;
-            // });
-            //
-            // vm.returnTime.subscribe(value => {
-            //     vm.dataFetch().businessTripContent.returnTime = value;
-            // });
         }
 
         changeWorkTypeCode(data: BusinessTripOutput, date: string, wkCode: string, index: number) {
@@ -180,6 +173,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             let cloneData = _.clone(vm.dataFetch());
             let contentChanged = cloneData.businessTripOutput.businessTripActualContent[index].opAchievementDetail;
 
+            vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D2',
             ]).then((valid: boolean) => {
@@ -225,6 +219,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             let command = {
                 date, businessTripInfoOutputDto, wkCode, timeCode
             };
+            vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
@@ -274,6 +269,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 timeCode: null
             };
 
+            vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D2'
             ]).then((valid: boolean) => {
@@ -323,6 +319,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     timeCode: codeChanged
             };
 
+            vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
@@ -362,8 +359,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             const vm = this;
             let dispFlag: boolean = true;
             let selectedDate = data.date;
-            let workTypeCodes = data.wkTypeCd();
-            let workTimeCodes = data.wkTimeCd();
+            let workTypeCode = data.wkTypeCd();
+            let workTimeCode = data.wkTimeCd();
 
             let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: data.date});
 
@@ -394,44 +391,46 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
             vm.$window.storage('parentCodes', {
                 workTypeCodes: _.union(listHolidayCode, listWorkCode),
-                selectedWorkTypeCode: workTypeCodes,
+                selectedWorkTypeCode: workTypeCode,
                 workTimeCodes: listWkTimeCd,
-                selectedWorkTimeCode: workTimeCodes,
+                selectedWorkTimeCode: workTimeCode,
                 showNone: dispFlag
             });
 
+            vm.$errors("clear");
+
             vm.$window.modal('/view/kdl/003/a/index.xhtml').then((result: any) => {
                 vm.$window.storage('childData').then(rs => {
-                    if (vm.mode == Mode.New) {
-                        let cloneData = _.clone(vm.dataFetch());
-                        let currentDetail = cloneData.businessTripOutput.businessTripActualContent[selectedIndex].opAchievementDetail;
+                    if (rs) {
+                        if (vm.mode == Mode.New) {
+                            let cloneData = _.clone(vm.dataFetch());
+                            let currentDetail = cloneData.businessTripOutput.businessTripActualContent[selectedIndex].opAchievementDetail;
 
-                        currentDetail.workTypeCD = rs.selectedWorkTypeCode;
-                        currentDetail.opWorkTypeName = rs.selectedWorkTypeName;
-                        currentDetail.workTimeCD = rs.selectedWorkTimeCode;
-                        currentDetail.opWorkTimeName = rs.selectedWorkTimeName;
-                        currentDetail.opWorkTime = rs.first.start;
-                        currentDetail.opLeaveTime = rs.first.end;
+                            currentDetail.workTypeCD = rs.selectedWorkTypeCode;
+                            currentDetail.opWorkTypeName = rs.selectedWorkTypeName;
+                            currentDetail.workTimeCD = rs.selectedWorkTimeCode;
+                            currentDetail.opWorkTimeName = rs.selectedWorkTimeName;
+                            currentDetail.opWorkTime = rs.first.start;
+                            currentDetail.opLeaveTime = rs.first.end;
 
-                        vm.dataFetch(cloneData);
-                    } else {
-                        let cloneData = _.clone(vm.dataFetch());
-                        let contentChanged = cloneData.businessTripContent.tripInfos[selectedIndex];
+                            vm.dataFetch(cloneData);
+                        } else {
+                            let cloneData = _.clone(vm.dataFetch());
+                            let contentChanged = cloneData.businessTripContent.tripInfos[selectedIndex];
 
-                        contentChanged.wkTypeCd = rs.selectedWorkTypeCode;
-                        contentChanged.wkTypeName = rs.selectedWorkTypeName;
-                        contentChanged.wkTimeCd = rs.selectedWorkTimeCode;
-                        contentChanged.wkTimeName = rs.selectedWorkTimeName;
-                        contentChanged.startWorkTime = rs.first.start;
-                        contentChanged.endWorkTime = rs.first.end;
+                            contentChanged.wkTypeCd = rs.selectedWorkTypeCode;
+                            contentChanged.wkTypeName = rs.selectedWorkTypeName;
+                            contentChanged.wkTimeCd = rs.selectedWorkTimeCode;
+                            contentChanged.wkTimeName = rs.selectedWorkTimeName;
+                            contentChanged.startWorkTime = rs.first.start;
+                            contentChanged.endWorkTime = rs.first.end;
 
-                        vm.dataFetch(cloneData);
+                            vm.dataFetch(cloneData);
+                        }
                     }
                 });
             }).then(() => {
-                vm.$errors("clear").then(() => {
-                    $('#' + data.id).focus();
-                });
+
             });
 
         }
