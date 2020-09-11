@@ -7,9 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.shr.com.primitive.PersonId
-			</com:ValidatorScript>
 			<com:stylefile path="ktg026.a.style.css" />
 			<!-- <com:scriptfile path="ktg026.a.service.js" /> -->
 			<com:scriptfile path="ktg026.a.vm.js" />
@@ -26,7 +23,7 @@
 				<table class="flex">
 					<tbody class="flex100">
 						<tr class="flex100">
-							<td class="p-10 left40">
+							<td class="p-10 left65">
 								<!-- A1_2 -->
 								<div data-bind="ntsDatePicker: {
 									value: year,
@@ -34,10 +31,10 @@
 									valueFormat: 'YYYY',
 									showJumpButtons: true
 								}"></div>
-								<!-- A1_5 -->
-								<label class="grid mt-10">Transfer A1_5</label>
 								<!-- A1_6 -->
-								<label class="grid mt-10">Transfer A1_6</label>
+								<label class="grid mt-10">日通 はるか</label>
+								<!-- A1_5 -->
+								<label class="grid mt-10" data-bind="text: textA1_5"></label>
 							</td>
 							<td class="block p-10" style="width: 60%">
 								<div class="right">
@@ -67,63 +64,63 @@
 					</thead>
 					<tbody>
 						<tr class="mw-200">
-							<td class="border-bot pr-20 data-text">Transfer</td>
-							<td class="border-bot">Transfer</td>
+							<td class="border-bot data-text">2020/03</td>
+							<td class="border-bot">46:00</td>
 							<td class="pl-20 inline-flex">
 								<span class="dashed45"></span>
 								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color"></span>
+								<span class="label non-statutory-bg-color" style="width: 80px;"></span>
+								<span class="label time-outside-bg-color" style="width: 12px;"></span>
+							</td>
+						</tr>
+						<tr class="mw-200">
+							<td class="border-bot data-text">2020/04</td>
+							<td class="border-bot">50:00</td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<span class="label non-statutory-bg-color" style="width: 100px;"></span>
 								<span class="label time-outside-bg-color"></span>
 							</td>
 						</tr>
 						<tr class="mw-200">
-							<td class="border-bot pr-20">Transfer</td>
-							<td class="border-bot">Transfer</td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" data-bind="{style: { width: 100 }}"></span>
-								<span class="label time-outside-bg-color"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot pr-20">Transfer</td>
-							<td class="border-bot">Transfer</td>
+							<td class="border-bot data-text">2020/05</td>
+							<td class="border-bot">15:00</td>
 							<td class="pl-20 inline-flex">
 								<span class="dashed45"></span>
 								<span class="dashed80"></span>
 								<span class="label non-statutory-bg-color"></span>
+								<span class="label time-outside-bg-color" style="width: 30px;"></span>
+							</td>
+						</tr>
+						<tr class="mw-200">
+							<td class="border-bot data-text">2020/06</td>
+							<td class="border-bot">20:00</td>
+							<td class="pl-20 inline-flex">
+								<span class="dashed45"></span>
+								<span class="dashed80"></span>
+								<span class="label non-statutory-bg-color" style="width: 40px;"></span>
 								<span class="label time-outside-bg-color"></span>
 							</td>
 						</tr>
 						<tr class="mw-200">
-							<td class="border-bot pr-20">Transfer</td>
-							<td class="border-bot">Transfer</td>
+							<td class="border-bot data-text">2020/07</td>
+							<td class="border-bot">30:00</td>
 							<td class="pl-20 inline-flex">
 								<span class="dashed45"></span>
 								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color"></span>
+								<span class="label non-statutory-bg-color" style="width: 60px;"></span>
 								<span class="label time-outside-bg-color"></span>
 							</td>
 						</tr>
 						<tr class="mw-200">
-							<td class="border-bot pr-20">Transfer</td>
-							<td class="border-bot">Transfer</td>
+							<td class="border-bot data-text">2020/08</td>
+							<td class="border-bot">55:00</td>
 							<td class="pl-20 inline-flex">
 								<span class="dashed45"></span>
 								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color"></span>
-								<span class="label time-outside-bg-color"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot pr-20">Transfer</td>
-							<td class="border-bot">Transfer</td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color"></span>
-								<span class="label time-outside-bg-color"></span>
+								<span class="label non-statutory-bg-color" style="width: 70px;"></span>
+								<span class="label time-outside-bg-color" style="width: 40px;"></span>
 							</td>
 						</tr>
 					</tbody>
