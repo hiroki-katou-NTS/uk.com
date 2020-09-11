@@ -608,6 +608,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 unit: item.isPresent() ? userInfor.unit : 0
             };
             self.saveModeGridToLocalStorege('shortName');
+            
+            let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
+            __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
+                userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+            
             self.visibleShiftPalette(false);
             self.visibleBtnInput(false);
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
@@ -643,9 +648,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             self.saveModeGridToLocalStorege('time');
             
-//            let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
-//            __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
-//                userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId , objWorkTime.code);
+            let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
+            __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
+                userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
 
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
