@@ -104,13 +104,13 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 		// ドメインモデル「締め状態管理」を取得する
 		Optional<ClosureStatusManagement> closureStatusManagement = this.closureStatusManagementRepository
 				.getLatestByEmpId(employeeId);
-		if (!closureStatusManagement.isPresent()) {
-			listErrorMessageInfo.add(
-					new ErrorMessageInfo(companyId, employeeId, periodTimes.start(), ExecutionContent.DAILY_CREATION,
-							new ErrMessageResource("010"), new ErrMessageContent(TextResource.localize("Msg_426"))));
-
-			return new OutputCreateDailyResult(ProcessState.SUCCESS, listErrorMessageInfo);
-		}
+//		if (!closureStatusManagement.isPresent()) {
+//			listErrorMessageInfo.add(
+//					new ErrorMessageInfo(companyId, employeeId, periodTimes.start(), ExecutionContent.DAILY_CREATION,
+//							new ErrMessageResource("010"), new ErrMessageContent(TextResource.localize("Msg_426"))));
+//
+//			return new OutputCreateDailyResult(ProcessState.SUCCESS, listErrorMessageInfo);
+//		}
 		List<GeneralDate> listDayBetween = periodTimes.datesBetween();
 		for (GeneralDate day : listDayBetween) {
 			// 処理すべきかをチェックする
@@ -126,7 +126,8 @@ public class CreateDailyResultEmployeeDomainServiceNewImpl implements CreateDail
 //					.findByEmploymentCD(companyId, employmentCode);
 
 			//処理する日が締められているかチェックする
-			if (!closureStatusManagement.get().getPeriod().contains(day)) {
+			if (!closureStatusManagement.isPresent() || 
+					!closureStatusManagement.get().getPeriod().contains(day)) {
 				LockStatus lockStatus = LockStatus.UNLOCK;
                 //「ロック中の計算/集計する」の値をチェックする
                 if(!checkLock.isPresent() || checkLock.get() == false) {
