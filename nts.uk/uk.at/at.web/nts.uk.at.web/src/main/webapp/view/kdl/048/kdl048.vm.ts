@@ -31,7 +31,8 @@ module nts.uk.at.view.kdl048.screenModel {
         width: 55,
         columnCssClass: "text-center",
       },
-      { headerText: this.$i18n("KDL048_6"), prop: "itemId", width: 70 },
+      { headerText: 'ID', prop: "itemId", hidden:true },
+      { headerText: this.$i18n("KDL048_6"), prop: "indicatesNumber", width: 70 },
       { headerText: this.$i18n("KDL048_7"), prop: "name", width: 200 },
     ]);
     paramSelectedTimeList: KnockoutObservableArray<SelectedTimeListParam> = ko.observableArray([]);
@@ -58,7 +59,8 @@ module nts.uk.at.view.kdl048.screenModel {
 
       // Columns of table A6
       vm.columns = ko.observableArray([
-        { headerText: vm.$i18n("KDL048_6"), prop: "id", width: 70 },
+        { headerText: 'ID', prop: "id", hidden: true },
+        { headerText: vm.$i18n("KDL048_6"), prop: "indicatesNumber", width: 70 },
         { headerText: vm.$i18n("KDL048_7"), prop: "name", width: 200 },
       ]);
 
@@ -83,12 +85,14 @@ module nts.uk.at.view.kdl048.screenModel {
             data.name = item1.name;
             data.itemId = item2.itemId;
             data.operator = item2.operator;
+            data.indicatesNumber = item1.indicatesNumber
             data1.id = item1.id;
             vm.dataSelectedItemList.push(data);
             list.push(data1);
           }
         });
       });
+      vm.dataSelectedItemList(_.orderBy(vm.dataSelectedItemList(), ["indicatesNumber"], ["asc"]))
       _.each(list(), (item: any) => {
         vm.diligenceData().filter((items: any) => {
           if (items.id === parseInt(item.id)) {
@@ -138,6 +142,7 @@ module nts.uk.at.view.kdl048.screenModel {
             data.itemId = e.id;
             data.operator = vm.$i18n("KDL048_8");
             data.name = e.name;
+            data.indicatesNumber = e.indicatesNumber;
             dataParam.itemId = e.id;
             dataParam.operator = vm.$i18n("KDL048_8");
             vm.dataSelectedItemList.push(data);
@@ -148,7 +153,7 @@ module nts.uk.at.view.kdl048.screenModel {
         });
       });
       vm.dataSelectedItemList(
-        _.orderBy(vm.dataSelectedItemList(), ["itemId"], ["asc"])
+        _.orderBy(vm.dataSelectedItemList(), ["indicatesNumber"], ["asc"])
       );
     }
 
@@ -164,6 +169,7 @@ module nts.uk.at.view.kdl048.screenModel {
             data.itemId = e.id;
             data.operator = vm.$i18n("KDL048_9");
             data.name = e.name;
+            data.indicatesNumber = e.indicatesNumber
             dataParam.itemId = e.id;
             dataParam.operator = vm.$i18n("KDL048_9");
             vm.dataSelectedItemList.push(data);
@@ -174,7 +180,7 @@ module nts.uk.at.view.kdl048.screenModel {
         });
       });
       vm.dataSelectedItemList(
-        _.orderBy(vm.dataSelectedItemList(), ["itemId"], ["asc"])
+        _.orderBy(vm.dataSelectedItemList(), ["indicatesNumber"], ["asc"])
       );
     }
 
@@ -188,6 +194,7 @@ module nts.uk.at.view.kdl048.screenModel {
             let dataParam: SelectedTimeListParam = new SelectedTimeListParam();
             data.id = e.itemId;
             data.name = e.name;
+            data.indicatesNumber = e.indicatesNumber
             dataParam.itemId = e.itemId;
             dataParam.operator = e.operator;
             vm.diligenceData.push(data);
@@ -263,6 +270,8 @@ module nts.uk.at.view.kdl048.screenModel {
     operator: String | null = null;
 
     name: String | null = null;
+
+    indicatesNumber: any | null = null;
     constructor(init?: Partial<TitleLineObject>) {
       $.extend(this, init);
     }
