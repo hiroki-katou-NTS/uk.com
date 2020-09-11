@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.ksc001.d;
 
 import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeaveHolidayAdapter;
 import nts.uk.ctx.at.record.dom.adapter.eligibleemployees.LeavePeriodAdapter;
@@ -13,6 +14,8 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +25,7 @@ import java.util.Optional;
 /**
  * ScreenQuery: 設定した要件によると対象社員を取得する
  */
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class GetEligibleEmployeesScreenQuery {
     @Inject
@@ -34,6 +38,8 @@ public class GetEligibleEmployeesScreenQuery {
     private LeaveHolidayAdapter leaveHolidayAdapter;
     @Inject
     private LeavePeriodAdapter leavePeriodAdapter;
+    @Inject
+    private ManagedParallelWithContext parallel;
     public List<String> getListEmployeeId(ConditionDto conditionDto){
         List<String> rs = new ArrayList<>();
         ImplRequire require = new ImplRequire(sWorkTimeHistoryRepository,workingConditionItemRepository,syWorkplaceAdapter
@@ -43,7 +49,7 @@ public class GetEligibleEmployeesScreenQuery {
                     conditionDto.isShortWorkingHours(),conditionDto.isChangedWorkingConditions());
             val listId = conditionDto.getListEmployeeId();
             val period = new DatePeriod(conditionDto.getStartDate(),conditionDto.getEndDate());
-            listId.stream().parallel().forEach(e ->{
+            this.parallel.forEach(listId,e ->{
                 if(checkEmployee.CheckEmployeesAreEligible(require,e,period)){
                     rs.add(e);
                 }
