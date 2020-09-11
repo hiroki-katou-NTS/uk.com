@@ -23,7 +23,7 @@
 	left: 16px;
 }
 .arrow-button{	
-	padding: 80px 37px;	
+	padding: 80px 20px;	
 	margin: 2px;
 }
 
@@ -39,7 +39,7 @@
 .container-custom {	
 	display: flex;
 	margin-top: 5px;
-	width: 800px;
+	width: 750px;
 }
 .container-table {
 	display: flex;
@@ -52,12 +52,12 @@
 	margin-top: 5px;		
 }
 .lblForm{
-	margin-right: 313px;
+	margin-right: 279px;
 }
 
 #line {
 	margin: 5px 0px 10px 0px;
-	width: 810px;
+	width: 750px;
 	border:none;
 	display: block;
 	height: 0.1px;
