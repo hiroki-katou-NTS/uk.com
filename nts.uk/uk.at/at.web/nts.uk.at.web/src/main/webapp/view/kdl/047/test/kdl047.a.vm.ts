@@ -19,6 +19,8 @@ module nts.uk.at.view.kdl047.test.screenModel {
     isDisplayTitle: KnockoutObservable<boolean> = ko.observable(true);
     isEnableComboBox: KnockoutObservable<number> = ko.observable(1);
     isEnableTextEditor: KnockoutObservable<number> = ko.observable(1);
+    comboSelected: KnockoutObservable<any> = ko.observable(null);
+    tableSelected: KnockoutObservable<any> = ko.observable(null);
 
     created() {
       const vm = this;
@@ -57,6 +59,8 @@ module nts.uk.at.view.kdl047.test.screenModel {
       shareParam.itemNameLine.displayInputCategory = vm.isEnableTextEditor();
       shareParam.itemNameLine.name = vm.attendanceItemName();
       shareParam.attribute.selectionCategory = vm.isEnableComboBox();
+      shareParam.attribute.selected = vm.comboSelected();
+      shareParam.selectedTime = vm.tableSelected();
       shareParam.attribute.attributeList = [
         new AttendaceType(1, vm.$i18n('KWR002_141')),
         new AttendaceType(2, vm.$i18n('KWR002_142')),
@@ -72,6 +76,17 @@ module nts.uk.at.view.kdl047.test.screenModel {
         new DiligenceProject(28, '勤務種類', '勤務種類', 28),
         new DiligenceProject(2, '予定就業時間帯', '予定就業時間帯', 2),
         new DiligenceProject(3, '予定出勤時刻1', '予定出勤時刻1', 3),
+        new DiligenceProject(5, '予定出勤時刻5', '予定出勤時刻5', 5),
+        new DiligenceProject(6, '予定出勤時刻6', '予定出勤時刻6', 6),
+        new DiligenceProject(8, '予定出勤時刻8', '予定出勤時刻8', 8),
+        new DiligenceProject(9, '予定出勤時刻9', '予定出勤時刻9', 9),
+        new DiligenceProject(10, '予定出勤時刻10', '予定出勤時刻10', 10),
+        new DiligenceProject(11, '予定出勤時111', '予定出勤時刻11', 11),
+        new DiligenceProject(12, '予定出勤時刻12', '予定出勤時刻12', 12),
+        new DiligenceProject(13, '予定出勤時刻13', '予定出勤時刻13', 13),
+        new DiligenceProject(14, '予定出勤時刻14', '予定出勤時刻14', 14),
+        new DiligenceProject(15, '予定出勤時刻15', '予定出勤時刻15', 15),
+        new DiligenceProject(16, '予定出勤時刻16', '予定出勤時刻16', 16),
         new DiligenceProject(4, '予定退勤時刻1', '予定退勤時刻1', 4),
         new DiligenceProject(7, '予定休憩開始時刻1', '予定休憩開始時刻1', 7),
         new DiligenceProject(8, '予定休憩終了時刻1', '予定休憩終了時刻1', 8),
@@ -101,8 +116,10 @@ module nts.uk.at.view.kdl047.test.screenModel {
         if (!attendanceItem) {
           return;
         }
+        vm.comboSelected = ko.observable(attendanceItem.attribute);
+        vm.tableSelected = ko.observable(attendanceItem.attendanceId);
         vm.attendanceItemName(attendanceItem.attendanceItemName);
-        alert('Code selection in combo: ' +attendanceItem.attribute+' and '+'Code selection in table ' + attendanceItem.attendanceId)
+        alert('Code selection in combo: ' + vm.comboSelected() +' and '+'Code selection in table ' + vm.tableSelected())
       });
     }
 
