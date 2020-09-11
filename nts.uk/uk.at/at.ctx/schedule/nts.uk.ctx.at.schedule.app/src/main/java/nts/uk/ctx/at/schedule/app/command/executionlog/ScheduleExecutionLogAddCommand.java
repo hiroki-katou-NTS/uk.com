@@ -304,13 +304,13 @@ public class ScheduleExecutionLogAddCommand {
 		 * getCreateMethodAtr()
 		 */
 		@Override
-		public RecreateCondition getRecreateCondition() {
-			return new RecreateCondition(
+		public Optional<RecreateCondition> getRecreateCondition() {
+			return Optional.of(new RecreateCondition(
 					false,
 					false,
 					false,
 					Optional.empty()
-			);
+			));
 		}
 
 		/*
