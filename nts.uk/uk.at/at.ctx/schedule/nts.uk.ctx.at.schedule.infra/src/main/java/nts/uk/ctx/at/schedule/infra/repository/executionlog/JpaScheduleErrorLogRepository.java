@@ -21,6 +21,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
@@ -30,6 +31,7 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLogPK;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLogPK_;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheErrLog_;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaScheduleErrorLogRepository.
@@ -175,7 +177,11 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 	 */
 	private KscdtScheErrLog toEntity(ScheduleErrorLog domain) {
 		KscdtScheErrLog entity = new KscdtScheErrLog();
+		val cid = AppContexts.user().companyId();
+		val cd = AppContexts.user().contractCode();
 		domain.saveToMemento(new JpaScheduleErrorLogSetMemento(entity));
+		entity.setCid(cid);
+		entity.setContractCd(cd);
 		return entity;
 	}
 
@@ -239,6 +245,11 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public void update(ScheduleErrorLog domain) {
+		this.commandProxy().update(this.toEntity(domain));
 	}
 
 }

@@ -8,7 +8,6 @@
 	<ui:composition template="../base/kdl023.base.index.xhtml">
 		<ui:define name="extended-header">
 			<com:scriptfile path="kdl023.a.vm.js" />
-			<com:scriptfile path="kdl023.a.start.js" />
 		</ui:define>
 		<ui:define name="calendar-header">
 			<div class="nts-calendar-header">
@@ -22,8 +21,14 @@
 			</div>
 		</ui:define>
 		<ui:define name="extended-function">
-			<button id="btnClose" class="large" data-bind="click: closeDialog"
+			<button id="btnClose" class="large ref-mode" data-bind="click: closeDialog"
 						tabindex="13">#{i18n.getText('KDL023_16')}</button>
+
+			<div class="exec-mode" data-bind="ntsCheckBox: { checked: isOverWrite, style: 'warnpanel' }">#{i18n.getText('KDL023_37')}</div>
+			<br/><br/>
+			<button tabindex="13" id="btnDecide" class="x-large proceed exec-mode" data-bind="click: decide">#{i18n.getText('KDL023_38')}</button>
+			<button tabindex="14" id="btnCancel" class="large exec-mode" data-bind="click: closeDialog">#{i18n.getText('KDL023_22')}</button>
+
 		</ui:define>
 	</ui:composition>
 </body>

@@ -1,6 +1,9 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.ksm003.a {
+    import baseService = nts.uk.at.view.kdl023.base.service;
+    import ReflectionSetting = baseService.model.ReflectionSetting;
+    import DayOffSetting = baseService.model.DayOffSetting;
 
     @bean()
     class ViewModel extends ko.ViewModel {
@@ -351,10 +354,26 @@ module nts.uk.at.view.ksm003.a {
         //click button open Dialog Working
         openDialogWorking() {
             let self = this;
-            nts.uk.ui.windows.setShared("patternCode", self.selectedCode());
+            let data: ReflectionSetting = {
+                selectedPatternCd: self.selectedCode(),
+                patternStartDate: moment(new Date()).startOf('month').format('YYYY-MM-DD').toString(),
+                reflectionMethod: 0,
+                statutorySetting: self.convertWorktypeSetting(true, ''),
+                holidaySetting: self.convertWorktypeSetting(true, ''),
+                nonStatutorySetting: self.convertWorktypeSetting(true, '')
+            };
+            nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(data));
             nts.uk.ui.windows.sub.modal("/view/kdl/023/a/index.xhtml", {
                 title: nts.uk.resource.getText("KDL023_1"),
             });
+        }
+
+        convertWorktypeSetting(use: boolean, worktypeCode: string): DayOffSetting {
+            let data: DayOffSetting = {
+                useClassification: use,
+                workTypeCode: worktypeCode
+            };
+            return data;
         }
 
         // delete Pattern

@@ -875,13 +875,13 @@ public class ProgramsManager {
     /**
      * The Constant KSM005A.
      */
-    public static final Program KSM005A = new Program(WebAppId.AT, ProgramIdConsts.KSM005A, "KSM005_37",
+    public static final Program KSM005A = new Program(WebAppId.AT, ProgramIdConsts.KSM005A, "KSM005_38",
             "/view/ksm/005/a/index.xhtml");
 
     /**
      * The Constant KSM005B.
      */
-    public static final Program KSM005B = new Program(WebAppId.AT, ProgramIdConsts.KSM005B, "KSM005_38",
+    public static final Program KSM005B = new Program(WebAppId.AT, ProgramIdConsts.KSM005B, "KSM005_41",
             "/view/ksm/005/b/index.xhtml");
 
     /**

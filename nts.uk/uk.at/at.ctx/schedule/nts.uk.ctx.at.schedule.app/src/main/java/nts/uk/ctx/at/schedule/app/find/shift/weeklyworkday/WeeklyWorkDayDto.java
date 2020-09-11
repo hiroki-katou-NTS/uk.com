@@ -17,8 +17,14 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class WeeklyWorkDayDto {
 
+    /**
+     * CompanyId
+     */
     private String companyId;
 
+    /**
+     * work pattern item list
+     */
     private List<WorkdayPatternItemDto> workdayPatternItemDtoList;
 
     public WeeklyWorkDayDto toDto(WeeklyWorkDayPattern weeklyWorkDayPattern) {
