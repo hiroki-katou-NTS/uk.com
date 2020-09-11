@@ -5,8 +5,10 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.ApproveTripRequestParam;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.DetailScreenInfo;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.StartScreenBDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.*;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.ParamUpdate;
 import nts.uk.ctx.at.request.dom.application.*;
@@ -15,19 +17,18 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripSe
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.DetailScreenB;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.BusinessTripAppWorkType;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
-import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.*;
 import nts.uk.shr.com.context.AppContexts;
@@ -35,7 +36,6 @@ import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.time.Period;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -44,6 +44,9 @@ public class BusinessTripFinder {
 
     @Inject
     private CommonAlgorithm commonAlgorithm;
+
+    @Inject
+    private CommonAlgorithmMobile algorithmMobile;
 
     @Inject
     private NewBeforeRegister processBeforeRegister;
@@ -76,55 +79,22 @@ public class BusinessTripFinder {
         BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, paramStart.getApplicantList(), dateList, appDispInfoStartupOutput);
         // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
         // Check xem có ngày nào không có content không, nếu có add Error msg 1695 + date
-        List<ConfirmMsgOutput> listErrors = this.checkDateWithContent(businessTripInfoOutputDto.getBusinessTripActualContent());
-        if (!listErrors.isEmpty()) {
-            result.setBusinessTripInfoOutputDto(businessTripInfoOutputDto);
-            result.setResult(false);
-            result.setConfirmMsgOutputs(listErrors);
-            return result;
-        }
+        this.checkDateWithContent(businessTripInfoOutputDto.getBusinessTripActualContent());
         result.setResult(true);
         result.setBusinessTripInfoOutputDto(businessTripInfoOutputDto);
         return result;
-
-        //Dummy data
-//        DetailStartScreenInfoDto dummy = new DetailStartScreenInfoDto();
-//        dummy.setResult(true);
-//        dummy.setConfirmMsgOutputs(Collections.emptyList());
-//        BusinessTripInfoOutputDto dummyContent = new BusinessTripInfoOutputDto();
-//        List<BusinessTripActualContentDto> dummyActualContent = new ArrayList<>();
-//        AchievementDetailDto dummyDetail = new AchievementDetailDto();
-//        dummyDetail.setWorkTypeCD("001");
-//        dummyDetail.setWorkTimeCD("001");
-//        dummyDetail.setOpWorkTypeName("勤務種類");
-//        dummyDetail.setOpWorkTimeName("就業時間帯");
-//        dummyDetail.setOpWorkTime(480);
-//        dummyDetail.setOpLeaveTime(1020);
-//        GeneralDate baseDateDummy = GeneralDate.today();
-//        for(int i = 0 ; i < 12; i ++) {
-//            BusinessTripActualContentDto eachDetail = new BusinessTripActualContentDto();
-//            eachDetail.setDate(baseDateDummy.addDays(i).toString());
-//            eachDetail.setOpAchievementDetail(dummyDetail);
-//            dummyActualContent.add(eachDetail);
-//        }
-//        dummyContent.setBusinessTripActualContent(dummyActualContent);
-//        dummy.setBusinessTripInfoOutputDto(dummyContent);
-//        dummy.setConfirmMsgOutputs(Collections.emptyList());
-//        return dummy;
     }
 
-    private List<ConfirmMsgOutput> checkDateWithContent(List<BusinessTripActualContentDto> contents) {
+    private void checkDateWithContent(List<BusinessTripActualContentDto> contents) {
         List<ConfirmMsgOutput> result = new ArrayList<>();
         if (!contents.isEmpty()) {
-            List<BusinessTripActualContentDto> itemNotHaveConent = contents.stream().filter(i -> i.getOpAchievementDetail() == null).collect(Collectors.toList());
-            if (!itemNotHaveConent.isEmpty()) {
-                ConfirmMsgOutput msg = new ConfirmMsgOutput();
-                msg.setMsgID("Msg_1695");
-                msg.setParamLst(itemNotHaveConent.stream().map(i -> i.getDate().toString()).collect(Collectors.toList()));
-                result.add(msg);
+            Optional<BusinessTripActualContentDto> itemNotHaveConent = contents
+                    .stream()
+                    .filter(i -> i.getOpAchievementDetail() == null).findFirst();
+            if (!itemNotHaveConent.isPresent()) {
+                throw new BusinessException("Msg_1695", itemNotHaveConent.get().getDate().toString());
             }
         }
-        return result;
     }
 
     /**
@@ -170,8 +140,7 @@ public class BusinessTripFinder {
             Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
             businessTripWorkTypes = actualContentDisplays.stream().map(i -> new BusinessTripWorkTypes(
                     i.getDate(),
-                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null
-            ))
+                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null))
                     .collect(Collectors.toList());
         }
         // 取得した情報をOUTPUT「出張申請の表示情報」にセットしてを返す
@@ -189,54 +158,55 @@ public class BusinessTripFinder {
 
     /**
      * アルゴリズム「出張申請登録前エラーチェック」を実行する
-     * @param errorFlag
-     * @param application
-     * @param businessTripApp
-     * @param tripRequestInfoOutput
-     * @return
      */
-    public List<ConfirmMsgOutput> checkBeforeRegister(ErrorFlagImport errorFlag, Application application, BusinessTrip businessTripApp, BusinessTripInfoOutput tripRequestInfoOutput) {
-        String sid = application.getEmployeeID() == null ? AppContexts.user().employeeId() : application.getEmployeeID();
+    public List<ConfirmMsgOutput> checkBeforeRegister(CheckBeforeRegisterDto param) {
+        String sid = AppContexts.user().employeeId();
         String cid = AppContexts.user().companyId();
         List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
+
+        ApplicationDto applicationDto = param.getApplication();
+
+        Application application = Application.createFromNew(
+                EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
+                sid,
+                EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
+                new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
+                sid,
+                Optional.empty(),
+                Optional.empty(),
+                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
+                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
+                Optional.of(new AppReason(applicationDto.getOpAppReason())),
+                Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
+                ));
+
+        BusinessTripInfoOutput output = param.getBusinessTripInfoOutput().toDomain();
+
         Optional<ApplicationDate> appStartDate = application.getOpAppStartDate();
         Optional<ApplicationDate> appEndDate = application.getOpAppEndDate();
         DatePeriod period = new DatePeriod(appStartDate.get().getApplicationDate(), appEndDate.get().getApplicationDate());
         List<GeneralDate> lstDate = period.datesBetween();
 
         // アルゴリズム「2-1.新規画面登録前の処理」を実行する
-        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
-                AppContexts.user().companyId(),
-                EmploymentRootAtr.APPLICATION,
-                false,
-                application,
-                null,
-                errorFlag,
-                null,
-                tripRequestInfoOutput.getAppDispInfoStartup()
-        );
+//        confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
+//                AppContexts.user().companyId(),
+//                EmploymentRootAtr.APPLICATION,
+//                true,
+//                application,
+//                null,
+//                output.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
+//                Collections.emptyList(),
+//                output.getAppDispInfoStartup()
+//        );
+
+        BusinessTrip businessTrip = param.getBusinessTrip().toDomain(application);
+
         if (confirmMsgOutputs.isEmpty()) {
             // アルゴリズム「出張申請個別エラーチェック」を実行する
-            if (businessTripApp.getInfos().isEmpty()) {
+            if (businessTrip.getInfos().isEmpty()) {
                 throw new BusinessException("Msg_1703");
             }
-            // loop 年月日　in　期間
-            businessTripApp.getInfos().stream().forEach(i -> {
-                String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
-                String wkTimeCd = i.getWorkInformation().getWorkTimeCode().v();
-                // アルゴリズム「出張申請就業時間帯チェック」を実行する
-                businessTripService.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
-
-                List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
-                // 申請の矛盾チェック
-                this.commonAlgorithm.appConflictCheck(
-                        cid,
-                        employeeInfoImports.get(0),
-                        lstDate,
-                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-                        tripRequestInfoOutput.getActualContentDisplay().get()
-                );
-            });
+            businessTripService.businessTripIndividualCheck(businessTrip.getInfos());
         }
         return confirmMsgOutputs;
     }
@@ -271,11 +241,59 @@ public class BusinessTripFinder {
         DatePeriod dates = new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate());
         List<GeneralDate> inputDates = dates.datesBetween();
 
-        List<ActualContentDisplay> appActualContents = businessTripService.getBusinessTripNotApproved(
-                loginSid, inputDates, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
-        );
+        // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
+        // エラーメッセージとして「#Msg_1695」を返す({0}＝年月日)
+//        if (!inputDates.isEmpty()) {
+//            inputDates.stream().forEach(i -> {
+//                if (appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().isPresent()) {
+//                    Optional<ActualContentDisplay> opContent = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
+//                            .stream().filter(x -> x.getDate() == i)
+//                            .findAny();
+//                    if (!opContent.isPresent()) {
+//                        throw new BusinessException("Msg_1695", i.toString());
+//                    }
+//                 } else {
+//                    throw new BusinessException("Msg_1695", i.toString());
+//                }
+//            });
+//        }
 
-        //Dummy data
+//        List<ActualContentDisplay> appActualContents = businessTripService.getBusinessTripNotApproved(
+//                loginSid, inputDates, appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
+//        );
+
+        List<ActualContentDisplay> appActualContents = Collections.emptyList();
+
+        List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
+        if (!appActualContents.isEmpty()) {
+            List<String> cds = appActualContents.stream().filter(i -> i.getOpAchievementDetail().isPresent())
+                    .map(i -> i.getOpAchievementDetail().get().getWorkTypeCD())
+                    .distinct()
+                    .collect(Collectors.toList());
+            // ドメインモデル「勤務種類」を取得する
+            Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
+            businessTripWorkTypes = appActualContents.stream().map(i -> new BusinessTripWorkTypes(
+                    i.getDate(),
+                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null
+            )).collect(Collectors.toList());
+        }
+
+        tripRequestInfoOutput.setActualContentDisplay(Optional.of(appActualContents));
+        tripRequestInfoOutput.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
+        result.setResult(true);
+        result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(tripRequestInfoOutput));
+
+//        return result;
+        //Dummy Data
+        return this.dummyDataForTest(inputDates, businessTripInfoOutputDto);
+    }
+
+    public DetailStartScreenInfoDto dummyDataForTest(List<GeneralDate> inputDates, BusinessTripInfoOutputDto businessTripInfoOutputDto) {
+        String cid = AppContexts.user().companyId();
+        DetailStartScreenInfoDto result = new DetailStartScreenInfoDto();
+
+        BusinessTripInfoOutput tripRequestInfoOutput = businessTripInfoOutputDto.toDomain();
+
         List<BusinessTripActualContentDto> dummyActualContent = new ArrayList<>();
         AchievementDetailDto dummyDetail = new AchievementDetailDto();
         dummyDetail.setWorkTypeCD("001");
@@ -291,48 +309,27 @@ public class BusinessTripFinder {
             dummyActualContent.add(eachDetail);
         });
 
-        // Check có ngày nào không có content
-//        if (!appActualContents.isEmpty()) {
-//            List<ConfirmMsgOutput> listErrors = this.checkDateWithContent(
-//                    appActualContents.stream().map(i -> BusinessTripActualContentDto.fromDomain(i)).collect(Collectors.toList())
-//            );
-//            if (!listErrors.isEmpty()) {
-//                result.setResult(false);
-//                result.setConfirmMsgOutputs(listErrors);
-//                return result;
-//            }
-//        }
-
-
         List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
-        if (!appActualContents.isEmpty()) {
-            // Dummy data
-//            List<String> cds = appActualContents.stream().filter(i -> i.getOpAchievementDetail().isPresent())
-//                    .map(i -> i.getOpAchievementDetail().get().getWorkTypeCD())
-//                    .distinct()
-//                    .collect(Collectors.toList());
-            List<String> cds = dummyActualContent.stream()
-                    .map(i -> i.getOpAchievementDetail().getWorkTypeCD())
-                    .distinct()
-                    .collect(Collectors.toList());
-            // ドメインモデル「勤務種類」を取得する
-            Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
-//            businessTripWorkTypes = appActualContents.stream().map(i -> new BusinessTripWorkTypes(
-//                    i.getDate(),
-//                    i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null
-//            )).collect(Collectors.toList());
-            businessTripWorkTypes = dummyActualContent.stream().map(i -> new BusinessTripWorkTypes(
-                    GeneralDate.fromString(i.getDate(), "yyyy/MM/dd"),
-                    i.getOpAchievementDetail().getWorkTypeCD() != null ? mapWorkCds.get(i.getOpAchievementDetail().getWorkTypeCD()) : null
-            )).collect(Collectors.toList());
-        }
 
-        tripRequestInfoOutput.setActualContentDisplay(Optional.of(appActualContents));
+        List<String> cds = dummyActualContent.stream()
+                .map(i -> i.getOpAchievementDetail().getWorkTypeCD())
+                .distinct()
+                .collect(Collectors.toList());
+
+        Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
+
+        businessTripWorkTypes = dummyActualContent.stream().map(i -> new BusinessTripWorkTypes(
+                GeneralDate.fromString(i.getDate(), "yyyy/MM/dd"),
+                i.getOpAchievementDetail().getWorkTypeCD() != null ? mapWorkCds.get(i.getOpAchievementDetail().getWorkTypeCD()) : null
+        )).collect(Collectors.toList());
+
+        tripRequestInfoOutput.setActualContentDisplay(Optional.of(Collections.emptyList()));
         tripRequestInfoOutput.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
         result.setResult(true);
         result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(tripRequestInfoOutput));
         // Rewrite dummy content
         result.getBusinessTripInfoOutputDto().setBusinessTripActualContent(dummyActualContent);
+
         return result;
     }
 
@@ -376,7 +373,7 @@ public class BusinessTripFinder {
      * @return
      */
     private List<WorkType> getBusinessTripWorkChangeInfo(BusinessTripInfoOutput businessTripInfoOutput, WorkType workType) {
-        Boolean businessTripWorkCls = getBusinessTripClsContent(workType);
+        Boolean businessTripWorkCls = businessTripService.getBusinessTripClsContent(workType);
         if (businessTripWorkCls) {
             // 勤務種類リスト＝出張申請の表示情報.出勤日勤務種類リスト
             return businessTripInfoOutput.getWorkDayCds().get();
@@ -384,53 +381,6 @@ public class BusinessTripFinder {
             // 勤務種類リスト＝出張申請の表示情報.休日勤務種類リスト
             return businessTripInfoOutput.getHolidayCds().get();
         }
-    }
-
-    /**
-     * アルゴリズム「出張申請勤務種類分類内容取得」を実行する
-     * @param workType
-     * @return
-     */
-    private boolean getBusinessTripClsContent(WorkType workType) {
-        Boolean result = true;
-        val workCls = workType.getDailyWork().getWorkTypeUnit();
-        List<WorkTypeClassification> workDays = Arrays.asList(
-                WorkTypeClassification.Attendance, // 出勤
-                WorkTypeClassification.AnnualHoliday, // 年休
-                WorkTypeClassification.YearlyReserved, // 積立年休
-                WorkTypeClassification.SpecialHoliday, // 特別年休
-                WorkTypeClassification.Absence, // 欠勤
-                WorkTypeClassification.SubstituteHoliday, // 代休
-                WorkTypeClassification.Pause, // 振休
-                WorkTypeClassification.TimeDigestVacation // 時間消化休暇
-        );
-        List<WorkTypeClassification> holidays = Arrays.asList(
-                WorkTypeClassification.Holiday, // 休日
-                WorkTypeClassification.HolidayWork, // 休日出勤
-                WorkTypeClassification.Shooting // 振出
-        );
-        switch (workCls) {
-            case OneDay:
-                WorkTypeClassification workTypeClassification = workType.getDailyWork().getOneDay();
-                if (workDays.contains(workTypeClassification)) {
-                    result = true;
-                }
-                if (holidays.contains(workTypeClassification)) {
-                    result = false;
-                }
-                break;
-            case MonringAndAfternoon:
-                WorkTypeClassification afternoonWork = workType.getDailyWork().getAfternoon();
-                WorkTypeClassification morningWork = workType.getDailyWork().getMorning();
-                if (workDays.contains(morningWork) && workDays.contains(afternoonWork)) {
-                    result = false;
-                }
-                if (holidays.contains(morningWork) && holidays.contains(afternoonWork)) {
-                    result = true;
-                }
-                break;
-        }
-        return result;
     }
 
     public WorkTypeNameDto changeWorkTimeCode(ChangeWorkCodeParam changeWorkCodeParam) {
@@ -456,21 +406,125 @@ public class BusinessTripFinder {
         return result;
     }
 
+    /**
+     * 出張申請B画面を実行する
+     * @param param
+     * @return
+     */
     public DetailScreenDto getDetailKAF008(ParamUpdate param) {
-        //		14-1.詳細画面起動前申請共通設定を取得する
+        // アルゴリズム「詳細画面起動前申請共通設定を取得する」を実行する
         AppDispInfoStartupOutput appDispInfoStartupOutput =
                 appCommonSetService.getCommonSetBeforeDetail(param.getCompanyId(), param.getApplicationId());
+        // アルゴリズム「出張申請画面初期（更新）」を実行する
         DetailScreenB detailScreen = businessTripService.getDataDetail(param.getCompanyId(), param.getApplicationId(), appDispInfoStartupOutput);
         DetailScreenDto detailScreenDto = DetailScreenDto.fromDomain(detailScreen);
         return detailScreenDto;
     }
 
+    /**
+     * アルゴリズム「出張申請勤務変更ダイアログ用情報の取得」を実行する
+     * @param param
+     * @return
+     */
     public boolean getFlagStartKDL003(ParamStartKDL003 param) {
         GeneralDate selectedDate = GeneralDate.fromString(param.getSelectedDate(), "yyyy/MM/dd");
         BusinessTripInfoOutput infoOutput = param.getBusinessTripInfoOutputDto().toDomain();
         WorkType selectedWorkType = infoOutput.getWorkTypeBeforeChange().get().stream().filter(i -> i.getDate().equals(selectedDate)).findFirst().get().getWorkType();
-        return this.getBusinessTripClsContent(selectedWorkType);
+        return businessTripService.getBusinessTripClsContent(selectedWorkType);
     }
 
+    public BusinessTripOutputDto startKAFS08(AppBusinessParam appBusinessParam) {
+        boolean mode = appBusinessParam.getMode();
+        String cid = AppContexts.user().companyId();
+        ApplicationType appType;
+        String employeeID = null;
+        //Kiểm tra nếu employeeID null thì lấy giá trị lúc login
+        if(appBusinessParam.getEmployeeID() != null) {
+            employeeID = appBusinessParam.getEmployeeID();
+        }
+        List<String> applicantlist = new ArrayList<String>();
+        List<GeneralDate> dateList = appBusinessParam.getListDates().stream()
+                .map(i -> GeneralDate.fromString(i, "yyyy/MM/dd")).collect(Collectors.toList());
+        BusinessTripOutputDto result = new BusinessTripOutputDto();
+        BusinessTripInfoOutput businessTripInfoOutput = appBusinessParam
+                .getBusinessTripInfoOutput() == null ? null : appBusinessParam.getBusinessTripInfoOutput().toDomain();
+        BusinessTrip businessTrip = appBusinessParam.getBusinessTrip() == null ? null : appBusinessParam.getBusinessTrip().toDomain(businessTripInfoOutput.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication());
+        // new mode thì thực hiện thuật toán 申請共通起動処理
+        if (mode) {
+            AppDispInfoStartupOutput appDispInfoStartupOutput = algorithmMobile.appCommonStartProcess(mode, cid,
+                    AppContexts.user().employeeId(), ApplicationType.BUSINESS_TRIP_APPLICATION, Optional.ofNullable(null),
+                    dateList, Optional.ofNullable(null));
+            BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, applicantlist,
+                    dateList, appDispInfoStartupOutput);
+            result.setBusinessTripInfoOutput(businessTripInfoOutputDto);
+            // INPUT「出張申請の表示情報」と「出張申請」を返す
+        } else {
+            result.setBusinessTrip(BusinessTripDto.fromDomain(businessTrip));
+            result.setBusinessTripInfoOutput(BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput));
+        }
+        return result;
+    }
+
+    /**
+     * 「KAFS08_出張申請（スマホ）」のB画面を起動する
+     * @param param StartScreenBDto
+     * @return
+     */
+    public DetailScreenDto startScreenB(StartScreenBDto param) {
+        String cid = AppContexts.user().companyId();
+        AppDispInfoStartupOutput appDispInfoStartupOutput = param.getAppDispInfoStartup().toDomain();
+        DetailScreenB detailScreen = businessTripService.getDataDetail(cid, param.getAppId(), appDispInfoStartupOutput);
+        DetailScreenDto detailScreenDto = DetailScreenDto.fromDomain(detailScreen);
+        return detailScreenDto;
+    }
+
+    /**
+     *
+     * @param param
+     * @return
+     */
+    public DetailScreenInfo approveTripRequest(ApproveTripRequestParam param) {
+        String cid = AppContexts.user().companyId();
+        DetailScreenInfo result = new DetailScreenInfo();
+        List<GeneralDate> lstDate = param.getListDate().stream().map(i -> GeneralDate.fromString(i,"")).collect(Collectors.toList());
+        boolean newMode = param.isNewMode();
+        if (newMode) {
+            AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
+                    cid,
+                    ApplicationType.BUSINESS_TRIP_APPLICATION,
+                    param.getEmployeeIds(),
+                    lstDate,
+                    true,
+                    Optional.empty(),
+                    Optional.empty()
+            );
+            BusinessTripInfoOutputDto businessTripInfoOutput = this.businessScreenInit_New(cid, param.getEmployeeIds(), lstDate, appDispInfoStartupOutput);
+            result.setBusinessTripInfoOutput(businessTripInfoOutput);
+        } else {
+            result.setBusinessTripInfoOutput(param.getBusinessTripInfoOutput());
+            result.setBusinessTrip(param.getBusinessTrip());
+        }
+        return result;
+    }
+
+    /**
+     * アルゴリズム「出張申請個別エラーチェック」を実行する
+     */
+    public void checkBeforeRegisterMobile(DetailScreenDto param) {
+        String sid = AppContexts.user().employeeId();
+        String cid = AppContexts.user().companyId();
+        List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
+
+        BusinessTrip businessTrip = new BusinessTrip();
+        businessTrip.setDepartureTime(param.getBusinessTripDto().getDepartureTime() == null ? Optional.empty() : Optional.of(param.getBusinessTripDto().getDepartureTime()));
+        businessTrip.setReturnTime(param.getBusinessTripDto().getReturnTime() == null ? Optional.empty() : Optional.of(param.getBusinessTripDto().getReturnTime()));
+        businessTrip.setInfos(param.getBusinessTripDto().getTripInfos().stream().map(i -> i.toDomain()).collect(Collectors.toList()));
+
+        if (businessTrip.getInfos().isEmpty()) {
+            throw new BusinessException("Msg_1703");
+        }
+
+        businessTripService.businessTripIndividualCheck(businessTrip.getInfos());
+    }
 
 }

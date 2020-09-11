@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppC
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.InitDisplayWorktimeAtr;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.color.ColorCode;
 
 /**
  * refactor4 refactor 4

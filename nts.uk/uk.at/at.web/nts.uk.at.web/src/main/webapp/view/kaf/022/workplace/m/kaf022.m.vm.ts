@@ -27,8 +27,8 @@ module nts.uk.at.view.kaf022.m.viewmodel {
         workplaceName: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
         colAtrs: Array<any> = [
-            { width: "150px"},
-            { width: "150px"},
+            { width: "130px"},
+            { width: "120px"},
             { width: "327px"}
         ];
         alreadySettingData: Array<any>;

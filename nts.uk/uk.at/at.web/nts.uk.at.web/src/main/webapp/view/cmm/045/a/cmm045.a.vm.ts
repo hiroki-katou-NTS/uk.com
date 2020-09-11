@@ -24,14 +24,14 @@ module cmm045.a.viewmodel {
         selectedIds: KnockoutObservableArray<any> = ko.observableArray([1,5]);// check box - ver50
         dateValue: KnockoutObservable<vmbase.Date> = ko.observable({ startDate: '', endDate: '' });
         itemApplication: KnockoutObservableArray<vmbase.ChoseApplicationList> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
+        // selectedCode: KnockoutObservable<number> = ko.observable(-1);// combo box
         mode: KnockoutObservable<number> = ko.observable(1);
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
 
         //spr
         isSpr: KnockoutObservable<boolean> = ko.observable(false);
-        extractCondition: KnockoutObservable<number> = ko.observable(0);
+        // extractCondition: KnockoutObservable<number> = ko.observable(0);
         //ver33
         isHidden: KnockoutObservable<boolean> = ko.observable(false);
         //_______CCG001____
@@ -56,22 +56,28 @@ module cmm045.a.viewmodel {
         isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
         isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
+		approvalLstDispSet: any = null;
 
         constructor() {
             let self = this;
-            /*self.apptypeGridColumns = ko.observable([
-                { headerText: 'appType', key: 'appType', width: 50, hidden: true},
-                { headerText: getText('CMM045_94'), key: 'appName', width: 125 },
-            ])*/
             $(".popup-panel").ntsPopup({
-                trigger: '.hyperlink',
                 position: {
                     my: "left top",
                     at: "left bottom",
                     of: ".hyperlink"
                 },
                 showOnStart: false,
-                dismissible: true
+                dismissible: false
+            });
+
+            $("a.hyperlink").click(() => {$(".popup-panel").ntsPopup("toggle");});
+            $(window).on("mousedown.popup", function(e) {
+                let control = $(".popup-panel");
+                if (!$(e.target).is(control)
+                    && control.has(e.target).length === 0
+                    && !$(e.target).is($(".hyperlink"))) {
+                    $(".popup-panel").ntsPopup("hide");
+                }
             });
 
             self.itemList = ko.observableArray([
@@ -147,8 +153,9 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
+					self.approvalLstDispSet = data.displaySet;
 					let newItemLst = [];
-					_.each(data.appListInfo.appLst, item => {
+					_.each(data.appLst, item => {
 						newItemLst.push(new vmbase.DataModeApp(item));
 					});
 					self.items(newItemLst);
@@ -224,12 +231,12 @@ module cmm045.a.viewmodel {
             //check filter
             //check startDate
             if (self.dateValue().startDate == null || self.dateValue().startDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsStartDate').ntsError('set', {messageId:"Msg_359"});
+                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsStartDate input').ntsError('set', {messageId:"Msg_359"});
                 return false;
             }
             //check endDate
             if (self.dateValue().endDate == null || self.dateValue().endDate == '') {//期間開始日付または期間終了日付が入力されていない
-                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsEndDate').ntsError('set', {messageId:"Msg_359"});
+                $('#daterangepicker>.ntsDateRange_Container>.ntsDateRange>.ntsEndDate input').ntsError('set', {messageId:"Msg_359"});
                 return false;
             }
             if (self.mode() == 1 && self.selectedIds().length == 0) {//承認状況のチェックの確認
@@ -244,11 +251,7 @@ module cmm045.a.viewmodel {
 			if (_.isEmpty(selectAppTypeLst)) {
 				nts.uk.ui.dialog.alertError({ messageId: "Msg_1723" });
                 return false;
-            }
-            if(!self.isBeforeCheck() && !self.isAfterCheck()) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_1722" });
-                return false;
-            }
+			}
 			return true;
 		}
 
@@ -262,6 +265,9 @@ module cmm045.a.viewmodel {
 
 			block.invisible();
 			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
+				self.appListExtractConditionDto = data.appListExtractCondition;
+				self.updateFromAppListExtractCondition();
+				self.approvalLstDispSet = data.appListInfo.displaySet;
 				let newItemLst = [];
 				_.each(data.appListInfo.appLst, item => {
 					newItemLst.push(new vmbase.DataModeApp(item));
@@ -293,33 +299,34 @@ module cmm045.a.viewmodel {
             let self = this;
             var dfd = $.Deferred();
             //get param url
-            let url = $(location).attr('search');
-            let urlParam: number = 0;
+            /*let url = $(location).attr('search');
+            let urlParam: number = undefined;
 			if(_.isUndefined(url.split("=")[1])) {
 				history.pushState({}, null, "?a=0");
 			} else {
 				urlParam = parseInt(url.split("=")[1]);
-			}
-            let characterData = null;
-            let appCHeck = null;
-            if (urlParam !== undefined) {
+			}*/
+            // let characterData = null;
+            // let appCHeck = null;
+            /*if (urlParam !== undefined) {
                 character.save('AppListExtractCondition', null);
-            }
+            }*/
             //get param spr
             let paramSprCmm045: vmbase.IntefaceSPR = __viewContext.transferred.value == null ?
                     null : __viewContext.transferred.value.PARAM_SPR_CMM045;
             //spr call
             if(paramSprCmm045 !== undefined && paramSprCmm045 !== null){
-                character.save('AppListExtractCondition', null);
+                // character.save('AppListExtractCondition', null);
                 let date: vmbase.Date = { startDate: paramSprCmm045.startDate, endDate: paramSprCmm045.endDate }
                 self.dateValue(date);
                 self.mode(paramSprCmm045.mode);
                 self.isSpr(true);
-                self.extractCondition(paramSprCmm045.extractCondition);
+                // self.extractCondition(paramSprCmm045.extractCondition);
             }
             character.restore("AppListExtractCondition").then((obj) => {
-				characterData = obj;
+				// characterData = obj;
                 if (obj !== undefined && obj !== null && !self.isSpr()) {
+					self.appListExtractConditionDto = obj;
 					self.updateFromAppListExtractCondition();
                     /*let date: vmbase.Date = { startDate: obj.periodStartDate, endDate: obj.periodEndDate }
                     self.dateValue(date);
@@ -344,12 +351,23 @@ module cmm045.a.viewmodel {
                     }*/
 //                    self.selectedRuleCode(obj.appDisplayAtr);
                     //combo box
-                    appCHeck = obj.appType;
+                    // appCHeck = obj.appType;
                     // self.lstSidFilter(obj.opListEmployeeID);
 					// self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map((x: any) => x.appType).value());
+					character.remove('AppListExtractCondition');
                 }
+				let url = $(location).attr('search');
+	            let urlParam: number = undefined;
+				if(!_.isUndefined(url.split("=")[1])) {
+					urlParam = parseInt(url.split("=")[1]);
+				}
                 if (urlParam === undefined && !self.isSpr()) {
-                    self.mode(characterData.appListAtr);
+					if (obj !== undefined && obj !== null) {
+						self.mode(obj.appListAtr);
+					} else {
+						self.mode(1);
+					}
+					history.pushState({}, null, "?a="+self.mode());
                 }
                 if(urlParam !== undefined && !self.isSpr()){
                     self.mode(urlParam);
@@ -370,7 +388,9 @@ module cmm045.a.viewmodel {
 //                            };
 				return service.getAppNameInAppList();
 			}).then((data: any) => {
-                self.appListExtractConditionDto.opListOfAppTypes = data;
+				if(_.isEmpty(self.appListExtractConditionDto.opListOfAppTypes)) {
+					self.appListExtractConditionDto.opListOfAppTypes = data;
+				}
 				self.updateFromAppListExtractCondition();
 				// self.selectedAppId(_.chain(self.appListExtractConditionDto.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
                 _.forEach(data, item => {
@@ -379,12 +399,16 @@ module cmm045.a.viewmodel {
                     }
                 });
                 _.uniqBy(self.itemApplication(), ['appType', 'appName']);
-				let newParam = {
-							mode: self.mode(),
-							device: 0,
-							listOfAppTypes: data,
-							appListExtractCondition: self.appListExtractConditionDto
-                        };
+				let newParam: any = {
+					mode: self.mode(),
+					device: 0,
+					listOfAppTypes: data,
+					appListExtractCondition: self.appListExtractConditionDto
+                };
+				if(paramSprCmm045 !== undefined && paramSprCmm045 !== null) {
+					newParam.startDate = paramSprCmm045.startDate;
+					newParam.endDate = paramSprCmm045.endDate;
+				}
 
                 // self.itemList()
 				return service.getApplicationList(newParam);
@@ -398,6 +422,7 @@ module cmm045.a.viewmodel {
 				// self.dateValue({ startDate: data.appListInfo.displaySet.startDateDisp, endDate: data.appListInfo.displaySet.endDateDisp });
 				self.appListExtractConditionDto = data.appListExtractCondition;
 				self.updateFromAppListExtractCondition();
+				self.approvalLstDispSet = data.appListInfo.displaySet;
                 self.lstContentApp(data.lstContentApp);
                 let isHidden = data.isDisPreP == 1 ? true : true;
                 self.isHidden(isHidden);
@@ -412,7 +437,7 @@ module cmm045.a.viewmodel {
 //                let paramSave: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(self.dateValue().startDate, self.dateValue().endDate, self.mode(),
 //                    self.selectedCode(), self.findcheck(self.selectedIds(), 1), self.findcheck(self.selectedIds(), 2), self.findcheck(self.selectedIds(), 3),
 //                    self.findcheck(self.selectedIds(), 4), self.findcheck(self.selectedIds(), 5), self.findcheck(self.selectedIds(), 6), 0, self.lstSidFilter(), '');
-                character.save('AppListExtractCondition', self.appListExtractConditionDto);
+                // character.save('AppListExtractCondition', self.appListExtractConditionDto);
 //                _.each(data.lstApp, function(app) {
 //                    self.lstAppCommon.push(new vmbase.ApplicationDataOutput(app.applicationID, app.prePostAtr, app.inputDate,
 //                        app.enteredPersonSID, app.applicationDate, app.applicationType, app.applicantSID, app.reflectPerState,
@@ -455,13 +480,13 @@ module cmm045.a.viewmodel {
                     let colorBackGr = self.fillColorbackGr();
                     self.reloadGridApplicaion(colorBackGr, self.isHidden());
                 }
-                if(appCHeck != null){
+                /*if(appCHeck != null){
                     self.selectedCode(appCHeck);
                 }
                 if(self.isSpr()){
                     let selectedType = paramSprCmm045.extractCondition == 0 ? -1 : 0;
                     self.selectedCode(selectedType);
-                }
+                }*/
                 // if(self.mode() == 0){
                     $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
                 // }
@@ -609,6 +634,7 @@ module cmm045.a.viewmodel {
 
                 if (options.withCcg001) {
                     $container.addClass("with-ccg001");
+                    $("#app-resize").addClass("with-ccg001");
                 }
 
                 // header
@@ -707,6 +733,8 @@ module cmm045.a.viewmodel {
                     $container.find(".nts-fixed-body-container table"));
             }
 
+            // $("#app-resize").css("width", options.width - 20);
+
             this.loadGridData(options.columns);
 
             $container.show();
@@ -791,8 +819,10 @@ module cmm045.a.viewmodel {
                         }
                     }
                     else {
-                        $td.html(self.customContent(column.key, item[column.key]));
+                        $td.html(self.customContent(column.key, item));
                     }
+
+                    $("td.appType").css("white-space", "normal")
 
                     $td.appendTo($tr);
                 });
@@ -805,11 +835,22 @@ module cmm045.a.viewmodel {
                 $container.find(".nts-fixed-body-wrapper table"));
         }
 
-		customContent(key: string, value: any) {
+		customContent(key: string, item: any) {
 
 			const self = this;
+			if(key=='applicantName') {
+				let nameStr = '';
+				if(self.approvalLstDispSet.workplaceNameDisp==1) {
+					//if(!nts.uk.util.isNullOrEmpty(item.workplaceName)) {
+					nameStr += item.workplaceName + '<br/>';
+					//}
+				}
+				nameStr += item[key];
+				return nameStr;
+			}
+
 			if(key=='appType') {
-				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == value);
+				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key]);
 				if(_.isUndefined(appInfo)) {
 					return '';
 				} else {
@@ -817,23 +858,23 @@ module cmm045.a.viewmodel {
 				}
 			}
 			if(key=='prePostAtr') {
-				if(value==0) {
+				if(item[key]==0) {
 					return nts.uk.resource.getText('KAF000_47');
 				} else {
 					return nts.uk.resource.getText('KAF000_48');
 				}
 			}
 			if(key=='appContent') {
-				return value.replace(/\n/g, '<br/>');
+				return item[key].replace(/\n/g, '<br/>');
             }
             if(key=='inputDate') {
                 var cl = "";
-                var time = nts.uk.time.formatDate(new Date(value), "yy/MM/ddD hh:mm");
+                var time = nts.uk.time.formatDate(new Date(value), "MM/ddD hh:mm");
 
                 if(_.includes(time, ''))
                 return self.inputDateColor(time, cl);
             }
-			return value;
+			return item[key];
 		}
 
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
@@ -841,7 +882,8 @@ module cmm045.a.viewmodel {
             var self = this;
             let widthAuto = isHidden == false ? 1175 : 1110;
             // let widthAuto = isHidden == false ? 1250 : 1185;
-            widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
+            // widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
+            widthAuto = window.innerWidth - 130;
 
             let columns = [
                 { headerText: getText('CMM045_50'), key: 'details', width: '55px', button: {
@@ -849,7 +891,8 @@ module cmm045.a.viewmodel {
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
                         let lstAppId = self.items().map(app => app.appID);
-                        window.localStorage.setItem('UKProgramParam', 'a=0');
+                        // window.localStorage.setItem('UKProgramParam', 'a=0');
+						character.save('AppListExtractCondition', self.appListExtractConditionDto);
                         nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
@@ -858,6 +901,7 @@ module cmm045.a.viewmodel {
                 { headerText: getText('CMM045_53'), key: 'prePostAtr', width: '65px', hidden: false},
                 { headerText: getText('CMM045_54'), key: 'appDate', width: '155px'},
                 { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
+                // { headerText: getText('CMM045_55'), key: 'appContent', width: '340px'},
                 { headerText: getText('CMM045_56'), key: 'inputDate', width: '120px'},
                 { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                 { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
@@ -869,6 +913,8 @@ module cmm045.a.viewmodel {
                 height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true),
             });
+
+            $("#app-resize").css("width", widthAuto);
 
 /*
             $("#grid2").ntsGrid({
@@ -948,7 +994,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let result = [];
             _.each(self.items(), function(item) {
-                let rowId = item.appId;
+                let rowId = item.appID;
                 // //fill color in 承認状況
                 // if (item.appStatusNo == 0) {//0 下書き保存/未反映　=　未
                 //     item.appStatusName = 'unapprovalCell';
@@ -1013,7 +1059,7 @@ module cmm045.a.viewmodel {
             let self = this;
             let result = [];
             _.each(self.items(), function(item) {
-                let rowId = item.appId;
+                let rowId = item.appID;
                 //fill color in 承認状況
                 // if (item.appStatusNo == 5) {//5 -UNAPPROVED 未
                 //     item.appStatusName = 'unapprovalCell';
@@ -1081,18 +1127,18 @@ module cmm045.a.viewmodel {
                 //color text appDate
                 let color = item.appDate.substring(9,10);
                 if (color == '土') {//土
-                    result.push(new vmbase.TextColor(item.appId,'appDate','saturdayCell'));
+                    result.push(new vmbase.TextColor(item.appID,'appDate','saturdayCell'));
                 }
                 if (color == '日') {//日
-                    result.push(new vmbase.TextColor(item.appId,'appDate','sundayCell'));
+                    result.push(new vmbase.TextColor(item.appID,'appDate','sundayCell'));
                 }
                 //fill color text input date
                 let colorIn = item.inputDate.substring(9,10);
                 if (colorIn == '土') {//土
-                    result.push(new vmbase.TextColor(item.appId,'inputDate','saturdayCell'));
+                    result.push(new vmbase.TextColor(item.appID,'inputDate','saturdayCell'));
                 }
                 if (colorIn == '日') {//日
-                    result.push(new vmbase.TextColor(item.appId,'inputDate','sundayCell'));
+                    result.push(new vmbase.TextColor(item.appID,'inputDate','sundayCell'));
                 }
              });
             return result;
@@ -1101,7 +1147,8 @@ module cmm045.a.viewmodel {
 
             var self = this;
             let widthAuto = isHidden == false ? 1175 : 1110;
-            widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
+            // widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
+            widthAuto = window.innerWidth - 130;
 
             let columns = [
                 { headerText: getText('CMM045_49'), key: 'check', dataType: 'boolean', width: '35px', checkbox: {
@@ -1113,7 +1160,8 @@ module cmm045.a.viewmodel {
                     click: (e) => {
                         let targetAppId = $(e.target).closest("td").data("app-id");
                         let lstAppId = self.items().map(app => app.appID);
-                        nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+                        // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
+						character.save('AppListExtractCondition', self.appListExtractConditionDto);
                         nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                     }
                 } },
@@ -1133,6 +1181,8 @@ module cmm045.a.viewmodel {
                 height: heightAuto,
                 columns: columns.filter(c => c.hidden !== true)
             });
+
+            $("#app-resize").css("width", widthAuto - 20);
 /*
             $("#grid1").ntsGrid({
                 width: widthAuto,
@@ -1947,12 +1997,14 @@ module cmm045.a.viewmodel {
 						});
 					}
 					if(isInfoDialog) {
-						nts.uk.ui.dialog.info(displayMsg);
+						return nts.uk.ui.dialog.info(displayMsg);
 					} else {
-						nts.uk.ui.dialog.alertError(displayMsg);
+						return nts.uk.ui.dialog.alertError(displayMsg);
 					}
 				}
-			}).always(() => { block.clear(); });
+            })
+            .always(() => window.location.reload());
+            // .always(() => { block.clear(); });
 		}
     }
 }

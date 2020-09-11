@@ -13,23 +13,21 @@
 			<com:scriptfile path="kaf022.s.start.js" />
 			<com:scriptfile path="kaf022.s.vm.js" />
 			<com:scriptfile set="IGNITE" />
-			
-		<com:EnumScript>
-			nts.uk.ctx.at.request.dom.application.ApplicationType
-		</com:EnumScript>
-		
-		<com:ValidatorScript>
-			nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode
-			nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm
-		</com:ValidatorScript>
+
+			<com:EnumScript>
+				nts.uk.ctx.at.request.dom.application.ApplicationType
+			</com:EnumScript>
+
+			<com:ValidatorScript>
+				nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode
+				nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonForFixedForm
+			</com:ValidatorScript>
 		</ui:define>
 
-
-		
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- S1_1 -->
-				<button tabindex="1"  data-bind="click: createNew">#{i18n.getText('KAF022_434')}</button>
+				<button tabindex="1"  data-bind="click: createNew, enable: isUpdate">#{i18n.getText('KAF022_434')}</button>
 				<!-- data-bind="click: closeWindows" -->
 				<!-- S1_2 -->
 				<button  tabindex="2" class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KAF022_1')}</button>
@@ -39,12 +37,11 @@
 				<button style = "margin-right: 100px; float: right;" tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KAF022_435')}</button>
 			</div>
 			<div id="contents-area">
-				<div style="float: left;">
-					<div class="flex valign-center" style = "margin-left: 10px;">
-						<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_440')}</div>
-						<!-- S2_2 -->
-						<div id="app-type"
-						data-bind="ntsComboBox: {
+				<div class="control-group valign-center" style = "margin-left: 10px;">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_440')}</div>
+					<!-- S2_2 -->
+					<div id="app-type"
+						 data-bind="ntsComboBox: {
 							options: listAppType,
 							optionsValue: 'code',
 							visibleItemsCount: 6,
@@ -54,55 +51,59 @@
 							columns: [
 								{ prop: 'name', length: 4 },
 							]}" />
-					</div>
-							<!-- S2_3 -->
+				</div>
+				<div class="fixed-flex-layout">
+					<div class="fixed-flex-layout-left">
+						<!-- S2_3 -->
 						<div id="left-content" class="bg-green caret-right caret-background">
 							<div>
 								<div id = "disp-order" style="display: inline-block;">
 									<table id="grid-test-single"
-										data-bind="ntsGridList: {
-												height: 257,
-												dataSource: listReasonByAppType,
-												primaryKey: 'reasonCode',
-												columns: columns,
-												value: selectedReasonCode,
-												multiple: false
-											}" />
+										   data-bind="ntsGridList: {
+											rows: 10,
+											dataSource: listReasonByAppType,
+											primaryKey: 'reasonCode',
+											columns: columns,
+											value: selectedReasonCode,
+											multiple: false
+										}" />
 								</div>
 								<div id="grid-up-down"
-									data-bind="ntsUpDown: {
-											targetSource: listReasonByAppType,
-											primaryKey: 'reasonCode',
-											comId: '#grid-test-single',
-											type: 'grid'
-										}"/>
+									 data-bind="ntsUpDown: {
+										targetSource: listReasonByAppType,
+										primaryKey: 'reasonCode',
+										comId: '#grid-test-single',
+										type: 'grid'
+									}"/>
 							</div>
 						</div>
 					</div>
-						
-					<div id="right-content" style="float: left;" data-bind="with: selectedReason">
+
+					<div id="right-content" class="fixed-flex-layout-right" data-bind="with: selectedReason">
 						<div class="control-group valign-center">
 							<div data-bind="ntsFormLabel: {required: true, constraint: 'AppStandardReasonCode'}">#{i18n.getText('KAF022_694')}</div>
 							<input data-bind="ntsNumberEditor: {
-								name:'#{i18n.getText('KAF022_694')}',
-								value: reasonCode,
-								constraint: 'AppStandardReasonCode',
-								required: true,
-								enable: !$parent.isUpdate()}" />
+							name:'#{i18n.getText('KAF022_694')}',
+							value: reasonCode,
+							constraint: 'AppStandardReasonCode',
+							required: true,
+							enable: !$parent.isUpdate()}" />
 						</div>
-						<div class="control-group">
+						<div class="control-group valign-top">
 							<!-- S2_10 -->
 							<div data-bind="ntsFormLabel: {required: true, constraint: 'ReasonForFixedForm'}">#{i18n.getText('KAF022_443')}</div>
 							<!-- S2_11 -->
-							<textarea id="reason-temp" tabindex="9" data-bind="ntsMultilineEditor: {
-									name:'#{i18n.getText('KAF022_443')}',
-									value: reasonTemp,
-									constraint: 'ReasonForFixedForm',
-									required: true}"/>
+							<textarea tabindex="9" style="height: 45px; width: 162px;"
+									  data-bind="ntsMultilineEditor: {
+								name:'#{i18n.getText('KAF022_443')}',
+								value: reasonTemp,
+								constraint: 'ReasonForFixedForm',
+								required: true}"/>
 						</div>
 						<!-- S2_12 -->
 						<div id="default-flg" tabindex="10" data-bind="ntsCheckBox: { checked: defaultFlg }">#{i18n.getText('KAF022_442')}</div>
-					</div>	
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

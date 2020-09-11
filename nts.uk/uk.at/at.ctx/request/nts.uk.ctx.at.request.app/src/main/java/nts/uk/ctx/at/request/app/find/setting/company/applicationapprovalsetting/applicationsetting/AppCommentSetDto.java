@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.color.ColorCode;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

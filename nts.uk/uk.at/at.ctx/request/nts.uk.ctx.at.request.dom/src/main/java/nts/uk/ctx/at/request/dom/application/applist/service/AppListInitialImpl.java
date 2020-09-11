@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.enums.EnumAdaptor;
@@ -57,6 +58,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkPlaceHistBySIDImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.ActualStatusCheckResult;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeColorCheck;
@@ -1110,7 +1112,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public AppInfoMasterOutput getListAppMasterInfo(Application application, DatePeriod period, NotUseAtr displayWorkPlaceName, 
-			Map<String, SyEmployeeImport> mapEmpInfo, int device) {
+			Map<String, SyEmployeeImport> mapEmpInfo, Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo, int device) {
 		SyEmployeeImport applicant = null;
 		Optional<SyEmployeeImport> opEnteredPerson = Optional.empty();
 		// 社員のキャッシュがあるかチェックする ( Check xem  cash của employee có hay không?
@@ -1133,9 +1135,39 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		}
 		String workplaceName = null;
 		Optional<Integer> opTimeCalcUseAtr = Optional.empty();
-		if(displayWorkPlaceName==NotUseAtr.USE && 
-				(application.isOverTimeApp() || application.isHolidayWorkApp())) {
-			
+		if((displayWorkPlaceName==NotUseAtr.USE || 
+				application.isOverTimeApp() || application.isHolidayWorkApp()) &&
+				device == PC) {
+			// 所属職場履歴Listのキャッシュがあるかチェックする(Check xem có cache List lịch sử nơi làm việc)
+			Optional<Pair<String, DatePeriod>> containKey = mapWkpInfo.keySet().stream().filter(x -> {
+				boolean employeeCondition = x.getLeft().equals(application.getEmployeeID());
+				boolean startDateCondition = x.getRight().start().beforeOrEquals(
+						application.getOpAppStartDate().map(y -> y.getApplicationDate()).orElse(application.getAppDate().getApplicationDate()));
+				boolean endDateCondition = x.getRight().end().afterOrEquals(
+						application.getOpAppEndDate().map(y -> y.getApplicationDate()).orElse(application.getAppDate().getApplicationDate()));
+				return employeeCondition && startDateCondition && endDateCondition;
+			}).findAny();
+			if(containKey.isPresent()) {
+				// 申請一覧リスト.職場名をキャッシュからセットする(applicationList.Set workPlace từ cache)
+				workplaceName = mapWkpInfo.get(containKey.get()).getWpkName();
+			} else {
+				// 社員指定期間所属職場履歴を取得  (Lấy lịch sử nơi làm việc period chỉ định nhân viên)
+				WorkPlaceHistBySIDImport wkp = wkpAdapter.findWpkBySIDandPeriod(application.getEmployeeID(), period);
+				Optional<WkpInfo> opWkpInfo = wkp.getLstWkpInfo().stream().filter(x -> {
+					boolean startDateCondition = x.getDatePeriod().start().beforeOrEquals(
+							application.getOpAppStartDate().map(y -> y.getApplicationDate()).orElse(application.getAppDate().getApplicationDate()));
+					boolean endDateCondition = x.getDatePeriod().end().afterOrEquals(
+							application.getOpAppEndDate().map(y -> y.getApplicationDate()).orElse(application.getAppDate().getApplicationDate()));
+					return startDateCondition && endDateCondition;
+				}).findFirst();
+				if(opWkpInfo.isPresent()) {
+					workplaceName = opWkpInfo.get().getWpkName();
+				}
+				// 取得したデータをキャッシュに追加 ( Thêm data đã lấy vào cache)
+				for(WkpInfo wkpInfo : wkp.getLstWkpInfo()) {
+					mapWkpInfo.put(Pair.of(application.getEmployeeID(), wkpInfo.getDatePeriod()), wkpInfo);
+				}
+			}
 		}
 		// 申請データを作成して申請一覧に追加 ( Tạo data application và thêm vào applicationList)
 		ListOfApplication result = new ListOfApplication();
@@ -1143,7 +1175,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		result.setApplicantID(application.getEmployeeID());
 		result.setPrePostAtr(application.getPrePostAtr().value);
 		result.setApplicantName(applicant.getBusinessName());
-		// result.setWorkplaceName(workplaceName);
+		result.setWorkplaceName(workplaceName);
 		result.setAppType(application.getAppType());
 		result.setApplicantCD(applicant.getEmployeeCode());
 		// result.setAppReason
@@ -1154,6 +1186,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		result.setAppDate(application.getAppDate().getApplicationDate());
 		// result.setOpTimeCalcUseAtr();
 		result.setVersion(application.getVersion());
+		result.setApplication(application);
 		return new AppInfoMasterOutput(result, mapEmpInfo);
 		
 //		if (lstApp.isEmpty()) {

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * refactor 4
@@ -12,6 +13,7 @@ import lombok.Getter;
  *
  */
 @Getter
+@NoArgsConstructor
 @AllArgsConstructor
 public class EmailContent {
 	

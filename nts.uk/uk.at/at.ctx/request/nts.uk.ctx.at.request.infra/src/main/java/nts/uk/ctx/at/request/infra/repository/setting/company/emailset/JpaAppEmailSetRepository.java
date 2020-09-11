@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.setting.company.emailset.EmailSubject;
 import nts.uk.ctx.at.request.dom.setting.company.emailset.EmailText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
+import nts.uk.ctx.at.request.infra.entity.setting.company.emailset.KrqmtAppMail;
 
 /**
  * refactor 4
@@ -77,61 +78,18 @@ public class JpaAppEmailSetRepository extends JpaRepository implements AppEmailS
 
 	@Override
 	public AppEmailSet findByCID(String companyID) {
-		String sql = "select * from KRQMT_APP_MAIL where CID = @companyID";
-		Optional<AppEmailSet> appEmailSet = new NtsStatement(sql, this.jdbcProxy())
-				.paramString("companyID", companyID)
-				.getSingle(rec -> {
-					List<EmailContent> emailContentLst = new ArrayList<>();
-					Optional<EmailSubject> opEmailSubject1 = Optional.empty();
-					Optional<EmailText> opEmailText1 = Optional.empty();
-					String subject1 = rec.getString("SUBJECT_APPROVAL");
-					if(Strings.isNotBlank(subject1)) {
-						opEmailSubject1 = Optional.of(new EmailSubject(subject1));
-					}
-					String content1 = rec.getString("CONTENT_APPROVAL");
-					if(Strings.isNotBlank(content1)) {
-						opEmailText1 = Optional.of(new EmailText(content1));
-					}
-					emailContentLst.add(new EmailContent(Division.APPLICATION_APPROVAL, opEmailSubject1, opEmailText1));
-					Optional<EmailSubject> opEmailSubject2 = Optional.empty();
-					Optional<EmailText> opEmailText2 = Optional.empty();
-					String subject2 = rec.getString("SUBJECT_REMAND");
-					if(Strings.isNotBlank(subject2)) {
-						opEmailSubject2 = Optional.of(new EmailSubject(subject2));
-					}
-					String content2 = rec.getString("CONTENT_REMAND");
-					if(Strings.isNotBlank(content2)) {
-						opEmailText2 = Optional.of(new EmailText(content2));
-					}
-					emailContentLst.add(new EmailContent(Division.REMAND, opEmailSubject2, opEmailText2));
-					Optional<EmailSubject> opEmailSubject3 = Optional.empty();
-					Optional<EmailText> opEmailText3 = Optional.empty();
-					String subject3 = rec.getString("SUBJECT_OT_INSTRUCTION");
-					if(Strings.isNotBlank(subject3)) {
-						opEmailSubject3 = Optional.of(new EmailSubject(subject3));
-					}
-					String content3 = rec.getString("CONTENT_OT_INSTRUCTION");
-					if(Strings.isNotBlank(content3)) {
-						opEmailText3 = Optional.of(new EmailText(content3));
-					}
-					emailContentLst.add(new EmailContent(Division.OVERTIME_INSTRUCTION, opEmailSubject3, opEmailText3));
-					Optional<EmailSubject> opEmailSubject4 = Optional.empty();
-					Optional<EmailText> opEmailText4 = Optional.empty();
-					String subject4 = rec.getString("SUBJECT_HD_INSTRUCTION");
-					if(Strings.isNotBlank(subject4)) {
-						opEmailSubject4 = Optional.of(new EmailSubject(subject4));
-					}
-					String content4 = rec.getString("CONTENT_HD_INSTRUCTION");
-					if(Strings.isNotBlank(content4)) {
-						opEmailText4 = Optional.of(new EmailText(content4));
-					}
-					emailContentLst.add(new EmailContent(Division.HOLIDAY_WORK_INSTRUCTION, opEmailSubject4, opEmailText4));
-					return new AppEmailSet(
-							companyID, 
-							EnumAdaptor.valueOf(rec.getInt("URL_EMBEDDED"), NotUseAtr.class), 
-							emailContentLst);
-				});
-		return appEmailSet.get();
+		return this.queryProxy().find(companyID, KrqmtAppMail.class).map(KrqmtAppMail::toDomain).orElse(null);
 	}
-	
+
+	@Override
+	public void save(AppEmailSet domain) {
+		KrqmtAppMail entity = this.queryProxy().find(domain.getCompanyID(), KrqmtAppMail.class).orElse(null);
+		if (entity == null) {
+			this.commandProxy().insert(KrqmtAppMail.fromDomain(domain));
+		} else {
+			entity.update(domain);
+			this.commandProxy().update(entity);
+		}
+	}
+
 }

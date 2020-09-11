@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stam
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SupportFrameDispNO;
-import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
+import nts.uk.shr.com.color.ColorCode;
 @Stateless
 public class JpaAppStampSettingRepository extends JpaRepository implements AppStampSettingRepository{
 

@@ -2,18 +2,21 @@ module nts.uk.at.view.kaf022.company.viewmodel {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
 
-    import ScreenModelA = nts.uk.at.view.kaf022.a.viewmodel.ScreenModelA;
-    import ScreenModelB = nts.uk.at.view.kaf022.b.viewmodel.ScreenModelB;
-    import ScreenModelC = nts.uk.at.view.kaf022.c.viewmodel.ScreenModelC;
-    import ScreenModelD = nts.uk.at.view.kaf022.d.viewmodel.ScreenModelD;
-    import ScreenModelE = nts.uk.at.view.kaf022.e.viewmodel.ScreenModelE;
-    import ScreenModelF = nts.uk.at.view.kaf022.f.viewmodel.ScreenModelF;
-    import ScreenModelG = nts.uk.at.view.kaf022.g.viewmodel.ScreenModelG;
-    import ScreenModelH = nts.uk.at.view.kaf022.h.viewmodel.ScreenModelH;
-    import ScreenModelI = nts.uk.at.view.kaf022.i.viewmodel.ScreenModelI;
-    import ScreenModelJ = nts.uk.at.view.kaf022.j.viewmodel.ScreenModelJ;
-    import ScreenModelQ = nts.uk.at.view.kaf022.q.viewmodel.ScreenModelQ;
-    import ScreenModelV = nts.uk.at.view.kaf022.v.viewmodel.ScreenModelV;
+    import ScreenModelA = a.viewmodel.ScreenModelA;
+    import ScreenModelB = b.viewmodel.ScreenModelB;
+    import ScreenModelC = c.viewmodel.ScreenModelC;
+    import ScreenModelD = d.viewmodel.ScreenModelD;
+    import ScreenModelE = e.viewmodel.ScreenModelE;
+    import ScreenModelF = f.viewmodel.ScreenModelF;
+    import ScreenModelG = g.viewmodel.ScreenModelG;
+    import ScreenModelH = h.viewmodel.ScreenModelH;
+    import ScreenModelI = i.viewmodel.ScreenModelI;
+    import ScreenModelJ = j.viewmodel.ScreenModelJ;
+    import ScreenModelK = k.viewmodel.ScreenModelK;
+    import ScreenModelN = n.viewmodel.ScreenModelN;
+    import ScreenModelQ = q.viewmodel.ScreenModelQ;
+    import ScreenModelV = v.viewmodel.ScreenModelV;
+    import ScreenModelY = y.viewmodel.ScreenModelY;
 
     export class ScreenModel {
         tabs: KnockoutObservableArray<NtsTabPanelModel>;
@@ -28,8 +31,11 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         viewmodelH: ScreenModelH;
         viewmodelI: ScreenModelI;
         viewmodelJ: ScreenModelJ;
+        viewmodelK: ScreenModelK;
+        viewmodelN: ScreenModelN;
         viewmodelQ: ScreenModelQ;
         viewmodelV: ScreenModelV;
+        viewmodelY: ScreenModelY;
 
         constructor() {
             const self = this;
@@ -62,8 +68,11 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             self.viewmodelH = new ScreenModelH();
             self.viewmodelI = new ScreenModelI();
             self.viewmodelJ = new ScreenModelJ();
+            self.viewmodelK = new ScreenModelK();
+            self.viewmodelN = new ScreenModelN();
             self.viewmodelQ = new ScreenModelQ();
             self.viewmodelV = new ScreenModelV();
+            self.viewmodelY = new ScreenModelY();
         }
 
         start(): JQueryPromise<any> {
@@ -79,13 +88,18 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             service.findAllData().done((data: any) => {
                 self.viewmodelA.initData(data);
                 self.viewmodelB.initData(data);
+                self.viewmodelC.initData(data);
                 self.viewmodelD.initData(data);
                 self.viewmodelE.initData(data);
                 self.viewmodelF.initData(data);
+                self.viewmodelG.initData(data);
+                self.viewmodelH.initData(data);
                 self.viewmodelI.initData(data);
                 self.viewmodelJ.initData(data);
+                self.viewmodelN.initData(data);
                 self.viewmodelQ.initData(data);
                 self.viewmodelV.initData(data);
+                self.viewmodelY.initData(data);
                 dfd.resolve();
             }).fail(error => {
                 dfd.reject();
@@ -102,27 +116,38 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         }
 
         saveDataAt(): void {
-            $('#a16_14').trigger("validate");
-            $('#a16_15').trigger("validate");
-            $('#a7_23').trigger("validate");
-            $('#a7_23_2').trigger("validate");
-            $('#a7_23_3').trigger("validate");
+            $('input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) { return; }
             const self = this, postion: number = $('.tab-content-1').scrollTop();;
             const dataA = self.viewmodelA.collectData();
             const dataV = self.viewmodelV.collectData();
             const dataB = self.viewmodelB.collectData();
+            const dataC = self.viewmodelC.collectData();
             const dataD = self.viewmodelD.collectData();
             const dataE = self.viewmodelE.collectData();
+            const dataG = self.viewmodelG.collectData();
+            const dataH = self.viewmodelH.collectData();
             const dataJ = self.viewmodelJ.collectData();
+            const dataK = self.viewmodelK.collectData();
             const dataQ = self.viewmodelQ.collectData();
+            const dataY = self.viewmodelY.collectData();
             const data: any = {};
             data["applicationSetting"] = {
                 appLimitSetting: dataA.appLimitSetting,
-                appTypeSettings: dataA.appTypeSettings,
+                appTypeSettings: dataA.appTypeSettings.map(setting => {
+                    const s = _.find(dataY.appTypeSettings, i => i.appType == setting.appType);
+                    if (s) {
+                        setting["sendMailWhenApproval"] = s.sendMailWhenApproval;
+                        setting["sendMailWhenRegister"] = s.sendMailWhenRegister;
+                    }
+                    return setting;
+                }),
                 appSetForProxyApps: dataV,
                 appDeadlineSettings: dataA.appDeadlineSettings,
-                appDisplaySetting: dataA.appDisplaySetting,
+                appDisplaySetting: {
+                    prePostDisplayAtr: dataA.prePostDisplayAtr,
+                    manualSendMailAtr: dataY.manualSendMailAtr
+                },
                 receptionRestrictionSettings: dataA.receptionRestrictionSettings,
                 recordDate: dataA.recordDate
             };
@@ -133,14 +158,23 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             data["appReflectCondition"] = dataA.appReflectCondition;
             data["overtimeApplicationSetting"] = dataB.overtimeApplicationSetting;
             data["overtimeApplicationReflect"] = dataB.overtimeApplicationReflect;
+            data["holidayApplicationSetting"] = dataC.holidayApplicationSetting;
+            data["holidayApplicationReflect"] = dataC.holidayApplicationReflect;
             data["appWorkChangeSetting"] = dataD;
             data["tripRequestSetting"] = dataE;
             data["goBackReflectAtr"] = self.viewmodelF.selectedValueF13();
+            data["holidayWorkApplicationSetting"] = dataG.holidayWorkApplicationSetting;
+            data["holidayWorkApplicationReflect"] = dataG.holidayWorkApplicationReflect;
+            data["timeLeaveApplicationReflect"] = dataH;
             data["lateEarlyCancelAtr"] = self.viewmodelI.lateEarlyCancelAtr();
             data["lateEarlyClearAlarmAtr"] = self.viewmodelI.lateEarlyClearAlarmAtr();
             data["appStampSetting"] = dataJ.appStampSetting;
             data["appStampReflect"] = dataJ.appStampReflect;
+            data["substituteWorkAppReflect"] = dataK.drawOutApplicationReflect;
+            data["substituteLeaveAppReflect"] = dataK.suspenseApplicationReflect;
+            data["substituteHdWorkAppSetting"] = dataK.suspenseDrawOutApplicationSetting;
             data["approvalListDisplaySetting"] = dataQ;
+            data["appMailSetting"] = dataY.appMailSetting;
 
             nts.uk.ui.block.grayout();
             service.update(data).done(() => {

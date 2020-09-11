@@ -580,6 +580,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                                 nts.uk.ui.windows.sub.modal("/view/kdl/030/a/index.xhtml")
                                 .onClosed(() => {location.reload()});
                             };
+                        }).then(() => {
+                            window.location.reload();
                         });
                     }
                 }).fail((fail: any) => {

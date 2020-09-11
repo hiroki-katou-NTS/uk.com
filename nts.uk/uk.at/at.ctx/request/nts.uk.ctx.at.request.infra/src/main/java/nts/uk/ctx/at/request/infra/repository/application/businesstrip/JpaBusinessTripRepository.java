@@ -51,9 +51,7 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
                 .paramString("appID", appId)
                 .paramString("companyId", companyId)
                 .getList(res -> toDomain(res));
-        BusinessTrip result = new BusinessTrip();
-        result.setDepartureTime(businessTrips.get(0).getDepartureTime());
-        result.setReturnTime(businessTrips.get(0).getReturnTime());
+        BusinessTrip result = businessTrips.get(0);
         List<BusinessTripInfo> infos = businessTrips.stream().map(i -> i.getInfos().get(0)).collect(Collectors.toList());
         result.setInfos(infos);
         return Optional.of(result);
@@ -82,7 +80,8 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
 
     @Override
     public void remove(BusinessTrip domain) {
-
+        List<KrqdtAppTrip> entities = this.toEntity(domain);
+        this.commandProxy().removeAll(KrqdtAppTrip.class, entities.stream().map(i -> i.getKrqdtAppTripPK()).collect(Collectors.toList()));
     }
 
     private BusinessTrip toDomain(NtsResultRecord res) {
