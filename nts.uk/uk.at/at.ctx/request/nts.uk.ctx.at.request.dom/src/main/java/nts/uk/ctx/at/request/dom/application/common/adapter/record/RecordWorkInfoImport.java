@@ -3,70 +3,148 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.record;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeOfExistMinus;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.DeductionTotalTime;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
+import nts.uk.shr.com.time.TimeWithDayAttr;
+
 /**
- * 
+ * refactor 4
  * @author Doan Duy Hung
  *
  */
-@Value
 @AllArgsConstructor
+@Getter
 public class RecordWorkInfoImport {
-	// 勤務種類コード
-	private String workTypeCode;
+//	社員ID
+	private String employeeId;
 	
-	// 就業時間帯コード
-	private String workTimeCode;
+//	年月日
+	private GeneralDate date;
 	
-	// 日別実績の出退勤．出退勤．出勤．打刻 , 勤務NO＝0
-	private Integer attendanceStampTimeFirst;
+//	勤務種類コード
+	private WorkTypeCode workTypeCode;
 	
-	// 日別実績の出退勤．出退勤．退勤．打刻, 勤務NO＝0
-	private Integer leaveStampTimeFirst;
+//	就業時間帯コード
+	private WorkTimeCode workTimeCode;
 	
-	// 日別実績の出退勤．出退勤．出勤．打刻 , 勤務NO＝1
-	private Integer attendanceStampTimeSecond;
+//	開始時刻1
+//	日別実績の出退勤．出退勤．出退勤．勤務NO＝1
+	private WorkTimeInformation startTime1;	
 	
-	// 日別実績の出退勤．出退勤．退勤．打刻, 勤務NO＝1
-	private Integer leaveStampTimeSecond;
+//	終了時刻1
+//	日別実績の出退勤．出退勤．出退勤．勤務NO＝1
+	private WorkTimeInformation endTime1;
 	
-	/** 日別実績の勤怠時間．実働時間．総労働時間．遅刻時間．遅刻時間 */
-	private Integer lateTime1;
+//	開始時刻2
+//	日別実績の出退勤．出退勤．出退勤．勤務NO＝2
+	private WorkTimeInformation startTime2;
 	
-	/** 日別実績の勤怠時間．実働時間．総労働時間．早退時間．早退時間 */
-	private Integer leaveEarlyTime1;
+//	終了時刻2
+//	日別実績の出退勤．出退勤．出退勤．勤務NO＝2
+	private WorkTimeInformation endTime2;
 	
-	/** 日別実績の勤怠時間．実働時間．総労働時間．遅刻時間．遅刻時間 */
-	private Integer lateTime2;
 	
-	/** 日別実績の勤怠時間．実働時間．総労働時間．早退時間．早退時間 */
-	private Integer leaveEarlyTime2;
-
-	/** 日別実績の勤怠時間．実働時間．総労働時間．短時間勤務時間.育児時間 */
-	private Integer childCareTime;
 	
-	/** 日別実績の勤怠時間．実働時間．総労働時間.外出時間.計上用合計時間.合計時間.外出時間 私用 */
-	private Integer outingTimePrivate;
+//	遅刻時間
+	private AttendanceTime lateTime1;
 	
-	/** 日別実績の勤怠時間．実働時間．総労働時間.外出時間.計上用合計時間.合計時間.外出時間 組合 */
-	private Integer outingTimeCombine;
-
-	/** 日別実績の勤怠時間．実績時間．総労働時間．所定外時間．残業時間．フレックス時間．フレックス時間.計算フレックス */
-	private Integer flexTime;
+//	早退時間
+	private AttendanceTime earlyLeaveTime1;
 	
-	/** 日別実績の勤怠時間．実績時間．総労働時間．所定外時間．残業時間．残業枠時間．残業時間.計算残業 */
-	/** 日別実績の勤怠時間．実績時間．総労働時間．所定外時間．残業時間．残業枠時間．振替時間.計算振替残業 */
-	private List<CommonTimeSheetImport> overtimes;
-		
-//		private List<CommonTimeSheet> otTranferTimes;
-		
-	/** 日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出枠時間．休出時間.計算休日出勤 */
-	/** 日別実績の勤怠時間．実績時間．総労働時間．所定外時間．休出時間．休出枠時間．振替時間.計算振替 */
-	private List<CommonTimeSheetImport> holidayWorks;
-		
-//		private List<CommonTimeSheet> holWorkTranferTimes;
-		
-	/** 計算就業外深夜 */
-	/** 休出深夜 */
-	private Integer midnightTime;
+//	遅刻時間
+	private AttendanceTime lateTime2;
+//	早退時間
+	private AttendanceTime earlyLeaveTime2;
+	
+//	外出時間
+	private AttendanceTime outTime1;
+	
+//	外出時間
+	private AttendanceTime outTime2;
+	
+	
+	
+	
+	
+//	育児時間
+	private DeductionTotalTime totalTime;
+	
+//	計算フレックス
+	private AttendanceTimeOfExistMinus calculateFlex;
+	
+//	計算残業	
+	private List<AttendanceTime> overTimeLst;
+	
+//	計算振替残業
+	private List<AttendanceTime> calculateTransferOverTimeLst;
+	
+//	計算休日出勤
+	private List<AttendanceTime> calculateHolidayLst;
+	
+//	計算振替
+	private List<AttendanceTime> calculateTransferLst;
+	
+	
+	
+	
+	
+	
+	
+//	予定出勤時刻1
+	private TimeWithDayAttr scheduledAttendence1;
+	
+//	予定退勤時刻1
+	private TimeWithDayAttr scheduledDeparture1;
+	
+//	予定出勤時刻2
+	private TimeWithDayAttr scheduledAttendence2;
+	
+//	予定退勤時刻2
+	private TimeWithDayAttr scheduledDeparture2;
+	
+	
+	
+	
+	
+	
+	
+	
+//	臨時時間帯
+	private List<TimeLeavingWork> timeLeavingWorks;
+	
+//	外出時間帯
+	private List<OutingTimeSheet> outHoursLst;
+	
+//	短時間勤務時間帯
+	private List<ShortWorkingTimeSheet> shortWorkingTimeSheets;
+	
+//	休憩時間帯
+	private List<BreakTimeSheet> breakTimeSheets;
+	
+	
+	
+	
+	
+//	残業深夜時間
+	private TimeDivergenceWithCalculation overTimeMidnight;
+	
+//	法内休出深夜時間
+	private TimeDivergenceWithCalculation midnightOnHoliday;
+	
+//	法外休出深夜時間
+	private TimeDivergenceWithCalculation outOfMidnight;
+	
+//	祝日休出深夜時間
+	private TimeDivergenceWithCalculation midnightPublicHoliday;
 }
