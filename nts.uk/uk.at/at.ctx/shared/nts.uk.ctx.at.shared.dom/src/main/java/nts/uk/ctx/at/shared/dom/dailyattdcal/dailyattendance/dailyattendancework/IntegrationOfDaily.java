@@ -101,6 +101,7 @@ public class IntegrationOfDaily {
 	//日別実績の入退門 (old)
 //	private Optional<AttendanceLeavingGateOfDaily> attendanceLeavingGate;
 	//入退門: 日別勤怠の入退門
+	@Setter
 	private Optional<AttendanceLeavingGateOfDailyAttd> attendanceLeavingGate;
 	
 	//日別実績の勤怠時間 (old)

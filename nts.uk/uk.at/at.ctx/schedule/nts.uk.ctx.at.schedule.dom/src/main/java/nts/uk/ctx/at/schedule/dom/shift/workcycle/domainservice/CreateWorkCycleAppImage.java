@@ -1,18 +1,18 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 
-import lombok.val;
-import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
-import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.shr.com.context.AppContexts;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
+
 
 /**
  *  勤務サイクルの適用イメージを作成する
@@ -60,10 +60,10 @@ public class CreateWorkCycleAppImage {
                 case WORKINGDAYS:
                     return;
                 case NON_WORKINGDAY_INLAW:
-                    reflectionImage.addByWeeklyWorking(i, new WorkInformation("", config.getLegalHolidayCd().get().v()));
+                    reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getLegalHolidayCd().map(m -> m.v()).orElse(null), ""));
                     break;
                 case NON_WORKINGDAY_EXTRALEGAL:
-                    reflectionImage.addByWeeklyWorking(i, new WorkInformation("", config.getNonStatutoryHolidayCd().get().v()));
+                    reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getNonStatutoryHolidayCd().map(m -> m.v()).orElse(null), ""));
                     break;
             }
         });
@@ -79,7 +79,7 @@ public class CreateWorkCycleAppImage {
     private static void createImageHoliday(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
         val holidayList = require.getpHolidayWhileDate(createPeriod.start(), createPeriod.end());
         for (PublicHoliday pubHoliday : holidayList) {
-            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation("",config.getHolidayCd().get().v()));
+            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation(config.getHolidayCd().map(m -> m.v()).orElse(null), ""));
         }
     }
 

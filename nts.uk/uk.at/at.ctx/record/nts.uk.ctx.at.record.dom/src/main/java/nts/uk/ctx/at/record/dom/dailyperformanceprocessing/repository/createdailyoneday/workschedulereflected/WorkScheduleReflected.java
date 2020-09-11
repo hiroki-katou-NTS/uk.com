@@ -64,7 +64,7 @@ public class WorkScheduleReflected {
 			return listErrorMessageInfo;
 		}
 		
-		WorkInformation wi =  scheduleWorkInfor.map(m -> new WorkInformation(m.getWorkTyle(), m.getWorkTime())).orElse(new WorkInformation("", ""));
+		WorkInformation wi =  scheduleWorkInfor.map(m -> new WorkInformation(m.getWorkTyle(), m.getWorkTime())).orElse(null);
 		
 		//勤務情報をコピーする (Copy thông tin 勤務)
 		workInformation.setRecordInfo(wi);

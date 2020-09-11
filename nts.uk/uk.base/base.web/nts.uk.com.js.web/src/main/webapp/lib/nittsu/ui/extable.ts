@@ -3965,7 +3965,11 @@ module nts.uk.ui.exTable {
                 || minute > MINUTE_MAX) return false;
             let targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
             if (!targetTime) return false;
-            if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0) return false;
+            let compareMax = compare(targetTime, maxTime);
+            let compareMin = compare(targetTime, minTime);
+            if (compareMax > 0 || compareMin < 0) return false;
+            if ((targetTime.negative && maxTime.negative && compareMax === 0)
+                || (targetTime.negative && minTime.negative && compareMin === 0)) return false;
             return true; 
         }
         
@@ -5274,13 +5278,15 @@ module nts.uk.ui.exTable {
             }
             
             let div = agencies[index];
-            div.style.left = left + "px";
-            div.style.height = height + "px";
-            
-            if (vertSumHidden) {
-                helper.addClass(div, STAY_CLS);
-            } else {
-                helper.removeClass(div, STAY_CLS);
+            if (!_.isNil(div)) {
+                div.style.left = left + "px";
+                div.style.height = height + "px";
+                
+                if (vertSumHidden) {
+                    helper.addClass(div, STAY_CLS);
+                } else {
+                    helper.removeClass(div, STAY_CLS);
+                }
             }
         }
         
@@ -5319,7 +5325,11 @@ module nts.uk.ui.exTable {
         export function setHeight($container: HTMLElement, height: any) {
             selector.queryAll($container, "div[class*='" + BODY_PRF + "']").forEach(function(e) {
                 if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM)) return;
-                e.style.height = height + "px";
+                if (e.classList.contains(BODY_PRF + LEFTMOST)) {
+                    e.style.height = `${height - helper.getScrollWidth()}px`;
+                } else {
+                    e.style.height = height + "px";
+                }
             });
             
             let cHeight = 0, showCount = 0;
@@ -6436,7 +6446,7 @@ module nts.uk.ui.exTable {
             let self = this;
             switch(name) {
                 case "setHeight":
-                    resize.setHeight(self, params[0]); 
+                    resize.setHeight(self[0], params[0]); 
                     break;
                 case "gridHeightMode":
                     changeGridHeightMode(self, params[0]);

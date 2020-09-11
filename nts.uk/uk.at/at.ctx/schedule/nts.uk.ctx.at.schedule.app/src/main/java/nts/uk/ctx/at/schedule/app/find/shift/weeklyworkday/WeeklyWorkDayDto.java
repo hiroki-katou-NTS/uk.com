@@ -22,13 +22,15 @@ public class WeeklyWorkDayDto {
     private List<WorkdayPatternItemDto> workdayPatternItemDtoList;
 
     public WeeklyWorkDayDto toDto(WeeklyWorkDayPattern weeklyWorkDayPattern) {
-        System.out.println("weeklyWorkDayPattern:   "+weeklyWorkDayPattern.getListWorkdayPatternItem().size());
-        List<WorkdayPatternItemDto> workdayPatternItemDtoList = weeklyWorkDayPattern.getListWorkdayPatternItem()
-                .stream()
-                .map(item ->
-            new WorkdayPatternItemDto(item.getDayOfWeek().value, item.getWorkdayDivision().value)
-        ).collect(Collectors.toList());
-        return new WeeklyWorkDayDto(weeklyWorkDayPattern.getCompanyId().v(), workdayPatternItemDtoList);
+        if(weeklyWorkDayPattern != null) {
+            List<WorkdayPatternItemDto> workdayPatternItemDtoList = weeklyWorkDayPattern.getListWorkdayPatternItem()
+                    .stream()
+                    .map(item ->
+                            new WorkdayPatternItemDto(item.getDayOfWeek().value, item.getWorkdayDivision().value)
+                    ).collect(Collectors.toList());
+            return new WeeklyWorkDayDto(weeklyWorkDayPattern.getCompanyId().v(), workdayPatternItemDtoList);
+        }
+        return new WeeklyWorkDayDto();
     }
 
 }

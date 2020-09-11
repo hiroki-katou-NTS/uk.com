@@ -352,4 +352,7 @@ public interface WorkTypeRepository {
 	List<WorkType> findForAppKAF008(String companyId, int deprecateAtr, int worktypeAtr, List<Integer> hdType);
 
 	List<WorkType> findByDepreacateAtrAndWorkTypeAtr(String companyId, int deprecateAtr, int worktypeAtr);
+	
+	List<WorkType> getAllWorkTypeNotAbolished(String companyId);
+	
 }

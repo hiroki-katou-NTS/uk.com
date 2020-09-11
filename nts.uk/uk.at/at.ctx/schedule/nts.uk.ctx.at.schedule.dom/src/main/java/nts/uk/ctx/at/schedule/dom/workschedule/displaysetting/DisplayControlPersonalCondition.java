@@ -38,7 +38,7 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 	private final String companyID;
 	@Getter
 	/** List<条件表示制御> --- 条件表示制御リスト **/
-	private List<PersonInforDisplayControl> listConditionDisplayControl;
+	private List<PersonInforDisplayControl> listConditionDisplayControl; 
 
 	@Getter
 	/** Optional<勤務予定の資格設定> 資格設定 **/
@@ -109,6 +109,7 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 			 * $社員免許区分 = $社員免許区分リスト.get($).免許区分 return 個人条件( $, $社員チーム, $社員ランク,
 			 * $社員免許区分)
 			 */
+
 		List<PersonalCondition> conditions = new ArrayList<>();
 		
 		for(String empId : lstEmpId) {

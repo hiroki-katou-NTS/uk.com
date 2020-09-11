@@ -23,8 +23,7 @@ public class AddWorkCycleCommand {
 
     public static WorkCycle createFromCommand(AddWorkCycleCommand command, String cid) {
         // Sort list workinformation by display order
-        command.workInformations.sort(Comparator.comparingDouble(WorkInformation::getDispOrder)
-                .reversed());
+        command.workInformations.sort(Comparator.comparingDouble(WorkInformation::getDispOrder));
 
         List<WorkCycleInfo> infos =command.workInformations.stream().map(i -> WorkCycleInfo.create(
                 i.getDays(),
@@ -39,7 +38,7 @@ public class AddWorkCycleCommand {
     }
 
     public static WorkCycle createTemp(String cid) {
-        WorkInformation info = new WorkInformation("code","timeCd", 1, 2);
+        WorkInformation info = new WorkInformation("code", "timeCd", 1, 2);
         List<WorkInformation> infos = new ArrayList<>();
         infos.add(info);
         AddWorkCycleCommand workCycle = new AddWorkCycleCommand(

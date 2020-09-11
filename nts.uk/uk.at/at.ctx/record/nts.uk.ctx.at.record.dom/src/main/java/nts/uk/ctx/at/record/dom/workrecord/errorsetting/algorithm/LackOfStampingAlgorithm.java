@@ -46,7 +46,7 @@ public class LackOfStampingAlgorithm {
 			// timeLeavingOfDailyPerformanceRepository.findByKey(employeeID,
 			// processingDate).get();
 
-			if (timeLeavingOfDailyPerformance != null
+			if (timeLeavingOfDailyPerformance != null && timeLeavingOfDailyPerformance.getAttendance()!=null
 					&& !timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks().isEmpty()) {
 				List<TimeLeavingWork> timeLeavingWorkList = timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks();
 				List<Integer> attendanceItemIDList = new ArrayList<>();

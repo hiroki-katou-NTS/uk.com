@@ -88,6 +88,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 							}
 							self.isEnable(true);
 						}
+						nts.uk.ui.errors.clearAll();
 					});
 					self.selectedWorkplaceId.valueHasMutated();
 					nts.uk.ui.errors.clearAll();

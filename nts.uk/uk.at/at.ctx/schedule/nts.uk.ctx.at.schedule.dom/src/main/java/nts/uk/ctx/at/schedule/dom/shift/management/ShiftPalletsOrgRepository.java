@@ -32,4 +32,6 @@ public interface ShiftPalletsOrgRepository {
 	//[3] Delete(対象組織, ページ)																							
 	public void delete(TargetOrgIdenInfor targeOrg,int page);
 
+	List<ShiftPalletsOrg> findbyWorkPlaceIdUse(int targetUnit, String workplaceId);
+
 }

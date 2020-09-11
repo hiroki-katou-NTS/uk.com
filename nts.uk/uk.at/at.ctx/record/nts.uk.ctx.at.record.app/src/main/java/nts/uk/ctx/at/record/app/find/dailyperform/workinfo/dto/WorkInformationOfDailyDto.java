@@ -106,8 +106,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	}
 
 	private static WorkInfoDto createWorkInfo(WorkInformation workInfo) {
-		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(),
-						workInfo.getWorkTimeCode() == null ? null : workInfo.getWorkTimeCode().v());
+		return workInfo == null ? null : new WorkInfoDto(workInfo.getWorkTypeCode() == null ? null : workInfo.getWorkTypeCode().v(), workInfo.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null));
 	}
 
 	@Override
@@ -147,7 +146,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	
 
 	private WorkInformation getWorkInfo(WorkInfoDto dto) {
-		return dto == null ? null : new WorkInformation(dto.getWorkTimeCode() == null || dto.getWorkTimeCode().isEmpty() ? null : dto.getWorkTimeCode(), dto.getWorkTypeCode());
+		return dto == null ? null : new WorkInformation(dto.getWorkTypeCode(), dto.getWorkTimeCode());
 	}
 
 	@Override
