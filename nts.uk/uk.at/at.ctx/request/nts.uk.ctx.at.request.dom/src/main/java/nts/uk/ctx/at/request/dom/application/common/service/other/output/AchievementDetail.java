@@ -8,7 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeLeaveTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 
 /**
  * refactor 4
@@ -32,6 +33,11 @@ public class AchievementDetail {
 	private String workTimeCD;
 	
 	/**
+	 * 休憩時間帯
+	 */
+	private List<BreakTimeSheet> breakTimeSheets;
+	
+	/**
 	 * 勤怠時間内容
 	 */
 	private TimeContentOutput timeContentOutput;
@@ -49,7 +55,7 @@ public class AchievementDetail {
 	/**
 	 * 短時間勤務時間帯
 	 */
-	private List<ShortWorkTime> shortWorkTimeLst;
+	private List<ShortWorkingTimeSheet> shortWorkTimeLst;
 	
 	/**
 	 * 遅刻早退実績

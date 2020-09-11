@@ -11,12 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaDeforLaborMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaFlexMonthActCalSetRepository;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employee.ShaRegulaMonthActCalSetRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.sha.ShaFlexMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaDeforLaborMonthActCalSetRepo;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.sha.ShaRegulaMonthActCalSetRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -27,15 +27,15 @@ public class SaveShaMonthCalSetCommandHandler extends CommandHandler<SaveShaMont
 
 	/** The defor labor month act cal set repo. */
 	@Inject
-	private ShaDeforLaborMonthActCalSetRepository deforLaborMonthActCalSetRepo;
+	private ShaDeforLaborMonthActCalSetRepo deforLaborMonthActCalSetRepo;
 
 	/** The flex month act cal set repo. */
 	@Inject
-	private ShaFlexMonthActCalSetRepository flexMonthActCalSetRepo;
+	private ShaFlexMonthActCalSetRepo flexMonthActCalSetRepo;
 
 	/** The regula month act cal set repo. */
 	@Inject
-	private ShaRegulaMonthActCalSetRepository regulaMonthActCalSetRepo;
+	private ShaRegulaMonthActCalSetRepo regulaMonthActCalSetRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -52,11 +52,11 @@ public class SaveShaMonthCalSetCommandHandler extends CommandHandler<SaveShaMont
 		
 		// get employee id
 		SaveShaMonthCalSetCommand command = context.getCommand();
-		String sid = command.getEmpId();
+		String sid = command.getEmployeeId();
 
-		ShaDeforLaborMonthActCalSet shaDeforLaborMonthActCalSet = new ShaDeforLaborMonthActCalSet(context.getCommand());
-		ShaFlexMonthActCalSet shaFlexMonthActCalSet = new ShaFlexMonthActCalSet(context.getCommand());
-		ShaRegulaMonthActCalSet shaRegulaMonthActCalSet = new ShaRegulaMonthActCalSet(context.getCommand());
+		ShaDeforLaborMonthActCalSet shaDeforLaborMonthActCalSet = context.getCommand().defor(cid);
+		ShaFlexMonthActCalSet shaFlexMonthActCalSet = context.getCommand().flex(cid);
+		ShaRegulaMonthActCalSet shaRegulaMonthActCalSet = context.getCommand().regular(cid);
 
 		Optional<ShaDeforLaborMonthActCalSet> optShaDeforLaborMonthActCalSet = deforLaborMonthActCalSetRepo.find(cid,
 				sid);

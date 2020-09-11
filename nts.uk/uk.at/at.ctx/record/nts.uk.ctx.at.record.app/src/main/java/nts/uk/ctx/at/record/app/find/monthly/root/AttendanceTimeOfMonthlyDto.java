@@ -6,18 +6,15 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.ClosureDateDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.DatePeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.common.MonthlyItemCommon;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.ExcessOutsideWorkOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.MonthlyCalculationDto;
+import nts.uk.ctx.at.record.app.find.monthly.root.dto.OuenTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.TotalCountByPeriodDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.VerticalTotalOfMonthlyDto;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
-import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
@@ -26,8 +23,13 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Data
 @NoArgsConstructor
@@ -84,6 +86,9 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 	/** 回数集計: 期間別の回数集計 */
 	@AttendanceItemLayout(jpPropertyName = COUNT + AGGREGATE, layout = LAYOUT_H)
 	private TotalCountByPeriodDto totalCount;
+	
+	@AttendanceItemLayout(jpPropertyName = OUEN, layout = LAYOUT_I)
+	private OuenTimeOfMonthlyDto ouen;
 
 	@Override
 	public String employeeId() {
@@ -106,6 +111,7 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 			dto.setVerticalTotal(VerticalTotalOfMonthlyDto.from(domain.getVerticalTotal()));
 			dto.setTotalCount(TotalCountByPeriodDto.from(domain.getTotalCount()));
 			dto.setVersion(domain.getVersion());
+			dto.setOuen(OuenTimeOfMonthlyDto.from(domain.getOuenTime()));
 			dto.exsistData();
 		}
 		return dto;
@@ -137,7 +143,8 @@ public class AttendanceTimeOfMonthlyDto extends MonthlyItemCommon {
 																	excessOutsideWork == null ? new ExcessOutsideWorkOfMonthly() : excessOutsideWork.toDomain(), 
 																	verticalTotal == null ? new VerticalTotalOfMonthly() : verticalTotal.toDomain(),
 																	this.totalCount == null ? new TotalCountByPeriod() : this.totalCount.toDomain(),
-																	new AttendanceDaysMonth(aggregateDays));
+																	new AttendanceDaysMonth(aggregateDays),
+																	ouen == null ? OuenTimeOfMonthly.empty() : ouen.domain());
 		domain.setVersion(this.version);
 		
 		return domain;

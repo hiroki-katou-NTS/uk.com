@@ -11,12 +11,11 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainDeforLaborSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainFlexSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSetting;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainNormalSettingRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainRegularWorkTimeRepository;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.employeeNew.ShainTransLaborTimeRepository;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSet.LaborWorkTypeAttr;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.monunit.MonthlyWorkTimeSetSha;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeShaRepo;
+import nts.uk.ctx.at.shared.dom.statutory.worktime.week.regular.RegularLaborTimeShaRepo;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,25 +24,16 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class DeleteShainStatWorkTimeSetCommandHandler extends CommandHandler<DeleteShainStatWorkTimeSetCommand> {
 
-	/** The shain normal setting repository. */
+	/** The trans labor time repository. */
 	@Inject
-	private ShainNormalSettingRepository shainNormalSettingRepository;
+	private DeforLaborTimeShaRepo transLaborTimeRepository;
 
-	/** The shain flex setting repository. */
+	/** The regular labor time repository. */
 	@Inject
-	private ShainFlexSettingRepository shainFlexSettingRepository;
+	private RegularLaborTimeShaRepo regularLaborTimeRepository;
 
-	/** The shain defor labor setting repository. */
 	@Inject
-	private ShainDeforLaborSettingRepository shainDeforLaborSettingRepository;
-
-	/** The shain regular work time repository. */
-	@Inject
-	private ShainRegularWorkTimeRepository shainRegularWorkTimeRepository;
-
-	/** The shain spe defor labor time repository. */
-	@Inject
-	private ShainTransLaborTimeRepository shainSpeDeforLaborTimeRepository;
+	private MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo;
 
 	/*
 	 * @see
@@ -58,12 +48,7 @@ public class DeleteShainStatWorkTimeSetCommandHandler extends CommandHandler<Del
 		int year = command.getYear();
 		String employeeId = command.getEmployeeId();
 
-		this.shainNormalSettingRepository.find(companyId, employeeId, year)
-				.ifPresent((setting) -> this.shainNormalSettingRepository.delete(companyId, employeeId, year));
-		this.shainFlexSettingRepository.find(companyId, employeeId, year)
-				.ifPresent((setting) -> this.shainFlexSettingRepository.delete(companyId, employeeId, year));
-		this.shainDeforLaborSettingRepository.find(companyId, employeeId, year)
-				.ifPresent((setting) -> this.shainDeforLaborSettingRepository.delete(companyId, employeeId, year));
+		monthlyWorkTimeSetRepo.removeEmployee(companyId, employeeId, year);
 
 		// set isOverOneYear == true
 		command.setOverOneYear(true);
@@ -71,10 +56,10 @@ public class DeleteShainStatWorkTimeSetCommandHandler extends CommandHandler<Del
 		// if isOverOneYearRegister == false, remove remain domains
 		if (!this.isOverOneYearRegister(companyId, employeeId)) {
 
-			this.shainRegularWorkTimeRepository.find(companyId, employeeId)
-					.ifPresent((setting) -> this.shainRegularWorkTimeRepository.delete(companyId, employeeId));
-			this.shainSpeDeforLaborTimeRepository.find(companyId, employeeId)
-					.ifPresent((setting) -> this.shainSpeDeforLaborTimeRepository.delete(companyId, employeeId));
+			transLaborTimeRepository.find(companyId, employeeId)
+					.ifPresent((setting) -> transLaborTimeRepository.delete(companyId, employeeId));
+			regularLaborTimeRepository.find(companyId, employeeId)
+					.ifPresent((setting) -> regularLaborTimeRepository.delete(companyId, employeeId));
 
 			// set isOverOneYear == false
 			command.setOverOneYear(false);
@@ -85,8 +70,7 @@ public class DeleteShainStatWorkTimeSetCommandHandler extends CommandHandler<Del
 	/**
 	 * Checks if is over one year register.
 	 *
-	 * @param cid
-	 *            the cid
+	 * @param cid the cid
 	 * @param employeeId
 	 *            the employee id
 	 * @return true, if is over one year register
@@ -94,7 +78,8 @@ public class DeleteShainStatWorkTimeSetCommandHandler extends CommandHandler<Del
 	public boolean isOverOneYearRegister(String cid, String employeeId) {
 
 		// find list sha normal setting register
-		List<ShainNormalSetting> listShainNormalSetting = this.shainNormalSettingRepository.findList(cid, employeeId);
+		List<MonthlyWorkTimeSetSha> listShainNormalSetting = monthlyWorkTimeSetRepo
+				.findEmployee(cid, employeeId, LaborWorkTypeAttr.REGULAR_LABOR);
 
 		// check list sha normal setting > 0
 		if (!listShainNormalSetting.isEmpty() && listShainNormalSetting.size() > 0) {

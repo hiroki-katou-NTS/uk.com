@@ -21,14 +21,12 @@ public class InformationEmployeeViewB {
 		PersonInfoExport personInfoExport =  IPersonInfoPub.getPersonInfo(sid);
 		
 		if (personInfoExport == null) {
-			throw new RuntimeException("Not found");
+			return new InformationEmployeeDtoViewB();
 		}
 
 		InformationEmployeeDtoViewB dto = new InformationEmployeeDtoViewB(
-				personInfoExport.getPid() == null ? "" : personInfoExport.getPid(),
 				personInfoExport.getBusinessName() == null ? "" : personInfoExport.getBusinessName(),
-				personInfoExport.getEntryDate(), personInfoExport.getGender(),
-				personInfoExport.getBirthDay(),
+				personInfoExport.getEntryDate(),
 				personInfoExport.getEmployeeId() == null ? sid : personInfoExport.getEmployeeId(),
 				personInfoExport.getEmployeeCode() == null ? "" : personInfoExport.getEmployeeCode(),
 				personInfoExport.getRetiredDate());

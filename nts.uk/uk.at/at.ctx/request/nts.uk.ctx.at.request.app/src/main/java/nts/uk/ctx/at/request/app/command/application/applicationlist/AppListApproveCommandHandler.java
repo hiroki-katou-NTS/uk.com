@@ -122,7 +122,7 @@ public class AppListApproveCommandHandler extends CommandHandlerWithResult<AppLi
 	 */
 	public Pair<Boolean, String> approveSingleApp(String companyID, ListOfApplicationCmd listOfApplicationCmd) {
 		try {
-			Application application = listOfApplicationCmd.toDomainApplication();
+			Application application = listOfApplicationCmd.toDomain().getApplication();
 			// ドメインモデル「申請設定」を取得し申請表示情報として作成する
 			AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
 					companyID, 

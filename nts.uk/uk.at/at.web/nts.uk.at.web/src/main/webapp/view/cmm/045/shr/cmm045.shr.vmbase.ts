@@ -129,6 +129,8 @@ module cmm045.shr {
 			prePostAtr: number;
 			/** 職場名 */
 			workplaceName: string;
+			/** 申請 */
+			application: any;
 			/** 申請ID */
 			appID: string;
 			/** 申請者CD */
@@ -187,6 +189,7 @@ module cmm045.shr {
             constructor(listOfApplicationDto: ListOfApplicationDto){
 				this.prePostAtr = listOfApplicationDto.prePostAtr;
 				this.workplaceName = listOfApplicationDto.workplaceName;
+				this.application = listOfApplicationDto.application;
 				this.appID = listOfApplicationDto.appID;
 				this.applicantCD = listOfApplicationDto.applicantCD;
 				this.applicantID = listOfApplicationDto.applicantID;
@@ -227,6 +230,8 @@ module cmm045.shr {
 			prePostAtr: number;
 			/** 職場名 */
 			workplaceName: string;
+			/** 申請 */
+			application: any;
 			/** 申請ID */
 			appID: string;
 			/** 申請者CD */

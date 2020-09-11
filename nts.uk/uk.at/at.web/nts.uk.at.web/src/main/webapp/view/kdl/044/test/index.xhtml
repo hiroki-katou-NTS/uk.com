@@ -11,11 +11,15 @@
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="test.service.js" />
 			<com:scriptfile path="test.start.js" />
 			<com:scriptfile path="test.vm.js" />
+			<com:stylefile path="/view/kcp/011/main.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/011/kcp.011.vm.js"
+				of="/nts.uk.com.web" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -25,7 +29,8 @@
 			</div>
 			<div id="contents-area">
 				<div style="padding-bottom: 10px;">
-					<div style="padding-right: 47px;" data-bind="ntsFormLabel: {required: true}">選択モード</div>
+					<div style="padding-right: 47px;"
+						data-bind="ntsFormLabel: {required: true}">選択モード</div>
 					<div
 						data-bind="ntsRadioBoxGroup: {
 					options: modeList,
@@ -47,7 +52,8 @@
 					</div>
 				</div>
 				<div style="padding-bottom: 10px;">
-					<div style="padding-right: 30px;" data-bind="ntsFormLabel: {required: true}">絞り込み区分</div>
+					<div style="padding-right: 30px;"
+						data-bind="ntsFormLabel: {required: true}">絞り込み区分</div>
 					<div
 						data-bind="ntsRadioBoxGroup: {
 					options: filterList,
@@ -57,10 +63,12 @@
 					enable: enable}">
 					</div>
 				</div>
-				<div style=" margin-bottom: 5px;" data-bind="ntsFormLabel: {required: false}">シフト選択</div>
-				<div data-bind="visible:isMultiSelect">
-				<table id="multi-list" tabindex="0"
-					data-bind="ntsGridList: {	
+				<div id="multi-list-table">
+					<div style="margin-bottom: 5px;"
+						data-bind="ntsFormLabel: {required: false}">シフト選択</div>
+					<div data-bind="visible:isMultiSelect">
+						<table id="multi-list" tabindex="0"
+							data-bind="ntsGridList: {	
 								name: '#[KDL044_11]',  
 								height: 450,
 								options: listShifuto,
@@ -70,11 +78,11 @@
 								value: selectedCodes,
 								rows: 10
 						}">
-				</table>
-				</div>
-				<div data-bind="visible:!isMultiSelect()">
-				<table id="multi-list" tabindex="0"
-					data-bind="ntsGridList: {	
+						</table>
+					</div>
+					<div data-bind="visible:!isMultiSelect()">
+						<table id="multi-list" tabindex="0"
+							data-bind="ntsGridList: {	
 								name: '#[KDL044_11]',  
 								height: 450,
 								options: listShifuto,
@@ -84,10 +92,44 @@
 								value: selectedCode,
 								rows: 10
 						}">
-				</table>
+						</table>
+					</div>
+					<div style="margin-top: 10px; margin-bottom: 5px;"
+						data-bind="ntsFormLabel: {required: false}">絞り込み対象</div>
+					<div id="tree-grid" style="width: 460px;"></div>
 				</div>
-				<div style="margin-top: 10px; margin-bottom: 5px;" data-bind="ntsFormLabel: {required: false}">絞り込み対象</div>
-				<div id="tree-grid" style="width: 460px;"></div>
+				<div id="workplace-group">
+					<div data-bind="visible:isMultiSelect">
+						<table id="workplace-list"
+							data-bind="ntsGridList: {
+								height: 330,
+                				width: 700,
+				                dataSource: shiftItems,
+				                optionsValue: 'shiftMasterCode',
+				                columns: shiftColumns,
+				                multiple: true,
+				                value: selectedShiftMaster
+				            }"></table>
+					</div>
+					<div data-bind="visible:!isMultiSelect()">
+						<table id="workplace-list"
+							data-bind="ntsGridList: {
+								height: 330,
+                				width: 700,
+				                dataSource: shiftItems,
+				                optionsValue: 'shiftMasterCode',
+				                columns: shiftColumns,
+				                multiple: false,
+				                value: selectedShiftMaster
+				            }"></table>
+					</div>
+
+					<div id="tree-grid-2">
+						<workplace-group id="tree-grid-2" params="options: options">
+						</workplace-group>
+					</div>
+				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>

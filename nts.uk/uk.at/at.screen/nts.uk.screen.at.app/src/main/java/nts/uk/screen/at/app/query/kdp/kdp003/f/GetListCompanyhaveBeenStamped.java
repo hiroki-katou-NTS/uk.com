@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossing;
+import nts.uk.ctx.at.record.dom.stamp.application.SettingsUsingEmbossingRepository;
 import nts.uk.ctx.bs.company.pub.company.CompanyExportForKDP003;
 import nts.uk.ctx.bs.company.pub.company.ICompanyPub;
 import nts.uk.screen.at.app.query.kdp.kdp003.f.dto.GetListCompanyHasStampedDto;
@@ -27,6 +29,9 @@ public class GetListCompanyhaveBeenStamped {
 	
 	@Inject
 	private ICompanyPub companyPub;
+	
+	@Inject
+	private SettingsUsingEmbossingRepository embossingRepo;
 
 	/**
 	 * 【input】 ・会社ID(Optional) 
@@ -39,20 +44,41 @@ public class GetListCompanyhaveBeenStamped {
 		List<GetListCompanyHasStampedDto> resultList = new ArrayList<>();
 		
 		List<CompanyExportForKDP003> listCompany = companyPub.get(contractCd, cid, isAbolition);
-		
+
+		List<String> companyIds = listCompany.stream().map(m -> m.getCompanyId()).collect(Collectors.toList());
+
+		List<SettingsUsingEmbossing> listEmbossing = embossingRepo.getSettingEmbossingByComIds(companyIds);
+
 		if (listCompany.isEmpty()) {
 			return new ArrayList<GetListCompanyHasStampedDto>();
 		}
-		
-		// 2020/06/12　EA3789
+
+		// 2020/06/12 EA3789
 		// 未作成のため、利用区分はすべて「利用する」で返してください。
-		resultList = listCompany.stream().map(item -> new GetListCompanyHasStampedDto(item.getCompanyCode(), item.getCompanyName(),
-				item.getCompanyId(), item.getContractCd(), true, true, true)).collect(Collectors.toList());
+		resultList = listCompany.stream().map(item -> {
+			Optional<SettingsUsingEmbossing> domain = listEmbossing.stream()
+					.filter(f -> f.getCompanyId().equals(item.getCompanyId())).findFirst();
+
+			GetListCompanyHasStampedDto dto = new GetListCompanyHasStampedDto(item.getCompanyCode(),
+					item.getCompanyName(), item.getCompanyId(), item.getContractCd(), true, true, true);
+			/**
+			 * 2020/07/27 EA3811
+			 * 1: 氏名選択 ⇒ 打刻会社一覧.氏名選択利用
+			 * 2: 指認証打刻 ⇒ 打刻会社一覧.指認証打刻
+			 * 3:ICカード打刻 ⇒ 打刻会社一覧.ICカード打刻
+			 */
+			domain.ifPresent(c -> {
+				dto.setIcCardStamp(c.isIc_card());
+				dto.setFingerAuthStamp(c.isFinger_authc());
+				dto.setSelectUseOfName(c.isName_selection());
+			});
+
+			return dto;
+		}).collect(Collectors.toList());
 		
 		resultList.sort(Comparator.comparing(GetListCompanyHasStampedDto::getCompanyCode));
 		
 		return resultList;
-
 	}
 
 }

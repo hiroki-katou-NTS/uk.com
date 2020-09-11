@@ -42,39 +42,39 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class HolidayShipmentScreenBFinder {
-	@Inject
-	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
+//	@Inject
+//	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	@Inject
 	private DetailAppCommonSetService detailService;
-	@Inject
-	private BeforePreBootMode bootMode;
-	@Inject
-	private ApplicationSettingRepository appSetRepo;
+//	@Inject
+//	private BeforePreBootMode bootMode;
+//	@Inject
+//	private ApplicationSettingRepository appSetRepo;
 	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private RecruitmentAppRepository recRepo;
 	@Inject
 	private CompltLeaveSimMngRepository CompLeaveRepo;
-	@Inject
-	private ApplicationRepository appRepo;
-	@Inject
-	private HolidayShipmentScreenAFinder aFinder;
+//	@Inject
+//	private ApplicationRepository appRepo;
+//	@Inject
+//	private HolidayShipmentScreenAFinder aFinder;
 	@Inject
 	private EmployeeRequestAdapter empAdaptor;
-	@Inject
-	private RequestSettingRepository reqSetRepo;
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
-	@Inject
-	private WithDrawalReqSetRepository withDrawRepo;
+//	@Inject
+//	private RequestSettingRepository reqSetRepo;
+//	@Inject
+//	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+//	@Inject
+//	private WithDrawalReqSetRepository withDrawRepo;
 	@Inject
 	private WorkTimeSettingRepository wkTimeSetRepo;
 	@Inject
 	private PredetemineTimeSettingRepository preTimeSetRepo;
 	
-	@Inject
-	private HolidayShipmentService holidayShipmentService;
+//	@Inject
+//	private HolidayShipmentService holidayShipmentService;
 
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 

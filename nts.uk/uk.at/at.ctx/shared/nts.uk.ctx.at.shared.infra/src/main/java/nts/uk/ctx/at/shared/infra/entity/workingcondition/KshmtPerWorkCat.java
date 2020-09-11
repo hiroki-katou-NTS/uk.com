@@ -6,6 +6,8 @@ package nts.uk.ctx.at.shared.infra.entity.workingcondition;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +21,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workingcondition.SingleDaySchedule;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -106,5 +109,31 @@ public class KshmtPerWorkCat extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.kshmtPerWorkCatPK;
+	}
+
+	public KshmtPerWorkCat(KshmtPerWorkCatPK kshmtPerWorkCatPK, String sid, String workTypeCode, String workTimeCode,
+			List<KshmtWorkCatTimeZone> kshmtWorkCatTimeZones) {
+		super();
+		this.kshmtPerWorkCatPK = kshmtPerWorkCatPK;
+		this.sid = sid;
+		this.workTypeCode = workTypeCode;
+		this.workTimeCode = workTimeCode;
+		this.kshmtWorkCatTimeZones = kshmtWorkCatTimeZones;
+	}
+	
+	public SingleDaySchedule toDomain() {
+		return new SingleDaySchedule(this.workTypeCode,
+				kshmtWorkCatTimeZones.stream().map(c -> c.toDomain()).collect(Collectors.toList()),
+				Optional.ofNullable(this.workTimeCode));
+	}
+	
+	public static KshmtPerWorkCat toEntity(SingleDaySchedule domain,String historyId,String sid,int workCategoryAtr) {
+		return new KshmtPerWorkCat(
+				new KshmtPerWorkCatPK(historyId, workCategoryAtr),
+				sid, 
+				domain.getWorkTypeCode().isPresent()?domain.getWorkTypeCode().get().v():null, 
+				domain.getWorkTimeCode().isPresent()?domain.getWorkTimeCode().get().v():null,
+				domain.getWorkingHours().stream().map(c->KshmtWorkCatTimeZone.toEntity(c, historyId, workCategoryAtr)).collect(Collectors.toList())
+				);
 	}
 }

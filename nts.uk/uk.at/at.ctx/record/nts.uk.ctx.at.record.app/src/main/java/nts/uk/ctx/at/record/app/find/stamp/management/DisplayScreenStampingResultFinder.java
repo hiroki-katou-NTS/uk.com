@@ -108,11 +108,8 @@ public class DisplayScreenStampingResultFinder {
 
 	@AllArgsConstructor
 	private static class RequireImpl implements GetListStampEmployeeService.Require {
-		@Inject
 		private StampCardRepository stampCardRepository;
-		@Inject
 		private StampRecordRepository stampRecordRepository;
-		@Inject
 		private StampDakokuRepository stampDakokuRepository;
 
 		@Override
@@ -122,7 +119,7 @@ public class DisplayScreenStampingResultFinder {
 
 		@Override
 		public List<StampRecord> getStampRecord(List<StampNumber> stampNumbers, GeneralDate date) {
-			return stampRecordRepository.get( stampNumbers, date);
+			return stampRecordRepository.get(AppContexts.user().contractCode(), stampNumbers, date);
 		}
 
 		@Override

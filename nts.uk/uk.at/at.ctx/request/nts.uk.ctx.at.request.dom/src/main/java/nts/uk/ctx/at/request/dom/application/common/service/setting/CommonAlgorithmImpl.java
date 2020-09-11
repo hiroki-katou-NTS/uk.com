@@ -63,12 +63,15 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmpl
 import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApprovalFunctionSet;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbycompany.RequestByCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.workplace.requestbyworkplace.RequestByWorkplaceRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.UseATR;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultipleRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
@@ -126,19 +129,22 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 	private AppEmploymentSetRepository appEmploymentSetRepository;
 	
 	@Inject
-	private ClosureService closureService;
+	private ClosureEmploymentRepository closureEmpRepo;
 	
 	@Inject
 	private AppDeadlineSettingGet appDeadlineSettingGet;
-	
-	@Inject
-	private WorkingConditionService workingConditionService;
 	
 	@Inject
 	private WorkTypeRepository workTypeRepository;
 	
 	@Inject
 	private JudgmentOneDayHoliday judgmentOneDayHoliday;
+	
+	@Inject
+	private WorkingConditionRepository workingConditionRepository;
+	
+	@Inject
+	private WorkingConditionItemRepository workingConditionItemRepository;
 
 	@Override
 	public AppDispInfoNoDateOutput getAppDispInfo(String companyID, List<String> applicantLst, ApplicationType appType, 
@@ -256,7 +262,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 				opOvertimeAppAtr,
 				opReceptionRestrictionSetting.map(x -> x.getOtAppBeforeAccepRestric().orElse(null)).orElse(null));
 		// 雇用に紐づく締めを取得する
-		int closureID = closureService.getClosureIDByEmploymentCD(empHistImport.getEmploymentCode());
+		int closureID = closureEmpRepo.findByEmploymentCD(companyID, empHistImport.getEmploymentCode()).get().getClosureId();
 		// 申請締切設定を取得する
 		DeadlineLimitCurrentMonth deadlineLimitCurrentMonth = appDeadlineSettingGet.getApplicationDeadline(companyID, employeeID, closureID);
 		// 取得したした情報をOUTPUT「申請表示情報(基準日関係あり)」にセットする
@@ -500,7 +506,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// 社員の労働条件を取得する(get điiều kiện lao đọng của employee)
 		GeneralDate paramDate = date == null ? GeneralDate.today() : date;
-		Optional<WorkingConditionItem> opWorkingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeID, paramDate);
+		Optional<WorkingConditionItem> opWorkingConditionItem = WorkingConditionService.findWorkConditionByEmployee(createRequireM1(), employeeID, paramDate);
 		String processWorkType = null;
 		String processWorkTime = null; 
 		if(opWorkingConditionItem.isPresent()) {
@@ -704,5 +710,20 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		// メッセージを表示する(Msg_1648)を表示する
 		throw new BusinessException("Msg_1648", date.toString(), msgParam);
+	}
+	
+	private WorkingConditionService.RequireM1 createRequireM1() {
+		return new WorkingConditionService.RequireM1() {
+			
+			@Override
+			public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
+				return workingConditionItemRepository.getByHistoryId(historyId);
+			}
+			
+			@Override
+			public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
+				return workingConditionRepository.getBySidAndStandardDate(companyId, employeeId, baseDate);
+			}
+		};
 	}
 }

@@ -1,46 +1,49 @@
 package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.remainnumberprocess.specialholiday.deletetempdata;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import nts.arc.task.tran.AtomTask;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
-import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 特別休暇暫定データ削除
  * @author shuichi_ishida
  */
-@Stateless
 public class SpecialTempDataDeleting {
 
-	/** 暫定残数管理データ */
-	@Inject
-	private InterimRemainRepository interimRemainRepo;
-	
-	/** 特別休暇暫定データ */
-	@Inject
-	private InterimSpecialHolidayMngRepository tempSpecialRepo;
-	
 	/**
 	 * 特別休暇暫定データ削除
 	 * @param empId 社員ID
 	 * @param period 期間
 	 */
-	public void deleteTempDataProcess(String empId, DatePeriod period) {
+	public static AtomTask deleteTempDataProcess(RequireM1 require, String empId, DatePeriod period) {
 
+		List<AtomTask> atomTask = new ArrayList<>();
+		
 		// 「特別休暇暫定データを削除する」
-		List<InterimRemain> interimRemains = this.interimRemainRepo.getRemainBySidPriod(
-				empId, period, RemainType.SPECIAL);
-		if (CollectionUtil.isEmpty(interimRemains)) return;
+		List<InterimRemain> interimRemains = require.interimRemain(empId, period, RemainType.SPECIAL);
+		if (CollectionUtil.isEmpty(interimRemains)) return AtomTask.bundle(atomTask);
+		
 		List<String> ids = interimRemains.stream().map(b -> b.getRemainManaID()).collect(Collectors.toList());
-		for (String id : ids) this.tempSpecialRepo.deleteSpecialHoliday(id);
-		this.interimRemainRepo.deleteBySidPeriodType(empId, period, RemainType.SPECIAL);
+		
+		for (String id : ids) atomTask.add(AtomTask.of(() -> require.deleteSpecialHolidayInterim(id)));
+		
+		atomTask.add(AtomTask.of(() -> require.deleteInterimRemain(empId, period, RemainType.SPECIAL)));
+		
+		return AtomTask.bundle(atomTask);
+	}
+	
+	public static interface RequireM1 {
+		
+		List<InterimRemain> interimRemain(String employeeId, DatePeriod dateData, RemainType remainType);
+		
+		void deleteSpecialHolidayInterim(String specialId);
+		
+		void deleteInterimRemain(String employeeId, DatePeriod dateData, RemainType remainType);
 	}
 }

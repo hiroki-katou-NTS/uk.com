@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.pubimp.schedule.basicschedule;
 
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,28 +13,24 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone.WorkScheduleTimeZone;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicScheduleExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkBreakTimeExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport;
+import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScWorkScheduleExport_New;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScheduleTimeSheetExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ShortWorkingTimeSheetExport;
 import nts.uk.ctx.at.schedule.pub.schedule.basicschedule.WorkScheduleTimeZoneExport;
-import nts.uk.shr.com.time.TimeWithDayAttr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.gul.collection.CollectionUtil;
 
 /**
  * The Class ScBasicSchedulePubImpl.
@@ -48,6 +42,9 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 	/** The repository. */
 	@Inject
 	private BasicScheduleRepository repository;
+	
+	@Inject
+	private WorkScheduleRepository workScheduleRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -59,87 +56,6 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 	@Override
 	public Optional<ScBasicScheduleExport> findById(String employeeId, GeneralDate baseDate) {
 		return this.repository.find(employeeId, baseDate).map(domain -> this.convertExport(domain));
-	}
-	
-	@Override
-	public Optional<ScWorkScheduleExport> findByIdNew(String employeeId, GeneralDate baseDate) {
-	// return file here
-		try {
-			String currentPath = Paths.get(".").toAbsolutePath().normalize().toString();
-			File fXmlFile = new File(currentPath + "\\datatest\\staff.xml");
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			Document doc = dBuilder.parse(fXmlFile);
-			
-			doc.getDocumentElement().normalize();
-			
-			String testXml = doc.getDocumentElement().getNodeName();
-			String sId = "";
-			GeneralDate date = GeneralDate.today();
-			Element eElement = (Element) doc.getElementsByTagName("data").item(0);
-			String sid = eElement.getElementsByTagName("EmployeeId").item(0).getTextContent();
-			String dateXml = eElement.getElementsByTagName("Date").item(0).getTextContent();
-			String workType = eElement.getElementsByTagName("WorkType").item(0).getTextContent();
-			String workTime = eElement.getElementsByTagName("WorkTime").item(0).getTextContent();
-			List<ScheduleTimeSheetExport> scheduleTimeSheetExports = new ArrayList<ScheduleTimeSheetExport>(); 
-			NodeList nodeScheduleTimeSheetExport = eElement.getElementsByTagName("ScheduleTimeSheetExport");
-			for (int itr = 0; itr < nodeScheduleTimeSheetExport.getLength(); itr++) {
-				Node node = nodeScheduleTimeSheetExport.item(itr); 
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					Element e = (Element) node; 
-					Integer workNo = Integer.parseInt(e.getElementsByTagName("WorkNo").item(0).getTextContent());
-					Integer attendance = Integer.parseInt(e.getElementsByTagName("Attendance").item(0).getTextContent());
-					Integer leaveWork = Integer.parseInt(e.getElementsByTagName("LeaveWork").item(0).getTextContent());
-					ScheduleTimeSheetExport scheduleTimeSheetExport = new ScheduleTimeSheetExport(workNo, new TimeWithDayAttr(attendance), new TimeWithDayAttr(leaveWork));
-					
-					scheduleTimeSheetExports.add(scheduleTimeSheetExport);
-				}
-			}
-			List<ShortWorkingTimeSheetExport> shortWorkingTimeSheetExports = new ArrayList<ShortWorkingTimeSheetExport>(); 
-			NodeList nodeShortWorkingTimeSheetExports = eElement.getElementsByTagName("ShortWorkingTimeSheetExport");
-			for (int itr = 0; itr < nodeShortWorkingTimeSheetExports.getLength(); itr++) {
-				Node node = nodeShortWorkingTimeSheetExports.item(itr); 
-				if (node.getNodeType() == Node.ELEMENT_NODE) {
-					Element e = (Element) node; 
-					Integer shortWorkTimeFrameNo = Integer.parseInt(e.getElementsByTagName("ShortWorkTimeFrameNo").item(0).getTextContent());
-					Integer childCareAttr = Integer.parseInt(e.getElementsByTagName("ChildCareAttr").item(0).getTextContent());
-					Integer startTime = Integer.parseInt(e.getElementsByTagName("StartTime").item(0).getTextContent());
-					Integer endTime = Integer.parseInt(e.getElementsByTagName("EndTime").item(0).getTextContent());
-					Integer deductionTime = Integer.parseInt(e.getElementsByTagName("DeductionTime").item(0).getTextContent());
-					Integer shortTime = Integer.parseInt(e.getElementsByTagName("ShortTime").item(0).getTextContent());
-					
-					ShortWorkingTimeSheetExport shortWorkingTimeSheetExport = new ShortWorkingTimeSheetExport(
-							shortWorkTimeFrameNo,
-							childCareAttr,
-							startTime,
-							endTime,
-							deductionTime,
-							shortTime);
-					shortWorkingTimeSheetExports.add(shortWorkingTimeSheetExport);
-				}
-			}
-			ScWorkScheduleExport scheduleExport = new ScWorkScheduleExport(
-					sid,
-					date,
-					workType,
-					workTime,
-					scheduleTimeSheetExports,
-					shortWorkingTimeSheetExports);
-			return Optional.of(scheduleExport);
-			
-			
-		}catch(Exception e) {
-			return Optional.empty();
-		}
-	}
-	/*
-	 * -PhuongDV- for test
-	 * (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.pub.schedule.basicschedule.ScBasicSchedulePub#findById(java.lang.String, nts.arc.time.GeneralDate)
-	 */
-	@Override
-	public String findByIdTest(String employeeId, GeneralDate baseDate) {
-		return "";
 	}
 	
 	@Override
@@ -192,6 +108,87 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 	@Override
 	public GeneralDate acquireMaxDateBasicSchedule(List<String> sIds) {
 		return this.repository.findMaxDateByListSid(sIds);
+	}
+
+	@Override
+	public Optional<ScWorkScheduleExport> findByIdNew(String employeeId, GeneralDate baseDate) {
+		Optional<WorkSchedule> workSchedule =  workScheduleRepository.get(employeeId, baseDate);
+		if(workSchedule.isPresent()){
+			return Optional.empty();
+		}
+		return Optional.of(convertToWorkSchedule(workSchedule.get()));
+	}
+	
+	private ScWorkScheduleExport convertToWorkSchedule(WorkSchedule ws) {
+		List<ShortWorkingTimeSheetExport> listShortWorkingTimeSheetExport = new ArrayList<>();
+		if (ws.getOptSortTimeWork().isPresent()) {
+			listShortWorkingTimeSheetExport = ws.getOptSortTimeWork().get().getShortWorkingTimeSheets().stream()
+					.map(c -> convertToShortWorkingTimeSheet(c)).collect(Collectors.toList());
+		}
+		List<ScheduleTimeSheetExport> listScheduleTimeSheetExport = ws.getWorkInfo().getScheduleTimeSheets().stream()
+				.map(c -> convertToScheduleTimeSheet(c)).collect(Collectors.toList());
+		return new ScWorkScheduleExport(ws.getEmployeeID(), ws.getYmd(),
+				ws.getWorkInfo().getScheduleInfo().getWorkTypeCode().v(),
+				ws.getWorkInfo().getScheduleInfo().getWorkTimeCode() == null ? null
+						: ws.getWorkInfo().getScheduleInfo().getWorkTimeCode().v(),
+				listScheduleTimeSheetExport, listShortWorkingTimeSheetExport);
+	}
+
+	private ShortWorkingTimeSheetExport convertToShortWorkingTimeSheet(ShortWorkingTimeSheet swt) {
+		return new ShortWorkingTimeSheetExport(swt.getShortWorkTimeFrameNo().v(), swt.getChildCareAttr().value,
+				swt.getStartTime().v(), swt.getEndTime().v(), swt.getDeductionTime().v(), swt.getShortTime().v());
+	}
+
+	private ScheduleTimeSheetExport convertToScheduleTimeSheet(ScheduleTimeSheet st) {
+		return new ScheduleTimeSheetExport(st.getWorkNo().v(), st.getAttendance(), st.getLeaveWork());
+	}
+
+	@Override
+	public ScWorkScheduleExport_New findByIdNewV2(String employeeId, GeneralDate baseDate) {
+		ScWorkScheduleExport_New record = new ScWorkScheduleExport_New();
+//		get 勤務予定
+		Optional<WorkSchedule> workSchedule =  workScheduleRepository.get(employeeId, baseDate);
+		workSchedule.ifPresent(x -> {
+			x.getOptSortTimeWork().ifPresent(y -> {
+				List<ShortWorkingTimeSheet> shortWorkingTimeSheet = y.getShortWorkingTimeSheets();
+				List<ShortWorkingTimeSheetExport> listExport = shortWorkingTimeSheet.stream().map(a ->{
+					return new ShortWorkingTimeSheetExport(
+							a.getShortWorkTimeFrameNo().v(),
+							a.getChildCareAttr().value,
+							a.getStartTime().v(),
+							a.getEndTime().v(),
+							a.getDeductionTime().v(),
+							a.getShortTime().v());
+				}).collect(Collectors.toList());
+				record.setListShortWorkingTimeSheetExport(listExport);							
+			});
+		});
+		
+//		get 勤務予定基本情報
+		Optional<BasicSchedule> basicSchedule = repository.find(employeeId, baseDate);
+		basicSchedule.ifPresent(x -> {
+			record.setEmployeeId(x.getEmployeeId());
+			record.setDate(x.getDate());
+			record.setWorkTypeCode(x.getWorkTypeCode());
+			record.setWorkTimeCode(x.getWorkTimeCode());
+//			勤務予定基本情報.勤務予定時間帯
+			List<WorkScheduleTimeZone> workScheduleTimeZones = x.getWorkScheduleTimeZones();
+			Optional<WorkScheduleTimeZone> with1 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 1).findFirst();
+			Optional<WorkScheduleTimeZone> with2 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 2).findFirst();
+			with1.ifPresent(a -> {
+				record.setScheduleStartClock1(a.getScheduleStartClock());
+				record.setScheduleEndClock1(a.getScheduleEndClock());
+			});
+			with2.ifPresent(a -> {
+				record.setScheduleStartClock2(a.getScheduleStartClock());
+				record.setScheduleEndClock2(a.getScheduleEndClock());
+			});
+			x.getWorkScheduleTime().ifPresent(a -> {
+				record.setChildTime(a.getChildTime().v());
+			});
+			
+		});
+		return record;
 	}
 
 }

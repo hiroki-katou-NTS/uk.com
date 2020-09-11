@@ -7,16 +7,14 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.company;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.DeforLaborSettlementPeriodDto;
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
+import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.ExcessOutsideTimeSetRegDto;
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.FlexMonthWorkTimeAggrSetDto;
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.RegularWorkTimeAggrSetDto;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComDeforLaborMonthActCalSetSetMemento;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComFlexMonthActCalSetSetMemento;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.company.ComRegulaMonthActCalSetSetMemento;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.RegularWorkTimeAggrSet;
 
 /**
  * The Class ComMonthCalSetDto.
@@ -24,8 +22,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 @Getter
 @Setter
 @Builder
-public class ComMonthCalSetDto implements ComRegulaMonthActCalSetSetMemento, ComFlexMonthActCalSetSetMemento,
-		ComDeforLaborMonthActCalSetSetMemento {
+public class ComMonthCalSetDto {
 
 	/** The flex aggr setting. */
 	private FlexMonthWorkTimeAggrSetDto flexAggrSetting;
@@ -35,56 +32,32 @@ public class ComMonthCalSetDto implements ComRegulaMonthActCalSetSetMemento, Com
 
 	/** The defor aggr setting. */
 	private DeforWorkTimeAggrSetDto deforAggrSetting;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
-	 * ComRegulaMonthActCalSetSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.
-	 * common.CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		// Do nothing.
+	
+	public void transfer(DeforWorkTimeAggrSet domain) {
+		deforAggrSetting = DeforWorkTimeAggrSetDto.builder()
+				.aggregateTimeSet(ExcessOutsideTimeSetRegDto.from(domain.getAggregateTimeSet()))
+				.excessOutsideTimeSet(ExcessOutsideTimeSetRegDto.from(domain.getExcessOutsideTimeSet()))
+				.isOtTransCriteria(domain.getDeforLaborCalSetting().isOtTransCriteria())
+				.settlementPeriod(DeforLaborSettlementPeriodDto.from(domain.getDeforLaborAccPeriod()))
+				.build();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
-	 * ComRegulaMonthActCalSetSetMemento#setRegulaAggrSetting(nts.uk.ctx.at.
-	 * record.dom.workrecord.monthcal.RegularWorkTimeAggrSet)
-	 */
-	@Override
-	public void setRegulaAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew) {
-		regAggrSetting = RegularWorkTimeAggrSetDto.builder().build();
-		regAggrSetting.fromDomain(legalAggrSetOfRegNew);
+	public void transfer(RegularWorkTimeAggrSet domain) {
+		regAggrSetting = RegularWorkTimeAggrSetDto.builder()
+				.aggregateTimeSet(ExcessOutsideTimeSetRegDto.from(domain.getAggregateTimeSet()))
+				.excessOutsideTimeSet(ExcessOutsideTimeSetRegDto.from(domain.getExcessOutsideTimeSet()))
+				.build();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
-	 * ComDeforLaborMonthActCalSetSetMemento#setDeforAggrSetting(nts.uk.ctx.at.
-	 * record.dom.workrecord.monthcal.DeforWorkTimeAggrSet)
-	 */
-	@Override
-	public void setDeforAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
-		deforAggrSetting = DeforWorkTimeAggrSetDto.builder().build();
-		deforAggrSetting.fromDomain(legalAggrSetOfIrgNew);
+	public void transfer(FlexMonthWorkTimeAggrSet domain) {
+		flexAggrSetting = FlexMonthWorkTimeAggrSetDto.builder()
+				.aggrMethod(domain.getAggrMethod().value)
+				.includeIllegalHdwk(domain.getFlexTimeHandle().isIncludeIllegalHdwk() ? 1 : 0)
+				.includeOverTime(domain.getFlexTimeHandle().isIncludeOverTime() ? 1 : 0)
+				.insufficSet(domain.getInsufficSet().getCarryforwardSet().value)
+				.period(domain.getInsufficSet().getPeriod().value)
+				.settlePeriod(domain.getInsufficSet().getSettlePeriod().value)
+				.startMonth(domain.getInsufficSet().getStartMonth().v())
+				.legalAggrSet(domain.getLegalAggrSet().getAggregateSet().value)
+				.build();
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.company.
-	 * ComFlexMonthActCalSetSetMemento#setFlexAggrSetting(nts.uk.ctx.at.record.
-	 * dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet)
-	 */
-	@Override
-	public void setFlexAggrSetting(FlexMonthWorkTimeAggrSet aggrSetting) {
-		flexAggrSetting = FlexMonthWorkTimeAggrSetDto.builder().build();
-		flexAggrSetting.fromDomain(aggrSetting);
-	}
-
 }

@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.totalworkingtime.overtime.KrcdtMonAggrOverTimePK;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTimeRepository;
 
 /**
  * リポジトリ実装：集計残業時間

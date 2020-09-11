@@ -20,6 +20,6 @@ public class CalendarClassDto {
 				domain.getCompanyId(),
 				domain.getClassId().v(),
 				domain.getDate(),
-				domain.getWorkingDayAtr().value);
+				domain.getWorkDayDivision().value);
 	}
 }

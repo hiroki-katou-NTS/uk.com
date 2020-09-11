@@ -1,25 +1,32 @@
 package nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.stampsetting;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
-import nts.uk.ctx.at.request.dom.setting.UseDivision;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.*;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
-import nts.uk.shr.com.color.ColorCode;
-import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
-import org.apache.commons.lang3.BooleanUtils;
+import java.util.Arrays;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.util.Arrays;
+
+import org.apache.commons.lang3.BooleanUtils;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.UseDivision;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.GoOutType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.GoOutTypeDispControl;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SupportFrameDispNO;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.stampapplication.StampAppReflect;
+import nts.uk.shr.com.color.ColorCode;
+import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Getter
 @Setter

@@ -9,9 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.find.application.common.dto.AchievementDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.SEmpHistImportDto;
+import nts.uk.ctx.at.request.app.find.application.common.service.other.output.ActualContentDisplayDto;
 import nts.uk.ctx.at.request.app.find.setting.employment.appemploymentsetting.AppEmploymentSetDto;
 import nts.uk.ctx.at.request.app.find.setting.workplace.appuseset.ApprovalFunctionSetDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
@@ -87,7 +87,7 @@ public class AppDispInfoWithDateDto {
 	/**
 	 * 表示する実績内容
 	 */
-	private List<AchievementDto> opAchievementOutputLst;
+	private List<ActualContentDisplayDto> opActualContentDisplayLst;
 	
 	/**
 	 * 表示する事前申請内容
@@ -160,8 +160,8 @@ public class AppDispInfoWithDateDto {
 		if(opErrorFlag != null) {
 			appDispInfoWithDateOutput.setOpErrorFlag(Optional.of(EnumAdaptor.valueOf(opErrorFlag, ErrorFlagImport.class)));
 		}
-		if(opAchievementOutputLst != null) {
-			// appDispInfoWithDateOutput.setOpAchievementOutputLst(Optional.of(opAchievementOutputLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
+		if(opActualContentDisplayLst != null) {
+			appDispInfoWithDateOutput.setOpActualContentDisplayLst(Optional.of(opActualContentDisplayLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));
 		}
 		if(opPreAppContentDispDtoLst != null) {
 			appDispInfoWithDateOutput.setOpPreAppContentDisplayLst(Optional.of(opPreAppContentDispDtoLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())));

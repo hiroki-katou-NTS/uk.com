@@ -7,11 +7,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeCompany;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeCompanyPK;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
 
 @Stateless
 public class JpaAgreementTimeCompanyRepository extends JpaRepository implements AgreementTimeCompanyRepository {

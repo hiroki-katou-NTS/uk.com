@@ -9,16 +9,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordAdapter;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.application.ApplicationRecordImport;
 import nts.uk.ctx.at.record.dom.adapter.company.StatusOfEmployeeExport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.ApprovalStatusAdapter;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.AppRootOfEmpMonthImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApprovalRootOfEmployeeImport;
 import nts.uk.ctx.at.record.dom.adapter.workflow.service.dtos.ApproveRootStatusForEmpImport;
-import nts.uk.ctx.at.record.dom.application.realitystatus.RealityStatusService;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.CommonProcess;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmInfoResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.EmployeeDateErrorOuput;
@@ -28,11 +28,9 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCR
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.Identification;
 import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.month.ConfirmationMonth;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.ConfirmationMonthRepository;
-import nts.uk.ctx.at.record.dom.workrecord.identificationstatus.repository.IdentificationRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx
@@ -43,24 +41,10 @@ public class ApprovalStatusInfoEmp {
 
 	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
-
-	@Inject
-	private IdentificationRepository identificationRepository;
-
 	@Inject
 	private ApprovalStatusAdapter approvalStatusAdapter;
-
-	@Inject
-	private ApplicationRecordAdapter applicationRecordAdapter;
-
-	@Inject
-	private ConfirmationMonthRepository confirmationMonthRepository;
-
-	@Inject
-	private RealityStatusService realityStatusService;
-	
-	@Inject
-	private GetClosurePeriod getClosurePeriod;
+	@Inject 
+	private RecordDomRequireService requireService;
 
 	public List<ConfirmInfoResult> approvalStatusInfoOneEmp(String companyId, String empTarget, String employeeId,
 			Optional<DatePeriod> periodOpt, Optional<YearMonth> yearMonthOpt, boolean isCallBy587) {
@@ -73,7 +57,7 @@ public class ApprovalStatusInfoEmp {
 		} else {
 			// 年月を指定して集計期間を求める
 			GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(), yearMonthOpt.get().lastDateInMonth());
-			lstClosure = getClosurePeriod.fromYearMonth(employeeId, dateRefer, yearMonthOpt.get());
+			lstClosure = GetClosurePeriod.fromYearMonth(requireService.createRequire(), new CacheCarrier(), employeeId, dateRefer, yearMonthOpt.get());
 		}
 
 		// Output「締め処理期間．集計期間．期間」のMAX期間を求める
@@ -172,7 +156,7 @@ public class ApprovalStatusInfoEmp {
 			} else {
 				// TODO: 年月を指定して集計期間を求める
 				GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(), yearMonthOpt.get().lastDateInMonth());
-				lstClosure = getClosurePeriod.fromYearMonth(employeeId, dateRefer, yearMonthOpt.get());
+				lstClosure = GetClosurePeriod.fromYearMonth(requireService.createRequire(), new CacheCarrier(), employeeId, dateRefer, yearMonthOpt.get());
 			}
 
 			// Output「締め処理期間．集計期間．期間」のMAX期間を求める

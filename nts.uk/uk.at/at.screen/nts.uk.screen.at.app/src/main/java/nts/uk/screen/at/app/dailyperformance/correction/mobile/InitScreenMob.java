@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
@@ -30,13 +31,14 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Ap
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
@@ -109,9 +111,6 @@ public class InitScreenMob {
 	private ApplicationListForScreen applicationListFinder;
 
 	@Inject
-	private AbsenceTenProcess absenceTenProcess;
-
-	@Inject
 	private DataDialogWithTypeProcessor dataDialogWithTypeProcessor;
 
 	@Inject
@@ -125,6 +124,9 @@ public class InitScreenMob {
 
 	@Inject
 	private DaiPerformanceFunFinder daiPerformanceFunFinder;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 
 	private static final Integer[] DEVIATION_REASON = { 436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456,
 			458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822 };
@@ -454,14 +456,18 @@ public class InitScreenMob {
 		String sId = AppContexts.user().employeeId();
 		// 休暇管理状況をチェックする
 		// 10-1.年休の設定を取得する
-		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyId);
+		AnnualHolidaySetOutput annualHd = AbsenceTenProcess.getSettingForAnnualHoliday(
+				requireService.createRequire(), companyId);
 		// 10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyId, sId,
+		SubstitutionHolidayOutput subHd = AbsenceTenProcess.getSettingForSubstituteHoliday(
+				requireService.createRequire(), new CacheCarrier(), companyId, sId,
 				GeneralDate.today());
 		// 10-3.振休の設定を取得する
-		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyId, sId, GeneralDate.today());
+		LeaveSetOutput leaveSet = AbsenceTenProcess.getSetForLeave(
+				requireService.createRequire(), new CacheCarrier(), companyId, sId, GeneralDate.today());
 		// 10-4.積立年休の設定を取得する
-		boolean isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyId, sId, GeneralDate.today());
+		boolean isRetentionManage = AbsenceTenProcess.getSetForYearlyReserved(
+				requireService.createRequire(), new CacheCarrier(), companyId, sId, GeneralDate.today());
 
 		if ((annualHd.isYearHolidayManagerFlg() || subHd.isSubstitutionFlg() || leaveSet.isSubManageFlag()
 				|| isRetentionManage) && displayFormat == 0) {
@@ -517,8 +523,8 @@ public class InitScreenMob {
 		appplicationDisable.forEach(x -> {
 			String key = x.getEmployeeID() + "|" + x.getAppDate();
 			if (disableSignMap != null) {
-				boolean disable = (x.getReflectState() == ReflectedState.NOTREFLECTED.value
-						|| x.getReflectState() == ReflectedState.REMAND.value)
+				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
+						|| x.getReflectState() == ReflectedState_New.REMAND.value)
 						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);

@@ -9,6 +9,10 @@
 }
 
 .kdp-003-a #stamp-input.time-stamp {
+	min-width: 100%;
+}
+
+.kdp-003-a .has-time-sheet #stamp-input.time-stamp {
 	min-width: calc(100% - 270px);
 }
 
@@ -23,4 +27,9 @@
 
 .kdp-003-a .control-panel:not(.has-time-sheet) .time-sheet {
 	display: none;
+}
+
+.kdp-003-a .not_used_label {
+	color: red;
+	font-size: 1.2rem !important;
 }

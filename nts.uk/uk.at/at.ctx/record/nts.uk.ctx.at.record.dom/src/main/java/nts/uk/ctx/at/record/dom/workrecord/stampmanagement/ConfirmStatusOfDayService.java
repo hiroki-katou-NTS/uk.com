@@ -10,6 +10,7 @@ import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.workplace.SWkpHistRcImported;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ConfirmStatusActualResult;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ReleasedAtr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.DailyLock;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.StatusActualDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
@@ -32,6 +33,9 @@ public class ConfirmStatusOfDayService {
 	 */
 	public static ConfirmStatusActualResult get(Require require,String companyId,String employeeId,GeneralDate baseDate) {
 		Closure closure = require.getClosureDataByEmployee(employeeId, baseDate);
+		if(closure == null) {
+			return new ConfirmStatusActualResult(employeeId, baseDate, false, ReleasedAtr.CAN_NOT_IMPLEMENT, ReleasedAtr.CAN_NOT_IMPLEMENT);
+		}
 		Optional<SWkpHistRcImported> optSWkpHistRcImported = require.findBySid( employeeId, baseDate);
 		if(!optSWkpHistRcImported.isPresent()) {
 			throw new BusinessException("Msg_427");
