@@ -354,7 +354,12 @@ public class ReflectAttendanceClock {
 				workStampNew.setLocationCode(Optional.empty());
 				workStampNew.setAfterRoundingTime(timeWithDayAttr);
 				workStamp = Optional.of(workStampNew);
-				timeActualStamp.get().setStamp(workStamp);
+				if(actualStampAtr == ActualStampAtr.STAMP ) {
+					timeActualStamp.get().setStamp(workStamp);
+				}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+					timeActualStamp.get().setActualStamp(workStamp);
+				}
+				
 			}
 			//打刻を丸める (làm tròn 打刻)
 			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
