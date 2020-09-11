@@ -877,7 +877,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
                             self.bindVisibleView(self.data.appWorkChangeDispInfo);
                             // this.model.workType.code = f.selectedWorkType.workTypeCode;
                             // this.model.workType.name = f.selectedWorkType.name;
-                            if (!(f.selectedWorkTime.code == '' && res.data.setupType == 2)) {
+                            if (!(f.selectedWorkTime.code == '' && res.data.setupType == 0)) {
                                 this.model.workTime.code = f.selectedWorkTime.code;
                                 this.model.workTime.name = f.selectedWorkTime.name;
                                 this.model.workTime.time = f.selectedWorkTime.workTime1;
