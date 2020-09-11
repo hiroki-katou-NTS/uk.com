@@ -122,4 +122,17 @@ public class TimeLeavingOfDailyAttd implements DomainObject{
 	public void timeLeavesChanged(String employeeId,GeneralDate ymd) {
 		TimeLeaveChangeEvent.builder().employeeId(employeeId).targetDate(ymd).timeLeave(this.timeLeavingWorks).build().toBePublished();
 	}
+	
+	// 出退勤回数の計算
+	public void setCountWorkTime() {
+		this.workTimes = new WorkTimes((int) this.timeLeavingWorks.stream().filter(x -> {
+			if (x.getAttendanceStamp().isPresent() && x.getAttendanceStamp().get().getStamp().isPresent()
+					&& x.getAttendanceStamp().get().getStamp().get().getTimeDay() != null
+					&& x.getLeaveStamp().isPresent() && x.getLeaveStamp().get().getStamp().isPresent()
+					&& x.getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
+				return true;
+			}
+			return false;
+		}).count());
+	}
 }
