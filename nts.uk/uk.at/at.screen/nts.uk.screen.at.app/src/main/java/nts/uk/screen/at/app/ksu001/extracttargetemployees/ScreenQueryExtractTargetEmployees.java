@@ -109,7 +109,7 @@ public class ScreenQueryExtractTargetEmployees {
 		// 並び順に基づいて社員を並び替える(Require, 年月日, List<社員ID>)
 		List<String> listSidOrder = SortEmpService.sortEmpTheirOrder(requireSortEmpImpl, param.baseDate, sids2);		
 				
-		listEmp.sort(Comparator.comparingInt(listSidOrder::indexOf));
+		listEmp.sort(Comparator.comparing(v-> listSidOrder.indexOf(v.getEmployeeId())));
 		
 		return listEmp;
 		
