@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.infra.entity.application.businesstrip.KrqdtAppTripP
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.TimeZoneWithWorkNo;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 import javax.ejb.Stateless;
 import java.text.DateFormat;
@@ -143,8 +144,8 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
                 (wkTimeStart == null && wkTimeEnd == null) ? Optional.empty() : Optional.of(Arrays.asList(new TimeZoneWithWorkNo(1,wkTimeStart, wkTimeEnd)) )
         );
         businessTrip.setInfos(Arrays.asList(businessTripInfo));
-        businessTrip.setDepartureTime(Optional.ofNullable(startTime));
-        businessTrip.setReturnTime(Optional.ofNullable(returnTime));
+        businessTrip.setDepartureTime(startTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(startTime)));
+        businessTrip.setReturnTime(returnTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(returnTime)));
         return businessTrip;
     }
 
@@ -161,8 +162,8 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
             entity.setContractCD(contractCd);
             entity.setWorkTypeCD(i.getWorkInformation().getWorkTypeCode().v());
             entity.setWorkTimeCD(i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v());
-            entity.setStartTime(domain.getDepartureTime().isPresent() ? domain.getDepartureTime().get() : null);
-            entity.setArrivalTime(domain.getReturnTime().isPresent() ? domain.getReturnTime().get() : null);
+            entity.setStartTime(domain.getDepartureTime().isPresent() ? domain.getDepartureTime().get().v() : null);
+            entity.setArrivalTime(domain.getReturnTime().isPresent() ? domain.getReturnTime().get().v() : null);
             entity.setWorkTimeStart(i.getWorkingHours().isPresent() ? i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v() : null);
             entity.setWorkTimeEnd(i.getWorkingHours().isPresent() ? i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v() : null);
             entities.add(entity);
