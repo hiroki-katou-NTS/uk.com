@@ -237,7 +237,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     vm.dataFetch(cloneData);
                 }
             }).fail(err => {
-                contentChanged.workTimeCD = timeCode;
+                contentChanged.workTimeCD = "";
                 contentChanged.opWorkTimeName = "なし";
 
                 vm.dataFetch(cloneData);
