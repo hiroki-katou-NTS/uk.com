@@ -56,7 +56,7 @@ public class AutoStampSettingProcess {
 				timeLeavingOptional == null ? new ArrayList<>() : timeLeavingOptional.getTimeLeavingWorks());
 
 		// 返ってきた「日別実績の出退勤」を返す
-		if (lstTimeLeavResult != null) {
+		if (timeLeavingOptional != null) {
 			timeLeavingOptional.setTimeLeavingWorks(lstTimeLeavResult);
 			return timeLeavingOptional;
 		}
