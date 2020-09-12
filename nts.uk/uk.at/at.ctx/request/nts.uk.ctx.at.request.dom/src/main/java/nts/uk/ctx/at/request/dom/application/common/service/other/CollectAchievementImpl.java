@@ -32,28 +32,28 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
 /**
- * 
+ *
  * @author Doan Duy Hung
  *
  */
 @Stateless
 public class CollectAchievementImpl implements CollectAchievement {
-	
+
 	@Inject
 	private RecordWorkInfoAdapter recordWorkInfoAdapter;
-	
+
 	@Inject
 	private ScheduleManagementControlAdapter scheduleManagementControlAdapter;
 
 	@Inject
 	private ScBasicScheduleAdapter scBasicScheduleAdapter;
-	
+
 	@Inject
 	private WorkTypeRepository workTypeRepository;
-	
+
 	@Inject
 	private WorkTimeSettingRepository WorkTimeRepository;
-	
+
 	@Override
 	public ActualContentDisplay getAchievement(String companyID, String applicantID, GeneralDate appDate) {
 		//Imported(申請承認)「勤務実績」を取得する - (lấy thông tin Imported(appAproval)「DailyPerformance」) - RQ5
@@ -110,42 +110,48 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//・実績詳細．遅刻早退実績．予定出勤時刻2＝OUTPUT．勤務予定．開始時刻2
 			//・実績詳細．遅刻早退実績．予定退勤時刻2＝OUTPUT．勤務予定．終了時刻2
 			achievementEarly = new AchievementEarly(
-					scBasicScheduleImport.getScheduleStartClock1(), 
-					scBasicScheduleImport.getScheduleStartClock2(), 
-					scBasicScheduleImport.getScheduleEndClock1(), 
+					scBasicScheduleImport.getScheduleStartClock1(),
+					scBasicScheduleImport.getScheduleStartClock2(),
+					scBasicScheduleImport.getScheduleEndClock1(),
 					scBasicScheduleImport.getScheduleEndClock2());
 		} else {//取得件数＝1件(số data lấy được = 1)
 			// 実績スケ区分＝日別実績 (Phân loại thực tế = Thực tế hàng ngày )
 			trackRecordAtr = TrackRecordAtr.DAILY_RESULTS;
 			//・実績詳細．1勤務種類コード＝OUTPUT．勤務実績．勤務種類コード
-			workTypeCD = recordWorkInfoImport.getWorkTypeCode().v();
+			workTypeCD = recordWorkInfoImport.getWorkTypeCode() == null ? null
+					: recordWorkInfoImport.getWorkTypeCode().v();
 			//・実績詳細．3就業時間帯コード＝OUTPUT．勤務実績．勤務種類コード
-			workTimeCD = recordWorkInfoImport.getWorkTimeCode().v();
+			workTimeCD = recordWorkInfoImport.getWorkTimeCode() == null ? null
+					: recordWorkInfoImport.getWorkTimeCode().v();
 			//・実績詳細．5出勤時刻＝OUTPUT．勤務実績．出勤時刻1
-			opWorkTime = recordWorkInfoImport.getStartTime1().getTimeWithDay().map(x -> x.v());
+			opWorkTime = recordWorkInfoImport.getStartTime1() == null ? Optional.empty()
+					: recordWorkInfoImport.getStartTime1().getTimeWithDay().map(x -> x.v());
 			//・実績詳細．6退勤時刻＝OUTPUT．勤務実績．退勤時刻1
-			opLeaveTime = recordWorkInfoImport.getEndTime1().getTimeWithDay().map(x -> x.v());
+			opLeaveTime = recordWorkInfoImport.getEndTime1() == null ? Optional.empty()
+					: recordWorkInfoImport.getEndTime1().getTimeWithDay().map(x -> x.v());
 			//・実績詳細．9出勤時刻2＝OUTPUT．勤務実績．出勤時刻2
-			opWorkTime2 = recordWorkInfoImport.getStartTime2().getTimeWithDay().map(x -> x.v());
+			opWorkTime2 = recordWorkInfoImport.getStartTime2() == null ? Optional.empty()
+					: recordWorkInfoImport.getStartTime2().getTimeWithDay().map(x -> x.v());
 			//・実績詳細．10退勤時刻2＝OUTPUT．勤務実績．退勤時刻2
-			opDepartureTime2 = recordWorkInfoImport.getEndTime2().getTimeWithDay().map(x -> x.v());
+			opDepartureTime2 = recordWorkInfoImport.getEndTime2() == null ? Optional.empty()
+					: recordWorkInfoImport.getEndTime2().getTimeWithDay().map(x -> x.v());
 			//・実績詳細．遅刻早退実績．予定出勤時刻1＝OUTPUT．勤務実績．予定出勤時刻1
 			//・実績詳細．遅刻早退実績．予定退勤時刻1＝OUTPUT．勤務実績．予定退勤時刻1
 			//・実績詳細．遅刻早退実績．予定出勤時刻2＝OUTPUT．勤務実績．予定出勤時刻2
 			//・実績詳細．遅刻早退実績．予定退勤時刻2＝OUTPUT．勤務実績．予定退勤時刻2
 			achievementEarly = new AchievementEarly(
-					recordWorkInfoImport.getScheduledAttendence1(), 
-					recordWorkInfoImport.getScheduledAttendence2(), 
-					recordWorkInfoImport.getScheduledDeparture1(), 
+					recordWorkInfoImport.getScheduledAttendence1(),
+					recordWorkInfoImport.getScheduledAttendence2(),
+					recordWorkInfoImport.getScheduledDeparture1(),
 					recordWorkInfoImport.getScheduledDeparture2());
 			//・実績詳細．勤怠時間内容．早退時間＝OUTPUT．勤務実績．早退時間
 			//・実績詳細．勤怠時間内容．遅刻時間＝OUTPUT．勤務実績．遅刻時間
 			//・実績詳細．勤怠時間内容．早退時間2＝OUTPUT．勤務実績．早退時間2
 			//・実績詳細．勤怠時間内容．遅刻時間2＝OUTPUT．勤務実績．遅刻時間2
 			timeContentOutput = new TimeContentOutput(
-					recordWorkInfoImport.getEarlyLeaveTime1(), 
-					recordWorkInfoImport.getEarlyLeaveTime2(), 
-					recordWorkInfoImport.getLateTime1(), 
+					recordWorkInfoImport.getEarlyLeaveTime1(),
+					recordWorkInfoImport.getEarlyLeaveTime2(),
+					recordWorkInfoImport.getLateTime1(),
 					recordWorkInfoImport.getLateTime2());
 			//・実績詳細．勤怠時間内容．短時間勤務時間帯＝OUTPUT．勤務実績．短時間勤務時間帯
 			shortWorkTimeLst = recordWorkInfoImport.getShortWorkingTimeSheets();
@@ -165,25 +171,25 @@ public class CollectAchievementImpl implements CollectAchievement {
 		//ドメインモデル「就業時間帯」を1件取得する - (lấy 1 dữ liệu của domain 「WorkTime」)
 		opWorkTimeName = WorkTimeRepository.findByCode(companyID, workTimeCD).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v());
 		AchievementDetail achievementDetail = new AchievementDetail(
-				workTypeCD, 
-				workTimeCD, 
+				workTypeCD,
+				workTimeCD,
 				breakTimeSheets,
-				timeContentOutput, 
-				trackRecordAtr, 
-				stampRecordOutput, 
-				shortWorkTimeLst, 
-				achievementEarly, 
-				opDepartureTime2, 
-				opWorkTypeName, 
-				opWorkTimeName, 
-				opWorkTime, 
-				opLeaveTime, 
-				opAchievementStatus, 
-				opWorkTime2, 
-				opOvertimeMidnightTime, 
-				opInlawHolidayMidnightTime, 
-				opOutlawHolidayMidnightTime, 
-				opPublicHolidayMidnightTime, 
+				timeContentOutput,
+				trackRecordAtr,
+				stampRecordOutput,
+				shortWorkTimeLst,
+				achievementEarly,
+				opDepartureTime2,
+				opWorkTypeName,
+				opWorkTimeName,
+				opWorkTime,
+				opLeaveTime,
+				opAchievementStatus,
+				opWorkTime2,
+				opOvertimeMidnightTime,
+				opInlawHolidayMidnightTime,
+				opOutlawHolidayMidnightTime,
+				opPublicHolidayMidnightTime,
 				opOvertimeLeaveTimeLst);
 		return new ActualContentDisplay(appDate, Optional.of(achievementDetail));
 	}
