@@ -358,7 +358,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				&& appDispInfoWithDateOutput.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail()
 						.isPresent()
 				&& appDispInfoWithDateOutput.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-						.getAchievementEarly() == null) {
+						.getAchievementEarly() != null) {
 			lateEarlyActualResults = Optional.of(appDispInfoWithDateOutput.getOpActualContentDisplayLst().get().get(0)
 					.getOpAchievementDetail().get().getAchievementEarly());
 		}
