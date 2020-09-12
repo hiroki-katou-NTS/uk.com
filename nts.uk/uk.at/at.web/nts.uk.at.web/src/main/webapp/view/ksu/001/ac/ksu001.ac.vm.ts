@@ -6,7 +6,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
     export class ScreenModel {
 
         modeCompany: KnockoutObservable<boolean> = ko.observable(true);
-        workplaceModeName : KnockoutObservable<String > = ko.observable('');
+        workplaceModeName : KnockoutObservable<String > = ko.observable(getText("Com_Workplace"));
         
         palletUnit: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedpalletUnit: KnockoutObservable<number> ;
@@ -49,7 +49,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             
             self.palletUnit = ko.observableArray([
                 { code: 1, name: getText("Com_Company") },
-                { code: 2, name: getText("Com_Workplace") }
+                { code: 2, name: self.workplaceModeName() }
             ]);
             
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
