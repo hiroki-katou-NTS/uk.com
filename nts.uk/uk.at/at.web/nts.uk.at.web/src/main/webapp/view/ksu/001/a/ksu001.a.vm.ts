@@ -1908,11 +1908,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.editModeToConfirmMode();
                     self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
+                    self.pasteData();
                 }).ifNo(() => { });
             } else {
                 self.editModeToConfirmMode();
                 self.enableBtnRedo(false);
                 self.enableBtnUndo(false);
+                self.pasteData();
             }
         }
         
@@ -1954,9 +1956,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.confirmModeToeditMode();
+                    self.pasteData();
                 }).ifNo(() => { });
             } else {
                 self.confirmModeToeditMode();
+                self.pasteData();
             }
         }
         
