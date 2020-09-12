@@ -170,7 +170,7 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 			record.setEmployeeId(x.getEmployeeId());
 			record.setDate(x.getDate());
 			record.setWorkTypeCode(x.getWorkTypeCode());
-			record.setWorkTimeCode(x.getWorkTimeCode());
+			record.setWorkTimeCode(Optional.ofNullable(x.getWorkTimeCode()));
 //			勤務予定基本情報.勤務予定時間帯
 			List<WorkScheduleTimeZone> workScheduleTimeZones = x.getWorkScheduleTimeZones();
 			Optional<WorkScheduleTimeZone> with1 = workScheduleTimeZones.stream().filter(item -> item.getScheduleCnt() == 1).findFirst();
@@ -180,8 +180,8 @@ public class ScBasicSchedulePubImpl implements ScBasicSchedulePub {
 				record.setScheduleEndClock1(a.getScheduleEndClock());
 			});
 			with2.ifPresent(a -> {
-				record.setScheduleStartClock2(a.getScheduleStartClock());
-				record.setScheduleEndClock2(a.getScheduleEndClock());
+				record.setScheduleStartClock2(Optional.of(a.getScheduleStartClock()));
+				record.setScheduleEndClock2(Optional.of(a.getScheduleEndClock()));
 			});
 			x.getWorkScheduleTime().ifPresent(a -> {
 				record.setChildTime(a.getChildTime().v());

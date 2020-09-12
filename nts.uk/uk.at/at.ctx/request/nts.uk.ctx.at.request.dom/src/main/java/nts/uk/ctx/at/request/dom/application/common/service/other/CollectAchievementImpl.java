@@ -53,7 +53,16 @@ public class CollectAchievementImpl implements CollectAchievement {
 
 	@Inject
 	private WorkTimeSettingRepository WorkTimeRepository;
-
+	
+	public StampRecordOutput createStampRecord() {
+		return new StampRecordOutput(null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null);
+	}
 	@Override
 	public ActualContentDisplay getAchievement(String companyID, String applicantID, GeneralDate appDate) {
 		//Imported(申請承認)「勤務実績」を取得する - (lấy thông tin Imported(appAproval)「DailyPerformance」) - RQ5
@@ -63,7 +72,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 		List<BreakTimeSheet> breakTimeSheets = Collections.emptyList();
 		TimeContentOutput timeContentOutput = null;
 		TrackRecordAtr trackRecordAtr = null;
-		StampRecordOutput stampRecordOutput = null;
+		StampRecordOutput stampRecordOutput = this.createStampRecord();
 		List<ShortWorkingTimeSheet> shortWorkTimeLst = Collections.emptyList();
 		AchievementEarly achievementEarly = null;
 		Optional<Integer> opDepartureTime2 = Optional.empty();
@@ -87,7 +96,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//管理する
 			//Imported(申請承認)「勤務予定」を取得する(lấy thông tin imported(申請承認)「勤務予定」)
 			ScBasicScheduleImport scBasicScheduleImport = scBasicScheduleAdapter.findByIDRefactor(applicantID, appDate);
-			if(Strings.isBlank(scBasicScheduleImport.getWorkTypeCode()) && Strings.isBlank(scBasicScheduleImport.getWorkTimeCode())){
+			if(Strings.isBlank(scBasicScheduleImport.getWorkTypeCode()) && Strings.isBlank(scBasicScheduleImport.getWorkTimeCode().orElse(null))){
 				//取得件数＝0件 ( số data lấy được  = 0)
 				return new ActualContentDisplay(appDate, Optional.empty());
 			}
@@ -96,15 +105,17 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//・実績詳細．1勤務種類コード＝OUTPUT．勤務予定．勤務種類コード
 			workTypeCD = scBasicScheduleImport.getWorkTypeCode();
 			//・実績詳細．3就業時間帯コード＝OUTPUT．勤務予定．勤務種類コード
-			workTimeCD = scBasicScheduleImport.getWorkTimeCode();
+			workTimeCD = scBasicScheduleImport.getWorkTimeCode().orElse(null);
 			//・実績詳細．5出勤時刻＝OUTPUT．勤務予定．開始時刻1
+			// check null to remove exception
 			opWorkTime = scBasicScheduleImport.getScheduleStartClock1() == null ? Optional.empty() : Optional.of(scBasicScheduleImport.getScheduleStartClock1().v());
 			//・実績詳細．6退勤時刻＝OUTPUT．勤務予定．終了時刻1
+			// check null to remove exception
 			opLeaveTime = scBasicScheduleImport.getScheduleEndClock1() == null ? Optional.empty() : Optional.of(scBasicScheduleImport.getScheduleEndClock1().v());
 			//・実績詳細．9出勤時刻2＝OUTPUT．勤務予定．開始時刻2
-			opWorkTime2 = scBasicScheduleImport.getScheduleStartClock2() == null ? Optional.empty() : Optional.of(scBasicScheduleImport.getScheduleStartClock2().v());
+			opWorkTime2 = scBasicScheduleImport.getScheduleStartClock2().map(x -> x.v());
 			//・実績詳細．10退勤時刻2＝OUTPUT．勤務予定．終了時刻2
-			opDepartureTime2 = scBasicScheduleImport.getScheduleEndClock2() == null ? Optional.empty() : Optional.of(scBasicScheduleImport.getScheduleEndClock2().v());
+			opDepartureTime2 = scBasicScheduleImport.getScheduleEndClock2().map(x -> x.v());
 			//・実績詳細．遅刻早退実績．予定出勤時刻1＝OUTPUT．勤務予定．開始時刻1
 			//・実績詳細．遅刻早退実績．予定退勤時刻1＝OUTPUT．勤務予定．終了時刻1
 			//・実績詳細．遅刻早退実績．予定出勤時刻2＝OUTPUT．勤務予定．開始時刻2
@@ -124,17 +135,16 @@ public class CollectAchievementImpl implements CollectAchievement {
 			workTimeCD = recordWorkInfoImport.getWorkTimeCode() == null ? null
 					: recordWorkInfoImport.getWorkTimeCode().v();
 			//・実績詳細．5出勤時刻＝OUTPUT．勤務実績．出勤時刻1
-			opWorkTime = recordWorkInfoImport.getStartTime1() == null ? Optional.empty()
-					: recordWorkInfoImport.getStartTime1().getTimeWithDay().map(x -> x.v());
+			opWorkTime = recordWorkInfoImport.getStartTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
 			//・実績詳細．6退勤時刻＝OUTPUT．勤務実績．退勤時刻1
 			opLeaveTime = recordWorkInfoImport.getEndTime1() == null ? Optional.empty()
-					: recordWorkInfoImport.getEndTime1().getTimeWithDay().map(x -> x.v());
+					: recordWorkInfoImport.getEndTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
 			//・実績詳細．9出勤時刻2＝OUTPUT．勤務実績．出勤時刻2
 			opWorkTime2 = recordWorkInfoImport.getStartTime2() == null ? Optional.empty()
-					: recordWorkInfoImport.getStartTime2().getTimeWithDay().map(x -> x.v());
+					: recordWorkInfoImport.getStartTime2().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
 			//・実績詳細．10退勤時刻2＝OUTPUT．勤務実績．退勤時刻2
 			opDepartureTime2 = recordWorkInfoImport.getEndTime2() == null ? Optional.empty()
-					: recordWorkInfoImport.getEndTime2().getTimeWithDay().map(x -> x.v());
+					: recordWorkInfoImport.getEndTime2().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
 			//・実績詳細．遅刻早退実績．予定出勤時刻1＝OUTPUT．勤務実績．予定出勤時刻1
 			//・実績詳細．遅刻早退実績．予定退勤時刻1＝OUTPUT．勤務実績．予定退勤時刻1
 			//・実績詳細．遅刻早退実績．予定出勤時刻2＝OUTPUT．勤務実績．予定出勤時刻2

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.pub.workinformation;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -38,38 +39,38 @@ public class RecordWorkInfoPubExport_New {
 	
 //	開始時刻1
 //	日別実績の出退勤．出退勤．出退勤．勤務NO＝1
-	private WorkTimeInformation startTime1;	
+	private Optional<WorkTimeInformation> startTime1 = Optional.empty();	
 	
 //	終了時刻1
 //	日別実績の出退勤．出退勤．出退勤．勤務NO＝1
-	private WorkTimeInformation endTime1;
+	private Optional<WorkTimeInformation> endTime1 = Optional.empty();
 	
 //	開始時刻2
 //	日別実績の出退勤．出退勤．出退勤．勤務NO＝2
-	private WorkTimeInformation startTime2;
+	private Optional<WorkTimeInformation> startTime2 = Optional.empty();
 	
 //	終了時刻2
 //	日別実績の出退勤．出退勤．出退勤．勤務NO＝2
-	private WorkTimeInformation endTime2;
+	private Optional<WorkTimeInformation> endTime2 = Optional.empty();
 	
 	
 	
 //	遅刻時間
-	private AttendanceTime lateTime1;
+	private Optional<AttendanceTime> lateTime1 = Optional.empty();
 	
 //	早退時間
-	private AttendanceTime earlyLeaveTime1;
+	private Optional<AttendanceTime> earlyLeaveTime1 = Optional.empty();
 	
 //	遅刻時間
-	private AttendanceTime lateTime2;
+	private Optional<AttendanceTime> lateTime2 = Optional.empty();
 //	早退時間
-	private AttendanceTime earlyLeaveTime2;
+	private Optional<AttendanceTime> earlyLeaveTime2 = Optional.empty();
 	
 //	外出時間
-	private AttendanceTime outTime1;
+	private Optional<AttendanceTime> outTime1 = Optional.empty();
 	
 //	外出時間
-	private AttendanceTime outTime2;
+	private Optional<AttendanceTime> outTime2 = Optional.empty();
 	
 	
 	
@@ -106,10 +107,10 @@ public class RecordWorkInfoPubExport_New {
 	private TimeWithDayAttr scheduledDeparture1;
 	
 //	予定出勤時刻2
-	private TimeWithDayAttr scheduledAttendence2;
+	private Optional<TimeWithDayAttr> scheduledAttendence2 = Optional.empty();
 	
 //	予定退勤時刻2
-	private TimeWithDayAttr scheduledDeparture2;
+	private Optional<TimeWithDayAttr> scheduledDeparture2 = Optional.empty();
 	
 	
 	
@@ -135,16 +136,16 @@ public class RecordWorkInfoPubExport_New {
 	
 	
 //	残業深夜時間
-	private TimeDivergenceWithCalculation overTimeMidnight;
+	private Optional<TimeDivergenceWithCalculation> overTimeMidnight = Optional.empty();
 	
 //	法内休出深夜時間
-	private TimeDivergenceWithCalculation midnightOnHoliday;
+	private Optional<TimeDivergenceWithCalculation> midnightOnHoliday = Optional.empty();
 	
 //	法外休出深夜時間
-	private TimeDivergenceWithCalculation outOfMidnight;
+	private Optional<TimeDivergenceWithCalculation> outOfMidnight = Optional.empty();
 	
 //	祝日休出深夜時間
-	private TimeDivergenceWithCalculation midnightPublicHoliday;
+	private Optional<TimeDivergenceWithCalculation> midnightPublicHoliday = Optional.empty();
 	
 
 	
