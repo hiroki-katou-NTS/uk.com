@@ -159,7 +159,7 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 let command = {
                     appType: vm.application().appType,
                     appDates: [ko.toJS(vm.application().appDate)],
-                    baseDate: vm.application().appDate,
+                    baseDate: vm.application().appDate(),
                     appDispNoDate: vm.appDispInfoStartupOutput().appDispInfoNoDateOutput,
                     appDispWithDate: vm.appDispInfoStartupOutput().appDispInfoWithDateOutput,
                     setting: vm.arrivedLateLeaveEarlyInfo().lateEarlyCancelAppSet
