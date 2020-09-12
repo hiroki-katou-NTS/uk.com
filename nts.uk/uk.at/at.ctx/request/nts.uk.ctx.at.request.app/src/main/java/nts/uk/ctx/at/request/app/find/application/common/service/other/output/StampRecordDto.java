@@ -60,4 +60,15 @@ public class StampRecordDto {
 				stampRecordOutput.getParentingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
 				stampRecordOutput.getExtraordinaryTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()));
 	}
+	
+	public StampRecordOutput toDomain() {
+		return new StampRecordOutput(
+				nursingTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				breakTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				workingTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				outingTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				supportTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				parentingTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				extraordinaryTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
+	}
 }

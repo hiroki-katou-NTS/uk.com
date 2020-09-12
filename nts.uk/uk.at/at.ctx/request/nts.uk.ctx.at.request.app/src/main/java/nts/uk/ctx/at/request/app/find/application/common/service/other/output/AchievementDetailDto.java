@@ -1,15 +1,20 @@
 package nts.uk.ctx.at.request.app.find.application.common.service.other.output;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeLeaveTime;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
 import nts.uk.ctx.at.shared.app.find.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheetDto;
 import nts.uk.ctx.at.shared.app.find.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheetDto;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * refactor 4
@@ -156,27 +161,26 @@ public class AchievementDetailDto {
 	}
 	
 	public AchievementDetail toDomain() {
-//		return new AchievementDetail(
-//				workTypeCD, 
-//				workTimeCD, 
-//				breakTimeSheets, 
-//				timeContentOutput, 
-//				trackRecordAtr, 
-//				stampRecordOutput, 
-//				shortWorkTimeLst, 
-//				achievementEarly, 
-//				opDepartureTime2, 
-//				opWorkTypeName, 
-//				opWorkTimeName, 
-//				opWorkTime, 
-//				opLeaveTime, 
-//				opAchievementStatus, 
-//				opWorkTime2, 
-//				opOvertimeMidnightTime, 
-//				opInlawHolidayMidnightTime, 
-//				opOutlawHolidayMidnightTime, 
-//				opPublicHolidayMidnightTime, 
-//				opOvertimeLeaveTimeLst);
-		return null;
+		return new AchievementDetail(
+				workTypeCD, 
+				workTimeCD, 
+				breakTimeSheets.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				timeContentOutput.toDomain(), 
+				EnumAdaptor.valueOf(trackRecordAtr, TrackRecordAtr.class), 
+				stampRecordOutput.toDomain(), 
+				shortWorkTimeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				achievementEarly.toDomain(), 
+				Optional.of(opDepartureTime2), 
+				Optional.of(opWorkTypeName), 
+				Optional.of(opWorkTimeName), 
+				Optional.of(opWorkTime), 
+				Optional.of(opLeaveTime), 
+				Optional.of(opAchievementStatus), 
+				Optional.of(opWorkTime2), 
+				opOvertimeMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opOvertimeMidnightTime)), 
+				opInlawHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opInlawHolidayMidnightTime)), 
+				opOutlawHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opOutlawHolidayMidnightTime)), 
+				opPublicHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opPublicHolidayMidnightTime)), 
+				CollectionUtil.isEmpty(opOvertimeLeaveTimeLst) ? Optional.empty() : Optional.of(opOvertimeLeaveTimeLst));
 	}
 }
