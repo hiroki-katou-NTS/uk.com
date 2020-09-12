@@ -563,6 +563,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('shift');
                 
+                $($("#Aa1_2 > button")[1]).html(data.dataBasicDto.targetOrganizationName);
+                
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
                 // set data Header
                 self.bindingToHeader(data);
@@ -570,10 +572,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // set data shiftPallet
                 __viewContext.viewModel.viewAC.flag = false;
                 __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.targetOrganizationName);
-                __viewContext.viewModel.viewAC.palletUnit([
-                    { code: 1, name: getText("Com_Company") },
-                    { code: 2, name: data.dataBasicDto.targetOrganizationName }
-                ]);
+                
                 __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
                 if(userInfor.shiftPalletUnit == 1){
                     __viewContext.viewModel.viewAC.handleInitCom(
