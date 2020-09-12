@@ -569,6 +569,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 // set data shiftPallet
                 __viewContext.viewModel.viewAC.flag = false;
+                __viewContext.viewModel.viewAC.workplaceModeName(data.dataBasicDto.targetOrganizationName);
+                __viewContext.viewModel.viewAC.palletUnit([
+                    { code: 1, name: getText("Com_Company") },
+                    { code: 2, name: data.dataBasicDto.targetOrganizationName }
+                ]);
                 __viewContext.viewModel.viewAC.selectedpalletUnit(userInfor.shiftPalletUnit);
                 if(userInfor.shiftPalletUnit == 1){
                     __viewContext.viewModel.viewAC.handleInitCom(

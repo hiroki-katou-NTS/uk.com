@@ -735,7 +735,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             
             setShared('dataForJB', {
                 selectedTab: self.selectedpalletUnit() == 1 ? 'company' : userInfor.unit == 0 ? 'workplace' : 'workplaceGroup',
-                workplaceName: self.workplaceModeName,
+                workplaceName: self.workplaceModeName(),
                 workplaceCode: '',
                 workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
                 listWorkType: __viewContext.viewModel.viewAB.listWorkType(),
