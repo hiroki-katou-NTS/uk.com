@@ -7,7 +7,7 @@ module cmm045.shr {
             constructor(code: number, name: string){
                 this.code = code;
                 this.name = name;
-            } 
+            }
         }
         //parameter filter
         export class AppListExtractConditionDto{
@@ -43,7 +43,7 @@ module cmm045.shr {
 			opAppTypeLst: Array<any>;
 			/** 申請種類リスト */
 			opListOfAppTypes: Array<any>;
-	
+
 			constructor(periodStartDate: string, periodEndDate: string, postOutput: boolean, preOutput: boolean, appListAtr: number,
 				appDisplayOrder: number, tableWidthRegis: boolean, opListEmployeeID: Array<string>, opRemandStatus: boolean,
 				opCancelStatus: boolean, opApprovalStatus: boolean, opAgentApprovalStatus: boolean, opDenialStatus: boolean,
@@ -63,9 +63,9 @@ module cmm045.shr {
 					this.opDenialStatus = opDenialStatus;
 					this.opUnapprovalStatus = opUnapprovalStatus;
 					this.opAppTypeLst = opAppTypeLst;
-					this.opListOfAppTypes = opListOfAppTypes;	
+					this.opListOfAppTypes = opListOfAppTypes;
 			}
-	
+
 //            /**期間開始日付*/
 //            startDate: string;
 //            /**期間終了日付*/
@@ -110,7 +110,7 @@ module cmm045.shr {
 //                    this.appDisplayAtr = appDisplayAtr;
 //                    this.listEmployeeId = listEmployeeId;
 //                    this.empRefineCondition = empRefineCondition;
-                    
+
 //            }
 //            setAppType(appType: number){
 //                  this.appType = appType;
@@ -175,7 +175,7 @@ module cmm045.shr {
 			opBackgroundColor: number;
 			/** 表示行数超 */
 			opMoreThanDispLineNO: boolean;
-	
+
 			// param dùng cho grid ở UI
             check: boolean;
             details: string;
@@ -223,7 +223,7 @@ module cmm045.shr {
 		        this.appIdSub = '';
 		        this.appStatusNo = 0;
             }
-        }  
+        }
 
 		export interface ListOfApplicationDto {
 			/** 事前事後区分 */
@@ -275,9 +275,9 @@ module cmm045.shr {
 			/** 背景色 */
 			opBackgroundColor: number;
 			/** 表示行数超 */
-			opMoreThanDispLineNO: boolean;	
+			opMoreThanDispLineNO: boolean;
 		}
-        
+
         export class AppMasterInfo {
             appID: string;
             appType: number;
@@ -293,7 +293,7 @@ module cmm045.shr {
             //ver14 + EA1360
             detailSet: number;
             constructor(appID: string, appType: number, dispName: string, empName: string, inpEmpName: string,
-            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean, 
+            workplaceName: string, statusFrameAtr: boolean, phaseStatus: string, checkAddNote: boolean,
             checkTimecolor: number, detailSet: number)
             {
                 this.appID = appID;
@@ -313,13 +313,13 @@ module cmm045.shr {
             // 申請ID
             applicationID: string;
             // 事前事後区分
-            prePostAtr: number; 
+            prePostAtr: number;
             // 入力日
-            inputDate: string; 
+            inputDate: string;
             // 入力者
             enteredPersonSID: string;
             // 申請日
-            applicationDate: string; 
+            applicationDate: string;
             // 申請種類
             applicationType: number;
             // 申請者
@@ -336,10 +336,10 @@ module cmm045.shr {
                 startDate: string, endDate: string, version: number, reflectStatus: string)
             {
                 this.applicationID = applicationID;
-                this.prePostAtr = prePostAtr; 
-                this.inputDate = inputDate; 
+                this.prePostAtr = prePostAtr;
+                this.inputDate = inputDate;
                 this.enteredPersonSID = enteredPersonSID;
-                this.applicationDate = applicationDate; 
+                this.applicationDate = applicationDate;
                 this.applicationType = applicationType;
                 this.applicantSID = applicantSID;
                 this.reflectPerState = reflectPerState;
@@ -360,12 +360,12 @@ module cmm045.shr {
                 approvalAgentNumber: number, cancelNumber: number,
                 remandNumner: number,denialNumber: number)
             {
-                this.unApprovalNumber = getText('CMM045_18', [unApprovalNumber]); 
+                this.unApprovalNumber = getText('CMM045_18', [unApprovalNumber]);
                 this.approvalNumber = getText('CMM045_18', [approvalNumber]);
                 this.approvalAgentNumber = getText('CMM045_18', [denialNumber]);
                 this.cancelNumber = getText('CMM045_18', [approvalAgentNumber]);
                 this.remandNumner = getText('CMM045_18', [remandNumner]);
-                this.denialNumber = getText('CMM045_18', [cancelNumber]);    
+                this.denialNumber = getText('CMM045_18', [cancelNumber]);
             }
         }
         export class ChoseApplicationList{
@@ -374,7 +374,7 @@ module cmm045.shr {
             constructor(appType: number, appName: string){
                 this.appType = appType;
                 this.appName = appName;
-            }    
+            }
         }
         export interface Date{
             startDate: string;
@@ -412,7 +412,7 @@ module cmm045.shr {
                 this.columnKey = columnKey;
                 this.state = state;
             }
-        }      
+        }
         export class TextColor {
             rowId: number;
             columnKey: string;
@@ -421,7 +421,7 @@ module cmm045.shr {
                 this.rowId = rowId;
                 this.columnKey = columnKey;
                 this.color = color;
-            } 
+            }
         }
         export interface IntefaceSPR{
             mode: number;//1=承認一覧
@@ -429,6 +429,15 @@ module cmm045.shr {
             endDate: string;//yyyy-mm-dd //期間（終了日）
             extractCondition: number;//０＝全て、１＝早出・普通残業のみ
             agreementTime36: number;//０＝表示しない、1＝表示する
-        }
+		}
+		export class columnWidth {
+			appLstAtr: boolean;
+			width: number;
+
+			constructor(appLstAtr: boolean, width: number) {
+				this.appLstAtr = appLstAtr;
+				this.width = width
+			}
+		}
     }
 }

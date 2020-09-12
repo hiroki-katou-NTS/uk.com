@@ -67,6 +67,17 @@ public class AsposeAppScreenDto {
 				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));
 	}
 	
+	public static AsposeAppScreenDto fromDomainPrint(ListOfApplication domain, int dispWplName) {
+		return new AsposeAppScreenDto(EnumAdaptor.valueOf(domain.getPrePostAtr(), PrePostAtr.class).name, 
+				dispWplName == 1 ? domain.getWorkplaceName() + "\n" + domain.getApplicantName() : domain.getApplicantName(), 
+				domain.getAppType().name, 
+				domain.getAppContent(), 
+				domain.getInputDate().toString("M/d(E) H:mm"), 
+				domain.getReflectionStatus(), 
+				domain.getOpApprovalStatusInquiry().isPresent() ? domain.getOpApprovalStatusInquiry().get().toString() : "", 
+				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));
+	}
+	
 	public static String convertStartEndDate(Optional<GeneralDate> startDate, Optional<GeneralDate> endDate, ApplicationType appType, GeneralDate appDate) {
 		String result = "";
 		
