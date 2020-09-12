@@ -522,12 +522,12 @@ module cmm045.a.viewmodel {
                     self.selectedCode(selectedType);
                 }*/
                 // if(self.mode() == 0){
-                    
+
                 // }
                 // dfd.resolve();
 			}).then((data) => {
 				if(data) {
-					$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);	
+					$('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 				}
 			}).always(() => block.clear());
 
@@ -619,10 +619,10 @@ module cmm045.a.viewmodel {
         }
 
 		reload(appListExtractCondition: any, appListInfo: any) {
-			const self = this;	
+			const self = this;
 			if(!_.isNull(appListExtractCondition)) {
 				self.appListExtractConditionDto = appListExtractCondition;
-				self.updateFromAppListExtractCondition();	
+				self.updateFromAppListExtractCondition();
 			}
 			self.appListInfo = appListInfo;
 			let newItemLst = [];
@@ -648,8 +648,8 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion(colorBackGr, false);
                 // self.reloadGridApplicaion(colorBackGr, self.isHidden());
           	}
-			
-			
+
+
 			/*self.appList(data.appListInfo);
             if(self.appList().appLst.length > 500) {
 
@@ -2049,7 +2049,7 @@ module cmm045.a.viewmodel {
 			} else {
 				msgConfirm = 'Msg_1549';
 			}
-			nts.uk.ui.dialog.confirm(msgConfirm).ifYes(() => {
+			nts.uk.ui.dialog.confirm({ messageId: msgConfirm}).ifYes(() => {
 				block.invisible();
 				let listOfApplicationCmds = [];
 				_.each(self.items(), function(item) {
@@ -2109,7 +2109,7 @@ module cmm045.a.viewmodel {
 							});
 						}
 						if(isInfoDialog) {
-							nts.uk.ui.dialog.info(displayMsg);
+							nts.uk.ui.dialog.info({displayMsg});
 						} else {
 						 	nts.uk.ui.dialog.alertError(displayMsg);
 						}
@@ -2121,8 +2121,8 @@ module cmm045.a.viewmodel {
 					}
 				}).then((data: any) => {
 					if(data) {
-						return self.reload(data.appListExtractCondition, data.appListInfo);	
-					}			
+						return self.reload(data.appListExtractCondition, data.appListInfo);
+					}
 				}).always(() => { block.clear(); });
 			});
 		}
