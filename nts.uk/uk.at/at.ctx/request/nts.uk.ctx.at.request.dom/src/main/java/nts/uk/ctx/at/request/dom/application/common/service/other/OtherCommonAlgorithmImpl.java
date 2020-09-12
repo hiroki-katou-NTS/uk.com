@@ -167,7 +167,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		Object<String: startDate, String: endDate> obj2 = Period.find(obj1.tightenID, obj1.currentMonth); // obj2 <=> 締め期間(開始年月日,終了年月日) 
 		*/
 		DatePeriod datePeriod = ClosureService.getClosurePeriod(closure.get().getClosureId().value,
-				closure.get().getClosureMonth().getProcessingYm(), Optional.empty());
+				closure.get().getClosureMonth().getProcessingYm(), closure);
 		return new PeriodCurrentMonth(closure.get().getClosureId(), datePeriod.start(), datePeriod.end());
 	}
 	/**
