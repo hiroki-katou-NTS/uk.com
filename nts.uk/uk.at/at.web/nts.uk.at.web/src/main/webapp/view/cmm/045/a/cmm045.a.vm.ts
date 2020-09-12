@@ -2101,7 +2101,11 @@ module cmm045.a.viewmodel {
 							isInfoDialog = false;
 						}
 						if(!_.isEmpty(data.failMap)) {
-							displayMsg += nts.uk.resource.getMessage('Msg_1726');
+							if(isInfoDialog) {
+								displayMsg += nts.uk.resource.getMessage('Msg_1726');	
+							} else {
+								displayMsg += nts.uk.resource.getMessage('Msg_1725');	
+							}
 							let itemFailMap = _.filter(listOfApplicationCmds, item => _.includes(Object.keys(data.failMap), item.appID));
 							_.each(itemFailMap, item => {
 								let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item.appType),
