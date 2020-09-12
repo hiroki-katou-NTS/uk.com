@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
+        isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
         dataSourceOb: KnockoutObservableArray<any>;
         application: KnockoutObservable<Application>;
