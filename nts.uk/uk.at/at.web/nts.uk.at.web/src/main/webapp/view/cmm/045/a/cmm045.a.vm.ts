@@ -632,10 +632,10 @@ module cmm045.a.viewmodel {
 			self.items(newItemLst);
 			if (appListInfo.numberOfApp != null) {
                 self.approvalCount(new vmbase.ApplicationStatus(
-					appListInfo.numberOfApp.unApprovalNumber, 
+					appListInfo.numberOfApp.unApprovalNumber,
 					appListInfo.numberOfApp.approvalNumber,
-                    appListInfo.numberOfApp.approvalAgentNumber, 
-					appListInfo.numberOfApp.cancelNumber, 
+                    appListInfo.numberOfApp.approvalAgentNumber,
+					appListInfo.numberOfApp.cancelNumber,
 					appListInfo.numberOfApp.remandNumner,
                     appListInfo.numberOfApp.denialNumber));
             }
@@ -2102,9 +2102,9 @@ module cmm045.a.viewmodel {
 						}
 						if(!_.isEmpty(data.failMap)) {
 							if(isInfoDialog) {
-								displayMsg += nts.uk.resource.getMessage('Msg_1726');	
+								displayMsg += nts.uk.resource.getMessage('Msg_1726');
 							} else {
-								displayMsg += nts.uk.resource.getMessage('Msg_1725');	
+								displayMsg += nts.uk.resource.getMessage('Msg_1725');
 							}
 							let itemFailMap = _.filter(listOfApplicationCmds, item => _.includes(Object.keys(data.failMap), item.appID));
 							_.each(itemFailMap, item => {
@@ -2117,9 +2117,9 @@ module cmm045.a.viewmodel {
 							});
 						}
 						if(isInfoDialog) {
-							nts.uk.ui.dialog.info({messageId: displayMsg});
+							nts.uk.ui.dialog.info(displayMsg);
 						} else {
-						 	nts.uk.ui.dialog.alertError({messageId: displayMsg});
+						 	nts.uk.ui.dialog.alertError(displayMsg);
 						}
 						return data;
 					}
