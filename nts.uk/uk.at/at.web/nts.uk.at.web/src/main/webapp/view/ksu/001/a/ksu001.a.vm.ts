@@ -2186,8 +2186,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: self.listSid() });
             $('#A1_10_1').ntsPopup('hide');
-            nts.uk.ui.windows.sub.modal('/view/kdl/020/a/index.xhtml').onClosed(function(): any {
-            });
+            if (self.listSid().length == 1) {
+                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/single.xhtml').onClosed(function(): any { });
+            } else if (self.listSid().length > 1) {
+                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/mutil.xhtml').onClosed(function(): any { });
+            }
         }
         
         // A1_10_5
