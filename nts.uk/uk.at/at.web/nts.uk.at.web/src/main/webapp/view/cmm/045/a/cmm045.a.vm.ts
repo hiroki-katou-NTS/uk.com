@@ -2109,9 +2109,9 @@ module cmm045.a.viewmodel {
 							});
 						}
 						if(isInfoDialog) {
-							nts.uk.ui.dialog.info({displayMsg});
+							nts.uk.ui.dialog.info({messageId: displayMsg});
 						} else {
-						 	nts.uk.ui.dialog.alertError(displayMsg);
+						 	nts.uk.ui.dialog.alertError({messageId: displayMsg});
 						}
 						return data;
 					}
