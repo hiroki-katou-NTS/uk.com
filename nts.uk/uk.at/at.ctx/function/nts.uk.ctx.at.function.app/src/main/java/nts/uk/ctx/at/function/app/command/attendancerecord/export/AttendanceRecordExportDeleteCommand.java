@@ -13,6 +13,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class AttendanceRecordExportDeleteCommand {
+	
+	/** The layout id. */
+	String layoutId;
 
 	/**
 	 * The export code.

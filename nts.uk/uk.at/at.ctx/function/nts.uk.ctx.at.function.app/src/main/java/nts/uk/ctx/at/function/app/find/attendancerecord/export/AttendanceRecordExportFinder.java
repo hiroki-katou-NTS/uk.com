@@ -28,11 +28,10 @@ public class AttendanceRecordExportFinder {
 	 *            the code
 	 * @return the all attendance record export
 	 */
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(String companyId, long code) {
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(String layoutId) {
 
 		// Get list of domain
-		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportDaily(companyId,
-				code);
+		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportDaily(layoutId);
 
 		// Convert domain to Dto
 
@@ -69,11 +68,10 @@ public class AttendanceRecordExportFinder {
 	 *            the code
 	 * @return the all attendance record export monthly
 	 */
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(String companyId, long code) {
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(String layoutId) {
 
 		// Get list of domain
-		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportMonthly(companyId,
-				code);
+		List<AttendanceRecordExport> domainList = attendanceRecordExpRepo.getAllAttendanceRecordExportMonthly(layoutId);
 
 		// Convert domain to Dto
 

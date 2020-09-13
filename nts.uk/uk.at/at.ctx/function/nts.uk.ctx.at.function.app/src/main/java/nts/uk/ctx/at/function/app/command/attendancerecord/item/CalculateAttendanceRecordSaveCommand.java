@@ -14,6 +14,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CalculateAttendanceRecordSaveCommand {
+	
+	private String layoutId;
 	/** The export setting code. */
 	private int exportSettingCode;
 

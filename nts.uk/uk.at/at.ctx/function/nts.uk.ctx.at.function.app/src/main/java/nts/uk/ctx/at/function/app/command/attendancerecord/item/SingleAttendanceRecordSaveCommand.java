@@ -12,6 +12,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SingleAttendanceRecordSaveCommand {
+	
+	/** The layout id. */
+	private String layoutId;
 
 	/** The export setting code. */
 	private long exportSettingCode;
