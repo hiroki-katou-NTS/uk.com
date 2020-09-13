@@ -8,9 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
@@ -116,8 +118,16 @@ public class FurikyuMngDataExtractionService {
 		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
 	}
 	
-	// Step 社員IDから全ての雇用履歴を取得
-	// this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate();
+	public boolean isManageHolidayManagementData(String sId, String compId) {
+		// Step 社員IDから全ての雇用履歴を取得
+		List<EmploymentHistShareImport> empHistShrImp = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(sId);
+		// Step 取得した社員の雇用履歴をチェック
+		if(empHistShrImp.isEmpty()) {
+			// Step エラーメッセージ(Msg_1306)を表示する
+			throw new BusinessException("Msg_1306");
+		}
+		return false;
+	}
 	
 	public Double getNumberOfDayLeft(String sID) {
 		String cid = AppContexts.user().companyId();
