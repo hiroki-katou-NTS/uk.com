@@ -222,26 +222,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // close screen O1 when change mode
                 if (viewMode == 'shift') { // mode シフト表示   
                     self.shiftModeStart().done(() => {
-                        self.pasteData();
-                        self.setPositionButonToRightToLeft();
-                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+                        self.editMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
                     self.shortNameModeStart().done(() => {
-                        self.pasteData();
-                        self.setPositionButonToRightToLeft();
-                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+                        self.editMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
                     self.timeModeStart().done(() => {
-                        self.pasteData();
-                        self.setPositionButonToRightToLeft();
-                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+                        self.editMode();
                         self.stopRequest(true);
                     });
                 }
@@ -475,20 +466,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (viewMode == 'shift') { // mode シフト表示   
                 self.shiftModeStart().done(() => {
-                    self.setUpdateMode();
-                    self.setPositionButonToRightToLeft();
                     self.stopRequest(true);
                 });
             } else if (viewMode == 'shortName') { // mode 略名表示
                 self.shortNameModeStart().done(() => {
-                    self.setUpdateMode();
-                    self.setPositionButonToRightToLeft();
                     self.stopRequest(true);
                 });
             } else if (viewMode == 'time') {  // mode 勤務表示 
                 self.timeModeStart().done(() => {
-                    self.setUpdateMode();
-                    self.setPositionButonToRightToLeft();
                     self.stopRequest(true);
                 });
             }
@@ -593,6 +578,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shift');
                 
+                self.pasteData();
+                
+                self.setPositionButonToRightToLeft();
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -635,6 +624,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shortName');
                 
+                self.pasteData();
+                
+                self.setPositionButonToRightToLeft();
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -662,6 +655,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
+            
             self.saveModeGridToLocalStorege('time');
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
 
@@ -675,6 +669,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'time');
+                
+                self.pasteData();
+                
+                self.setPositionButonToRightToLeft();
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
