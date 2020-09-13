@@ -57,7 +57,7 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 			if (command.getSelectionType() == ItemSelectionType.STANDARD_SELECTION.value) {
 				// 定型設定のコードから出力項目を取得 (Get the output item from the code of the fixed form setting)
 				Optional<OutputStandardSettingOfDailyWorkSchedule> standardDomain = this.standardSettingRepository
-						.getStandardSettingByCompanyId(companyId);
+						.findByCompanyIdAndCode(companyId, command.getItemCode().v());
 				
 				// エラーメッセージ（ID:Msg_3）を表示する(Display error message (ID: Msg_3))
 				if (standardDomain.isPresent()) {
@@ -77,7 +77,7 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 			if (command.getSelectionType() == ItemSelectionType.FREE_SETTING.value) {
 				// 自由設定のコードから出力項目を取得 (Get the output item from free setup code)
 				Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSettingDomain = this.freeSettingRepository
-						.getFreeSettingByCompanyAndEmployee(companyId, command.getEmployeeId());
+						.findByCompanyIdAndEmployeeIdAndCode(companyId, employeeId, command.getItemCode().v());
 				
 				// エラーメッセージ（ID:Msg_3）を表示する(Display error message (ID: Msg_3))
 				if (freeSettingDomain.isPresent()) {

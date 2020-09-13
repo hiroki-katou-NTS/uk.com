@@ -117,6 +117,7 @@ import nts.uk.file.at.app.export.dailyschedule.FormOutputType;
 import nts.uk.file.at.app.export.dailyschedule.ItemSelectionType;
 import nts.uk.file.at.app.export.dailyschedule.OutputConditionSetting;
 import nts.uk.file.at.app.export.dailyschedule.PageBreakIndicator;
+import nts.uk.file.at.app.export.dailyschedule.SwitchItemDisplay;
 import nts.uk.file.at.app.export.dailyschedule.TotalDayCountWs;
 import nts.uk.file.at.app.export.dailyschedule.TotalWorkplaceHierachy;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition;
@@ -340,6 +341,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant ATTENDANCE_ID_EMPLOYMENT. */
 	private static final int ATTENDANCE_ID_BUSSINESS_TYPE = 858;
 	
+	/** ①勤怠項目ID（438, 443, 448, 453, 458, 801, 806, 811, 816, 821）：乖離理由コード   */
+	private static final int[] ATTENDANCE_ID_DIVERGENCE_CODE = { 438, 443, 448, 453, 458, 801, 806, 811, 816, 821 };
+
+	/** ②勤怠項目ID（439, 444, 449, 454, 459, 802, 807, 812, 817, 822）：乖離理由  */
+	private static final int[] ATTENDANCE_ID_FOR_DIVERGENCE = { 439, 444, 449, 454, 459, 802, 807, 812, 817, 822 };
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputGenerator#generate(nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputCondition, nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo, nts.uk.file.at.app.export.dailyschedule.WorkScheduleOutputQuery)
 	 */
@@ -472,6 +479,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// Write detailed work schedule
 			if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE)
+				
 				currentRow = writeDetailedWorkSchedule(currentRow, sheetCollection, sheetInfo, reportData.getWorkplaceReportData(), nSize, condition, rowPageTracker, chunkSize, condition.getZeroDisplayType());
 			else {
 				DailyReportData dailyReportData = reportData.getDailyReportData();
@@ -1031,8 +1039,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									if (masterUnregistedFlag) {
 										lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 									}
-								}
-								else {
+								} else {
 									// Get possible content based on remark choice
 									Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId // 社員ID
 											, workingDate // 期間(年月日)
@@ -1196,15 +1203,19 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			if (optEmployment.isPresent()) {
 				Employment employment = optEmployment.get();
 				employeeData.employmentName = employment.getEmploymentName().v();
+				employeeData.employmentCode = employment.getEmploymentCode().v();
 			}
 		}
 		
 		// Job title
 		Optional<EmployeeJobHistExport> optJobTitle = jobTitleAdapter.findBySid(employeeId, endDate);
-		if (optJobTitle.isPresent())
+		if (optJobTitle.isPresent()) {
 			employeeData.position = optJobTitle.get().getJobTitleName();
-		else
+			employeeData.jobTitleCode = optJobTitle.get().getJobCode();
+		} else {
 			employeeData.position = "";
+			employeeData.jobTitleCode = "";
+		}
 		
 		employeeData.lstDetailedPerformance = new ArrayList<>();
 		
@@ -1239,14 +1250,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (optRemarkInput.isPresent()) {
 							String value = optRemarkInput.get().getValue();
 //							value = StringUtils.substring(value, 0, 9); // Already dealt with null possibility
-							if(value != null) {
+							if (value != null) {
 								value = StringLength.cutOffAsLengthHalf(value, LIMIT_REMARK_INPUT);
 							}
 							detailedDate.errorDetail += (value == null ? "" : value + " ");
 						}
-					}
 					// Append マスタ未登録
-					else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
+					} else if (remark.getPrintItem() == RemarksContentChoice.MASTER_UNREGISTERED) {
 						List<AttendanceItemValueImport> lstItemMasterUnregistered = x.getAttendanceItems().stream().
 								filter(att -> EnumAdaptor.valueOf(att.getValueType(), ValueType.class) == ValueType.CODE).collect(Collectors.toList());
 						
@@ -1262,8 +1272,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						if (masterUnregistedFlag) {
 							lstRemarkContentStr.add(TextResource.localize(RemarksContentChoice.MASTER_UNREGISTERED.shortName));
 						}
-					}
-					else {
+					} else {
 						// Get other possible content based on remark choice
 						Optional<PrintRemarksContent> optContent = getRemarkContent(employeeId
 								, workingDate
@@ -2038,7 +2047,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		Cell periodCell = cells.get(dateRow,0);
 		
 		DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/M/d (E)", Locale.JAPAN);
-		String periodStr = WorkScheOutputConstants.PERIOD + " " + query.getStartDate().toLocalDate().format(jpFormatter) + " " +WorkScheOutputConstants.PERIOD_SYMBOL + " " + query.getEndDate().toLocalDate().format(jpFormatter);
+		String periodStr = TextResource.localize("KWR001_112") + " "
+							+ query.getStartDate().toLocalDate().format(jpFormatter) + " "
+							+ WorkScheOutputConstants.PERIOD_SYMBOL + " "
+							+ query.getEndDate().toLocalDate().format(jpFormatter);
 		periodCell.setValue(periodStr);
 	}
 	
@@ -2161,7 +2173,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
             		&& !condition.getSettingDetailTotalOutput().isDetails()
             		&& !condition.getSettingDetailTotalOutput().isGrossTotal()
             		&& !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
-	                String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
+	                String workplaceTitle = TextResource.localize("KWR001_90") + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
 	                // A3_1
 	                currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
 	                departmentCode.add(workplaceReportData.getWorkplaceCode());
@@ -2172,11 +2184,15 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
                 		&& !condition.getSettingDetailTotalOutput().isCumulativeWorkplace()
                 		&& !condition.getSettingDetailTotalOutput().isGrossTotal()
                 		&& !condition.getSettingDetailTotalOutput().isPersonalTotal()) {
-	                String personalTitle = WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
-	                        + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
-	                        + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
+	                String personalTitle = TextResource.localize("KWR001_91") + "　" // A4_1
+	                		+ employeeReportData.employeeCode + "　"				   // A4_2
+	                        + employeeReportData.employeeName + "　"				   // A4_3
+	                		+ TextResource.localize("KWR001_92") + "　"			   // A4_4
+	                		+ employeeReportData.employmentCode + "　"			   // A4_8
+	                        + employeeReportData.employmentName + "　"			   // A4_5
+	                		+ TextResource.localize("KWR001_93") + "　"			   // A4_6
 	                        + employeeReportData.position;
-	                // A4_1
+
 	                currentRow = this.printPersonal(currentRow, templateSheetCollection, sheetInfo, personalTitle);
 	                departmentCode.add(workplaceReportData.getWorkplaceCode());
                 }
@@ -2188,7 +2204,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					rowPageTracker.resetRemainingRow();
 				}
 				if (condition.getSettingDetailTotalOutput().isPersonalTotal() || condition.getSettingDetailTotalOutput().isDetails()) {
-					String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　"
+					String workplaceTitle = TextResource.localize("KWR001_90") + "　"
 							+ workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
 					// A3_1
 					currentRow = this.printWorkplace(currentRow, templateSheetCollection, sheetInfo, workplaceTitle);
@@ -2208,11 +2224,13 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						rowPageTracker.useRemainingRow(dataRowCount);
 					}
 
-					// A4_1
 					Cell employeeTagCell = cells.get(currentRow, 0);
-					employeeTagCell.setValue(WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode
-							+ "　" + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
-							+ employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
+					employeeTagCell.setValue(TextResource.localize("KWR001_91") + "　"
+							+ employeeReportData.employeeCode + "　"
+							+ employeeReportData.employeeName + "　"
+							+ TextResource.localize("KWR001_92") + "　"
+							+ employeeReportData.employmentName + "　"
+							+ TextResource.localize("KWR001_93") + "　"
 							+ employeeReportData.position);
 					currentRow++;
 				}
@@ -2239,9 +2257,9 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								currentRow = sheetInfo.getStartDataIndex();
 							}
 							rowPageTracker.resetRemainingRow();
-					                String workplaceTitle = WorkScheOutputConstants.WORKPLACE + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
-					                String personalTitle = WorkScheOutputConstants.EMPLOYEE + "　" + employeeReportData.employeeCode + "　"
-					                        + employeeReportData.employeeName + "　" + WorkScheOutputConstants.EMPLOYMENT + "　"
+					                String workplaceTitle = TextResource.localize("KWR001_90") + "　" + workplaceReportData.getWorkplaceCode() + "　" + workplaceReportData.getWorkplaceName();
+					                String personalTitle = TextResource.localize("KWR001_91") + "　" + employeeReportData.employeeCode + "　"
+					                        + employeeReportData.employeeName + "　" + TextResource.localize("KWR001_92") + "　"
 					                        + employeeReportData.employmentName + "　" + WorkScheOutputConstants.POSITION + "　"
 					                        + employeeReportData.position;
 					                departmentCode.add(workplaceReportData.getWorkplaceCode());
@@ -2367,7 +2385,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					
 					// A6_1
 					Cell personalTotalCellTag = cells.get(currentRow, 0);
-					personalTotalCellTag.setValue(WorkScheOutputConstants.PERSONAL_TOTAL);
+					personalTotalCellTag.setValue(TextResource.localize("KWR001_94"));
 					
 					// A6_2
 					Map<Integer, TotalValue> mapPersonalTotal = employeeReportData.getMapPersonalTotal();
@@ -2517,7 +2535,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			
 			// A9_1 - A13_1
 			Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + levelIterator.next());
+			workplaceTotalCellTag.setValue(TextResource.localize("KWR001_116") + levelIterator.next());
 			
 			// A9_2 - A13_2
 			int numOfChunks = (int) Math.ceil( (double) workplaceReportData.getGrossTotal().size() / chunkSize);
@@ -2745,7 +2763,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// B3_1
 			DateTimeFormatter jpFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd (E)", Locale.JAPAN);
 			String date = dailyReportData.getDate().toLocalDate().format(jpFormatter);
-			String titleDate = WorkScheOutputConstants.DATE_BRACKET +"　"+ date;
+			String titleDate = TextResource.localize("KWR001_115") + "　" + date;
 			
 //			// B3_2
 //			Cell dateCell = cells.get(currentRow, 2);
@@ -2828,7 +2846,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			, int chunkSize
 			, ZeroDisplayType zeroDisplayType) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
-        String workplaceTitle = WorkScheOutputConstants.WORKPLACE +"　"+ rootWorkplace.getWorkplaceCode() +"　"+ rootWorkplace.getWorkplaceName();
+        String workplaceTitle = TextResource.localize("KWR001_90") + "　" + rootWorkplace.getWorkplaceCode() +"　"+ rootWorkplace.getWorkplaceName();
 
         boolean colorWhite = true; // true = white, false = light blue, start with white row
 		
@@ -3099,7 +3117,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				
 				// B7_1 - B11_1
 				Cell workplaceTotalCellTag = cells.get(currentRow, 0);
-				workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_HIERARCHY_TOTAL + level);
+				workplaceTotalCellTag.setValue(TextResource.localize("KWR001_116") + level);
 				
 				// B7_2 - B11_2
 				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false, chunkSize, zeroDisplayType);
@@ -3538,7 +3556,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param outSche the out sche
 	 * @return the name from code
 	 */
-	private String getNameFromCode(int attendanceId, String code, WorkScheduleQueryData queryData, OutputItemDailyWorkSchedule outSche) {
+	private String getNameFromCode(int attendanceId
+			, String code
+			, WorkScheduleQueryData queryData
+			, OutputItemDailyWorkSchedule outSche
+			, SwitchItemDisplay displayType) {
 		// Get all data
 		List<WorkType> lstWorkType = queryData.getLstWorkType();
 		List<WorkTimeSetting> lstWorkTime = queryData.getLstWorkTime();
@@ -3563,7 +3585,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 
 			CodeName workplace = optWorkplace.get();
-			return workplace.getName();
+			return displayType == SwitchItemDisplay.DISPLAY_NAME ? workplace.getName() : workplace.getCode();
 		}
 		
 		
@@ -3576,6 +3598,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			}
 
 			WorkType workType = optWorkType.get();
+
+			if (displayType == SwitchItemDisplay.DISPLAY_CODE) {
+				return workType.getWorkTypeCode().v();
+			}
+
 			if (outSche.getWorkTypeNameDisplay() == NameWorkTypeOrHourZone.OFFICIAL_NAME) {
 				return workType.getName().v();
 			}
