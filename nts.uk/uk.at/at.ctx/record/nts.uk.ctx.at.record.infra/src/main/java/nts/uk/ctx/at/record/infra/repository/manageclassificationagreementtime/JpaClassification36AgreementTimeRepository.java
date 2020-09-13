@@ -8,6 +8,9 @@ import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 	Repository	 分類３６協定時間
+ */
 public class JpaClassification36AgreementTimeRepository extends JpaRepository implements Classification36AgreementTimeRepository {
     private static String FIND_BY_CID;
 

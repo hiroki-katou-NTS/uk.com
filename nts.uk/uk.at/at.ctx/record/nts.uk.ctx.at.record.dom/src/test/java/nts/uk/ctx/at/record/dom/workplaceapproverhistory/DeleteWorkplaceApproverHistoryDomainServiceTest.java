@@ -18,7 +18,7 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
 
 
     @Injectable
-    DeleteWorkplaceApproverHistoryDomainService.Requeire requeire;
+    DeleteWorkplaceApproverHistoryDomainService.Require require;
 
     @Test
     public void test_01(){
@@ -39,14 +39,14 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
 
         );
         new Expectations(){{
-            requeire.getLastHistory(deleteItem.getWorkplaceId(),deleteItem.getPeriod().end().addDays(-1));
+            require.getLastHistory(deleteItem.getWorkplaceId(),deleteItem.getPeriod().end().addDays(-1));
             result = Optional.of(preVHistoryItem);
         }};
         val service = new DeleteWorkplaceApproverHistoryDomainService();
         NtsAssert.atomTask(
-                () -> service.changeHistory(requeire, deleteItem),
-                any -> requeire.deleteHistory(any.get()),
-                any -> requeire.changeLatestHistory(any.get())
+                () -> service.changeHistory(require, deleteItem),
+                any -> require.deleteHistory(any.get()),
+                any -> require.changeLatestHistory(any.get())
         );
     }
     @Test
@@ -60,13 +60,13 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
 
         );
         new Expectations(){{
-            requeire.getLastHistory(deleteItem.getWorkplaceId(),deleteItem.getPeriod().end().addDays(-1));
+            require.getLastHistory(deleteItem.getWorkplaceId(),deleteItem.getPeriod().end().addDays(-1));
             result = Optional.empty();
         }};
         val service = new DeleteWorkplaceApproverHistoryDomainService();
         NtsAssert.atomTask(
-                () -> service.changeHistory(requeire, deleteItem),
-                any -> requeire.deleteHistory(any.get())
+                () -> service.changeHistory(require, deleteItem),
+                any -> require.deleteHistory(any.get())
         );
     }
 }

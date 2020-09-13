@@ -15,21 +15,21 @@ import java.util.Optional;
 @Stateless
 public class DeleteWorkplaceApproverHistoryDomainService {
     // 	[1] 変更する
-    public AtomTask changeHistory(Requeire requeire,Approver36AgrByWorkplace deleteHist){
+    public AtomTask changeHistory(Require require, Approver36AgrByWorkplace deleteHist){
             return AtomTask.of(()->{
-                requeire.deleteHistory(deleteHist);
-                val optprevHist = requeire.getLastHistory(deleteHist.getWorkplaceId(),deleteHist.getPeriod().end().addDays(-1));
+                require.deleteHistory(deleteHist);
+                val optprevHist = require.getLastHistory(deleteHist.getWorkplaceId(),deleteHist.getPeriod().end().addDays(-1));
                 if(optprevHist.isPresent()){
                     val preItem = optprevHist.get();
                     val newPeriod = new DatePeriod(preItem.getPeriod().start(),GeneralDate.max());
                     preItem.setPeriod(newPeriod);
-                    requeire.changeLatestHistory(preItem);
+                    require.changeLatestHistory(preItem);
                 }
         });
     }
 
 
-    public static interface Requeire{
+    public static interface Require {
 
      //		[R-1] 直前の履歴を取得する :	職場別の承認者（36協定）Repository.指定終了日の履歴を取得する(職場ID,終了日)
      Optional<Approver36AgrByWorkplace> getLastHistory(String workplaceId, GeneralDate endDate);

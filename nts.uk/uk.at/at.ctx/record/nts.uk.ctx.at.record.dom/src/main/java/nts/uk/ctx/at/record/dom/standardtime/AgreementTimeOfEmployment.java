@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTim
 @NoArgsConstructor
 public class AgreementTimeOfEmployment extends AggregateRoot {
 	// 会社ID 1
-	private String companyId;
+	private  String companyId;
 	// 基本設定 TODO KHÔNG DÙNG TRONG CMM024
 	private String basicSettingId;
 	// 雇用コード 2 TODO BỔ SUNG TRONG CMM024

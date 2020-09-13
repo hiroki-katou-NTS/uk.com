@@ -37,7 +37,7 @@ public class CreateDomain {
         return createStringListWithSize("confirmer", size);
     }
 
-    private static List<String> createStringListWithSize(String sample, int size) {
+    public static List<String> createStringListWithSize(String sample, int size) {
         val stringList = new ArrayList<String>();
         for (int i = 0; i < size; i++) {
             stringList.add(sample + i);

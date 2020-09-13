@@ -4,7 +4,9 @@ import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
 
 import java.util.List;
 import java.util.Optional;
-
+/**
+ * 	Repository	 分類３６協定時間
+ */
 public interface Classification36AgreementTimeRepository {
     void insert(AgreementTimeOfClassification domain);
     void update(AgreementTimeOfClassification domain);
