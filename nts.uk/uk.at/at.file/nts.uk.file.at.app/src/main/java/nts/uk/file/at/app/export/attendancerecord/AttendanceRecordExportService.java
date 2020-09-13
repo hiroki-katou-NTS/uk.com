@@ -34,10 +34,16 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.ItemSelectedTypeSettingDto;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.NameUseAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
@@ -139,6 +145,12 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	
 	@Inject
 	private FileService service;
+	
+	@Inject
+	private AttendanceRecordStandardSettingRepository standardSettingRepo;
+	
+	@Inject
+	private AttendanceRecordOuputItemsRepository freeSettingRepo;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -146,6 +158,23 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		// get Dto
 		AttendanceRecordRequest request = context.getQuery();
 		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		if (request.getSelection() == ItemSelectionType.STANDARD_SETTING.value) {
+			// ドメインモデル「出勤簿の出力項目定型設定」を取得する
+			Optional<AttendanceRecordStandardSetting> standardDomain = this.standardSettingRepo
+					.findByCompanyCodeAndSelectType(companyId, request.getLayout(), request.getSelection());
+			if (!standardDomain.isPresent()) {
+				throw new BusinessException("msg_1141");
+			}
+		} else {
+			// ドメインモデル「出勤簿の出力項目自由設定」を取得する
+			Optional<AttendanceRecordOuputItems> freeDomain = this.freeSettingRepo
+					.findByCompanyEmployeeAndCodeAndSelection(companyId, employeeId, request.getLayout(),
+							request.getSelection());
+			if (!freeDomain.isPresent()) {
+				throw new BusinessException("msg_1141");
+			}
+		}
 		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new LinkedHashMap<>();
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
@@ -1020,6 +1049,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		recordReportData.setReportName(optionalAttendanceRecExpSet.get().getName().v());
 		recordReportData.setSealColName(
 				optionalAttendanceRecExpSet.get().getSealUseAtr() ? sealStamp : new ArrayList<String>());
+		recordReportData.setFontSize(optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		AttendanceRecordReportDatasource recordReportDataSource = new AttendanceRecordReportDatasource(recordReportData,
 				request.getMode());

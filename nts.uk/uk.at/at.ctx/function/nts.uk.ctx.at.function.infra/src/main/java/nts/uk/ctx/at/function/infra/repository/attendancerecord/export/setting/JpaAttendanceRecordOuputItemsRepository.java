@@ -85,4 +85,11 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 		// 2 list group by;
 		return null;
 	}
+
+	@Override
+	public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCodeAndSelection(String companyId, String employeeId,
+			long code, int selectionType) {
+		
+		return null;
+	}
 }

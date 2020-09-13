@@ -33,4 +33,13 @@ public class AttendanceRecordRequest {
 	private int mode;
 	
 	private int closureId;
+	
+	/** The selection type */
+	private int selection;
+//	
+//	/** The output layout id. */
+//	private String outputLayoutId;
+	
+	
+	
 }

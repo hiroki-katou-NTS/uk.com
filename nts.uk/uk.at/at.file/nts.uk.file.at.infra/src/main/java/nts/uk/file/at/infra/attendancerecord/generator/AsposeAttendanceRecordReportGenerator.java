@@ -27,6 +27,7 @@ import com.aspose.pdf.Document;
 import aspose.pdf.Cell;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportDatasource;
 import nts.uk.file.at.app.export.attendancerecord.AttendanceRecordReportGenerator;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportColumnData;
@@ -47,7 +48,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		implements AttendanceRecordReportGenerator {
 
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "report/KWR002.xlsx";
+	private String TEMPLATE_FILE = "report/KWR002.xlsx";
 
 	/** The Constant PDF_EXT. */
 	private static final String PDF_EXT = ".pdf";
@@ -70,35 +71,38 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final String REPORT_ROW_START_RIGHT = "REPORT_ROW_START_RIGHT";
 
 	/** The Constant REPORT_PAGE_ADDR. */
-	private static final String REPORT_PAGE_ADDR = "A1:AO";
+	private String REPORT_PAGE_ADDR = "A1:AO";
 
 	/** The Constant MONTHLY_DATA_ADDR. */
-	private static final String MONTHLY_DATA_ADDR = "C%d:Z%d";
+	private String MONTHLY_DATA_ADDR = "C%d:Z%d";
 
 	/** The Constant DAILY_W_RANGE_TMPL_ADDR. */
-	private static final String DAILY_W_RANGE_TMPL_ADDR = "AQ1:BJ2";
+	private String DAILY_W_RANGE_TMPL_ADDR = "AQ1:BJ2";
 
 	/** The Constant DAILY_B_RANGE_TMPL_ADDR. */
-	private static final String DAILY_B_RANGE_TMPL_ADDR = "AQ4:BJ5";
+	private String DAILY_B_RANGE_TMPL_ADDR = "AQ4:BJ5";
 
 	/** The Constant WEEKLY_RANGE_TMPL_ADDR. */
-	private static final String WEEKLY_RANGE_TMPL_ADDR = "AQ11:BJ12";
+	private String WEEKLY_RANGE_TMPL_ADDR = "AQ11:BJ12";
 
 	/** The Constant SEAL_RANGE_TMPL_ADDR. */
-	private static final String SEAL_RANGE_TMPL_ADDR = "AQ14:AR17";
+	private String SEAL_RANGE_TMPL_ADDR = "AQ14:AR17";
 
 	/** The Constant SEAL_COL_ADDR. */
 	private static final List<String> SEAL_COL_ADDR = Arrays
 			.asList(new String[] { "AN1", "AL1", "AJ1", "AH1", "AF1", "AD1" });
 	
 	/** The Constant END_REPORT_COL2. */
-	private static final String END_REPORT_PAGE_BREAK= "AP";
+	private String END_REPORT_PAGE_BREAK= "AP";
 
-	/** The Constant REPORT_LEFT_COL_ADDR. */
-	private static final String REPORT_LEFT_COL_ADDR = "A%d:T%d";
+	/** The Constant REPORT_LEFT_COL_ADDR. font size large */
+	private String REPORT_LEFT_COL_ADDR = "A%d:T%d";
+	
+	/** The Constant REPORT_LEFT_COL_ADDR. font size medium*/
+//	private static final String REPORT_LEFT_COL_ADDR = "A%d:V%d";
 
 	/** The Constant REPORT_RIGHT_COL_ADDR. */
-	private static final String REPORT_RIGHT_COL_ADDR = "V%d:AO%d";
+	private String REPORT_RIGHT_COL_ADDR = "V%d:AO%d";
 	
 	/** The Constant PRINT_TITLE_ROW. */
 	private static final String PRINT_TITLE_ROW = "$6:$7";
@@ -116,7 +120,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private static final int START_REPORT_DATA_ROW = 11;
 
 	/** The Constant MAX_ROW_PER_EMPL. */
-	private static final int MAX_ROW_PER_EMPL = 50;
+	private int MAX_ROW_PER_EMPL = 50;
 
 	/** The Constant EMPL_INVIDUAL_INDEX. */
 	private static final int EMPL_INVIDUAL_INDEX = 0;
@@ -166,6 +170,48 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	public void generate(FileGeneratorContext generatorContext, AttendanceRecordReportDatasource dataSource) {
 
 		AttendanceRecordReportData data = dataSource.getData();
+		
+		if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+			TEMPLATE_FILE = "report/KWR002_FM.xlsx";
+			
+			MONTHLY_DATA_ADDR = "C%d:AD%d";
+			
+			REPORT_PAGE_ADDR = "A1:BB";
+			
+			REPORT_LEFT_COL_ADDR = "A%d:X%d";
+			
+			REPORT_RIGHT_COL_ADDR = "Z%d:AX%d";
+			
+			END_REPORT_PAGE_BREAK = "AT";
+			
+			DAILY_W_RANGE_TMPL_ADDR = "AY1:BV2";
+			
+			DAILY_B_RANGE_TMPL_ADDR = "AY4:BV5";
+			
+			WEEKLY_RANGE_TMPL_ADDR = "AY11:BV12";
+			
+			MAX_ROW_PER_EMPL = 80;
+		} else if( dataSource.getData().getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
+			TEMPLATE_FILE = "report/KWR002_FS.xlsx";
+			
+			MONTHLY_DATA_ADDR = "C%d:AD%d";
+			
+			REPORT_PAGE_ADDR = "A1:BB";
+			
+			REPORT_LEFT_COL_ADDR = "A%d:X%d";
+			
+			REPORT_RIGHT_COL_ADDR = "Z%d:AX%d";
+			
+			END_REPORT_PAGE_BREAK = "AT";
+			
+			DAILY_W_RANGE_TMPL_ADDR = "AY1:BV2";
+			
+			DAILY_B_RANGE_TMPL_ADDR = "AY4:BV5";
+			
+			WEEKLY_RANGE_TMPL_ADDR = "AY11:BV12";
+			
+			MAX_ROW_PER_EMPL = 80;
+		}
 
 		try (val reportContext = this.createContext(TEMPLATE_FILE, data.getExportDateTime())) {
 
@@ -336,7 +382,6 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 				.setValue(TextResource.localize("KWR002_216") + " " + employeeData.getWorkType());
 		employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX)
 				.setValue(TextResource.localize("KWR002_217") + " " + employeeData.getYearMonth());
-
 		// Create weekly data
 		List<AttendanceRecordReportWeeklyData> weeklyDatas = employeeData.getWeeklyDatas();
 		Map<String, Integer> dataRow = new HashMap<>();

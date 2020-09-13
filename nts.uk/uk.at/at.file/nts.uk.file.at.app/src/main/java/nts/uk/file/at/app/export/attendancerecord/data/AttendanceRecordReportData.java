@@ -38,5 +38,6 @@ public class AttendanceRecordReportData {
 	/** The report data. */
 	private Map<String, List<AttendanceRecordReportEmployeeData>> reportData;
 	
-	private int fontSize = 20;
+	/** The font size. */
+	private int fontSize;
 }

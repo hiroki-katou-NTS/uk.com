@@ -37,7 +37,7 @@ public interface AttendanceRecordOuputItemsRepository {
      * @param code the code
      * @return the optional
      */
-    public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCode(String companyId, String employeeId,String code);
+    public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCode(String companyId, String employeeId, String code);
     
     
     /**
@@ -59,6 +59,19 @@ public interface AttendanceRecordOuputItemsRepository {
      * @return the optional
      */
     public Optional<AttendanceRecordExportSetting> findByLayoutId(String layoutId);
+    
+    /**
+     * Find by company employee and code.
+     *
+     * @param companyId the company id
+     * @param employeeId the employee id
+     * @param code the code
+     * @param selectionType the selection type
+     * @return the optional
+     */
+    public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCodeAndSelection(String companyId, String employeeId, long code , int selectionType);
+    
+    
     
     
     

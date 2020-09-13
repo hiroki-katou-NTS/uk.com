@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 
@@ -49,5 +50,16 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public Optional<AttendanceRecordStandardSetting> findByCompanyCodeAndSelectType(String companyId, long code,
+			int selectType) {
+		AttendanceRecordStandardSetting attendanceRecordStandardSetting = new AttendanceRecordStandardSetting();
+		Optional<AttendanceRecordExportSetting> getRec = this.recordExportSettingRepo.getAttendanceByCodeAndType(companyId, code, selectType);
+	
+		return Optional.ofNullable(attendanceRecordStandardSetting);
+	}
+
+	
 
 }
