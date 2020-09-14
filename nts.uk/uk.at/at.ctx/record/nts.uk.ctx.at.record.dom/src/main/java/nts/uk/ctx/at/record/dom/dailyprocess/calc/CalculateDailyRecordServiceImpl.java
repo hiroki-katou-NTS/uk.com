@@ -370,7 +370,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				integrationOfWorkTime,
 				schedule);
 
-		if (!record.isPresent() || !schedule.isPresent()) {
+		if ((!record.isPresent() || !schedule.isPresent())
+				|| (!integrationOfWorkTime.isPresent() && !schedule.get().getIntegrationOfWorkTime().isPresent())) {
 			return ManageCalcStateAndResult.failCalc(integrationOfDaily, attendanceItemConvertFactory);
 		}
 		
@@ -378,8 +379,8 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				schedule.get().getCalculationRangeOfOneDay(),
 				companyCommonSetting,
 				personCommonSetting,
-				workType,
-				integrationOfWorkTime.get(),
+				schedule.get().getWorkType(),
+				schedule.get().getIntegrationOfWorkTime(),
 				integrationOfDaily);
 		
 		ManageReGetClass recordManageReGetClass = new ManageReGetClass(
@@ -387,7 +388,7 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 				companyCommonSetting,
 				personCommonSetting,
 				workType,
-				integrationOfWorkTime.get(),
+				integrationOfWorkTime,
 				integrationOfDaily);
 
 		// 実際の計算処理
@@ -594,7 +595,9 @@ public class CalculateDailyRecordServiceImpl implements CalculateDailyRecordServ
 	 */
 	private Optional<WorkTimeCode> decisionWorkTimeCode(WorkInfoOfDailyAttendance workInfo,
 			ManagePerPersonDailySet personCommonSetting, Optional<WorkType> workType) {
-
+		if(!workType.isPresent() || workType.get().isNoneWorkTimeType())
+			return Optional.empty();
+		
 		if (workInfo == null || workInfo.getRecordInfo() == null
 				|| workInfo.getRecordInfo().getWorkTimeCode() == null) {
 				return personCommonSetting.getPersonInfo().getWorkCategory().getWeekdayTime().getWorkTimeCode();

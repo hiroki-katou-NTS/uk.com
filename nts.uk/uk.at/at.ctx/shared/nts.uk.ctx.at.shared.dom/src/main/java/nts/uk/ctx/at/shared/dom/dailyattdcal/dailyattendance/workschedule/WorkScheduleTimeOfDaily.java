@@ -71,7 +71,7 @@ public class WorkScheduleTimeOfDaily {
 				companyCommonSetting,
 				personDailySetting,
 				schedulePerformance.getWorkType(),
-				schedulePerformance.getIntegrationOfWorkTime().get(),
+				schedulePerformance.getIntegrationOfWorkTime(),
 				integrationOfDaily);
 		
 		//設定を退避する
