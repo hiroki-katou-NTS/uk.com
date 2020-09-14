@@ -68,16 +68,16 @@ public class KfnctAtdIdRptDai extends UkJpaEntity
 		for (FormCanUsedForTime formCanUsedForTime : form) {
 			switch (formCanUsedForTime) {
 				case DAILY_WORK_SCHEDULE:
-					this.setWorkDaily(BigDecimal.valueOf(formCanUsedForTime.value));
+					this.setWorkDaily(BigDecimal.valueOf(1));
 					break;
 				case ATTENDANCE_BOOK:
-					this.setWorkAttendance(BigDecimal.valueOf(formCanUsedForTime.value));
+					this.setWorkAttendance(BigDecimal.valueOf(1));
 					break;
 				case WORK_SITUATION_TABLE:
-					this.setAtdWorkDaily(BigDecimal.valueOf(formCanUsedForTime.value));
+					this.setAtdWorkDaily(BigDecimal.valueOf(1));
 					break;
 				case ANNUAL_WORK_LEDGER:
-					this.setAtdWorkAttendance(BigDecimal.valueOf(formCanUsedForTime.value));
+					this.setAtdWorkAttendance(BigDecimal.valueOf(1));
 					break;
 				default:
 					break;

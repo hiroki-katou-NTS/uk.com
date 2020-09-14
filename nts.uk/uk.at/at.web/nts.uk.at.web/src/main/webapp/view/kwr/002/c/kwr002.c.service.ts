@@ -13,8 +13,8 @@ module nts.uk.com.view.kwr002.c{
             getSealStamp:"com/function/attendancerecord/export/setting/getSealStamp/",
             getAttendanceRecordExportSetting: "com/function/attendancerecord/export/setting/getAttendanceRecExpSet/",
             getApprovalProcessingUseSetting: "com/function/attendancerecord/export/getApprovalProcessingUseSetting",
-            getDailyAttendanceItems: "com/function/attendancerecord/export/getDailyAttendanceTtems",
-            getMonthlyAttendanceItems: "com/function/attendancerecord/export/getMonthlyAttendanceTtems",
+            getDailyAttendanceItems: "com/function/attendancerecord/export/getDailyAttendanceItems",
+            getMonthlyAttendanceItems: "com/function/attendancerecord/export/getMonthlyAttendanceItems",
             getSingleAttendanceRecord: "com/function/attendancerecord/export/getSingleAttendanceRecord",
             getCalculateAttendanceRecordDto: "com/function/attendancerecord/export/getCalculateAttendanceRecordDto"
         };
@@ -46,7 +46,7 @@ module nts.uk.com.view.kwr002.c{
         
         // Ver25 get daily attendance items
         export function getDailyAttendanceItems(): JQueryPromise<Array<viewmodel.model.AttributeOfAttendanceItem>> {
-            return nts.uk.request.ajax("at", path.getDailyAttendanceTtems);
+            return nts.uk.request.ajax("at", path.getDailyAttendanceItems);
         }
 
         // Ver25 get monthly attendance items

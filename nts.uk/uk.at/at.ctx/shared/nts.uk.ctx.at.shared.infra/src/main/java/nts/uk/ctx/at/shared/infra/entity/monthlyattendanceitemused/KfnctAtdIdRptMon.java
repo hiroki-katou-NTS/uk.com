@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.infra.entity.monthlyattendanceitemused;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -75,25 +75,31 @@ public class KfnctAtdIdRptMon extends UkJpaEntity implements MonthlyAttendanceIt
 
 	@Override
 	public void setFormCanUsedForTimes(List<FormCanUsedForTime> forms) {
+		this.setWorkAttendance(BigDecimal.valueOf(0));
+		this.setWorkMonthly(BigDecimal.valueOf(0));
+		this.setWorkYearly(BigDecimal.valueOf(0));
+		this.setWorkPeriod(BigDecimal.valueOf(0));
+		this.setAtdWorkAttendance(BigDecimal.valueOf(0));
+		this.setAtdWorkYearly(BigDecimal.valueOf(0));
 		for (FormCanUsedForTime form : forms) {
 			switch (form) {
 				case ATTENDANCE_BOOK:
-					this.setAtdWorkAttendance(BigDecimal.valueOf(form.value));
+					this.setWorkAttendance(BigDecimal.valueOf(1));
 					break;
 				case MONTHLY_WORK_SCHEDULE:
-					this.setWorkMonthly(BigDecimal.valueOf(form.value));
+					this.setWorkMonthly(BigDecimal.valueOf(1));
 					break;
 				case ANNUAL_WORK_SCHEDULE:
-					this.setWorkYearly(BigDecimal.valueOf(form.value));
+					this.setWorkYearly(BigDecimal.valueOf(1));
 					break;
 				case OPTIONAL_PERIOD_SCHEDULE:
-					this.setWorkPeriod(BigDecimal.valueOf(form.value));
+					this.setWorkPeriod(BigDecimal.valueOf(1));
 					break;
 				case ANNUAL_WORK_LEDGER:
-					this.setAtdWorkAttendance(BigDecimal.valueOf(form.value));
+					this.setAtdWorkAttendance(BigDecimal.valueOf(1));
 					break;
 				case WORKBOOK:
-					this.setAtdWorkYearly(BigDecimal.valueOf(form.value));
+					this.setAtdWorkYearly(BigDecimal.valueOf(1));
 					break;
 				default:
 					break;
@@ -113,14 +119,31 @@ public class KfnctAtdIdRptMon extends UkJpaEntity implements MonthlyAttendanceIt
 
 	@Override
 	public List<FormCanUsedForTime> getFormCanUsedForTimes() {
-		List<FormCanUsedForTime> canUsedForTimes = Arrays.asList(
-				FormCanUsedForTime.valueOf(this.atdWorkAttendance.intValue()),
-				FormCanUsedForTime.valueOf(this.workMonthly.intValue()),
-				FormCanUsedForTime.valueOf(this.workYearly.intValue()),
-				FormCanUsedForTime.valueOf(this.workPeriod.intValue()),
-				FormCanUsedForTime.valueOf(this.atdWorkAttendance.intValue()),
-				FormCanUsedForTime.valueOf(this.atdWorkYearly.intValue())
-		);
+		List<FormCanUsedForTime> canUsedForTimes = new ArrayList<FormCanUsedForTime>();
+		if (this.getWorkAttendance().intValue() == 1) {
+			canUsedForTimes.add(FormCanUsedForTime.ATTENDANCE_BOOK);
+		}
+		
+		if (this.workMonthly.intValue() == 1) {
+			canUsedForTimes.add(FormCanUsedForTime.MONTHLY_WORK_SCHEDULE);
+		}
+		
+		if (this.workYearly.intValue() == 1) {
+			canUsedForTimes.add(FormCanUsedForTime.ANNUAL_WORK_SCHEDULE);
+		}
+		
+		if (this.workPeriod.intValue() == 1) {
+			canUsedForTimes.add(FormCanUsedForTime.OPTIONAL_PERIOD_SCHEDULE);
+		}
+		
+		if (this.atdWorkAttendance.intValue() == 1) {
+			canUsedForTimes.add(FormCanUsedForTime.ANNUAL_WORK_LEDGER);
+		}
+		
+		if (this.atdWorkYearly.intValue() == 1) {
+			canUsedForTimes.add(FormCanUsedForTime.WORKBOOK);
+		}
+
 		return canUsedForTimes;
 	}
 	

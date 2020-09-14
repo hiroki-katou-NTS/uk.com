@@ -156,7 +156,7 @@ public class AttendanceRecordExportWebService {
 	 * @return List＜勤怠項目ID、名称、属性、マスタの種類、表示番号＞
 	 */
 	@POST
-	@Path("getDailyAttendanceTtems")
+	@Path("getDailyAttendanceItems")
 	public List<AttributeOfAttendanceItemDto> getDailyAttendanceTtems() {
 		return this.attendanceItemFinder.getDailyAttendanceItemAtrs();
 	}
@@ -167,7 +167,7 @@ public class AttendanceRecordExportWebService {
 	 * @return List＜勤怠項目ID、名称、属性、表示番号＞
 	 */
 	@POST
-	@Path("getMonthlyAttendanceTtems")
+	@Path("getMonthlyAttendanceItems")
 	public List<AttributeOfAttendanceItemDto> getMonthlyAttendanceTtems() {
 		return this.attendanceItemFinder.getMonthlyAttendanceItemAtrs();
 	}
