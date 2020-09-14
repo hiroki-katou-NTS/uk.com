@@ -112,7 +112,7 @@ public class GetAgreementTimeProc {
 				errorMessages.add(confirmed.getConfirmedErrorMessage());
 				
 				// 36協定時間一覧にエラーメッセージを入れる
-				val employeeError = AgreementTimeDetail.of(employeeIds.get(0), null, null, null, null,
+				val employeeError = AgreementTimeDetail.of(employeeId, null, null, null, null,
 						confirmed.getConfirmedErrorMessage());
 				results.add(employeeError);
 				return;
