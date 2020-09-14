@@ -82,6 +82,7 @@ public class WorkInformationOfDailyDto extends AttendanceItemCommon {
 	public static WorkInformationOfDailyDto getDto(String employeeId,GeneralDate ymd, WorkInfoOfDailyAttendance workInfo) {
 		WorkInformationOfDailyDto result = new WorkInformationOfDailyDto();
 		if (workInfo != null) {
+			result.setVersion(workInfo.getVer());
 			result.setEmployeeId(employeeId);
 			result.setDate(ymd);
 			result.setActualWorkInfo(createWorkInfo(workInfo.getRecordInfo()));
