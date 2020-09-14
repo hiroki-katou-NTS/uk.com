@@ -560,7 +560,7 @@ module nts.uk.at.view.ksc001.b {
 					isSelectAllAfterReload : true,
 					maxWidth : 550,
 					maxRows : 10,
-					tabindex : 5
+					tabindex : -1
 				};
 
 				return dfd.promise();
@@ -758,7 +758,7 @@ module nts.uk.at.view.ksc001.b {
 				} else {
 					self.buildString();
 					self.next().done( function() {
-
+						$('#employeeSearch .nts-gridlist').attr('tabindex', '-1');
 						if( self.kcp005EmployeeList().length <= 0 )
 							$('.ccg-lbl-search-drawer').click();
 
@@ -948,8 +948,7 @@ module nts.uk.at.view.ksc001.b {
 							//#KSC001_37+#KSC001_113+#KSC001_114+#KSC001_111
 							lstLabelInfomation.push( self.$i18n( "KSC001_37" ) + self.$i18n( "KSC001_113" ) + self.$i18n( "KSC001_114" ) + self.$i18n( "KSC001_111" ) );
 							//#KSC001_37+#KSC001_111+#KSC001_114+「C2_12」+「▲」+「C2_13」
-							let monthlyPattern = self.monthlyPatternOpts().find( element => element.code == self.monthlyPatternCode() );
-							//let monthlyPatternText = self.monthlyPatternCode() + self.fullSizeSpace + (!_.isNil(monthlyPattern) ? monthlyPattern.name : '');
+							let monthlyPattern = _.find( self.monthlyPatternOpts(), (element) => { return element.code == self.monthlyPatternCode() });
 							let monthlyPatternText = !_.isNil(monthlyPattern) ? monthlyPattern.name : '';
 							lstLabelInfomation.push( self.$i18n( "KSC001_37" ) + self.$i18n( "KSC001_111" ) + self.$i18n( "KSC001_114" ) + monthlyPatternText );
 							break;

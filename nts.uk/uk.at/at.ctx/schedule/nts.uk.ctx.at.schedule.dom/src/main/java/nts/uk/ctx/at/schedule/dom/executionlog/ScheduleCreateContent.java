@@ -10,6 +10,8 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 
+import java.util.Optional;
+
 
 /**
  * The Class ScheduleCreateContent.
@@ -36,14 +38,14 @@ public class ScheduleCreateContent extends AggregateRoot{
 	private SpecifyCreation specifyCreation;
 
 	//再作成条件
-	private RecreateCondition recreateCondition;
+	private Optional<RecreateCondition> recreateCondition;
 
 //	//TODO: bien tam thoi, se xoa sau khi co tai lieu moi
 	private ImplementAtr implementAtr;
 	private ReCreateContent reCreateContent;
 	private CreateMethodAtr createMethodAtr;
 	public ScheduleCreateContent (String executionId,Boolean confirm,ImplementAtr creationType,
-								  SpecifyCreation specifyCreation,RecreateCondition recreateCondition){
+								  SpecifyCreation specifyCreation,Optional<RecreateCondition> recreateCondition){
 		this.executionId = executionId;
 		this.confirm =confirm;
 		this.creationType = creationType;
@@ -109,7 +111,7 @@ public class ScheduleCreateContent extends AggregateRoot{
     public void setSpecifyCreation(SpecifyCreation specifyCreation) {
         this.specifyCreation = specifyCreation;
     }
-    public void setRecreateCondition(RecreateCondition recreateCondition) {
+    public void setRecreateCondition(Optional<RecreateCondition> recreateCondition) {
         this.recreateCondition = recreateCondition;
     }
 }

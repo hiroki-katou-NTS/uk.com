@@ -117,7 +117,7 @@ public class ScheduleExecutionAddCommand {
     public ScheduleExecutionLog toDomain(String companyId, String employeeId, String executionId ) {
         return new ScheduleExecutionLog(new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
     }
-    // command to domain: not use memento pattern.
+    // command to domain
     public ScheduleCreateContent toDomainContentNew(String executionId) {
         val monthly = new MonthlyPatternCode(monthlyPatternId);
         val creMethod = CreationMethod.valueOf(creationMethod);
@@ -125,21 +125,21 @@ public class ScheduleExecutionAddCommand {
         if(copyStartYmd!=null){
             copyStartD =  Optional.of(copyStartYmd);
         }
-        val re = ReferenceMaster.valueOf(referenceMaster);
-        Optional ref = Optional.empty();
-        Optional mon = Optional.empty();
+        val refMasValueOf = ReferenceMaster.valueOf(referenceMaster);
+        Optional refMasOpt = Optional.empty();
+        Optional monthlyOpt = Optional.empty();
         if(creationMethod == CreationMethod.SPECIFY_CREATION.value){
-            if(re!=null){
-                ref =   Optional.of(re);
+            if(refMasValueOf!=null){
+                refMasOpt =   Optional.of(refMasValueOf);
             }
             if(referenceMaster== ReferenceMaster.MONTH_PATTERN.value){
-                mon = Optional.of(monthly);
+                monthlyOpt = Optional.of(monthly);
             }
         }
-        val specify = new SpecifyCreation(creMethod,copyStartD, ref,mon);
+        val specify = new SpecifyCreation(creMethod,copyStartD, refMasOpt,monthlyOpt);
         val con = new ConditionEmployee(reTargetTransfer,reTargetLeave,reTargetShortWork,reTargetLaborChange);
         val recreateCondition = new RecreateCondition(reTargetAtr,reOverwriteConfirmed,reOverwriteRevised,Optional.of(con));
-        return new ScheduleCreateContent(executionId,beConfirmed,ImplementAtr.valueOf(creationType),specify,recreateCondition);
+        return new ScheduleCreateContent(executionId,beConfirmed,ImplementAtr.valueOf(creationType),specify,Optional.of(recreateCondition));
     }
 
     /**
@@ -340,13 +340,13 @@ public class ScheduleExecutionAddCommand {
          * getCreateMethodAtr()
          */
         @Override
-        public RecreateCondition getRecreateCondition() {
-            return new RecreateCondition(
+        public Optional<RecreateCondition> getRecreateCondition() {
+            return Optional.of(new RecreateCondition(
                     false,
                     false,
                     false,
                     Optional.empty()
-            );
+            ));
         }
 
         /*
