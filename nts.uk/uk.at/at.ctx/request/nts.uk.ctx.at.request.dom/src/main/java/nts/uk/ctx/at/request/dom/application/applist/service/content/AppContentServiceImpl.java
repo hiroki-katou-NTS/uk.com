@@ -435,12 +435,12 @@ public class AppContentServiceImpl implements AppContentService {
 						phaseAtr = phase.getApprovalAtr();
 						frameAtr = approver.getApprovalAtr();
 						isBreak = true;
+						listOfApp.setOpApprovalFrameStatus(Optional.of(frameAtr.value));
+						// 反映状態　＝　反映状態（承認一覧モード）//Trạng thái phản ánh= trạng thái phản ánh(mode danh sách approve)
+						reflectedStateString = this.getReflectStatusApprovalListMode(reflectedState, phaseAtr, frameAtr, device);
 					}
 				}
 			}
-			listOfApp.setOpApprovalFrameStatus(Optional.of(frameAtr.value));
-			// 反映状態　＝　反映状態（承認一覧モード）//Trạng thái phản ánh= trạng thái phản ánh(mode danh sách approve)
-			reflectedStateString = this.getReflectStatusApprovalListMode(reflectedState, phaseAtr, frameAtr, device);
 		}
 		// 申請一覧．反映状態　＝　申請の反映状態(ApplicationList. trạng thái phản ánh = trạng thái phản ánh của đơn xin)
 		listOfApp.setReflectionStatus(reflectedStateString);

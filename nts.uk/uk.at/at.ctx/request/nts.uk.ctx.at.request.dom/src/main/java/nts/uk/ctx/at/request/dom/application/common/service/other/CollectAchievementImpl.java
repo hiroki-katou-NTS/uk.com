@@ -295,13 +295,13 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//・実績詳細．休憩時間帯＝OUTPUT．勤務実績．休憩時間帯
 			breakTimeSheets = recordWorkInfoImport.getBreakTimeSheets();
 			//・実績詳細．残業深夜時間＝OUTPUT．勤務実績．残業深夜時間
-			//opOvertimeMidnightTime = recordWorkInfoImport.getOverTimeMidnight().getTime();
+			opOvertimeMidnightTime = recordWorkInfoImport.getOverTimeMidnight().map(x -> x.getCalcTime());
 			//・実績詳細．法内休出深夜時間＝OUTPUT．勤務実績．法内休出深夜時間
-			//opInlawHolidayMidnightTime = recordWorkInfoImport.getMidnightOnHoliday();
+			opInlawHolidayMidnightTime = recordWorkInfoImport.getMidnightOnHoliday().map(x -> x.getCalcTime());
 			//・実績詳細．法外休出深夜時間＝OUTPUT．勤務実績．法外休出深夜時間
-			//opOutlawHolidayMidnightTime = recordWorkInfoImport.getOutOfMidnight();
+			opOutlawHolidayMidnightTime = recordWorkInfoImport.getOutOfMidnight().map(x -> x.getCalcTime());
 			//・実績詳細．祝日休出深夜時間＝OUTPUT．勤務実績．祝日休出深夜時間
-			//opPublicHolidayMidnightTime = recordWorkInfoImport.getMidnightPublicHoliday();
+			opPublicHolidayMidnightTime = recordWorkInfoImport.getMidnightPublicHoliday().map(x -> x.getCalcTime());
 		}
 		//ドメインモデル「勤務種類」を1件取得する - (lấy 1 dữ liệu của domain 「WorkType」)
 		opWorkTypeName = workTypeRepository.findByPK(companyID, workTypeCD).map(x -> x.getName().v());
