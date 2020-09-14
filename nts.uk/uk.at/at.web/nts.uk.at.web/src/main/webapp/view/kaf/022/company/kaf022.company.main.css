@@ -97,3 +97,7 @@ td .form-label {
 .grid-col-text-right {
     text-align: right;
 }
+
+.label-holiday {
+    padding-left: 30px;
+}

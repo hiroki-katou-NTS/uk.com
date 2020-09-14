@@ -41,6 +41,7 @@ module nts.uk.at.view.kaf022.p.viewmodel {
                     self.selectedSetting(new OptionalItemAppSet());
                     self.isUpdate(false);
                     nts.uk.ui.errors.clearAll();
+                    $("#optItemAppTypeCode").focus();
                 }
                 self.optionalItems(_.cloneDeep(self.optionalItemsBak));
             });
@@ -135,6 +136,10 @@ module nts.uk.at.view.kaf022.p.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 const currentCode = self.selectedSetting().code();
                 const data = ko.toJS(self.selectedSetting);
+                if (!self.isUpdate() && _.find(self.settings(), i => i.code == data.code)) {
+                    dialog.alertError({ messageId: "Msg_3" });
+                    return;
+                }
                 data.settingItems.forEach((obj, index) => {
                     obj['dispOrder'] = index + 1;
                 });

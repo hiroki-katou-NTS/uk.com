@@ -49,6 +49,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     self.selectedReason(new AppReasonStandard(self.selectedAppType()));
                     self.isUpdate(false);
                     nts.uk.ui.errors.clearAll();
+                    $("#reasonCode").focus();
                 }
             });
 
@@ -63,7 +64,10 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         else
                             self.selectedReasonCode(self.listReasonByAppType()[0].reasonCode);
                     } else {
-                        self.selectedReasonCode(null);
+                        if (self.selectedReasonCode() != null)
+                            self.selectedReasonCode(null);
+                        else
+                            self.selectedReasonCode.valueHasMutated();
                     }
                 }
             });
@@ -138,6 +142,10 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             $('#reasonTemp').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 const current = ko.toJS(self.selectedReason);
+                if (!self.isUpdate() && _.find(self.listReasonByAppType(), i => i.reasonCode == current.reasonCode)) {
+                    alert({ messageId: "Msg_3" });
+                    return;
+                }
                 let data = ko.toJS(self.listReasonByAppType);
                 if (!self.isUpdate()) {
                     data.push(current);

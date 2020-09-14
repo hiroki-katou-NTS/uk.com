@@ -81,8 +81,9 @@
 
 					<div id="right-content" class="fixed-flex-layout-right" data-bind="with: selectedReason">
 						<div class="control-group valign-center">
-							<div data-bind="ntsFormLabel: {required: true, constraint: 'AppStandardReasonCode'}">#{i18n.getText('KAF022_694')}</div>
+							<div style="width: 95px" data-bind="ntsFormLabel: {required: true, constraint: 'AppStandardReasonCode'}">#{i18n.getText('KAF022_694')}</div>
 							<input id="reasonCode"
+								   style="width: 163px;"
 								   data-bind="ntsNumberEditor: {
 											name:'#{i18n.getText('KAF022_694')}',
 											value: reasonCode,
@@ -93,10 +94,10 @@
 						</div>
 						<div class="control-group valign-top">
 							<!-- S2_10 -->
-							<div data-bind="ntsFormLabel: {required: true, constraint: 'ReasonForFixedForm'}">#{i18n.getText('KAF022_443')}</div>
+							<div style="width: 95px" data-bind="ntsFormLabel: {required: true, constraint: 'ReasonForFixedForm'}">#{i18n.getText('KAF022_443')}</div>
 							<!-- S2_11 -->
 							<textarea id="reasonTemp"
-									style="height: 45px; width: 162px;"
+									style="height: 45px; width: 163px;"
 									data-bind="ntsMultilineEditor: {
 											name:'#{i18n.getText('KAF022_443')}',
 											value: reasonTemp,
