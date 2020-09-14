@@ -222,26 +222,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // close screen O1 when change mode
                 if (viewMode == 'shift') { // mode シフト表示   
                     self.shiftModeStart().done(() => {
-                        self.pasteData();
-                        self.setPositionButonToRightToLeft();
-                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+                        self.editMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'shortName') { // mode 略名表示
                     self.shortNameModeStart().done(() => {
-                        self.pasteData();
-                        self.setPositionButonToRightToLeft();
-                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+                        self.editMode();
                         self.stopRequest(true);
                     });
                 } else if (viewMode == 'time') {  // mode 勤務表示 
                     self.timeModeStart().done(() => {
-                        self.pasteData();
-                        self.setPositionButonToRightToLeft();
-                        $(".editMode").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-                        $(".confirmMode").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+                        self.editMode();
                         self.stopRequest(true);
                     });
                 }
@@ -394,7 +385,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // khởi tạo data localStorage khi khởi động lần đầu.
                 self.creatDataLocalStorege(data.dataBasicDto);
                 
-                __viewContext.viewModel.viewAB.workPlaceId(data.dataBasicDto.workplaceId);
+                __viewContext.viewModel.viewAB.workPlaceId(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
         
                 self.getSettingDisplayWhenStart(viewMode);
                 
@@ -475,20 +466,14 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (viewMode == 'shift') { // mode シフト表示   
                 self.shiftModeStart().done(() => {
-                    self.setUpdateMode();
-                    self.setPositionButonToRightToLeft();
                     self.stopRequest(true);
                 });
             } else if (viewMode == 'shortName') { // mode 略名表示
                 self.shortNameModeStart().done(() => {
-                    self.setUpdateMode();
-                    self.setPositionButonToRightToLeft();
                     self.stopRequest(true);
                 });
             } else if (viewMode == 'time') {  // mode 勤務表示 
                 self.timeModeStart().done(() => {
-                    self.setUpdateMode();
-                    self.setPositionButonToRightToLeft();
                     self.stopRequest(true);
                 });
             }
@@ -593,6 +578,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shift');
                 
+                self.pasteData();
+                
+                self.setPositionButonToRightToLeft();
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -635,6 +624,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'shortName');
                 
+                self.pasteData();
+                
+                self.setPositionButonToRightToLeft();
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -662,6 +655,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             self.visibleShiftPalette(false);
             self.visibleBtnInput(true);
+            
             self.saveModeGridToLocalStorege('time');
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
 
@@ -675,6 +669,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                 // remove va tao lai grid
                 self.destroyAndCreateGrid(dataBindGrid, 'time');
+                
+                self.pasteData();
+                
+                self.setPositionButonToRightToLeft();
+                
                 dfd.resolve();
             }).fail(function() {
                 dfd.reject();
@@ -1908,11 +1907,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.editModeToConfirmMode();
                     self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
+                    self.pasteData();
                 }).ifNo(() => { });
             } else {
                 self.editModeToConfirmMode();
                 self.enableBtnRedo(false);
                 self.enableBtnUndo(false);
+                self.pasteData();
             }
         }
         
@@ -1954,9 +1955,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.confirmModeToeditMode();
+                    self.pasteData();
                 }).ifNo(() => { });
             } else {
                 self.confirmModeToeditMode();
+                self.pasteData();
             }
         }
         

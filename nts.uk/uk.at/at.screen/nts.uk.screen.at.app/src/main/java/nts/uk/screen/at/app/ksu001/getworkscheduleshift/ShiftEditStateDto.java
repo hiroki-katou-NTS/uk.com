@@ -25,7 +25,7 @@ public class ShiftEditStateDto {
 	//HAND_CORRECTION_OTHER(1), 手修正（他人） 
 	//REFLECT_APPLICATION(2), 申請反映
 	//IMPRINT(3); 打刻反映
-	private  Integer optEditStateOfDailyAttd;
+	private  Integer editStateSetting;
 	
 	public static ShiftEditStateDto toDto(ShiftEditState domain) {
 		
