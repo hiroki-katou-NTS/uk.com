@@ -1,8 +1,7 @@
 
-#contents-area {
-	padding: 10px;
-	max-height: 625px;
+.kdl023-content-area {
 	font-size: 0.85rem;
+	height: calc(-110px + 100vh) !important;
 }
 #calendar-reflect-pattern {
 	width: 990px;
