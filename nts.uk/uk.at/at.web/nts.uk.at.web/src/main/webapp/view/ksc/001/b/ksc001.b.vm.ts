@@ -655,9 +655,10 @@ module nts.uk.at.view.ksc001.b {
 					createAfterDeleted = self.createAfterDeleting();
 				}
 
-				if(self.checkCreateMethodAtrPersonalInfo() !== CreateMethodAtr.PATTERN_SCHEDULE) {
+				if(self.checkCreateMethodAtrPersonalInfo() === CreateMethodAtr.PATTERN_SCHEDULE) {
 					creationMethodCode =  self.creationMethodCode();
-					monthlyPatternCode = self.monthlyPatternCode();
+					if( creationMethodCode ===  CreationMethodRef.MONTHLY_PATTERN )
+						monthlyPatternCode = self.monthlyPatternCode();
 				}
 
 				data.employeeId = user.employeeId;
@@ -1023,14 +1024,11 @@ module nts.uk.at.view.ksc001.b {
 					service.checkMonthMax( self.toDate( self.periodDate().startDate ) ).done( checkMax => {
 						self.$blockui("hide");
 						if( checkMax ) {
-							this.$dialog.confirm({ messageId: "Msg_568" }).then((result: 'no' | 'yes' | 'cancel') => {
-								if (result === 'no') {
-									return;
-								}
-
+							self.$dialog.confirm({ messageId: "Msg_568" }).then((result) => {
 								if (result === 'yes') {
 									self.createPersonalSchedule();
-								}
+								} else
+									return;
 							});
 						} else {
 							self.createPersonalSchedule();
@@ -1044,14 +1042,11 @@ module nts.uk.at.view.ksc001.b {
 			 */
 			private createPersonalSchedule(): void {
 				let self = this;
-				self.$dialog.confirm({ messageId: "Msg_569" }).then((result: 'no' | 'yes' | 'cancel') => {
-					if (result === 'no' || 'cancel') {
-						return;
-					}
-
+				self.$dialog.confirm({ messageId: "Msg_569" }).then((result) => {
 					if (result === 'yes') {
 						self.savePersonalScheduleData();
-					}
+					} else
+						return;
 				});
 			}
 
