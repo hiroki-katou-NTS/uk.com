@@ -144,22 +144,22 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			// Column H
 			Cell cellH = cells.get("H" + i);
 			String contextH = cellH.getStringValue();
-			if (contextH.equals("承認済")) {
+			if (contextH.equals(I18NText.getText("CMM045_63"))) {
 				this.backgroundColor(cellH, 191, 234, 96);
 			}
-			if (contextH.equals("反映済")) {
+			if (contextH.equals(I18NText.getText("CMM045_64"))) {
 				this.backgroundColor(cellH, 206, 230, 255);
 			}
-			if (contextH.equals("否認")) {
+			if (contextH.equals(I18NText.getText("CMM045_65"))) {
 				this.backgroundColor(cellH, 253, 77, 77);
 			}
-			if (contextH.equals("未承認")) {
+			if (contextH.equals(I18NText.getText("CMM045_62"))) {
 				this.backgroundColor(cellH, 255, 255, 255);
 			}
-			if (contextH.equals("差戻")) {
+			if (contextH.equals(I18NText.getText("CMM045_66"))) {
 				this.backgroundColor(cellH, 253, 77, 77);
 			}
-			if (contextH.equals("取消")) {
+			if (contextH.equals(I18NText.getText("CMM045_67"))) {
 				this.backgroundColor(cellH, 246, 246, 54);
 			}
 		}

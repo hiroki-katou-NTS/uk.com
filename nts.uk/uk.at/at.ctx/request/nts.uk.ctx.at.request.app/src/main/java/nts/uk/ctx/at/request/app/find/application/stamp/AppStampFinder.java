@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.find.application.stamp;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,11 +18,17 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto_Old;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
+import nts.uk.ctx.at.request.dom.application.AppReason;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
@@ -34,10 +42,12 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.ErrorStampInfo;
+import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -156,10 +166,24 @@ public class AppStampFinder {
 	}
 	
 	public void checkBeforeRegister(BeforeRegisterOrUpdateParam beforeRegisterParam) {
+		String pattern2 = "yyyy/MM/dd";
+		ApplicationDto applicationDto = beforeRegisterParam.getApplicationDto();
+		Application application = Application.createFromNew(
+				EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
+				applicationDto.getEmployeeID(),
+				EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
+				new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), pattern2)),
+				applicationDto.getEnteredPerson(),
+				applicationDto.getOpStampRequestMode() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(applicationDto.getOpStampRequestMode(), StampRequestMode.class)),
+				applicationDto.getOpReversionReason() == null ? Optional.empty() : Optional.of(new ReasonForReversion(applicationDto.getOpReversionReason())),
+				StringUtils.isBlank(applicationDto.getOpAppStartDate()) ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), pattern2))),
+				StringUtils.isBlank(applicationDto.getOpAppEndDate()) ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), pattern2))),
+				applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
+				applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())));
 		appCommonStampDomainService.checkBeforeRegister(
 				beforeRegisterParam.getCompanyId(),
 				beforeRegisterParam.getAgentAtr(),
-				beforeRegisterParam.getApplicationDto().toDomain(),
+				application,
 				beforeRegisterParam.getAppStampOutputDto().toDomain());
 	}
 	

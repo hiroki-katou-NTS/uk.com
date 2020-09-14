@@ -142,7 +142,7 @@ public class AchievementDetailDto {
 		return new AchievementDetailDto(
 				achievementDetail.getWorkTypeCD(), 
 				achievementDetail.getWorkTimeCD(), 
-				achievementDetail.getBreakTimeSheets().stream().map(x -> BreakTimeSheetDto.fromDomain(x)).collect(Collectors.toList()),
+				CollectionUtil.isEmpty(achievementDetail.getBreakTimeSheets()) ? Collections.emptyList() : achievementDetail.getBreakTimeSheets().stream().map(x -> BreakTimeSheetDto.fromDomain(x)).collect(Collectors.toList()),
 				TimeContentDto.fromDomain(achievementDetail.getTimeContentOutput()), 
 				achievementDetail.getTrackRecordAtr().value, 
 				StampRecordDto.fromDomain(achievementDetail.getStampRecordOutput()), 
