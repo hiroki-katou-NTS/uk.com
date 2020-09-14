@@ -29,18 +29,18 @@ public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	public OiomtStdOutputCondSetPk stdOutputCondSetPk;
 
 	/**
-	 * カテゴリID
-	 */
-	@Basic(optional = false)
-	@Column(name = "CTG_ID")
-	public int categoryId;
-
-	/**
 	 * 外部出力条件名称
 	 */
 	@Basic(optional = false)
 	@Column(name = "CND_SET_NAME")
 	public String conditionSetName;
+	
+	/**
+	 * カテゴリID
+	 */
+	@Basic(optional = false)
+	@Column(name = "CTG_ID")
+	public int categoryId;
 
 	/**
 	 * するしない区分
@@ -50,13 +50,6 @@ public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	public int conditionOutputName;
 
 	/**
-	 * 区切り文字
-	 */
-	@Basic(optional = false)
-	@Column(name = "DELIMITER")
-	public int delimiter;
-
-	/**
 	 * するしない区分
 	 */
 	@Basic(optional = false)
@@ -64,11 +57,11 @@ public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	public int itemOutputName;
 
 	/**
-	 * するしない区分
+	 * 区切り文字
 	 */
 	@Basic(optional = false)
-	@Column(name = "AUTO_EXECUTION")
-	public int autoExecution;
+	@Column(name = "DELIMITER")
+	public int delimiter;
 
 	/**
 	 * 文字列形式
@@ -76,6 +69,13 @@ public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "STRING_FORMAT")
 	public int stringFormat;
+
+	/**
+	 * するしない区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "AUTO_EXECUTION")
+	public int autoExecution;
 
 	@Override
 	protected Object getKey() {

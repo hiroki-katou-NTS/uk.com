@@ -30,6 +30,34 @@ public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 	public OiomtAtWorkClsDfsPk atWorkClsDfsPk;
 
 	/**
+	 * 在職時出力
+	 */
+	@Basic(optional = true)
+	@Column(name = "AT_WORK_OUTPUT")
+	public String atWorkOutput;
+
+	/**
+	 * 休職時出力
+	 */
+	@Basic(optional = true)
+	@Column(name = "ABSENCE_OUTPUT")
+	public String absenceOutput;
+
+	/**
+	 * 休業時出力
+	 */
+	@Basic(optional = true)
+	@Column(name = "CLOSED_OUTPUT")
+	public String closedOutput;
+
+	/**
+	 * 退職時出力
+	 */
+	@Basic(optional = true)
+	@Column(name = "RETIREMENT_OUTPUT")
+	public String retirementOutput;
+
+	/**
 	 * 固定値
 	 */
 	@Basic(optional = false)
@@ -42,34 +70,6 @@ public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "FIXED_VAL")
 	public String valueOfFixedValue;
-
-	/**
-	 * 休業時出力
-	 */
-	@Basic(optional = true)
-	@Column(name = "CLOSED_OUTPUT")
-	public String closedOutput;
-
-	/**
-	 * 休職時出力
-	 */
-	@Basic(optional = true)
-	@Column(name = "ABSENCE_OUTPUT")
-	public String absenceOutput;
-
-	/**
-	 * 在職時出力
-	 */
-	@Basic(optional = true)
-	@Column(name = "AT_WORK_OUTPUT")
-	public String atWorkOutput;
-
-	/**
-	 * 退職時出力
-	 */
-	@Basic(optional = true)
-	@Column(name = "RETIREMENT_OUTPUT")
-	public String retirementOutput;
 
 	@Override
 	protected Object getKey() {
@@ -88,11 +88,11 @@ public class OiomtAtWorkClsDfs extends UkJpaEntity implements Serializable {
 						domain.getCid(), 
 						domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),
-				domain.getFixedValue().value,
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
-				domain.getClosedOutput().isPresent() ? domain.getClosedOutput().get().v() : null,
-				domain.getAbsenceOutput().isPresent() ? domain.getAbsenceOutput().get().v() : null,
 				domain.getAtWorkOutput().isPresent() ? domain.getAtWorkOutput().get().v() : null,
-				domain.getRetirementOutput().isPresent() ? domain.getRetirementOutput().get().v() : null);
+				domain.getAbsenceOutput().isPresent() ? domain.getAbsenceOutput().get().v() : null,
+				domain.getClosedOutput().isPresent() ? domain.getClosedOutput().get().v() : null,
+				domain.getRetirementOutput().isPresent() ? domain.getRetirementOutput().get().v() : null,
+				domain.getFixedValue().value,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
 	}
 }
