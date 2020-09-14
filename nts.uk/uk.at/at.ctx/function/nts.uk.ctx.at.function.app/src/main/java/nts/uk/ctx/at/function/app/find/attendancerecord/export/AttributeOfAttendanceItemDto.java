@@ -33,6 +33,6 @@ public class AttributeOfAttendanceItemDto {
 	/**
 	 *	表示番号
 	 */
-	private int displayNumber;
+	private int displayNumbers;
 
 }

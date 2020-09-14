@@ -272,7 +272,7 @@ public class AttendanceIdItemFinder {
 					.attendanceItemName(attendance.getAttendanceItemName())
 					.attendanceAtr(item.getDailyAttendanceAtr().value)
 					.masterType(item.getMasterType().isPresent() ? item.getMasterType().get().value : null)
-					.displayNumber(item.getDisplayNumber())
+					.displayNumbers(item.getDisplayNumber())
 					.build());
 			});
 
@@ -350,7 +350,7 @@ public class AttendanceIdItemFinder {
 					.attendanceItemId(attendance.getAttendanceItemId())
 					.attendanceItemName(attendance.getAttendanceItemName())
 					.attendanceAtr(item.getMonthlyAttendanceAtr().value)
-					.displayNumber(item.getDisplayNumber())
+					.displayNumbers(item.getDisplayNumber())
 					.build());
 			});
 
