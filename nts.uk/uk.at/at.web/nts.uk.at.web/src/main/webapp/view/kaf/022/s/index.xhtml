@@ -82,26 +82,30 @@
 					<div id="right-content" class="fixed-flex-layout-right" data-bind="with: selectedReason">
 						<div class="control-group valign-center">
 							<div data-bind="ntsFormLabel: {required: true, constraint: 'AppStandardReasonCode'}">#{i18n.getText('KAF022_694')}</div>
-							<input data-bind="ntsNumberEditor: {
-							name:'#{i18n.getText('KAF022_694')}',
-							value: reasonCode,
-							constraint: 'AppStandardReasonCode',
-							required: true,
-							enable: !$parent.isUpdate()}" />
+							<input id="reasonCode"
+								   data-bind="ntsNumberEditor: {
+											name:'#{i18n.getText('KAF022_694')}',
+											value: reasonCode,
+											constraint: 'AppStandardReasonCode',
+											required: true,
+											enable: !$parent.isUpdate()
+									}" />
 						</div>
 						<div class="control-group valign-top">
 							<!-- S2_10 -->
 							<div data-bind="ntsFormLabel: {required: true, constraint: 'ReasonForFixedForm'}">#{i18n.getText('KAF022_443')}</div>
 							<!-- S2_11 -->
-							<textarea tabindex="9" style="height: 45px; width: 162px;"
-									  data-bind="ntsMultilineEditor: {
-								name:'#{i18n.getText('KAF022_443')}',
-								value: reasonTemp,
-								constraint: 'ReasonForFixedForm',
-								required: true}"/>
+							<textarea id="reasonTemp"
+									style="height: 45px; width: 162px;"
+									data-bind="ntsMultilineEditor: {
+											name:'#{i18n.getText('KAF022_443')}',
+											value: reasonTemp,
+											constraint: 'ReasonForFixedForm',
+											required: true
+									}"/>
 						</div>
 						<!-- S2_12 -->
-						<div id="default-flg" tabindex="10" data-bind="ntsCheckBox: { checked: defaultFlg }">#{i18n.getText('KAF022_442')}</div>
+						<div id="default-flg" data-bind="ntsCheckBox: { checked: defaultFlg }">#{i18n.getText('KAF022_442')}</div>
 					</div>
 				</div>
 			</div>

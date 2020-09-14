@@ -140,9 +140,9 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             // A22
             self.appTypeSettings = ko.observableArray([]);
             self.itemListA22_2 = ko.observableArray([
-                new ItemModel(0, getText('KAF022_775')),
-                new ItemModel(1, getText('KAF022_776')),
-                new ItemModel(2, getText('KAF022_777'))
+                new ItemModel(0, getText('KAF022_745')),
+                new ItemModel(1, getText('KAF022_746')),
+                new ItemModel(2, getText('KAF022_747'))
             ]);
 
             // A8

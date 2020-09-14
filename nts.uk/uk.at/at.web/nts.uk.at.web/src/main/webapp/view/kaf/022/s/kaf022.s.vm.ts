@@ -134,7 +134,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         /** update or insert data when click button register **/
         register() {
             const self = this;
-            $('input').trigger("validate");
+            $('#reasonCode').trigger("validate");
+            $('#reasonTemp').trigger("validate");
             if (!nts.uk.ui.errors.hasError()) {
                 const current = ko.toJS(self.selectedReason);
                 let data = ko.toJS(self.listReasonByAppType);

@@ -2,17 +2,13 @@ module nts.uk.at.view.kaf022.j.viewmodel {
     import text = nts.uk.resource.getText;
 
     export class ScreenModelJ {
-        itemListD15: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 1, name: text('KAF022_391')},
-            {code: 0, name: text('KAF022_392')}
-        ]);
         itemListD13: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 1, name: text('KAF022_100')},
             {code: 0, name: text('KAF022_101')}
         ]);
         supportFrames: KnockoutObservableArray<ItemModel>;
 
-        cancelAtr: KnockoutObservable<number> = ko.observable(1);
+        cancelAtr: KnockoutObservable<number> = ko.observable(0);
 
         workComment1Content: KnockoutObservable<string> = ko.observable("");
         workComment1Color: KnockoutObservable<string> = ko.observable("");

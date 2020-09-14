@@ -70,7 +70,7 @@ module nts.uk.at.view.kaf022.z.viewmodel {
         constructor(label: string, appType: number, radioValue?: number, textAreaValue?: string) {
             this.label = label;
             this.appType = appType;
-            this.useAtr = ko.observable(radioValue || 1);
+            this.useAtr = ko.observable(radioValue == null ? 1 : radioValue);
             this.memo = ko.observable(textAreaValue || "");
         }
     }

@@ -55,7 +55,7 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                     self.workplaceName("");
                     self.workplaceCode("");
                     self.settings().forEach(s => {
-                        s.useAtr(0);
+                        s.useAtr(1);
                         s.memo("");
                     });
                     self.isUpdate(false);
@@ -75,14 +75,14 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                                     s.useAtr(setting.useDivision);
                                     s.memo(setting.memo);
                                 } else {
-                                    s.useAtr(0);
+                                    s.useAtr(1);
                                     s.memo("");
                                 }
                             });
                             self.isUpdate(true)
                         } else {
                             self.settings().forEach(s => {
-                                s.useAtr(0);
+                                s.useAtr(1);
                                 s.memo("");
                             });
                             self.isUpdate(false);
@@ -91,7 +91,7 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                         self.workplaceName("");
                         self.workplaceCode("");
                         self.settings().forEach(s => {
-                            s.useAtr(0);
+                            s.useAtr(1);
                             s.memo("");
                         });
                         self.isUpdate(false);
