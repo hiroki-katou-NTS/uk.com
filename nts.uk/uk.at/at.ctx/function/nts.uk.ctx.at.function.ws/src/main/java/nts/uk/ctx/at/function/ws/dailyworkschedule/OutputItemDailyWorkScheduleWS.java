@@ -58,7 +58,7 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 	@Path("find")
 	@POST
 	public Map<String, Object> find(RequestStartScreenCDto dto) {
-		return this.outputItemDailyWorkScheduleFinder.startScreenC(Optional.of(dto.getLayoutId()), dto.getSelectTionType());
+		return this.outputItemDailyWorkScheduleFinder.startScreenC(Optional.of(dto.getCode()), dto.getSelectTionType());
 	}
 	
 	/**
@@ -138,10 +138,10 @@ public class OutputItemDailyWorkScheduleWS extends WebService{
 		return EnumAdaptor.convertToValueNameList(RemarkInputContent.class);
 	}
 	
-	@Path("findByCode/{code}")
+	@Path("findByCode/{code}/{selectionType}")
 	@POST
-	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("code") String code) {
-		return this.outputItemDailyWorkScheduleFinder.findByCode(code);
+	public OutputItemDailyWorkScheduleDto findByCode(@PathParam("code") String code, @PathParam("selectionType") Integer selectionType) {
+		return this.outputItemDailyWorkScheduleFinder.findByCode(code, selectionType);
 	}
 
 	/**

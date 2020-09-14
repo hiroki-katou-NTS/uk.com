@@ -32,5 +32,5 @@ public interface FreeSettingOfOutputItemRepository {
 	 * @param code コード：入力しているコード(D1_6)
 	 * @return the optional
 	 */
-	public Optional<FreeSettingOfOutputItemForDailyWorkSchedule> findByCompanyIdAndEmployeeIdAndCode(String companyId, String employeeId, String code);
+	public Optional<OutputItemDailyWorkSchedule> findByCompanyIdAndEmployeeIdAndCode(String companyId, String employeeId, String code);
 }

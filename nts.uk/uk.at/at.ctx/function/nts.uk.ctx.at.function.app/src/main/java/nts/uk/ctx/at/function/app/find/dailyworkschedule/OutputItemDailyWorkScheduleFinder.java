@@ -41,7 +41,6 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemForDa
 import nts.uk.ctx.at.function.dom.dailyworkschedule.FreeSettingOfOutputItemRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingOfDailyWorkSchedule;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
@@ -62,10 +61,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class OutputItemDailyWorkScheduleFinder {
-	
-	/** The output item daily work schedule repository. */
-	@Inject
-	private OutputItemDailyWorkScheduleRepository outputItemDailyWorkScheduleRepository;
 	
 	@Inject
 	private AttendanceTypeRepository attendanceTypeRepository;
@@ -134,7 +129,7 @@ public class OutputItemDailyWorkScheduleFinder {
 	 * @param selectionType
 	 * @return
 	 */
-	public Map<String, Object> startScreenC(Optional<String> layoutId, int selectionType) {	
+	public Map<String, Object> startScreenC(Optional<String> code, int selectionType) {	
 		String companyID = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 
@@ -150,7 +145,6 @@ public class OutputItemDailyWorkScheduleFinder {
 			Optional<OutputStandardSettingOfDailyWorkSchedule> standardSetting = this.outputStandardSettingRepository
 					.getStandardSettingByCompanyId(companyID);
 			lstDomainModel = standardSetting.isPresent() ? standardSetting.get().getOutputItems() : new ArrayList<>();
-		
 		// Type: 自由設定の場合
 		} else {
 			
@@ -158,6 +152,7 @@ public class OutputItemDailyWorkScheduleFinder {
 			Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSetting = this.freeSettingOfOutputItemRepository
 					.getFreeSettingByCompanyAndEmployee(companyID, employeeId);
 			lstDomainModel = freeSetting.isPresent() ? freeSetting.get().getOutputItemDailyWorkSchedules() : new ArrayList<>();
+			mapDtoReturn.put("employeeId", employeeId);
 		}
 		
 		// 取得したドメインモデル「日別勤務表の出力項目」からList<「出力項目設定>を作成 (Creat list [出力項目設定]from the
@@ -172,12 +167,12 @@ public class OutputItemDailyWorkScheduleFinder {
 				})
 				.sorted(Comparator.comparing(OutputItemSettingDto::getCode)).collect(Collectors.toList()));
 		
-		Optional<OutputItemDailyWorkSchedule> outputItem = layoutId.isPresent()
-				? lstDomainModel.stream().filter(t -> t.getLayoutId().equals(layoutId.get())).findFirst()
-				: Optional.empty();
+		Optional<OutputItemDailyWorkSchedule> outputItem = code.isPresent()
+			? lstDomainModel.stream().filter(t -> t.getItemCode().equals(code.get())).findFirst()
+			: Optional.empty();
 
 		// 選択している項目情報を取得する(Get the selected information item)
-		Optional<SelectedInformationItemDto> selectedItem = this.getSlectedInformation(companyID, layoutId, outputItem);
+		Optional<SelectedInformationItemDto> selectedItem = this.getSlectedInformation(companyID, employeeId, code, outputItem, selectionType);
 
 		if (selectedItem.isPresent()) {
 			mapDtoReturn.put("selectedItem", selectedItem.get());
@@ -256,7 +251,7 @@ public class OutputItemDailyWorkScheduleFinder {
 		if (selection == ItemSelectionType.STANDARD_SELECTION.value) {
 
 			// 定型設定の出力項目を取得 (Get the output item for fix-form setup)
-			Optional<OutputStandardSettingOfDailyWorkSchedule> standardSetting = this.outputStandardSettingRepository
+			Optional<OutputItemDailyWorkSchedule> standardSetting = this.outputStandardSettingRepository
 					.findByCompanyIdAndCode(companyId, codeCopy);
 			
 			if (standardSetting.isPresent()) {
@@ -268,7 +263,7 @@ public class OutputItemDailyWorkScheduleFinder {
 			String employeeId = AppContexts.user().employeeId();
 
 			// 社員IDから自由設定の出力項目を取得 (Get the output item for free setup from Company ID)
-			Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSetting = this.freeSettingOfOutputItemRepository
+			Optional<OutputItemDailyWorkSchedule> freeSetting = this.freeSettingOfOutputItemRepository
 					.findByCompanyIdAndEmployeeIdAndCode(companyId, employeeId, codeCopy);
 			
 			if (freeSetting.isPresent()) {
@@ -417,10 +412,22 @@ public class OutputItemDailyWorkScheduleFinder {
 								.collect(Collectors.toList());
 	} 
 	
-	public OutputItemDailyWorkScheduleDto findByCode(String code) {
+	public OutputItemDailyWorkScheduleDto findByCode(String code, Integer selectionItem) {
 		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
 		OutputItemDailyWorkScheduleDto dtoOIDW = new OutputItemDailyWorkScheduleDto();
-		OutputItemDailyWorkSchedule domainOIDW = outputItemDailyWorkScheduleRepository.findByCode(code, companyId).get();
+		Optional<OutputItemDailyWorkSchedule> domain;
+		if (selectionItem == ItemSelectionType.STANDARD_SELECTION.value) {
+			domain = outputStandardSettingRepository.findByCompanyIdAndCode(companyId, code);
+		} else {
+			domain = freeSettingOfOutputItemRepository.findByCompanyIdAndEmployeeIdAndCode(companyId, employeeId, code);
+		}
+		
+		if (!domain.isPresent()) {
+			return null;
+		}
+		
+		OutputItemDailyWorkSchedule domainOIDW = domain.get();
 
 		Map<Integer, String> mapIdNameAttendance = dailyAttendanceItemNameDomainService.getNameOfDailyAttendanceItem(domainOIDW.getLstDisplayedAttendance()
 																					.stream()
@@ -490,15 +497,17 @@ public class OutputItemDailyWorkScheduleFinder {
 		
 	}
 
-	public Optional<SelectedInformationItemDto> getSlectedInformation(String companyId, Optional<String> layoutId,
-			Optional<OutputItemDailyWorkSchedule> outputItem) {
+	public Optional<SelectedInformationItemDto> getSlectedInformation(String companyId
+			, String employeeId
+			, Optional<String> code
+			, Optional<OutputItemDailyWorkSchedule> outputItem
+			, Integer selectionType) {
 		
 		// 画面で使用可能な日次勤怠項目を取得する(Get daily attendance items available on screen)
 		List<Integer> avaiableItems = this.getDailyAttendanceItemsAvaiable(companyId,
 				FormCanUsedForTime.DAILY_WORK_SCHEDULE, TypeOfItem.Daily);
 		
 		// 日次勤怠項目に対応する名称、属性を取得する (Get the name and attribute corresponding to the daily
-		// attendance item)
 		List<DailyItemDto> dailyItemDtos = this.companyDailyItemService.findByAttendanceItems(companyId, avaiableItems);
 		
 		Map<Integer, DailyItemDto> mapAttendanceItem = dailyItemDtos.stream()
@@ -508,9 +517,13 @@ public class OutputItemDailyWorkScheduleFinder {
 		// Input．Optional＜出力レイアウトID＞　設定あり　(空ではない)( != Empty)
 		// AND
 		// Input．Optional＜日別勤務表の出力項目＞ 設定なし　(空)( = Empty)
-		if (layoutId.isPresent() && !outputItem.isPresent()) {
+		if (code.isPresent() && !outputItem.isPresent()) {
 			// Input．Optional＜日別勤務表の出力項目＞　←　ドメインモデル「日別勤務表の出力項目」を取得
-			outputItem = this.outputItemDailyWorkScheduleRepository.findByLayoutId(layoutId.get());
+			if (selectionType == ItemSelectionType.STANDARD_SELECTION.value) {
+				outputItem = this.outputStandardSettingRepository.findByCompanyIdAndCode(companyId, code.get());
+			} else {
+				outputItem = this.freeSettingOfOutputItemRepository.findByCompanyIdAndEmployeeIdAndCode(companyId, employeeId, code.get());
+			}
 		}
 
 		List<InformationItemDto> displayDtos = new ArrayList<InformationItemDto>();

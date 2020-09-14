@@ -1029,7 +1029,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 									
 									List<String> names = lstItemMasterUnregistered.stream()
 											.map(item -> this.getNameFromCode(item.getItemId(),
-													item.getValue(), queryData, outSche))
+													item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
 											.collect(Collectors.toList());
 
 									boolean masterUnregistedFlag = names.stream()
@@ -1111,7 +1111,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 								ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 								int attendanceId = itemValue.getItemId();
 								if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-									String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
+									String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay());
 									itemValue.setValue(value);
 								}
 								// Workaround for optional attendance item from KMK002
@@ -1262,7 +1262,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 						
 						List<String> names = lstItemMasterUnregistered.stream()
 								.map(item -> this.getNameFromCode(item.getItemId(),
-										item.getValue(), queryData, outSche))
+										item.getValue(), queryData, outSche, condition.getSwitchItemDisplay()))
 								.collect(Collectors.toList());
 
 						boolean masterUnregistedFlag = names.stream()
@@ -1340,7 +1340,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					ValueType valueTypeEnum = EnumAdaptor.valueOf(itemValue.getValueType(), ValueType.class);
 					int attendanceId = itemValue.getItemId();
 					if ((valueTypeEnum == ValueType.CODE || valueTypeEnum == ValueType.ATTR) && itemValue.getValue() != null) {
-						String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche);
+						String value = this.getNameFromCode(attendanceId, itemValue.getValue(), queryData, outSche, condition.getSwitchItemDisplay());
 						itemValue.setValue(value);
 					}
 					// Workaround for optional attendance item from KMK002

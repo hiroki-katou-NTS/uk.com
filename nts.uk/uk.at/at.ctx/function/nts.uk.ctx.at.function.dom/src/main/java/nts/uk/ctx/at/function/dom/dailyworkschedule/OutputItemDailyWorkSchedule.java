@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.text.StringUtil;
 
 /**
  * The Class OutputItemDailyWorkSchedule.
@@ -75,7 +76,7 @@ public class OutputItemDailyWorkSchedule extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(OutputItemDailyWorkScheduleSetMemento memento) {
-		if (!this.layoutId.isEmpty()) {
+		if (!StringUtil.isNullOrEmpty(this.layoutId, true)) {
 			memento.setLayoutId(this.layoutId);
 		}
 		memento.setItemCode(this.itemCode);

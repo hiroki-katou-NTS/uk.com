@@ -46,7 +46,6 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 	protected void handle(CommandHandlerContext<OutputItemDailyWorkScheduleCommand> context) {
 		OutputItemDailyWorkScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
 		OutputItemDailyWorkSchedule domain = new OutputItemDailyWorkSchedule(command);
 
 		// Step. 画面モードをチェックする(Check screen mode)
@@ -56,7 +55,7 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 			// 定型選択の場合
 			if (command.getSelectionType() == ItemSelectionType.STANDARD_SELECTION.value) {
 				// 定型設定のコードから出力項目を取得 (Get the output item from the code of the fixed form setting)
-				Optional<OutputStandardSettingOfDailyWorkSchedule> standardDomain = this.standardSettingRepository
+				Optional<OutputItemDailyWorkSchedule> standardDomain = this.standardSettingRepository
 						.findByCompanyIdAndCode(companyId, command.getItemCode().v());
 				
 				// エラーメッセージ（ID:Msg_3）を表示する(Display error message (ID: Msg_3))
@@ -76,8 +75,8 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 			// 自由設定の場合
 			if (command.getSelectionType() == ItemSelectionType.FREE_SETTING.value) {
 				// 自由設定のコードから出力項目を取得 (Get the output item from free setup code)
-				Optional<FreeSettingOfOutputItemForDailyWorkSchedule> freeSettingDomain = this.freeSettingRepository
-						.findByCompanyIdAndEmployeeIdAndCode(companyId, employeeId, command.getItemCode().v());
+				Optional<OutputItemDailyWorkSchedule> freeSettingDomain = this.freeSettingRepository
+						.findByCompanyIdAndEmployeeIdAndCode(companyId, command.getEmployeeId(), command.getItemCode().v());
 				
 				// エラーメッセージ（ID:Msg_3）を表示する(Display error message (ID: Msg_3))
 				if (freeSettingDomain.isPresent()) {
@@ -88,7 +87,7 @@ public class OutputItemDailyWorkScheduleSaveHandler extends CommandHandler<Outpu
 				FreeSettingOfOutputItemForDailyWorkScheduleCommand freeSettingCommand = new FreeSettingOfOutputItemForDailyWorkScheduleCommand(
 						command.getSelectionType()
 						, companyId
-						, employeeId
+						, command.getEmployeeId()
 						, Arrays.asList(command));
 				this.freeSettingRepository.add(FreeSettingOfOutputItemForDailyWorkSchedule.createFromMemento(freeSettingCommand));
 			}

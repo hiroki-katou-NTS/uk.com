@@ -167,7 +167,7 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 	}
 
 	@Override
-	public Optional<FreeSettingOfOutputItemForDailyWorkSchedule> findByCompanyIdAndEmployeeIdAndCode(String companyId,
+	public Optional<OutputItemDailyWorkSchedule> findByCompanyIdAndEmployeeIdAndCode(String companyId,
 			String employeeId, String code) {
 		Map<String, List<KfnmtRptWkDaiOutatd>> mapAtd = this.getLstKfnmtRptWkDaiOutatds(companyId).stream()
 				.collect(Collectors.groupingBy(t -> t.getId().getLayoutId()));
@@ -175,30 +175,19 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 		Map<String, List<KfnmtRptWkDaiOutnote>> mapNote = this.getLstKfnmtRptWkDaiOutnotes(companyId).stream()
 				.collect(Collectors.groupingBy(t -> t.getId().getLayoutId()));
 
-		List<KfnmtRptWkDaiOutItem> lstResult = this.queryProxy().query(GET_SETTING_BY_EMPLOYEE_AND_COMPANY_AND_CODE, KfnmtRptWkDaiOutItem.class)
+		Optional<OutputItemDailyWorkSchedule> result = this.queryProxy()
+				.query(GET_SETTING_BY_EMPLOYEE_AND_COMPANY_AND_CODE, KfnmtRptWkDaiOutItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
 				.setParameter("itemSelType", ItemSelectionType.FREE_SETTING.value)
 				.setParameter("itemCode", code)
-				.getList().stream()
-				.map(t -> {
+				.getSingle(t -> {
 					t.setLstKfnmtRptWkDaiOutatds(mapAtd.get(t.getLayoutId()));
 					t.setLstKfnmtRptWkDaiOutnotes(mapNote.get(t.getLayoutId()));
 					return t;
-				}).collect(Collectors.toList());
+				}).map(outputItem -> new OutputItemDailyWorkSchedule(outputItem));
 
-		if (lstResult.isEmpty()) {
-			return Optional.empty();
-		}
-		
-		FreeSettingOfOutputItemForDailyWorkSchedule result = FreeSettingOfOutputItemForDailyWorkSchedule
-				.createFromMemento(new JpaFreeSettingOfDailyWorkScheduleGetMemento(
-						lstResult,
-						companyId,
-						employeeId,
-						ItemSelectionType.FREE_SETTING.value));
-
-		return Optional.of(result);
+		return result;
 	}
 
 	@Override
@@ -214,35 +203,24 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 	}
 
 	@Override
-	public Optional<OutputStandardSettingOfDailyWorkSchedule> findByCompanyIdAndCode(String companyId, String code) {
+	public Optional<OutputItemDailyWorkSchedule> findByCompanyIdAndCode(String companyId, String code) {
 		Map<String, List<KfnmtRptWkDaiOutatd>> mapAtd = this.getLstKfnmtRptWkDaiOutatds(companyId).stream()
 				.collect(Collectors.groupingBy(t -> t.getId().getLayoutId()));
 
 		Map<String, List<KfnmtRptWkDaiOutnote>> mapNote = this.getLstKfnmtRptWkDaiOutnotes(companyId).stream()
 				.collect(Collectors.groupingBy(t -> t.getId().getLayoutId()));
 
-		List<KfnmtRptWkDaiOutItem> lstResult = this.queryProxy().query(GET_SETTING_BY_COMPANY_AND_CODE, KfnmtRptWkDaiOutItem.class)
+		Optional<OutputItemDailyWorkSchedule> result = this.queryProxy().query(GET_SETTING_BY_COMPANY_AND_CODE, KfnmtRptWkDaiOutItem.class)
 				.setParameter("companyId", companyId)
 				.setParameter("itemSelType", ItemSelectionType.STANDARD_SELECTION.value)
 				.setParameter("itemCode", code)
-				.getList().stream()
-				.map(t -> {
+				.getSingle(t -> {
 					t.setLstKfnmtRptWkDaiOutatds(mapAtd.get(t.getLayoutId()));
 					t.setLstKfnmtRptWkDaiOutnotes(mapNote.get(t.getLayoutId()));
 					return t;
-				}).collect(Collectors.toList());
+				}).map(outputItem -> new OutputItemDailyWorkSchedule(outputItem));
 
-		if (lstResult.isEmpty()) {
-			return Optional.empty();
-		}
-		
-		OutputStandardSettingOfDailyWorkSchedule result = OutputStandardSettingOfDailyWorkSchedule
-				.createFromMemento(new JpaOutputStandardSettingOfDailyWorkScheduleGetMemento(
-						lstResult,
-						companyId,
-						ItemSelectionType.STANDARD_SELECTION.value));
-
-		return Optional.of(result);
+		return result;
 	}
 
 	/**

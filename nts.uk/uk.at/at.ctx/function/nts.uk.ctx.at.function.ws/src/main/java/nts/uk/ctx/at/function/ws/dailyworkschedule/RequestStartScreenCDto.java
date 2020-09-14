@@ -7,5 +7,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RequestStartScreenCDto {
 	private int selectTionType;
-	private String layoutId;
+	private String code;
 }

@@ -33,5 +33,5 @@ public interface OutputStandardSettingRepository {
 	 * @param code コード：入力しているコード(D1_6)
 	 * @return the optional
 	 */
-	public Optional<OutputStandardSettingOfDailyWorkSchedule> findByCompanyIdAndCode(String companyId, String code);
+	public Optional<OutputItemDailyWorkSchedule> findByCompanyIdAndCode(String companyId, String code);
 }

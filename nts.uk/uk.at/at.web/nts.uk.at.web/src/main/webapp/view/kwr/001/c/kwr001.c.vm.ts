@@ -79,6 +79,7 @@ module nts.uk.at.view.kwr001.c {
 
             layoutId: string;
             selectionType: number;
+            employeeId?: string;
 
             constructor() {
                 var self = this;
@@ -114,7 +115,7 @@ module nts.uk.at.view.kwr001.c {
                     });
                     if (!_.isUndefined(codeChoose) && !_.isNull(codeChoose)) {
                         blockUI.grayout();
-                        service.findByCode(self.currentCodeList()).done((outputItemDailyWorkSchedule) => {
+                        service.findByCode(self.currentCodeList(), self.selectionType).done((outputItemDailyWorkSchedule) => {
                             self.C3_2_value(outputItemDailyWorkSchedule.itemCode);
                             self.C3_3_value(outputItemDailyWorkSchedule.itemName);
                             self.getOutputItemDailyWorkSchedule(outputItemDailyWorkSchedule);
@@ -255,7 +256,7 @@ module nts.uk.at.view.kwr001.c {
             private getDataService(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                service.getDataStartPage(self.selectionType, self.layoutId).done(function(data: any) {
+                service.getDataStartPage(self.selectionType, self.C3_2_value()).then(function(data: any) {
                     // variable global store data from service 
                     self.allMainDom(data.outputItemDailyWorkSchedule);
 
@@ -281,6 +282,7 @@ module nts.uk.at.view.kwr001.c {
                     })
 
                     self.items(data.selectedItem.displayAttendanceItem);
+                    self.employeeId = data.employeeId ? data.employeeId : undefined;
 
                     dfd.resolve();
                 })
@@ -341,10 +343,9 @@ module nts.uk.at.view.kwr001.c {
             openScreenD() {
                 var self = this;
                 let dataScrD: any;
-
                 // update ver34 set shared data
                 nts.uk.ui.windows.setShared('KWR001_D', {
-                    fontSize: self.selectedSizeClassificationType,
+                    fontSize: self.selectedSizeClassificationType(),
                     selecttionType: self.selectionType,
                 }, true);
 
@@ -376,6 +377,7 @@ module nts.uk.at.view.kwr001.c {
                             self.items(arrTemp);
                             self.C3_2_value(dataScrD.codeCopy);
                             self.C3_3_value(dataScrD.nameCopy);
+                            self.layoutId = null;
                             if (_.size(dataScrD.lstAtdChoose.msgErr)) {
                                 nts.uk.ui.dialog.error({ messageId: "Msg_1476" }).then(function() {
                                     self.saveData(dataScrD);
@@ -429,6 +431,7 @@ module nts.uk.at.view.kwr001.c {
                 command.fontSize = self.selectedSizeClassificationType;
                 command.selectionType = self.selectionType;
                 command.layoutId = self.layoutId;
+                command.employeeId = self.employeeId;
 
                 // check to get data old from DB or current interface when it was disable
                 if (self.checkedRemarksInput()) {
@@ -440,8 +443,8 @@ module nts.uk.at.view.kwr001.c {
                     command.remarkInputNo = _.isEmpty(outputItemDailyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemDailyWorkSchedule.remarkInputNo;
                     self.currentRemarkInputContent(self.convertDBRemarkInputToValue(command.remarkInputNo));
                 }
-                service.save(command).done(function() {
-                    self.getDataService().done(function() {
+                service.save(command).then(function() {
+                    self.getDataService().then(function() {
                         self.currentCodeList(self.C3_2_value());
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                            $('#C3_3').focus(); 

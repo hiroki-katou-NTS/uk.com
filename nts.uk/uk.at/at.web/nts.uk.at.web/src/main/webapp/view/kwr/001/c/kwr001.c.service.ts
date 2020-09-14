@@ -13,10 +13,10 @@ module nts.uk.at.view.kwr001.c {
            findByCode: "at/function/dailyworkschedule/findByCode",
         }
         
-        export function getDataStartPage(selectionType: number, layoutId?: string): JQueryPromise<any> {
+        export function getDataStartPage(selectionType: number, code: string): JQueryPromise<any> {
             const dto = {
                 selectTionType: selectionType,
-                layoutId: layoutId
+                code: code
             };
             return nts.uk.request.ajax('at', paths.getDataStartPage, dto);
         }
@@ -42,8 +42,8 @@ module nts.uk.at.view.kwr001.c {
             return nts.uk.request.ajax('at', paths.getEnumRemarkInputContent);
         }
         
-        export function findByCode(code: string): JQueryPromise<any> {
-            return nts.uk.request.ajax('at', paths.findByCode + SLASH + code);
+        export function findByCode(code: string, selectionType: number): JQueryPromise<any> {
+            return nts.uk.request.ajax('at', paths.findByCode + SLASH + code + SLASH + selectionType);
         }
     }
 }

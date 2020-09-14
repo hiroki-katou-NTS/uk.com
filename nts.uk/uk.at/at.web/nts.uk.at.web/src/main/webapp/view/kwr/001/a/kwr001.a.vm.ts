@@ -389,7 +389,6 @@ module nts.uk.at.view.kwr001.a {
                         self.checkedA10_18(workScheduleOutputCondition.settingDetailTotalOutput.workplaceHierarchyTotal.ninthLevel);
                     }
                     self.selectedCodeA13_1(workScheduleOutputCondition.conditionSetting);
-                    self.selectionType(workScheduleOutputCondition.selectionType);
                     self.freeSettingLayoutId = workScheduleOutputCondition.freeSettingLayoutId;
                     self.standardSettingLayoutId = workScheduleOutputCondition.standardSelectionLayoutId;
                     self.selectedCodeA7_8(workScheduleOutputCondition.freeSettingCode);
@@ -500,11 +499,24 @@ module nts.uk.at.view.kwr001.a {
                     $.when(self.getDataCharateristic()).done(function(dataCharacteristic: any) {
                         let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
                         self.getDataStartPageService(isExist).done(function(dataService: any) {
-                            self.itemListCodeTemplate(_.sortBy(dataService.lstOutputItemDailyWorkSchedule,(item:any) => item.code));
-                            if (_.isEmpty(dataService.lstOutputItemDailyWorkSchedule)) {
-                                self.selectedCodeA7_3('');
+                            if (self.selectionType() === ItemSelectionType.STANDARD_SELECTION) {
+                                if (dataService.standardSetting) {
+                                    self.itemListCodeTemplate(_.sortBy(dataService.standardSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
+                                    if (_.isEmpty(dataService.standardSetting.outputItemDailyWorkSchedules)) {
+                                        self.selectedCodeA7_3('');
+                                    } else {
+                                        self.selectedCodeA7_3(nts.uk.ui.windows.getShared('KWR001_C'));
+                                    }
+                                }
                             } else {
-                                self.selectedCodeA7_3(nts.uk.ui.windows.getShared('KWR001_C'));
+                                if (dataService.freeSetting) {
+                                    self.outputItemDailyWorkSchedules(_.sortBy(dataService.freeSetting.outputItemDailyWorkSchedules, (item: any) => item.code));
+                                    if (_.isEmpty(dataService.freeSetting.outputItemDailyWorkSchedules)) {
+                                        self.selectedCodeA7_8('');
+                                    } else {
+                                        self.selectedCodeA7_8(nts.uk.ui.windows.getShared('KWR001_C'));
+                                    }
+                                }
                             }
                         }).fail(function(error) {
                            nts.uk.ui.dialog.alertError(error);     

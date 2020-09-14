@@ -28,6 +28,4 @@ public interface OutputItemDailyWorkScheduleRepository {
 	 * @param domain the domain
 	 */
 	void update(OutputItemDailyWorkSchedule domain, int selectionType, String companyId, String employeeId);
-	
-	public Optional<OutputItemDailyWorkSchedule> findByCode(String code, String companyId);
 }
