@@ -152,3 +152,9 @@ html {
 th.ui-iggrid-rowselector-header> .ui-igcheckbox-normal> span {
 	left: 0;
 }
+td.appType {
+	white-space: normal !important;
+}
+td.appContent {
+	min-width: 45px;
+}

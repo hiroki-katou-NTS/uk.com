@@ -888,26 +888,26 @@ module cmm045.a.viewmodel {
                         }
                         $td.html(self.appDateColor(date, "", ""));
                     }
-                    else if(column.key == 'reflectionStatus' && self.mode() == 0) {
-                        if(item.reflectionStatus === '未反映') {
-                            $td.html('未');
-                        }
-                        if(item.reflectionStatus === '反映待ち') {
-                            $td.html('承認済み');
-                        }
-                        if(item.reflectionStatus === '反映済') {
-                            $td.html('反映済み');
-                        }
-                        if(item.reflectionStatus === '取消済') {
-                            $td.html('取消');
-                        }
-                        if(item.reflectionStatus === '差し戻し') {
-                            $td.html('差戻');
-                        }
-                        if(item.reflectionStatus === '否認') {
-                            $td.html('否');
-                        }
-                    }
+                    // else if(column.key == 'reflectionStatus' && self.mode() == 0) {
+                    //     if(item.reflectionStatus === '未反映') {
+                    //         $td.html('未');
+                    //     }
+                    //     if(item.reflectionStatus === '反映待ち') {
+                    //         $td.html('承認済み');
+                    //     }
+                    //     if(item.reflectionStatus === '反映済') {
+                    //         $td.html('反映済み');
+                    //     }
+                    //     if(item.reflectionStatus === '取消済') {
+                    //         $td.html('取消');
+                    //     }
+                    //     if(item.reflectionStatus === '差し戻し') {
+                    //         $td.html('差戻');
+                    //     }
+                    //     if(item.reflectionStatus === '否認') {
+                    //         $td.html('否');
+                    //     }
+                    // }
                     else {
                         $td.html(self.customContent(column.key, item));
                     }
@@ -1129,27 +1129,27 @@ module cmm045.a.viewmodel {
                 //     result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
                 // }
 
-                if(item.reflectionStatus === '反映待ち') {
+                if(item.reflectionStatus === getText('CMM045_63')) {
                     item.appStatusName = 'approvalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['approvalCell']));
                 }
-                if(item.reflectionStatus === '反映済') {
+                if(item.reflectionStatus === getText('CMM045_64')) {
                     item.appStatusName = 'reflectCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['reflectCell']));
                 }
-                if(item.reflectionStatus === '否認') {
+                if(item.reflectionStatus === getText('CMM045_65')) {
                     item.appStatusName = 'denialCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['denialCell']));
                 }
-                if(item.reflectionStatus === '未反映') {
+                if(item.reflectionStatus === getText('CMM045_62')) {
                     item.appStatusName = 'unapprovalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['unapprovalCell']));
                 }
-                if(item.reflectionStatus === '差し戻し') {
+                if(item.reflectionStatus === getText('CMM045_66')) {
                     item.appStatusName = 'remandCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['remandCell']));
                 }
-                if(item.reflectionStatus === '取消済') {
+                if(item.reflectionStatus === getText('CMM045_67')) {
                     item.appStatusName = 'cancelCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['cancelCell']));
                 }
