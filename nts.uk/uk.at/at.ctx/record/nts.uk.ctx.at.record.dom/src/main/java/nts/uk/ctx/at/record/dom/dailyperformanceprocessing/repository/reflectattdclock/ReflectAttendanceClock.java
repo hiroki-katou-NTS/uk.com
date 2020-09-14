@@ -135,12 +135,12 @@ public class ReflectAttendanceClock {
 				workStamp = timeActualStamp.get().getStamp();
 			}
 			if(!workStamp.isPresent() 
-					|| !workStamp.get().getLocationCode().isPresent()
+//					|| !workStamp.get().getLocationCode().isPresent()
 					|| !workStamp.get().getTimeDay().getTimeWithDay().isPresent()) {
 				return null;
 			}
 			
-			return new TimePrintDestinationOutput(workStamp.get().getLocationCode().get(),
+			return new TimePrintDestinationOutput(workStamp.get().getLocationCode().isPresent()? workStamp.get().getLocationCode().get():null,
 					workStamp.get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(),
 					workStamp.get().getTimeDay().getTimeWithDay().get());
 		}
@@ -186,7 +186,7 @@ public class ReflectAttendanceClock {
 		Optional<WorkStamp> workStamp = getWorkStamp(attendanceAtr, actualStampAtr, integrationOfDaily, workNo);
 		
 		//出退勤打刻反映先がNullか確認する 
-		if(timePrintDestinationOutput == null) {
+ 		if(timePrintDestinationOutput == null) {
 			return ReflectStampOuput.REFLECT;	
 		}
 		//実打刻を反映するなのかをチェックする
