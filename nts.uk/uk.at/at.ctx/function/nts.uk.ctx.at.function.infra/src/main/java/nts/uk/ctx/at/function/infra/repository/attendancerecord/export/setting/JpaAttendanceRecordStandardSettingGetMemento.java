@@ -23,9 +23,15 @@ public class JpaAttendanceRecordStandardSettingGetMemento
 
 	@Override
 	public List<AttendanceRecordExportSetting> getAttendanceRecordExportSettings() {
-		List<AttendanceRecordExportSetting> result = this.kfnmtRptWkAtdOut.stream()
-				.map(i -> new AttendanceRecordExportSetting(i)).collect(Collectors.toList());
-		return result;
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+//	@Override
+//	public List<AttendanceRecordExportSetting> getAttendanceRecordExportSettings() {
+//		List<AttendanceRecordExportSetting> result = this.kfnmtRptWkAtdOut.stream()
+//				.map(i -> new AttendanceRecordExportSetting(i)).collect(Collectors.toList());
+//		return result;
+//	}
 
 }

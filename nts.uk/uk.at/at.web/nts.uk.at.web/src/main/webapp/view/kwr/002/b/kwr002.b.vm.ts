@@ -24,6 +24,7 @@ module nts.uk.com.view.kwr002.b {
         fontSizeSwitch: KnockoutObservableArray<SealUseAtrSwitch>;
         inputKWR002B: KnockoutObservable<DataInputScreenB>;
         selectionType: string = '' ;
+        layoutId: string = '';
 
         constructor() {
             let self = this;
@@ -89,10 +90,11 @@ module nts.uk.com.view.kwr002.b {
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
                 let currentData = self.currentARES();
                 let delARESCmd = {
-                    code: Number(currentData.code()),
-                    exportCode: Number(currentData.code()),
-                    exportSettingCode: Number(currentData.code()),
-                    name: currentData.name()
+                    code: currentData.code(),
+                    exportCode: currentData.code(),
+                    exportSettingCode: currentData.code(),
+                    name: currentData.name(),
+                    layoutId: currentData.layoutId()
                 };
 
                 let cmd = {
@@ -245,13 +247,16 @@ module nts.uk.com.view.kwr002.b {
         };
 
         createTransferData(currentData, rcdExport) {
+            let self = this;
             let cmd = {
-                code: Number(currentData.code()),
+                code: currentData.code(),
                 name: currentData.name(),
                 sealUseAtr: rcdExport.useSeal,
                 sealStamp: rcdExport.sealStamp,
                 nameUseAtr: currentData.nameUseAtr(),
                 exportFontSize: currentData.exportFontSize(),
+                itemSelType : self.selectionType,
+                layoutId: currentData.layoutId()
             };
 
             let itemCmd = {
@@ -260,7 +265,7 @@ module nts.uk.com.view.kwr002.b {
             };
 
             _.forEach(rcdExport.attendanceRecItemList, (o) => {
-                let code = Number(currentData.code());
+                let code = currentData.code();
                 let name = o.attendanceItemName;
                 let timeItemIds = o.attendanceId;
                 let columnIndex = Number(o.columnIndex);
@@ -417,6 +422,8 @@ module nts.uk.com.view.kwr002.b {
         sealUseAtr: boolean;
         nameUseAtr: number;
         exportFontSize: number;
+        layoutId: string;
+        itemSelType: number;
     }
 
     export class AttendanceRecordExportSetting {
@@ -425,6 +432,8 @@ module nts.uk.com.view.kwr002.b {
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
         exportFontSize: KnockoutObservable<number>;
+        layoutId: KnockoutObservable<string>;
+        itemSelType: KnockoutObservable<number>;
 
         constructor(param: IARES) {
             let self = this;
@@ -433,6 +442,8 @@ module nts.uk.com.view.kwr002.b {
             self.sealUseAtr = ko.observable(param.sealUseAtr);
             self.nameUseAtr = ko.observable(param.nameUseAtr);
             self.exportFontSize = ko.observable(param.exportFontSize);
+            self.layoutId = ko.observable(param.layoutId);
+            self.itemSelType = ko.observable(param.itemSelType);
         };
 
 

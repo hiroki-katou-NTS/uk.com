@@ -14,14 +14,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnstAttndRecItem_;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd_;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -53,11 +52,10 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * ExportSettingCode, long, long, long)
 	 */
 	@Override
-	public Optional<SingleAttendanceRecord> getSingleAttendanceRecord(String companyId,
-			ExportSettingCode exportSettingCode, long columnIndex, long position, long exportArt) {
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
+	public Optional<SingleAttendanceRecord> getSingleAttendanceRecord(String layoutId, long columnIndex, long position, long exportArt) {
+		KfnmtRptWkAtdOutframePK kfnstAttndRecPK = new KfnmtRptWkAtdOutframePK(layoutId, columnIndex, exportArt,
 				position);
-		return this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class).map(e -> this.toDomain(e));
+		return this.queryProxy().find(kfnstAttndRecPK, KfnmtRptWkAtdOutframe.class).map(e -> this.toDomain(e));
 	}
 
 	/*
@@ -70,7 +68,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord)
 	 */
 	@Override
-	public void addSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex,
+	public void addSingleAttendanceRecord(String layoutId, long columnIndex,
 			long position, long exportArt, boolean useAtr, SingleAttendanceRecord singleAttendanceRecord) {
 		// No Code
 
@@ -86,37 +84,47 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord)
 	 */
 	@Override
-	public void updateSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex,
+	public void updateSingleAttendanceRecord(String layoutId, long columnIndex,
 			long position, long exportArt, boolean useAtr, SingleAttendanceRecord singleAttendanceRecord) {
 		// update attendanceRecord
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
+		KfnmtRptWkAtdOutframePK kfnstAttndRecPK = new KfnmtRptWkAtdOutframePK(layoutId, columnIndex, exportArt,
 				position);
 		// check and update AttendanceRecord
-		Optional<KfnstAttndRec> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
+		Optional<KfnmtRptWkAtdOutframe> kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnmtRptWkAtdOutframe.class);
 		if (kfnstAttndRec.isPresent()) {
-			KfnstAttndRec kfnstAttndRecUpdate = kfnstAttndRec.get();
+			KfnmtRptWkAtdOutframe kfnstAttndRecUpdate = kfnstAttndRec.get();
 			kfnstAttndRecUpdate.setItemName(singleAttendanceRecord.getName().toString());
 			kfnstAttndRecUpdate.setAttribute(new BigDecimal(singleAttendanceRecord.getAttribute().value));
 			int useAtrValue = useAtr ? USE_ATTRIBUTE : NOT_USE_ATTRIBUTE;
 			kfnstAttndRecUpdate.setUseAtr(new BigDecimal(useAtrValue));
 			this.commandProxy().update(kfnstAttndRecUpdate);
 		} else {
-			this.commandProxy().insert(this.toEntityAttndRec(exportSettingCode, columnIndex, position, exportArt,
+			this.commandProxy().insert(this.toEntityAttndRec(layoutId, columnIndex, position, exportArt,
 					useAtr, singleAttendanceRecord));
 		}
 		// check and update attendanceRecordItem
-		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
-		KfnstAttndRecItem kfnstAttndRecItem = (listKfnstAttndRecItem.size() != 0) ? listKfnstAttndRecItem.get(0) : null;
-		if (kfnstAttndRecItem != null) {
-			this.commandProxy().remove(kfnstAttndRecItem);
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
+		KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd = (listKfnstAttndRecItem.size() != 0) ? listKfnstAttndRecItem.get(0) : null;
+		if (kfnmtRptWkAtdOutatd != null) {
+			this.commandProxy().remove(kfnmtRptWkAtdOutatd);
 			this.getEntityManager().flush();
-			this.commandProxy().insert(this.toEntityAttndRecItem(exportSettingCode, columnIndex, position, exportArt,
+			this.commandProxy().insert(this.toEntityAttndRecItem(layoutId, columnIndex, position, exportArt,
 					singleAttendanceRecord));
 		} else {
 			UID uid = new UID();
-			kfnstAttndRecItem = new KfnstAttndRecItem(uid.toString(), companyId, columnIndex, Long.parseLong(exportSettingCode.v()),
-					new BigDecimal(SINGLE_FORMULA_TYPE), exportArt, position, singleAttendanceRecord.getTimeItemId());
-			this.commandProxy().insert(kfnstAttndRecItem);
+			
+			kfnmtRptWkAtdOutatd.setRecordItemId(uid.toString());
+			kfnmtRptWkAtdOutatd.setExclusVer(1);
+			kfnmtRptWkAtdOutatd.setContractCd(AppContexts.user().contractCode());
+			kfnmtRptWkAtdOutatd.setCid(AppContexts.user().companyId());
+			kfnmtRptWkAtdOutatd.setLayoutId(layoutId);
+			kfnmtRptWkAtdOutatd.setColumnIndex(columnIndex);
+			kfnmtRptWkAtdOutatd.setPosition(position);
+			kfnmtRptWkAtdOutatd.setOutputAtr(exportArt);
+			kfnmtRptWkAtdOutatd.setTimeItemId(singleAttendanceRecord.getTimeItemId());
+			kfnmtRptWkAtdOutatd.setFormulaType(new BigDecimal(SINGLE_FORMULA_TYPE));
+			
+			this.commandProxy().insert(kfnmtRptWkAtdOutatd);
 		}
 		this.getEntityManager().flush();
 
@@ -132,19 +140,19 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord)
 	 */
 	@Override
-	public void deleteSingleAttendanceRecord(String companyId, ExportSettingCode exportSettingCode, long columnIndex,
+	public void deleteSingleAttendanceRecord(String layoutId, long columnIndex,
 			long position, long exportArt, SingleAttendanceRecord singleAttendanceRecord) {
-		// find and delete KfnstAttndRec, KfnstAttndRecItem
-		KfnstAttndRecPK kfnstAttndRecPK = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
+		// find and delete KfnmtRptWkAtdOutframe, KfnmtRptWkAtdOutatd
+		KfnmtRptWkAtdOutframePK kfnstAttndRecPK = new KfnmtRptWkAtdOutframePK(layoutId, columnIndex, exportArt,
 				position);
-		Optional<KfnstAttndRec> optionalKfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnstAttndRec.class);
+		Optional<KfnmtRptWkAtdOutframe> optionalKfnstAttndRec = this.queryProxy().find(kfnstAttndRecPK, KfnmtRptWkAtdOutframe.class);
 		optionalKfnstAttndRec.ifPresent(kfnstAttndRec -> this.commandProxy().remove(kfnstAttndRec));
 
-		// find and delete KfnstAttndRecItem
-		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
-		KfnstAttndRecItem kfnstAttndRecItem = (listKfnstAttndRecItem.size() != 0) ? listKfnstAttndRecItem.get(0) : null;
-		if (kfnstAttndRecItem != null)
-			this.commandProxy().remove(kfnstAttndRecItem);
+		// find and delete KfnmtRptWkAtdOutatd
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
+		KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd = (listKfnstAttndRecItem.size() != 0) ? listKfnstAttndRecItem.get(0) : null;
+		if (kfnmtRptWkAtdOutatd != null)
+			this.commandProxy().remove(kfnmtRptWkAtdOutatd);
 		this.getEntityManager().flush();
 	}
 
@@ -155,17 +163,17 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 *            the kfnst attnd rec
 	 * @return the single attendance record
 	 */
-	private SingleAttendanceRecord toDomain(KfnstAttndRec kfnstAttndRec) {
-		// get KfnstAttndRecItem by KfnstAttndRecPK
-		KfnstAttndRecPK attendanceRecordPK = kfnstAttndRec.getId();
-		List<KfnstAttndRecItem> listKfnstAttndRecItem = this.findAttendanceRecordItems(attendanceRecordPK);
+	private SingleAttendanceRecord toDomain(KfnmtRptWkAtdOutframe kfnstAttndRec) {
+		// get KfnmtRptWkAtdOutatd by KfnmtRptWkAtdOutframePK
+		KfnmtRptWkAtdOutframePK attendanceRecordPK = kfnstAttndRec.getId();
+		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem = this.findAttendanceRecordItems(attendanceRecordPK);
 
 		// check value
-		KfnstAttndRecItem kfnstAttndRecItem = listKfnstAttndRecItem.isEmpty() ? new KfnstAttndRecItem()
+		KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd = listKfnstAttndRecItem.isEmpty() ? new KfnmtRptWkAtdOutatd()
 				: listKfnstAttndRecItem.get(0);
 		// create getMemento
 		SingleAttendanceRecordGetMemento getMemento = new JpaSingleAttendanceRecordGetMemento(kfnstAttndRec,
-				kfnstAttndRecItem);
+				kfnmtRptWkAtdOutatd);
 		return new SingleAttendanceRecord(getMemento);
 
 	}
@@ -185,24 +193,25 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 *            the single attendance record
 	 * @return the kfnst attnd rec
 	 */
-	private KfnstAttndRec toEntityAttndRec(ExportSettingCode exportSettingCode, long columnIndex, long position,
+	private KfnmtRptWkAtdOutframe toEntityAttndRec(String layoutId, long columnIndex, long position,
 			long exportArt, boolean useAtr, SingleAttendanceRecord singleAttendanceRecord) {
-		// find entity KfnstAttndRec by pk
+		// find entity KfnmtRptWkAtdOutframe by pk
 		String companyId = AppContexts.user().companyId();
-		KfnstAttndRecPK kfnstAttndRecPk = new KfnstAttndRecPK(companyId, Long.parseLong(exportSettingCode.v()), columnIndex, exportArt,
+		KfnmtRptWkAtdOutframePK kfnstAttndRecPk = new KfnmtRptWkAtdOutframePK(layoutId, columnIndex, exportArt,
 				position);
-		KfnstAttndRec kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPk, KfnstAttndRec.class)
-				.orElse(new KfnstAttndRec(kfnstAttndRecPk, new BigDecimal(0), null, new BigDecimal(0)));
-		// find entites KfnstAttndRecItem by attendanceRecordPK
-		List<KfnstAttndRecItem> listAttndRecItemEntity = this.findAttendanceRecordItems(kfnstAttndRecPk);
-		KfnstAttndRecItem attendanceRecItemEntity = listAttndRecItemEntity.isEmpty() ? new KfnstAttndRecItem()
+		KfnmtRptWkAtdOutframe kfnstAttndRec = this.queryProxy().find(kfnstAttndRecPk, KfnmtRptWkAtdOutframe.class)
+				.orElse(new KfnmtRptWkAtdOutframe(kfnstAttndRecPk, 1, AppContexts.user().contractCode(), companyId,
+						new BigDecimal(0), null, new BigDecimal(0)));
+		// find entites KfnmtRptWkAtdOutatd by attendanceRecordPK
+		List<KfnmtRptWkAtdOutatd> listAttndRecItemEntity = this.findAttendanceRecordItems(kfnstAttndRecPk);
+		KfnmtRptWkAtdOutatd attendanceRecItemEntity = listAttndRecItemEntity.isEmpty() ? new KfnmtRptWkAtdOutatd()
 				: listAttndRecItemEntity.get(0);
 		if (attendanceRecItemEntity.getRecordItemId() == null) {
 			UID uid = new UID();
 			// set another property for attendanceRecordItem
+			attendanceRecItemEntity.setLayoutId(layoutId);
 			attendanceRecItemEntity.setRecordItemId(uid.toString());
 			attendanceRecItemEntity.setCid(companyId);
-			attendanceRecItemEntity.setExportCd(Long.parseLong(exportSettingCode.v()));
 			attendanceRecItemEntity.setColumnIndex(columnIndex);
 			attendanceRecItemEntity.setPosition(position);
 			attendanceRecItemEntity.setOutputAtr(exportArt);
@@ -231,14 +240,22 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 *            the single attendance record
 	 * @return the kfnst attnd rec item
 	 */
-	private KfnstAttndRecItem toEntityAttndRecItem(ExportSettingCode exportSettingCode, long columnIndex, long position,
+	private KfnmtRptWkAtdOutatd toEntityAttndRecItem(String layoutId, long columnIndex, long position,
 			long exportArt, SingleAttendanceRecord singleAttendanceRecord) {
-		String companyId = AppContexts.user().companyId();
 		UID uid = new UID();
-		KfnstAttndRecItem kfnstAttndRecItem = new KfnstAttndRecItem(uid.toString(), companyId, columnIndex,
-				Long.parseLong(exportSettingCode.v()), new BigDecimal(SINGLE_FORMULA_TYPE), exportArt, position,
-				singleAttendanceRecord.getTimeItemId());
-		return kfnstAttndRecItem;
+		
+		KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd = new KfnmtRptWkAtdOutatd();
+		kfnmtRptWkAtdOutatd.setRecordItemId(uid.toString());
+		kfnmtRptWkAtdOutatd.setExclusVer(1);
+		kfnmtRptWkAtdOutatd.setContractCd(AppContexts.user().contractCode());
+		kfnmtRptWkAtdOutatd.setCid(AppContexts.user().companyId());
+		kfnmtRptWkAtdOutatd.setLayoutId(layoutId);
+		kfnmtRptWkAtdOutatd.setColumnIndex(columnIndex);
+		kfnmtRptWkAtdOutatd.setPosition(position);
+		kfnmtRptWkAtdOutatd.setOutputAtr(exportArt);
+		kfnmtRptWkAtdOutatd.setTimeItemId(singleAttendanceRecord.getTimeItemId());
+		kfnmtRptWkAtdOutatd.setFormulaType(new BigDecimal(SINGLE_FORMULA_TYPE));
+		return kfnmtRptWkAtdOutatd;
 	}
 
 	/*
@@ -249,32 +266,31 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 * java. lang.String, long, long)
 	 */
 	@Override
-	public List<Integer> getIdSingleAttendanceRecordByPosition(String companyId, long exportCode, long position) {
+	public List<Integer> getIdSingleAttendanceRecordByPosition(String layoutId, long position) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRecItem> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRecItem.class);
-		Root<KfnstAttndRecItem> root = criteriaQuery.from(KfnstAttndRecItem.class);
+		CriteriaQuery<KfnmtRptWkAtdOutatd> criteriaQuery = criteriaBuilder.createQuery(KfnmtRptWkAtdOutatd.class);
+		Root<KfnmtRptWkAtdOutatd> root = criteriaQuery.from(KfnmtRptWkAtdOutatd.class);
 
 		// Build query
 		criteriaQuery.select(root);
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.exportCd), exportCode));
-		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnstAttndRecItem_.columnIndex), (long) 6));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.position), position));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRecItem_.outputAtr), 1));
+		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.layoutId), layoutId));
+		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnmtRptWkAtdOutatd_.columnIndex), (long) 6));
+		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.position), position));
+		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.outputAtr), 1));
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 
 		// query data
-		List<KfnstAttndRecItem> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
 
-		List<KfnstAttndRecItem> kfnstAttndRecItemsTotal = new ArrayList<>();
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItemsTotal = new ArrayList<>();
 		for (int i = 1; i <= 6; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems)==null) {
-				KfnstAttndRecItem item = new KfnstAttndRecItem();
+				KfnmtRptWkAtdOutatd item = new KfnmtRptWkAtdOutatd();
 				item.setTimeItemId(0);
 				kfnstAttndRecItemsTotal.add(item);
 			} else
@@ -286,8 +302,8 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 
 	}
 
-	private KfnstAttndRecItem findIndexInList(int i, List<KfnstAttndRecItem> list) {
-		for (KfnstAttndRecItem item : list) {
+	private KfnmtRptWkAtdOutatd findIndexInList(int i, List<KfnmtRptWkAtdOutatd> list) {
+		for (KfnmtRptWkAtdOutatd item : list) {
 			if (item.getColumnIndex() == i)
 				return item;
 		}

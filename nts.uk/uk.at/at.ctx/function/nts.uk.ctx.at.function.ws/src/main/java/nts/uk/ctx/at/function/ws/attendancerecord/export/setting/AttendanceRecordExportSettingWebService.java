@@ -68,9 +68,8 @@ public class AttendanceRecordExportSettingWebService {
 	 */
 	@POST
 	@Path("getAttendanceRecExpSet/{code}")
-	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") long code) {
-		String companyId = AppContexts.user().companyId();
-		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(companyId, code);
+	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") String code) {
+		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(code);
 	}
 
 	/**
@@ -145,6 +144,13 @@ public class AttendanceRecordExportSettingWebService {
 		return attendanceEcExpSetFinder.getAuthorityOfWorkPerformance();
 	}
 	
+	
+	/**
+	 * Start screen KWR002 - B.
+	 *
+	 * @param dto the dto
+	 * @return the attendance setting dto
+	 */
 	@POST
 	@Path("startScreenB")
 	public AttendanceSettingDto startScreenB(ItemSelectedTypeSettingDto dto) {

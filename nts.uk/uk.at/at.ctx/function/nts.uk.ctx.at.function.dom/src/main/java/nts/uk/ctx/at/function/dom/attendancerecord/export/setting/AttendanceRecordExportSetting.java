@@ -26,6 +26,10 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	/** The company id. */
 	// 会社ID
 	private String companyId;
+	
+	/** The employee id. */
+	private String employeeId;
+	
 
 	/** The daily ouput item. */
 	// 日次の出力項目
@@ -76,6 +80,7 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	 */
 	public AttendanceRecordExportSetting(AttendanceRecordExportSettingGetMemento memento) {
 		this.companyId = AppContexts.user().companyId();
+		this.layoutId = memento.getLayoutId();
 		this.dailyExportItem = memento.getDailyExportItem();
 		this.monthlyExportItem = memento.getMonthlyExportItem();
 		this.sealUseAtr = memento.getSealUseAtr();
@@ -83,9 +88,7 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		this.name = memento.getName();
 		this.sealStamp = memento.getSealStamp();
 		this.nameUseAtr =  NameUseAtr.valueOf(memento.getNameUseAtr());
-		
 		this.exportFontSize = ExportFontSize.valueOf(memento.getExportFontSize());
-
 		this.monthlyConfirmedDisplay = MonthlyConfirmedDisplay.valueOf(memento.getMonthlyConfirmedDisplay());
 
 	}
@@ -99,10 +102,10 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	public void saveToMemento(AttendanceRecordExportSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setCode(this.code);
-//		memento.setDailyExportItem(this.dailyExportItem);
-//		memento.setMonthlyExportItem(this.monthlyExportItem);
+		memento.setDailyExportItem(this.dailyExportItem);
+		memento.setMonthlyExportItem(this.monthlyExportItem);
 		memento.setName(this.name);
-//		memento.setSealStamp(this.sealStamp);
+		memento.setSealStamp(this.sealStamp);
 		memento.setSealUseAtr(this.sealUseAtr);
 		if (this.nameUseAtr != null) {
 			memento.setNameUseAtr(this.nameUseAtr.value);

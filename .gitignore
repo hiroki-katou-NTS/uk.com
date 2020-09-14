@@ -46,3 +46,5 @@ nts.uk/uk.repo/*
 **/main-server*
 **/wwwroot/*
 **/.DS_Store
+
+/run_before_import.bat

@@ -29,10 +29,16 @@ public class JpaAttendanceRecordOuputItemsGetMemento implements AttendanceRecord
 
 	@Override
 	public List<AttendanceRecordExportSetting> getAttendanceRecordExportSettings() {
-		List<AttendanceRecordExportSetting> result = this.listKfnmtRptWkAtdOut.stream()
-				.map(i -> new AttendanceRecordExportSetting(i)).collect(Collectors.toList());
-		return result;
+		// TODO Auto-generated method stub
+		return null;
 	}
+
+//	@Override
+//	public List<AttendanceRecordExportSetting> getAttendanceRecordExportSettings() {
+//		List<AttendanceRecordExportSetting> result = this.listKfnmtRptWkAtdOut.stream()
+//				.map(i -> new AttendanceRecordExportSetting(i)).collect(Collectors.toList());
+//		return result;
+//	}
 	
 
 }

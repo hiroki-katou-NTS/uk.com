@@ -12,6 +12,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class AttendanceRecordKeyDto {
 	
+	/** The layout id. */
+	private String layoutId;
+	
 	/** The code. */
 	private long code;
 	

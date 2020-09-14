@@ -14,6 +14,8 @@ import lombok.Setter;
 @Setter
 public class SingleAttendanceRecordAddCommand {
 
+	private String layoutId;
+
 	/** The export setting code. */
 	private long exportSettingCode;
 

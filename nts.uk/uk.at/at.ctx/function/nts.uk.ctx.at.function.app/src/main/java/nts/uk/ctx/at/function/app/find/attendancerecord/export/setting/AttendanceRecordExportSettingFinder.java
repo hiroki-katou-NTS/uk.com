@@ -91,8 +91,9 @@ public class AttendanceRecordExportSettingFinder {
 	 *            the code
 	 * @return the attendance record export setting dto
 	 */
-	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String companyId, long code) {
+	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String code) {
 
+		String companyId = AppContexts.user().companyId();
 		Optional<AttendanceRecordExportSetting> optionalDomain = attendanceRecExpSetRepo
 				.getAttendanceRecExpSet(companyId, code);
 
@@ -100,6 +101,7 @@ public class AttendanceRecordExportSettingFinder {
 			AttendanceRecordExportSetting domain = optionalDomain.get();
 			AttendanceRecordExportSettingDto dto = new AttendanceRecordExportSettingDto();
 
+			dto.setLayoutId(domain.getLayoutId());
 			dto.setCode(domain.getCode().toString());
 			dto.setName(domain.getName().toString());
 			dto.setSealUseAtr(domain.getSealUseAtr());

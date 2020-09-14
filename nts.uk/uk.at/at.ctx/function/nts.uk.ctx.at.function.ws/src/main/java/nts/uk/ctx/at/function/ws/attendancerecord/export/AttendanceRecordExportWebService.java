@@ -13,7 +13,6 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemD
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceIdItemFinder;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.AttendanceRecordExportFinder;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AttendanceRecordExportWebService.
@@ -38,10 +37,9 @@ public class AttendanceRecordExportWebService {
 	 * @return the all attendance record export daily
 	 */
 	@POST
-	@Path("getAllAttendanceRecordDailyExport/{code}")
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(@PathParam("code") long code) {
-		String companyId = AppContexts.user().companyId();
-		return this.attendanceRecExpFinder.getAllAttendanceRecordExportDaily(companyId, code);
+	@Path("getAllAttendanceRecordDailyExport/{layoutId}")
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportDaily(@PathParam("layoutId") String layoutId) {
+		return this.attendanceRecExpFinder.getAllAttendanceRecordExportDaily(layoutId);
 	}
 
 	/**
@@ -52,10 +50,9 @@ public class AttendanceRecordExportWebService {
 	 * @return the all attendance record export monthly
 	 */
 	@POST
-	@Path("getAllAttendanceRecordExportMonthly/{code}")
-	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(@PathParam("code") long code) {
-		String companyId = AppContexts.user().companyId();
-		return this.attendanceRecExpFinder.getAllAttendanceRecordExportMonthly(companyId, code);
+	@Path("getAllAttendanceRecordExportMonthly/{layoutId}")
+	public List<AttendanceRecordExportDto> getAllAttendanceRecordExportMonthly(@PathParam("layoutId") String layoutId) {
+		return this.attendanceRecExpFinder.getAllAttendanceRecordExportMonthly(layoutId);
 	}
 
 	/**

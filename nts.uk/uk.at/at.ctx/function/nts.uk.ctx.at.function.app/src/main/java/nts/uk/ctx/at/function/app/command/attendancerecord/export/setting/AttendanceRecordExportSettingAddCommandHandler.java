@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.app.command.attendancerecord.export.setting;
 
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -33,14 +34,18 @@ public class AttendanceRecordExportSettingAddCommandHandler
 
 		AttendanceRecordExportSettingAddCommand command = context.getCommand();
 
+		UUID genLayoutId = UUID.randomUUID(); 
 		// convert to domain
-
 		AttendanceRecordExportSetting domain = new AttendanceRecordExportSetting();
+		
+		String layoutId = command.getLayoutId() != null ? command.getLayoutId() : genLayoutId.toString();
+		domain.setLayoutId(layoutId);
 		domain.setCompanyId(AppContexts.user().companyId());
 		domain.setCode(new ExportSettingCode(String.valueOf(command.getCode())));
 		domain.setName(new ExportSettingName(command.getName()));
 		domain.setNameUseAtr(NameUseAtr.valueOf(command.getNameUseAtr()));
 		domain.setExportFontSize(ExportFontSize.valueOf(command.getExportFontSize()));
+//		domain.setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay.valueOf(command.getMonthlyDisplay()));
 		if (command.getSealStamp() != null) {
 			domain.setSealStamp(command.getSealStamp().stream().map(SealColumnName::new).collect(Collectors.toList()));
 			domain.setSealUseAtr(command.getSealUseAtr());

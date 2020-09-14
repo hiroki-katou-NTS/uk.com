@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.infra.entity.attendancerecord;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -35,13 +36,14 @@ public class KfnmtRptWkAtdOutseal extends UkJpaEntity implements Serializable {
 	private String columnId;
 	
 	/** The exclus ver. */
-	@Column(name="EXCLUS_VER")
-	private long exclusVer;
-	
-	/** The contract cd. */
-	@Column(name="CONTRACT_CD")
-	private String contractCd;
+	@Basic(optional = false)
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer;
 
+	/** The contract cd. */
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
+	
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;

@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.infra.entity.attendancerecord;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -10,6 +12,7 @@ import lombok.NoArgsConstructor;
  * The primary key class for the KFNMT_RPT_WK_ATD_OUTFRAME database table.
  * 
  */
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
@@ -20,11 +23,11 @@ public class KfnmtRptWkAtdOutframePK implements Serializable {
 	@Column(name="LAYOUT_ID")
 	private String layoutId;
 
-	@Column(name = "OUTPUT_ATR")
-	private long outputAtr;
-
 	@Column(name = "COLUMN_INDEX")
 	private long columnIndex;
+	
+	@Column(name = "OUTPUT_ATR")
+	private long outputAtr;
 
 	@Column(name = "[POSITION]")
 	private long position;
@@ -74,5 +77,13 @@ public class KfnmtRptWkAtdOutframePK implements Serializable {
 		hash = hash * prime + ((int) (this.position ^ (this.position >>> 32)));
 
 		return hash;
+	}
+
+	public String getLayoutId() {
+		return layoutId;
+	}
+
+	public void setLayoutId(String layoutId) {
+		this.layoutId = layoutId;
 	}
 }

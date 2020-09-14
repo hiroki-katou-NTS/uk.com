@@ -23,18 +23,17 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.EmploymentHistoryImported;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
-import nts.uk.ctx.at.shared.app.find.vacation.setting.subst.dto.SubstVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecGenerationDigestionHis;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceHistoryOutputPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentManaQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecAbsHistoryOutputPara;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.RecruitmentHistoryOutPara;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AsbRemainTotalInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.NumberCompensatoryLeavePeriodProcess;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.CompenLeaveAggrResult;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffHistory;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffManagementQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
@@ -44,15 +43,12 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.Brea
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakHistoryData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffHistoryData;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcessCommon;
+import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveEmSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepository;
-import nts.uk.ctx.at.shared.dom.vacation.setting.subst.SubstVacationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -70,14 +66,21 @@ public class EmploymentSystemFinder {
 	private ShareEmploymentAdapter employeeAdaptor;
 	@Inject
 	private WorkplaceAdapter wpAdapter;
-	@Inject
-	private EmpSubstVacationRepository empSubrepo;
-	@Inject
-	private ComSubstVacationRepository comSubrepo;
+//	@Inject
+//	private EmpSubstVacationRepository empSubrepo;
+//	@Inject
+//	private ComSubstVacationRepository comSubrepo;
 	@Inject
 	private CompensLeaveComSetRepository compensLeaveComSetRepository;
 	@Inject
 	private RemainNumberTempRequireService requireService;
+	
+	@Inject
+	private AbsenceTenProcessCommon absenceTenProcessCommon;
+	
+	@Inject
+	private NumberCompensatoryLeavePeriodProcess numberCompensatoryLeavePeriodProcess;
+
 	
 	/** 
 	 * KDL005
@@ -268,112 +271,121 @@ public class EmploymentSystemFinder {
 	 * @param baseDate
 	 * @return
 	 */
-	public NumberRestDaysDto getAcquisitionNumberRestDays(String employeeId, String baseDate) {
+	public AcquisitionNumberRestDayDto getAcquisitionNumberRestDays(String employeeId, String baseDate) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		String companyId = AppContexts.user().companyId();
 		GeneralDate inputDate = GeneralDate.fromString(baseDate, "yyyyMMdd");
-		// アルゴリズム「社員に対応する締め期間を取得する」を実行する		
+		AcquisitionNumberRestDayDto result = new AcquisitionNumberRestDayDto();
 		DatePeriod closingPeriod = ClosureService.findClosurePeriod(require, cacheCarrier, employeeId, inputDate);
 		
-		// アルゴリズム「振出振休発生消化履歴の取得」を実行する
-		Optional<AbsRecGenerationDigestionHis> data = absenceReruitmentManaQuery
-				.generationDigestionHis(companyId, employeeId, inputDate);
-
-		List<RecAbsHistoryOutputDto> recAbsHistoryOutput = new ArrayList<>();
+		// Step 10-3.振休の設定を取得する
+		LeaveSetOutput leaveSet = this.absenceTenProcessCommon.getSetForLeave(companyId, employeeId, inputDate);
+		result.setIsManagementSection(leaveSet.isSubManageFlag());
 		
-		if(data.isPresent() && data.get().getGreneraGigesHis().size() > 0) {
-			for (RecAbsHistoryOutputPara item : data.get().getGreneraGigesHis()) {
-				if(item == null) {
-					continue;
-				}
-				
-				CompensatoryDayoffDateDto ymdData = new CompensatoryDayoffDateDto(item.getYmdData().isUnknownDate(), 
-						item.getYmdData().getDayoffDate().isPresent() ? item.getYmdData().getDayoffDate().get() : null);
-				
-				Double useDays = item.getUseDays() != null ? item.getUseDays().get() : 0.0;
-				
-				AbsenceHistoryOutputPara absHisDatas = item.getAbsHisData() != null ? item.getAbsHisData().get() : null;
-				
-				CompensatoryDayoffDateDto absDate = new CompensatoryDayoffDateDto(absHisDatas != null ? absHisDatas.getAbsDate().isUnknownDate() : true, 
-						absHisDatas != null ? (absHisDatas.getAbsDate().getDayoffDate().isPresent() ? absHisDatas.getAbsDate().getDayoffDate().get() : null) : null);
-				
-				AbsenceHistoryOutputParaDto absHisData = new AbsenceHistoryOutputParaDto(absHisDatas != null ? absHisDatas.getCreateAtr().value : 0, 
-						absHisDatas != null ? absHisDatas.getAbsId() : null,
-						absDate, absHisDatas != null ? absHisDatas.getRequeiredDays() : 0.0, 
-						absHisDatas != null ? absHisDatas.getUnOffsetDays() : 0.0);
-				
-				RecruitmentHistoryOutPara recHisDatas = item.getRecHisData() != null ? item.getRecHisData().get() : null;
-				
-				CompensatoryDayoffDateDto recDate = new CompensatoryDayoffDateDto(
-						recHisDatas != null ? recHisDatas.getRecDate().isUnknownDate() : true, 
-						recHisDatas != null 
-								? (recHisDatas.getRecDate().getDayoffDate().isPresent() ? recHisDatas.getRecDate().getDayoffDate().get() : null) 
-								: null);
-				
-				RecruitmentHistoryOutParaDto recHisData = new RecruitmentHistoryOutParaDto(recHisDatas != null ? recHisDatas.getExpirationDate() : null, 
-						recHisDatas != null ? recHisDatas.isChkDisappeared() : true,
-						recHisDatas != null ? recHisDatas.getDataAtr().value : 0, 
-						recHisDatas != null ? recHisDatas.getRecId() : null, recDate, 
-						recHisDatas != null ? recHisDatas.getOccurrenceDays() : 0.0,
-						recHisDatas != null ? recHisDatas.getHolidayAtr() : 0, 
-						recHisDatas != null ? recHisDatas.getUnUseDays() : 0.0);
-				
-				RecAbsHistoryOutputDto outputDto = new RecAbsHistoryOutputDto(ymdData, useDays, absHisData, recHisData);
-				recAbsHistoryOutput.add(outputDto);
-			}
+		// If 取得した振休管理区分　＝＝　False
+		if (!leaveSet.isSubManageFlag()) {
+			// 「確認残数情報」を返す
+			result.setListRemainNumberDetail(Collections.emptyList());
+			result.setListPegManagement(Collections.emptyList());
+			return result;
 		}
 
-		NumberRestDaysDto result = new NumberRestDaysDto() ;
+		// Step 社員に対応する締め期間を取得する		
+		DatePeriod closingPeriod = this.closureService.findClosurePeriod(employeeId, inputDate);
 		
-		result.setClosingPeriod(closingPeriod);
-		result.setRecAbsHistoryOutput(recAbsHistoryOutput);
-		result.setAbsRemainInfor(data.isPresent() ? data.get().getAbsRemainInfor() : null);
-		//imported（就業）「所属雇用履歴」を取得する RequestList31
-		Optional<EmploymentHistoryImported> empImpOpt =  this.wpAdapter.getEmpHistBySid(companyId, employeeId, inputDate);
-		// アルゴリズム「振休管理設定の取得」を実行する
-		SubstVacationSetting setting = getLeaveManagementSetting(companyId, employeeId, empImpOpt);
-		result.setSetting(SubstVacationSettingDto.fromDomain(setting));
-		//アルゴリズム「期間内の振出振休残数を取得する」を実行する
-		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId,
-																			employeeId,
-																			getDatePeroid(closingPeriod.start()),
-																			GeneralDate.today(),
-																			false,
-																			false, 
-																			Collections.emptyList(),
-																			Collections.emptyList(),
-																			Collections.emptyList(),
-																			Optional.empty(),Optional.empty(),Optional.empty());
+		// Step アルゴリズム「期間内の振出振休残数を取得する」を実行する
+		AbsRecMngInPeriodRefactParamInput inputParam = new AbsRecMngInPeriodRefactParamInput(
+				companyId,
+				employeeId,
+				getDatePeroid(closingPeriod.start()),
+				GeneralDate.today(),
+				false,
+				false, 
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Collections.emptyList(),
+				Optional.empty(),
 		AbsRecRemainMngOfInPeriod absRecMng = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, param);
-		result.setAbsRecMng(absRecMng);
-		return result;
-	}
+				Optional.empty());
+		CompenLeaveAggrResult compenLeaveAggrResult = this.numberCompensatoryLeavePeriodProcess.process(inputParam);
 
-	private SubstVacationSetting getLeaveManagementSetting(String companyId, String employeeId,
-			Optional<EmploymentHistoryImported> empImpOpt) {
-		SubstVacationSetting setting = null;
+		// Step 紐付け情報を生成する ()
+		List<PegManagementDto> listPegManagement = compenLeaveAggrResult.getLstSeqVacation().stream()
+				.map(item -> {
+					PegManagementDto itemDto = new PegManagementDto();
+					itemDto.setUsageDate(item.getDateOfUse());
+					itemDto.setUsageDay(item.getDayNumberUsed().v());
+					itemDto.setUsageHour(0);
+					itemDto.setOccurrenceDate(item.getOutbreakDay());
+					return itemDto;
+				})
+				.collect(Collectors.toList());
+		result.setListPegManagement(listPegManagement);
 		
-		if (empImpOpt.isPresent()) {
-			EmploymentHistoryImported empImp = empImpOpt.get();
-			String emptCD = empImp.getEmploymentCode();
-
-			Optional<EmpSubstVacation> empSubOpt = empSubrepo.findById(companyId, emptCD);
-			if (empSubOpt.isPresent()) {
-				setting = empSubOpt.get().getSetting();
-			} else {
-				Optional<ComSubstVacation> comSubOpt = comSubrepo.findById(companyId);
-				if (comSubOpt.isPresent()) {
-					setting = comSubOpt.get().getSetting();
-				}
-			}
-			if (setting == null) {
-				throw new BusinessException("振休管理設定 == null");
-			}
-
+		// Step 「残数詳細」を作成
+		List<RemainNumberDetailDto> listRemainNumberDetail = compenLeaveAggrResult.getVacationDetails().getLstAcctAbsenDetail().stream()
+				.map(item -> {
+					RemainNumberDetailDto itemDto = new RemainNumberDetailDto();
+					itemDto.setExpiredInCurrentMonth(false);
+					if (item.getOccurrentClass().equals(OccurrenceDigClass.OCCURRENCE)) {
+						// ・逐次発生の休暇明細．発生消化区分　＝＝　発生　－＞発生日　＝　逐次発生の休暇明細．年月日
+						if (item.getDateOccur().getDayoffDate().isPresent()) {
+							GeneralDate occurrenceDate = item.getDateOccur().getDayoffDate().get();
+							itemDto.setOccurrenceDate(occurrenceDate);
+							// condition 取得した期間．開始日＜＝発生日＜＝取得した期間．終了日　－＞・当月で期限切れ　＝　True　ELSE　－＞・当月で期限切れ　＝　False
+							itemDto.setExpiredInCurrentMonth(closingPeriod.contains(occurrenceDate));
+						}
+					} else if (item.getOccurrentClass().equals(OccurrenceDigClass.DIGESTION)) {
+						// ・逐次発生の休暇明細．発生消化区分　＝＝　消化　－＞消化日　＝　逐次発生の休暇明細．年月日
+						itemDto.setDigestionDate(item.getDateOccur().getDayoffDate().orElse(null));
+					}
+					// field ・発生数　＝　取得した逐次発生の休暇明細．発生数．日数
+					itemDto.setOccurrenceNumber(item.getNumberOccurren().getDay().v());
+					// field ・消化数　＝　取得した逐次発生の休暇明細．未相殺数．日数
+					itemDto.setDigestionNumber(item.getUnbalanceNumber().getDay().v());
+					// field ・期限日　＝　取得した逐次発生の休暇明細．休暇発生明細．期限日
+					Optional<UnbalanceCompensation> oUnbalanceCompensation = item.getUnbalanceCompensation();
+					if (oUnbalanceCompensation.isPresent()) {
+						itemDto.setExpirationDate(oUnbalanceCompensation.get().getDeadline());
+					}
+					// field 管理データ状態区分　＝　取得した逐次発生の休暇明細．状態
+					itemDto.setManagementDataStatus(item.getDataAtr().value);
+					// field ・発生時間　＝　取得した逐次発生の休暇明細．発生数．時間
+					Optional<AttendanceTime> oOccurrenceHour = item.getNumberOccurren().getTime();
+					if (oOccurrenceHour.isPresent()) {
+						itemDto.setOccurrenceHour(oOccurrenceHour.get().v());				
+					}
+					// field ・消化時間　＝　取得した逐次発生の休暇明細．未相殺数．時間
+					Optional<AttendanceTime> oDigestionHour = item.getUnbalanceNumber().getTime();
+					if (oDigestionHour.isPresent()) {
+						itemDto.setDigestionHour(oDigestionHour.get().v());				
+					}
+					return itemDto;
+				})
+				.collect(Collectors.toList());
+		result.setListRemainNumberDetail(listRemainNumberDetail);
+		
+		// Step 振出振休発生消化履歴の取得
+		Optional<AbsRecGenerationDigestionHis> data = this.absenceReruitmentManaQuery.generationDigestionHis(companyId, employeeId, inputDate);
+		if (data.isPresent()) {
+			AsbRemainTotalInfor absRemainInfor = data.get().getAbsRemainInfor();
+			// A8_1_2 繰越日数
+			result.setCarryForwardDay(absRemainInfor.getCarryForwardDays());
+			// A8_2_2 発生日数
+			result.setOccurrenceDay(absRemainInfor.getRecordOccurrenceDays());
+			// A8_2_3 予定発生日数
+			result.setScheduleOccurrencedDay(absRemainInfor.getScheOccurrenceDays());
+			// A8_3_2 使用日数
+			result.setUsageDay(absRemainInfor.getRecordUseDays());
+			// A8_3_3 予定使用日数
+			result.setScheduledUsageDay(absRemainInfor.getScheUseDays());
+			// A8_4_2 残数
+			result.setRemainingDay(absRemainInfor.getRecordOccurrenceDays() - absRemainInfor.getRecordUseDays());
+			// A8_4_3 予定残数
+			result.setScheduledRemainingDay(absRemainInfor.getScheOccurrenceDays() - absRemainInfor.getScheUseDays());
 		}
-		return setting;
-
+		return result;
 	}
 
 	@Data
