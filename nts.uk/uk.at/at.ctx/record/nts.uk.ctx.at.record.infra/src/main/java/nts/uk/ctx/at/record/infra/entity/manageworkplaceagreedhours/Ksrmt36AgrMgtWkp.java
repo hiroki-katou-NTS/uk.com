@@ -72,9 +72,6 @@ public class Ksrmt36AgrMgtWkp extends UkJpaEntity implements Serializable {
     @Column(name = "MULTI_M_AVG_AL_TIME")
     public double multiMAvgAlTime;
 
-    @Column(name = "SP_Y_ER_TIME")
-    public double spYErTime;
-
     @Column(name = "MULTI_M_AVG_ER_TIME")
     public double multiMAvgErTime;
 
