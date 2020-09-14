@@ -119,10 +119,10 @@ module nts.uk.at.view.kmr002.a.model {
             self.workLocationCode(data.workLocationCode);
             self.startLunch(data.bentoMenuByClosingTimeDto.closingTime1.start);
             self.finishLunch(data.bentoMenuByClosingTimeDto.closingTime1.finish);
-            self.startDinner(data.bentoMenuByClosingTimeDto.closingTime2.start);
-            self.finishDinner(data.bentoMenuByClosingTimeDto.closingTime2.finish);
+            self.startDinner(data.bentoMenuByClosingTimeDto.closingTime2 == null ? 0 : data.bentoMenuByClosingTimeDto.closingTime2.start);
+            self.finishDinner(data.bentoMenuByClosingTimeDto.closingTime2 == null ? 0 : data.bentoMenuByClosingTimeDto.closingTime2.finish);
             self.lunchText(data.bentoMenuByClosingTimeDto.closingTime1.reservationTimeName);
-            self.dinnerText(data.bentoMenuByClosingTimeDto.closingTime2.reservationTimeName);
+            self.dinnerText(data.bentoMenuByClosingTimeDto.closingTime2 == null ? '' : data.bentoMenuByClosingTimeDto.closingTime2.reservationTimeName);
             self.optionMenu.push({ code: 1, name: self.lunchText() });
             self.optionMenu.push({ code: 2, name: self.dinnerText() });
             self.optionMenu.valueHasMutated();

@@ -42,7 +42,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         isMasterDataUnregisterd: KnockoutObservable<boolean>;
         isOutOfCalendarRange: KnockoutObservable<boolean>;
         isDataEmpty: boolean;
-        buttonReflectPatternText: KnockoutObservable<string>;
         shared: ReflectionSettingDto;
 
         // Calendar component
@@ -105,7 +104,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             vm.listWorkTime = ko.observableArray<WorkTime>([]);
             vm.isMasterDataUnregisterd = ko.observable(false);
             vm.isOutOfCalendarRange = ko.observable(false);
-            vm.buttonReflectPatternText = ko.observable('');
             vm.isDataEmpty = false;
             vm.calendarStartDate = moment();
             // Calendar component
@@ -176,13 +174,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         vm.loadDailyPatternDetail(code);
                     });
 
-                    // Define isReflectionMethodEnable after patternReflection is loaded.
-                    // vm.isReflectionMethodEnable = ko.computed(() => {
-                    //     return vm.reflectionSetting.statutorySetting.useClassification() ||
-                    //         vm.reflectionSetting.nonStatutorySetting.useClassification() ||
-                    //         vm.reflectionSetting.holidaySetting.useClassification();
-                    // }).extend({ notify: 'always' });
-
                     // Set tabindex.
                     vm.isReflectionMethodEnable.subscribe(val => {
                         if (val) {
@@ -191,14 +182,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                             $('#reflection-method-radio-group').attr('tabindex', '-1');
                         }
                     });
-
-                    if(vm.isExecMode()){
-                        $('.exec-mode').show();
-                        $('.ref-mode').hide();
-                    } else{
-                        $('.ref-mode').show();
-                        $('.exec-mode').hide();
-                    }
 
                     vm.reflectionMethod.subscribe(val => {
                         if(val === 2){
@@ -365,9 +348,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     vm.$dialog.alert(res.message)
                     dfd.fail();
                 }).always(() => {
-                    // Set button reflect pattern text.
-                    vm.setButtonReflectPatternText();
-
                     // Show message Msg_37 then close dialog.
                     if (vm.isDataEmpty) {
                         vm.showErrorThenCloseDialog();
@@ -936,25 +916,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
 
         /**
-         * Set button reflect pattern text.
-         */
-        private setButtonReflectPatternText(): void {
-            let self = this;
-
-            // Is exec mode
-            // if (self.isExecMode()) {
-            //     self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_20'));
-            //
-            // }
-
-            // Is ref mode
-            //else {
-                self.buttonReflectPatternText(nts.uk.resource.getText('KDL023_13'));
-            //}
-
-        }
-
-        /**
          * Get worktype name by code.
          */
         private getWorktypeNameByCode(code: string): string {
@@ -1140,10 +1101,10 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          * Show error then close dialog.
          */
         private showErrorThenCloseDialog(): void {
-            let self = this;
+            let vm = this;
             nts.uk.ui.dialog.alertError({ messageId: "Msg_37" }).then(() => {
-                self.closeDialog();
-            });
+				vm.$blockui("clear");
+			});
         }
 
         /**
