@@ -14,8 +14,8 @@ import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrA.WorkScheduleOutput
 import nts.uk.ctx.at.function.dom.adapter.RoleLogin.LoginRoleAdapter;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
@@ -52,7 +52,7 @@ public class AttendanceRecordExportSettingFinder {
 	private DailyPerformAuthorRepo dailyPerAuthRepo;
 	
 	@Inject
-	private AttendanceRecordOuputItemsRepository outputItemRepo;
+	private AttendanceRecordFreeSettingRepository outputItemRepo;
 	
 	@Inject
 	private AttendanceRecordStandardSettingRepository standardRepo;
@@ -155,7 +155,7 @@ public class AttendanceRecordExportSettingFinder {
 				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
 		
 		if (isFreeSetting) {
-			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo
+			Optional<AttendanceRecordFreeSetting> freeSetting = this.outputItemRepo
 					.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
 		} else {
 			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo
@@ -177,8 +177,8 @@ public class AttendanceRecordExportSettingFinder {
 	 * @param employeeId the employee id
 	 * @return the free setting
 	 */
-	private AttendanceRecordOuputItemsDto getFreeSetting(String companyId, String employeeId) {
-		Optional<AttendanceRecordOuputItems> oDomain = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+	private AttendanceRecordFreeSettingDto getFreeSetting(String companyId, String employeeId) {
+		Optional<AttendanceRecordFreeSetting> oDomain = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
 		
 		return oDomain.map(d -> toFreeSettingDto(d)).orElse(null);
 	}
@@ -201,8 +201,8 @@ public class AttendanceRecordExportSettingFinder {
 	 * @param domain the domain
 	 * @return the attendance record ouput items dto
 	 */
-	private AttendanceRecordOuputItemsDto toFreeSettingDto(AttendanceRecordOuputItems domain) {
-		AttendanceRecordOuputItemsDto dto = new AttendanceRecordOuputItemsDto();
+	private AttendanceRecordFreeSettingDto toFreeSettingDto(AttendanceRecordFreeSetting domain) {
+		AttendanceRecordFreeSettingDto dto = new AttendanceRecordFreeSettingDto();
 		domain.setMemento(dto);
 		return dto;
 	}
@@ -244,7 +244,7 @@ public class AttendanceRecordExportSettingFinder {
 			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo.getStandardByCompanyId(companyId);
 			lstAttenDanceReportExportDto = standardSetting.isPresent() ? standardSetting.get().getAttendanceRecordExportSettings() : new ArrayList<>();
 		}else {
-			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+			Optional<AttendanceRecordFreeSetting> freeSetting = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
 			lstAttenDanceReportExportDto = freeSetting.isPresent() ? freeSetting.get().getAttendanceRecordExportSettings() : new ArrayList<>();
 		}
 		return lstAttenDanceReportExportDto;

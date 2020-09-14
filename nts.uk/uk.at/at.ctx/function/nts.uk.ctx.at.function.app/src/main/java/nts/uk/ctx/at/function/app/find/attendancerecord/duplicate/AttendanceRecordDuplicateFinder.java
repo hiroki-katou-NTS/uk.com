@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.duplicate;
 
-import java.util.ArrayList;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -9,8 +8,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataReturnDto;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
@@ -25,7 +24,7 @@ public class AttendanceRecordDuplicateFinder {
 
 	
 	@Inject
-	private AttendanceRecordOuputItemsRepository outputItemRepo;
+	private AttendanceRecordFreeSettingRepository outputItemRepo;
 	
 	@Inject
 	private AttendanceRecordStandardSettingRepository standardRepo;
@@ -44,7 +43,7 @@ public class AttendanceRecordDuplicateFinder {
 //				throw new BusinessException("Msg_3");
 //			}
 //		} else {
-//			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+//			Optional<AttendanceRecordFreeSetting> freeSetting = this.outputItemRepo.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
 //			if (freeSetting.isPresent()) {
 //				throw new BusinessException("Msg_3");
 //			}
@@ -63,7 +62,7 @@ public class AttendanceRecordDuplicateFinder {
 			}
 		} else {
 			// 	ドメインモデル「出勤簿の出力項目自由設定」を取得する  Nhận domain model 「...」
-			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo.findByCompanyEmployeeAndCode(companyId, employeeId, dto.getCode());
+			Optional<AttendanceRecordFreeSetting> freeSetting = this.outputItemRepo.findByCompanyEmployeeAndCode(companyId, employeeId, dto.getCode());
 			if (freeSetting.isPresent()) {
 				throw new BusinessException("Msg_3");
 			}
@@ -73,11 +72,11 @@ public class AttendanceRecordDuplicateFinder {
 			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo.findByCompanyCodeLayoutId(companyId, dto.getCode(), dto.getLayoutId());
 //			standardSetting.map(i -> {
 //				AttendanceRecordStandardSetting domainCopy = new AttendanceRecordStandardSetting();
-//				JpaAttendanceRecordOuputItemsSetMemsento
+//				JpaAttendanceRecordFreeSettingSetMemsento
 //			})
 			
 		} else {
-			Optional<AttendanceRecordOuputItems> freeSetting = this.outputItemRepo.findByCompanyEmployeeCodeAndLayoutId(companyId, employeeId, dto.getCode(), dto.getLayoutId());
+			Optional<AttendanceRecordFreeSetting> freeSetting = this.outputItemRepo.findByCompanyEmployeeCodeAndLayoutId(companyId, employeeId, dto.getCode(), dto.getLayoutId());
 			
 		}
 		return null;

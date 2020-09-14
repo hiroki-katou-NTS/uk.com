@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -15,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class AttendanceRecordOutputItemCommandHandler extends CommandHandler<AttendanceRecordOutputItemCommand>{
 	
 	@Inject
-	private AttendanceRecordOuputItemsRepository attOuputItemsRepo;
+	private AttendanceRecordFreeSettingRepository attOuputItemsRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceRecordOutputItemCommand> context) {

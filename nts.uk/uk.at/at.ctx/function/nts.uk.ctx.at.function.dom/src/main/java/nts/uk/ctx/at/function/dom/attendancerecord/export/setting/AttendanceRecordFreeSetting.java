@@ -14,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Getter
-public class AttendanceRecordOuputItems extends AggregateRoot {
+public class AttendanceRecordFreeSetting extends AggregateRoot {
 
 	/**
 	 * 会社ID
@@ -40,7 +40,7 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 	/**
 	 * Instantiates a new attendance record ouput items.
 	 */
-	private AttendanceRecordOuputItems() {
+	private AttendanceRecordFreeSetting() {
 	}
 	
 	
@@ -50,8 +50,8 @@ public class AttendanceRecordOuputItems extends AggregateRoot {
 	 * @param memento the memento
 	 * @return the attendance record ouput items
 	 */
-	public static AttendanceRecordOuputItems createFromMemento(MementoGetter memento) {
-		AttendanceRecordOuputItems domain = new AttendanceRecordOuputItems();
+	public static AttendanceRecordFreeSetting createFromMemento(MementoGetter memento) {
+		AttendanceRecordFreeSetting domain = new AttendanceRecordFreeSetting();
 		domain.getMemento(memento);
 		return domain;
 	}

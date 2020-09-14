@@ -6,11 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingCommand;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
 
 @Setter
 @NoArgsConstructor
-public class AttendanceRecordOutputItemCommand implements AttendanceRecordOuputItems.MementoGetter {
+public class AttendanceRecordOutputItemCommand implements AttendanceRecordFreeSetting.MementoGetter {
 
 	private Boolean isNew;
 
