@@ -28,10 +28,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePla
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  *
@@ -60,7 +62,7 @@ public class CollectAchievementImpl implements CollectAchievement {
 		List<TimePlaceOutput> list = new ArrayList<>();
 //		介護時間帯
 		if (type == 1) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.empty(), Optional.empty());
+			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(150)), Optional.of(new TimeWithDayAttr(450)));
 			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
 			list.add(t1);
 			list.add(t2);
@@ -88,7 +90,58 @@ public class CollectAchievementImpl implements CollectAchievement {
 			list.add(t9);
 			list.add(t10);
 		}
-		return null;
+//		勤務時間帯
+		if (type == 3) {
+			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(450)), Optional.empty());
+			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.of(new TimeWithDayAttr(550)), Optional.of(new TimeWithDayAttr(450)));
+			list.add(t1);
+			list.add(t2);
+		}
+//		外出時間帯
+		if (type == 4) {
+			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PRIVATE), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(450)), Optional.of(new TimeWithDayAttr(100)));
+			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.COMPENSATION), new StampFrameNo(2), Optional.empty(), Optional.empty());
+			TimePlaceOutput t3 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PUBLIC), new StampFrameNo(3), Optional.empty(), Optional.empty());
+			TimePlaceOutput t4 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PRIVATE), new StampFrameNo(4), Optional.empty(), Optional.empty());
+			TimePlaceOutput t5 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PUBLIC), new StampFrameNo(5), Optional.empty(), Optional.empty());
+			TimePlaceOutput t6 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PUBLIC), new StampFrameNo(6), Optional.empty(), Optional.empty());
+			TimePlaceOutput t7 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PRIVATE), new StampFrameNo(7), Optional.empty(), Optional.empty());
+			TimePlaceOutput t8 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PUBLIC), new StampFrameNo(8), Optional.empty(), Optional.empty());
+			TimePlaceOutput t9 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PRIVATE), new StampFrameNo(9), Optional.empty(), Optional.empty());
+			TimePlaceOutput t10 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.UNION), new StampFrameNo(10), Optional.empty(), Optional.empty());
+			list.add(t1);
+			list.add(t2);
+			list.add(t3);
+			list.add(t4);
+			list.add(t5);
+			list.add(t6);
+			list.add(t7);
+			list.add(t8);
+			list.add(t9);
+			list.add(t10);
+		}
+//		応援時間帯
+		if (type == 5) {
+			
+		} 
+//		育児時間帯
+		if (type == 6) {
+			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.empty(), Optional.empty());
+			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
+			list.add(t1);
+			list.add(t2);
+		}
+//		 臨時時間帯
+		if (type == 7) {
+			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(550)), Optional.empty());
+			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
+			TimePlaceOutput t3 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
+
+			list.add(t1);
+			list.add(t2);
+			list.add(t3);
+		}
+		return list;
 	}
 	
 	public StampRecordOutput createStampRecord() {
@@ -106,12 +159,12 @@ public class CollectAchievementImpl implements CollectAchievement {
 		/**
 		 * 勤務時間帯
 		 */
-		List<TimePlaceOutput> workingTime;
+		List<TimePlaceOutput> workingTime = this.createTimePlace(3);
 		
 		/**
 		 * 外出時間帯
 		 */
-		List<TimePlaceOutput> outingTime;
+		List<TimePlaceOutput> outingTime = this.createTimePlace(4);
 		
 		/**
 		 * 応援時間帯
@@ -121,21 +174,21 @@ public class CollectAchievementImpl implements CollectAchievement {
 		/**
 		 * 育児時間帯
 		 */
-		List<TimePlaceOutput> parentingTime;
+		List<TimePlaceOutput> parentingTime = this.createTimePlace(6);
 		
 		/**
 		 * 臨時時間帯
 		 */
-		List<TimePlaceOutput> extraordinaryTime;
+		List<TimePlaceOutput> extraordinaryTime = this.createTimePlace(7);
 		
 		return new StampRecordOutput(
 				nursingTime,
 				breakTime,
+				workingTime,
+				outingTime,
 				null,
-				null,
-				null,
-				null,
-				null);
+				parentingTime,
+				extraordinaryTime);
 	}
 	@Override
 	public ActualContentDisplay getAchievement(String companyID, String applicantID, GeneralDate appDate) {

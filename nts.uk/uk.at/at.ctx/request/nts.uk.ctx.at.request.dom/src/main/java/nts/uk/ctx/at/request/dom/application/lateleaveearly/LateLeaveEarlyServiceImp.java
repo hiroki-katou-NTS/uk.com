@@ -285,7 +285,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			if (opAchievementDetail.get().getOpWorkTime2().isPresent()) {
 				// 出勤２のデータの状態のチェック
 				LateOrEarlyInfo attend2 = this.checkDataStatus(
-						Optional.of(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime2().rawHour()),
+						Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime2().map(x -> x.rawHour()).orElse(null)),
 						Optional.of(opAchievementDetail.get().getOpWorkTime2().get()), listAppSet.getCancelAtr(),
 						new LateOrEarlyInfo(false, 2, false, true, LateOrEarlyAtr.LATE));
 
@@ -296,8 +296,8 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			if (opAchievementDetail.get().getOpDepartureTime2().isPresent()) {
 				// 退勤２のデータの状態のチェック
 				LateOrEarlyInfo leave2 = this.checkDataStatus(
-						Optional.of(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime2().rawHour()),
-						Optional.of(opAchievementDetail.get().getOpDepartureTime2().get()), listAppSet.getCancelAtr(),
+						Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime2().map(x -> x.rawHour()).orElse(null)),
+						Optional.ofNullable(opAchievementDetail.get().getOpDepartureTime2().get()), listAppSet.getCancelAtr(),
 						new LateOrEarlyInfo(false, 2, false, true, LateOrEarlyAtr.EARLY));
 
 				// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する （退勤２）
