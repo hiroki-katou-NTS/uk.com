@@ -93,6 +93,7 @@
 					</div>
 				</div>
                 <!-- C3_2 -->
+                <com:ko-if bind="isAttendance()">
                 <div id="confirmedCreation">
                     <div tabindex="-1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_101')}</div>
                     <div class="radioButtonGroup comboBoxLists">
@@ -101,6 +102,7 @@
                         </div>
                     </div>
                 </div>
+                </com:ko-if>
 			</div>
 			
 			<div class="buttonPrevNext">

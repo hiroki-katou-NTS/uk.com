@@ -88,7 +88,7 @@ module nts.uk.at.view.ksc001.b {
 			isHandleUpdateSchedule: KnockoutObservable<boolean> = ko.observable( false );
 			isMonthlyPatternRq: KnockoutObservable<boolean> = ko.observable( false );
 			hasChangedCondition: KnockoutObservable<boolean> = ko.observable( false );
-			monthlyPatternCode: KnockoutObservable<number> = ko.observable();
+			monthlyPatternCode: KnockoutObservable<string> = ko.observable();
 			creationMethodCode: KnockoutObservable<number> = ko.observable();
 			monthlyPatternOpts: KnockoutObservableArray<MonthlyPatternModel> = ko.observableArray( [] );
 			creationMethodReference: KnockoutObservableArray<any> = ko.observableArray( [] );
@@ -98,6 +98,7 @@ module nts.uk.at.view.ksc001.b {
 			isEnableNextPageD: KnockoutObservable<boolean> = ko.observable( true );
 			isConfirmedCreation: KnockoutObservable<boolean> = ko.observable( false );
 			isCopyStartDate: KnockoutObservable<boolean> = ko.observable( false );
+			isAttendance: KnockoutObservable<boolean> = ko.observable( false );
 			implementAtr: KnockoutObservable<number> = ko.observable( 0 );
 			createMethodAtr: KnockoutObservable<number> = ko.observable( 0 );
 			employeeIds: KnockoutObservableArray<string> = ko.observableArray( [] );
@@ -442,15 +443,11 @@ module nts.uk.at.view.ksc001.b {
 
 				//init Schedule for personal
 				self.displayPersonalInfor();
-
-				let isAttendance = self.$user.role.isInCharge.attendance;
+				self.isAttendance(self.$user.role.isInCharge.attendance);
 					//__viewContext.user.role.isInCharge.attendance;
-				if( !isAttendance ) {
+				if( !self.isAttendance() ) {
 					self.isConfirmedCreation( false );
-					$( '#confirmedCreation' ).hide();
-
 					self.overwriteConfirmedData( false );
-					$( '#overwriteConfirmedData' ).hide();
 				}
 
 				//fix screen on 1280
@@ -473,8 +470,9 @@ module nts.uk.at.view.ksc001.b {
 					newListEmployees: Array<string> = [];
 
 				let dfd = $.Deferred<void>();
-				nts.uk.ui.block.grayout(); // block ui
-				//self.$blockui("grayout");
+				//nts.uk.ui.block.grayout(); // block ui
+				self.$blockui("grayout");
+
 				self.employeeList( [] );
 				self.selectedEmployeeCode( [] );
 				self.employeeIds( [] );
@@ -484,6 +482,12 @@ module nts.uk.at.view.ksc001.b {
 
 				_.each( dataList,( employeeSearch ) => {
 					employeeIds.push( employeeSearch.employeeId );
+					employeeSearchs.push( {
+						code : employeeSearch.employeeCode,
+						name : employeeSearch.employeeName,
+						affiliationName : employeeSearch.affiliationName
+					} );
+					listSelectedEmpCode.push( employeeSearch.employeeCode.trim() );
 				} );
 
 				// update employee list by ccg001 search
@@ -492,56 +496,76 @@ module nts.uk.at.view.ksc001.b {
 				//filter personal with new conditions
 				let startDate = moment.utc( self.periodStartDate(), "YYYY/MM/DD" );
 				let endDate = moment.utc( self.periodEndDate(), "YYYY/MM/DD" );
-				let listEmployeeFilter: ListEmployeeIds = new ListEmployeeIds(
-					employeeIds,
-					self.recreateConverter(),
-					self.recreateEmployeeOffWork(),
-					self.recreateShortTimeWorkers(),
-					self.recreateDirectBouncer(),
-					startDate, endDate
-				);
 
-				if( employeeIds.length > 0 ) {
-					self.employeeIds( [] );
-					service.getEmployeeListAfterFilter( listEmployeeFilter )
-						.done(( response ) => {
-							newListEmployees = response.listEmployeeId;
-							//reset data listing after filtered
-							employeeSearchs = [];
-							employeeIds = [];
-							listSelectedEmpCode = [];
-							if( newListEmployees.length > 0 ) {
-								for( let i = 0 ; i < newListEmployees.length ; i++ ) {
-									for( let j = 0 ; j < oldListSelectedEmpCode.length ; j++ ) {
-										if( oldListSelectedEmpCode[ j ].employeeId == newListEmployees[ i ] ) {
-											employeeSearchs.push( {
-												code : oldListSelectedEmpCode[ j ].employeeCode,
-												name : oldListSelectedEmpCode[ j ].employeeName,
-												affiliationName : oldListSelectedEmpCode[ j ].affiliationName
-											} );
-											listSelectedEmpCode.push( oldListSelectedEmpCode[ j ].employeeCode.trim() );
-											employeeIds.push( oldListSelectedEmpCode[ j ].employeeId );
+				if(self.selectedImplementAtrCode() === ImplementAtr.GENERALLY_CREATED
+					|| (self.selectedImplementAtrCode() === ImplementAtr.RECREATE &&
+					self.selectRebuildAtrCode() === ReBuildAtr.REBUILD_ALL) ) {
+
+					self.employeeList( employeeSearchs );
+					self.selectedEmployeeCode( listSelectedEmpCode );
+					//self.employeeIds( employeeIds );
+					self.$blockui("hide");
+					dfd.resolve();
+				} else {
+
+					let listEmployeeFilter: ListEmployeeIds = new ListEmployeeIds(
+						employeeIds,
+						self.recreateConverter(),
+						self.recreateEmployeeOffWork(),
+						self.recreateShortTimeWorkers(),
+						self.recreateDirectBouncer(),
+						startDate, endDate
+					);
+
+					if( employeeIds.length > 0 ) {
+						self.employeeIds( [] );
+						service.getEmployeeListAfterFilter( listEmployeeFilter )
+							.done(( response ) => {
+								newListEmployees = response.listEmployeeId;
+								//reset data listing after filtered
+								employeeSearchs = [];
+								employeeIds = [];
+								listSelectedEmpCode = [];
+								if( newListEmployees.length > 0 ) {
+									for( let i = 0 ; i < newListEmployees.length ; i++ ) {
+										for( let j = 0 ; j < oldListSelectedEmpCode.length ; j++ ) {
+											if( oldListSelectedEmpCode[ j ].employeeId == newListEmployees[ i ] ) {
+												employeeSearchs.push( {
+													code : oldListSelectedEmpCode[ j ].employeeCode,
+													name : oldListSelectedEmpCode[ j ].employeeName,
+													affiliationName : oldListSelectedEmpCode[ j ].affiliationName
+												} );
+												listSelectedEmpCode.push( oldListSelectedEmpCode[ j ].employeeCode.trim() );
+												employeeIds.push( oldListSelectedEmpCode[ j ].employeeId );
+											}
 										}
 									}
-								}
 
-								self.employeeList( employeeSearchs );
-								self.selectedEmployeeCode( listSelectedEmpCode );
-								self.employeeIds( employeeIds );
-							} else {
-								nts.uk.ui.dialog.error({ messageId: "Msg_1779"});
-							}
-							nts.uk.ui.block.clear();
-							dfd.resolve();
-						})
-						.fail(() => {
-							nts.uk.ui.block.clear();
-							dfd.reject();
-						})
-						.always(() => {
-							nts.uk.ui.block.clear();
-							dfd.resolve();
-						});
+									self.employeeList( employeeSearchs );
+									self.selectedEmployeeCode( listSelectedEmpCode );
+									self.employeeIds( employeeIds );
+								} else {
+									//nts.uk.ui.dialog.error({ messageId: "Msg_1779"});
+									self.$dialog.error({ messageId: "Msg_1779" }).then(() => {});
+								}
+								//nts.uk.ui.block.clear();
+								self.$blockui("hide");
+								dfd.resolve();
+							})
+							.fail(() => {
+								//nts.uk.ui.block.clear();
+								self.$blockui("hide");
+								dfd.reject();
+							})
+							.always(() => {
+								//nts.uk.ui.block.clear();
+								self.$blockui("hide");
+								dfd.resolve();
+							});
+					} else {
+						self.$blockui("hide");
+						dfd.resolve();
+					}
 				}
 
 				// update kc005
@@ -611,17 +635,43 @@ module nts.uk.at.view.ksc001.b {
 				var user: any = self.$user; // __viewContext.user;
 				var data: PersonalSchedule = new PersonalSchedule();
 
+				let Converter: boolean = false,
+					EmployeeOffWork: boolean = false,
+					ShortTimeWorkers: boolean = false,
+					DirectBouncer: boolean = false,
+					ConfirmedData: boolean = false,
+					createAfterDeleted: boolean = false,
+					creationMethodCode: number = 0,
+					monthlyPatternCode: string = null;
+
+				if( self.selectedImplementAtrCode() === ImplementAtr.RECREATE ) {
+					if(self.selectRebuildAtrCode() === ReBuildAtr.REBUILD_TARGET_ONLY ) {
+						Converter = self.recreateConverter ();
+						EmployeeOffWork = self.recreateEmployeeOffWork ();
+						ShortTimeWorkers = self.recreateShortTimeWorkers ();
+						DirectBouncer = self.recreateDirectBouncer ();
+					}
+					ConfirmedData =  self.overwriteConfirmedData();
+					createAfterDeleted = self.createAfterDeleting();
+				}
+
+				if(self.checkCreateMethodAtrPersonalInfo() === CreateMethodAtr.PATTERN_SCHEDULE) {
+					creationMethodCode =  self.creationMethodCode();
+					if( creationMethodCode ===  CreationMethodRef.MONTHLY_PATTERN )
+						monthlyPatternCode = self.monthlyPatternCode();
+				}
+
 				data.employeeId = user.employeeId;
 				data.implementAtr = self.selectedImplementAtrCode();
 				data.reCreateAtr = self.checkReCreateAtrAllCase();
 				data.processExecutionAtr = self.checkProcessExecutionAtrRebuild();
 				data.rebuildTargetAtr = self.selectRebuildAtrCode();
-				data.recreateConverter = self.recreateConverter();
-				data.recreateEmployeeOffWork = self.recreateEmployeeOffWork();
-				data.recreateDirectBouncer = self.recreateDirectBouncer();
+				data.recreateConverter = Converter; //self.recreateConverter();
+				data.recreateEmployeeOffWork = EmployeeOffWork; //self.recreateEmployeeOffWork();
+				data.recreateDirectBouncer = DirectBouncer; //self.recreateDirectBouncer();
 				data.recreateShortTermEmployee = self.recreateShortTermEmployee();
 				data.recreateWorkTypeChange = self.recreateWorkTypeChange();
-				data.recreateShortTimeWorkers = self.recreateShortTimeWorkers();
+				data.recreateShortTimeWorkers = ShortTimeWorkers; //self.recreateShortTimeWorkers();
 
 				data.resetWorkingHours = self.resetWorkingHours();
 				data.resetStartEndTime = self.resetStartEndTime();
@@ -630,13 +680,13 @@ module nts.uk.at.view.ksc001.b {
 				data.confirm = self.isConfirmedCreation();//self.confirm();
 				data.createMethodAtr = self.checkCreateMethodAtrPersonalInfo();
 
-				data.overwriteConfirmedData = self.overwriteConfirmedData();
-				data.createAfterDeleting = self.createAfterDeleting();
+				data.overwriteConfirmedData = ConfirmedData;//self.overwriteConfirmedData();
+				data.createAfterDeleting = createAfterDeleted;//self.createAfterDeleting();
 				data.selectedImplementAtrCode = self.selectedImplementAtrCode();
 				data.selectRebuildAtrCode = self.selectRebuildAtrCode();
 				data.checkCreateMethodAtrPersonalInfo = self.checkCreateMethodAtrPersonalInfo();
-				data.creationMethodCode = self.creationMethodCode();
-				data.monthlyPatternCode = self.monthlyPatternCode();
+				data.creationMethodCode = creationMethodCode;//self.creationMethodCode();
+				data.monthlyPatternCode = monthlyPatternCode;//self.monthlyPatternCode();
 				data.isConfirmedCreation = self.isConfirmedCreation();
 
 				return data;
@@ -974,14 +1024,11 @@ module nts.uk.at.view.ksc001.b {
 					service.checkMonthMax( self.toDate( self.periodDate().startDate ) ).done( checkMax => {
 						self.$blockui("hide");
 						if( checkMax ) {
-							this.$dialog.confirm({ messageId: "Msg_568" }).then((result: 'no' | 'yes' | 'cancel') => {
-								if (result === 'no') {
-									return;
-								}
-
+							self.$dialog.confirm({ messageId: "Msg_568" }).then((result) => {
 								if (result === 'yes') {
 									self.createPersonalSchedule();
-								}
+								} else
+									return;
 							});
 						} else {
 							self.createPersonalSchedule();
@@ -995,14 +1042,11 @@ module nts.uk.at.view.ksc001.b {
 			 */
 			private createPersonalSchedule(): void {
 				let self = this;
-				self.$dialog.confirm({ messageId: "Msg_569" }).then((result: 'no' | 'yes' | 'cancel') => {
-					if (result === 'no') {
-						return;
-					}
-
+				self.$dialog.confirm({ messageId: "Msg_569" }).then((result) => {
 					if (result === 'yes') {
 						self.savePersonalScheduleData();
-					}
+					} else
+						return;
 				});
 			}
 
@@ -1091,7 +1135,13 @@ module nts.uk.at.view.ksc001.b {
 				var self = this,
 					user: any = self.$user,//__viewContext.user,
 					data: PersonalSchedule = self.toPersonalScheduleData(),
-					dto: ScheduleExecutionLogSaveDto = {
+					isCopyStartDate : boolean = true;
+
+				if( self.checkCreateMethodAtrPersonalInfo() !== CreateMethodAtr.COPY_PAST_SCHEDULE ) {
+					isCopyStartDate = false;
+				}
+
+				let dto: ScheduleExecutionLogSaveDto = {
 						periodStartDate : self.toDate( self.periodDate().startDate ),
 						periodEndDate : self.toDate( self.periodDate().endDate ),
 						creationType : data.selectedImplementAtrCode, //実施区分
@@ -1106,7 +1156,7 @@ module nts.uk.at.view.ksc001.b {
 						monthlyPatternId : data.monthlyPatternCode, //月間パターンコード
 						beConfirmed : data.confirm, //作成時の同時確定
 						creationMethod : data.checkCreateMethodAtrPersonalInfo, //作成方法区分
-						copyStartYmd : self.toDate( self.copyStartDate() ), //コピー開始日
+						copyStartYmd : (isCopyStartDate ? self.toDate( self.copyStartDate() ) : null ), //コピー開始日
 						employeeIds : self.employeeIds(),
 						employeeIdLogin : user.employeeIdLogin
 					};
@@ -1400,7 +1450,7 @@ module nts.uk.at.view.ksc001.b {
 			selectRebuildAtrCode: number;
 			checkCreateMethodAtrPersonalInfo: number;
 			creationMethodCode: number;
-			monthlyPatternCode: number;
+			monthlyPatternCode: string;
 			isConfirmedCreation: boolean;
 
 			constructor() {
@@ -1438,7 +1488,7 @@ module nts.uk.at.view.ksc001.b {
 				self.createAfterDeleting = false;
 				self.checkCreateMethodAtrPersonalInfo = 0;
 				self.creationMethodCode = 0;
-				self.monthlyPatternCode = 0;
+				self.monthlyPatternCode = null;
 				self.isConfirmedCreation = false;
 			}
 		}
