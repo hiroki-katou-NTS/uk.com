@@ -15,13 +15,7 @@ module nts.uk.at.kmr001.b {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
-        model: KnockoutObservable<Reservation> = ko.observable(new Reservation(
-            0, 0,
-            0, 0,
-            0, 0, 0,
-            '', 0,
-            0, '',
-            null, null, 0));
+        model: KnockoutObservable<Reservation> = ko.observable(new Reservation());
         visibleContentChangeDeadline: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
@@ -30,22 +24,41 @@ module nts.uk.at.kmr001.b {
 
             //combo box B10_2
             vm.itemsReservationChange([
-                {appId: 0, appName: vm.$i18n('KMR001_85')},
-                {appId: 1, appName: vm.$i18n('KMR001_86')},
-                {appId: 2, appName: vm.$i18n('KMR001_87')}
+                { appId: 0, appName: vm.$i18n('KMR001_85') },
+                { appId: 1, appName: vm.$i18n('KMR001_86') },
+                { appId: 2, appName: vm.$i18n('KMR001_87') }
             ]);
 
             //combo box B10_3
-            _.range(0, 31).map(item => vm.itemsReservationChangeDay.push({
+            let items = [];
+            _.range(0, 31).map(item => items.push({
                 appId: item,
                 appValue: (item + 1).toString()
             }));
+            vm.itemsReservationChangeDay(items);
+
             vm.enable = ko.observable(true);
         }
 
         created() {
             const vm = this;
-            _.extend(window, {vm});
+
+            vm.model().contentChangeDeadline.subscribe(data => {
+                if (data == 1) {
+                    vm.visibleContentChangeDeadline(true);
+                    return;
+                }
+                vm.visibleContentChangeDeadline(false);
+            });
+
+            vm.model().reservationEndTime1.subscribe(() => {
+                vm.$errors("clear", "#end1");
+            });
+            vm.model().reservationEndTime2.subscribe(() => {
+                vm.$errors("clear", "#end2");
+            });
+
+            _.extend(window, { vm });
         }
 
         mounted() {
@@ -53,13 +66,7 @@ module nts.uk.at.kmr001.b {
             vm.$blockui("invisible");
             vm.$ajax(API.GET_BENTO_RESERVATION).done((data: Reservation) => {
                 if (data) {
-                    vm.model(new Reservation(Number(data.operationDistinction), Number(data.referenceTime),
-                        data.contentChangeDeadline ? Number(data.contentChangeDeadline) : 0,
-                        Number(data.contentChangeDeadlineDay), Number(data.orderDeadline),
-                        Number(data.monthlyResults), Number(data.dailyResults), data.reservationFrameName1.toString(),
-                        Number(data.reservationStartTime1), Number(data.reservationEndTime1), data.reservationFrameName2 ? data.reservationFrameName2.toString() : "",
-                        data.reservationStartTime2 ? Number(data.reservationStartTime2) : null, data.reservationEndTime2 ? Number(data.reservationEndTime2) : null, Number(data.orderedData))
-                    );
+                    vm.model().updateData(data);
                     if (Number(data.contentChangeDeadline) == 1) {
                         vm.visibleContentChangeDeadline(true);
                     }
@@ -70,42 +77,42 @@ module nts.uk.at.kmr001.b {
 
         registerBentoReserveSetting() {
             const vm = this;
-            $(".nts-input").trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
-            if (vm.model().reservationStartTime1() >= vm.model().reservationEndTime1()) {
-                $('#end1').ntsError('set', {messageId: 'Msg_849'});
-                return;
-            }
-            if (vm.model().reservationStartTime2() != null && vm.model().reservationEndTime2() != null && vm.model().reservationStartTime2() >= vm.model().reservationEndTime2()) {
-                $('#end2').ntsError('set', {messageId: 'Msg_849'});
-                return;
-            }
+            vm.$validate(".nts-input").then((valid: boolean) => {
+                if (!valid) {
+                    return;
+                }
+                if (vm.model().reservationStartTime1() >= vm.model().reservationEndTime1()) {
+                    vm.$errors("#end1", "Msg_849");
+                    return;
+                }
+                if (vm.model().reservationStartTime2() != null && vm.model().reservationEndTime2() != null && vm.model().reservationStartTime2() >= vm.model().reservationEndTime2()) {
+                    vm.$errors("#end2", "Msg_849");
+                    return;
+                }
 
-            vm.$blockui("invisible");
-            const dataRegister = {
-                operationDistinction: vm.model().operationDistinction(),
-                referenceTime: vm.model().referenceTime(),
-                dailyResults: vm.model().dailyResults(),
-                monthlyResults: vm.model().monthlyResults(),
-                contentChangeDeadline: vm.model().contentChangeDeadline(),
-                contentChangeDeadlineDay: vm.model().contentChangeDeadlineDay(),
-                orderedData: vm.model().orderedData(),
-                orderDeadline: vm.model().orderDeadline(),
-                name1: vm.model().reservationFrameName1(),
-                end1: vm.model().reservationEndTime1(),
-                start1: vm.model().reservationStartTime1(),
-                name2: vm.model().reservationFrameName2(),
-                end2: vm.model().reservationEndTime2(),
-                start2: vm.model().reservationStartTime2()
-            };
-            vm.$ajax(API.ADD_BENTO_RESERVATION, dataRegister).done(() => {
-                vm.$dialog.info({messageId: "Msg_15"}).then(function () {
-                    vm.$blockui("clear");
-                });
-            }).always(() => this.$blockui("clear"));
-
+                vm.$blockui("invisible");
+                const dataRegister = {
+                    operationDistinction: vm.model().operationDistinction(),
+                    referenceTime: vm.model().referenceTime(),
+                    dailyResults: vm.model().dailyResults(),
+                    monthlyResults: vm.model().monthlyResults(),
+                    contentChangeDeadline: vm.model().contentChangeDeadline(),
+                    contentChangeDeadlineDay: vm.model().contentChangeDeadlineDay(),
+                    orderedData: vm.model().orderedData(),
+                    orderDeadline: vm.model().orderDeadline(),
+                    name1: vm.model().reservationFrameName1(),
+                    end1: vm.model().reservationEndTime1(),
+                    start1: vm.model().reservationStartTime1(),
+                    name2: vm.model().reservationFrameName2(),
+                    end2: vm.model().reservationEndTime2(),
+                    start2: vm.model().reservationStartTime2()
+                };
+                vm.$ajax(API.ADD_BENTO_RESERVATION, dataRegister).done(() => {
+                    vm.$dialog.info({ messageId: "Msg_15" }).then(function () {
+                        vm.$blockui("clear");
+                    });
+                }).always(() => this.$blockui("clear"));
+            })
         }
 
     }
@@ -123,64 +130,53 @@ module nts.uk.at.kmr001.b {
     // class for kmr001 b
     class Reservation {
         //B3_2
-        operationDistinction: KnockoutObservable<number>;
+        operationDistinction: KnockoutObservable<number> = ko.observable(0);
         //B5_2
-        referenceTime: KnockoutObservable<number>;
+        referenceTime: KnockoutObservable<number> = ko.observable(0);
         //B10_2
-        contentChangeDeadline: KnockoutObservable<number>;
+        contentChangeDeadline: KnockoutObservable<number> = ko.observable(0);
         //B10_3
-        contentChangeDeadlineDay: KnockoutObservable<number>;
+        contentChangeDeadlineDay: KnockoutObservable<number> = ko.observable(0);
         //B14_2
-        orderDeadline: KnockoutObservable<number>;
+        orderDeadline: KnockoutObservable<number> = ko.observable(0);
         //B17_2
-        monthlyResults: KnockoutObservable<number>;
+        monthlyResults: KnockoutObservable<number> = ko.observable(0);
         //B18_2
-        dailyResults: KnockoutObservable<number>;
+        dailyResults: KnockoutObservable<number> = ko.observable(0);
         //B19_3
-        reservationFrameName1: KnockoutObservable<string>;
+        reservationFrameName1: KnockoutObservable<string> = ko.observable('');
         //B19_5
-        reservationStartTime1: KnockoutObservable<number>;
+        reservationStartTime1: KnockoutObservable<number> = ko.observable(0);
         //B19_7
-        reservationEndTime1: KnockoutObservable<number>;
+        reservationEndTime1: KnockoutObservable<number> = ko.observable(0);
         //B20_3
-        reservationFrameName2: KnockoutObservable<string>;
+        reservationFrameName2: KnockoutObservable<string> = ko.observable('');
         //B20_5
-        reservationStartTime2: KnockoutObservable<number>;
+        reservationStartTime2: KnockoutObservable<number> = ko.observable(null);
         //B20_7	
-        reservationEndTime2: KnockoutObservable<number>;
+        reservationEndTime2: KnockoutObservable<number> = ko.observable(null);
         //B21_2	
-        orderedData: KnockoutObservable<number>;
+        orderedData: KnockoutObservable<number> = ko.observable(0);
 
-        constructor(operationDistinction: number, referenceTime: number, contentChangeDeadline: number, contentChangeDeadlineDay: number, orderDeadline: number, monthlyResults: number,
-                    dailyResults: number, reservationFrameName1: string, reservationStartTime1: number, reservationEndTime1: number, reservationFrameName2: string, reservationStartTime2: number,
-                    reservationEndTime2: number, orderedData: number) {
-            this.operationDistinction = ko.observable(operationDistinction),
-                this.referenceTime = ko.observable(referenceTime),
-                this.contentChangeDeadline = ko.observable(contentChangeDeadline),
-                this.contentChangeDeadlineDay = ko.observable(contentChangeDeadlineDay),
-                this.orderDeadline = ko.observable(orderDeadline),
-                this.monthlyResults = ko.observable(monthlyResults),
-                this.dailyResults = ko.observable(dailyResults),
-                this.reservationFrameName1 = ko.observable(reservationFrameName1),
-                this.reservationStartTime1 = ko.observable(reservationStartTime1),
-                this.reservationEndTime1 = ko.observable(reservationEndTime1),
-                this.reservationFrameName2 = ko.observable(reservationFrameName2),
-                this.reservationStartTime2 = ko.observable(reservationStartTime2),
-                this.reservationEndTime2 = ko.observable(reservationEndTime2),
-                this.orderedData = ko.observable(orderedData),
-                this.contentChangeDeadline.subscribe(data => {
-                    if (data == 1) {
-                        nts.uk.ui._viewModel.content.visibleContentChangeDeadline(true);
-                        return;
-                    }
-                    nts.uk.ui._viewModel.content.visibleContentChangeDeadline(false);
-                });
-            this.reservationEndTime1.subscribe(() => {
-                $('#end1').ntsError('clear');
-            });
-            this.reservationEndTime2.subscribe(() => {
-                $('#end2').ntsError('clear');
-            });
-        };
+        viewModel: ViewModel;
+
+        constructor() { };
+
+        updateData(data: any) {
+            this.operationDistinction(Number(data.operationDistinction));
+            this.referenceTime(Number(data.referenceTime));
+            this.contentChangeDeadline(data.contentChangeDeadline ? Number(data.contentChangeDeadline) : 0);
+            this.contentChangeDeadlineDay(Number(data.contentChangeDeadlineDay));
+            this.orderDeadline(Number(data.orderDeadline));
+            this.monthlyResults(Number(data.monthlyResults));
+            this.dailyResults(Number(data.dailyResults));
+            this.reservationFrameName1(data.reservationFrameName1.toString());
+            this.reservationStartTime1(Number(data.reservationStartTime1));
+            this.reservationEndTime1(Number(data.reservationEndTime1));
+            this.reservationFrameName2(data.reservationFrameName2 ? data.reservationFrameName2.toString() : "");
+            this.reservationStartTime2(data.reservationStartTime2 ? Number(data.reservationStartTime2) : null);
+            this.reservationEndTime2(data.reservationEndTime2 ? Number(data.reservationEndTime2) : null);
+            this.orderedData(Number(data.orderedData));
+        }
     }
 }
