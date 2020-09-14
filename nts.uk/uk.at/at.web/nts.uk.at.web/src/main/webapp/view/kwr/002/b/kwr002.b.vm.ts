@@ -442,6 +442,7 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecExpSetCode', settingCode, true);
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
+            setShared('exportFontSize', self.exportFontSize());
 
             modal('../c/index.xhtml', {});
         }
