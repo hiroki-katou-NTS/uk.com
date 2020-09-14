@@ -6,7 +6,7 @@
 <body>
     <ui:composition template="../../../../master/dialog.xhtml">
         <ui:define name="htmlHead">
-            <script>var dialogSize = { width: 650, height: 860 };</script>
+            <script>var dialogSize = { width: 600, height: 760 };</script>
 
             <com:scriptfile set="IGNITE" />            
             <com:stylefile path="/view/kcp/006/a/fullcalendar-lib/nts-calendar.css" of="/nts.uk.at.web" />
@@ -25,8 +25,11 @@
                 <button tabindex="2" data-bind="click: closeDialog">#{i18n.getText('KSU001_4002')}</button>
             </div>
             <div id="content-area">
-                <div style="margin-left: 6%; margin-top: 20px;" data-bind="text: workplaceName"></div>
-                <hr style="margin: 10px 5%;" />                
+                <!-- <div style="margin-left: 6%; margin-top: 20px;" data-bind="text: workplaceName"></div>
+                <hr style="margin: 10px 5%;" />                 -->
+                <div style="margin-left: 6%; margin-top: 10px;" data-bind="text: workplaceName"></div>
+                <!-- <hr style="margin: 3px 5%;" />   -->
+                <hr id="line" />
                     <div class="container-custom">
                         <button id ="prev-btn" tabindex="4" class="auto-height"  data-bind="click: Prev, enable: isEnableBtn">
                             <div class="flex valign-center" ><img src="img/prev.png" /> #{i18n.getText('KSU001_4008')}</div>                    
