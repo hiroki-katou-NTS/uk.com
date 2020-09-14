@@ -852,7 +852,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         } else if (userInfor.backgroundColor == 0) {
                             // A10_color③ シフト表示：通常の背景色  (hiển thị shift: màu nền normal)                                                     
                             if (cell.achievements == true || cell.needToWork == false) {
-                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 0));
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
                             } else if (cell.supportCategory != SupportCategory.NotCheering) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0)); 
                             } else {
@@ -921,8 +921,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")                                                   
                         if (cell.achievements == true || cell.needToWork == false) {
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 1));
                         } else {
                             if (cell.workTypeEditStatus != null && cell.workTypeEditStatus.editStateSetting != null && cell.workTypeEditStatus.editStateSetting == 0) {
                                 // HAND_CORRECTION_MYSELF(0), 手修正（本人）
@@ -990,10 +990,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
                         if (cell.achievements == true || cell.needToWork == false) {
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 1));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 2));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 3));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 2));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 3));
                         } else {
                             if (cell.workTypeEditStatus != null && cell.workTypeEditStatus.editStateSetting == 0) {
                                 // HAND_CORRECTION_MYSELF(0), 手修正（本人）
