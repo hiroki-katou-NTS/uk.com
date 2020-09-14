@@ -1,7 +1,7 @@
 /// <reference path="./viewcontext.d.ts" />
 
 const prefix = 'nts.uk.storage'
-	, OPENWD = `${prefix}.OPEN_WINDOWS_DATA`
+	, OPENWD = 'OPEN_WINDOWS_DATA'
 	, { ui, request, resource } = nts.uk
 	, { windows, block, dialog } = ui
 	, $storeSession = function (name: string, params?: any) {
@@ -40,7 +40,7 @@ const prefix = 'nts.uk.storage'
 			return $.Deferred().resolve()
 				.then(() => $storeSession(OPENWD))
 				.then((value: any) => {
-					nts.uk.localStorage.removeItem(OPENWD);
+					nts.uk.localStorage.removeItem(`${prefix}.${OPENWD}`);
 
 					return value;
 				});
@@ -465,7 +465,8 @@ BaseViewModel.prototype.$errors = function $errors() {
 		// if action is clear, call validate clear action
 		if (args[0] === 'clear') {
 			return $.Deferred().resolve()
-				.then(() => $('.nts-input').ntsError('clear'));
+				.then(() => $('.nts-input').ntsError('clear'))
+				.then(() => !$('.nts-input').ntsError('hasError'));
 		} else {
 			const errors: {
 				[name: string]: any;

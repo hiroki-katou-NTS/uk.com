@@ -10,10 +10,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import lombok.Data;
 import lombok.Value;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.AcquisitionNumberRestDayDto;
-import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.DetailConfirmDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmployeeBasicInfoDto;
 import nts.uk.ctx.at.request.app.find.dialog.employmentsystem.EmploymentSystemFinder;
 
@@ -44,7 +44,7 @@ public class EmploymentSystemService extends WebService {
 	
 	@POST
 	@Path("getDetailsConfirm/{employeeId}/{baseDate}")
-	public DetailConfirmDto getDetailsConfirm(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
+	public AcquisitionNumberRestDayDto getDetailsConfirm(@PathParam("employeeId") String employeeId, @PathParam("baseDate") String baseDate)
 	{		
 		// アルゴリズム「代休確認ダイア詳細取得」を実行する
 		return employeeFinder.getDetailsConfirm(employeeId, baseDate);
@@ -85,7 +85,7 @@ class DataParam{
 	String baseDate;
 }
 
-@Value
+@Data
 class EmployeeParam{
 	 List<String> employeeIds;
 	 String baseDate;

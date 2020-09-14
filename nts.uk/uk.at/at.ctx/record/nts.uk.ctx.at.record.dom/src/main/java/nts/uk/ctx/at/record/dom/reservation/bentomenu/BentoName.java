@@ -8,7 +8,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author Doan Duy Hung
  *
  */
-@StringMaxLength(20)
+@StringMaxLength(16)
 public class BentoName extends StringPrimitiveValue<BentoName>{
 
 	/**

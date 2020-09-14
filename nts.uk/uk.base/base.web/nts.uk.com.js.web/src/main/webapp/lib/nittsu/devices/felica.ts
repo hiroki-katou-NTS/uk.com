@@ -1,5 +1,5 @@
 module nts.uk.devices {
-    const WS_URI = "ws://localhost:18080/pasori/";
+    const WS_URI = "ws://127.0.0.1:18080/pasori/";
 
     let instance: Felica | null = null;
     let callback: CALL_BACK | null = null;

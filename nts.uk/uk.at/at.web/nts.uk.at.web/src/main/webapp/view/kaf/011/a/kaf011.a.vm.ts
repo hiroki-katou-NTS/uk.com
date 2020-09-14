@@ -62,13 +62,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
         totalEmployeeText = ko.observable('');
 
         transferDate: KnockoutObservable<string> = ko.observable(null);
-        
+
         firstLoad: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         remainDays: KnockoutObservable<number> = ko.observable('');
-        
+
         requiredReason: KnockoutObservable<boolean> = ko.observable(false);
-        
+
         kaf011ReasonIsEditable: KnockoutObservable<boolean> = ko.computed(() => {
                 return this.appTypeSet().displayAppReason() != 0;
             });
@@ -94,7 +94,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
             let self = this,
                 recWk = ko.unwrap(self.recWk),
                 absWk = ko.unwrap(self.absWk);
-            
+
             recWk.appDate.subscribe(newDate => {
                 let absDate = self.absWk().appDate(),
                     recDate = self.recWk().appDate(),
@@ -116,15 +116,15 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     self.kaf000_a.initData({
                         errorFlag: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.errorFlag,
                         listApprovalPhaseStateDto: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState,
-                        isSystemDate: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate 
+                        isSystemDate: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate
                     });
                 }).fail((error) => {
                     alError({ messageId: error.messageId, messageParams: error.parameterIds });
                 }).always(() => {
                     block.clear();
-                }); 
+                });
             });
-            
+
             absWk.appDate.subscribe(newDate => {
                 let absDate = self.absWk().appDate(),
                     recDate = self.recWk().appDate(),
@@ -146,20 +146,20 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     self.kaf000_a.initData({
                         errorFlag: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.errorFlag,
                         listApprovalPhaseStateDto: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoWithDateOutput.listApprovalPhaseState,
-                        isSystemDate: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate         
+                        isSystemDate: self.displayInforWhenStarting.appDispInfoStartup.appDispInfoNoDateOutput.requestSetting.applicationSetting.recordDate
                     });
                 }).fail((error) => {
                     alError({ messageId: error.messageId, messageParams: error.parameterIds });
                 }).always(() => {
                     block.clear();
-                });   
+                });
             });
 
             self.appComSelectedCode.subscribe((newCode) => {
                 self.absWk().appDate(null);
                 self.recWk().appDate(null);
                 setTimeout(()=>self.clearTextboxError(), 100);
-                
+
             });
             self.appReasons.subscribe((appReasons) => {
                 if (appReasons) {
@@ -184,13 +184,13 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     $('#absTimeBtn').ntsError("clear");
                 }
             });
-            
+
             self.absWk().wkTypeCD.subscribe((newWkTypeCd)=>{
                 if (nts.uk.ui._viewModel) {
                     $('.absWkingTime').ntsError("clear");
                 }
             });
-            
+
             self.employeeList.subscribe((datas) => {
                 if (datas.length) {
                     self.totalEmployeeText(text('KAF011_79', [datas.length]));
@@ -199,7 +199,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
 
             });
         }
-        
+
         clearTextboxError() {
             nts.uk.ui.errors.clearAll();
             return;
@@ -294,25 +294,25 @@ module nts.uk.at.view.kaf011.a.screenModel {
                     workTypeCode: o.worktimeCode, name: o.workTimeDisplayName.workTimeName} })  || null);
             }
         }
-        
+
         getWorkTypeName(code, workTypeLst) {
             let currentWorkType = _.find(workTypeLst, o => o.workTypeCode == code);
             if(nts.uk.util.isNullOrUndefined(currentWorkType)) {
                 return text("マスタ未登録");
             } else {
-                return currentWorkType.name;     
-            }      
+                return currentWorkType.name;
+            }
         }
-        
+
         getWorkTimeName(code, workTimeLst) {
             let currentWorkTime = _.find(workTimeLst, o => o.worktimeCode == code);
             if(nts.uk.util.isNullOrUndefined(currentWorkTime)) {
                 return text("マスタ未登録");
             } else {
-                return currentWorkTime.workTimeDisplayName.workTimeName;     
-            }      
+                return currentWorkTime.workTimeDisplayName.workTimeName;
+            }
         }
-        
+
         validateControl() {
             let self = this,
                 isRecError = self.checkRecTime(),
@@ -480,7 +480,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 modal("/view/kdl/009/a/single.xhtml");
             }
         }
-            
+
         processConfirmMsg(paramInsert: any, result: any, confirmIndex: number) {
             let self = this;
             let confirmMsgLst = result;
@@ -497,7 +497,7 @@ module nts.uk.at.view.kaf011.a.screenModel {
                 });
                 return;
             }
-            
+
             nts.uk.ui.dialog.confirm({ messageId: confirmMsg.msgID, messageParams: confirmMsg.paramLst }).ifYes(() => {
                 self.processConfirmMsg(paramInsert, result, confirmIndex + 1);
             }).ifNo(() => {

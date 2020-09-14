@@ -153,7 +153,7 @@ export class KdpS01AComponent extends Vue {
 
             let stampToSuppress: model.IStampToSuppress = result.data;
 
-            _.forEach(vm.setting.buttons, function (button) {
+            _.forEach(vm.setting.buttons, function(button) {
 
                 vm.setBtnColor(button, stampToSuppress);
 
@@ -200,10 +200,11 @@ export class KdpS01AComponent extends Vue {
     }
 
     public stampClick(button: model.ButtonSettingsDto) {
+        const STAMP_MEANS_SMARTPHONE = 5;
         let vm = this,
             command: model.IRegisterSmartPhoneStampCommand = {
                 stampDatetime: moment(vm.$dt.now).format('YYYY/MM/DD HH:mm:ss'),
-                stampButton: { pageNo: 1, buttonPositionNo: button.buttonPositionNo },
+                stampButton: { pageNo: 1, buttonPositionNo: button.buttonPositionNo, stampMeans: STAMP_MEANS_SMARTPHONE },
                 geoCoordinate: { latitude: null, longitude: null },
                 refActualResult: { cardNumberSupport: null, overtimeDeclaration: null, workLocationCD: null, workTimeCode: null }
             };

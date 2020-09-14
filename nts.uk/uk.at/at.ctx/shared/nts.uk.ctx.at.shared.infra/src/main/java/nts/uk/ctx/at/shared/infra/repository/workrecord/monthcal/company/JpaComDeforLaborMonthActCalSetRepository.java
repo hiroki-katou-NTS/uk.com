@@ -63,7 +63,7 @@ public class JpaComDeforLaborMonthActCalSetRepository extends JpaRepository
 	@Override
 	public void update(ComDeforLaborMonthActCalSet domain) {
 		// Get info
-		this.queryProxy().find(domain.getComId(), KrcstWkpDeforMCalSet.class).ifPresent(e -> {
+		this.queryProxy().find(domain.getComId(), KrcstComDeforMCalSet.class).ifPresent(e -> {
 			
 			e.transfer(domain);
 			
