@@ -174,9 +174,7 @@ module nts.uk.com.view.cli003.b {
     selectedEmployeeCodeOperator: KnockoutObservableArray<any> = ko.observableArray([]);
     employeeList : KnockoutObservableArray<any> = ko.observableArray([]);
     logOutputItems: KnockoutObservableArray<any> = ko.observableArray([]);
-    recordTypeList: KnockoutObservableArray<
-    ItemTypeModel
-    > = ko.observableArray([
+	recordTypeList: KnockoutObservableArray<ItemTypeModel> = ko.observableArray([
       new ItemTypeModel(0, this.$i18n("Enum_RecordType_Login")),
       new ItemTypeModel(1, this.$i18n("Enum_RecordType_StartUp")),
       new ItemTypeModel(2, this.$i18n("Enum_RecordType_UpdateMaster")),
@@ -185,10 +183,7 @@ module nts.uk.com.view.cli003.b {
       new ItemTypeModel(5, this.$i18n("Enum_RecordType_DataManipulation")),
       new ItemTypeModel(6, this.$i18n("Enum_RecordType_DataCorrect")),
       new ItemTypeModel(7, this.$i18n("Enum_RecordType_MyNumber")),
-      new ItemTypeModel(
-        8,
-        this.$i18n("Enum_RecordType_TerminalCommucationInfo")
-      ),
+      new ItemTypeModel(8, this.$i18n("Enum_RecordType_TerminalCommucationInfo")),
       new ItemTypeModel(9, this.$i18n("Enum_RecordType_DataStorage")),
       new ItemTypeModel(10, this.$i18n("Enum_RecordType_DataRecovery")),
       new ItemTypeModel(11, this.$i18n("Enum_RecordType_DataDeletion")),
@@ -223,9 +218,9 @@ module nts.uk.com.view.cli003.b {
     b2_10CurrentCode: KnockoutObservable<any> = ko.observable();
     b4_2SelectedRuleCode: any = ko.observable(2);
     b6_2SelectedRuleCode: any = ko.observable(2);
-    roundingRules = ko.observableArray([
+    roundingRules : KnockoutObservableArray<any> = ko.observableArray([
       { code: EMPLOYEE_SPECIFIC.SPECIFY, name: this.$i18n("CLI003_17") },
-      { code: EMPLOYEE_SPECIFIC.ALL, name: this.$i18n("CLI003_18") },
+      { code: EMPLOYEE_SPECIFIC.ALL, name: this.$i18n("CLI003_18")},
     ]);
     b1Columns: KnockoutObservableArray<any> = ko.observableArray([
       {
@@ -244,9 +239,7 @@ module nts.uk.com.view.cli003.b {
         width: "100px",
       },
     ]);
-    b2_10Datasource: KnockoutObservableArray<
-      LogSetItemDetailModalDisplay
-    > = ko.observableArray([]);
+    b2_10Datasource: KnockoutObservableArray<LogSetItemDetailModalDisplay> = ko.observableArray([]);
     b2_10Columns: KnockoutObservableArray<any> = ko.observableArray([
       {
         headerText: this.$i18n("CLI003_90"),
@@ -289,6 +282,7 @@ module nts.uk.com.view.cli003.b {
     startDateOperator: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD 0:00:00"));
     endDateOperator: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD 23:59:59"));
 
+	logSetOutputs: KnockoutObservableArray<any> = ko.observableArray([]);
     constructor() {
       super();
       const vm = this;
@@ -333,13 +327,19 @@ module nts.uk.com.view.cli003.b {
     }
     mounted() {
       const vm = this;
+      // if ($("#B1").data("mGrid")){
+      //   $("#B1").mGrid("destroy");
+      // } 
       // new nts.uk.ui.mgrid.MGrid($("#B1")[0], {
-      //   height: 600,
-      //   width: 300,
+      //   subHeight: 600,
+      //   subWidth: 300,
       //   primaryKey: "code",
       //   primaryKeyDataType: "number",
-      //   dataSource: vm.b1Datasource(),
+      //   dataSource: vm.logSets(),
       //   columns: vm.b1Columns(),
+      //   multiple: false,
+      //   value: vm.currentCode(),
+      //   selectFirstIfNull: true,
       //   enter: "right",
       //   features: [],
       // }).create();
@@ -409,7 +409,7 @@ module nts.uk.com.view.cli003.b {
       service
         .getLogOutputItemByRecordType(String(logSet.recordType))
         .done((logOutputItems: any) => {
-          vm.setLogSetInfo(logSet);
+		  vm.setLogSetInfo(logSet);
           const logSetItemDetailsList = [];
           logSet.logSetOutputs.map((item :any,index:number) => {
             const listCond: string[] = ["", "", "", "", "", ""];
@@ -434,7 +434,7 @@ module nts.uk.com.view.cli003.b {
           });
           vm.b2_10Datasource(logSetItemDetailsList);
         })
-        .fail(function (error: string) {
+        .fail((error: string) => {
           vm.$dialog.alert({ messageId: "Msg_1221" });
           return null;
         })
@@ -443,7 +443,8 @@ module nts.uk.com.view.cli003.b {
         });
     }
     setLogSetInfo(logSet: any) {
-      const vm = this;
+	  const vm = this;
+	  vm.logSetOutputs(logSet.logSetOutputs);
       vm.currentLogDisplaySet(logSet);
       vm.logSetId(logSet.logSetId);
       vm.currentLogSetCode(vm.currentCode());
@@ -553,7 +554,8 @@ module nts.uk.com.view.cli003.b {
             vm.$dialog.error({ messageId: "[Msg_1718,Msg_1719]" });
       }else{
         const data = {
-          currentCode : vm.currentCode(),
+		  currentCode : vm.currentCode(),
+		  logSetOutputs : vm.logSetOutputs(),
           operatorEmployeeCount : vm.operatorEmployeeCount(),
           targetEmployeeCount : vm.targetEmployeeCount(),
           logTypeSelectedCode : vm.recordType(),
@@ -567,7 +569,7 @@ module nts.uk.com.view.cli003.b {
           selectedRuleCode: vm.b4_2SelectedRuleCode(),
           selectedRuleCodeOperator: vm.b6_2SelectedRuleCode(),
           listEmployeeIdOperator: vm.selectedEmployeeCodeOperator(),
-        }
+		}
         vm.$window
         .storage('VIEW_B_DATA', data)
         .then(() => vm.$jump.self("/view/cli/003/f/index.xhtml",data));
