@@ -559,7 +559,7 @@ module nts.uk.at.kmr003.a {
             this.bentoName = item.bentoName;
             this.unit = item.unit;
 
-            this.key = item.frameNo + "_" + item.bentoName;
+            this.key = item.frameNo.toString();
             this.unitLabel = "(" + item.unit + ")";
 
             this.bentoValidation = new validation.NumberValidator(this.bentoName, "BentoReservationCount", { required: false });
