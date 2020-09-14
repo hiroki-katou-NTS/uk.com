@@ -361,7 +361,6 @@ public class KTG027QueryProcessor {
 	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(int currentOrNextMonth) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
-		String cID = AppContexts.user().companyId();
 		String sID = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.today();
 		//	社員に対応する処理締めを取得する
@@ -369,19 +368,46 @@ public class KTG027QueryProcessor {
 		OvertimedDisplayForSuperiorsDto result = OvertimedDisplayForSuperiorsDto.builder().build();
 		//	指定した年月の締め期間を取得する
 		List<ClosureHistPeriod> lstClosure = getSpecifyPeriod.getSpecifyPeriod(closure.getClosureMonth().getProcessingYm());
+		//	上長用の時間外時間表示．当月の締め情報．処理年月＝取得したドメインモデル「締め」．当月
+		//	上長用の時間外時間表示．当月の締め情報．締め開始日＝取得した締め期間．開始日
+		//	上長用の時間外時間表示．当月の締め情報．締め終了日＝取得した締め期間．終了日
+		//	上長用の時間外時間表示．ログイン者の締めID＝取得したドメインモデル「締め」．締めID
 		CurrentClosingPeriod closingInformationForCurrentMonth = CurrentClosingPeriod.builder()
 				.processingYm(closure.getClosureMonth().getProcessingYm())
 				.closureEndDate(lstClosure.get(0).getPeriod().end())
 				.closureStartDate(lstClosure.get(0).getPeriod().start()).build();
-		result.builder()
-			.closingInformationForCurrentMonth(closingInformationForCurrentMonth)
-			.closureId(closure.getClosureId().value).build();
+		result.setClosingInformationForCurrentMonth(closingInformationForCurrentMonth);
+		result.setClosureId(closure.getClosureId().value);
+		// INPUT．表示年月＝当月表示
 		if(currentOrNextMonth == 1) {
-			//Todo
+			//	対象年月を指定するログイン者の配下社員の時間外時間の取得
+			AcquisitionOfOvertimeHoursOfEmployeesDto acquisitionOfOvertimeHoursOfEmployeesDto = this.getAcquisitionOfOvertimeHoursOfEmployeesDto(
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm(), Optional.of(lstClosure.get(0).getPeriod()));
+			//	上長用の時間外時間表示．配下社員の個人情報＝取得したList＜個人社員基本情報＞
+			//	上長用の時間外時間表示．配下社員の時間外時間＝取得したList＜管理期間の36協定時間＞
+			result.setOvertimeOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getOvertimeOfSubordinateEmployees());
+			result.setPersonalInformationOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees());
+		
 		}else {
-			//Todo
-		}
-		//	ユーザー固有情報「トップページ表示年月」を取得する
+			//	INPUT．表示年月＝翌月表示
+			//	指定した年月の期間を算出する
+			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+					requireService.createRequire(),result.getClosureId(),closure.getClosureMonth().getProcessingYm().addMonths(1));
+			//	上長用の時間外時間表示．翌月の締め情報．処理年月＝上長用の時間外時間表示．当月の締め情報．処理年月．AddMonth(1)
+			//	上長用の時間外時間表示．翌月の締め情報．締め期間＝取得した締め期間
+			CurrentClosingPeriod closingInformationForNextMonth = CurrentClosingPeriod.builder()
+					.processingYm(closure.getClosureMonth().getProcessingYm().addMonths(1))
+					.closureEndDate(datePeriodClosure.end())
+					.closureStartDate(datePeriodClosure.start()).build();
+			result.setClosingInformationForNextMonth(Optional.of(closingInformationForNextMonth));
+			//	/対象年月を指定するログイン者の配下社員の時間外時間の取得
+			AcquisitionOfOvertimeHoursOfEmployeesDto acquisitionOfOvertimeHoursOfEmployeesDto = this.getAcquisitionOfOvertimeHoursOfEmployeesDto(
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().addMonths(1), Optional.of(datePeriodClosure));
+			//	上長用の時間外時間表示．配下社員の個人情報＝取得したList＜個人社員基本情報＞
+			//	上長用の時間外時間表示．配下社員の時間外時間＝取得したList＜管理期間の36協定時間＞
+			result.setOvertimeOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getOvertimeOfSubordinateEmployees());
+			result.setPersonalInformationOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees());
+			}
 				
 		return result;
 	}
@@ -401,7 +427,6 @@ public class KTG027QueryProcessor {
 	 if(referencePeriodParam.isPresent()) { 
 		referencePeriod = referencePeriodParam;
 	 }else {
-		 
 		//	指定した年月の期間を算出する
 		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(requireService.createRequire(),closureId,targetDate);
 		referencePeriod = Optional.ofNullable(datePeriodClosure);
@@ -417,7 +442,46 @@ public class KTG027QueryProcessor {
 	
 	//	社員ID(List)から個人社員基本情報を取得
 	List<PersonEmpBasicInfoImport> listPersonEmp = empEmployeeAdapter.getPerEmpBasicInfo(lstEmployeeId);
-	AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder().build();
+	//	指定する年月と指定する社員の時間外時間の取得
+	List<AgreementTimeDetail> listAgreementTimeDetail = this.getOvertimeByEmployee(lstEmployeeId, targetDate, referencePeriod.get().end());
+	
+	//	OUTPUT：
+	//	List＜個人社員基本情報＞
+	//	List＜管理期間の36協定時間＞
+	AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
+			.personalInformationOfSubordinateEmployees(listPersonEmp)
+			.OvertimeOfSubordinateEmployees(listAgreementTimeDetail).build();
 	return result;
+	}
+	 
+	 /**
+	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).アルゴリズム.対象年月を指定するログイン者の配下社員の時間外時間の取得.指定する年月と指定する社員の時間外時間の取得
+	 * @param lstEmployeeId
+	 * @param targetDate
+	 * @param endDate
+	 * @return
+	 */ 
+	public List<AgreementTimeDetail> getOvertimeByEmployee(List<String> lstEmployeeId, YearMonth targetDate, GeneralDate endDate){
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		String cId = AppContexts.user().companyId();
+		GeneralDate baseDate = GeneralDate.today();
+		List<AgreementTimeDetail> listAgreementTimeDetail = new ArrayList<AgreementTimeDetail>();
+		for(String empCode: lstEmployeeId) {
+			//	社員に対応する処理締めを取得する
+			Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, empCode, baseDate);
+			//	[取得したドメインモデル「締め」．当月<=INPUT．対象年月]がtrue
+			if(closure.getClosureMonth().getProcessingYm().lessThanOrEqualTo(targetDate) ) {
+				// sau khi có update cần phải sửa
+				// 【NO.333】36協定時間の取得: 
+				 listAgreementTimeDetail = GetAgreementTime.get(
+						requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate, closure.getClosureId());
+			}else {
+				// 【NO.333】36協定時間の取得: 
+				 listAgreementTimeDetail = GetAgreementTime.get(
+						requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate, closure.getClosureId());
+			}
+		} 
+		return listAgreementTimeDetail;
 	}
 }
