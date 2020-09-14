@@ -11,7 +11,7 @@ public class AgreementTimeYearDto {
     public AgreementTimeYearDto(AgreementTimeYear domain) {
         this.limitTime = domain.getLimitTime().v();
         this.time = domain.getRecordTime().v();
-        this.status = domain.getLimitTime().v();
+        this.status = domain.getStatus().value;
     }
 
     /**

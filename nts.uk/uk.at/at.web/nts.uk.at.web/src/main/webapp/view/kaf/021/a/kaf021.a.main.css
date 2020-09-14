@@ -24,3 +24,31 @@
     width: 200px;
     text-align: right;
 }
+
+#grid{
+    margin-top: 10px;
+}
+
+.center-align {
+    text-align: center;
+}
+
+.red-text {
+    color: red;
+}
+
+.black-text {
+    color: black;
+}
+
+.bg-alarm{
+    background-color: #f6f636;
+}
+
+.bg-error{
+    background-color: #fd4d4d;
+}
+
+.bg-special{
+    background-color: #eb9152;
+}

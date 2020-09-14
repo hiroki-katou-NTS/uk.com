@@ -35,10 +35,6 @@ public class EmployeeAgreementTimeDto {
      */
     private String affiliationName;
     /**
-     * 月度
-     */
-    private List<AgreementTimeMonthDto> months;
-    /**
      * 1月度
      */
     private AgreementTimeMonthDto month1;

@@ -105,7 +105,7 @@ public class Kaf021Finder {
         CurrentClosurePeriod closurePeriod = getClosure(cid);
 
         // 社員に対応する処理締めを取得する
-        Map<String, Closure> closureAll = closureEmploymentService.findClosureByEmployee(employeeIds, baseDate);
+        // Map<String, Closure> closureAll = closureEmploymentService.findClosureByEmployee(employeeIds, baseDate);
 
         // 年月を指定して、36協定期間の年月を取得する
         YearMonth startYm = setting.getYearMonthOfAgreementPeriod(closurePeriod.getProcessingYm().addMonths(monthAdd));
