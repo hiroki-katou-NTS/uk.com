@@ -14,7 +14,10 @@ public enum OverallErrorDetail {
 	NOT_FINISHED(1, "前回の更新処理が完了していなかったため実行されませんでした。"),
 	
 	/* 画面から強制終了しました。*/
-	TERMINATED(2, "画面から強制終了しました。");
+	TERMINATED(2, "画面から強制終了しました。"),
+	
+	/* システム利用停止中のため実行されませんでした。*/
+	NOT_EXECUTE(3, "システム利用停止中のため実行されませんでした。");
 	
 	/** The value. */
 	public final int value;
