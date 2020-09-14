@@ -8,7 +8,7 @@
 	width: 990px;
 }
 .reflect-setting {
-	padding: 5px 5px 20px 5px;
+	padding: 5px 5px 10px 5px;
 	width:360px;
 	height: auto;
 	margin-right: 20px;
@@ -78,7 +78,7 @@
 	align-items: center;
 }
 .margin-bottom-15px{
-	margin-bottom: 15px;
+	margin-bottom: 5px;
 }
 .calc-margin{
     float: right;
@@ -96,5 +96,5 @@
 }
 
 .pull-left .control-group {
-	margin-bottom: 0px;
+	margin-bottom: 3px;
 }
