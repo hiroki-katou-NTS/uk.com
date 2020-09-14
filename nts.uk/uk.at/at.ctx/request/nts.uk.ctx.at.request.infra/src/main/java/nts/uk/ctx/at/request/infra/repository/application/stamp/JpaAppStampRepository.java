@@ -105,10 +105,10 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		
 		List<KrqdtAppStamp> listStamps = new ArrayList<KrqdtAppStamp>();
 
-		List<TimeStampApp> listTimeStampApp = new ArrayList<TimeStampApp>();
-		List<DestinationTimeApp> listDestinationTimeApp = new ArrayList<DestinationTimeApp>();
-		List<TimeStampAppOther> listTimeStampAppOther = new ArrayList<TimeStampAppOther>();
-		List<DestinationTimeZoneApp> listDestinationTimeZoneApp = new ArrayList<DestinationTimeZoneApp>();
+		List<TimeStampApp> listTimeStampApp = appStamp.getListTimeStampApp();
+		List<DestinationTimeApp> listDestinationTimeApp = appStamp.getListDestinationTimeApp();
+		List<TimeStampAppOther> listTimeStampAppOther = appStamp.getListTimeStampAppOther();
+		List<DestinationTimeZoneApp> listDestinationTimeZoneApp = appStamp.getListDestinationTimeZoneApp();
 
 		if (!CollectionUtil.isEmpty(listTimeStampApp)) {
 			listTimeStampApp.stream().forEach(x -> {
@@ -272,30 +272,33 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							StartEndClassification.END, Optional.empty());
 					DestinationTimeApp destinationTimeAppStart = new DestinationTimeApp(timeStampAppEnum, stampFrameNo,
 							StartEndClassification.START, Optional.empty());
-					if (startCancelAtr == 1) {
-						listDestinationTimeApp.add(destinationTimeAppStart);
-					} else {
-						Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
-						if (goOutAtr != null) {
-							GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
-							appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
-						}
-						TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppStart,
-								new TimeWithDayAttr(startTime), Optional.empty(), appStampGoOutAtrOp);
-						listTimeStampApp.add(timeStampApp);
+					if (startCancelAtr != null) {
+						if (startCancelAtr == 1) {
+							listDestinationTimeApp.add(destinationTimeAppStart);
+						} else {
+							Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
+							if (goOutAtr != null) {
+								GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
+								appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
+							}
+							TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppStart,
+									new TimeWithDayAttr(startTime), Optional.empty(), appStampGoOutAtrOp);
+							listTimeStampApp.add(timeStampApp);
+						}						
 					}
-
-					if (endCancelAtr == 1) {
-						listDestinationTimeApp.add(destinationTimeAppEnd);
-					} else {
-						Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
-						if (goOutAtr != null) {
-							GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
-							appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
-						}
-						TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppEnd,
-								new TimeWithDayAttr(endTime), Optional.empty(), appStampGoOutAtrOp);
-						listTimeStampApp.add(timeStampApp);
+					if (endCancelAtr != null) {
+						if (endCancelAtr == 1) {
+							listDestinationTimeApp.add(destinationTimeAppEnd);
+						} else {
+							Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
+							if (goOutAtr != null) {
+								GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
+								appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
+							}
+							TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppEnd,
+									new TimeWithDayAttr(endTime), Optional.empty(), appStampGoOutAtrOp);
+							listTimeStampApp.add(timeStampApp);
+						}		
 					}
 
 				}

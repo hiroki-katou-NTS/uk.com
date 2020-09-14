@@ -51,9 +51,9 @@ public class AppStampStandard {
 					} else {
 						appStampStandar = new AppStampStandard();
 						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
-							appStampStandar.endTime = x.getTimeOfDay().getDayTime();
-						} else {
 							appStampStandar.startTime = x.getTimeOfDay().getDayTime();
+						} else {
+							appStampStandar.endTime = x.getTimeOfDay().getDayTime();
 						}
 						appStampStandar.framNo = x.getDestinationTimeApp().getEngraveFrameNo();
 						// parse enum
@@ -72,9 +72,9 @@ public class AppStampStandard {
 				} else {
 					appStampStandar = new AppStampStandard();
 					if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
-						appStampStandar.endTime = x.getTimeOfDay().getDayTime();
-					} else {
 						appStampStandar.startTime = x.getTimeOfDay().getDayTime();
+					} else {
+						appStampStandar.endTime = x.getTimeOfDay().getDayTime();
 					}
 					appStampStandar.framNo = x.getDestinationTimeApp().getEngraveFrameNo();
 					// parse enum

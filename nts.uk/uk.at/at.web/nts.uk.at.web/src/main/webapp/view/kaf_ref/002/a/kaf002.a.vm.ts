@@ -86,22 +86,39 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
     public createCommandCheckRegister() {
         const self = this;
-        self.data.appStampOptional = self.createAppStamp();
+        let data = _.clone(self.data);
+        data.appStampOptional = self.createAppStamp();
         let companyId = __viewContext.user.companyId;
         let agentAtr = false;
-        ko.toJS(self.application).enteredPerson = __viewContext.user.employeeId;
+        self.application().enteredPerson = __viewContext.user.employeeId;
+        self.application().employeeID = __viewContext.user.employeeId;
         self.application().prePostAtr(1);
         let command = {
                 companyId,
                 agentAtr,
-                appStampOutputDto: self.data,
+                appStampOutputDto: data,
                 applicationDto: ko.toJS(self.application)
                 
         };
         self.$ajax(API.checkRegister, command)
             .then(res => {
                 console.log(res);
-            });
+//                if (res) {
+                    let command = {
+                            applicationDto: ko.toJS(self.application),
+                            appStampDto: data.appStampOptional,
+                            appStampOutputDto: self.data,
+                            recoderFlag: false
+                    };
+                    return self.$ajax(API.register, command);
+//                }
+            })
+            .then(res => {
+                console.log(res);
+            })
+            .always(err => {
+                console.log(err);
+            })
         
     }
     public register() {
@@ -118,6 +135,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         let opActualContentDisplayLst = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.opActualContentDisplayLst;
         let opAchievementDetail = opActualContentDisplayLst[0].opAchievementDetail;
+        if (_.isNull(opAchievementDetail)) {
+            
+            return;
+        }
         let stampRecord = opAchievementDetail.stampRecordOutput;
         
         let items1 = (function() {
@@ -308,6 +329,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
                                 destinationTimeApp.startEndClassification = 1;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -321,6 +343,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
                                 destinationTimeApp.startEndClassification = 0;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -332,12 +355,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
                                 destinationTimeApp.startEndClassification = 1;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                             if (el.endTimeActual) {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
                                 destinationTimeApp.startEndClassification = 0;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                         }   
