@@ -1,22 +1,31 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult;
 
-import nts.arc.time.GeneralDate;
-
-import java.util.Optional;
-
 /**
- * 確認状況
+ * 確認状態
  * @author quang.nh1
  */
-public class ConfirmationStatus {
+public enum ConfirmationStatus {
+	/**
+	 * 未確認(unconfirm)
+	 */
+	UNCONFIRMED(0,"未確認"),
 
-    /** 確認状態 */
-    private ConfirmationStatusEnum confirmationStatusEnum;
+	/**
+	 * 承認(recognition)
+	 */
+	RECOGNITION(1,"承認"),
 
-    /** 確認者 */
-    private String confirmerSID;
+	/**
+	 * 否認(deny)
+	 */
+	DENY(2,"否認");
 
+	public int value;
 
-    /** 確認日 */
-    private Optional<GeneralDate> confirmDate;
+	public String nameId;
+
+	ConfirmationStatus(int type, String nameId){
+		this.value = type;
+		this.nameId = nameId;
+	}
 }

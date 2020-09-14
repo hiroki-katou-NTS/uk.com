@@ -1,11 +1,18 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.Optional;
 
 /**
  * 申請時間
  * @author quang.nh1
  */
+@Getter
+@Setter
+@AllArgsConstructor
 public class ApplicationTime {
 
     /**３６協定申請種類*/
