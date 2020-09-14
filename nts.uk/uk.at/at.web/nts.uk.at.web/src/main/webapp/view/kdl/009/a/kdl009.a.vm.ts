@@ -1,6 +1,8 @@
 module nts.uk.at.view.kdl009.a {
     export module viewmodel {
-        export class ScreenModel {
+
+        @bean()
+        export class ScreenModel extends ko.ViewModel {
             //Grid data
             listComponentOption: any;
             selectedCode: KnockoutObservable<string> = ko.observable('');
@@ -18,7 +20,8 @@ module nts.uk.at.view.kdl009.a {
             kdl009Data: any;
             employeeInfo: KnockoutObservable<string>;
 
-            isManagementSection: KnockoutObservable<boolean> = ko.observable(true);
+            isFirstLoaded: KnockoutObservable<boolean> = ko.observable(false);
+            isManagementSection: KnockoutObservable<boolean> = ko.observable(null);
             dataItems: KnockoutObservableArray<DataItems>;
 
             value01: KnockoutObservable<string> = ko.observable("");
@@ -30,61 +33,73 @@ module nts.uk.at.view.kdl009.a {
             hint04: KnockoutObservable<string> = ko.observable("");
             expirationDateText: KnockoutObservable<string> = ko.observable("");
 
-            constructor() {
-                const self = this;
-
-                self.kdl009Data = nts.uk.ui.windows.getShared("KDL009_DATA");
-                self.employeeInfo = ko.observable("");
-                self.dataItems = ko.observableArray([]);
-                self.legendOptions = {
+            created(params: any) {
+                const vm = this;
+                vm.kdl009Data = nts.uk.ui.windows.getShared("KDL009_DATA");
+                vm.employeeInfo = ko.observable("");
+                vm.dataItems = ko.observableArray([]);
+                vm.legendOptions = {
                     items: [
                         { labelText: nts.uk.resource.getText("KDL009_29") },
                         { labelText: nts.uk.resource.getText("KDL009_30") }
                     ]
                 };
+            }
 
-                service.getEmployee(self.kdl009Data)
-                    .done((data: any) => {
+            mounted() {
+                const vm = this;
+                vm.$blockui('grayout');
+                service.getEmployee(vm.kdl009Data)
+                    .then((data: any) => {
                         if (data.employeeBasicInfo.length > 1) {
-                            self.selectedCode.subscribe((value) => {
+                            vm.selectedCode.subscribe((value) => {
                                 const itemSelected: any = _.find(data.employeeBasicInfo, ['employeeCode', value]);
-                                self.onEmployeeSelect(
+                                vm.onEmployeeSelect(
                                     data.baseDate,
                                     itemSelected.employeeId,
                                     itemSelected.employeeCode,
                                     itemSelected.businessName,
                                 );
                             });
-                            self.bindEmpList(data.employeeBasicInfo);
+                            vm.bindEmpList(data.employeeBasicInfo);
                         } else if (data.employeeBasicInfo.length == 1) {
                             const itemSelected: any = data.employeeBasicInfo[0];
-                            self.onEmployeeSelect(
+                            vm.onEmployeeSelect(
                                 data.baseDate,
                                 itemSelected.employeeId,
                                 itemSelected.employeeCode,
                                 itemSelected.businessName,
                             );
                         } else {
-                            self.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
+                            vm.employeeInfo(nts.uk.resource.getText("KDL009_25", ["", ""]));
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_918" });
                         }
-                        $("#date-fixed-table").ntsFixedTable({ height: 150 });
                     })
-                    .fail(self.onError);
+                    .fail(vm.onError)
+                    .always(() => vm.$blockui('clear'));
             }
 
             // On select employee
             private onEmployeeSelect(baseDate: any, employeeId: string, employeeCode: string, employeeName: string) {
-                const self = this;
-                self.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
+                const vm = this;
+                vm.employeeInfo(nts.uk.resource.getText("KDL009_25", [employeeCode, employeeName]));
+                vm.$blockui('grayout');
+                // アルゴリズム「振休残数情報の取得」を実行する(thực hiện thuật toán 「振休残数情報の取得」)
+                vm.isFirstLoaded(false);
                 service.getAcquisitionNumberRestDays(employeeId, baseDate)
-                    .done((data) => {
-                        self.expirationDateText(ExpirationDate[data.expiredDay]);
-                        self.bindTimeData(data);
-                        self.bindSummaryData(data);
-                        self.isManagementSection(data.isManagementSection);
+                    .then((data) => {
+                        vm.isFirstLoaded(true);
+                        vm.isManagementSection(data.isManagementSection);
+                        vm.expirationDateText(ExpirationDate[data.expiredDay]);
+                        vm.bindTimeData(data);
+                        vm.bindSummaryData(data);
+                        // Render table
+                        if (data.isManagementSection) {
+                            vm.$nextTick(() => $("#date-fixed-table").ntsFixedTable({ height: 150 }));
+                        }
                     })
-                    .fail(self.onError);
+                    .fail(vm.onError)
+                    .always(() => vm.$blockui('clear'));
             }
 
             // On error
@@ -93,173 +108,163 @@ module nts.uk.at.view.kdl009.a {
             }
 
             startPage(): JQueryPromise<any> {
-                var self = this;
                 var dfd = $.Deferred();
-
                 dfd.resolve();
-
                 return dfd.promise();
             }
 
             bindEmpList(data: any) {
-                const self = this;
+                const vm = this;
 
                 // self.baseDate = ko.observable(new Date());
-                self.selectedCode(data[0].employeeCode);
-                self.multiSelectedCode = ko.observableArray([]);
-                self.isShowAlreadySet = ko.observable(false);
-                self.alreadySettingList = ko.observableArray([
+                vm.selectedCode(data[0].employeeCode);
+                vm.multiSelectedCode = ko.observableArray([]);
+                vm.isShowAlreadySet = ko.observable(false);
+                vm.alreadySettingList = ko.observableArray([
                     { code: '1', isAlreadySetting: true },
                     { code: '2', isAlreadySetting: true }
                 ]);
-                self.isDialog = ko.observable(false);
-                self.isShowNoSelectRow = ko.observable(false);
-                self.isMultiSelect = ko.observable(false);
-                self.isShowWorkPlaceName = ko.observable(false);
-                self.isShowSelectAllButton = ko.observable(false);
-                this.employeeList = ko.observableArray<UnitModel>(_.map(data, (x: any) => ({ code: x.employeeCode, name: x.businessName })));
-                self.listComponentOption = {
-                    isShowAlreadySet: self.isShowAlreadySet(),
-                    isMultiSelect: self.isMultiSelect(),
+                vm.isDialog = ko.observable(false);
+                vm.isShowNoSelectRow = ko.observable(false);
+                vm.isMultiSelect = ko.observable(false);
+                vm.isShowWorkPlaceName = ko.observable(false);
+                vm.isShowSelectAllButton = ko.observable(false);
+                vm.employeeList = ko.observableArray<UnitModel>(_.map(data, (x: any) => ({ code: x.employeeCode, name: x.businessName })));
+                vm.listComponentOption = {
+                    isShowAlreadySet: vm.isShowAlreadySet(),
+                    isMultiSelect: vm.isMultiSelect(),
                     listType: ListType.EMPLOYEE,
-                    employeeInputList: self.employeeList,
+                    employeeInputList: vm.employeeList,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.selectedCode,
-                    isDialog: self.isDialog(),
-                    isShowNoSelectRow: self.isShowNoSelectRow(),
-                    alreadySettingList: self.alreadySettingList,
-                    isShowWorkPlaceName: self.isShowWorkPlaceName(),
-                    isShowSelectAllButton: self.isShowSelectAllButton(),
+                    selectedCode: vm.selectedCode,
+                    isDialog: vm.isDialog(),
+                    isShowNoSelectRow: vm.isShowNoSelectRow(),
+                    alreadySettingList: vm.alreadySettingList,
+                    isShowWorkPlaceName: vm.isShowWorkPlaceName(),
+                    isShowSelectAllButton: vm.isShowSelectAllButton(),
                     maxRows: 12
                 };
 
-                $('#component-items-list').ntsListComponent(self.listComponentOption);
+                $('#component-items-list').ntsListComponent(vm.listComponentOption);
             }
 
             private bindTimeData(data: AcquisitionNumberRestDayDto) {
-                const self = this;
-                self.dataItems.removeAll();
+                const vm = this;
+                vm.dataItems.removeAll();
                 // Convert to list item
-                ko.utils.arrayPushAll(self.dataItems, self.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
+                ko.utils.arrayPushAll(vm.dataItems, vm.convertDetailToItem(data.listRemainNumberDetail, data.listPegManagement));
             }
 
             private convertDetailToItem(listDetail: RemainNumberDetailDto[], listPeg: PegManagementDto[]): DataItems[] {
-                const self = this;
-                const listItem: DataItems[] = [];
-                const mapOccurenceDate: Map<String, any[]> = {};
-                const mapUsageDate: Map<String, any[]> = {};
-                for (const itemPeg of listPeg) {
-                    let listOccurenceDate = mapOccurenceDate[itemPeg.occurrenceDate];
-                    if (listOccurenceDate) {
-                        listOccurenceDate.push(itemPeg);
+                const vm = this;
+                let listItem: DataItems[] = [];
+                let itemId: number = 0;
+                const mapAddedOccurrenceDate = {};
+                const mapAddedDigestionDate = {};
+
+                // Convert listPeg to mutiple row item in final list
+                for (const peg of listPeg) {
+                    const existedItem = _.find(listItem, (item) => {
+                        return _.findIndex(item.listOccurrence, (itemOccurrence) => itemOccurrence.occurrenceDate === peg.occurrenceDate) > -1
+                            || _.findIndex(item.listDigestion, (itemDigestion) => itemDigestion.digestionDate === peg.usageDate) > -1;
+                    });
+                    if (existedItem) {
+                        // Add to existed mutiple row item
+                        // Check if adding to listOccurrence or listDigestion
+                        if (!_.find(existedItem.listOccurrence, (item) => item.occurrenceDate === peg.occurrenceDate)) {
+                            const itemOccurrenceDto: RemainNumberDetailDto = _.find(listDetail, (item) => item.occurrenceDate === peg.occurrenceDate);
+                            if (!itemOccurrenceDto) {
+                                continue;
+                            }
+                            mapAddedOccurrenceDate[peg.occurrenceDate] = itemOccurrenceDto;
+                            const newlistOccurrence: RemainNumberDetailModel[] = existedItem.listOccurrence;
+                            newlistOccurrence.push(vm.convertDetailDtoToModel(itemOccurrenceDto));
+                            existedItem.isMultiOccurrence = true;
+                            existedItem.listOccurrence = newlistOccurrence;
+                            listItem = _.map(listItem, (item) => item.itemId === existedItem.itemId ? existedItem : item);
+                        } else if (!_.find(existedItem.listDigestion, (item) => item.digestionDate === peg.usageDate)) {
+                            const itemDigestionDto: RemainNumberDetailDto = _.find(listDetail, (item) => item.digestionDate === peg.usageDate);
+                            if (!itemDigestionDto) {
+                                continue;
+                            }
+                            mapAddedDigestionDate[peg.usageDate] = itemDigestionDto;
+                            const newlistDigestion: RemainNumberDetailModel[] = existedItem.listDigestion;
+                            newlistDigestion.push(vm.convertDetailDtoToModel(itemDigestionDto));
+                            existedItem.isMultiDigestion = true;
+                            existedItem.listDigestion = newlistDigestion;
+                            listItem = _.map(listItem, (item) => item.itemId === existedItem.itemId ? existedItem : item);
+                        }
                     } else {
-                        listOccurenceDate = [itemPeg];
+                        const itemOccurrenceDto: RemainNumberDetailDto = _.find(listDetail, (item) => item.occurrenceDate === peg.occurrenceDate);
+                        const itemDigestionDto: RemainNumberDetailDto = _.find(listDetail, (item) => item.digestionDate === peg.usageDate);
+                        if (!itemOccurrenceDto || !itemDigestionDto) {
+                            continue;
+                        }
+                        mapAddedOccurrenceDate[peg.occurrenceDate] = itemOccurrenceDto;
+                        mapAddedDigestionDate[peg.usageDate] = itemDigestionDto;
+                        // Create new mutiple row item
+                        const itemOccurrence = vm.convertDetailDtoToModel(itemOccurrenceDto);
+                        const itemDigestion = vm.convertDetailDtoToModel(itemDigestionDto);
+                        listItem.push(new DataItems({
+                            itemId: itemId,
+                            isMultiOccurrence: false,
+                            isMultiDigestion: false,
+                            listOccurrence: [itemOccurrence],
+                            listDigestion: [itemDigestion],
+                        }));
+                        // Increase id
+                        itemId++;
                     }
-                    mapOccurenceDate[itemPeg.occurrenceDate] = listOccurenceDate;
-                    let listUsageDate = mapUsageDate[itemPeg.usageDate];
-                    if (listUsageDate) {
-                        listUsageDate.push(itemPeg);
-                    } else {
-                        listUsageDate = [itemPeg];
-                    }
-                    mapUsageDate[itemPeg.usageDate] = listUsageDate;
                 }
 
-                // Mapping from list detail + list peg to list combined item
-                let item: DataItems = undefined;
-                for (const itemDetail of listDetail) {
-                    if (itemDetail.occurrenceDate) {
-                        let listOccurenceDate: any[] = mapOccurenceDate[itemDetail.occurrenceDate];
-                        if (listOccurenceDate) {
-                            // Combined records
-                            if (item) {
-                                item.listOccurrence.push(self.convertDetailDtoToModel(itemDetail));
-                            } else {
-                                item = new DataItems({
-                                    isMultiOccurrence: false,
-                                    isMultiDigestion: false,
-                                    listOccurrence: [self.convertDetailDtoToModel(itemDetail)],
-                                    listDigestion: [],
-                                    singleRowDetail: self.convertDetailDtoToModel(itemDetail),
-                                });
-                            }
-                        } else {
-                            // Single record
-                            listItem.push(new DataItems({
-                                isMultiOccurrence: false,
-                                isMultiDigestion: false,
-                                singleRowDetail: self.convertDetailDtoToModel(itemDetail),
-                            }));
+                // Convert listDetail to single row item in final list
+                for (const detail of listDetail) {
+                    if (detail.occurrenceDate) {
+                        // Check if added
+                        if (mapAddedOccurrenceDate[detail.occurrenceDate]) {
+                            // Added them skip
+                            continue;
                         }
-                    } else if (itemDetail.digestionDate) {
-                        let listDigestionDate: any[] = mapUsageDate[itemDetail.digestionDate];
-                        if (listDigestionDate) {
-                            // Combined records
-                            if (item) {
-                                item.listDigestion.push(self.convertDetailDtoToModel(itemDetail));
-                            } else {
-                                item = new DataItems({
-                                    isMultiOccurrence: false,
-                                    isMultiDigestion: false,
-                                    listOccurrence: [],
-                                    listDigestion: [self.convertDetailDtoToModel(itemDetail)],
-                                    singleRowDetail: self.convertDetailDtoToModel(itemDetail),
-                                });
-                            }
-                        } else {
-                            // Single record
-                            listItem.push(new DataItems({
-                                isMultiOccurrence: false,
-                                isMultiDigestion: false,
-                                singleRowDetail: self.convertDetailDtoToModel(itemDetail),
-                            }));
+                        mapAddedOccurrenceDate[detail.occurrenceDate] = detail;
+                        // Create new mutiple row item
+                        const itemOccurrence = vm.convertDetailDtoToModel(detail);
+                        listItem.push(new DataItems({
+                            itemId: itemId,
+                            isMultiOccurrence: false,
+                            isMultiDigestion: false,
+                            singleRowDetail: itemOccurrence,
+                        }));
+                        // Increase id
+                        itemId++;
+                    } else if (detail.digestionDate) {
+                        // Check if added
+                        if (mapAddedDigestionDate[detail.digestionDate]) {
+                            // Added them skip
+                            continue;
                         }
-                    }
-                    // Check if item is complete
-                    if (item) {
-                        if ((item.listOccurrence.length === 1 && item.listDigestion.length === 2)
-                            || (item.listOccurrence.length === 2 && item.listDigestion.length === 1)) {
-                            item.isMultiDigestion = (item.listDigestion.length === 2);
-                            item.isMultiOccurrence = (item.listOccurrence.length === 2);
-                            listItem.push(item);
-                            item = undefined;
-                        } else if (item.listDigestion.length === 1 && item.listOccurrence.length === 1) {
-                            const occurrenceDate = item.listOccurrence[0];
-                            const digestionDate = item.listDigestion[0];
-                            let listOccurenceDate: any[] = mapOccurenceDate[occurrenceDate.occurrenceDate];
-                            let listDigestionDate: any[] = mapUsageDate[digestionDate.digestionDate];
-                            if (listOccurenceDate && listOccurenceDate.length === 1 && listDigestionDate && listDigestionDate.length === 1) {
-                                (<any>Object).assign(item.singleRowDetail, {
-                                    expirationDate: occurrenceDate.expirationDate,
-                                    expirationDateText: occurrenceDate.expirationDateText,
-                                    occurrenceNumber: occurrenceDate.occurrenceNumber,
-                                    occurrenceDate: occurrenceDate.occurrenceDate,
-                                    occurrenceHour: occurrenceDate.occurrenceHour,
-                                    occurrenceDateText: occurrenceDate.occurrenceDateText,
-                                    occurrenceHourText: occurrenceDate.occurrenceHourText,
-                                    occurrenceNumberText: occurrenceDate.occurrenceNumberText,
-                                    digestionNumber: digestionDate.digestionNumber,
-                                    digestionDate: digestionDate.digestionDate,
-                                    digestionHour: digestionDate.digestionHour,
-                                    digestionDateText: digestionDate.digestionDateText,
-                                    digestionHourText: digestionDate.digestionHourText,
-                                    digestionNumberText: digestionDate.digestionNumberText,
-                                });
-                                listItem.push(item);
-                                item = undefined;
-                            }
-                        }
+                        mapAddedDigestionDate[detail.digestionDate] = detail;
+                        // Create new mutiple row item
+                        const itemDigestion = vm.convertDetailDtoToModel(detail);
+                        listItem.push(new DataItems({
+                            itemId: itemId,
+                            isMultiOccurrence: false,
+                            isMultiDigestion: false,
+                            singleRowDetail: itemDigestion,
+                        }));
+                        // Increase id
+                        itemId++;
                     }
                 }
                 return listItem;
             }
 
             private convertDetailDtoToModel(item: RemainNumberDetailDto): RemainNumberDetailModel {
-                let digestionDateText: string = item.digestionDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.digestionDate]) : '';
                 let occurrenceDateText: string = item.occurrenceDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.occurrenceDate]) : '';
+                let digestionDateText: string = item.digestionDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.digestionDate]) : '';
                 // 代休残数.休出代休残数詳細.管理データ状態区分をチェック
                 if ([2, 3].indexOf(item.managementDataStatus) !== -1) {
                     occurrenceDateText = occurrenceDateText ? nts.uk.resource.getText("KDL005_36", [occurrenceDateText]) : '';
+                    digestionDateText = digestionDateText ? nts.uk.resource.getText("KDL005_36", [digestionDateText]) : '';
                 }
                 let expirationDateText: string = item.expirationDate ? (nts.uk.time as any).applyFormat("Short_YMDW", [item.expirationDate]) : '';
                 // 代休残数.休出代休残数詳細.当月で期限切れをチェック
@@ -269,13 +274,13 @@ module nts.uk.at.view.kdl009.a {
                     expirationDateText = expirationDateText ? nts.uk.resource.getText("KDL005_37", [expirationDateText]) : '';
                 }
                 // 「日数」の場合
-                let digestionNumberText = '';
-                if (item.digestionNumber === 0.5) {
-                    digestionNumberText = nts.uk.resource.getText("KDL005_27", [item.digestionNumber]);
-                }
                 let occurrenceNumberText = '';
                 if (item.occurrenceNumber === 0.5) {
                     occurrenceNumberText = nts.uk.resource.getText("KDL005_27", [item.occurrenceNumber]);
+                }
+                let digestionNumberText = '';
+                if (item.digestionNumber === 0.5) {
+                    digestionNumberText = nts.uk.resource.getText("KDL005_27", [item.digestionNumber]);
                 }
                 return new RemainNumberDetailModel({
                     expirationDate: item.expirationDate,
@@ -296,15 +301,15 @@ module nts.uk.at.view.kdl009.a {
             }
 
             bindSummaryData(data: AcquisitionNumberRestDayDto) {
-                const self = this;
+                const vm = this;
                 const numberFormat = new nts.uk.ui.option.NumberEditorOption({ decimallength: 1 });
-                self.value01(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.carryForwardDay, numberFormat)]));
-                self.value02(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.occurrenceDay, numberFormat)]));
-                self.hint02(nts.uk.resource.getText("KDL005_33", [nts.uk.ntsNumber.formatNumber(data.scheduleOccurrencedDay, numberFormat)]));
-                self.value03(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.usageDay, numberFormat)]));
-                self.hint03(nts.uk.resource.getText("KDL005_34", [nts.uk.ntsNumber.formatNumber(data.scheduledUsageDay, numberFormat)]));
-                self.value04(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.remainingDay, numberFormat)]));
-                self.hint04(nts.uk.resource.getText("KDL005_35", [nts.uk.ntsNumber.formatNumber(data.scheduledRemainingDay, numberFormat)]));
+                vm.value01(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.carryForwardDay, numberFormat)]));
+                vm.value02(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.occurrenceDay, numberFormat)]));
+                vm.hint02(nts.uk.resource.getText("KDL005_33", [nts.uk.ntsNumber.formatNumber(data.scheduleOccurrencedDay, numberFormat)]));
+                vm.value03(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.usageDay, numberFormat)]));
+                vm.hint03(nts.uk.resource.getText("KDL005_34", [nts.uk.ntsNumber.formatNumber(data.scheduledUsageDay, numberFormat)]));
+                vm.value04(nts.uk.resource.getText("KDL005_27", [nts.uk.ntsNumber.formatNumber(data.remainingDay, numberFormat)]));
+                vm.hint04(nts.uk.resource.getText("KDL005_35", [nts.uk.ntsNumber.formatNumber(data.scheduledRemainingDay, numberFormat)]));
             }
 
             cancel() {
@@ -338,7 +343,7 @@ module nts.uk.at.view.kdl009.a {
             isAlreadySetting: boolean;
         }
 
-        class RemainNumberDetailModel {
+        export class RemainNumberDetailModel {
             expirationDate: string;
             expirationDateText: string;
             digestionNumber: number;
@@ -355,11 +360,12 @@ module nts.uk.at.view.kdl009.a {
             occurrenceHourText: string;
 
             constructor(init?: Partial<RemainNumberDetailModel>) {
-                (<any>Object).assign(this, init);
+                $.extend(this, init);
             }
         }
 
-        class DataItems {
+        export class DataItems {
+            itemId: number;
             isMultiOccurrence: boolean;
             isMultiDigestion: boolean;
             listOccurrence: RemainNumberDetailModel[];
@@ -367,11 +373,19 @@ module nts.uk.at.view.kdl009.a {
             singleRowDetail: RemainNumberDetailModel;
 
             constructor(init?: Partial<DataItems>) {
-                (<any>Object).assign(this, init);
+                $.extend(this, init);
             }
 
             public isSingleRow() {
                 return !this.isMultiOccurrence && !this.isMultiDigestion;
+            }
+
+            public isListOccurrenceExisted() {
+                return this.listOccurrence && this.listOccurrence.length;
+            }
+
+            public isListDigestionExisted() {
+                return this.listDigestion && this.listDigestion.length;
             }
         }
 

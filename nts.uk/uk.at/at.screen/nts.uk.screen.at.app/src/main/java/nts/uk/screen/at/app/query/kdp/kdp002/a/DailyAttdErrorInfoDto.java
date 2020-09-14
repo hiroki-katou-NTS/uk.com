@@ -2,6 +2,7 @@ package nts.uk.screen.at.app.query.kdp.kdp002.a;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Data;
 import lombok.Getter;
@@ -41,7 +42,8 @@ public class DailyAttdErrorInfoDto {
 			this.messageContent = dom.getPromptingMessage().getMessageContent().v();
 			this.messageColor = dom.getPromptingMessage().getMessageColor().v();
 			this.lastDateError = dom.getLastDateError().toString();
-			this.listRequired = dom.getListRequired();
+			//sắp xếp nó
+			this.listRequired = dom.getListRequired().stream().sorted().collect(Collectors.toList());
 		}
 	}
 

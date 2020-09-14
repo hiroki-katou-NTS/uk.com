@@ -25,6 +25,9 @@ const daysColor = [
 	{ day: 6, color: '#0000FF' }
 ]
 
+const STAMP_MEANS_PORTAL = 4;
+const DEFAULT_PAGE_NO = 1;
+
 const DEFAULT_GRAY = '#E8E9EB';
 @bean()
 class KDP001AViewModel extends ko.ViewModel {
@@ -49,60 +52,11 @@ class KDP001AViewModel extends ko.ViewModel {
 	} as IStampToSuppress);
 
 	stampResultDisplay: KnockoutObservable<IStampResultDisplay> = ko.observable({
-		companyId: "000000000000-000",
-		displayItemId: [653, 651, 652],
+		companyId: "",
+		displayItemId: [],
 		notUseAttr: 0
 	});
-	buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([
-		{
-			buttonPositionNo: 1,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 2,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test2'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 3,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test3'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		},
-		{
-			buttonPositionNo: 4,
-			buttonDisSet: {
-
-				buttonNameSet: {
-					textColor: '#f3f3f3',
-					buttonName: 'test4'
-				},
-				/** 背景色 */
-				backGroundColor: '#3e7db6'
-			}
-		}
-	]);
+	buttons: KnockoutObservableArray<IButtonSettingsDto> = ko.observableArray([]);
 
 	constructor() {
 		super();
@@ -121,7 +75,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 		vm.screenMode(!!urlParam ? urlParam : null);
 		this.$blockui("invisible");
-		vm.$ajax(requestUrl.confirmUseOfStampInput, { stampMeans: 4 }).then((result) => {
+		vm.$ajax(requestUrl.confirmUseOfStampInput, { stampMeans: STAMP_MEANS_PORTAL }).then((result) => {
 			this.$blockui("clear");
 			vm.usedSatus(result.used);
 			vm.systemDate(moment(vm.$date.now()));
@@ -252,7 +206,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 	public getStampTime(data: IStampInfoDisp) {
 
-		return data.stampHow + ' ' + moment.utc(data.stampTimeWithSec).format("HH:mm");
+		return moment.utc(data.stampTimeWithSec).format("HH:mm");
 	}
 
 	public convertToShortMDW(data: IStampInfoDisp) {
@@ -353,7 +307,7 @@ class KDP001AViewModel extends ko.ViewModel {
 		});
 		nts.uk.ui.windows.sub.modal('/view/kdp/002/b/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 1, buttonDisNo: buttonDisNo }).then((res) => {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: DEFAULT_PAGE_NO, buttonDisNo: buttonDisNo , stampMeans: STAMP_MEANS_PORTAL}).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
@@ -394,7 +348,7 @@ class KDP001AViewModel extends ko.ViewModel {
 
 		nts.uk.ui.windows.sub.modal('/view/kdp/002/c/index.xhtml').onClosed(function(): any {
 			vm.$blockui("invisible");
-			vm.$ajax(requestUrl.getOmissionContents, { pageNo: 1, buttonDisNo: buttonDisNo }).then((res) => {
+			vm.$ajax(requestUrl.getOmissionContents, { pageNo: DEFAULT_PAGE_NO, buttonDisNo: buttonDisNo, stampMeans: STAMP_MEANS_PORTAL }).then((res) => {
 				if (res && res.dailyAttdErrorInfos && res.dailyAttdErrorInfos.length > 0) {
 
 					vm.$window.storage('KDP010_2T', res);
@@ -477,23 +431,23 @@ class KDP001AViewModel extends ko.ViewModel {
 
 }
 
-	enum ButtonType {
-		// 系
-	
-		GOING_TO_WORK = 1,
-		// 系
-	
-		WORKING_OUT = 2,
-		// "外出系"
-	
-		GO_OUT = 3,
-		// 戻り系
-	
-		RETURN = 4,
-		// 予約系
-	
-		RESERVATION_SYSTEM = 5
-	}
+enum ButtonType {
+	// 系
+
+	GOING_TO_WORK = 1,
+	// 系
+
+	WORKING_OUT = 2,
+	// "外出系"
+
+	GO_OUT = 3,
+	// 戻り系
+
+	RETURN = 4,
+	// 予約系
+
+	RESERVATION_SYSTEM = 5
+}
 
 interface IStampToSuppress {
 	/**

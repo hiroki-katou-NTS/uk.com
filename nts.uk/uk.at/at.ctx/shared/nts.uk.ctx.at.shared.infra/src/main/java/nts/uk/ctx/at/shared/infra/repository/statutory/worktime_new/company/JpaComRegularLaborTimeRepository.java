@@ -83,7 +83,7 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 						
 						return RegularLaborTimeCom.of(rec.getString("CID"),
 								new WeeklyUnit(new WeeklyTime(rec.getInt("WEEKLY_TIME")), 
-												EnumAdaptor.valueOf(rec.getInt("WEEK_STR"), WeekStart.class)), 
+												EnumAdaptor.valueOf(0, WeekStart.class)), 
 								new DailyUnit(new TimeOfDay(rec.getInt("DAILY_TIME"))));
 					});
 		}
