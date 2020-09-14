@@ -630,15 +630,15 @@ module cmm045.a.viewmodel {
 				newItemLst.push(new vmbase.DataModeApp(item));
 			});
 			self.items(newItemLst);
-			if (appListInfo.numberOfApp != null) {
-                self.approvalCount(new vmbase.ApplicationStatus(
-					appListInfo.numberOfApp.unApprovalNumber, 
-					appListInfo.numberOfApp.approvalNumber,
-                    appListInfo.numberOfApp.approvalAgentNumber, 
-					appListInfo.numberOfApp.cancelNumber, 
-					appListInfo.numberOfApp.remandNumner,
-                    appListInfo.numberOfApp.denialNumber));
-            }
+			//if (appListInfo.numberOfApp != null) {
+            self.approvalCount(new vmbase.ApplicationStatus(
+				appListInfo.numberOfApp.unApprovalNumber, 
+				appListInfo.numberOfApp.approvalNumber,
+                appListInfo.numberOfApp.approvalAgentNumber, 
+				appListInfo.numberOfApp.cancelNumber, 
+				appListInfo.numberOfApp.remandNumner,
+                appListInfo.numberOfApp.denialNumber));
+            //}
 
             if (self.mode() == 1) {
                 $("#grid1").ntsGrid("destroy");
