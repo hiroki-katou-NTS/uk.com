@@ -53,4 +53,4 @@ browser.private
     .then(() => app.$mask('hide'))
     .catch(() => app.$mask('hide'));
 
-Object.assign(window, { Vue, app });
+// Object.assign(window, { Vue, app });
