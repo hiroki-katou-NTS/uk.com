@@ -5,7 +5,7 @@
         <template v-else />
       </div>
       <!-- A2_1 -->
-      <div class="card bg-danger top-alert uk-text-danger topError">
+      <div id="error" class="card bg-danger top-alert uk-text-danger topError">
         <button class="btn btn-link uk-text-danger">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
           {{ 'KAFS08_13' | i18n }}
@@ -26,7 +26,7 @@
         </div>
         <!-- A5_3 -->
         <nts-time-editor
-          v-model="departureTime"
+          v-model="derpartureTime"
           :name="'KAFS08_28'"
           time-input-type="time-with-day"
           :columns="{ title: 'col-3', input: 'col-5' }"

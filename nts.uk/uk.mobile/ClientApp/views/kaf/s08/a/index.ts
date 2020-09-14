@@ -24,20 +24,20 @@ export class KafS08AComponent extends Vue {
     public step: string = 'KAFS08_10';
 
     //public paramsFromA1: any | null = null;
-    public departureTime: number = null;
-    public returnTime: number = null;
-    public table: [] = [] ;
+    public achievementDetails: [] = [] ;
     public comment: Object = {};
+    public derpartureTime: number = null;
+    public returnTime: number = null;
 
    
     //thực hiện emit từ component con A1
-    public ProcessNextToStepTwo(departureTime: number,returnTime: number,achievementDetails,comment) {
+    public ProcessNextToStepTwo(departureTime,returnTime,achievementDetails,comment) {
         const vm = this;
-        //departureTime và returnTime có được ở màn hình A1
-        vm.departureTime = departureTime;
+        //Object date có được ở màn hình A1
+        vm.derpartureTime = departureTime;
         vm.returnTime = returnTime;
         //table có được ở màn hình A1 chuyển lên.
-        vm.table = achievementDetails;
+        vm.achievementDetails = achievementDetails;
         //lấy giá trị comment set ở A1
         vm.comment = comment;
         //nhảy sang step A2 

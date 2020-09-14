@@ -1,7 +1,7 @@
 <template>
   <div class="kafs08a2 mt-4 mx-n3">
     <!-- A2_1 -->
-    <div class="card bg-danger top-alert uk-text-danger topError">
+    <div id="error" class="card bg-danger top-alert uk-text-danger topError">
               <button class="btn btn-link uk-text-danger">
                 <i class="fa fa-exclamation-circle" aria-hidden="true" ></i>
                 {{ 'KAFS08_13' | i18n }}
@@ -25,7 +25,7 @@
       <div class="uk-text-dark-gray">
         <label class="a7_5">{{'KAFS08_28' | i18n}}</label>
         <!-- A7_6 -->
-        <label>{{(derpartureTime || 0) | timewd}}</label>
+        <label>{{(departureTime || 0) | timewd}}</label>
       </div>
       <!-- A7_7 -->
       <div class="uk-text-dark-gray">
@@ -58,8 +58,8 @@
               <td class="px-1">{{data.opAchievementDetail.opWorkTimeName}}</td>
               <td class="px-1">{{data.opAchievementDetail.opLeaveTime | timewd}}</td>
               <td class="border-right-0 px-1">{{data.opAchievementDetail.opWorkTime | timewd}}</td>
-              <td class="text-center px-0 border-left-0">
-                <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" v-click="showDialog.bind(this, 'modal')"/>
+              <td class="text-center px-0 border-left-0" @click="selectRowDate(data)">
+                <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" />
               </td>
             </tr>
           </tbody>

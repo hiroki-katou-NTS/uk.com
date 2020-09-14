@@ -27,12 +27,12 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     //private seen: boolean = true;
     public step: string = 'KAFS08_10';
     public mode: Boolean = true;
-    public departureTime: number = null;
-    public returnTime: number = null;
     public isVisible: boolean = false;
-
+    public derpartureTime: number = null;
+    public returnTime: number = null;
+    
     @Prop({ default:() => ({}) })
-    public params?: any;
+    public readonly params?: any;
 
     public user: any;
     public title: String = 'KafS08A1';
@@ -49,6 +49,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         vm.fetchStart();
     }
 
+
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
@@ -56,11 +57,26 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         //if (vm.params1.derpartureTime == null || vm.params1.returnTime == null ) {
         //    return ;
         //}
+        if (vm.derpartureTime == null || vm.returnTime == null ) {
+            vm.toggleErrorAlert();
+            
+            return ;
+        }
         //gửi table sang màn hình A2
         let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
         //gửi comment sang màn hình A2
         let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-        this.$emit('nextToStepTwo',vm.departureTime,vm.returnTime,achievementDetails,commentSet);
+        this.$emit('nextToStepTwo',vm.derpartureTime,vm.returnTime,achievementDetails,commentSet);
+    }
+
+    //thực hiện ẩn/hiện alert error
+    public toggleErrorAlert() {
+        let x = document.getElementById('error');
+        if (x.style.display === 'none') {
+            x.style.display = 'block';
+        } else {
+            x.style.display = 'none';
+        }
     }
 
     public fetchStart() {
@@ -183,5 +199,4 @@ const API = {
     startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
     checkBeforeRegister: 'at/request/application/businesstrip/mobile/checkBeforeRegister'
 };
-
 

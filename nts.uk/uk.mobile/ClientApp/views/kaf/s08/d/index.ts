@@ -1,8 +1,32 @@
-import { Vue } from '@app/provider';
+import { Vue, moment } from '@app/provider';
 import { component, Prop } from '@app/core/component';
 import * as _ from 'lodash';
 import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
+
+interface Parameter {
+    date: string;
+    opAchievementDetail: {
+        opLeaveTime: number;
+        opWorkTime: number;
+        opWorkTimeName: string;
+        opWorkTypeName: string;
+        workTimeCD: string;
+        workTypeCD: string;
+    };
+}
+
+const defaultParam = (): Parameter => ({
+    date: '',
+    opAchievementDetail: {
+        opLeaveTime: 0,
+        opWorkTime: 0,
+        opWorkTimeName: '',
+        opWorkTypeName: '',
+        workTimeCD: '',
+        workTypeCD: ''
+    }
+});
 
 @component({
     name: 'kafs08d',
@@ -10,16 +34,15 @@ import { Kdl001Component } from '../../../kdl/001';
     template: require('./index.vue')
 })
 export class KafS08DComponent extends Vue {
-    @Prop({ default: (): Params => ({ timetowork: null, leavetime: null,date : null,title: null}) })
-    public readonly params!: Params;
-    @Prop({default: () => '' })
-    public readonly name: String;
+    @Prop({ default: defaultParam })
+    public readonly params!: Parameter;
 
-    //public name: string = 'Nittsu System Viet Nam';
     public title: string = 'KafS08D';
-    public date: Date = new Date(2020, 2, 12);
+    public test: Date = new Date(2020, 2, 12);
+    public timetowork: number = null;
+    public leavetime: number = null;
 
-
+    
     public openKDLS02() {
         const vm = this;
         vm.$modal(KDL002Component, {}).then(console.log);
@@ -30,32 +53,15 @@ export class KafS08DComponent extends Vue {
         vm.$modal(Kdl001Component, {}).then(console.log);
     }
 
-    public model: Params = {
-        timetowork: null,
-        leavetime: null,
-        date : null,
-        title: null,
-    };
-
     public created() {
         const vm = this;
-        vm.model.timetowork = vm.params.timetowork;
-        vm.model.leavetime = vm.params.leavetime;
-        vm.model.date = vm.params.date;
-        console.log(name);
     }
 
 
     //Đóng dialog
-   public close() {
+    public close() {
         const vm = this;
-        vm.$close(vm.model);
+        vm.$close();
     }
 }
 
-interface Params {
-    timetowork: number | null;
-    leavetime: number | null;
-    date: string | null;
-    title: string;
-}
