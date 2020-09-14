@@ -48,7 +48,7 @@ public class GetWorkHoursWs {
 			PredetemineTimeSetting setting = predetemineTimeSettings.containsKey(i.getWorktimeCode().v())
 					? predetemineTimeSettings.get(i.getWorktimeCode().v())
 					: null;
-			return new AcquireWorkHours(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeName().v(),
+			return new AcquireWorkHours(i.getWorktimeCode().v(), i.getWorkTimeDisplayName().getWorkTimeAbName().v(),
 					setting.getPrescribedTimezoneSetting().getLstTimezone().stream().filter((x) -> x.getWorkNo() == 1)
 							.findFirst().get().getStart().v(),
 					setting.getPrescribedTimezoneSetting().getLstTimezone().stream().filter((x) -> x.getWorkNo() == 1)
