@@ -840,14 +840,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set Deco background
                         if (userInfor.backgroundColor == 1) {
                             // A10_color② シフト表示：シフトの背景色  (Hiển thị Shift: màu nền của shift) 
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));
                             
                             let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                             if (cell.shiftCode != null) {
                                 let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
                                 if (objShiftMasterWithWorkStyle.length > 0) {
                                     let color = objShiftMasterWithWorkStyle[0].color;
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0)); 
+                                    //detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0)); 
                                 }
                             }
                         } else if (userInfor.backgroundColor == 0) {
@@ -1650,7 +1649,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 decorator: detailContentDeco
             }]);
 
-           // $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
+           $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
         }
 
         // save setting hight cua grid vao localStorage
