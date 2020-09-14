@@ -159,53 +159,13 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                 let command = {
                     appType: vm.application().appType,
                     appDates: [ko.toJS(vm.application().appDate)],
-                    baseDate: vm.application().appDate,
+                    baseDate: vm.application().appDate(),
                     appDispNoDate: vm.appDispInfoStartupOutput().appDispInfoNoDateOutput,
                     appDispWithDate: vm.appDispInfoStartupOutput().appDispInfoWithDateOutput,
                     setting: vm.arrivedLateLeaveEarlyInfo().lateEarlyCancelAppSet
                 }
                 vm.$ajax(API.changeAppDate, command).done((success: any) => {
                     console.log(success);
-                    // Test data
-                    vm.workManagement.clearData();
-                    vm.workManagement.scheAttendanceTime("--:--")
-                    vm.workManagement.scheAttendanceTime2("--:--")
-                    vm.workManagement.scheWorkTime("--:--")
-                    vm.workManagement.scheWorkTime2("--:--")
-                    if (vm.application().appDate() === "2020/08/15") {
-                        vm.workManagement.scheAttendanceTime("8:30");
-                        vm.workManagement.scheWorkTime("17:30");
-                        vm.workManagement.scheAttendanceTime2("18:00");
-                        vm.workManagement.scheWorkTime2("23:00");
-
-                        vm.workManagement.workTime(510);
-                        vm.workManagement.leaveTime(1030);
-                        vm.workManagement.workTime2(1110);
-                        vm.workManagement.leaveTime2(1200);
-
-                        if(vm.workManagement.workTime() === null || vm.workManagement.workTime() === "") {
-                            vm.lateOrEarlyInfo1().isActive(false);
-                        } else {
-                            vm.lateOrEarlyInfo1().isActive(true);
-                        }
-                        if(vm.workManagement.leaveTime() === null || vm.workManagement.leaveTime() === "") {
-                            vm.lateOrEarlyInfo2().isActive(false);
-                        } else {
-                            vm.lateOrEarlyInfo2().isActive(true);
-                        }
-                        if(vm.workManagement.workTime2() === null || vm.workManagement.workTime2() === "") {
-                            vm.lateOrEarlyInfo3().isActive(false);
-                        } else {
-                            vm.lateOrEarlyInfo3().isActive(true);
-                        }
-                        if(vm.workManagement.leaveTime2() === null || vm.workManagement.leaveTime2() === "") {
-                            vm.lateOrEarlyInfo4().isActive(false);
-                        } else {
-                            vm.lateOrEarlyInfo4().isActive(true);
-                        }
-                        return;
-                    }
-                    // Test data
 
                     if (success.errorInfo) {
                         if(vm.application().prePostAtr() === 1) {

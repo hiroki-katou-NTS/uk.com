@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other.output;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -22,7 +24,7 @@ public class AchievementEarly {
 	/**
 	 * 予定出勤時刻2
 	 */
-	private TimeWithDayAttr scheAttendanceTime2;
+	private Optional<TimeWithDayAttr> scheAttendanceTime2;
 	
 	/**
 	 * 予定退勤時刻1
@@ -32,6 +34,6 @@ public class AchievementEarly {
 	/**
 	 * 予定退勤時刻2
 	 */
-	private TimeWithDayAttr scheDepartureTime2;
+	private Optional<TimeWithDayAttr> scheDepartureTime2 = Optional.empty();
 	
 }

@@ -115,9 +115,8 @@ public class AppDispInfoWithDateDto {
 				appDispInfoWithDateOutput.getOpListApprovalPhaseState()
 					.map(x -> x.stream().map(y -> ApprovalPhaseStateForAppDto.fromApprovalPhaseStateImport(y)).collect(Collectors.toList())).orElse(null), 
 				appDispInfoWithDateOutput.getOpErrorFlag().map(x -> x.value).orElse(null), 
-				/*appDispInfoWithDateOutput.getOpAchievementOutputLst()
-					.map(x -> x.stream().map(y -> AchievementDto.convertFromAchievementOutput(y)).collect(Collectors.toList())).orElse(null), */
-				null,
+				appDispInfoWithDateOutput.getOpActualContentDisplayLst()
+					.map(x -> x.stream().map(y -> ActualContentDisplayDto.fromDomain(y)).collect(Collectors.toList())).orElse(null),
 				appDispInfoWithDateOutput.getOpPreAppContentDisplayLst().map(x -> x.stream().map(y -> PreAppContentDispDto.fromDomain(y)).collect(Collectors.toList())).orElse(null), 
 				appDispInfoWithDateOutput.getOpAppDeadline().map(x -> x.toString()).orElse(null), 
 				appDispInfoWithDateOutput.getOpWorkTimeLst().map(x -> x.stream()

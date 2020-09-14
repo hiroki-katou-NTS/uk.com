@@ -331,8 +331,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 		}
 		dateLst = dateLst.stream().filter(x -> x != null).collect(Collectors.toList());
 		// 実績内容の取得
-		/*List<ActualContentDisplay> actualContentDisplayLst = collectAchievement.getAchievementContents(companyID, employeeID, dateLst, appType);*/
-		List<ActualContentDisplay> actualContentDisplayLst = Collections.emptyList();
+		List<ActualContentDisplay> actualContentDisplayLst = collectAchievement.getAchievementContents(companyID, employeeID, dateLst, appType);
 		output.setActualContentDisplayLst(actualContentDisplayLst);
 		// 事前内容の取得
 		List<PreAppContentDisplay> preAppContentDisplayLst = collectAchievement.getPreAppContents(companyID, employeeID, dateLst, appType);

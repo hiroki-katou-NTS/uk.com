@@ -149,25 +149,47 @@ export class KafS07AComponent extends KafS00ShrComponent {
             return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
         }).then((loadData: any) => {
             if (loadData) {
-                return self.$http.post('at', API.startS07, {
+                let param = self.mode ? 
+                {
                     mode: self.mode,
                     companyId: self.user.companyId,
                     employeeId: self.user.employeeId,
                     listDates: [],
-                    appWorkChangeOutputDto: self.mode ? null : self.data,
+                    appWorkChangeOutputDto: null,
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
-                });
+                } : 
+                {
+                    mode: self.mode,
+                    companyId: self.user.companyId,
+                    employeeId: self.user.employeeId,
+                    listDates: [],
+                    appWorkChangeOutputCmd: self.data,
+                    appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                };
+
+                return self.$http.post('at', API.startS07, param);
             }
             if (self.appDispInfoStartupOutput) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
-                    return self.$http.post('at', API.startS07, {
-                        mode: self.mode,
-                        companyId: self.user.companyId,
-                        employeeId: self.user.employeeId,
-                        listDates: [],
-                        appWorkChangeOutputDto: self.mode ? null : self.data,
-                        appWorkChangeDto: self.mode ? null : self.data.appWorkChange
-                    });
+                    let param = self.mode ? 
+                {
+                    mode: self.mode,
+                    companyId: self.user.companyId,
+                    employeeId: self.user.employeeId,
+                    listDates: [],
+                    appWorkChangeOutputDto: null,
+                    appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                } : 
+                {
+                    mode: self.mode,
+                    companyId: self.user.companyId,
+                    employeeId: self.user.employeeId,
+                    listDates: [],
+                    appWorkChangeOutputCmd: self.data,
+                    appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                };
+
+                    return self.$http.post('at', API.startS07, param);
                 }
             }
 

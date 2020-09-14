@@ -353,15 +353,13 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
 		backtoCMM045() {
 			const vm = this;
-			vm.$jump("at", "/view/cmm/045/a/index.xhtml");
-			/*nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
-                let paramUrl = 0;
-                if (obj !== undefined && obj !== null){
-                    paramUrl = obj.appListAtr;
-                }
-                nts.uk.localStorage.setItem('UKProgramParam', 'a=' + paramUrl);
-                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-            });	*/
+			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+				let param = 0;
+				if(obj.appListAtr==1) {
+					param = 1;		
+				}
+				vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+            });
 		}
     }
 
