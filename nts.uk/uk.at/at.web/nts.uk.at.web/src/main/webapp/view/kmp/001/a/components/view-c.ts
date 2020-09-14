@@ -139,6 +139,13 @@ module nts.uk.at.view.kmp001.c {
 		ADD_STAMP_CARD: 'at/record/register-stamp-card/view-c/save'
 	};
 
+
+	const DIALOG = {
+		A: '/view/cdl/009/a/index.xhtml'
+	};
+
+	const DATE_FORMAT = 'YYYY/MM/DD';
+
 	@component({
 		name: 'view-c',
 		template
@@ -157,13 +164,12 @@ module nts.uk.at.view.kmp001.c {
 		created(params: Params) {
 			const vm = this;
 			vm.params = params;
-			const format = 'YYYY/MM/DD';
-
-			const endDate = moment().format(format);
-			const startDate = moment().subtract(3, 'month').format(format);
+			const format = DATE_FORMAT,
+				endDate = moment().format(format),
+				startDate = moment().subtract(3, 'month').format(format);
 
 			vm.dateRange({ startDate, endDate });
-			
+
 			vm.reloadData(0);
 
 			vm.employee.employeeId
@@ -172,6 +178,11 @@ module nts.uk.at.view.kmp001.c {
 					if (c != '') {
 						vm.$ajax(KMP001C_API.GET_INFO_EMPLOYEE + ko.toJS(c))
 							.then((data: IEmployeeVIewC[]) => {
+								
+								if(moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31"){
+									data.retiredDate = null;
+								}
+								
 								vm.employee.update(ko.toJS(data));
 							})
 					}
@@ -187,17 +198,22 @@ module nts.uk.at.view.kmp001.c {
 		reloadData(selectedIndex: number = 0) {
 			const vm = this;
 			const { startDate, endDate } = ko.toJS(vm.dateRange);
-			
+
 			vm.model.clear();
 			if (startDate != null && endDate != null) {
 				vm.$blockui("invisible");
 
-				const start = moment.utc(startDate, "YYYY/MM/DD").format("YYYY-MM-DD");
-				const end = moment.utc(endDate, "YYYY/MM/DD").format("YYYY-MM-DD");
+				const start = moment.utc(startDate, DATE_FORMAT).format("YYYY-MM-DD");
+				const end = moment.utc(endDate, DATE_FORMAT).format("YYYY-MM-DD");
 
 				vm.$ajax(KMP001C_API.GET_STAMP_CARD + start + "/" + end)
 					.then((data: IStampCardC[]) => {
-						vm.items(data);
+						// convert string to date format
+						_.each(data, (d) => {
+							d.stampDatetime = d.stampDatetime.replace(/T/, ' ').replace(/Z/, '');
+						});
+					
+						vm.items(_.orderBy(data, ['stampNumber'], ['asc']));
 
 						if (selectedIndex >= 0) {
 							const record = data[selectedIndex || 0];
@@ -219,7 +235,7 @@ module nts.uk.at.view.kmp001.c {
 
 			vm.$window
 				.storage('CDL009Params', params)
-				.then(() => vm.$window.modal('com', '/view/cdl/009/a/index.xhtml'))
+				.then(() => vm.$window.modal('com', DIALOG.A))
 				.then(() => vm.$window.storage('CDL009Output'))
 				.then((data: string | string[]) => {
 					if (data != '') {
@@ -241,7 +257,7 @@ module nts.uk.at.view.kmp001.c {
 
 				vm.$ajax(KMP001C_API.ADD_STAMP_CARD, command)
 					.then(() => vm.$dialog.info({ messageId: "Msg_15" }))
-					.then(() => vm.reloadData(newIndex))
+					.then(() => vm.reloadData(0))
 					.then(() => vm.employee.clear())
 					.then(() => vm.$blockui("clear"));
 			}
@@ -252,14 +268,14 @@ module nts.uk.at.view.kmp001.c {
 		stampNumber: string;
 		infoLocation: string;
 		stampAtr: string;
-		stampDatetime: Date;
+		stampDatetime: string;
 	}
 
 	export class StampCardC {
 		stampNumber: KnockoutObservable<string> = ko.observable('');
 		infoLocation: KnockoutObservable<string> = ko.observable('');
 		stampAtr: KnockoutObservable<string> = ko.observable('');
-		stampDatetime: KnockoutObservable<Date | null> = ko.observable(null);
+		stampDatetime: KnockoutObservable<string> = ko.observable('');
 
 		constructer(params?: IStampCardC) {
 			const self = this;
@@ -274,6 +290,10 @@ module nts.uk.at.view.kmp001.c {
 
 		update(params: IStampCardC) {
 			const self = this;
+
+			self.infoLocation(params.infoLocation);
+			self.stampAtr(params.stampAtr);
+			self.stampDatetime(params.stampDatetime);
 		}
 
 		clear() {

@@ -1,6 +1,8 @@
 module nts.uk.at.view.ksm015.c.viewmodel {
 	import flat = nts.uk.util.flatArray;
 
+	let __viewContext: any = window["__viewContext"] || {};
+	
 	export class ScreenModel {
 		baseDate: KnockoutObservable<Date>;
 		selectedWorkplaceId: KnockoutObservable<string>;
@@ -33,10 +35,20 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				isShowSelectButton: true,
 				isDialog: false,
 				alreadySettingList: self.alreadySettingList,
-				maxRows: 15,
+				maxRows: 13,
 				tabindex: 1,
 				systemType: 2
 			};
+			$("#sidebar").ntsSideBar("init", {
+                active: 0,
+                activate: (event, info) => {
+                    if (info.newIndex == 1) {
+                        //nts.uk.ui._viewModel.content.viewModelD.startPage();
+                    } else {
+                       // self.startPage();
+                    }
+                }
+            });
 
 			let ksm015Data = new Ksm015Data();
 			self.shiftItems = ko.observableArray([]);
@@ -77,7 +89,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 			let self = this;
 			let dfd = $.Deferred();
 			nts.uk.ui.block.invisible();
-			service.startPage()
+			service.startPage(TargetUnit.WORKPLACE)
 				.done((data) => {
 					self.forAttendent(!_.isNull(data.forAttendent));
 					if (data.alreadyConfigWorkplaces) {
@@ -89,9 +101,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 					}
 
 					dfd.resolve(data);
-				}).fail(function (error) {
+				}).fail(function(error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-				}).always(function () {
+				}).always(function() {
 					nts.uk.ui.block.clear();
 				});
 			return dfd.promise();
@@ -115,9 +127,9 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						self.reloadAlreadySetting();
 					}
 					self.selectedWorkplaceId.valueHasMutated();
-				}).fail(function (error) {
+				}).fail(function(error) {
 					nts.uk.ui.dialog.alertError({ messageId: error.messageId });
-				}).always(function () {
+				}).always(function() {
 					nts.uk.ui.block.clear();
 				});
 		}
@@ -138,7 +150,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						nts.uk.ui.block.clear();
 						self.reloadAlreadySetting();
 					}).fail((res) => {
-						nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function () { nts.uk.ui.block.clear(); });
+						nts.uk.ui.dialog.alertError({ messageId: res.messageId }).then(function() { nts.uk.ui.block.clear(); });
 					});
 				}).ifNo(() => {
 					nts.uk.ui.block.clear();
@@ -162,11 +174,12 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				isMultiSelect: true,
 				filter: 0,
 				permission: false,
-				// shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
-				shifutoCodes: []
+				//shifutoCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
+				shifutoCodes: [],
+				shiftCodeExpel : _.map(self.shiftItems(), (val) => { return val.shiftMasterCode })
 			}, true);
 
-			nts.uk.ui.windows.sub.modal('/view/kdl/044/a/index.xhtml').onClosed(function (): any {
+			nts.uk.ui.windows.sub.modal('/view/kdl/044/a/index.xhtml').onClosed(function(): any {
 				//view all code of selected item 
 				let isCancel = nts.uk.ui.windows.getShared('kdl044_IsCancel');
 				if (!isCancel) {
@@ -207,6 +220,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 				let lstSelection: any = nts.uk.ui.windows.getShared("CDL023Output");
 				if (!nts.uk.util.isNullOrEmpty(lstSelection)) {
 					let wkps = [];
+					let data = [];
 					lstSelection.forEach((wp) => {
 						wkps.push({ targetUnit: TargetUnit.WORKPLACE, workplaceId: wp, shiftMasterCodes: [] });
 					});
@@ -216,17 +230,29 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 						shiftMasterCodes: _.map(self.shiftItems(), (val) => { return val.shiftMasterCode }),
 						toWkps: wkps
 					}
+					let bundledErrors = [];
 					service.copyOrg(param)
 						.done((results) => {
 							let msg = '';
 							results.forEach((result) => {
 								let dataWkp = _.find(flwps, wkp => wkp.id == result.workplaceId);
-								if(dataWkp) {
+								if (dataWkp) {
 									let status = result.status ? nts.uk.resource.getText('KSM015_26') : nts.uk.resource.getText('KSM015_27');
 									msg += dataWkp.code + ' ' + dataWkp.name + ' ' + status + '<br>';
 								}
+								data.push({
+									code : dataWkp.code + ' ' + dataWkp.name,
+									status : status
+								})
+								
+								bundledErrors.push({
+	                            message: dataWkp.code + ' ' + dataWkp.name,
+	                            messageId: nts.uk.resource.getText('KSM015_26'),
+	                            supplements: {}
+                      			});
 							});
-							nts.uk.ui.dialog.info(msg);
+							nts.uk.ui.windows.setShared("KSM_K_Input", data);
+							nts.uk.at.view.ksm015.dialog.bundledErrors({ errors: bundledErrors });
 							self.reloadAlreadySetting();
 						});
 				}
@@ -235,7 +261,7 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public reloadAlreadySetting() {
 			let self = this;
-			service.getAlreadyConfigOrg()
+			service.getAlreadyConfigOrg(TargetUnit.WORKPLACE)
 				.done((data) => {
 					let alreadySettings = []
 					_.forEach(data.workplaceIds, (wp) => {
@@ -247,11 +273,11 @@ module nts.uk.at.view.ksm015.c.viewmodel {
 
 		public reCalGridWidth() {
 			let panelWidthResize = window.innerWidth - 650;
-			panelWidthResize = panelWidthResize < 400 ? 400 : panelWidthResize;
-			$('#shift-list').igGrid("option", "width", panelWidthResize);
+			panelWidthResize = panelWidthResize < 400 ? 400 : 700;
 			$('#form-title').css("width", panelWidthResize + "px");
 		}
 
 
 	}
+
 }

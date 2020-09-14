@@ -89,6 +89,7 @@ import nts.uk.ctx.at.record.dom.raisesalarytime.SpecificDateAttrSheet;
 import nts.uk.ctx.at.record.dom.raisesalarytime.enums.SpecificDateAttr;
 import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.shorttimework.repo.ShortTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.workinformation.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
@@ -177,6 +178,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 //	@Inject
 //	private WorkInformationRepository workInformationRepository;
+	@Inject 
+	private RecordDomRequireService requireService;
 
 	@Inject
 	private BreakTimeOfDailyPerformanceRepository breakTimeOfDailyPerformanceRepository;
@@ -242,9 +245,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 	private AutoCalculationSetService autoCalculationSetService;
 
 	@Inject
-	private GetCommonSet getCommonSet;
-
-	@Inject
 	private RecStatusOfEmployeeAdapter recStatusOfEmployeeAdapter;
 
 	@Inject
@@ -297,9 +297,6 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 
 	@Inject
 	private SpecificDateAttrOfDailyPerforRepo specificDateAttrOfDailyPerforRepo;
-	
-	@Inject
-	private WorkingConditionService workingConditionService;
 	
 	@Resource
 	private SessionContext scContext;
@@ -1359,8 +1356,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 				Optional<BasicScheduleSidDto> optBasicSchedule = this.basicScheduleAdapter.findAllBasicSchedule(employeeId, day);
 				if (optBasicSchedule.isPresent()) {
 					// 社員の労働条件を取得する
-					Optional<WorkingConditionItem> optWorkingConditionItem = this.workingConditionService
-							.findWorkConditionByEmployee(employeeId, day);
+					Optional<WorkingConditionItem> optWorkingConditionItem = WorkingConditionService
+							.findWorkConditionByEmployee(requireService.createRequire(), employeeId, day);
 					// 休業休職の勤務種類コードを返す
 					String workTypeCode = this.basicScheduleService.getWorktypeCodeLeaveHolidayType(companyId,
 							employeeId, day, optBasicSchedule.get().getWorkTypeCode(),
@@ -1627,7 +1624,8 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformanceUpdate,
 			Optional<WorkingConditionItem> workingConditionItem, TimeLeavingOfDailyPerformance timeLeavingOptional,
 			String employeeID, GeneralDate day, Optional<StampReflectionManagement> stampReflectionManagement) {
-
+		val require = requireService.createRequire();
+		
 		if (timeLeavingOptional == null) {
 			// 日別実績の出退勤
 			timeLeavingOptional = new TimeLeavingOfDailyPerformance();
@@ -1689,7 +1687,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 						timeLeavingWorkOutput.setWorkNo(sheet.getWorkNo());
 
 						// 出勤系時刻を丸める (làm tròn thời gian 出勤)
-						Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(companyId,
+						Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(require, companyId,
 								workInfoOfDailyPerformanceUpdate.getScheduleInfo().getWorkTimeCode().v());
 						WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 
@@ -1771,8 +1769,7 @@ public class ReflectWorkInforDomainServiceImpl implements ReflectWorkInforDomain
 										leaveActualStamp.setTimeWithDay(timezone.getEnd());
 
 										// 出勤系時刻を丸める
-										Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = this.getCommonSet.get(
-												companyId,
+										Optional<WorkTimezoneCommonSet> workTimezoneCommonSet = GetCommonSet.workTimezoneCommonSet(require, companyId,
 												workInfoOfDailyPerformanceUpdate.getRecordInfo().getWorkTimeCode().v());
 										WorkTimezoneStampSet stampSet = workTimezoneCommonSet.get().getStampSet();
 

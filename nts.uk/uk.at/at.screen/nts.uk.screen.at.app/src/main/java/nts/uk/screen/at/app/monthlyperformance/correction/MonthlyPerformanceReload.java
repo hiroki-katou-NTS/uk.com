@@ -69,6 +69,7 @@ import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobTitleHisImport;
 import nts.uk.ctx.at.shared.dom.adapter.jobtitle.SharedAffJobtitleHisAdapter;
 import nts.uk.ctx.at.shared.dom.monthlyattditem.MonthlyAttendanceItemAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -121,9 +122,6 @@ public class MonthlyPerformanceReload {
 
 	@Inject
 	private MonthlyPerformanceScreenRepo repo;
-	
-	@Inject
-	private ClosureService closureService;
 	
 	@Inject
 	private SyCompanyRecordAdapter syCompanyRecordAdapter;
@@ -194,6 +192,8 @@ public class MonthlyPerformanceReload {
 	
 	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
 	
 	public MonthlyPerformanceCorrectionDto reloadScreen(MonthlyPerformanceParam param) {
 
@@ -229,7 +229,9 @@ public class MonthlyPerformanceReload {
 		screenDto.setAuthDto(monthlyItemAuthDto);
 		
 		//指定した年月の期間を算出する
-		DatePeriod datePeriodClosure = closureService.getClosurePeriod(screenDto.getClosureId(), new YearMonth(screenDto.getProcessDate()));
+		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+				ClosureService.createRequireM1(closureRepository, closureEmploymentRepo),
+				screenDto.getClosureId(), new YearMonth(screenDto.getProcessDate()));
 		//社員ID（List）と指定期間から所属会社履歴項目を取得
 		// RequestList211
 		List<AffCompanyHistImport> lstAffComHist = syCompanyRecordAdapter

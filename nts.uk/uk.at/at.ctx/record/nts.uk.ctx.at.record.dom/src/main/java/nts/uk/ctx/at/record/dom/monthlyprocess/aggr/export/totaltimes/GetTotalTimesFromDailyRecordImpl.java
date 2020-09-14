@@ -1,9 +1,5 @@
 package nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.totaltimes;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -14,11 +10,8 @@ import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
-import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesResult;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.algorithm.GetTotalTimesFromDailyRecord;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 実装：日別実績から回数集計結果を取得する
@@ -52,37 +45,37 @@ public class GetTotalTimesFromDailyRecordImpl implements GetTotalTimesFromDailyR
 	@Inject
 	private AttendanceItemConvertFactory attendanceItemConverter;
 
-	/** 回数集計結果情報を取得 */
-	@Override
-	public Optional<TotalTimesResult> getResult(String companyId, String employeeId, DatePeriod period,
-			TotalTimes totalTimes) {
-		
-		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
-				companyId, employeeId, period,
-				this.attendanceTimeRepo,
-				this.anyItemValueOfDailyRepo,
-				this.timeLeavingOfDailyRepo,
-				this.workInfoOfDailyRepo,
-				this.workTypeOfDailyRepo,
-				this.workTypeRepo,
-				this.optionalItemRepo);
-		return algorithm.getResult(totalTimes, period, this.attendanceItemConverter);
-	}
-	
-	/** 回数集計結果情報を取得 */
-	@Override
-	public Map<Integer, TotalTimesResult> getResults(String companyId, String employeeId, DatePeriod period,
-			List<TotalTimes> totalTimesList) {
-		
-		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
-				companyId, employeeId, period,
-				this.attendanceTimeRepo,
-				this.anyItemValueOfDailyRepo,
-				this.timeLeavingOfDailyRepo,
-				this.workInfoOfDailyRepo,
-				this.workTypeOfDailyRepo,
-				this.workTypeRepo,
-				this.optionalItemRepo);
-		return algorithm.getResults(totalTimesList, period, this.attendanceItemConverter);
-	}
+//	/** 回数集計結果情報を取得 */
+//	@Override
+//	public Optional<TotalTimesResult> getResult(String companyId, String employeeId, DatePeriod period,
+//			TotalTimes totalTimes) {
+//		
+//		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
+//				companyId, employeeId, period,
+//				this.attendanceTimeRepo,
+//				this.anyItemValueOfDailyRepo,
+//				this.timeLeavingOfDailyRepo,
+//				this.workInfoOfDailyRepo,
+//				this.workTypeOfDailyRepo,
+//				this.workTypeRepo,
+//				this.optionalItemRepo);
+//		return algorithm.getResult(totalTimes, period, this.attendanceItemConverter);
+//	}
+//	
+//	/** 回数集計結果情報を取得 */
+//	@Override
+//	public Map<Integer, TotalTimesResult> getResults(String companyId, String employeeId, DatePeriod period,
+//			List<TotalTimes> totalTimesList) {
+//		
+//		TotalTimesFromDailyRecord algorithm = new TotalTimesFromDailyRecord(
+//				companyId, employeeId, period,
+//				this.attendanceTimeRepo,
+//				this.anyItemValueOfDailyRepo,
+//				this.timeLeavingOfDailyRepo,
+//				this.workInfoOfDailyRepo,
+//				this.workTypeOfDailyRepo,
+//				this.workTypeRepo,
+//				this.optionalItemRepo);
+//		return algorithm.getResults(totalTimesList, period, this.attendanceItemConverter);
+//	}
 }

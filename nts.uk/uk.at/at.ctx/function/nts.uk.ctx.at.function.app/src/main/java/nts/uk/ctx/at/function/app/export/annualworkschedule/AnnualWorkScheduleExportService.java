@@ -22,10 +22,13 @@ import javax.inject.Inject;
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.adapter.RegularSortingTypeImport;
 import nts.uk.ctx.at.function.dom.adapter.RegulationInfoEmployeeAdapter;
 import nts.uk.ctx.at.function.dom.adapter.SortingConditionOrderImport;
@@ -65,7 +68,7 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScR
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreMaxTimeMonthOut;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreTimeByPeriod;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementPeriod;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.dom.workrecord.export.WorkRecordExport;
@@ -85,8 +88,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkScheduleExportQuery> {
@@ -107,8 +108,6 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	@Inject
 	private RegulationInfoEmployeeAdapter employeeAdapter;
 	@Inject
-	private ClosureService closureService;
-	@Inject
 	private GetAgreementPeriodFromYearAdapter getAgreementPeriodFromYearPub;
 	@Inject
 	private AgreementTimeByPeriodAdapter agreementTimeByPeriodAdapter;
@@ -117,15 +116,11 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	@Inject
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
 	@Inject
-	private GetAgreementPeriod getAgreementPeriodPub;
-	@Inject
-	private GetAgreTimeByPeriod getAgreTimeByPeriod;
-	@Inject
-	private GetExcessTimesYear getExcessTimesYear;
-	@Inject
 	private WorkRecordExport workRecordExport;
 	@Inject
 	private GetExcessTimesYearAdapter getExcessTimesYearAdapter;
+	@Inject
+	private RecordDomRequireService requireService;
 
 	public static final String YM_FORMATER = "uuuu/MM";
 	
@@ -327,7 +322,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		//ドメインモデル「36協定運用設定」を取得する
 		Optional<AgreementOperationSetting> agreementOperationSetting = agreementOperationSettingRepository.find(cid);
 		//年度を指定して36協定期間を取得 - get RequestList554
-		Optional<DatePeriod> period = getAgreementPeriodPub.byYear(cid, employeeIdLogin, GeneralDate.ymd(yearMonthPeriod.end().year(), yearMonthPeriod.end().month(), yearMonthPeriod.end().lastDateInMonth()), fiscalYear);
+		Optional<DatePeriod> period = GetAgreementPeriod.byYear(requireService.createRequire(),
+				new CacheCarrier(), cid, employeeIdLogin, GeneralDate.ymd(yearMonthPeriod.end().year(), yearMonthPeriod.end().month(), yearMonthPeriod.end().lastDateInMonth()), fiscalYear);
 		if(!period.isPresent()) {
 			throw new BusinessException("Msg_1513");
 		}
@@ -487,7 +483,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 		
 		List<AgreementTimeByPeriodImport> listAgreementTimeByMonth = new ArrayList<>();
 		//requestList 548 
-		List<AgreMaxTimeMonthOut> agreMaxTimeMonthOut = getAgreTimeByPeriod.maxTime(cid, employeeId, yearMonthPeriodRQL554);
+		List<AgreMaxTimeMonthOut> agreMaxTimeMonthOut = GetAgreTimeByPeriod.maxTime(requireService.createRequire(),
+				cid, employeeId, yearMonthPeriodRQL554);
 		int sum = 0;
 		for (AgreMaxTimeMonthOut agreMax : agreMaxTimeMonthOut) {
 			AgreementTimeByPeriodImport oneMonth = new AgreementTimeByPeriodImport(agreMax.getYearMonth(), null, 
@@ -535,7 +532,8 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 * */
 	private List<AgreMaxAverageTime> createMonthlyAverage(String companyId, String employeeId, GeneralDate criteria, nts.arc.time.YearMonth yearMonth) {
 		//get requestList547
-		Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMulti = getAgreTimeByPeriod.maxAverageTimeMulti(companyId, employeeId, criteria, yearMonth);
+		Optional<AgreMaxAverageTimeMulti> agreMaxAverageTimeMulti = GetAgreTimeByPeriod.maxAverageTimeMulti(
+				requireService.createRequire(), companyId, employeeId, criteria, yearMonth);
 		if(agreMaxAverageTimeMulti.isPresent()) {
 			return agreMaxAverageTimeMulti.get().getAverageTimeList();
 		}
@@ -695,7 +693,7 @@ public class AnnualWorkScheduleExportService extends ExportService<AnnualWorkSch
 	 */
 	private List<AgreementTimeByPeriodImport> create36AgreementFewMonth(String cid, String employeeId, Year fiscalYear, YearMonth startYm, PeriodAtrOfAgreement periodAtr) {
 		// アルゴリズム「2・3ヶ月の36協定時間の作成」を実行する
-		Closure closure = closureService.getClosureDataByEmployee(employeeId, GeneralDate.today());
+		Closure closure = ClosureService.getClosureDataByEmployee(requireService.createRequire(), new CacheCarrier(), employeeId, GeneralDate.today());
 		// 年度から集計期間を取得
 		Optional<DatePeriod> datePeriod = getAgreementPeriodFromYearPub.algorithm(fiscalYear, closure);
 		// ドメイン「３６協定運用設定」を取得する

@@ -9,6 +9,7 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.monthly.WorkTypeDaysCountTable;
@@ -19,12 +20,10 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.attdstatus.Attendance
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.RepositoriesRequiredByMonthlyAggr;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 期間別の縦計
@@ -81,17 +80,16 @@ public class VerticalTotalOfMonthly implements Serializable{
 	 * @param companySets 月別集計で必要な会社別設定
 	 * @param employeeSets 月別集計で必要な社員別設定
 	 * @param monthlyCalcDailys 月の計算中の日別実績データ
-	 * @param repositories 月次集計が必要とするリポジトリ
 	 */
 	public void verticalTotal(
+			RequireM1 require,
 			String companyId,
 			String employeeId,
 			DatePeriod datePeriod,
 			WorkingSystem workingSystem,
 			MonAggrCompanySettings companySets,
 			MonAggrEmployeeSettings employeeSets,
-			MonthlyCalculatingDailys monthlyCalcDailys,
-			RepositoriesRequiredByMonthlyAggr repositories){
+			MonthlyCalculatingDailys monthlyCalcDailys){
 		
 		// 集計結果の初期化
 		this.workTime = new WorkTimeOfMonthlyVT();
@@ -131,7 +129,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 				val workTypeCode = recordWorkInfo.getWorkTypeCode();
 				val workTimeCode = recordWorkInfo.getWorkTimeCode();
 				if (workTypeCode != null){
-					workType = companySets.getWorkTypeMap(workTypeCode.v(), repositories);
+					workType = companySets.getWorkTypeMap(require,workTypeCode.v());
 					if (workType != null){
 						
 						// 勤務種類を判断しカウント数を取得する
@@ -149,7 +147,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 				
 				// 計算用所定時間設定を確認する
 				if (workTimeCode != null){
-					predetermineTimeSet = companySets.getPredetemineTimeSetMap(workTimeCode.v(), repositories);
+					predetermineTimeSet = companySets.getPredetemineTimeSetMap(require, workTimeCode.v());
 					if (predetermineTimeSet != null){
 						predTimeSetForCalc = PredetermineTimeSetForCalc.convertMastarToCalc(predetermineTimeSet);
 					}
@@ -166,7 +164,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 					if (weekdayTime != null) {
 						if (weekdayTime.getWorkTimeCode().isPresent()) {
 							predTimeSetOnWeekday = companySets.getPredetemineTimeSetMap(
-									weekdayTime.getWorkTimeCode().get().v(), repositories);
+									require, weekdayTime.getWorkTimeCode().get().v());
 						}
 					}
 				}
@@ -228,5 +226,9 @@ public class VerticalTotalOfMonthly implements Serializable{
 		this.workDays.sum(target.workDays);
 		this.workTime.sum(target.workTime);
 		this.workClock.sum(target.workClock);
+	}
+	
+	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4, MonAggrCompanySettings.RequireM2 {
+
 	}
 }

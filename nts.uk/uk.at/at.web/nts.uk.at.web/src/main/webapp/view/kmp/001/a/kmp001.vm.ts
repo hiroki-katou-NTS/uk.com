@@ -9,7 +9,7 @@ module nts.uk.at.view.kmp001 {
 			mounted() {
 				const vm = this;
 
-				if (!!vm.$user.role.attendance) {
+				if (vm.$user.role.isInCharge.attendance) {
 					vm.tabs(['KMP001_1', 'KMP001_2', 'KMP001_3']);
 				} else {
 					vm.tabs(['KMP001_1']);
@@ -18,6 +18,32 @@ module nts.uk.at.view.kmp001 {
 		}
 	}
 
+	export interface IStampCardEdit {
+		stampCardDigitNumber: number;
+		stampCardEditMethod: number;
+	}
+	
+	export class StampCardEdit {
+		stampCardDigitNumber: KnockoutObservable<number> = ko.observable(0);
+		stampCardEditMethod: KnockoutObservable<number> = ko.observable(0);
+		
+		public create(params?: IStampCardEdit) {
+			const self = this;
+
+			if (params) {
+				self.update(params);
+			}
+		}
+
+		public update(params?: IStampCardEdit) {
+			const self = this;
+
+			if (params) {
+				self.stampCardDigitNumber(params.stampCardDigitNumber);
+				self.stampCardEditMethod(params.stampCardEditMethod);
+			}
+		}
+	}
 
 	export interface IModel {
 		code: string;
@@ -33,35 +59,6 @@ module nts.uk.at.view.kmp001 {
 		workplaceId: string;
 		workplaceName: string;
 		stampCardDto: IStampCard[];
-	}
-
-	export interface IStampCard {
-		stampCardId: string;
-		stampNumber: string;
-		checked: boolean;
-	}
-
-	export class StampCard {
-		stampCardId: KnockoutObservable<string> = ko.observable('');
-		stampNumber: KnockoutObservable<string> = ko.observable('');
-		checked: KnockoutObservable<boolean> = ko.observable(false);
-
-		constructor(params?: IStampCard) {
-			const model = this;
-
-			model.stampCardId(params.stampCardId);
-			model.update(params);
-		}
-
-		public update(params?: IStampCard) {
-			const model = this;
-
-			if (params) {
-				//model.stampCardId(params.stampCardId);
-				model.stampNumber(params.stampNumber);
-				model.checked(params.checked);
-			}
-		}
 	}
 
 	export class Model {
@@ -107,16 +104,78 @@ module nts.uk.at.view.kmp001 {
 
 				self.stampCardDto(params.stampCardDto.map(m => new StampCard(m)));
 
-				self.selectedStampCardIndex(0);
+				if (ko.unwrap(self.selectedStampCardIndex) === 0) {
+					self.selectedStampCardIndex.valueHasMutated();
+				} else {
+					self.selectedStampCardIndex(0);
+				}
+
+				const vm = new ko.ViewModel();
+
+				vm.$nextTick(() => {
+					const $grid = $('#stampcard-list');
+
+					if ($grid.length && $grid.data('igGrid')) {
+						$grid.igGridSelection('clearSelection');
+						$grid.igGridSelection('selectRow', 0);
+					}
+				});
 			}
 		}
 
+		public clear() {
+			const self = this;
+
+			self.code('');
+			self.affiliationId('');
+			self.birthDay(null);
+			self.businessName('');
+			self.employeeCode('');
+			self.employeeId('');
+			self.entryDate(null);
+			self.gender(-1);
+			self.pid('');
+			self.retiredDate(null);
+			self.stampCardDto([]);
+		}
 
 		public addNewStampCard() {
 			const model = this;
 
 			model.stampCardDto.unshift(new StampCard({ checked: false, stampCardId: "", stampNumber: "" }));
 			model.selectedStampCardIndex(model.stampCardDto.length - 1);
+		}
+	}
+
+	export interface IStampCard {
+		stampCardId: string;
+		defaultValue?: string;
+		stampNumber: string;
+		checked: boolean;
+	}
+
+	export class StampCard {
+		stampCardId: KnockoutObservable<string> = ko.observable('');
+		defaultValue: string = '';
+		stampNumber: KnockoutObservable<string> = ko.observable('');
+		checked: KnockoutObservable<boolean> = ko.observable(false);
+
+		constructor(params?: IStampCard) {
+			const model = this;
+
+			model.stampCardId(params.stampCardId);
+			model.defaultValue = params.stampNumber;
+			model.update(params);
+		}
+
+		public update(params?: IStampCard) {
+			const model = this;
+
+			if (params) {
+				//model.stampCardId(params.stampCardId);
+				model.stampNumber(params.stampNumber);
+				model.checked(params.checked);
+			}
 		}
 	}
 
@@ -148,4 +207,6 @@ module nts.uk.at.view.kmp001 {
 	export interface IEmployeeId {
 		employee: string;
 	}
+
+	export type SELECT = 'select';
 }

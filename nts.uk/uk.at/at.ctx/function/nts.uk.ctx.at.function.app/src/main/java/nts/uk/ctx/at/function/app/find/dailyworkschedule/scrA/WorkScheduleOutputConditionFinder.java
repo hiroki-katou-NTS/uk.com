@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataInforReturnDto;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.scrB.ErrorAlarmCodeDto;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
@@ -28,7 +29,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkScheduleOutputConditionFinder.
@@ -48,10 +48,6 @@ public class WorkScheduleOutputConditionFinder {
 	/** The closure repository. */
 	@Inject
 	private ClosureRepository closureRepository;
-	
-	/** The closure service. */
-	@Inject
-	private ClosureService closureService;
 	
 	/** The output item daily work schedule repository. */
 	@Inject
@@ -82,7 +78,6 @@ public class WorkScheduleOutputConditionFinder {
 		String companyId = AppContexts.user().companyId();
 		GeneralDate systemDate = GeneralDate.today();
 		String employeeId = AppContexts.user().employeeId();
-		
 		//「ログイン者が担当者か判断する」で就業担当者かチェックする
 		// 出力項目の設定ボタン(A7_6)の活性制御を行う
 		if (roleExportRepoAdapter.getRoleWhetherLogin().isEmployeeCharge()) {
@@ -100,7 +95,9 @@ public class WorkScheduleOutputConditionFinder {
 			dto.setMsgErrClosingPeriod(null);
 			
 			// アルゴリズム「当月の期間を算出する」を実行する(Execute the algorithm "Calculate the period of the current month")
-			DatePeriod datePeriod = closureService.getClosurePeriodNws(closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
+			DatePeriod datePeriod = ClosureService.getClosurePeriodNws(
+					ClosureService.createRequireM5(closureRepository),
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
 			dto.setStartDate(datePeriod.start());
 			dto.setEndDate(datePeriod.end());
 		} else {

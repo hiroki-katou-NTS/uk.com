@@ -29,9 +29,9 @@ public class SubHolTransferSetPolicyImpl implements SubHolTransferSetPolicy {
 	@Override
 	public void validate(BundledBusinessException be, PredetemineTimeSetting predSet, SubHolTransferSet subHdSet) {
 		AttendanceTime oneDayRange = predSet.getRangeTimeDay();
-		boolean isCertainDayInvalid = subHdSet.getCertainTime().greaterThan(oneDayRange);
-		boolean isHalfDayInvalid = subHdSet.getDesignatedTime().getHalfDayTime().greaterThan(oneDayRange);
-		boolean isOneDayInvalid = subHdSet.getDesignatedTime().getOneDayTime().greaterThan(oneDayRange);
+		boolean isCertainDayInvalid = subHdSet.getCertainTime().greaterThan(oneDayRange.v());
+		boolean isHalfDayInvalid = subHdSet.getDesignatedTime().getHalfDayTime().greaterThan(oneDayRange.v());
+		boolean isOneDayInvalid = subHdSet.getDesignatedTime().getOneDayTime().greaterThan(oneDayRange.v());
 
 		if (isHalfDayInvalid || isOneDayInvalid || isCertainDayInvalid) {
 			be.addMessage("Msg_781");

@@ -31,9 +31,6 @@ module nts.uk.at.kdp003.s {
 		created() {
 			const vm = this;
 			const { randomId } = nts.uk.util;
-			const { GOING_TO_WORK, WORKING_OUT } = ChangeClockArt;
-			const { GO_OUT, RETURN } = ChangeClockArt;
-			const { FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK } = ChangeClockArt;
 
 			vm.dataSources.filtereds = ko.computed({
 				read: () => {
@@ -46,57 +43,17 @@ module nts.uk.at.kdp003.s {
 						.each((item: StampData) => {
 							const d = moment(item.stampDate, 'YYYY/MM/DD');
 							const day = d.clone().locale('en').format('dddd');
-							const {
-								WORK,
-								WORK_STRAIGHT,
-								WORK_EARLY,
-								WORK_BREAK,
-								DEPARTURE,
-								DEPARTURE_BOUNCE,
-								DEPARTURE_OVERTIME,
-								OUT,
-								RETURN,
-								GETTING_STARTED,
-								DEPAR,
-								TEMPORARY_WORK,
-								TEMPORARY_LEAVING,
-								START_SUPPORT,
-								END_SUPPORT,
-								WORK_SUPPORT,
-								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK,
-								RESERVATION,
-								CANCEL_RESERVATION
-							} = ContentsStampType;
-
-							// bad algorithm :/
-							const LEFT_ALIGNS = [
-								WORK,
-								WORK_STRAIGHT,
-								WORK_EARLY,
-								WORK_BREAK,
-								GETTING_STARTED,
-								TEMPORARY_WORK,
-								START_SUPPORT,
-								WORK_SUPPORT,
-								START_SUPPORT_EARLY_APPEARANCE,
-								START_SUPPORT_BREAK
-							];
-							const RIGHT_ALIGNS = [
-								DEPARTURE, 
-								DEPARTURE_BOUNCE,
-								DEPARTURE_OVERTIME,
-								DEPAR,
-								TEMPORARY_LEAVING,
-								END_SUPPORT
-								];
+							
+							let value = item.buttonValueType;
 
 							const pushable = {
 								id: randomId(),
 								time: `${item.stampHow} ${item.stampTime}`,
 								date: `<div class="color-schedule-${day.toLowerCase()}">${d.format('YYYY/MM/DD(dd)')}</div>`,
-								name: `<div style="text-align: ${LEFT_ALIGNS.indexOf(item.correctTimeStampValue) > -1 ? 'left' :
-									RIGHT_ALIGNS.indexOf(item.correctTimeStampValue) > -1 ? 'right' : 'center'};">${item.stampArt}</div>`
+								name: `<div style="text-align: 
+								${(ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) ? 'left' :
+								ButtonType.WORKING_OUT == value ? 'right' 
+								: 'center'};">${item.stampArt}</div>`
 							};
 
 							// S1 bussiness logic
@@ -106,16 +63,17 @@ module nts.uk.at.kdp003.s {
 									filtereds.push(pushable);
 									break;
 								case '2':
-									if ([GOING_TO_WORK, WORKING_OUT].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.GOING_TO_WORK, ChangeClockArt.WORKING_OUT].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
 									break;
 								case '3':
-									if ([GO_OUT, RETURN].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.GO_OUT, ChangeClockArt.RETURN].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
+									break;
 								case '4':
-									if ([FIX, END_OF_SUPPORT, SUPPORT, TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
+									if ([ChangeClockArt.FIX, ChangeClockArt.END_OF_SUPPORT, ChangeClockArt.SUPPORT, ChangeClockArt.TEMPORARY_SUPPORT_WORK].indexOf(item.changeClockArt) > -1) {
 										filtereds.push(pushable);
 									}
 									break;
@@ -146,6 +104,10 @@ module nts.uk.at.kdp003.s {
 
 			vm.filter.day.valueHasMutated();
 		}
+		
+		mounted() {
+			$('.nts-datepicker-wrapper').first().find('input').focus();
+		}
 
 		closeDialog() {
 			const vm = this;
@@ -155,6 +117,24 @@ module nts.uk.at.kdp003.s {
 	}
 
 	export type ENGRAVING = '1' | '2' | '3' | '4';
+	
+	export enum ButtonType {
+		// 系
+
+		GOING_TO_WORK = 1,
+		// 系
+
+		WORKING_OUT = 2,
+		// "外出系"
+
+		GO_OUT = 3,
+		// 戻り系
+
+		RETURN = 4,
+		// 予約系
+
+		RESERVATION_SYSTEM = 5
+	}
 
 	export enum ChangeClockArt {
 		/** 0. 出勤 */
@@ -299,6 +279,7 @@ module nts.uk.at.kdp003.s {
 		changeHalfDay: boolean;
 		corectTtimeStampType: string;
 		correctTimeStampValue: ContentsStampType;
+		buttonValueType:number;
 		empInfoTerCode: string;
 		goOutArt: string;
 		latitude: number;

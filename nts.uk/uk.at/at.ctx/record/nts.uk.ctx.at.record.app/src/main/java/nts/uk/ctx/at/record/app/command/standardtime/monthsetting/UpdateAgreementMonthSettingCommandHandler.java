@@ -10,6 +10,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
@@ -29,7 +30,7 @@ public class UpdateAgreementMonthSettingCommandHandler extends CommandHandlerWit
 	private AgreementMonthSetDomainService agreementMonthSetDomainService;
 	
 	@Inject
-	private WorkingConditionService workingConditionService;
+	private RecordDomRequireService requireService;
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<UpdateAgreementMonthSettingCommand> context) {
@@ -41,7 +42,9 @@ public class UpdateAgreementMonthSettingCommandHandler extends CommandHandlerWit
 		
 //		agreementMonthSetting.validate();
 		
-		Optional<WorkingConditionItem> workingConditionItem = this.workingConditionService.findWorkConditionByEmployee(command.getEmployeeId(), GeneralDate.today());
+		Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService
+				.findWorkConditionByEmployee(requireService.createRequire(),
+						command.getEmployeeId(), GeneralDate.today());
 		Integer yearMonthValueOld = command.getYearMonthValueOld();
 		return this.agreementMonthSetDomainService.update(agreementMonthSetting, workingConditionItem, yearMonthValueOld);
 	}

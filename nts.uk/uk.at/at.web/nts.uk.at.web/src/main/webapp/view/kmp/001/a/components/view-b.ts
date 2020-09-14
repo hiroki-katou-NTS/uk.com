@@ -9,7 +9,7 @@ module nts.uk.at.view.kmp001.b {
 		</div>
 		<div class="search_label" style="padding-bottom: 0px">
 			<span class="sub_title" data-bind= "text: $i18n('KMP001_22')"></span>
-			<input data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
+			<input id="input-stamp-card" data-bind="ntsTextEditor: {value: inputStampCard}" style="width: 225px"/>
 			<button id="top_bottom" data-bind= "text: $i18n('KMP001_23'),
 												click: getStampCard">
 			</button>
@@ -98,6 +98,8 @@ module nts.uk.at.view.kmp001.b {
 		ADD_STAMP: 'at/record/register-stamp-card/view-b/save',
 		DELETE_STAMP: 'at/record/register-stamp-card/view-b/delete'
 	};
+	
+	const DATE_FORMAT = 'YYYY/MM/DD';
 
 	@component({
 		name: 'view-b',
@@ -107,7 +109,7 @@ module nts.uk.at.view.kmp001.b {
 		public params!: Params;
 		public inputStampCard: KnockoutObservable<string> = ko.observable('');
 		public items: KnockoutObservableArray<IStampCard> = ko.observableArray([]);
-		public currentCode: KnockoutObservable<string> = ko.observable('');
+		public currentCode: KnockoutObservable<string> = ko.observable('');	
 		public model: StampCard = new StampCard();
 		public employee: EmployeeVIewB = new EmployeeVIewB();
 		public mode: KnockoutObservable<MODE> = ko.observable('all');
@@ -122,7 +124,6 @@ module nts.uk.at.view.kmp001.b {
 					const stampCards: IStampCard[] = ko.toJS(vm.items);
 					const current = _.find(stampCards, e => e.stampNumber === c);
 
-					vm.model.clear();
 					vm.employee.clear();
 					if (current) {
 						vm.employee.employeeId(current.employeeId);
@@ -141,12 +142,25 @@ module nts.uk.at.view.kmp001.b {
 					if (c != '') {
 						vm.$ajax(KMP001B_API.GET_INFO_EMPLOYEE + ko.toJS(c))
 							.then((data: IEmployeeVIewB[]) => {
+								
+								if(moment(data.retiredDate).format(DATE_FORMAT) === "9999/12/31"){
+									data.retiredDate = null;
+								}
+								
 								vm.employee.update(ko.toJS(data));
 							})
 					}
 				})
 		}
 
+		mounted() {
+			const vm = this;
+			
+			$(document).ready(function() {
+				$('#input-stamp-card').focus();
+			});
+		}
+		
 		getStampCard() {
 			const vm = this;
 			vm.$blockui("invisible");
@@ -209,8 +223,10 @@ module nts.uk.at.view.kmp001.b {
 								stampCardList.push(data);
 							}
 						});
-
-						vm.items(stampCardList);
+						
+						const dataSort: IStampCard[] = _.orderBy(stampCardList, ['stampNumber'], ['asc']);
+						
+						vm.items(dataSort);
 						const record = stampCardList[selectedIndex];
 
 						if (record) {
@@ -277,6 +293,7 @@ module nts.uk.at.view.kmp001.b {
 					.ifYes(() => {
 						vm.$ajax(KMP001B_API.DELETE_STAMP, command)
 							.done(() => vm.$dialog.info({ messageId: "Msg_16" }))
+							.then(() => vm.model.clear())
 							.then(() => vm.reloadAllStampCard(newIndex));
 					})
 			}
@@ -332,15 +349,17 @@ module nts.uk.at.view.kmp001.b {
 
 		update(params: IStampCard) {
 			const seft = this;
-			seft.employeeCode(params.stampNumber);
 			seft.employeeCode(params.employeeCode);
 			seft.businessName(params.businessName);
 			seft.employeeId(params.employeeId);
 		}
 
 		clear() {
-			const self = this;
-			self.update({ stampNumber: '', employeeCode: '', businessName: '', employeeId: '' });
+			const seft = this;
+			seft.stampNumber('');
+			seft.employeeCode('');
+			seft.businessName('');
+			seft.employeeId('');
 		}
 	}
 

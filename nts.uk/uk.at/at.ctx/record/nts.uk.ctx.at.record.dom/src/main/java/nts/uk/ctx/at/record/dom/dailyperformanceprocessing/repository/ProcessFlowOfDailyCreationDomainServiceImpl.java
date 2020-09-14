@@ -13,14 +13,17 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
+import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.AppReflectManagerFromRecordImport;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLogRepository;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
@@ -44,6 +47,9 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	@Inject
 	private EmpCalAndSumExeLogRepository empCalAndSumExeLogRepository;
 	
+	@Inject 
+	private RecordDomRequireService requireService;
+	
 	@Inject
 	private TargetPersonRepository targetPersonRepository;
 	
@@ -52,9 +58,6 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 	
 	@Inject
 	private DailyCalculationService dailyCalculationService;
-	
-	@Inject
-	private MonthlyAggregationService monthlyAggregationService;
 	
 	@Inject
 	private ErrMessageInfoRepository errMessageInfoRepository;
@@ -224,8 +227,15 @@ public class ProcessFlowOfDailyCreationDomainServiceImpl implements ProcessFlowO
 			
 			Optional<ExecutionLog> monthlyAggregationLog =
 					Optional.of(logsMap.get(ExecutionContent.MONTHLY_AGGREGATION));
-			finalStatus = this.monthlyAggregationService.manager(asyncContext, companyId, employeeIdList,
+			MonthlyAggregationService.AggregationResult aggreResult = MonthlyAggregationService.manager(requireService.createRequire(), 
+					new CacheCarrier(), asyncContext, companyId, employeeIdList,
 					periodTime, executionAttr, empCalAndSumExecLogID, monthlyAggregationLog);
+			
+			finalStatus = aggreResult.getStatus();
+			
+			/** run to save data to DB */
+			AtomTask.bundle(aggreResult.getAtomTasks()).run();
+			
 			dataSetter.updateData("monthlyAggregateEndTime", GeneralDateTime.now().toString());
 			GeneralDateTime monthlyAggregateEndTime = GeneralDateTime.now();
 			

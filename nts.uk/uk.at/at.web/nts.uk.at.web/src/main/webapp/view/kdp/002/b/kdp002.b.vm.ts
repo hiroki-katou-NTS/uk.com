@@ -95,12 +95,9 @@ module nts.uk.at.view.kdp002.b {
 						self.laceName(data[0].workPlaceName);
 						self.listStampRecord(_.orderBy(self.listStampRecord(), ['stampTimeWithSec'], ['desc']));
 						_.forEach(self.listStampRecord(), (sr) => {
-							let changeClockArtDisplay = "<div class='full-width' style='text-align: center'> " + sr.stampArtName + " </div>";
-							if (sr.changeClockArt == 0) {
-								changeClockArtDisplay = "<div class='full-width' style='text-align: left'> " + sr.stampArtName + " </div>";
-							} else if (sr.changeClockArt == 1) {
-								changeClockArtDisplay = "<div class='full-width' style='text-align: right'> " + sr.stampArtName + " </div>";
-							}
+
+							let changeClockArtDisplay = self.getTextAlign(sr);
+
 							let dateDisplay = nts.uk.time.applyFormat("Short_YMDW", sr.stampDate);
 							if (moment(sr.stampDate).day() == 6) {
 								dateDisplay = "<span class='color-schedule-saturday' >" + dateDisplay + "</span>";
@@ -120,7 +117,7 @@ module nts.uk.at.view.kdp002.b {
 						self.currentCode(self.items()[0].id);
 						dfd.resolve();
 					} else {
-						nts.uk.ui.dialog.alertError({ messageId: "Stamp Data Not Found!!!" }).then(() => {
+						nts.uk.ui.dialog.alertError("Stamp Data Not Found!!!").then(() => {
 							nts.uk.ui.windows.close();
 						});
 
@@ -128,6 +125,28 @@ module nts.uk.at.view.kdp002.b {
 				});
 				return dfd.promise();
 			}
+
+			getTextAlign(sr: any): string {
+
+				let value = sr.buttonValueType;
+				if (ButtonType.GOING_TO_WORK == value || ButtonType.RESERVATION_SYSTEM == value) {
+
+					sr.timeStampType = `<div class='full-width' style='text-align: left'>` + sr.stampArtName + '</div>';
+					return;
+
+				}
+
+				if (ButtonType.WORKING_OUT == value) {
+
+					sr.timeStampType = `<div class='full-width' style='text-align: right'>` + sr.stampArtName + '</div>';
+					return;
+
+				}
+
+				sr.timeStampType = sr.stampArtName ? `<div class='full-width' style='text-align: center'>` + sr.stampArtName + '</div>' : '';
+
+			}
+
 			getEmpInfo(): JQueryPromise<any> {
 				let self = this;
 				let dfd = $.Deferred();
@@ -147,6 +166,27 @@ module nts.uk.at.view.kdp002.b {
 			}
 		}
 	}
+
+	enum ButtonType {
+		// 系
+
+		GOING_TO_WORK = 1,
+		// 系
+
+		WORKING_OUT = 2,
+		// "外出系"
+
+		GO_OUT = 3,
+		// 戻り系
+
+		RETURN = 4,
+		// 予約系
+
+		RESERVATION_SYSTEM = 5
+	}
+
+
+
 	export module model {
 
 		export class ItemModels {

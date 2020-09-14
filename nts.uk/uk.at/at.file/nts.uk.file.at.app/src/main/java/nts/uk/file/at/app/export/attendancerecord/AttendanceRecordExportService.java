@@ -34,6 +34,8 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
@@ -78,8 +80,6 @@ import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -152,7 +152,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		TaskDataSetter setter = context.getDataSetter();
 		// Get layout info
 		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = attendanceRecExpSetRepo
-				.getAttendanceRecExpSet(companyId, request.getLayout());
+				.getAttendanceRecExpSet(companyId, request.getLayoutId());
 
 		List<Employee> unknownEmployeeList = new ArrayList<>();
 		List<Employee> nullDataEmployeeList = new ArrayList<>();
@@ -228,31 +228,29 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		List<Integer> attendanceItemList = new ArrayList<>();
 		// get upper-daily-singleItem list
-		List<Integer> singleIdUpper = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(companyId,
-				request.getLayout(), UPPER_POSITION);
+		List<Integer> singleIdUpper = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(request.getLayoutId(), UPPER_POSITION);
 		attendanceItemList.addAll(singleIdUpper);
 		// get upper-daily-calculateItem list
 
 		List<CalculateAttendanceRecord> calculateUpperDaily = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordDailyByPosition(companyId, request.getLayout(), UPPER_POSITION);
+				.getIdCalculateAttendanceRecordDailyByPosition(request.getLayoutId(), UPPER_POSITION);
 
 		// get lower-daily-singleItem list
-		List<Integer> singleIdLower = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(companyId,
-				request.getLayout(), LOWER_POSITION);
+		List<Integer> singleIdLower = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(request.getLayoutId(), LOWER_POSITION);
 
 		attendanceItemList.addAll(singleIdLower);
 		// get lower-daily-CalculateItem list
 
 		List<CalculateAttendanceRecord> calculateLowerDaily = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordDailyByPosition(companyId, request.getLayout(), LOWER_POSITION);
+				.getIdCalculateAttendanceRecordDailyByPosition(request.getLayoutId(), LOWER_POSITION);
 
 		// get upper-monthly-Item list
 		List<CalculateAttendanceRecord> calculateUpperMonthly = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(), UPPER_POSITION);
+				.getIdCalculateAttendanceRecordMonthlyByPosition(request.getLayoutId(), UPPER_POSITION);
 
 		// get lower-monthly-Item list
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordMonthlyByPosition(companyId, request.getLayout(), LOWER_POSITION);
+				.getIdCalculateAttendanceRecordMonthlyByPosition(request.getLayoutId(), LOWER_POSITION);
 
 		List<ScreenUseAtr> screenUseAtrList = Arrays.asList(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE,
 				ScreenUseAtr.EMPLOYEE_BOOKING_HOURS);
@@ -940,8 +938,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<String> sealStamp = attendanceRecExpSetRepo.getSealStamp(companyId, request.getLayout());
 
 		// Get daily header info
-		List<AttendanceRecordExport> dailyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportDaily(companyId,
-				request.getLayout());
+		List<AttendanceRecordExport> dailyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportDaily(request.getLayoutId());
 		List<AttendanceRecordExport> dailyRecordTotal = new ArrayList<>();
 
 		for (int i = 1; i <= 9; i++) {
@@ -956,8 +953,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		}
 
 		// get monthly header info
-		List<AttendanceRecordExport> monthlyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportMonthly(companyId,
-				request.getLayout());
+		List<AttendanceRecordExport> monthlyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportMonthly(request.getLayoutId());
 		List<AttendanceRecordExport> monthlyRecordTotal = new ArrayList<>();
 		for (int i = 1; i <= 12; i++) {
 			if (this.findIndexInList(i, monthlyRecord) == null) {

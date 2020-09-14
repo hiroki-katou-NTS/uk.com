@@ -1,3 +1,4 @@
+
 module nts.uk.com.view.kwr002.b {
     import block = nts.uk.ui.block;
     import errors = nts.uk.ui.errors;
@@ -21,6 +22,9 @@ module nts.uk.com.view.kwr002.b {
         sealUseAtrSwitchs: KnockoutObservableArray<SealUseAtrSwitch>;
         newMode: KnockoutObservable<boolean>;
         fontSizeSwitch: KnockoutObservableArray<SealUseAtrSwitch>;
+        inputKWR002B: KnockoutObservable<DataInputScreenB>;
+        selectionType: string = '' ;
+        layoutId: string = '';
 
         constructor() {
             let self = this;
@@ -37,9 +41,9 @@ module nts.uk.com.view.kwr002.b {
             ]);
 
             self.fontSizeSwitch = ko.observableArray([
-                new SealUseAtrSwitch(1, getText("KWR002_50")),
-                new SealUseAtrSwitch(2, getText("KWR002_51")),
-                new SealUseAtrSwitch(3, getText("KWR002_52")),
+                new SealUseAtrSwitch(2, getText("KWR002_50")),
+                new SealUseAtrSwitch(1, getText("KWR002_51")),
+                new SealUseAtrSwitch(0, getText("KWR002_52")),
             ]);
 
             self.newMode = ko.observable(false);
@@ -50,8 +54,12 @@ module nts.uk.com.view.kwr002.b {
                 });
                 self.resetShare();
                 if (value) {
-                    service.getARESByCode(value).done((aRESData) => {
+                    service.getARESByCode(value).done((aRESData: any) => {
                         self.currentARES(new AttendanceRecordExportSetting(aRESData));
+                        // choose default font size large
+                        if (_.isNil(self.currentARES().exportFontSize())) {
+                            self.currentARES().exportFontSize(2);
+                        }
                         self.newMode(false);
                         newModeFlag = false;
                     })
@@ -82,10 +90,11 @@ module nts.uk.com.view.kwr002.b {
             confirm({ messageId: 'Msg_18' }).ifYes(() => {
                 let currentData = self.currentARES();
                 let delARESCmd = {
-                    code: Number(currentData.code()),
-                    exportCode: Number(currentData.code()),
-                    exportSettingCode: Number(currentData.code()),
-                    name: currentData.name()
+                    code: currentData.code(),
+                    exportCode: currentData.code(),
+                    exportSettingCode: currentData.code(),
+                    name: currentData.name(),
+                    layoutId: currentData.layoutId()
                 };
 
                 let cmd = {
@@ -93,7 +102,7 @@ module nts.uk.com.view.kwr002.b {
                     delARECmd: delARESCmd,
                     delARICmd: delARESCmd
                 };
-                self.indexOfDelete(_.findIndex(self.aRES(), (e) => {
+                self.indexOfDelete(_.findIndex(self.aRES(), (e: any) => {
                     return e.code == self.currentARESCode()
                 }));
                 service.delARES(cmd).done(() => {
@@ -116,14 +125,14 @@ module nts.uk.com.view.kwr002.b {
             block.invisible();
             let self = this;
             let dfd = $.Deferred<any>();
-            service.getAllARES().done((data) => {
+            service.getAllARES().done((data: any) => {
                 block.clear();
                 if (data.length > 0) {
-                    _.map(data, (item) => {
+                    _.map(data, (item: any) => {
                         item.code = _.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
                     });
-                    data = _.orderBy(data, [item => item.code], ['asc']);
+                    data = _.orderBy(data, [(item: any) => item.code], ['asc']);
                     self.aRES(data);
                     if (self.indexOfDelete() == self.aRES().length) {
                         self.currentARESCode(self.aRES()[self.indexOfDelete() - 1].code);
@@ -147,7 +156,7 @@ module nts.uk.com.view.kwr002.b {
                 name: "",
                 sealUseAtr: false,
                 nameUseAtr: 1,
-                fontSizeAtr: 1,
+                exportFontSize: 2,
             };
             self.currentARES(new AttendanceRecordExportSetting(params));
             self.currentARESCode("");
@@ -181,7 +190,7 @@ module nts.uk.com.view.kwr002.b {
                 },
 
                 isListValid: function(list) {
-                    return _.find(list, (item) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
+                    return _.find(list, (item: any) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
                 }
             };
 
@@ -218,7 +227,7 @@ module nts.uk.com.view.kwr002.b {
         callGetAll(self, currentData) {
             service.getAllARES().done((data) => {
                 if (data.length > 0) {
-                    _.map(data, (item) => {
+                    _.map(data, (item: any) => {
                         item.code = _.padStart(item.code, 2, '0');
                     });
                     data = _.orderBy(data, [e => e.code], ['asc']);
@@ -238,13 +247,16 @@ module nts.uk.com.view.kwr002.b {
         };
 
         createTransferData(currentData, rcdExport) {
+            let self = this;
             let cmd = {
-                code: Number(currentData.code()),
+                code: currentData.code(),
                 name: currentData.name(),
                 sealUseAtr: rcdExport.useSeal,
                 sealStamp: rcdExport.sealStamp,
                 nameUseAtr: currentData.nameUseAtr(),
-                fontSizeAtr: currentData.fontSizeAtr(),
+                exportFontSize: currentData.exportFontSize(),
+                itemSelType : self.selectionType,
+                layoutId: currentData.layoutId()
             };
 
             let itemCmd = {
@@ -253,12 +265,12 @@ module nts.uk.com.view.kwr002.b {
             };
 
             _.forEach(rcdExport.attendanceRecItemList, (o) => {
-                let code = Number(currentData.code());
+                let code = currentData.code();
                 let name = o.attendanceItemName;
                 let timeItemIds = o.attendanceId;
                 let columnIndex = Number(o.columnIndex);
                 if (_.isArray(timeItemIds)) {
-                    let timeItems = _.map(timeItemIds, (item) => {
+                    let timeItems = _.map(timeItemIds, (item: any) => {
                         let type = _.isEqual(_.trim(item.action), getText("KWR002_178")) ? 1 : 2; //KWR002_178
                         return new TimeItem(type, item.code);
                     });
@@ -281,15 +293,14 @@ module nts.uk.com.view.kwr002.b {
             return data;
         };
 
-        openKDL002F() {
+        public openDialogF() {
             let self = this;
-            block.grayout();
-            // setShared('inputDialogD',
-            //     { repeatMonthDateList: self.curExecSetting().repeatMonthDateList()
-            //     });
-            modal("/view/kbt/002/d/index.xhtml").onClosed(function(){
+            let data = new OpenDialogFParam(self.selectionType,self.currentARES().code(),self.currentARES().name(),'');
+            let code = self.currentARES().code();
+            let name = self.currentARES().name();
+            setShared("dataFromScreenB", data, true);
+            modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
 
-                block.clear();
             });
         }
 
@@ -297,17 +308,44 @@ module nts.uk.com.view.kwr002.b {
             block.invisible();
             let self = this;
             let dfd = $.Deferred<any>();
+            let dataFromScreenA = getShared("dataTranferScreenB");
+            self.selectionType = dataFromScreenA.selectionType;
 
-            service.getAllARES().done((data) => {
-                if (data.length > 0) {
-                    _.map(data, (item) => {
+
+//             service.getAllARES().done((data: any) => {
+//                 if (data.length > 0) {
+//                     _.map(data, (item:any) => {
+//                         item.code = _.padStart(item.code, 2, '0');
+//                         // new AttendanceRecordExportSetting(item);
+//                     });
+//                     data = _.orderBy(data, [item => item.code], ['asc']);
+//                     self.aRES(data);
+// //                    let firstData = _.first(data);
+//                     self.currentARESCode(getShared("currentARESSelectCode"));
+//                     console.log("1");
+
+//                     console.log(data);
+//                 } else {
+//                     self.onNew(true);
+//                 }
+//                 dfd.resolve();
+//             }).fail(function(error) {
+//                 dfd.reject();
+//                 alert(error.message);
+//             }).always(() => {
+//                 block.clear();
+//             });
+            service.startScreenB(dataFromScreenA).done((data: any) => {
+                if (data.lstAttendanceRecordExportSetting.length > 0) {
+                    _.map(data.lstAttendanceRecordExportSetting, (item:any) => {
                         item.code = _.padStart(item.code, 2, '0');
                         // new AttendanceRecordExportSetting(item);
                     });
-                    data = _.orderBy(data, [item => item.code], ['asc']);
-                    self.aRES(data);
+                    data.lstAttendanceRecordExportSetting = _.orderBy(data.lstAttendanceRecordExportSetting, [item => item.code], ['asc']);
+                    self.aRES(data.lstAttendanceRecordExportSetting);
 //                    let firstData = _.first(data);
                     self.currentARESCode(getShared("currentARESSelectCode"));
+
                 } else {
                     self.onNew(true);
                 }
@@ -383,7 +421,9 @@ module nts.uk.com.view.kwr002.b {
         name: string;
         sealUseAtr: boolean;
         nameUseAtr: number;
-        fontSizeAtr: number;
+        exportFontSize: number;
+        layoutId: string;
+        itemSelType: number;
     }
 
     export class AttendanceRecordExportSetting {
@@ -391,7 +431,9 @@ module nts.uk.com.view.kwr002.b {
         name: KnockoutObservable<string>;
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
-        fontSizeAtr: KnockoutObservable<number>;
+        exportFontSize: KnockoutObservable<number>;
+        layoutId: KnockoutObservable<string>;
+        itemSelType: KnockoutObservable<number>;
 
         constructor(param: IARES) {
             let self = this;
@@ -399,7 +441,9 @@ module nts.uk.com.view.kwr002.b {
             self.name = ko.observable(param.name);
             self.sealUseAtr = ko.observable(param.sealUseAtr);
             self.nameUseAtr = ko.observable(param.nameUseAtr);
-            self.fontSizeAtr = ko.observable(param.fontSizeAtr);
+            self.exportFontSize = ko.observable(param.exportFontSize);
+            self.layoutId = ko.observable(param.layoutId);
+            self.itemSelType = ko.observable(param.itemSelType);
         };
 
 
@@ -446,5 +490,35 @@ module nts.uk.com.view.kwr002.b {
             this.code = code;
             this.name = name;
         }
+    }
+
+    class DataInputScreenB {
+        selectionType: number; //設定区分（自由設定）
+        companyId: string; //会社ID
+        employeeId: string; //社員ID
+        selectedOutputLayoutId: string; //選択出力レイアウトID
+        selectedCode: string;// 選択コード
+
+        constructor(selectionType: number, companyId: string,employeeId: string,selectedOutputLayoutId: string,selectedCode: string) {
+            this.selectionType = selectionType;
+            this.companyId = companyId;
+            this.employeeId = employeeId;
+            this.selectedOutputLayoutId = selectedOutputLayoutId;
+            this.selectedCode = selectedCode;
+        }
+    }
+
+    class OpenDialogFParam{
+        itemSelectedType: string;
+        code: string;
+        name: string;
+        layoutCode: string;
+
+        constructor(itemSelectedType: string, code: string, name: string, layoutCode: string) {
+            this.itemSelectedType = itemSelectedType;
+            this.code = code;
+            this.name = name;
+            this.layoutCode = layoutCode;
+      }
     }
 }

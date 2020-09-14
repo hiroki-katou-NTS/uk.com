@@ -53,6 +53,7 @@ import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMon
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonMedicalTime;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -289,7 +290,8 @@ public class KrcdtMonAttendanceTime extends UkJpaEntity implements Serializable 
 				excessOutsideWork,
 				verticalTotal,
 				totalCount,
-				new AttendanceDaysMonth(this.aggregateDays));
+				new AttendanceDaysMonth(this.aggregateDays),
+				OuenTimeOfMonthly.empty());
 		
 //		//テーブル結合用
 //		return null;

@@ -12,9 +12,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.gul.util.value.MutableValue;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.ClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
@@ -25,14 +28,13 @@ import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.InterimRemain
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnAndRsvLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.param.AggrResultOfAnnualLeave;
 import nts.uk.ctx.at.record.dom.remainingnumber.reserveleave.export.param.AggrResultOfReserveLeave;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagementRepository;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.GetRsvLeaNumAfterCurrentMon;
 import nts.uk.ctx.at.record.pub.remainnumber.reserveleave.RsvLeaUsedCurrentMonExport;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
-import nts.arc.time.calendar.period.DatePeriod;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
  * 実装：当月以降の積立年休使用数・残数を取得する
@@ -41,27 +43,20 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 @Stateless
 public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrentMon {
 
-	/** 当月の期間を算出する */
-	@Inject
-	private ClosureService closureService;
-	/** 集計期間を取得する */
-	@Inject
-	private GetClosurePeriod getClosurePeriod;
-	/** 期間中の年休積休残数を取得 */
-	@Inject
-	private GetAnnAndRsvRemNumWithinPeriod annRsvRemNum;
 	@Inject
 	private ManagedParallelWithContext parallel;
 	@Inject
 	private ClosureStatusManagementRepository clsSttMngRepo;
 	@Inject
-	private GetClosureStartForEmployee clsStrForEmp;
+	private RecordDomRequireService requireService;
 	
 	/** 当月以降の積立年休使用数・残数を取得する */
 	@Override
 	public List<RsvLeaUsedCurrentMonExport> algorithm(String employeeId, YearMonthPeriod period) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
 		// 社員に対応する処理締めを取得する
-		val closure = this.closureService.getClosureDataByEmployee(employeeId, GeneralDate.today());
+		val closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, GeneralDate.today());
 		if (closure == null) return new ArrayList<>();
 		
 		// 指定した年月の期間をすべて取得する
@@ -69,7 +64,7 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 		List<ClosurePeriod> aggrTmp = Collections.synchronizedList(new ArrayList<>());
 		parallel.forEach(endYMPeriods, endYMPeriod -> {
 			// 集計期間を取得する
-			aggrTmp.addAll(this.getClosurePeriod.get(closure.getCompanyId().v(), employeeId,
+			aggrTmp.addAll(GetClosurePeriod.get(require, closure.getCompanyId().v(), employeeId,
 					endYMPeriod.end(), Optional.empty(), Optional.empty(), Optional.empty()));
 		});
 		List<ClosurePeriod> aggrPeriods = new ArrayList<>();
@@ -99,8 +94,8 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 		parallel.forEach (keys, key -> {
 			val closurePeriod = closurePeriods.get(key);
 			// 期間中の年休積休残数を取得
-			AggrResultOfAnnAndRsvLeave aggrResult = this.annRsvRemNum.algorithm(
-					closure.getCompanyId().v(),
+			AggrResultOfAnnAndRsvLeave aggrResult = GetAnnAndRsvRemNumWithinPeriod.algorithm(require,
+					cacheCarrier, closure.getCompanyId().v(),
 					employeeId,
 					closurePeriod,
 					InterimRemainMngMode.OTHER,
@@ -138,10 +133,15 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 
 	//RequestList364 - ver2
 	@Override
-	public List<RsvLeaUsedCurrentMonExport> getRemainRsvAnnAfCurMonV2(String employeeId, YearMonthPeriod period, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets) {
-
+	public List<RsvLeaUsedCurrentMonExport> getRemainRsvAnnAfCurMonV2(String employeeId, 
+			YearMonthPeriod period, MonAggrCompanySettings companySets, 
+			MonAggrEmployeeSettings employeeSets) {
+		
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		// 社員に対応する処理締めを取得する
-		val closure = this.closureService.getClosureDataByEmployee(employeeId, GeneralDate.today());
+		val closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, GeneralDate.today());
 		if (closure == null) return new ArrayList<>();
 		
 		// 指定した年月の期間をすべて取得する
@@ -149,7 +149,7 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 		List<ClosurePeriod> aggrPeriods = new ArrayList<>();
 		for(DatePeriod endYMPeriod : endYMPeriods){
 			// 集計期間を取得する
-			aggrPeriods.addAll(this.getClosurePeriod.get(closure.getCompanyId().v(), employeeId,
+			aggrPeriods.addAll(GetClosurePeriod.get(require, closure.getCompanyId().v(), employeeId,
 					endYMPeriod.end(), Optional.empty(), Optional.empty(), Optional.empty()));
 		}
 		// 締め処理期間のうち、同じ年月の期間をまとめる
@@ -174,12 +174,13 @@ public class GetRsvLeaNumAfterCurrentMonImpl implements GetRsvLeaNumAfterCurrent
 		MutableValue<AggrResultOfAnnualLeave> prevAnnLea = new MutableValue<>();
 		MutableValue<AggrResultOfReserveLeave> prevRsvLeave = new MutableValue<>();
 		Optional<ClosureStatusManagement> sttMng = clsSttMngRepo.getLatestByEmpId(employeeId);
-		Optional<GeneralDate> closureStartOpt = clsStrForEmp.algorithm(employeeId);
+		Optional<GeneralDate> closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
 		List<RsvLeaUsedCurrentMonExport> results = new ArrayList<>();
 		for(YearMonth key : keys) {
 			DatePeriod clsPeriod = closurePeriods.get(key);
 			// 期間中の年休積休残数を取得
-			AggrResultOfAnnAndRsvLeave aggrResult = annRsvRemNum.getRemainAnnRscByPeriod(
+			AggrResultOfAnnAndRsvLeave aggrResult = GetAnnAndRsvRemNumWithinPeriod.getRemainAnnRscByPeriod(
+					require, cacheCarrier,
 					closure.getCompanyId().v(), employeeId, clsPeriod, InterimRemainMngMode.OTHER,
 					clsPeriod.end(), false, false, Optional.empty(), Optional.empty(), Optional.empty(),
 					Optional.empty(), Optional.empty(), prevAnnLea.optional(), prevRsvLeave.optional(),

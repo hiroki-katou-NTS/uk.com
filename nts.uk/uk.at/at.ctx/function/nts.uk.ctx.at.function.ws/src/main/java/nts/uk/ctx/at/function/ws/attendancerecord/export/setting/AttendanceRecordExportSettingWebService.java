@@ -8,10 +8,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.*;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingSaveCommand;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.AttendanceRecordExportSettingSaveCommandHandler;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.DeleteAttendanceRecordExportSettingCommand;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.DeleteAttendanceRecordExportSettingCommandHandler;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.NewAttendanceRecordExportSettingCommand;
+import nts.uk.ctx.at.function.app.command.attendancerecord.export.setting.NewAttendanceRecordExportSettingCommandHandler;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendaceMonthDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceAuthorityOfWorkPerform;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceSettingDto;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.ItemSelectedTypeSettingDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -38,6 +46,7 @@ public class AttendanceRecordExportSettingWebService {
 
 	@Inject
 	DeleteAttendanceRecordExportSettingCommandHandler delHandler;
+	
 
 	/**
 	 * Gets the all attendance rec out set.
@@ -47,8 +56,7 @@ public class AttendanceRecordExportSettingWebService {
 	@POST
 	@Path("getAllAttendanceRecExpSet")
 	public List<AttendanceRecordExportSettingDto> getAllAttendanceRecExpSet() {
-		String companyId = AppContexts.user().companyId();
-		return attendanceEcExpSetFinder.getAllAttendanceRecordExportSetting(companyId);
+		return attendanceEcExpSetFinder.getAllAttendanceRecordExportSetting();
 	}
 
 	/**
@@ -60,9 +68,8 @@ public class AttendanceRecordExportSettingWebService {
 	 */
 	@POST
 	@Path("getAttendanceRecExpSet/{code}")
-	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") long code) {
-		String companyId = AppContexts.user().companyId();
-		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(companyId, code);
+	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") String code) {
+		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(code);
 	}
 
 	/**
@@ -129,5 +136,24 @@ public class AttendanceRecordExportSettingWebService {
 	@Path("getClosureMonth")
 	public AttendaceMonthDto getClosureMonth() {
 		return attendanceEcExpSetFinder.getClosureMonth();
+	}
+	
+	@POST
+	@Path("getAuthorityOfWorkPerformance")
+	public AttendanceAuthorityOfWorkPerform getAuthorityOfWorkPerformance() {
+		return attendanceEcExpSetFinder.getAuthorityOfWorkPerformance();
+	}
+	
+	
+	/**
+	 * Start screen KWR002 - B.
+	 *
+	 * @param dto the dto
+	 * @return the attendance setting dto
+	 */
+	@POST
+	@Path("startScreenB")
+	public AttendanceSettingDto startScreenB(ItemSelectedTypeSettingDto dto) {
+		return attendanceEcExpSetFinder.startScreenB(dto);
 	}
 }

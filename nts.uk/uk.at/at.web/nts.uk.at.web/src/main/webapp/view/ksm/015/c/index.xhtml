@@ -12,26 +12,50 @@
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			
+			
+
 			<com:stylefile path="ksm015.c.css" />
 			<com:scriptfile path="ksm015.c.model.js" />
 			<com:scriptfile path="ksm015.c.vm.js" />
 			<com:scriptfile path="ksm015.c.service.js" />
 			<com:scriptfile path="ksm015.c.start.js" />
+			
+			<com:stylefile path="../d/ksm015.d.css" />
+			<com:scriptfile path="../d/ksm015.d.model.js" />
+			<com:scriptfile path="../d/ksm015.d.vm.js" />
+			<com:scriptfile path="../d/ksm015.d.service.js" />
+			
+			<com:scriptfile path="../dialog/dialog.js" />
+			
+			<com:stylefile path="/view/kcp/011/main.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/011/kcp.011.vm.js"
+				of="/nts.uk.com.web" />
+
+			<com:ValidatorScript>
+	          nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupCode
+	          nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupName
+	        </com:ValidatorScript>
+				<com:EnumScript>
+	        	nts.uk.ctx.bs.employee.dom.workplace.group.WorkplaceGroupType
+	        </com:EnumScript>
+
+
 
 		</ui:define>
 		<ui:define name="sidebar">
 			<ul class="navigator">
 				<li><a href="#Com_Workplace" role="tab-navigator" class="active">#{i18n.getText('Com_Workplace')}</a></li>
-				<!-- <li><a href="#Com_ScheGroup" role="tab-navigator">#{i18n.getText('Com_WorkplaceGroup')}</a></li> -->
+				<li><a href="#Com_ScheGroup" role="tab-navigator" class="active">#{i18n.getText('Com_WorkplaceGroup')}</a></li>
 			</ul>
-			<div class="divider"></div>
 		</ui:define>
 
 		<ui:define name="sidebar-content">
-			<div id="Com_Workplace" role="tabpanel">
+			<div id="Com_Workplace" role="tabpanel" data-bind="with: viewmodelC">
 				<ui:include src="c.xhtml" />
 			</div>
-			<div id="Com_ScheGroup" role="tabpanel">
+			<div id="Com_ScheGroup" role="tabpanel" data-bind="with: viewmodelD">
+				<ui:include src="../d/d.xhtml" />
 				
 			</div>
 		</ui:define>

@@ -7,17 +7,14 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.employment;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.DeforLaborSettlementPeriodDto;
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.DeforWorkTimeAggrSetDto;
+import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.ExcessOutsideTimeSetRegDto;
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.FlexMonthWorkTimeAggrSetDto;
 import nts.uk.ctx.at.record.app.find.workrecord.monthcal.common.RegularWorkTimeAggrSetDto;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetSetMemento;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetSetMemento;
-import nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetSetMemento;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.FlexMonthWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforWorkTimeAggrSet;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.RegularWorkTimeAggrSet;
 
 /**
  * The Class EmpMonthCalSetDto.
@@ -26,8 +23,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 @Getter
 @Setter
 @Builder
-public class EmpMonthCalSetDto implements EmpRegulaMonthActCalSetSetMemento,
-		EmpFlexMonthActCalSetSetMemento, EmpDeforLaborMonthActCalSetSetMemento {
+public class EmpMonthCalSetDto {
 
 	/** The employment code. */
 	private String employmentCode;
@@ -45,48 +41,31 @@ public class EmpMonthCalSetDto implements EmpRegulaMonthActCalSetSetMemento,
 	private DeforWorkTimeAggrSetDto deforAggrSetting;
 
 
-	/* 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpDeforLaborMonthActCalSetSetMemento#setAggrSetting(nts.uk.ctx.at.record.dom.workrecord.monthcal.DeforWorkTimeAggrSet)
-	 */
-	@Override
-	public void setAggrSetting(DeforWorkTimeAggrSet legalAggrSetOfIrgNew) {
-		deforAggrSetting = DeforWorkTimeAggrSetDto.builder().build();
-		deforAggrSetting.fromDomain(legalAggrSetOfIrgNew);
+	public void transfer(DeforWorkTimeAggrSet domain) {
+		deforAggrSetting = DeforWorkTimeAggrSetDto.builder()
+				.aggregateTimeSet(ExcessOutsideTimeSetRegDto.from(domain.getAggregateTimeSet()))
+				.excessOutsideTimeSet(ExcessOutsideTimeSetRegDto.from(domain.getExcessOutsideTimeSet()))
+				.isOtTransCriteria(domain.getDeforLaborCalSetting().isOtTransCriteria())
+				.settlementPeriod(DeforLaborSettlementPeriodDto.from(domain.getDeforLaborAccPeriod()))
+				.build();
 	}
 
-	/* 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpFlexMonthActCalSetSetMemento#setAggrSetting(nts.uk.ctx.at.record.dom.workrecord.monthcal.FlexMonthWorkTimeAggrSet)
-	 */
-	@Override
-	public void setAggrSetting(FlexMonthWorkTimeAggrSet aggrSettingMonthlyOfFlxNew) {
-		flexAggrSetting = FlexMonthWorkTimeAggrSetDto.builder().build();
-		flexAggrSetting.fromDomain(aggrSettingMonthlyOfFlxNew);
+	public void transfer(RegularWorkTimeAggrSet domain) {
+		regAggrSetting = RegularWorkTimeAggrSetDto.builder()
+				.aggregateTimeSet(ExcessOutsideTimeSetRegDto.from(domain.getAggregateTimeSet()))
+				.excessOutsideTimeSet(ExcessOutsideTimeSetRegDto.from(domain.getExcessOutsideTimeSet()))
+				.build();
 	}
-
-	/* 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetSetMemento#setAggrSetting(nts.uk.ctx.at.record.dom.workrecord.monthcal.RegularWorkTimeAggrSet)
-	 */
-	@Override
-	public void setAggrSetting(RegularWorkTimeAggrSet legalAggrSetOfRegNew) {
-		regAggrSetting = RegularWorkTimeAggrSetDto.builder().build();
-		regAggrSetting.fromDomain(legalAggrSetOfRegNew);
+	public void transfer(FlexMonthWorkTimeAggrSet domain) {
+		flexAggrSetting = FlexMonthWorkTimeAggrSetDto.builder()
+				.aggrMethod(domain.getAggrMethod().value)
+				.includeIllegalHdwk(domain.getFlexTimeHandle().isIncludeIllegalHdwk() ? 1 : 0)
+				.includeOverTime(domain.getFlexTimeHandle().isIncludeOverTime() ? 1 : 0)
+				.insufficSet(domain.getInsufficSet().getCarryforwardSet().value)
+				.period(domain.getInsufficSet().getPeriod().value)
+				.settlePeriod(domain.getInsufficSet().getSettlePeriod().value)
+				.startMonth(domain.getInsufficSet().getStartMonth().v())
+				.legalAggrSet(domain.getLegalAggrSet().getAggregateSet().value)
+				.build();
 	}
-
-	/* 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
-	 */
-	@Override
-	public void setCompanyId(CompanyId companyId) {
-		this.companyId = companyId.v();
-	}
-
-	/* 
-	 * @see nts.uk.ctx.at.record.dom.workrecord.monthcal.employment.EmpRegulaMonthActCalSetSetMemento#setEmploymentCode(nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode)
-	 */
-	@Override
-	public void setEmploymentCode(EmploymentCode employmentCode) {
-		this.employmentCode = employmentCode.v();
-	}
-
-
 }

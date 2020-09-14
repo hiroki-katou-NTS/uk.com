@@ -16,8 +16,10 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 
+import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
@@ -78,6 +80,7 @@ import nts.uk.ctx.at.request.dom.setting.workplace.RequestOfEachWorkplaceReposit
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
@@ -147,14 +150,9 @@ public class HolidayShipmentScreenAFinder {
 	private WorkTimeSettingRepository wkTimeSetRepo;
 	@Inject
 	private AtEmployeeAdapter atEmpAdaptor;
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
 	
 	@Inject
 	private CommonAlgorithm commonAlgorithm;
-	
-	@Inject 
-	private WorkingConditionService workingConditionService;
 	
 	@Inject
 	private AppAbsenceFinder appAbsenceFinder;
@@ -164,6 +162,9 @@ public class HolidayShipmentScreenAFinder {
 	
 	@Inject
 	private HolidayShipmentService holidayShipmentService;
+	
+	@Inject
+	private RemainNumberTempRequireService requireService;
 	
 	private static final ApplicationType APP_TYPE = ApplicationType.COMPLEMENT_LEAVE_APPLICATION;
 
@@ -177,6 +178,9 @@ public class HolidayShipmentScreenAFinder {
 	 */
 	// Screen A Start
 	public HolidayShipmentDto startPageA(List<String> sIDs, GeneralDate initDate, int uiType) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		String employeeID = CollectionUtil.isEmpty(sIDs) ? AppContexts.user().employeeId() : sIDs.get(0);
 		String companyID = AppContexts.user().companyId();
 
@@ -227,7 +231,7 @@ public class HolidayShipmentScreenAFinder {
 		String wkTypeCD = result.getRecWkTypes().size() > 0 ? result.getRecWkTypes().get(0).getWorkTypeCode() : "";
 		setWorkTimeInfo(result, wkTimeCD, wkTypeCD, companyID);
 		//[No.506]振休残数を取得する
-		double absRecMng = absRertMngInPeriod.getAbsRecMngRemain(employeeID, GeneralDate.today()).getRemainDays();
+		double absRecMng = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(require, cacheCarrier, employeeID, GeneralDate.today()).getRemainDays();
 		result.setAbsRecMng(absRecMng);
 		
 		return result;
@@ -878,6 +882,9 @@ public class HolidayShipmentScreenAFinder {
 	
 	// 1.振休振出申請（新規）起動処理
 	public DisplayInforWhenStarting startPageARefactor(String companyId, List<String> lstEmployee, List<GeneralDate> dateLst) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		DisplayInforWhenStarting result = new DisplayInforWhenStarting();
 		// 起動時の申請表示情報を取得する (Lấy thông tin hiển thị Application khi  khởi động)
 		AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(companyId, ApplicationType.COMPLEMENT_LEAVE_APPLICATION, lstEmployee, dateLst,true);
@@ -905,7 +912,8 @@ public class HolidayShipmentScreenAFinder {
 		result.setApplicationForHoliday(applicationForHoliday);
 		
 		//[No.506]振休残数を取得する ([No.506]Lấy số ngày nghỉ bù còn lại)
-		AbsRecRemainMngOfInPeriod absRecMngRemain = absRertMngInPeriod.getAbsRecMngRemain(lstEmployee.get(0), GeneralDate.today());
+		AbsRecRemainMngOfInPeriod absRecMngRemain = AbsenceReruitmentMngInPeriodQuery
+				.getAbsRecMngRemain(require, cacheCarrier, lstEmployee.get(0), GeneralDate.today());
 		
 		result.setRemainingHolidayInfor(new RemainingHolidayInfor(absRecMngRemain));
 		
@@ -914,11 +922,13 @@ public class HolidayShipmentScreenAFinder {
 	
 	//1.振出申請（新規）起動処理(申請対象日関係あり)
 	public DisplayInformationApplication applicationForWorkingDay(String companyId, String employeeId, GeneralDate baseDate, String employmentCode, List<WorkTimeSetting> workTimeLst) {
+		val require = requireService.createRequire();
 	
 		DisplayInformationApplication result = new DisplayInformationApplication();
 		
 		//社員の労働条件を取得する(Lấy điều kiện lao động của employee)
-		Optional<WorkingConditionItem> workingConditionItem = workingConditionService.findWorkConditionByEmployee(employeeId, baseDate);
+		Optional<WorkingConditionItem> workingConditionItem = WorkingConditionService.findWorkConditionByEmployee(
+				require, employeeId, baseDate);
 		
 		if(workingConditionItem.isPresent()) {
 			result.setSelectionWorkTime(workingConditionItem.get().getWorkCategory().getWeekdayTime().getWorkTimeCode().map(x -> x.v()).orElse(null));

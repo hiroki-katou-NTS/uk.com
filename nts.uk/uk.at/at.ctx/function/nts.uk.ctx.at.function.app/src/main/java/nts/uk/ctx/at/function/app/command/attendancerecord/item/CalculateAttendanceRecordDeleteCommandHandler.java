@@ -8,12 +8,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateItemAttributes;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author tuannt-nws
@@ -39,8 +37,7 @@ public class CalculateAttendanceRecordDeleteCommandHandler
 		CalculateAttendanceRecord calculateAttendanceRecord = new CalculateAttendanceRecord(CalculateItemAttributes.valueOf(command.getAttribute()), new ItemName(command.getName()), addedItems, subtractedItems);
 		//delete
 		this.calculateAttendanceRecordRepository.deleteCalculateAttendanceRecord(
-																			AppContexts.user().companyId(),
-																			new ExportSettingCode(Long.valueOf(command.getExportSettingCode())),
+																			command.getLayoutId(),
 																			command.getColumnIndex(),
 																			command.getPosition(),
 																			command.getExportAtr(),

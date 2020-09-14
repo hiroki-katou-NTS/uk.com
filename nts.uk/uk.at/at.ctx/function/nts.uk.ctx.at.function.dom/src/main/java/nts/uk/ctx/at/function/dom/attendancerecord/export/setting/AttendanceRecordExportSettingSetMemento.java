@@ -65,4 +65,27 @@ public interface AttendanceRecordExportSettingSetMemento {
 	 * @param nameUseAtr the new name use atr
 	 */
 	void setNameUseAtr(Integer nameUseAtr);
+	
+	/**
+	 * Font size - Screen B 
+	 * Sets the export font size.
+	 *
+	 * @param exportFontSize the new export font size
+	 */
+	void setExportFontSize(Integer exportFontSize);
+	
+	/**
+	 * A18_2 - Screen F
+	 * Sets the monthly confirmed display.
+	 *
+	 * @param monthlyConfirmedDisplay the new monthly confirmed display
+	 */
+	void setMonthlyConfirmedDisplay(Integer monthlyConfirmedDisplay);
+	
+	/**
+	 * Sets the layout id.
+	 *
+	 * @param layoutId the new layout id
+	 */
+	void setLayoutId(String layoutId);
 }

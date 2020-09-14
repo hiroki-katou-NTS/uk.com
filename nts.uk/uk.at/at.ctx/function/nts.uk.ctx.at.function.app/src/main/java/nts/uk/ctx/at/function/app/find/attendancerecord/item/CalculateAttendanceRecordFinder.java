@@ -9,11 +9,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.attendanceitemname.service.AttendanceItemNameDomainService;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
-//import nts.uk.ctx.at.function.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CalculateAttendanceRecordFinder {
@@ -36,9 +33,8 @@ public class CalculateAttendanceRecordFinder {
 	public CalculateAttendanceRecordDto getCalculateAttendanceRecordDto(AttendanceRecordKeyDto attendanceRecordKey) {
 		// get domain object
 		Optional<CalculateAttendanceRecord> optionalCalculateAttendanceRecord = this.calculateAttendanceRecordRepository
-				.getCalculateAttendanceRecord(AppContexts.user().companyId(),
-						new ExportSettingCode(attendanceRecordKey.getCode()), attendanceRecordKey.getColumnIndex(),
-						attendanceRecordKey.getPosition(), attendanceRecordKey.getExportAtr());
+				.getCalculateAttendanceRecord(attendanceRecordKey.getLayoutId(), attendanceRecordKey.getColumnIndex(),attendanceRecordKey.getExportAtr(),
+						attendanceRecordKey.getPosition());
 		// convert to dto
 		CalculateAttendanceRecord calculateAttendanceRecord = optionalCalculateAttendanceRecord.isPresent()
 				? optionalCalculateAttendanceRecord.get() : null;

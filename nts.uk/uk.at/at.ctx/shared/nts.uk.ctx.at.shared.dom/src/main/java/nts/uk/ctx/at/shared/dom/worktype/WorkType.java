@@ -471,4 +471,8 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 	public AttendanceDayAttr chechAttendanceDay() {
 		return this.dailyWork.chechAttendanceDay();
 	}
+
+	public void setDeprecate(DeprecateClassification deprecate) {
+		this.deprecate = deprecate;
+	}
 }

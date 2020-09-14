@@ -8,7 +8,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingCache;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -40,7 +45,22 @@ public class GetPredWorkingDaysImpl implements GetPredWorkingDays {
 	/** 指定期間の所定労働日数を取得する(大塚用) */
 	@Override
 	public AttendanceDaysMonth byPeriod(DatePeriod period, Map<String, WorkType> workTypeMap) {
-
+		val require = new GetPredWorkingDaysImpl.Require() {
+			
+			@Override
+			public List<WorkMonthlySetting> findByStartEndDate(String companyId, String monthlyPatternCode,
+					GeneralDate startDate, GeneralDate endDate) {
+				return workMonthlySetRepo.findByStartEndDate(companyId, monthlyPatternCode, startDate, endDate);
+			}
+			@Override
+			public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+				return workTypeRepo.findByPK(companyId, workTypeCd);
+			}
+		};
+		return byPeriodRequire(require, period, workTypeMap);
+	}
+	@Override
+	public AttendanceDaysMonth byPeriodRequire(Require require, DatePeriod period, Map<String, WorkType> workTypeMap) {
 		double result = 0.0;
 		
 		// 勤務種類マップ　初期設定
@@ -50,7 +70,7 @@ public class GetPredWorkingDaysImpl implements GetPredWorkingDays {
 		// 「月間勤務就業設定」を取得する
 		LoginUserContext loginUserContext = AppContexts.user();
 		String companyId = loginUserContext.companyId();
-		List<WorkMonthlySetting> workMonthlySetList = this.workMonthlySetRepo.findByStartEndDate(
+		List<WorkMonthlySetting> workMonthlySetList = require.findByStartEndDate(
 				companyId, "001", period.start(), period.end().addDays(1));
 		
 		for (WorkMonthlySetting workMonthlySet : workMonthlySetList) {
@@ -59,7 +79,7 @@ public class GetPredWorkingDaysImpl implements GetPredWorkingDays {
 			if (workMonthlySet.getWorkTypeCode() == null) continue;
 			String workTypeCode = workMonthlySet.getWorkTypeCode().v();
 			if (!_workTypeMap.containsKey(workTypeCode)) {
-				Optional<WorkType> workTypeOpt = this.workTypeRepo.findByPK(companyId, workTypeCode);
+				Optional<WorkType> workTypeOpt = require.findByPK(companyId, workTypeCode);
 				if (workTypeOpt.isPresent()) {
 					_workTypeMap.put(workTypeCode, workTypeOpt.get());
 				}
@@ -84,5 +104,12 @@ public class GetPredWorkingDaysImpl implements GetPredWorkingDays {
 		}
 
 		return new AttendanceDaysMonth(result);
+	}
+	
+	public static interface Require{
+//		this.workMonthlySetRepo.findByStartEndDate(companyId, "001", period.start(), period.end().addDays(1));
+		List<WorkMonthlySetting> findByStartEndDate(String companyId, String monthlyPatternCode,GeneralDate startDate, GeneralDate endDate);
+//		this.workTypeRepo.findByPK(companyId, workTypeCode);
+		Optional<WorkType> findByPK(String companyId, String workTypeCd);
 	}
 }

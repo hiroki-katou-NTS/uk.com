@@ -8,21 +8,21 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.ExportAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.AttendanceRecordDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 import nts.uk.ctx.at.function.infra.repository.attendancerecord.JpaCalculateAttendanceRecordGetMemento;
 import nts.uk.ctx.at.function.infra.repository.attendancerecord.JpaSingleAttendanceRecordGetMemento;
-
 /**
  * The Class JpaAttendanceRecordExportGetMemento.
  * 
  * @author NWS_QUANGNT
  */
 public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExportGetMemento {
-
+	
+	
 	/** The entity. */
-	private KfnstAttndRec upperEntity;
+	private KfnmtRptWkAtdOutframe upperEntity;
 
-	private KfnstAttndRec lowerEntity;
+	private KfnmtRptWkAtdOutframe lowerEntity;
 
 	/**
 	 * Instantiates a new jpa attendance record export get memento.
@@ -30,7 +30,7 @@ public class JpaAttendanceRecordExportGetMemento implements AttendanceRecordExpo
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaAttendanceRecordExportGetMemento(KfnstAttndRec upperEntity, KfnstAttndRec lowerEntity) {
+	public JpaAttendanceRecordExportGetMemento(KfnmtRptWkAtdOutframe upperEntity, KfnmtRptWkAtdOutframe lowerEntity) {
 		this.upperEntity = upperEntity;
 		this.lowerEntity = lowerEntity;
 	}

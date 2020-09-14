@@ -8,12 +8,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateItemAttributes;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.ItemName;
-import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class CalculateAttendanceRecordSaveCommandHandler extends CommandHandler<CalculateAttendanceRecordSaveCommand> {
@@ -35,8 +33,7 @@ public class CalculateAttendanceRecordSaveCommandHandler extends CommandHandler<
 				CalculateItemAttributes.valueOf(command.getAttribute()), new ItemName(command.getName()), addedItems,
 				subtractedItems);
 		// update
-		this.calculateAttendanceRecordRepository.updateCalculateAttendanceRecord(AppContexts.user().companyId(),
-				new ExportSettingCode(Long.valueOf(command.getExportSettingCode())), command.getColumnIndex(),
+		this.calculateAttendanceRecordRepository.updateCalculateAttendanceRecord(command.getLayoutId(), command.getColumnIndex(),
 				command.getPosition(), command.getExportAtr(), command.isUseAtr(), calculateAttendanceRecord);
 	}
 

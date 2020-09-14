@@ -19,7 +19,9 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.find.dailyperform.DailyRecordDto;
 import nts.uk.ctx.at.record.dom.daily.itemvalue.DailyItemValue;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.ApprovalStatusActualResult;
@@ -27,6 +29,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Co
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
@@ -68,7 +71,6 @@ import nts.uk.screen.at.app.dailyperformance.correction.monthflex.DPMonthFlexPro
 import nts.uk.screen.at.app.dailyperformance.correction.text.DPText;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -95,14 +97,8 @@ public class DPLoadRowProcessor {
 //    @Inject
 //	private CheckIndentityDayConfirm checkIndentityDayConfirm;
     
-//    @Inject
-//	private ClosureService closureService;
-    
     @Inject
 	private CheckIndentityMonth checkIndentityMonth;
-    
-    @Inject
-	private ClosureService closureService;
     
 	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
@@ -112,6 +108,9 @@ public class DPLoadRowProcessor {
 	
 	@Inject
 	private ConfirmStatusActualDayChange confirmStatusActualDayChange;
+	
+	@Inject
+	private RecordDomRequireService requireService;
     
 	public DailyPerformanceCorrectionDto reloadGrid(DPPramLoadRow param){
 		DailyPerformanceCorrectionDto result = new DailyPerformanceCorrectionDto();
@@ -145,7 +144,8 @@ public class DPLoadRowProcessor {
 			//}
 			if (emp.equals(sId) && !param.getOnlyLoadMonth()) {
 				//社員に対応する締め期間を取得する
-				DatePeriod period = closureService.findClosurePeriod(emp, dateRange.getEndDate());
+				DatePeriod period = ClosureService.findClosurePeriod(requireService.createRequire(), 
+						new CacheCarrier(), emp, dateRange.getEndDate());
 				
 				//パラメータ「日別実績の修正の状態．対象期間．終了日」がパラメータ「締め期間」に含まれているかチェックする
 				if (!period.contains(dateRange.getEndDate())) {

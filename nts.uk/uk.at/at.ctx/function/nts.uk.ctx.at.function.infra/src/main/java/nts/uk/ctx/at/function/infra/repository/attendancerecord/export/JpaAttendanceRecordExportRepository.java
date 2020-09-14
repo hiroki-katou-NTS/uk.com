@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export;
 
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportGetMemento;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRecPK_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec_;
-import org.apache.commons.lang3.tuple.MutablePair;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -16,8 +13,16 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.tuple.MutablePair;
+
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportGetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK_;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe_;
 
 /**
  * The Class JpaAttendanceRecordExportRepository.
@@ -38,12 +43,12 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * lang.String, long)
 	 */
 	@Override
-	public List<AttendanceRecordExport> getAllAttendanceRecordExportDaily(String companyId, long exportSettingCode) {
+	public List<AttendanceRecordExport> getAllAttendanceRecordExportDaily(String layoutId) {
 
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRec> cq = criteriaBuilder.createQuery(KfnstAttndRec.class);
-		Root<KfnstAttndRec> root = cq.from(KfnstAttndRec.class);
+		CriteriaQuery<KfnmtRptWkAtdOutframe> cq = criteriaBuilder.createQuery(KfnmtRptWkAtdOutframe.class);
+		Root<KfnmtRptWkAtdOutframe> root = cq.from(KfnmtRptWkAtdOutframe.class);
 
 		// build query
 		cq.select(root);
@@ -51,16 +56,14 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportSettingCode));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 1));
+		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
+		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 1));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
 
 		// query data
-		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
+		List<KfnmtRptWkAtdOutframe> entityList = em.createQuery(cq).getResultList();
 
 		List<AttendanceRecordExport> domainList = domainsFrom(entityList);
 
@@ -72,15 +75,15 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * @param entityList
 	 * @return
 	 */
-	private List<AttendanceRecordExport> domainsFrom(List<KfnstAttndRec> entityList) {
+	private List<AttendanceRecordExport> domainsFrom(List<KfnmtRptWkAtdOutframe> entityList) {
 		List<AttendanceRecordExport> domainList = new ArrayList<>();
 
-		Map<Long, MutablePair<KfnstAttndRec,KfnstAttndRec>> map = new HashMap<>();
+		Map<Long, MutablePair<KfnmtRptWkAtdOutframe,KfnmtRptWkAtdOutframe>> map = new HashMap<>();
 
-		for (KfnstAttndRec item : entityList) {
+		for (KfnmtRptWkAtdOutframe item : entityList) {
 			boolean isNew = false;
 			long key = item.getId().getColumnIndex();
-			MutablePair<KfnstAttndRec, KfnstAttndRec> exist = map.get(key);
+			MutablePair<KfnmtRptWkAtdOutframe, KfnmtRptWkAtdOutframe> exist = map.get(key);
 			if (exist == null) {
 				exist = new MutablePair<>();
 				isNew = true;
@@ -113,11 +116,11 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * .lang.String, long)
 	 */
 	@Override
-	public List<AttendanceRecordExport> getAllAttendanceRecordExportMonthly(String companyId, long exportSettingCode) {
+	public List<AttendanceRecordExport> getAllAttendanceRecordExportMonthly(String layoutId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRec> cq = criteriaBuilder.createQuery(KfnstAttndRec.class);
-		Root<KfnstAttndRec> root = cq.from(KfnstAttndRec.class);
+		CriteriaQuery<KfnmtRptWkAtdOutframe> cq = criteriaBuilder.createQuery(KfnmtRptWkAtdOutframe.class);
+		Root<KfnmtRptWkAtdOutframe> root = cq.from(KfnmtRptWkAtdOutframe.class);
 
 		// build query
 		cq.select(root);
@@ -125,18 +128,16 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd), exportSettingCode));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.outputAtr), 2));
+		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
+		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 2));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
 
 		// query data
-		List<KfnstAttndRec> entityList = em.createQuery(cq).getResultList();
+		List<KfnmtRptWkAtdOutframe> entityList = em.createQuery(cq).getResultList();
 
-//		Map<Long, MutablePair<KfnstAttndRec,KfnstAttndRec>> map = new HashMap<>();
+//		Map<Long, MutablePair<KfnmtRptWkAtdOutframe,KfnmtRptWkAtdOutframe>> map = new HashMap<>();
 
 		List<AttendanceRecordExport> domainList = domainsFrom(entityList);
 
@@ -178,8 +179,8 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * ExportSettingCode)
 	 */
 	@Override
-	public void deleteAttendanceRecord(String companyId, ExportSettingCode exportSettingCode) {
-		List<KfnstAttndRec> items = this.findAllAttendanceRecord(companyId, exportSettingCode);
+	public void deleteAttendanceRecord(String layoutId) {
+		List<KfnmtRptWkAtdOutframe> items = this.findAllAttendanceRecord(layoutId);
 		if (items != null && !items.isEmpty()) {
 			this.removeAllAttndRec(items);
 			this.getEntityManager().flush();
@@ -195,7 +196,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 *            the lower entity
 	 * @return the attendance record export
 	 */
-	public AttendanceRecordExport toDomain(KfnstAttndRec upperEntity, KfnstAttndRec lowerEntity) {
+	public AttendanceRecordExport toDomain(KfnmtRptWkAtdOutframe upperEntity, KfnmtRptWkAtdOutframe lowerEntity) {
 
 		AttendanceRecordExportGetMemento memento = new JpaAttendanceRecordExportGetMemento(upperEntity, lowerEntity);
 
@@ -212,25 +213,24 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 *            the export setting code
 	 * @return the list
 	 */
-	private List<KfnstAttndRec> findAllAttendanceRecord(String companyId, ExportSettingCode exportSettingCode) {
+	private List<KfnmtRptWkAtdOutframe> findAllAttendanceRecord(String layoutId) {
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnstAttndRec> criteriaQuery = criteriaBuilder.createQuery(KfnstAttndRec.class);
-		Root<KfnstAttndRec> root = criteriaQuery.from(KfnstAttndRec.class);
+		CriteriaQuery<KfnmtRptWkAtdOutframe> criteriaQuery = criteriaBuilder.createQuery(KfnmtRptWkAtdOutframe.class);
+		Root<KfnmtRptWkAtdOutframe> root = criteriaQuery.from(KfnmtRptWkAtdOutframe.class);
 
 		// Build query
 		criteriaQuery.select(root);
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.cid), companyId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnstAttndRec_.id).get(KfnstAttndRecPK_.exportCd),
-				exportSettingCode.v()));
+		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
+
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 
 		// query data
-		List<KfnstAttndRec> kfnstAttndRecs = em.createQuery(criteriaQuery).getResultList();
+		List<KfnmtRptWkAtdOutframe> kfnstAttndRecs = em.createQuery(criteriaQuery).getResultList();
 		return kfnstAttndRecs.isEmpty() ? new ArrayList<>() : kfnstAttndRecs;
 	}
 
@@ -240,7 +240,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 	 * @param items
 	 *            the items
 	 */
-	public void removeAllAttndRec(List<KfnstAttndRec> items) {
+	public void removeAllAttndRec(List<KfnmtRptWkAtdOutframe> items) {
 		if (!items.isEmpty()) {
 			this.commandProxy().removeAll(items);
 			this.getEntityManager().flush();

@@ -10,6 +10,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
@@ -27,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * @author thanhnx
@@ -63,10 +63,6 @@ public class CheckShortageFlex {
 	/** The closure repository. */
 	@Inject
 	private ClosureRepository closureRepository;
-	
-	/** The closure service. */
-	@Inject
-	private ClosureService closureService;
 	
 	public CheckShortage checkShortageFlex(String employeeId, GeneralDate date){
 
@@ -122,7 +118,7 @@ public class CheckShortageFlex {
 		CurrentMonth currentMonth = closure.get().getClosureMonth();
 		
 		// 当月の期間を算出する.
-		return this.closureService.getClosurePeriod(closure.get(), currentMonth.getProcessingYm());
+		return ClosureService.getClosurePeriod(closure.get(), currentMonth.getProcessingYm());
 	}
 	
 	/**
