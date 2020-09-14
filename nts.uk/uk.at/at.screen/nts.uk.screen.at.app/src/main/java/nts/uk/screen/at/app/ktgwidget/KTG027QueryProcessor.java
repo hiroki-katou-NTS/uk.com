@@ -358,7 +358,7 @@ public class KTG027QueryProcessor {
 	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).ユースケース.起動する(Khởi động).システム.起動する
 	 * @return
 	 */
-	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto() {
+	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(int currentOrNextMonth) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		String cID = AppContexts.user().companyId();
@@ -376,7 +376,11 @@ public class KTG027QueryProcessor {
 		result.builder()
 			.closingInformationForCurrentMonth(closingInformationForCurrentMonth)
 			.closureId(closure.getClosureId().value).build();
-						
+		if(currentOrNextMonth == 1) {
+			//Todo
+		}else {
+			//Todo
+		}
 		//	ユーザー固有情報「トップページ表示年月」を取得する
 				
 		return result;
@@ -403,14 +407,17 @@ public class KTG027QueryProcessor {
 		referencePeriod = Optional.ofNullable(datePeriodClosure);
 	 }
 	 //	アルゴリズム「社員所属職場履歴を取得」を実行する
-	SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriodParam.get().end());
+	SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriod.get().end());
 	
 	//[No.573]職場の下位職場を基準職場を含めて取得する
-	List<String> lstWorkPlaceId = workplacePub.getAllChildrenOfWorkplaceId(cID, referencePeriodParam.get().end(),sWkpHistImport.getWorkplaceId());
+	List<String> lstWorkPlaceId = workplacePub.getAllChildrenOfWorkplaceId(cID, referencePeriod.get().end(),sWkpHistImport.getWorkplaceId());
 	
 	//	期間内に特定の職場（List）に所属している社員一覧を取得
 	List<String> lstEmployeeId = syEmployeeFnAdapter.getListEmployeeId(lstWorkPlaceId, referencePeriodParam.get());
-	List<PersonEmpBasicInfoImport> listPersonEmp = empEmployeeAdapter.getPerEmpBasicInfo(lstEmployeeId);
 	
+	//	社員ID(List)から個人社員基本情報を取得
+	List<PersonEmpBasicInfoImport> listPersonEmp = empEmployeeAdapter.getPerEmpBasicInfo(lstEmployeeId);
+	AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder().build();
+	return result;
 	}
 }
