@@ -104,7 +104,7 @@ public class AppStampStandard {
 					Optional<AppStampStandard> optional = listAppStampStandard.stream()
 							.filter(item -> item.framNo== x.getEngraveFrameNo()).findFirst();
 					if (optional.isPresent()) {
-						
+						optional.get().setFramNo(x.getEngraveFrameNo());
 					} else {
 						appStampStandar.startTime =  null;
 						appStampStandar.endTime = null;
@@ -119,6 +119,7 @@ public class AppStampStandard {
 							stampAtr = StampAtrOther.CHEERING;
 						}
 						appStampStandar.stampAtrOther = stampAtr;
+						appStampStandar.setFramNo(x.getEngraveFrameNo());
 					}
 				} else {
 					
@@ -135,6 +136,7 @@ public class AppStampStandard {
 						stampAtr = StampAtrOther.CHEERING;
 					}
 					appStampStandar.stampAtrOther = stampAtr;
+					appStampStandar.setFramNo(x.getEngraveFrameNo());
 				}
 				listAppStampStandard.add(appStampStandar);
 

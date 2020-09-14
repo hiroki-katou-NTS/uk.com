@@ -115,14 +115,15 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				KrqdtAppStamp krqdtAppStamp;
 				if (!CollectionUtil.isEmpty(listStamps)) {
 					Optional<KrqdtAppStamp> optional = listStamps.stream().filter(
-							item -> item.krqdtAppStampPK.stampFrameNo == x.getDestinationTimeApp().getEngraveFrameNo())
+							item -> item.krqdtAppStampPK.stampFrameNo == x.getDestinationTimeApp().getEngraveFrameNo() && item.krqdtAppStampPK.stampAtr == convertEnumTimeStamApp(x.getDestinationTimeApp().getTimeStampAppEnum()))
 							.findFirst();
 					if (optional.isPresent()) {
 						krqdtAppStamp = optional.get();
-						if (krqdtAppStamp.startTime == null) {
-							krqdtAppStamp.endTime = x.getTimeOfDay().getDayTime();
-						} else {
+						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
 							krqdtAppStamp.startTime = x.getTimeOfDay().getDayTime();
+						} 
+						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END) {
+							krqdtAppStamp.endTime = x.getTimeOfDay().getDayTime();
 						}
 					} else {
 						krqdtAppStamp = new KrqdtAppStamp(
@@ -162,14 +163,17 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				KrqdtAppStamp krqdtAppStamp;
 				if (!CollectionUtil.isEmpty(listStamps)) {
 					Optional<KrqdtAppStamp> optional = listStamps.stream()
-							.filter(item -> item.krqdtAppStampPK.stampFrameNo == x.getEngraveFrameNo()).findFirst();
+							.filter(item -> item.krqdtAppStampPK.stampFrameNo == x.getEngraveFrameNo() && item.krqdtAppStampPK.stampAtr == convertEnumTimeStamApp(x.getTimeStampAppEnum())).findFirst();
 					if (optional.isPresent()) {
 						krqdtAppStamp = optional.get();
-						if (krqdtAppStamp.startCancelAtr == 1) {
-							krqdtAppStamp.endCancelAtr = 1;
-						} else {
+						if (x.getStartEndClassification() == StartEndClassification.START) {
 							krqdtAppStamp.startCancelAtr = 1;
 						}
+						
+						if (x.getStartEndClassification() == StartEndClassification.END) {
+							krqdtAppStamp.endCancelAtr = 1;
+						}
+		
 					} else {
 						krqdtAppStamp = new KrqdtAppStamp(
 								new KrqdtAppStampPK(AppContexts.user().companyId(), appStamp.getAppID(),

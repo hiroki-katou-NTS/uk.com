@@ -126,8 +126,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 		} 
 //		育児時間帯
 		if (type == 6) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.empty(), Optional.empty());
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
+			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(550)), Optional.of(new TimeWithDayAttr(100)));
+			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.of(new TimeWithDayAttr(800)), Optional.of(new TimeWithDayAttr(550)));
 			list.add(t1);
 			list.add(t2);
 		}
