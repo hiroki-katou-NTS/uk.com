@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.paymana;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacation;
@@ -118,15 +120,64 @@ public class FurikyuMngDataExtractionService {
 		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
 	}
 	
-	public boolean isManageHolidayManagementData(String sId, String compId) {
+	public void displayRemainingNumberDataInformation(String compId, String empId, boolean isPeriod, String messageDisplay) {
+		List<PayoutManagementData> payoutManagementData;
+		EmploymentManageDistinctDto emplManage = getEmploymentManageDistinct(compId, empId);
+		if (emplManage.getIsManage() == ManageDistinct.NO) {
+			throw new BusinessException("Msg_1731");
+		} else {
+			if (isPeriod) {
+				
+			}
+		}
+	}
+	
+	// Step 振休管理データを管理するかチェック
+	public EmploymentManageDistinctDto getEmploymentManageDistinct(String compId, String empId) {
+		// Step 管理区分 ＝ 管理しない
+		EmploymentManageDistinctDto emplManage = new EmploymentManageDistinctDto();
+		emplManage.setIsManage(ManageDistinct.NO);
 		// Step 社員IDから全ての雇用履歴を取得
-		List<EmploymentHistShareImport> empHistShrImp = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(sId);
+		List<EmploymentHistShareImport> empHistShrImp = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(empId);
 		// Step 取得した社員の雇用履歴をチェック
-		if(empHistShrImp.isEmpty()) {
+		if (empHistShrImp.isEmpty()) {
 			// Step エラーメッセージ(Msg_1306)を表示する
 			throw new BusinessException("Msg_1306");
+		} else {
+			// Step 取得した社員の雇用履歴をループする
+			for (EmploymentHistShareImport empHist : empHistShrImp) {
+				// Step 管理区分設定を取得する
+				ComSubstVacation comSubstVaca = getClassifiedManagementSetup(compId, empHist.getEmploymentCode());
+				// Step 取得した「振休管理設定」．管理区分をチェック
+				if (comSubstVaca.isManaged()) {
+					// Step 管理区分 ＝ 管理する
+					emplManage.setIsManage(ManageDistinct.YES);					
+				}
+				// Step 雇用コード ＝ 取得した社員の雇用履歴．期間．開始日 ＜＝ システム日付 AND 取得した社員の雇用履歴．期間．終了日 ＞＝システム日付
+				GeneralDate now = GeneralDate.today();
+				if (empHist.getPeriod().start().beforeOrEquals(now) && empHist.getPeriod().end().afterOrEquals(now)) {
+					emplManage.setEmploymentCode(empHist.getEmploymentCode());
+				}
+			}
 		}
-		return false;
+		// Step 管理区分、雇用コードを返す
+		return emplManage;
+	}
+	
+	// Step 管理区分設定を取得する
+	public ComSubstVacation getClassifiedManagementSetup(String compId, String empCode) {
+		// Step ドメインモデル「雇用振休管理設定」を取得
+		Optional<ComSubstVacation> optComSubData = comSubstVacationRepository.findById(compId);
+		// Step 取得した「振休管理設定」をチェック
+		if (!optComSubData.isPresent()) {
+			// Step ドメインモデル「振休管理設定」を取得
+			Optional<EmpSubstVacation> optEmpSubData = empSubstVacationRepository.findById(compId, empCode);
+			// Step ドメインモデル「雇用振休管理設定」を返す
+			return new ComSubstVacation(optEmpSubData.get().getCompanyId(), optEmpSubData.get().getSetting());
+		} else {
+			// Step 取得したドメインモデル「振休管理設定」を返す
+			return optComSubData.get();
+		}
 	}
 	
 	public Double getNumberOfDayLeft(String sID) {

@@ -52,7 +52,7 @@
 					<div id="D6" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_62')}</div>
 					<!-- D6_1 年月日 -->
 					<!-- Datepicker -->
-					<div id="D6_1"
+					<div id="D6_1" class="left-m"
 						data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_63')}',value: dayOff,required: pickUp, enable: pickUp, dateFormat: 'YYYY/MM/DD' }"></div>
 					<!-- D6_2 休出日数 -->
 					<span class="label" style="margin: 0 5px 0 80px;">#{i18n.getText('KDM001_64')}</span>
@@ -80,7 +80,7 @@
 					<div id = "D7" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_70')}</div>		
 					<!-- D7_1 法定区分 -->
 					<!-- Combobox -->
-					<div id="D7_1" class="combo-legal-classification"
+					<div id="D7_1" class="combo-legal-classification left-m"
 						data-bind="ntsComboBox: {
 					name: '#{i18n.getText('KDM001_71')}',
 					options: typeHoliday,
@@ -102,11 +102,11 @@
 					<div id="D8" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_72')}</div>
 					<!-- D8_1 期限 -->
 					<!-- Datepicker -->
-					<div id="D8_1"
+					<div id="D8_1" class="left-m"
 						data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_73')}',value: expiredDate,required: pickUp,enable:pickUp, dateFormat: 'YYYY/MM/DD'}"></div>
 				</div>
 
-				<div class="down-s left-m">
+				<div class="down-s margin-left-0">
 					<!-- D9 代休 -->
 					<div id="D9"
 						data-bind="ntsCheckBox: { checked: pause, enable: true, text: '#{i18n.getText('KDM001_74')}' }"></div>
@@ -120,7 +120,7 @@
 					<div id="D11" class="labelTitle" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KDM001_75')}</div>
 					<!-- D11_1 年月日 -->
 					<!-- Datepicker -->
-					<div id="D11_1" class="valid"
+					<div id="D11_1" class="valid left-m"
 						data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_76')}',value: subDayoffDate, required: pause,enable: pause, dateFormat: 'YYYY/MM/DD'}"></div>
 					<!-- D11_2 代休日数 -->
 					<span class="label" style="margin: 0 5px 0 80px;">#{i18n.getText('KDM001_77')}</span>
@@ -156,7 +156,7 @@
 						<div id="D12_2" 
 							data-bind="ntsDatePicker: {name: '#{i18n.getText('KDM001_81')}',value: holidayDate,required: checkedSplit,dateFormat: 'YYYY/MM/DD', enable: isOptionSubHolidayEnable}"></div>
 						<!-- D12_3 代休日数 -->
-						<span class="label margin-left-15" style="margin: 0 5px 0 15px;">#{i18n.getText('KDM001_82')}</span>
+						<span class="label" style="margin: 0 5px 0 25px;">#{i18n.getText('KDM001_82')}</span>
 						<!-- D12_4 代休日数 -->
 						<!-- Combobox -->
 						<div id="D12_4" class="combo-box-option-sub-holiday"
@@ -180,9 +180,9 @@
 						<!-- D16_1 -->
 						<div id="D16_1" class="sub-label-title" data-bind="ntsFormLabel: {}">#{i18n.getText('KDM001_158')}</div>
 						<!-- D16_2 -->
-						<button id="D16_2" tabindex="14" data-bind="click: openKDL035">#{i18n.getText('KDM001_159')}</button>
+						<button class="width-112" id="D16_2" tabindex="14" data-bind="click: openKDL035">#{i18n.getText('KDM001_159')}</button>
 						<!-- D16_3 -->
-						<span id="D16_3" class="label margin-left-15" data-bind="text: baseDate"></span>
+						<span id="D16_3" class="label margin-left-25" data-bind="text: baseDate"></span>
 					</div>
 					<!-- D13 残数 -->
 					<div class="label">#{i18n.getText('KDM001_84')}</div>
