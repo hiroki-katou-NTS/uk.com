@@ -29,7 +29,7 @@ import java.util.*;
  * @author khai.dh
  */
 @Stateless
-public class OneMonthAppReg {
+public class OneMonthAppCreate {
 	@Inject
 	private ApproverGetDomainService apprService;
 
