@@ -430,18 +430,21 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 } else {
                     _.forEach(items, (el: GridItem) => {
                         if (!ko.toJS(el.flagObservable)) {
-                            if (ko.toJS(el.startTimeRequest) && ko.toJS(el.endTimeRequest)) {
-                                let timeStampAppOtherDto = new TimeStampAppOtherDto();
-                                let tz = new TimeZone();
+                            let timeStampAppOtherDto = new TimeStampAppOtherDto();
+                            let tz = new TimeZone();
+                            let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
+                            destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
+                            destinationTimeZoneAppDto.engraveFrameNo = el.id;
+                            timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
+                            timeStampAppOtherDto.timeZone = tz;
+                            if (ko.toJS(el.startTimeRequest)) {
                                 tz.startTime = ko.toJS(el.startTimeRequest);
-                                tz.endTime = ko.toJS(el.endTimeRequest);
-                                let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
-                                destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
-                                destinationTimeZoneAppDto.engraveFrameNo = el.id;
-                                timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
-                                timeStampAppOtherDto.timeZone = tz;
-                                listTimeStampAppOther.push(timeStampAppOtherDto);
+                                
                             }
+                            if (ko.toJS(el.endTimeRequest)) {
+                                tz.endTime = ko.toJS(el.endTimeRequest);                             
+                            }
+                            listTimeStampAppOther.push(timeStampAppOtherDto);
                         } else {
                             
                         }

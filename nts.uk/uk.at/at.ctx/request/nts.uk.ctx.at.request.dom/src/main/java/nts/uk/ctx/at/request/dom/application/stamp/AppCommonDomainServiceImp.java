@@ -355,6 +355,15 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	}
 	public void checkRegisterAndUpdate(AppStamp appStamp) {
 		if (appStamp == null) return;
+//		事前モード：「時間帯：Empty　AND　AND　時刻：Empty」の場合：Msg_308を表示する
+		if (appStamp.getPrePostAtr() == PrePostAtr.PREDICT) {
+			if (CollectionUtil.isEmpty(appStamp.getListTimeStampApp())  
+					&& CollectionUtil.isEmpty(appStamp.getListTimeStampAppOther()))
+					{
+				throw new BusinessException("Msg_308");
+	
+			}
+		}
 //		事後モード：「時間帯：Empty　AND　時間帯の取消：Empty　AND　時刻：Empty　AND　時刻の取消：Empty、」の場合：Msg_308を表示する
 		if (appStamp.getPrePostAtr() == PrePostAtr.POSTERIOR) {
 			if (CollectionUtil.isEmpty(appStamp.getListTimeStampApp())  
