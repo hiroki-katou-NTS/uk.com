@@ -11,9 +11,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum RequestFlag {
 
-	Normal(0),
+	Normal(0), //通常
 
-	Report(1);
+	Report(1); //届出
 
 	public final int value;
 
