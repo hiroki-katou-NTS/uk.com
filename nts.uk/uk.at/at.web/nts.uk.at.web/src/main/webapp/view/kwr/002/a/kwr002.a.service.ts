@@ -11,7 +11,7 @@ module nts.uk.com.view.kwr002.a {
             getAuthorityOfWorkPerformance: "com/function/attendancerecord/export/setting/getAuthorityOfWorkPerformance"
         };
 
-        export function getAllAttendanceRecExpSet(): JQueryPromise<Array<a.viewModel.AttendanceRecordExportSettingDto>> {
+        export function getAllAttendanceRecExpSet(): JQueryPromise<a.viewModel.AttendanceRecordExportSettingWrapperDto> {
             return nts.uk.request.ajax("at", path.getAllAttendanceRecExpSet);
         }
 

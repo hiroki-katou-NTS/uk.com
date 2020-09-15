@@ -35,8 +35,7 @@ public class AttendanceRecordStandardSetting extends AggregateRoot{
 	/**
 	 * Instantiates a new attendance record standard setting.
 	 */
-	public AttendanceRecordStandardSetting() {
-	}
+	public AttendanceRecordStandardSetting() {}
 
 	/**
 	 * Creates the from memento.

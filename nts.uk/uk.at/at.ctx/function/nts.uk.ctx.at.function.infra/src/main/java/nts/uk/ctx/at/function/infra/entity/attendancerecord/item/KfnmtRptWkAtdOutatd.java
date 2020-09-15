@@ -32,43 +32,43 @@ public class KfnmtRptWkAtdOutatd extends UkJpaEntity implements Serializable {
 
 	/** The record item id. */
 	@Id
-	@Column(name="RECORD_ITEM_ID")
+	@Column(name = "RECORD_ITEM_ID")
 	private String recordItemId;
-	
+
 	/** The exclus ver. */
-	@Column(name="EXCLUS_VER")
+	@Column(name = "EXCLUS_VER")
 	private long exclusVer;
-	
+
 	/** The contract cd. */
-	@Column(name="CONTRACT_CD")
+	@Column(name = "CONTRACT_CD")
 	private String contractCd;
 
 	/** The cid. */
-	@Column(name="CID")
+	@Column(name = "CID")
 	private String cid;
-	
+
 	/** The layout id. */
-	@Column(name="LAYOUT_ID")
+	@Column(name = "LAYOUT_ID")
 	private String layoutId;
 
 	/** The column index. */
-	@Column(name="COLUMN_INDEX")
+	@Column(name = "COLUMN_INDEX")
 	private long columnIndex;
 
 	/** The position. */
-	@Column(name="[POSITION]")
+	@Column(name = "[POSITION]")
 	private long position;
 
 	/** The output atr. */
-	@Column(name="OUTPUT_ATR")
+	@Column(name = "OUTPUT_ATR")
 	private long outputAtr;
 
 	/** The time item id. */
-	@Column(name="TIME_ITEM_ID")
+	@Column(name = "TIME_ITEM_ID")
 	private long timeItemId;
 
 	/** The formula type. */
-	@Column(name="FORMULA_TYPE")
+	@Column(name = "FORMULA_TYPE")
 	private BigDecimal formulaType;
 
 	/* (non-Javadoc)

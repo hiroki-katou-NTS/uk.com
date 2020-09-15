@@ -41,8 +41,6 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 			+ "		AND ot.itemSelType = :itemSelType"
 			+ "		AND ot.exportCD = :code";
 
-	private JpaAttendanceRecordExportSettingRepository recordExportSettingRepo;
-
 	@Override
 	public void add(AttendanceRecordStandardSetting domain) {
 		List<KfnmtRptWkAtdOut> entities = domain.getAttendanceRecordExportSettings().stream().map(t -> {

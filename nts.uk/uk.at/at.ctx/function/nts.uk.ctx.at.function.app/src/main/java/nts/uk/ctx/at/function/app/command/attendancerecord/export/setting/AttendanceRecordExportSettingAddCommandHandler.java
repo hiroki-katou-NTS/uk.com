@@ -40,7 +40,6 @@ public class AttendanceRecordExportSettingAddCommandHandler
 		
 		String layoutId = command.getLayoutId() != null ? command.getLayoutId() : genLayoutId.toString();
 		domain.setLayoutId(layoutId);
-		domain.setCompanyId(AppContexts.user().companyId());
 		domain.setCode(new ExportSettingCode(String.valueOf(command.getCode())));
 		domain.setName(new ExportSettingName(command.getName()));
 		domain.setNameUseAtr(NameUseAtr.valueOf(command.getNameUseAtr()));

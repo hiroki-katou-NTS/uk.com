@@ -19,8 +19,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecor
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe_;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -272,13 +270,13 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
-		predicates.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.columnIndex), (long) 7));
-		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.columnIndex),
-				(long) 9));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.position), position));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 1));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
+//		predicates.add(criteriaBuilder
+//				.greaterThanOrEqualTo(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.columnIndex), (long) 7));
+//		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.columnIndex),
+//				(long) 9));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.position), position));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 1));
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 
@@ -328,9 +326,9 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.position), position));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 2));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.position), position));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 2));
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 

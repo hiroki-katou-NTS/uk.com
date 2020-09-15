@@ -6,12 +6,10 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 
 @Data
-public class JpaAttendanceRecordFreeSettingSetMemento
-		implements AttendanceRecordFreeSetting.MementoSetter, AttendanceRecordStandardSetting.MementoSetter {
+public class JpaAttendanceRecordFreeSettingSetMemento implements AttendanceRecordFreeSetting.MementoSetter {
 
 	/** The list kfnmt rpt wk atd out. */
 	List<KfnmtRptWkAtdOut> listKfnmtRptWkAtdOut;
@@ -29,7 +27,7 @@ public class JpaAttendanceRecordFreeSettingSetMemento
 	public void setAttendanceRecordExportSettings(List<AttendanceRecordExportSetting> outputItem) {
 		this.listKfnmtRptWkAtdOut = outputItem.stream().map(i -> {
 			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
-//			i.saveToMemento(entity);
+			i.saveToMemento(entity);
 			return entity;
 		}).collect(Collectors.toList());
 
