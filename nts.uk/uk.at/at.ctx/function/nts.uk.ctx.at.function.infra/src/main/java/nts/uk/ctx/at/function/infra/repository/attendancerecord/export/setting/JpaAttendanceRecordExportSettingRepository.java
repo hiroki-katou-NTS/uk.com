@@ -306,5 +306,12 @@ public class JpaAttendanceRecordExportSettingRepository extends JpaRepository{
 //		// TODO Auto-generated method stub
 //		return null;
 //	}
+	
+	public Optional<AttendanceRecordExportSetting> getAttendanceByCodeAndType(String companyId, long code , int type) {
+
+		String sql = "SELECT o FROM Kfn";
+		
+		return null;
+	}
 
 }

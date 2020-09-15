@@ -11,6 +11,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
@@ -159,5 +160,16 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 		return this.queryProxy().query(GET_SEAL_BY_COMPANY_ID, KfnmtRptWkAtdOutseal.class)
 				.setParameter("cid", companyId).getList();
 	}
+
+	@Override
+	public Optional<AttendanceRecordStandardSetting> findByCompanyCodeAndSelectType(String companyId, long code,
+			int selectType) {
+		AttendanceRecordStandardSetting attendanceRecordStandardSetting = new AttendanceRecordStandardSetting();
+		Optional<AttendanceRecordExportSetting> getRec = this.recordExportSettingRepo.getAttendanceByCodeAndType(companyId, code, selectType);
+	
+		return Optional.ofNullable(attendanceRecordStandardSetting);
+	}
+
+	
 
 }

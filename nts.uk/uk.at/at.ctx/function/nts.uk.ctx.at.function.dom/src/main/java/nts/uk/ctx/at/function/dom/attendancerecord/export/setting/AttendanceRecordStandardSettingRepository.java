@@ -45,4 +45,14 @@ public interface AttendanceRecordStandardSettingRepository {
      * @return the optional
      */
     public Optional<AttendanceRecordStandardSetting> findByCompanyCodeLayoutId(String companyId, String code, String layoutId);
+    
+    /**
+     * Find by compnay code and select type.
+     *
+     * @param companyId the company id
+     * @param code the code
+     * @param selectType the select type
+     * @return the optional
+     */
+    public Optional<AttendanceRecordStandardSetting> findByCompanyCodeAndSelectType(String companyId, long code, int selectType);
 }
