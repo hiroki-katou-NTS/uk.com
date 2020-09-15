@@ -183,7 +183,10 @@ public class GetScheduleOfWorkInfo {
 				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
 				
 				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepo,workTimeSettingService, basicScheduleService);
-				Optional<WorkStyle> workStyle = workInformation.getWorkStyle(require2); // workHolidayCls 
+				Optional<WorkStyle> workStyle = Optional.empty();
+				if (workInformation.getWorkTypeCode() != null) {
+					workStyle = workInformation.getWorkStyle(require2); // workHolidayCls
+				}
 				
 				String workTypeCode = workInformation.getWorkTypeCode() == null  ? null : workInformation.getWorkTypeCode().toString();
 				String workTypeName = null;
