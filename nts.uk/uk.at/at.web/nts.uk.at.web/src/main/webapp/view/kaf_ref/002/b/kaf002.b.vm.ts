@@ -62,11 +62,55 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         mounted() {
             
         }
+        public testGetDetail() {
+            
+        }
+        public register() {
+            console.log('register');
+            const self = this;
+            let data = _.clone(self.data);
+            let appRecordImage = new AppRecordImage(Number(ko.toJS(self.selectedCode)), Number(ko.toJS(self.time)));
+            if (ko.toJS(self.selectedCode) == '3') {
+                appRecordImage.appStampGoOutAtr = Number(ko.toJS(self.selectedCodeReason));
+            }
+            data.appRecordImage = null;
+            let companyId = __viewContext.user.companyId;
+            let agentAtr = false;
+            self.application().enteredPerson = __viewContext.user.employeeId;
+            self.application().employeeID = __viewContext.user.employeeId;
+//            self.application().prePostAtr(0);
+            let command = {
+                    appStampOutputDto: data,
+                    applicationDto: ko.toJS(self.application),
+                    recoderFlag: true,
+                    appRecordImageDto: appRecordImage
+                    
+            };
+            
+            self.$ajax(API.register, command)
+                .then(res => {
+                    console.log('done');
+                }).fail(res => {
+                    console.log('fail');
+                }).always(() => {
+                    self.$blockui('hide');
+                })
+        }
         
         
         
         
         
+    }
+    class AppRecordImage {
+        appStampCombinationAtr: number;
+        attendanceTime: number;
+        appStampGoOutAtr?: number;
+        constructor(appStampCombinationAtr: number, attendanceTime: number, appStampGoOutAtr?: number) {
+            this.appStampCombinationAtr = appStampCombinationAtr;
+            this.attendanceTime = attendanceTime;
+            this.appStampGoOutAtr = appStampGoOutAtr;
+        }
     }
     class ItemModel {
         code: string;
@@ -157,7 +201,8 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
     const API = {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",
-            register: "at/request/application/stamp/register"
+            register: "at/request/application/stamp/register",
+            getDetail: "at/request/application/stamp/detailAppStamp"
             
         }
 }

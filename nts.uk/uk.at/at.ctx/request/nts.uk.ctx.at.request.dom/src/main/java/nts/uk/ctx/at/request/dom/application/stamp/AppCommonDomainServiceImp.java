@@ -483,7 +483,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		if (appStampSettingOptional.isPresent()) {
 			appStampOutput.setAppStampSetting(appStampSettingOptional.get());
 		}
-		
+		appStampOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		return appStampOutput;
 	}
 	

@@ -61,6 +61,7 @@ public class JpaAppRecordImageRepository extends JpaRepository implements AppRec
 	
 	public KrqdtAppSampNR toEntity(AppRecordImage appRecordImage) {
 		KrqdtAppSampNR krqdtAppSampNR = new KrqdtAppSampNR();
+		krqdtAppSampNR.krqdtAppSampNRPk = new KrqdtAppSampNRPk();
 		krqdtAppSampNR.krqdtAppSampNRPk.companyID = AppContexts.user().companyId();
 		krqdtAppSampNR.krqdtAppSampNRPk.appID = appRecordImage.getAppID();
 		
