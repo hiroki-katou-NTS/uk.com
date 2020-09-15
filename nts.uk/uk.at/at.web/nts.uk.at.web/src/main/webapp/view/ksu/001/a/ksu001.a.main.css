@@ -534,9 +534,17 @@ html {
 .background-holiday {background-color: #ff0000 !important;}
 .background-half-day-work {background-color: #FF7F27 !important; }
 .background-schedule-performance {background-color:#008000 !important;}
-.background-white {background-color: white;}
-.color-default {color : #000000 !important;}
+.bg-daily-alter-self {background-color:#94B7FE !important;}
+.bg-daily-alter-other {background-color:#CEE6FF !important;}
+.background-white {background-color: white !important;}
+.color-default {color : #000000;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
+.extable div.xseal, .extable td.xseal {
+    background-color: #ddddd2;
+}
+.extable div.highlight, .extable td.highlight, .xheader td.highlight {
+  background-color: #FFFFCC !important;
+}
 
 table th, table td {
 	padding: 2px 5px;
