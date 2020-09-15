@@ -226,11 +226,21 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 						});
 					}
 				}
-
+				
+				Optional<WorkSchedule> oldDatas = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
+						.setParameter("employeeID", workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd())
+						.getSingle(c->c.toDomain(workSchedule.getEmployeeID(), workSchedule.getYmd()));
+				
 				if (newData.schShortTimeTs.isEmpty()) {
 					// if have not ShortWorkingTimeSheet delete all old data
 					this.deleteAllShortTime(workSchedule.getEmployeeID(), workSchedule.getYmd());
-				} else {
+				}
+				
+				if(oldDatas.get().getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty() && !workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()) {
+					for (ShortWorkingTimeSheet ts : workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets()) {
+							this.insert(ts, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+					}
+				}else{
 					// List<KscdtSchShortTimeTs> schShortTimeTs
 					for (KscdtSchShortTimeTs ts : newData.schShortTimeTs) {
 						oldData.get().schShortTimeTs.forEach(x -> {
