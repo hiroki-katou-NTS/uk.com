@@ -96,5 +96,5 @@ public interface PayoutManagementDataRepository {
 	 */
 	List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state);
 	
-	List<PayoutManagementData> getAllData();
+	List<PayoutManagementData> getAllBySid(String sid);
 }
