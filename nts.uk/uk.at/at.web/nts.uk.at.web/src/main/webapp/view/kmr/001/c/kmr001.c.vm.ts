@@ -260,9 +260,9 @@ module nts.uk.at.kmr001.c {
                     bentoDtos = _.orderBy(bentoDtos, ['frameNo', 'asc']);
                     if (dataRes.operationDistinction == 1) {
                         vm.columnBento([
-                            { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
-                            { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 225 },
-                            { headerText: vm.$i18n('KMR001_50'), key: 'locationName', width: 100 },
+                            { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50, formatter: _.escape },
+                            { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 225, formatter: _.escape },
+                            { headerText: vm.$i18n('KMR001_50'), key: 'locationName', width: 100, formatter: _.escape },
                         ]);
 
                         let array: Array<any> = [];
@@ -289,8 +289,8 @@ module nts.uk.at.kmr001.c {
 
                     } else {
                         vm.columnBento([
-                            { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50 },
-                            { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325 },
+                            { headerText: vm.$i18n('KMR001_41'), key: 'id', width: 50, formatter: _.escape },
+                            { headerText: vm.$i18n('KMR001_42'), key: 'name', width: 325, formatter: _.escape },
                         ]);
                         let array: Array<any> = [];
                         _.range(1, 41).forEach(item =>
