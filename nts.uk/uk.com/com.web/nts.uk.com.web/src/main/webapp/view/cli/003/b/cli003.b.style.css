@@ -1,12 +1,7 @@
 #contents-area {
 	overflow: auto;
-}
-
-#contents-area {
-	overflow: auto;
 	margin-left: 20px;
 }
-
 .contentR {
 	width: 900px;
 	padding-left: 20px;
@@ -51,8 +46,13 @@
 	margin-right: -85px;
 }
 
-.nts-switch-button{
-	width: 75px;
+.nts-switch-button, #B4_3, #B6_3{
+	width: 110px;
+}
+
+.time-editor, .ntsDatepicker {
+	text-align: center !important;
+    width: 85px !important;
 }
 
 #B3_2, #B4_2, #B4_3, #B5_2, #B6_2, #B6_3{
