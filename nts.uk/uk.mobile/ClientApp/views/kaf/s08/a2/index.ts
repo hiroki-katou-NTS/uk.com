@@ -47,6 +47,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //A2 nhận về props comment là một Object comment
     @Prop({ default: {} }) public readonly comment!: Object;
 
+    //A2 nhan ve props businessTripInfoOutput
+    @Prop({default : { }}) public readonly businessTripInfoOutput !: Object;
+
     //public readonly params!: any;
     public name: string = 'hello my dialog';
     //public date: Date = new Date(2020,2,14);
@@ -54,44 +57,6 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public mode: boolean = true;
     public user: any;
     public data: any;
-    public application: any = {
-        version: 1,
-        // appID: '939a963d-2923-4387-a067-4ca9ee8808zz',
-        prePostAtr: 1,
-        // employeeID: '',
-        appType: 3,
-        appDate: this.$dt(new Date(), 'YYYY/MM/DD'),
-        enteredPerson: '1',
-        inputDate: this.$dt(new Date(), 'YYYY/MM/DD HH:mm:ss'),
-        reflectionStatus: {
-            listReflectionStatusOfDay: [{
-                actualReflectStatus: 1,
-                scheReflectStatus: 1,
-                targetDate: '2020/01/07',
-                opUpdateStatusAppReflect: {
-                    opActualReflectDateTime: '2020/01/07 20:11:11',
-                    opScheReflectDateTime: '2020/01/07 20:11:11',
-                    opReasonActualCantReflect: 1,
-                    opReasonScheCantReflect: 0
-
-                },
-                opUpdateStatusAppCancel: {
-                    opActualReflectDateTime: '2020/01/07 20:11:11',
-                    opScheReflectDateTime: '2020/01/07 20:11:11',
-                    opReasonActualCantReflect: 1,
-                    opReasonScheCantReflect: 0
-                }
-            }]
-        },
-        // opStampRequestMode: 1,
-        // opReversionReason: '1',
-        // opAppStartDate: '2020/08/07',
-        // opAppEndDate: '2020/08/08',
-        // opAppReason: 'jdjadja',
-        // opAppStandardReasonCD: 1
-
-
-    };
 
     public created() {
         const vm = this;
@@ -218,8 +183,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
         };
         this.$http.post('at', API.register, {
             businessTrip: paramsBusinessTrip,
-            businessTripInfoOutput: vm.data.businessTripInfoOutput,
-            application: this.application
+            businessTripInfoOutput: vm.businessTripInfoOutput,
+            //application: this.application
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する

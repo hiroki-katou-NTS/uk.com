@@ -28,10 +28,11 @@ export class KafS08AComponent extends Vue {
     public comment: Object = {};
     public derpartureTime: number = null;
     public returnTime: number = null;
+    public businessTripInfoOutput: Object = {};
 
    
     //thực hiện emit từ component con A1
-    public ProcessNextToStepTwo(departureTime,returnTime,achievementDetails,comment) {
+    public ProcessNextToStepTwo(businessTripInfoOutput,departureTime,returnTime,achievementDetails,comment) {
         const vm = this;
         //Object date có được ở màn hình A1
         vm.derpartureTime = departureTime;
@@ -42,6 +43,8 @@ export class KafS08AComponent extends Vue {
         vm.comment = comment;
         //nhảy sang step A2 
         vm.step = 'KAFS08_11';
+        //nhan businessTripInfoOutput tu man hinh start
+        vm.businessTripInfoOutput = businessTripInfoOutput;
     }
 
     //thực hiện emit từ component con A2 đến C

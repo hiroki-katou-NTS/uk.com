@@ -30,6 +30,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public isVisible: boolean = false;
     public derpartureTime: number = null;
     public returnTime: number = null;
+    public isValidateAll: Boolean = true;
     
     @Prop({ default:() => ({}) })
     public readonly params?: any;
@@ -57,16 +58,38 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         //if (vm.params1.derpartureTime == null || vm.params1.returnTime == null ) {
         //    return ;
         //}
-        if (vm.derpartureTime == null || vm.returnTime == null ) {
-            vm.toggleErrorAlert();
-            
-            return ;
-        }
         //gửi table sang màn hình A2
         let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
+        let businessTripInfoOutput = vm.data;
         //gửi comment sang màn hình A2
         let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-        this.$emit('nextToStepTwo',vm.derpartureTime,vm.returnTime,achievementDetails,commentSet);
+        this.$emit('nextToStepTwo',businessTripInfoOutput,vm.derpartureTime,vm.returnTime,achievementDetails,commentSet);
+    }
+
+    //check button next
+    public checkNextButton() {
+        const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                validAll = false;
+            }
+        }
+        vm.isValidateAll = validAll;
+        console.log(validAll);
+        //console.log(vm.application);
+
+        // check validation 
+        this.$validate();
+        if (!this.$valid || !validAll) {
+            window.scrollTo(500, 0);
+
+            return;
+        }
+        if (this.$valid && validAll) {
+            this.$mask('show');
+        }
     }
 
     //thực hiện ẩn/hiện alert error
