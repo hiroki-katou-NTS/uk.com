@@ -77,6 +77,7 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                         vm.application().appDate(appDate);
                         vm.application().opAppStartDate(appDate);
                         vm.application().opAppEndDate(appDate);
+                        vm.application.valueHasMutated();
                         CommonProcess.checkUsage(true, element, vm);
                     }
                 }).fail((res: any) => {
@@ -122,6 +123,7 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                         vm.application().appDate(startDate);
                         vm.application().opAppStartDate(startDate);
                         vm.application().opAppEndDate(endDate);
+                        vm.application.valueHasMutated();
                         CommonProcess.checkUsage(true, element, vm);
                     }
                 }).fail((res: any) => {
