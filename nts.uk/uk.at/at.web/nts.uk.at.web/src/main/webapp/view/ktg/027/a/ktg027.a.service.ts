@@ -3,13 +3,13 @@ module nts.uk.at.view.ktg027.a.service {
    
     
     var paths: any = {
-         getListClosure: "screen/at/overtimehours/getlistclosure",
+        getDataInit: "screen/at/overtimehours/getOvertimedDisplayForSuperiorsDto/",
         getOvertimeHours: "screen/at/overtimehours/getovertimehours/",
         buttonPressingProcess : "screen/at/overtimehours/buttonPressingProcess/{0}/{1}"
     }
     /** Get ListClosure */
-    export function getListClosure(): JQueryPromise<any> {
-        return ajax("at", paths.getListClosure);
+    export function getDataInit(currentOrNextMonth: number): JQueryPromise<any> {
+        return ajax("at", paths.getDataInit + currentOrNextMonth);
     }
     /** Start page */   
     export function getOvertimeHours(targetMonth : number): JQueryPromise<any> {

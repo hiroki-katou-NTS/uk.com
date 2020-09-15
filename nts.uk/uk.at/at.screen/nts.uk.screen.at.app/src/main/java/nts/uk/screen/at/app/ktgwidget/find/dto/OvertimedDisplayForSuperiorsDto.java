@@ -1,7 +1,6 @@
 package nts.uk.screen.at.app.ktgwidget.find.dto;
 
 import java.util.List;
-import java.util.Optional;
 
 import lombok.Builder;
 import lombok.Data;
@@ -28,6 +27,6 @@ public class OvertimedDisplayForSuperiorsDto {
 	private List<AgreementTimeDetail> overtimeOfSubordinateEmployees;
 	
 	//	翌月の締め情報
-	private Optional<CurrentClosingPeriod> closingInformationForNextMonth;
+	private CurrentClosingPeriod closingInformationForNextMonth;
 	
 }

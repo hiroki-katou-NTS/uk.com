@@ -13,6 +13,7 @@ import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.screen.at.app.ktgwidget.KTG027QueryProcessor;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHoursDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimedDisplayForSuperiorsDto;
 @Path("screen/at/overtimehours")
 @Produces("application/json")
 public class OvertimeHoursWebService extends WebService{
@@ -34,5 +35,11 @@ public class OvertimeHoursWebService extends WebService{
 	@Path("buttonPressingProcess/{targetMonth}/{selectedClosureID}")
 	public OvertimeHours getOvertimeHours(@PathParam("targetMonth") int targetMonth, @PathParam("selectedClosureID") int selectedClosureID){
 		return finder.buttonPressingProcess(targetMonth, selectedClosureID);
+	}
+	
+	@POST
+	@Path("getOvertimedDisplayForSuperiorsDto/{currentOrNextMonth}")
+	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(@PathParam("currentOrNextMonth") int currentOrNextMonth) {
+		return finder.getOvertimeDisplayForSuperiorsDto(currentOrNextMonth);
 	}
 }

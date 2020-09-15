@@ -400,7 +400,7 @@ public class KTG027QueryProcessor {
 					.processingYm(closure.getClosureMonth().getProcessingYm().addMonths(1))
 					.closureEndDate(datePeriodClosure.end())
 					.closureStartDate(datePeriodClosure.start()).build();
-			result.setClosingInformationForNextMonth(Optional.ofNullable(closingInformationForNextMonth));
+			result.setClosingInformationForNextMonth(closingInformationForNextMonth);
 			//	/対象年月を指定するログイン者の配下社員の時間外時間の取得
 			AcquisitionOfOvertimeHoursOfEmployeesDto acquisitionOfOvertimeHoursOfEmployeesDto = this.getAcquisitionOfOvertimeHoursOfEmployeesDto(
 					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().addMonths(1), Optional.ofNullable(datePeriodClosure));
@@ -485,6 +485,7 @@ public class KTG027QueryProcessor {
 						requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate, closure.getClosureId());
 			}
 		} 
+		// sủa lại sau khi có update 30/09
 		return listAgreementTimeDetail;
 	}
 	
@@ -495,7 +496,7 @@ public class KTG027QueryProcessor {
 	 */ 
 	public OvertimedDisplayForSuperiorsDto getClosingInfomationForNextMonth(OvertimedDisplayForSuperiorsDto data) {
 		//	上長用の時間外時間表示．翌月の締め情報をチェックするNullじゃない
-		if(data.getClosingInformationForNextMonth().isPresent()) {
+		if(data.getClosingInformationForNextMonth() != null) {
 			return data;
 		}
 		//	上長用の時間外時間表示．翌月の締め情報をチェックするNull
@@ -507,7 +508,7 @@ public class KTG027QueryProcessor {
 				.processingYm(data.getClosingInformationForCurrentMonth().getProcessingYm().addMonths(1))
 				.closureEndDate(datePeriodClosure.end())
 				.closureStartDate(datePeriodClosure.start()).build();
-		data.setClosingInformationForNextMonth(Optional.of(closingInformationForNextMonth));
+		data.setClosingInformationForNextMonth(closingInformationForNextMonth);
 		//	更新後の上長用の時間外時間表示を返す
 		return data;
 	}
