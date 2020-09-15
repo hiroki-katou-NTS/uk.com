@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.indexreconstruction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 
 /**
  * 	インデックス再構成結果履歴
@@ -14,8 +15,7 @@ import nts.arc.layer.dom.AggregateRoot;
 public class IndexReconstructionResultHistory extends AggregateRoot {
 
 	/** 実行ID*/
-	//QA111441
-	private String executionId;
+	private ExecutionCode executionId;
 	
 	/** 結果詳細*/
 	private IndexReconstructionResult indexReconstructionResult;
@@ -37,12 +37,12 @@ public class IndexReconstructionResultHistory extends AggregateRoot {
 	}
 
 	public static interface MementoSetter {
-		void setexecutionId(String indexNo);
+		void setexecutionId(ExecutionCode indexNo);
 		void setIndexReconstructionResult(IndexReconstructionResult fragmentationRate);
 	}
 
 	public static interface MementoGetter {
 		IndexReconstructionResult getIndexReconstructionResult();
-		String getexecutionId();
+		ExecutionCode getexecutionId();
 	}
 }

@@ -17,5 +17,5 @@ public class SaveData extends DomainObject {
 	private NotUseAtr saveDataClassification;
 	
 	/* パターンコード */
-	private Optional<String> patternCode;
+	private Optional<AuxiliaryPatternCode> patternCode;
 }

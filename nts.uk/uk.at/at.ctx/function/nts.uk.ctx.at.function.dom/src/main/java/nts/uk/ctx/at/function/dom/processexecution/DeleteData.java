@@ -19,5 +19,6 @@ public class DeleteData extends DomainObject {
 	private NotUseAtr dataDeletionClassification;
 	
 	/* パターンコード */
-	private Optional<String> patternCode;
+	/* 補助パターンコード */
+	private Optional<AuxiliaryPatternCode> patternCode;
 }

@@ -289,7 +289,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 
 	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,
 			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate,
-			TaskEndTime endTime, boolean repeat, RepeatContentItem content, RepeatDetailSetting detailSetting,
+			TaskEndTime endTime, RepeatContentItem content, RepeatDetailSetting detailSetting,
 			GeneralDate startDate, StartTime startTime, String scheduleId, String endScheduleId) {
 		super();
 		this.oneDayRepInr = oneDayRepInr;
@@ -309,7 +309,7 @@ public class ExecutionTaskSetting extends AggregateRoot {
 	}
 	public ExecutionTaskSetting(OneDayRepeatInterval oneDayRepInr, ExecutionCode execItemCd, String companyId,
 			boolean enabledSetting, GeneralDateTime nextExecDateTime, TaskEndDate endDate,
-			TaskEndTime endTime, boolean repeat, RepeatContentItem content, RepeatDetailSetting detailSetting,
+			TaskEndTime endTime, RepeatContentItem content, RepeatDetailSetting detailSetting,
 			GeneralDate startDate, StartTime startTime) {
 		super();
 		this.oneDayRepInr = oneDayRepInr;
