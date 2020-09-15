@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.request.infra.repository.application.stamp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -70,14 +72,18 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 
 	@Override
 	public void updateStamp(AppStamp appStamp) {
-		// TODO Auto-generated method stub
+		this.commandProxy().updateAll(toEntityList(appStamp));
+		this.getEntityManager().flush();
 
 	}
 
 	@Override
 	public void delete(String companyID, String appID) {
-//		this.commandProxy().remove(KrqdtAppStamp.class, new KrqdtAppStampPK(companyID, appID, stampAtr, stampFrameNo));
-
+		List<KrqdtAppStamp> krqdtAppStampList = new NtsStatement(FIND_BY_APPID, this.jdbcProxy())
+				.paramString("cid", companyID).paramString("appId", appID).getList(res -> toEntity(res));
+		List<KrqdtAppStampPK> keys = krqdtAppStampList.stream().map(
+				x -> new KrqdtAppStampPK(companyID, appID, x.krqdtAppStampPK.stampAtr, x.krqdtAppStampPK.stampFrameNo)).collect(Collectors.toList());
+		this.commandProxy().removeAll(KrqdtAppStamp.class, keys);
 	}
 
 	public Integer convertEnumTimeStamApp(TimeStampAppEnum timeStampAppEnum) {

@@ -11,7 +11,10 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         selectedCodeReason: KnockoutObservable<string>;
         time: KnockoutObservable<number>;
         application: KnockoutObservable<Application>;
-        
+        isSendMail: KnockoutObservable<boolean> = ko.observable(false);
+        data: any;
+        comment1: KnockoutObservable<string> = ko.observable('comment1');
+        comment2: KnockoutObservable<string> = ko.observable('');
         created() {
             
             const self = this;
@@ -38,12 +41,21 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             self.loadData([], [], self.appType())
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
-                    let ApplicantEmployeeID: null,
-                        ApplicantList: null,
-                        appDispInfoStartupOutput = ko.toJS(self.appDispInfoStartupOutput),
-                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+                    let companyId = __viewContext.user.companyId;
+                    let command = { 
+                            appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
+                            recoderFlag: false,
+                            companyId
+                    };
+                
+                    return self.$ajax(API.start, command);
                 }
-            })
+            }).then((res: any) => {
+                console.log(res);
+                self.data = res;
+            }).always(() => {
+                self.$blockui('hide');
+            });
             
         }
         
@@ -142,4 +154,10 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         UNION = {value: GoOutReasonAtr.UNION, name: '組合'};
         
     }
+    const API = {
+            start: "at/request/application/stamp/startStampApp",
+            checkRegister: "at/request/application/stamp/checkBeforeRegister",
+            register: "at/request/application/stamp/register"
+            
+        }
 }

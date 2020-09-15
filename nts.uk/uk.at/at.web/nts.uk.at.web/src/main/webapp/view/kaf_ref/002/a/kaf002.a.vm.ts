@@ -85,7 +85,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }).then((res: any) => {
             console.log(res);
             self.data = res;
-        });
+        }).always(() => {
+            self.$blockui('hide');
+        });;
         self.initData();
     }
     changeDataSource() {

@@ -13,6 +13,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImageRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNR;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNRPk;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,14 +42,21 @@ public class JpaAppRecordImageRepository extends JpaRepository implements AppRec
 
 	@Override
 	public void updateStamp(AppRecordImage appStamp) {
-		// TODO Auto-generated method stub
-
+		KrqdtAppSampNR krqdtAppSampNR = toEntity(appStamp);
+		Optional<KrqdtAppSampNR> krOptional = this.queryProxy().find(krqdtAppSampNR.krqdtAppSampNRPk, KrqdtAppSampNR.class);
+		if (!krOptional.isPresent()) {
+			
+			return;
+		}
+		krOptional.get().stampAtr = krqdtAppSampNR.stampAtr;
+		krOptional.get().appTime = krqdtAppSampNR.appTime;
+		krOptional.get().goOutAtr = krqdtAppSampNR.goOutAtr;
+		this.commandProxy().update(krOptional.get());
 	}
 
 	@Override
 	public void delete(String companyID, String appID) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().remove(KrqdtAppSampNR.class, new KrqdtAppSampNRPk(companyID, appID));
 	}
 	
 	public KrqdtAppSampNR toEntity(AppRecordImage appRecordImage) {
