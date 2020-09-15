@@ -33,11 +33,6 @@ public class OiomtOutputPeriodSet extends UkJpaEntity implements OutputPeriodSet
 	// Embedded primary key 会社ID + 条件設定コード
 	@EmbeddedId
 	private OiomtOutputPeriodSetPk pk;
-
-	// column 契約コード
-	@Basic(optional = false)
-	@Column(name = "CONTRACT_CD")
-	private String contractCd;
 	
 	// column 期間設定
 	@Basic(optional = false)
