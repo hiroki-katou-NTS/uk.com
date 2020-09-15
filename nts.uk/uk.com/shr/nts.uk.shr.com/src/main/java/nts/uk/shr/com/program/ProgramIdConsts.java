@@ -1042,14 +1042,11 @@ public class ProgramIdConsts {
 	public static final String CLI001A = "CLI001A";
 	public static final String CLI001B = "CLI001B";
 	/** CLI003 */
-	public static final String CLI003I = "CLI003I";
 	public static final String CLI003G = "CLI003G";
 	public static final String CLI003H = "CLI003H";
 	public static final String CLI003A = "CLI003A";
 	public static final String CLI003B = "CLI003B";
 	public static final String CLI003C = "CLI003C";
-	public static final String CLI003D = "CLI003D";
-	public static final String CLI003E = "CLI003E";
 	public static final String CLI003F = "CLI003F";
 	//KDL029
 	public static final String KDL029A = "KDL029A";
