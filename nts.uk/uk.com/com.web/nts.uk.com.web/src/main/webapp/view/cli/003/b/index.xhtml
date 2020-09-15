@@ -24,11 +24,11 @@
         <div id="functions-area">
           <a class="goback" data-bind="ntsLinkButton: { jump: '/view/cli/003/a/index.xhtml' }">#{i18n.getText('CLI003_2')}</a>
 	      </div>
-        <div id="contents-area">
+       
           <div class="table valign-top control-group">
             <div class="contentL cell" data-bind="ntsPanel:{width: 300, height: 400, direction: 'right', showIcon: true, visible: true}">
               <div id="B1-search-box" tabindex="1" data-bind="ntsSearchBox: {
-                mode:'igGrid',
+                mode:'mgrid',
                 searchMode: 'highlight',
                 targetKey:'code', 
                 comId: 'B1', 
@@ -117,8 +117,7 @@
                       <td></td>
                       <td>
                         <button id="B4_3" data-bind="click: openDialogForB4_3 ">#{i18n.getText('CLI003_91')}</button>
-                        &#160;&#160;&#160;&#160;
-                        <span data-bind="text : targetEmployeeCount"></span>
+                        <span  id="B4_4" data-bind="text : targetEmployeeCount"></span>
                       </td>
                     </tr>	
                 </com:ko-if>	
@@ -162,8 +161,7 @@
                       <td></td>
                       <td>
                         <button id="B6_3" data-bind="click: openDialogForB6_3 ">#{i18n.getText('CLI003_91')}</button>
-                        &#160;&#160;&#160;&#160;
-                        <span data-bind="text: operatorEmployeeCount"></span>
+                        <span id="B6_4" data-bind="text: operatorEmployeeCount"></span>
                       </td>
                     </tr>					
                   </com:ko-if>	
@@ -178,7 +176,7 @@
                 </table>
               </div>
             </div>
-          </div>
+        
         </div>
       </ui:define>
     </ui:composition>
