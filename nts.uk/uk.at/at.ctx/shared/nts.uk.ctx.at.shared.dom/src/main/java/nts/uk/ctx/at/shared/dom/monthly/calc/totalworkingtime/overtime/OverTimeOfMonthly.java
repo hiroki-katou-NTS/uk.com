@@ -257,12 +257,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 		WithinStatutoryTimeOfDaily legalTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 		if (legalTimeOfDaily == null){
-			legalTimeOfDaily = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-					new AttendanceTime(0),
-					new AttendanceTime(0),
-					new AttendanceTime(0),
-					new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-					new AttendanceTime(0));
+			legalTimeOfDaily = WithinStatutoryTimeOfDaily.defaultValue();
 		}
 		
 		// 法定内残業にできる時間を計算する

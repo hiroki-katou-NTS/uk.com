@@ -330,7 +330,7 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 			Optional<WorkTimezoneCommonSet> commonSetting,
 			NotUseAtr lateEarlyMinusAtr) {
 		
-		if(!this.jugmentDeductLateEarly(premiumAtr, holidayCalcMethodSet, commonSetting) && lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE))
+		if(!this.isDeductLateLeaveEarly(premiumAtr, holidayCalcMethodSet, commonSetting) && lateEarlyMinusAtr.equals(NotUseAtr.NOT_USE))
 			//設定を参照して「控除しない」となった場合、かつ、「強制的に控除する＝しない」の場合は0
 			return AttendanceTime.ZERO;
 		
@@ -410,18 +410,13 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 		//介護
 		AttendanceTime careTime = new AttendanceTime(0);
 		//短時間勤務を控除するか判断
-		if(premiumAtr.isRegularWork()) {
-			Optional<WorkTimeCalcMethodDetailOfHoliday> advancedSet = holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet();
-			if(advancedSet.isPresent()&&advancedSet.get().getCalculateIncludCareTime()==NotUseAtr.NOT_USE) {
-				shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
-				careTime =  ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
-			}
-		}else {
-			Optional<PremiumCalcMethodDetailOfHoliday> advanceSet = holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet();
-			if(advanceSet.isPresent()&&advanceSet.get().getCalculateIncludCareTime()==NotUseAtr.NOT_USE) {
-				shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
-				careTime =  ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
-			}
+		if(premiumAtr.isRegularWork() && !holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().isCalculateIncludCareTime()) {
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
+		}
+		if(premiumAtr.isPremium() && !holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().isCalculateIncludCareTime()) {
+			shortTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Child);
+			careTime = ((CalculationTimeSheet)this).calcDedTimeByAtr(DeductionAtr.Deduction,ConditionAtr.Care);
 		}
 		result = result.addMinutes(shortTime.valueAsMinutes());
 		result = result.addMinutes(careTime.valueAsMinutes());
@@ -913,34 +908,15 @@ public class WithinWorkTimeFrame extends ActualWorkingTimeSheet {
 	 * @param lateEarlyMinusAtr 
 	 * @return
 	 */
-	public boolean jugmentDeductLateEarly(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
-	
+	public boolean isDeductLateLeaveEarly(PremiumAtr premiumAtr,HolidayCalcMethodSet holidayCalcMethodSet,Optional<WorkTimezoneCommonSet> commonSetting) {
 		//就業の休暇の就業時間計算方法詳細．遅刻・早退を控除する
-		NotUseAtr workTimeDeductLateLeaveEarly = NotUseAtr.USE;
-		if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().isPresent()) {
-			if(holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().getAdvancedSet().get().isDeductLateLeaveEarly(commonSetting)) {
-				workTimeDeductLateLeaveEarly = NotUseAtr.USE;
-			}else {
-				workTimeDeductLateLeaveEarly = NotUseAtr.NOT_USE;
-			}
-		}
+		if(premiumAtr.isRegularWork() && holidayCalcMethodSet.getWorkTimeCalcMethodOfHoliday().isDeductLateLeaveEarly(commonSetting))
+			return true;
 		
 		//割増の休暇の就業時間計算方法詳細．遅刻・早退を控除する
-		NotUseAtr premiumDeductLateLeaveEarly = NotUseAtr.USE;
-		if(holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet().isPresent()) {
-			if(holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().getAdvanceSet().get().isDeductLateLeaveEarly(commonSetting)) {
-				premiumDeductLateLeaveEarly = NotUseAtr.USE;
-			}else {
-				premiumDeductLateLeaveEarly = NotUseAtr.NOT_USE;
-			}
-		}
+		if(premiumAtr.isPremium() && holidayCalcMethodSet.getPremiumCalcMethodOfHoliday().isDeductLateLeaveEarly(commonSetting))
+			return true;
 		
-		if(premiumAtr.isRegularWork() && workTimeDeductLateLeaveEarly.equals(NotUseAtr.USE)) {
-			return true;
-		} 
-		if(premiumAtr.isPremium() && premiumDeductLateLeaveEarly.equals(NotUseAtr.USE)){
-			return true;
-		}
 		return false;
 	}
 	

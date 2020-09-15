@@ -69,14 +69,35 @@ module nts.uk.at.view.ksu001.a {
             $('#A1_12_1').ntsPopup("toggle");
         });
 
-        //click btnA4
-        $('#A4_1').ntsPopup({
+        $('#A4_1').ntsPopup("init", {
             position: {
                 my: 'left top',
                 at: 'left bottom+3',
                 of: $('#A4')
+            },
+            dismissible: false
+        });
+        
+        $(window).on("mousedown.popup", function(e) {
+            let control = $('#A4_1');
+            let combo = $('.nts-combo-column-0');
+
+            if ($(e.target).is(combo[1]) || $(e.target).is(combo[2])) {
+                console.log('not hide');
+            } else if (!$(e.target).is(control) // Target isn't Popup
+                && control.has(e.target).length === 0) { // Target isn't Trigger element
+                hide(control);
             }
         });
+
+        function hide(control: JQuery): JQuery {
+            control.css({
+                visibility: 'hidden',
+                top: "-9999px",
+                left: "-9999px"
+            });
+            return control;
+        }
         
         $('#A4').click(function() {
             $('#A4_1').ntsPopup("toggle");

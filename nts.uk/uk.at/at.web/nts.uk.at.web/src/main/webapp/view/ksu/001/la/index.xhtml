@@ -78,14 +78,14 @@
                                             value: scheduleTeamModel().name
                                         }" tabindex="7" />
                         </div>
-                        <div style="margin-left: 80px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
+                        <div style="margin-left: 70px;" data-bind="ntsFormLabel:{ constraint:'ScheduleTeamRemarks'}">#{i18n.getText('KSU001_3210')}
                         </div>
                         <div class="input">
                             <input id="scheduleTeamRemarks" data-bind="ntsTextEditor:{
                                             name:'#[KSU001_3210]',                                            
                                             constraint: 'ScheduleTeamRemarks',      
                                             option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({                                        
-                                                width: '220px',
+                                                width: '110px',
                                                 textalign: 'left'
                                             })),                                      
                                             value: scheduleTeamModel().note
@@ -115,7 +115,7 @@
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', 
                                             items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd','businessName', 'teamName'], mode: 'igGrid'}" />
 
-                        <div style="width: 95px;"></div>
+                        <div style="width: 96px;"></div>
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
@@ -138,10 +138,10 @@
                         </div>
                         <div class="arrow-button">
                             <div>
-                                <button class="btn-custom"   data-bind="click: moveItemLeftToRight" ><div class="valign-center " ><img src="img/arrow-right.png" /></div></button>
+                                <button class="large btn-custom"   data-bind="click: moveItemLeftToRight" ><div class="valign-center " ><img src="img/arrow-right.png" /></div></button>
                             </div>
                             <div>
-                                <button class="btn-custom"  data-bind="click: moveItemRightToLeft" ><div class="valign-center"><img src="img/arrow-left.png" /></div></button>
+                                <button class="large btn-custom"  data-bind="click: moveItemRightToLeft" ><div class="valign-center"><img src="img/arrow-left.png" /></div></button>
                             </div>   
                         </div>
                         <div>

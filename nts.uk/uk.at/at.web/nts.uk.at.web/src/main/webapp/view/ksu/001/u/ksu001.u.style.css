@@ -1,12 +1,13 @@
 .container-custom-btn{
     display: flex;
     justify-content: center;  
-    margin-left: 550px;
+    /* margin-left: 550px; */
+    margin-left: 451px;
 } 
 .container-custom {
     display: flex; 
     justify-content: center;   
-    margin-top: 20px;
+    margin-top: 15px;
     margin-bottom: -30px;   
 }
 .btn-custom {
@@ -16,5 +17,35 @@
 .fc-title {
 	text-align: center;
 	font-size: 14px;    
-    padding-top: 20% ;    
+    padding-top: 18% ;    
+}
+.panel.ntsPanel {
+    padding: 20px 15px !important;
+}
+
+#calendar{
+	width: 500px !important;
+}
+
+#calendar.fc.fc-unthemed .fc-body .fc-row {
+	height: 80px !important;
+}
+
+#calendar.fc.fc-unthemed .fc-day-grid-container {
+	height: auto !important;
+}
+
+.caret-background.caret-bottom:after {   
+    border-width: 16px 36px !important;
+}
+.nts-calendar-header div {
+    margin-left: 34.5% !important; 
+}
+
+#line {
+	margin: 3px 5%;	
+	border:none;
+	display: block;
+	height: 0.1px;
+	background:#9A9A9A
 }

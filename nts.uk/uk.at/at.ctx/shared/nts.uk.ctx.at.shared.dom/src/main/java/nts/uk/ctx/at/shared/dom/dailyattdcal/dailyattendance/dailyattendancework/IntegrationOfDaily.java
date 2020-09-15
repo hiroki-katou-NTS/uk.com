@@ -96,6 +96,7 @@ public class IntegrationOfDaily {
 	//日別実績の臨時出退勤 (old)
 //	private Optional<TemporaryTimeOfDailyPerformance> tempTime;
 	//臨時出退勤: 日別勤怠の臨時出退勤
+	@Setter
 	private Optional<TemporaryTimeOfDailyAttd> tempTime;
 	
 	//日別実績の入退門 (old)
