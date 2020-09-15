@@ -345,6 +345,7 @@ public class ReflectAttendanceClock {
 				workStamp.get().getTimeDay().setTimeWithDay(Optional.of(timeWithDayAttr));
 				workStamp.get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
 				workStamp.get().getTimeDay().getReasonTimeChange().setEngravingMethod(Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
+				workStamp.get().setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 			}else {
 				WorkStamp workStampNew = new WorkStamp();
 				WorkTimeInformation timeDay = new WorkTimeInformation(
@@ -354,6 +355,7 @@ public class ReflectAttendanceClock {
 				workStampNew.setLocationCode(Optional.empty());
 				workStampNew.setAfterRoundingTime(timeWithDayAttr);
 				workStamp = Optional.of(workStampNew);
+				workStamp.get().setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 				if(actualStampAtr == ActualStampAtr.STAMP ) {
 					timeActualStamp.get().setStamp(workStamp);
 				}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
@@ -385,6 +387,7 @@ public class ReflectAttendanceClock {
 			workStamp.setTimeDay(timeDay);
 			workStamp.setLocationCode(Optional.empty());
 			workStamp.setAfterRoundingTime(timeWithDayAttr);
+			workStamp.setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 			if(actualStampAtr == ActualStampAtr.STAMP ) {
 				timeActualStamp.setStamp(Optional.of(workStamp));
 			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
