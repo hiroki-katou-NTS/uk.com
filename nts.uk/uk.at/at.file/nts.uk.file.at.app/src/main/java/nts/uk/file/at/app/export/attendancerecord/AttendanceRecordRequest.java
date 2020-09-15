@@ -26,20 +26,17 @@ public class AttendanceRecordRequest {
 	/** The end date. */
 	private GeneralDate endDate;
 
-	/** The layout. */
+	/** The code */
 	private long layout;
 	
 	/** The file type. */
 	private int mode;
 	
+	/** The closure id. */
 	private int closureId;
 	
-	/** The selection type */
-	private int selection;
-//	
-//	/** The output layout id. */
-//	private String outputLayoutId;
-	
+	/** The condition. */
+	private AttendanceRecordOutputConditionsDto condition;
 	
 	
 }
