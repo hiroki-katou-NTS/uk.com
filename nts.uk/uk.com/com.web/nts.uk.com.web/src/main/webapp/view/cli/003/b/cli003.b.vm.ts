@@ -51,7 +51,7 @@ module nts.uk.com.view.cli003.b {
   }
   export class ItemLogSetModel {
     id: string;
-    code: any;
+    code: string;
     name: string;
     recordType: number;
     dataType: number;
@@ -59,21 +59,21 @@ module nts.uk.com.view.cli003.b {
     logSetOutputs: any;
 
     constructor(
-      id: string,
-      code: any,
-      name: string,
-      recordType: number,
-      dataType: number,
-      systemType: number,
-      logSetOutputs: any
+		id: string,
+		code: any,
+		name: string,
+		recordType: number,
+		dataType: number,
+		systemType: number,
+		logSetOutputs: any
     ) {
-      this.id = id;
-      this.code = code;
-      this.name = name;
-      this.recordType = recordType;
-      this.dataType = dataType;
-      this.systemType = systemType;
-      this.logSetOutputs = logSetOutputs;
+		this.id = id;
+		this.code = code;
+		this.name = name;
+		this.recordType = recordType;
+		this.dataType = dataType;
+		this.systemType = systemType;
+		this.logSetOutputs = logSetOutputs;
     }
   }
 
@@ -222,23 +222,6 @@ module nts.uk.com.view.cli003.b {
       { code: EMPLOYEE_SPECIFIC.SPECIFY, name: this.$i18n("CLI003_17") },
       { code: EMPLOYEE_SPECIFIC.ALL, name: this.$i18n("CLI003_18")},
     ]);
-    b1Columns: KnockoutObservableArray<any> = ko.observableArray([
-      {
-        headerText: "",
-        key: "rowNumber",
-        width: "40px",
-      },
-      {
-        headerText: this.$i18n("CLI003_88"),
-        key: "code",
-        width: "50px",
-      },
-      {
-        headerText: this.$i18n("CLI003_89"),
-        key: "name",
-        width: "100px",
-      },
-    ]);
     b2_10Datasource: KnockoutObservableArray<LogSetItemDetailModalDisplay> = ko.observableArray([]);
     b2_10Columns: KnockoutObservableArray<any> = ko.observableArray([
       {
@@ -273,6 +256,18 @@ module nts.uk.com.view.cli003.b {
         width: 125,
       },
     ]);
+    b1Columns: KnockoutObservableArray<any> = ko.observableArray([
+        {
+          headerText: this.$i18n("CLI003_88"),
+          key: "code",
+          width: "50px",
+        },
+        {
+          headerText: this.$i18n("CLI003_89"),
+          key: "name",
+          width: "100px",
+        },
+      ]);
     startDateNameOperator: KnockoutObservable<string>= ko.observable(this.$i18n("CLI003_52"));
     endDateNameOperator: KnockoutObservable<string> = ko.observable(this.$i18n("CLI003_53"));
     startDateString: KnockoutObservable<string>= ko.observable("");
@@ -326,23 +321,7 @@ module nts.uk.com.view.cli003.b {
 
     }
     mounted() {
-      const vm = this;
-      // if ($("#B1").data("mGrid")){
-      //   $("#B1").mGrid("destroy");
-      // } 
-      // new nts.uk.ui.mgrid.MGrid($("#B1")[0], {
-      //   subHeight: 600,
-      //   subWidth: 300,
-      //   primaryKey: "code",
-      //   primaryKeyDataType: "number",
-      //   dataSource: vm.logSets(),
-      //   columns: vm.b1Columns(),
-      //   multiple: false,
-      //   value: vm.currentCode(),
-      //   selectFirstIfNull: true,
-      //   enter: "right",
-      //   features: [],
-      // }).create();
+	  const vm = this;
     }
 
     getAllLogDisplaySet() {
@@ -359,13 +338,13 @@ module nts.uk.com.view.cli003.b {
               const logDisplaySet = logDisplaySets[i];
               vm.logSets.push(
                 new ItemLogSetModel(
-                  logDisplaySet.logSetId,
-                  logDisplaySet.code,
-                  logDisplaySet.name,
-                  logDisplaySet.recordType,
-                  logDisplaySet.dataType,
-                  logDisplaySet.systemType,
-                  logDisplaySet.logSetOutputItems
+					logDisplaySet.logSetId,
+					logDisplaySet.code,
+					logDisplaySet.name,
+					logDisplaySet.recordType,
+					logDisplaySet.dataType,
+					logDisplaySet.systemType,
+					logDisplaySet.logSetOutputItems
                 )
               );
             }
@@ -381,8 +360,8 @@ module nts.uk.com.view.cli003.b {
             }
           }
           dfd.resolve();
-        })
-        .fail(function (error: string) {
+		})
+        .fail((error: string) => {
           vm.$dialog.alert(error);
           dfd.resolve();
         })
@@ -434,7 +413,7 @@ module nts.uk.com.view.cli003.b {
           });
           vm.b2_10Datasource(logSetItemDetailsList);
         })
-        .fail((error: string) => {
+        .fail(() => {
           vm.$dialog.alert({ messageId: "Msg_1221" });
           return null;
         })

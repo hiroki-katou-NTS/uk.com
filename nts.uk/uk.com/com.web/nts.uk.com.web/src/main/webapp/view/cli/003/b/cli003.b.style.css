@@ -48,5 +48,17 @@
 	text-align: right;
 }
 #B7{
-	margin-right: -130px;
+	margin-right: -85px;
+}
+
+.nts-switch-button{
+	width: 75px;
+}
+
+#B3_2, #B4_2, #B4_3, #B5_2, #B6_2, #B6_3{
+	margin-left: 50px;
+}
+
+#B4_4, #B6_4 {
+	margin-left: 20px;
 }
