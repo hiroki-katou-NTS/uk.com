@@ -4,7 +4,9 @@ package nts.uk.ctx.at.record.ws.approver36agrbycompany;
  * @author chinh.hm
  */
 
+import lombok.val;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.app.command.approver36agrbycompany.CompanyApproverHistoryAddCommand;
 import nts.uk.ctx.at.record.app.command.approver36agrbycompany.CompanyApproverHistoryAddCommandHandler;
 
@@ -22,7 +24,9 @@ public class CompanyApproverHistoryAddWebService extends WebService {
 
     @Path("register")
     @POST
-    public void register(CompanyApproverHistoryAddCommand command){
+    public void register(CompanyApproverHistoryAddDto dto){
+        val command = new CompanyApproverHistoryAddCommand(dto.getCompanyId(),
+                new DatePeriod(dto.getStarDate(),dto.getStarDate()),dto.getApproveList(),dto.getConfirmedList());
         this.commandHandler.handle(command);
     }
 

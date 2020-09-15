@@ -8,12 +8,11 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CompanyApproverHistoryAddCommand {
+public class CompanyApproverHistoryUpdateCommand {
     /**
      * 会社ID
      */
@@ -28,10 +27,11 @@ public class CompanyApproverHistoryAddCommand {
     /**
      * 承認者リスト
      */
-    private List<String> approveList;
+    private List<String> approvedList;
     /**
      * 確認者リスト
      */
     private List<String> confirmedList;
 
+    private GeneralDate startDateBeforeChange;
 }
