@@ -840,20 +840,19 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set Deco background
                         if (userInfor.backgroundColor == 1) {
                             // A10_color② シフト表示：シフトの背景色  (Hiển thị Shift: màu nền của shift) 
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));
                             
                             let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                             if (cell.shiftCode != null) {
                                 let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
                                 if (objShiftMasterWithWorkStyle.length > 0) {
                                     let color = objShiftMasterWithWorkStyle[0].color;
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0)); 
+                                    //detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0)); 
                                 }
                             }
                         } else if (userInfor.backgroundColor == 0) {
                             // A10_color③ シフト表示：通常の背景色  (hiển thị shift: màu nền normal)                                                     
                             if (cell.achievements == true || cell.needToWork == false) {
-                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 0));
+                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
                             } else if (cell.supportCategory != SupportCategory.NotCheering) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-support", 0)); 
                             } else {
@@ -917,13 +916,17 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let ymd = time.yearMonthDay;
                         let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
                         let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '')) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        if (cell.needToWork == false) {
+                            workTypeName = '';
+                            workTimeName = '';
+                        }
                         objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName);
 
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")                                                   
                         if (cell.achievements == true || cell.needToWork == false) {
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 1));
                         } else {
                             if (cell.workTypeEditStatus != null && cell.workTypeEditStatus.editStateSetting != null && cell.workTypeEditStatus.editStateSetting == 0) {
                                 // HAND_CORRECTION_MYSELF(0), 手修正（本人）
@@ -986,15 +989,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
                         let workTimeCode = cell.workTimeCode;
+                        if (cell.needToWork == false) {
+                            workTypeName = '';
+                            workTimeName = '';
+                            startTime    = '';
+                            endTime      = '';
+                        }
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime);
 
                         // set Deco background
                         // A10_color⑤ 勤務略名表示の背景色 (Màu nền hiển thị "chuyên cần, tên viết tắt")
                         if (cell.achievements == true || cell.needToWork == false) {
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 0));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 1));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 2));
-                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable", 3));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 0));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 1));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 2));
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-schedule-uncorrectable-ksu001", 3));
                         } else {
                             if (cell.workTypeEditStatus != null && cell.workTypeEditStatus.editStateSetting == 0) {
                                 // HAND_CORRECTION_MYSELF(0), 手修正（本人）
@@ -1650,7 +1659,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 decorator: detailContentDeco
             }]);
 
-           // $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
+           $("#extable").exTable("updateTable", "detail", {}, detailContentUpdate);
         }
 
         // save setting hight cua grid vao localStorage

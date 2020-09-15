@@ -16,9 +16,13 @@ public class WorkHour {
 	//休暇加算時間
 	private AttendanceTime vacationAddTime;
 	
-	public WorkHour(AttendanceTime workTime,AttendanceTime vacationAddTime) {
+	/** 所定内割増時間 */
+	private AttendanceTime withinPremiumTime;
+	
+	public WorkHour(AttendanceTime workTime, AttendanceTime vacationAddTime, AttendanceTime withinPremiumTime) {
 		this.workTime = workTime;
 		this.vacationAddTime = vacationAddTime;
+		this.withinPremiumTime = withinPremiumTime;
 	}
 	
 }

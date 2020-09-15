@@ -40,12 +40,7 @@ public class WorkTimeOfTimeSeries implements Serializable{
 	public WorkTimeOfTimeSeries(GeneralDate ymd){
 		
 		this.ymd = ymd;
-		this.legalTime = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-				new AttendanceTime(0),
-				new AttendanceTime(0),
-				new AttendanceTime(0),
-				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-				new AttendanceTime(0));
+		this.legalTime = WithinStatutoryTimeOfDaily.defaultValue();
 		this.vacationAddTime = new AttendanceTime(0);
 		this.workType = null;
 	}
