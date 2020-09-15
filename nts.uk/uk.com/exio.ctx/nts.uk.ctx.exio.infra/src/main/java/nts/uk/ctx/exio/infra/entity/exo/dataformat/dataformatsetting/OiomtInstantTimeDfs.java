@@ -33,7 +33,7 @@ public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
 	 * 時分/分選択
 	 */
 	@Basic(optional = false)
-	@Column(name = "TIME_SELETION")
+	@Column(name = "HOUR_MIN_SELECT")
 	public int timeSeletion;
 
 	/**
@@ -47,14 +47,14 @@ public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
 	 * 分/小数処理端数区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "MINUTE_FRACTION_DIGIT_PROCESS_CLS")
+	@Column(name = "DECIMAL_FRACTION")
 	public int minuteFractionDigitProcessCls;
 
 	/**
 	 * 進数選択
 	 */
 	@Basic(optional = false)
-	@Column(name = "DECIMAL_SELECTION")
+	@Column(name = "DECIMAL_SELECT")
 	public int decimalSelection;
 
 	/**
@@ -131,7 +131,7 @@ public class OiomtInstantTimeDfs extends UkJpaEntity implements Serializable {
 	 * 固定値の値
 	 */
 	@Basic(optional = true)
-	@Column(name = "VALUE_OF_FIXED_VALUE")
+	@Column(name = "FIXED_VAL")
 	public String valueOfFixedValue;
 
 	@Override

@@ -56,7 +56,7 @@ public class OiomtExterOutExecLog extends UkJpaEntity implements Serializable {
 	 * ロール種類
 	 */
 	@Basic(optional = true)
-	@Column(name = "CTG_CD")
+	@Column(name = "CTG_ID")
 	public Integer categoryId;
 
 	/**
