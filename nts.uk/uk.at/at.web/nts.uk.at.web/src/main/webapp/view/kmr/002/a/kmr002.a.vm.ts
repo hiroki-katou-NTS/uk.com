@@ -124,7 +124,9 @@ module nts.uk.at.view.kmr002.a.model {
             self.lunchText(data.bentoMenuByClosingTimeDto.closingTime1.reservationTimeName);
             self.dinnerText(data.bentoMenuByClosingTimeDto.closingTime2 == null ? '' : data.bentoMenuByClosingTimeDto.closingTime2.reservationTimeName);
             self.optionMenu.push({ code: 1, name: self.lunchText() });
-            self.optionMenu.push({ code: 2, name: self.dinnerText() });
+            if (data.bentoMenuByClosingTimeDto.closingTime2 != null){
+                self.optionMenu.push({ code: 2, name: self.dinnerText() });
+            }
             self.optionMenu.valueHasMutated();
             self.isUpdate(data.listOrder.length > 0 ? true : false);
             self.initTime(data, self.setIndex(data, 1));
@@ -141,7 +143,9 @@ module nts.uk.at.view.kmr002.a.model {
             if (data.bentoMenuByClosingTimeDto.menu2.length > 0) {
                 self.optionMenu().clear();
                 self.optionMenu.push({ code: 1, name: self.lunchText() });
-                self.optionMenu.push({ code: 2, name: self.dinnerText() });
+                if (data.bentoMenuByClosingTimeDto.closingTime2 != null){
+                    self.optionMenu.push({ code: 2, name: self.dinnerText() });
+                }
                 _.forEach(data.bentoMenuByClosingTimeDto.menu2, (item) => {
                     let self = this, status = false;
                     status = self.checkLengthOrder(self.setIndex(data, 2), data, item);
