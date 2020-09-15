@@ -4,16 +4,16 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult;
  * 承認状態
  * @author quang.nh1
  */
-public enum ConfirmationStatusEnum {
+public enum ApprovalStatus {
 	/**
-	 * 未確認(unconfirm)
+	 * 未承認(unapprove)
 	 */
-	UNCONFIRM(0,"未確認"),
+	UNAPPROVED(0,"未確認"),
 
 	/**
-	 * 承認(recognition)
+	 * 承認(approved)
 	 */
-	RECOGNITION(1,"承認"),
+	APPROVED(1,"承認"),
 
 	/**
 	 * 否認(deny)
@@ -24,7 +24,7 @@ public enum ConfirmationStatusEnum {
 
 	public String nameId;
 
-	ConfirmationStatusEnum(int type, String nameId){
+	ApprovalStatus(int type, String nameId){
 		this.value = type;
 		this.nameId = nameId;
 	}
