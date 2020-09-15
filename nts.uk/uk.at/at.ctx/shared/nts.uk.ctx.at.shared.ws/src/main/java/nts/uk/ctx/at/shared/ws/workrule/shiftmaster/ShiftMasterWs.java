@@ -75,7 +75,7 @@ public class ShiftMasterWs {
 	public Ksm015StartPageDto isForAttendent(@PathParam("unit") int unit){
 		AlreadySettingWorkplaceDto configWorkplace = this.orgFinder.getAlreadySetting(unit);
 		return Ksm015StartPageDto.builder()
-				.forAttendent(AppContexts.user().roles().forAttendance())
+				.forAttendent(AppContexts.user().roles().isInChargeAttendance())
 				.alreadyConfigWorkplaces(configWorkplace.getWorkplaceIds())
 				.build() ;
 	}
@@ -85,7 +85,7 @@ public class ShiftMasterWs {
 	public Ksm015StartPageDto getDStart(@PathParam("unit") int unit){
 		AlreadySettingWorkplaceDto configWorkplace = this.orgFinder.getAlreadySettingWplGr(unit);
 		return Ksm015StartPageDto.builder()
-				.forAttendent(AppContexts.user().roles().forAttendance())
+				.forAttendent(AppContexts.user().roles().isInChargeAttendance())
 				.alreadyConfigWorkplaces(unit == 0 ? configWorkplace.getWorkplaceIds() : configWorkplace.getWorkplaceGrpIds())
 				.build() ;
 	}

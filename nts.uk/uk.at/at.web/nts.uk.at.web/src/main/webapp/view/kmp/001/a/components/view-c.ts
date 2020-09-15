@@ -213,7 +213,7 @@ module nts.uk.at.view.kmp001.c {
 							d.stampDatetime = d.stampDatetime.replace(/T/, ' ').replace(/Z/, '');
 						});
 					
-						vm.items(_.orderBy(data, ['stampNumber'], ['asc']));
+						vm.items(data);
 
 						if (selectedIndex >= 0) {
 							const record = data[selectedIndex || 0];
@@ -257,7 +257,7 @@ module nts.uk.at.view.kmp001.c {
 
 				vm.$ajax(KMP001C_API.ADD_STAMP_CARD, command)
 					.then(() => vm.$dialog.info({ messageId: "Msg_15" }))
-					.then(() => vm.reloadData(0))
+					.then(() => vm.reloadData(newIndex))
 					.then(() => vm.employee.clear())
 					.then(() => vm.$blockui("clear"));
 			}
