@@ -1,24 +1,18 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
-import lombok.Getter;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstAttndRec;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnstSealColumn;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSet;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnstAttndRecOutSetPK;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 
 
 /**
@@ -42,10 +36,8 @@ public class JpaAttendanceRecordExportSettingSetMemento implements AttendanceRec
 	/**
 	 * Instantiates a new jpa attendance record export setting set memento.
 	 *
-	 * @param entity
-	 *            the entity
-	 * @param sealColumnNames
-	 *            the seal column entity
+	 * @param entity the entity
+	 * @param sealColumnNames the seal column entity
 	 */
 	public JpaAttendanceRecordExportSettingSetMemento(KfnmtRptWkAtdOut entity) {
 		this.resEntity = entity;

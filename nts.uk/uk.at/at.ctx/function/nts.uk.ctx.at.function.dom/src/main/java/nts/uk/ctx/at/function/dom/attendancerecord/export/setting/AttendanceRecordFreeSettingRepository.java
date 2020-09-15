@@ -7,18 +7,18 @@ import java.util.Optional;
  * 
  * Repository
  */
-public interface AttendanceRecordOuputItemsRepository {
+public interface AttendanceRecordFreeSettingRepository {
 	/**
 	 * Add new OutputPeriodSetting
 	 * @param domain
 	 */
-	void add(AttendanceRecordOuputItems domain);
+	void add(AttendanceRecordFreeSetting domain);
 
 	/**
 	 * Update OutputPeriodSetting
 	 * @param domain
 	 */
-    void update(AttendanceRecordOuputItems domain);
+    void update(AttendanceRecordFreeSetting domain);
     
     /**
      * Get domain model 「出勤簿の出力項目自由設定」－「出勤簿の出力項目設定」 with company ID and employee ID
@@ -26,7 +26,7 @@ public interface AttendanceRecordOuputItemsRepository {
      * @param employeeId
      * @return
      */
-    public Optional<AttendanceRecordOuputItems> getOutputItemsByCompnayAndEmployee(String companyId, String employeeId);
+    public Optional<AttendanceRecordFreeSetting> getOutputItemsByCompnayAndEmployee(String companyId, String employeeId);
     
     
     /**
@@ -37,7 +37,7 @@ public interface AttendanceRecordOuputItemsRepository {
      * @param code the code
      * @return the optional
      */
-    public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCode(String companyId, String employeeId, String code);
+    public Optional<AttendanceRecordFreeSetting> findByCompanyEmployeeAndCode(String companyId, String employeeId,String code);
     
     
     /**
@@ -49,7 +49,7 @@ public interface AttendanceRecordOuputItemsRepository {
      * @param layoutId the layout id
      * @return the optional
      */
-    public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeCodeAndLayoutId(String companyId, String employeeId, String code, String layoutId);
+    public Optional<AttendanceRecordFreeSetting> findByCompanyEmployeeCodeAndLayoutId(String companyId, String employeeId, String code, String layoutId);
     
     
     /**
@@ -59,19 +59,6 @@ public interface AttendanceRecordOuputItemsRepository {
      * @return the optional
      */
     public Optional<AttendanceRecordExportSetting> findByLayoutId(String layoutId);
-    
-    /**
-     * Find by company employee and code.
-     *
-     * @param companyId the company id
-     * @param employeeId the employee id
-     * @param code the code
-     * @param selectionType the selection type
-     * @return the optional
-     */
-    public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCodeAndSelection(String companyId, String employeeId, long code , int selectionType);
-    
-    
     
     
     

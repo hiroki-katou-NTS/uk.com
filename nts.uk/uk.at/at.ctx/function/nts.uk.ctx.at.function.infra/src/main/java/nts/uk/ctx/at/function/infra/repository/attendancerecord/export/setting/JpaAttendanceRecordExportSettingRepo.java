@@ -26,6 +26,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut_;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -75,7 +76,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 		predicates.add(
-				criteriaBuilder.equal(root.get("cid"), companyId));
+				criteriaBuilder.equal(root.get(KfnmtRptWkAtdOut_.cid), companyId));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -101,7 +102,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		Optional<AttendanceRecordExportSetting> oKfnmtRptWkAtdOut = this.queryProxy().query(sql, KfnmtRptWkAtdOut.class)
 													.setParameter("exportCD", code)
 													.setParameter("companyId", companyId)
-													.getSingle(c -> this.toDomain(c));
+													.getSingle(c -> toDomain(c));
 
 		return oKfnmtRptWkAtdOut;
 	}
@@ -152,7 +153,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		KfnmtRptWkAtdOutseal outseal = new KfnmtRptWkAtdOutseal();
 		outseal.setColumnId(columnId.toString());
 		outseal.setExclusVer(0);
-		outseal.setContractCd("111");
+		outseal.setContractCd(AppContexts.user().contractCode());
 		outseal.setCid(cId);
 		outseal.setLayoutId(layoutId);
 		outseal.setSealStampName(sealName.toString());

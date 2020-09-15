@@ -4,13 +4,13 @@ import java.util.List;
 
 import lombok.Data;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
 
 /**
- * The Class AttendanceRecordOuputItemsDto.
+ * The Class AttendanceRecordFreeSettingDto.
  */
 @Data
-public class AttendanceRecordOuputItemsDto implements AttendanceRecordOuputItems.MementoSetter {
+public class AttendanceRecordFreeSettingDto implements AttendanceRecordFreeSetting.MementoSetter {
 	
 	/**
 	 *	会社ID

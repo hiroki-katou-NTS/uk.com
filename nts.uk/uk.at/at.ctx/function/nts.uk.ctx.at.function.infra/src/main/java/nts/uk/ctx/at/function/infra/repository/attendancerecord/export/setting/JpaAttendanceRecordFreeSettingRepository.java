@@ -6,13 +6,13 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItems;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordOuputItemsRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
 
 @Stateless
-public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
-		implements AttendanceRecordOuputItemsRepository {
+public class JpaAttendanceRecordFreeSettingRepository extends JpaRepository
+		implements AttendanceRecordFreeSettingRepository {
 	
 	
 	// Select all
@@ -22,17 +22,17 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 			+ " WHERE f.cid = :cId AND f.sid = :sId";
 
 	@Override
-	public void add(AttendanceRecordOuputItems domain) {
+	public void add(AttendanceRecordFreeSetting domain) {
 		// Convert data to entity
-		KfnmtRptWkAtdOut entity = JpaAttendanceRecordOuputItemsRepository.toEntity(domain);
+		KfnmtRptWkAtdOut entity = JpaAttendanceRecordFreeSettingRepository.toEntity(domain);
 		// Insert entity
 		this.commandProxy().insert(entity);
 	}
 
 	@Override
-	public void update(AttendanceRecordOuputItems domain) {
+	public void update(AttendanceRecordFreeSetting domain) {
 		// Convert data to entity
-		KfnmtRptWkAtdOut entity = JpaAttendanceRecordOuputItemsRepository.toEntity(domain);
+		KfnmtRptWkAtdOut entity = JpaAttendanceRecordFreeSettingRepository.toEntity(domain);
 		KfnmtRptWkAtdOut oldEntity = this.queryProxy().find(entity.getLayoutId(), KfnmtRptWkAtdOut.class).get();
 //		oldEntity.setExclusVer(entity.getExclusVer());
 //		oldEntity.setContractCD(entity.getContractCD());
@@ -50,21 +50,21 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<AttendanceRecordOuputItems> getOutputItemsByCompnayAndEmployee(String companyId,
+	public Optional<AttendanceRecordFreeSetting> getOutputItemsByCompnayAndEmployee(String companyId,
 			String employeeId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCode(String companyId, String employeeId,
+	public Optional<AttendanceRecordFreeSetting> findByCompanyEmployeeAndCode(String companyId, String employeeId,
 			String code) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeCodeAndLayoutId(String companyId,
+	public Optional<AttendanceRecordFreeSetting> findByCompanyEmployeeCodeAndLayoutId(String companyId,
 			String employeeId, String code, String layoutId) {
 		// TODO Auto-generated method stub
 		return null;
@@ -75,7 +75,7 @@ public class JpaAttendanceRecordOuputItemsRepository extends JpaRepository
 //		return new AttendanceRecordExportSetting(entity);
 	}
 	
-	private static KfnmtRptWkAtdOut toEntity(AttendanceRecordOuputItems domain) {
+	private static KfnmtRptWkAtdOut toEntity(AttendanceRecordFreeSetting domain) {
 		KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
 //		domain.setMemento(entity);
 		return entity;
