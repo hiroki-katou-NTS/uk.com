@@ -1,16 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.OneYearTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.ScreenDisplayInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.SpecialProvisionsOfAgreement;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.List;
-
-// import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
 
 /**
  * 年間申請を登録する
@@ -98,10 +93,8 @@ public class AnnualAppCreate {
 	}
 
 
-	public static interface Require extends ApproverGetDomainService.Require, AgreementDomainService.RequireM3 {
-//[R-1] 申請を追加する
-//
-//	36協定特別条項の適用申請Repository.Insert(36協定特別条項の適用申請)
-
+	public static interface Require {
+		//[R-1] 申請を追加する
+		//	36協定特別条項の適用申請Repository.Insert(36協定特別条項の適用申請)
 	}
 }
