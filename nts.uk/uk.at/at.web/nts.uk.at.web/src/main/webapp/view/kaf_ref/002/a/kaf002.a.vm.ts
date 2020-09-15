@@ -100,25 +100,39 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 applicationDto: ko.toJS(self.application)
                 
         };
-        self.$ajax(API.checkRegister, command)
-            .then(res => {
-                console.log(res);
-//                if (res) {
-                    let command = {
-                            applicationDto: ko.toJS(self.application),
-                            appStampDto: data.appStampOptional,
-                            appStampOutputDto: self.data,
-                            recoderFlag: false
-                    };
-                    return self.$ajax(API.register, command);
-//                }
-            })
-            .then(res => {
-                console.log(res);
-            })
-            .always(err => {
-                console.log(err);
-            })
+        self.$blockui("show");
+        self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+        .then(isValid => {
+            if ( isValid ) {
+                return true;
+            }
+        }).then(result => {
+            if (result) {
+                self.$ajax(API.checkRegister, command)
+                .then(res => {
+                    if (res) {
+                        let command = {
+                                applicationDto: ko.toJS(self.application),
+                                appStampDto: data.appStampOptional,
+                                appStampOutputDto: self.data,
+                                recoderFlag: false
+                        };
+                        return self.$ajax(API.register, command);
+//                    }
+                })
+                .done(res => {
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    } );
+                })
+                .always(err => {
+                    self.$blockui("hide");
+                })
+            }
+        })
+        .always(err => {
+            self.$blockui("hide");
+         })
         
     }
     public register() {
@@ -358,14 +372,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             _.forEach(self.dataSourceOb(), (items: GridItem, index) => {
 //                出勤／退勤 , 外出
                 if (index == 0 || index == 1) {                    
-                    _.forEach(items, el => {                       
+                    _.forEach(items, (el: GridItem) => {                       
                         if (!ko.toJS(el.flagObservable)) {
                             if (ko.toJS(el.startTimeRequest)) {
                                 let timeStampAppDto = new TimeStampAppDto();
                                 let destinationTimeApp = new DestinationTimeAppDto();
-                                destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -377,9 +391,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                             if (ko.toJS(el.endTimeRequest)) {
                                 let timeStampAppDto = new TimeStampAppDto();
                                 let destinationTimeApp = new DestinationTimeAppDto();
-                                destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -389,24 +403,39 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                         } else {
                             if (el.startTimeActual) {
                                 let destinationTimeApp = new DestinationTimeAppDto();
-                                destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                             if (el.endTimeActual) {
                                 let destinationTimeApp = new DestinationTimeAppDto();
-                                destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                         }   
                     })
                     
                 } else {
-                    _.forEach(items, el => {
-                        
+                    _.forEach(items, (el: GridItem) => {
+                        if (!ko.toJS(el.flagObservable)) {
+                            if (ko.toJS(el.startTimeRequest) && ko.toJS(el.endTimeRequest)) {
+                                let timeStampAppOtherDto = new TimeStampAppOtherDto();
+                                let tz = new TimeZone();
+                                tz.startTime = ko.toJS(el.startTimeRequest);
+                                tz.endTime = ko.toJS(el.endTimeRequest);
+                                let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
+                                destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
+                                destinationTimeZoneAppDto.engraveFrameNo = el.id;
+                                timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
+                                timeStampAppOtherDto.timeZone = tz;
+                                listTimeStampAppOther.push(timeStampAppOtherDto);
+                            }
+                        } else {
+                            
+                        }
                     });
                 }
             });
@@ -463,7 +492,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
     class TimeStampAppOtherDto {
         public destinationTimeZoneApp: DestinationTimeZoneAppDto;
-        public timezone: TimeZone;
+        public timeZone: TimeZone;
     }
     class TimeZone {
         public startTime: number;
