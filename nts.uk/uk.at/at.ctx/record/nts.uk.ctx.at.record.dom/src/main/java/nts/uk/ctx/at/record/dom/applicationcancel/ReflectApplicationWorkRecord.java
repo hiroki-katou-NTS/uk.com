@@ -9,17 +9,16 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.adapter.application.reflect.RCAppReflectionSetting;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
-import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
 import nts.uk.ctx.at.shared.dom.application.common.StampRequestModeShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.ScheduleRecordClassifi;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.CreateApplicationReflectionHist;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.RCCreateDailyAfterApplicationeReflect;
 import nts.uk.ctx.at.shared.dom.application.stamp.AppRecordImageShare;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
@@ -68,11 +67,12 @@ public class ReflectApplicationWorkRecord {
 		// 申請.打刻申請モードをチェック
 		if (application.getOpStampRequestMode().isPresent()
 				&& application.getOpStampRequestMode().get() == StampRequestModeShare.STAMP_ONLINE_RECORD) {
-			/// 打刻申請（NRモード）を反映する
+			/// 打刻申請（NRモード）を反映する -- itemId
 			TimeStampApplicationNRMode.process(require, dateTarget, (AppRecordImageShare) application, dailyRecordApp,
 					stamp);
 		} else {
-			/// TODO: 申請の反映（勤務実績）
+			/// 申請の反映（勤務実績） in process
+			RCCreateDailyAfterApplicationeReflect.process(require, application, dailyRecordApp, dateTarget);
 		}
 
 		// 日別実績の補正処理 --- create default ???? sau xu ly phan anh check lai
@@ -114,29 +114,9 @@ public class ReflectApplicationWorkRecord {
 		return converter.toDomain();
 	}
 
-//	private static ChangeDailyAttendance createChangeDailyAtt(List<Integer> lstItemId) {
-//
-//		boolean workInfo = lstItemId.stream().filter(x -> x.intValue() == 28 || x.intValue() == 29).findFirst()
-//				.isPresent();
-//		boolean scheduleWorkInfo = lstItemId.stream().filter(x -> x.intValue() == 1 || x.intValue() == 2).findFirst()
-//				.isPresent();
-//		boolean attendance = lstItemId.stream()
-//				.filter(x -> x.intValue() == 31 || x.intValue() == 34 || x.intValue() == 41 || x.intValue() == 44)
-//				.findFirst().isPresent();
-//		return new ChangeDailyAttendance(workInfo, scheduleWorkInfo, attendance, false);
-//	}
-
-	public static interface Require
-			extends GetTargetDateRecordApplication.Require, CorrectDailyAttendanceService.Require,
-			CreateApplicationReflectionHist.Require, TimeStampApplicationNRMode.Require {
-
-		/**
-		 * 
-		 * require{ 申請反映設定を取得する(会社ID、申請種類） }
-		 * RequestSettingRepository.getAppReflectionSetting RequestSettingAdapter
-		 */
-		public Optional<RCAppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationTypeShare appType);
-
+	public static interface Require extends GetTargetDateRecordApplication.Require,
+			CorrectDailyAttendanceService.Require, CreateApplicationReflectionHist.Require,
+			TimeStampApplicationNRMode.Require, RCCreateDailyAfterApplicationeReflect.Require {
 		/**
 		 * 
 		 * require{ 社員の作業データ設定を取得する(社員ID） }

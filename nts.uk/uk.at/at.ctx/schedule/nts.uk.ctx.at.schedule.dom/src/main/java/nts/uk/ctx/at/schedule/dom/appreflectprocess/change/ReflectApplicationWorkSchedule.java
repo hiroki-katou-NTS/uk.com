@@ -43,7 +43,7 @@ public class ReflectApplicationWorkSchedule {
 			return Pair.of(reflectStatus, AtomTask.of(() -> {
 			}));
 
-		// TODO: 事前申請を勤務予定に反映する
+		// TODO: 事前申請を勤務予定に反映する chua xu ly, vi tam hoan
 
 		// input.日別勤怠(work）を[反映前の日別勤怠(work)]へコピーして保持する
 		IntegrationOfDaily domainDaily = new IntegrationOfDaily(workSchedule.getEmployeeID(), workSchedule.getYmd(),
@@ -60,7 +60,7 @@ public class ReflectApplicationWorkSchedule {
 
 		// TODO: 申請の反映（勤務予定）in processing reflect all application
 		DailyAfterAppReflectResult affterReflect = SCCreateDailyAfterApplicationeReflect.process(require, application,
-				dailyRecordApp.getDomain(), date);
+				dailyRecordApp, date);
 		dailyRecordApp.setDomain(affterReflect.getDomainDaily());
 
 		// 日別実績の補正処理
@@ -126,7 +126,7 @@ public class ReflectApplicationWorkSchedule {
 		 * require{ 申請反映設定を取得する(会社ID、申請種類） }
 		 * RequestSettingRepository.getAppReflectionSetting
 		 */
-		public Optional<SCAppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationTypeShare appType);
+		public Optional<SCAppReflectionSetting> getAppReflectionSettingSc(String companyId, ApplicationTypeShare appType);
 
 		// WorkScheduleRepository
 		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd);

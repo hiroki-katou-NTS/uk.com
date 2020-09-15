@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.AllArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.adapter.appreflect.RequestSettingAdapter;
@@ -17,10 +18,17 @@ import nts.uk.ctx.at.schedule.dom.appreflectprocess.change.ReflectApplicationWor
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.workschedule.WorkScheduleRepository;
 import nts.uk.ctx.at.schedule.pub.appreflectprocess.ReflectApplicationWorkSchedulePub;
+import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHAppReflectionSetting;
+import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHApplyTimeSchedulePriority;
+import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHClassifyScheAchieveAtr;
+import nts.uk.ctx.at.shared.dom.adapter.application.reflect.SHPriorityTimeReflectAtr;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -141,12 +149,6 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		}
 
 		@Override
-		public Optional<SCAppReflectionSetting> getAppReflectionSetting(String companyId,
-				ApplicationTypeShare appType) {
-			return requestSettingAdapter.getAppReflectionSetting(companyId, appType);
-		}
-
-		@Override
 		public Optional<WorkSchedule> get(String employeeID, GeneralDate ymd) {
 			return workScheduleRepository.get(employeeID, ymd);
 		}
@@ -170,6 +172,47 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 		public List<IntegrationOfDaily> calculateForSchedule(CalculateOption calcOption,
 				List<IntegrationOfDaily> integrationOfDaily) {
 			return calculateDailyRecordServiceCenterNew.calculateForSchedule(calcOption, integrationOfDaily);
+		}
+
+		@Override
+		public Optional<ReflectWorkChangeApplication> findReflectWorkCg(String companyId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<SCAppReflectionSetting> getAppReflectionSettingSc(String companyId,
+				ApplicationTypeShare appType) {
+			return requestSettingAdapter.getAppReflectionSetting(companyId, appType);
+		}
+
+		@Override
+		public Optional<SHAppReflectionSetting> getAppReflectionSetting(String companyId,
+				ApplicationTypeShare appType) {
+			return requestSettingAdapter.getAppReflectionSetting(companyId, appType)
+					.map(x -> new SHAppReflectionSetting(x.getScheReflectFlg(),
+							EnumAdaptor.valueOf(x.getPriorityTimeReflectFlag().value, SHPriorityTimeReflectAtr.class),
+							x.getAttendentTimeReflectFlg(),
+							EnumAdaptor.valueOf(x.getClassScheAchi().value, SHClassifyScheAchieveAtr.class),
+							EnumAdaptor.valueOf(x.getReflecTimeofSche().value, SHApplyTimeSchedulePriority.class)));
+		}
+
+		@Override
+		public Optional<ReflectGoBackDirectly> findReflectGoBack(String companyId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<ReflectAppStamp> findReflectAppStamp(String companyId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			// TODO Auto-generated method stub
+			return null;
 		}
 
 	}

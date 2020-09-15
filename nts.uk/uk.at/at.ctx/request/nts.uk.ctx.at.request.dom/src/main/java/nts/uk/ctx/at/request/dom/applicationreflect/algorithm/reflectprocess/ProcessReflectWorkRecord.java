@@ -9,13 +9,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkRecord;
 import nts.uk.ctx.at.request.dom.applicationreflect.algorithm.checkprocess.PreCheckProcessWorkSchedule.PreCheckProcessResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.AppReflectExecCond;
 import nts.uk.ctx.at.request.dom.applicationreflect.object.ReflectStatusResult;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workschedule.ExecutionType;
-import nts.uk.ctx.at.request.dom.setting.company.request.appreflect.AppReflectionSetting;
 import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectDailyShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReasonNotReflectShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
@@ -67,13 +65,6 @@ public class ProcessReflectWorkRecord {
 		 * require{ 申請反映実行条件を取得する(会社ID) ｝
 		 */
 		public Optional<AppReflectExecCond> findAppReflectExecCond(String companyId);
-
-		/**
-		 * 
-		 * require{ 申請反映設定を取得する(会社ID、申請種類） }
-		 * RequestSettingRepository.getAppReflectionSetting
-		 */
-		public Optional<AppReflectionSetting> getAppReflectionSetting(String companyId, ApplicationType appType);
 
 		/**
 		 * 
