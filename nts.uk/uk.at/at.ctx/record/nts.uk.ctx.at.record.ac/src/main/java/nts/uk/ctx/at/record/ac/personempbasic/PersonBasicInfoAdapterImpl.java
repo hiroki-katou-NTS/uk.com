@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Stateless
-public class PersonEmpBasicInfoAdapterImpl implements PersonEmpBasicInfoAdapter {
+public class PersonBasicInfoAdapterImpl implements PersonEmpBasicInfoAdapter {
     @Inject
     private  PersonEmpBasicInfoPub personEmpBasicInfoPub;
     @Override
