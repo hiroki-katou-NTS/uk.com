@@ -289,39 +289,39 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             } else {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 0));
                             }
+                        }
 
-                            // set Deco text color
-                            // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")  
-                            if (util.isNullOrUndefined(cell.shiftCode) || util.isNullOrEmpty(cell.shiftCode)) {
-                                // デフォルト（黒）  Default (black)
-                                detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
-                            } else {
-                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
-                                if (objShiftMasterWithWorkStyle.length > 0) {
-                                    /**
-                                     *  1日休日系  ONE_DAY_REST(0)
-                                     *  午前出勤系 MORNING_WORK(1)
-                                     *  午後出勤系 AFTERNOON_WORK(2)
-                                     *  1日出勤系 ONE_DAY_WORK(3)
-                                     **/
-                                    let workStyle = objShiftMasterWithWorkStyle[0].workStyle;
-                                    if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
-                                    }
-                                    if (workStyle == AttendanceHolidayAttr.MORNING) {
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                    }
-                                    if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
-                                    }
-                                    if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
-                                    }
-                                    if (util.isNullOrUndefined(workStyle) || util.isNullOrEmpty(workStyle)) {
-                                        // デフォルト（黒）  Default (black)
-                                        detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
-                                    }
-                                } 
+                        // set Deco text color
+                        // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")  
+                        if (util.isNullOrUndefined(cell.shiftCode) || util.isNullOrEmpty(cell.shiftCode)) {
+                            // デフォルト（黒）  Default (black)
+                            detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                        } else {
+                            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
+                            if (objShiftMasterWithWorkStyle.length > 0) {
+                                /**
+                                 *  1日休日系  ONE_DAY_REST(0)
+                                 *  午前出勤系 MORNING_WORK(1)
+                                 *  午後出勤系 AFTERNOON_WORK(2)
+                                 *  1日出勤系 ONE_DAY_WORK(3)
+                                 **/
+                                let workStyle = objShiftMasterWithWorkStyle[0].workStyle;
+                                if (workStyle == AttendanceHolidayAttr.FULL_TIME) {
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-attendance", 0));
+                                }
+                                if (workStyle == AttendanceHolidayAttr.MORNING) {
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
+                                }
+                                if (workStyle == AttendanceHolidayAttr.AFTERNOON) {
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-half-day-work", 0));
+                                }
+                                if (workStyle == AttendanceHolidayAttr.HOLIDAY) {
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-holiday", 0));
+                                }
+                                if (util.isNullOrUndefined(workStyle) || util.isNullOrEmpty(workStyle)) {
+                                    // デフォルト（黒）  Default (black)
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
+                                }
                             }
                         }
                     };
@@ -683,9 +683,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         destroyAndCreateGrid(dataBindGrid,viewMode){
             let self = this;
-            $("#extable").remove();
-            let ex = "<div id='extable'></div>";
-            $("#extableA").append(ex);
+            $("#extable").children().remove();
+            $("#extable").removeData();
+//            let ex = "<div id='extable'></div>";
+//            $("#extable-outside").append(ex);
             self.initExTable(dataBindGrid, viewMode, 'stick');
             if (!self.showA9) {
                 $(".toLeft").css("display", "none");
