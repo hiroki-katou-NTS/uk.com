@@ -317,7 +317,8 @@ module nts.uk.at.kmr001.c {
                         bentoDtos[0].reservationAtr1, bentoDtos[0].reservationAtr2,
                         Number(bentoDtos[0].price1), Number(bentoDtos[0].price2),
                         bentoDtos[0].workLocationCode
-                    )
+                    );
+                    vm.model.valueHasMutated();
                 } else {
                     vm.$dialog.error({ messageId: 'Msg_1849' });
                 }
@@ -332,6 +333,7 @@ module nts.uk.at.kmr001.c {
                             Number(bento[0].price1), Number(bento[0].price2),
                             bento[0].workLocationCode
                         );
+                        vm.model.valueHasMutated();
                         vm.selectedWorkLocationCode(bento[0].workLocationCode);
                         vm.$blockui('clear');
                     } else {
@@ -341,6 +343,7 @@ module nts.uk.at.kmr001.c {
                             null, null,
                             vm.workLocationList().length > 0 ? vm.workLocationList()[0].id : ''
                         );
+                        vm.model.valueHasMutated();
                         vm.selectedWorkLocationCode(vm.workLocationList().length > 0 ? vm.workLocationList()[0].id : '');
                         vm.$blockui('clear');
                     }
