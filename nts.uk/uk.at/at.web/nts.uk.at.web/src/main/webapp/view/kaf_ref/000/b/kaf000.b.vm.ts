@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+ /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf000_ref.b.viewmodel {
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
@@ -100,8 +100,8 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             vm.$ajax(`${API.getDetailPC}/${vm.currentApp()}`).done((successData: any) => {
             	vm.approvalReason("");
                 vm.appType(successData.appDetailScreenInfo.application.appType);
-                vm.application().appID = successData.appDetailScreenInfo.application.appID;
-		        vm.application().appType = vm.appType();
+				vm.application().appType = vm.appType();
+                vm.application().appID(successData.appDetailScreenInfo.application.appID);
 		        vm.application().opAppReason(successData.appDetailScreenInfo.application.opAppReason);
 		        vm.application().opAppStandardReasonCD(successData.appDetailScreenInfo.application.opAppStandardReasonCD);
 		        vm.application().opReversionReason(successData.appDetailScreenInfo.application.opReversionReason);
