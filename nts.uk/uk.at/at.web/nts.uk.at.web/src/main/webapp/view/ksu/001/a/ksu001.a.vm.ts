@@ -113,11 +113,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         // data grid
         listEmpInfo = [];
-        listWorkScheduleWorkInfor = [];
-        listWorkScheduleShift = [];
-        listPersonalConditions = [];
+        listWorkScheduleWorkInfor  = [];
+        listWorkScheduleShift      = [];
+        listPersonalConditions     = [];
         displayControlPersonalCond = {};
-        listDateInfo = [];
+        listDateInfo     = [];
+        listCellNotEdit  = [];
         
         showTeamCol = false;
         showRankCol = false;
@@ -247,6 +248,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 let shiftMasterWithWorkStyleLst;
                 let detailContentDeco = [];
+                //detailContentDeco     = self.listCellNotEdit;
 
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor: IUserInfor = JSON.parse(data);
@@ -435,6 +437,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataWhenChangeModePeriod(param).done((data: any) => {
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                
+                self.saveDataGrid(data);
 
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
@@ -794,6 +798,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDs   = [];
             let detailContentDeco = [];
             let htmlToolTip       = [];
+            let listCellNotEdit   = [];
             
             let arrListCellLock = [];
             
@@ -802,6 +807,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listEmpData = [];
             self.listSid([]);
             self.arrListCellLock = [];
+            self.listCellNotEdit = [];
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -898,6 +904,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa1
                         if (cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            listCellNotEdit.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                         }
                         // điều kiện ※Aa2
                         if (cell.isActive == false) {
@@ -1069,6 +1076,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.arrListCellLock = arrListCellLock;
                 }
             }
+            
+            self.listCellNotEdit = listCellNotEdit;
 
             // set width cho column cho tung mode
             let widthColumn = 0;
@@ -1820,7 +1829,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             service.getDataChangeMonth(param).done((data: any) => {
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
-                
+                self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
                 
@@ -1876,7 +1885,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataChangeMonth(param).done((data: any) => {
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
-
+                self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
 
