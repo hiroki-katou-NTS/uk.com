@@ -94,7 +94,7 @@ public class ReflectTemporaryStartEnd {
 			TimeLeavingWork timeSheet = new TimeLeavingWork(new WorkNo(tf.getFrameNo()), tf.getStart(), tf.getEnd(), false, false);
 			timeLeavingWork.add(timeSheet);
 		}
-		integrationOfDaily.setAttendanceLeave(Optional.of(new TimeLeavingOfDailyAttd(timeLeavingWork, new WorkTimes(0))));
+		integrationOfDaily.setTempTime(Optional.of(new TemporaryTimeOfDailyAttd(new WorkTimes(0),timeLeavingWork)));
 		
 		return ReflectStampOuput.REFLECT;
 	}

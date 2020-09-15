@@ -273,7 +273,7 @@ public class FlexWithinWorkTimeSheet extends WithinWorkTimeSheet{
 				conditionItem,
 				predetermineTimeSetByPersonInfo,
 				coreTimeSetting,
-				HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(addSetting.getCalculationByActualTimeAtr(PremiumAtr.RegularWork)),
+				HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(addSetting.getCalculationByActualTimeAtr(PremiumAtr.Premium)),
 				lateEarlyMinusAtr);
 		
 		AttendanceTimeOfExistMinus flexTime = new AttendanceTimeOfExistMinus(0);

@@ -201,8 +201,7 @@ public class GoingOutStampLeakageChecking {
 							&& timeLeavingWork.getAttendanceStamp().get().getStamp().isPresent())
 							&& (timeLeavingWork.getLeaveStamp().get().getStamp() != null
 									&& timeLeavingWork.getLeaveStamp().get().getStamp().isPresent())
-							&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-							&& comeBack.get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+							&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
 						if ((comeBack != null && comeBack.isPresent() && comeBack.get().getStamp() != null
 								&& comeBack.get().getStamp().isPresent()
 								&& timeLeavingWork.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get()

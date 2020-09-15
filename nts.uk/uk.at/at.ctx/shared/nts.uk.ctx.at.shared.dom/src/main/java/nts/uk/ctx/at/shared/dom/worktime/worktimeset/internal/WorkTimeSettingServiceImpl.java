@@ -90,7 +90,7 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 	 */
 	@Override
 	public List<StampReflectTimezone> getStampReflectTimezone(String companyId, String workTimeCode, Integer start1,
-			Integer start2, Integer end1, Integer end2) {
+			Integer end1, Integer start2, Integer end2) {
 
 		Optional<WorkTimeSetting> optWorkTimeSetting = workTimeSettingRepo.findByCode(companyId, workTimeCode);
 		if (!optWorkTimeSetting.isPresent()) {
@@ -216,17 +216,17 @@ public class WorkTimeSettingServiceImpl implements WorkTimeSettingService {
 
 			// 打刻反映時間帯でループ
 			flowWorkSetting.getStampReflectTimezone().getStampReflectTimezones().forEach(item -> {
-				// start = start, end = 2
-				StampReflectTimezone v = StampReflectTimezone.builder().workNo(new WorkNo(1))
-						.classification(item.getClassification()).startTime(item.getStartTime())
-						.endTime(new TimeWithDayAttr(start)).build();
-
-				// start = 2, end = end
-				StampReflectTimezone v2 = StampReflectTimezone.builder().workNo(new WorkNo(2))
-						.classification(item.getClassification()).startTime(new TimeWithDayAttr(start))
-						.endTime(item.getEndTime()).build();
-				rs.add(v);
-				rs.add(v2);
+					// start = start, end = 2
+					StampReflectTimezone v = StampReflectTimezone.builder().workNo(new WorkNo(1))
+							.classification(item.getClassification()).startTime(item.getStartTime())
+							.endTime(new TimeWithDayAttr(start)).build();
+					rs.add(v);
+					// start = 2, end = end
+					StampReflectTimezone v2 = StampReflectTimezone.builder().workNo(new WorkNo(2))
+							.classification(item.getClassification()).startTime(new TimeWithDayAttr(start))
+							.endTime(item.getEndTime()).build();
+					
+					rs.add(v2);
 			});
 
 			return rs;
