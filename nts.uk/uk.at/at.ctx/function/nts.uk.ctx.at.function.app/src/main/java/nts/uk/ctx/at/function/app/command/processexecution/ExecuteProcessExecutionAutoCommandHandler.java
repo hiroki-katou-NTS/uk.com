@@ -540,20 +540,15 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //	
 //	@Inject
 //	private AppDataInfoMonthlyRepository appDataInfoMonthlyRepo;
+	
 	/**
-	 * 各処理を実行する
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.更新処理自動実行.実行処理.各処理の分岐.各処理の分岐
 	 * 
-	 * @param execId
-	 *            実行ID
-	 * @param procExec
-	 *            更新処理自動実行
-	 * @param execSetting
-	 *            実行タスク設定
-	 * @param procExecLog
-	 *            更新処理自動実行ログ
+	 * @param execId      実行ID
+	 * @param procExec    更新処理自動実行
+	 * @param execSetting 実行タスク設定
+	 * @param procExecLog 更新処理自動実行ログ
 	 */
-	// true interrupt false non interrupt
-	// 各処理の分岐
 	private boolean doProcesses(CommandHandlerContext<ExecuteProcessExecutionCommand> context,
 			EmpCalAndSumExeLog empCalAndSumExeLog, String execId, ProcessExecution procExec,
 			ProcessExecutionLog procExecLog, String companyId) {
@@ -562,10 +557,12 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		/*
 		 * スケジュールの作成 【パラメータ】 実行ID 取得したドメインモデル「更新処理自動実行」、「実行タスク設定」、「更新処理自動実行ログ」の情報
 		 */
+		/* スケジュールの作成 */
 		OutputCreateScheduleAndDaily dataSchedule = this.createSchedule(context, execId, procExec, procExecLog); 
 		if (!dataSchedule.isCheckStop()) {
 			return true;
 		} 
+		/* 終了状態＝中断がかえってきているか確認する */
 		OutputCreateScheduleAndDaily dataDaily = this.createDailyData(context, empCalAndSumExeLog, execId, procExec, procExecLog);
 		if (!dataDaily.isCheckStop()) {
 			return true;
@@ -580,12 +577,25 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				Collectors.collectingAndThen(Collectors.toList(), list -> mergeList(list))));
 		List<ApprovalPeriodByEmp> lstApprovalPeriod = mapApprovalPeriod.values().stream().collect(Collectors.toList());
 		
+		// Step 承認結果反映
 		if (this.reflectApprovalResult(execId, procExec, procExecLog, companyId,lstApprovalPeriod)) {
 			return true;
-		} 
+		}
+		
+		// Step	月別集計
 		if (this.monthlyAggregation(execId, procExec, procExecLog, companyId, context)) {
 			return true;
-		} 
+		}
+		
+		// Step 任意期間の集計
+		if (this.aggregationOfArbitraryPeriod(execId, companyId, procExec, procExecLog, context)) {
+			return true;
+		}
+		
+		// Step 外部出力
+		// TODO
+		
+		// Step アラーム抽出
 		if (this.alarmExtraction(execId, procExec, procExecLog, companyId, context)) {
 			return true;
 		}
@@ -600,7 +610,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		boolean checkErrAppDaily = false;
 		OutputAppRouteDaily outputAppRouteDaily = new OutputAppRouteDaily(); 
 		String errorMessageDaily = "";
-		// 承認ルート更新（日次）
+		// Step 承認ルート更新（日次）
 		try {
 		outputAppRouteDaily = this.appRouteUpdateDailyService.checkAppRouteUpdateDaily(execId, procExec, procExecLog);
 		if(outputAppRouteDaily.isCheckError1552Daily()) {
@@ -686,7 +696,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		String errorMessageMonthly = "";
 		OutputAppRouteMonthly outputAppRouteMonthly = new OutputAppRouteMonthly();
 		try {
-			// 承認ルート更新（月次）
+			// Step 承認ルート更新（月次）
 			outputAppRouteMonthly = this.appRouteUpdateMonthlyService.checkAppRouteUpdateMonthly(execId, procExec, procExecLog);
 			if(outputAppRouteMonthly.isCheckError1552Monthly()) {
 				errorMessageMonthly = "Msg_1552";
@@ -762,9 +772,73 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 //					executionLogAdapterFn.updateExecuteLog(paramMonthly);
 //				}
 //			}
+			
+			// Step データの保存
+			// TODO
+			
+			// Step データの削除
+			// TODO
+			
+			// Step インデックス再構成
+			// TODO
 		}
 		return false;
 	}
+
+	
+	/**
+	 *	 任意期間の集計
+	 * @param execId
+	 *	 実行ID
+	 * @param companyId
+	 * 	会社ID
+	 * @param procExec
+	 * 	更新処理自動実行
+	 * @param procExecLog
+	 * 	更新処理自動実行ログ
+	 * @param context
+	 * @return
+	 */
+	private boolean aggregationOfArbitraryPeriod(String execId, String companyId, ProcessExecution procExec,
+		ProcessExecutionLog procExecLog, CommandHandlerContext<ExecuteProcessExecutionCommand> context) {
+		// ドメインモデル「更新処理自動実行ログ」を更新する
+		List<ExecutionTaskLog> taskLogLists = procExecLog.getTaskLogList();
+		int size = taskLogLists.size();
+		boolean existExecutionTaskLog = false;
+		for (int i = 0; i < size; i++) {
+			ExecutionTaskLog executionTaskLog = taskLogLists.get(i);
+			// 各処理の終了状態.更新処理　＝　任意期間の集計
+			if (executionTaskLog.getProcExecTask().value == ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD.value) {
+				executionTaskLog.setStatus(null);
+				executionTaskLog.setLastExecDateTime(GeneralDateTime.now());
+				existExecutionTaskLog = true;
+				executionTaskLog.setLastEndExecDateTime(null);
+				break;
+				
+			}
+		}
+		if (!existExecutionTaskLog) {
+			ExecutionTaskLog execTaskLog = new ExecutionTaskLog(ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD, null);
+			execTaskLog.setLastExecDateTime(GeneralDateTime.now());
+			execTaskLog.setErrorBusiness(null);
+			execTaskLog.setErrorSystem(null);
+			execTaskLog.setLastEndExecDateTime(null);
+			taskLogLists.add(execTaskLog);
+		}
+		String execItemCd = context.getCommand().getExecItemCd();
+		List<ExecutionTaskLog> taskLogList = this.execTaskLogRepo.getAllByCidExecCdExecId(companyId, execItemCd,
+				execId);
+		if (CollectionUtil.isEmpty(taskLogList)) {
+			this.execTaskLogRepo.insertAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
+		} else {
+			this.execTaskLogRepo.updateAll(companyId, execItemCd, execId, procExecLog.getTaskLogList());
+		}
+
+		this.procExecLogRepo.update(procExecLog);
+				
+				
+	return false;
+}
 
 	@Inject
 	private BasicScheduleRepository basicScheduleRepository;

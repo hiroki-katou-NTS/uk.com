@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.dom.processexecution.updatelogafterprocess;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,7 +10,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.employeemanage.EmployeeManageAdapter;
 import nts.uk.ctx.at.function.dom.adapter.executionlog.ScheduleErrorLogAdapter;
@@ -19,13 +17,14 @@ import nts.uk.ctx.at.function.dom.adapter.executionlog.ScheduleErrorLogImport;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.AlarmCategoryFn;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.ExecutionLogAdapterFn;
 import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.ExecutionLogErrorDetailFn;
-import nts.uk.ctx.at.function.dom.adapter.toppagealarmpub.ExecutionLogImportFn;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.AppDataInfoDailyImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovaldaily.CreateperApprovalDailyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.AppDataInfoMonthlyImport;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.actualsituation.createperapprovalmonthly.CreateperApprovalMonthlyAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoAdapter;
 import nts.uk.ctx.at.function.dom.adapter.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfoImport;
+import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforAdapter;
+import nts.uk.ctx.at.function.dom.executionstatusmanage.optionalperiodprocess.AggrPeriodInforImported;
 import nts.uk.ctx.at.function.dom.processexecution.ProcessExecution;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
@@ -33,41 +32,65 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecution
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogRepository;
 import nts.uk.shr.com.i18n.TextResource;
 
+// TODO: Auto-generated Javadoc
 /**
- * 各処理の後のログ更新処理
- * 
- * @author tutk
+ * 各処理の後のログ更新処理.
  *
+ * @author tutk
  */
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class UpdateLogAfterProcess {
+	
+	/** The employee manage adapter. */
 	@Inject
 	private EmployeeManageAdapter employeeManageAdapter;
 
+	/** The err message info adapter. */
 	@Inject
 	private ErrMessageInfoAdapter errMessageInfoAdapter;
 
+	/** The schedule error log adapter. */
 	@Inject
 	private ScheduleErrorLogAdapter scheduleErrorLogAdapter;
 
+	/** The createper approval daily adapter. */
 	@Inject
 	private CreateperApprovalDailyAdapter createperApprovalDailyAdapter;
 
+	/** The createper approval monthly adapter. */
 	@Inject
 	private CreateperApprovalMonthlyAdapter createperApprovalMonthlyAdapter;
 
+	/** The proc exec log repo. */
 	@Inject
 	private ProcessExecutionLogRepository procExecLogRepo;
 
+	/** The execution log adapter fn. */
 	@Inject
 	private ExecutionLogAdapterFn executionLogAdapterFn;
+	
+	@Inject
+	private AggrPeriodInforAdapter aggrPeriodInforAdapter;
 
+	
+	/**
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.更新処理自動実行ログ更新.アルゴリズム.各処理の後のログ更新処理.各処理の後のログ更新処理
+	 *
+	 * @param processExecutionTask the process execution task
+	 * @param companyId the company id
+	 * @param execItemCd the exec item cd
+	 * @param procExec the proc exec
+	 * @param procExecLog the proc exec log
+	 * @param isException the is exception
+	 * @param isStopExec the is stop exec
+	 * @param errorMessage the error message
+	 */
 	public void updateLogAfterProcess(ProcessExecutionTask processExecutionTask, String companyId, String execItemCd,
 			ProcessExecution procExec, ProcessExecutionLog procExecLog, boolean isException, boolean isStopExec,
 			String errorMessage) {
 		// 就業担当者の社員ID（List）を取得する - RQ526
-		List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
+//		List<String> listManagementId = employeeManageAdapter.getListEmpID(companyId, GeneralDate.today());
 
 		String execId = procExecLog.getExecId();
 		boolean isHasErrorBusiness = false;
@@ -98,7 +121,24 @@ public class UpdateLogAfterProcess {
 			}
 			break;
 		case AL_EXTRACTION:
+			// case アラーム抽出
+			// INPUT「エラーメッセージ」をチェックする
 				isHasErrorBusiness = false;
+			break;
+		case AGGREGATION_OF_ARBITRARY_PERIOD:
+			// case 任意項目の集計
+			// step ドメインモデル「任意期間集計エラーメッセージ情報」を取得する
+			List<AggrPeriodInforImported> listAggrPeriodInforImported = this.aggrPeriodInforAdapter.findAggrPeriodInfor(execId);
+			if (!listAggrPeriodInforImported.isEmpty()) {
+				isHasErrorBusiness = true;
+			}
+			break;
+		case DELETE_DATA:
+		case SAVE_DATA:
+		case EXTERNAL_ACCEPTANCE:
+		case EXTERNAL_OUTPUT:
+			// INPUT「エラーメッセージ」を取得する (input get message error)
+			isHasErrorBusiness = true;
 			break;
 		default: // DAILY_CREATION DAILY_CALCULATION RFL_APR_RESULT MONTHLY_AGGR
 			// ドメインモデル「エラーメッセージ情報」を取得する
@@ -109,11 +149,11 @@ public class UpdateLogAfterProcess {
 			break;
 		}
 
-		// 取得できた場合
+		// step 取得できた場合
 		if (isHasErrorBusiness) {
-			// パラメータ「Exceptionの有無」を判断
-			if (isException) {
-				// ドメインモデル「更新処理自動実行ログ」を更新する
+			// step パラメータ「Exceptionの有無」を判断
+			if (isException) { // exceptionがある場合
+				// step ドメインモデル「更新処理自動実行ログ」を更新する (update domain 「更新処理自動実行ログ」)
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
 						task.setLastEndExecDateTime(GeneralDateTime.now());
@@ -124,27 +164,27 @@ public class UpdateLogAfterProcess {
 				});
 				this.procExecLogRepo.update(procExecLog);
 
-				// アルゴリズム「実行ログ登録」を実行する - RQ477
-				ExecutionLogImportFn param = new ExecutionLogImportFn();
-				// ・会社ID ＝ パラメータ.更新処理自動実行.会社ID
-				param.setCompanyId(companyId);
-				// ・管理社員ID ＝ パラメータ「就業担当社員ID」
-				param.setManagerId(listManagementId);
-				// ・実行完了日時 ＝ システム日時
-				param.setFinishDateTime(GeneralDateTime.now());
-				// ・エラーの有無 ＝ エラーあり
-				param.setExistenceError(1);
-				// ・実行内容 ＝ パラメータ「実行項目」
-				param.setExecutionContent(getCategory(processExecutionTask));
-				// ・実行ログエラー詳細 ＝ 取得したエラーメッセージ情報
-				param.setTargerEmployee(getExecutionLogErrorDetail(processExecutionTask, listScheduleErrorLog,
-						listAppDataInfoDaily, listAppDataInfoMonthly, listErr, isException, isHasErrorBusiness,
-						listManagementId, errorMessage));
+//				// アルゴリズム「実行ログ登録」を実行する - RQ477
+//				ExecutionLogImportFn param = new ExecutionLogImportFn();
+//				// ・会社ID ＝ パラメータ.更新処理自動実行.会社ID
+//				param.setCompanyId(companyId);
+//				// ・管理社員ID ＝ パラメータ「就業担当社員ID」
+//				param.setManagerId(listManagementId);
+//				// ・実行完了日時 ＝ システム日時
+//				param.setFinishDateTime(GeneralDateTime.now());
+//				// ・エラーの有無 ＝ エラーあり
+//				param.setExistenceError(1);
+//				// ・実行内容 ＝ パラメータ「実行項目」
+//				param.setExecutionContent(getCategory(processExecutionTask));
+//				// ・実行ログエラー詳細 ＝ 取得したエラーメッセージ情報
+//				param.setTargerEmployee(getExecutionLogErrorDetail(processExecutionTask, listScheduleErrorLog,
+//						listAppDataInfoDaily, listAppDataInfoMonthly, listErr, isException, isHasErrorBusiness,
+//						listManagementId, errorMessage));
+//
+//				executionLogAdapterFn.updateExecuteLog(param);
 
-				executionLogAdapterFn.updateExecuteLog(param);
-
-			} else {
-				// ドメインモデル「更新処理自動実行ログ」を更新する
+			} else { // exceptionがない場合
+				// step ドメインモデル「更新処理自動実行ログ」を更新する (update domain 「更新処理自動実行ログ」)
 				procExecLog.getTaskLogList().forEach(task -> {
 					if (processExecutionTask.value == task.getProcExecTask().value) {
 						task.setLastEndExecDateTime(GeneralDateTime.now());
@@ -155,23 +195,23 @@ public class UpdateLogAfterProcess {
 				});
 				this.procExecLogRepo.update(procExecLog);
 
-				// アルゴリズム「実行ログ登録」を実行する - RQ477
-				ExecutionLogImportFn param = new ExecutionLogImportFn();
-				// ・会社ID ＝ パラメータ.更新処理自動実行.会社ID
-				param.setCompanyId(companyId);
-				// ・管理社員ID ＝ パラメータ「就業担当社員ID」
-				param.setManagerId(listManagementId);
-				// ・実行完了日時 ＝ システム日時
-				param.setFinishDateTime(GeneralDateTime.now());
-				// ・エラーの有無 ＝ エラーあり
-				param.setExistenceError(1);
-				// ・実行内容 ＝ パラメータ「実行項目」
-				param.setExecutionContent(getCategory(processExecutionTask));
-				// ・実行ログエラー詳細 ＝ 取得したエラーメッセージ情報
-				param.setTargerEmployee(getExecutionLogErrorDetail(processExecutionTask, listScheduleErrorLog,
-						listAppDataInfoDaily, listAppDataInfoMonthly, listErr, isException, isHasErrorBusiness,
-						listManagementId, errorMessage));
-				executionLogAdapterFn.updateExecuteLog(param);
+//				// アルゴリズム「実行ログ登録」を実行する - RQ477
+//				ExecutionLogImportFn param = new ExecutionLogImportFn();
+//				// ・会社ID ＝ パラメータ.更新処理自動実行.会社ID
+//				param.setCompanyId(companyId);
+//				// ・管理社員ID ＝ パラメータ「就業担当社員ID」
+//				param.setManagerId(listManagementId);
+//				// ・実行完了日時 ＝ システム日時
+//				param.setFinishDateTime(GeneralDateTime.now());
+//				// ・エラーの有無 ＝ エラーあり
+//				param.setExistenceError(1);
+//				// ・実行内容 ＝ パラメータ「実行項目」
+//				param.setExecutionContent(getCategory(processExecutionTask));
+//				// ・実行ログエラー詳細 ＝ 取得したエラーメッセージ情報
+//				param.setTargerEmployee(getExecutionLogErrorDetail(processExecutionTask, listScheduleErrorLog,
+//						listAppDataInfoDaily, listAppDataInfoMonthly, listErr, isException, isHasErrorBusiness,
+//						listManagementId, errorMessage));
+//				executionLogAdapterFn.updateExecuteLog(param);
 
 			}
 		} else {// 取得できない場合
@@ -188,24 +228,24 @@ public class UpdateLogAfterProcess {
 				});
 				this.procExecLogRepo.update(procExecLog);
 
-				// アルゴリズム「実行ログ登録」を実行する - RQ477
-				ExecutionLogImportFn param = new ExecutionLogImportFn();
-				// ・会社ID ＝ パラメータ.更新処理自動実行.会社ID
-				param.setCompanyId(companyId);
-				// ・管理社員ID ＝ パラメータ「就業担当社員ID」
-				param.setManagerId(listManagementId);
-				// ・実行完了日時 ＝ システム日時
-				param.setFinishDateTime(GeneralDateTime.now());
-				// ・エラーの有無 ＝ エラーあり
-				param.setExistenceError(1);
-				// ・実行内容 ＝ パラメータ「実行項目」
-				param.setExecutionContent(getCategory(processExecutionTask));
-				// ・実行ログエラー詳細 ＝ 取得したエラーメッセージ情報
-				param.setTargerEmployee(getExecutionLogErrorDetail(processExecutionTask, listScheduleErrorLog,
-						listAppDataInfoDaily, listAppDataInfoMonthly, listErr, isException, isHasErrorBusiness,
-						listManagementId, errorMessage));
-
-				executionLogAdapterFn.updateExecuteLog(param);
+//				// アルゴリズム「実行ログ登録」を実行する - RQ477
+//				ExecutionLogImportFn param = new ExecutionLogImportFn();
+//				// ・会社ID ＝ パラメータ.更新処理自動実行.会社ID
+//				param.setCompanyId(companyId);
+//				// ・管理社員ID ＝ パラメータ「就業担当社員ID」
+//				param.setManagerId(listManagementId);
+//				// ・実行完了日時 ＝ システム日時
+//				param.setFinishDateTime(GeneralDateTime.now());
+//				// ・エラーの有無 ＝ エラーあり
+//				param.setExistenceError(1);
+//				// ・実行内容 ＝ パラメータ「実行項目」
+//				param.setExecutionContent(getCategory(processExecutionTask));
+//				// ・実行ログエラー詳細 ＝ 取得したエラーメッセージ情報
+//				param.setTargerEmployee(getExecutionLogErrorDetail(processExecutionTask, listScheduleErrorLog,
+//						listAppDataInfoDaily, listAppDataInfoMonthly, listErr, isException, isHasErrorBusiness,
+//						listManagementId, errorMessage));
+//
+//				executionLogAdapterFn.updateExecuteLog(param);
 
 			} else {
 				// ドメインモデル「更新処理自動実行ログ」を更新する
@@ -219,110 +259,233 @@ public class UpdateLogAfterProcess {
 				});
 				this.procExecLogRepo.update(procExecLog);
 
-				// アルゴリズム「実行ログ登録」を実行する - RQ477
-				ExecutionLogImportFn param = new ExecutionLogImportFn();
-				// ・会社ID ＝ パラメータ.更新処理自動実行.会社ID
-				param.setCompanyId(companyId);
-				// ・管理社員ID ＝ パラメータ「就業担当社員ID」
-				param.setManagerId(listManagementId);
-				// ・実行完了日時 ＝ システム日時
-				param.setFinishDateTime(GeneralDateTime.now());
-				// ・エラーの有無 ＝ エラーあり
-				param.setExistenceError(0);
-				// ・実行内容 ＝ パラメータ「実行項目」
-				param.setExecutionContent(getCategory(processExecutionTask));
-				// ・実行ログエラー詳細 ＝ 取得したエラーメッセージ情報
-				param.setTargerEmployee(Collections.emptyList());
-				executionLogAdapterFn.updateExecuteLog(param);
+//				// アルゴリズム「実行ログ登録」を実行する - RQ477
+//				ExecutionLogImportFn param = new ExecutionLogImportFn();
+//				// ・会社ID ＝ パラメータ.更新処理自動実行.会社ID
+//				param.setCompanyId(companyId);
+//				// ・管理社員ID ＝ パラメータ「就業担当社員ID」
+//				param.setManagerId(listManagementId);
+//				// ・実行完了日時 ＝ システム日時
+//				param.setFinishDateTime(GeneralDateTime.now());
+//				// ・エラーの有無 ＝ エラーあり
+//				param.setExistenceError(0);
+//				// ・実行内容 ＝ パラメータ「実行項目」
+//				param.setExecutionContent(getCategory(processExecutionTask));
+//				// ・実行ログエラー詳細 ＝ 取得したエラーメッセージ情報
+//				param.setTargerEmployee(Collections.emptyList());
+//				executionLogAdapterFn.updateExecuteLog(param);
 
 			}
 		}
-		// INPUT「中断フラグ」をチェック
+		// Step INPUT「中断フラグ」をチェック
 		if (isStopExec) {
+			// ◆実行項目 = 「スケジュール作成」
 			if (processExecutionTask == ProcessExecutionTask.SCH_CREATION) {
-				// 各処理の終了状態 ＝ [日別作成、未実施]
+				// Step 各処理の終了状態 ＝ [日別作成、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [日別計算、未実施]
+				// Step 各処理の終了状態 ＝ [日別計算、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認結果反映、未実施]
+				// Step 各処理の終了状態 ＝ [承認結果反映、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [月別集計、未実施]
+				// Step 各処理の終了状態 ＝ [月別集計、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [アラーム抽出、未実施]
+				// Step 各処理の終了状態 ＝ [アラーム抽出、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
+				// Step 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				// Step 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
 				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-			} else if (processExecutionTask == ProcessExecutionTask.DAILY_CREATION) {
-				// 各処理の終了状態 ＝ [日別計算、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認結果反映、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [月別集計、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [アラーム抽出、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-
-			} else if (processExecutionTask == ProcessExecutionTask.DAILY_CALCULATION) {
-				// 各処理の終了状態 ＝ [承認結果反映、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [月別集計、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [アラーム抽出、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-
-			} else if (processExecutionTask == ProcessExecutionTask.RFL_APR_RESULT) {
-				// 各処理の終了状態 ＝ [月別集計、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [アラーム抽出、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-
-			} else if (processExecutionTask == ProcessExecutionTask.RFL_APR_RESULT) {
-				// 各処理の終了状態 ＝ [月別集計、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [アラーム抽出、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-			} else if (processExecutionTask == ProcessExecutionTask.MONTHLY_AGGR) {
-				// 各処理の終了状態 ＝ [アラーム抽出、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-			} else if (processExecutionTask == ProcessExecutionTask.AL_EXTRACTION) {
-				// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
-				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
-			} else if (processExecutionTask == ProcessExecutionTask.APP_ROUTE_U_DAI) {
-				// 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.FORCE_END);
-				// 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
-				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
 			}
+			// ◆実行項目 = 「日別作成」
+			else if (processExecutionTask == ProcessExecutionTask.DAILY_CREATION) {
+				// Step 各処理の終了状態 ＝ [日別計算、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認結果反映、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [月別集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [アラーム抽出、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[任意項目の集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+			}
+			// ◆実行項目 = 「日別計算」
+			else if (processExecutionTask == ProcessExecutionTask.DAILY_CALCULATION) {
+				// Step 各処理の終了状態 ＝ [承認結果反映、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [月別集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [アラーム抽出、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[任意項目の集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+			}
+			//◆実行項目 = 「承認結果の反映」
+			else if (processExecutionTask == ProcessExecutionTask.RFL_APR_RESULT) {
+				// Step 各処理の終了状態 ＝ [月別集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [アラーム抽出、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[任意項目の集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+			}
+			//◆実行項目 = 「月別実績の集計」
+			else if (processExecutionTask == ProcessExecutionTask.MONTHLY_AGGR) {
+				// Step 各処理の終了状態 ＝ [アラーム抽出、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[任意項目の集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+			}
+			// ◆実行項目 = 「アラーム抽出」
+			else if (processExecutionTask == ProcessExecutionTask.AL_EXTRACTION) {
+				// Step 各処理の終了状態 ＝ [承認ルート更新（日次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+			}
+			// ◆実行項目 = 「承認ルート更新（日次）」
+			else if (processExecutionTask == ProcessExecutionTask.APP_ROUTE_U_DAI) {
+				// Step 各処理の終了状態 ＝ [承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+			}
+			// ◆実行項目 = 「承認ルート更新（月次）」
+			else if (processExecutionTask == ProcessExecutionTask.APP_ROUTE_U_MON) {
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+			}
+			// ◆実行項目 = 「外部出力」
+			else if (processExecutionTask == ProcessExecutionTask.EXTERNAL_OUTPUT) {
+				// Step 各処理の終了状態　＝　[アラーム抽出、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部受入、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_ACCEPTANCE, EndStatus.NOT_IMPLEMENT);
+			}
+			// ◆実行項目 = 「外部受入」
+			else if (processExecutionTask == ProcessExecutionTask.EXTERNAL_ACCEPTANCE) {
+				// Step 各処理の終了状態　＝　[日別作成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CREATION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[日別計算、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DAILY_CALCULATION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[承認結果反映、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.RFL_APR_RESULT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[月別集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.MONTHLY_AGGR, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[承認ルート更新（日次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_DAI, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[承認ルート更新（月次）、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.APP_ROUTE_U_MON, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[スケジュールの作成、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SCH_CREATION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[任意項目の集計、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AGGREGATION_OF_ARBITRARY_PERIOD, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[外部出力、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.EXTERNAL_OUTPUT, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[アラーム抽出、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.AL_EXTRACTION, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ保存、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.SAVE_DATA, EndStatus.NOT_IMPLEMENT);
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+			}
+			// ◆実行項目 = 「データ保存」
+			else if (processExecutionTask == ProcessExecutionTask.SAVE_DATA) {
+				// Step 各処理の終了状態　＝　[データ削除、未実施]
+				this.updateEachTaskStatus(procExecLog, ProcessExecutionTask.DELETE_DATA, EndStatus.NOT_IMPLEMENT);
+			}
+
 			// ドメインモデル「更新処理自動実行ログ」を更新する
 			this.procExecLogRepo.update(procExecLog);
 		}
 
 	}
 
+	/**
+	 * Gets the content.
+	 *
+	 * @param processExecutionTask the process execution task
+	 * @return the content
+	 */
 	private int getContent(ProcessExecutionTask processExecutionTask) {
 		if (processExecutionTask == ProcessExecutionTask.DAILY_CREATION) {
 			return 0;
@@ -334,10 +497,30 @@ public class UpdateLogAfterProcess {
 		return 3;
 	}
 
+	/**
+	 * Gets the category.
+	 *
+	 * @param processExecutionTask the process execution task
+	 * @return the category
+	 */
 	private AlarmCategoryFn getCategory(ProcessExecutionTask processExecutionTask) {
 		return EnumAdaptor.valueOf(processExecutionTask.value + 1, AlarmCategoryFn.class);
 	}
 
+	/**
+	 * Gets the execution log error detail.
+	 *
+	 * @param processExecutionTask the process execution task
+	 * @param listScheduleErrorLog the list schedule error log
+	 * @param listAppDataInfoDaily the list app data info daily
+	 * @param listAppDataInfoMonthly the list app data info monthly
+	 * @param listErr the list err
+	 * @param isException the is exception
+	 * @param isHasErrorBusiness the is has error business
+	 * @param listManagerId the list manager id
+	 * @param errorMessage the error message
+	 * @return the execution log error detail
+	 */
 	private List<ExecutionLogErrorDetailFn> getExecutionLogErrorDetail(ProcessExecutionTask processExecutionTask,
 			List<ScheduleErrorLogImport> listScheduleErrorLog, List<AppDataInfoDailyImport> listAppDataInfoDaily,
 			List<AppDataInfoMonthlyImport> listAppDataInfoMonthly, List<ErrMessageInfoImport> listErr,
@@ -383,6 +566,13 @@ public class UpdateLogAfterProcess {
 		return listExecutionLogErrorDetail;
 	}
 
+	/**
+	 * Update each task status.
+	 *
+	 * @param procExecLog the proc exec log
+	 * @param execTask the exec task
+	 * @param status the status
+	 */
 	private void updateEachTaskStatus(ProcessExecutionLog procExecLog, ProcessExecutionTask execTask,
 			EndStatus status) {
 		procExecLog.getTaskLogList().forEach(task -> {
