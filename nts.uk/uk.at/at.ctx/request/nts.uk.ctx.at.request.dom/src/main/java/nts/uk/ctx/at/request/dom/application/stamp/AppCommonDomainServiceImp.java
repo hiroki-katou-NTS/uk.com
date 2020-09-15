@@ -312,23 +312,30 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 						throw new BusinessException("Msg_307");
 					}
 				}else {
-					if (item.getStartTime() != null && temp.getEndTime() != null) {
-						if (item.getStartTime() < temp.getEndTime() ) {
-							// throw msg
-							
-							throw new BusinessException("Msg_307");
+					if (item.getStartTime() != null) {
+						
+						if (temp.getEndTime() != null) {
+							if (item.getStartTime() < temp.getEndTime() ) {
+								// throw msg	
+								throw new BusinessException("Msg_307");
+							}							
+						} else if (temp.getStartTime() != null) {
+							if (item.getStartTime() < temp.getStartTime() ) {
+								// throw msg	
+								throw new BusinessException("Msg_307");
+							}
 						}
 					} 
 					
 				}
 				
-				
-				
 				if (item.getStartTime() != null) {
-					temp.setStartTime(item.getStartTime());
+					temp.setStartTime(temp.getEndTime());
+					temp.setEndTime(item.getStartTime());
 					
 				}
 				if (item.getEndTime() != null) {
+					temp.setStartTime(temp.getEndTime());
 					temp.setEndTime(item.getEndTime());
 					
 				}
