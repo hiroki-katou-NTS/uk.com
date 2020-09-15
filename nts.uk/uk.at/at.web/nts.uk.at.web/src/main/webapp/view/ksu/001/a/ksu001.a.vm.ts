@@ -124,7 +124,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showRankCol = false;
         showQualificCol = false;
         widthMid : number = 0;
-
+        
         constructor() {
             let self = this;
 
@@ -1927,20 +1927,31 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
-            let arrLockCellAfterSave = $("#extable").exTable("lockCells");
+            let lockCells = $("#extable").exTable("lockCells");
             
             $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
             $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
             
-            if (arrCellUpdated.length > 0) {
+            if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.editModeToConfirmMode();
                     self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
-                    self.pasteData();
+                    // tam thoi dung cach thay doi mode nay de load lai data ban dau
+                    $("#extable").exTable("updateMode", "copyPaste");
+                    $("#extable").exTable("updateMode", "stick");
+                    if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                        $("#extable").exTable("stickMode", "single");
+                        self.pasteData();
+                    } else if (self.selectedModeDisplayInBody() == 'shift') {
+                        $("#extable").exTable("stickMode", "multi");
+                        self.pasteData();
+                    }
                 }).ifNo(() => {
                     $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
                     $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
+                    self.editModeToConfirmMode();
+                    self.pasteData();
                 });
             } else {
                 self.editModeToConfirmMode();
@@ -1991,10 +2002,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.confirmModeToeditMode();
-                    self.pasteData();
+                    // tam thoi dung cach thay doi mode nay de load lai data ban dau
+                    $("#extable").exTable("updateMode", "copyPaste");
+                    $("#extable").exTable("updateMode", "stick");
+                    if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                        $("#extable").exTable("stickMode", "single");
+                        self.pasteData();
+                    } else if (self.selectedModeDisplayInBody() == 'shift') {
+                        $("#extable").exTable("stickMode", "multi");
+                        self.pasteData();
+                    }
                 }).ifNo(() => {
                     $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
                     $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
+                    self.confirmModeToeditMode();
+                    self.pasteData();
                 });
             } else {
                 self.confirmModeToeditMode();
@@ -2108,7 +2130,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             
             $("#extable").exTable("updateMode", "copyPaste");
-            
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor : IUserInfor = JSON.parse(data);
                 userInfor.updateMode =  'copyPaste';
