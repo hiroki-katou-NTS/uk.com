@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.SneakyThrows;
-import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
@@ -616,64 +616,51 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	}
 
 	@Override
-	public List<ApprovalRootState> findEmploymentAppCMM045(List<String> lstApproverID, DatePeriod period,
+	public List<ApprovalRootState> findEmploymentAppCMM045(String approverID, List<String> agentLst, DatePeriod period,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
 			boolean remandStatus, boolean cancelStatus) {
 		String companyID = AppContexts.user().companyId();
 		List<ApprovalRootState> result = new ArrayList<>();
-		CollectionUtil.split(lstApproverID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			internalQuery045(companyID, result, subList, period, unapprovalStatus, approvalStatus, denialStatus,
-					agentApprovalStatus, remandStatus, cancelStatus);
-		});
+		//CollectionUtil.split(agentLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		internalQuery045(companyID, result, approverID, agentLst, period, unapprovalStatus, approvalStatus, denialStatus,
+				agentApprovalStatus, remandStatus, cancelStatus);
+		//});
 		return result;
 	}
 
 	@SneakyThrows
-	private void internalQuery045(String companyID, List<ApprovalRootState> result, List<String> lstApproverID,
+	private void internalQuery045(String companyID, List<ApprovalRootState> result, String approverID, List<String> agentLst,
 			DatePeriod period, boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus,
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus) {
-		// Phase
 		List<Integer> lstPhaseStt = new ArrayList<>();
-
-		if (unapprovalStatus || approvalStatus || denialStatus || agentApprovalStatus) {
-			lstPhaseStt.add(0);
-		}
-
-		if (approvalStatus || agentApprovalStatus || denialStatus) {
-			lstPhaseStt.add(1);
-		}
-
-		if (denialStatus || remandStatus) {
-			lstPhaseStt.add(3);
-		}
-
-		if (denialStatus || cancelStatus) {
-			lstPhaseStt.add(2);
-			lstPhaseStt.add(4);
-		}
-		// Frame
 		List<Integer> lstFrameStt = new ArrayList<>();
-
-		if (unapprovalStatus || denialStatus || remandStatus || cancelStatus || approvalStatus) {
+		List<String> lstApproverID = new ArrayList<>();
+		if(unapprovalStatus) {
 			lstFrameStt.add(0);
+			lstPhaseStt.add(0);
+			lstApproverID.add(approverID);
 		}
-
-		if (approvalStatus || agentApprovalStatus || denialStatus || remandStatus || cancelStatus) {
+		if(approvalStatus) {
+			lstFrameStt.addAll(Arrays.asList(0, 1));
+			lstPhaseStt.add(1);
+			lstApproverID.add(approverID);
+		}
+		if(agentApprovalStatus) {
 			lstFrameStt.add(1);
+			lstApproverID.addAll(agentLst);
 		}
-
-		if (denialStatus || remandStatus || cancelStatus) {
-			lstFrameStt.add(2);
-			lstFrameStt.add(3);
-			lstFrameStt.add(4);
+		if(remandStatus) {
+			lstPhaseStt.addAll(Arrays.asList(3, 4));
+			lstApproverID.add(approverID);
 		}
-
-		String query = "";
-		String lstPhase = NtsStatement.In.createParamsString(lstPhaseStt);
-		String lstFrame = NtsStatement.In.createParamsString(lstFrameStt);
-		String lstIds = NtsStatement.In.createParamsString(lstApproverID);
-
-		query = "SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, "
+		if(denialStatus) {
+			lstPhaseStt.add(2);
+			lstApproverID.add(approverID);
+		}
+		lstPhaseStt = lstPhaseStt.stream().distinct().collect(Collectors.toList());
+		lstFrameStt = lstFrameStt.stream().distinct().collect(Collectors.toList());
+		lstApproverID = lstApproverID.stream().distinct().collect(Collectors.toList());
+		String sql = "SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, "
 				+ 	"phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, approver.APPROVER_ORDER, "
 				+ 	"approver.APPROVER_ID, approver.APPROVAL_ATR, approver.CONFIRM_ATR, approver.AGENT_ID, "
 				+   "approver.APPROVAL_DATE, approver.APPROVAL_REASON, approver.APP_DATE, approver.APPROVER_LIST_ORDER  "
@@ -683,30 +670,123 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 				+ "WHERE root.ROOT_STATE_ID IN "
 				+ 	"(SELECT DISTINCT a.ROOT_STATE_ID " + "FROM WWFDT_APPROVER_STATE a "
 				+ 		"inner join WWFDT_APPROVAL_PHASE_ST c on a.ROOT_STATE_ID = c.ROOT_STATE_ID and a.PHASE_ORDER = c.PHASE_ORDER "
-				+ 		"and a.APP_DATE >= ?  and a.APP_DATE <= ? " 
-				+ 		"and c.APP_PHASE_ATR IN (" + lstPhase + ") " 
-				+ 		"and a.APPROVAL_ATR IN (" + lstFrame + ") " + "and a.APPROVER_ID IN (" + lstIds + ") )";
-
-		List<WwfdtFullJoinState> listFullData = new ArrayList<>();
-
-		try (val pstatement = this.connection().prepareStatement(query)) {
-			pstatement.setString(1, period.start().toString("yyyy-MM-dd"));
-			pstatement.setString(2, period.end().toString("yyyy-MM-dd"));
-
-			for (int i = 0; i < lstPhaseStt.size(); i++) {
-				pstatement.setInt(i + 3, lstPhaseStt.get(i));
-			}
-
-			for (int i = 0; i < lstFrameStt.size(); i++) {
-				pstatement.setInt(i + 3 + lstPhaseStt.size(), lstFrameStt.get(i));
-			}
-
-			for (int i = 0; i < lstApproverID.size(); i++) {
-				pstatement.setString(i + 3 + lstPhaseStt.size() + lstFrameStt.size(), lstApproverID.get(i));
-			}
-
-			listFullData.addAll(WwfdtFullJoinState.fromResultSet(pstatement.executeQuery()));
+				+ 		"where a.APP_DATE >= @startDate  and a.APP_DATE <= @endDate "; 
+		if(!CollectionUtil.isEmpty(lstPhaseStt)) {
+			sql += "and c.APP_PHASE_ATR IN @lstPhase ";
 		}
+		if(!CollectionUtil.isEmpty(lstFrameStt)) {
+			sql += "and a.APPROVAL_ATR IN @lstFrame ";
+		} 		
+		if(CollectionUtil.isEmpty(lstApproverID)) {
+			return;
+		}
+		sql += "and a.APPROVER_ID IN @lstIds";
+		sql += ")";
+		NtsStatement ntsStatement = new NtsStatement(sql, this.jdbcProxy())
+				.paramDate("startDate", period.start())
+				.paramDate("endDate", period.end());
+		if(!CollectionUtil.isEmpty(lstPhaseStt)) {
+			ntsStatement.paramInt("lstPhase", lstPhaseStt);
+		}
+		if(!CollectionUtil.isEmpty(lstFrameStt)) {
+			ntsStatement.paramInt("lstFrame", lstFrameStt);
+		} 
+		ntsStatement.paramString("lstIds", lstApproverID);
+		List<WwfdtFullJoinState> listFullData = ntsStatement
+				.getList(rec -> {
+						return new WwfdtFullJoinState(
+							rec.getString("ROOT_STATE_ID"), 
+							rec.getString("EMPLOYEE_ID"), 
+							rec.getGeneralDate("APPROVAL_RECORD_DATE"), 
+							rec.getInt("PHASE_ORDER"), 
+							rec.getInt("APPROVAL_FORM"), 
+							rec.getInt("APP_PHASE_ATR"), 
+							rec.getInt("APPROVER_ORDER"), 
+							rec.getString("APPROVER_ID"), 
+							rec.getInt("APPROVAL_ATR"), 
+							rec.getInt("CONFIRM_ATR"), 
+							rec.getString("AGENT_ID"), 
+							rec.getGeneralDateTime("APPROVAL_DATE"), 
+							rec.getString("APPROVAL_REASON"), 
+							rec.getGeneralDate("APP_DATE"),
+							rec.getInt("APPROVER_LIST_ORDER"));
+				});
+		
+//		// Phase
+//		List<Integer> lstPhaseStt = new ArrayList<>();
+//
+//		if (unapprovalStatus || approvalStatus || denialStatus || agentApprovalStatus) {
+//			lstPhaseStt.add(0);
+//		}
+//
+//		if (approvalStatus || agentApprovalStatus || denialStatus) {
+//			lstPhaseStt.add(1);
+//		}
+//
+//		if (denialStatus || remandStatus) {
+//			lstPhaseStt.add(3);
+//		}
+//
+//		if (denialStatus || cancelStatus) {
+//			lstPhaseStt.add(2);
+//			lstPhaseStt.add(4);
+//		}
+//		// Frame
+//		List<Integer> lstFrameStt = new ArrayList<>();
+//
+//		if (unapprovalStatus || denialStatus || remandStatus || cancelStatus || approvalStatus) {
+//			lstFrameStt.add(0);
+//		}
+//
+//		if (approvalStatus || agentApprovalStatus || denialStatus || remandStatus || cancelStatus) {
+//			lstFrameStt.add(1);
+//		}
+//
+//		if (denialStatus || remandStatus || cancelStatus) {
+//			lstFrameStt.add(2);
+//			lstFrameStt.add(3);
+//			lstFrameStt.add(4);
+//		}
+
+//		String query = "";
+//		String lstPhase = NtsStatement.In.createParamsString(lstPhaseStt.stream().distinct().collect(Collectors.toList()));
+//		String lstFrame = NtsStatement.In.createParamsString(lstFrameStt.stream().distinct().collect(Collectors.toList()));
+//		String lstIds = NtsStatement.In.createParamsString(lstApproverID);
+//
+//		query = "SELECT root.ROOT_STATE_ID, root.EMPLOYEE_ID, root.APPROVAL_RECORD_DATE, "
+//				+ 	"phase.PHASE_ORDER, phase.APPROVAL_FORM, phase.APP_PHASE_ATR, approver.APPROVER_ORDER, "
+//				+ 	"approver.APPROVER_ID, approver.APPROVAL_ATR, approver.CONFIRM_ATR, approver.AGENT_ID, "
+//				+   "approver.APPROVAL_DATE, approver.APPROVAL_REASON, approver.APP_DATE, approver.APPROVER_LIST_ORDER  "
+//				+ "FROM WWFDT_APPROVAL_ROOT_STATE root "
+//				+ "LEFT JOIN WWFDT_APPROVAL_PHASE_ST phase ON root.ROOT_STATE_ID = phase.ROOT_STATE_ID "
+//				+ "LEFT JOIN WWFDT_APPROVER_STATE approver ON phase.ROOT_STATE_ID = approver.ROOT_STATE_ID AND phase.PHASE_ORDER = approver.PHASE_ORDER "
+//				+ "WHERE root.ROOT_STATE_ID IN "
+//				+ 	"(SELECT DISTINCT a.ROOT_STATE_ID " + "FROM WWFDT_APPROVER_STATE a "
+//				+ 		"inner join WWFDT_APPROVAL_PHASE_ST c on a.ROOT_STATE_ID = c.ROOT_STATE_ID and a.PHASE_ORDER = c.PHASE_ORDER "
+//				+ 		"and a.APP_DATE >= ?  and a.APP_DATE <= ? " 
+//				+ 		"and c.APP_PHASE_ATR IN (" + lstPhase + ") " 
+//				+ 		"and a.APPROVAL_ATR IN (" + lstFrame + ") " + "and a.APPROVER_ID IN (" + lstIds + ") )";
+//
+//		List<WwfdtFullJoinState> listFullData = new ArrayList<>();
+//
+//		try (val pstatement = this.connection().prepareStatement(query)) {
+//			pstatement.setString(1, period.start().toString("yyyy-MM-dd"));
+//			pstatement.setString(2, period.end().toString("yyyy-MM-dd"));
+//
+//			for (int i = 0; i < lstPhaseStt.size(); i++) {
+//				pstatement.setInt(i + 3, lstPhaseStt.get(i));
+//			}
+//
+//			for (int i = 0; i < lstFrameStt.size(); i++) {
+//				pstatement.setInt(i + 3 + lstPhaseStt.size(), lstFrameStt.get(i));
+//			}
+//
+//			for (int i = 0; i < lstApproverID.size(); i++) {
+//				pstatement.setString(i + 3 + lstPhaseStt.size() + lstFrameStt.size(), lstApproverID.get(i));
+//			}
+//
+//			listFullData.addAll(WwfdtFullJoinState.fromResultSet(pstatement.executeQuery()));
+//		}
 
 		List<ApprovalRootState> entityRoot = WwfdtFullJoinState.toDomain(listFullData);
 		result.addAll(entityRoot);

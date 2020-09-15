@@ -116,7 +116,7 @@ public interface ApprovalRootStateRepository {
 	 * @param approverID
 	 * @return
 	 */
-	public List<ApprovalRootState> findEmploymentAppCMM045(List<String> lstApproverID, DatePeriod period,
+	public List<ApprovalRootState> findEmploymentAppCMM045(String approverID, List<String> agentLst, DatePeriod period,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
 			boolean remandStatus, boolean cancelStatus);
 

@@ -1441,14 +1441,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// request 244
 		String companyID = AppContexts.user().companyId();
 		GeneralDate sysDate = GeneralDate.today();
-		List<AgentDataRequestPubImport> lstAgent = agentAdapter.lstAgentData(companyID, approverID, sysDate, sysDate);
-		List<String> lstEmp = new ArrayList<>();
-		for (AgentDataRequestPubImport agent : lstAgent) {
-			lstEmp.add(agent.getEmployeeId());
-		}
+		List<String> lstAgent = agentAdapter.lstAgentData(companyID, approverID, sysDate, sysDate).stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 		// ドメインモデル「承認ルートインスタンス」を取得
 		mapApprInfo = approvalRootStateAdapter
-				.getApprovalRootContentCMM045(companyID, lstEmp, period, unapprovalStatus, approvalStatus,
+				.getApprovalRootContentCMM045(companyID, approverID, lstAgent, period, unapprovalStatus, approvalStatus,
 						denialStatus, agentApprovalStatus, remandStatus, cancelStatus);
 		if(!CollectionUtil.isEmpty(appIDLst)) {
 			Map<String, List<ApprovalPhaseStateImport_New>> mapApprInfoByAppLst = new HashMap<>();
