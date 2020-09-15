@@ -1938,7 +1938,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
                     self.pasteData();
-                }).ifNo(() => { });
+                }).ifNo(() => {
+                    $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
+                    $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
+                });
             } else {
                 self.editModeToConfirmMode();
                 self.enableBtnRedo(false);
@@ -1989,7 +1992,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.confirmModeToeditMode();
                     self.pasteData();
-                }).ifNo(() => { });
+                }).ifNo(() => {
+                    $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
+                    $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
+                });
             } else {
                 self.confirmModeToeditMode();
                 self.pasteData();
