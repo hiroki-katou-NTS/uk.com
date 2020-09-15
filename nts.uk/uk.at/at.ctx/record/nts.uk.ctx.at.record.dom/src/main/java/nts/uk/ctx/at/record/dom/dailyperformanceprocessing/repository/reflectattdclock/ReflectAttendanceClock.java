@@ -457,7 +457,8 @@ public class ReflectAttendanceClock {
 				}else {
 					timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay + blockTime;
 				}
-				workStamp.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(timeChange)));
+				//workStamp.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(timeChange)));
+				workStamp.setAfterRoundingTime(new TimeWithDayAttr(timeChange));
 			}//end : nếu time khác giá trị default
 		}
 	}
