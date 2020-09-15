@@ -92,7 +92,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let agentAtr = false;
         self.application().enteredPerson = __viewContext.user.employeeId;
         self.application().employeeID = __viewContext.user.employeeId;
-        self.application().prePostAtr(1);
+//        self.application().prePostAtr(0);
         let command = {
                 companyId,
                 agentAtr,
@@ -118,12 +118,21 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 recoderFlag: false
                         };
                         return self.$ajax(API.register, command);
-//                    }
+                    }
                 })
                 .done(res => {
                     this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
                         location.reload();
                     } );
+                })
+                .fail(res => {
+                    let param;
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds}
+                    }
+                    self.$dialog.error(param);
                 })
                 .always(err => {
                     self.$blockui("hide");

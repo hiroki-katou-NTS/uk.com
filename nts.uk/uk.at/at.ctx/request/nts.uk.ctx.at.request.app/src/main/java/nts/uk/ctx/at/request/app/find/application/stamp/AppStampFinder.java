@@ -39,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainService;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
@@ -181,11 +182,15 @@ public class AppStampFinder {
 				StringUtils.isBlank(applicationDto.getOpAppEndDate()) ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), pattern2))),
 				applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
 				applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())));
+		AppStampOutput as = beforeRegisterParam.getAppStampOutputDto().toDomain();
+		as.getAppStampOptional().ifPresent(x -> {
+			x.setPrePostAtr(application.getPrePostAtr());
+		});
 		return appCommonStampDomainService.checkBeforeRegister(
 				beforeRegisterParam.getCompanyId(),
 				beforeRegisterParam.getAgentAtr(),
 				application,
-				beforeRegisterParam.getAppStampOutputDto().toDomain());
+				as);
 	}
 	
 	public void checkBeforeUpdate(BeforeRegisterOrUpdateParam beforeRegisterParam) {
