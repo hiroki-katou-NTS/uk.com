@@ -124,7 +124,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showRankCol = false;
         showQualificCol = false;
         widthMid : number = 0;
-
+        
         constructor() {
             let self = this;
 
@@ -1201,6 +1201,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         getSettingDisplayWhenStart(viewMode) {
             let self = this;
+            
+            $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
+            $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
+
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
 
@@ -1923,15 +1927,32 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
-            let arrLockCellAfterSave = $("#extable").exTable("lockCells");
-
-            if (arrCellUpdated.length > 0) {
+            let lockCells = $("#extable").exTable("lockCells");
+            
+            $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
+            $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
+            
+            if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.editModeToConfirmMode();
                     self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
+                    // tam thoi dung cach thay doi mode nay de load lai data ban dau
+                    $("#extable").exTable("updateMode", "copyPaste");
+                    $("#extable").exTable("updateMode", "stick");
+                    if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                        $("#extable").exTable("stickMode", "single");
+                        self.pasteData();
+                    } else if (self.selectedModeDisplayInBody() == 'shift') {
+                        $("#extable").exTable("stickMode", "multi");
+                        self.pasteData();
+                    }
+                }).ifNo(() => {
+                    $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
+                    $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
+                    self.editModeToConfirmMode();
                     self.pasteData();
-                }).ifNo(() => { });
+                });
             } else {
                 self.editModeToConfirmMode();
                 self.enableBtnRedo(false);
@@ -1970,6 +1991,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.mode() == 'confirm')
                 return;
+            
+             $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
+             $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
 
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
@@ -1978,8 +2002,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.confirmModeToeditMode();
+                    // tam thoi dung cach thay doi mode nay de load lai data ban dau
+                    $("#extable").exTable("updateMode", "copyPaste");
+                    $("#extable").exTable("updateMode", "stick");
+                    if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                        $("#extable").exTable("stickMode", "single");
+                        self.pasteData();
+                    } else if (self.selectedModeDisplayInBody() == 'shift') {
+                        $("#extable").exTable("stickMode", "multi");
+                        self.pasteData();
+                    }
+                }).ifNo(() => {
+                    $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
+                    $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
+                    self.confirmModeToeditMode();
                     self.pasteData();
-                }).ifNo(() => { });
+                });
             } else {
                 self.confirmModeToeditMode();
                 self.pasteData();
@@ -2016,9 +2054,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         removeClass() {
             let self = this;
-            $("#paste").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#coppy").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#input").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#paste").addClass("A6_not_hover").removeClass("A6_hover btnControlUnSelected btnControlSelected");
+            $("#coppy").addClass("A6_not_hover").removeClass("A6_hover btnControlUnSelected btnControlSelected");
+            $("#input").addClass("A6_not_hover").removeClass("A6_not_hover btnControlUnSelected btnControlSelected");
         }
 
         /**
@@ -2030,9 +2068,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.mode() == 'confirm')
                 return;
             nts.uk.ui.block.grayout();
-            $("#paste").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#paste").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
+            $("#coppy").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            
             $("#extable").exTable("updateMode", "stick");
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 $("#extable").exTable("stickMode", "single");
@@ -2086,11 +2125,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.mode() == 'confirm')
                 return;
             nts.uk.ui.block.grayout();
-            $("#paste").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#coppy").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#extable").exTable("updateMode", "copyPaste");
+            $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
+            $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             
+            $("#extable").exTable("updateMode", "copyPaste");
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor : IUserInfor = JSON.parse(data);
                 userInfor.updateMode =  'copyPaste';
@@ -2104,10 +2143,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.mode() == 'confirm')
                 return;
             nts.uk.ui.block.grayout();
-            $("#paste").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#input").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-
+            $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            $("#coppy").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            $("#input").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
+            
             $("#extable").exTable("updateMode", "edit");
             
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
