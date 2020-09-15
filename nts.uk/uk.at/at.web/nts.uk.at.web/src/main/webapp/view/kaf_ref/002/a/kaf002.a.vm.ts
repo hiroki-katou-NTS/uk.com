@@ -86,22 +86,62 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
     public createCommandCheckRegister() {
         const self = this;
-        self.data.appStampOptional = self.createAppStamp();
+        let data = _.clone(self.data);
+        data.appStampOptional = self.createAppStamp();
         let companyId = __viewContext.user.companyId;
         let agentAtr = false;
-        ko.toJS(self.application).enteredPerson = __viewContext.user.employeeId;
-        self.application().prePostAtr(1);
+        self.application().enteredPerson = __viewContext.user.employeeId;
+        self.application().employeeID = __viewContext.user.employeeId;
+//        self.application().prePostAtr(0);
         let command = {
                 companyId,
                 agentAtr,
-                appStampOutputDto: self.data,
+                appStampOutputDto: data,
                 applicationDto: ko.toJS(self.application)
                 
         };
-        self.$ajax(API.checkRegister, command)
-            .then(res => {
-                console.log(res);
-            });
+        self.$blockui("show");
+        self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+        .then(isValid => {
+            if ( isValid ) {
+                return true;
+            }
+        }).then(result => {
+            if (result) {
+                self.$ajax(API.checkRegister, command)
+                .then(res => {
+                    if (res) {
+                        let command = {
+                                applicationDto: ko.toJS(self.application),
+                                appStampDto: data.appStampOptional,
+                                appStampOutputDto: self.data,
+                                recoderFlag: false
+                        };
+                        return self.$ajax(API.register, command);
+                    }
+                })
+                .done(res => {
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    } );
+                })
+                .fail(res => {
+                    let param;
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds}
+                    }
+                    self.$dialog.error(param);
+                })
+                .always(err => {
+                    self.$blockui("hide");
+                })
+            }
+        })
+        .always(err => {
+            self.$blockui("hide");
+         })
         
     }
     public register() {
@@ -118,6 +158,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         let opActualContentDisplayLst = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.opActualContentDisplayLst;
         let opAchievementDetail = opActualContentDisplayLst[0].opAchievementDetail;
+        if (_.isNull(opAchievementDetail)) {
+            
+            return;
+        }
         let stampRecord = opAchievementDetail.stampRecordOutput;
         
         let items1 = (function() {
@@ -140,8 +184,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         })();
         let items2 = (function() {
             let list = [];
+            let extraordinaryTime = stampRecord.extraordinaryTime;
             for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                _.forEach(extraordinaryTime, item => {
+                    if (item.frameNo == i) {
+                        dataObject.opStartTime = item.opStartTime;
+                        dataObject.opEndTime = item.opEndTime;
+                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                    }
+                });
                 list.push(new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY));
     
             }
@@ -170,9 +223,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 
         let items4 = ( function() {
             let list = [];
-
+            let breakTime = stampRecord.breakTime;
             for ( let i = 1; i < 11; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
+                _.forEach(breakTime, item => {
+                    if (item.frameNo == i) {
+                        dataObject.opStartTime = item.opStartTime;
+                        dataObject.opEndTime = item.opEndTime;
+                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                    }
+                });
                 list.push( new GridItem( dataObject, STAMPTYPE.BREAK ) );
             }
 
@@ -181,8 +242,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 
         let items5 = ( function() {
             let list = [];
+            let parentingTime = stampRecord.parentingTime;
             for ( let i = 1; i < 3; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
+                _.forEach(parentingTime, item => {
+                    if (item.frameNo == i) {
+                        dataObject.opStartTime = item.opStartTime;
+                        dataObject.opEndTime = item.opEndTime;
+                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                    }
+                });
                 list.push( new GridItem( dataObject, STAMPTYPE.PARENT ) );
             }
 
@@ -191,8 +261,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         
         let items6 = (function() {
             let list = [];
+            let nursingTime = stampRecord.nursingTime;
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
+                _.forEach(nursingTime, item => {
+                    if (item.frameNo == i) {
+                        dataObject.opStartTime = item.opStartTime;
+                        dataObject.opEndTime = item.opEndTime;
+                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                    }
+                });
                 list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
             }
             
@@ -300,14 +379,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 listTimeStampAppOther: Array<TimeStampAppOtherDto> = [],
                 listDestinationTimeZoneApp: Array<DestinationTimeZoneAppDto> = [];
             _.forEach(self.dataSourceOb(), (items: GridItem, index) => {
-                if (index == 0) {                    
-                    _.forEach(items, el => {                       
+//                出勤／退勤 , 外出
+                if (index == 0 || index == 1) {                    
+                    _.forEach(items, (el: GridItem) => {                       
                         if (!ko.toJS(el.flagObservable)) {
                             if (ko.toJS(el.startTimeRequest)) {
                                 let timeStampAppDto = new TimeStampAppDto();
                                 let destinationTimeApp = new DestinationTimeAppDto();
-                                destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
-                                destinationTimeApp.startEndClassification = 1;
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
+                                destinationTimeApp.startEndClassification = START_CLASSIFICATION;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -319,8 +400,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                             if (ko.toJS(el.endTimeRequest)) {
                                 let timeStampAppDto = new TimeStampAppDto();
                                 let destinationTimeApp = new DestinationTimeAppDto();
-                                destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
-                                destinationTimeApp.startEndClassification = 0;
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
+                                destinationTimeApp.startEndClassification = END_CLASSIFICATION;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -330,18 +412,40 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                         } else {
                             if (el.startTimeActual) {
                                 let destinationTimeApp = new DestinationTimeAppDto();
-                                destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
-                                destinationTimeApp.startEndClassification = 1;
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
+                                destinationTimeApp.startEndClassification = START_CLASSIFICATION;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                             if (el.endTimeActual) {
                                 let destinationTimeApp = new DestinationTimeAppDto();
-                                destinationTimeApp.timeStampAppEnum = el.typeStamp.valueOf();
-                                destinationTimeApp.startEndClassification = 0;
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
+                                destinationTimeApp.startEndClassification = END_CLASSIFICATION;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                         }   
                     })
+                    
+                } else {
+                    _.forEach(items, (el: GridItem) => {
+                        if (!ko.toJS(el.flagObservable)) {
+                            if (ko.toJS(el.startTimeRequest) && ko.toJS(el.endTimeRequest)) {
+                                let timeStampAppOtherDto = new TimeStampAppOtherDto();
+                                let tz = new TimeZone();
+                                tz.startTime = ko.toJS(el.startTimeRequest);
+                                tz.endTime = ko.toJS(el.endTimeRequest);
+                                let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
+                                destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
+                                destinationTimeZoneAppDto.engraveFrameNo = el.id;
+                                timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
+                                timeStampAppOtherDto.timeZone = tz;
+                                listTimeStampAppOther.push(timeStampAppOtherDto);
+                            }
+                        } else {
+                            
+                        }
+                    });
                 }
             });
             appStamp.listTimeStampApp = listTimeStampApp;
@@ -397,7 +501,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
     class TimeStampAppOtherDto {
         public destinationTimeZoneApp: DestinationTimeZoneAppDto;
-        public timezone: TimeZone;
+        public timeZone: TimeZone;
     }
     class TimeZone {
         public startTime: number;
@@ -407,7 +511,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         public timeZoneStampClassification: number;
         public engraveFrameNo: number;
     }
-    
+    const START_CLASSIFICATION = 0;
+    const END_CLASSIFICATION = 1;
     const API = {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",

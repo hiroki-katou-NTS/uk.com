@@ -31,6 +31,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRecordOutput;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgori
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainService;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
@@ -165,7 +167,7 @@ public class AppStampFinder {
 		
 	}
 	
-	public void checkBeforeRegister(BeforeRegisterOrUpdateParam beforeRegisterParam) {
+	public List<ConfirmMsgOutput> checkBeforeRegister(BeforeRegisterOrUpdateParam beforeRegisterParam) {
 		String pattern2 = "yyyy/MM/dd";
 		ApplicationDto applicationDto = beforeRegisterParam.getApplicationDto();
 		Application application = Application.createFromNew(
@@ -180,11 +182,15 @@ public class AppStampFinder {
 				StringUtils.isBlank(applicationDto.getOpAppEndDate()) ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), pattern2))),
 				applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
 				applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())));
-		appCommonStampDomainService.checkBeforeRegister(
+		AppStampOutput as = beforeRegisterParam.getAppStampOutputDto().toDomain();
+		as.getAppStampOptional().ifPresent(x -> {
+			x.setPrePostAtr(application.getPrePostAtr());
+		});
+		return appCommonStampDomainService.checkBeforeRegister(
 				beforeRegisterParam.getCompanyId(),
 				beforeRegisterParam.getAgentAtr(),
 				application,
-				beforeRegisterParam.getAppStampOutputDto().toDomain());
+				as);
 	}
 	
 	public void checkBeforeUpdate(BeforeRegisterOrUpdateParam beforeRegisterParam) {

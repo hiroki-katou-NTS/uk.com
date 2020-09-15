@@ -459,6 +459,35 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>'
                 + '</div>';
         }
+        public convertTimeZoneStampClassification() {
+            const self = this;
+            if (self.typeStamp == STAMPTYPE.PARENT) {
+                
+                return 0;
+            } else if (self.typeStamp == STAMPTYPE.NURSE) {
+                
+                return 1;
+            } else if (self.typeStamp == STAMPTYPE.BREAK) {
+                
+                return 2;
+            }
+        }
+        public convertTimeStampAppEnum() {
+            const self = this;
+            if (self.typeStamp == STAMPTYPE.ATTENDENCE) {
+                
+                return 0;
+            } else if (self.typeStamp == STAMPTYPE.EXTRAORDINARY) {
+                
+                return 1;
+            } else if (self.typeStamp == STAMPTYPE.GOOUT_RETURNING) {
+                
+                return 2;
+            } else if (self.typeStamp == STAMPTYPE.CHEERING) {
+                
+                return 3;
+            }
+        }
         
     }
 
@@ -516,7 +545,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.state = state;
         }
     }
-
+    
     export enum STAMPTYPE {
         ATTENDENCE = 0,
         EXTRAORDINARY = 1,

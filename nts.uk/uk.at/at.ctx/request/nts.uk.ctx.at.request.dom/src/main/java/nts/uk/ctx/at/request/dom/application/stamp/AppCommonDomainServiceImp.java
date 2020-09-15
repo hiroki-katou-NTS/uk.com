@@ -250,7 +250,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	public List<ConfirmMsgOutput> checkBeforeRegister(String companyId, Boolean agentAtr,
 			Application application, AppStampOutput appStampOutput) {
 		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
-//		check
+//		「打刻申請（制約）」の事前条件のチェックを実行する
 		this.checkRegisterAndUpdate(appStampOutput.getAppStampOptional().orElse(null));
 		
 //		2-1.新規画面登録前の処理

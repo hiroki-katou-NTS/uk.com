@@ -26,7 +26,6 @@ import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.ApplicationListAtr;
@@ -209,6 +208,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//アルゴリズム「申請一覧リスト取得承認」を実行する - 3
 			appListInfo = this.getAppListByApproval(param, device, appListInfo);
 		}
+		// 各申請の申請名称を「申請一覧抽出条件.申請種類リスト」より取得する
+		param.setOpAppTypeLst(param.getOpListOfAppTypes());
+		// 取得した一覧の申請種類(単一化）で申請一覧抽出条件.申請種類を作成する
+		// thêm select all ở dropdownlist, xử lý ở UI
 		return new AppListInitOutput(param, appListInfo);
 	}
 
@@ -716,28 +719,53 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public ApplicationStatus countAppListApproval(List<ListOfApplication> listApp, ApplicationStatus appStatus) {
+		String loginID = AppContexts.user().employeeId();
 		for (ListOfApplication appFull : listApp) {
 			int add = 1;
 			if(appFull.getAppType() == ApplicationType.COMPLEMENT_LEAVE_APPLICATION && appFull.getOpComplementLeaveApp().isPresent()) {
 				add = 2;
 			}
 			//承認状況＝否
-			if(appFull.getReflectionStatus().equals(ReflectedState.DENIAL.name)) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_65"))) {
 				//否認件数に＋１する
 				appStatus.setDenialNumber(appStatus.getDenialNumber() + add);
 			}
 			//承認状況＝差戻
-			if(appFull.getReflectionStatus().equals(ReflectedState.REMAND.name)) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_66"))) {
 				//差戻件数に＋１する
 				appStatus.setRemandNumner(appStatus.getRemandNumner() + add);
 			}
 			//承認状況＝取消
-			if(appFull.getReflectionStatus().equals(ReflectedState.CANCELED.name)) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_67"))) {
 				//取消件数に＋１する
 				appStatus.setCancelNumber(appStatus.getCancelNumber() + add);
 			}
 			//承認状況＝承認済み/反映済み
-			if(appFull.getReflectionStatus().equals(ReflectedState.REFLECTED.name)) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_63")) || appFull.getReflectionStatus().equals(I18NText.getText("CMM045_64"))) {
+				List<ApprovalPhaseStateImport_New> listPhase = appFull.getOpApprovalPhaseLst()
+						.map(x -> x.stream().sorted(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed()).collect(Collectors.toList()))
+						.orElse(Collections.emptyList());
+				for(ApprovalPhaseStateImport_New phase : listPhase) {
+					for(ApprovalFrameImport_New frame : phase.getListApprovalFrame()) {
+						for(ApproverStateImport_New approver : frame.getListApprover()) {
+							if((approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED) &&
+									approver.getApproverID().equals(loginID) &&
+									Strings.isBlank(approver.getAgentID())) {
+								appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
+							}
+							if((approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED) &&
+									Strings.isNotBlank(approver.getAgentID()) &&
+									approver.getAgentID().equals(loginID)) {
+								appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
+							}
+							if((approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.APPROVED) &&
+									Strings.isNotBlank(approver.getAgentID()) &&
+									!approver.getAgentID().equals(loginID)) {
+								appStatus.setApprovalAgentNumber(appStatus.getApprovalAgentNumber() + add);
+							}
+						}
+					}
+				}
 //				if (StringUtil.isNullOrEmpty(appFull.getAgentId(), true) || appFull.getAgentId().equals(sID)) {
 //					//代行者＝未登録  または  代行者＝ログインID
 //					appStatus.setApprovalNumber(appStatus.getApprovalNumber() + add);
@@ -746,7 +774,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //				}
 			}
 			//承認状況＝未
-			if(appFull.getReflectionStatus().equals(ReflectedState.NOTREFLECTED.name)) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_62"))) {
 				//未承認件数に＋１する
 				appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + add);
 			}

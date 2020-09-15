@@ -110,6 +110,10 @@ public class AppDataCreationImpl implements AppDataCreation {
 				// 取得した申請一覧を申請一覧情報．申請リストにセット(Set AppList đã lấy thành AppListInformation.AppList)
 				appListInfo.getAppLst().add(listOfApp);
 			}
+			if(mode == ApplicationListAtr.APPROVER && !listOfApp.getOpApprovalFrameStatus().isPresent()) {
+				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
+				appListInfo.getAppLst().remove(listOfApp);
+			}
 		}
 		// アルゴリズム「申請一覧の並び順を変更する」を実行する
 		appListInfo = this.changeOrderOfAppLst(appListInfo, appListExtractCondition, device);

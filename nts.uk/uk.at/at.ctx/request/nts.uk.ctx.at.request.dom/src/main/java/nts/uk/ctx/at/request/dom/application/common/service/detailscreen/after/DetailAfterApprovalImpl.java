@@ -8,6 +8,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
@@ -35,6 +38,9 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 	@Inject
 	private NewRegisterMailSendCheck newRegisterMailSendCheck;
 	
+	@Inject
+	private ApplicationRepository applicationRepository;
+	
 	@Override
 	public ProcessResult doApproval(String companyID, String appID, Application application, AppDispInfoStartupOutput appDispInfoStartupOutput, String memo) {
 		boolean isProcessDone = true;
@@ -49,11 +55,12 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 		Boolean allApprovalFlg = approvalRootStateAdapter.isApproveAllComplete(appID);
 		String reflectAppId = "";
 		if(allApprovalFlg.equals(Boolean.TRUE)){
-			// 実績反映状態 = 反映状態．反映待ち
-			//application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.WAITREFLECTION);
-			//予定反映状態 = 反映状態．反映待ち
-			//application.getReflectionInformation().setStateReflection(ReflectedState_New.WAITREFLECTION);
-			// applicationRepository.update(application);
+			// 反映状態を「反映待ち」に変更する
+			for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
+				reflectionStatusOfDay.setActualReflectStatus(ReflectedState.WAITREFLECTION);
+				reflectionStatusOfDay.setActualReflectStatus(ReflectedState.WAITREFLECTION);
+			}
+			applicationRepository.update(application);
 			reflectAppId = application.getAppID();
 			// 反映対象なのかチェックする(check xem có phải đối tượng phản ánh hay k?)
 			if((application.isPreApp() && (application.isOverTimeApp() || application.isHolidayWorkApp()))
@@ -63,9 +70,12 @@ public class DetailAfterApprovalImpl implements DetailAfterApproval {
 				//appReflectManager.reflectEmployeeOfApp(application);
 			}
 		} else {
-			// ドメインモデル「申請」と紐付き「反映情報」．実績反映状態 = 反映状態．未反映
-			//application.getReflectionInformation().setStateReflectionReal(ReflectedState_New.NOTREFLECTED);
-			// applicationRepository.update(application);
+			// 反映状態を「未反映」に変更する
+			for(ReflectionStatusOfDay reflectionStatusOfDay : application.getReflectionStatus().getListReflectionStatusOfDay()) {
+				reflectionStatusOfDay.setActualReflectStatus(ReflectedState.NOTREFLECTED);
+				reflectionStatusOfDay.setActualReflectStatus(ReflectedState.NOTREFLECTED);
+			}
+			applicationRepository.update(application);
 			// INPUT．申請表示情報．申請表示情報(基準日関係なし)．メールサーバ設定済区分をチェックする
 			if(!appDispInfoStartupOutput.getAppDispInfoNoDateOutput().isMailServerSet()) {
 				return new ProcessResult(isProcessDone, isAutoSendMail, autoSuccessMail, autoFailMail, autoFailServer, appID, reflectAppId);

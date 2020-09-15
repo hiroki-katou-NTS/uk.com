@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/004/b/index.html'
     })
     class KAF004AViewModel extends ko.ViewModel {
-		appType: KnockoutObservable<number> = ko.observable(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
+        appType: KnockoutObservable<number> = ko.observable(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
         application: KnockoutObservable<Application>;
         workManagement: WorkManagement;
         arrivedLateLeaveEarlyInfo: any;
@@ -48,10 +48,6 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.lateOrEarlyInfo2 = ko.observable(new LateOrEarlyInfo(false, 1, false, false, 1));
             vm.lateOrEarlyInfo3 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 0));
             vm.lateOrEarlyInfo4 = ko.observable(new LateOrEarlyInfo(false, 2, false, false, 1));
-            // vm.lateOrEarlyInfo1 = ko.observable(null);
-            // vm.lateOrEarlyInfo2 = ko.observable(null);
-            // vm.lateOrEarlyInfo3 = ko.observable(null);
-            // vm.lateOrEarlyInfo4 = ko.observable(null);
             vm.lateOrEarlyInfos = ko.observableArray([]);
             vm.managementMultipleWorkCycles = ko.observable(false);
 
@@ -62,6 +58,11 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 }
             });
 
+            vm.application().appID.subscribe(() => {
+                if(vm.application().appType === AppType.EARLY_LEAVE_CANCEL_APPLICATION) {
+                    vm.createParamKAF004();
+                }
+            });
 
             vm.createParamKAF004();
             // params.printContentOfEachAppDto.opArrivedLateLeaveEarlyInfo = ko.toJS(vm.arrivedLateLeaveEarlyInfo);
@@ -99,7 +100,6 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.arrivedLateLeaveEarlyInfo = ko.observable(params);
             vm.appDispInfoStartupOutput(params.appDispInfoStartupOutput);
             vm.appDispInfoStartupOutput.valueHasMutated();
-            vm.printContentOfEachAppDto().opArrivedLateLeaveEarlyInfo = params;
 
             var check1 = _.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation, { 'workNo': 1, 'lateOrEarlyClassification': 0 });
             var check2 = _.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateCancelation, { 'workNo': 1, 'lateOrEarlyClassification': 1 });
@@ -108,60 +108,85 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.lateOrEarlyInfos(vm.arrivedLateLeaveEarlyInfo().earlyInfos);
             if (this.lateOrEarlyInfos().length > 0) {
-                // vm.lateOrEarlyInfo1(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0]);
-                // vm.lateOrEarlyInfo1().isCheck = _.isEmpty(check1) ? true : false;
-                // vm.lateOrEarlyInfo2(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0]);
-                // vm.lateOrEarlyInfo2().isCheck = _.isEmpty(check2) ? true : false;
-                // vm.lateOrEarlyInfo3(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0]);
-                // vm.lateOrEarlyInfo3().isCheck = _.isEmpty(check3) ? true : false;
-                // vm.lateOrEarlyInfo4(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0]);
-                // vm.lateOrEarlyInfo4().isCheck = _.isEmpty(check4) ? true : false;
-
                 vm.lateOrEarlyInfo1().isActive(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].isActive);
                 vm.lateOrEarlyInfo1().isCheck(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].isCheck);
                 vm.lateOrEarlyInfo1().isIndicated(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].isIndicated);
                 vm.lateOrEarlyInfo1().category(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].category);
                 vm.lateOrEarlyInfo1().workNo(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].workNo);
-                vm.lateOrEarlyInfo1().isCheck(_.isEmpty(check1) ? false : true);
+                vm.lateOrEarlyInfo1().isCheck(_.isEmpty(check1) && vm.lateOrEarlyInfo1().isIndicated() !== false ? false : true);
 
                 vm.lateOrEarlyInfo2().isActive(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0].isActive);
                 vm.lateOrEarlyInfo2().isCheck(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0].isCheck);
                 vm.lateOrEarlyInfo2().isIndicated(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0].isIndicated);
                 vm.lateOrEarlyInfo2().category(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0].category);
                 vm.lateOrEarlyInfo2().workNo(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0].workNo);
-                vm.lateOrEarlyInfo2().isCheck(_.isEmpty(check2) ? false : true);
+                vm.lateOrEarlyInfo2().isCheck(_.isEmpty(check2) && vm.lateOrEarlyInfo2().isIndicated() !== false ? false : true);
 
-                if(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 })).length > 0) {
+                if (ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 })).length > 0) {
                     vm.lateOrEarlyInfo3().isActive(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0].isActive);
                     vm.lateOrEarlyInfo3().isCheck(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0].isCheck);
                     vm.lateOrEarlyInfo3().isIndicated(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0].isIndicated);
                     vm.lateOrEarlyInfo3().category(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0].category);
                     vm.lateOrEarlyInfo3().workNo(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0].workNo);
-                    vm.lateOrEarlyInfo3().isCheck(_.isEmpty(check3) ? false : true);
+                    vm.lateOrEarlyInfo3().isCheck(_.isEmpty(check3) && vm.lateOrEarlyInfo3().isIndicated() !== false ? false : true);
                 }
 
-                if(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 })).length > 0) {
+                if (ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 })).length > 0) {
                     vm.lateOrEarlyInfo4().isActive(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0].isActive);
                     vm.lateOrEarlyInfo4().isCheck(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0].isCheck);
                     vm.lateOrEarlyInfo4().isIndicated(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0].isIndicated);
                     vm.lateOrEarlyInfo4().category(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0].category);
                     vm.lateOrEarlyInfo4().workNo(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0].workNo);
-                    vm.lateOrEarlyInfo4().isCheck(_.isEmpty(check4) ? false : true);
+                    vm.lateOrEarlyInfo4().isCheck(_.isEmpty(check4) && vm.lateOrEarlyInfo4().isIndicated() !== false ? false : true);
                 }
             }
 
-            if (ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 })).length > 0) {
-                vm.workManagement.workTime(ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 0 }))[0].timeWithDayAttr);
+            var lateEarliesApp = params.arrivedLateLeaveEarly.lateOrLeaveEarlies;
+
+            vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1 == null ? vm.workManagement.scheAttendanceTime('--:--') :
+                vm.workManagement.scheAttendanceTime(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1));
+            vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1 == null ? vm.workManagement.scheWorkTime('--:--') :
+                vm.workManagement.scheWorkTime(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1));
+            vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2 == null ? vm.workManagement.scheAttendanceTime2('--:--') :
+                vm.workManagement.scheAttendanceTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2));
+            vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2 == null ? vm.workManagement.scheWorkTime2('--:--') :
+                vm.workManagement.scheWorkTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2));
+
+
+            if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 0 }).length > 0) {
+                vm.workManagement.workTime(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr));
+            } else {
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime !== null) {
+                    vm.workManagement.workTime(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime));
+                }
             }
-            if (ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 2, 'lateOrEarlyClassification': 0 })).length > 0) {
-                vm.workManagement.workTime2(ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 2, 'lateOrEarlyClassification': 0 }))[0].timeWithDayAttr);
+
+            if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 }).length > 0) {
+                vm.workManagement.leaveTime(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr));
+            } else {
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime !== null) {
+                    vm.workManagement.leaveTime(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime));
+                }
             }
-            if (ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 1 })).length > 0) {
-                vm.workManagement.leaveTime(ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 1, 'lateOrEarlyClassification': 1 }))[0].timeWithDayAttr);
+
+            if (_.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 0 }).length > 0) {
+                vm.workManagement.workTime2(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr));
+            } else {
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2 !== null) {
+                    vm.workManagement.workTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2));
+                }
             }
-            if (ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 2, 'lateOrEarlyClassification': 1 })).length > 0) {
-                vm.workManagement.leaveTime2(ko.toJS(_.filter(vm.arrivedLateLeaveEarlyInfo().arrivedLateLeaveEarly.lateOrLeaveEarlies, { 'workNo': 2, 'lateOrEarlyClassification': 1 }))[0].timeWithDayAttr);
+
+            if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 }).length > 0) {
+                vm.workManagement.leaveTime2(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr));
+            } else {
+                if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2 !== null) {
+                    vm.workManagement.leaveTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2));
+                }
             }
+
+
+
 
             if (!vm.workManagement.scheAttendanceTime) {
                 vm.workManagement.scheAttendanceTime("--:--");
@@ -175,6 +200,21 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             if (!vm.workManagement.scheWorkTime2) {
                 vm.workManagement.scheWorkTime2("--:--");
             }
+
+            params.arrivedLateLeaveEarly.lateCancelation = [];
+            if (vm.lateOrEarlyInfo1().isCheck()) {
+                params.arrivedLateLeaveEarly.lateCancelation.push({ workNo: 1, lateOrEarlyClassification: 0 })
+            }
+            if (vm.lateOrEarlyInfo2().isCheck()) {
+                params.arrivedLateLeaveEarly.lateCancelation.push({ workNo: 1, lateOrEarlyClassification: 1 })
+            }
+            if (vm.lateOrEarlyInfo3().isCheck()) {
+                params.arrivedLateLeaveEarly.lateCancelation.push({ workNo: 2, lateOrEarlyClassification: 0 })
+            }
+            if (vm.lateOrEarlyInfo4().isCheck()) {
+                params.arrivedLateLeaveEarly.lateCancelation.push({ workNo: 2, lateOrEarlyClassification: 1 })
+            }
+            vm.printContentOfEachAppDto().opArrivedLateLeaveEarlyInfo = params;
         }
 
         update() {
@@ -212,21 +252,21 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 }).fail((fail: any) => {
                     if (fail) {
                         vm.$dialog.error({ messageId: fail.messageId })
-                        .then(() => {
-                            let command = {
-                                appId: ko.toJS(vm.application().appID),
-                                infoStartup: ko.toJS(vm.appDispInfoStartupOutput)
-                            };
+                            .then(() => {
+                                let command = {
+                                    appId: ko.toJS(vm.application().appID),
+                                    infoStartup: ko.toJS(vm.appDispInfoStartupOutput)
+                                };
 
-                            return vm.$ajax(API.initPageB, command)
-                                .done((res: any) => {
-                                    this.fetchData(res);
-                                })
-                                .fail((err: any) => {
-                                    console.log()
-                                    vm.$dialog.error({ messageId: err.messageId });
-                                });
-                        })
+                                return vm.$ajax(API.initPageB, command)
+                                    .done((res: any) => {
+                                        this.fetchData(res);
+                                    })
+                                    .fail((err: any) => {
+                                        console.log()
+                                        vm.$dialog.error({ messageId: err.messageId });
+                                    });
+                            })
                     }
                 }).always(() => vm.$blockui('hide'));
         }

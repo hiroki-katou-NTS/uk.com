@@ -126,8 +126,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 		} 
 //		育児時間帯
 		if (type == 6) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.empty(), Optional.empty());
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.empty(), Optional.empty());
+			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(550)), Optional.of(new TimeWithDayAttr(100)));
+			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.empty(), new StampFrameNo(2), Optional.of(new TimeWithDayAttr(800)), Optional.of(new TimeWithDayAttr(550)));
 			list.add(t1);
 			list.add(t2);
 		}
@@ -295,13 +295,13 @@ public class CollectAchievementImpl implements CollectAchievement {
 			//・実績詳細．休憩時間帯＝OUTPUT．勤務実績．休憩時間帯
 			breakTimeSheets = recordWorkInfoImport.getBreakTimeSheets();
 			//・実績詳細．残業深夜時間＝OUTPUT．勤務実績．残業深夜時間
-			//opOvertimeMidnightTime = recordWorkInfoImport.getOverTimeMidnight().getTime();
+			opOvertimeMidnightTime = recordWorkInfoImport.getOverTimeMidnight().map(x -> x.getCalcTime());
 			//・実績詳細．法内休出深夜時間＝OUTPUT．勤務実績．法内休出深夜時間
-			//opInlawHolidayMidnightTime = recordWorkInfoImport.getMidnightOnHoliday();
+			opInlawHolidayMidnightTime = recordWorkInfoImport.getMidnightOnHoliday().map(x -> x.getCalcTime());
 			//・実績詳細．法外休出深夜時間＝OUTPUT．勤務実績．法外休出深夜時間
-			//opOutlawHolidayMidnightTime = recordWorkInfoImport.getOutOfMidnight();
+			opOutlawHolidayMidnightTime = recordWorkInfoImport.getOutOfMidnight().map(x -> x.getCalcTime());
 			//・実績詳細．祝日休出深夜時間＝OUTPUT．勤務実績．祝日休出深夜時間
-			//opPublicHolidayMidnightTime = recordWorkInfoImport.getMidnightPublicHoliday();
+			opPublicHolidayMidnightTime = recordWorkInfoImport.getMidnightPublicHoliday().map(x -> x.getCalcTime());
 		}
 		//ドメインモデル「勤務種類」を1件取得する - (lấy 1 dữ liệu của domain 「WorkType」)
 		opWorkTypeName = workTypeRepository.findByPK(companyID, workTypeCD).map(x -> x.getName().v());
