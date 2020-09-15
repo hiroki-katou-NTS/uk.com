@@ -13,14 +13,14 @@ module nts.uk.at.view.kaf000_ref.a.component7.viewmodel {
             const vm = this;
 			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
-            vm.checkBoxValue = ko.observable(false);
+            vm.checkBoxValue = params.checkBoxValue;
             vm.dispCheckBox = ko.observable(true);
             
             vm.appDispInfoStartupOutput.subscribe(value => {
                 vm.dispCheckBox(!value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting.sendMailWhenRegister &&
                                     value.appDispInfoNoDateOutput.mailServerSet);
                 if(vm.dispCheckBox()) {
-                    vm.checkBoxValue(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr);            
+                    vm.checkBoxValue(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.manualSendMailAtr==1);            
                 } else {
                     vm.checkBoxValue(false);
                 }

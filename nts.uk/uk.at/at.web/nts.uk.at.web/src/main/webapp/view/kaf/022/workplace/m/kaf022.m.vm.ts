@@ -61,7 +61,9 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                     self.isUpdate(false);
                 } else {
                     const wkpList: Array<any> = $('#wkp-list').getDataList();
-                    let selectedWkp = _.find(wkpList, {'id': value});
+                    const tmpList = [];
+                    self.treeToList(tmpList, wkpList);
+                    let selectedWkp = _.find(tmpList, {'id': value});
                     if (selectedWkp) {
                         self.workplaceName(selectedWkp.name || "");
                         self.workplaceCode(selectedWkp.code || "");
@@ -95,6 +97,15 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                         self.isUpdate(false);
                     }
                 }
+            });
+        }
+
+        treeToList(lst: Array<any>, tree: Array<any>) {
+            const self = this;
+            tree.forEach(w => {
+                lst.push(w);
+                if (w.children != null && w.children.length > 0)
+                    self.treeToList(lst, w.children);
             });
         }
 

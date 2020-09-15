@@ -95,7 +95,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 			// check exist data calendar work place
 			if (optionalCalendarWorkplace.isPresent()) {
-				return Optional.of(optionalCalendarWorkplace.get().getWorkingDayAtr().value);
+				return Optional.of(optionalCalendarWorkplace.get().getWorkDayDivision().value);
 			}
 		}
 
@@ -105,7 +105,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 		// check exist data calendar company
 		if (optionalCalendarCompany.isPresent()) {
-			return Optional.of(optionalCalendarCompany.get().getWorkingDayAtr().value);
+			return Optional.of(optionalCalendarCompany.get().getWorkDayDivision().value);
 		}
 		// add error messageId Msg_588
 		this.scheCreExeErrorLogHandler.addError(command.getBaseGetter(), command.getEmployeeId(), "Msg_588");
@@ -137,7 +137,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @param command
 	 * @return
 	 */
-	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkplace(
+	public Optional<BasicWorkSetting> getBasicWorkSettingByWorkplace(
 			BasicWorkSettingByWorkplaceGetterCommand command) {
 		for (String workplaceId : command.getWorkplaceIds()) {
 			// find basic work by id
@@ -285,7 +285,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @param command
 	 * @return
 	 */
-	private Optional<Integer> getWorkdayDivisionByClass(WorkdayAttrByClassGetterCommand command) {
+	public Optional<Integer> getWorkdayDivisionByClass(WorkdayAttrByClassGetterCommand command) {
 
 		// find calendar classification by id
 		Optional<CalendarClass> optionalCalendarClass = this.calendarClassRepository.findCalendarClassByDate(
@@ -294,7 +294,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 		// check exist data
 		if (optionalCalendarClass.isPresent()) {
-			return Optional.ofNullable(optionalCalendarClass.get().getWorkingDayAtr().value);
+			return Optional.ofNullable(optionalCalendarClass.get().getWorkDayDivision().value);
 		} else {
 
 			// find calendar company by id
@@ -304,7 +304,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 
 			// check exits data
 			if (optionalCalendarCompany.isPresent()) {
-				return Optional.ofNullable(optionalCalendarCompany.get().getWorkingDayAtr().value);
+				return Optional.ofNullable(optionalCalendarCompany.get().getWorkDayDivision().value);
 			}
 
 			// add error messageId Msg_588
@@ -431,7 +431,7 @@ public class ScheCreExeBasicWorkSettingHandler {
 	 * @param command
 	 * @return
 	 */
-	private Optional<BasicWorkSetting> getBasicWorkSettingByClassification(
+	public Optional<BasicWorkSetting> getBasicWorkSettingByClassification(
 			BasicWorkSettingByClassificationGetterCommand command) {
 		// find classification basic work by id
 		Optional<ClassificationBasicWork> optionalClassificationBasicWork = this.classificationBasicWorkRepository

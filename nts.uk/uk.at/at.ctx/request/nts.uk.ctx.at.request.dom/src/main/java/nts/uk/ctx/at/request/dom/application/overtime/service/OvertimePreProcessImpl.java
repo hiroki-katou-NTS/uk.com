@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -157,7 +157,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 			return result;
 		}
 		// Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
+		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, GeneralDate.fromString(appDate, DATE_FORMAT));
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
 			return result;
 		}
@@ -175,7 +175,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 	
 	@Override
-	public AppOvertimeReference getResultCurrentDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport recordWorkInfoImport) {
+	public AppOvertimeReference getResultCurrentDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport_Old recordWorkInfoImport) {
 		String companyID = AppContexts.user().companyId();
 		AppOvertimeReference result = new AppOvertimeReference();
 		result.setAppDateRefer(date.toString(DATE_FORMAT));
@@ -230,7 +230,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 	}
 
 	@Override
-	public AppOvertimeReference getResultOtherDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport recordWorkInfoImport) {
+	public AppOvertimeReference getResultOtherDay(String employeeID, GeneralDate date, String workType, String workTime, RecordWorkInfoImport_Old recordWorkInfoImport) {
 		String companyID = AppContexts.user().companyId();
 		AppOvertimeReference result = new AppOvertimeReference();
 		result.setAppDateRefer(date.toString(DATE_FORMAT));
@@ -270,7 +270,7 @@ public class OvertimePreProcessImpl implements IOvertimePreProcess {
 		return result;
 	}
 	
-	private List<OvertimeRefer> convertOTReferFromReal(RecordWorkInfoImport recordWorkInfoImport){
+	private List<OvertimeRefer> convertOTReferFromReal(RecordWorkInfoImport_Old recordWorkInfoImport){
 		List<OvertimeRefer> overtimeReferLst = new ArrayList<>();
 		/*overtimeReferLst.addAll(recordWorkInfoImport.getOvertimeCaculation().stream().map(x -> new OvertimeRefer(x.getFrameNo(), x.getResultCaculation())).collect(Collectors.toList()));
 		overtimeReferLst.add(new OvertimeRefer(11, recordWorkInfoImport.getShiftNightCaculation()));

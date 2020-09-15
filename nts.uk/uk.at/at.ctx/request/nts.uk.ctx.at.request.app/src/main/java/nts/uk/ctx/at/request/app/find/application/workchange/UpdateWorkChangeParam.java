@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.request.app.find.application.workchange.dto.AppWorkChangeDispInfoDto;
+import nts.uk.ctx.at.request.app.command.application.workchange.AppWorkChangeDispInfoCmd;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -22,6 +22,6 @@ public class UpdateWorkChangeParam {
 	private List<String> listDates;
 	
 	// 勤務変更申請の表示情報
-	private AppWorkChangeDispInfoDto appWorkChangeDispInfo;
+	private AppWorkChangeDispInfoCmd appWorkChangeDispInfo;
 
 }

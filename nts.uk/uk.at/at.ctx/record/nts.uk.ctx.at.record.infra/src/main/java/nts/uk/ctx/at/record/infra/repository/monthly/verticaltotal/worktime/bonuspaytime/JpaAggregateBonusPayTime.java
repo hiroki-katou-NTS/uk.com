@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTimeRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.verticaltotal.worktime.KrcdtMonAggrBnspyTimePK;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTimeRepository;
 
 /**
  * リポジトリ実装：集計加給時間

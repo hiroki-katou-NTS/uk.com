@@ -4,12 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.statutory.worktime.shared;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class FlexMonth.
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FlexMonth {
 
 	/** The month. */
@@ -20,4 +24,7 @@ public class FlexMonth {
 
 	/** The specified time. */
 	private int specifiedTime;
+
+	/** The specified time. */
+	private int weekAvgTime;
 }

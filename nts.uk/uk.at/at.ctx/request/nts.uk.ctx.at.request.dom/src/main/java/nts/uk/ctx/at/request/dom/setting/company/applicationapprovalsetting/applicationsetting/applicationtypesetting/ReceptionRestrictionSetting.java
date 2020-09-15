@@ -3,8 +3,8 @@ package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.app
 import java.util.Optional;
 
 import lombok.Getter;
-import nts.arc.time.ClockHourMinute;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.clock.ClockHourMinute;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeAppAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.BeforeAddCheckMethod;

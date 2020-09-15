@@ -19,6 +19,7 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.adapter.RegularSortingTypeImport;
@@ -49,10 +50,13 @@ import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExcludeEmp;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.ExportData;
 import nts.uk.ctx.at.function.dom.annualworkschedule.export.PrintFormat;
 import nts.uk.ctx.at.function.dom.annualworkschedule.repository.SetOutItemsWoScRepository;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -75,8 +79,14 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private RegulationInfoEmployeeAdapter employeeAdapter;
 	@Inject
 	private GetExcessTimesYearAdapter getExcessTimesYearAdapter;
+	
 	@Inject
-	private ClosureService closureService;
+	private ClosureRepository closureRepo; 
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
+	
 	@Inject
 	private GetAgreementPeriodFromYearAdapter getAgreementPeriodFromYearPub;
 	@Inject
@@ -475,7 +485,9 @@ public class JpaAnnualWorkScheduleRepository implements AnnualWorkScheduleReposi
 	private List<AgreementTimeByPeriodImport> create36AgreementFewMonth(String cid, String employeeId, Year fiscalYear,
 			YearMonth startYm, PeriodAtrOfAgreement periodAtr) {
 		// アルゴリズム「2・3ヶ月の36協定時間の作成」を実行する
-		Closure closure = closureService.getClosureDataByEmployee(employeeId, GeneralDate.today());
+		Closure closure = ClosureService.getClosureDataByEmployee(
+				ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
+				new CacheCarrier(), employeeId, GeneralDate.today());
 		// 年度から集計期間を取得
 		Optional<DatePeriod> datePeriod = getAgreementPeriodFromYearPub.algorithm(fiscalYear, closure);
 		// ドメイン「３６協定運用設定」を取得する

@@ -3,18 +3,18 @@ package nts.uk.ctx.at.record.app.find.dailyperform.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.AbsenceOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.AnnualOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.HolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.OverSalaryOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.SpecialHolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.SubstituteHolidayOfDaily;
-import nts.uk.ctx.at.record.dom.daily.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.AbsenceOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.AnnualOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.HolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.OverSalaryOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SpecialHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SubstituteHolidayOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.YearlyReservedOfDaily;
 
 /** 日別実績の休暇 */
 @Data

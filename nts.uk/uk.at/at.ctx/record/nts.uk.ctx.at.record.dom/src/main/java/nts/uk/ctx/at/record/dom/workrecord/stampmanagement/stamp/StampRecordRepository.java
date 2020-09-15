@@ -36,17 +36,23 @@ public interface StampRecordRepository {
 	 * @param stampDateTime
 	 * @return 
 	 */
-	public List<StampRecord> get(List<StampNumber> stampNumbers, GeneralDate stampDate);
+	public List<StampRecord> get(String contractCode, List<StampNumber> stampNumbers, GeneralDate stampDate);
 
 	/**
 	 *  [5] 打刻カード未登録の打刻記録データを取得する
 	 * @param period
 	 * @return List<打刻記録>	
 	 */
-	public List<StampRecord> getStempRcNotResgistNumber(DatePeriod period);
+	public List<StampRecord> getStempRcNotResgistNumber(String contractCode, DatePeriod period);
 	
 	/**
-	 * [6] 取得する
+	 * @param stampNumber
+	 * @param stampDateTime
+	 * @return
+	 */
+	public Optional<StampRecord> findByKey(StampNumber stampNumber, GeneralDateTime stampDateTime);
+
+	/*** [6] 取得する
 	 * 
 	 * @param contractCd
 	 *            契約コード

@@ -10,8 +10,8 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;

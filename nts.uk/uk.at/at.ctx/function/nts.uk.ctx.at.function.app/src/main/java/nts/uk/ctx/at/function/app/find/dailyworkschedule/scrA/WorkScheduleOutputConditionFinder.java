@@ -49,10 +49,6 @@ public class WorkScheduleOutputConditionFinder {
 	@Inject
 	private ClosureRepository closureRepository;
 	
-	/** The closure service. */
-	@Inject
-	private ClosureService closureService;
-	
 	/** The output item daily work schedule repository. */
 	@Inject
 	private OutputItemDailyWorkScheduleRepository outputItemDailyWorkScheduleRepository;
@@ -100,7 +96,9 @@ public class WorkScheduleOutputConditionFinder {
 			dto.setMsgErrClosingPeriod(null);
 			
 			// アルゴリズム「当月の期間を算出する」を実行する(Execute the algorithm "Calculate the period of the current month")
-			DatePeriod datePeriod = closureService.getClosurePeriodNws(closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
+			DatePeriod datePeriod = ClosureService.getClosurePeriodNws(
+					ClosureService.createRequireM5(closureRepository),
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm());
 			dto.setStartDate(datePeriod.start());
 			dto.setEndDate(datePeriod.end());
 		} else {

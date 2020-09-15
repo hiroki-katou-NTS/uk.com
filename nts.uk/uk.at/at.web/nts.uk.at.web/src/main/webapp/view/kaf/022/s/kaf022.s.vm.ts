@@ -56,7 +56,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             self.selectedAppType.subscribe((value) => {
                 if (!_.isNil(value)) {
                     nts.uk.ui.errors.clearAll();
-                    self.listReasonByAppType(self.listReason().filter(r => r.appType == value));
+                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == value), ['reasonCode']));
                     if (self.listReasonByAppType().length > 0) {
                         if (self.selectedReasonCode() == self.listReasonByAppType()[0].reasonCode)
                             self.selectedReasonCode.valueHasMutated();

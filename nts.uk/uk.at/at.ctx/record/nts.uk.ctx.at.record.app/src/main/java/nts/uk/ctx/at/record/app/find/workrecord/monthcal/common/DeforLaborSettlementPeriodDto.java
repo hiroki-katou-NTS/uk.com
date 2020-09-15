@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.common;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.DeforLaborSettlementPeriod;
 
 /**
  * The Class DeforLaborSettlementPeriod.
@@ -24,5 +25,13 @@ public class DeforLaborSettlementPeriodDto {
 
 	/** The repeat atr. */
 	private Boolean repeatAtr;
-
+	
+	public static DeforLaborSettlementPeriodDto from(DeforLaborSettlementPeriod domain) {
+		
+		return DeforLaborSettlementPeriodDto.builder()
+				.startMonth(domain.getStartMonth().v())
+				.period(domain.getPeriod().v())
+				.repeatAtr(domain.isRepeat())
+				.build();
+	}
 }

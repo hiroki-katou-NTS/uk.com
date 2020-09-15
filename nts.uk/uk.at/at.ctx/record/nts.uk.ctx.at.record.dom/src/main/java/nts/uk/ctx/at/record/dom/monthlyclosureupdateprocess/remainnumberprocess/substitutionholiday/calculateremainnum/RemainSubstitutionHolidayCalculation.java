@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
@@ -25,12 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author HungTT - <<Work>> 振休残数計算
  *
  */
-
-@Stateless
 public class RemainSubstitutionHolidayCalculation {
-
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery query;
 
 	/**
 	 * 振休残数計算
@@ -38,7 +31,8 @@ public class RemainSubstitutionHolidayCalculation {
 	 * @param empId 社員ID
 	 * @return 振休の集計結果
 	 */
-	public AbsRecRemainMngOfInPeriod calculateRemainHoliday(AggrPeriodEachActualClosure period, String empId,
+	public static AbsRecRemainMngOfInPeriod calculateRemainHoliday(RequireM1 require, CacheCarrier cacheCarrier,
+			AggrPeriodEachActualClosure period, String empId,
 			Map<GeneralDate, DailyInterimRemainMngData> interimRemainMngMap) {
 		
 		String companyId = AppContexts.user().companyId();
@@ -65,6 +59,10 @@ public class RemainSubstitutionHolidayCalculation {
 		// 「期間内の振出振休残数を取得する」を実行する
 		AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, empId, period.getPeriod(),
 				period.getPeriod().end(), true, true, useAbsMng, interimMng, useRecMng, Optional.empty(), Optional.empty(), Optional.empty());
-		return query.getAbsRecMngInPeriod(param);
+		return AbsenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(require, cacheCarrier, param);
+	}
+	
+	public static interface RequireM1 extends AbsenceReruitmentMngInPeriodQuery.RequireM10 {
+		
 	}
 }

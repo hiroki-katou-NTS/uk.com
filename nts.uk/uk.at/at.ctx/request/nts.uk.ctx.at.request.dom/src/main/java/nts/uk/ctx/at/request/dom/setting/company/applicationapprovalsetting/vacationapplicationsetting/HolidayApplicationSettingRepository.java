@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface HolidayApplicationSettingRepository {
     Optional<HolidayApplicationSetting> findSettingByCompanyId(String companyId);
-    Optional<VacationApplicationReflect> findReflectByCompanyId(String companyId);
+
     void save(String companyId, HolidayApplicationSetting setting, VacationApplicationReflect reflect);
 }

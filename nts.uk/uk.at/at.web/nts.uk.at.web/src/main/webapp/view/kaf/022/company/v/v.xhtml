@@ -5,18 +5,20 @@
     <span class="label">#{i18n.getText('KAF022_668')}</span>
     <table id="fixed-table-v2">
         <colgroup>
-            <col width="50px"/>
+            <col width="70px"/>
             <col width="200px"/>
         </colgroup>
         <thead>
             <tr>
-                <th class="ui-widget-header">#{i18n.getText('KAF022_764')}</th>
+                <th class="ui-widget-header">
+                    <div data-bind="ntsCheckBox: { checked: allChecked }">#{i18n.getText('KAF022_764')}</div>
+                </th>
                 <th class="ui-widget-header">#{i18n.getText('KAF022_765')}</th>
             </tr>
         </thead>
         <tbody data-bind="foreach : menuList">
             <tr>
-                <td>
+                <td style="text-align: center">
                     <div data-bind="ntsCheckBox: { checked: checked }"/>
                 </td>
                 <td>

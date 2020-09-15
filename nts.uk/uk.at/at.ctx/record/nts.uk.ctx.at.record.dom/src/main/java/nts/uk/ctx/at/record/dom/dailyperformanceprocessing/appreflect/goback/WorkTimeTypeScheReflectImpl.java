@@ -8,12 +8,13 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ScheAndRecordSameChangeFlg;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.overtime.AppReflectRecordWork;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.ReflectParameter;
 import nts.uk.ctx.at.record.dom.workinformation.service.reflectprocess.WorkUpdateService;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeIsFluidWork;
 import nts.uk.ctx.at.shared.dom.worktype.service.WorkTypeIsClosedService;
 
@@ -22,23 +23,22 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 	@Inject
 	private WorkInformationRepository workRepository;
 	@Inject
-	private WorkTypeIsClosedService workTypeService;
-	@Inject
-	private WorkTimeIsFluidWork workTimeService;
-	@Inject
 	private WorkUpdateService workUpdate;
+	@Inject 
+	private RecordDomRequireService requireService;
 	@Override
 	public AppReflectRecordWork reflectScheWorkTimeType(GobackReflectParameter para, IntegrationOfDaily dailyInfor) {
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(para.getEmployeeId(), para.getDateData(), dailyInfor.getWorkInformation());
 		//予定勤務種類による勤種・就時を反映できるかチェックする
-		if(!this.checkReflectWorkTimeType(para,dailyInfor.getWorkInformation())) {
-			return new AppReflectRecordWork(false, dailyInfor.getWorkInformation());
+		if(!this.checkReflectWorkTimeType(para,dailyPerformance)) {
+			return new AppReflectRecordWork(false, dailyPerformance);
 		}
 		//予定勤種・就時の反映
 		ReflectParameter reflectInfo = new ReflectParameter(para.getEmployeeId(), para.getDateData(), 
 				para.getGobackData().getWorkTimeCode(), 
 				para.getGobackData().getWorkTypeCode(), false); 
 		workUpdate.updateWorkTimeType(reflectInfo, true, dailyInfor);
-		return new AppReflectRecordWork(true, dailyInfor.getWorkInformation());
+		return new AppReflectRecordWork(true, dailyPerformance);
 	}
 
 	@Override
@@ -55,7 +55,8 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 			if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.ALWAYS_CHANGE_AUTO) {
 				return this.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(),dailyInfor);
 			} else if(para.getScheAndRecordSameChangeFlg() == ScheAndRecordSameChangeFlg.AUTO_CHANGE_ONLY_WORK
-					&& workTimeService.checkWorkTimeIsFluidWork(para.getGobackData().getWorkTimeCode())){
+					&& WorkTimeIsFluidWork.checkWorkTimeIsFluidWork(requireService.createRequire(), 
+							para.getGobackData().getWorkTimeCode())){
 				//流動勤務かどうかの判断処理
 				return this.checkScheAndRecordSamseChange(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(),dailyInfor);
 			} else {
@@ -71,7 +72,8 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 			return true;
 		}
 		//勤務種類が休出振出かの判断
-		if(workTypeService.checkWorkTypeIsClosed(dailyInfor.getScheduleInfo().getWorkTypeCode().v())) {
+		if(WorkTypeIsClosedService.checkWorkTypeIsClosed(requireService.createRequire(), 
+				dailyInfor.getWorkInformation().getScheduleInfo().getWorkTypeCode().v())) {
 			return false;
 		} else {
 			return true;
@@ -80,6 +82,7 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 
 	@Override
 	public AppReflectRecordWork reflectRecordWorktimetype(GobackReflectParameter para, IntegrationOfDaily dailyInfor) {
+		WorkInfoOfDailyPerformance dailyPerformance = new WorkInfoOfDailyPerformance(para.getEmployeeId(), para.getDateData(), dailyInfor.getWorkInformation());
 		boolean isReflect = this.checkReflectRecordForActual(para.getEmployeeId(), para.getDateData(), para.isOutResReflectAtr(),
 				para.getGobackData().getChangeAppGobackAtr());
 		//実績勤務種類による勤種・就時を反映できるかチェックする
@@ -88,9 +91,9 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 			ReflectParameter reflectPara = new ReflectParameter(para.getEmployeeId(), para.getDateData(),
 					para.getGobackData().getWorkTimeCode(), para.getGobackData().getWorkTypeCode(), false);
 			workUpdate.updateWorkTimeType(reflectPara, false, dailyInfor);
-			return new AppReflectRecordWork(isReflect, dailyInfor.getWorkInformation());
+			return new AppReflectRecordWork(isReflect, dailyPerformance);
 		}
-		return new AppReflectRecordWork(isReflect, dailyInfor.getWorkInformation());
+		return new AppReflectRecordWork(isReflect, dailyPerformance);
 	}
 
 	@Override
@@ -111,9 +114,9 @@ public class WorkTimeTypeScheReflectImpl implements WorkTimeTypeScheReflect {
 		}
 		WorkInfoOfDailyPerformance workInfoOfDaily = optWorkInfoOfDaily.get();
 		//実績勤務種類を取得する
-		WorkInformation recordWorkInformation = workInfoOfDaily.getRecordInfo();
+		WorkInformation recordWorkInformation = workInfoOfDaily.getWorkInformation().getRecordInfo();
 		//勤務種類が休出振出かの判断
-		if(workTypeService.checkWorkTypeIsClosed(recordWorkInformation.getWorkTypeCode().v())) {
+		if(WorkTypeIsClosedService.checkWorkTypeIsClosed(requireService.createRequire(), recordWorkInformation.getWorkTypeCode().v())) {
 			return false;
 		} else {
 			return true;

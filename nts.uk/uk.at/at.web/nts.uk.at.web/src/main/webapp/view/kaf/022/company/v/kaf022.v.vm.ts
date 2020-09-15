@@ -3,11 +3,26 @@ module nts.uk.at.view.kaf022.v.viewmodel {
 
     export class ScreenModelV {
         menuList: KnockoutObservableArray<MenuModel>;
+        allChecked: KnockoutObservable<boolean>;
 
         constructor() {
             const self = this;
             self.menuList = ko.observableArray([]);
             $("#fixed-table-v2").ntsFixedTable({});
+
+            self.allChecked = ko.pureComputed({
+                read: function () {
+                    return self.menuList().length > 0 && self.menuList().filter(m => m.checked()).length == self.menuList().length;
+                },
+                write: function (value) {
+                    if (value) {
+                        self.menuList().forEach(m => m.checked(true));
+                    } else {
+                        self.menuList().forEach(m => m.checked(false));
+                    }
+                },
+                owner: self
+            });
         }
 
         initData(allData: any): void {

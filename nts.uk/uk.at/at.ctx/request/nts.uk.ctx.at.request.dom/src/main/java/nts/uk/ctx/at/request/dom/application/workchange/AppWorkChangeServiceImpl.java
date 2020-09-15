@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
@@ -87,6 +88,9 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	
 	@Inject
 	private CommonAlgorithmMobile algorithmMobile;
+	
+	@Inject
+	private CommonAlgorithm commonAlgorithm;
 	
 	@Inject
 	private AppWorkChangeSetRepository appWorkChangeSetRepoNew;
@@ -241,25 +245,15 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 	@Override
 	public AppWorkChangeDispInfo changeAppDate(String companyID, List<GeneralDate> dateLst,
 			AppWorkChangeDispInfo appWorkChangeDispInfo) {
-		// 共通インタラクション「申請日を変更する」を実行する
-		AppDispInfoWithDateOutput appDispInfoWithDateOutput = algorithmMobile.getAppSetInfoRelatedBaseDate(
-				true, 
-				companyID,
-				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getEmployeeInfoLst().get(0).getSid(),
-				dateLst,
+		// 申請表示情報(基準日関係あり)を取得する
+		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.getAppDispInfoWithDate(companyID,
 				ApplicationType.WORK_CHANGE_APPLICATION,
-				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting(),
-				Optional.ofNullable(null));
+				dateLst,
+				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
+				true,
+				Optional.empty());
+		// 「勤務変更申請の表示情報」を更新して返す
 		appWorkChangeDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
-//		commonAlgorithm.getAppSetInfoRelatedBaseDate
-//		AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(
-//				companyID, 
-//				dateLst,
-//				ApplicationType.WORK_CHANGE_APPLICATION, 
-//				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput(),
-//				appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput());
-//		// 「勤務変更申請の表示情報」を更新する
-//		appWorkChangeDispInfo.getAppDispInfoStartupOutput().setAppDispInfoWithDateOutput(appDispInfoWithDateOutput);
 		return appWorkChangeDispInfo;
 	}
 

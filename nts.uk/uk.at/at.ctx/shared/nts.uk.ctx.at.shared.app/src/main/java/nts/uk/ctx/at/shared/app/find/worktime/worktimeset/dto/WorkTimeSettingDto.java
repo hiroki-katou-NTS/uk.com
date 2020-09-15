@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.worktime.worktimeset.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.AbolishAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
@@ -19,9 +16,6 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class WorkTimeSettingDto.
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class WorkTimeSettingDto implements WorkTimeSettingSetMemento {
 
 	/** The company id. */

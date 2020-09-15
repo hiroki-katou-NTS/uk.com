@@ -18,6 +18,7 @@ import javax.management.RuntimeErrorException;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -30,16 +31,13 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NextAnnualLeaveGrantImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.NumAnnLeaReferenceDateImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -47,6 +45,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
@@ -55,6 +54,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeav
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -107,23 +107,11 @@ public class ToppageStartupProcessMobFinder {
 	@Inject
 	private OptionalWidgetAdapter optionalWidgetAdapter;
 	@Inject
-	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absenceReruitmentMngInPeriodQuery;
-	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
 	@Inject
 	private ClosureRepository closureRepo;
 	@Inject
-	private ClosureService closureService;
-	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
-	@Inject
-	private SpecialLeaveManagementService specialLeaveManagementService;
-	@Inject
-	private ClosureRepository closureRepository;
-	@Inject
-	private GetAgreementTime getAgreementTime;
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
 	@Inject
@@ -134,16 +122,17 @@ public class ToppageStartupProcessMobFinder {
 //	private DailyPerformanceAdapter dailyPerformanceAdapter;
 	@Inject
 	private ApprovalRootStateRepository approvalRootStateRepository;
-	@Inject
-	private ApplicationRepository applicationRepository_New;
+//	@Inject
+//	private ApplicationRepository_New applicationRepository_New;
 	@Inject
 	private AgreementOperationSettingRepository agreementOperationSettingRepository;
-	@Inject
-	private GetAgreementPeriodFromYear getAgreementPeriodFromYear;
 	@Inject
 	private InitDisplayPeriodSwitchSetFinder displayPeriodfinder;
 	@Inject
 	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
+	
+	@Inject
+	private RecordDomRequireService requireService;
 
 	public ToppageStartupDto startupProcessMob() {
 		String companyID = AppContexts.user().companyId();
@@ -170,7 +159,10 @@ public class ToppageStartupProcessMobFinder {
 						spTopPageSet.getDisplayAtr() == NotUseAtr.USE);
 			}
 		}
-		Closure closure = closureService.getClosureDataByEmployee(AppContexts.user().employeeId(), GeneralDate.today());
+		Closure closure = ClosureService.getClosureDataByEmployee(
+				ClosureService.createRequireM3(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),
+				new CacheCarrier(),
+				AppContexts.user().employeeId(), GeneralDate.today());
 		toppageStartupDto.closureID = closure.getClosureId().value;
 		toppageStartupDto.closureYearMonth = closure.getClosureMonth().getProcessingYm().v();
 		
@@ -216,11 +208,11 @@ public class ToppageStartupProcessMobFinder {
 		GeneralDate startDate = GeneralDate.localDate(todaydate.withDayOfMonth(1));
 		GeneralDate endDate = GeneralDate.localDate(todaydate.with(TemporalAdjusters.lastDayOfMonth()));
 		if (!employmentCode.isEmpty() && closureId != null) {
-			Optional<Closure> closure = closureRepository.findById(companyId, closureId);
+			Optional<Closure> closure = closureRepo.findById(companyId, closureId);
 			YearMonth yearmonth = closure.get().getClosureMonth().getProcessingYm();
 			// アルゴリズム「当月の期間を算出する」を実行する
 			// 検索当月＝当月＋１ヵ月
-			DatePeriod datePeriod1 = closureService.getClosurePeriod(closureId, yearmonth);
+			DatePeriod datePeriod1 = ClosureService.getClosurePeriod(closureId, yearmonth, closure);
 			startDate = datePeriod1.start();
 			endDate = datePeriod1.end();
 		}
@@ -241,7 +233,7 @@ public class ToppageStartupProcessMobFinder {
 			visible = setting.getDisplayAtr() == NotUseAtr.USE;
 		}
 		
-		Closure closure = closureRepository.findById(companyID, closureId).get();
+		Closure closure = closureRepo.findById(companyID, closureId).get();
 		YearMonth targetMonth = closure.getClosureMonth().getProcessingYm();
 		
 		// [RQ609]ログイン社員のシステム日時点の処理対象年月を取得する
@@ -255,7 +247,8 @@ public class ToppageStartupProcessMobFinder {
 				.filter(c -> c.getClosureID() == closure.getClosureId().value)
 				.collect(Collectors.toList()).get(0).getTargetDate();
 		// 【NO.333】36協定時間の取得(【NO.333】lấy thời gian hiệp định 36)
-		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, Arrays.asList(employeeID), targetMonth_A, ClosureId.valueOf(closureId));
+		List<AgreementTimeDetail> listAgreementTimeDetail = GetAgreementTime.get(
+				requireService.createRequire(), new CacheCarrier(), companyID, Arrays.asList(employeeID), targetMonth_A, ClosureId.valueOf(closureId));
 
 		if (listAgreementTimeDetail.isEmpty()) {
 			throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
@@ -280,7 +273,7 @@ public class ToppageStartupProcessMobFinder {
 		}
 		
 		// 年度から36協定の年月期間を取得
-		YearMonthPeriod yearMonthPeriod = agreeOpSet.getYearMonthPeriod(year, closure, this.getAgreementPeriodFromYear);
+		YearMonthPeriod yearMonthPeriod = agreeOpSet.getYearMonthPeriod(year, closure);
 		YearMonthPeriod ymPeriodPast = new YearMonthPeriod(yearMonthPeriod.start(), yearMonth.previousMonth());
 		
 		// Parameter．当月翌月区分をチェックする
@@ -301,7 +294,8 @@ public class ToppageStartupProcessMobFinder {
 			}
 		} else {//翌月(NextMonth)
 			// 【NO.333】36協定時間の取得: lay data thang hien tai
-			List<AgreementTimeDetail> listAgreementTimeCur = getAgreementTime.get(companyID, Arrays.asList(employeeID), targetMonth, closure.getClosureId());
+			List<AgreementTimeDetail> listAgreementTimeCur = GetAgreementTime.get(
+					requireService.createRequire(), new CacheCarrier(), companyID, Arrays.asList(employeeID), targetMonth, closure.getClosureId());
 			if (listAgreementTimeCur.isEmpty()) {
 				throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
 			}
@@ -450,14 +444,16 @@ public class ToppageStartupProcessMobFinder {
 				// アルゴリズム「18.代休残数表示」を実行する_Thực hiện thuật toán"18.Hiển thị nghỉ
 				// bù"
 				// Xử lý 18
-				Double remain = breakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(employeeId, systemDate);
+				Double remain = BreakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(
+						requireService.createRequire(), new CacheCarrier(), employeeId, systemDate);
 				dataKTG029.setRemainAlternationNoDay(remain != null ? remain : 0.0);
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMNANT_NUMBER
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
 				// アルゴリズム「19.振休残数表示」を実行する_ THực hiện thuật toán "19.Hiển thị
 				// nghỉ bù ngày lễ không nghỉ"
 				// Xử lý 19
-				Double remainLeft = absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate).getRemainDays();
+				Double remainLeft = AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
+						requireService.createRequire(), new CacheCarrier(), employeeId, systemDate).getRemainDays();
 				dataKTG029.setRemainsLeft(remainLeft != null ? remainLeft : 0.0);
 			} else if (timeStatusDisplayItem.getDetailType() == TimeStatusType.REMAINING_HOLIDAY
 					&& timeStatusDisplayItem.getDisplayAtr() == NotUseAtr.USE) {
@@ -476,8 +472,9 @@ public class ToppageStartupProcessMobFinder {
 									datePeriodDto.getStrCurrentMonth().addYears(1).addDays(-1)),
 							false, systemDate, specialHoliday.getSpecialHolidayCode().v(), false, false,
 							new ArrayList<>(), new ArrayList<>(), Optional.empty());
-					InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService
-							.complileInPeriodOfSpecialLeave(param).getAggSpecialLeaveResult();
+					InPeriodOfSpecialLeave inPeriodOfSpecialLeave = SpecialLeaveManagementService
+							.complileInPeriodOfSpecialLeave(
+									requireService.createRequire(), new CacheCarrier(), param).getAggSpecialLeaveResult();
 					boolean showAfter = false;
 					GeneralDate date = GeneralDate.today();
 					List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave
@@ -513,9 +510,9 @@ public class ToppageStartupProcessMobFinder {
 
 		YearMonth processingDate = closure.get().getClosureMonth().getProcessingYm();
 
-		DatePeriod currentMonth = closureService.getClosurePeriod(closureId, processingDate);
+		DatePeriod currentMonth = ClosureService.getClosurePeriod(closureId, processingDate, closure);
 
-		DatePeriod nextMonth = closureService.getClosurePeriod(closureId, processingDate.addMonths(1));
+		DatePeriod nextMonth = ClosureService.getClosurePeriod(requireService.createRequire(), closureId, processingDate.addMonths(1));
 
 		DatePeriodDto dto = new DatePeriodDto(currentMonth.start(), currentMonth.end(), nextMonth.start(),
 				nextMonth.end());
@@ -558,7 +555,8 @@ public class ToppageStartupProcessMobFinder {
 		if (closureId == null) {
 			throw new BusinessException("Msg_1134");
 		}
-		List<AgreementTimeDetail> listAgreementTimeDetail = getAgreementTime.get(companyID, employeeId,
+		List<AgreementTimeDetail> listAgreementTimeDetail = GetAgreementTime.get(
+				requireService.createRequire(), new CacheCarrier(), companyID, employeeId,
 				YearMonth.of(targetMonth), ClosureId.valueOf(closureId));
 
 		if (listAgreementTimeDetail.isEmpty()) {
@@ -699,11 +697,13 @@ public class ToppageStartupProcessMobFinder {
 		String employmentCode = this.getEmploymentCode();
 		Integer closureId = this.getClosureId();
 		if (!employmentCode.isEmpty()) {
-			Optional<Closure> closure = closureRepository.findById(companyId, closureId);
+			Optional<Closure> closure = closureRepo.findById(companyId, closureId);
 			YearMonth yearmonth = closure.get().getClosureMonth().getProcessingYm();
 			// アルゴリズム「当月の期間を算出する」を実行する
 			// 検索当月＝当月＋１ヵ月
-			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, yearmonth.addMonths(1));
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(
+					ClosureService.createRequireM1(closureRepo, closureEmploymentRepo),
+					closureId, yearmonth.addMonths(1));
 			GeneralDate startDate = datePeriod.start();
 			YearlyHoliday yearlyHoliday = new YearlyHoliday();
 		}
@@ -737,11 +737,12 @@ public class ToppageStartupProcessMobFinder {
 			List<String> listApplicationID = approvalRootStateRepository.resultKTG002Mobile(startDate.get(), endDate,
 					employeeID, 0, cid);
 			// アルゴリズム「申請IDを使用して申請一覧を取得する」を実行する
-			List<Application> listApplication = applicationRepository_New.findByListID(cid, listApplicationID);
+			// List<Application_New> listApplication = applicationRepository_New.findByListID(cid, listApplicationID);
+			List<Application_New> listApplication = null;
 			/* 「申請」．申請種類＝Input．申請種類 & 「申請」．実績反映状態<>差し戻し に該当する申請が存在するかチェックする */
-			List<Application> listApplicationFilter = listApplication.stream()
+			List<Application_New> listApplicationFilter = listApplication.stream()
 					.filter(c -> (c.getAppType() == ApplicationType.OVER_TIME_APPLICATION)
-							&& c.getAppReflectedState() != ReflectedState.REMAND)
+							&& c.getReflectionInformation().getStateReflectionReal() != ReflectedState_New.REMAND)
 					.collect(Collectors.toList());
 			if (listApplicationFilter.isEmpty()) {
 				return false;

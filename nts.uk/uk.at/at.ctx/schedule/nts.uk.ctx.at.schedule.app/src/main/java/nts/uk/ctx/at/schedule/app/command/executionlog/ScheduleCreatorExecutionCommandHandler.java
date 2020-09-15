@@ -17,10 +17,14 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.AllArgsConstructor;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.adapter.ScTimeAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.dailymonthlyprocessing.DailyMonthlyprocessAdapterSch;
@@ -48,6 +52,12 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.algorithm.WorkRestTimeZoneDto;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.schedule.dom.schedule.workschedule.ScheManaStatuTempo;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveHistoryAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
@@ -59,6 +69,10 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpComHisAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmpEnrollPeriodImport;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentHisScheduleAdapter;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.difftimeset.DiffTimeWorkSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkSettingRepository;
@@ -68,10 +82,11 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDailyAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.i18n.resource.I18NResourcesForUK;
 
 /**
@@ -152,12 +167,27 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 	@Inject
 	private ClosureRepository closureRepository;
-
-	@Inject
-	private ClosureService closureService;
 	
 	@Inject
 	private I18NResourcesForUK internationalization;
+	
+	@Inject
+	private EmpEmployeeAdapter empEmployeeAdapter;
+	
+	@Inject
+	private EmpComHisAdapter comHisAdapter;
+	
+	@Inject
+	private WorkingConditionRepository conditionRespo;
+	
+	@Inject
+	private EmpLeaveHistoryAdapter empHisAdapter;
+	
+	@Inject
+	private EmpLeaveWorkHistoryAdapter leaHisAdapter;
+	
+	@Inject
+	private EmploymentHisScheduleAdapter scheAdapter;
 
 	/** The Constant DEFAULT_CODE. */
 	public static final String DEFAULT_CODE = "000";
@@ -183,7 +213,11 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	/** The Constant BEFORE_JOINING. */
 	// 入社前
 	public static final int BEFORE_JOINING = 4;
-
+	
+	/** The Constant ON_LOAN. */
+	// 出向中
+	public static final int ON_LOAN = 5;
+	
 	/** The Constant RETIREMENT. */
 	// 退職
 	public static final int RETIREMENT = 6;
@@ -287,9 +321,9 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		// パラメータ実施区分を判定
 		if (scheduleExecutionLog.getExeAtr() == ExecutionAtr.AUTOMATIC) {
+			//アルゴリズム「実行ログ作成処理」を実行する
 			createExcutionLog(command, scheduleExecutionLog);
 		}
-
 		// get all data creator
 		List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository.findAll(exeId);
 		List<String> employeeIds = scheduleCreators.stream().map(item -> item.getEmployeeId())
@@ -305,6 +339,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		// at.recordの計算処理で使用する共通の会社設定は、ここで取得しキャッシュしておく
 		Object companySetting = scTimeAdapter.getCompanySettingForCalculation();
 		AtomicBoolean checkStop = new AtomicBoolean(false);
+		CacheCarrier carrier = new CacheCarrier();
 		this.parallel.forEach(
 				scheduleCreators.stream().sorted((a,b) -> a.getEmployeeId().compareTo(b.getEmployeeId())).collect(Collectors.toList()),
 				scheduleCreator -> {
@@ -335,6 +370,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					command.getCompanyId(), scheduleCreator.getEmployeeId(), period,
 					masterCache.getEmpGeneralInfo());
 
+			// 対象期間あり　の場合
 			if (stateAndValueDatePeriod.state) {
 				DatePeriod dateAfterCorrection = stateAndValueDatePeriod.getValue();
 			
@@ -345,6 +381,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 					List<BasicSchedule> listBasicSchedule = this.basicScheduleRepository.findSomePropertyWithJDBC(
 							Arrays.asList(scheduleCreator.getEmployeeId()), subPeriod);
 					
+					// 勤務予定作成する
 					this.transaction.execute(
 							command,
 							scheduleExecutionLog,
@@ -356,7 +393,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 							listBasicSchedule,
 							asyncTask,
 							companySetting,
-							scheduleCreator);
+							scheduleCreator,
+							carrier);
 				});
 			} else {
 				String errorContent = this.internationalization.localize("Msg_1509").get();
@@ -442,10 +480,19 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private CreateScheduleMasterCache acquireData(String companyId, List<String> employeeIds, DatePeriod period) {
 		
-		// EA No1675
+		// 所属情報を取得する
 		// Imported(就業)「社員の履歴情報」を取得する
+		// 職場、職位、雇用、分類を取得する
+		// EA修正履歴：No1675
 		EmployeeGeneralInfoImported empGeneralInfo = this.scEmpGeneralInfoAdapter.getPerEmpInfo(employeeIds, period);
-
+		
+		// 勤務種別情報を取得する
+		// ドメインモデル「社員の勤務種別の履歴」を取得する
+		// ドメインモデル「社員の勤務種別」を取得する
+		// <<Public>> 社員ID(List)、期間で期間分の勤務種別情報を取得する
+		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
+				.findByCidSidBaseDate(companyId, employeeIds, period);
+		empGeneralInfo.setListBusTypeOfEmpHis(listBusTypeOfEmpHis);
 		// Imported(就業)「社員の在職状態」を取得する
 		Map<String, List<EmploymentInfoImported>> mapEmploymentStatus = this.employmentStatusAdapter
 				.findListOfEmployee(employeeIds, period).stream().collect(Collectors
@@ -453,27 +500,50 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 		// 労働条件情報を取得する
 		// EA No1828
+		//社員ID(List)から労働条件を取得する
 		List<WorkCondItemDto> listWorkingConItem = this.acquireWorkingConditionInformation(employeeIds, period);
 
 		// 社員の短時間勤務履歴を取得する
+		// 社員の短時間勤務履歴を期間で取得する
 		// EA No2134
 		List<ShortWorkTimeDto> listShortWorkTimeDto = this.scShortWorkTimeAdapter.findShortWorkTimes(employeeIds, period);
-
-		// 勤務種別情報を取得する
-		// ドメインモデル「社員の勤務種別の履歴」を取得する
-		// ドメインモデル「社員の勤務種別」を取得する
-		List<BusinessTypeOfEmpDto> listBusTypeOfEmpHis = this.businessTypeOfEmpHisAdaptor
-				.findByCidSidBaseDate(companyId, employeeIds, period);
 		
+		// 「社員の予定管理状態」を取得する ↓
+		// ToDo
+		// 社員一覧のループ
+		// 「パラメータ」・社員ID一覧・期間
+		List<ScheManaStatuTempo> lstStatuTempos = new ArrayList<>();
+		for(val id : employeeIds) {
+			// 期間のループ
+			for (val date : period.datesBetween()) {
+				// 「社員の予定管理状態」を取得する
+				// 「Output」・社員の予定管理状態一覧
+				ScheManaStatuTempo.Require require = new ScheManaStatuTempoImpl(companyId,comHisAdapter, conditionRespo, empHisAdapter, leaHisAdapter, scheAdapter);
+				ScheManaStatuTempo manaStatuTempo = ScheManaStatuTempo.create(require, id, date);
+				lstStatuTempos.add(manaStatuTempo);
+			}
+		}
+		// -----↑
+		
+		// 勤務種類情報を取得する ↓
+		// EA修正履歴　No2282
+		// ドメインモデル「勤務種類」を取得する
+		List<WorkType> lstWorkTypeInfo = workTypeRepository.findWorkByDeprecate(companyId, DeprecateClassification.NotDeprecated.value);
+		// -----↑
+		// 勤務種別をテク定期間の社員情報を入れて返す (Comment theo luồng của bác Bình)
 		CreateScheduleMasterCache cache = new CreateScheduleMasterCache(
 				empGeneralInfo,
 				mapEmploymentStatus,
 				listWorkingConItem,
 				listShortWorkTimeDto,
-				listBusTypeOfEmpHis);
+				listBusTypeOfEmpHis,
+				lstWorkTypeInfo,
+				lstStatuTempos
+				);
 		
+
 		
-		// ドメインモデル「勤務種類」を取得する
+		// ドメインモデル「勤務種類」を取得する  - 廃止区分　＝　廃止しない
 		cache.getListWorkType().addAll(this.workTypeRepository.findNotDeprecateByCompanyId(companyId));
 		// ドメインモデル「就業時間帯の設定」を取得する
 		cache.getListWorkTimeSetting().addAll(this.workTimeSettingRepository.findActiveItems(companyId));
@@ -518,7 +588,7 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 
 			this.setDataForMap(cache.getMapDiffTimeWorkSetting(), mapDiffOffdayWorkRestTimezones, mapDiffHalfDayWorkRestTimezones);
 		}
-
+		//取得した情報を返す
 		return cache;
 	}
 	
@@ -531,11 +601,14 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 	 */
 	private List<WorkCondItemDto> acquireWorkingConditionInformation(List<String> sIds, DatePeriod datePeriod) {
 		// EA修正履歴 No1829
-		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriodNew(sIds,
+		//ドメインモデル「労働条件」を取得する
+		List<WorkingCondition> listWorkingCondition = this.workingConditionRepository.getBySidsAndDatePeriod(sIds,
 				datePeriod);
 
+		//ドメインモデル「労働条件項目」を取得する
 		List<WorkingConditionItem> listWorkingConditionItem = this.workingConditionItemRepository
-				.getBySidsAndDatePeriodNew(sIds, datePeriod);
+				.getBySidsAndDatePeriod(sIds, datePeriod);
+		//取得した労働条件と労働条件項目を返す
 		Map<String, WorkingConditionItem> mapWorkingCondtionItem = listWorkingConditionItem.stream()
 				.collect(Collectors.toMap(WorkingConditionItem::getHistoryId, x -> x));
 		List<WorkCondItemDto> listWorkCondItemDto = new ArrayList<>();
@@ -641,8 +714,8 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		if (!optionalClosure.isPresent())
 			return new StateAndValueDatePeriod(dateBeforeCorrection, false);
 		// アルゴリズム「当月の期間を算出する」を実行
-		DatePeriod dateP = this.closureService.getClosurePeriod(optionalClosure.get().getClosureId().value,
-				optionalClosure.get().getClosureMonth().getProcessingYm());
+		DatePeriod dateP = ClosureService.getClosurePeriod(optionalClosure.get().getClosureId().value,
+				optionalClosure.get().getClosureMonth().getProcessingYm(), optionalClosure);
 		// Input「対象開始日」と、取得した「開始年月日」を比較
 		DatePeriod dateAfterCorrection = dateBeforeCorrection;
 		if (dateBeforeCorrection.start().before(dateP.start())) {
@@ -656,5 +729,61 @@ public class ScheduleCreatorExecutionCommandHandler extends AsyncCommandHandler<
 		}
 
 		return new StateAndValueDatePeriod(dateAfterCorrection, false);
+	}
+	
+	@AllArgsConstructor
+	public static class ScheManaStatuTempoImpl implements ScheManaStatuTempo.Require{
+		String companyId = AppContexts.user().companyId();
+		@Inject
+		private EmpComHisAdapter comHisAdapter;
+		
+		@Inject
+		private WorkingConditionRepository conditionRespo;
+		
+		@Inject
+		private EmpLeaveHistoryAdapter empHisAdapter;
+		
+		@Inject
+		private EmpLeaveWorkHistoryAdapter leaHisAdapter;
+		
+		@Inject
+		private EmploymentHisScheduleAdapter scheAdapter;
+		
+		@Override
+		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
+			val result = comHisAdapter.getEnrollmentPeriod(sids, datePeriod);
+            if (result.isEmpty())
+                return Optional.empty();
+            return Optional.of(result.get(0));
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> getBySidAndStandardDate(String employeeId, GeneralDate baseDate) {
+			return conditionRespo.getWorkingConditionItemByEmpIDAndDate(companyId, baseDate, employeeId);
+		}
+
+		@Override
+		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
+			val result =  empHisAdapter.getLeaveBySpecifyingPeriod(lstEmpID, datePeriod);
+            if (result.isEmpty())
+                return Optional.empty();
+            return Optional.of(result.get(0));
+		}
+
+		@Override
+		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod) {
+			val result =  leaHisAdapter.getHolidayPeriod(lstEmpID, datePeriod);
+            if (result.isEmpty())
+                return Optional.empty();
+            return Optional.of(result.get(0));
+		}
+
+		@Override
+		public Optional<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
+			val result =  scheAdapter.getEmploymentPeriod(lstEmpID, datePeriod);
+            if (result.isEmpty())
+                return Optional.empty();
+            return Optional.of(result.get(0));
+		}
 	}
 }

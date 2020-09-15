@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
@@ -45,6 +46,7 @@ public interface SyEmployeePub {
 	 */
 	// RequestList #1-2
 	EmployeeBasicInfoExport findBySId(String sId);
+	EmployeeBasicInfoExport findBySIdRequire(CacheCarrier cacheCarrier, String sId);
 
 	/**
 	 * Find by emp ids.
@@ -247,4 +249,6 @@ public interface SyEmployeePub {
 	List<EmployeeDataMngInfoExport> findBySidNotDel(List<String> sids);
 	
 	List<ResultRequest596Export> getEmpNotDeletedLstBySids(List<String> sids);
+	
+	Optional<EmployeeDataMngInfoExport> findByScdNotDel(String employeeCd, String companyId);
 }

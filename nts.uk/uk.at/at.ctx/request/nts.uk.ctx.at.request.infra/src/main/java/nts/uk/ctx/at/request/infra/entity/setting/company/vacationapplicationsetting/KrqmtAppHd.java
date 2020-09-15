@@ -163,7 +163,7 @@ public class KrqmtAppHd extends ContractUkJpaEntity {
                     entity.setAbsenseName(d.getDisplayName().v());
                     break;
                 case SPECIAL_HOLIDAY:
-                    entity.setYearHolidayName(d.getDisplayName().v());
+                    entity.setSpecialVacationName(d.getDisplayName().v());
                     break;
                 case YEARLY_RESERVE:
                     entity.setYearResigName(d.getDisplayName().v());
@@ -195,7 +195,7 @@ public class KrqmtAppHd extends ContractUkJpaEntity {
         return companyid;
     }
 
-    public void update(HolidayApplicationSetting setting, VacationApplicationReflect reflect) {
+    public void updateSetting(HolidayApplicationSetting setting) {
         this.setCheckUpperLimitHalfDayHoliday(setting.getHalfDayAnnualLeaveUsageLimitCheck().value);
         setting.getHolidayApplicationTypeDisplayName().forEach(d -> {
             switch (d.getHolidayApplicationType()) {
@@ -224,6 +224,9 @@ public class KrqmtAppHd extends ContractUkJpaEntity {
                     break;
             }
         });
+    }
+
+    public void updateReflect(VacationApplicationReflect reflect) {
         this.workTimeReflectAtr = reflect.getWorkAttendanceReflect().getReflectAttendance().value;
         this.workTimeDeleteAtr = reflect.getWorkAttendanceReflect().getOneDayLeaveDeleteAttendance().value;
         this.workTimeConditionReflectAtr = reflect.getWorkAttendanceReflect().getReflectWorkHour().value;

@@ -135,20 +135,6 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
         );
     }
 
-    public AfterOtWorkAppReflect toAfterOvertimeAppReflectDomain() {
-        return AfterOtWorkAppReflect.create(
-                postWorkTimeReflectAtr,
-                postBpTimeReflectAtr,
-                postAnyvTimeReflectAtr,
-                postDvgcReflectAtr,
-                postBreakTimeReflectAtr
-        );
-    }
-
-    public BeforeOtWorkAppReflect toBeforeOvertimeAppReflectDomain() {
-        return BeforeOtWorkAppReflect.create(preWorkReflectAtr, preInputTimeReflectAtr, preBreakTimeReflectAtr);
-    }
-
     public OtWorkAppReflect toOvertimeWorkAppReflect() {
         return new OtWorkAppReflect(
                 BeforeOtWorkAppReflect.create(preWorkReflectAtr, preInputTimeReflectAtr, preBreakTimeReflectAtr),

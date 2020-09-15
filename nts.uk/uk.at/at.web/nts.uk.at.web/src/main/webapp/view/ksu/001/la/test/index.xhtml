@@ -1,0 +1,34 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+    <ui:composition template="../../../../../master/base.xhtml">
+    <ui:define name="htmlHead">
+        <script>var dialogSize = { width: 1250, height: 700 };</script>
+        <com:scriptfile set="IGNITE" />        
+        <com:scriptfile path="vm.js" />
+        <com:scriptfile path="start.js" />   
+    </ui:define>
+    <ui:define name="content">
+        <div id="contents-area" class="fixed-flex-layout">
+            <div data-bind="ntsDatePicker: {value: date, dateType:'date', dateFormat:'YYYY/MM/DD' }"></div>
+            <div style="margin-left:50px;">
+                <button  class="proceed" tabindex="2" data-bind="click: openDialogLA">KSU001LA</button>
+               
+            </div>
+            <!-- <div style="margin: 0 auto;">                
+                <button  class="proceed" tabindex="2" data-bind="click: openDialogU">KSU001U</button>
+            </div> -->
+        </div>
+
+    </ui:define>
+    
+</ui:composition>
+   
+
+</body>
+
+
+</html>

@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="../../../../master/dialog.xhtml">
+    <ui:define name="htmlHead">
+        <script>
+            var dialogSize = {
+                width : 1000,
+                height : 270
+            };
+        </script>
+
+        <com:scriptfile set="IGNITE" />
+        <com:stylefile path="./kmr003.b.style.css"/>
+        <com:scriptfile path="./kmr003.b.vm.js" />
+    </ui:define>
+
+    <!-- PAGE CONTENT -->
+    <ui:define name="content">
+        <div id="contents-area">
+            <table id="B1" data-bind="ntsGridList: {								
+                rows: 5,
+                dataSource: errors,
+                primaryKey: 'key',
+                columns: [
+                    { headerText: 'id', key: 'key', width: 140, formatter: _.escape, hidden: true },
+                    { headerText: '#{i18n.getText('KMR003_27')}', key: 'employee', width: 300, formatter: _.escape },
+                    { headerText: '#{i18n.getText('KMR003_28')}', key: 'bento', width: 150, formatter: _.escape },
+                    { headerText: '#{i18n.getText('KMR003_29')}', key: 'message', width: 500, formatter: _.escape }
+                ],
+                value: selected
+            }"></table>
+        </div>
+        
+        <div id="functions-area-bottom">
+            <button id="B3_1" tabindex="1" data-bind="click: close">#{i18n.getText('KMR003_31')}</button>
+        </div>
+    </ui:define>
+</ui:composition>
+</body>
+</html>

@@ -105,4 +105,9 @@ public class Stamp implements DomainAggregate {
 	public String retriveKey() {
 		return this.getCardNumber().v() + this.getStampDateTime().toString();
 	}
+
+	public void setReflectedCategory(boolean reflectedCategory) {
+		this.reflectedCategory = reflectedCategory;
+	}
+	
 }

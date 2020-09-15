@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.ac.workplace;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -41,5 +42,13 @@ public class SyWorkplaceAdapterImp implements SyWorkplaceAdapter {
 						x.getWorkplaceCode(), x.getWorkplaceName(), x.getWkpDisplayName()));
 	}
 
+	//社員（List）と基準日から所属職場履歴項目を取得する
+	@Override
+	public List<SWkpHistRcImported> findBySid(List<String> employeeIds, GeneralDate baseDate) {
+		return workplacePub.findBySId(employeeIds, baseDate).stream()
+				.map(x -> new SWkpHistRcImported(x.getDateRange(), x.getEmployeeId(), x.getWorkplaceId(),
+						x.getWorkplaceCode(), x.getWorkplaceName(), x.getWkpDisplayName()))
+				.collect(Collectors.toList());
+	}
 
 }

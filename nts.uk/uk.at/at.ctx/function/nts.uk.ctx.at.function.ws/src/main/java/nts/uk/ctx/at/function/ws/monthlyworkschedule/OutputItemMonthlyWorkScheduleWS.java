@@ -29,7 +29,6 @@ import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWork
 import nts.uk.ctx.at.function.app.find.monthlyworkschedule.OutputItemMonthlyWorkScheduleFinder;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 
 /**
  * The Class OutputItemMonthlyWorkScheduleWS.
@@ -53,9 +52,6 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	/** The output item monthly work schedule delete handler. */
 	@Inject
 	private OutputItemMonthlyWorkScheduleDeleteHandler outputItemMonthlyWorkScheduleDeleteHandler;
-
-	@Inject
-	private ClosureService closureService;
 	
 	/**
 	 * Gets the current loginer role.

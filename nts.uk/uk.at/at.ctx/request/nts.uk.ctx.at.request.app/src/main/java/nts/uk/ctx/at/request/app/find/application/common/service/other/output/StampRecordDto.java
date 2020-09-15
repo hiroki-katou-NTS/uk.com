@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.request.app.find.application.common.service.other.output;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.StampRecordOutput;
 
 /**
@@ -52,12 +56,23 @@ public class StampRecordDto {
 	
 	public static StampRecordDto fromDomain(StampRecordOutput stampRecordOutput) {
 		return new StampRecordDto(
-				stampRecordOutput.getNursingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
-				stampRecordOutput.getBreakTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
-				stampRecordOutput.getWorkingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
-				stampRecordOutput.getOutingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
-				stampRecordOutput.getSupportTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
-				stampRecordOutput.getParentingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
-				stampRecordOutput.getExtraordinaryTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()));
+				CollectionUtil.isEmpty(stampRecordOutput.getNursingTime()) ? Collections.emptyList() : stampRecordOutput.getNursingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
+				CollectionUtil.isEmpty(stampRecordOutput.getBreakTime()) ? Collections.emptyList() : stampRecordOutput.getBreakTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
+				CollectionUtil.isEmpty(stampRecordOutput.getWorkingTime()) ? Collections.emptyList() : stampRecordOutput.getWorkingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
+				CollectionUtil.isEmpty(stampRecordOutput.getOutingTime()) ? Collections.emptyList() : stampRecordOutput.getOutingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
+				CollectionUtil.isEmpty(stampRecordOutput.getSupportTime()) ? Collections.emptyList() : stampRecordOutput.getSupportTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
+				CollectionUtil.isEmpty(stampRecordOutput.getParentingTime()) ? Collections.emptyList() : stampRecordOutput.getParentingTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()), 
+				CollectionUtil.isEmpty(stampRecordOutput.getExtraordinaryTime()) ? Collections.emptyList() : stampRecordOutput.getExtraordinaryTime().stream().map(x -> TimePlaceDto.fromDomain(x)).collect(Collectors.toList()));
+	}
+	
+	public StampRecordOutput toDomain() {
+		return new StampRecordOutput(
+				nursingTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				breakTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				workingTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				outingTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				supportTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				parentingTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				extraordinaryTime.stream().map(x -> x.toDomain()).collect(Collectors.toList()));
 	}
 }

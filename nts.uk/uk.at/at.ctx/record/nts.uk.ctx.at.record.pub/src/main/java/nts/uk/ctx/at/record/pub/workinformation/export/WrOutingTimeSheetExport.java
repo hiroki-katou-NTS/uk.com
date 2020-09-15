@@ -5,11 +5,10 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 
 @Getter
 @Setter

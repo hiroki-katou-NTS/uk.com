@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampOutputDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendanceitem.AttendanceResultImport;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 /**
  * 
@@ -97,8 +98,8 @@ public class ApplicationStampWebService extends WebService {
 	
 	@POST
 	@Path("checkBeforeRegister")
-	public void checkBeforeRegister(BeforeRegisterOrUpdateParam beforeRegisterParam) {
-		appStampFinder.checkBeforeRegister(beforeRegisterParam);
+	public List<ConfirmMsgOutput> checkBeforeRegister(BeforeRegisterOrUpdateParam beforeRegisterParam) {
+		return appStampFinder.checkBeforeRegister(beforeRegisterParam);
 	}
 	
 	@POST

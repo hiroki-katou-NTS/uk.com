@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
@@ -30,6 +31,11 @@ public class ListOfApplication {
 	 * 職場名
 	 */
 	private String workplaceName;
+	
+	/**
+	 * 申請
+	 */
+	private Application application;
 	
 	/**
 	 * 申請ID

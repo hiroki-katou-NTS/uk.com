@@ -31,6 +31,7 @@ import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistByEmployee;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistCustom;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistItem;
 import nts.uk.ctx.bs.employee.dom.employee.history.AffCompanyHistRepository;
+import nts.uk.ctx.bs.employee.dom.employee.history.CompanyWithEmployeeID;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.BsymtAffClassHistory;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHist;
 import nts.uk.ctx.bs.employee.infra.entity.employee.history.BsymtAffCompanyHistPk;
@@ -819,5 +820,25 @@ public class AffCompanyHistRepositoryImp extends JpaRepository implements AffCom
 			}
 		});
 		return result;
+	}
+
+	@Override
+	public List<CompanyWithEmployeeID> getHistoryItemByEmpID(List<String> lstEmpId, DatePeriod datePeriod) {
+		//getAffEmployeeHistory
+		//$社員別履歴リスト = [3-2] *社員IDを指定して履歴を取得する ( 社員IDリスト )																					
+
+		List<AffCompanyHistByEmployee> data = getAffEmployeeHistory(lstEmpId);
+		List<List<CompanyWithEmployeeID>> flatMap = data.stream().map( c ->{
+			List<AffCompanyHistItem> histItems = c.getLstAffCompanyHistoryItem().stream().
+					filter(x-> (datePeriod.contains(x.getDatePeriod().start()) || datePeriod.contains(x.getDatePeriod().end()) || 
+							x.getDatePeriod().contains(datePeriod.start()) || x.getDatePeriod().contains(datePeriod.end()))
+					).collect(Collectors.toList());
+			List<CompanyWithEmployeeID> results = histItems.stream().map(mapper-> new CompanyWithEmployeeID(c.getSId(), mapper)).collect(Collectors.toList());
+			return results;
+		}).collect(Collectors.toList());
+
+		List<CompanyWithEmployeeID> employeeIds = flatMap.stream().flatMap(x->x.stream()).collect(Collectors.toList());
+		
+		return employeeIds;
 	}
 }

@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculationImport;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWork;
@@ -34,7 +34,7 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppD
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.RangeOfDayTimeZoneService;
-import nts.uk.ctx.at.shared.dom.worktime.algorithm.rangeofdaytimezone.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.common.DeductionTime;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -132,7 +132,7 @@ public class PreActualColorCheckImpl implements PreActualColorCheck {
 			String workType, String workTime, OverrideSet overrideSet, Optional<CalcStampMiss> calStampMiss, List<DeductionTime> deductionTimeLst) {
 		List<OvertimeColorCheck> actualLst = new ArrayList<>();
 		// Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
+		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isBlank(recordWorkInfoImport.getWorkTypeCode())){
 			return new ActualStatusCheckResult(ActualStatus.NO_ACTUAL, "", "", null, null, Collections.emptyList());
 		}

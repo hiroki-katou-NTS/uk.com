@@ -12,6 +12,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
     import ScreenModelH = h.viewmodel.ScreenModelH;
     import ScreenModelI = i.viewmodel.ScreenModelI;
     import ScreenModelJ = j.viewmodel.ScreenModelJ;
+    import ScreenModelK = k.viewmodel.ScreenModelK;
     import ScreenModelN = n.viewmodel.ScreenModelN;
     import ScreenModelQ = q.viewmodel.ScreenModelQ;
     import ScreenModelV = v.viewmodel.ScreenModelV;
@@ -30,6 +31,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         viewmodelH: ScreenModelH;
         viewmodelI: ScreenModelI;
         viewmodelJ: ScreenModelJ;
+        viewmodelK: ScreenModelK;
         viewmodelN: ScreenModelN;
         viewmodelQ: ScreenModelQ;
         viewmodelV: ScreenModelV;
@@ -66,6 +68,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             self.viewmodelH = new ScreenModelH();
             self.viewmodelI = new ScreenModelI();
             self.viewmodelJ = new ScreenModelJ();
+            self.viewmodelK = new ScreenModelK();
             self.viewmodelN = new ScreenModelN();
             self.viewmodelQ = new ScreenModelQ();
             self.viewmodelV = new ScreenModelV();
@@ -125,6 +128,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             const dataG = self.viewmodelG.collectData();
             const dataH = self.viewmodelH.collectData();
             const dataJ = self.viewmodelJ.collectData();
+            const dataK = self.viewmodelK.collectData();
             const dataQ = self.viewmodelQ.collectData();
             const dataY = self.viewmodelY.collectData();
             const data: any = {};
@@ -166,6 +170,9 @@ module nts.uk.at.view.kaf022.company.viewmodel {
             data["lateEarlyClearAlarmAtr"] = self.viewmodelI.lateEarlyClearAlarmAtr();
             data["appStampSetting"] = dataJ.appStampSetting;
             data["appStampReflect"] = dataJ.appStampReflect;
+            data["substituteWorkAppReflect"] = dataK.drawOutApplicationReflect;
+            data["substituteLeaveAppReflect"] = dataK.suspenseApplicationReflect;
+            data["substituteHdWorkAppSetting"] = dataK.suspenseDrawOutApplicationSetting;
             data["approvalListDisplaySetting"] = dataQ;
             data["appMailSetting"] = dataY.appMailSetting;
 

@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -24,6 +26,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -75,6 +78,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 		}
 		
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
+		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
 		for(Application app : appLst) {
 			// 申請一覧リスト取得マスタ情報 ( Thông tin master lấy applicationLisst)
 			AppInfoMasterOutput appInfoMasterOutput = appListInitialRepository.getListAppMasterInfo(
@@ -82,6 +86,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 					period, 
 					opApprovalListDisplaySetting.get().getDisplayWorkPlaceName(), 
 					mapEmpInfo, 
+					mapWkpInfo,
 					device);
 			mapEmpInfo.putAll(appInfoMasterOutput.getMapEmpInfo());
 			// 各申請データを作成 ( Tạo data tên application)
@@ -104,6 +109,10 @@ public class AppDataCreationImpl implements AppDataCreation {
 			} else {
 				// 取得した申請一覧を申請一覧情報．申請リストにセット(Set AppList đã lấy thành AppListInformation.AppList)
 				appListInfo.getAppLst().add(listOfApp);
+			}
+			if(mode == ApplicationListAtr.APPROVER && !listOfApp.getOpApprovalFrameStatus().isPresent()) {
+				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
+				appListInfo.getAppLst().remove(listOfApp);
 			}
 		}
 		// アルゴリズム「申請一覧の並び順を変更する」を実行する

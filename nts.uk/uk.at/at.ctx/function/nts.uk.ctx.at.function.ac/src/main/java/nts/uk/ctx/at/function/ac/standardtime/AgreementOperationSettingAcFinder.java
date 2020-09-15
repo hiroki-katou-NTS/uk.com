@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingAdapter;
 import nts.uk.ctx.at.function.dom.adapter.standardtime.AgreementOperationSettingImport;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementOperationSettingPub;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
 
 /**
  * @author dat.lh

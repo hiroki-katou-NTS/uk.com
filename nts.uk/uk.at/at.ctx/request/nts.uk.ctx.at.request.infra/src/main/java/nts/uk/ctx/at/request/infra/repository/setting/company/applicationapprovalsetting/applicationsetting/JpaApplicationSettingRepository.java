@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.OtHdWorkAppSettingRepository;
 import org.apache.commons.lang3.BooleanUtils;
 
 import nts.arc.enums.EnumAdaptor;
@@ -39,7 +40,7 @@ import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalset
  *
  */
 @Stateless
-public class JpaApplicationSettingRepository extends JpaRepository implements ApplicationSettingRepository {
+public class JpaApplicationSettingRepository extends JpaRepository implements ApplicationSettingRepository, OtHdWorkAppSettingRepository {
 
 	@Override
 	public ApplicationSetting findByAppType(String companyID, ApplicationType appType) {

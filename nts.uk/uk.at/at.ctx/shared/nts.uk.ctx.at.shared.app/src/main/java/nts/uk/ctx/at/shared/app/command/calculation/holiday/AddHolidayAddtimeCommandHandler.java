@@ -13,13 +13,13 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.AddSetManageWorkHour;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionRepository;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HolidayAddtionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.HourlyPaymentAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkDeformedLaborAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkFlexAdditionSet;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.WorkRegularAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.AddSetManageWorkHour;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HourlyPaymentAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkDeformedLaborAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkFlexAdditionSet;
+import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.WorkRegularAdditionSet;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

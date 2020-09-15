@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.workchange;
 
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
@@ -7,7 +9,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stam
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.AppWorkChangeSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.workchange.InitDisplayWorktimeAtr;
 import nts.uk.shr.com.color.ColorCode;
-import org.apache.commons.lang3.BooleanUtils;
 
 /**
  * refactor4 refactor 4

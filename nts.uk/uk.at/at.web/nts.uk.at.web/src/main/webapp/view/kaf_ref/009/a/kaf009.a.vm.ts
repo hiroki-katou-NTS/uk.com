@@ -7,7 +7,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
 
     @bean()
     class Kaf009AViewModel extends Kaf000AViewModel {
-        
+
 		appType: KnockoutObservable<number> = ko.observable(AppType.GO_RETURN_DIRECTLY_APPLICATION);
         application: KnockoutObservable<Application>;
         applicationTest: any = {
@@ -36,18 +36,20 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         }
                     }]
                 }
-                
+
 
 
             };
         model: Model;
         dataFetch: KnockoutObservable<ModelDto> = ko.observable(null);
         mode: string = 'edit';
+        isSendMail: KnockoutObservable<Boolean>;
 
         created(params: any) {
             const vm = this;
+            vm.isSendMail = ko.observable(false);
             vm.application = ko.observable(new Application(vm.appType()));
-            vm.model = new Model(true, true, true, '', '', '', '');            
+            vm.model = new Model(true, true, true, '', '', '', '');
             vm.$blockui("show");
             vm.loadData([], [], vm.appType())
             .then((loadDataFlag: any) => {
@@ -62,7 +64,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         ApplicantList: null,
                         appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                         command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
-                        
+
                     return vm.$ajax(API.startNew, command);
                 }
             }).then((res: any) => {
@@ -75,7 +77,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                         lstWorkType: ko.observable(res.lstWorkType),
                         goBackApplication: ko.observable(res.goBackApplication),
                         isChangeDate: false
-                    });     
+                    });
                 }
             }).fail((failData: any) => {
                 let param;
@@ -84,21 +86,21 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 } else {
                     param = {messageId: failData.messageId, messageParams: failData.parameterIds}
                 }
-                vm.$dialog.error(param); 
-                
+                vm.$dialog.error(param);
+
             }).always(() => vm.$blockui("hide"));
-            
-            
-            
+
+
+
 
         }
 
         mounted() {
             const vm = this;
         }
-        
-       
-        
+
+
+
         public handleConfirmMessage(listMes: any, res: any) {
             let vm = this;
             if (!_.isEmpty(listMes)) {
@@ -115,7 +117,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 });
             }
         }
-        
+
         registerData(goBackApp) {
             let vm = this;
             let paramsRegister = {
@@ -125,7 +127,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
                     mode : vm.mode == 'edit'
             }
-            
+
             return vm.$ajax( API.register, paramsRegister )
                 .done( resRegister => {
                     console.log( resRegister );
@@ -146,9 +148,9 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.opAppStartDate = application.opAppStartDate;
             vm.applicationTest.opAppEndDate = application.opAppEndDate;
             vm.applicationTest.opAppReason = application.opAppReason;
-            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;    
+            vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
-            
+
             vm.$blockui( "show" );
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then( isValid => {
@@ -199,7 +201,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                                 if (err.message && err.messageId) {
                                     param = {messageId: err.messageId, messageParams: err.parameterIds};
                                 } else {
-                                    
+
                                     if (err.message) {
                                         param = {message: err.message, messageParams: err.parameterIds};
                                     } else {
@@ -212,20 +214,21 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     }
                 } ).always(() => vm.$blockui( "hide" ) );
 
-            
+
 
 
 
         }
-        
+
         changeDate() {
             const vm = this;
             if(!_.isNull(ko.toJS(vm.dataFetch))) {
-                vm.dataFetch().isChangeDate = true;                
+                vm.dataFetch().isChangeDate = true;
             }
             let dataClone = _.clone(vm.dataFetch());
             if (!_.isNull(dataClone)) {
-                vm.dataFetch(dataClone); 
+                vm.dataFetch(dataClone);
+                vm.dataFetch().appDispInfoStartup = vm.appDispInfoStartupOutput;
                 return;
             }
             vm.$blockui( "show" );
@@ -248,7 +251,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     }
                 })
                 .fail(res => {
-                    
+
                     let param;
                     if (res.message) {
                         param = {message: res.message, messageParams: res.parameterIds};
@@ -258,10 +261,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     vm.$dialog.error(param);
                 })
                 .always(() => vm.$blockui( "hide" ));
-            
+
         }
 
-        
+
 
     }
     export class GoBackApplication {
@@ -276,8 +279,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             this.dataWork = dataWork;
         }
     }
-   
-   
+
+
     export class DataWork {
         workType: string;
         workTime?: string;
@@ -303,7 +306,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
         lstWorkType: KnockoutObservable<any>;
 
         goBackApplication: KnockoutObservable<any>;
-    
+
         isChangeDate: boolean = false;
     }
 

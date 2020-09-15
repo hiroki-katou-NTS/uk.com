@@ -43,7 +43,6 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appl
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationlatearrival.LateEarlyCancelAppSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author anhnm
@@ -172,16 +171,22 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 		Optional<List<ActualContentDisplay>> actualContentDisplay = appDisplayInfo.getAppDispInfoWithDateOutput()
 				.getOpActualContentDisplayLst();
 
-		// AnhNM Mock data: START
-		AchievementEarly mockAchiveEarly = new AchievementEarly(new TimeWithDayAttr(510), new TimeWithDayAttr(990),
-				new TimeWithDayAttr(900), new TimeWithDayAttr(1320));
-		AchievementDetail mockAchive = new AchievementDetail(null, null, null, null, null, null, mockAchiveEarly,
-				Optional.of(1320), Optional.empty(), Optional.empty(), Optional.of(510), Optional.of(900),
-				Optional.empty(), Optional.of(960), Optional.empty(), Optional.empty(), Optional.empty(),
-				Optional.empty(), Optional.empty());
-		ActualContentDisplay mockDisplay = new ActualContentDisplay(GeneralDate.fromString("2020/09/03", DATE_FORMAT),
-				Optional.of(mockAchive));
-		// AnhNM Mock data: END
+		// // AnhNM Mock data: START
+		// AchievementEarly mockAchiveEarly = new AchievementEarly(new
+		// TimeWithDayAttr(510), new TimeWithDayAttr(990),
+		// new TimeWithDayAttr(900), new TimeWithDayAttr(1320));
+		//// AchievementDetail mockAchive = new AchievementDetail(null, null, null,
+		// null, null, null, mockAchiveEarly,
+		//// Optional.of(1320), Optional.empty(), Optional.empty(), Optional.of(510),
+		// Optional.of(900),
+		//// Optional.empty(), Optional.of(960), Optional.empty(), Optional.empty(),
+		// Optional.empty(),
+		//// Optional.empty(), Optional.empty());
+		// AchievementDetail mockAchive = null;
+		// ActualContentDisplay mockDisplay = new
+		// ActualContentDisplay(GeneralDate.fromString("2020/09/03", DATE_FORMAT),
+		// Optional.of(mockAchive));
+		// // AnhNM Mock data: END
 
 		List<LateOrEarlyInfo> lateOrEarlyInfos = new ArrayList<>();
 		if (actualContentDisplay.isPresent()) {
@@ -196,10 +201,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			}
 		}
 
-		// AnhNM Mock data: START
-		lateOrEarlyInfos = this.initialInfo(listAppSet, Optional.of(mockAchive),
-				appDisplayInfo.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
-		// AnhNM Mock data: END
+		// // AnhNM Mock data: START
+		// lateOrEarlyInfos = this.initialInfo(listAppSet, Optional.of(mockAchive),
+		// appDisplayInfo.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
+		// // AnhNM Mock data: END
 
 		displayInfo.setAppDispInfoStartupOutput(appDisplayInfo);
 		displayInfo.setLateEarlyCancelAppSet(listAppSet);
@@ -280,7 +285,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			if (opAchievementDetail.get().getOpWorkTime2().isPresent()) {
 				// 出勤２のデータの状態のチェック
 				LateOrEarlyInfo attend2 = this.checkDataStatus(
-						Optional.of(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime2().rawHour()),
+						Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheAttendanceTime2().map(x -> x.rawHour()).orElse(null)),
 						Optional.of(opAchievementDetail.get().getOpWorkTime2().get()), listAppSet.getCancelAtr(),
 						new LateOrEarlyInfo(false, 2, false, true, LateOrEarlyAtr.LATE));
 
@@ -291,8 +296,8 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 			if (opAchievementDetail.get().getOpDepartureTime2().isPresent()) {
 				// 退勤２のデータの状態のチェック
 				LateOrEarlyInfo leave2 = this.checkDataStatus(
-						Optional.of(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime2().rawHour()),
-						Optional.of(opAchievementDetail.get().getOpDepartureTime2().get()), listAppSet.getCancelAtr(),
+						Optional.ofNullable(opAchievementDetail.get().getAchievementEarly().getScheDepartureTime2().map(x -> x.rawHour()).orElse(null)),
+						Optional.ofNullable(opAchievementDetail.get().getOpDepartureTime2().get()), listAppSet.getCancelAtr(),
 						new LateOrEarlyInfo(false, 2, false, true, LateOrEarlyAtr.EARLY));
 
 				// 「OUTPUT.取り消す初期情報＜List＞」に取得した「取り消す初期情報」を追加する （退勤２）
@@ -353,7 +358,7 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				&& appDispInfoWithDateOutput.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail()
 						.isPresent()
 				&& appDispInfoWithDateOutput.getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail().get()
-						.getAchievementEarly() == null) {
+						.getAchievementEarly() != null) {
 			lateEarlyActualResults = Optional.of(appDispInfoWithDateOutput.getOpActualContentDisplayLst().get().get(0)
 					.getOpAchievementDetail().get().getAchievementEarly());
 		}
@@ -685,25 +690,31 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 					.getOpAchievementDetail();
 		}
 
-		// AnhNM Mock data: START
-		AchievementEarly mockAchiveEarly = new AchievementEarly(new TimeWithDayAttr(510), new TimeWithDayAttr(990),
-				new TimeWithDayAttr(900), new TimeWithDayAttr(1320));
-		AchievementDetail mockAchive = new AchievementDetail(null, null, null, null, null, null, mockAchiveEarly,
-				Optional.of(1320), Optional.empty(), Optional.empty(), Optional.of(510), Optional.of(900),
-				Optional.empty(), Optional.of(960), Optional.empty(), Optional.empty(), Optional.empty(),
-				Optional.empty(), Optional.empty());
-		ActualContentDisplay mockDisplay = new ActualContentDisplay(GeneralDate.fromString("2020/09/03", DATE_FORMAT),
-				Optional.of(mockAchive));
-		// AnhNM Mock data: END
+		// // AnhNM Mock data: START
+		// AchievementEarly mockAchiveEarly = new AchievementEarly(new
+		// TimeWithDayAttr(510), new TimeWithDayAttr(990),
+		// new TimeWithDayAttr(900), new TimeWithDayAttr(1320));
+		//// AchievementDetail mockAchive = new AchievementDetail(null, null, null,
+		// null, null, null, mockAchiveEarly,
+		//// Optional.of(1320), Optional.empty(), Optional.empty(), Optional.of(510),
+		// Optional.of(900),
+		//// Optional.empty(), Optional.of(960), Optional.empty(), Optional.empty(),
+		// Optional.empty(),
+		//// Optional.empty(), Optional.empty());
+		// AchievementDetail mockAchive = null;
+		// ActualContentDisplay mockDisplay = new
+		// ActualContentDisplay(GeneralDate.fromString("2020/09/03", DATE_FORMAT),
+		// Optional.of(mockAchive));
+		// // AnhNM Mock data: END
 
 		// 取り消す初期情報
 		List<LateOrEarlyInfo> listInfo = this.initialInfo(lateEarlyCancelAppSet, opAchieve,
 				infoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
 
-		// AnhNM Mock data: START
-		listInfo = this.initialInfo(lateEarlyCancelAppSet, Optional.of(mockAchive),
-				infoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
-		// AnhNM Mock data: END
+		// // AnhNM Mock data: START
+		// listInfo = this.initialInfo(lateEarlyCancelAppSet, Optional.of(mockAchive),
+		// infoStartupOutput.getAppDispInfoNoDateOutput().isManagementMultipleWorkCycles());
+		// // AnhNM Mock data: END
 
 		output.setEarlyInfos(listInfo);
 		output.setArrivedLateLeaveEarly(Optional.of(arrivedLateLeaveEarly));

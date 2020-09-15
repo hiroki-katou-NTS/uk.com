@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.app.find.workrecord.monthcal.common;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
 
 /**
  * The Class ExcessOutsideTimeSetReg.
@@ -16,13 +17,21 @@ import lombok.Setter;
 @Builder
 public class ExcessOutsideTimeSetRegDto {
 
-	/** The legal over time work. */
-	private Boolean legalOverTimeWork;
+	private boolean legalOverTimeWork;
 
-	/** The legal holiday. */
-	private Boolean legalHoliday;
+	private boolean legalHoliday;
 
-	/** The surcharge week month. */
-	private Boolean surchargeWeekMonth;
+	private boolean surchargeWeekMonth;
 
+	private boolean exceptLegalHdwk;
+
+	public static ExcessOutsideTimeSetRegDto from(ExcessOutsideTimeSetReg domain){
+		
+		return ExcessOutsideTimeSetRegDto.builder()
+				.legalHoliday(domain.isLegalHoliday())
+				.legalOverTimeWork(domain.isLegalOverTimeWork())
+				.surchargeWeekMonth(domain.isSurchargeWeekMonth())
+				.exceptLegalHdwk(domain.isExceptLegalHdwk())
+				.build();
+	}
 }

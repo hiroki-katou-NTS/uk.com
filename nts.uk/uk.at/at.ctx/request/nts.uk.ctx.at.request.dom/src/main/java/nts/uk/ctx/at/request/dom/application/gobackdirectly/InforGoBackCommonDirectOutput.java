@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 @Data
 @AllArgsConstructor

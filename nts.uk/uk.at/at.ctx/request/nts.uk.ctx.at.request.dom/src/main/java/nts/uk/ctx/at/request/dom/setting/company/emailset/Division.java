@@ -29,7 +29,7 @@ public enum Division {
 	/**
 	 * 休出指示
 	 */
-	LEAVE_INSTRUCTION(3, "休出指示");
+	HOLIDAY_WORK_INSTRUCTION(3, "休出指示");
 	
 	public final int value;
 	
