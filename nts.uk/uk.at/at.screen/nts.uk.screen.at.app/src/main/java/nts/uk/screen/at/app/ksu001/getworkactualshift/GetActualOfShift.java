@@ -108,7 +108,9 @@ public class GetActualOfShift {
 			if (v.isPresent()) {
 				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInformation();
 				if (workInfo != null) {
-					workInfoOfDailyAttendances.add(workInfo);
+					if (workInfo.getRecordInfo().getWorkTypeCode() != null) {
+						workInfoOfDailyAttendances.add(workInfo);
+					}
 				}
 			}
 		});
