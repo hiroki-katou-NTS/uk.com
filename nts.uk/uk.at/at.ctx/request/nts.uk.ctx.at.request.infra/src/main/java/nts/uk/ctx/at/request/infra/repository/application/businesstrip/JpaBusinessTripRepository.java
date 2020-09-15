@@ -139,7 +139,7 @@ public class JpaBusinessTripRepository extends JpaRepository implements Business
         GeneralDate date = res.getGeneralDate("APP_DATE");
         BusinessTrip businessTrip = new BusinessTrip(application);
         BusinessTripInfo businessTripInfo = new BusinessTripInfo(
-                new WorkInformation(wkTimeCd, wkTypeCd),
+                new WorkInformation(wkTypeCd, wkTimeCd),
                 date,
                 (wkTimeStart == null && wkTimeEnd == null) ? Optional.empty() : Optional.of(Arrays.asList(new TimeZoneWithWorkNo(1,wkTimeStart, wkTimeEnd)) )
         );

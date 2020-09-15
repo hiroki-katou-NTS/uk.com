@@ -17,7 +17,6 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
         approvalReason: KnockoutObservable<string>;
         appDispInfoStartupOutput: any;
         application: KnockoutObservable<Application>;
-        model: Model;
         mode: number = Mode.Edit;
         dataFetch: KnockoutObservable<DetailSreenInfo> = ko.observable({
             businessTripContent: {
@@ -57,8 +56,14 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                 if (value) {
                     vm.dataFetch().businessTripOutput.appDispInfoStartup = value;
                 }
-                ;
             });
+
+            vm.application().appID.subscribe(appID => {
+                if(vm.application().appType === AppType.BUSINESS_TRIP_APPLICATION) {
+                    vm.createParamKAF008();
+                }
+            });
+
         }
 
         createParamKAF008() {
@@ -96,9 +101,9 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
                         return {
                             date: detail.date,
-                            wkTimeCd: detail.wkTimeCd == null ? "" : detail.wkTimeCd,
+                            wkTimeCd: detail.wkTimeCd,
                             wkTimeName: timeName,
-                            wkTypeCd: detail.wkTypeCd == null ? "" : detail.wkTypeCd,
+                            wkTypeCd: detail.wkTypeCd,
                             wkTypeName: workName,
                             startWorkTime: detail.startWorkTime,
                             endWorkTime: detail.endWorkTime
@@ -107,15 +112,13 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
                     let cloneData = _.clone(vm.dataFetch());
 
-                    cloneData.businessTripContent.departureTime(businessTripContent.departureTime);
-                    cloneData.businessTripContent.returnTime(businessTripContent.returnTime);
-                    cloneData.businessTripContent.tripInfos = eachDetail;
+                    vm.dataFetch().businessTripContent.departureTime(businessTripContent.departureTime);
+                    vm.dataFetch().businessTripContent.returnTime(businessTripContent.returnTime);
+                    vm.dataFetch().businessTripContent.tripInfos = eachDetail;
+                    vm.dataFetch().businessTripOutput = res.businessTripInfoOutputDto;
+                    vm.dataFetch.valueHasMutated();
 
-                    vm.printContent.opBusinessTripInfoOutput = cloneData.businessTripContent;
-
-                    cloneData.businessTripOutput = res.businessTripInfoOutputDto;
-
-                    vm.dataFetch(cloneData);
+                    vm.printContent.opBusinessTripInfoOutput = ko.toJS(vm.dataFetch().businessTripContent);
                 }
             }).fail(err => {
                 vm.$dialog.error({messageId: err.msgId});
@@ -182,26 +185,12 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
         businessTripOutput: BusinessTripOutput;
     }
 
-    export interface BusinessTripInfo {
-        departureTime: KnockoutObservable<number>;
-        returnTime: KnockoutObservable<number>;
-        tripInfos: Array<TripInfoDetail>;
-    }
-
     export interface TripInfoDetail {
         date: string;
         wkTimeCd: string;
         wkTimeName: string;
         wkTypeCd: string;
         wkTypeName: string;
-        startWorkTime: number;
-        endWorkTime: number;
-    }
-
-    interface TripInfo {
-        date: string;
-        wkTypeCd: string;
-        wkTimeCd: string;
         startWorkTime: number;
         endWorkTime: number;
     }

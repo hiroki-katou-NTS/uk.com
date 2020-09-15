@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
@@ -107,6 +108,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     @Inject
     private AtEmployeeAdapter atEmployeeAdapter;
 
+    @Inject
+    private CommonAlgorithm commonAlgorithm;
 
     /**
      * アルゴリズム「出張申請未承認申請を取得」を実行する
@@ -116,12 +119,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
      * @param opActualContentDisplayLst 申請表示情報.申請表示情報(基準日関係あり).表示する実績内容
      */
     @Override
-    public List<ActualContentDisplay> getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst) {
-        List<ActualContentDisplay> result = new ArrayList<>();
+    public void getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst) {
 
-        if(appDate.isEmpty()) {
-            return Collections.emptyList();
+        if (appDate.isEmpty()) {
+            return;
         }
+
         // ドメインモデル「申請」を取得する
         // Get Application có hiệu lực trong khoảng thời gian trên màn hình
         List<Application> apps = appRepo.getAppForKAF008(
@@ -141,12 +144,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             // Lấy Content của ngày loop
             Optional<ActualContentDisplay> currentContent = opActualContentDisplayLst.get().stream().filter(i -> i.getDate().equals(date)).findFirst();
 
-            if (!currentContent.isPresent()) {
-                continue;
-            }
-
             if (validApps.isEmpty()) {
-                result.add(currentContent.get());
+                continue;
             } else {
                 // 対象年月日を含む申請が存在を確認
                 // Lấy Application có ngày đăng ký mới nhất sau khi sort
@@ -163,14 +162,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                         if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION) {
                             // アルゴリズム「出張申請内容より勤務情報を取得」を実行する
                             this.getWorkInfoFromTripReqContent(newestApp.getAppID(), newestApp.getAppType(), date, currentContent.get());
-                            ActualContentDisplay actualContent = new ActualContentDisplay(date, currentContent.get().getOpAchievementDetail());
-                            result.add(actualContent);
                         }
                     }
                 }
             }
         }
-        return result;
     }
 
     @Override
@@ -188,14 +184,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         Optional<AppEmploymentSet> opEmploymentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet();
         // アルゴリズム「出張申請勤務種類を取得する」を実行する
         List<WorkType> workDays = this.getBusinessAppWorkType(
-                opEmploymentSet.get(),
+                opEmploymentSet,
                 EnumAdaptor.valueOf(BusinessTripAppWorkType.WORK_DAY.value, BusinessTripAppWorkType.class),
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Attendance))
         );
 
         // アルゴリズム「出張申請勤務種類を取得する」を実行する
         List<WorkType> holidayWorkType = this.getBusinessAppWorkType(
-                opEmploymentSet.get(),
+                opEmploymentSet,
                 EnumAdaptor.valueOf(BusinessTripAppWorkType.HOLIDAY.value, BusinessTripAppWorkType.class),
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Holiday, WorkTypeClassification.HolidayWork, WorkTypeClassification.Shooting))
         );
@@ -240,10 +236,15 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public List<WorkType> getBusinessAppWorkType(AppEmploymentSet appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification) {
+    public List<WorkType> getBusinessAppWorkType(Optional<AppEmploymentSet> appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification) {
         String cid = AppContexts.user().companyId();
         List<WorkType> result = Collections.emptyList();
-        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet
+
+        if (!appEmploymentSet.isPresent()) {
+            return result;
+        }
+
+        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet.get()
                 .getTargetWorkTypeByAppLst()
                 .stream()
                 .filter((x ->
@@ -371,8 +372,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public void businessTripIndividualCheck(List<BusinessTripInfo> infos) {
+    public void businessTripIndividualCheck(List<BusinessTripInfo> infos, List<ActualContentDisplay> actualContent) {
         String sid = AppContexts.user().employeeId();
+        String cid = AppContexts.user().companyId();
 
         // loop 年月日　in　期間
         infos.stream().forEach(i -> {
@@ -382,14 +384,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
-            // 申請の矛盾チェック
-//                this.commonAlgorithm.appConflictCheck(
-//                        cid,
-//                        employeeInfoImports.get(0),
-//                        lstDate,
-//                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-//                        output.getActualContentDisplay().get()
-//                );
+            // アルゴリズム「申請の矛盾チェック」を実行する
+                this.commonAlgorithm.appConflictCheck(
+                        cid,
+                        employeeInfoImports.get(0),
+                        Arrays.asList(i.getDate()),
+                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+                        actualContent
+                );
         });
     }
 

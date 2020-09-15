@@ -127,13 +127,13 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
             // 申請の矛盾チェック
-//            this.commonAlgorithm.appConflictCheck(
-//                    cid,
-//                    employeeInfoImports.get(0),
-//                    Arrays.asList(i.getDate()),
-//                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-//                    appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
-//            );
+            this.commonAlgorithm.appConflictCheck(
+                    cid,
+                    employeeInfoImports.get(0),
+                    Arrays.asList(i.getDate()),
+                    new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+                    appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get()
+            );
         });
     }
 }
