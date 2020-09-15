@@ -537,6 +537,12 @@ html {
 .background-white {background-color: white;}
 .color-default {color : #000000 !important;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
+.extable div.xseal, .extable td.xseal {
+    background-color: #ddddd2;
+}
+.extable div.highlight, .extable td.highlight, .xheader td.highlight {
+  background-color: #FFFFCC !important;
+}
 
 table th, table td {
 	padding: 2px 5px;
