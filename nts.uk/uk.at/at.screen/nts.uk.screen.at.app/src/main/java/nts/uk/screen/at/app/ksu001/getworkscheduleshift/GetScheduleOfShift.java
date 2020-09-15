@@ -152,7 +152,11 @@ public class GetScheduleOfShift {
 				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
 				// 4.2.1
 				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-				Optional<WorkStyle> workStyle = workInformation.getWorkStyle(require2);
+				Optional<WorkStyle> workStyle = Optional.empty();
+				if(workInformation.getWorkTypeCode() != null){
+					workStyle = workInformation.getWorkStyle(require2);
+				}		
+						
 				// 4.2.2
 				ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 				ShiftEditStateDto shiftEditStateDto = ShiftEditStateDto.toDto(shiftEditState);
