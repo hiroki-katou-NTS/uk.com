@@ -48,33 +48,30 @@ public class SpecialLeaveAggregatePeriodWork {
 		this.specialLeaveGrant = Optional.empty();
 	}
 	
-//	/**
-//	 * ファクトリー
-//	 * @param period 期間
-//	 * @param nextDayAfterPeriodEnd 期間終了後翌日
-//	 * @param grantAtr 付与フラグ
-//	 * @param afterGrant 付与後
-//	 * @param lapsedAtr 消滅フラグ
-//	 * @param annualLeaveGrant 年休付与
-//	 * @return 年休集計期間WORK
-//	 */
-//	public static SpecialLeaveAggregatePeriodWork of(
-//			DatePeriod period,
-//			boolean dayBeforePeriodEnd,
-//			boolean nextDayAfterPeriodEnd,
-//			boolean grantAtr,
-//			boolean afterGrant,
-//			boolean lapsedAtr,
-//			Optional<NextAnnualLeaveGrant> annualLeaveGrant){
-//		
-//		SpecialLeaveAggregatePeriodWork domain = new SpecialLeaveAggregatePeriodWork();
-//		domain.period = period;
-//		domain.dayBeforePeriodEnd = dayBeforePeriodEnd;
-//		domain.nextDayAfterPeriodEnd = nextDayAfterPeriodEnd;
-//		domain.grantAtr = grantAtr;
-//		domain.afterGrant = afterGrant;
-//		domain.lapsedAtr = lapsedAtr;
-//		domain.annualLeaveGrant = annualLeaveGrant;
-//		return domain;
-//	}
+	/**
+	 * ファクトリー
+	 * @param period 期間
+	 * @param nextDayAfterPeriodEnd 期間終了後翌日
+	 * @param afterGrant 付与後
+	 * @param lapsedAtr 消滅フラグ
+	 * @param specialLeaveGrant 特休付与
+	 * @return 年休集計期間WORK
+	 */
+	public static SpecialLeaveAggregatePeriodWork of(
+			DatePeriod period,
+			boolean dayBeforePeriodEnd,
+			boolean nextDayAfterPeriodEnd,
+			boolean afterGrant,
+			SpecialLeaveLapsedWork lapsedAtr,
+			Optional<NextSpecialLeaveGrant> specialLeaveGrant){
+		
+		SpecialLeaveAggregatePeriodWork domain = new SpecialLeaveAggregatePeriodWork();
+		domain.period = period;
+		domain.dayBeforePeriodEnd = dayBeforePeriodEnd;
+		domain.nextDayAfterPeriodEnd = nextDayAfterPeriodEnd;
+		domain.afterGrant = afterGrant;
+		domain.lapsedWork = lapsedAtr;
+		domain.specialLeaveGrant = specialLeaveGrant;
+		return domain;
+	}
 }

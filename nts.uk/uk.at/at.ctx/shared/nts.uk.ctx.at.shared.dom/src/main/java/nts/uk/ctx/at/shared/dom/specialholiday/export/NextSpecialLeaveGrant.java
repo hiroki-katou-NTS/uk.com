@@ -39,5 +39,6 @@ public class NextSpecialLeaveGrant {
 		this.grantDate = GeneralDate.today();
 		this.grantDays = new GrantDays(0.0);
 		this.times = new GrantNum(0);
+		this.deadLine = GeneralDate.max();
 	}
 }

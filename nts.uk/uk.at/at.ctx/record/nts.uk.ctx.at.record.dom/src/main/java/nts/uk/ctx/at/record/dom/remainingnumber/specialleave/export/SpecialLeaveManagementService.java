@@ -390,51 +390,52 @@ public class SpecialLeaveManagementService {
 		
 		
 		
-		// 取得した締め開始日と「集計開始日」を比較
-		if (closureStart != null){
-			
-			// 締め開始日＜集計開始日　か確認する
-			if (closureStart.before(aggrPeriod.start())) isAfterClosureStart = true;
-		}
-			
-		if (!closureStartOpt.isPresent()) closureStartOpt = Optional.of(aggrPeriod.start());
-		
-		if (isAfterClosureStart){
-			// 締め開始日<集計開始日　の時
-			
-			// 開始日までの特休残数を計算　（締め開始日～集計開始日前日） 
-			val aggrResultOpt = algorithm(require, cacheCarrier, companyId, employeeId, new DatePeriod(closureStartOpt.get(), 
-					aggrPeriod.start().addDays(-1)), mode, aggrPeriod.start().addDays(-1),
-					isGetNextMonthData, isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt,
-					Optional.empty(), Optional.of(true));
-			
-			if (!aggrResultOpt.isPresent()) return emptyInfo;
-			val aggrResult = aggrResultOpt.get();
-			
-			// 特休情報（期間終了日の翌日開始時点）を取得
-			val asOfPeriodEnd = aggrResult.getAsOfPeriodEnd();
-			
-			// 取得内容をもとに特休情報を作成
-			return createInfoFromRemainingData(asOfPeriodEnd.getGrantRemainingList(), 
-												Optional.of(asOfPeriodEnd.getMaxData()), aggrPeriod);
-		}
-
-		// 締め開始日>=集計開始日　or 締め開始日がnull　の時
-		
-		// 「特休付与残数データ」を取得
-		List<SpecialLeaveGrantRemaining> remainingDatas = new ArrayList<>();
-		for (val grantRemainingData : grantRemainingDatas){
-			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
-			if (grantRemainingData.getGrantDate().after(closureStartOpt.get())) continue;
-			if (grantRemainingData.getDeadline().before(closureStartOpt.get())) continue;
-			remainingDatas.add(grantRemainingData);
-		}
-		
-		// 「特休上限データ」を取得
-		val annLeaMaxDataOpt = require.SpecialLeaveMaxData(employeeId);
-
-		// 取得内容をもとに特休情報を作成
-		return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
+//		// 取得した締め開始日と「集計開始日」を比較
+//		if (closureStart != null){
+//			
+//			// 締め開始日＜集計開始日　か確認する
+//			if (closureStart.before(aggrPeriod.start())) isAfterClosureStart = true;
+//		}
+//			
+//		if (!closureStartOpt.isPresent()) closureStartOpt = Optional.of(aggrPeriod.start());
+//		
+//		if (isAfterClosureStart){
+//			// 締め開始日<集計開始日　の時
+//			
+//			// 開始日までの特休残数を計算　（締め開始日～集計開始日前日） 
+//			val aggrResultOpt = algorithm(require, cacheCarrier, companyId, employeeId, new DatePeriod(closureStartOpt.get(), 
+//					aggrPeriod.start().addDays(-1)), mode, aggrPeriod.start().addDays(-1),
+//					isGetNextMonthData, isCalcAttendanceRate, isOverWriteOpt, forOverWriteListOpt,
+//					Optional.empty(), Optional.of(true));
+//			
+//			if (!aggrResultOpt.isPresent()) return emptyInfo;
+//			val aggrResult = aggrResultOpt.get();
+//			
+//			// 特休情報（期間終了日の翌日開始時点）を取得
+//			val asOfPeriodEnd = aggrResult.getAsOfPeriodEnd();
+//			
+//			// 取得内容をもとに特休情報を作成
+//			return createInfoFromRemainingData(asOfPeriodEnd.getGrantRemainingList(), 
+//												Optional.of(asOfPeriodEnd.getMaxData()), aggrPeriod);
+//		}
+//
+//		// 締め開始日>=集計開始日　or 締め開始日がnull　の時
+//		
+//		// 「特休付与残数データ」を取得
+//		List<SpecialLeaveGrantRemaining> remainingDatas = new ArrayList<>();
+//		for (val grantRemainingData : grantRemainingDatas){
+//			if (grantRemainingData.getExpirationStatus() == LeaveExpirationStatus.EXPIRED) continue;
+//			if (grantRemainingData.getGrantDate().after(closureStartOpt.get())) continue;
+//			if (grantRemainingData.getDeadline().before(closureStartOpt.get())) continue;
+//			remainingDatas.add(grantRemainingData);
+//		}
+//		
+//		// 「特休上限データ」を取得
+//		val annLeaMaxDataOpt = require.SpecialLeaveMaxData(employeeId);
+//
+//		// 取得内容をもとに特休情報を作成
+//		return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
+		return null;
 	}
 	
 	/**
@@ -481,57 +482,43 @@ public class SpecialLeaveManagementService {
 			= lstSpeData.stream().sorted(comparator).collect(Collectors.toList());
 		
 		// 処理単位分割日リスト
-		Map<GeneralDate, SpecialLeaveDividedDayEachProcess> dividedDayMap = new HashMap<>();
+		Map<GeneralDate, SpecialLeaveDividedDayEachProcess> dividedDayMap 
+			= new HashMap<GeneralDate, SpecialLeaveDividedDayEachProcess>();
 		
 		sortedLstSpeData.forEach( c->{
-			
-			// 消滅情報WORKを作成
-			SpecialLeaveLapsedWork specialLeaveLapsedWork = new SpecialLeaveLapsedWork();
-			// 消滅情報WORK.期間の開始日に消滅するかどうか←true
-			specialLeaveLapsedWork.setLapsedAtr(true);
 			
 			// 期限日
 			val deadline = c.getDeadline();
 			
 			// 期限日>=開始日 && 期限日<=終了日 が処理対象
 			if (!aggrPeriod.contains(deadline)) continue;
+
+			// 消滅情報WORKを作成
+			SpecialLeaveLapsedWork specialLeaveLapsedWork = new SpecialLeaveLapsedWork();
+			// 消滅情報WORK.期間の開始日に消滅するかどうか←true
+			specialLeaveLapsedWork.setLapsedAtr(true);
 			
 			// 年月日←期限日の翌日
 			val nextDayOfDeadLine = deadline;
 			if (deadline.before(GeneralDate.max())){
 				nextDayOfDeadLine = deadline.addDays(1);
-				
 			}
 			
+			// ※既に同じ年月日がある場合は、追加せずに消滅情報WORKのみセット
+			if ( dividedDayMap.containsKey(nextDayOfDeadLine)){
+				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
+					= dividedDayMap.get(nextDayOfDeadLine);
+				if ( specialLeaveDividedDayEachProcess != null ){
+					specialLeaveDividedDayEachProcess.setLapsedAtr(true);
+				}
+			} else {
+				SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
+					= new SpecialLeaveDividedDayEachProcess(nextDayOfDeadLine);
+				specialLeaveDividedDayEachProcess.setLapsedAtr(true);
+				// リストへ追加
+				dividedDayMap.put(nextDayOfDeadLine, specialLeaveDividedDayEachProcess);
+			}
 			
-//			// ※既に同じ年月日がある場合は、追加せずに消滅情報WORKのみセット
-//			if ( dividedDayMap.
-			
-					
-					
-					
-					
-					
-					
-					
-					
-//			// 処理単位分割日
-//			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
-//				= dividedDayMap
-//			
-//			
-//			
-//			
-//			specialLeaveAggregatePeriodWork.setLapsedWork(specialLeaveLapsedWork);
-			
-			
-//			dividedDayMap.putIfAbsent(grantDate, new DividedDayEachProcess(grantDate));
-//			dividedDayMap.get(grantDate).setGrantAtr(true);
-//			dividedDayMap.get(grantDate).setNextAnnualLeaveGrant(Optional.of(nextAnnualLeaveGrant));
-
-			
-//			//リストへ追加
-//			aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 		});
 
 		// 付与日で期間を区切る ----------------------------
@@ -540,8 +527,14 @@ public class SpecialLeaveManagementService {
 		// 【条件】
 		// 付与年月日>=パラメータ「開始日」の翌日
 		// 付与年月日<=パラメータ「終了日」の翌日
-		GeneralDate nextDayStart = aggrPeriod.start().addDays(1);
-		GeneralDate nextDayEnd = aggrPeriod.end().addDays(1);
+		GeneralDate nextDayStart = aggrPeriod.start();
+		if (nextDayStart.before(GeneralDate.max())){
+			nextDayStart = nextDayStart.addDays(1);
+		}
+		GeneralDate nextDayEnd = aggrPeriod.end();
+		if (nextDayEnd.before(GeneralDate.max())){
+			nextDayEnd = nextDayEnd.addDays(1);
+		}
 		
 		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList_period
 			= nextSpecialLeaveGrantList.stream()
@@ -550,21 +543,22 @@ public class SpecialLeaveManagementService {
 				.collect(Collectors.toList());
 		
 		// 付与情報WORKを作成
+		int grantNumber = 1; // 期間中、何回目の付与かをカウント
 		nextSpecialLeaveGrantList_period
 			.forEach(c -> {
 				SpecialLeaveGrantWork specialLeaveGrantWork
 					= new SpecialLeaveGrantWork();
 				
 				// 付与情報WORK.付与回数←集計期間内での付与回数
-				// ooooo
+				specialLeaveGrantWork.setGrantNumber(grantNumber);
+				grantNumber++;
 				
 				// 付与情報WORK.期間の開始日に付与があるかどうか←true
 				specialLeaveGrantWork.setGrantAtr(true);
-				// 付与情報WORK.年休付与←次回特別休暇付与
-				//specialLeaveGrantWork.setGrantRegular(
-				// oooooo
+				// 付与情報WORK.特休付与←次回特別休暇付与
+				specialLeaveGrantWork.setGrantRegular(c);
 				
-				// 年月日←次回特別休暇付与．付与年月日 ooooo
+				// 年月日←次回特別休暇付与．付与年月日
 				c.getGrantDate();
 
 				if ( dividedDayMap.containsKey(c.getGrantDate())){ // すでに追加されているとき
@@ -586,17 +580,31 @@ public class SpecialLeaveManagementService {
 		// 終了日の処理単位分割日を取得
 		val specialLeaveGrantList1 = new ArrayList<SpecialLeaveDividedDayEachProcess>();
 		// 【条件】
-		// 終了日の翌日の期間かどうか=true
+		// 終了日の期間かどうか=true
 		dividedDayMap.forEach((key, val)->{
-			if ( val.getNextSpecialLeaveGrant().equals(true) ){
+			if ( val.isDayBeforePeriodEnd() ){
 				specialLeaveGrantList1.add(val);
 			}
 		});
 		
 		// 終了日の期間かどうか　←true
-		specialLeaveGrantList1.forEach(c->{
-//			c 	ooooo
-		});
+		if (specialLeaveGrantList1.isEmpty()){ // 件数=０
+			ArrayList<SpecialLeaveDividedDayEachProcess> list 
+				= new ArrayList<SpecialLeaveDividedDayEachProcess>();
+			dividedDayMap.forEach((key, val)->{
+				// 【条件】 年月日！＝パラメータ「終了日」の翌日
+				if ( !val.getYmd().equals(nextDayOfPeriodEnd) ){
+					list.add(val);					
+				}
+			});
+			
+			// リストの中で年月日が一番大きい処理単位分割日の終了日の期間かどうか = true
+			list.sort((a,b)->b.getYmd().compareTo(a.getYmd())); // 降順
+			list.forEach(c->{
+					c.setDayBeforePeriodEnd(true);
+					break;
+				});
+		}
 		
 		// 終了日翌日の処理単位分割日を取得
 		// 【条件】
@@ -632,9 +640,9 @@ public class SpecialLeaveManagementService {
 		// 終了日の翌日情報WORK.終了日の翌日かどうか = true
 		if ( specialLeaveGrantList3.isEmpty() ){
 			SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
-				= new SpecialLeaveDividedDayEachProcess(nextEndDate);
+				= new SpecialLeaveDividedDayEachProcess(nextDayEnd);
 			specialLeaveDividedDayEachProcess.setNextDayAfterPeriodEnd(true);
-			dividedDayMap.put(nextEndDate, specialLeaveDividedDayEachProcess);
+			dividedDayMap.put(nextDayEnd, specialLeaveDividedDayEachProcess);
 		}
 		
 		// 付与前と付与後の期間を区別する   ----------------------------
@@ -649,110 +657,86 @@ public class SpecialLeaveManagementService {
 		specialLeaveGrantList4.sort((a,b)->a.getYmd().compareTo(b.getYmd()));
 		
 		// 付与前か付与後か = 付与前
-		boolean isBeforeGrant = false;
+		boolean afterGrant = false;
 		specialLeaveGrantList4.forEach(c->{
-			if ( c.())
-			
-		});
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-//		// 処理単位分割日リスト
-//		Map<GeneralDate, DividedDayEachProcess> dividedDayMap = new HashMap<>();
-		
-		// 期間終了日翌日
-		GeneralDate nextDayOfPeriodEnd = aggrPeriod.end();
-		if (nextDayOfPeriodEnd.before(GeneralDate.max())) nextDayOfPeriodEnd = nextDayOfPeriodEnd.addDays(1);
-		
-		// 「年休付与残数データ」を取得　（期限日　昇順、付与日　昇順）
-		List<AnnualLeaveGrantRemainingData> remainingDatas = new ArrayList<>();
-		remainingDatas.addAll(grantRemainingDatas);
-		Collections.sort(remainingDatas, new Comparator<AnnualLeaveGrantRemainingData>() {
-			@Override
-			public int compare(AnnualLeaveGrantRemainingData o1, AnnualLeaveGrantRemainingData o2) {
-				int compDeadline = o1.getDeadline().compareTo(o2.getDeadline());
-				if (compDeadline != 0) return compDeadline;
-				return o1.getGrantDate().compareTo(o2.getGrantDate());
+			if ( c.isGrantAtr() ){ // 付与フラグ
+				afterGrant = true;
 			}
+			c.setAfterGrant(afterGrant);
 		});
 		
-		// 取得した「年休付与残数データ」をすべて「処理単位分割日リスト」に追加
-		for (val remainingData : remainingDatas){
-			val deadline = remainingData.getDeadline();
-			if (!aggrPeriod.contains(deadline)) continue;
-			
-			val nextDayOfDeadline = deadline.addDays(1);
-			dividedDayMap.putIfAbsent(nextDayOfDeadline, new DividedDayEachProcess(nextDayOfDeadline));
-			dividedDayMap.get(nextDayOfDeadline).setLapsedAtr(true);
-		}
-		
-		// 「次回年休付与リスト」をすべて「処理単位分割日リスト」に追加
-		for (val nextAnnualLeaveGrant : nextAnnualLeaveGrantList){
-			val grantDate = nextAnnualLeaveGrant.getGrantDate();
-			if (grantDate.beforeOrEquals(aggrPeriod.start().addDays(1))) continue;
-			if (grantDate.after(nextDayOfPeriodEnd)) continue;
-			
-			dividedDayMap.putIfAbsent(grantDate, new DividedDayEachProcess(grantDate));
-			dividedDayMap.get(grantDate).setGrantAtr(true);
-			dividedDayMap.get(grantDate).setNextAnnualLeaveGrant(Optional.of(nextAnnualLeaveGrant));
-		}
-		
-		// 期間終了日翌日の「処理単位分割日」を取得・追加　→　フラグ設定
-		dividedDayMap.putIfAbsent(nextDayOfPeriodEnd, new DividedDayEachProcess(nextDayOfPeriodEnd));
-		dividedDayMap.get(nextDayOfPeriodEnd).setNextDayAfterPeriodEnd(true);
+		// 特別休暇集計WORK作成 ----------------------------
 		
 		// 「処理単位分割日」をソート
-		List<DividedDayEachProcess> dividedDayList = new ArrayList<>();
+		List<SpecialLeaveDividedDayEachProcess> dividedDayList = new ArrayList<>();
 		dividedDayList.addAll(dividedDayMap.values());
 		dividedDayList.sort((a, b) -> a.getYmd().compareTo(b.getYmd()));
 		
-		// 「年休集計期間WORK」を作成
-		AggregatePeriodWork startWork = new AggregatePeriodWork();
-		val startWorkEnd = dividedDayList.get(0).getYmd().addDays(-1);
-		startWork.setPeriod(new DatePeriod(aggrPeriod.start(), startWorkEnd));
-		aggregatePeriodWorks.add(startWork);
+//		SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork_first
+//			= 
 		
-		// 付与後フラグ
-		boolean isAfterGrant = false;
-		
-		for (int index = 0; index < dividedDayList.size(); index++){
-			val nowDividedDay = dividedDayList.get(index);
-			DividedDayEachProcess nextDividedDay = null;
-			if (index + 1 < dividedDayList.size()) nextDividedDay = dividedDayList.get(index + 1);
-			
-			// 付与フラグをチェック
-			if (nowDividedDay.isGrantAtr()) isAfterGrant = true;
-			
-			// 年休集計期間WORKを作成し、Listに追加
-			GeneralDate workPeriodEnd = nextDayOfPeriodEnd;
-			if (nextDividedDay != null) workPeriodEnd = nextDividedDay.getYmd().addDays(-1);
-			AggregatePeriodWork nowWork = AggregatePeriodWork.of(
-					new DatePeriod(nowDividedDay.getYmd(), workPeriodEnd),
-					false,
-					nowDividedDay.isNextDayAfterPeriodEnd(),
-					nowDividedDay.isGrantAtr(),
-					isAfterGrant,
-					nowDividedDay.isLapsedAtr(),
-					nowDividedDay.getNextAnnualLeaveGrant());
-			aggregatePeriodWorks.add(nowWork);
-		}
-		
-		// 処理期間内で何回目の付与なのかを保持。（一回目の付与を判断したい）
-		int grantNumber = 1;
-		for( AggregatePeriodWork nowWork : aggregatePeriodWorks){
-			if ( nowWork.isGrantAtr() ) // 付与のとき
-			{
-				nowWork.setGrantNumber(grantNumber);
-				grantNumber++;
+		// 処理単位分割日でループ
+		boolean isFirst = true;
+		GeneralDate preYmd;
+		dividedDayList.forEach(c->{
+			if ( isFirst ){
+				
+				// 「特別休暇集計期間WORK」を作成
+				SpecialLeaveLapsedWork specialLeaveLapsedWork
+					= new SpecialLeaveLapsedWork();
+				
+				// 期間．開始日←パラメータ「開始日」
+				// 期間．終了日←最初の「処理単位分割日．年月日」の前日
+				specialLeaveLapsedWork.setLapsedAtr(false);
+				SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
+					= SpecialLeaveAggregatePeriodWork.of(
+							new DatePeriod(aggrPeriod.start(), c.getYmd().addDays(-1)),
+							true, false, false, specialLeaveLapsedWork, Optional.empty());
+				aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
+				
+				isFirst = false;
+				preYmd = c.getYmd();
+				
+				continue;
 			}
-		}
+			
+			// 特別休暇集計期間WORKを作成し、Listに追加
+			SpecialLeaveLapsedWork specialLeaveLapsedWork
+				= new SpecialLeaveLapsedWork();
+			specialLeaveLapsedWork.setLapsedAtr(c.isLapsedAtr());
+			
+			// 期間．開始日←「処理単位分割日．年月日」
+			// 期間．終了日←次の「処理単位分割日．年月日」の前日
+			// 　　　　※次の処理単位分割日がない場合、パラメータ「終了日」の翌日
+			// 消滅←「処理単位分割日.消滅情報WORK」
+			// 付与←「処理単位分割日.付与情報WORK」
+			// 終了日←「処理単位分割日.終了日の翌日情報WORK」
+			// 付与前か付与後か←「処理単位分割日.付与前、付与後の期間区分」
+			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
+				= SpecialLeaveAggregatePeriodWork.of(
+					new DatePeriod(preYmd, c.getYmd().addDays(-1)),
+					c.isDayBeforePeriodEnd(), 
+					c.isNextDayAfterPeriodEnd(),
+					c.isAfterGrant(), 
+					specialLeaveLapsedWork, 
+					Optional.empty());
+			aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
+		});
+		
+		// 次の処理単位分割日がない場合、パラメータ「終了日」の翌日
+		
+		// 「特別休暇集計期間WORK」を作成
+		SpecialLeaveLapsedWork specialLeaveLapsedWork
+			= new SpecialLeaveLapsedWork();
+		specialLeaveLapsedWork.setLapsedAtr(false);
+		
+		// 期間．開始日←最後の「処理単位分割日．年月日」
+		// 期間．終了日←パラメータ「終了日」の翌日
+		SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork
+			= SpecialLeaveAggregatePeriodWork.of(
+					new DatePeriod(preYmd, nextDayOfPeriodEnd),
+					true, false, false, specialLeaveLapsedWork, Optional.empty());
+		aggregatePeriodWorks.add(specialLeaveAggregatePeriodWork);
 		
 		return aggregatePeriodWorks;
 	}

@@ -643,6 +643,40 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 		}
 		
 		return aggregatePeriodWorks;
+		
+		// 特休に合わせて要修正
+//		// 終了日の翌日で期間を区切る  ----------------------------
+////		GeneralDate nextEndDate = aggrPeriod.end().addDays(1);
+//		
+//		// 終了日の処理単位分割日を取得
+//		val specialLeaveGrantList1 = new ArrayList<SpecialLeaveDividedDayEachProcess>();
+//		// 【条件】
+//		// 終了日の期間かどうか=true
+//		dividedDayMap.forEach((key, val)->{
+//			if ( val.getDayBeforePeriodEnd().equals(true) ){
+//				specialLeaveGrantList1.add(val);
+//			}
+//		});
+//		
+//		// 終了日の期間かどうか　←true
+//		if (specialLeaveGrantList1.isEmpty()){ // 件数=０
+//			ArrayList<SpecialLeaveDividedDayEachProcess> list 
+//				= new ArrayList<SpecialLeaveDividedDayEachProcess>();
+//			dividedDayMap.forEach((key, val)->{
+//				// 【条件】 年月日！＝パラメータ「終了日」の翌日
+//				if ( !val.getYmd().equals(nextDayOfPeriodEnd) ){
+//					list.add(val);					
+//				}
+//			});
+//			
+//			// リストの中で年月日が一番大きい処理単位分割日の終了日の期間かどうか = true
+//			list.sort((a,b)->b.getYmd().compareTo(a.getYmd())) // 降順
+//				.foreach(c->{
+//					c.setDayBeforePeriodEnd(true);
+//					break;
+//				});
+//		}
+//		
 	}
 	
 	/**

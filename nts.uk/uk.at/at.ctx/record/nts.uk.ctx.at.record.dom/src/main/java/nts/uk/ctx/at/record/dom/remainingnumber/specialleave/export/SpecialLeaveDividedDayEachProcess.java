@@ -27,6 +27,12 @@ public class SpecialLeaveDividedDayEachProcess {
 	/** 期間終了後翌日 */
 	@Setter
 	private boolean nextDayAfterPeriodEnd;
+	/** 何回目の付与なのか */
+	@Setter
+	private int grantNumber = 0;	
+	/** 付与後 */
+	@Setter
+	private boolean afterGrant;
 	/** 付与フラグ */
 	@Setter
 	private boolean grantAtr;
