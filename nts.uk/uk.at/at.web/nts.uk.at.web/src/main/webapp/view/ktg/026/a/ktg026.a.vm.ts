@@ -1,8 +1,6 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.at.view.ktg029.a.viewmodel {
   import block = nts.uk.ui.block;
-  import getText = nts.uk.resource.getText;
-  import info = nts.uk.ui.dialog.info;
 
   @bean()
   export class ViewModel extends ko.ViewModel {
@@ -21,13 +19,14 @@ module nts.uk.at.view.ktg029.a.viewmodel {
 
     mounted() {
       const vm = this;
+
+      vm.year.subscribe(year => {
+        
+      })
     }
 
 
-    // textA1_5(): string {
-    //   const vm = this;
-    //   return getText('KTG027_6', ['2020', 'abc']);
-    // }
+
   }
 }
 

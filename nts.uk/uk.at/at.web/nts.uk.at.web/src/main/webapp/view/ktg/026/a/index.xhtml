@@ -8,16 +8,15 @@
 	<ui:composition template="../../../../master/freelayout.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="ktg026.a.style.css" />
-			<!-- <com:scriptfile path="ktg026.a.service.js" /> -->
 			<com:scriptfile path="ktg026.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
 				<div class="title-border">
 					<!-- A1_1 -->
-					<label class="big-text">#{i18n.getText('KTG027_5')}</label>
+					<label class="big-text">#{i18n.getText('KTG026_5')}</label>
 					<!-- A1_7 -->
-					<button class="right">#{i18n.getText('KTG027_8')}</button>
+					<button class="right">#{i18n.getText('KTG026_8')}</button>
 				</div>
 
 				<table class="flex">
@@ -26,6 +25,7 @@
 							<td class="p-10 left65">
 								<!-- A1_2 -->
 								<div data-bind="ntsDatePicker: {
+									name: '#[KTG026_1]',
 									value: year,
 									dateFormat: 'YYYY',
 									valueFormat: 'YYYY',
@@ -39,9 +39,9 @@
 							<td class="block p-10" style="width: 60%">
 								<div class="right">
 									<!-- A1_3 -->
-									<label class="grid non-statutory-color">#{i18n.getText('KTG027_2')}</label>
+									<label class="grid non-statutory-color">#{i18n.getText('KTG026_2')}</label>
 									<!-- A1_4 -->
-									<label class="grid time-outside-color">#{i18n.getText('KTG027_3')}</label>
+									<label class="grid time-outside-color">#{i18n.getText('KTG026_3')}</label>
 								</div>
 							</td>
 						</tr>
@@ -51,9 +51,9 @@
 					<thead>
 						<tr>
 							<!-- A2_1 -->
-							<th>#{i18n.getText('KTG027_7')}</th>
+							<th>#{i18n.getText('KTG026_7')}</th>
 							<!-- A2_2 -->
-							<th>#{i18n.getText('KTG027_4')}</th>
+							<th>#{i18n.getText('KTG026_4')}</th>
 							<th class="w-200">
 								<!-- A2_3 -->
 								<span class="fixed45">45:00</span>
