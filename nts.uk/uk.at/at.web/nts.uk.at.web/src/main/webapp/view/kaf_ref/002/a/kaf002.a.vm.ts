@@ -60,8 +60,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         .then((loadDataFlag: any) => {
             self.appDispInfoStartupOutput.subscribe(value => {
                 console.log(value);
-                if (value) {
+                if (value) { 
                     self.changeDate();
+                }
+            });
+            if (!_.isNull(ko.toJS(self.application().prePostAtr))) {
+                self.isPreAtr(self.application().prePostAtr() == 0);                
+            }
+            self.application().prePostAtr.subscribe(value => {
+                if (!_.isNull(value)) {
+                    self.isPreAtr(value == 0);
                 }
             });
             if(loadDataFlag) {
@@ -430,23 +438,28 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 } else {
                     _.forEach(items, (el: GridItem) => {
                         if (!ko.toJS(el.flagObservable)) {
-                            let timeStampAppOtherDto = new TimeStampAppOtherDto();
-                            let tz = new TimeZone();
+                            if (ko.toJS(el.startTimeRequest) || ko.toJS(el.endTimeRequest)) {
+                                let timeStampAppOtherDto = new TimeStampAppOtherDto();
+                                let tz = new TimeZone();
+                                let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
+                                destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
+                                destinationTimeZoneAppDto.engraveFrameNo = el.id;
+                                timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
+                                timeStampAppOtherDto.timeZone = tz;
+                                if (ko.toJS(el.startTimeRequest)) {
+                                    tz.startTime = ko.toJS(el.startTimeRequest);
+                                    
+                                }
+                                if (ko.toJS(el.endTimeRequest)) {
+                                    tz.endTime = ko.toJS(el.endTimeRequest);                             
+                                }
+                                listTimeStampAppOther.push(timeStampAppOtherDto);                               
+                            }
+                        } else {
                             let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
                             destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
                             destinationTimeZoneAppDto.engraveFrameNo = el.id;
-                            timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
-                            timeStampAppOtherDto.timeZone = tz;
-                            if (ko.toJS(el.startTimeRequest)) {
-                                tz.startTime = ko.toJS(el.startTimeRequest);
-                                
-                            }
-                            if (ko.toJS(el.endTimeRequest)) {
-                                tz.endTime = ko.toJS(el.endTimeRequest);                             
-                            }
-                            listTimeStampAppOther.push(timeStampAppOtherDto);
-                        } else {
-                            
+                            listDestinationTimeZoneApp.push(destinationTimeZoneAppDto);
                         }
                     });
                 }
