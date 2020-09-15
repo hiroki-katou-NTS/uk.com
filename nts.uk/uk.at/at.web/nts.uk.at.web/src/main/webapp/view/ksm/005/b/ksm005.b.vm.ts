@@ -284,7 +284,7 @@ module nts.uk.at.view.ksm005.b {
                 var dto: MonthlyPatternSettingBatchDto;
                 var self = this;
                 dto = {
-                    settingWorkDays: self.lstHolidaysPattern.length > 0 ? self.monthlyPatternSettingBatchWorkDays() : null,
+                    settingWorkDays: self.lstHolidaysPattern().length > 0 ? self.monthlyPatternSettingBatchWorkDays() : null,
                     settingStatutoryHolidays: self.monthlyPatternSettingBatchStatutoryHolidays(),
                     settingNoneStatutoryHolidays: self.monthlyPatternSettingBatchNoneStatutoryHolidays(),
                     settingPublicHolidays: self.monthlyPatternSettingBatchPublicHolidays(),
