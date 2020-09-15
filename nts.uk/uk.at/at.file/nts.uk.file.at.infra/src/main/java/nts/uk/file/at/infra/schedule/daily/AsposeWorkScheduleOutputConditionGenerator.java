@@ -261,6 +261,11 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	/** The Constant filename. */
 	private static final String TEMPLATE_EMPLOYEE = "report/KWR001_Employee.xlsx";
 	
+	/** The Constant filename. */
+	private static final String TEMPLATE_DATE_SMALL_SIZE = "report/KWR001_Date_Small_Size.xlsx";
+	
+	/** The Constant filename. */
+	private static final String TEMPLATE_EMPLOYEE_SMALL_SIZE = "report/KWR001_Employee_Small_Size.xlsx";
 	
 	/** The Constant DATA_PREFIX_NO_WORKPLACE. */
 	private static final String DATA_PREFIX_NO_WORKPLACE = "NOWPK_";
@@ -333,7 +338,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	private static final String FONT_FAMILY = "ＭＳ ゴシック";
 	
 	/** The Constant FONT_SIZE. */
-	private static final int FONT_SIZE = 9;
+	private static final int FONT_SIZE_BIG = 9;
+	private static final int FONT_SIZE_SMALL = 7;
 
 	/** The Constant MAX_PAGE_PER_SHEET. */
 	private static final int MAX_PAGE_PER_SHEET = 1000;
@@ -354,11 +360,6 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	public void generate(FileGeneratorContext generatorContext, TaskDataSetter setter, WorkScheduleOutputQuery query) {
 		AsposeCellsReportContext reportContext = null;
 		WorkScheduleOutputCondition condition = query.getCondition();
-		if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
-			reportContext = this.createContext(TEMPLATE_EMPLOYEE);
-		} else {
-			reportContext = this.createContext(TEMPLATE_DATE);
-		}
 
 		String layoutId = condition.getSelectionType() == ItemSelectionType.FREE_SETTING
 				? condition.getFreeSettingLayoutId()
@@ -373,6 +374,12 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 		
 		OutputItemDailyWorkSchedule outputItemDailyWork = optOutputItemDailyWork.get();
 		
+		if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE) {
+			reportContext = outputItemDailyWork.getFontSize() == FontSizeEnum.BIG ? this.createContext(TEMPLATE_EMPLOYEE) : this.createContext(TEMPLATE_EMPLOYEE_SMALL_SIZE);
+		} else {
+			reportContext = outputItemDailyWork.getFontSize() == FontSizeEnum.BIG ? this.createContext(TEMPLATE_DATE) : this.createContext(TEMPLATE_DATE_SMALL_SIZE);
+		}
+
 		Workbook workbook;
 		try {
 			workbook = reportContext.getWorkbook();
@@ -480,10 +487,26 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			// Write detailed work schedule
 			if (condition.getOutputType() == FormOutputType.BY_EMPLOYEE)
 				
-				currentRow = writeDetailedWorkSchedule(currentRow, sheetCollection, sheetInfo, reportData.getWorkplaceReportData(), nSize, condition, rowPageTracker, chunkSize, condition.getZeroDisplayType());
+				currentRow = writeDetailedWorkSchedule(currentRow
+						, sheetCollection
+						, sheetInfo
+						, reportData.getWorkplaceReportData()
+						, nSize
+						, condition
+						, rowPageTracker
+						, chunkSize
+						, outputItemDailyWork.getFontSize());
 			else {
 				DailyReportData dailyReportData = reportData.getDailyReportData();
-				currentRow = writeDetailedDailySchedule(currentRow, sheetCollection, sheetInfo, dailyReportData, nSize, condition, rowPageTracker, chunkSize, condition.getZeroDisplayType());
+				currentRow = writeDetailedDailySchedule(currentRow
+						, sheetCollection
+						, sheetInfo
+						, dailyReportData
+						, nSize
+						, condition
+						, rowPageTracker
+						, chunkSize
+						, outputItemDailyWork.getFontSize());
 			}
 			
 			// Delete footer if user doesn't set remark content
@@ -528,10 +551,10 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 *
 	 * @param style the new font style
 	 */
-	private void setFontStyle (Style style){
+	private void setFontStyle (Style style, FontSizeEnum fontSize) {
 		
 		Font font = style.getFont();
-		font.setSize(FONT_SIZE);
+		font.setSize(fontSize == FontSizeEnum.BIG ? FONT_SIZE_BIG : FONT_SIZE_SMALL);
 		font.setName(FONT_FAMILY);
 	}
 	
@@ -2155,8 +2178,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @return the int
 	 * @throws Exception the exception
 	 */
-	private int writeDetailedWorkSchedule(int currentRow, WorksheetCollection templateSheetCollection, WorkSheetInfo sheetInfo, WorkplaceReportData workplaceReportData,
-			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker, int chunkSize, ZeroDisplayType zeroDisplayType) throws Exception {
+	private int writeDetailedWorkSchedule(int currentRow
+			, WorksheetCollection templateSheetCollection
+			, WorkSheetInfo sheetInfo, WorkplaceReportData workplaceReportData
+			, int dataRowCount
+			, WorkScheduleOutputCondition condition
+			, RowPageTracker rowPageTracker
+			, int chunkSize
+			, FontSizeEnum fontSize) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		
 		WorkScheduleSettingTotalOutput totalOutput = condition.getSettingDetailTotalOutput();
@@ -2318,7 +2347,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	// Column 4, 6, 8,...
 				            	ActualValue actualValue = lstItemRow.get(j);
 				            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2);
-				            	writeDetailValue(actualValue, cell, zeroDisplayType);
+				            	writeDetailValue(actualValue, cell, condition.getZeroDisplayType(), fontSize);
 				            }
 				            
 				            curRow++;
@@ -2344,7 +2373,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					            	Style style = remarkCell.getStyle();
 					            	remarkCell.setValue(remarkContentRow);
 									style.setHorizontalAlignment(TextAlignmentType.LEFT);
-					            	setFontStyle(style);
+					            	setFontStyle(style, fontSize);
 					            	remarkCell.setStyle(style);
 					            }
 					            
@@ -2402,7 +2431,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            for (int j = 0; j < length; j++) {
 			            	TotalValue totalValue = lstItemRow.get(j);
 			            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2);
-			            	writeTotalValue(totalValue, cell, zeroDisplayType);
+			            	writeTotalValue(totalValue, cell, condition.getZeroDisplayType(), fontSize);
 			            }
 			            currentRow++;
 			        }
@@ -2506,7 +2535,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            for (int j = 0; j < length; j++) {
 	            	TotalValue totalValue = lstItemRow.get(j);
 	            	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2);
-	            	writeTotalValue(totalValue, cell, zeroDisplayType);
+	            	writeTotalValue(totalValue, cell, condition.getZeroDisplayType(), fontSize);
 	            }
 	            currentRow++;
 	        }
@@ -2551,7 +2580,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	            for (int j = 0; j < length; j++) {
 	            	TotalValue totalValue = lstItemRow.get(j);
 	            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2); 
-	            	writeTotalValue(totalValue, cell, zeroDisplayType);
+	            	writeTotalValue(totalValue, cell, condition.getZeroDisplayType(), fontSize);
 	            }
 	            currentRow++;
 	        }
@@ -2583,7 +2612,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					, condition
 					, rowPageTracker
 					, chunkSize
-					, zeroDisplayType);
+					, fontSize);
 			
 			// Page break by workplace
 			if ((condition.getPageBreakIndicator() == PageBreakIndicator.WORKPLACE || condition.getPageBreakIndicator() == PageBreakIndicator.EMPLOYEE)
@@ -2679,7 +2708,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            for (int j = 0; j < length; j++) {
 				            	TotalValue totalValue = lstItemRow.get(j);
 				            	Cell cell = cells.get(currentRow + i, DATA_COLUMN_INDEX[0] + j * 2);
-				            	writeTotalValue(totalValue, cell, zeroDisplayType);
+				            	writeTotalValue(totalValue, cell, condition.getZeroDisplayType(), fontSize);
 				            }
 				        }
 				        currentRow += dataRowCount;
@@ -2701,7 +2730,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param actualValue the actual value
 	 * @param cell the cell
 	 */
-	private void writeDetailValue(ActualValue actualValue, Cell cell, ZeroDisplayType zeroDisplayType) {
+	private void writeDetailValue(ActualValue actualValue, Cell cell, ZeroDisplayType zeroDisplayType, FontSizeEnum fontSize) {
 		Style style = cell.getStyle();
 		ValueType valueTypeEnum = EnumAdaptor.valueOf(actualValue.getValueType(), ValueType.class);
 		if (valueTypeEnum.isTime()) {
@@ -2722,7 +2751,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			cell.setValue(actualValue.getValue());
 			style.setHorizontalAlignment(TextAlignmentType.LEFT);
 		}
-		setFontStyle(style);
+		setFontStyle(style, fontSize);
 		cell.setStyle(style);
 	}
 	
@@ -2740,7 +2769,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @throws Exception the exception
 	 */
 	private int writeDetailedDailySchedule(int currentRow, WorksheetCollection templateSheetCollection, WorkSheetInfo sheetInfo, DailyReportData dailyReport,
-			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker, int chunkSize, ZeroDisplayType zeroDisplayType) throws Exception {
+			int dataRowCount, WorkScheduleOutputCondition condition, RowPageTracker rowPageTracker, int chunkSize, FontSizeEnum fontSize) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
 		List<WorkplaceDailyReportData> lstDailyReportData = dailyReport.getLstDailyReportData();
 		
@@ -2779,7 +2808,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					, rowPageTracker
 					, titleDate
 					, chunkSize
-					, zeroDisplayType);
+					, fontSize);
 		
 			if (iteratorWorkplaceData.hasNext()) {
 				// Page break (regardless of setting, see example template sheet ★ 日別勤務表-日別3行-1)
@@ -2816,7 +2845,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			Cell grossTotalCellTag = cells.get(currentRow, 0);
 			grossTotalCellTag.setValue(WorkScheOutputConstants.GROSS_TOTAL);
 			
-			currentRow = writeGrossTotal(currentRow, dailyReport.getListTotalValue(), sheetInfo.getSheet(), dataRowCount, rowPageTracker, chunkSize, condition.getZeroDisplayType());
+			currentRow = writeGrossTotal(currentRow
+					, dailyReport.getListTotalValue()
+					, sheetInfo.getSheet()
+					, dataRowCount
+					, rowPageTracker
+					, chunkSize
+					, condition.getZeroDisplayType()
+					, fontSize);
 		}
 		
 		return currentRow;
@@ -2844,7 +2880,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			, RowPageTracker rowPageTracker
 			, String titleDate
 			, int chunkSize
-			, ZeroDisplayType zeroDisplayType) throws Exception {
+			, FontSizeEnum fontSize) throws Exception {
 		Cells cells = sheetInfo.getSheet().getCells();
         String workplaceTitle = TextResource.localize("KWR001_90") + "　" + rootWorkplace.getWorkplaceCode() +"　"+ rootWorkplace.getWorkplaceName();
 
@@ -2940,7 +2976,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			            	// Column 4, 6, 8,...
 			            	ActualValue actualValue = lstItemRow.get(j);
 			            	Cell cell = cells.get(curRow, DATA_COLUMN_INDEX[0] + j * 2); 
-			            	writeDetailValue(actualValue, cell, zeroDisplayType);
+			            	writeDetailValue(actualValue, cell, condition.getZeroDisplayType(), fontSize);
 			            }
 			            
 			            curRow++;
@@ -2966,7 +3002,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				            	Style style = remarkCell.getStyle();
 				            	remarkCell.setValue(remarkContentRow);
 								style.setHorizontalAlignment(TextAlignmentType.LEFT);
-				            	setFontStyle(style);
+				            	setFontStyle(style, fontSize);
 				            	remarkCell.setStyle(style);
 				            }
 				            
@@ -3030,7 +3066,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			workplaceTotalCellTag.setValue(WorkScheOutputConstants.WORKPLACE_TOTAL);
 			
 			// B6_2
-			currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, true, chunkSize, zeroDisplayType);
+			currentRow = writeWorkplaceTotal(currentRow
+					, rootWorkplace
+					, sheetInfo.getSheet()
+					, dataRowCount
+					, true
+					, chunkSize
+					, condition.getZeroDisplayType()
+					, fontSize);
 		}
 		
 		boolean firstWorkplace = true;
@@ -3073,7 +3116,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 					, rowPageTracker
 					, titleDate
 					, chunkSize
-					, zeroDisplayType);
+					, fontSize);
 
 		}
 		
@@ -3120,7 +3163,14 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 				workplaceTotalCellTag.setValue(TextResource.localize("KWR001_116") + level);
 				
 				// B7_2 - B11_2
-				currentRow = writeWorkplaceTotal(currentRow, rootWorkplace, sheetInfo.getSheet(), dataRowCount, false, chunkSize, zeroDisplayType);
+				currentRow = writeWorkplaceTotal(currentRow
+						, rootWorkplace
+						, sheetInfo.getSheet()
+						, dataRowCount
+						, false
+						, chunkSize
+						, condition.getZeroDisplayType()
+						, fontSize);
 			} while (levelIterator != null && levelIterator.hasNext());
 		}
 		
@@ -3143,7 +3193,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			, int dataRowCount
 			, boolean totalType
 			, int chunkSize
-			, ZeroDisplayType zeroDisplayType) {
+			, ZeroDisplayType zeroDisplayType
+			, FontSizeEnum fontSize) {
 		List<TotalValue> totalWorkplaceValue;
 		if (!totalType)
 			totalWorkplaceValue = rootWorkplace.getWorkplaceTotal().getTotalWorkplaceValue();
@@ -3171,7 +3222,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    for (int j = 0; j < length; j++) {
 			    	totalValue = lstItemRow.get(j);
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	writeTotalValue(totalValue, cell, zeroDisplayType);
+		        	writeTotalValue(totalValue, cell, zeroDisplayType, fontSize);
 			    }
 			    currentRow++;
 			}
@@ -3188,7 +3239,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 	 * @param totalValue the total value
 	 * @param cell the cell
 	 */
-	private void writeTotalValue(TotalValue totalValue, Cell cell, ZeroDisplayType zeroDisplayType) {
+	private void writeTotalValue(TotalValue totalValue, Cell cell, ZeroDisplayType zeroDisplayType, FontSizeEnum fontSize) {
 		Style style = cell.getStyle();
 		String value = totalValue.getValue();
     	ValueType valueTypeEnum = EnumAdaptor.valueOf(totalValue.getValueType(), ValueType.class);
@@ -3209,7 +3260,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			cell.setValue(value);
     	}
     	
-    	setFontStyle(style);
+    	setFontStyle(style, fontSize);
     	cell.setStyle(style);
 	}
 	
@@ -3229,7 +3280,8 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			, int dataRowCount
 			, RowPageTracker rowPageTracker
 			, int chunkSize
-			, ZeroDisplayType zeroDisplayType) {
+			, ZeroDisplayType zeroDisplayType
+			, FontSizeEnum fontSizeEnum) {
 		int size = lstGrossTotal.size();
 		if (size == 0) {
 			currentRow += dataRowCount;
@@ -3252,7 +3304,7 @@ public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsRepor
 			    for (int j = 0; j < length; j++) {
 			    	totalValue =lstItemRow.get(j);
 		        	Cell cell = cells.get(currentRow, DATA_COLUMN_INDEX[0] + j * 2); 
-		        	writeTotalValue(totalValue, cell, zeroDisplayType);
+		        	writeTotalValue(totalValue, cell, zeroDisplayType, fontSizeEnum);
 			    }
 			    currentRow++;
 			}

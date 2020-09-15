@@ -428,7 +428,7 @@ module nts.uk.at.view.kwr001.c {
                 command.lstRemarkContent.push({ usedClassification: self.convertBoolToNum(self.checkDeviationAlarm()), printItem: 13 });
                 command.workTypeNameDisplay = self.selectedRuleCode();
                 command.newMode = (_.isUndefined(self.currentCodeList()) || _.isNull(self.currentCodeList()) || _.isEmpty(self.currentCodeList())) ? true : false;
-                command.fontSize = self.selectedSizeClassificationType;
+                command.fontSize = self.selectedSizeClassificationType();
                 command.selectionType = self.selectionType;
                 command.layoutId = self.layoutId;
                 command.employeeId = self.employeeId;
