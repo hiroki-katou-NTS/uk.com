@@ -177,6 +177,6 @@ public class OiomtTimeDfs extends UkJpaEntity implements Serializable {
 				domain.getNullValueReplace().value, 
 				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
 				domain.getFixedValue().value, 
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,);
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
 	}
 }
