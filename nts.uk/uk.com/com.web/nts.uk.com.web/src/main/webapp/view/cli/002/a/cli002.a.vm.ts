@@ -116,6 +116,8 @@ module nts.uk.com.view.cli002.a {
 
             new MGrid($mgrid.get(0), {
                 subHeight: "450px",
+                height: "900px",
+                width: "600px",
                 headerHeight: '60px',
                 primaryKey: "rowNumber",
                 primaryKeyDataType: "number",
@@ -126,20 +128,20 @@ module nts.uk.com.view.cli002.a {
                 dataSource: vm.dataSourceItem(),
                 columns: [
                     { headerText: "", key: "rowNumber", dataType: "number", width: "30px"},
-                    { headerText: this.$i18n("CLI002_7"), key: "functionName", dataType: "string", width: "180px"},
+                    { headerText: this.$i18n("CLI002_7"), key: "functionName", dataType: "string", width: "140px", ntsControl: 'Label'},
                     { headerText: this.$i18n("CLI002_4"),
                         group: [
-                            {headerText: "", key: "logLoginDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, hidden: false}
+                            {headerText: "", key: "logLoginDisplay", dataType: "boolean", width: "150px", ntsControl: "Checkbox", checkbox: true, hidden: false}
                         ] 
                     },
                     { headerText: this.$i18n("CLI002_5"),
                         group: [
-                            {headerText: "", key: "logStartDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, hidden: false}
+                            {headerText: "", key: "logStartDisplay", dataType: "boolean", width: "150px", ntsControl: "Checkbox", checkbox: true, hidden: false}
                         ] 
                     },
                     { headerText: this.$i18n("CLI002_6"),
                         group: [
-                            {headerText: "", key: "logUpdateDisplay", dataType: "boolean", width: "180px", ntsControl: "Checkbox", checkbox: true, hidden: false}
+                            {headerText: "", key: "logUpdateDisplay", dataType: "boolean", width: "150px", ntsControl: "Checkbox", checkbox: true, hidden: false}
                         ]
                     },
                 ],
@@ -187,7 +189,7 @@ module nts.uk.com.view.cli002.a {
         bootHistoryRecord: TargetSetting,
         editHistoryRecord: TargetSetting,
         programId: string,
-        menuClassification: number
+        menuClassification: number,
     }
 
     class PGInfomation {
