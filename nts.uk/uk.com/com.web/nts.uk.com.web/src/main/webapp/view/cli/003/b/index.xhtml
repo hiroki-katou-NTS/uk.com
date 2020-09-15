@@ -26,7 +26,7 @@
 	      </div>
        
           <div class="table valign-top control-group">
-            <div class="contentL cell" data-bind="ntsPanel:{width: 300, height: 400, direction: 'right', showIcon: true, visible: true}">
+            <div class="contentL cell" data-bind="ntsPanel:{ direction: 'right', showIcon: true, visible: true}">
               <div id="B1-search-box" tabindex="1" data-bind="ntsSearchBox: {
                 mode:'mgrid',
                 searchMode: 'highlight',
@@ -37,7 +37,7 @@
                 fields: ['name', 'code']
               }"/>
               <table id="B1" tabindex="2" data-bind="ntsGridList:{
-                height: 600,
+                height: 390,
                 width: 300,
                 primaryKey: 'code',
                 dataSource: logSets,
@@ -73,7 +73,7 @@
                    <div id="B2_9"  data-bind="ntsFormLabel:{}">#{i18n.getText('CLI003_79')}</div>
                    <div class="table2">
                     <table id="B2_10" tabindex="3" data-bind="ntsGridList:{
-                      height: 200,
+                      height: 150,
                       width: 500,
                       dataSource: b2_10Datasource,
                       columns: b2_10Columns,
