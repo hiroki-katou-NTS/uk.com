@@ -208,6 +208,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				//アルゴリズム「申請一覧リスト取得承認」を実行する - 3
 			appListInfo = this.getAppListByApproval(param, device, appListInfo);
 		}
+		// 各申請の申請名称を「申請一覧抽出条件.申請種類リスト」より取得する
+		param.setOpAppTypeLst(param.getOpListOfAppTypes());
+		// 取得した一覧の申請種類(単一化）で申請一覧抽出条件.申請種類を作成する
+		// thêm select all ở dropdownlist, xử lý ở UI
 		return new AppListInitOutput(param, appListInfo);
 	}
 
