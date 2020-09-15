@@ -916,6 +916,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let ymd = time.yearMonthDay;
                         let workTypeName = (cell.workTypeCode != null && (cell.workTypeName == null || cell.workTypeName == '')) ? cell.workTypeCode + getText("KSU001_22") : cell.workTypeName;
                         let workTimeName = (cell.workTimeCode != null && (cell.workTimeName == null || cell.workTimeName == '')) ? cell.workTimeCode + getText("KSU001_22") : cell.workTimeName;
+                        if (cell.needToWork == false) {
+                            workTypeName = '';
+                            workTimeName = '';
+                        }
                         objDetailContentDs['_' + ymd] = new ExCell(cell.workTypeCode, workTypeName, cell.workTimeCode, workTimeName);
 
                         // set Deco background
@@ -985,6 +989,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         let endTime      = cell.endTime   == null ? '' : formatById("Clock_Short_HM", cell.endTime);
                         let workTypeCode = cell.workTypeCode;
                         let workTimeCode = cell.workTimeCode;
+                        if (cell.needToWork == false) {
+                            workTypeName = '';
+                            workTimeName = '';
+                            startTime    = '';
+                            endTime      = '';
+                        }
                         objDetailContentDs['_' + ymd] = new ExCell(workTypeCode, workTypeName, workTimeCode, workTimeName, startTime, endTime);
 
                         // set Deco background
