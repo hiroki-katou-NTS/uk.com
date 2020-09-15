@@ -248,7 +248,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 let shiftMasterWithWorkStyleLst;
                 let detailContentDeco = [];
-                //detailContentDeco     = self.listCellNotEdit;
+                let listCellNotEdit   = self.listCellNotEdit;
 
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor: IUserInfor = JSON.parse(data);
@@ -256,6 +256,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                     uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 });
+                
+                // lay data tai thời điểm chuyển combobox
+                let dataSource = $("#extable").exTable('dataSource', 'detail').body;
 
                 for (let i = 0; i < self.listEmpInfo.length; i++) {
                     let rowId = i + '';
@@ -263,7 +266,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let objDetailContentDs = new Object();
 
                     let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(self.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
-
+                    let dataOnGrid: any = _.filter(dataSource, function(workSchedul: any) { return workSchedul.employeeId === emp.employeeId })[0];
+                    
                     // set data to detailContent : datasource v        
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
@@ -272,11 +276,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     style.type = 'text/css';
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
-
                         let rowOfSelf = cell.employeeId == self.employeeIdLogin ? true : false;
-
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
+                        
+                        let dataCellOnGrid = dataOnGrid['_'+ ymd];
 
                         // set Deco background
                         if (value == 1) {
@@ -295,11 +299,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                         // set Deco text color
                         // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")  
-                        if (util.isNullOrUndefined(cell.shiftCode) || util.isNullOrEmpty(cell.shiftCode)) {
+                        if (util.isNullOrUndefined(dataCellOnGrid.shiftCode) || util.isNullOrEmpty(dataCellOnGrid.shiftCode)) {
                             // デフォルト（黒）  Default (black)
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
                         } else {
-                            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
+                            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
                             if (objShiftMasterWithWorkStyle.length > 0) {
                                 /**
                                  *  1日休日系  ONE_DAY_REST(0)
@@ -328,7 +332,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     };
                 }
-                self.updateExTableWhenChangeModeBg(detailContentDeco);
+                self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,listCellNotEdit));
                 self.stopRequest(true);
             });
 
