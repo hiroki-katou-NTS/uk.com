@@ -26,6 +26,8 @@ import nts.uk.ctx.at.request.dom.application.applist.service.OverTimeFrame;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentService;
 import nts.uk.ctx.at.request.dom.application.applist.service.content.ArrivedLateLeaveEarlyItemContent;
 import nts.uk.ctx.at.request.dom.application.applist.service.datacreate.StampAppOutputTmp;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.lateleaveearly.ArrivedLateLeaveEarly;
@@ -87,6 +89,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	
 	@Inject
 	private GoBackDirectlyRepository goBackDirectlyRepository;
+	
+	@Inject
+	private BusinessTripRepository businessTripRepository;
 	
 	private final static String KDL030 = "\n";
 	private final static String CMM045 = "<br/>";
@@ -963,5 +968,39 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				itemContentLst, 
 				application.getAppType(), 
 				application.getOpAppStandardReasonCD().orElse(null));
+	}
+
+	@Override
+	public String createBusinessTripData(Application application, DisplayAtr appReasonDisAtr, ScreenAtr screenAtr,
+			String companyID) {
+		String content = Strings.EMPTY;
+		// ドメインモデル「出張申請」を取得する
+		BusinessTrip businessTrip = businessTripRepository.findByAppId(companyID, application.getAppID()).get();
+		// @＝''
+		String paramString = "";
+		// 出張申請.出発時刻が入力されている場合
+		if(businessTrip.getDepartureTime().isPresent()) {
+			// 申請内容＝#CMM045_290＋"　"＋出張申請.出発時刻＋”　”
+			content += I18NText.getText("CMM045_290") + " " + new TimeWithDayAttr(businessTrip.getDepartureTime().get().v()).getFullText() + " ";
+			// @＝'　'
+			paramString = " ";
+		}
+		// 出張申請.帰着時刻が入力されている場合
+		if(businessTrip.getReturnTime().isPresent()) {
+			// 申請内容＋＝@＋#CMM045_291＋"　"＋出張申請.帰着時刻
+			content += I18NText.getText("CMM045_291") + " " + new TimeWithDayAttr(businessTrip.getReturnTime().get().v()).getFullText();
+		}
+		// アルゴリズム「申請内容の申請理由」を実行する
+		String appReasonContent = appContentService.getAppReasonContent(
+				appReasonDisAtr, 
+				application.getOpAppReason().orElse(null), 
+				screenAtr, 
+				application.getOpAppStandardReasonCD().orElse(null), 
+				ApplicationType.BUSINESS_TRIP_APPLICATION, 
+				Optional.empty());
+		if(Strings.isNotBlank(appReasonContent)) {
+			content += "\n" + appReasonContent;
+		}
+		return content;
 	}
 }

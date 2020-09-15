@@ -63,7 +63,7 @@ public class AsposeLateLeaveEarly {
 						.getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime1() != null) {
 			scheAttendTime1 = printContentOfApp.getOpArrivedLateLeaveEarlyInfo().get().getAppDispInfoStartupOutput()
 					.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail()
-					.get().getAchievementEarly().getScheAttendanceTime1().toString();
+					.get().getAchievementEarly().getScheAttendanceTime1().getInDayTimeWithFormat();
 		}
 		// A2_2
 		String scheDepartureTime1 = EMPTY;
@@ -78,7 +78,7 @@ public class AsposeLateLeaveEarly {
 						.getOpAchievementDetail().get().getAchievementEarly().getScheDepartureTime1() != null) {
 			scheDepartureTime1 = printContentOfApp.getOpArrivedLateLeaveEarlyInfo().get().getAppDispInfoStartupOutput()
 					.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0).getOpAchievementDetail()
-					.get().getAchievementEarly().getScheDepartureTime1().toString();
+					.get().getAchievementEarly().getScheDepartureTime1().getInDayTimeWithFormat();
 		}
 
 		timeReportsTemp = printContentOfApp.getOpArrivedLateLeaveEarlyInfo().get().getArrivedLateLeaveEarly().get()
@@ -167,10 +167,12 @@ public class AsposeLateLeaveEarly {
 							.getOpAchievementDetail().isPresent()
 					&& printContentOfApp.getOpArrivedLateLeaveEarlyInfo().get().getAppDispInfoStartupOutput()
 							.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0)
-							.getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime2() != null) {
+							.getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime2()
+							.isPresent()) {
 				scheAttendTime2 = printContentOfApp.getOpArrivedLateLeaveEarlyInfo().get().getAppDispInfoStartupOutput()
 						.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0)
-						.getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime2().toString();
+						.getOpAchievementDetail().get().getAchievementEarly().getScheAttendanceTime2().get()
+						.getInDayTimeWithFormat();
 			}
 			// A4_2
 			String scheDepartureTime2 = EMPTY;
@@ -182,11 +184,11 @@ public class AsposeLateLeaveEarly {
 							.getOpAchievementDetail().isPresent()
 					&& printContentOfApp.getOpArrivedLateLeaveEarlyInfo().get().getAppDispInfoStartupOutput()
 							.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst().get().get(0)
-							.getOpAchievementDetail().get().getAchievementEarly().getScheDepartureTime2() != null) {
+							.getOpAchievementDetail().get().getAchievementEarly().getScheDepartureTime2().isPresent()) {
 				scheDepartureTime2 = printContentOfApp.getOpArrivedLateLeaveEarlyInfo().get()
 						.getAppDispInfoStartupOutput().getAppDispInfoWithDateOutput().getOpActualContentDisplayLst()
 						.get().get(0).getOpAchievementDetail().get().getAchievementEarly().getScheDepartureTime2()
-						.toString();
+						.get().getInDayTimeWithFormat();
 			}
 
 			timeReportsTemp = printContentOfApp.getOpArrivedLateLeaveEarlyInfo().get().getArrivedLateLeaveEarly().get()

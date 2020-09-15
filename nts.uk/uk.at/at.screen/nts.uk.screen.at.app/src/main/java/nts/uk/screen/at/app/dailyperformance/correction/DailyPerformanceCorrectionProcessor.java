@@ -31,6 +31,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -53,26 +54,27 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.Re
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.approval.ApprovalStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.confirmationstatus.change.confirm.ConfirmStatusActualDayChange;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.AggrPeriodEachActualClosure;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
-import nts.uk.ctx.at.record.dom.workinformation.enums.CalculationState;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.SettingUnitType;
 import nts.uk.ctx.at.record.dom.workrecord.operationsetting.YourselfConfirmError;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.AppGroupExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationExportDto;
 import nts.uk.ctx.at.request.app.find.application.applicationlist.ApplicationListForScreen;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.CalculationState;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeUseSet;
+import nts.uk.ctx.at.shared.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.enums.DailyAttendanceAtr;
@@ -169,9 +171,6 @@ public class DailyPerformanceCorrectionProcessor {
 	private DailyPerformanceScreenRepo repo;
 
 	@Inject
-	private ClosureService closureService;
-
-	@Inject
 	private DailyModifyQueryProcessor dailyModifyQueryProcessor;
 
 	@Inject
@@ -238,10 +237,10 @@ public class DailyPerformanceCorrectionProcessor {
 	private FindClosureDateService findClosureService;
 	
 	@Inject
-	private GetClosurePeriod getClosurePeriod;
-	
-	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
+	
+	@Inject 
+	private RecordDomRequireService requireService;
 	
     static final Integer[] DEVIATION_REASON  = {436, 438, 439, 441, 443, 444, 446, 448, 449, 451, 453, 454, 456, 458, 459, 799, 801, 802, 804, 806, 807, 809, 811, 812, 814, 816, 817, 819, 821, 822};
 	public static final Map<Integer, Integer> DEVIATION_REASON_MAP = IntStream.range(0, DEVIATION_REASON.length-1).boxed().collect(Collectors.toMap(x -> DEVIATION_REASON[x], x -> x/3 +1));
@@ -647,7 +646,8 @@ public class DailyPerformanceCorrectionProcessor {
 				String attendanceAtrAsString = String.valueOf(item.getAttendanceAtr());
 				Integer groupType = item.getTypeGroup();
 				String key = mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + data.getDate().toString());
-				String value = itemValueMap.get(key) != null && itemValueMap.get(key).value() != null
+				// fix tạm cho Hoa test, sau đó Thanh sẽ điều tra (TQP)
+				String value = itemValueMap.get(key) != null && itemValueMap.get(key == "" ? 0 : key).value() != null
 						? itemValueMap.get(key).value().toString() : "";
 				cellEdit = dailyRecEditSetsMap.get(mergeString(itemIdAsString, "|", data.getEmployeeId(), "|" + converDateToString(data.getDate())));
 				
@@ -915,8 +915,8 @@ public class DailyPerformanceCorrectionProcessor {
 		appplicationDisable.forEach(x -> {
 			String key = x.getEmployeeID() + "|" + x.getAppDate();
 			if (disableSignMap != null) {
-				boolean disable = (x.getReflectState() == ReflectedState.NOTREFLECTED.value
-						|| x.getReflectState() == ReflectedState.REMAND.value)
+				boolean disable = (x.getReflectState() == ReflectedState_New.NOTREFLECTED.value
+						|| x.getReflectState() == ReflectedState_New.REMAND.value)
 						&& x.getAppType() != nts.uk.ctx.at.request.dom.application.ApplicationType.OVER_TIME_APPLICATION.value;
 				if (disableSignMap.containsKey(key)) {
 					disableSignMap.put(key, disableSignMap.get(key) || disable);
@@ -1008,7 +1008,9 @@ public class DailyPerformanceCorrectionProcessor {
 		List<ClosureDto> closureDtos = repo.getClosureId(employmentWithSidMap, dateRange.getEndDate());
 		if (!closureDtos.isEmpty()) {
 			closureDtos.forEach(x -> {
-				DatePeriod datePeriod = closureService.getClosurePeriod(x.getClosureId(),
+				DatePeriod datePeriod = ClosureService.getClosurePeriod(
+						requireService.createRequire(),
+						x.getClosureId(),
 						new YearMonth(x.getClosureMonth()));
 				Optional<ActualLockDto> actualLockDto = repo.findAutualLockById(companyId, x.getClosureId());
 				if (actualLockDto.isPresent()) {
@@ -1664,25 +1666,35 @@ public class DailyPerformanceCorrectionProcessor {
 				.findByKey(employeeId, date);
 		if (timeLeavingOpt.isPresent()) {
 			TimeLeavingOfDailyPerformance timeLeaving = timeLeavingOpt.get();
-			if (!timeLeaving.getTimeLeavingWorks().isEmpty()) {
-				timeLeaving.getTimeLeavingWorks().stream().filter(x -> x.getWorkNo() != null && x.getWorkNo().v() == 1).forEach(x -> {
+			if (!timeLeaving.getAttendance().getTimeLeavingWorks().isEmpty()) {
+				timeLeaving.getAttendance().getTimeLeavingWorks().stream().filter(x -> x.getWorkNo() != null && x.getWorkNo().v() == 1).forEach(x -> {
 					Optional<TimeActualStamp> attOpt = x.getAttendanceStamp();
 					if (attOpt.isPresent()) {
 						Optional<WorkStamp> workStampOpt = attOpt.get().getStamp();
 						if (workStampOpt.isPresent() && stampSourceAt) {
-							workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
-									workStampOpt.get().getTimeWithDay(), workStampOpt.get().getLocationCode().isPresent() ?  workStampOpt.get().getLocationCode().get() : null,
-									StampSourceInfo.SPR);
-						}
+									workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+											workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()
+													? workStampOpt.get().getTimeDay().getTimeWithDay().get()
+													: null,
+											workStampOpt.get().getLocationCode().isPresent()
+													? workStampOpt.get().getLocationCode().get()
+													: null,
+											TimeChangeMeans.SPR_COOPERATION);
+								}
 					}
 
 					Optional<TimeActualStamp> leavOpt = x.getLeaveStamp();
 					if (leavOpt.isPresent() && stampSourceLeav) {
 						Optional<WorkStamp> workStampOpt = leavOpt.get().getStamp();
-						workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
-								workStampOpt.get().getTimeWithDay(), workStampOpt.get().getLocationCode().isPresent() ?  workStampOpt.get().getLocationCode().get() : null,
-								StampSourceInfo.SPR);
-					}
+								workStampOpt.get().setPropertyWorkStamp(workStampOpt.get().getAfterRoundingTime(),
+										workStampOpt.get().getTimeDay().getTimeWithDay().isPresent()
+												? workStampOpt.get().getTimeDay().getTimeWithDay().get()
+												: null,
+										workStampOpt.get().getLocationCode().isPresent()
+												? workStampOpt.get().getLocationCode().get()
+												: null,
+										TimeChangeMeans.SPR_COOPERATION);
+							}
 					timeLeavingOfDailyPerformanceRepository.update(timeLeaving);
 				});
 			}
@@ -1761,10 +1773,12 @@ public class DailyPerformanceCorrectionProcessor {
 		
 		if (dateRange != null && (initScreenOther == null || !initScreenOther) && !changeFormat){
 			screenDto.setEmploymentCode(getEmploymentCode(companyId, dateRange.getEndDate(), sId));
+			if(dpStateParam != null) {
 			DatePeriodInfo dateInfo = dpStateParam.getDateInfo();
 			dateInfo.setTargetRange(dateRange);
 			dateInfo.setClosureId(ClosureId.valueOf(closureId));
 			return dateInfo;
+			}
 		}
 		
 		if (dateRange != null && initScreenOther != null && initScreenOther) {
@@ -1862,8 +1876,9 @@ public class DailyPerformanceCorrectionProcessor {
 				GeneralDate dateRefer = GeneralDate.ymd(yearMonthOpt.get().year(), yearMonthOpt.get().month(),
 						yearMonthOpt.get().lastDateInMonth());
 				yearMonth = yearMonthOpt.get();
-				lstClosurePeriod.addAll(getClosurePeriod
-						.fromYearMonth(empTarget, dateRefer, yearMonthOpt.get()));
+				lstClosurePeriod.addAll(GetClosurePeriod
+						.fromYearMonth(requireService.createRequire(), new CacheCarrier(),
+								empTarget, dateRefer, yearMonthOpt.get()));
 			} else {
 				Optional<ClosurePeriod> closurePeriodOpt = findClosureService.getClosurePeriod(empTarget,
 						period.start());
@@ -1872,8 +1887,9 @@ public class DailyPerformanceCorrectionProcessor {
 						closurePeriodOpt.get().getYearMonth().month(),
 						closurePeriodOpt.get().getYearMonth().lastDateInMonth());
 				yearMonth = closurePeriodOpt.get().getYearMonth();
-				lstClosurePeriod.addAll(getClosurePeriod
-						.fromYearMonth(empTarget, dateRefer, closurePeriodOpt.get().getYearMonth()));
+				lstClosurePeriod.addAll(GetClosurePeriod
+						.fromYearMonth(requireService.createRequire(), new CacheCarrier(),
+								empTarget, dateRefer, closurePeriodOpt.get().getYearMonth()));
 			}
 			if(lstClosurePeriod.isEmpty()) return null;
 			

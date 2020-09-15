@@ -3,16 +3,16 @@ module nts.uk.at.view.kaf022.j.viewmodel {
 
     export class ScreenModelJ {
         itemListD15: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: text('KAF022_391')},
-            {code: 1, name: text('KAF022_392')}
+            {code: 1, name: text('KAF022_391')},
+            {code: 0, name: text('KAF022_392')}
         ]);
         itemListD13: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 1, name: text('KAF022_389')},
-            {code: 0, name: text('KAF022_390')}
+            {code: 1, name: text('KAF022_100')},
+            {code: 0, name: text('KAF022_101')}
         ]);
         supportFrames: KnockoutObservableArray<ItemModel>;
 
-        cancelAtr: KnockoutObservable<number> = ko.observable(0);
+        cancelAtr: KnockoutObservable<number> = ko.observable(1);
 
         workComment1Content: KnockoutObservable<string> = ko.observable("");
         workComment1Color: KnockoutObservable<string> = ko.observable("");
@@ -21,10 +21,10 @@ module nts.uk.at.view.kaf022.j.viewmodel {
         workComment2Color: KnockoutObservable<string> = ko.observable("");
         workComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
-        goOutPrivateDispAtr: KnockoutObservable<number> = ko.observable(0);
-        goOutOfficeDispAtr: KnockoutObservable<number> = ko.observable(0);
-        goOutCompensationDispAtr: KnockoutObservable<number> = ko.observable(0);
-        goOutUnionDispAtr: KnockoutObservable<number> = ko.observable(0);
+        goOutPrivateDispAtr: KnockoutObservable<number> = ko.observable(1);
+        goOutOfficeDispAtr: KnockoutObservable<number> = ko.observable(1);
+        goOutCompensationDispAtr: KnockoutObservable<number> = ko.observable(1);
+        goOutUnionDispAtr: KnockoutObservable<number> = ko.observable(1);
         goOutComment1Content: KnockoutObservable<string> = ko.observable("");
         goOutComment1Color: KnockoutObservable<string> = ko.observable("");
         goOutComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
@@ -39,7 +39,7 @@ module nts.uk.at.view.kaf022.j.viewmodel {
         childCareComment2Color: KnockoutObservable<string> = ko.observable("");
         childCareComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
-        supportFrameDispNO: KnockoutObservable<number> = ko.observable(0);
+        supportFrameDispNO: KnockoutObservable<number> = ko.observable(1);
         supportComment1Content: KnockoutObservable<string> = ko.observable("");
         supportComment1Color: KnockoutObservable<string> = ko.observable("");
         supportComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
@@ -68,13 +68,13 @@ module nts.uk.at.view.kaf022.j.viewmodel {
         imageRecordComment2Color: KnockoutObservable<string> = ko.observable("");
         imageRecordComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
-        workTimeReflectAtr: KnockoutObservable<number> = ko.observable(0);
-        extraWorkTimeReflectAtr: KnockoutObservable<number> = ko.observable(0);
-        goOutTimeReflectAtr: KnockoutObservable<number> = ko.observable(0);
-        childCareTimeReflecAtr: KnockoutObservable<number> = ko.observable(0);
-        supportTimeReflecAtr: KnockoutObservable<number> = ko.observable(0);
-        careTimeReflectAtr: KnockoutObservable<number> = ko.observable(0);
-        breakTimeReflectAtr: KnockoutObservable<number> = ko.observable(0);
+        workTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
+        extraWorkTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
+        goOutTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
+        childCareTimeReflecAtr: KnockoutObservable<number> = ko.observable(1);
+        supportTimeReflecAtr: KnockoutObservable<number> = ko.observable(1);
+        careTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
+        breakTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
             const self = this;
@@ -99,22 +99,22 @@ module nts.uk.at.view.kaf022.j.viewmodel {
             const dataSetting = allData.appStampSetting;
             const dataReflect = allData.appStampReflect;
             if (dataSetting) {
-                self.cancelAtr(dataSetting.useCancelFunction || 0);
+                self.cancelAtr(dataSetting.useCancelFunction);
                 self.supportFrameDispNO(dataSetting.supportFrameDispNO);
                 const goOutTypeDispControl = dataSetting.goOutTypeDispControl || [];
                 goOutTypeDispControl.forEach(d => {
                     switch (d.goOutType) {
                         case 0:
-                            self.goOutPrivateDispAtr(d.display || 0);
+                            self.goOutPrivateDispAtr(d.display);
                             break;
                         case 1:
-                            self.goOutOfficeDispAtr(d.display || 0);
+                            self.goOutOfficeDispAtr(d.display);
                             break;
                         case 2:
-                            self.goOutCompensationDispAtr(d.display || 0);
+                            self.goOutCompensationDispAtr(d.display);
                             break;
                         case 3:
-                            self.goOutUnionDispAtr(d.display || 0);
+                            self.goOutUnionDispAtr(d.display);
                             break;
                         default:
                             break;
@@ -185,13 +185,13 @@ module nts.uk.at.view.kaf022.j.viewmodel {
                 })
             }
             if (dataReflect) {
-                self.workTimeReflectAtr(dataReflect.workTimeReflectAtr || 0);
-                self.extraWorkTimeReflectAtr(dataReflect.extraWorkTimeReflectAtr || 0);
-                self.goOutTimeReflectAtr(dataReflect.goOutTimeReflectAtr || 0);
-                self.childCareTimeReflecAtr(dataReflect.childCareTimeReflecAtr || 0);
-                self.supportTimeReflecAtr(dataReflect.supportTimeReflecAtr || 0);
-                self.careTimeReflectAtr(dataReflect.careTimeReflectAtr || 0);
-                self.breakTimeReflectAtr(dataReflect.breakTimeReflectAtr || 0);
+                self.workTimeReflectAtr(dataReflect.workTimeReflectAtr);
+                self.extraWorkTimeReflectAtr(dataReflect.extraWorkTimeReflectAtr);
+                self.goOutTimeReflectAtr(dataReflect.goOutTimeReflectAtr);
+                self.childCareTimeReflecAtr(dataReflect.childCareTimeReflecAtr);
+                self.supportTimeReflecAtr(dataReflect.supportTimeReflecAtr);
+                self.careTimeReflectAtr(dataReflect.careTimeReflectAtr);
+                self.breakTimeReflectAtr(dataReflect.breakTimeReflectAtr);
             }
         }
 

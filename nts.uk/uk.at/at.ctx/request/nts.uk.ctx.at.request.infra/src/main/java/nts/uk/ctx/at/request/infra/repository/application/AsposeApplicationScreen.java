@@ -24,6 +24,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.at.request.dom.application.AppScreenGenerator;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppLstApprovalLstDispSet;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -45,7 +46,7 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	private CompanyAdapter companyAdapter;
 
 	private final String TEMPLATE_FILE = "application/CMM045_template.xlsx";
-	private final String OUTPUT_FILE = "申請一覧.xlsx";
+	private final String OUTPUT_FILE_EXTENSION = ".xlsx";
 
 	/*
 	 * (non-Javadoc)
@@ -56,7 +57,7 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	 * nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo)
 	 */
 	@Override
-	public void generate(FileGeneratorContext context, int appListAtr, AppListInfo appLst) {
+	public void generate(FileGeneratorContext context, int appListAtr, AppListInfo appLst, String programName) {
 		try {
 			val designer = this.createContext(this.TEMPLATE_FILE);
 
@@ -93,13 +94,14 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 
 			String companyId = AppContexts.user().companyId();
 
-			this.printHeader(worksheet, companyId);
+			this.printHeader(worksheet, companyId, programName);
 			this.printTopR1(worksheet, appLst);
 			this.printContent(workbook, appLst);
 			this.applyStyle(worksheet, appLst);
 
 			for (int i = 2; i < appLst.getAppLst().size() + 2; i++) {
 				worksheet.autoFitRow(i);
+				worksheet.getCells().deleteRow(appLst.getAppLst().size() + 2);
 			}
 
 			if (appListAtr == 0) {
@@ -111,7 +113,7 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 
-			designer.saveAsExcel(this.createNewFile(context, this.getReportName(OUTPUT_FILE)));
+			designer.saveAsExcel(this.createNewFile(context, this.getReportName(programName + OUTPUT_FILE_EXTENSION)));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -142,22 +144,22 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			// Column H
 			Cell cellH = cells.get("H" + i);
 			String contextH = cellH.getStringValue();
-			if (contextH.equals("承認済")) {
+			if (contextH.equals(I18NText.getText("CMM045_63"))) {
 				this.backgroundColor(cellH, 191, 234, 96);
 			}
-			if (contextH.equals("反映済")) {
+			if (contextH.equals(I18NText.getText("CMM045_64"))) {
 				this.backgroundColor(cellH, 206, 230, 255);
 			}
-			if (contextH.equals("否認")) {
+			if (contextH.equals(I18NText.getText("CMM045_65"))) {
 				this.backgroundColor(cellH, 253, 77, 77);
 			}
-			if (contextH.equals("未承認")) {
+			if (contextH.equals(I18NText.getText("CMM045_62"))) {
 				this.backgroundColor(cellH, 255, 255, 255);
 			}
-			if (contextH.equals("差戻")) {
+			if (contextH.equals(I18NText.getText("CMM045_66"))) {
 				this.backgroundColor(cellH, 253, 77, 77);
 			}
-			if (contextH.equals("取消")) {
+			if (contextH.equals(I18NText.getText("CMM045_67"))) {
 				this.backgroundColor(cellH, 246, 246, 54);
 			}
 		}
@@ -212,10 +214,10 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			}
 		} else {
 			if (content.contains("土")) {
-				cell.characters(0, content.length() - 1).getFont().setColor(colorSaturday);
+				cell.characters(0, content.length()).getFont().setColor(colorSaturday);
 			}
 			if (content.contains("日")) {
-				cell.characters(0, content.length() - 1).getFont().setColor(colorSunday);
+				cell.characters(0, content.length()).getFont().setColor(colorSunday);
 			}
 		}
 	}
@@ -226,7 +228,12 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	 */
 	private void printContent(Workbook workbook, AppListInfo appLst) {
 		List<ListOfApplication> lstApp = appLst.getAppLst();
-		List<AsposeAppScreenDto> dataSource = lstApp.stream().map(x -> AsposeAppScreenDto.fromDomain(x))
+
+		AppLstApprovalLstDispSet dispSet = appLst.getDisplaySet();
+		int dispWplName = dispSet.getWorkplaceNameDisp();
+
+		List<AsposeAppScreenDto> dataSource = lstApp.stream()
+				.map(x -> AsposeAppScreenDto.fromDomainPrint(x, dispWplName))
 				.collect(Collectors.toList());
 
 		WorkbookDesigner designer = new WorkbookDesigner();
@@ -279,12 +286,12 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 		// cellI2.setStyle(headerBackground);
 	}
 
-	private void printHeader(Worksheet worksheet, String cID) {
+	private void printHeader(Worksheet worksheet, String cID, String programName) {
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 
 		pageSetup.setHeader(0, this.companyAdapter.getCurrentCompany().get().getCompanyName());
-		pageSetup.setHeader(1, "applicationName");
+		pageSetup.setHeader(1, programName);
 		// pageSetup.setHeader(2, GeneralDateTime.now().toString());
 	}
 }

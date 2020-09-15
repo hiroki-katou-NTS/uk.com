@@ -54,11 +54,12 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="text:this.$i18n('KAF009_3')"></button>
+				<button class="proceed" data-bind="text:this.$i18n('KAF009_3'), click: register"></button>
 				<div
 					data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
+												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"
 					style="display: inline-block;"></div>
@@ -97,12 +98,12 @@
 					3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9
 				</div>
 
-				<div style="display: inline-block;">
+				<div>
 					<!-- A7_2 -->
 					<div style="float: left" data-bind="ntsFormLabel: {}">レイアウトコード</div>
 					<div
 						data-bind="component: {name: 'kaf002-m', params: {dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr}}"
-						style="margin-left: 100px; width: auto !important"></div>
+						style="margin-left: 121px; width: auto !important"></div>
 				</div>
 
 

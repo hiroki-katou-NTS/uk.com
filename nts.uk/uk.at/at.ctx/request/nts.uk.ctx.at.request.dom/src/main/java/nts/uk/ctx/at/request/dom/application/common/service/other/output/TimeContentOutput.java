@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other.output;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -17,21 +19,21 @@ public class TimeContentOutput {
 	/**
 	 * 早退時間
 	 */
-	private AttendanceTime earlyLeaveTime;
+	private Optional<AttendanceTime> earlyLeaveTime = Optional.empty();
 	
 	/**
 	 * 早退時間2
 	 */
-	private AttendanceTime earlyLeaveTime2;
+	private Optional<AttendanceTime> earlyLeaveTime2 = Optional.empty();
 	
 	/**
 	 * 遅刻時間
 	 */
-	private AttendanceTime lateTime;
+	private Optional<AttendanceTime> lateTime = Optional.empty();
 	
 	/**
 	 * 遅刻時間2
 	 */
-	private AttendanceTime lateTime2;
+	private Optional<AttendanceTime> lateTime2 = Optional.empty();
 	
 }

@@ -15,9 +15,9 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.I18NText;
-import nts.arc.time.ClockHourMinute;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.arc.time.clock.ClockHourMinute;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.mail.send.MailContents;
 import nts.gul.text.StringUtil;
@@ -30,9 +30,9 @@ import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
@@ -94,8 +94,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
-	private ClosureService closureService;
-	@Inject
 	private AbsenceLeaveAppRepository absRepo;
 	@Inject
 	private CompltLeaveSimMngRepository compLeaveRepo;
@@ -114,8 +112,6 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private IApplicationContentService applicationContentService;
-	@Inject
-	private WorkTypeIsClosedService workTypeRepo;
 	
 	@Inject
 	private WorkTimeSettingRepository workTimeSettingRepository;
@@ -170,8 +166,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		当月の期間を算出する(tính period của tháng hiện tại)
 		Object<String: startDate, String: endDate> obj2 = Period.find(obj1.tightenID, obj1.currentMonth); // obj2 <=> 締め期間(開始年月日,終了年月日) 
 		*/
-		DatePeriod datePeriod = closureService.getClosurePeriod(closure.get().getClosureId().value,
-				closure.get().getClosureMonth().getProcessingYm());
+		DatePeriod datePeriod = ClosureService.getClosurePeriod(closure.get().getClosureId().value,
+				closure.get().getClosureMonth().getProcessingYm(), closure);
 		return new PeriodCurrentMonth(closure.get().getClosureId(), datePeriod.start(), datePeriod.end());
 	}
 	/**
@@ -497,7 +493,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			AchievementOutput achInfor = null;
 			if(achInfor != null 
 					&& achInfor.getWorkType() != null
-					&& workTypeRepo.checkHoliday(achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
+					&& WorkTypeIsClosedService.checkHoliday(createM1(), achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
 					) {
 				lstOutput.add(loopDate);
 			}
@@ -507,7 +503,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Override
 	public WorkType getWorkTypeScheduleSpec(String companyID, String employeeID, GeneralDate appDate) {
 		// Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
+		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID, appDate);
 		if(Strings.isNotBlank(recordWorkInfoImport.getWorkTypeCode())){
 			String workTypeCd = recordWorkInfoImport.getWorkTypeCode();
 			// ドメインモデル「勤務種類」を1件取得する
@@ -519,7 +515,7 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			return workType;
 		}
 		// Imported(申請承認)「勤務予定」を取得する
-		Optional<ScBasicScheduleImport> opScBasicScheduleImport = scBasicScheduleAdapter.findByID(employeeID, appDate);
+		Optional<ScBasicScheduleImport_Old> opScBasicScheduleImport = scBasicScheduleAdapter.findByID(employeeID, appDate);
 		if(opScBasicScheduleImport.isPresent()){
 			String workTypeCd = opScBasicScheduleImport.get().getWorkTypeCode();
 			// ドメインモデル「勤務種類」を1件取得する
@@ -678,5 +674,15 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 			
 		
 		return result;
+	}
+	
+	private WorkTypeIsClosedService.RequireM1 createM1() {
+		return new WorkTypeIsClosedService.RequireM1() {
+			
+			@Override
+			public Optional<WorkType> workType(String companyId, String workTypeCd) {
+				return workTypeRepository.findByPK(companyId, workTypeCd);
+			}
+		};
 	}
 }

@@ -1,4 +1,4 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+ /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf000_ref.b.viewmodel {
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
@@ -74,14 +74,12 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 
         created(listAppMeta: Array<string>, currentApp: string) {
             const vm = this;
-			nts.uk.characteristics.restore("AppListExtractCondition").done((obj) => {
+			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
                 if (nts.uk.util.isNullOrUndefined(obj)) {
                     vm.displayGoback(false);
                 } else {
                     vm.displayGoback(true);
                 }
-            }).fail(() => {
-                vm.displayGoback(false);
             });
             vm.listApp(__viewContext.transferred.value.listAppMeta);
             vm.currentApp(__viewContext.transferred.value.currentApp);
@@ -102,8 +100,8 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             vm.$ajax(`${API.getDetailPC}/${vm.currentApp()}`).done((successData: any) => {
             	vm.approvalReason("");
                 vm.appType(successData.appDetailScreenInfo.application.appType);
-                vm.application().appID = successData.appDetailScreenInfo.application.appID;
-		        vm.application().appType = vm.appType();
+				vm.application().appType = vm.appType();
+                vm.application().appID(successData.appDetailScreenInfo.application.appID);
 		        vm.application().opAppReason(successData.appDetailScreenInfo.application.opAppReason);
 		        vm.application().opAppStandardReasonCD(successData.appDetailScreenInfo.application.opAppStandardReasonCD);
 		        vm.application().opReversionReason(successData.appDetailScreenInfo.application.opReversionReason);
@@ -354,14 +352,14 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
         }
 
 		backtoCMM045() {
+			const vm = this;
 			nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
-                let paramUrl = 0;
-                if (obj !== undefined && obj !== null){
-                    paramUrl = obj.appListAtr;
-                }
-                nts.uk.localStorage.setItem('UKProgramParam', 'a=' + paramUrl);
-                nts.uk.request.jump("/view/cmm/045/a/index.xhtml");
-            });	
+				let param = 0;
+				if(obj.appListAtr==1) {
+					param = 1;		
+				}
+				vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+            });
 		}
     }
 

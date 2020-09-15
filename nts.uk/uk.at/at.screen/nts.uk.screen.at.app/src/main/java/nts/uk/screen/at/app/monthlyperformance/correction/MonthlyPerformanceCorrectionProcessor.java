@@ -23,6 +23,7 @@ import nts.arc.error.BusinessException;
 //import nts.arc.task.parallel.ParallelExceptions.Item;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.auth.dom.employmentrole.EmployeeReferenceRange;
@@ -43,10 +44,6 @@ import nts.uk.ctx.at.record.dom.adapter.workflow.service.enums.ApprovalStatusFor
 import nts.uk.ctx.at.record.dom.approvalmanagement.ApprovalProcessingUseSetting;
 import nts.uk.ctx.at.record.dom.approvalmanagement.repository.ApprovalProcessingUseSettingRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.finddata.IFindDataDCRecord;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyRepository;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.record.dom.organization.EmploymentHistoryImported;
 import nts.uk.ctx.at.record.dom.organization.adapter.EmploymentAdapter;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
@@ -68,7 +65,12 @@ import nts.uk.ctx.at.shared.app.find.scherec.monthlyattditem.ControlOfMonthlyFin
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemIdContainer;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 //import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
@@ -108,7 +110,6 @@ import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyQue
 import nts.uk.screen.at.app.monthlyperformance.correction.query.MonthlyModifyResult;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * TODO
@@ -128,8 +129,6 @@ public class MonthlyPerformanceCorrectionProcessor {
 	private ShClosurePub shClosurePub;
 	@Inject
 	private ClosureRepository closureRepository;
-	@Inject
-	private ClosureService closureService;
 	@Inject
 	private MonthlyPerformanceDisplay monthlyDisplay;
 	@Inject
@@ -185,6 +184,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 	
 	@Inject
 	private IFindDataDCRecord iFindDataDCRecord;
+	
+	@Inject
+	private ClosureEmploymentRepository closureEmploymentRepo;
 
 	
 	private static final String STATE_DISABLE = "mgrid-disable";
@@ -301,7 +303,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 					monthlyModifyQueryProcessor).call();
 			
 			//指定した年月の期間を算出する
-			DatePeriod datePeriodClosure = closureService.getClosurePeriod(closureId.intValue(), new YearMonth(yearMonth));
+			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+					ClosureService.createRequireM1(closureRepository, closureEmploymentRepo),
+					closureId.intValue(), new YearMonth(yearMonth));
 			//社員ID（List）と指定期間から所属会社履歴項目を取得
 			// RequestList211
 			List<AffCompanyHistImport> lstAffComHist = syCompanyRecordAdapter
@@ -490,7 +494,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 						monthlyModifyQueryProcessor).call();
 				
 				//指定した年月の期間を算出する
-				DatePeriod datePeriodClosure = closureService.getClosurePeriod(screenDto.getClosureId().intValue(), new YearMonth(yearMonth));
+				DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+						ClosureService.createRequireM1(closureRepository, closureEmploymentRepo),
+						screenDto.getClosureId().intValue(), new YearMonth(yearMonth));
 				//社員ID（List）と指定期間から所属会社履歴項目を取得
 				// RequestList211
 				List<AffCompanyHistImport> lstAffComHist = syCompanyRecordAdapter
@@ -684,7 +690,9 @@ public class MonthlyPerformanceCorrectionProcessor {
 					new ActualTime(actualTimes.get(0).getStartDate(), actualTimes.get(0).getEndDate()));
 		} else if (actualTimes.size() == 2) {
 			// 当月の期間を算出する
-			DatePeriod datePeriod = closureService.getClosurePeriod(closureId, new YearMonth(processYM));
+			DatePeriod datePeriod = ClosureService.getClosurePeriod(
+					ClosureService.createRequireM1(closureRepository, closureEmploymentRepo),
+					closureId, new YearMonth(processYM));
 			// 画面項目「A4_4：実績期間選択」の選択状態を変更する
 			screenDto.setSelectedActualTime(new ActualTime(datePeriod.start(), datePeriod.end()));
 		}

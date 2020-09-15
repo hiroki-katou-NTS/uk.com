@@ -4,13 +4,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.HolidayWorkAppSetRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.company.applicationapprovalsetting.hdworkapplicationsetting.KrqmtAppHdWork;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflectRepository;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
 
 import javax.ejb.Stateless;
 import java.util.Optional;
 
 @Stateless
-public class JpaHolidayWorkAppSetRepository extends JpaRepository implements HolidayWorkAppSetRepository {
+public class JpaHolidayWorkAppSetRepository extends JpaRepository implements HolidayWorkAppSetRepository, HdWorkAppReflectRepository {
 
     @Override
     public Optional<HolidayWorkAppSet> findSettingByCompany(String companyId) {
@@ -18,12 +19,12 @@ public class JpaHolidayWorkAppSetRepository extends JpaRepository implements Hol
     }
 
     @Override
-    public Optional<HdWorkApplicationReflect> findReflectByCompany(String companyId) {
+    public Optional<HdWorkAppReflect> findReflectByCompany(String companyId) {
         return this.queryProxy().find(companyId, KrqmtAppHdWork.class).map(KrqmtAppHdWork::toHolidayWorkAppReflect);
     }
 
     @Override
-    public void save(String companyId, HolidayWorkAppSet setting, HdWorkApplicationReflect reflect) {
+    public void save(String companyId, HolidayWorkAppSet setting, HdWorkAppReflect reflect) {
         Optional<KrqmtAppHdWork> optEntity = this.queryProxy().find(companyId, KrqmtAppHdWork.class);
         if (optEntity.isPresent()) {
             KrqmtAppHdWork entity = optEntity.get();

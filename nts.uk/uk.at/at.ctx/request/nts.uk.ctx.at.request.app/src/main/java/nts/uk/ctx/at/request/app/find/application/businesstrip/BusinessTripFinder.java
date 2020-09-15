@@ -16,7 +16,6 @@ import nts.uk.ctx.at.request.dom.application.businesstrip.*;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripService;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.DetailScreenB;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.init.DetailAppCommonSetService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
@@ -32,6 +31,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTri
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.*;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 import org.apache.logging.log4j.util.Strings;
 
 import javax.ejb.Stateless;
@@ -537,8 +537,8 @@ public class BusinessTripFinder {
         List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
 
         BusinessTrip businessTrip = new BusinessTrip();
-        businessTrip.setDepartureTime(param.getBusinessTripDto().getDepartureTime() == null ? Optional.empty() : Optional.of(param.getBusinessTripDto().getDepartureTime()));
-        businessTrip.setReturnTime(param.getBusinessTripDto().getReturnTime() == null ? Optional.empty() : Optional.of(param.getBusinessTripDto().getReturnTime()));
+        businessTrip.setDepartureTime(param.getBusinessTripDto().getDepartureTime() == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.getBusinessTripDto().getDepartureTime())));
+        businessTrip.setReturnTime(param.getBusinessTripDto().getReturnTime() == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(param.getBusinessTripDto().getReturnTime())));
         businessTrip.setInfos(param.getBusinessTripDto().getTripInfos().stream().map(i -> i.toDomain()).collect(Collectors.toList()));
 
         if (businessTrip.getInfos().isEmpty()) {
@@ -547,6 +547,5 @@ public class BusinessTripFinder {
 
         businessTripService.businessTripIndividualCheck(businessTrip.getInfos());
     }
-
 
 }

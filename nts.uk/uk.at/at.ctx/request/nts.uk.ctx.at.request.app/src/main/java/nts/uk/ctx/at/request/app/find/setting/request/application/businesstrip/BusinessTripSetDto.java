@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.request.app.find.setting.company.applicationapprovalsetting.applicationsetting.AppCommentSetDto;
-import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
+import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
 import nts.uk.shr.com.color.ColorCode;
 
 @AllArgsConstructor

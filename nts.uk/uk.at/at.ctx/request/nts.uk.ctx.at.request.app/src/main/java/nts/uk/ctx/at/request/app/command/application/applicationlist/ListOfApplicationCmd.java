@@ -8,11 +8,9 @@ import lombok.Data;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
-import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.applist.service.ApplicationTypeDisplay;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ComplementLeaveAppConnect;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -33,6 +31,11 @@ public class ListOfApplicationCmd {
 	 * 職場名
 	 */
 	private String workplaceName;
+	
+	/**
+	 * 申請
+	 */
+	private ApplicationDto application;
 	
 	/**
 	 * 申請ID
@@ -152,6 +155,7 @@ public class ListOfApplicationCmd {
 		
 		lstApp.setPrePostAtr(prePostAtr);
 		lstApp.setWorkplaceName(workplaceName);
+		lstApp.setApplication(application.toDomain());
 		lstApp.setAppID(appID);
 		lstApp.setApplicantCD(applicantCD);
 		lstApp.setApplicantID(applicantID);
@@ -176,22 +180,5 @@ public class ListOfApplicationCmd {
 		lstApp.setOpMoreThanDispLineNO(opMoreThanDispLineNO == null ? Optional.empty() : Optional.of(opMoreThanDispLineNO));
 		lstApp.setVersion(version);
 		return lstApp;
-	}
-	
-	public Application toDomainApplication() {
-		Application application = Application.createFromNew(
-				EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), 
-				applicantID, 
-				EnumAdaptor.valueOf(appType, ApplicationType.class), 
-				new ApplicationDate(GeneralDate.fromString(appDate, "yyyy/MM/dd")), 
-				"", 
-				Optional.empty(), 
-				Optional.empty(), 
-				opAppStartDate == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(opAppStartDate, "yyyy/MM/dd"))), 
-				opAppEndDate == null ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(opAppEndDate, "yyyy/MM/dd"))), 
-				Optional.empty(), 
-				Optional.empty());
-		application.setVersion(version);
-		return application;
 	}
 }

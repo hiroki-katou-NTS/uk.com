@@ -25,6 +25,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.dataFetch = params.dataFetch;
             vm.mode = params.mode;
 
+            vm.departureTime = vm.dataFetch().businessTripContent.departureTime;
+            vm.returnTime = vm.dataFetch().businessTripContent.returnTime;
+
             switch (params.mode) {
                 case Mode.New:
                     vm.startNewMode();
@@ -46,7 +49,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                     const tripOutput = value.businessTripOutput;
                     const tripContent = value.businessTripContent;
-                    const setting = tripOutput.setting;
+                    const { setting } = tripOutput ;
 
                     vm.businessTripOutput(tripOutput);
                     vm.workTypeCds(tripOutput.workdays);
@@ -71,12 +74,14 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                             content.opAchievementDetail.opLeaveTime
                         );
                         eachContent.wkTypeCd.subscribe(code => {
-                            nts.uk.ui.errors.clearAll();
-                            vm.changeWorkTypeCode(tripOutput, content.date, code, index);
+                            vm.$errors("clear").then(() =>{
+                                vm.changeWorkTypeCode(tripOutput, content.date, code, index);
+                            });
                         });
                         eachContent.wkTimeCd.subscribe(code => {
-                            nts.uk.ui.errors.clearAll();
-                            vm.changeWorkTimeCode(tripOutput, content.date, content.opAchievementDetail.workTypeCD, code, index);
+                            vm.$errors("clear").then(() =>{
+                                vm.changeWorkTimeCode(tripOutput, content.date, content.opAchievementDetail.workTypeCD, code, index);
+                            });
                         });
                         eachContent.start.subscribe(startValue => {
                             content.opAchievementDetail.opWorkTime = startValue;
@@ -103,8 +108,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     vm.businessTripOutput(tripOutput);
                     vm.workTypeCds(tripOutput.workdays);
                     vm.holidayTypeCds(tripOutput.holidays);
-                    vm.departureTime(tripContent.departureTime);
-                    vm.returnTime(tripContent.returnTime);
+                    vm.departureTime(tripContent.departureTime());
+                    vm.returnTime(tripContent.returnTime());
 
                     if (setting && setting.appCommentSet) {
                         vm.comment({
@@ -127,12 +132,14 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         );
 
                         contentTrip.wkTypeCd.subscribe(code => {
-                            nts.uk.ui.errors.clearAll();
-                            vm.changeTypeCodeScreenB(tripOutput, data, code, index);
+                            vm.$errors("clear").then(() =>{
+                                vm.changeTypeCodeScreenB(tripOutput, data, code, index);
+                            });
                         });
                         contentTrip.wkTimeCd.subscribe(code => {
-                            nts.uk.ui.errors.clearAll();
-                            vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
+                            vm.$errors("clear").then(() =>{
+                                vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
+                            });
                         });
                         contentTrip.start.subscribe(startValue => {
                             data.startWorkTime = startValue;
@@ -152,13 +159,6 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
             $("#fixed-table").ntsFixedTable({});
 
-            vm.departureTime.subscribe(value => {
-                vm.dataFetch().businessTripContent.departureTime = value;
-            });
-
-            vm.returnTime.subscribe(value => {
-                vm.dataFetch().businessTripContent.returnTime = value;
-            });
         }
 
         changeWorkTypeCode(data: BusinessTripOutput, date: string, wkCode: string, index: number) {
@@ -173,6 +173,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             let cloneData = _.clone(vm.dataFetch());
             let contentChanged = cloneData.businessTripOutput.businessTripActualContent[index].opAchievementDetail;
 
+            vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D2',
             ]).then((valid: boolean) => {
@@ -218,6 +219,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             let command = {
                 date, businessTripInfoOutputDto, wkCode, timeCode
             };
+            vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
@@ -235,7 +237,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     vm.dataFetch(cloneData);
                 }
             }).fail(err => {
-                contentChanged.workTimeCD = timeCode;
+                contentChanged.workTimeCD = "";
                 contentChanged.opWorkTimeName = "なし";
 
                 vm.dataFetch(cloneData);
@@ -267,6 +269,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 timeCode: null
             };
 
+            vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D2'
             ]).then((valid: boolean) => {
@@ -316,6 +319,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     timeCode: codeChanged
             };
 
+            vm.$blockui("show");
             vm.$validate([
                 '#kaf008-share #A10_D4'
             ]).then((valid: boolean) => {
@@ -355,8 +359,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             const vm = this;
             let dispFlag: boolean = true;
             let selectedDate = data.date;
-            let workTypeCodes = data.wkTypeCd();
-            let workTimeCodes = data.wkTimeCd();
+            let workTypeCode = data.wkTypeCd();
+            let workTimeCode = data.wkTimeCd();
 
             let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: data.date});
 
@@ -377,7 +381,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             let command = {
                 selectedDate: selectedDate,
                 businessTripInfoOutputDto: ko.toJS(vm.businessTripOutput)
-            }
+            };
 
             vm.$ajax(API.startKDL003, command).then(res => {
                 if(res) {
@@ -387,44 +391,46 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
             vm.$window.storage('parentCodes', {
                 workTypeCodes: _.union(listHolidayCode, listWorkCode),
-                selectedWorkTypeCode: workTypeCodes,
+                selectedWorkTypeCode: workTypeCode,
                 workTimeCodes: listWkTimeCd,
-                selectedWorkTimeCode: workTimeCodes,
+                selectedWorkTimeCode: workTimeCode,
                 showNone: dispFlag
             });
 
+            vm.$errors("clear");
+
             vm.$window.modal('/view/kdl/003/a/index.xhtml').then((result: any) => {
                 vm.$window.storage('childData').then(rs => {
-                    if (vm.mode == Mode.New) {
-                        let cloneData = _.clone(vm.dataFetch());
-                        let currentDetail = cloneData.businessTripOutput.businessTripActualContent[selectedIndex].opAchievementDetail;
+                    if (rs) {
+                        if (vm.mode == Mode.New) {
+                            let cloneData = _.clone(vm.dataFetch());
+                            let currentDetail = cloneData.businessTripOutput.businessTripActualContent[selectedIndex].opAchievementDetail;
 
-                        currentDetail.workTypeCD = rs.selectedWorkTypeCode;
-                        currentDetail.opWorkTypeName = rs.selectedWorkTypeName;
-                        currentDetail.workTimeCD = rs.selectedWorkTimeCode;
-                        currentDetail.opWorkTimeName = rs.selectedWorkTimeName;
-                        currentDetail.opWorkTime = rs.first.start;
-                        currentDetail.opLeaveTime = rs.first.end;
+                            currentDetail.workTypeCD = rs.selectedWorkTypeCode;
+                            currentDetail.opWorkTypeName = rs.selectedWorkTypeName;
+                            currentDetail.workTimeCD = rs.selectedWorkTimeCode;
+                            currentDetail.opWorkTimeName = rs.selectedWorkTimeName;
+                            currentDetail.opWorkTime = rs.first.start;
+                            currentDetail.opLeaveTime = rs.first.end;
 
-                        vm.dataFetch(cloneData);
-                    } else {
-                        let cloneData = _.clone(vm.dataFetch());
-                        let contentChanged = cloneData.businessTripContent.tripInfos[selectedIndex];
+                            vm.dataFetch(cloneData);
+                        } else {
+                            let cloneData = _.clone(vm.dataFetch());
+                            let contentChanged = cloneData.businessTripContent.tripInfos[selectedIndex];
 
-                        contentChanged.wkTypeCd = rs.selectedWorkTypeCode;
-                        contentChanged.wkTypeName = rs.selectedWorkTypeName;
-                        contentChanged.wkTimeCd = rs.selectedWorkTimeCode;
-                        contentChanged.wkTimeName = rs.selectedWorkTimeName;
-                        contentChanged.startWorkTime = rs.first.start;
-                        contentChanged.endWorkTime = rs.first.end;
+                            contentChanged.wkTypeCd = rs.selectedWorkTypeCode;
+                            contentChanged.wkTypeName = rs.selectedWorkTypeName;
+                            contentChanged.wkTimeCd = rs.selectedWorkTimeCode;
+                            contentChanged.wkTimeName = rs.selectedWorkTimeName;
+                            contentChanged.startWorkTime = rs.first.start;
+                            contentChanged.endWorkTime = rs.first.end;
 
-                        vm.dataFetch(cloneData);
+                            vm.dataFetch(cloneData);
+                        }
                     }
                 });
             }).then(() => {
-                setTimeout(() => {
-                    $('#' + data.id).focus();
-                }, 50);
+
             });
 
         }
@@ -448,8 +454,8 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
     }
 
     export interface BusinessTripContent {
-        departureTime: number;
-        returnTime: number;
+        departureTime: KnockoutObservable<number>;
+        returnTime: KnockoutObservable<number>;
         tripInfos: Array<any>;
     }
 

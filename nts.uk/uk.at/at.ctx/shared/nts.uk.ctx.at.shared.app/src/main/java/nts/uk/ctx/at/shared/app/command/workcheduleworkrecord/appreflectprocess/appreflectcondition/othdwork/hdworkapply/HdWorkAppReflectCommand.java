@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.app.command.workcheduleworkrecord.appreflectprocess
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkApplicationReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.hdworkapply.HdWorkAppReflect;
 
 @Data
 @NoArgsConstructor
@@ -16,8 +16,8 @@ public class HdWorkAppReflectCommand {
     private int reflectDivergence;
     private int reflectBreakOuting;
 
-    public HdWorkApplicationReflect toDomain() {
-        return HdWorkApplicationReflect.create(
+    public HdWorkAppReflect toDomain() {
+        return HdWorkAppReflect.create(
                 reflectActualHolidayWorkAtr,
                 workReflect,
                 reflectPaytime,

@@ -40,6 +40,10 @@
 	margin-left: 90px;
 }
 
+#app-resize.with-ccg001 {
+	margin-left: 90px;
+}
+
 #app-grid-container .nts-fixed-header-container,
 #app-grid-container .nts-fixed-body-container {
 	background: #f3f3f3;
@@ -147,4 +151,10 @@ html {
 }
 th.ui-iggrid-rowselector-header> .ui-igcheckbox-normal> span {
 	left: 0;
+}
+td.appType {
+	white-space: normal !important;
+}
+td.appContent {
+	min-width: 45px;
 }

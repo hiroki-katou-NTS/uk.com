@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthlyRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.KrcdtMonAttendanceTimePK;
 import nts.uk.ctx.at.record.infra.entity.monthly.calc.KrcdtMonAgreementTime;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthlyRepository;
 
 /**
  * リポジトリ実装：月別実績の36協定時間

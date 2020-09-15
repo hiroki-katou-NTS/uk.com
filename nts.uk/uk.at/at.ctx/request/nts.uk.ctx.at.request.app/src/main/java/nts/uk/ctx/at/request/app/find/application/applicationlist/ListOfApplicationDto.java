@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApprovalPhaseStateForAppDto;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ComplementLeaveAppConnect;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
@@ -26,6 +27,11 @@ public class ListOfApplicationDto {
 	 * 職場名
 	 */
 	private String workplaceName;
+	
+	/**
+	 * 申請
+	 */
+	private ApplicationDto application;
 	
 	/**
 	 * 申請ID
@@ -142,7 +148,8 @@ public class ListOfApplicationDto {
 	public static ListOfApplicationDto fromDomain(ListOfApplication listOfApplication) {
 		return new ListOfApplicationDto(
 				listOfApplication.getPrePostAtr(), 
-				listOfApplication.getWorkplaceName(), 
+				listOfApplication.getWorkplaceName(),
+				ApplicationDto.fromDomain(listOfApplication.getApplication()),
 				listOfApplication.getAppID(), 
 				listOfApplication.getApplicantCD(), 
 				listOfApplication.getApplicantID(),

@@ -9,8 +9,6 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.appreflect.ExecutionType;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppCommonPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.AppReflectProcessRecordPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ApprovalProcessingUseSettingPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.BreakTimePubParam;
@@ -18,11 +16,8 @@ import nts.uk.ctx.at.record.pub.dailyperform.appreflect.CommonReflectPubParamete
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorkReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.HolidayWorktimeAppPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.IdentityProcessUseSetPub;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.PrePostRecordAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReasonNotReflectDailyPubRecord;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectRecordAtr;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ReflectedStatePubRecord;
-import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ScheAndRecordIsReflectPub;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.ScheAndRecordSameChangePubFlg;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.WorkChangeCommonReflectPubPara;
 import nts.uk.ctx.at.record.pub.dailyperform.appreflect.goback.ChangeAppGobackPubAtr;
@@ -46,32 +41,31 @@ import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeA
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.OvertimeReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.ScheAndRecordIsReflect;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 public class AppReflectProcessRecordImpl implements AppReflectProcessRecord {
 	@Inject
 	private AppReflectProcessRecordPub recordPub;
-/*	@Override
+	@Override
     public ScheAndRecordIsReflect appReflectProcessRecord(Application appInfor, ExecutionTypeExImport executionType, GeneralDate appDate,Boolean isCalWhenLock) {
 		//Optional<RequestSetting> settingData = requestSetting.findByCompany(appInfor.getCompanyID());
-		settingData.isPresent() ?
+		/*settingData.isPresent() ?
 				EnumAdaptor.valueOf(settingData.get().getAppReflectAfterConfirm().getAchievementConfirmedAtr().value, ReflectRecordAtr.class) 
-				: ReflectRecordAtr.NOT_RFFLECT_CANNOT_REF
-		AppCommonPara para = new AppCommonPara(appInfor.getCompanyID(), 
-				appInfor.getEmployeeID(),
-				appDate, 
-				ReflectRecordAtr.REFLECT,
-				appInfor.getReflectionInformation().getForcedReflectionReal() == NotUseAtr.USE ? true : false,
-				EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflectionReal().value, ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflection().value,  ReflectedStatePubRecord.class),
-				EnumAdaptor.valueOf(appInfor.getPrePostAtr().value, PrePostRecordAtr.class),
-				EnumAdaptor.valueOf(appInfor.getAppType().value, ApplicationType.class),
-				appInfor.getReflectionInformation().getForcedReflection() == NotUseAtr.USE ? true : false);
-        ScheAndRecordIsReflectPub checkResult = recordPub.appReflectProcess(para, EnumAdaptor.valueOf(executionType.value, ExecutionType.class),isCalWhenLock);
-		return new ScheAndRecordIsReflect(checkResult.isScheReflect(), checkResult.isRecordReflect());
-	}*/
+				: ReflectRecordAtr.NOT_RFFLECT_CANNOT_REF*/
+//		AppCommonPara para = new AppCommonPara(appInfor.getCompanyID(), 
+//				appInfor.getEmployeeID(),
+//				appDate, 
+//				ReflectRecordAtr.REFLECT,
+//				appInfor.getReflectionInformation().getForcedReflectionReal() == DisabledSegment_New.TODO ? true : false,
+//				EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflectionReal().value, ReflectedStatePubRecord.class),
+//				EnumAdaptor.valueOf(appInfor.getReflectionInformation().getStateReflection().value,  ReflectedStatePubRecord.class),
+//				EnumAdaptor.valueOf(appInfor.getPrePostAtr().value, PrePostRecordAtr.class),
+//				EnumAdaptor.valueOf(appInfor.getAppType().value, ApplicationType.class),
+//				appInfor.getReflectionInformation().getForcedReflection() == DisabledSegment_New.TODO ? true : false);
+//        ScheAndRecordIsReflectPub checkResult = recordPub.appReflectProcess(para, EnumAdaptor.valueOf(executionType.value, ExecutionType.class),isCalWhenLock);
+//		return new ScheAndRecordIsReflect(checkResult.isScheReflect(), checkResult.isRecordReflect());
+		return null;
+	}
 
 	@Override
 	public void gobackReflectRecord(GobackReflectPara para, boolean isPre) {

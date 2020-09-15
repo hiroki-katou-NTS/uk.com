@@ -1,11 +1,12 @@
 package nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime;
 
-import static nts.arc.time.ClockHourMinute.now;
+import static nts.arc.time.clock.ClockHourMinute.now;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collections;
 import java.util.Optional;
 
+import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import org.junit.Test;
 
 import nts.arc.testing.assertion.NtsAssert;
@@ -84,10 +85,12 @@ public class BentoMenuByClosingTimeTest {
 		assertThat(target.isReservationTime1Atr()).isFalse();
 		assertThat(target.isReservationTime2Atr()).isFalse();
 	}
-	
+
 	@Test
 	public void getters() {
-		BentoMenuByClosingTime target = Helper.Menu.DUMMY.getByClosingTime();
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
+		BentoMenuByClosingTime target = Helper.Menu.DUMMY.getByClosingTime(workLocationCode);
 		NtsAssert.invokeGetters(target);
 	}
+
 }

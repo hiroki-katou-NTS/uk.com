@@ -105,4 +105,8 @@ public class ScheduleErrorLog extends AggregateRoot {
 		this.date = date;
 		this.employeeId = employeeId;
 	}
+
+	public void setExecutionId(String executionId) {
+		this.executionId = executionId;
+	}
 }

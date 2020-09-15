@@ -259,9 +259,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             
             let comboColumns = [{ prop: 'code', length: 2 },
                                 { prop: 'name', length: 4 }];
-            let comboItems = [ new ItemModel('1', '基本給'),
-                               new ItemModel('2', '役職手当'),
-                               new ItemModel('3', '基本給2') ];
+            let comboItems = [ new ItemModel('0', '私用'),
+                               new ItemModel('1', '公用'),
+                               new ItemModel('2', '有償'),
+                               new ItemModel('3', '組合')];
             let option2 = { 
               width: '100%',
               height: '360px',
@@ -362,14 +363,15 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             self.typeStamp = typeStamp;
             self.id = dataObject.frameNo;
-            self.typeReason = '2';
+            self.typeReason = String(dataObject.opGoOutReasonAtr);
             self.startTimeActual = dataObject.opStartTime;
             self.endTimeActual = dataObject.opEndTime;
             if ( _.isNull( dataObject.opStartTime ) && _.isNull( dataObject.opEndTime ) ) {
                 self.flagEnable( false );
             }
-            let start = _.isNull( dataObject.opStartTime ) ? '--:--' : '10:00';
-            let end = _.isNull( dataObject.opEndTime ) ? '--:--' : '17:30';
+            let parseTime = nts.uk.time.minutesBased.clock.dayattr;
+            let start = _.isNull(self.startTimeActual) ? '--:--' : parseTime.create(self.startTimeActual).shortText;
+            let end = _.isNull(self.endTimeActual) ? '--:--' : parseTime.create(self.endTimeActual).shortText;
             let idGetList = typeStamp == STAMPTYPE.EXTRAORDINARY ? self.id - 3 : self.id - 1;
             let param = 'dataSource[' + String(self.index) +']';
             if ( typeStamp == STAMPTYPE.ATTENDENCE ) {
@@ -410,11 +412,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
             this.flag = '<div  style="display: block" align="center" data-bind="css: !' + param + '[' + idGetList + '].flagEnable ? \'disableFlag\' : \'enableFlag\' , ntsCheckBox: {enable: ' + param + '[' + idGetList + '].flagEnable, checked: ' + param + '[' + idGetList + '].flagObservable}"></div>';
         }
-        
+    
+
         public changeElement () {
             let self = this; 
-            let start = _.isNull(self.startTimeActual) ? '--:--' : '10:00';
-            let end = _.isNull(self.endTimeActual) ? '--:--' : '17:30';
+            let parseTime = nts.uk.time.minutesBased.clock.dayattr;
+            let start = _.isNull(self.startTimeActual) ? '--:--' : parseTime.create(self.startTimeActual).shortText;
+            let end = _.isNull(self.endTimeActual) ? '--:--' : parseTime.create(self.endTimeActual).shortText;
             let param = 'dataSource[' + String(self.index) +']';
             
             let idGetList = self.id - 1;
@@ -455,6 +459,35 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '</div>'
                 + '</div>';
         }
+        public convertTimeZoneStampClassification() {
+            const self = this;
+            if (self.typeStamp == STAMPTYPE.PARENT) {
+                
+                return 0;
+            } else if (self.typeStamp == STAMPTYPE.NURSE) {
+                
+                return 1;
+            } else if (self.typeStamp == STAMPTYPE.BREAK) {
+                
+                return 2;
+            }
+        }
+        public convertTimeStampAppEnum() {
+            const self = this;
+            if (self.typeStamp == STAMPTYPE.ATTENDENCE) {
+                
+                return 0;
+            } else if (self.typeStamp == STAMPTYPE.EXTRAORDINARY) {
+                
+                return 1;
+            } else if (self.typeStamp == STAMPTYPE.GOOUT_RETURNING) {
+                
+                return 2;
+            } else if (self.typeStamp == STAMPTYPE.CHEERING) {
+                
+                return 3;
+            }
+        }
         
     }
 
@@ -474,17 +507,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.opWorkLocationCD = null;
             this.opGoOutReasonAtr = null;
             this.frameNo = index;
-            if ( index == 1 ) {
-                this.opStartTime = 650;
-                this.opEndTime = null;
-            } else if ( index == 3 ) {
-                this.opStartTime = 500;
-                this.opEndTime = 1500;
-
-            } else {
-                this.opStartTime = index % 2 == 0 ? 1000 : null;
-                this.opEndTime = index % 2 == 0 ? 1500 : null;
-            }
+            this.opStartTime = null;
+            this.opEndTime = null;
+//            if ( index == 1 ) {
+//                this.opStartTime = 650;
+//                this.opEndTime = null;
+//            } else if ( index == 3 ) {
+//                this.opStartTime = 500;
+//                this.opEndTime = 1500;
+//
+//            } else {
+//                this.opStartTime = index % 2 == 0 ? 1000 : null;
+//                this.opEndTime = index % 2 == 0 ? 1500 : null;
+//            }
         }
 
     }
@@ -510,7 +545,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.state = state;
         }
     }
-
+    
     export enum STAMPTYPE {
         ATTENDENCE = 0,
         EXTRAORDINARY = 1,

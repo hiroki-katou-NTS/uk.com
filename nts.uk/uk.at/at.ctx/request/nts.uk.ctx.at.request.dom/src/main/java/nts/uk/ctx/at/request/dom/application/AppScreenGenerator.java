@@ -8,5 +8,5 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
  *
  */
 public interface AppScreenGenerator {
-	void generate(FileGeneratorContext exportContext, int appListAtr, AppListInfo lstApp);
+	void generate(FileGeneratorContext exportContext, int appListAtr, AppListInfo lstApp, String programName);
 }

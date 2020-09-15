@@ -5,13 +5,10 @@
 package nts.uk.ctx.at.shared.app.command.statutory.worktime.workplace;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.statutory.worktime.workplace.WorkPlaceWtSettingRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkplaceWtSettingRemoveCommandHandler.
@@ -20,8 +17,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class WorkplaceWtSettingRemoveCommandHandler extends CommandHandler<WorkplaceWtSettingRemoveCommand> {
 
 	/** The repository. */
-	@Inject
-	private WorkPlaceWtSettingRepository repository;
+//	@Inject
+//	private WorkPlaceWtSettingRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -34,11 +31,11 @@ public class WorkplaceWtSettingRemoveCommandHandler extends CommandHandler<Workp
 	@Transactional
 	protected void handle(CommandHandlerContext<WorkplaceWtSettingRemoveCommand> context) {
 		/** The company id. */
-		String companyId = AppContexts.user().companyId();
-		
-		// Get Command
-		WorkplaceWtSettingRemoveCommand command = context.getCommand();
-		this.repository.remove(companyId, command.getYear(), command.getWorkplaceId());
+//		String companyId = AppContexts.user().companyId();
+//		
+//		// Get Command
+//		WorkplaceWtSettingRemoveCommand command = context.getCommand();
+//		this.repository.remove(companyId, command.getYear(), command.getWorkplaceId());
 	}
 
 }

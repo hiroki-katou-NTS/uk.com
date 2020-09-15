@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.request.app.command.setting.company.applicationapprovalsetting.stampsetting;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang3.BooleanUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,11 +11,14 @@ import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppCommentSet;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.*;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.AppStampSetting;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.GoOutType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.GoOutTypeDispControl;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SettingForEachType;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.StampAtr;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.SupportFrameDispNO;
 import nts.uk.shr.com.color.ColorCode;
-import org.apache.commons.lang3.BooleanUtils;
-
-import java.util.Arrays;
 
 @Data
 @NoArgsConstructor

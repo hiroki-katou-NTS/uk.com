@@ -4,10 +4,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlxForWkpRepository;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetWkpRegAggrPK;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.workplace.KrcstMonsetWkpFlxAggr;
+import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlx;
+import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.flex.AggrSettingMonthlyOfFlxForWkpRepository;
 
 /**
  * リポジトリ実装：職場のフレックス時間勤務の月の集計設定

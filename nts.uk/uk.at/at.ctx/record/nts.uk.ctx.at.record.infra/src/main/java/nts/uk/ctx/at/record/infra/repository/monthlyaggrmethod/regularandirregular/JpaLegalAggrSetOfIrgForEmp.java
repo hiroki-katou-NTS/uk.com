@@ -6,10 +6,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrgForEmpRepository;
-import nts.uk.ctx.at.record.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.KrcstMonsetEmpRegAggrPK;
 import nts.uk.ctx.at.record.infra.entity.monthlyaggrmethod.employment.KrcstMonsetEmpIrgAggr;
+import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrg;
+import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.regularandirregular.LegalAggrSetOfIrgForEmpRepository;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
 
 /**

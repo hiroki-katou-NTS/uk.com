@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.dailyattendancetime.DailyAttendanceTimeCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
@@ -42,10 +42,10 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.InforGoBackCommonDir
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.applicationtypesetting.AppTypeSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.ApplicationStatus;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.ApplicationStatus;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackReflect;
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
@@ -408,7 +408,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	 */
 	@Override
 	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly_Old goBackDirectly,
-			GoBackDirectlyCommonSetting goBackCommonSet, int line, ScBasicScheduleImport scBasicScheduleImport) {
+			GoBackDirectlyCommonSetting goBackCommonSet, int line, ScBasicScheduleImport_Old scBasicScheduleImport) {
 		WorkTypeCode bsWorkTypeCD = scBasicScheduleImport == null ? new WorkTypeCode("") : new WorkTypeCode(scBasicScheduleImport.getWorkTypeCode());
 		WorkTimeCode bsSiftCd = scBasicScheduleImport == null ? new WorkTimeCode("") : new WorkTimeCode(scBasicScheduleImport.getWorkTimeCode());
 		/*WorkTimeGoBack bsWorkTimeStart1 = scBasicScheduleImport == null ? null : new WorkTimeGoBack(scBasicScheduleImport.getScheduleStartClock1());

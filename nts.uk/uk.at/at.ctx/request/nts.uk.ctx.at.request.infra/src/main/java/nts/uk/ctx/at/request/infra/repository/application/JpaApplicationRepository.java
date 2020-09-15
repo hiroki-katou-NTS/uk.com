@@ -380,9 +380,10 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 * 反映状態 ＝ 「差戻し」
 	 */
 	private static final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication a"
+			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
 			+ " WHERE a.pk.companyID =:companyID" + " AND a.employeeID = :employeeID "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
-			+ " AND a.krqdtAppReflectStateLst.actualReflectStatus IN :listReflecInfor" + " ORDER BY a.appDate ASC," + " a.prePostAtr DESC";
+			+ " AND ref.actualReflectStatus IN :listReflecInfor" + " ORDER BY a.appDate ASC," + " a.prePostAtr DESC";
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)

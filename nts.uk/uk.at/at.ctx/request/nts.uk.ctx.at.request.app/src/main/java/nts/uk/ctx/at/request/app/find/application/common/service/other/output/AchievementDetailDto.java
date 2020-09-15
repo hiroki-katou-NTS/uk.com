@@ -1,14 +1,22 @@
 package nts.uk.ctx.at.request.app.find.application.common.service.other.output;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeLeaveTime;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
-import nts.uk.ctx.at.shared.app.find.dailyattdcal.dailyattendance.shortworktime.ShortWorkTimeDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
+import nts.uk.ctx.at.shared.app.find.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheetDto;
+import nts.uk.ctx.at.shared.app.find.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheetDto;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 /**
  * refactor 4
@@ -29,6 +37,11 @@ public class AchievementDetailDto {
 	private String workTimeCD;
 	
 	/**
+	 * 休憩時間帯
+	 */
+	private List<BreakTimeSheetDto> breakTimeSheets;
+	
+	/**
 	 * 勤怠時間内容
 	 */
 	private TimeContentDto timeContentOutput;
@@ -46,7 +59,7 @@ public class AchievementDetailDto {
 	/**
 	 * 短時間勤務時間帯
 	 */
-	private List<ShortWorkTimeDto> shortWorkTimeLst;
+	private List<ShortWorkingTimeSheetDto> shortWorkTimeLst;
 	
 	/**
 	 * 遅刻早退実績
@@ -129,10 +142,11 @@ public class AchievementDetailDto {
 		return new AchievementDetailDto(
 				achievementDetail.getWorkTypeCD(), 
 				achievementDetail.getWorkTimeCD(), 
+				CollectionUtil.isEmpty(achievementDetail.getBreakTimeSheets()) ? Collections.emptyList() : achievementDetail.getBreakTimeSheets().stream().map(x -> BreakTimeSheetDto.fromDomain(x)).collect(Collectors.toList()),
 				TimeContentDto.fromDomain(achievementDetail.getTimeContentOutput()), 
 				achievementDetail.getTrackRecordAtr().value, 
 				StampRecordDto.fromDomain(achievementDetail.getStampRecordOutput()), 
-				achievementDetail.getShortWorkTimeLst().stream().map(x -> ShortWorkTimeDto.fromDomain(x)).collect(Collectors.toList()), 
+				CollectionUtil.isEmpty(achievementDetail.getShortWorkTimeLst()) ? Collections.emptyList() : achievementDetail.getShortWorkTimeLst().stream().map(x -> ShortWorkingTimeSheetDto.fromDomain(x)).collect(Collectors.toList()), 
 				AchievementEarlyDto.fromDomain(achievementDetail.getAchievementEarly()), 
 				achievementDetail.getOpDepartureTime2().orElse(null), 
 				achievementDetail.getOpWorkTypeName().orElse(null), 
@@ -146,5 +160,29 @@ public class AchievementDetailDto {
 				achievementDetail.getOpOutlawHolidayMidnightTime().map(x -> x.v()).orElse(null), 
 				achievementDetail.getOpPublicHolidayMidnightTime().map(x -> x.v()).orElse(null), 
 				achievementDetail.getOpOvertimeLeaveTimeLst().orElse(null));
+	}
+	
+	public AchievementDetail toDomain() {
+		return new AchievementDetail(
+				workTypeCD, 
+				workTimeCD, 
+				breakTimeSheets.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				timeContentOutput.toDomain(), 
+				EnumAdaptor.valueOf(trackRecordAtr, TrackRecordAtr.class), 
+				stampRecordOutput.toDomain(), 
+				shortWorkTimeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList()), 
+				achievementEarly.toDomain(), 
+				Optional.ofNullable(opDepartureTime2), 
+				Optional.ofNullable(opWorkTypeName), 
+				Optional.ofNullable(opWorkTimeName), 
+				Optional.ofNullable(opWorkTime), 
+				Optional.ofNullable(opLeaveTime), 
+				Optional.ofNullable(opAchievementStatus), 
+				Optional.ofNullable(opWorkTime2), 
+				opOvertimeMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opOvertimeMidnightTime)), 
+				opInlawHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opInlawHolidayMidnightTime)), 
+				opOutlawHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opOutlawHolidayMidnightTime)), 
+				opPublicHolidayMidnightTime == null ? Optional.empty() : Optional.of(new AttendanceTime(opPublicHolidayMidnightTime)), 
+				CollectionUtil.isEmpty(opOvertimeLeaveTimeLst) ? Optional.empty() : Optional.of(opOvertimeLeaveTimeLst));
 	}
 }

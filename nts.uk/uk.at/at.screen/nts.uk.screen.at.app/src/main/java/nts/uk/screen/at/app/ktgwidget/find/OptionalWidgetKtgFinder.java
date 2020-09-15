@@ -10,6 +10,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
+import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -27,8 +29,8 @@ import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetAdapter;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.OptionalWidgetImport;
 import nts.uk.ctx.at.function.dom.adapter.widgetKtg.WidgetDisplayItemImport;
 import nts.uk.ctx.at.function.dom.employmentfunction.checksdailyerror.ChecksDailyPerformanceErrorRepository;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.holidayinstruction.HolidayInstructRepository;
 import nts.uk.ctx.at.request.dom.overtimeinstruct.OvertimeInstructRepository;
 import nts.uk.ctx.at.shared.dom.adapter.employment.BsEmploymentHistoryImport;
@@ -74,7 +76,7 @@ public class OptionalWidgetKtgFinder {
 	private ClosureRepository closureRepo;
 	
 	@Inject
-	private ClosureService closureService;
+	private RecordDomRequireService requireService;
 	
 	@Inject
 	private OptionalWidgetAdapter optionalWidgetAdapter; 
@@ -85,8 +87,8 @@ public class OptionalWidgetKtgFinder {
 	@Inject
 	private HolidayInstructRepository holidayInstructRepo;
 	
-	@Inject
-	private ApplicationRepository applicationRepo_New;
+//	@Inject
+//	private ApplicationRepository_New applicationRepo_New;
 	
 	@Inject
 	private ApplicationAdapter applicationAdapter;
@@ -95,16 +97,7 @@ public class OptionalWidgetKtgFinder {
 	private ChecksDailyPerformanceErrorRepository checksDailyPerformanceErrorRepo;
 	
 	@Inject
-	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriodQuery;
-	
-	@Inject 
-	private AbsenceReruitmentMngInPeriodQuery absenceReruitmentMngInPeriodQuery;
-	
-	@Inject
 	private ShNursingLeaveSettingPub shNursingLeaveSettingPub;
-	
-	@Inject
-	private SpecialLeaveManagementService specialLeaveManagementService;
 	
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
@@ -120,9 +113,9 @@ public class OptionalWidgetKtgFinder {
 		
 		YearMonth processingDate = closure.get().getClosureMonth().getProcessingYm();
 		
-		DatePeriod currentMonth = closureService.getClosurePeriod(closureId, processingDate);
+		DatePeriod currentMonth = ClosureService.getClosurePeriod(closureId, processingDate, closure);
 		
-		DatePeriod nextMonth = closureService.getClosurePeriod(closureId, processingDate.addMonths(1));
+		DatePeriod nextMonth = ClosureService.getClosurePeriod(requireService.createRequire(), closureId, processingDate.addMonths(1));
 		
 		DatePeriodDto dto = new DatePeriodDto(currentMonth.start(), currentMonth.end(), nextMonth.start(), nextMonth.end());
 		
@@ -170,6 +163,9 @@ public class OptionalWidgetKtgFinder {
 	
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public OptionalWidgetInfoDto getDataRecord(String code, GeneralDate startDate, GeneralDate endDate) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
+		
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		DatePeriod datePeriod = new DatePeriod(startDate, endDate);
@@ -191,28 +187,28 @@ public class OptionalWidgetKtgFinder {
 					//lấy theo request list của anh hiếu. chỉ khác tham số đầu vào.
 					//・反映状態　　＝　「反映済み」または「反映待ち」(「反映済み」 OR 「反映待ち」)
 					List<Integer> reflected = new ArrayList<>();
-					reflected.add(ReflectedState.REFLECTED.value);
-					reflected.add(ReflectedState.WAITREFLECTION.value);
-					dto.setApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
+					reflected.add(ReflectedState_New.REFLECTED.value);
+					reflected.add(ReflectedState_New.WAITREFLECTION.value);
+					//dto.setApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.UNAPPROVED_NO.value) {
 					//sử lý 04
 					//・反映状態　　＝　「未承認」または「差戻し」(「未承認」OR 「差戻し」)
 					List<Integer> reflected = new ArrayList<>();
-					reflected.add(ReflectedState.NOTREFLECTED.value);
+					reflected.add(ReflectedState_New.NOTREFLECTED.value);
 					//reflected.add(ReflectedState_New.REMAND.value); // redmine update tài liệu 108908
-					dto.setUnApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
+					//dto.setUnApproved(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.DENIED_NO.value) {
 					//sử lý 05
 					//・反映状態　　＝　「否認」
 					List<Integer> reflected = new ArrayList<>();
-					reflected.add(ReflectedState.DENIAL.value);
-					dto.setDeniedNo(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
+					reflected.add(ReflectedState_New.DENIAL.value);
+					//dto.setDeniedNo(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAND_NO.value) {
 					//sử lý 06
 					//・反映状態　　＝　「差戻し」
 					List<Integer> reflected = new ArrayList<>();
-					reflected.add(ReflectedState.REMAND.value);
-					dto.setRemand(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
+					reflected.add(ReflectedState_New.REMAND.value);
+					//dto.setRemand(applicationRepo_New.getByListRefStatus(companyId, employeeId, startDate, endDate, reflected).size());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.APP_DEADLINE_MONTH.value) {
 					//sử lý 07
 					ApplicationDeadlineImport deadlineImport = applicationAdapter.getApplicationDeadline(companyId, this.getClosureId());
@@ -384,14 +380,16 @@ public class OptionalWidgetKtgFinder {
 					//BreakDayOffRemainMngOfInPeriod time = breakDayOffMngInPeriodQuery.getBreakDayOffMngInPeriod(param);
 					//to do some thinks
 					// 26/09 đổi sang lấy thông tin từ request 505
-					dto.setRemainAlternationNoDay(breakDayOffMngInPeriodQuery.getBreakDayOffMngRemain(employeeId, systemDate));
+					dto.setRemainAlternationNoDay(BreakDayOffMngInPeriodQuery
+							.getBreakDayOffMngRemain(require, cacheCarrier, employeeId, systemDate));
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.REMAINS_LEFT.value) {
 					//sử lý 19
 					//requestList 204 Dudt
 					//AbsRecMngInPeriodParamInput param = new AbsRecMngInPeriodParamInput(companyId, employeeId, datePeriod, systemDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
 					//AbsRecRemainMngOfInPeriod time = absenceReruitmentMngInPeriodQuery.getAbsRecMngInPeriod(param);
 					// 26/09 đổi sang lấy thông tin từ request 506
-					dto.setRemainsLeft(absenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(employeeId, systemDate).getRemainDays());
+					dto.setRemainsLeft(AbsenceReruitmentMngInPeriodQuery.getAbsRecMngRemain(
+							require, cacheCarrier, employeeId, systemDate).getRemainDays());
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.PUBLIC_HD_NO.value) {
 					//not use
 				}else if(item.getDisplayItemType() == WidgetDisplayItemTypeImport.HD_REMAIN_NO.value) {
@@ -447,7 +445,9 @@ public class OptionalWidgetKtgFinder {
 								specialHoliday.getSpecialHolidayCode().v(),
 								false, false,
 								new ArrayList<>(), new ArrayList<>(), Optional.empty());
-						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param).getAggSpecialLeaveResult();
+						InPeriodOfSpecialLeave inPeriodOfSpecialLeave = SpecialLeaveManagementService
+								.complileInPeriodOfSpecialLeave(require, cacheCarrier, param)
+								.getAggSpecialLeaveResult();
 						boolean showAfter = false;
 						GeneralDate date = GeneralDate.today();
 						List<SpecialLeaveGrantDetails> lstSpeLeaveGrantDetails = inPeriodOfSpecialLeave.getLstSpeLeaveGrantDetails(); 

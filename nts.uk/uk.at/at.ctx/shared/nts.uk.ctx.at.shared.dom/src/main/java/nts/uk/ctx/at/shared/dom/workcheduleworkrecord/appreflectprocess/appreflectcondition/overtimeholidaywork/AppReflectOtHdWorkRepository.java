@@ -4,5 +4,4 @@ import java.util.Optional;
 
 public interface AppReflectOtHdWorkRepository {
     Optional<AppReflectOtHdWork> findByCompanyId(String companyId);
-    void save(AppReflectOtHdWork domain);
 }

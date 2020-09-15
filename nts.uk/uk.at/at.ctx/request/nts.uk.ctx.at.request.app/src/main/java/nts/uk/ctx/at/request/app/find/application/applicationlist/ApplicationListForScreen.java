@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.basicschedule.ScBasicScheduleImport_Old;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
@@ -84,7 +84,7 @@ public class ApplicationListForScreen {
 				.collect(Collectors.toList());
 		List<AppDispName> allApps = appDispNameRepository.getAll(application.stream().map(c -> c.getAppType().value).distinct().collect(Collectors.toList()));
 		if(!applicationExcessHoliday.isEmpty()){
-			List<ScBasicScheduleImport> basicSchedules = new ArrayList<>();
+			List<ScBasicScheduleImport_Old> basicSchedules = new ArrayList<>();
 			GeneralDate minD = applicationExcessHoliday.stream().map(c -> c.getOpAppStartDate().orElse(null)).filter(c -> c.getApplicationDate() != null)
 					.min((c1, c2) -> c1.getApplicationDate().compareTo(c2.getApplicationDate())).get().getApplicationDate();
 			GeneralDate maxD = applicationExcessHoliday.stream().map(c -> c.getOpAppEndDate().orElse(null)).filter(c -> c.getApplicationDate() != null)
@@ -105,7 +105,7 @@ public class ApplicationListForScreen {
 				} else {
 					for(GeneralDate loopDate = app.getOpAppStartDate().get().getApplicationDate(); loopDate.beforeOrEquals(app.getOpAppEndDate().get().getApplicationDate()); loopDate = loopDate.addDays(1)){
 						// Imported「勤務予定基本情報」を取得する
-						Optional<ScBasicScheduleImport> opScBasicScheduleImport = findBasicSchedule(basicSchedules, app.getEmployeeID(), loopDate);
+						Optional<ScBasicScheduleImport_Old> opScBasicScheduleImport = findBasicSchedule(basicSchedules, app.getEmployeeID(), loopDate);
 						if(!opScBasicScheduleImport.isPresent()){
 							ApplicationExportDto applicationExport = new ApplicationExportDto();
 							applicationExport.setAppDate(loopDate);
@@ -135,7 +135,7 @@ public class ApplicationListForScreen {
 		if(!applicationHoliday.isEmpty()){
 			Optional<HdAppSet> hdAppSet = this.hdAppSetRepository.getAll();
 			List<AppAbsence> apps = appAbsenceRepository.getAbsenceByIds(companyID, applicationHoliday.stream().map(c -> c.getAppID()).distinct().collect(Collectors.toList()));
-			List<ScBasicScheduleImport> basicSchedules = new ArrayList<>();
+			List<ScBasicScheduleImport_Old> basicSchedules = new ArrayList<>();
 			GeneralDate minD = applicationHoliday.stream().map(c -> c.getOpAppStartDate().orElse(null)).filter(c -> c.getApplicationDate() != null)
 					.min((c1, c2) -> c1.getApplicationDate().compareTo(c2.getApplicationDate())).get().getApplicationDate();
 			GeneralDate maxD = applicationHoliday.stream().map(c -> c.getOpAppEndDate().orElse(null)).filter(c -> c.getApplicationDate() != null)
@@ -158,7 +158,7 @@ public class ApplicationListForScreen {
 				} else {
 					for(GeneralDate loopDate = app.getOpAppStartDate().get().getApplicationDate(); loopDate.beforeOrEquals(app.getOpAppEndDate().get().getApplicationDate()); loopDate = loopDate.addDays(1)){
 						// Imported「勤務予定基本情報」を取得する
-						Optional<ScBasicScheduleImport> opScBasicScheduleImport = findBasicSchedule(basicSchedules, app.getEmployeeID(), loopDate);
+						Optional<ScBasicScheduleImport_Old> opScBasicScheduleImport = findBasicSchedule(basicSchedules, app.getEmployeeID(), loopDate);
 						if(!opScBasicScheduleImport.isPresent()){
 							ApplicationExportDto applicationExport = new ApplicationExportDto();
 							applicationExport.setAppDate(loopDate);
@@ -190,7 +190,7 @@ public class ApplicationListForScreen {
 		List<Application> appWorkChangeLst = application.stream().filter(x -> x.getAppType().value == ApplicationType.WORK_CHANGE_APPLICATION.value).collect(Collectors.toList());
 		if(!appWorkChangeLst.isEmpty()){
 			List<AppWorkChange_Old> appWorkChanges = new ArrayList<>();
-			List<ScBasicScheduleImport> basicSchedules = new ArrayList<>();
+			List<ScBasicScheduleImport_Old> basicSchedules = new ArrayList<>();
 			List<WorkType> workTypes = new ArrayList<>();
 			GeneralDate minD = appWorkChangeLst.stream().map(c -> c.getOpAppStartDate().orElse(null)).filter(c -> c.getApplicationDate() != null)
 					.min((c1, c2) -> c1.getApplicationDate().compareTo(c2.getApplicationDate())).get().getApplicationDate();
@@ -225,7 +225,7 @@ public class ApplicationListForScreen {
 							applicationExports.add(applicationExport);
 						} else {
 							// Imported「勤務予定基本情報」を取得する
-							Optional<ScBasicScheduleImport> opScBasicScheduleImport = findBasicSchedule(basicSchedules, app.getEmployeeID(), loopDate);
+							Optional<ScBasicScheduleImport_Old> opScBasicScheduleImport = findBasicSchedule(basicSchedules, app.getEmployeeID(), loopDate);
 							if(!opScBasicScheduleImport.isPresent()){
 								ApplicationExportDto applicationExport = new ApplicationExportDto();
 								applicationExport.setAppDate(loopDate);
@@ -256,7 +256,7 @@ public class ApplicationListForScreen {
 		return applicationExports;
 	}
 	
-	private Optional<ScBasicScheduleImport> findBasicSchedule(List<ScBasicScheduleImport> basicSchedules, String empId, GeneralDate loopDate) {
+	private Optional<ScBasicScheduleImport_Old> findBasicSchedule(List<ScBasicScheduleImport_Old> basicSchedules, String empId, GeneralDate loopDate) {
 		return basicSchedules.stream().filter(c -> c.getEmployeeId().equals(empId) && c.getDate().equals(loopDate)).findFirst();
 	}
 	

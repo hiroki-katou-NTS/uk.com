@@ -7,10 +7,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaUsedDays;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetPeriodFromPreviousToNextGrantDate;
+import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.ReferenceAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnLeaGrantRemDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
@@ -33,15 +35,14 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	/** 社員の前回付与日から次回付与日までの年休使用日数を取得 */
 	@Inject
 	private GetAnnLeaUsedDays getAnnLeaUsedDays;
-	/** ドメインサービス：締め */
-	@Inject
-	private ClosureService closureService;
 	/** 前回付与日から次回付与日までの期間を取得 */
 	@Inject
 	private GetPeriodFromPreviousToNextGrantDate getPeriodFromPreviousToNextGrantDate;
 	/** 年休付与残数データ */
 	@Inject
 	private AnnLeaGrantRemDataRepository annLeaGrantRemDataRepo;
+	@Inject 
+	private RecordDomRequireService requireService;
 	
 	/** 使用義務日数の取得 */
 	@Override
@@ -151,12 +152,14 @@ public class ObligedAnnLeaUseServiceImpl implements ObligedAnnLeaUseService {
 	@Override
 	public AnnLeaGrantInfoOutput getRemainDatasAtDupGrantPeriod(GeneralDate criteria,
 			ObligedAnnualLeaveUse obligedAnnualLeaveUse) {
+		val require = requireService.createRequire();
+		val cacheCarrier = new CacheCarrier();
 		
 		String employeeId = obligedAnnualLeaveUse.getEmployeeId();
 		AnnLeaGrantInfoOutput result = new AnnLeaGrantInfoOutput(employeeId);
 		
 		// 社員に対応する処理締めを取得する
-		val closure = this.closureService.getClosureDataByEmployee(employeeId, criteria);
+		val closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, employeeId, criteria);
 		if (closure == null) return result;
 		YearMonth currentMonth = closure.getClosureMonth().getProcessingYm();
 		

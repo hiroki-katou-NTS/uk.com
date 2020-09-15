@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class GetOmissionContentQuery {
 	int pageNo;
 	int buttonDisNo;
+	int stampMeans;
 
 }

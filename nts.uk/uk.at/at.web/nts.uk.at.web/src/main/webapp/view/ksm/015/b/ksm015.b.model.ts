@@ -24,6 +24,24 @@ class ShiftGridOption {
        }
 }
 
+class WorkStyle {
+       	color: KnockoutObservable<String>;
+		backGroundColor: KnockoutObservable<String>;
+		borderColor: KnockoutObservable<String>;
+        workTimeSetDisplay: KnockoutObservable<String>;
+		isDisplay: KnockoutObservable<String>;
+
+       constructor() {
+              let self = this;
+              self.color = ko.observable('');
+		      self.backGroundColor = ko.observable('');
+              self.workTimeSetDisplay = ko.observable('');
+			  self.isDisplay = ko.observable('');
+			  self.borderColor = ko.observable('');
+
+       }
+}
+
 class RegistrationForm {
        selectedCode: KnockoutObservable<String>;
        shiftMasterName: KnockoutObservable<String>;
