@@ -11,6 +11,10 @@
 	margin-top: 20px;
 }
 
+.contentL {
+	width: 300px;
+}
+
 .contentR {
 	width: 800px;
 	padding-left: 40px;
@@ -49,7 +53,7 @@
 	margin-bottom: -3px;
 }
 #G4_2_container {
-	height: 275px !important;
+	height: 220px !important;
 }
 #up-down {
 	height: inherit;
