@@ -4,9 +4,10 @@ import lombok.Builder;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-//現在の締め期間
 @Value
 @Builder
+
+//	現在の締め期間
 public class CurrentClosingPeriod {
 	// 処理年月
 	private YearMonth processingYm;

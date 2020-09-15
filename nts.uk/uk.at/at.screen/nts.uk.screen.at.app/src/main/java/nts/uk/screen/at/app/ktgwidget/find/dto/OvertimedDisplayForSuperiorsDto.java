@@ -11,6 +11,8 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 
 @Data
 @Builder
+
+//UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).アルゴリズム.起動する.上長用の時間外時間表示
 public class OvertimedDisplayForSuperiorsDto {
 	
 	//	ログイン者の締めID
@@ -27,7 +29,5 @@ public class OvertimedDisplayForSuperiorsDto {
 	
 	//	翌月の締め情報
 	private Optional<CurrentClosingPeriod> closingInformationForNextMonth;
-	
-
 	
 }

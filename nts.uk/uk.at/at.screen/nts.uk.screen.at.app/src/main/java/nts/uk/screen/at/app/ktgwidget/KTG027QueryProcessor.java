@@ -357,6 +357,7 @@ public class KTG027QueryProcessor {
 	/**
 	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).ユースケース.起動する(Khởi động).システム.起動する
 	 * @return
+	 * @param currentOrNextMonth
 	 */
 	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(int currentOrNextMonth) {
 		val require = requireService.createRequire();
@@ -399,10 +400,10 @@ public class KTG027QueryProcessor {
 					.processingYm(closure.getClosureMonth().getProcessingYm().addMonths(1))
 					.closureEndDate(datePeriodClosure.end())
 					.closureStartDate(datePeriodClosure.start()).build();
-			result.setClosingInformationForNextMonth(Optional.of(closingInformationForNextMonth));
+			result.setClosingInformationForNextMonth(Optional.ofNullable(closingInformationForNextMonth));
 			//	/対象年月を指定するログイン者の配下社員の時間外時間の取得
 			AcquisitionOfOvertimeHoursOfEmployeesDto acquisitionOfOvertimeHoursOfEmployeesDto = this.getAcquisitionOfOvertimeHoursOfEmployeesDto(
-					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().addMonths(1), Optional.of(datePeriodClosure));
+					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().addMonths(1), Optional.ofNullable(datePeriodClosure));
 			//	上長用の時間外時間表示．配下社員の個人情報＝取得したList＜個人社員基本情報＞
 			//	上長用の時間外時間表示．配下社員の時間外時間＝取得したList＜管理期間の36協定時間＞
 			result.setOvertimeOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getOvertimeOfSubordinateEmployees());
@@ -425,16 +426,18 @@ public class KTG027QueryProcessor {
 		String sID = AppContexts.user().employeeId();
 		Optional<DatePeriod> referencePeriod;
 	 if(referencePeriodParam.isPresent()) { 
+		//	基準期間＝INPUT．基準期間
 		referencePeriod = referencePeriodParam;
 	 }else {
 		//	指定した年月の期間を算出する
 		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(requireService.createRequire(),closureId,targetDate);
+		//	基準期間＝取得した締め期間
 		referencePeriod = Optional.ofNullable(datePeriodClosure);
 	 }
-	 //	アルゴリズム「社員所属職場履歴を取得」を実行する
+	 //	[RQ30]社員所属職場履歴を取得
 	SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriod.get().end());
 	
-	//[No.573]職場の下位職場を基準職場を含めて取得する
+	//	[No.573]職場の下位職場を基準職場を含めて取得する
 	List<String> lstWorkPlaceId = workplacePub.getAllChildrenOfWorkplaceId(cID, referencePeriod.get().end(),sWkpHistImport.getWorkplaceId());
 	
 	//	期間内に特定の職場（List）に所属している社員一覧を取得
@@ -483,5 +486,29 @@ public class KTG027QueryProcessor {
 			}
 		} 
 		return listAgreementTimeDetail;
+	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).ユースケース.表示期間を切り替える.システム.翌月の締め情報を取得する
+	 * @param data
+	 * @return
+	 */ 
+	public OvertimedDisplayForSuperiorsDto getClosingInfomationForNextMonth(OvertimedDisplayForSuperiorsDto data) {
+		//	上長用の時間外時間表示．翌月の締め情報をチェックするNullじゃない
+		if(data.getClosingInformationForNextMonth().isPresent()) {
+			return data;
+		}
+		//	上長用の時間外時間表示．翌月の締め情報をチェックするNull
+		//	指定した年月の期間を算出する
+		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
+					requireService.createRequire(),data.getClosureId(),data.getClosingInformationForCurrentMonth().getProcessingYm());
+		//	上長用の時間外時間表示．翌月の締め情報を更新する
+		CurrentClosingPeriod closingInformationForNextMonth = CurrentClosingPeriod.builder()
+				.processingYm(data.getClosingInformationForCurrentMonth().getProcessingYm().addMonths(1))
+				.closureEndDate(datePeriodClosure.end())
+				.closureStartDate(datePeriodClosure.start()).build();
+		data.setClosingInformationForNextMonth(Optional.of(closingInformationForNextMonth));
+		//	更新後の上長用の時間外時間表示を返す
+		return data;
 	}
 }
