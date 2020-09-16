@@ -19,7 +19,7 @@ public class CompanyApproverHistoryChangeDomainService {
 	 * [1] 変更する
 	 * 会社別の承認者（36協定）の履歴を変更して、直前の履歴の終了日を変更する
 	 */
-	public AtomTask changeApproverHistory(
+	public static AtomTask changeApproverHistory(
 			Require require,
 			GeneralDate startDateBeforeChange,
 			Approver36AgrByCompany histToChange) {

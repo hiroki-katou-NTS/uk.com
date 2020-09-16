@@ -11,7 +11,6 @@ import javax.inject.Inject;
 
 /**
  * 年間申請を更新する
- * 年間申請を更新する
  * 登録した36協定特別条項の適用申請の申請時間を変更する
  *
  * @author khai.dh
@@ -63,7 +62,7 @@ public class AnnualAppUpdate {
 		return null;
 	}
 
-	public static interface Require extends ApproverGetDomainService.Require, AgreementDomainService.RequireM3 {
+	public static interface Require {
 //		[R-1] 申請を取得する
 //		36協定特別条項の適用申請Repository.get(申請ID)
 //

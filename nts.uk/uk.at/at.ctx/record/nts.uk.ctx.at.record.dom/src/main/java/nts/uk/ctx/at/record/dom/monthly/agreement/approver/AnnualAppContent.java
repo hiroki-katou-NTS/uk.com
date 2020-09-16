@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
@@ -12,6 +12,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  * @author khai.dh
  */
 @Getter
+@AllArgsConstructor
 public class AnnualAppContent extends ValueObject {
 
 	// 対象者
@@ -28,6 +29,4 @@ public class AnnualAppContent extends ValueObject {
 
 	// 申請理由 : 36協定申請理由
 	private SpecialProvisionsOfAgreement reason;
-
-	// [C-0] 年間の申請内容 (対象者,年度,エラー時間,アラーム時間,申請理由) TODO
 }
