@@ -116,19 +116,37 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				EnumAdaptor.valueOf(this.execSetting.dailyPerfItem, DailyPerformanceItem.class), new TargetGroupClassification(this.execSetting.recreateTypeChangePerson == 1 ? true : false,
 						this.execSetting.midJoinEmployee == 1 ? true : false, this.execSetting.recreateTransfers == 1 ? true : false));
 
-		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(alarmExtraction, perSchCreation,
-				dailyPerfCreation, this.execSetting.reflectResultCls == 1 ? true : false,
-				this.execSetting.monthlyAggCls == 1 ? true : false,
-				new AppRouteUpdateDaily(
+//		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(alarmExtraction, perSchCreation,
+//				dailyPerfCreation, this.execSetting.reflectResultCls == 1 ? true : false,
+//				this.execSetting.monthlyAggCls == 1 ? true : false,
+//				new AppRouteUpdateDaily(
+//						EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtr, NotUseAtr.class) ,
+//						this.execSetting.createNewEmp==null?null:EnumAdaptor.valueOf(this.execSetting.createNewEmp, NotUseAtr.class)),
+//				EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class)
+//				);
+		ProcessExecutionSetting execSetting = ProcessExecutionSetting.builder()
+				.alarmExtraction(alarmExtraction)
+				.perSchedule(perSchCreation)
+				.dailyPerf(dailyPerfCreation)
+				.reflectResultCls(this.execSetting.reflectResultCls == 1 ? true : false)
+				.appRouteUpdateDaily(new AppRouteUpdateDaily(
 						EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtr, NotUseAtr.class) ,
-						this.execSetting.createNewEmp==null?null:EnumAdaptor.valueOf(this.execSetting.createNewEmp, NotUseAtr.class)),
-				EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class)
-				);
+						this.execSetting.createNewEmp==null?null:EnumAdaptor.valueOf(this.execSetting.createNewEmp, NotUseAtr.class)))
+				.appRouteUpdateMonthly(EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class))
+				.build();
 
-		return new ProcessExecution(this.kfnmtProcExecPK.companyId, new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
-				new ExecutionName(this.execItemName), execScope, execSetting,
-				EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class)
-				);
+//		return new ProcessExecution(this.kfnmtProcExecPK.companyId, new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
+//				new ExecutionName(this.execItemName), execScope, execSetting,
+//				EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class)
+//				);
+		return ProcessExecution.builder()
+				.companyId(this.kfnmtProcExecPK.companyId)
+				.execItemCd(new ExecutionCode(this.kfnmtProcExecPK.execItemCd))
+				.execItemName(new ExecutionName(this.execItemName))
+				.execScope(execScope)
+				.execSetting(execSetting)
+				.processExecType(EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class))
+				.build();
 	}
 
 	public static KfnmtProcessExecution toEntity(ProcessExecution domain) {
