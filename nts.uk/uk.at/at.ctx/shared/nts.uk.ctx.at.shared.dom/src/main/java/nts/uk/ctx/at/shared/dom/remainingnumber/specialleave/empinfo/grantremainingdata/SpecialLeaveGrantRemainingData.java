@@ -14,6 +14,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveNumberInfo;
 
 @Getter
@@ -72,10 +73,7 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 			Double stowageDays, 
 			double remainDays,
 			Integer remainMinutes, 
-			double usedPercent, 
-			Double prescribedDays, 
-			Double deductedDays, 
-			Double workingDays) {
+			double usedPercent) {
 
 			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 			domain.cid = cID;
@@ -87,16 +85,16 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
 
 			domain.details 
-				= new SpecialLeaveNumberInfo(
+				= new LeaveNumberInfo(
 					grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
 					remainDays, remainMinutes, usedPercent);
 
-			if (prescribedDays != null && deductedDays != null && workingDays != null) {
-				domain.annualLeaveConditionInfo = Optional
-						.of(SpecialLeaveConditionInfo.createFromJavaType(prescribedDays, deductedDays, workingDays));
-			} else {
-				domain.annualLeaveConditionInfo = Optional.empty();
-			}
+//			if (prescribedDays != null && deductedDays != null && workingDays != null) {
+//				domain.annualLeaveConditionInfo = Optional
+//						.of(SpecialLeaveConditionInfo.createFromJavaType(prescribedDays, deductedDays, workingDays));
+//			} else {
+//				domain.annualLeaveConditionInfo = Optional.empty();
+//			}
 			return domain;
 	}
 	
