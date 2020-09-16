@@ -101,7 +101,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	// hoatt
 	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT app FROM KrqdtApplication app"
 			+ " JOIN KrqdtAppReflectState ref ON app.pk.companyID = ref.pk.companyID  AND app.pk.appID = ref.pk.appID"
-			+ " WHERE app.pk.companyID = :companyID" + " AND c.employeeID = :employeeID"
+			+ " WHERE app.pk.companyID = :companyID" + " AND app.employeeID = :employeeID"
 			+ " AND app.appDate >= :startDate" + " AND app.appDate <= :endDate" + " AND app.prePostAtr = :prePostAtr"
 			+ " AND app.appType = :appType" + " AND  ref.actualReflectStatus IN :lstRef"
 			+ " ORDER BY app.appType ASC, c.inputDate DESC";
