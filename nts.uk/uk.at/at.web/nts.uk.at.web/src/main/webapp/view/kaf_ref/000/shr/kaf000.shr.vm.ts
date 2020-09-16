@@ -24,7 +24,7 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.opAppEndDate = ko.observable("");
             this.opStampRequestMode = ko.observable(null);
         }        
-    }       
+    }
     
     export class ApplicationSub {
         appID: string;
@@ -34,6 +34,56 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.appType = appType;
         }      
     }
+
+	export class ActualContentDisplayDto {
+		/** 年月日 */
+		date: string;
+		/** 実績詳細 */
+		opAchievementDetail: AchievementDetailDto;
+	}    
+	
+	export interface AchievementDetailDto {
+		/** 1勤務種類コード */
+		workTypeCD: string;
+		/** 3就業時間帯コード */
+		workTimeCD: string;
+		/** 休憩時間帯 */
+		breakTimeSheets: Array<any>;
+		/** 勤怠時間内容 */
+		timeContentOutput: any;
+		/** 実績スケ区分 */
+		trackRecordAtr: number;
+		/** 打刻実績 */
+		stampRecordOutput: any;
+		/** 短時間勤務時間帯 */
+		shortWorkTimeLst: Array<any>;
+		/** 遅刻早退実績 */
+		achievementEarly: any;
+		/** 10退勤時刻2 */
+		opDepartureTime2: number;
+		/** 2勤務種類名称 */
+		opWorkTypeName: string;
+		/** 4就業時間帯名称 */
+		opWorkTimeName: string;
+		/** 5出勤時刻 */
+		opWorkTime: number;
+		/** 6退勤時刻 */
+		opLeaveTime: number;
+		/** 8実績状態 */
+		opAchievementStatus: number;
+		/** 9出勤時刻2 */
+		opWorkTime2: number;
+		/** 残業深夜時間 */
+		opOvertimeMidnightTime: number;
+		/** 法内休出深夜時間 */
+		opInlawHolidayMidnightTime: number;
+		/** 法外休出深夜時間 */
+		opOutlawHolidayMidnightTime: number;
+		/** 祝日休出深夜時間 */
+		opPublicHolidayMidnightTime: number;
+		/** 7勤怠時間 */
+		opOvertimeLeaveTimeLst: Array<any>;	
+	}
 
 	export interface PrintContentOfEachAppDto {
 		/**
