@@ -61,5 +61,17 @@ public interface AttendanceRecordFreeSettingRepository {
     public Optional<AttendanceRecordExportSetting> findByLayoutId(String layoutId);
     
     
+    /**
+     * Find by company employee and code and selection.
+     *
+     * @param companyId the company id
+     * @param employeeId the employee id
+     * @param code the code
+     * @param selection the selection
+     * @return the optional
+     */
+    public Optional<AttendanceRecordFreeSetting> findByCompanyEmployeeAndCodeAndSelection(String companyId, String employeeId, long code, int selection);
+    
+    
     
 }
