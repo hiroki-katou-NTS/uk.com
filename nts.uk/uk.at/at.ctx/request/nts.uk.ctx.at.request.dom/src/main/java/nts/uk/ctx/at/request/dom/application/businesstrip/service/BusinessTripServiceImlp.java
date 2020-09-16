@@ -428,7 +428,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     private void getWorkInfoFromTripReqContent(String appId, ApplicationType appType, GeneralDate date, ActualContentDisplay content) {
         String cid = AppContexts.user().companyId();
         String wkTypeCd = Strings.EMPTY;
-        String wkTimeCd = Strings.EMPTY;
+        String wkTimeCd = content.getOpAchievementDetail().get().getWorkTimeCD();
         Optional<String> wkTypeName;
         Optional<String> wkTimeName;
         Optional<Integer> opWorkTime = Optional.empty();
@@ -440,7 +440,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<AppHolidayWork> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
                 if (appHolidayWork.isPresent()) {
                     wkTypeCd = appHolidayWork.get().getWorkTypeCode().v();
-                    wkTimeCd = appHolidayWork.get().getWorkTimeCode().v();
+                    wkTimeCd = appHolidayWork.get().getWorkTimeCode() == null ? null : appHolidayWork.get().getWorkTimeCode().v();
                     opWorkTime = appHolidayWork.map(i -> i.getWorkClock1().getStartTime().v());
                     opLeaveTime = appHolidayWork.map(i -> i.getWorkClock1().getEndTime().v());
                 }
@@ -450,7 +450,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<GoBackDirectly> goBackDirectly = goBackDirectlyRepository.find(cid, appId);
                 if (goBackDirectly.isPresent() && goBackDirectly.get().getDataWork().isPresent()) {
                     wkTypeCd = goBackDirectly.get().getDataWork().get().getWorkTypeCode().v();
-                    wkTimeCd = goBackDirectly.get().getDataWork().get().getWorkTimeCode().v();
+                    wkTimeCd = goBackDirectly.get().getDataWork().get().getWorkTimeCode() == null ? null : goBackDirectly.get().getDataWork().get().getWorkTimeCode().v();
                 }
                 break;
             case WORK_CHANGE_APPLICATION:
@@ -460,7 +460,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                         && appWorkChange.get().getOpWorkTimeCD().isPresent()
                         && appWorkChange.get().getOpWorkTimeCD().isPresent()) {
                     wkTypeCd = appWorkChange.get().getOpWorkTypeCD().get().v();
-                    wkTimeCd = appWorkChange.get().getOpWorkTimeCD().get().v();
+                    wkTimeCd = appWorkChange.get().getOpWorkTimeCD().get() == null ? null : appWorkChange.get().getOpWorkTimeCD().get().v();
                     if (!appWorkChange.get().getTimeZoneWithWorkNoLst().isEmpty()) {
                         val workChangeStart = appWorkChange.get().getTimeZoneWithWorkNoLst().get(0);
                         opWorkTime = Optional.of(workChangeStart.getTimeZone().getStartTime().v());
@@ -474,7 +474,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 if (businessTrip.isPresent() && !businessTrip.get().getInfos().isEmpty()) {
                     Optional<BusinessTripInfo> info = businessTrip.get().getInfos().stream().filter(i -> i.getDate().compareTo(date) == 0).findFirst();
                     if (info.isPresent()) {
-                        wkTimeCd = info.get().getWorkInformation().getWorkTimeCode().v();
+                        wkTimeCd = info.get().getWorkInformation().getWorkTimeCode() == null ? null : info.get().getWorkInformation().getWorkTimeCode().v();
                         wkTypeCd = info.get().getWorkInformation().getWorkTypeCode().v();
                         opWorkTime = info.get().getWorkingHours().isPresent() ? Optional.of(info.get().getWorkingHours().get().get(0).getTimeZone().getStartTime().v()) : Optional.empty();
                         opLeaveTime = info.get().getWorkingHours().isPresent() ? Optional.of(info.get().getWorkingHours().get().get(0).getTimeZone().getEndTime().v()) : Optional.empty();
@@ -486,7 +486,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<AppAbsence> appAbsence = appAbsenceRepository.getAbsenceByAppId(cid, appId);
                 if (appAbsence.isPresent()) {
                     wkTypeCd = appAbsence.get().getWorkTypeCode().v();
-                    wkTimeCd = appAbsence.get().getWorkTimeCode().v();
+                    wkTimeCd = appAbsence.get().getWorkTimeCode() == null ? null : appAbsence.get().getWorkTimeCode().v();
                     opWorkTime = appAbsence.map(i -> i.getStartTime1().getDayTime());
                     opLeaveTime = appAbsence.map(i -> i.getEndTime1().getDayTime());
                 }
