@@ -93,7 +93,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID = :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
 
-	private static final String SELECT_LATE_LEAVE = "SELECT a FROM KrqdtApplication_New a"
+	private static final String SELECT_LATE_LEAVE = "SELECT a FROM KrqdtApplication a"
 			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
 			+ " WHERE a.pk.companyID = :companyID"
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate "
