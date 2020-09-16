@@ -52,5 +52,4 @@ public class GetNewestStampNotRegisteredService {
 	public static interface Require extends RetrieveNoStampCardRegisteredService.Require {
 
 	}
-
 }

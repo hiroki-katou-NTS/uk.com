@@ -31,6 +31,11 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 				self.clearPreviewColor();
 				self.getWorkStyle();
 			});
+			
+			self.registrationForm().color.subscribe((value) => {
+				if(value)
+				nts.uk.ui.errors.clearAll();
+			})
 
 			/*	self.registrationForm().workTypeCd.subscribe((value) => {
 					if(!value){
@@ -79,6 +84,14 @@ module nts.uk.at.view.ksm015.b.viewmodel {
 		public getWorkStyle() {
 			let self = this;
 			let dfd = $.Deferred();
+			if (_.isNil(self.registrationForm().color())) {
+				let KSM015_19 = nts.uk.resource.getText('KSM015_19');
+				$('#colorpicker').ntsError('set', nts.uk.resource.getMessage("MsgB_2", [KSM015_19]), "MsgB_2");
+			};
+
+			if (nts.uk.ui.errors.hasError()) {
+				return;
+			};
 			nts.uk.ui.block.grayout();
 			if (self.registrationForm().shiftMasterName() == "" || self.registrationForm().workTypeCd() == ""
 				|| self.registrationForm().workTimeSetName().search(nts.uk.resource.getText('KSM015_29')) != -1

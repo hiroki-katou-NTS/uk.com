@@ -251,24 +251,27 @@ module nts.uk.at.view.ksm003.a {
                     item.days
                 );
 
-                let workTypeName = _.find(lstWorkType, (element) => {
-                        return element.workTypeCode == item.typeCode
-                    }
-                );
+	            let workType = _.find(lstWorkType, (element) => {
+			            return element.workTypeCode == item.typeCode
+		            }
+	            );
 
-                workTypeName = workTypeName && workTypeName.name || '';
-                dailyPatternValModel.setWorkTypeName(workTypeName);
+	            let workTypeName = nts.uk.util.isNullOrUndefined(workType) ? vm.$i18n('KSM003_2') : workType.name;
+	            dailyPatternValModel.setWorkTypeName(workTypeName);
 
-                let workTimeName = _.find(lstWorkTime, (element) => {
-                        return element.code == item.timeCode
-                    }
-                );
-
-                workTimeName = workTimeName && workTimeName.name || '';
+	            let workTimeName = '';
+	            if( nts.uk.util.isNullOrEmpty(item.timeCode) ) {
+		            workTimeName = '';
+	            }  else {
+		            let workTime = _.find(lstWorkTime, (element) => {
+				            return element.code == item.timeCode
+			            }
+		            );
+		            workTimeName = nts.uk.util.isNullOrUndefined(workTime) ? vm.$i18n('KSM003_2') : workTime.name;
+	            }
                 dailyPatternValModel.setWorkTimeName(workTimeName);
 
                 dailyPatternVals.push(dailyPatternValModel);
-
             });
 
             vm.dailyPatternValModel(dailyPatternVals);
@@ -319,16 +322,10 @@ module nts.uk.at.view.ksm003.a {
             const vm = this;
                 let currentCodeList = vm.currentCodeList();
                 let currentDataList = vm.mainModel().dailyPatternVals();
-                let newDataList = [];
                 let dailyPatternValModel: Array<DailyPatternValModel> = [];
-
                 currentCodeList && currentDataList && currentDataList.map((item, i) => {
                     if (!item.isChecked()) {
-                        dailyPatternValModel.push(
-                            new DailyPatternValModel(
-                                item.dispOrder, item.typeCode(),
-                                item.timeCode(), item.days()
-                            ));
+                        dailyPatternValModel.push(item);
                     }
                 });
                 //update model
@@ -339,9 +336,7 @@ module nts.uk.at.view.ksm003.a {
                 vm.dailyPatternValModel(dailyPatternValModel);
                 vm.lessThan99Items(true);
                 if( dailyPatternValModel.length <= 0 ) vm.selectedCheckAll(false);
-
                 vm.enableRemoveItem(false);
-                vm.$blockui("hide");
         }
 
         /*
