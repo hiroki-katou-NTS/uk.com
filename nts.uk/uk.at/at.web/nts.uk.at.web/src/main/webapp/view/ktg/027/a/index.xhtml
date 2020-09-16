@@ -15,7 +15,7 @@
       <com:scriptfile path="ktg027.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-      <div style="width: 500px; height: 600px; padding: 10px;">
+      <div>
 			<div id="contents-area">
 				<div class="title-border">
 					<!-- A1_1 -->
@@ -44,97 +44,157 @@
 							</td>
 						</tr>
 				</tbody>
-				</table>
-				<table class="block pl-10 scroll">
-					<thead>
-						<tr>
-							<!-- A2_1 -->
-							<th>#{i18n.getText('KTG027_7')}</th>
-							<!-- A2_2 -->
-							<th>#{i18n.getText('KTG027_4')}</th>
-							<th class="w-200">
-								<!-- A2_3 -->
-								<span class="fixed45">45:00</span>
-								<!-- A2_4 -->
-								<span class="fixed80">80:00</span>
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="mw-200">
-							<td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
-							<td class="border-bot"><a href="#">60:00</a></td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" data-bind="style: { width: width() }"></span>
-								<span class="label time-outside-bg-color" data-bind="style: { width: width2() }"></span>
-							</td>
-						</tr>
-            <tr class="mw-200">
-							<td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
-							<td class="border-bot"><a href="#">60:00</a></td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" data-bind="style: { width: width() }"></span>
-								<span class="label time-outside-bg-color" data-bind="style: { width: width2() }"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
-							<td class="border-bot"><a href="#">60:00</a></td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" data-bind="style: { width: width() }"></span>
-								<span class="label time-outside-bg-color" data-bind="style: { width: width2() }"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
-							<td class="border-bot"><a href="#">60:00</a></td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" data-bind="style: { width: width() }"></span>
-								<span class="label time-outside-bg-color" data-bind="style: { width: width2() }"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
-							<td class="border-bot"><a href="#">60:00</a></td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" data-bind="style: { width: width() }"></span>
-								<span class="label time-outside-bg-color" data-bind="style: { width: width2() }"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
-							<td class="border-bot"><a href="#">60:00</a></td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" data-bind="style: { width: width() }"></span>
-								<span class="label time-outside-bg-color" data-bind="style: { width: width2() }"></span>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-
-				<div class="row-inline">
-					<div class="panel gray-bg custom-panel">
-						<div class="addSign"></div>
-					</div>
-					<div class="panel gray-bg custom-panel">
-						<div class="addSign"></div>
-					</div>
-					<div class="panel gray-bg custom-panel">
-						<div class="addSign"></div>
-					</div>
-				</div>
+        </table>
+        <div style="height: 270px;">
+          <table class="block pl-10 scroll">
+            <thead>
+              <tr>
+                <!-- A2_1 -->
+                <th>#{i18n.getText('KTG027_7')}</th>
+                <!-- A2_2 -->
+                <th>#{i18n.getText('KTG027_4')}</th>
+                <th class="w-200">
+                  <!-- A2_3 -->
+                  <span class="fixed45">45:00</span>
+                  <!-- A2_4 -->
+                  <span class="fixed80">80:00</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+              <tr class="mw-200">
+                <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
+                <td class="border-bot"><a href="#">60:00</a></td>
+                <td class="pl-20 inline-flex position-relative">
+                  <div class="label non-statutory-bg-color" data-bind="style: { width: width() }"></div>
+                  <div class="label time-outside-bg-color" data-bind="style: { width: width2() }"></div> 
+                  <div class="dashed45"></div>
+                  <div class="dashed80"></div>
+                </td>
+              </tr>
+            </tbody>
+          </table>  
+        </div>
       </div>
       </div>
 		</ui:define>

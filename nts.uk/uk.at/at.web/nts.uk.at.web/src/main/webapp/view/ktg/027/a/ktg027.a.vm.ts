@@ -11,12 +11,16 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     currentOrNextMonth: KnockoutObservable<number> = ko.observable(0);
     created() {
       const vm = this;
-      vm.year(moment(vm.$date.today()));
-      vm.currentOrNextMonth(getShared('cache').currentOrNextMonth);
+      vm.currentOrNextMonth(parseInt(getShared('cache').currentOrNextMonth));
     }
 
     mounted() {
       const vm = this;
+      if(vm.currentOrNextMonth() === 1){
+        vm.year(moment(vm.$date.today()));
+      }else {
+        vm.year(moment(vm.$date.today().setMonth(vm.$date.today().getMonth() + 1)));
+      }
     }
   }
 
