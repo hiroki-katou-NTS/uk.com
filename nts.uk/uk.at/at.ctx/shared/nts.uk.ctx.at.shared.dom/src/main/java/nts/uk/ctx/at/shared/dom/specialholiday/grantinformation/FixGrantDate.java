@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
 
 /**
  * 指定日付与
@@ -23,6 +24,7 @@ public class FixGrantDate {
 	private RegularGrantDays grantDays;
 
 	/** 期限 */
+	private GrantPeriodic grantPeriodic;
 	
 	/** 付与月日 */
 	private Optional<MonthDay> grantMonthDay;

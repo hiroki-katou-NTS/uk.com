@@ -28,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPaidLeaveSetting;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.AnnualPriority;
 
@@ -168,45 +169,39 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * @param require
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
-	 * @param aggregatePeriodWork 処理中の特休集計期間WORK
-	 * @param tempAnnualLeaveMngs 暫定特休管理データリスト
-	 * @param isGetNextMonthData 翌月管理データ取得フラグ
-	 * @param isCalcAttendanceRate 出勤率計算フラグ
+	 * @param specialLeaveAggregatePeriodWork 処理中の特休集計期間WORK
+	 * @param interimSpecialHolidayMng 暫定特休管理データリスト
+//	 * @param isGetNextMonthData 翌月管理データ取得フラグ
+//	 * @param isCalcAttendanceRate 出勤率計算フラグ
 	 * @param aggrResult 特休の集計結果
-	 * @param annualPaidLeaveSet 特休設定
+	 * @param specialLeaveCode 特別休暇コード
 	 * @return 特休の集計結果
 	 */
-	public AggrResultOfAnnualLeave lapsedGrantDigest(
+	public InPeriodOfSpecialLeaveResultInfor lapsedGrantDigest(
 			LeaveRemainingNumber.RequireM3 require,
 			String companyId,
 			String employeeId,
-			AggregatePeriodWork aggregatePeriodWork,
-			List<TmpAnnualLeaveMngWork> tempAnnualLeaveMngs,
-			boolean isGetNextMonthData,
-			boolean isCalcAttendanceRate,
-			AggrResultOfAnnualLeave aggrResult,
-			AnnualPaidLeaveSetting annualPaidLeaveSet){
+			SpecialLeaveAggregatePeriodWork specialLeaveAggregatePeriodWork,
+			List<InterimSpecialHolidayMng> interimSpecialHolidayMng,
+//			boolean isGetNextMonthData,
+//			boolean isCalcAttendanceRate,
+			InPeriodOfSpecialLeaveResultInfor aggrResult,
+			int specialLeaveCode){
 		
-		this.annualPaidLeaveSet = annualPaidLeaveSet;
+		// 付与前退避処理
+		this.saveStateBeforeGrant(specialLeaveAggregatePeriodWork);
 		
-		// 期間終了日時点の特休情報を付与消滅前に退避するかチェック
-		// if (aggregatePeriodWork.isNextDayAfterPeriodEnd() && !isGetNextMonthData){
-		
-		// 初回付与かチェックする
-		if ( aggregatePeriodWork.getGrantNumber() == 1 ){ 
-			
-			// 「特休の集計結果．特休情報（期間終了日時点）」　←　処理中の「特休情報」
-			aggrResult.setAsOfPeriodEnd(this.clone());
-			
-			// 付与前退避処理
-			this.saveStateBeforeGrant(aggregatePeriodWork);
-		}
-		
-		// 年月日を更新　←　開始日
-		this.ymd = aggregatePeriodWork.getPeriod().start();
+		// 特別休暇情報．年月日を開始日に更新
+		this.ymd = specialLeaveAggregatePeriodWork.getPeriod().start();
 
 		// 消滅処理
-		aggrResult = this.lapsedProcess(aggregatePeriodWork, aggrResult);
+		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult);
+		
+		
+		
+		
+		
+		
 		
 		// 付与処理
 		aggrResult = this.grantProcess(companyId, employeeId,
@@ -218,7 +213,7 @@ public class SpecialLeaveInfo implements Cloneable {
 			// 消化処理
 			aggrResult = this.digestProcess(
 					require, companyId, employeeId,
-					aggregatePeriodWork, tempAnnualLeaveMngs, aggrResult);
+					aggregatePeriodWork, tempSpecialLeaveMngs, aggrResult);
 			
 			// 年月日を更新　←　終了日
 			this.ymd = aggregatePeriodWork.getPeriod().end();
@@ -243,27 +238,28 @@ public class SpecialLeaveInfo implements Cloneable {
 	
 	/**
 	 * 付与前退避処理
-	 * @param aggregatePeriodWork 処理中の特休集計期間WORK
+	 * @param specialLeaveAggregatePeriodWork 処理中の特休集計期間WORK
 	 */
-	private void saveStateBeforeGrant(AggregatePeriodWork aggregatePeriodWork){
+	private void saveStateBeforeGrant(
+			SpecialLeaveAggregatePeriodWork aggregatePeriodWork){
 		
-		// 「特休集計期間WORK.付与フラグ」をチェック
-		if (!aggregatePeriodWork.isGrantAtr()) return;
+		// パラメータ「特別休暇集計期間WORK．期間の開始日に付与があるかどうか」をチェック
+		if (!aggregatePeriodWork.getGrantWork().isGrantAtr()) return;
 		
 //		// 「特休情報．付与後フラグ」をチェック
 //		if (this.isAfterGrantAtr()) return;
 		
-		// 初回付与かチェックする
-		if ( aggregatePeriodWork.getGrantNumber() != 1 ){
+		// 初回付与か判断する
+		if ( aggregatePeriodWork.getGrantWork().getGrantNumber() != 1 ){
 			return;
 		}
 	
 		// 現在の特休（マイナスあり）の残数を付与前として退避する
-		val withMinus = this.remainingNumber.getAnnualLeaveWithMinus();
+		val withMinus = this.remainingNumber.getSpecialLeaveWithMinus();
 		withMinus.saveStateBeforeGrant();
 
 		// 現在の特休（マイナスなし）の残数を付与前として退避する
-		val noMinus = this.remainingNumber.getAnnualLeaveNoMinus();
+		val noMinus = this.remainingNumber.getSpecialLeaveNoMinus();
 		noMinus.saveStateAfterGrant();
 	}
 	
@@ -273,14 +269,23 @@ public class SpecialLeaveInfo implements Cloneable {
 	 * @param aggrResult 特休の集計結果
 	 * @return 特休の集計結果
 	 */
-	private AggrResultOfAnnualLeave lapsedProcess(
-			AggregatePeriodWork aggregatePeriodWork,
-			AggrResultOfAnnualLeave aggrResult){
+	private InPeriodOfSpecialLeaveResultInfor lapsedProcess(
+			SpecialLeaveAggregatePeriodWork aggregatePeriodWork,
+			InPeriodOfSpecialLeaveResultInfor aggrResult){
 		
 		// 消滅フラグを取得
-		if (!aggregatePeriodWork.isLapsedAtr()) return aggrResult;
+		if (!aggregatePeriodWork.getLapsedWork().isLapsedAtr()) return aggrResult;
 		
-		// 「付与残数データ」を取得
+		// 特別休暇を消滅させる --------------------------
+		
+		// 「特別休暇情報．付与残数データ」を取得
+		// 【条件】
+		// 期限日=特別休暇集計期間WORK．期間．開始日の前日
+		// 年休不足ダミーフラグ=false
+		// 【ソート】
+		// 付与日(ASC)
+		// ※期限が切れた翌日開始時点で消滅する
+		this.grantRemainingList.sort((a,b)->a.getGrantDate().compareTo(b.getGrantDate()));
 		val itrGrantRemainingNumber = this.grantRemainingList.listIterator();
 		while (itrGrantRemainingNumber.hasNext()){
 			val grantRemainingNumber = itrGrantRemainingNumber.next();
@@ -296,16 +301,16 @@ public class SpecialLeaveInfo implements Cloneable {
 			// 処理中の付与残数データを期限切れにする
 			grantRemainingNumber.setExpirationStatus(LeaveExpirationStatus.EXPIRED);
 			
-//			// 未消化数を更新
-//			val targetUndigestNumber = this.remainingNumber.getAnnualLeaveNoMinus().getUndigestedNumber();
-//			val remainingNumber = grantRemainingNumber.getDetails().getRemainingNumber();
-//			targetUndigestNumber.getUndigestedDays().addDays(remainingNumber.getDays().v());
-//			if (remainingNumber.getMinutes().isPresent()){
-//				if (!targetUndigestNumber.getUndigestedTime().isPresent()){
-//					targetUndigestNumber.setUndigestedTime(Optional.of(new UndigestedTimeAnnualLeaveTime()));
-//				}
-//				targetUndigestNumber.getUndigestedTime().get().addMinutes(remainingNumber.getMinutes().get().v());
-//			}
+			// 未消化数を更新
+			val targetUndigestNumber = this.remainingNumber.getSpecialLeaveNoMinus().getUndigestedNumber();
+			val remainingNumber = grantRemainingNumber.getDetails().getRemainingNumber();
+			targetUndigestNumber.getUndigestedDays().addDays(remainingNumber.getDays().v());
+			if (remainingNumber.getMinutes().isPresent()){
+				if (!targetUndigestNumber.getUndigestedTime().isPresent()){
+					targetUndigestNumber.setUndigestedTime(Optional.of(new UndigestedTimeSpecialLeaveTime()));
+				}
+				targetUndigestNumber.getUndigestedTime().get().addMinutes(remainingNumber.getMinutes().get().v());
+			}
 		}
 		
 		// 特休情報残数を更新

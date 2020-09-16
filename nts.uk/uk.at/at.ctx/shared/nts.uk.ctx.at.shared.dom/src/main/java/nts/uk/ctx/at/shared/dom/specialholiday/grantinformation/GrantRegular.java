@@ -10,6 +10,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
+import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.GrantPeriodic;
 
 /**
  * 付与・期限情報
@@ -32,28 +33,25 @@ public class GrantRegular extends DomainObject {
 	private FixGrantDate fixGrantDate;
 	
 	/** 付与日テーブル参照付与 */
-	
+	private GrantPeriodic grantPeriodic;
 	
 	/** 期間付与 */
 	private PeriodGrantDate periodGrantDate;
 	
+
 	
-	
-	
-	
-	
-	
-	/** 会社ID */
-	private String companyId;
-	
-	/** 特別休暇コード */
-	private SpecialHolidayCode specialHolidayCode;
-	
-	/** 取得できなかった端数は消滅する */
-	private boolean allowDisappear;
-	
-	/** 取得できなかった端数は消滅する */
-	private GrantTime grantTime;
+//	
+//	/** 会社ID */
+//	private String companyId;
+//	
+//	/** 特別休暇コード */
+//	private SpecialHolidayCode specialHolidayCode;
+//	
+//	/** 取得できなかった端数は消滅する */
+//	private boolean allowDisappear;
+//	
+//	/** 取得できなかった端数は消滅する */
+//	private GrantTime grantTime;
 	
 	@Override
 	public void validate() {

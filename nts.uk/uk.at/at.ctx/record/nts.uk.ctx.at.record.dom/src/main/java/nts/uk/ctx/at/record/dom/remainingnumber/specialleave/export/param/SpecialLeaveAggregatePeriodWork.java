@@ -21,20 +21,19 @@ public class SpecialLeaveAggregatePeriodWork {
 
 	/** 期間 */
 	private DatePeriod period;
-	/** 期間終了内 */
+	/** 終了日の期間かどうか */
 	private boolean dayBeforePeriodEnd;
-	/** 期間終了後翌日 */
+	/** 終了日の翌日の期間かどうか */
 	private boolean nextDayAfterPeriodEnd;
-//	/** 付与フラグ */
-//	private boolean grantAtr;
-//	/** 何回目の付与なのか */
-//	private int grantNumber = 0;	
 	/** 付与後 */
 	private boolean afterGrant;
 	/** 消滅情報WORK */
 	private SpecialLeaveLapsedWork lapsedWork;
-	/** 特休付与 */
-	private Optional<NextSpecialLeaveGrant> specialLeaveGrant;
+	/** 付与情報WORK */
+	private SpecialLeaveGrantWork grantWork;
+	
+//	/** 特休付与 */
+//	private Optional<NextSpecialLeaveGrant> specialLeaveGrant;
 	
 	/**
 	 * コンストラクタ

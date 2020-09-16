@@ -683,8 +683,12 @@ public class GetAnnLeaRemNumWithinPeriodProc {
 	 * 暫定年休管理データを取得する
 	 * @return 暫定年休管理データWORKリスト
 	 */
-	private static List<TmpAnnualLeaveMngWork> getTempAnnualLeaveMngs(RequireM2 require, String employeeId, 
-			DatePeriod aggrPeriod, InterimRemainMngMode mode, Optional<Boolean> isOverWriteOpt, 
+	private static List<TmpAnnualLeaveMngWork> getTempAnnualLeaveMngs(
+			RequireM2 require, 
+			String employeeId, 
+			DatePeriod aggrPeriod, 
+			InterimRemainMngMode mode, 
+			Optional<Boolean> isOverWriteOpt, 
 			Optional<List<TmpAnnualLeaveMngWork>> forOverWriteListOpt){
 		
 		List<TmpAnnualLeaveMngWork> results = new ArrayList<>();
