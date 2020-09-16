@@ -161,7 +161,8 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsReportGenerator implements WorkScheduleOutputGenerator{
+public class AsposeWorkScheduleOutputConditionGenerator extends AsposeCellsReportGenerator
+		implements WorkScheduleOutputGenerator {
 	
 	/** The workplace info repository. */
 	@Inject
