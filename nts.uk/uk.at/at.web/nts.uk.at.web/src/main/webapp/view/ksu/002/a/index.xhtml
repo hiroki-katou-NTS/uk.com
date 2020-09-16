@@ -13,9 +13,12 @@
 			<com:scriptfile path="./ksu.002a.vm.js" />
 			<com:stylefile path="./ksu.002a.style.css" />
 			<com:scriptfile path="../component/calendar.js" />
+			<com:scriptfile path="../component/title-date.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
+			</div>
+			<div data-bind="component: { name: 'title-date', params: {} }">
 			</div>
 			<div id="contents-area">
                 <div data-bind="scheduler: undefined, baseDate: ko.observable({ begin: new Date(2020, 8, 14), finish: new Date(2020, 9, 4) })"></div>
