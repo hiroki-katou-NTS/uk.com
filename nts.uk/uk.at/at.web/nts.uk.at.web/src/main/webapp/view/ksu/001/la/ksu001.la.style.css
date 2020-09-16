@@ -23,14 +23,14 @@
 	left: 16px;
 }
 .arrow-button{	
-	padding: 80px 45px;	
+	padding: 80px 20px;	
 	margin: 2px;
 }
 
 .btn-custom{
-	width: 50px !important;
+	/* width: 50px !important;
 	height: 31px !important;
-	padding: 0px !important	;
+	padding: 0px !important	; */
 	margin-bottom: 20px !important;
 }
 .icon-btn-custom {
@@ -39,7 +39,7 @@
 .container-custom {	
 	display: flex;
 	margin-top: 5px;
-	width: 800px;
+	width: 750px;
 }
 .container-table {
 	display: flex;
@@ -52,12 +52,12 @@
 	margin-top: 5px;		
 }
 .lblForm{
-	margin-right: 313px;
+	margin-right: 281px;
 }
 
 #line {
 	margin: 5px 0px 10px 0px;
-	width: 830px;
+	width: 750px;
 	border:none;
 	display: block;
 	height: 0.1px;
