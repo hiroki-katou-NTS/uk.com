@@ -113,15 +113,15 @@ public class LogSetting extends AggregateRoot {
 
 		void setProgramId(String programId);
 
-		void setMenuClassification(Integer menuClassification);
+		void setMenuClassification(int menuClassification);
 
-		void setLoginHistoryRecord(Integer loginHistoryRecord);
+		void setLoginHistoryRecord(int loginHistoryRecord);
 
 		void setCompanyId(String companyId);
 
-		void setEditHistoryRecord(Integer editHistoryRecord);
+		void setEditHistoryRecord(int editHistoryRecord);
 
-		void setBootHistoryRecord(Integer bootHistoryRecord);
+		void setBootHistoryRecord(int bootHistoryRecord);
 	}
 
 	/**
@@ -137,14 +137,14 @@ public class LogSetting extends AggregateRoot {
 
 		String getProgramId();
 
-		Integer getMenuClassification();
+		int getMenuClassification();
 
-		Integer getLoginHistoryRecord();
+		int getLoginHistoryRecord();
 
 		String getCompanyId();
 
-		Integer getEditHistoryRecord();
+		int getEditHistoryRecord();
 
-		Integer getBootHistoryRecord();
+		int getBootHistoryRecord();
 	}
 }

@@ -27,6 +27,7 @@ public class LogSettingService extends WebService {
 	@POST
 	@Path("update")
 	public void updateLogSetting(List<LogSettingDto> logSettingDtos) {
+		System.out.println(logSettingDtos);
 		String companyId = AppContexts.user().companyId();
 		for (LogSettingDto l : logSettingDtos) {
 			l.setCompanyId(companyId);

@@ -5,16 +5,14 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
+import javax.persistence.Version;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 @Table(name = "SRCDT_LOG_SETTING")
 @EqualsAndHashCode(callSuper = true)
@@ -24,6 +22,11 @@ public class SrcdtLogSetting extends UkJpaEntity
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	// column 排他バージョン
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private long version;
 
 	@EmbeddedId
 	public SrcdtLogSettingPK srcdtLogSettingPK;
@@ -63,12 +66,12 @@ public class SrcdtLogSetting extends UkJpaEntity
 	}
 
 	@Override
-	public void setMenuClassification(Integer menuClassification) {
+	public void setMenuClassification(int menuClassification) {
 		this.setMenuClassification(menuClassification);
 	}
 
 	@Override
-	public void setLoginHistoryRecord(Integer loginHistoryRecord) {
+	public void setLoginHistoryRecord(int loginHistoryRecord) {
 		this.setLoginHistoryRecord(loginHistoryRecord);
 	}
 
@@ -81,12 +84,12 @@ public class SrcdtLogSetting extends UkJpaEntity
 	}
 
 	@Override
-	public void setEditHistoryRecord(Integer editHistoryRecord) {
+	public void setEditHistoryRecord(int editHistoryRecord) {
 		this.setEditHistoryRecord(editHistoryRecord);
 	}
 
 	@Override
-	public void setBootHistoryRecord(Integer bootHistoryRecord) {
+	public void setBootHistoryRecord(int bootHistoryRecord) {
 		this.setBootHistoryRecord(bootHistoryRecord);
 	}
 
@@ -107,15 +110,15 @@ public class SrcdtLogSetting extends UkJpaEntity
 	}
 
 	@Override
-	public Integer getMenuClassification() {
+	public int getMenuClassification() {
 		if (this.srcdtLogSettingPK != null) {
 			return this.srcdtLogSettingPK.getMenuClassification();
 		}
-		return null;
+		return 0;
 	}
 
 	@Override
-	public Integer getLoginHistoryRecord() {
+	public int getLoginHistoryRecord() {
 		return this.getLoginLogUseAtr();
 	}
 
@@ -128,12 +131,12 @@ public class SrcdtLogSetting extends UkJpaEntity
 	}
 
 	@Override
-	public Integer getEditHistoryRecord() {
+	public int getEditHistoryRecord() {
 		return this.getUpdateLogUseAtr();
 	}
 
 	@Override
-	public Integer getBootHistoryRecord() {
+	public int getBootHistoryRecord() {
 		return this.getStartupLogUseAtr();
 	}
 

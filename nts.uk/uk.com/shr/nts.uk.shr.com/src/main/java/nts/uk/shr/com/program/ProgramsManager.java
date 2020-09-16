@@ -2364,6 +2364,12 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
             "/view/cli/001/a/index.xhtml");
     public static final Program CLI001B = new Program(WebAppId.COM, ProgramIdConsts.CLI001B, "CLI001_2",
             "/view/cli/001/b/index.xhtml");
+    
+    /**    	* CLI002 	*/
+    public static final Program CLI002A = new Program(WebAppId.COM, 
+            ProgramIdConsts.CLI002A,
+            "CLI002_1",
+            "/view/cli/002/a/index.xhtml");
 
     /**     * CLI003     */
     public static final Program CLI003I = new Program(WebAppId.COM, ProgramIdConsts.CLI003I, "CLI003_63",

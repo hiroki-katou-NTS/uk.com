@@ -38,8 +38,12 @@ public class JpaLogSettingRepository extends JpaRepository implements LogSetting
 	public SrcdtLogSetting insertToEntity(LogSetting domain) {
 		SrcdtLogSettingPK srcdtLogSettingPK = new SrcdtLogSettingPK(domain.getCompanyId(), domain.getSystem(),
 				domain.getMenuClassification().value, domain.getProgramId());
-		return new SrcdtLogSetting(srcdtLogSettingPK, domain.getLoginHistoryRecord().value,
-				domain.getBootHistoryRecord().value, domain.getEditHistoryRecord().value);
+		SrcdtLogSetting srcdtLogSetting = new SrcdtLogSetting();
+		srcdtLogSetting.srcdtLogSettingPK = srcdtLogSettingPK;
+		srcdtLogSetting.loginLogUseAtr = domain.getLoginHistoryRecord().value;
+		srcdtLogSetting.startupLogUseAtr = domain.getBootHistoryRecord().value;
+		srcdtLogSetting.updateLogUseAtr = domain.getEditHistoryRecord().value;
+		return srcdtLogSetting;
 	}
 
 }

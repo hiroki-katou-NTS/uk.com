@@ -30,7 +30,7 @@ module nts.uk.com.view.cli002.a {
 
     @bean()
     export class ScreenModel extends ko.ViewModel {
-        public logSettings: KnockoutObservableArray<LogSetting> = ko.observableArray([]);
+        public logSettings: Array<LogSetting> = [];
 
         public systemList: KnockoutObservableArray<systemType> = ko.observableArray([
             new systemType(0, this.$i18n("Enum_SystemType_PERSON_SYSTEM")),
@@ -39,7 +39,7 @@ module nts.uk.com.view.cli002.a {
             new systemType(3, this.$i18n("Enum_SystemType_OFFICE_HELPER")),
         ]);
 
-        public dataSourceItem: KnockoutObservableArray<any> = ko.observableArray([]);
+        public dataSourceItem: KnockoutObservableArray<PGInfomation> = ko.observableArray([]);
         public selectedSystemCode: KnockoutObservable<number> = ko.observable(0);
 
         public systemColumns = [
@@ -74,11 +74,15 @@ module nts.uk.com.view.cli002.a {
 
         public register() {
             const vm = this;
-            vm.logSettings = ko.observableArray([]);
-            _.forEach(vm.dataSourceItem, function(item: PGList) {
-                vm.logSettings.push(new LogSetting(vm.selectedSystemCode(), item.programId, item.menuClassification, item.loginHistoryRecord.usageCategory,
-                    item.editHistoryRecord.usageCategory, item.bootHistoryRecord.usageCategory));
-            });
+            vm.logSettings = [];
+            vm.dataSourceItem().map((item: any) => {
+                console.log(item);
+                vm.logSettings.push(new LogSetting(vm.selectedSystemCode(), item.programId, item.menuClassification,
+                    item.loginHistoryRecord ? 1 : 0,
+                    item.editHistoryRecord ? 1 : 0,
+                    item.bootHistoryRecord ? 1 : 0));
+            })
+            console.log(vm.logSettings);
             vm.$ajax(API.updateLogSetting, vm.logSettings).then(() => {
                 vm.$dialog.alert({ messageId: 'Msg_15' });
             });
@@ -151,14 +155,14 @@ module nts.uk.com.view.cli002.a {
                         name: 'CellStyles',
                         states: statesTable
                     },
-                    {   
-                        name: 'ColumnFixing',
-                        fixingDirection: 'left',
-                        showFixButtons: false,
-                        columnSettings: [
-                            { columnKey: 'rowNumber', isFixed: true }
-                        ]
-                    }
+                    // {   
+                    //     name: 'ColumnFixing',
+                    //     fixingDirection: '',
+                    //     showFixButtons: false,
+                    //     columnSettings: [
+                    //         { columnKey: 'rowNumber', isFixed: true }
+                    //     ]
+                    // }
                 ],
 
                 ntsFeatures: [],

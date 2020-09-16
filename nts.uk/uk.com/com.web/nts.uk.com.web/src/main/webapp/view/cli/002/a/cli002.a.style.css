@@ -14,3 +14,15 @@
   width: 80px;
   margin-left: 300px;
 }
+
+#item-list .mcell:not(.mgrid-no):not(.mlabel) {
+  text-align: center;
+}
+
+#item-list .mgrid-free-table tr+tr td {
+  border-top: none !important;
+}
+
+#item-list .mgrid-free-table tr:first-child:not(:last-child) td:not(:nth-child(1)):not(:nth-child(2)) {
+  border-bottom: none !important;
+}

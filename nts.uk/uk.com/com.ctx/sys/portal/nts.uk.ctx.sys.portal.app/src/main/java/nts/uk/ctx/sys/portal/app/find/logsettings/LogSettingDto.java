@@ -6,7 +6,7 @@ import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Data
-public class LogSettingDto implements LogSetting.MementoSetter {
+public class LogSettingDto implements LogSetting.MementoSetter, LogSetting.MementoGetter {
 
 	/**
 	 * システム
@@ -63,41 +63,5 @@ public class LogSettingDto implements LogSetting.MementoSetter {
 		logSetting.setEditHistoryRecord(NotUseAtr.valueOf(logSettingDto.getEditHistoryRecord()));
 		logSetting.setBootHistoryRecord(NotUseAtr.valueOf(logSettingDto.getBootHistoryRecord()));
 		return logSetting;
-	}
-
-	@Override
-	public void setMenuClassification(Integer menuClassification) {
-		this.setMenuClassification(menuClassification);
-	}
-
-	@Override
-	public void setLoginHistoryRecord(Integer loginHistoryRecord) {
-		this.setLoginHistoryRecord(loginHistoryRecord);
-	}
-
-	@Override
-	public void setEditHistoryRecord(Integer editHistoryRecord) {
-		this.setEditHistoryRecord(editHistoryRecord);
-	}
-
-	@Override
-	public void setBootHistoryRecord(Integer bootHistoryRecord) {
-		this.setBootHistoryRecord(bootHistoryRecord);
-	}
-	
-
-	@Override
-	public void setSystem(int system) {
-		this.setSystem(system);
-	}
-
-	@Override
-	public void setProgramId(String programId) {
-		this.setProgramId(programId);
-	}
-
-	@Override
-	public void setCompanyId(String companyId) {
-		this.setCompanyId(companyId);
 	}
 }

@@ -30,12 +30,13 @@ public class PGInfomationQuery {
 	public List<PGInfomationDto> findBySystem(int systemType) {
 		String companyId = AppContexts.user().companyId();
 		String programId = AppContexts.programId();
+		System.out.println(programId);
 
 		/**
 		 * システムからログ設定を取得
 		 */
 		List<LogSetting> logSettings = this.logSettingRepository.findBySystem(companyId, systemType);
-
+		
 		List<MenuClassification> menuClassifications = logSettings.stream().map(s -> s.getMenuClassification())
 				.collect(Collectors.toList());
 
@@ -43,7 +44,7 @@ public class PGInfomationQuery {
 		 * コード一覧から標準メニューを取得
 		 */
 		List<StandardMenu> standardMenus = this.standardMenuRepository.findByProgram(companyId, systemType,
-				menuClassifications, programId);
+				menuClassifications, "CLI002");
 
 		/**
 		 * 「PG一覧」を作成
