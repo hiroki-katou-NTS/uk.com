@@ -155,11 +155,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 ReflectedState reflectedState = newestApp.getAppReflectedState();
 
                 // 未反映、反映待ちの場合
-                if (reflectedState == ReflectedState.WAITREFLECTION) {
+                if (reflectedState == ReflectedState.WAITREFLECTION || reflectedState == ReflectedState.NOTREFLECTED) {
                     Optional<ReflectionStatusOfDay> actualReflectStatus = newestApp.getReflectionStatus().getListReflectionStatusOfDay().stream().filter(i -> i.getTargetDate().compareTo(date) == 0).findAny();
                     if (actualReflectStatus.isPresent()) {
                         // 未反映、反映待ちの場合
-                        if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION) {
+                        if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION || actualReflectStatus.get().getActualReflectStatus() == ReflectedState.NOTREFLECTED) {
                             // アルゴリズム「出張申請内容より勤務情報を取得」を実行する
                             this.getWorkInfoFromTripReqContent(newestApp.getAppID(), newestApp.getAppType(), date, currentContent.get());
                         }
