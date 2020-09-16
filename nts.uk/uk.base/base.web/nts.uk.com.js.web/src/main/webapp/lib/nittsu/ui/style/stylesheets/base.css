@@ -4607,7 +4607,7 @@ input.nts-editor::-ms-clear {
 
 /* line 30, ../sass/components/_extable.scss */
 .extable div.xseal, .extable td.xseal {
-  background-color: #CCC;
+  background-color: #ddddd2;
 }
 
 /* line 33, ../sass/components/_extable.scss */
