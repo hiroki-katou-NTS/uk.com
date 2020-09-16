@@ -285,7 +285,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             let recoderFlag = false;
             let appStampOutputDto = self.data;
             let appStampDto = {} as AppStampDto;
-//                self.createAppStamp() as AppStampDto;
+            appStampDto = self.createAppStamp() as AppStampDto;
             let command = {
                     applicationDto,
                     recoderFlag,

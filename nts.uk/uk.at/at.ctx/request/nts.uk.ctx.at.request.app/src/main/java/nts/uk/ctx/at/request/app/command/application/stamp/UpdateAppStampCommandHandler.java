@@ -13,6 +13,8 @@ import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppRecordImageDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainServiceRegister;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 @Transactional
 @Stateless
 public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<RegisterOrUpdateAppStampParam, ProcessResult>{
@@ -27,16 +29,22 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<Regis
 		ApplicationDto applicationDto = param.getApplicationDto();
 		AppStampDto appStampDto = param.getAppStampDto();
 		AppRecordImageDto appRecordImageDto = param.getAppRecordImageDto();
+		Optional<AppStamp> asOp = Optional.empty();
+		Optional<AppRecordImage> arOp = Optional.empty();
 		if (appStampDto != null) {
-			appStampDto.setAppID(applicationDto.getAppID());			
+			AppStamp as = appStampDto.toDomain();
+			as.setAppID(applicationDto.getAppID());
+			asOp = Optional.of(as);
 		}
 		if (appRecordImageDto != null) {
-			appRecordImageDto.setAppID(applicationDto.getAppID());			
+			AppRecordImage ar = appRecordImageDto.toDomain();
+			ar.setAppID(applicationDto.getAppID());
+			arOp = Optional.of(ar);			
 		}
 		return appCommonDomainServiceRegister.updateAppStamp(
 				applicationDto.toDomain(),
-				appStampDto != null ? Optional.of(appStampDto.toDomain()) : Optional.empty(),
-				appRecordImageDto != null ? Optional.of(appRecordImageDto.toDomain()) : Optional.empty(),
+				asOp,
+				arOp,
 				param.getRecoderFlag());
 	}
 	

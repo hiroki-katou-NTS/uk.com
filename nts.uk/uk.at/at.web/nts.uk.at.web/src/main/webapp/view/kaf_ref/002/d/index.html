@@ -1,10 +1,51 @@
-<div >
+<div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component1', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput	
+								} }"></div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component2', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component3', 
+								params: {
+									appType: appType,
+									approvalReason: approvalReason,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component4', 
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component5', 
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component6', 
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
 	<div class="label" data-bind="text: comment1" style="margin: 10px">
 	</div>
 
 	<div class="inlineBlockFirst">
 		<!-- B6_1 -->
-		<div class="labelFirst" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_79')}</div>
+		<div class="labelFirst"
+			data-bind="ntsFormLabel: {}, text: $i18n.text('KAF002_79')"></div>
 		<div style="margin-left: 40px"
 			data-bind="ntsComboBox: {
 						options: dataSource,
@@ -30,8 +71,19 @@
 					}"></div>
 	</div>
 
-	<div class="label" style="margin: 10px">1 2 3 4 5 6 7 8 9 1 2 3 4
-		5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9</div>
-
+	<div data-bind="text: comment2" class="label" style="margin: 10px"></div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component7', 
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div
+		data-bind="component: { name: 'kaf000-b-component8', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
 
 </div>
