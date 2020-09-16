@@ -103,8 +103,10 @@
         </div>
 
         <div id="functions-area-bottom">
-            <div id="checkOverWriteSetting" tabindex="9"
-                 data-bind="ntsCheckBox: { checked: overwirte }">#{i18n.getText('KSM005_33')}</div>
+            <div id="checkOverWriteSetting">
+                <div tabindex="9"
+                     data-bind="ntsCheckBox: { checked: overwirte, style: 'warnpanel' }">#{i18n.getText('KSM005_33')}</div>
+            </div>
             <button tabindex="10" class="proceed x-large"
                     data-bind="click: saveMonthlyPatternSettingBatch">#{i18n.getText('KSM005_34')}</button>
             <button tabindex="11" class="large"

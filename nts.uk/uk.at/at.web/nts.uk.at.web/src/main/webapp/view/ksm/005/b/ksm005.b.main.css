@@ -37,7 +37,6 @@
 }
 
 #checkOverWriteSetting {
-	height: 30px;
 	display: block;
     margin-bottom: 5px;
 }
@@ -74,12 +73,6 @@
 }
 .popup-b72 {
 	top: 125px !important;
-}
-
-#checkOverWriteSetting .ntsCheckBox-label {
-    background: #ffc0cb;
-    padding: 5px;
-    border-radius: 5px;
 }
 .popup-b72 .nts-fixed-body-wrapper {
 	height: 162px !important;

@@ -392,6 +392,9 @@ public class CreateOrderInfoFileQuery {
             int totalFee = 0;
             reservationDetails.addAll(item.getBentoReservationDetails());
             BentoMenu bentoMenuList = bentoMenuRepository.getBentoMenu(companyId, item.getReservationDate().getDate());
+            if (bentoMenuList == null) {
+            	continue;
+			}
             List<BentoTotalDto> bentoTotalDtoLst = new ArrayList<>();
             BentoMenuByClosingTime menu = bentoMenuList.getByClosingTime(workLocationCode);
             List<BentoItemByClosingTime> bentos;

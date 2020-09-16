@@ -103,6 +103,7 @@ module nts.uk.at.view.ksc001.b {
 			createMethodAtr: KnockoutObservable<number> = ko.observable( 0 );
 			employeeIds: KnockoutObservableArray<string> = ko.observableArray( [] );
 			kcp005EmployeeList: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray( [] );
+			isKCP005EmployeeSelectedAll: KnockoutObservable<boolean> = ko.observable( false );
 
 			fullSizeSpace: string = "　　";
 
@@ -451,7 +452,7 @@ module nts.uk.at.view.ksc001.b {
 				}
 
 				//fix screen on 1280
-				if( window.outerWidth <= 1280 ) {
+				if( window.outerWidth <= 1400 ) {
 					$( '#contents-area' ).addClass( 'fix-2180' );
 				}
 
@@ -503,10 +504,11 @@ module nts.uk.at.view.ksc001.b {
 
 					self.employeeList( employeeSearchs );
 					self.selectedEmployeeCode( listSelectedEmpCode );
-					//self.employeeIds( employeeIds );
+					self.isKCP005EmployeeSelectedAll(false);
 					self.$blockui("hide");
 					dfd.resolve();
 				} else {
+					self.isKCP005EmployeeSelectedAll(true);
 
 					let listEmployeeFilter: ListEmployeeIds = new ListEmployeeIds(
 						employeeIds,
@@ -806,6 +808,7 @@ module nts.uk.at.view.ksc001.b {
 				if( self.isInValidCopyPasteSchedule() ) {
 					return;
 				} else {
+					self.isKCP005EmployeeSelectedAll(false);
 					self.buildString();
 					self.next().done( function() {
 						$('#employeeSearch .nts-gridlist').attr('tabindex', '-1');
@@ -855,23 +858,36 @@ module nts.uk.at.view.ksc001.b {
 			 * function next page by selection employee goto page(E)
 			 */
 			private nextPageD(): void {
-				var self = this;
-				if( self.selectedEmployeeCode().length <= 0 ) {
-					self.$dialog.error( { messageId : "Msg_206" } ).then(() => {
+
+				let self = this,
+					selectedEmployeeCode = self.selectedEmployeeCode(),
+					kcp005EmployeeList = self.kcp005EmployeeList();
+
+				if( !self.isKCP005EmployeeSelectedAll() ) {
+					self.$dialog.error( { messageId : "Msg_758" } ).then(() => {
+						self.isKCP005EmployeeSelectedAll(true);
 						return;
 					} );
 				} else {
-					let totalEmployees = self.selectedEmployeeCode().length,
-						newEmployeesIds : Array<string> = [];
+					if ( selectedEmployeeCode.length <= 0 ) {
+						self.$dialog.error ( { messageId : "Msg_206" } ).then ( () => {
+							return;
+						} );
+					} else {
+						let totalEmployees = selectedEmployeeCode.length,
+							newEmployeesIds: Array<string> = [];
 
-					_.forEach(self.selectedEmployeeCode(), (item) => {
-						let foundEmployee = _.find( self.kcp005EmployeeList(), (x) => { return x.employeeCode === item });
-						if( !_.isNil(foundEmployee) ) newEmployeesIds.push( foundEmployee.employeeId ) ;
-					});
+						_.forEach ( selectedEmployeeCode, ( item ) => {
+							let foundEmployee = _.find ( kcp005EmployeeList, ( x ) => {
+								return x.employeeCode === item
+							} );
+							if ( !_.isNil ( foundEmployee ) ) newEmployeesIds.push ( foundEmployee.employeeId );
+						} );
 
-					self.employeeIds(newEmployeesIds);
-					self.lengthEmployeeSelected( self.$i18n( "KSC001_47", [ totalEmployees.toString() ] ) );
-					self.openDialogPageE();
+						self.employeeIds ( newEmployeesIds );
+						self.lengthEmployeeSelected ( self.$i18n ( "KSC001_47", [ totalEmployees.toString () ] ) );
+						self.openDialogPageE ();
+					}
 				}
 			}
 

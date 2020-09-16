@@ -14,6 +14,10 @@ import { resources, Language, LanguageBar, } from '@app/plugins/i18n';
 Vue.config.devtools = true;
 // Vue.config.productionTip = false;
 
+const data = () => ({
+    ready: false
+});
+
 const computed = {
     pgName: {
         get() {
@@ -30,14 +34,14 @@ const components = {
 
 const $el = document.querySelector('body>#app_uk_mobile');
 
-const app = new (RootApp.extend({ computed, components }))().$mount($el);
+const app = new (RootApp.extend({ data, computed, components }))().$mount($el);
 
 browser.private
     .then((prid: boolean) => {
         if (browser.version === 'Safari 10' && prid) {
             app.$modal.warn({ messageId: 'Msg_1533' });
         } else {
-            app.$mask('show', { message: true, opacity: 0.75 });
+            app.$mask('show', { message: true, opacity: 0.35 });
         }
     })
     .then(() => app.$auth.token)
@@ -50,6 +54,7 @@ browser.private
     .then(() => app.$http.resources)
     .then((resr: any) => obj.merge(resources.jp, resr, true))
     .then(() => Language.refresh())
+    .then(() => app.ready = true)
     .then(() => app.$mask('hide'))
     .catch(() => app.$mask('hide'));
 

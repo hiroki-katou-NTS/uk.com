@@ -381,13 +381,10 @@ module nts.uk.at.view.kmr004.a {
 		}
 
 		restoreScreenState(c13sData){
-			if (c13sData == undefined) {
-				return;
-			}
-
 			const vm = this;
-			if(vm.closingTimeOptions().length < c13sData.reservationClosingTimeFrame){
-			 	c13sData.reservationClosingTimeFrame = vm.model().reservationClosingTimeFrame();
+			if (c13sData == undefined) {
+				vm.model().reservationClosingTimeFrame(1);
+				return;
 			}
 
 			vm.model().reservationClosingTimeFrame(c13sData.reservationClosingTimeFrame);
