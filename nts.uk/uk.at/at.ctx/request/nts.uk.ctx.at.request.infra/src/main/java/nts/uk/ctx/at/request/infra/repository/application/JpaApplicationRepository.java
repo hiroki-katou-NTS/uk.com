@@ -93,17 +93,22 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID = :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
 
-	private static final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " " + "AND a.employeeID = :employeeID "
-			+ "AND a.stateReflectionReal = 0 " + "AND a.appType = 9 ORDER BY a.appDate ASC";
+	private static final String SELECT_LATE_LEAVE = "SELECT a FROM KrqdtApplication_New a"
+			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
+			+ " WHERE a.pk.companyID = :companyID"
+			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate "
+			+ "AND a.employeeID = :employeeID "
+			+ "AND ref.actualReflectStatus = 0 " + "AND a.appType = 9 ORDER BY a.appDate ASC";
 
 	private static final String SELECT_BY_SID_PERIOD_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
 			+ " WHERE c.employeeID = :employeeID" + " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals" + " AND c.appType IN :appTypes";
 	// hoatt
 	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT app FROM KrqdtApplication app"
+			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
 			+ " WHERE c.pk.companyID = :companyID" + " AND c.employeeID = :employeeID"
 			+ " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate" + " AND c.prePostAtr = :prePostAtr"
-			+ " AND c.appType = :appType" + " AND c.krqdtAppReflectStateLst.actualReflectStatus IN :lstRef"
+			+ " AND c.appType = :appType" + " AND  ref.actualReflectStatus IN :lstRef"
 			+ " ORDER BY c.appType ASC, c.inputDate DESC";
 	
 	/*
