@@ -100,11 +100,11 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " AND c.stateReflectionReal IN :stateReflectionReals" + " AND c.appType IN :appTypes";
 	// hoatt
 	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT app FROM KrqdtApplication app"
-			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
-			+ " WHERE c.pk.companyID = :companyID" + " AND c.employeeID = :employeeID"
-			+ " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate" + " AND c.prePostAtr = :prePostAtr"
-			+ " AND c.appType = :appType" + " AND  ref.actualReflectStatus IN :lstRef"
-			+ " ORDER BY c.appType ASC, c.inputDate DESC";
+			+ " JOIN KrqdtAppReflectState ref ON app.pk.companyID = ref.pk.companyID  AND app.pk.appID = ref.pk.appID"
+			+ " WHERE app.pk.companyID = :companyID" + " AND app.employeeID = :employeeID"
+			+ " AND app.appDate >= :startDate" + " AND app.appDate <= :endDate" + " AND app.prePostAtr = :prePostAtr"
+			+ " AND app.appType = :appType" + " AND  ref.actualReflectStatus IN :lstRef"
+			+ " ORDER BY app.appType ASC, app.inputDate DESC";
 	
 	/*
 	@Override
