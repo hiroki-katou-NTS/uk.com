@@ -61,7 +61,18 @@ public class AsposeAppScreenDto {
 				domain.getApplicantName(), 
 				domain.getAppType().name, 
 				domain.getAppContent(), 
-				domain.getInputDate().toString("yy/MM/dd(E) HH:mm"), 
+				domain.getInputDate().toString("M/d(E) H:mm"), 
+				domain.getReflectionStatus(), 
+				domain.getOpApprovalStatusInquiry().isPresent() ? domain.getOpApprovalStatusInquiry().get().toString() : "", 
+				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));
+	}
+	
+	public static AsposeAppScreenDto fromDomainPrint(ListOfApplication domain, int dispWplName) {
+		return new AsposeAppScreenDto(EnumAdaptor.valueOf(domain.getPrePostAtr(), PrePostAtr.class).name, 
+				dispWplName == 1 ? domain.getWorkplaceName() + "\n" + domain.getApplicantName() : domain.getApplicantName(), 
+				domain.getAppType().name, 
+				domain.getAppContent(), 
+				domain.getInputDate().toString("M/d(E) H:mm"), 
 				domain.getReflectionStatus(), 
 				domain.getOpApprovalStatusInquiry().isPresent() ? domain.getOpApprovalStatusInquiry().get().toString() : "", 
 				convertStartEndDate(domain.getOpAppStartDate(), domain.getOpAppEndDate(), domain.getAppType(), domain.getAppDate()));
@@ -72,19 +83,19 @@ public class AsposeAppScreenDto {
 		
 		if(startDate.isPresent() && endDate.isPresent()) {
 			if(startDate.get().toString().equals(endDate.get().toString())) {
-				result = startDate.get().toString("MM/dd(E)");
+				result = startDate.get().toString("M/d(E)");
 			} else {
 				result = new StringBuilder()
-						.append(startDate.get().toString("MM/dd(E)"))
+						.append(startDate.get().toString("M/d(E)"))
 						.append("ー")
-						.append(endDate.get().toString("MM/dd(E)"))
+						.append(endDate.get().toString("M/d(E)"))
 						.toString();
 			}
 		}
 		if(appType.value == 10) {
 			result = new StringBuilder(result)
 					.append("\n'")
-					.append(appDate.toString("MM/dd(E)")).toString();
+					.append(appDate.toString("M/d(E)")).toString();
 		}
 		
 		return result;

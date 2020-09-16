@@ -36,10 +36,6 @@ public class WorkPlaceInfFinder {
 	@Inject
 	private ClosureRepository closureRepository;
 
-	/** The closure service. */
-	@Inject
-	private ClosureService closureService;
-
 	/**
 	 * Find work place info.
 	 *
@@ -70,8 +66,8 @@ public class WorkPlaceInfFinder {
 			return result;	
 		}
 		
-		DatePeriod currentPeriod = this.closureService.getClosurePeriod(listClosure.get(0).getClosureId().value,
-				listClosure.get(0).getClosureMonth().getProcessingYm());
+		DatePeriod currentPeriod = ClosureService.getClosurePeriod(listClosure.get(0).getClosureId().value,
+				listClosure.get(0).getClosureMonth().getProcessingYm(), Optional.of(listClosure.get(0)));
 
 		Optional<AffWorkplaceDto> opAffWorkPlaceDto = affWorkplaceAdapter.findBySid(employeeId,
 				currentPeriod.end());

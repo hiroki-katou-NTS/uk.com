@@ -55,7 +55,8 @@ public class AppStampSettingDto {
 	}
 	
 	public AppStampSetting toDomain() {
-		return new AppStampSetting(companyID, EnumAdaptor.valueOf(supportFrameDispNO, SupportFrameDispNO.class),
+		return new AppStampSetting(companyID,
+				new SupportFrameDispNO(supportFrameDispNO),
 				EnumAdaptor.valueOf(useCancelFunction, UseDivision.class),
 				!CollectionUtil.isEmpty(settingForEachTypeLst)
 						? settingForEachTypeLst.stream().map(x -> x.toDomain()).collect(Collectors.toList())

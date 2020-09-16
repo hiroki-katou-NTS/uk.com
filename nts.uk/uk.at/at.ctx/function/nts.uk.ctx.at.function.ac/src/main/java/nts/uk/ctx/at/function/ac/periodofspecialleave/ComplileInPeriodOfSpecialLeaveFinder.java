@@ -7,26 +7,60 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.ComplileInPeriodOfSpecialLeaveAdapter;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialHolidayImported;
 import nts.uk.ctx.at.function.dom.adapter.periodofspecialleave.SpecialVacationImported;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataOutput;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.monthremaindata.export.SpecialHolidayRemainDataSevice;
+import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.basicinfo.AnnLeaEmpBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfoRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ComplileInPeriodOfSpecialLeaveParam;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
 
 @Stateless
 public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfSpecialLeaveAdapter {
 
 	@Inject
-	private SpecialLeaveManagementService specialLeaveManagementService;
+	private SpecialHolidayRemainDataSevice specialHolidayRemainDataSevice;
 
 	@Inject
-	private SpecialHolidayRemainDataSevice specialHolidayRemainDataSevice;
+	private SpecialLeaveGrantRepository specialLeaveGrantRepo;
+
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter; 
+
+	@Inject
+	private EmpEmployeeAdapter empEmployeeAdapter;
+
+	@Inject
+	private GrantDateTblRepository grantDateTblRepo;
+
+	@Inject
+	private AnnLeaEmpBasicInfoRepository annLeaEmpBasicInfoRepo;
+
+	@Inject
+	private SpecialHolidayRepository specialHolidayRepo;
+
+	@Inject
+	private InterimSpecialHolidayMngRepository interimSpecialHolidayMngRepo;
+
+	@Inject
+	private InterimRemainRepository interimRemainRepo;
+
+	@Inject
+	private SpecialLeaveBasicInfoRepository specialLeaveBasicInfoRepo;
 
 	@Override
 	public SpecialVacationImported complileInPeriodOfSpecialLeave(String cid, String sid, DatePeriod complileDate,
@@ -35,7 +69,13 @@ public class ComplileInPeriodOfSpecialLeaveFinder implements ComplileInPeriodOfS
 		ComplileInPeriodOfSpecialLeaveParam param = new ComplileInPeriodOfSpecialLeaveParam(cid, sid,
 				complileDate, mode, baseDate, specialLeaveCode, mngAtr,
 				false, new ArrayList<>(), new ArrayList<>(), Optional.empty());//TODO can them thong tin cho 3 bien nay
-		InPeriodOfSpecialLeave specialLeave = specialLeaveManagementService.complileInPeriodOfSpecialLeave(param).getAggSpecialLeaveResult();
+		InPeriodOfSpecialLeave specialLeave = SpecialLeaveManagementService
+				.complileInPeriodOfSpecialLeave(
+						SpecialLeaveManagementService.createRequireM5(specialLeaveGrantRepo, shareEmploymentAdapter, 
+								empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, 
+								interimSpecialHolidayMngRepo, interimRemainRepo, specialLeaveBasicInfoRepo),
+						new CacheCarrier(), param)
+				.getAggSpecialLeaveResult();
 		if (specialLeave == null)
 			return null;
 		return new SpecialVacationImported(

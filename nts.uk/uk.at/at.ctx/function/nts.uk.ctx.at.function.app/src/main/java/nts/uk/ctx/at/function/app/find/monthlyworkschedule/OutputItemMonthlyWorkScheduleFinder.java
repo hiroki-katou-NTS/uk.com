@@ -42,7 +42,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesR
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.scherec.monthlyattendanceitem.service.CompanyMonthlyItemService;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -84,9 +83,6 @@ public class OutputItemMonthlyWorkScheduleFinder {
 
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
-	
-	@Inject
-	private ClosureService closureService;
 	
 	/** The Constant AUTHORITY. */
 	// SettingUnitType.AUTHORITY.value

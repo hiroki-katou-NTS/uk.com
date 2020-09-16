@@ -66,21 +66,16 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         mounted() {
             const vm = this;
 
-            vm.application().opAppStartDate.subscribe(value => {
-                if (value && vm.application().opAppEndDate()) {
-                    let checkFormat = vm.validateAppDate(value, vm.application().opAppEndDate());
-                    if (checkFormat) {
-                        vm.changeAppDate();
-                    }
-                }
-            });
-            vm.application().opAppEndDate.subscribe(value => {
-                if (value && vm.application().opAppStartDate()) {
-                    let checkFormat = vm.validateAppDate(value, vm.application().opAppStartDate());
-                    if (checkFormat) {
-                        vm.changeAppDate();
-                    }
-                }
+            vm.application.subscribe(app => {
+               if (app) {
+                   let startDate = app.opAppStartDate();
+                   let endDate = app.opAppEndDate();
+                   let checkFormat = vm.validateAppDate(startDate, endDate);
+
+                   if (checkFormat) {
+                       vm.changeAppDate();
+                   }
+               }
             });
         }
 
@@ -158,31 +153,33 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 '.nts-input'
             ]).then((valid: boolean) => {
                 if (valid) {
-                    return vm.$ajax(API.checkBeforeRegister, command);
-                }
-            }).done((res: any) => {
-                if (res) {
-                    vm.registerData(command);
-                }
-            }).fail(err => {
-                let param;
-                switch (err.messageId) {
-                    case "Msg_24" :
-                        param = err.parameterIds[0] + err.message;
-                        break;
-                    case "Msg_23" :
-                        param = err.parameterIds[0] + err.message;
-                        break;
-                    default: {
-                        if (err.message) {
-                            param = {message: err.message, messageParams: err.parameterIds};
+                    vm.$ajax(API.checkBeforeRegister, command).done((res: any) => {
+                        if ( _.isEmpty( res ) ) {
+                            vm.registerData(command);
                         } else {
-                            param = {messageId: err.messageId, messageParams: err.parameterIds}
+                            vm.handleConfirmMessage(res, command);
                         }
-                        break;
-                    }
+                    }).fail(err => {
+                        let param;
+                        switch (err.messageId) {
+                            case "Msg_24" :
+                                param = err.parameterIds[0] + err.message;
+                                break;
+                            case "Msg_23" :
+                                param = err.parameterIds[0] + err.message;
+                                break;
+                            default: {
+                                if (err.message) {
+                                    param = {message: err.message, messageParams: err.parameterIds};
+                                } else {
+                                    param = {messageId: err.messageId, messageParams: err.parameterIds}
+                                }
+                                break;
+                            }
+                        }
+                        vm.$dialog.error(param);
+                    });
                 }
-                vm.$dialog.error(param);
             }).always(() => vm.$blockui("hide"));
         }
 
@@ -207,6 +204,23 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 dateItem.focus();
             } else {
                 $(vm.$el).find('#kaf000-a-component4-singleDate').focus();
+            }
+        }
+
+        public handleConfirmMessage(listMes: any, res: any) {
+            let vm = this;
+            if (!_.isEmpty(listMes)) {
+                let item = listMes.shift();
+                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                    if (value == 'yes') {
+                        if (_.isEmpty(listMes)) {
+                            vm.registerData(res);
+                        } else {
+                            vm.handleConfirmMessage(listMes, res);
+                        }
+
+                    }
+                });
             }
         }
 

@@ -2,23 +2,15 @@ package nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-
+import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 
 /**
  * 
  * @author HungTT - <<Work>> 処理年月更新
  *
  */
-
-@Stateless
 public class ProcessYearMonthUpdate {
-
-	@Inject
-	private ClosureRepository closureRepository;
 
 	/**
 	 * 処理年月更新
@@ -26,16 +18,24 @@ public class ProcessYearMonthUpdate {
 	 * @param companyId
 	 * @param closureId
 	 */
-	public void processYmUpdate(String companyId, int closureId) {
-		Optional<Closure> optClosure = closureRepository.findById(companyId, closureId);
+	public static AtomTask processYmUpdate(RequireM1 require, String companyId, int closureId) {
+		Optional<Closure> optClosure = require.closure(companyId, closureId);
 		// check exist
 		if (!optClosure.isPresent()) {
-			return;
+			return AtomTask.of(() -> {});
 		}
 		// update CurrentMonth
 		Closure closure = optClosure.get();
 		closure.updateCurrentMonth();
-		closureRepository.update(closure);
+		
+		return AtomTask.of(() -> require.updateClosure(closure));
+	}
+	
+	public static interface RequireM1 {
+		
+		Optional<Closure> closure(String companyId, int closureId);
+		
+		void updateClosure(Closure closure);
 	}
 
 }

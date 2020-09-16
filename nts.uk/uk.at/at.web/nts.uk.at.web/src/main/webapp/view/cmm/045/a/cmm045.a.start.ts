@@ -157,7 +157,7 @@ module cmm045.a  {
 
 
             let $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid nts-fixed-header'/>").css({"max-width": viewWidth});
-            let $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(width);
+            let $headerWrapper = $("<div class='nts-fixed-header-wrapper'/>").width(viewWidth);
             let $headerTable = $("<table class='fixed-table'></table>");
 
 
@@ -183,7 +183,7 @@ module cmm045.a  {
                 $headerContainer.scrollLeft($bodyContainer.scrollLeft());
             });
 
-            $bodyWrapper.width(width).height(bodyHeight);
+            $bodyWrapper.width(viewWidth).height(bodyHeight);
             $bodyWrapper.append($originTable);
             $bodyContainer.append($bodyWrapper);
             $container.append($bodyContainer);

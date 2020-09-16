@@ -197,12 +197,12 @@
 					</div>
 				</div>
 
-				<div style="display: block; margin: 7px; overflow: auto; max-width: 1100px; padding-left: 70px;">
-					<div data-bind="visible: mode() == 1" style="float: left; margin: 10px;">
+				<div id="app-resize" style="display: block; overflow: auto;">
+					<div data-bind="visible: mode() == 1" style="float: left; margin: 10px 0;">
 						<span style="color: #BFEA60">■</span>
 						<span data-bind="text: '#{i18n.getText('CMM045_89')}'"></span>
 					</div>
-					<button data-bind="" style="float: right;">#{i18n.getText('CMM045_88')}</button>
+					<button data-bind="click: saveContentWidth" style="float: right; margin-bottom: 10px;">#{i18n.getText('CMM045_88')}</button>
 					<span data-bind="text: '#{i18n.getText('CMM045_90')}', visible: isLimit500()" style="color: #FF0000; float: right; margin: 10px"></span>
 				</div>
 
@@ -225,11 +225,11 @@
 				<div class="popup-panel">
 					<table>
 						<tr>
-							<td>#{i18n.getText('CMM045_91')}</td>
-							<td>#{i18n.getText('CMM045_94')}</td>
+							<td style="padding-bottom: 10px;">#{i18n.getText('CMM045_91')}</td>
+							<td style="padding-bottom: 10px;">#{i18n.getText('CMM045_94')}</td>
 						</tr>
 						<tr>
-							<td style="vertical-align: top">
+							<td style="vertical-align: top; padding-right: 15px;">
 								<div
 									data-bind="ntsCheckBox: { text: '#{i18n.getText('CMM045_92')}', checked: isBeforeCheck }">
 								</div>

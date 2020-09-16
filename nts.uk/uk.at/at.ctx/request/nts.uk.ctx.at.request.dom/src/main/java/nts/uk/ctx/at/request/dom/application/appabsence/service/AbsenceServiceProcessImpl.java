@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,30 +16,20 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
-import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
-import nts.uk.ctx.at.request.dom.application.appabsence.appforspecleave.AppForSpecLeaveRepository;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.four.AppAbsenceFourProcess;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AbsenceCheckRegisterOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.AppAbsenceStartInfoOutput;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.output.SpecAbsenceDispInfo;
 import nts.uk.ctx.at.request.dom.application.appabsence.service.three.AppAbsenceThreeProcess;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.AnnLeaveRemainNumberAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.annualleave.ReNumAnnLeaReferenceDateImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.ReserveLeaveManagerApdater;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaGrantRemainingImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.remainingnumber.rsvleamanager.rsvimport.RsvLeaManagerImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootStateAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.setting.output.ApplyWorkTypeOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.AppliedDate;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.vacationapplicationsetting.HdAppSetRepository;
@@ -52,13 +41,7 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.Holiday
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.WorkTypeObjAppHoliday;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleError;
 import nts.uk.ctx.at.request.dom.vacation.history.service.PlanVacationRuleExport;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecMngInPeriodParamInput;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsenceReruitmentMngInPeriodQuery;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngCheckRegister;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffMngInPeriodQuery;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngParam;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 import nts.uk.ctx.at.shared.dom.specialholiday.specialholidayevent.MaxNumberDayType;
@@ -71,11 +54,6 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.SettingDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRule;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AcquisitionRuleRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.acquisitionrule.AnnualHoliday;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AbsenceTenProcess;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.AnnualHolidaySetOutput;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.LeaveSetOutput;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
-import nts.uk.ctx.at.shared.dom.workrule.closure.service.GetClosureStartForEmployee;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.internal.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -86,28 +64,28 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
-	@Inject
-	private AppAbsenceRepository appAbsenceRepository;
-	@Inject
-	private ApplicationApprovalService appRepository;
+//	@Inject
+//	private AppAbsenceRepository appAbsenceRepository;
+//	@Inject
+//	private ApplicationApprovalService appRepository;
 	@Inject
 	private PlanVacationRuleExport planVacationRuleExport;
-	@Inject
-	private AbsenceTenProcess absenceTenProcess;
-	@Inject
-	private AppForSpecLeaveRepository repoSpecLeave;
+//	@Inject
+//	private AbsenceTenProcess absenceTenProcess;
+//	@Inject
+//	private AppForSpecLeaveRepository repoSpecLeave;
 	@Inject
 	private AcquisitionRuleRepository repoAcquisitionRule;
-	@Inject
-	private GetClosureStartForEmployee getClosureStartForEmp;
-	@Inject
-	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
-	@Inject
-	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
-	@Inject
-	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
-	@Inject
-	private ReserveLeaveManagerApdater rsvLeaMngApdater;
+//	@Inject
+//	private GetClosureStartForEmployee getClosureStartForEmp;
+//	@Inject
+//	private AbsenceReruitmentMngInPeriodQuery absRertMngInPeriod;
+//	@Inject
+//	private BreakDayOffMngInPeriodQuery breakDayOffMngInPeriod;
+//	@Inject
+//	private AnnLeaveRemainNumberAdapter annLeaRemNumberAdapter;
+//	@Inject
+//	private ReserveLeaveManagerApdater rsvLeaMngApdater;
 	
 	@Inject
 	private HdAppSetRepository hdAppSetRepository;
@@ -209,26 +187,27 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	 */
 	@Override
 	public CheckDispHolidayType checkDisplayAppHdType(String companyID, String sID, GeneralDate baseDate) {
-		//A4_3 - 年休設定
-		boolean isYearManage = false;
-		//A4_4 - 代休管理設定
-		boolean isSubHdManage = false;
-		//A4_5 - 振休管理設定
-		boolean isSubVacaManage = false;
-		//A4_8 - 積立年休設定
-		boolean isRetentionManage = false;
-		//10-1.年休の設定を取得する
-		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyID);
-		isYearManage = annualHd.isYearHolidayManagerFlg();
-		//10-4.積立年休の設定を取得する
-		isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyID, sID, baseDate);
-		//10-2.代休の設定を取得する
-		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyID, sID, baseDate);
-		isSubHdManage = subHd.isSubstitutionFlg();
-		//10-3.振休の設定を取得する
-		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyID, sID, baseDate);
-		isSubVacaManage = leaveSet.isSubManageFlag();
-		return new CheckDispHolidayType(isYearManage, isSubHdManage, isSubVacaManage, isRetentionManage);
+//		//A4_3 - 年休設定
+//		boolean isYearManage = false;
+//		//A4_4 - 代休管理設定
+//		boolean isSubHdManage = false;
+//		//A4_5 - 振休管理設定
+//		boolean isSubVacaManage = false;
+//		//A4_8 - 積立年休設定
+//		boolean isRetentionManage = false;
+//		//10-1.年休の設定を取得する
+//		AnnualHolidaySetOutput annualHd = absenceTenProcess.getSettingForAnnualHoliday(companyID);
+//		isYearManage = annualHd.isYearHolidayManagerFlg();
+//		//10-4.積立年休の設定を取得する
+//		isRetentionManage = absenceTenProcess.getSetForYearlyReserved(companyID, sID, baseDate);
+//		//10-2.代休の設定を取得する
+//		SubstitutionHolidayOutput subHd = absenceTenProcess.getSettingForSubstituteHoliday(companyID, sID, baseDate);
+//		isSubHdManage = subHd.isSubstitutionFlg();
+//		//10-3.振休の設定を取得する
+//		LeaveSetOutput leaveSet = absenceTenProcess.getSetForLeave(companyID, sID, baseDate);
+//		isSubVacaManage = leaveSet.isSubManageFlag();
+//		return new CheckDispHolidayType(isYearManage, isSubHdManage, isSubVacaManage, isRetentionManage);
+		return null;
 	}
 	
 	@Override
@@ -339,80 +318,81 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 	@Override
 	public NumberOfRemainOutput getNumberOfRemaining(String companyID, String employeeID, GeneralDate baseDate,
 			boolean yearManage, boolean subHdManage, boolean subVacaManage, boolean retentionManage) {
-		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
-		Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
-		if(!closure.isPresent()){
-			return new NumberOfRemainOutput(null, null, null, null);
-		}
-		//年休残数
-		Double yearRemain = null;
-		//代休残数
-		Double subHdRemain = null;
-		//振休残数
-		Double subVacaRemain = null;
-		//ストック休暇残数
-		Double stockRemain = null;
-		GeneralDate closureDate = closure.get();
-		
-		//1
-		if(subVacaManage){//output．振休管理区分が管理する
-			//アルゴリズム「期間内の振出振休残数を取得する」を実行する - RQ204
-			//・会社ID＝ログイン会社ID
-//			・社員ID＝申請者社員ID
-//			・集計開始日＝締め開始日
-//			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
-//			・モード＝その他モード
-//			・基準日＝申請開始日
-//			・上書きフラグ＝false
-			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
-			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
-			subVacaRemain = subVaca.getRemainDays();//残日数
-		}
-		
-		//2
-		if(subHdManage){//output．代休管理区分が管理する
-			//アルゴリズム「期間内の休出代休残数を取得する」を実行する - RQ203
-			//・会社ID＝ログイン会社ID
-//			・社員ID＝申請者社員ID
-//			・集計開始日＝締め開始日
-//			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
-//			・モード＝その他モード
-//			・基準日＝申請開始日
-//			・上書きフラグ＝false
-			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
-					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
-			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
-			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
-			subHdRemain = subHd.getRemainDays();
-		}
-		
-		//3
-		if(retentionManage){//output．積休管理区分が管理する
-			//基準日時点の積立年休残数を取得する - RQ201
-			Optional<RsvLeaManagerImport> stock = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
-			if(stock.isPresent()){
-				//積休残数 ←  積立年休情報.残数.積立年休（マイナスあり）.残数.合計残日数 
-				//reserveLeaveInfo.remainingNumber.reserveLeaveWithMinus.remainingNumber.totalRemainingDays
-				if(stock.get().getGrantRemainingList().size() > 0){
-					stockRemain = new Double(0L);
-					for (RsvLeaGrantRemainingImport rsv : stock.get().getGrantRemainingList()) {
-						stockRemain = stockRemain + rsv.getRemainingNumber();
-					}
-				}
-			}
-		}
-		
-		//4
-		if(yearManage){//output．年休管理区分が管理する
-			//基準日時点の年休残数を取得する - RQ198
-			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
-			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
-			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
-				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
-		}
-        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearManage, subHdManage, subVacaManage, retentionManage);
+//		//アルゴリズム「社員に対応する締め開始日を取得する」を実行する
+//		Optional<GeneralDate> closure = getClosureStartForEmp.algorithm(employeeID);
+//		if(!closure.isPresent()){
+//			return new NumberOfRemainOutput(null, null, null, null);
+//		}
+//		//年休残数
+//		Double yearRemain = null;
+//		//代休残数
+//		Double subHdRemain = null;
+//		//振休残数
+//		Double subVacaRemain = null;
+//		//ストック休暇残数
+//		Double stockRemain = null;
+//		GeneralDate closureDate = closure.get();
+//		
+//		//1
+//		if(subVacaManage){//output．振休管理区分が管理する
+//			//アルゴリズム「期間内の振出振休残数を取得する」を実行する - RQ204
+//			//・会社ID＝ログイン会社ID
+////			・社員ID＝申請者社員ID
+////			・集計開始日＝締め開始日
+////			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
+////			・モード＝その他モード
+////			・基準日＝申請開始日
+////			・上書きフラグ＝false
+//			AbsRecMngInPeriodParamInput paramInput = new AbsRecMngInPeriodParamInput(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+//					baseDate, false, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+//			AbsRecRemainMngOfInPeriod subVaca = absRertMngInPeriod.getAbsRecMngInPeriod(paramInput);
+//			//振休残数 ← 残日数　（アルゴリズム「期間内の振出振休残数を取得する」のoutput）
+//			subVacaRemain = subVaca.getRemainDays();//残日数
+//		}
+//		
+//		//2
+//		if(subHdManage){//output．代休管理区分が管理する
+//			//アルゴリズム「期間内の休出代休残数を取得する」を実行する - RQ203
+//			//・会社ID＝ログイン会社ID
+////			・社員ID＝申請者社員ID
+////			・集計開始日＝締め開始日
+////			・集計終了日＝締め開始日.AddYears(1).AddDays(-1)
+////			・モード＝その他モード
+////			・基準日＝申請開始日
+////			・上書きフラグ＝false
+//			BreakDayOffRemainMngParam inputParam = new BreakDayOffRemainMngParam(companyID, employeeID, new DatePeriod(closureDate, closureDate.addYears(1).addDays(-1)), 
+//					false, baseDate, false, new ArrayList<>(), new ArrayList<>(), new ArrayList<>(), Optional.empty(), Optional.empty(), Optional.empty());
+//			BreakDayOffRemainMngOfInPeriod subHd = breakDayOffMngInPeriod.getBreakDayOffMngInPeriod(inputParam);
+//			//代休残数 ← 残日数　（アルゴリズム「期間内の代休残数を取得する」のoutput）
+//			subHdRemain = subHd.getRemainDays();
+//		}
+//		
+//		//3
+//		if(retentionManage){//output．積休管理区分が管理する
+//			//基準日時点の積立年休残数を取得する - RQ201
+//			Optional<RsvLeaManagerImport> stock = rsvLeaMngApdater.getRsvLeaveManager(employeeID, baseDate);
+//			if(stock.isPresent()){
+//				//積休残数 ←  積立年休情報.残数.積立年休（マイナスあり）.残数.合計残日数 
+//				//reserveLeaveInfo.remainingNumber.reserveLeaveWithMinus.remainingNumber.totalRemainingDays
+//				if(stock.get().getGrantRemainingList().size() > 0){
+//					stockRemain = new Double(0L);
+//					for (RsvLeaGrantRemainingImport rsv : stock.get().getGrantRemainingList()) {
+//						stockRemain = stockRemain + rsv.getRemainingNumber();
+//					}
+//				}
+//			}
+//		}
+//		
+//		//4
+//		if(yearManage){//output．年休管理区分が管理する
+//			//基準日時点の年休残数を取得する - RQ198
+//			ReNumAnnLeaReferenceDateImport year = annLeaRemNumberAdapter.getReferDateAnnualLeaveRemainNumber(employeeID, baseDate);
+//			//年休残数 ← 年休残数.年休残数（付与前）日数 annualLeaveRemainNumberExport.annualLeaveGrantPreDay
+//			yearRemain = year.getAnnualLeaveRemainNumberExport() == null ? null : 
+//				year.getAnnualLeaveRemainNumberExport().getAnnualLeaveGrantDay();
+//		}
+//        return NumberOfRemainOutput.init(yearRemain, subHdRemain, subVacaRemain, stockRemain, yearManage, subHdManage, subVacaManage, retentionManage);
+		return null;
 	}
 
 	@Override

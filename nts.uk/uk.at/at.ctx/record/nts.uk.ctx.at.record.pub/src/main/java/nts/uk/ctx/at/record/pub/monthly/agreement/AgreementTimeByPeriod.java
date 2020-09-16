@@ -4,9 +4,9 @@ import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneYear;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
 
 /**
  * 指定期間36協定時間

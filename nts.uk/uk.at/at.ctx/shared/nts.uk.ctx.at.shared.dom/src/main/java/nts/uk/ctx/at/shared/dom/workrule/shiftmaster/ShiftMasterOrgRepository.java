@@ -22,5 +22,7 @@ public interface ShiftMasterOrgRepository {
 
 	public List<ShiftMasterOrganization> getByCid(String companyId);
 	
-	public List<String> getAlreadySettingWorkplace(String companyId);
+	public List<ShiftMasterOrganization> getAlreadySettingWorkplace(String companyId, int unit);
+
+	List<ShiftMasterOrganization> getAlreadySettingWorkplaceGrp(String companyId, int unit);
 }

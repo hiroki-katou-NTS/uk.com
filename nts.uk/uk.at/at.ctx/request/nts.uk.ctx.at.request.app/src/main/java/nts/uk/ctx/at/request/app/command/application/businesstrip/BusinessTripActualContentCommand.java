@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.businesstrip;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.AchievementDetailDto;
+import nts.uk.ctx.at.request.app.find.application.common.service.other.output.AchievementDetailDto;
 
 @Data
 @NoArgsConstructor

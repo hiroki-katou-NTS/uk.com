@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainServiceRegister;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 @Transactional
@@ -35,46 +36,35 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<Reg
 	@Override
 	protected ProcessResult handle(CommandHandlerContext<RegisterOrUpdateAppStampParam> context) {
 		RegisterOrUpdateAppStampParam param = context.getCommand();
-		ApplicationDto applicationDto = param.getApplicationDto();
+		String pattern2 = "yyyy/MM/dd";
 		AppStampDto appStampDto = param.getAppStampDto();
 		AppRecordImageDto appRecordImageDto = param.getAppRecordImageDto();
+		ApplicationDto applicationDto = param.getApplicationDto();
 		Application application = Application.createFromNew(
-				EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class), applicationDto.getEmployeeID(),
-				ApplicationType.STAMP_APPLICATION,
-				new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), DATE_FORMAT)),
+				EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
+				applicationDto.getEmployeeID(),
+				EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
+				new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), pattern2)),
 				applicationDto.getEnteredPerson(),
-				applicationDto.getOpStampRequestMode() != null
-						? Optional
-								.of(EnumAdaptor.valueOf(applicationDto.getOpStampRequestMode(), StampRequestMode.class))
-						: Optional.empty(),
-
-				!StringUtils.isBlank(applicationDto.getOpReversionReason())
-						? Optional.of(new ReasonForReversion(applicationDto.getOpReversionReason()))
-						: Optional.empty(),
-
-				!StringUtils.isBlank(applicationDto.getOpAppStartDate())
-						? Optional.of(new ApplicationDate(
-								GeneralDate.fromString(applicationDto.getOpAppStartDate(), DATE_FORMAT)))
-						: Optional.empty(),
-
-				!StringUtils.isBlank(applicationDto.getOpAppEndDate())
-						? Optional.of(new ApplicationDate(
-								GeneralDate.fromString(applicationDto.getOpAppEndDate(), DATE_FORMAT)))
-						: Optional.empty(),
-
-				!StringUtils.isBlank(applicationDto.getOpAppReason())
-						? Optional.of(new AppReason(applicationDto.getOpAppReason()))
-						: Optional.empty(),
-
-				applicationDto.getOpAppStandardReasonCD() != null
-						? Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD()))
-						: Optional.empty());
-		appStampDto.setAppID(application.getAppID());
-		appRecordImageDto.setAppID(application.getAppID());
+				applicationDto.getOpStampRequestMode() == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(applicationDto.getOpStampRequestMode(), StampRequestMode.class)),
+				applicationDto.getOpReversionReason() == null ? Optional.empty() : Optional.of(new ReasonForReversion(applicationDto.getOpReversionReason())),
+				StringUtils.isBlank(applicationDto.getOpAppStartDate()) ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), pattern2))),
+				StringUtils.isBlank(applicationDto.getOpAppEndDate()) ? Optional.empty() : Optional.of(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), pattern2))),
+				applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
+				applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())));
+		AppStamp as = null;
+		if (appStampDto != null) {
+			as = appStampDto.toDomain();
+			as.setAppID(application.getAppID());
+			application.setOpStampRequestMode(Optional.ofNullable(StampRequestMode.STAMP_ADDITIONAL));
+		}
+		if (appRecordImageDto != null) {
+			appRecordImageDto.setAppID(application.getAppID());			
+		}
 		return appCommonDomainServiceRegister.registerAppStamp(
 				application,
-				appStampDto != null ? Optional.of(appStampDto.toDomain()) : Optional.empty(),
-						appRecordImageDto != null ? Optional.of(appRecordImageDto.toDomain()): Optional.empty(),
+				Optional.ofNullable(as),
+				appRecordImageDto != null ? Optional.of(appRecordImageDto.toDomain()): Optional.empty(),
 				param.getAppStampOutputDto().toDomain(),
 				param.getRecoderFlag());
 	}

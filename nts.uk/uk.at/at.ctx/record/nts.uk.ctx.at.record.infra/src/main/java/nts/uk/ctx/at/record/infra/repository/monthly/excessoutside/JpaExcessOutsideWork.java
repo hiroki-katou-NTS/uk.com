@@ -4,11 +4,11 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthlyKey;
-import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWork;
-import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.excessoutside.KrcdtMonExcoutTimePK;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
+import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWork;
+import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWorkRepository;
 
 /**
  * リポジトリ実装：時間外超過

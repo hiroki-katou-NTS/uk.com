@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.schedule.dom.shift.management.Combinations;
-import nts.uk.ctx.at.schedule.dom.shift.management.ShiftPalletCode;
+import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.ShiftMasterCode;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -66,7 +66,7 @@ public class KscmtPaletteCmpCombiDtl extends ContractUkJpaEntity {
 	}
 
 	public Combinations toDomain() {
-		return new Combinations(pk.positionOrder, new ShiftPalletCode(shiftMasterCd));
+		return new Combinations(pk.positionOrder, new ShiftMasterCode(shiftMasterCd));
 	}
 
 }

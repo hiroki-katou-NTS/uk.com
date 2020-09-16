@@ -28,13 +28,9 @@ public class CopyShiftMasterByOrgServiceTest {
 	public void testCopyShiftMasterByOrg_1() {
 		String companyId = "companyID"; // dummy
 		 
-		TargetOrgIdenInfor targetOrg1 = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-				"workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrg1 =TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		ShiftMasterOrganization shiftMaterOrg = new ShiftMasterOrganization(companyId, targetOrg1, Arrays.asList("123"));
-		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, // dummy
-				"workplaceId1", // dummy
-				"workplaceGroupId1"); // dummy
+		TargetOrgIdenInfor targetOrg = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId1") ;
 		boolean overwrite = false;
 
 		new Expectations() {
@@ -57,13 +53,9 @@ public class CopyShiftMasterByOrgServiceTest {
 	@Test
 	public void testCopyShiftMasterByOrg_2() {
 		String companyId = "companyID"; // dummy
-		TargetOrgIdenInfor targetOrg1 = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-				"workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrg1 = TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		ShiftMasterOrganization shiftMaterOrg = new ShiftMasterOrganization(companyId, targetOrg1, Arrays.asList("123"));
-		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, // dummy
-				"workplaceId1", // dummy
-				"workplaceGroupId1"); // dummy
+		TargetOrgIdenInfor targetOrg =  TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId1") ;
 		boolean overwrite = true;
 
 		new Expectations() {
@@ -88,13 +80,9 @@ public class CopyShiftMasterByOrgServiceTest {
 	@Test
 	public void testCopyShiftMasterByOrg_3() {
 		String companyId = "companyID"; // dummy
-		TargetOrgIdenInfor targetOrg1 = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE,
-				"workplaceId",
-				"workplaceGroupId");
+		TargetOrgIdenInfor targetOrg1 =  TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId") ;
 		ShiftMasterOrganization shiftMaterOrg = new ShiftMasterOrganization(companyId, targetOrg1, Arrays.asList("123"));
-		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor(TargetOrganizationUnit.WORKPLACE, // dummy
-				"workplaceId1", // dummy
-				"workplaceGroupId1"); // dummy
+		TargetOrgIdenInfor targetOrg =  TargetOrgIdenInfor.creatIdentifiWorkplace("workplaceId1") ;
 		boolean overwrite = true; // dummy
 
 		new Expectations() {

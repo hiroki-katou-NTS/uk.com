@@ -34,6 +34,10 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReaso
 @Stateless
 public class JpaAppStampRepository extends JpaRepository implements AppStampRepository{
 	public static final String FIND_BY_APPID = "SELECT * FROM KRQDT_APP_STAMP WHERE CID = @cid and APP_ID = @appId";
+	public static final Integer START_CANCEL = 1;
+	public static final Integer START_NOT_CANCEL = 0;
+	public static final Integer END_CANCEL = 1;
+	public static final Integer END_NOT_CANCEL = 0;
 
 	@Override
 	public Optional<AppStamp> findByAppID(String companyID, String appID) {
@@ -105,24 +109,27 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		
 		List<KrqdtAppStamp> listStamps = new ArrayList<KrqdtAppStamp>();
 
-		List<TimeStampApp> listTimeStampApp = new ArrayList<TimeStampApp>();
-		List<DestinationTimeApp> listDestinationTimeApp = new ArrayList<DestinationTimeApp>();
-		List<TimeStampAppOther> listTimeStampAppOther = new ArrayList<TimeStampAppOther>();
-		List<DestinationTimeZoneApp> listDestinationTimeZoneApp = new ArrayList<DestinationTimeZoneApp>();
+		List<TimeStampApp> listTimeStampApp = appStamp.getListTimeStampApp();
+		List<DestinationTimeApp> listDestinationTimeApp = appStamp.getListDestinationTimeApp();
+		List<TimeStampAppOther> listTimeStampAppOther = appStamp.getListTimeStampAppOther();
+		List<DestinationTimeZoneApp> listDestinationTimeZoneApp = appStamp.getListDestinationTimeZoneApp();
 
 		if (!CollectionUtil.isEmpty(listTimeStampApp)) {
 			listTimeStampApp.stream().forEach(x -> {
 				KrqdtAppStamp krqdtAppStamp;
 				if (!CollectionUtil.isEmpty(listStamps)) {
 					Optional<KrqdtAppStamp> optional = listStamps.stream().filter(
-							item -> item.krqdtAppStampPK.stampFrameNo == x.getDestinationTimeApp().getEngraveFrameNo())
+							item -> item.krqdtAppStampPK.stampFrameNo == x.getDestinationTimeApp().getEngraveFrameNo() && item.krqdtAppStampPK.stampAtr == convertEnumTimeStamApp(x.getDestinationTimeApp().getTimeStampAppEnum()))
 							.findFirst();
 					if (optional.isPresent()) {
 						krqdtAppStamp = optional.get();
-						if (krqdtAppStamp.startTime == null) {
-							krqdtAppStamp.endTime = x.getTimeOfDay().getDayTime();
-						} else {
+						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
 							krqdtAppStamp.startTime = x.getTimeOfDay().getDayTime();
+							krqdtAppStamp.startCancelAtr = START_NOT_CANCEL;
+						} 
+						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END) {
+							krqdtAppStamp.endTime = x.getTimeOfDay().getDayTime();
+							krqdtAppStamp.endCancelAtr = END_NOT_CANCEL;
 						}
 					} else {
 						krqdtAppStamp = new KrqdtAppStamp(
@@ -135,7 +142,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END
 										? x.getTimeOfDay().getDayTime()
 										: null,
-								null, null,
+								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
+								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
 								x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null);
 					}
 				} else {
@@ -149,7 +157,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END
 									? x.getTimeOfDay().getDayTime()
 									: null,
-							null, null,
+							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
+							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
 							x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null);
 				}
 
@@ -162,27 +171,32 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				KrqdtAppStamp krqdtAppStamp;
 				if (!CollectionUtil.isEmpty(listStamps)) {
 					Optional<KrqdtAppStamp> optional = listStamps.stream()
-							.filter(item -> item.krqdtAppStampPK.stampFrameNo == x.getEngraveFrameNo()).findFirst();
+							.filter(item -> item.krqdtAppStampPK.stampFrameNo == x.getEngraveFrameNo() && item.krqdtAppStampPK.stampAtr == convertEnumTimeStamApp(x.getTimeStampAppEnum())).findFirst();
 					if (optional.isPresent()) {
 						krqdtAppStamp = optional.get();
-						if (krqdtAppStamp.startCancelAtr == 1) {
-							krqdtAppStamp.endCancelAtr = 1;
-						} else {
-							krqdtAppStamp.startCancelAtr = 1;
+						if (x.getStartEndClassification() == StartEndClassification.START) {
+							krqdtAppStamp.startCancelAtr = START_CANCEL;
 						}
+						
+						if (x.getStartEndClassification() == StartEndClassification.END) {
+							krqdtAppStamp.endCancelAtr = END_CANCEL;
+						}
+		
 					} else {
 						krqdtAppStamp = new KrqdtAppStamp(
 								new KrqdtAppStampPK(AppContexts.user().companyId(), appStamp.getAppID(),
 										convertEnumTimeStamApp(x.getTimeStampAppEnum()), x.getEngraveFrameNo()),
-								null, null, x.getStartEndClassification() == StartEndClassification.START ? 1 : null,
-								x.getStartEndClassification() == StartEndClassification.END ? 1 : null, null);
+								null, null, x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
+								x.getStartEndClassification() == StartEndClassification.END ? END_CANCEL : null, 
+										null);
 					}
 				} else {
 					krqdtAppStamp = new KrqdtAppStamp(
 							new KrqdtAppStampPK(AppContexts.user().companyId(), appStamp.getAppID(),
 									convertEnumTimeStamApp(x.getTimeStampAppEnum()), x.getEngraveFrameNo()),
-							null, null, x.getStartEndClassification() == StartEndClassification.START ? 1 : null,
-							x.getStartEndClassification() == StartEndClassification.END ? 1 : null, null);
+							null, null, x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
+							x.getStartEndClassification() == StartEndClassification.END ? END_CANCEL : null, 
+									null);
 				}
 				listStamps.add(krqdtAppStamp);
 
@@ -195,8 +209,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						new KrqdtAppStampPK(AppContexts.user().companyId(), appStamp.getAppID(), convertTimeZoneStampClassification(item.getDestinationTimeZoneApp().getTimeZoneStampClassification()), item.getDestinationTimeZoneApp().getEngraveFrameNo()),
 						item.getTimeZone().getStartTime().getDayTime(),
 						item.getTimeZone().getEndTime().getDayTime(),
-						null,
-						null,
+						START_NOT_CANCEL,
+						END_NOT_CANCEL,
 						null);
 				listStamps.add(krqdtAppStamp);
 			});
@@ -207,8 +221,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						new KrqdtAppStampPK(AppContexts.user().companyId(), appStamp.getAppID(), convertTimeZoneStampClassification(item.getTimeZoneStampClassification()), item.getEngraveFrameNo()),
 						null,
 						null,
-						null,
-						null,
+						START_CANCEL,
+						END_CANCEL,
 						null);
 				listStamps.add(krqdtAppStamp);
 			});
@@ -272,30 +286,33 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							StartEndClassification.END, Optional.empty());
 					DestinationTimeApp destinationTimeAppStart = new DestinationTimeApp(timeStampAppEnum, stampFrameNo,
 							StartEndClassification.START, Optional.empty());
-					if (startCancelAtr == 1) {
-						listDestinationTimeApp.add(destinationTimeAppStart);
-					} else {
-						Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
-						if (goOutAtr != null) {
-							GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
-							appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
-						}
-						TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppStart,
-								new TimeWithDayAttr(startTime), Optional.empty(), appStampGoOutAtrOp);
-						listTimeStampApp.add(timeStampApp);
+					if (startCancelAtr != null) {
+						if (startCancelAtr == 1) {
+							listDestinationTimeApp.add(destinationTimeAppStart);
+						} else {
+							Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
+							if (goOutAtr != null) {
+								GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
+								appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
+							}
+							TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppStart,
+									new TimeWithDayAttr(startTime), Optional.empty(), appStampGoOutAtrOp);
+							listTimeStampApp.add(timeStampApp);
+						}						
 					}
-
-					if (endCancelAtr == 1) {
-						listDestinationTimeApp.add(destinationTimeAppEnd);
-					} else {
-						Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
-						if (goOutAtr != null) {
-							GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
-							appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
-						}
-						TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppEnd,
-								new TimeWithDayAttr(endTime), Optional.empty(), appStampGoOutAtrOp);
-						listTimeStampApp.add(timeStampApp);
+					if (endCancelAtr != null) {
+						if (endCancelAtr == 1) {
+							listDestinationTimeApp.add(destinationTimeAppEnd);
+						} else {
+							Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
+							if (goOutAtr != null) {
+								GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
+								appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
+							}
+							TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppEnd,
+									new TimeWithDayAttr(endTime), Optional.empty(), appStampGoOutAtrOp);
+							listTimeStampApp.add(timeStampApp);
+						}		
 					}
 
 				}

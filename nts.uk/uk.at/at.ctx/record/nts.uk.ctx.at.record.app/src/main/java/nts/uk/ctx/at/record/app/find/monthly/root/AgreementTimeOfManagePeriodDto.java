@@ -13,19 +13,19 @@ import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreMaxTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeBreakdownDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.AgreementTimeOfMonthlyDto;
 import nts.uk.ctx.at.record.app.find.monthly.root.dto.MonthlyAggregationErrorInfoDto;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeBreakdown;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeManage;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeBreakdown;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeManage;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.attendance.util.AttendanceItemUtil.AttendanceItemType;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeBreakdown;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeManage;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeManage;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 
 @Data
 @EqualsAndHashCode(callSuper = false)

@@ -1,19 +1,41 @@
 package nts.uk.ctx.at.request.dom.application.businesstrip.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
+import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.at.request.dom.application.*;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
+import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.businesstrip.*;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripWorkTypes;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.AtEmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.EmployeeInfoImport;
-import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.OvertimeLeaveTime;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -30,20 +52,16 @@ import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.Busines
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.TargetWorkTypeByApp;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSetRepository;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkTime;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
-import nts.uk.ctx.at.shared.dom.worktype.*;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
-import org.apache.logging.log4j.util.Strings;
-
-import javax.ejb.Stateless;
-import javax.inject.Inject;
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Stateless
 public class BusinessTripServiceImlp implements BusinessTripService {
@@ -90,6 +108,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     @Inject
     private AtEmployeeAdapter atEmployeeAdapter;
 
+    @Inject
+    private CommonAlgorithm commonAlgorithm;
 
     /**
      * アルゴリズム「出張申請未承認申請を取得」を実行する
@@ -99,12 +119,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
      * @param opActualContentDisplayLst 申請表示情報.申請表示情報(基準日関係あり).表示する実績内容
      */
     @Override
-    public List<ActualContentDisplay> getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst) {
-        List<ActualContentDisplay> result = new ArrayList<>();
+    public void getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst) {
 
-        if(appDate.isEmpty()) {
-            return Collections.emptyList();
+        if (appDate.isEmpty()) {
+            return;
         }
+
         // ドメインモデル「申請」を取得する
         // Get Application có hiệu lực trong khoảng thời gian trên màn hình
         List<Application> apps = appRepo.getAppForKAF008(
@@ -124,12 +144,8 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             // Lấy Content của ngày loop
             Optional<ActualContentDisplay> currentContent = opActualContentDisplayLst.get().stream().filter(i -> i.getDate().equals(date)).findFirst();
 
-            if (!currentContent.isPresent()) {
-                continue;
-            }
-
             if (validApps.isEmpty()) {
-                result.add(currentContent.get());
+                continue;
             } else {
                 // 対象年月日を含む申請が存在を確認
                 // Lấy Application có ngày đăng ký mới nhất sau khi sort
@@ -139,21 +155,18 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 ReflectedState reflectedState = newestApp.getAppReflectedState();
 
                 // 未反映、反映待ちの場合
-                if (reflectedState == ReflectedState.WAITREFLECTION) {
+                if (reflectedState == ReflectedState.WAITREFLECTION || reflectedState == ReflectedState.NOTREFLECTED) {
                     Optional<ReflectionStatusOfDay> actualReflectStatus = newestApp.getReflectionStatus().getListReflectionStatusOfDay().stream().filter(i -> i.getTargetDate().compareTo(date) == 0).findAny();
                     if (actualReflectStatus.isPresent()) {
                         // 未反映、反映待ちの場合
-                        if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION) {
+                        if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION || actualReflectStatus.get().getActualReflectStatus() == ReflectedState.NOTREFLECTED) {
                             // アルゴリズム「出張申請内容より勤務情報を取得」を実行する
                             this.getWorkInfoFromTripReqContent(newestApp.getAppID(), newestApp.getAppType(), date, currentContent.get());
-                            ActualContentDisplay actualContent = new ActualContentDisplay(date, currentContent.get().getOpAchievementDetail());
-                            result.add(actualContent);
                         }
                     }
                 }
             }
         }
-        return result;
     }
 
     @Override
@@ -171,14 +184,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         Optional<AppEmploymentSet> opEmploymentSet = appDispInfoStartupOutput.getAppDispInfoWithDateOutput().getOpEmploymentSet();
         // アルゴリズム「出張申請勤務種類を取得する」を実行する
         List<WorkType> workDays = this.getBusinessAppWorkType(
-                opEmploymentSet.get(),
+                opEmploymentSet,
                 EnumAdaptor.valueOf(BusinessTripAppWorkType.WORK_DAY.value, BusinessTripAppWorkType.class),
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Attendance))
         );
 
         // アルゴリズム「出張申請勤務種類を取得する」を実行する
         List<WorkType> holidayWorkType = this.getBusinessAppWorkType(
-                opEmploymentSet.get(),
+                opEmploymentSet,
                 EnumAdaptor.valueOf(BusinessTripAppWorkType.HOLIDAY.value, BusinessTripAppWorkType.class),
                 new ArrayList<>(Arrays.asList(WorkTypeClassification.Holiday, WorkTypeClassification.HolidayWork, WorkTypeClassification.Shooting))
         );
@@ -223,10 +236,15 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public List<WorkType> getBusinessAppWorkType(AppEmploymentSet appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification) {
+    public List<WorkType> getBusinessAppWorkType(Optional<AppEmploymentSet> appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification) {
         String cid = AppContexts.user().companyId();
         List<WorkType> result = Collections.emptyList();
-        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet
+
+        if (!appEmploymentSet.isPresent()) {
+            return result;
+        }
+
+        Optional<TargetWorkTypeByApp> opTargetWorkTypeByApp = appEmploymentSet.get()
                 .getTargetWorkTypeByAppLst()
                 .stream()
                 .filter((x ->
@@ -354,8 +372,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
     }
 
     @Override
-    public void businessTripIndividualCheck(List<BusinessTripInfo> infos) {
+    public void businessTripIndividualCheck(List<BusinessTripInfo> infos, List<ActualContentDisplay> actualContent) {
         String sid = AppContexts.user().employeeId();
+        String cid = AppContexts.user().companyId();
 
         // loop 年月日　in　期間
         infos.stream().forEach(i -> {
@@ -365,14 +384,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
-            // 申請の矛盾チェック
-//                this.commonAlgorithm.appConflictCheck(
-//                        cid,
-//                        employeeInfoImports.get(0),
-//                        lstDate,
-//                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
-//                        output.getActualContentDisplay().get()
-//                );
+            // アルゴリズム「申請の矛盾チェック」を実行する
+                this.commonAlgorithm.appConflictCheck(
+                        cid,
+                        employeeInfoImports.get(0),
+                        Arrays.asList(i.getDate()),
+                        new ArrayList<>(Arrays.asList(i.getWorkInformation().getWorkTypeCode().v())),
+                        actualContent
+                );
         });
     }
 

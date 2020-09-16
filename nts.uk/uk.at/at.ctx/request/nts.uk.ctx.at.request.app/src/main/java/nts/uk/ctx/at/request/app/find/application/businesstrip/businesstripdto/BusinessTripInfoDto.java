@@ -30,7 +30,7 @@ public class BusinessTripInfoDto {
             workingHours = Optional.of(Arrays.asList(new TimeZoneWithWorkNo(1, startWorkTime, endWorkTime)));
         }
         return new BusinessTripInfo(
-                new WorkInformation(this.wkTimeCd, this.wkTypeCd),
+                new WorkInformation(this.wkTypeCd, this.wkTimeCd),
                 GeneralDate.fromString(date, "yyyy/MM/dd"),
                 workingHours
         );

@@ -23,8 +23,15 @@ public interface BusinessTripService {
      * @param appDate                   申請対象日リスト
      * @param opActualContentDisplayLst 申請表示情報.申請表示情報(基準日関係あり).表示する実績内容
      */
-    List<ActualContentDisplay> getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst);
+    void getBusinessTripNotApproved(String sid, List<GeneralDate> appDate, Optional<List<ActualContentDisplay>> opActualContentDisplayLst);
 
+    /**
+     * アルゴリズム「出張申請画面初期（更新）」を実行する
+     * @param companyId
+     * @param appId
+     * @param appDispInfoStartupOutput
+     * @return
+     */
     DetailScreenB getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput);
 
     /**
@@ -34,8 +41,14 @@ public interface BusinessTripService {
      * @param workStyle              出勤休日区分
      * @param workTypeClassification 勤務分類(LIST)
      */
-    List<WorkType> getBusinessAppWorkType(AppEmploymentSet appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification);
+    List<WorkType> getBusinessAppWorkType(Optional<AppEmploymentSet> appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification);
 
+    /**
+     * アルゴリズム「出張申請就業時間帯チェック」を実行する
+     * @param wkTypeCd
+     * @param wkTimeCd
+     * @param inputDate
+     */
     void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate);
 
     /**
@@ -48,7 +61,8 @@ public interface BusinessTripService {
     /**
      * アルゴリズム「出張申請個別エラーチェック」を実行する
      * @param infos
+     * @param actualContent
      */
-    void businessTripIndividualCheck(List<BusinessTripInfo> infos);
+    void businessTripIndividualCheck(List<BusinessTripInfo> infos, List<ActualContentDisplay> actualContent);
 
 }

@@ -21,106 +21,107 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.affiliationinformation.primitivevalue.ClassificationCode;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.GoingOutReason;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculation;
-import nts.uk.ctx.at.record.dom.monthly.TimeMonthWithCalculationAndMinus;
-import nts.uk.ctx.at.record.dom.monthly.affiliation.AffiliationInfoOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.affiliation.AggregateAffiliationInfo;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
-import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.flex.ExcessFlexAtr;
-import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexCarryforwardTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexShortDeductTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeCurrentMonth;
-import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.flex.FlexTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.AnnualLeaveUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.CompensatoryLeaveUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
-import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWork;
-import nts.uk.ctx.at.record.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.mergetable.AggregateAbsenceDaysMerge;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.MonthMergeKey;
-import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCount;
-import nts.uk.ctx.at.record.dom.monthly.totalcount.TotalCountByPeriod;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.EndClockOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonDivergence;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonClockOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonDivergenceOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.AnyLeave;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.attdleavegatetime.AttendanceLeaveGateTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.GoOutForChildCare;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.Late;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.lateleaveearly.LeaveEarly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
-import nts.uk.ctx.at.record.dom.raisesalarytime.primitivevalue.SpecificDateItemNo;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.common.times.AttendanceTimesMonth;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.ClassificationCode;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateItemNo;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
+import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculationAndMinus;
+import nts.uk.ctx.at.shared.dom.monthly.affiliation.AffiliationInfoOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.affiliation.AggregateAffiliationInfo;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
+import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.flex.ExcessFlexAtr;
+import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexCarryforwardTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexShortDeductTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeCurrentMonth;
+import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeOfExcessOutsideTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.PrescribedWorkingTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.WorkTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.AnnualLeaveUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.CompensatoryLeaveUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.RetentionYearlyUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.SpecialHolidayUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.vacationusetime.VacationUseTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutSideWorkEachBreakdown;
+import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWork;
+import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWorkOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCount;
+import nts.uk.ctx.at.shared.dom.monthly.totalcount.TotalCountByPeriod;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.EndClockOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.WorkClockOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonClock;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.AggrPCLogonDivergence;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.PCLogonClockOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.PCLogonDivergenceOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workclock.pclogon.PCLogonOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.WorkDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.AggregateLeaveDays;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.AnyLeave;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.paydays.PayDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.AggregateSpecificDays;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AbsenceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AggregateAbsenceDays;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AggregateSpcVacationDays;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.AttendanceDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.HolidayDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.HolidayWorkDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.PredeterminedDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.RecruitmentDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.SpcVacationDaysOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TemporaryWorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.WorkTimeOfMonthlyVT;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.AggregateBonusPayTime;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.bonuspaytime.BonusPayTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.breaktime.BreakTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.AggregateDivergenceTime;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceAtrOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.divergencetime.DivergenceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.AggregateGoOut;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.GoOutForChildCare;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.GoOutOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.holidaytime.HolidayTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.Late;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.LateLeaveEarlyOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.lateleaveearly.LeaveEarly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.midnighttime.IllegalMidnightTime;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.midnighttime.MidnightTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.PremiumTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -128,7 +129,6 @@ import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -2437,6 +2437,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	/** 36協定上限時間 */
 	@Column(name = "AGREEMENT_REG_TIME")
 	public int agreementRegTime;
+
+	
 	
 	@Override
 	protected Object getKey() {
@@ -3426,7 +3428,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	}
 
 	/* KRCDT_MON_ATTENDANCE_TIME */
-	public void toEntityAttendanceTimeOfMonthly(AttendanceTimeOfMonthly domain) {
+	public void toEntityAttendanceTimeOfMonthly(AttendanceTimeOfMonthly domain,
+			KrcdtMonTimeSup ouenEntity) {
 		
 		this.startYmd = domain.getDatePeriod().start();
 		this.endYmd = domain.getDatePeriod().end();
@@ -3447,6 +3450,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		/** 回数集計 */
 		val totalCount = domain.getTotalCount();
 		toEntityTotalCount(totalCount.getTotalCountList());
+		
+		ouenEntity.setOuen(domain.getOuenTime());
 		
 		this.version = domain.getVersion();
 	}
@@ -5703,7 +5708,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 	 * ドメインに変換
 	 * @return 月別実績の勤怠時間
 	 */
-	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly() {
+	public AttendanceTimeOfMonthly toDomainAttendanceTimeOfMonthly(KrcdtMonTimeSup ouen) {
 		
 		// 月別実績の月の計算
 		MonthlyCalculation monthlyCalculation = toDomainMonthlyCalculation();
@@ -5728,7 +5733,8 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				excessOutsideWork,
 				verticalTotal,
 				totalCount,
-				new AttendanceDaysMonth(this.aggregateDays));
+				new AttendanceDaysMonth(this.aggregateDays),
+				ouen == null ? OuenTimeOfMonthly.empty() : ouen.convertToOuen());
 		
 		domain.setVersion(this.version);
 		
@@ -6252,45 +6258,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		return domain;
 	}
 	
-	/** KRCDT_MON_AGGR_ABSN_DAYS
-	 * 
-	 */
-	public AggregateAbsenceDaysMerge toDomainAbsenceDays() {
-		
-		AggregateAbsenceDaysMerge merge = new AggregateAbsenceDaysMerge();
-		merge.setAbsenceDays1(this.toDomainAbsenceDays1());
-		merge.setAbsenceDays2(this.toDomainAbsenceDays2());
-		merge.setAbsenceDays3(this.toDomainAbsenceDays3());
-		merge.setAbsenceDays4(this.toDomainAbsenceDays4());
-		merge.setAbsenceDays5(this.toDomainAbsenceDays5());
-		merge.setAbsenceDays6(this.toDomainAbsenceDays6());
-		merge.setAbsenceDays7(this.toDomainAbsenceDays7());
-		merge.setAbsenceDays8(this.toDomainAbsenceDays8());
-		merge.setAbsenceDays9(this.toDomainAbsenceDays9());
-		merge.setAbsenceDays10(this.toDomainAbsenceDays10());
-		merge.setAbsenceDays11(this.toDomainAbsenceDays11());
-		merge.setAbsenceDays12(this.toDomainAbsenceDays12());
-		merge.setAbsenceDays13(this.toDomainAbsenceDays13());
-		merge.setAbsenceDays14(this.toDomainAbsenceDays14());
-		merge.setAbsenceDays15(this.toDomainAbsenceDays15());
-		merge.setAbsenceDays16(this.toDomainAbsenceDays16());
-		merge.setAbsenceDays17(this.toDomainAbsenceDays17());
-		merge.setAbsenceDays18(this.toDomainAbsenceDays18());
-		merge.setAbsenceDays19(this.toDomainAbsenceDays19());
-		merge.setAbsenceDays20(this.toDomainAbsenceDays20());
-		merge.setAbsenceDays21(this.toDomainAbsenceDays21());
-		merge.setAbsenceDays22(this.toDomainAbsenceDays22());
-		merge.setAbsenceDays23(this.toDomainAbsenceDays23());
-		merge.setAbsenceDays24(this.toDomainAbsenceDays24());
-		merge.setAbsenceDays25(this.toDomainAbsenceDays25());
-		merge.setAbsenceDays26(this.toDomainAbsenceDays26());
-		merge.setAbsenceDays27(this.toDomainAbsenceDays27());
-		merge.setAbsenceDays28(this.toDomainAbsenceDays28());
-		merge.setAbsenceDays29(this.toDomainAbsenceDays29());
-		merge.setAbsenceDays30(this.toDomainAbsenceDays30());
-		return merge;
-		
-	}
+	
 	private  List<AggregateBonusPayTime> getBonusPayTimeLst() {
 		List<AggregateBonusPayTime> merge = new ArrayList<>();
 		merge.add(toDomainBonusPayTime1());

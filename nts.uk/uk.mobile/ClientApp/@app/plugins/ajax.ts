@@ -196,12 +196,7 @@ const WEB_APP_NAME = {
             });
         };
 
-        fetch({ pg: 'com', url: '/server/time/now', method: 'post' })
-            .then((time: string) => {
-                Object.defineProperty(vue, '$sdt', {
-                    value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
-                });
-            });
+        Object.defineProperty(vue, 'fetch', { value: fetch });
 
         vue.mixin({
             beforeCreate() {

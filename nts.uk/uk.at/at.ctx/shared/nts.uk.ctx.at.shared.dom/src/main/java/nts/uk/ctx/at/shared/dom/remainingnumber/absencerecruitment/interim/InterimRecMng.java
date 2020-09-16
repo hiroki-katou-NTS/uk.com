@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimMngCommon;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.OccurrenceDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.StatutoryAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
@@ -17,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDa
 @Getter
 @Setter
 @AllArgsConstructor
-public class InterimRecMng extends AggregateRoot{
+public class InterimRecMng extends AggregateRoot implements InterimMngCommon{
 	/**	暫定振出管理データID */
 	private String recruitmentMngId;
 	/**	使用期限日 */
@@ -28,5 +29,9 @@ public class InterimRecMng extends AggregateRoot{
 	private StatutoryAtr statutoryAtr;
 	/**	未使用日数 */
 	private UnUsedDay unUsedDays;
+	@Override
+	public String getId() {
+		return recruitmentMngId;
+	}
 
 }

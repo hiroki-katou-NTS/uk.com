@@ -149,25 +149,47 @@ export class KafS07AComponent extends KafS00ShrComponent {
             return self.loadCommonSetting(AppType.WORK_CHANGE_APPLICATION);
         }).then((loadData: any) => {
             if (loadData) {
-                return self.$http.post('at', API.startS07, {
+                let param = self.mode ? 
+                {
                     mode: self.mode,
                     companyId: self.user.companyId,
                     employeeId: self.user.employeeId,
                     listDates: [],
-                    appWorkChangeOutputDto: self.mode ? null : self.data,
+                    appWorkChangeOutputDto: null,
                     appWorkChangeDto: self.mode ? null : self.data.appWorkChange
-                });
+                } : 
+                {
+                    mode: self.mode,
+                    companyId: self.user.companyId,
+                    employeeId: self.user.employeeId,
+                    listDates: [],
+                    appWorkChangeOutputCmd: self.data,
+                    appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                };
+
+                return self.$http.post('at', API.startS07, param);
             }
             if (self.appDispInfoStartupOutput) {
                 if (self.appDispInfoStartupOutput.appDispInfoWithDateOutput.opErrorFlag != 0) {
-                    return self.$http.post('at', API.startS07, {
-                        mode: self.mode,
-                        companyId: self.user.companyId,
-                        employeeId: self.user.employeeId,
-                        listDates: [],
-                        appWorkChangeOutputDto: self.mode ? null : self.data,
-                        appWorkChangeDto: self.mode ? null : self.data.appWorkChange
-                    });
+                    let param = self.mode ? 
+                {
+                    mode: self.mode,
+                    companyId: self.user.companyId,
+                    employeeId: self.user.employeeId,
+                    listDates: [],
+                    appWorkChangeOutputDto: null,
+                    appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                } : 
+                {
+                    mode: self.mode,
+                    companyId: self.user.companyId,
+                    employeeId: self.user.employeeId,
+                    listDates: [],
+                    appWorkChangeOutputCmd: self.data,
+                    appWorkChangeDto: self.mode ? null : self.data.appWorkChange
+                };
+
+                    return self.$http.post('at', API.startS07, param);
                 }
             }
 
@@ -584,6 +606,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         };
         self.$http.post('at', API.updateAppWorkChange, params)
             .then((res: any) => {
+                self.$mask('hide');
                 self.data.appWorkChangeDispInfo = res.data;
                 self.bindStart();
                 let useDivision = self.appDispInfoStartupOutput.appDispInfoWithDateOutput.approvalFunctionSet.appUseSetLst[0].useDivision,
@@ -619,7 +642,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     default: 
                         break;
                 }
-                self.$mask('hide');
                 if (_.isEmpty(msgID)) { 
                     return true;
                 }
@@ -855,11 +877,38 @@ export class KafS07AComponent extends KafS00ShrComponent {
                     isSelectWorkTime: 1
                 }
             ).then((f: any) => {
-                if (f) {
-                    this.model.workTime.code = f.selectedWorkTime.code;
-                    this.model.workTime.name = f.selectedWorkTime.name;
-                    this.model.workTime.time = f.selectedWorkTime.workTime1;
+                if (!f) {
+
+                    return;
+                    // this.model.workTime.code = f.selectedWorkTime.code;
+                    // this.model.workTime.name = f.selectedWorkTime.name;
+                    // this.model.workTime.time = f.selectedWorkTime.workTime1;
                 }
+                let appWorkChangeSet = self.data.appWorkChangeDispInfo.appWorkChangeSet;
+                let param = {
+                    companyId: self.user.companyId,
+                    workType: this.model.workType.code,
+                    workTime: f.selectedWorkTime ? (f.selectedWorkTime.code ? f.selectedWorkTime.code : null) : null,
+                    appWorkChangeSetDto: appWorkChangeSet
+                };
+                self.$http.post('at', API.checkWorkTime, param)
+                        .then((res: any) => {
+                            self.$mask('hide');
+                            self.data.appWorkChangeDispInfo.setupType = res.data.setupType;
+                            self.data.appWorkChangeDispInfo.predetemineTimeSetting = res.data.opPredetemineTimeSetting;
+                            self.bindVisibleView(self.data.appWorkChangeDispInfo);
+                            // this.model.workType.code = f.selectedWorkType.workTypeCode;
+                            // this.model.workType.name = f.selectedWorkType.name;
+                            if (!(f.selectedWorkTime.code == '' && res.data.setupType == 0)) {
+                                this.model.workTime.code = f.selectedWorkTime.code;
+                                this.model.workTime.name = f.selectedWorkTime.name;
+                                this.model.workTime.time = f.selectedWorkTime.workTime1;
+                            }
+                        })
+                        .catch((res: any) => {
+                            self.handleErrorMessage(res);
+                        });
+
             }).catch((res: any) => {
                 self.handleErrorMessage(res);
             });

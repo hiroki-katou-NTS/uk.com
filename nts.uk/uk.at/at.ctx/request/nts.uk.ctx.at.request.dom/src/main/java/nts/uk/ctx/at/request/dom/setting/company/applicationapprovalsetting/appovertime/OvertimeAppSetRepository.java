@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime;
 
-import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
-
 import java.util.List;
 import java.util.Optional;
+
+import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.overtimeholidaywork.otworkapply.OtWorkAppReflect;
 
 public interface OvertimeAppSetRepository {
     Optional<OvertimeAppSet> findSettingByCompanyId(String companyId);

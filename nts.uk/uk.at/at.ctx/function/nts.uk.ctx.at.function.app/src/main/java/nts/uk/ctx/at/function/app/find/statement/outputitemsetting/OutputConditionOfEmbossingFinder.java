@@ -34,9 +34,6 @@ public class OutputConditionOfEmbossingFinder {
 	private ClosureRepository closureRepository;
 	
 	@Inject
-	private ClosureService closureService;
-	
-	@Inject
 	private StampingOutputItemSetRepository stampingOutputItemSetRepository; 
 	
 	/** The Constant FUNCTION_NO. */
@@ -70,7 +67,9 @@ public class OutputConditionOfEmbossingFinder {
 		optclosure.ifPresent(opt -> {
 			// アルゴリズム「当月の期間を算出する」を実行する(thực hiện thuật toán 「当月の期間を算出する」)
 			Closure closure = optclosure.get();
-			DatePeriod datePeriod = closureService.getClosurePeriodNws(CLOSURE_ID, closure.getClosureMonth().getProcessingYm());
+			DatePeriod datePeriod = ClosureService.getClosurePeriodNws(
+					ClosureService.createRequireM5(closureRepository),
+					CLOSURE_ID, closure.getClosureMonth().getProcessingYm());
 			dto.setStartDate(datePeriod.start());
 			dto.setEndDate(datePeriod.end());
 		});

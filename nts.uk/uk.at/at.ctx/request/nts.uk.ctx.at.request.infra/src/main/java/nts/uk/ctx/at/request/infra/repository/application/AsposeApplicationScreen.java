@@ -24,6 +24,7 @@ import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.at.request.dom.application.AppScreenGenerator;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
+import nts.uk.ctx.at.request.dom.application.applist.service.param.AppLstApprovalLstDispSet;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
@@ -143,22 +144,22 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 			// Column H
 			Cell cellH = cells.get("H" + i);
 			String contextH = cellH.getStringValue();
-			if (contextH.equals("承認済")) {
+			if (contextH.equals(I18NText.getText("CMM045_63"))) {
 				this.backgroundColor(cellH, 191, 234, 96);
 			}
-			if (contextH.equals("反映済")) {
+			if (contextH.equals(I18NText.getText("CMM045_64"))) {
 				this.backgroundColor(cellH, 206, 230, 255);
 			}
-			if (contextH.equals("否認")) {
+			if (contextH.equals(I18NText.getText("CMM045_65"))) {
 				this.backgroundColor(cellH, 253, 77, 77);
 			}
-			if (contextH.equals("未承認")) {
+			if (contextH.equals(I18NText.getText("CMM045_62"))) {
 				this.backgroundColor(cellH, 255, 255, 255);
 			}
-			if (contextH.equals("差戻")) {
+			if (contextH.equals(I18NText.getText("CMM045_66"))) {
 				this.backgroundColor(cellH, 253, 77, 77);
 			}
-			if (contextH.equals("取消")) {
+			if (contextH.equals(I18NText.getText("CMM045_67"))) {
 				this.backgroundColor(cellH, 246, 246, 54);
 			}
 		}
@@ -227,7 +228,12 @@ public class AsposeApplicationScreen extends AsposeCellsReportGenerator implemen
 	 */
 	private void printContent(Workbook workbook, AppListInfo appLst) {
 		List<ListOfApplication> lstApp = appLst.getAppLst();
-		List<AsposeAppScreenDto> dataSource = lstApp.stream().map(x -> AsposeAppScreenDto.fromDomain(x))
+
+		AppLstApprovalLstDispSet dispSet = appLst.getDisplaySet();
+		int dispWplName = dispSet.getWorkplaceNameDisp();
+
+		List<AsposeAppScreenDto> dataSource = lstApp.stream()
+				.map(x -> AsposeAppScreenDto.fromDomainPrint(x, dispWplName))
 				.collect(Collectors.toList());
 
 		WorkbookDesigner designer = new WorkbookDesigner();

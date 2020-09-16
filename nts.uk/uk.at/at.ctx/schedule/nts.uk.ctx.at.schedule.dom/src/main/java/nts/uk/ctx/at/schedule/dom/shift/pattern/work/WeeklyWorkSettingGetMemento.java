@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.DayOfWeek;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -34,5 +35,12 @@ public interface WeeklyWorkSettingGetMemento {
 	 * @return the work day division
 	 */
 	public WorkdayDivision getWorkdayDivision();
+
+	/**
+	 * Gets the contract code.
+	 *
+	 * @return the contract code
+	 */
+	public String getContractCode();
 
 }

@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.dom.application.applist.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInitOutput;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -129,10 +132,12 @@ public interface AppListInitialRepository {
 	 * @param period 対象期間
 	 * @param displayWorkPlaceName 所属職場名表示
 	 * @param mapEmpInfo Map<社員ID, 個人社員基本情報>
+	 * @param mapWkpInfo Map<<社員ID, 期間> 職場情報> 
 	 * @param device デバイス：PC or スマートフォン
 	 * @return
 	 */
-	public AppInfoMasterOutput getListAppMasterInfo(Application application, DatePeriod period, NotUseAtr displayWorkPlaceName, Map<String, SyEmployeeImport> mapEmpInfo, int device);
+	public AppInfoMasterOutput getListAppMasterInfo(Application application, DatePeriod period, NotUseAtr displayWorkPlaceName, 
+			Map<String, SyEmployeeImport> mapEmpInfo, Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo, int device);
 	/**
 	 * 12 - 申請一覧初期日付期間
 	 * @param 会社ID　companyId

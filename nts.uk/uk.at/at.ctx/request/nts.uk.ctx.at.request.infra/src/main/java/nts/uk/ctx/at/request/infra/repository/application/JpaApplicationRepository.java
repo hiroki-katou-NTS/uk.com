@@ -380,9 +380,10 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 * 反映状態 ＝ 「差戻し」
 	 */
 	private static final String SELECT_LIST_REFSTATUS = "SELECT a FROM KrqdtApplication a"
+			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
 			+ " WHERE a.pk.companyID =:companyID" + " AND a.employeeID = :employeeID "
 			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate"
-			+ " AND a.krqdtAppReflectStateLst.actualReflectStatus IN :listReflecInfor" + " ORDER BY a.appDate ASC," + " a.prePostAtr DESC";
+			+ " AND ref.actualReflectStatus IN :listReflecInfor" + " ORDER BY a.appDate ASC," + " a.prePostAtr DESC";
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -828,11 +829,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return krqdtApplicationLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 	}
 
-	private static final String SELECT_APP_FOR_KAF008 = "SELECT a FROM KrqdtApplication a WHERE"
-			+ " a.employeeID = :applicantSID"
-			+ " AND a.startDate <= :opAppEndDate AND a.opAppStartDate >= :startDate and a.appType IN (1,2,3,4,6,10)"
-			+ " ORDER BY a.inputDate DESC";
-
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請未承認申請を取得.ドメインモデル「申請」を取得する
 	 * @param sID
@@ -854,6 +850,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
 				"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
 				"where a.APPLICANTS_SID = @sid and a.APP_START_DATE <= @endDate and a.APP_END_DATE >= @startDate " +
+				"and b.REFLECT_PER_STATE IN (0,1) and a.APP_TYPE IN (2,3,4,6,1,10) "+
 				"order by a.INPUT_DATE DESC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sID)
