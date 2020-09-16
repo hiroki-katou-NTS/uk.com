@@ -11,7 +11,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
@@ -31,10 +30,10 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 	private static final String GET_ATD_BY_COMPANY_ID = "SELECT atd FROM KfnmtRptWkAtdOutatd atd"
 			+ " WHERE atd.cid = :cid";
 
-	private static final String GET_FRAME_BY_COMPANY_ID = "SELECT atd FROM KfnmtRptWkAtdOutframe frame"
+	private static final String GET_FRAME_BY_COMPANY_ID = "SELECT frame FROM KfnmtRptWkAtdOutframe frame"
 			+ " WHERE frame.cid = :cid";
 	
-	private static final String GET_SEAL_BY_COMPANY_ID = "SELECT atd FROM KfnmtRptWkAtdOutseal seal"
+	private static final String GET_SEAL_BY_COMPANY_ID = "SELECT seal FROM KfnmtRptWkAtdOutseal seal"
 			+ " WHERE seal.cid = :cid";
 	
 	private static final String GET_SETTING_BY_COMPANY_AND_CODE = "SELECT ot FROM KfnmtRptWkAtdOut ot"
@@ -58,12 +57,6 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 	@Override
 	public void update(AttendanceRecordStandardSetting domain) {
 
-	}
-
-	private static AttendanceRecordStandardSetting toEntity(AttendanceRecordStandardSetting domain) {
-		AttendanceRecordStandardSetting entity = new AttendanceRecordStandardSetting();
-//		domain.setMemento(entity);
-		return entity;
 	}
 
 	@Override
@@ -163,7 +156,6 @@ public class JpaAttendanceRecordStandardSettingRepository extends JpaRepository
 	public Optional<AttendanceRecordStandardSetting> findByCompanyCodeAndSelectType(String companyId, long code,
 			int selectType) {
 		AttendanceRecordStandardSetting attendanceRecordStandardSetting = new AttendanceRecordStandardSetting();
-		Optional<AttendanceRecordExportSetting> getRec = this.recordExportSettingRepo.getAttendanceByCodeAndType(companyId, code, selectType);
 	
 		return Optional.ofNullable(attendanceRecordStandardSetting);
 	}

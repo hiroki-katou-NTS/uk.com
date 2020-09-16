@@ -1,7 +1,6 @@
 package nts.uk.file.at.app.export.attendancerecord;
 
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 @Data
 public class AttendanceRecordOutputConditionsDto {
@@ -12,7 +11,7 @@ public class AttendanceRecordOutputConditionsDto {
 	//	自由設定_コード
 	private String freeSelectionCode;
 	// 	会社ID
-	private CompanyId companyId;
+	private String companyId;
 	// 	ユーザID
 	private String userId;
 	//	ゼロ表示区分

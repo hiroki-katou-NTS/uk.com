@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,15 +22,10 @@ public class JpaAttendanceRecordStandardSettingGetMemento
 
 	@Override
 	public List<AttendanceRecordExportSetting> getAttendanceRecordExportSettings() {
-		// TODO Auto-generated method stub
-		return null;
+		List<AttendanceRecordExportSetting> result = this.kfnmtRptWkAtdOut.stream()
+				.map(i -> new AttendanceRecordExportSetting(i))
+				.collect(Collectors.toList());
+		return result;
 	}
-
-//	@Override
-//	public List<AttendanceRecordExportSetting> getAttendanceRecordExportSettings() {
-//		List<AttendanceRecordExportSetting> result = this.kfnmtRptWkAtdOut.stream()
-//				.map(i -> new AttendanceRecordExportSetting(i)).collect(Collectors.toList());
-//		return result;
-//	}
 
 }

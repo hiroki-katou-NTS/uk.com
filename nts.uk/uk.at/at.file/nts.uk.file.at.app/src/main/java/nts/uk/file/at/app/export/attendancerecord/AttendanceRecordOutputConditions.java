@@ -34,7 +34,7 @@ public class AttendanceRecordOutputConditions {
 		AttendanceRecordOutputConditions condition = new AttendanceRecordOutputConditions();
 		condition.setSelectionType(ItemSelectionType.valueOf(dto.getSelectionType()));
 		condition.setStandardSelectionCode(new ExportSettingCode(dto.getStandardSelectionCode()));
-		condition.setCompanyId(dto.getCompanyId());
+		condition.setCompanyId(new CompanyId(dto.getCompanyId()));
 		condition.setUserId(dto.getUserId());
 		condition.setZeroDisplayType(ZeroDisplayType.valueOf(dto.getZeroDisplayType()));
 		condition.setFreeSettingLayoutId(dto.getFreeSettingLayoutId());
