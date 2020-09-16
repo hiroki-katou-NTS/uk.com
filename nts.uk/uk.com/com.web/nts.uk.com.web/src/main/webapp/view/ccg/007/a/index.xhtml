@@ -1,9 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
+
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
@@ -15,8 +14,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="padding: 10px; position: relative;"
-					data-bind="text: '#{i18n.getText('CCG007_10')}'"></div>
+				<div style="padding: 10px; position: relative;" data-bind="text: '#{i18n.getText('CCG007_10')}'"></div>
 				<div>
 					<table>
 						<tr>
@@ -27,8 +25,7 @@
 							</td>
 							<td style="width: 230px; padding: 10px;">
 								<div>
-									<input tabindex="1" id="contract-code-inp"
-										data-bind="ntsTextEditor: {
+									<input tabindex="1" id="contract-code-inp" data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_1')}',
 											value: contractCode,
 											required: false,
@@ -42,13 +39,12 @@
 						<tr>
 							<td style="width: 100px; padding: 10px;">
 								<div data-bind="ntsLabel">
-									<label data-bind="text: '#{i18n.getText('CCG007_2')}'"><br /></label>
+									<label data-bind="text: '#{i18n.getText('CCG007_61')}'"><br /></label>
 								</div>
 							</td>
 							<td style="width: 230px; padding: 10px;">
 								<div>
-									<input tabindex="2" id="password-input"
-										data-bind="ntsTextEditor: {
+									<input tabindex="2" id="password-input" data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_2')}',
 											value: password,
 											required: false,
@@ -63,8 +59,10 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom" style="height: 75px;">
-				<div style="padding: 0px 10px 5px 10px; text-align: left; line-height: 1em; height: 2em;">
-					<div>※#{i18n.getText('CCG007_11')}</div>
+				<div style="padding: 0px 10px 5px 10px; text-align: left; line-height: 0.6em; height: 2em;">
+					<div data-bind="text: bottomText1"></div>
+					<br />
+					<div data-bind="text: bottomText2"></div>
 				</div>
 				<button tabindex="3" id="login-btn" data-bind=" click: AuthContract"
 					class="btn-default proceed large">#{i18n.getText('CCG007_12')}</button>
@@ -72,4 +70,5 @@
 		</ui:define>
 	</ui:composition>
 </body>
+
 </html>
