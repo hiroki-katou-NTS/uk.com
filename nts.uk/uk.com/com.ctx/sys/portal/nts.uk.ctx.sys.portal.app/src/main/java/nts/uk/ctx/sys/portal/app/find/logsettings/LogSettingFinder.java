@@ -62,16 +62,16 @@ public class LogSettingFinder {
 		if (logSettingDtos.size() > 0) {
 			String companyId = AppContexts.user().companyId();
 			int systemType = logSettingDtos.get(0).getSystem();
-
-			/**
-			 * ドメインモデル「ログ設定」を削除
-			 */
-			this.deleteLogSetting(companyId, systemType);
 			
-			/**
-			 * ドメインモデル「ログ設定」に追加する
-			 */
 			for (LogSetting l : logSettings) {
+				/**
+				 * ドメインモデル「ログ設定」を削除
+				 */
+				this.deleteLogSetting(companyId, systemType);
+				
+				/**
+				 * ドメインモデル「ログ設定」に追加する
+				 */
 				this.addLogSetting(l);
 			}
 		}

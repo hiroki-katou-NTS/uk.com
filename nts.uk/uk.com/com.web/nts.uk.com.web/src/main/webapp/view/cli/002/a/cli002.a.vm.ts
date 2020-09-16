@@ -74,6 +74,7 @@ module nts.uk.com.view.cli002.a {
 
         public register() {
             const vm = this;
+            vm.dataSourceItem.valueHasMutated();
             vm.logSettings = [];
             vm.dataSourceItem().map((item: any) => {
                 console.log(item);
@@ -168,7 +169,9 @@ module nts.uk.com.view.cli002.a {
                 ntsFeatures: [],
 
                 ntsControls: [
-                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function() {}}
+                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function() {
+                        vm.dataSourceItem.valueHasMutated();
+                    }}
                 ],
             }).create();
         }
