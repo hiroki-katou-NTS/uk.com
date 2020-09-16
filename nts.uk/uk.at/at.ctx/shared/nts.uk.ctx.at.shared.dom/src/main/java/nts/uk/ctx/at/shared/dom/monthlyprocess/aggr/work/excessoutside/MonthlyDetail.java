@@ -441,12 +441,7 @@ public class MonthlyDetail {
 		// 「時系列の週割増時間」に入れた分を「逆時系列で週割増を割り当てた時間の明細」に入れる
 		assignedDetail.putIfAbsent(procDate, WorkTimeOfTimeSeries.of(
 				procDate,
-				WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-						new AttendanceTime(assignMinutes),
-						new AttendanceTime(0),
-						new AttendanceTime(0),
-						new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-						new AttendanceTime(0)),
+				WithinStatutoryTimeOfDaily.defaultValue(),
 				new AttendanceTime(0),
 				workType
 				));

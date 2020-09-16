@@ -52,20 +52,27 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         isCondition9: boolean = true;
         data : any;
         
-    created() {
+    created(param: any) {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
-
         self.loadData([], [], self.appType())
         .then((loadDataFlag: any) => {
             self.appDispInfoStartupOutput.subscribe(value => {
                 console.log(value);
-                if (value) {
+                if (value) { 
                     self.changeDate();
                 }
             });
+            if (!_.isNull(ko.toJS(self.application().prePostAtr))) {
+                self.isPreAtr(self.application().prePostAtr() == 0);                
+            }
+            self.application().prePostAtr.subscribe(value => {
+                if (!_.isNull(value)) {
+                    self.isPreAtr(value == 0);
+                }
+            });
             if(loadDataFlag) {
-                let companyId = __viewContext.user.companyId;
+                let companyId = self.$user.companyId;
                 let command = { 
                         appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
                         recoderFlag: false,
@@ -77,7 +84,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }).then((res: any) => {
             console.log(res);
             self.data = res;
-        });
+        }).always(() => {
+            self.$blockui('hide');
+        });;
         self.initData();
     }
     changeDataSource() {
@@ -88,10 +97,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         let data = _.clone(self.data);
         data.appStampOptional = self.createAppStamp();
-        let companyId = __viewContext.user.companyId;
+        let companyId = self.$user.companyId;
         let agentAtr = false;
-        self.application().enteredPerson = __viewContext.user.employeeId;
-        self.application().employeeID = __viewContext.user.employeeId;
+        self.application().enteredPerson = self.$user.employeeId;
+        self.application().employeeID = self.$user.employeeId;
 //        self.application().prePostAtr(0);
         let command = {
                 companyId,
@@ -430,20 +439,28 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 } else {
                     _.forEach(items, (el: GridItem) => {
                         if (!ko.toJS(el.flagObservable)) {
-                            if (ko.toJS(el.startTimeRequest) && ko.toJS(el.endTimeRequest)) {
+                            if (ko.toJS(el.startTimeRequest) || ko.toJS(el.endTimeRequest)) {
                                 let timeStampAppOtherDto = new TimeStampAppOtherDto();
                                 let tz = new TimeZone();
-                                tz.startTime = ko.toJS(el.startTimeRequest);
-                                tz.endTime = ko.toJS(el.endTimeRequest);
                                 let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
                                 destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
                                 destinationTimeZoneAppDto.engraveFrameNo = el.id;
                                 timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
                                 timeStampAppOtherDto.timeZone = tz;
-                                listTimeStampAppOther.push(timeStampAppOtherDto);
+                                if (ko.toJS(el.startTimeRequest)) {
+                                    tz.startTime = ko.toJS(el.startTimeRequest);
+                                    
+                                }
+                                if (ko.toJS(el.endTimeRequest)) {
+                                    tz.endTime = ko.toJS(el.endTimeRequest);                             
+                                }
+                                listTimeStampAppOther.push(timeStampAppOtherDto);                               
                             }
                         } else {
-                            
+                            let destinationTimeZoneAppDto = new DestinationTimeZoneAppDto();
+                            destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
+                            destinationTimeZoneAppDto.engraveFrameNo = el.id;
+                            listDestinationTimeZoneApp.push(destinationTimeZoneAppDto);
                         }
                     });
                 }
@@ -461,7 +478,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
     
     
-    class AppStampDto {
+    export class AppStampDto {
         public listTimeStampApp: Array<TimeStampAppDto>;
         public listDestinationTimeApp: Array<DestinationTimeAppDto>;
         public listTimeStampAppOther: Array<TimeStampAppOtherDto>;
@@ -472,7 +489,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }
     
     }
-    class TimeStampAppDto {
+    export class TimeStampAppDto {
         public destinationTimeApp: DestinationTimeAppDto;
         public timeOfDay: number;
         public workLocationCd?: string;
@@ -484,7 +501,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             this.appStampGoOutAtr = appStampGoOutAtr;
         }        
     }
-    class DestinationTimeAppDto {
+    export class DestinationTimeAppDto {
         
         public timeStampAppEnum: number;
         public engraveFrameNo: number;
@@ -499,15 +516,15 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }
     }
     
-    class TimeStampAppOtherDto {
+    export class TimeStampAppOtherDto {
         public destinationTimeZoneApp: DestinationTimeZoneAppDto;
         public timeZone: TimeZone;
     }
-    class TimeZone {
+    export class TimeZone {
         public startTime: number;
         public endTime: number;
     }
-    class DestinationTimeZoneAppDto {
+    export class DestinationTimeZoneAppDto {
         public timeZoneStampClassification: number;
         public engraveFrameNo: number;
     }

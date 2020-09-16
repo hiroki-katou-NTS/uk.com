@@ -193,7 +193,11 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	public void adUpTemporaryTime(Optional<TemporaryTimeOfDailyPerformance> tempTime) {
 		if (!tempTime.isPresent())
 			return;
-		temporaryTimrRepo.update(tempTime.get());
+		if(temporaryTimrRepo.findByKey(tempTime.get().getEmployeeId(), tempTime.get().getYmd()).isPresent()) {
+			temporaryTimrRepo.update(tempTime.get());
+		}else {
+			temporaryTimrRepo.add(tempTime.get());
+		}
 
 	}
 

@@ -277,11 +277,11 @@ public class ApprovalRootStateAdapterImpl implements ApprovalRootStateAdapter {
 	}
 
 	@Override
-	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID,
+	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID, String approverID, 
 			List<String> lstAgent, DatePeriod period, boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus) {
 		Map<String,List<ApprovalPhaseStateImport_New>> approvalPhaseImport_NewMap = new LinkedHashMap<>();
-		Map<String,List<ApprovalPhaseStateExport>> approvalRootContentExports = approvalRootStatePub.getApprovalRootCMM045(companyID, lstAgent, period,
+		Map<String,List<ApprovalPhaseStateExport>> approvalRootContentExports = approvalRootStatePub.getApprovalRootCMM045(companyID, approverID, lstAgent, period,
 				unapprovalStatus, approvalStatus, denialStatus, agentApprovalStatus, remandStatus, cancelStatus);
 		for(Map.Entry<String,List<ApprovalPhaseStateExport>> approvalRootContentExport : approvalRootContentExports.entrySet()){
 					

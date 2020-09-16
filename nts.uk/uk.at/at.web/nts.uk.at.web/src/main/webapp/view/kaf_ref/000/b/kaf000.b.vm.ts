@@ -105,6 +105,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
 		        vm.application().opAppReason(successData.appDetailScreenInfo.application.opAppReason);
 		        vm.application().opAppStandardReasonCD(successData.appDetailScreenInfo.application.opAppStandardReasonCD);
 		        vm.application().opReversionReason(successData.appDetailScreenInfo.application.opReversionReason);
+		        vm.application().opStampRequestMode(successData.appDetailScreenInfo.application.opStampRequestMode);
                 vm.appDispInfoStartupOutput(successData);
                 let viewContext: any = __viewContext,
                     loginID = viewContext.user.employeeId,

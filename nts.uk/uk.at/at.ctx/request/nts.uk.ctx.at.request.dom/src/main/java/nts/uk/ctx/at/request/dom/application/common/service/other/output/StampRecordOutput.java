@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * refactor 4
@@ -13,6 +14,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
+@Setter
 public class StampRecordOutput {
 	
 	/**

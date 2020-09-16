@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.workrule.statutoryworktime.DailyCalculationPerso
 import nts.uk.ctx.at.shared.dom.worktime.IntegrationOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.common.EmTimeZoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.OverTimeOfTimeZoneSet;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneOtherSubHolTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixRestTimezoneSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedset.FixedWorkCalcSetting;
@@ -56,7 +57,7 @@ public class ManageReGetClass {
 	private ManagePerPersonDailySet personDailySetting;
 	
 	/** 統合就業時間帯 */
-	private IntegrationOfWorkTime integrationOfWorkTime;
+	private Optional<IntegrationOfWorkTime> integrationOfWorkTime;
 	
 	/**
 	 * Constructor
@@ -72,7 +73,7 @@ public class ManageReGetClass {
 			ManagePerCompanySet companyCommonSetting,
 			ManagePerPersonDailySet personDailySetting,
 			Optional<WorkType> workType,
-			IntegrationOfWorkTime integrationOfWorkTime,
+			Optional<IntegrationOfWorkTime> integrationOfWorkTime,
 			IntegrationOfDaily integrationOfDaily) {
 		super();
 		this.calculationRangeOfOneDay = calculationRangeOfOneDay;
@@ -88,14 +89,20 @@ public class ManageReGetClass {
 	 * @return 就業時間帯の設定
 	 */
 	public Optional<WorkTimeSetting> getWorkTimeSetting() {
-		return Optional.of(this.integrationOfWorkTime.getWorkTimeSetting());
+		if(!this.integrationOfWorkTime.isPresent())
+			return Optional.empty();
+		
+		return Optional.of(this.integrationOfWorkTime.get().getWorkTimeSetting());
 	}
 	/**
 	 * 就業時間帯別代休時間設定(List)を取得する
 	 * @return 就業時間帯別代休時間設定(List)
 	 */
 	public List<WorkTimezoneOtherSubHolTimeSet> getSubHolTransferSetList() {
-		return this.integrationOfWorkTime.getCommonSetting().getSubHolTimeSet();
+		if(!this.integrationOfWorkTime.isPresent())
+			return Collections.emptyList();
+		
+		return this.integrationOfWorkTime.get().getCommonSetting().getSubHolTimeSet();
 	}
 	
 	/**
@@ -122,13 +129,13 @@ public class ManageReGetClass {
 	 * @return 固定勤務の休憩時間帯
 	 */
 	public Optional<FixRestTimezoneSet> getFixRestTimeSetting() {
-		if(!this.integrationOfWorkTime.getFixedWorkSetting().isPresent())
+		if(!this.integrationOfWorkTime.isPresent() || !this.integrationOfWorkTime.get().getFixedWorkSetting().isPresent())
 			return Optional.empty();
 		
-		if(this.integrationOfWorkTime.getFixedWorkSetting().get().getLstHalfDayWorkTimezone().isEmpty())
+		if(this.integrationOfWorkTime.get().getFixedWorkSetting().get().getLstHalfDayWorkTimezone().isEmpty())
 			return Optional.empty();
 		
-		return Optional.of(this.integrationOfWorkTime.getFixedWorkSetting().get().getLstHalfDayWorkTimezone().get(0).getRestTimezone());
+		return Optional.of(this.integrationOfWorkTime.get().getFixedWorkSetting().get().getLstHalfDayWorkTimezone().get(0).getRestTimezone());
 	}
 	
 	/**
@@ -136,10 +143,10 @@ public class ManageReGetClass {
 	 * @return 就業時間の時間帯設定
 	 */
 	public List<EmTimeZoneSet> getFixWoSetting() {
-		if(!this.workType.isPresent())
+		if(!this.workType.isPresent() || !this.integrationOfWorkTime.isPresent())
 			return Collections.emptyList();
 		
-		return this.integrationOfWorkTime.getEmTimeZoneSetList(this.workType.get());
+		return this.integrationOfWorkTime.get().getEmTimeZoneSetList(this.workType.get());
 	}
 	
 	/**
@@ -147,10 +154,10 @@ public class ManageReGetClass {
 	 * @return 固定勤務の計算設定
 	 */
 	public Optional<FixedWorkCalcSetting> getOotsukaFixedWorkSet() {
-		if(!this.integrationOfWorkTime.getFixedWorkSetting().isPresent())
+		if(!this.integrationOfWorkTime.isPresent() || !this.integrationOfWorkTime.get().getFixedWorkSetting().isPresent())
 			return Optional.empty();
 			
-		return this.integrationOfWorkTime.getFixedWorkSetting().get().getCalculationSetting();
+		return this.integrationOfWorkTime.get().getFixedWorkSetting().get().getCalculationSetting();
 	}
 	
 	/**
@@ -193,16 +200,16 @@ public class ManageReGetClass {
 	 * @return コアタイム時間帯設定
 	 */
 	public Optional<CoreTimeSetting> getCoreTimeSetting() {
-		if (!this.integrationOfWorkTime.getFlexWorkSetting().isPresent())
+		if (!this.integrationOfWorkTime.isPresent() || !this.integrationOfWorkTime.get().getFlexWorkSetting().isPresent())
 			return Optional.empty();
 			
 		if (!this.workType.isPresent())
-			return Optional.of(this.integrationOfWorkTime.getFlexWorkSetting().get().getCoreTimeSetting());
+			return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting());
 		
 		if (this.workType.get().isWeekDayAttendance()) {
-			return Optional.of(this.integrationOfWorkTime.getFlexWorkSetting().get().getCoreTimeSetting());
+			return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting());
 		} else {// 出勤系ではない場合は最低勤務時間を0：00にする
-			return Optional.of(this.integrationOfWorkTime.getFlexWorkSetting().get().getCoreTimeSetting().changeZeroMinWorkTime());
+			return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCoreTimeSetting().changeZeroMinWorkTime());
 		}
 	}
 	
@@ -218,8 +225,11 @@ public class ManageReGetClass {
 	 * 就業時間帯の共通設定を取得する
 	 * @return 就業時間帯の共通設定
 	 */
-	public Optional<nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet> getWorkTimezoneCommonSet() {
-		return Optional.of(this.integrationOfWorkTime.getCommonSetting());
+	public Optional<WorkTimezoneCommonSet> getWorkTimezoneCommonSet() {
+		if(!this.integrationOfWorkTime.isPresent())
+			return Optional.empty();
+		
+		return Optional.of(this.integrationOfWorkTime.get().getCommonSetting());
 	}
 	
 	/**
@@ -227,10 +237,10 @@ public class ManageReGetClass {
 	 * @return 法定内残業枠No(List)
 	 */
 	public List<OverTimeFrameNo> getStatutoryFrameNoList() {
-		if(!this.workType.isPresent())
+		if(!this.workType.isPresent() || !this.integrationOfWorkTime.isPresent())
 			return Collections.emptyList();
 
-		return this.integrationOfWorkTime.getLegalOverTimeFrameNoList(this.workType.get());
+		return this.integrationOfWorkTime.get().getLegalOverTimeFrameNoList(this.workType.get());
 	}
 	
 	/**
@@ -238,7 +248,10 @@ public class ManageReGetClass {
 	 * @return フレックス計算設定
 	 */
 	public Optional<FlexCalcSetting> getFlexCalcSetting() {
-		return Optional.of(this.integrationOfWorkTime.getFlexWorkSetting().get().getCalculateSetting());
+		if(!this.integrationOfWorkTime.isPresent() || !this.integrationOfWorkTime.get().getFlexWorkSetting().isPresent())
+			return Optional.empty();
+		
+		return Optional.of(this.integrationOfWorkTime.get().getFlexWorkSetting().get().getCalculateSetting());
 	}
 	
 	/**
@@ -254,10 +267,10 @@ public class ManageReGetClass {
 	 * @return 残業時間の時間帯設定(List)
 	 */
 	public List<OverTimeOfTimeZoneSet> getOverTimeSheetSetting() {
-		if(!this.workType.isPresent())
+		if(!this.workType.isPresent() || !this.integrationOfWorkTime.isPresent())
 			return Collections.emptyList();
 		
-		return this.integrationOfWorkTime.getOverTimeOfTimeZoneSetList(this.workType.get());
+		return this.integrationOfWorkTime.get().getOverTimeOfTimeZoneSetList(this.workType.get());
 	}
 	
 	/**

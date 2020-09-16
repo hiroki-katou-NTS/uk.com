@@ -855,15 +855,13 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		return approveService.isApproveApprovalPhaseStateComplete(companyID, opCurrentPhase.get());
 	}
     @Override
-	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRootCMM045(String companyID, List<String> lstAgent, DatePeriod period,
+	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRootCMM045(String companyID, String approverID, List<String> lstAgent, DatePeriod period,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
-			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus){ 
-		String approverID = AppContexts.user().employeeId();
-		lstAgent.add(approverID);
+			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus){
 		Map<String,List<ApprovalPhaseStateExport>> mapApprPhsStateEx = new LinkedHashMap<>();
 		ApprovalRootContentOutput apprRootContentOut =  null;
 		//ドメインモデル「承認ルートインスタンス」を取得する
-		List<ApprovalRootState> approvalRootStates = approvalRootStateRepository.findEmploymentAppCMM045(lstAgent, period, 
+		List<ApprovalRootState> approvalRootStates = approvalRootStateRepository.findEmploymentAppCMM045(approverID, lstAgent, period, 
 				unapprovalStatus, approvalStatus, denialStatus, agentApprovalStatus, remandStatus, cancelStatus);
 		if(approvalRootStates.isEmpty()){
 			return mapApprPhsStateEx;

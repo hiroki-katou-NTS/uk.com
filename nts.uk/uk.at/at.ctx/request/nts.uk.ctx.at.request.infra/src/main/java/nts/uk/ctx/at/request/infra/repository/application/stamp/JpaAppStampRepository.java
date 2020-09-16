@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.request.infra.repository.application.stamp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -70,14 +72,39 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 
 	@Override
 	public void updateStamp(AppStamp appStamp) {
-		// TODO Auto-generated method stub
+		List<KrqdtAppStamp> listKrqdtAppStamp = toEntityList(appStamp);
+		if (CollectionUtil.isEmpty(listKrqdtAppStamp)) return;
+		List<KrqdtAppStampPK> listKrqdtAppStampPK = listKrqdtAppStamp.stream().map(x -> x.krqdtAppStampPK).collect(Collectors.toList());
+		List<Optional<KrqdtAppStamp>> listKrqdtAppStampTemp = listKrqdtAppStampPK.stream().map(x -> this.queryProxy().find(x, KrqdtAppStamp.class)).collect(Collectors.toList());
+		listKrqdtAppStampTemp.stream().forEach(x -> {
+			if (x.isPresent()) {
+				KrqdtAppStamp krqdtAppStamp = x.get();
+				listKrqdtAppStamp.stream().forEach(y -> {
+					if (y.krqdtAppStampPK.appID == krqdtAppStamp.krqdtAppStampPK.appID 
+							&& y.krqdtAppStampPK.stampAtr == krqdtAppStamp.krqdtAppStampPK.stampAtr
+							&& y.krqdtAppStampPK.stampFrameNo == krqdtAppStamp.krqdtAppStampPK.stampFrameNo) {
+						krqdtAppStamp.startTime = y.startTime;
+						krqdtAppStamp.endTime = y.endTime;
+						krqdtAppStamp.startCancelAtr = y.startCancelAtr;
+						krqdtAppStamp.endCancelAtr = y.endCancelAtr;
+						krqdtAppStamp.goOutAtr = y.goOutAtr;
+						
+					}
+				});
+			}
+		});
+		this.commandProxy().updateAll(listKrqdtAppStampTemp.stream().filter(x -> x.isPresent()).collect(Collectors.toList()));
+		this.getEntityManager().flush();
 
 	}
 
 	@Override
 	public void delete(String companyID, String appID) {
-//		this.commandProxy().remove(KrqdtAppStamp.class, new KrqdtAppStampPK(companyID, appID, stampAtr, stampFrameNo));
-
+		List<KrqdtAppStamp> krqdtAppStampList = new NtsStatement(FIND_BY_APPID, this.jdbcProxy())
+				.paramString("cid", companyID).paramString("appId", appID).getList(res -> toEntity(res));
+		List<KrqdtAppStampPK> keys = krqdtAppStampList.stream().map(
+				x -> new KrqdtAppStampPK(companyID, appID, x.krqdtAppStampPK.stampAtr, x.krqdtAppStampPK.stampFrameNo)).collect(Collectors.toList());
+		this.commandProxy().removeAll(KrqdtAppStamp.class, keys);
 	}
 
 	public Integer convertEnumTimeStamApp(TimeStampAppEnum timeStampAppEnum) {
@@ -227,8 +254,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				listStamps.add(krqdtAppStamp);
 			});
 		}
-		this.commandProxy().insertAll(listStamps);
-		this.getEntityManager().flush();
+//		this.commandProxy().insertAll(listStamps);
+//		this.getEntityManager().flush();
 		
 
 		return listStamps;

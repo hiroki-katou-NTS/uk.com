@@ -75,7 +75,7 @@ public class VacationClass {
 			Optional<PredetermineTimeSetForCalc> predetermineTimeSetByPersonInfo) {
 
 		Optional<PredetermineTimeSetForCalc> predSetting = recordReGet.getCalculatable()
-				? Optional.of(recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc())
+				? Optional.ofNullable(recordReGet.getCalculationRangeOfOneDay().getPredetermineTimeSetForCalc())
 				: Optional.empty();
 		//欠勤使用時間
 		AttendanceTime absenceUseTime = vacationTimeOfcalcDaily(workType, VacationCategory.Absence, predSetting,

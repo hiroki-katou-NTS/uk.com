@@ -445,7 +445,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             let param = 'dataSource[' + String(self.index) +']';
             let idGetList = self.id - 1;
-            
+            self.flagObservable(false);
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'

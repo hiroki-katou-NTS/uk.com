@@ -8,18 +8,23 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import lombok.RequiredArgsConstructor;
+import lombok.val;
+
 /*import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMng;*/
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
-import nts.uk.ctx.at.request.dom.application.ReflectedState;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsence;
 import nts.uk.ctx.at.request.dom.application.appabsence.AppAbsenceRepository;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository_Old;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveApp;
 import nts.uk.ctx.at.request.dom.application.holidayshipment.absenceleaveapp.AbsenceLeaveAppRepository;
 //import nts.uk.ctx.at.request.dom.application.holidayshipment.compltleavesimmng.CompltLeaveSimMngRepository;
@@ -32,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.overtime.AppOverTime;
 import nts.uk.ctx.at.request.dom.application.overtime.AttendanceType;
 import nts.uk.ctx.at.request.dom.application.overtime.OverTimeInput;
 import nts.uk.ctx.at.request.dom.application.overtime.OvertimeRepository;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange_Old;
 import nts.uk.ctx.at.request.dom.application.workchange.IAppWorkChangeRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.AppRemainCreateInfor;
@@ -39,7 +45,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ApplicationType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.PrePostAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.service.RemainCreateInforByApplicationData;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class RemainCreateInforByApplicationDataImpl implements RemainCreateInforByApplicationData{
@@ -63,20 +68,20 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 	private IAppWorkChangeRepository workChangeRepos;
 	
 	@Override
-	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, DatePeriod dateData) {
+	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, DatePeriod dateData) {
 		
 		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = appRepository.getByPeriodReflectType(sid, dateData, lstReflect, lstAppType);
 		return this.lstResult(cid, sid, lstAppData);
 	}
 	@Override
-	public List<AppRemainCreateInfor> lstRemainDataFromApp(String cid, String sid, List<GeneralDate> dates) {
+	public List<AppRemainCreateInfor> lstRemainDataFromApp(CacheCarrier cacheCarrier, String cid, String sid, List<GeneralDate> dates) {
 		List<Integer> lstReflect = new ArrayList<>();
-		lstReflect.add(ReflectedState.NOTREFLECTED.value);
-		lstReflect.add(ReflectedState.WAITREFLECTION.value);
+		lstReflect.add(ReflectedState_New.NOTREFLECTED.value);
+		lstReflect.add(ReflectedState_New.WAITREFLECTION.value);
 		List<Integer> lstAppType = this.lstAppType();
 		List<Application> lstAppData = appRepository.getByListDateReflectType(sid, dates, lstReflect, lstAppType);
 		return this.lstResult(cid, sid, lstAppData);
@@ -206,12 +211,34 @@ public class RemainCreateInforByApplicationDataImpl implements RemainCreateInfor
 		});
 		return lstOutputData;
 	}
+	
 	@Override
-	public Integer excludeHolidayAtr(String cid, String appID) {
-		Optional<AppWorkChange_Old> data = workChangeRepos.getAppworkChangeById(cid, appID);
+	public Integer excludeHolidayAtr(CacheCarrier cacheCarrier, String cid, String appID) {
+		val require =  new RequireImpl(cacheCarrier);
+		Optional<AppWorkChange_Old> data = require.getAppworkChangeById(cid, appID);
 		if(data.isPresent()) {
 			return data.get().getExcludeHolidayAtr();
 		}
 		return null;
 	}
+	
+	
+	public static interface Require { 
+//		workChangeRepos.getAppworkChangeById(cid, appID);
+		Optional<AppWorkChange_Old> getAppworkChangeById(String cid, String appId);
+	}
+	
+	@RequiredArgsConstructor
+	class RequireImpl implements RemainCreateInforByApplicationDataImpl.Require{
+		
+		private final CacheCarrier cacheCarrier;
+
+		@Override
+		public Optional<AppWorkChange_Old> getAppworkChangeById(String cid, String appId) {
+//			AppWorkChangeCache cache = cacheCarrier.get( AppWorkChangeCache.DOMAIN_NAME);
+//			return cache.get(cid, appId);
+			return workChangeRepos.getAppworkChangeById(cid, appId);
+		}
+	}
+	
 }

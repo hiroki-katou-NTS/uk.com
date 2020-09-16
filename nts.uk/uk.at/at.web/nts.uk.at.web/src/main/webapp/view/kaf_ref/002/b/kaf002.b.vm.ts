@@ -11,7 +11,10 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         selectedCodeReason: KnockoutObservable<string>;
         time: KnockoutObservable<number>;
         application: KnockoutObservable<Application>;
-        
+        isSendMail: KnockoutObservable<boolean> = ko.observable(false);
+        data: any;
+        comment1: KnockoutObservable<string> = ko.observable('comment1');
+        comment2: KnockoutObservable<string> = ko.observable('');
         created() {
             
             const self = this;
@@ -38,17 +41,58 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             self.loadData([], [], self.appType())
             .then((loadDataFlag: any) => {
                 if(loadDataFlag) {
-                    let ApplicantEmployeeID: null,
-                        ApplicantList: null,
-                        appDispInfoStartupOutput = ko.toJS(self.appDispInfoStartupOutput),
-                        command = { ApplicantEmployeeID, ApplicantList, appDispInfoStartupOutput };
+                    let companyId = __viewContext.user.companyId;
+                    let command = { 
+                            appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
+                            recoderFlag: false,
+                            companyId
+                    };
+                
+                    return self.$ajax(API.start, command);
                 }
-            })
+            }).then((res: any) => {
+                console.log(res);
+                self.data = res;
+            }).always(() => {
+                self.$blockui('hide');
+            });
             
         }
         
         mounted() {
             
+        }
+
+        public register() {
+            console.log('register');
+            const self = this;
+            let data = _.clone(self.data);
+            let appRecordImage = new AppRecordImage(Number(ko.toJS(self.selectedCode)), Number(ko.toJS(self.time)));
+            if (ko.toJS(self.selectedCode) == '3') {
+                appRecordImage.appStampGoOutAtr = Number(ko.toJS(self.selectedCodeReason));
+            }
+            data.appRecordImage = null;
+            let companyId = __viewContext.user.companyId;
+            let agentAtr = false;
+            self.application().enteredPerson = __viewContext.user.employeeId;
+            self.application().employeeID = __viewContext.user.employeeId;
+//            self.application().prePostAtr(0);
+            let command = {
+                    appStampOutputDto: data,
+                    applicationDto: ko.toJS(self.application),
+                    recoderFlag: true,
+                    appRecordImageDto: appRecordImage
+                    
+            };
+            
+            self.$ajax(API.register, command)
+                .then(res => {
+                    console.log('done');
+                }).fail(res => {
+                    console.log('fail');
+                }).always(() => {
+                    self.$blockui('hide');
+                })
         }
         
         
@@ -56,7 +100,17 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         
         
     }
-    class ItemModel {
+    class AppRecordImage {
+        appStampCombinationAtr: number;
+        attendanceTime: number;
+        appStampGoOutAtr?: number;
+        constructor(appStampCombinationAtr: number, attendanceTime: number, appStampGoOutAtr?: number) {
+            this.appStampCombinationAtr = appStampCombinationAtr;
+            this.attendanceTime = attendanceTime;
+            this.appStampGoOutAtr = appStampGoOutAtr;
+        }
+    }
+    export class ItemModel {
         code: string;
         name: string;
 
@@ -142,4 +196,11 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         UNION = {value: GoOutReasonAtr.UNION, name: '組合'};
         
     }
+    const API = {
+            start: "at/request/application/stamp/startStampApp",
+            checkRegister: "at/request/application/stamp/checkBeforeRegister",
+            register: "at/request/application/stamp/register",
+            getDetail: "at/request/application/stamp/detailAppStamp"
+            
+        }
 }

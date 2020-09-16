@@ -30,6 +30,7 @@
         <com:scriptfile path="/view/kaf_ref/000/a/component5/kaf000.a.component5.js" />
         <com:scriptfile path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
         <com:scriptfile path="/view/kaf_ref/000/a/component7/kaf000.a.component7.js" />
+        <com:scriptfile path="/view/kaf_ref/000/a/component8/kaf000.a.component8.js" />
         <com:scriptfile path="/view/kaf_ref/008/a/kaf008.a.vm.js" />
         <com:scriptfile path="/view/kaf_ref/008/shr/kaf008.shr.vm.js" />
 
@@ -51,12 +52,20 @@
 												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-            <div data-bind="component: { name: 'kaf000-a-component2',
-											params: {
-												appType: appType,
-												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
+            <div class="table">
+				<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+                                         } }"></div>
+               	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+			</div>
             <div class="fixed-flex-layout" data-bind="component: { name: 'kaf000-a-component3',
 											params: {
 												appType: appType,

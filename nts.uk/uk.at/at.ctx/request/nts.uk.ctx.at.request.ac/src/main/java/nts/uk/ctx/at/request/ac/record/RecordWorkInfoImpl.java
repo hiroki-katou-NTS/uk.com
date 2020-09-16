@@ -7,8 +7,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPub;
 import nts.uk.ctx.at.record.pub.workinformation.RecordWorkInfoPubExport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 /**
  * 
  * @author Doan Duy Hung
@@ -83,7 +83,9 @@ public class RecordWorkInfoImpl implements RecordWorkInfoAdapter {
 				recordWorkInfoPubExport.getOverTimeMidnight(), 
 				recordWorkInfoPubExport.getMidnightOnHoliday(), 
 				recordWorkInfoPubExport.getOutOfMidnight(), 
-				recordWorkInfoPubExport.getMidnightPublicHoliday());
+				recordWorkInfoPubExport.getMidnightPublicHoliday(),
+				recordWorkInfoPubExport.getChildCareShortWorkingTimeList(),
+				recordWorkInfoPubExport.getCareShortWorkingTimeList());
 	}
 	
 }
