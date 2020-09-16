@@ -7,8 +7,8 @@
 .container-custom {
     display: flex; 
     justify-content: center;   
-    margin-top: 20px;
-    margin-bottom: -40px;   
+    margin-top: 15px;
+    margin-bottom: -30px;   
 }
 .btn-custom {
     padding: 10px 0px;
@@ -20,7 +20,7 @@
     padding-top: 18% ;    
 }
 .panel.ntsPanel {
-    padding: 11px !important;
+    padding: 20px 15px !important;
 }
 
 #calendar{
@@ -36,7 +36,10 @@
 }
 
 .caret-background.caret-bottom:after {   
-    border-width: 13px 36px !important;
+    border-width: 16px 36px !important;
+}
+.nts-calendar-header div {
+    margin-left: 34.5% !important; 
 }
 
 #line {
@@ -45,5 +48,4 @@
 	display: block;
 	height: 0.1px;
 	background:#9A9A9A
-	
 }
