@@ -287,15 +287,15 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let self = this;
             let empId = self.selectedItem();
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
-            let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
-            let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
+            // let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
+            // let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
 
             if (isPeriod) {
                 $("#daterangepickerA .ntsDatepicker").trigger("validate");
             }
 
             if (!nts.uk.ui.errors.hasError()) {
-                service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function (res: any) {
+                service.getFurikyuMngDataExtraction(empId, isPeriod).done(function (res: any) {
                     console.log(res);
                     if (res.haveEmploymentCode && (res.closureID != null) && (res.closureID != "")) {
                         let arrayResponse = res.compositePayOutSubMngData;
@@ -360,7 +360,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
 
                 $('#compositePayOutSubMngDataGrid').focus();
             } else {
-                service.getFurikyuMngDataExtraction(empId, startDate, endDate, false).done(function (res: any) {
+                service.getFurikyuMngDataExtraction(empId, false).done(function (res: any) {
                     if (!res.haveEmploymentCode || (res.closureID == null) || (res.closureID == "")) {
                         // update data to view
                         self.dispTotalRemain(0);
