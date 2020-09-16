@@ -7,6 +7,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
     import AppStampDto = nts.uk.at.view.kaf002_ref.a.viewmodel.AppStampDto;
+    import TimeStampAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.TimeStampAppDto;
+    import DestinationTimeAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.DestinationTimeAppDto;
+    import TimeStampAppOtherDto = nts.uk.at.view.kaf002_ref.a.viewmodel.TimeStampAppOtherDto;
+    import TimeZone = nts.uk.at.view.kaf002_ref.a.viewmodel.TimeZone;
+    import DestinationTimeZoneAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.DestinationTimeZoneAppDto;
     @component({
         name: 'kaf002-c',
         template: '/nts.uk.at.web/view/kaf_ref/002/c/index.html'
@@ -60,7 +65,48 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             
             
         }
-    
+    bindDataRequest(element: GridItem, type: number) {
+       const self = this;
+       let appStampDto = self.data.appStampOptional as AppStampDto,
+           timeStampAppDto = appStampDto.listTimeStampApp as Array<TimeStampAppDto>,
+           destinationTimeAppDto = appStampDto.listDestinationTimeApp as Array<DestinationTimeAppDto>,
+           timeStampAppOtherDto = appStampDto.listTimeStampAppOther as Array<TimeStampAppOtherDto>,
+           destinationTimeZoneAppDto = appStampDto.listDestinationTimeZoneApp as Array<DestinationTimeZoneAppDto>;
+       if (type ==1) {
+           if (timeStampAppDto) {
+               let items = _.filter(timeStampAppDto, (x: TimeStampAppDto) => {
+                   let destinationTimeAppDto = x.destinationTimeApp as DestinationTimeAppDto;
+                   return destinationTimeAppDto.timeStampAppEnum == element.typeStamp.valueOf() 
+                           && destinationTimeAppDto.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+               }) as Array<TimeStampAppDto>;
+               _.forEach(items, (x: TimeStampAppDto) => {
+                     if (x) {
+                         let desItem = x.destinationTimeApp as DestinationTimeAppDto;
+                         if (desItem.startEndClassification == 0) {
+                             element.startTimeRequest(x.timeOfDay);
+                         }
+                         if (desItem.startEndClassification == 1) {
+                             element.endTimeRequest(x.timeOfDay);
+                         }             
+                     }
+               });
+
+           }
+           
+           if (destinationTimeAppDto) {
+               let itemDes = _.findLast(destinationTimeAppDto, (x: any) => {
+                   return x.timeStampAppEnum == element.typeStamp.valueOf() 
+                   && x.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+               }) as DestinationTimeAppDto;
+               
+               if (itemDes) {
+                   element.flagObservable(true);
+               }
+           }
+           
+       }
+        
+    }
     bindActualData() {
         const self = this;
         let opActualContentDisplayLst = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.opActualContentDisplayLst;
@@ -84,9 +130,10 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push(new GridItem(dataObject, STAMPTYPE.ATTENDENCE)); 
-            }
-            
+                let gridItem = new GridItem(dataObject, STAMPTYPE.ATTENDENCE) as GridItem;
+                self.bindDataRequest(gridItem, 1);
+                list.push(gridItem); 
+            }   
             return list;
         })();
         let items2 = (function() {
@@ -222,9 +269,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             
         }
         
-        bindDataRequest() {
-            
-        }
+        
         
         
 
