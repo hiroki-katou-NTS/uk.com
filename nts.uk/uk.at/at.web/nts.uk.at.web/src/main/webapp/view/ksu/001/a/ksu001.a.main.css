@@ -552,9 +552,6 @@ html {
 .background-white {background-color: white !important;}
 .color-default {color : #000000;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
-.extable div.xseal, .extable td.xseal {
-    background-color: #ddddd2;
-}
 
 table th, table td {
 	padding: 2px 5px;

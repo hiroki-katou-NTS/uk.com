@@ -11286,7 +11286,9 @@ var nts;
                      */
                     function on($grid, updateMode) {
                         if (updateMode === COPY_PASTE) {
-                            new Printer().hook($grid);
+                            var printer = new Printer();
+                            $.data($grid, internal.PRINTER_INST, printer);
+                            printer.hook($grid);
                         }
                     }
                     copy.on = on;
@@ -14182,6 +14184,12 @@ var nts;
                             case "stickRedo":
                                 redoStick(self);
                                 break;
+                            case "copyUndo":
+                                undoCopy(self);
+                                break;
+                            case "copyRedo":
+                                redoCopy(self);
+                                break;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
                                 break;
@@ -14835,6 +14843,32 @@ var nts;
                         }
                     }
                     /**
+                     * Undo copy.
+                     */
+                    function undoCopy($container) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!exTable || exTable.updateMode !== COPY_PASTE)
+                            return;
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var printer = $grid.data(internal.PRINTER_INST);
+                        if (!printer)
+                            return;
+                        printer.undo();
+                    }
+                    /**
+                     * Redo copy.
+                     */
+                    function redoCopy($container) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!exTable || exTable.updateMode !== COPY_PASTE)
+                            return;
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var printer = $grid.data(internal.PRINTER_INST);
+                        if (!printer)
+                            return;
+                        printer.redo();
+                    }
+                    /**
                      * Clear histories.
                      */
                     function clearHistories($container, type) {
@@ -15234,6 +15268,7 @@ var nts;
                     internal.INPUT_SELECTING = "input-selecting";
                     internal.ERR_MSG = "error-msg";
                     internal.ERR_POPUP = "error-popup";
+                    internal.PRINTER_INST = "printer-inst";
                     /**
                      * Get gem.
                      */
@@ -15270,7 +15305,9 @@ var nts;
                                 return false;
                             }
                         });
-                        exTable.modifications[cell.rowIndex].splice(index, 1);
+                        if (index !== -1) {
+                            exTable.modifications[cell.rowIndex].splice(index, 1);
+                        }
                     }
                     internal.removeChange = removeChange;
                     /**
