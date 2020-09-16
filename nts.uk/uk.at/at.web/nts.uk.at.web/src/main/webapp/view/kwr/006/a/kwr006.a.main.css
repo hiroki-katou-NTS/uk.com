@@ -73,7 +73,7 @@ td {
 }
 
 label {
-	width: 85px;
+	width: 95px;
 }
 
 .A10-left{
@@ -112,7 +112,7 @@ hr {
 }
 
 #output-setting-content {
-	height: 445px
+	height: 457px
 }
 
 #btnSetErrorAlarmCd {
@@ -150,4 +150,7 @@ html {
 .work-place-accum {
     width:330px;
     margin-left:35px;
+}
+button.nts-switch-button {
+	width: 80px;
 }

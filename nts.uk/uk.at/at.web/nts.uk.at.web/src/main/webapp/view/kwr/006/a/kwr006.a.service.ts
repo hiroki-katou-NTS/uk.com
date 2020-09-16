@@ -17,7 +17,7 @@ module nts.uk.at.view.kwr006.a {
                 "_companyId_" + __viewContext.user.companyId +
                 "_userId_" + __viewContext.user.employeeId);
         }
-        
+
         export function exportSchedule(query: model.MonthlyWorkScheduleQuery): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportSchedule, query);
         }
@@ -33,7 +33,7 @@ module nts.uk.at.view.kwr006.a {
         export function getCurrentLoginerRole(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getCurrentLoginerRole);
         }
-        
+
         export module model {
 
             export interface OutputItemMonthlyWorkScheduleDto {
@@ -46,7 +46,11 @@ module nts.uk.at.view.kwr006.a {
                 workplaceIds: Array<string>;
                 condition: MonthlyWorkScheduleConditionDto;
                 fileType: number;
-                baseDate: string;
+                baseDate?: string;
+                startYearMonth?: number;
+                code?: string;
+                employeeId?: Array<any>;
+                closureId?: number;
             }
 
             export interface MonthlyWorkScheduleConditionDto {

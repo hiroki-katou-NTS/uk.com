@@ -11,6 +11,12 @@ module nts.uk.at.view.kwr006.c {
             selectedCodeC2_3: KnockoutObservable<any>;
             columns: KnockoutObservableArray<any>;
 
+            // switch button C9_2
+            dataOutputType: KnockoutObservableArray<ItemModel>;
+            C9_2_value: KnockoutObservable<string>;
+
+            // dropdown list C5_4
+            itemListAttribute: KnockoutObservableArray<ItemModel>;
 
             allMainDom: KnockoutObservable<any>;
             outputItemPossibleLst: KnockoutObservableArray<ItemModel>;
@@ -30,7 +36,7 @@ module nts.uk.at.view.kwr006.c {
             //c8-5
             remarkInputContents: KnockoutObservableArray<ItemModel>;
             currentRemarkInputContent: KnockoutObservable<number>;
-            isEnableRemarkInputContents: KnockoutComputed<boolean>;
+            isEnableRemarkInputContents: KnockoutObservable<boolean>;
 
             // store map to convert id and code attendance item
             mapIdCodeAtd: any;
@@ -50,8 +56,8 @@ module nts.uk.at.view.kwr006.c {
 
                 self.enableBtnDel = ko.observable(false);
                 self.enableCodeC3_2 = ko.observable(false);
-                self.selectedCodeC2_3.subscribe(function(value) {
-                    let codeChoose = _.find(self.allMainDom(), function(o: any) {
+                self.selectedCodeC2_3.subscribe(function (value) {
+                    let codeChoose = _.find(self.allMainDom(), function (o: any) {
                         return value == o.itemCode;
                     });
                     if (!_.isNil(codeChoose)) {
@@ -79,15 +85,30 @@ module nts.uk.at.view.kwr006.c {
                 ]);
                 self.items = ko.observableArray([]);
                 self.selectedCodeA8_2 = ko.observable(0);
-                self.isEnableRemarkInputContents = ko.computed(function() {
-                    return self.selectedCodeA8_2() == 1;
-                });
+                self.isEnableRemarkInputContents = ko.observable(false);
+                // self.isEnableRemarkInputContents = ko.computed(function () {
+                //     return self.selectedCodeA8_2() == 1;
+                // });
                 self.remarkInputContents = ko.observableArray([]);
                 self.storeCurrentCodeBeforeCopy = ko.observable('');
                 self.currentRemarkInputContent = ko.observable(0);
 
                 self.mapIdCodeAtd = {};
                 self.mapCodeIdAtd = {};
+
+                self.dataOutputType = ko.observableArray([
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_92"), '0'),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_93"), '1')
+                ]);
+                self.C9_2_value = ko.observable('0');
+                self.itemListAttribute = ko.observableArray([
+                    new ItemModel('0', nts.uk.resource.getText("KWR006_105"), '0'),
+                    new ItemModel('1', nts.uk.resource.getText("KWR006_106"), '1'),
+                    new ItemModel('2', nts.uk.resource.getText("KWR006_107"), '2'),
+                    new ItemModel('3', nts.uk.resource.getText("KWR006_110"), '3'),
+                    new ItemModel('4', nts.uk.resource.getText("KWR006_111"), '4'),
+                    new ItemModel('5', nts.uk.resource.getText("KWR006_108"), '5')
+                ]);
             }
 
             /*
@@ -126,7 +147,7 @@ module nts.uk.at.view.kwr006.c {
                 if (!_.isEmpty(self.selectedCodeC2_3())) {
                     self.storeCurrentCodeBeforeCopy(self.selectedCodeC2_3());
                 }
-                nts.uk.ui.windows.sub.modal('/view/kwr/006/d/index.xhtml').onClosed(function(): any {
+                nts.uk.ui.windows.sub.modal('/view/kwr/006/d/index.xhtml').onClosed(function (): any {
                     nts.uk.ui.errors.clearAll();
                     const KWR006DOutput = nts.uk.ui.windows.getShared('KWR006_D');
                     if (!_.isNil(KWR006DOutput)) {
@@ -137,12 +158,12 @@ module nts.uk.at.view.kwr006.c {
                             })
                             KWR006DOutput.lstAtdChoose.lstDisplayTimeItem = _.sortBy(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, o => o.displayOrder);
                             const chosen = _.filter(self.outputItemPossibleLst(), item => _.some(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, atd => atd.itemDaily == item.id));
-                            
+
                             var sortArr = _.map(KWR006DOutput.lstAtdChoose.lstDisplayTimeItem, 'itemDaily');
-                            chosen = _.sortBy(chosen, function(item) {
+                            chosen = _.sortBy(chosen, function (item) {
                                 return sortArr.indexOf(item.id)
                             });
-                            
+
                             if (!_.isEmpty(chosen)) {
                                 self.items(self.outputItemPossibleLst());
                                 self.currentCodeListSwap(chosen);
@@ -208,14 +229,14 @@ module nts.uk.at.view.kwr006.c {
                 command.lstDisplayedAttendance = [];
                 command.printSettingRemarksColumn = self.selectedCodeA8_2();
 
-                _.map(self.currentCodeListSwap(), function(value, index) {
+                _.map(self.currentCodeListSwap(), function (value, index) {
                     command.lstDisplayedAttendance.push({ sortBy: index, itemToDisplay: self.mapCodeIdAtd[value.code] });
                 });
 
                 if (self.selectedCodeA8_2() == 1) {
                     command.remarkInputNo = self.currentRemarkInputContent();
                 } else {
-                    let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function(o: any) {
+                    let outputItemMonthlyWorkSchedule: any = _.find(self.allMainDom(), function (o: any) {
                         return self.selectedCodeC2_3() == o.itemCode;
                     });
                     command.remarkInputNo = _.isEmpty(outputItemMonthlyWorkSchedule) ? DEFAULT_DATA_FIRST : outputItemMonthlyWorkSchedule.remarkInputNo;
@@ -223,17 +244,17 @@ module nts.uk.at.view.kwr006.c {
                 }
 
                 command.newMode = (_.isUndefined(self.selectedCodeC2_3()) || _.isNull(self.selectedCodeC2_3()) || _.isEmpty(self.selectedCodeC2_3())) ? true : false;
-                service.save(command).done(function() {
-                    self.getDataService().done(function() {
+                service.save(command).done(function () {
+                    self.getDataService().done(function () {
                         self.selectedCodeC2_3(self.C3_2_value());
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function () {
                             $('#C3_3').focus();
                         });
                         blockUI.clear();
                         dfd.resolve();
                     })
 
-                }).fail(function(err) {
+                }).fail(function (err) {
                     blockUI.clear();
                     nts.uk.ui.dialog.alertError(err);
                     dfd.reject();
@@ -249,8 +270,8 @@ module nts.uk.at.view.kwr006.c {
                 let self = this;
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     blockUI.grayout();
-                    service.remove(self.selectedCodeC2_3()).done(function() {
-                        let indexCurrentCode = _.findIndex(self.outputItemList(), function(value, index) {
+                    service.remove(self.selectedCodeC2_3()).done(function () {
+                        let indexCurrentCode = _.findIndex(self.outputItemList(), function (value, index) {
                             return self.selectedCodeC2_3() == value.code;
                         })
 
@@ -266,9 +287,9 @@ module nts.uk.at.view.kwr006.c {
                         else {
                             self.selectedCodeC2_3(self.outputItemList()[indexCurrentCode + 1].code);
                         }
-                        self.getDataService().done(function() {
+                        self.getDataService().done(function () {
                             blockUI.clear();
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function () {
                                 if (_.isEmpty(self.selectedCodeC2_3())) {
                                     $('#C3_2').focus();
                                 } else {
@@ -294,7 +315,7 @@ module nts.uk.at.view.kwr006.c {
                 var dfd = $.Deferred<void>();
                 let self = this;
 
-                $.when(self.getDataService(), self.getEnumSettingPrint(), self.getEnumRemarkInputContent()).done(function() {
+                $.when(self.getDataService(), self.getEnumSettingPrint(), self.getEnumRemarkInputContent()).done(function () {
                     self.selectedCodeC2_3(nts.uk.ui.windows.getShared('selectedCode'));
                     if (_.isNil(self.selectedCodeC2_3()))
                         self.newMode();
@@ -309,7 +330,7 @@ module nts.uk.at.view.kwr006.c {
             private getDataService(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                service.getDataStartPage().done(function(data: any) {
+                service.getDataStartPage().done(function (data: any) {
                     // variable global store data from service 
                     self.allMainDom(data.outputItemMonthlyWorkSchedule);
 
@@ -339,7 +360,7 @@ module nts.uk.at.view.kwr006.c {
             private getEnumSettingPrint(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                service.getEnumSettingPrint().done(function(data: any) {
+                service.getEnumSettingPrint().done(function (data: any) {
                     console.log(data);
                     dfd.resolve();
                 })
@@ -353,7 +374,7 @@ module nts.uk.at.view.kwr006.c {
             private getEnumRemarkInputContent(): JQueryPromise<void> {
                 let dfd = $.Deferred<void>();
                 let self = this;
-                service.getEnumRemarkInputContent().done(function(data: any) {
+                service.getEnumRemarkInputContent().done(function (data: any) {
                     self.remarkInputContents(data);
                     dfd.resolve();
                 })
