@@ -106,7 +106,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            applicationDto.opAppReason = application.opAppReason;
            applicationDto.opAppStandardReasonCD = application.opAppStandardReasonCD;    
            applicationDto.opReversionReason = application.opReversionReason;
-           let recoderFlag = false;
+           let recoderFlag = true;
            let appStampOutputDto = self.data;
            let appRecordImageDto = {
                    appStampCombinationAtr: Number(ko.toJS(self.selectedCode)),

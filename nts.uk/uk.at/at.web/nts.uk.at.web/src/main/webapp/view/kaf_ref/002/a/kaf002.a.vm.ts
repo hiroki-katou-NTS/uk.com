@@ -73,7 +73,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 }
             });
             if(loadDataFlag) {
-                let companyId = __viewContext.user.companyId;
+                let companyId = self.$user.companyId;
                 let command = { 
                         appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
                         recoderFlag: false,
@@ -98,10 +98,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         let data = _.clone(self.data);
         data.appStampOptional = self.createAppStamp();
-        let companyId = __viewContext.user.companyId;
+        let companyId = self.$user.companyId;
         let agentAtr = false;
-        self.application().enteredPerson = __viewContext.user.employeeId;
-        self.application().employeeID = __viewContext.user.employeeId;
+        self.application().enteredPerson = self.$user.employeeId;
+        self.application().employeeID = self.$user.employeeId;
 //        self.application().prePostAtr(0);
         let command = {
                 companyId,

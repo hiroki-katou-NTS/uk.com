@@ -233,8 +233,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				listStamps.add(krqdtAppStamp);
 			});
 		}
-		this.commandProxy().insertAll(listStamps);
-		this.getEntityManager().flush();
+//		this.commandProxy().insertAll(listStamps);
+//		this.getEntityManager().flush();
 		
 
 		return listStamps;
