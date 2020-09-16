@@ -109,12 +109,13 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             }).done((res: any) => {
                 if (res.result) {
                     let output = res.businessTripInfoOutputDto;
-                    let dataFetch = _.clone(vm.dataFetch());
 
-                    dataFetch.businessTripOutput = output;
-                    vm.dataFetch(dataFetch);
+                    vm.dataFetch().businessTripOutput = output;
+                    vm.dataFetch.valueHasMutated();
                 }
             }).fail(err => {
+                vm.dataFetch().businessTripOutput.businessTripActualContent = [];
+                vm.dataFetch.valueHasMutated();
                 vm.handleError(err);
             }).always(() => vm.$blockui("hide"));
         }

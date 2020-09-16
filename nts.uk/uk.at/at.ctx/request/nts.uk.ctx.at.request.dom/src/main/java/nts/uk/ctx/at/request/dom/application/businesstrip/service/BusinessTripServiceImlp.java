@@ -138,7 +138,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             List<Application> validApps = apps
                     .stream()
                     .filter(i -> i.getOpAppStartDate().get().getApplicationDate().beforeOrEquals(date) && date.beforeOrEquals(i.getOpAppEndDate().get().getApplicationDate()))
-                    .sorted(Comparator.nullsLast((e1, e2) -> e2.getAppDate().getApplicationDate().compareTo(e1.getAppDate().getApplicationDate())))
+                    .sorted(Comparator.nullsLast((e1, e2) -> e2.getInputDate().compareTo(e1.getInputDate())))
                     .collect(Collectors.toList());
 
             // Lấy Content của ngày loop
@@ -427,12 +427,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
      */
     private void getWorkInfoFromTripReqContent(String appId, ApplicationType appType, GeneralDate date, ActualContentDisplay content) {
         String cid = AppContexts.user().companyId();
-        String wkTypeCd = Strings.EMPTY;
+        String wkTypeCd = content.getOpAchievementDetail().get().getWorkTypeCD();
         String wkTimeCd = content.getOpAchievementDetail().get().getWorkTimeCD();
-        Optional<String> wkTypeName;
-        Optional<String> wkTimeName;
-        Optional<Integer> opWorkTime = Optional.empty();
-        Optional<Integer> opLeaveTime = Optional.empty();
+        Optional<String> wkTypeName = content.getOpAchievementDetail().get().getOpWorkTypeName();
+        Optional<String> wkTimeName = content.getOpAchievementDetail().get().getOpWorkTimeName();
+        Optional<Integer> opWorkTime = content.getOpAchievementDetail().get().getOpWorkTime();
+        Optional<Integer> opLeaveTime = content.getOpAchievementDetail().get().getOpLeaveTime();
 
         switch (appType) {
             case HOLIDAY_WORK_APPLICATION:
@@ -465,6 +465,9 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                         val workChangeStart = appWorkChange.get().getTimeZoneWithWorkNoLst().get(0);
                         opWorkTime = Optional.of(workChangeStart.getTimeZone().getStartTime().v());
                         opLeaveTime = Optional.of(workChangeStart.getTimeZone().getEndTime().v());
+                    } else {
+                        opWorkTime = Optional.empty();
+                        opLeaveTime = Optional.empty();
                     }
                 }
                 break;
@@ -515,24 +518,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         wkTypeName = StringUtil.isNullOrEmpty(wkTypeCd, true) ? Optional.empty() : wkTypeRepo.findByPK(cid, wkTypeCd).map(x -> x.getName().v());
         //ドメインモデル「就業時間帯」を1件取得する - (lấy 1 dữ liệu của domain 「WorkTime」)
         wkTimeName = StringUtil.isNullOrEmpty(wkTimeCd, true) ? Optional.empty() : wkTimeRepo.findByCode(cid, wkTimeCd).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v());
-        if (Strings.isBlank(wkTypeCd)) {
-            content.getOpAchievementDetail().get().setWorkTypeCD(wkTypeCd);
-        }
-        if (Strings.isBlank(wkTimeCd)) {
-            content.getOpAchievementDetail().get().setWorkTimeCD(wkTimeCd);
-        }
-        if (wkTypeName.isPresent()) {
-            content.getOpAchievementDetail().get().setOpWorkTypeName(wkTypeName);
-        }
-        if (wkTimeName.isPresent()) {
-            content.getOpAchievementDetail().get().setOpWorkTimeName(wkTimeName);
-        }
-        if (opWorkTime.isPresent()) {
-            content.getOpAchievementDetail().get().setOpWorkTime(opWorkTime);
-        }
-        if (opLeaveTime.isPresent()) {
-            content.getOpAchievementDetail().get().setOpLeaveTime(opLeaveTime);
-        }
+
+        content.getOpAchievementDetail().get().setWorkTypeCD(wkTypeCd);
+        content.getOpAchievementDetail().get().setWorkTimeCD(wkTimeCd);
+        content.getOpAchievementDetail().get().setOpWorkTypeName(wkTypeName);
+        content.getOpAchievementDetail().get().setOpWorkTimeName(wkTimeName);
+        content.getOpAchievementDetail().get().setOpWorkTime(opWorkTime);
+        content.getOpAchievementDetail().get().setOpLeaveTime(opLeaveTime);
+
     }
 
 }
