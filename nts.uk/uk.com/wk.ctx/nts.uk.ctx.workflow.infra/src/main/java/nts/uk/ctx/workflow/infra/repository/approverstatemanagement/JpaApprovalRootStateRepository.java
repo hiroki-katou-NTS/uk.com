@@ -26,6 +26,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -636,25 +637,25 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		List<Integer> lstFrameStt = new ArrayList<>();
 		List<String> lstApproverID = new ArrayList<>();
 		if(unapprovalStatus) {
-			lstFrameStt.add(0);
-			lstPhaseStt.add(0);
+			lstFrameStt.add(ApprovalBehaviorAtr.UNAPPROVED.value);
+			lstPhaseStt.add(ApprovalBehaviorAtr.UNAPPROVED.value);
 			lstApproverID.add(approverID);
 		}
 		if(approvalStatus) {
-			lstFrameStt.addAll(Arrays.asList(0, 1));
-			lstPhaseStt.add(1);
+			lstFrameStt.addAll(Arrays.asList(ApprovalBehaviorAtr.UNAPPROVED.value, ApprovalBehaviorAtr.APPROVED.value));
+			lstPhaseStt.add(ApprovalBehaviorAtr.APPROVED.value);
 			lstApproverID.add(approverID);
 		}
 		if(agentApprovalStatus) {
-			lstFrameStt.add(1);
+			lstFrameStt.add(ApprovalBehaviorAtr.APPROVED.value);
 			lstApproverID.addAll(agentLst);
 		}
 		if(remandStatus) {
-			lstPhaseStt.addAll(Arrays.asList(3, 4));
+			lstPhaseStt.addAll(Arrays.asList(ApprovalBehaviorAtr.REMAND.value, ApprovalBehaviorAtr.ORIGINAL_REMAND.value));
 			lstApproverID.add(approverID);
 		}
 		if(denialStatus) {
-			lstPhaseStt.add(2);
+			lstPhaseStt.add(ApprovalBehaviorAtr.DENIAL.value);
 			lstApproverID.add(approverID);
 		}
 		lstPhaseStt = lstPhaseStt.stream().distinct().collect(Collectors.toList());

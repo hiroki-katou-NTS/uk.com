@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
@@ -249,20 +251,19 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		List<Integer> lstState = new ArrayList<>();
 		if (unapprovalStatus || approvalStatus || agentApprovalStatus || remandStatus) {
-			lstState.add(0);
+			lstState.add(ReflectedState.NOTREFLECTED.value);
 		}
 		if (approvalStatus || agentApprovalStatus) {
-			lstState.add(1);
+			lstState.add(ReflectedState.WAITREFLECTION.value);
 		}
 		if (approvalStatus || agentApprovalStatus) {
-			lstState.add(2);
+			lstState.add(ReflectedState.REFLECTED.value);
 		}
 		if (agentApprovalStatus || cancelStatus) {
-			lstState.add(3);
-			lstState.add(4);
+			lstState.add(ReflectedState.CANCELED.value);
 		}
 		if (denialStatus || agentApprovalStatus) {
-			lstState.add(6);
+			lstState.add(ReflectedState.DENIAL.value);
 		}
 
 		List<Application> lstResult = new ArrayList<>();
