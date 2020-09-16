@@ -20,7 +20,7 @@ public class StampPromptApplicationHelper {
 		PromptingMessage promptingMessage = new PromptingMessage(new MessageContent("DUMMY"), new ColorCode("DUMMY"));
 		
 		lstStampRecordDis.add(new StampRecordDis(NotUseAtr.NOT_USE, CheckErrorType.HOKIDAY_EMBOSSING, Optional.of(promptingMessage)));
-		lstStampRecordDis.add(new StampRecordDis(NotUseAtr.USE, CheckErrorType.HOKIDAY_EMBOSSING, Optional.of(promptingMessage)));
+		lstStampRecordDis.add(new StampRecordDis(NotUseAtr.USE, CheckErrorType.OVERTIME_DIVERGGENCE, Optional.of(promptingMessage)));
 		lstStampRecordDis.add(new StampRecordDis(NotUseAtr.USE, CheckErrorType.HOKIDAY_EMBOSSING, Optional.of(promptingMessage)));
 		
 		StampPromptApplication stampPromptApplication = new StampPromptApplication("DUMMY", lstStampRecordDis);

@@ -31,7 +31,7 @@ public class StampCardEditingTest {
 	@Test
 	public void testMaxLength() {
 		StampCardEditing cardEditing = StampCardEditingHelper.getDefault();
-		Optional<String> optional = cardEditing.createStampCard("DUMMY", "000-0000000001");
+		Optional<String> optional = cardEditing.createStampCard("DUMMY", "0");
 		
 		assertThat(optional).isEmpty();
 	}
@@ -45,9 +45,9 @@ public class StampCardEditingTest {
 	@Test
 	public void testNotMaxLength() {
 		StampCardEditing cardEditing = StampCardEditingHelper.getDefault();
-		Optional<String> optional = cardEditing.createStampCard("DY", "1");
+		Optional<String> optional = cardEditing.createStampCard("DY", "01");
 		
-		assertThat(optional.get()).isEqualTo("  DY1");
+		assertThat(optional.get()).isEqualTo(" DY01");
 	}
 	
 	@Test

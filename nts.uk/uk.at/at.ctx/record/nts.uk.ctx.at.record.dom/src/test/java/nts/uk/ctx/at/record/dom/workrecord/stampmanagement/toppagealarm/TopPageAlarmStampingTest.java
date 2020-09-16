@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
 
@@ -17,10 +18,10 @@ public class TopPageAlarmStampingTest {
 		List<TopPageAlarmDetail> list = new ArrayList<>();
 		List<String> lstsid = new ArrayList<>();
 		
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
+		list.add(new TopPageAlarmDetail("DUMMY1", 1, "DUMMY01"));
+		list.add(new TopPageAlarmDetail("DUMMY2", 1, "DUMMY02"));
+		list.add(new TopPageAlarmDetail("DUMMY3", 1, "DUMMY03"));
+		list.add(new TopPageAlarmDetail("DUMMY4", 1, "DUMMY04"));
 		
 		lstsid.add("DUMMY");
 		lstsid.add("DUMMY");
@@ -44,15 +45,13 @@ public class TopPageAlarmStampingTest {
 	@Test
 	public void testGetLstErrorEmpty() {
 		
-		List<TopPageAlarmDetail> list = new ArrayList<>();
+		List<String> list = new ArrayList<>();
 		List<String> lstsid = new ArrayList<>();
 		
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
+		lstsid.add("123456789");
+		lstsid.add("987654321");
 		
-		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping("DUMMY", lstsid, "DUMMY", lstsid);
+		TopPageAlarmStamping alarmStamping = new TopPageAlarmStamping("DUMMY", list, "DUMMY", list);
 	
 		assertThat(alarmStamping.getLstTopPageDetail()).isEmpty();
 	}
@@ -67,21 +66,22 @@ public class TopPageAlarmStampingTest {
 		List<TopPageAlarmDetail> list = new ArrayList<>();
 		List<String> lstsid = new ArrayList<>();
 		
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
-		list.add(new TopPageAlarmDetail("DUMMY", 1, "DUMMY"));
+		list.add(new TopPageAlarmDetail("DUMMY1", 1, "DUMMY01"));
+		list.add(new TopPageAlarmDetail("DUMMY2", 1, "DUMMY02"));
+		list.add(new TopPageAlarmDetail("DUMMY3", 1, "DUMMY03"));
+		list.add(new TopPageAlarmDetail("DUMMY4", 1, "DUMMY04"));
 		
-		lstsid.add("DUMMY");
-		lstsid.add("DUMMY");
-		lstsid.add("DUMMY");
-		lstsid.add("DUMMY");
+		lstsid.add("123456");
+		lstsid.add("234567");
+		lstsid.add("345678");
+		lstsid.add("456789");
 		
-		TopPageAlarmStamping alarmStamping1 = new TopPageAlarmStamping("DUMMY", lstsid, "DUMMY", lstsid);
+		TopPageAlarmStamping alarmStamping1 = new TopPageAlarmStamping("DUMMY", lstsid, "DUMMY", list.stream().map(m -> m.getErrorMessage()).collect(Collectors.toList()));
 		
 		assertThat(alarmStamping1.getLstTopPageDetail().get(0).getSid_tgt()).isEqualTo("DUMMY");
 		assertThat(alarmStamping1.getLstTopPageDetail().get(0).getSerialNumber()).isEqualTo(0);
-		assertThat(alarmStamping1.getLstTopPageDetail().get(0).getErrorMessage()).isEqualTo("DUMMY");
+		assertThat(alarmStamping1.getLstTopPageDetail().get(0).getErrorMessage()).isEqualTo("DUMMY1");
+		assertThat(alarmStamping1.getPageAlarm().getLstManagementEmployee().get(0).getSid_mgr()).isEqualTo("123456");
 	}
 
 }

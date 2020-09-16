@@ -30,25 +30,23 @@ public class GetNewestStampNotRegisteredServiceTest {
 	private Require require;
 	
 	@Test
-	public void getters() {
-		GetNewestStampNotRegisteredService getNewestStampNotRegisteredService = new GetNewestStampNotRegisteredService();
-		NtsAssert.invokeGetters(getNewestStampNotRegisteredService);
-	}
-	
-	@Test
 	public void test_get_null() {
 		
-		GetNewestStampNotRegisteredService getNewestStampNotRegisteredService = new GetNewestStampNotRegisteredService();
+		new Expectations() {
+			{	
+				require.getStempRcNotResgistNumber(new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+				
+				require.getStempRcNotResgistNumberStamp("DUMMY",new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+			}
+		};
 		
-		List<StampInfoDisp> disps = getNewestStampNotRegisteredService.get(require, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+		List<StampInfoDisp> disps = GetNewestStampNotRegisteredService.get(require, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 		
 		assertThat(disps).isEmpty();
 	}
 	
 	@Test
 	public void test_get() {
-		
-		GetNewestStampNotRegisteredService getNewestStampNotRegisteredService = new GetNewestStampNotRegisteredService();
 		
 		new Expectations() {
 			{	
@@ -60,9 +58,8 @@ public class GetNewestStampNotRegisteredServiceTest {
 			}
 		};
 		
-		List<StampInfoDisp> disps = getNewestStampNotRegisteredService.get(require, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
+		List<StampInfoDisp> disps = GetNewestStampNotRegisteredService.get(require, new DatePeriod(GeneralDate.today(), GeneralDate.today()));
 		
 		assertThat(disps).isNotEmpty();
 	}
-
 }

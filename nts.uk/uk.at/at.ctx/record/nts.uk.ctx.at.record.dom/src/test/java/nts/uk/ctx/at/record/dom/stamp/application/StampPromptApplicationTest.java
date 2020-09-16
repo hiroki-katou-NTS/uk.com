@@ -28,6 +28,7 @@ public class StampPromptApplicationTest {
 		
 		List<ErrorInformationApplication> lstError = stampPromptApplication.getErrorListApply();
 		
-		assertThat(lstError.get(0).getErrorAlarmCode().get(0).v()).isEqualTo("S005");
+		assertThat(lstError.get(0).getErrorAlarmCode().get(0).v()).isEqualTo("D001");
+		assertThat(lstError.get(0).getErrorAlarmCode().get(1).v()).isEqualTo("D003");
 	}
 }

@@ -79,7 +79,6 @@ public class RetrieveNoStampCardRegisteredServiceTest {
 				result = StampHelper.getListStampDefault();
 			}
 		};
-		
 		assertThat(RetrieveNoStampCardRegisteredService.get(require, period).isEmpty()).isFalse();
 	}
 }

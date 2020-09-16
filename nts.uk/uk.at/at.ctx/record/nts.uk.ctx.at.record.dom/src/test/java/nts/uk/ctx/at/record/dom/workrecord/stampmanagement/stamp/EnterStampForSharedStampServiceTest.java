@@ -126,6 +126,7 @@ public class EnterStampForSharedStampServiceTest {
 		TimeStampInputResult timeStampInputResult = EnterStampForSharedStampService.create(require ,contractCode, employeeId, Optional.of(stampNumber),
 				relieve, dateTime, stampButton , null);
 		
-		assertThat(timeStampInputResult.getStampDataReflectResult().getReflectDate()).isEmpty();
+		assertThat(timeStampInputResult.at).isNotEmpty();
+		assertThat(timeStampInputResult.stampDataReflectResult.getAtomTask()).isNotNull();
 	}
 }
