@@ -479,7 +479,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
     
     
-    class AppStampDto {
+    export class AppStampDto {
         public listTimeStampApp: Array<TimeStampAppDto>;
         public listDestinationTimeApp: Array<DestinationTimeAppDto>;
         public listTimeStampAppOther: Array<TimeStampAppOtherDto>;
@@ -490,7 +490,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }
     
     }
-    class TimeStampAppDto {
+    export class TimeStampAppDto {
         public destinationTimeApp: DestinationTimeAppDto;
         public timeOfDay: number;
         public workLocationCd?: string;
@@ -502,7 +502,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             this.appStampGoOutAtr = appStampGoOutAtr;
         }        
     }
-    class DestinationTimeAppDto {
+    export class DestinationTimeAppDto {
         
         public timeStampAppEnum: number;
         public engraveFrameNo: number;
@@ -517,15 +517,15 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }
     }
     
-    class TimeStampAppOtherDto {
+    export class TimeStampAppOtherDto {
         public destinationTimeZoneApp: DestinationTimeZoneAppDto;
         public timeZone: TimeZone;
     }
-    class TimeZone {
+    export class TimeZone {
         public startTime: number;
         public endTime: number;
     }
-    class DestinationTimeZoneAppDto {
+    export class DestinationTimeZoneAppDto {
         public timeZoneStampClassification: number;
         public engraveFrameNo: number;
     }
