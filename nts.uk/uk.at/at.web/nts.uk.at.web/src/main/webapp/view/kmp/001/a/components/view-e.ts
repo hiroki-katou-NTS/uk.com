@@ -7,28 +7,27 @@ module nts.uk.at.view.kmp001.e {
 					params: { employees: employees, baseDate: baseDate, employeeIds: employeeIds}}">
 		</div>
 		<div id="functions-area">
-			<a class="goback" data-bind="ntsLinkButton: { jump: '/view/kmp/001/a/index.xhtml' },text: $i18n('KMP001_100')"></a>
+			<a class="goback" data-bind="i18n: 'KMP001_100', ntsLinkButton: { jump: '/view/kmp/001/a/index.xhtml' }"></a>
 		</div>
 		<div class="view-kmp">
 			<div class="list-component float-left viewa">
 				<div id="list-employee"></div>
 			</div>
 			<div class="float-left model-component" >
-				<div class="label" data-bind= "text: $i18n('KMP001_71')"></div>
+				<div class="label" data-bind= "i18n: 'KMP001_71'"></div>
 				<div class="view-e-content">
-					<div data-bind="foreach: _.chunk(paddingTypes, 2)">
-						<div class="label-column-select" data-bind="foreach: $data">
-							<label class="ntsRadioBox" id="viewd-radio-box">
-								<input type="radio" data-bind="checkedValue: value, checked: $vm.paddingType"  />
-								<span class="box"></span><span class="label" data-bind="text: $vm.$i18n(label)"></span>
-							<label class="ntsRadioBox" id="viewd-radio-box">
-							<div class="panel panel-frame">
-								<div class="label" data-bind= "text: $i18n('KMP001_75')"></div>
-							</div>
+					<div class="label-column-select" data-bind="foreach: $component.paddingTypes">
+						<label class="ntsRadioBox">
+							<input type="radio" data-bind="value: value, checked: $component.paddingType"  />
+							<span class="box"></span>
+							<span class="label" data-bind="i18n: label"></span>
+						</label>
+						<div class="panel panel-frame">
+							<div class="label" data-bind= "i18n: content"></div>
 						</div>
 					</div>
 					<div class="view-e-bg-button" >
-						<button class="proceed large view-e-button" data-bind="text: $i18n('KMP001_77')"></button>
+						<button class="proceed large view-e-button" data-bind="i18n: 'KMP001_77', click: $component.addStampCard"></button>
 					</div>
 				</div>
 			</div>
@@ -38,6 +37,10 @@ module nts.uk.at.view.kmp001.e {
 	interface Params {
 
 	}
+
+	const KMP001E_API = {
+		GENERATE_STAMP_CARD: 'screen/pointCardNumber/getStampCardGenerated'
+	};
 
 	@component({
 		name: 'view-e',
@@ -52,25 +55,24 @@ module nts.uk.at.view.kmp001.e {
 		public selectedCode: KnockoutObservableArray<string> = ko.observableArray([]);
 		public paddingType: KnockoutObservable<StampCardEditMethod | null> = ko.observable(null);
 
-		paddingTypes!: PaddingType[];
+		paddingTypes: PaddingType[] = [
+			{
+				value: StampCardEditMethod.EMPLOYEE_CODE,
+				label: 'KMP001_73',
+				content: 'KMP001_75'
+			}, {
+				value: StampCardEditMethod.COMPANY_CODE_AND_EMPLOYEE_CODE,
+				label: 'KMP001_74',
+				content: 'KMP001_76'
+			}];
 
 		created(params: Params) {
 			const vm = this;
-			
-			vm.paddingTypes = [
-				{
-					value: StampCardEditMethod.EMPLOYEE_CODE,
-					label: 'KMP001_73'
-				}, {
-					value: StampCardEditMethod.COMPANY_CODE_AND_EMPLOYEE_CODE,
-					label: 'KMP001_74'
-				}];
-			
 		}
 
 		mounted() {
 			const vm = this;
-			
+
 			$('#list-employee').ntsListComponent(
 				{
 					isShowAlreadySet: false, //設定済表示
@@ -89,17 +91,46 @@ module nts.uk.at.view.kmp001.e {
 				} as any
 			);
 		}
+
+		addStampCard() {
+			const vm = this;
+
+			console.log(ko.toJS(vm.paddingType));
+		}
 	}
-	
-	export enum StampCardEditMethod {
+
+	enum StampCardEditMethod {
 
 		EMPLOYEE_CODE = 0,
 
 		COMPANY_CODE_AND_EMPLOYEE_CODE = 1,
 	}
-	
+
 	interface PaddingType {
 		value: StampCardEditMethod;
-		label: 'KMP001_73' | 'KMP001_74' ;
+		label: 'KMP001_73' | 'KMP001_74';
+		content: 'KMP001_75' | 'KMP001_76';
+	}
+}
+
+interface IGenerateCard {
+	employeeCd: string;
+	cardNumber: string;
+	duplicateCard: string;
+}
+
+class GenerateCard {
+	employeeCd: KnockoutObservable<string> = ko.observable('');
+	cardNumber: KnockoutObservable<string> = ko.observable('');
+	duplicateCard: KnockoutObservable<string> = ko.observable('');
+
+	public create(params?: IGenerateCard) {
+		const self = this;
+
+		if (params) {
+			self.employeeCd(params.employeeCd);
+			self.cardNumber(params.cardNumber);
+			self.duplicateCard(params.duplicateCard);
+		}
 	}
 }

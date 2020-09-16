@@ -20,5 +20,5 @@ public class CardNumbersMassGeneratedDto {
 	private String cardNumber;
 
 	// 重複する打刻カード
-	private String duplicateCards;
+	private String duplicateCard;
 }

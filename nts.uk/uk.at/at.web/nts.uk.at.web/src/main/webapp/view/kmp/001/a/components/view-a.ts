@@ -25,7 +25,6 @@ module nts.uk.at.view.kmp001.a {
 `;
 
 	const KMP001A_API = {
-		GET_STAMPCARDDIGIT: 'screen/pointCardNumber/getStampCardDigit',
 		GET_STATUS_SETTING: 'screen/pointCardNumber/getStatusEmployeeSettingStampCard',
 		GET_INFOMAITON_EMPLOYEE: 'screen/pointCardNumber/getEmployeeInfoCardNumber',
 		ADD: 'at/record/register-stamp-card/view-a/save',
@@ -40,7 +39,6 @@ module nts.uk.at.view.kmp001.a {
 		template
 	})
 	class ViewA extends ko.ViewModel {
-		attendance: KnockoutObservable<boolean> = ko.observable(true);
 
 		public employees: KnockoutObservableArray<IModel> = ko.observableArray([]);
 		public model: share.Model = new share.Model();
@@ -124,12 +122,6 @@ module nts.uk.at.view.kmp001.a {
 			const dataFormate = 'YYYY/MM/DD';
 
 			vm.$errors('clear');
-
-			if (vm.$user.role.isInCharge.attendance) {
-				vm.attendance(true);
-			} else {
-				vm.attendance(false);
-			}
 
 			$('#list-employee').ntsListComponent(
 				{

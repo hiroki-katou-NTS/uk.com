@@ -3,7 +3,7 @@
 module nts.uk.at.view.kmp001.h {
 	const template = `
 		<div id="functions-area">
-			<button data-bind= "text: $i18n('KMP001_100')"></button>
+			<button data-bind= "text: $i18n('KMP001_100'), click: print"></button>
 			<button data-bind= "text: $i18n('KMP001_7'), click: showDiaLog"></button>
 		</div>
 		<div class="view-kmp">
@@ -22,7 +22,7 @@ module nts.uk.at.view.kmp001.h {
 									<div class="content" data-bind= "text: $i18n('KMP001_102')"></div>
 									<div class="button-select">
 										<span class="caret-right caret-inline">
-											<button class="large" data-bind= "text: $i18n('KMP001_1'), click: view_A"></button>
+											<button class="large" data-bind= "text: $i18n('KMP001_1'), click: view_A, enable: attendance"></button>
 										</span>
 									</div>
 								</div>
@@ -79,17 +79,32 @@ module nts.uk.at.view.kmp001.h {
 		model: KnockoutObservable<string>;
 	}
 
+	const KMP001H_API = {
+		GET_STAMPCARDDIGIT: 'screen/pointCardNumber/getStampCardDigit',
+		PRINT: 'file/stampEditting/report/export'
+	};
+
 	@component({
 		name: 'view-h',
 		template
 	})
+
 	export class ViewCComponent extends ko.ViewModel {
 
 		public params!: Params;
+		public attendance: KnockoutObservable<boolean> = ko.observable(true);
+		public stampCardEdit: StampCardEdit = new StampCardEdit();
 
 		created(params: Params) {
 			const vm = this;
 			vm.params = params;
+			vm.getSetting();
+			
+			if (vm.$user.role.isInCharge.attendance) {
+				vm.attendance(true);
+			} else {
+				vm.attendance(false);
+			}
 			
 		}
 
@@ -97,27 +112,43 @@ module nts.uk.at.view.kmp001.h {
 			const vm = this;
 			vm.params.model('KMP001_A');
 		}
-		
+
 		view_B() {
 			const vm = this;
 			vm.params.model('KMP001_B');
 		}
-		
+
 		view_C() {
 			const vm = this;
 			vm.params.model('KMP001_C');
 		}
-		
+
 		view_E() {
 			const vm = this;
 			vm.params.model('KMP001_E');
 		}
-		
+
 		showDiaLog() {
 			const vm = this;
 
 			vm.$window
 				.modal('/view/kmp/001/d/index.xhtml');
+		}
+
+		print() {
+			const vm = this,
+			param = {digitsNumber: ko.toJS(vm.stampCardEdit.stampCardDigitNumber), stampMethod: ko.toJS(vm.stampCardEdit.stampCardEditMethod)};
+			
+			nts.uk.request.exportFile('file/stampEditting/report/export', param);
+		}
+
+		getSetting() {
+			const vm = this;
+
+			vm.$ajax(KMP001H_API.GET_STAMPCARDDIGIT)
+				.then((data: IStampCardEdit) => {
+					vm.stampCardEdit.update(data);
+				});
 		}
 	}
 }

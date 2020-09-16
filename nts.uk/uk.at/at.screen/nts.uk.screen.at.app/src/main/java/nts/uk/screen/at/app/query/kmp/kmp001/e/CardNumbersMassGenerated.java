@@ -58,7 +58,7 @@ public class CardNumbersMassGenerated {
 			
 			dto.setEmployeeCd(m.getEmployeeCd());
 			dto.setCardNumber(m.getCardNumber().getStampNumber().v());
-			dto.setDuplicateCards(m.getDuplicateCards().map(c -> c.getStampNumber().v()).orElse(""));
+			dto.setDuplicateCard(m.getDuplicateCards().map(c -> c.getStampNumber().v()).orElse(""));
 			
 			return dto;
 		}).collect(Collectors.toList());
