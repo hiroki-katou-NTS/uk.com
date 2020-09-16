@@ -111,7 +111,7 @@
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
-                        <div style="width: 300px"
+                        <div style="width: 300px" tabindex="9"
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-left', searchMode: 'highlight', 
                                             items: itemsLeft, selected: currentCodeListLeft, selectedKey: 'employeeCd', fields: ['employeeCd','businessName', 'teamName'], mode: 'igGrid'}" />
 
@@ -119,14 +119,14 @@
                         <div class="custom">
                             <i class="icon icon-searchbox"></i>
                         </div>
-                        <div style="width: 266px;" class = "nts-searchbox-custom"
+                        <div style="width: 266px;" class = "nts-searchbox-custom" tabindex="10"
                             data-bind="ntsSearchBox: {targetKey: 'employeeCd', comId: 'emp-list-right', searchMode: 'highlight',
                                             items: itemsRight, selected: currentCodeListRight, selectedKey: 'employeeCd', fields: ['employeeCd','businessName'], mode: 'igGrid'}" />
                     </div>
 
                     <div class="container-table">
                         <div>
-                            <table id="emp-list-left" data-bind="ntsGridList: {
+                            <table id="emp-list-left" tabindex="11" data-bind="ntsGridList: {
                                             height: 265,
                                             options: itemsLeft,
                                             optionsValue: 'employeeCd',
@@ -138,14 +138,14 @@
                         </div>
                         <div class="arrow-button">
                             <div>
-                                <button class="large btn-custom"   data-bind="click: moveItemLeftToRight" ><div class="valign-center " ><img src="img/arrow-right.png" /></div></button>
+                                <button class="large btn-custom"  tabindex="12"  data-bind="click: moveItemLeftToRight" ><div class="valign-center " ><img src="img/arrow-right.png" /></div></button>
                             </div>
                             <div>
-                                <button class="large btn-custom"  data-bind="click: moveItemRightToLeft" ><div class="valign-center"><img src="img/arrow-left.png" /></div></button>
+                                <button class="large btn-custom" tabindex="13" data-bind="click: moveItemRightToLeft" ><div class="valign-center"><img src="img/arrow-left.png" /></div></button>
                             </div>   
                         </div>
                         <div>
-                            <table id="emp-list-right" data-bind="ntsGridList: {
+                            <table id="emp-list-right" tabindex="14" data-bind="ntsGridList: {
                                             height: 265,
                                             options: itemsRight,
                                             optionsValue: 'employeeCd',

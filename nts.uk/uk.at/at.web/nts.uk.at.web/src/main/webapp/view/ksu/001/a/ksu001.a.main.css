@@ -31,6 +31,14 @@
 	height: 525px;
 }
 
+.A6_hover:hover {
+    background-color: #007fff !important;
+}
+
+.A6_not_hover:hover {
+    background-color: #ffffff !important;
+}
+
 #functon-area-row2 *, #contain-view-right * {
 	font-size: 11.5px !important;
 	vertical-align: middle;
@@ -291,6 +299,12 @@
 	background-color: #ffff;
 }
 
+button[disabled] {
+    background-color: #d9d9d9 !important;
+    cursor: default;
+    color: #888888;
+}
+
 #redo {
 	margin-top: 6px;
 	background: url(../image/image031.png) no-repeat center;
@@ -525,7 +539,6 @@ html {
 	height: 27px;
 }
 
-
 #A16 table td {
 	border: 0px solid #ccc !important;
 }
@@ -534,8 +547,10 @@ html {
 .background-holiday {background-color: #ff0000 !important;}
 .background-half-day-work {background-color: #FF7F27 !important; }
 .background-schedule-performance {background-color:#008000 !important;}
-.background-white {background-color: white;}
-.color-default {color : #000000 !important;}
+.bg-daily-alter-self {background-color:#94B7FE !important;}
+.bg-daily-alter-other {background-color:#CEE6FF !important;}
+.background-white {background-color: white !important;}
+.color-default {color : #000000;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
 
 table th, table td {

@@ -78,7 +78,7 @@ public class ReflectActualStampAndStamp {
 			}
 			timeActualStamp = timeStampCopy;
 		}
-		int number = timeFrame.getNumberOfReflections()+1;
+		int number = timeActualStamp.getNumberOfReflectionStamp()!=null?timeActualStamp.getNumberOfReflectionStamp()+1:1;
 		//打刻反映回数を＋１する
 		timeFrame.setNumberOfReflections(number);
 		timeActualStamp.setNumberOfReflectionStamp(number);

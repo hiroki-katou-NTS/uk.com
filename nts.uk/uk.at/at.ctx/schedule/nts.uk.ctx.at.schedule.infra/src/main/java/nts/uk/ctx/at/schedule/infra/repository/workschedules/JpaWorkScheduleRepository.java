@@ -233,7 +233,8 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 			if (newData.schShortTimeTs.isEmpty()) {
 				// if have not ShortWorkingTimeSheet delete all old data
 				this.deleteAllShortTime(workSchedule.getEmployeeID(), workSchedule.getYmd());
-			}
+				oldData.get().setSchShortTimeTs(newData.schShortTimeTs);
+			} else {
 
 			if (oldDatas.get().getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()
 					&& workSchedule.getOptSortTimeWork().isPresent()) {
@@ -271,7 +272,7 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					}
 				}
 			}
-
+		}
 			// List<KscdtSchBreakTs> breakTs;
 			if (!oldData.get().breakTs.isEmpty()) {
 				for (KscdtSchBreakTs y : newData.breakTs) {
