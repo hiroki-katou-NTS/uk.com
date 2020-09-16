@@ -72,12 +72,12 @@ public class ScheduleCreateContent extends AggregateRoot{
 	 */
 	public void saveToMemento(ScheduleCreateContentSetMemento memento){
 		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
-//		memento.setConfirm(this.confirm);
-//		memento.setImplementAtr(this.implementAtr);
-//		memento.setExecutionId(this.executionId);
-//		memento.setCopyStartDate(this.copyStartDate);
-//		memento.setCreateMethodAtr(this.createMethodAtr);
-//		reCreateContent.saveToMemento(memento);
+		memento.setConfirm(this.confirm);
+		memento.setcreationType(this.implementAtr);
+		memento.setExecutionId(this.executionId);
+		//memento.setCopyStartDate(this.copyStartDate);
+		//memento.setCreateMethodAtr(this.createMethodAtr);
+		//reCreateContent.saveToMemento(memento);
 	}
 
 	public void setImplementAtr(ImplementAtr implementAtr) {
