@@ -13,6 +13,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
         dataSourceOb: KnockoutObservableArray<any>;
         application: KnockoutObservable<Application>;
+        selectedTab: KnockoutObservable<string> = ko.observable('');
         tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
                           new TabM(this.$i18n('KAF002_31'), true, true),
                           new TabM(this.$i18n('KAF002_76'), true, true),

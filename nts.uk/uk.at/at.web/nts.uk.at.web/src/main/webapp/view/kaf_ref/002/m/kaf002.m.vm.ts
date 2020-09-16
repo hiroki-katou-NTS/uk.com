@@ -65,7 +65,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.tabs = ko.observableArray(paramTabs);
             // select first tab
             self.selectedTab = ko.observable( paramTabs[0].id );
-            
+            params.selectedTab = self.selectedTab;
             self.isPreAtr.subscribe((value) => {
                if(!_.isNull(value)) {
                    self.loadAll();

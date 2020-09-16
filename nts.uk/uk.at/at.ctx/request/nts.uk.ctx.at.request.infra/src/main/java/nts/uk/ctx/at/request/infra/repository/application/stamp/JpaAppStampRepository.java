@@ -93,7 +93,15 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				});
 			}
 		});
-		this.commandProxy().updateAll(listKrqdtAppStampTemp.stream().filter(x -> x.isPresent()).collect(Collectors.toList()));
+		this.commandProxy().removeAll(KrqdtAppStamp.class, listKrqdtAppStampPK);
+		List<KrqdtAppStamp> listInsert = new ArrayList<KrqdtAppStamp>();
+		listKrqdtAppStampTemp.stream().forEach(x -> {
+			if (x.isPresent()) {
+				listInsert.add(x.get());
+			}
+		});
+		
+		this.commandProxy().insertAll(listInsert);
 		this.getEntityManager().flush();
 
 	}
