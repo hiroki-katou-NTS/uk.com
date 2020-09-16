@@ -138,7 +138,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             List<Application> validApps = apps
                     .stream()
                     .filter(i -> i.getOpAppStartDate().get().getApplicationDate().beforeOrEquals(date) && date.beforeOrEquals(i.getOpAppEndDate().get().getApplicationDate()))
-                    .sorted(Comparator.nullsLast((e1, e2) -> e2.getAppDate().getApplicationDate().compareTo(e1.getAppDate().getApplicationDate())))
+                    .sorted(Comparator.nullsLast((e1, e2) -> e2.getInputDate().compareTo(e1.getInputDate())))
                     .collect(Collectors.toList());
 
             // Lấy Content của ngày loop
