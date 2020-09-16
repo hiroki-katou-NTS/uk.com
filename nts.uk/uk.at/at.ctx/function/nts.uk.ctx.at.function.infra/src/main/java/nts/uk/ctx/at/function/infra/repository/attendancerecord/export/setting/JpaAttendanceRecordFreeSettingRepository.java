@@ -88,7 +88,7 @@ public class JpaAttendanceRecordFreeSettingRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<AttendanceRecordOuputItems> findByCompanyEmployeeAndCodeAndSelection(String companyId, String employeeId,
+	public Optional<AttendanceRecordFreeSetting> findByCompanyEmployeeAndCodeAndSelection(String companyId, String employeeId,
 			long code, int selectionType) {
 		
 		return null;
