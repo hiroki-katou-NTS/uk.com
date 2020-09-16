@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction;
 
+import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -12,13 +15,14 @@ import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class IndexReconstructionResultHistory extends AggregateRoot {
 
 	/** 実行ID*/
 	private ExecutionCode executionId;
 	
 	/** 結果詳細*/
-	private IndexReconstructionResult indexReconstructionResult;
+	private List<IndexReconstructionResult> indexReconstructionResult;
 	
 	public static IndexReconstructionResultHistory createFromMemento(MementoGetter memento) {
 		IndexReconstructionResultHistory domain = new IndexReconstructionResultHistory();
@@ -38,11 +42,11 @@ public class IndexReconstructionResultHistory extends AggregateRoot {
 
 	public static interface MementoSetter {
 		void setexecutionId(ExecutionCode indexNo);
-		void setIndexReconstructionResult(IndexReconstructionResult fragmentationRate);
+		void setIndexReconstructionResult(List<IndexReconstructionResult> fragmentationRate);
 	}
 
 	public static interface MementoGetter {
-		IndexReconstructionResult getIndexReconstructionResult();
+		List<IndexReconstructionResult> getIndexReconstructionResult();
 		ExecutionCode getexecutionId();
 	}
 }

@@ -40,45 +40,66 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 	private ExecutionTaskSettingRepository execSettingRepo;
 //	@Inject
 //	private UkJobScheduler ukJobScheduler;
+	
+	/**
+	 * Handle.
+	 *	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.振り分け処理.振り分け処理
+	 * @param context the context
+	 */
 	@Override //振り分け処理
 	protected void handle(CommandHandlerContext<ScheduleExecuteCommand> context) {
 		ScheduleExecuteCommand command = context.getCommand();
 		String companyId = command.getCompanyId();
 		String execItemCd = command.getExecItemCd();
 		GeneralDateTime nextDate = command.getNextDate();
-		//ドメインモデル「実行タスク設定」を取得する
+		// Step 1: RQ580「会社の廃止をチェックする」を実行する
+		//TODO
+		// Step 2: ドメインモデル「実行タスク設定」を取得する
 		Optional<ExecutionTaskSetting> executionTaskSettingOpt = execSettingRepo.getByCidAndExecCd(companyId, command.getExecItemCd());
 		if(!executionTaskSettingOpt.isPresent()) {
 			return;
 		}
-		//ドメインモデル「実行タスク設定.更新処理有効設定」をチェックする
+		// Step 3: ドメインモデル「実行タスク設定.更新処理有効設定」をチェックする
 		if(!executionTaskSettingOpt.get().isEnabledSetting()) {
 			//無効の場合
 			return;//フロー終了
 		}
 		log.info(":更新処理自動実行_START_"+command.getExecItemCd()+"_"+GeneralDateTime.now());
-		//ドメインモデル「更新処理自動実行管理」取得する
-		Optional<ProcessExecutionLogManage> logManageOpt = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd);
-		if(!logManageOpt.isPresent()){
-			return;
-		}
-		ProcessExecutionLogManage processExecutionLogManage = logManageOpt.get();
 		//実行IDを新規採番する
 		String execItemId = IdentifierUtil.randomUniqueId();
-		// ドメインモデル「更新処理自動実行管理.現在の実行状態」をチェックする
-		// 「実行中」
-		if (processExecutionLogManage.getCurrentStatus().value == 0) {
-			// ドメインモデル「更新処理自動実行管理．前回実行日時」から5時間を経っているかチェックする
-			boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime());
-			if (checkLastTime) {
-				this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate);
-			} else {
+		// Step 4: 利用停止をチェックする
+		//TODO
+		if (false) {
+			// case 利用停止する
+			// Step 前回の更新処理が実行中の登録処理
+			this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
+			return;
+		} else {
+			// case 利用停止しない
+			// Step ドメインモデル「更新処理自動実行管理」取得する
+			Optional<ProcessExecutionLogManage> logManageOpt = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd);
+			if(!logManageOpt.isPresent()){
+				return;
+			}
+			ProcessExecutionLogManage processExecutionLogManage = logManageOpt.get();
+			// Step ドメインモデル「更新処理自動実行管理.現在の実行状態」をチェックする
+			// 「実行中」
+			if (processExecutionLogManage.getCurrentStatus().value == 0) {
+				// ドメインモデル「更新処理自動実行管理．前回実行日時」から5時間を経っているかチェックする
+				boolean checkLastTime = checkLastDateTimeLessthanNow5h(processExecutionLogManage.getLastExecDateTime());
+				if (checkLastTime) {
+					// Step 実行中の場合の登録処理
+					this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
+				} else {
+					// Step 実行処理
+					this.executeHandler(companyId, execItemCd, execItemId, nextDate);
+				}
+			} 
+			// 「待機中」
+			else if (processExecutionLogManage.getCurrentStatus().value == 1) {
+				// Step 実行処理
 				this.executeHandler(companyId, execItemCd, execItemId, nextDate);
 			}
-		} 
-		// 「待機中」
-		else if (processExecutionLogManage.getCurrentStatus().value == 1) {
-			this.executeHandler(companyId, execItemCd, execItemId, nextDate);
 		}
 		
 	}
@@ -93,22 +114,42 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		this.execHandler.handle(executeProcessExecutionCommand);
 	}
 	
+	/**
+	 * Distribution regist process.
+	 *	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.就業機能.更新処理自動実行.アルゴリズム.振り分け処理.前回の更新処理が実行中の登録処理.前回の更新処理が実行中の登録処理
+	 * @param companyId the company id
+	 * @param execItemCd the exec item cd
+	 * @param execItemId the exec item id
+	 * @param nextDate the next date
+	 */
 	//振り分け登録処理 -> 前回の更新処理が実行中の登録処理
-	private void DistributionRegistProcess(String companyId, String execItemCd,String execItemId, GeneralDateTime nextDate ){
-		//ドメインモデル「更新処理自動実行管理」を更新する
+	private void DistributionRegistProcess(String companyId, String execItemCd, String execItemId, GeneralDateTime nextDate, boolean isSystemSuspended) {
+		// Step ドメインモデル「更新処理自動実行管理」を更新する
 		ProcessExecutionLogManage processExecutionLogManage = this.processExecLogManaRepo.getLogByCIdAndExecCd(companyId, execItemCd).get();
 		processExecutionLogManage.setLastExecDateTimeEx(GeneralDateTime.now());
 		processExecLogManaRepo.update(processExecutionLogManage);
-		//ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
+		// Step ドメインモデル「更新処理自動実行ログ履歴」を新規登録する
 		List<ExecutionTaskLog> taskLogList = new ArrayList<>();
 		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.SCH_CREATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.DAILY_CREATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.DAILY_CALCULATION ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.RFL_APR_RESULT ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.MONTHLY_AGGR ,Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.AL_EXTRACTION, Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_DAI, Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
+		taskLogList.add(new ExecutionTaskLog(ProcessExecutionTask.APP_ROUTE_U_MON, Optional.ofNullable(EndStatus.NOT_IMPLEMENT)));
 		ProcessExecutionLogHistory processExecutionLogHistory = new ProcessExecutionLogHistory(
-				new ExecutionCode(execItemCd), companyId, OverallErrorDetail.NOT_FINISHED, EndStatus.FORCE_END,
-				GeneralDateTime.now(), null, taskLogList, execItemId,GeneralDateTime.now(),null,null);
+				new ExecutionCode(execItemCd),
+				companyId,
+				isSystemSuspended ? OverallErrorDetail.NOT_EXECUTE : OverallErrorDetail.NOT_FINISHED,
+				EndStatus.FORCE_END,
+				GeneralDateTime.now(),
+				null,
+				taskLogList,
+				execItemId,
+				GeneralDateTime.now(),
+				null,
+				null);
 		processExecLogHistRepo.insert(processExecutionLogHistory);
 	
 		

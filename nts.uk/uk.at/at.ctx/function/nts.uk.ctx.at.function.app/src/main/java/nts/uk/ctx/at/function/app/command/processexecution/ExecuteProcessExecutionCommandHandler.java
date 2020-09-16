@@ -521,10 +521,10 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		if (execSetting != null) {
 			// execSetting.setNextExecDateTime();
 			String scheduleId = execSetting.getScheduleId();
-			if (execSetting.isRepeat()) {
-				Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
-				execSetting.setNextExecDateTime(nextFireTime);
-			}
+//			if (execSetting.isRepeat()) {
+//				Optional<GeneralDateTime> nextFireTime = this.scheduler.getNextFireTime(scheduleId);
+//				execSetting.setNextExecDateTime(nextFireTime);
+//			}
 			this.execSettingRepo.update(execSetting);
 		}
 

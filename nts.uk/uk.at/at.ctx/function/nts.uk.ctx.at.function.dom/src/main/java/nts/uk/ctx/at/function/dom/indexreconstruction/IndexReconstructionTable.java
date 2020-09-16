@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.indexreconstruction;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class IndexReconstructionTable extends AggregateRoot {
 
 	/**  カテゴリNO */

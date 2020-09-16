@@ -22,5 +22,5 @@ public class AggregationOfArbitraryPeriod extends DomainObject {
 	private NotUseAtr classificationOfUse;
 	
 	/* コード */
-	private Optional<ExternalAcceptanceConditionCode> code;
+	private Optional<AggrFrameCode> code;
 }
