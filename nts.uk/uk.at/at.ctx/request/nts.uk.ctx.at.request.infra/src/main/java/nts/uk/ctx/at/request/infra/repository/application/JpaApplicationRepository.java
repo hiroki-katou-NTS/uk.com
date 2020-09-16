@@ -104,7 +104,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " WHERE app.pk.companyID = :companyID" + " AND app.employeeID = :employeeID"
 			+ " AND app.appDate >= :startDate" + " AND app.appDate <= :endDate" + " AND app.prePostAtr = :prePostAtr"
 			+ " AND app.appType = :appType" + " AND  ref.actualReflectStatus IN :lstRef"
-			+ " ORDER BY app.appType ASC, c.inputDate DESC";
+			+ " ORDER BY app.appType ASC, app.inputDate DESC";
 	
 	/*
 	@Override
