@@ -12,7 +12,6 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd_;
 
 /**
  * @author tuannt-nws
@@ -37,12 +36,12 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.layoutId), kfnstAttndRecPK.getLayoutId()));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.columnIndex),kfnstAttndRecPK.getColumnIndex()));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.position), kfnstAttndRecPK.getPosition()));
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.outputAtr), kfnstAttndRecPK.getOutputAtr()));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.layoutId), kfnstAttndRecPK.getLayoutId()));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.columnIndex),kfnstAttndRecPK.getColumnIndex()));
+//		predicates.add(
+//				criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.position), kfnstAttndRecPK.getPosition()));
+//		predicates.add(
+//				criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.outputAtr), kfnstAttndRecPK.getOutputAtr()));
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 
@@ -69,7 +68,7 @@ public abstract class JpaAttendanceRecordRepository extends JpaRepository {
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.layoutId), layoutId));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.layoutId), layoutId));
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 

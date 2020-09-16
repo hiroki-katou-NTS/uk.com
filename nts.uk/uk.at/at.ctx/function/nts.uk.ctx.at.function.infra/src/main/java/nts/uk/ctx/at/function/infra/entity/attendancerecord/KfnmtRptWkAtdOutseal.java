@@ -9,22 +9,18 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The persistent class for the KFNMT_RPT_WK_ATD_OUTSEAL database table.
  * 
  */
+@Data
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "KFNMT_RPT_WK_ATD_OUTSEAL")
+@EqualsAndHashCode(callSuper = true)
 public class KfnmtRptWkAtdOutseal extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */

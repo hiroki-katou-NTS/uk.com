@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AttendanceRecordOutputSetting.
@@ -22,14 +21,6 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	/** The layout id. */
 	// 出力レイアウトID
 	private String layoutId;
-
-	/** The company id. */
-	// 会社ID
-	private String companyId;
-	
-	/** The employee id. */
-	private String employeeId;
-	
 
 	/** The daily ouput item. */
 	// 日次の出力項目
@@ -79,7 +70,6 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	 *            the memento
 	 */
 	public AttendanceRecordExportSetting(AttendanceRecordExportSettingGetMemento memento) {
-		this.companyId = AppContexts.user().companyId();
 		this.layoutId = memento.getLayoutId();
 		this.dailyExportItem = memento.getDailyExportItem();
 		this.monthlyExportItem = memento.getMonthlyExportItem();
@@ -88,8 +78,8 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		this.name = memento.getName();
 		this.sealStamp = memento.getSealStamp();
 		this.nameUseAtr =  NameUseAtr.valueOf(memento.getNameUseAtr());
-		this.exportFontSize = ExportFontSize.valueOf(memento.getExportFontSize());
-		this.monthlyConfirmedDisplay = MonthlyConfirmedDisplay.valueOf(memento.getMonthlyConfirmedDisplay());
+		this.exportFontSize = memento.getExportFontSize();
+		this.monthlyConfirmedDisplay = memento.getMonthlyConfirmedDisplay();
 
 	}
 
@@ -100,7 +90,6 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	 *            the memento
 	 */
 	public void saveToMemento(AttendanceRecordExportSettingSetMemento memento) {
-		memento.setCompanyId(this.companyId);
 		memento.setCode(this.code);
 		memento.setDailyExportItem(this.dailyExportItem);
 		memento.setMonthlyExportItem(this.monthlyExportItem);
@@ -110,13 +99,8 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		if (this.nameUseAtr != null) {
 			memento.setNameUseAtr(this.nameUseAtr.value);
 		}
-		if(this.exportFontSize !=null) {
-			memento.setExportFontSize(this.exportFontSize.value);
-		}
-		if(this.monthlyConfirmedDisplay !=null) {
-			memento.setMonthlyConfirmedDisplay(this.monthlyConfirmedDisplay.value);
-		}
-		
+		memento.setExportFontSize(this.exportFontSize);
+		memento.setMonthlyConfirmedDisplay(this.monthlyConfirmedDisplay);
 	}
 
 	/**
@@ -134,7 +118,6 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		result = prime * result + ((dailyExportItem == null) ? 0 : dailyExportItem.hashCode());
 		result = prime * result + ((monthlyExportItem == null) ? 0 : monthlyExportItem.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -168,11 +151,6 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 			if (other.code != null)
 				return false;
 		} else if (!code.equals(other.code))
-			return false;
-		if (companyId == null) {
-			if (other.companyId != null)
-				return false;
-		} else if (!companyId.equals(other.companyId))
 			return false;
 		if (dailyExportItem == null) {
 			if (other.dailyExportItem != null)

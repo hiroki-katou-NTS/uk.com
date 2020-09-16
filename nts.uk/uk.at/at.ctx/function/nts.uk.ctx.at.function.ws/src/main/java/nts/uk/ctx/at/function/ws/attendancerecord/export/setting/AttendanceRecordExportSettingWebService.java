@@ -18,9 +18,7 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.Attendace
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceAuthorityOfWorkPerform;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingFinder;
-import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceSettingDto;
-import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.ItemSelectedTypeSettingDto;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.AttendanceRecordExportSettingWrapperDto;
 
 /**
  * The Class AttendanceRecordOutputSettingWebService.
@@ -55,7 +53,7 @@ public class AttendanceRecordExportSettingWebService {
 	 */
 	@POST
 	@Path("getAllAttendanceRecExpSet")
-	public List<AttendanceRecordExportSettingDto> getAllAttendanceRecExpSet() {
+	public AttendanceRecordExportSettingWrapperDto getAllAttendanceRecExpSet() {
 		return attendanceEcExpSetFinder.getAllAttendanceRecordExportSetting();
 	}
 
@@ -138,22 +136,9 @@ public class AttendanceRecordExportSettingWebService {
 		return attendanceEcExpSetFinder.getClosureMonth();
 	}
 	
-	@POST
+	@POST 
 	@Path("getAuthorityOfWorkPerformance")
 	public AttendanceAuthorityOfWorkPerform getAuthorityOfWorkPerformance() {
 		return attendanceEcExpSetFinder.getAuthorityOfWorkPerformance();
-	}
-	
-	
-	/**
-	 * Start screen KWR002 - B.
-	 *
-	 * @param dto the dto
-	 * @return the attendance setting dto
-	 */
-	@POST
-	@Path("startScreenB")
-	public AttendanceSettingDto startScreenB(ItemSelectedTypeSettingDto dto) {
-		return attendanceEcExpSetFinder.startScreenB(dto);
 	}
 }

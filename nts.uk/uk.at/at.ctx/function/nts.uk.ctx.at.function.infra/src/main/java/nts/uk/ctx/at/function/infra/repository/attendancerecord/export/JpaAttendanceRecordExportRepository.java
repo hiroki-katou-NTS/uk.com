@@ -21,9 +21,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK_;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe_;
-
 /**
  * The Class JpaAttendanceRecordExportRepository.
  * 
@@ -56,8 +53,8 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 1));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 1));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -128,8 +125,8 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
 
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 2));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.outputAtr), 2));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -224,7 +221,7 @@ public class JpaAttendanceRecordExportRepository extends JpaRepository implement
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutframe_.id).get(KfnmtRptWkAtdOutframePK_.layoutId), layoutId));
 
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));

@@ -20,7 +20,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRe
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframePK;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd_;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -277,10 +276,10 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 
 		// create condition
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.layoutId), layoutId));
-		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnmtRptWkAtdOutatd_.columnIndex), (long) 6));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.position), position));
-		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.outputAtr), 1));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.layoutId), layoutId));
+//		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnmtRptWkAtdOutatd_.columnIndex), (long) 6));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.position), position));
+//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.outputAtr), 1));
 
 		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 

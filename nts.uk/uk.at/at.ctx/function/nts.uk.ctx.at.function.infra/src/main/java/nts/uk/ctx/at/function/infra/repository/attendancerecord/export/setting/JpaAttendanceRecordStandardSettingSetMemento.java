@@ -24,12 +24,8 @@ public class JpaAttendanceRecordStandardSettingSetMemento implements AttendanceR
 	public void setAttendanceRecordExportSettings(List<AttendanceRecordExportSetting> standardItem) {
 		this.kfnmtRptWkAtdOut = standardItem.stream().map(i -> {
 			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
-//			i.saveToMemento(entity);
+			i.saveToMemento(entity);
 			return entity;
 		}).collect(Collectors.toList());
-		
 	}
-
-	
-
 }

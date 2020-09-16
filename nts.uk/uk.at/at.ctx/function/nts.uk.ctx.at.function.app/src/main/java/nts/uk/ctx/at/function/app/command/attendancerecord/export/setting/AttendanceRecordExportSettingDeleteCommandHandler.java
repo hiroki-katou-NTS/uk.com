@@ -35,7 +35,6 @@ public class AttendanceRecordExportSettingDeleteCommandHandler
 		// convert to domain
 		AttendanceRecordExportSetting domain = new AttendanceRecordExportSetting();
 		domain.setLayoutId(command.getLayoutId());
-		domain.setCompanyId(AppContexts.user().companyId());
 		domain.setCode(new ExportSettingCode(String.valueOf(command.getCode())));
 		domain.setName(new ExportSettingName(command.getName()));
 

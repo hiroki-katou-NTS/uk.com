@@ -13,8 +13,7 @@ import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.Kfnmt
 @Stateless
 public class JpaAttendanceRecordFreeSettingRepository extends JpaRepository
 		implements AttendanceRecordFreeSettingRepository {
-	
-	
+
 	// Select all
 	private static final String QUERY_SELECT_ALL = "SELECT f FROM KfnmtRptWkAtdOut f";
 	// Select one

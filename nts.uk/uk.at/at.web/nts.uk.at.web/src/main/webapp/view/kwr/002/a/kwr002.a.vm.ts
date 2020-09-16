@@ -67,6 +67,8 @@ module nts.uk.com.view.kwr002.a {
             enableA8_8: KnockoutObservable<boolean> = ko.observable(false);
             // authority for work performance
             enableAuthority: KnockoutObservable<boolean> = ko.observable(true);
+
+            freeSettingLst: KnockoutObservableArray<AttendanceRecordExportSettingDto>;
             selectedCodeA8_8: KnockoutObservable<string> = ko.observable('');
             dataTranferScreenB: DataScreenB;
             companyId: string = '';
@@ -96,6 +98,7 @@ module nts.uk.com.view.kwr002.a {
                 });
 
                 self.attendanceRecordList = ko.observableArray([]);
+                self.freeSettingLst = ko.observableArray([]);
 
                 self.selectedCode = ko.observable(null);
 
@@ -222,22 +225,34 @@ module nts.uk.com.view.kwr002.a {
                         vm.permission(false);
                     }
                 });
-                service.getAllAttendanceRecExpSet().done((listAttendance: Array<AttendanceRecordExportSettingDto>) => {
-                    if (listAttendance === undefined || listAttendance.length == 0) {
-                        vm.attendanceRecordList();
-                        vm.enableSave(false);
+                service.getAllAttendanceRecExpSet().done((wrapper: AttendanceRecordExportSettingWrapperDto) => {
+                    if (wrapper.standardSettingLst.length === 0) {
+                        vm.attendanceRecordList([]);
                         // $('#print').attr("disabled", "disabled")
                         // $('#exportExcel').attr("disabled", "disabled")
                     } else {
-                        vm.enableSave(true);
-                        var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
+                        var sortArray = _.orderBy(wrapper.standardSettingLst, [e => Number(e.code)], ['asc']);
                         _.map(sortArray, (item) => {
                             item.code = _.padStart(item.code, 2, '0');
                         });
                         vm.attendanceRecordList(sortArray);
                         vm.selectedCode(sortArray[0].code);
+                    }
+
+                    if (wrapper.freeSettingLst.length === 0) {
+                        vm.freeSettingLst([]);
+                    } else {
+                        var sortArray = _.orderBy(wrapper.freeSettingLst, [e => Number(e.code)], ['asc']);
+                        _.map(sortArray, (item) => {
+                            item.code = _.padStart(item.code, 2, '0');
+                        });
+                        vm.freeSettingLst(sortArray);
                         vm.selectedCodeA8_8(sortArray[0].code);
                     }
+
+                    this.selectedCodeA8_5(wrapper.isFreeSetting ? ItemSelectionType.FREE_SETTING : ItemSelectionType.STANDARD_SETTING);
+                    vm.enableA8_3(!wrapper.isFreeSetting);
+                    vm.enableA8_8(wrapper.isFreeSetting);
 
                     dfd.resolve();
                 });
@@ -621,6 +636,12 @@ module nts.uk.com.view.kwr002.a {
             }
         }
 
+        export class AttendanceRecordExportSettingWrapperDto {
+            isFreeSetting: boolean;
+            freeSettingLst: AttendanceRecordExportSettingDto[];
+            standardSettingLst: AttendanceRecordExportSettingDto[];
+        }
+
         export interface GroupOption {
             /** Common properties */
             showEmployeeSelection: boolean; // 検索タイプ
@@ -714,6 +735,11 @@ module nts.uk.com.view.kwr002.a {
                 this.code = code;
                 this.name = name;
             }
+        }
+
+        class ItemSelectionType {
+            static STANDARD_SETTING = 0;
+            static FREE_SETTING = 1;
         }
 
         class DataScreenB {

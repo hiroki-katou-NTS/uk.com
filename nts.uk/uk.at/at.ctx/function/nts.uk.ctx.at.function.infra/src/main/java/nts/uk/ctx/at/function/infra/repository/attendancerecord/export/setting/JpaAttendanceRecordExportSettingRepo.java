@@ -26,7 +26,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut_;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -75,8 +74,8 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 
 		// create where conditions
 		List<Predicate> predicates = new ArrayList<>();
-		predicates.add(
-				criteriaBuilder.equal(root.get(KfnmtRptWkAtdOut_.cid), companyId));
+//		predicates.add(
+//				criteriaBuilder.equal(root.get(KfnmtRptWkAtdOut_.cid), companyId));
 
 		// add where to query
 		cq.where(predicates.toArray(new Predicate[] {}));
@@ -118,21 +117,21 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	@Override
 	public void updateAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
 
-		// update attendance info
-		this.commandProxy().update(toEntity(attendanceRecordExpSet));
-
-		// Delete seal stamp List
-		this.deleteSealStamp(attendanceRecordExpSet.getCompanyId(),attendanceRecordExpSet.getLayoutId());
-
-		// Add seal stamp List
-		int order = 1;
-		long expCode = Long.parseLong(attendanceRecordExpSet.getCode().v());
-	
-		String cid = attendanceRecordExpSet.getCompanyId();
-		String layoutId = attendanceRecordExpSet.getLayoutId();
-		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
-			this.commandProxy().insert(toSealStampEntity(cid, layoutId, seal, order++));
-		}
+//		// update attendance info
+//		this.commandProxy().update(toEntity(attendanceRecordExpSet));
+//
+//		// Delete seal stamp List
+//		this.deleteSealStamp(attendanceRecordExpSet.getCompanyId(),attendanceRecordExpSet.getLayoutId());
+//
+//		// Add seal stamp List
+//		int order = 1;
+//		long expCode = Long.parseLong(attendanceRecordExpSet.getCode().v());
+//	
+//		String cid = attendanceRecordExpSet.getCompanyId();
+//		String layoutId = attendanceRecordExpSet.getLayoutId();
+//		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
+//			this.commandProxy().insert(toSealStampEntity(cid, layoutId, seal, order++));
+//		}
 
 	}
 
@@ -192,18 +191,18 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	}
 
 	private void addKfnmtRptWkAtdOutseals(AttendanceRecordExportSetting attendanceRecordExpSet) {
-		String cid = attendanceRecordExpSet.getCompanyId();
-		String layoutId = attendanceRecordExpSet.getLayoutId();
-		ExportSettingCode settingCode = attendanceRecordExpSet.getCode();
-		// remove Seal stamps
-		deleteSealStamp(attendanceRecordExpSet.getCompanyId(),attendanceRecordExpSet.getLayoutId());
-
-		// Insert Seal Stamp List
-		int order = 1;
-		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
-			this.commandProxy().insert(toSealStampEntity(cid, layoutId, seal, order++));
-		}
-		this.getEntityManager().flush();
+//		String cid = attendanceRecordExpSet.getCompanyId();
+//		String layoutId = attendanceRecordExpSet.getLayoutId();
+//		ExportSettingCode settingCode = attendanceRecordExpSet.getCode();
+//		// remove Seal stamps
+//		deleteSealStamp(attendanceRecordExpSet.getCompanyId(),attendanceRecordExpSet.getLayoutId());
+//
+//		// Insert Seal Stamp List
+//		int order = 1;
+//		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
+//			this.commandProxy().insert(toSealStampEntity(cid, layoutId, seal, order++));
+//		}
+//		this.getEntityManager().flush();
 	}
 
 	private void addKfnmtRptWkAtdOut(AttendanceRecordExportSetting attendanceRecordExpSet) {
@@ -229,7 +228,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	@Override
 	public void deleteAttendanceRecExpSet(AttendanceRecordExportSetting domain) {
 		this.commandProxy().remove(toEntity(domain));
-		deleteSealStamp(domain.getCompanyId(),domain.getLayoutId());
+//		deleteSealStamp(domain.getCompanyId(),domain.getLayoutId());
 	}
 
 	/*
@@ -269,18 +268,11 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	/**
 	 * To domain.
 	 *
-	 * @param attendanceEntity
-	 *            the attendance entity
+	 * @param attendanceEntity the attendance entity
 	 * @return the attendance record export setting
 	 */
 	public AttendanceRecordExportSetting toDomain(KfnmtRptWkAtdOut attendanceEntity) {
-		List<KfnmtRptWkAtdOutseal> sealEntity = this.findAllSealColumn(attendanceEntity.getCid(), attendanceEntity.getLayoutId());
-		
-		AttendanceRecordExportSettingGetMemento memento = new JpaAttendanceRecordExportSettingGetMemento(
-				attendanceEntity, sealEntity);
-
-		return new AttendanceRecordExportSetting(memento);
-
+		return new AttendanceRecordExportSetting(attendanceEntity);
 	}
 
 
@@ -301,21 +293,16 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		PK.setCid(companyId);
 		PK.setSid(employeeId);
 		PK.setExportCD(domain.getCode().v());
-		PK.setName(domain.getName().v());
-		PK.setSealUseAtr(new BigDecimal(0));
-		PK.setNameUseAtr(new BigDecimal(0));
+//		PK.setName(domain.getName().v());
+//		PK.setSealUseAtr(new BigDecimal(0));
+//		PK.setNameUseAtr(new BigDecimal(0));
 		PK.setCharSizeType(new BigDecimal(1));
 		PK.setMonthAppDispAtr(new BigDecimal(0));
 		KfnmtRptWkAtdOut entity = this.queryProxy().find(PK.getLayoutId(), KfnmtRptWkAtdOut.class)
 				.orElse(PK);
 		
 		// new decimal 
-
-		JpaAttendanceRecordExportSettingSetMemento setMemento = new JpaAttendanceRecordExportSettingSetMemento(entity);
-		
-		domain.saveToMemento(setMemento);
-
-		return setMemento.getResEntity();
+		return entity;
 	}
 
 	/**
