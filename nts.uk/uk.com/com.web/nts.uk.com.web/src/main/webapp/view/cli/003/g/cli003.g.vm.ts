@@ -286,7 +286,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
             self.currentLogDisplaySet();
             self.currentName('');
             self.recordType('-1');
-//            self.dataType(-1);
+            self.dataType('-1');
             self.systemType('-1');
             self.selectedCodeList.removeAll();
         }
@@ -294,7 +294,7 @@ module nts.uk.com.view.cli003.g.viewmodel {
         initForm() {
             const self = this;
             self.recordType('0');
-//            self.dataType(-1);
+            self.dataType('-1');
             self.systemType('0');
         }
 
