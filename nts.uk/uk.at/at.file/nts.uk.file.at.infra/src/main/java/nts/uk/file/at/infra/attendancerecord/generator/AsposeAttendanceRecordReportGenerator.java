@@ -176,13 +176,13 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			
 			MONTHLY_DATA_ADDR = "C%d:AD%d";
 			
-			REPORT_PAGE_ADDR = "A1:BB";
+			REPORT_PAGE_ADDR = "A1:AW";
 			
 			REPORT_LEFT_COL_ADDR = "A%d:X%d";
 			
-			REPORT_RIGHT_COL_ADDR = "Z%d:AX%d";
+			REPORT_RIGHT_COL_ADDR = "Z%d:AW%d";
 			
-			END_REPORT_PAGE_BREAK = "AT";
+			END_REPORT_PAGE_BREAK = "AX";
 			
 			DAILY_W_RANGE_TMPL_ADDR = "AY1:BV2";
 			
@@ -191,6 +191,8 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			WEEKLY_RANGE_TMPL_ADDR = "AY11:BV12";
 			
 			MAX_ROW_PER_EMPL = 80;
+			
+			SEAL_RANGE_TMPL_ADDR = "AY14:BV17";
 		} else if( dataSource.getData().getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
 			TEMPLATE_FILE = "report/KWR002_FS.xlsx";
 			
@@ -275,7 +277,14 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					pageSetup.setHeader(2, "&\"ＭＳ ゴシック\"&9 " + currentFormattedDate+"\npage&P");
 					
 					// Delete template column
-					worksheet.getCells().deleteColumns(42, 20, true);
+					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
+						worksheet.getCells().deleteColumns(42, 20, true);
+					} else if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+						worksheet.getCells().deleteColumns(50, 24, true);
+					} else {
+						worksheet.getCells().deleteColumns(50, 24, true);
+					}
+					
 					
 					pageSetup.setPrintTitleRows(PRINT_TITLE_ROW);
 					if (dataSource.getMode() == EXPORT_EXCEL) {
