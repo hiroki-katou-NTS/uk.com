@@ -271,7 +271,7 @@ module nts.uk.com.view.cli003.b {
         endDateOperator: KnockoutObservable<string> = ko.observable(moment.utc().format("YYYY/MM/DD 23:59:59"));
 
         //B4
-        b4_2SelectedRuleCode: any = ko.observable(2);
+        b4_2SelectedRuleCode: KnockoutObservable<number> = ko.observable(2);
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
             { code: EMPLOYEE_SPECIFIC.SPECIFY, name: this.$i18n("CLI003_17") },
             { code: EMPLOYEE_SPECIFIC.ALL, name: this.$i18n("CLI003_18") },
@@ -286,7 +286,7 @@ module nts.uk.com.view.cli003.b {
         b5_2dateValue: KnockoutObservable<any> = ko.observable({});
 
         //B6
-        b6_2SelectedRuleCode: any = ko.observable(2);
+        b6_2SelectedRuleCode: KnockoutObservable<number> = ko.observable(2);
         operatorEmployeeCount: KnockoutObservable<string> = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
         selectedEmployeeCodeOperator: KnockoutObservableArray<any> = ko.observableArray([]);
 
