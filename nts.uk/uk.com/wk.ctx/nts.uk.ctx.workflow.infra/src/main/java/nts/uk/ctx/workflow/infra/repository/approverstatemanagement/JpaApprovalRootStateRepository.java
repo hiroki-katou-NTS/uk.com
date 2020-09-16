@@ -17,8 +17,10 @@ import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
@@ -38,7 +40,6 @@ import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmday.Wwfdt
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdpApprovalRootMonthPK;
 import nts.uk.ctx.workflow.infra.entity.approverstatemanagement.confirmmonth.WwfdtApprovalRootMonth;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 /**
  * 
@@ -798,5 +799,90 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		}
 		return false;
 
+	}
+	
+	// Query based on SELECT_APPS_BY_APPROVER's query.
+	@Override
+	public List<ApprovalRootState> findByApproverAndPeriod(String companyID, GeneralDate startDate, 
+			GeneralDate endDate, List<String> approverIDs) {
+		String query = "SELECT c"
+			+ " FROM WwfdtApprovalRootState c"
+			+ " WHERE c.rootStateID IN "
+			+ "(SELECT DISTINCT a.wwfdpApprovalRootStatePK.rootStateID"
+			+ " FROM WwfdtAppRootStateSimple a JOIN WwfdtAppStateSimple b "
+			+ " ON a.rootStateID = b.wwfdpApproverStatePK.rootStateID "
+			+ " WHERE (b.wwfdpApproverStatePK.approverID IN :approverID"
+			+ " OR b.wwfdpApproverStatePK.approverID IN"
+			+ " (SELECT d.cmmmtAgentPK.employeeId FROM CmmmtAgent d WHERE d.agentSid1 IN :approverID"
+			+ " AND :systemDate <= d.endDate AND :systemDate >= d.startDate))"
+			+ " AND b.companyID = :companyID"
+			+ " AND b.recordDate >= :startDate AND b.recordDate <= :endDate)";
+		
+		return this.queryProxy().query(query, WwfdtApprovalRootState.class).setParameter("companyID", companyID)
+			.setParameter("startDate", startDate).setParameter("endDate", endDate)
+			.setParameter("approverID", approverIDs).setParameter("systemDate", GeneralDate.today())
+			.getList(s -> s.toDomain());
+	}
+	
+	// Query based on resultKTG002Mobile's query.
+	@Override
+	public List<ApprovalRootState> findApprovalRootStateIds(String companyId, List<String> approverIds, 
+			GeneralDate startDate, GeneralDate endDate) {
+		
+		String idList = NtsStatement.In.createParamsString(approverIds);
+		GeneralDate baseDate = GeneralDate.today();
+		String query = "SELECT SYONIN.ROOT_STATE_ID, SYONIN.APPROVER_ID, SYONIN.APP_DATE FROM ( "
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID, APS.PHASE_ORDER AS PHASE_ORDER, "
+				+ "APS.APPROVER_ID AS APPROVER_ID, APS.APP_DATE AS APP_DATE "
+				+ "FROM WWFDT_APPROVER_STATE APS WHERE APS.APPROVER_ID IN (" + idList + ") "
+				+ "AND APS.APPROVAL_ATR = '0' AND APS.APP_DATE >= ? AND APS.APP_DATE <= ? UNION ALL "
+				+ "SELECT APS.ROOT_STATE_ID AS ROOT_STATE_ID, APS.PHASE_ORDER AS PHASE_ORDER, "
+				+ "APS.APPROVER_ID AS APPROVER_ID, APS.APP_DATE AS APP_DATE "
+				+ "FROM WWFDT_APPROVER_STATE APS INNER JOIN CMMMT_AGENT AG "
+				+ "ON APS.APPROVER_ID = AG.SID WHERE APS.APPROVAL_ATR = '0' "
+				+ "AND APS.APP_DATE >= ? AND APS.APP_DATE <= ? "
+				+ "AND AG.START_DATE <= ? AND AG.END_DATE >= ? AND AG.AGENT_APP_TYPE1 = '0' "
+				+ "AND AG.AGENT_SID1 IN (" + idList + ")) AS SYONIN "
+				+ "INNER JOIN ( SELECT AP.ROOT_STATE_ID AS ROOT_STATE_ID, MAX(PHASE_ORDER) AS NOW_PHASE_ORDER "
+				+ "FROM WWFDT_APPROVAL_PHASE_ST AP WHERE AP.APP_PHASE_ATR IN ('0','3') "
+				+ "GROUP BY AP.ROOT_STATE_ID ) AS NOWFAS "
+				+ "ON SYONIN.ROOT_STATE_ID = NOWFAS.ROOT_STATE_ID "
+				+ "AND SYONIN.PHASE_ORDER = NOWFAS.NOW_PHASE_ORDER";
+		
+		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
+			stmt.setDate(1, Date.valueOf(startDate.localDate()));
+			stmt.setDate(2, Date.valueOf(endDate.localDate()));
+			stmt.setDate(3, Date.valueOf(startDate.localDate()));
+			stmt.setDate(4, Date.valueOf(endDate.localDate()));
+			stmt.setDate(5, Date.valueOf(baseDate.localDate()));
+			stmt.setDate(6, Date.valueOf(baseDate.localDate()));
+			ResultSet result = stmt.executeQuery();
+			
+			return new NtsResultSet(result).getList(r -> {
+				ApprovalRootState root = new ApprovalRootState();
+				root.setRootStateID(r.getString("ROOT_STATE_ID"));
+				List<ApprovalPhaseState> phaseList = new ArrayList<>();
+				root.setListApprovalPhaseState(phaseList);
+				ApprovalPhaseState phase = new ApprovalPhaseState();
+				phaseList.add(phase);
+				
+				List<ApprovalFrame> frameList = new ArrayList<>();
+				phase.setListApprovalFrame(frameList);
+				ApprovalFrame frame = new ApprovalFrame();
+				frame.setAppDate(r.getGeneralDate("APP_DATE"));
+				frameList.add(frame);
+				
+				List<ApproverInfor> approverInfoList = new ArrayList<>();
+				frame.setLstApproverInfo(approverInfoList);
+				ApproverInfor approverInfo = new ApproverInfor();
+				approverInfo.setApproverID(r.getString("APPROVER_ID"));
+				approverInfoList.add(approverInfo);
+				return root;
+			});
+			
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }

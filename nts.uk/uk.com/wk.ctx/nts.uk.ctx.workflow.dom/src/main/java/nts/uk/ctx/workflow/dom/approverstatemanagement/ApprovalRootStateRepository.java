@@ -124,4 +124,18 @@ public interface ApprovalRootStateRepository {
 
 	public boolean resultKTG002(GeneralDate startDate, GeneralDate endDate, String approverID, Integer rootType,
 			String companyID);
+	
+	List<ApprovalRootState> findByApproverAndPeriod(String companyID, GeneralDate startDate, 
+			GeneralDate endDate, List<String> approverIDs);
+	
+	/**
+	 * [RQ611]承認すべき申請IDリストを取得する
+	 * @param companyId
+	 * @param approverIds
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	List<ApprovalRootState> findApprovalRootStateIds(String companyId, List<String> approverIds, 
+			GeneralDate startDate, GeneralDate endDate);
 }

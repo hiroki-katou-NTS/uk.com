@@ -17,7 +17,7 @@ public enum AlarmCategory {
 	/**
 	 * スケジュール4週
 	 */
-	SCHEDULE_4WEEK(2, "スケジュール4週"),
+	SCHEDULE_4WEEK(2, "4週4休"),
 	/**
 	 * スケジュール月次
 	 */
@@ -61,8 +61,11 @@ public enum AlarmCategory {
 	/**
 	 * 工数チェック
 	 */
-	MAN_HOUR_CHECK(13, "工数チェック");
-
+	MAN_HOUR_CHECK(13, "工数チェック"),
+	/**
+	 * マスタチェック
+	 */
+	MASTER_CHECK(14, "マスタチェック");
 	
 	/** The value. */
 	public final int value;

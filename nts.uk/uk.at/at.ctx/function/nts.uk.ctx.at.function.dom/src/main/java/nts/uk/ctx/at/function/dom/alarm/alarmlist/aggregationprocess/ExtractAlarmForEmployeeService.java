@@ -26,7 +26,9 @@ import nts.uk.ctx.at.function.dom.alarm.alarmlist.EmployeeSearchDto;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.PeriodByAlarmCategory;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.agreementprocess.AgreementProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.aggregationprocess.daily.dailyaggregationprocess.DailyAggregationProcessService;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.appapproval.AppApprovalAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.attendanceholiday.TotalProcessAnnualHoliday;
+import nts.uk.ctx.at.function.dom.alarm.alarmlist.mastercheck.MasterCheckAggregationProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.monthly.MonthlyAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.alarmlist.multiplemonth.MultipleMonthAggregateProcessService;
 import nts.uk.ctx.at.function.dom.alarm.checkcondition.AlarmCheckConditionByCategory;
@@ -54,6 +56,12 @@ public class ExtractAlarmForEmployeeService {
 
 	@Inject
 	private MultipleMonthAggregateProcessService multipleMonthAggregateProcessService;
+	
+	@Inject
+	private AppApprovalAggregationProcessService appApprovalAggregationProcessService;
+	
+	@Inject
+	private MasterCheckAggregationProcessService masterCheckAggregationProcessService;
 
 	@Inject
 	private ApprovalProcessAdapter approvalProcessAdapter;
@@ -213,6 +221,14 @@ public class ExtractAlarmForEmployeeService {
 //		});
 			//アルゴリズム「年休の集計処理」を実行する
 			result.addAll(runHolidayCheckErAl(comId, checkConList, listPeriodByCategory, employees,
+					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
+			
+			// アルゴリズム「申請承認の集計処理」を実行する
+			result.addAll(runAppApprovalCheckErAl(comId, checkConList, listPeriodByCategory, employees, 
+					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
+			
+			// アルゴリズム「マスタチェックの集計処理」を実行する
+			result.addAll(runMasterCheckErAl(comId, checkConList, listPeriodByCategory, employees, 
 					employeeIds, optWorkplaceImports, eralCate, counter, shouldStop));
 
 //		parallelManager.forEach(checks, check -> check.run());
@@ -414,6 +430,58 @@ public class ExtractAlarmForEmployeeService {
 		}
 		
 		return new ArrayList<>();
+	}
+	
+	/**
+	 * アラームリスト　申請承認
+	 * @param comId
+	 * @param checkConList
+	 * @param listPeriodByCategory
+	 * @param employees
+	 * @param employeeIds
+	 * @param optWorkplaceImports
+	 * @param eralCate
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
+	private List<ValueExtractAlarm> runAppApprovalCheckErAl(String comId, List<CheckCondition> checkConList,
+			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
+			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
+			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		
+		List<AlarmCheckConditionByCategory> checkCondition = getAlarmCheckConditionCate(eralCate, AlarmCategory.APPLICATION_APPROVAL, checkConList);
+		if (checkCondition.isEmpty()) return new ArrayList<>();
+		PeriodByAlarmCategory period = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.APPLICATION_APPROVAL.value).findFirst().get();
+		fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, period);
+		return appApprovalAggregationProcessService.aggregate(comId, checkCondition,
+				new DatePeriod(period.getStartDate(), period.getEndDate()), employees, counter, shouldStop);
+	}
+	
+	/**
+	 * アラームリスト　マスタチェック
+	 * @param comId
+	 * @param checkConList
+	 * @param listPeriodByCategory
+	 * @param employees
+	 * @param employeeIds
+	 * @param optWorkplaceImports
+	 * @param eralCate
+	 * @param counter
+	 * @param shouldStop
+	 * @return
+	 */
+	private List<ValueExtractAlarm> runMasterCheckErAl(String comId, List<CheckCondition> checkConList,
+			List<PeriodByAlarmCategory> listPeriodByCategory, List<EmployeeSearchDto> employees,
+			List<String> employeeIds, List<WorkplaceImport> optWorkplaceImports,
+			List<AlarmCheckConditionByCategory> eralCate, Consumer<Integer> counter, Supplier<Boolean> shouldStop) {
+		
+		List<AlarmCheckConditionByCategory> checkCondition = getAlarmCheckConditionCate(eralCate, AlarmCategory.MASTER_CHECK, checkConList);
+		if (checkCondition.isEmpty()) return new ArrayList<>();
+		PeriodByAlarmCategory period = listPeriodByCategory.stream().filter(c -> c.getCategory() == AlarmCategory.MASTER_CHECK.value).findFirst().get();
+		fillWorkPlaceForCategory(employees, employeeIds, optWorkplaceImports, period);
+		return masterCheckAggregationProcessService.aggregate(comId, checkCondition,
+				new DatePeriod(period.getStartDate(), period.getEndDate()), employees, counter, shouldStop);
 	}
 
 	private void fillWorkPlaceForCategory(List<EmployeeSearchDto> employees, List<String> employeeIds,

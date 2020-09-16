@@ -9,8 +9,10 @@ import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationAdapter;
 import nts.uk.ctx.at.function.dom.adapter.application.ApplicationImport;
+import nts.uk.ctx.at.function.dom.adapter.application.ApplicationStateImport;
 import nts.uk.ctx.at.function.dom.adapter.application.importclass.ApplicationDeadlineImport;
 import nts.uk.ctx.at.request.pub.screen.ApplicationDeadlineExport;
 import nts.uk.ctx.at.request.pub.screen.ApplicationExport;
@@ -38,6 +40,15 @@ public class ApplicationAcAdapter implements ApplicationAdapter {
 	public ApplicationDeadlineImport getApplicationDeadline(String companyID, Integer closureID) {
 		ApplicationDeadlineExport export = applicationPub.getApplicationDeadline(companyID, closureID);
 		return new ApplicationDeadlineImport(export.isUseApplicationDeadline(),export.getDateDeadline());
+	}
+	
+	@Override
+	public List<ApplicationStateImport> findByEmployeesAndDates(List<String> empIds, DatePeriod period) {
+		
+		return applicationPub.getApplicationBySID(empIds, period.start(), period.end()).stream()
+				.map(a -> new ApplicationStateImport(a.getAppDate(), a.getAppType(), a.getEmployeeID(), 
+						a.getAppTypeName(), a.getReflectState()))
+				.collect(Collectors.toList());
 	}
 
 }
