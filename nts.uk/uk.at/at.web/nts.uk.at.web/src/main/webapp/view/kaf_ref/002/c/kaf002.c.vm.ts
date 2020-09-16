@@ -262,15 +262,138 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             self.application = params.application;
             self.approvalReason = params.approvalReason;
             
-            self.isPreAtr(self.application().prePostAtr() == 0);
+            self.isPreAtr(self.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr == 0);
             self.dataSourceOb = ko.observableArray( [] );
             self.fetchData();
-//            self.bindActualData();
+
+            params.eventUpdate(self.update.bind(self));
             
         }
         
+        update() {
+            console.log('update');
+            const self = this;
+            if (!self.appDispInfoStartupOutput().appDetailScreenInfo) {
+                return;
+            }
+            let application = ko.toJS(self.application);
+            let applicationDto = self.appDispInfoStartupOutput().appDetailScreenInfo.application as any;
+            applicationDto.prePostAtr = application.prePostAtr;
+            applicationDto.opAppReason = application.opAppReason;
+            applicationDto.opAppStandardReasonCD = application.opAppStandardReasonCD;    
+            applicationDto.opReversionReason = application.opReversionReason;
+            let recoderFlag = false;
+            let appStampOutputDto = self.data;
+            let appStampDto = {} as AppStampDto;
+//                self.createAppStamp() as AppStampDto;
+            let command = {
+                    applicationDto,
+                    recoderFlag,
+                    appStampDto,
+                    appStampOutputDto
+            }
+            self.$blockui('show');
+            self.$ajax(API.update, command)
+                .done(res => {
+                    console.log(res);
+                }).fail(res => {
+                    console.log(res);
+                }).always(() => {
+                    self.$blockui('hide');
+                })
+        }
         
-        
+        public createAppStamp() {
+            const self = this;
+            let appStamp = {} as AppStampDto;
+            let listTimeStampApp: Array<TimeStampAppDto> = [],
+                listDestinationTimeApp: Array<DestinationTimeAppDto> = [],
+                listTimeStampAppOther: Array<TimeStampAppOtherDto> = [],
+                listDestinationTimeZoneApp: Array<DestinationTimeZoneAppDto> = [];
+            _.forEach(self.dataSourceOb(), (items: GridItem, index) => {
+//                出勤／退勤 , 外出
+                if (index == 0 || index == 1) {                    
+                    _.forEach(items, (el: GridItem) => {                       
+                        if (!ko.toJS(el.flagObservable)) {
+                            if (ko.toJS(el.startTimeRequest)) {
+                                let timeStampAppDto = {} as TimeStampAppDto;
+                                let destinationTimeApp = {} as DestinationTimeAppDto;
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
+                                destinationTimeApp.startEndClassification = START_CLASSIFICATION;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                timeStampAppDto.destinationTimeApp = destinationTimeApp;
+                                timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
+                                timeStampAppDto.workLocationCd = null;
+                                timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);
+                                listTimeStampApp.push(timeStampAppDto);
+                                
+                            }
+                            
+                            if (ko.toJS(el.endTimeRequest)) {
+                                let timeStampAppDto = {} as TimeStampAppDto;
+                                let destinationTimeApp = {} as DestinationTimeAppDto;
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
+                                destinationTimeApp.startEndClassification = END_CLASSIFICATION;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                timeStampAppDto.destinationTimeApp = destinationTimeApp;
+                                timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
+                                timeStampAppDto.workLocationCd = null;
+                                timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);
+                                listTimeStampApp.push(timeStampAppDto);
+                            }
+                        } else {
+                            if (el.startTimeActual) {
+                                let destinationTimeApp = {} as DestinationTimeAppDto;
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
+                                destinationTimeApp.startEndClassification = START_CLASSIFICATION;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                listDestinationTimeApp.push(destinationTimeApp)
+                            }
+                            if (el.endTimeActual) {
+                                let destinationTimeApp = {} as DestinationTimeAppDto;
+                                destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
+                                destinationTimeApp.startEndClassification = END_CLASSIFICATION;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                listDestinationTimeApp.push(destinationTimeApp)
+                            }
+                        }   
+                    })
+                    
+                } else {
+                    _.forEach(items, (el: GridItem) => {
+                        if (!ko.toJS(el.flagObservable)) {
+                            if (ko.toJS(el.startTimeRequest) || ko.toJS(el.endTimeRequest)) {
+                                let timeStampAppOtherDto = {} as TimeStampAppOtherDto;
+                                let tz = {} as TimeZone;
+                                let destinationTimeZoneAppDto = {} as DestinationTimeZoneAppDto;
+                                destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
+                                destinationTimeZoneAppDto.engraveFrameNo = el.id;
+                                timeStampAppOtherDto.destinationTimeZoneApp = destinationTimeZoneAppDto;
+                                timeStampAppOtherDto.timeZone = tz;
+                                if (ko.toJS(el.startTimeRequest)) {
+                                    tz.startTime = ko.toJS(el.startTimeRequest);
+                                    
+                                }
+                                if (ko.toJS(el.endTimeRequest)) {
+                                    tz.endTime = ko.toJS(el.endTimeRequest);                             
+                                }
+                                listTimeStampAppOther.push(timeStampAppOtherDto);                               
+                            }
+                        } else {
+                            let destinationTimeZoneAppDto = {} as DestinationTimeZoneAppDto;
+                            destinationTimeZoneAppDto.timeZoneStampClassification = el.convertTimeZoneStampClassification();
+                            destinationTimeZoneAppDto.engraveFrameNo = el.id;
+                            listDestinationTimeZoneApp.push(destinationTimeZoneAppDto);
+                        }
+                    });
+                }
+            });
+            appStamp.listTimeStampApp = listTimeStampApp;
+            appStamp.listDestinationTimeApp = listDestinationTimeApp;
+            appStamp.listTimeStampAppOther = listTimeStampAppOther;
+            appStamp.listDestinationTimeZoneApp = listDestinationTimeZoneApp;
+            return appStamp;
+        }
         
 
     }
@@ -278,7 +401,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",
             register: "at/request/application/stamp/register",
-            getDetail: "at/request/application/stamp/detailAppStamp"
+            getDetail: "at/request/application/stamp/detailAppStamp",
+            update: "at/request/application/stamp/updateNew",
+            checkUpdate: "at/request/application/stamp/checkBeforeUpdate"
             
         }
+    const START_CLASSIFICATION = 0;
+    const END_CLASSIFICATION = 1;
 }

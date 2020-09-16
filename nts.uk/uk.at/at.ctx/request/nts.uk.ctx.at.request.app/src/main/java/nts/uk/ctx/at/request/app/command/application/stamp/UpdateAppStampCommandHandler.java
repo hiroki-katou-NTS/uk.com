@@ -27,8 +27,12 @@ public class UpdateAppStampCommandHandler extends CommandHandlerWithResult<Regis
 		ApplicationDto applicationDto = param.getApplicationDto();
 		AppStampDto appStampDto = param.getAppStampDto();
 		AppRecordImageDto appRecordImageDto = param.getAppRecordImageDto();
-		appStampDto.setAppID(applicationDto.getAppID());
-		appRecordImageDto.setAppID(applicationDto.getAppID());
+		if (appStampDto != null) {
+			appStampDto.setAppID(applicationDto.getAppID());			
+		}
+		if (appRecordImageDto != null) {
+			appRecordImageDto.setAppID(applicationDto.getAppID());			
+		}
 		return appCommonDomainServiceRegister.updateAppStamp(
 				applicationDto.toDomain(),
 				appStampDto != null ? Optional.of(appStampDto.toDomain()) : Optional.empty(),
