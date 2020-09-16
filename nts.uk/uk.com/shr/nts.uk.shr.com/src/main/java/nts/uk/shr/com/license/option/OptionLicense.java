@@ -113,6 +113,14 @@ public interface OptionLicense {
 					}
 				};
 			}
+			@Override
+			public boolean presentAndMessage() {
+				return true;
+			}
+			@Override
+			public boolean enterAndExit() {
+				return true;
+			}
 		};
 	}
 }
