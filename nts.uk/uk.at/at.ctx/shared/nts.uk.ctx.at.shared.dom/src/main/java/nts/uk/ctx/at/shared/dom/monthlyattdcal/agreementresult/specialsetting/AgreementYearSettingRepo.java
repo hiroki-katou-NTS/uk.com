@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.specialsetting;
 
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.Year;
 
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * ３６協定年度設定Repository
+ */
 public interface AgreementYearSettingRepo {
 
     /**

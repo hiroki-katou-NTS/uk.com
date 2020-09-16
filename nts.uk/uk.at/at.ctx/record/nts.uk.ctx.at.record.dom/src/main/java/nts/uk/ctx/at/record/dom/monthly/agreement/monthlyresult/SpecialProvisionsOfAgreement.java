@@ -2,11 +2,14 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,13 +19,9 @@ import java.util.Optional;
  * @author quang.nh1
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class SpecialProvisionsOfAgreement extends AggregateRoot {
-
-    /**
-     * The company id.
-     */
-    private String companyId;
 
     /**
      * 申請ID
@@ -74,21 +73,31 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
      */
     private ScreenDisplayInfo screenDisplayInfo;
 
-    public SpecialProvisionsOfAgreement(String applicationID, String enteredPersonSID, GeneralDate inputDate,
-                                        String applicantsSID, ApplicationTime applicationTime, ReasonsForAgreement reasonsForAgreement,
-                                        List<String> listApproverSID, ApprovalStatusDetails confirmationStatus,
-                                        List<ConfirmationStatusDetails> confirmationStatuses, ScreenDisplayInfo screenDisplayInfo) {
 
-        this.applicationID = applicationID;
-        this.enteredPersonSID = enteredPersonSID;
-        this.inputDate = inputDate;
-        this.applicantsSID = applicantsSID;
-        this.applicationTime = applicationTime;
-        this.reasonsForAgreement = reasonsForAgreement;
-        this.listApproverSID = listApproverSID;
-        this.approvalStatusDetails = confirmationStatus;
-        this.confirmationStatusDetails = confirmationStatuses;
-        this.screenDisplayInfo = screenDisplayInfo;
+    /**
+     * [C-1] 新規申請作成
+     */
+    public static SpecialProvisionsOfAgreement create(String enteredPersonSID, String applicantsSID, ApplicationTime applicationTime, ReasonsForAgreement reasonsForAgreement,
+                                                      List<String> listApproverSID, List<String> listConfirmSID, ScreenDisplayInfo screenDisplayInfo) {
+
+        ApprovalStatusDetails approvalStatusDetails = new ApprovalStatusDetails(ApprovalStatus.UNAPPROVED, Optional.empty(), Optional.empty(), Optional.empty());
+        List<ConfirmationStatusDetails> confirmationStatusDetails = new ArrayList<>();
+        listConfirmSID.forEach(sid -> {
+            confirmationStatusDetails.add(new ConfirmationStatusDetails(ConfirmationStatus.UNCONFIRMED, sid, Optional.empty()));
+        });
+
+        return new SpecialProvisionsOfAgreement(
+                IdentifierUtil.randomUniqueId(),
+                enteredPersonSID,
+                GeneralDate.today(),
+                applicantsSID,
+                applicationTime,
+                reasonsForAgreement,
+                listApproverSID,
+                approvalStatusDetails,
+                confirmationStatusDetails,
+                screenDisplayInfo
+        );
     }
 
 
@@ -96,12 +105,13 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
      * [prv-1] 承認確認状況をクリアする
      */
     private void clearApprovalConfirm() {
-        if (this.approvalStatusDetails.getApprovalStatus() != ApprovalStatus.UNAPPROVED)
+        if (this.approvalStatusDetails.getApprovalStatus() != ApprovalStatus.UNAPPROVED) {
             this.approvalStatusDetails.setApprovalStatus(ApprovalStatus.UNAPPROVED);
-        this.confirmationStatusDetails.forEach(x -> {
-            x.setConfirmationStatusEnum(ConfirmationStatus.UNCONFIRMED);
-            x.setConfirmDate(Optional.empty());
-        });
+            this.confirmationStatusDetails.forEach(x -> {
+                x.setConfirmationStatus(ConfirmationStatus.UNCONFIRMED);
+                x.setConfirmDate(Optional.empty());
+            });
+        }
     }
 
     /**
@@ -109,7 +119,7 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
      */
     public void approveApplication(String authorizerSID, ApprovalStatus approvalStatus, Optional<AgreementApprovalComments> approvalComment) {
         this.approvalStatusDetails.setApprovalStatus(approvalStatus);
-        this.approvalStatusDetails.setAuthorizerSID(Optional.of(authorizerSID));
+        this.approvalStatusDetails.setApproveSID(Optional.of(authorizerSID));
         this.approvalStatusDetails.setApprovalComment(approvalComment);
         this.approvalStatusDetails.setApprovalDate(Optional.of(GeneralDate.today()));
     }
@@ -117,9 +127,9 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
     /**
      * [2] 申請を確認する
      */
-    public void confirmApplication(String confirmerSID, ConfirmationStatus confirmationStatusEnum) {
+    public void confirmApplication(String confirmerSID, ConfirmationStatus confirmationStatus) {
         this.confirmationStatusDetails.stream().filter(x -> x.getConfirmerSID().equals(confirmerSID)).forEach(c -> {
-            c.setConfirmationStatusEnum(confirmationStatusEnum);
+            c.setConfirmationStatus(confirmationStatus);
             c.setConfirmDate(Optional.of(GeneralDate.today()));
         });
     }
@@ -131,6 +141,9 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
         this.reasonsForAgreement = reasonsForAgreement;
         if (this.applicationTime.getOneMonthTime().isPresent())
             this.applicationTime.getOneMonthTime().get().setErrorTimeInMonth(errorTimeInMonth);
+
+        //[prv-1] 承認確認状況をクリアする
+        clearApprovalConfirm();
     }
 
     /**
@@ -140,6 +153,9 @@ public class SpecialProvisionsOfAgreement extends AggregateRoot {
         this.reasonsForAgreement = reasonsForAgreement;
         if (this.applicationTime.getOneYearTime().isPresent())
             this.applicationTime.getOneYearTime().get().setErrorTimeInYear(errorTimeInYear);
+
+        //[prv-1] 承認確認状況をクリアする
+        clearApprovalConfirm();
     }
 
 }

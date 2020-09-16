@@ -26,7 +26,7 @@ public class ApprovalStatusDetails {
     private Optional<GeneralDate> approvalDate;
 
     /** 承認者*/
-    private Optional<String> authorizerSID;
+    private Optional<String> approveSID;
 
 
 

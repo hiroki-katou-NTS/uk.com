@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
 
 /**
- * 
+ * ３６協定年度設定
  * @author nampt
  *
  */

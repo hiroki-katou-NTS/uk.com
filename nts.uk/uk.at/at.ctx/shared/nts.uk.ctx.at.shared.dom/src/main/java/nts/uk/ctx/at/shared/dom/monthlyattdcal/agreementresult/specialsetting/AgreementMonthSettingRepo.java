@@ -5,6 +5,10 @@ import nts.arc.time.YearMonth;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * ３６協定年月設定Repository
+ * @author quang.nh1
+ */
 public interface AgreementMonthSettingRepo {
 
     /**

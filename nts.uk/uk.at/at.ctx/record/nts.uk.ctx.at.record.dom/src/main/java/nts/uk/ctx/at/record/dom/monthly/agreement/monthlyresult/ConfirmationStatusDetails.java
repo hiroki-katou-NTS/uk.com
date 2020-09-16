@@ -17,7 +17,7 @@ import java.util.Optional;
 public class ConfirmationStatusDetails {
 
     /** 確認状態 */
-    private ConfirmationStatus confirmationStatusEnum;
+    private ConfirmationStatus confirmationStatus;
 
     /** 確認者 */
     private String confirmerSID;

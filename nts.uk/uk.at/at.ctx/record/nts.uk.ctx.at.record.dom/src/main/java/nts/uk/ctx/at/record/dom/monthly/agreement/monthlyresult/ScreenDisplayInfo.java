@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * 画面表示情報
@@ -9,6 +10,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ScreenDisplayInfo {
 
     /** 画面表示情報*/

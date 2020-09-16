@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult;
 
 /**
- * 
+ * ３６協定起算月
  * @author nampt
  *
  */
