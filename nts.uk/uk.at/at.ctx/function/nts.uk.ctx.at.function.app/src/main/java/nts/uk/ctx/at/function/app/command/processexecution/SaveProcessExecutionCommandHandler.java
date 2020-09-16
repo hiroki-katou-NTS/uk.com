@@ -102,22 +102,26 @@ public class SaveProcessExecutionCommandHandler extends CommandHandlerWithResult
 										EnumAdaptor.valueOf(command.getDailyPerfItem(), DailyPerformanceItem.class)
 										,new TargetGroupClassification( command.isRecreateWorkType(), command.isMidJoinEmployee(),command.isRecreateTransfer()));
 
-		ProcessExecutionSetting execSetting = 
-				new ProcessExecutionSetting(alarmExtraction, perSchCreation, dailyPerfCreation, command.isReflectResultCls(), command.isMonthlyAggCls(),
-						new AppRouteUpdateDaily(
+		ProcessExecutionSetting execSetting = ProcessExecutionSetting.builder()
+				.alarmExtraction(alarmExtraction)
+				.perSchedule(perSchCreation)
+				.dailyPerf(dailyPerfCreation)
+				.reflectResultCls(command.isReflectResultCls())
+				.monthlyAggCls(command.isMonthlyAggCls())
+				.appRouteUpdateDaily(new AppRouteUpdateDaily(
 								EnumAdaptor.valueOf(command.isAppRouteUpdateAtr()?1:0, NotUseAtr.class),
 								command.getCreateNewEmp()==null?null:EnumAdaptor.valueOf((command.getCreateNewEmp().booleanValue()?1:0), NotUseAtr.class)
-								),
-						EnumAdaptor.valueOf(command.isAppRouteUpdateMonthly()?1:0, NotUseAtr.class)
-						);
-		
-		ProcessExecution procExec =
-				new ProcessExecution(companyId,
-						new ExecutionCode(command.getExecItemCd()),
-						new ExecutionName(command.getExecItemName()), execScope, execSetting,
-						EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class));
-		
-		
+								))
+				.appRouteUpdateMonthly(EnumAdaptor.valueOf(command.isAppRouteUpdateMonthly()?1:0, NotUseAtr.class))
+				.build();
+		ProcessExecution procExec = ProcessExecution.builder()
+				.companyId(companyId)
+				.execItemCd(new ExecutionCode(command.getExecItemCd()))
+				.execItemName(new ExecutionName(command.getExecItemName()))
+				.execScope(execScope)
+				.execSetting(execSetting)
+				.processExecType(EnumAdaptor.valueOf(command.getProcessExecType(), ProcessExecType.class))
+				.build();
 		procExec.validateVer2();
 		if (command.isNewMode()) {
 			//新規登録処理

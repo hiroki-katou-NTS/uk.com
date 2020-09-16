@@ -3,6 +3,7 @@ package nts.uk.ctx.at.function.dom.processexecution;
 //import java.util.ArrayList;
 //import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
  * 更新処理自動実行
  */
 @Getter
+@Builder
 @AllArgsConstructor
 public class ProcessExecution extends AggregateRoot {
 	/* 会社ID */

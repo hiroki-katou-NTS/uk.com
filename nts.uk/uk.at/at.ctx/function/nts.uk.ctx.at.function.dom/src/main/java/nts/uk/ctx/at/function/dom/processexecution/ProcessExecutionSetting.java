@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.function.dom.processexecution;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.function.dom.processexecution.dailyperformance.DailyPerformanceCreation;
@@ -13,7 +15,9 @@ import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
  */
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProcessExecutionSetting extends DomainObject {	
 	/* アラーム抽出 */
 	private AlarmExtraction alarmExtraction;
