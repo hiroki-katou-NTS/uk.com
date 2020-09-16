@@ -225,37 +225,49 @@ module nts.uk.com.view.kwr002.a {
                         vm.permission(false);
                     }
                 });
-                service.getAllAttendanceRecExpSet().done((wrapper: AttendanceRecordExportSettingWrapperDto) => {
-                    if (wrapper.standardSettingLst.length === 0) {
-                        vm.attendanceRecordList([]);
-                        // $('#print').attr("disabled", "disabled")
-                        // $('#exportExcel').attr("disabled", "disabled")
-                    } else {
-                        var sortArray = _.orderBy(wrapper.standardSettingLst, [e => Number(e.code)], ['asc']);
-                        _.map(sortArray, (item) => {
-                            item.code = _.padStart(item.code, 2, '0');
-                        });
-                        vm.attendanceRecordList(sortArray);
-                        vm.selectedCode(sortArray[0].code);
-                    }
 
-                    if (wrapper.freeSettingLst.length === 0) {
-                        vm.freeSettingLst([]);
-                    } else {
-                        var sortArray = _.orderBy(wrapper.freeSettingLst, [e => Number(e.code)], ['asc']);
-                        _.map(sortArray, (item) => {
-                            item.code = _.padStart(item.code, 2, '0');
-                        });
-                        vm.freeSettingLst(sortArray);
-                        vm.selectedCodeA8_8(sortArray[0].code);
-                    }
+                $.when(vm.getDataCharateristic()).done((dataCharacteristic: any) => {
+                    let isExist = !(_.isUndefined(dataCharacteristic) || _.isNull(dataCharacteristic));
+                    service.getAllAttendanceRecExpSet().done((wrapper: AttendanceRecordExportSettingWrapperDto) => {
+                        if (wrapper.standardSettingLst.length === 0) {
+                            vm.attendanceRecordList([]);
+                        } else {
+                            var sortArray = _.orderBy(wrapper.standardSettingLst, [e => Number(e.code)], ['asc']);
+                            _.map(sortArray, (item) => {
+                                item.code = _.padStart(item.code, 2, '0');
+                            });
+                            vm.attendanceRecordList(sortArray);
+                            vm.selectedCode(sortArray[0].code);
+                        }
 
-                    this.selectedCodeA8_5(wrapper.isFreeSetting ? ItemSelectionType.FREE_SETTING : ItemSelectionType.STANDARD_SETTING);
-                    vm.enableA8_3(!wrapper.isFreeSetting);
-                    vm.enableA8_8(wrapper.isFreeSetting);
+                        if (wrapper.freeSettingLst.length === 0) {
+                            vm.freeSettingLst([]);
+                        } else {
+                            var sortArray = _.orderBy(wrapper.freeSettingLst, [e => Number(e.code)], ['asc']);
+                            _.map(sortArray, (item) => {
+                                item.code = _.padStart(item.code, 2, '0');
+                            });
+                            vm.freeSettingLst(sortArray);
+                            vm.selectedCodeA8_8(sortArray[0].code);
+                        }
 
-                    dfd.resolve();
+                        vm.selectedCodeA8_5(wrapper.isFreeSetting ? ItemSelectionType.FREE_SETTING : ItemSelectionType.STANDARD_SETTING);
+                        if (wrapper.isFreeSetting) {
+                            if (vm.freeSettingLst().length > 0 && isExist) {
+                                vm.renewDataPage();
+                            }
+                        } else {
+                            if (vm.attendanceRecordList().length > 0 && isExist) {
+                                vm.renewDataPage();
+                            }
+                        }
+                        vm.enableA8_3(!wrapper.isFreeSetting);
+                        vm.enableA8_8(wrapper.isFreeSetting);
+
+                        dfd.resolve();
+                    });
                 });
+                
                 service.getClosureMonth().done((dto) => {
                     const startMonth = dto.currentMonth;
                     const endMonth = dto.currentMonth;
@@ -610,6 +622,41 @@ module nts.uk.com.view.kwr002.a {
 
                 return dfd.promise();
             }
+
+            public getDataCharateristic(): JQueryPromise<any> {
+                const dfd = $.Deferred<any>();
+                let companyId: string = __viewContext.user.companyId;
+                let userId: string = __viewContext.user.employeeId;
+
+                $.when(service.restoreCharacteristic(companyId, userId)).done(function(data: AttendanceRecordOutputConditionsDto) {
+                    if (_.isUndefined(data)) {
+                        let attendanceRecordOutputConditionsDto = new AttendanceRecordOutputConditionsDto(
+                            ItemSelectionType.STANDARD_SETTING
+                            , ''
+                            , ''
+                            , companyId
+                            , userId
+                            , 0
+                            , ''
+                            , '');
+                        service.saveCharacteristic(companyId, userId, attendanceRecordOutputConditionsDto);    
+                    }
+                    dfd.resolve(data);
+                });
+                return dfd.promise();
+            }
+
+            private renewDataPage(): void {
+                let self = this;
+                let companyId: string = __viewContext.user.companyId;
+                let userId: string = __viewContext.user.employeeId;
+                service.restoreCharacteristic(companyId, userId).done(function(data: any) {
+                    let condition: AttendanceRecordOutputConditionsDto = data;
+                    self.selectedCode(condition.standardSelectionCode);
+                    self.selectedCodeA8_8(condition.freeSelectionCode);
+                    self.selectedDataZeroDisplayType(condition.zeroDisplayType);
+                })
+            }
         }
 
         export class ListType {
@@ -755,6 +802,43 @@ module nts.uk.com.view.kwr002.a {
                 this.employeeId = employeeId;
                 this.selectedOutputLayoutId = selectedOutputLayoutId;
                 this.selectedCode = selectedCode;
+            }
+        }
+
+        class AttendanceRecordOutputConditionsDto {
+            //	項目選択区分
+            selectionType: number;
+            //	定型選択_コード
+            standardSelectionCode: string;
+            //	自由設定_コード
+            freeSelectionCode: string;
+            // 	会社ID
+            companyId: string;
+            // 	ユーザID
+            userId: string;
+            //	ゼロ表示区分
+            zeroDisplayType: number;
+            //	自由設定_出力レイアウトID
+            freeSettingLayoutId: string;
+            //	定型選択_出力レイアウトID
+            standardSelectionLayoutId: string;
+
+            constructor(selectionType: number
+                , standardSelectionCode: string
+                , freeSelectionCode: string
+                , companyId: string
+                , userId: string
+                , zeroDisplayType: number
+                , freeSettingLayoutId: string
+                , standardSelectionLayoutId: string) {
+                this.selectionType = selectionType;
+                this.standardSelectionCode = standardSelectionCode;
+                this.freeSelectionCode = freeSelectionCode;
+                this.companyId = companyId;
+                this.userId = userId;
+                this.zeroDisplayType = zeroDisplayType;
+                this.freeSettingLayoutId = freeSettingLayoutId;
+                this.standardSelectionLayoutId = standardSelectionLayoutId;
             }
         }
     }

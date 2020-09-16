@@ -113,10 +113,8 @@ public class AttendanceRecordExportSettingFinder {
 	/**
 	 * Gets the attendance record export setting dto.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param code
-	 *            the code
+	 * @param companyId the company id
+	 * @param code the code
 	 * @return the attendance record export setting dto
 	 */
 	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String code) {
