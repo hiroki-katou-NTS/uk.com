@@ -57,7 +57,8 @@ public class ApplicationContentServiceImpl implements IApplicationContentService
 			}
 			case WORK_CHANGE_APPLICATION: {
 				/** 勤務変更申請*/
-				return contentDtail.getContentWorkChange(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
+//				return contentDtail.getContentWorkChange(null, companyID, appID, appReasonDisAtr, appReason, ScreenAtr.KDL030.value, Collections.emptyList(), Collections.emptyList());
+				return "";
 			}
 			case BUSINESS_TRIP_APPLICATION: {
 				/** 出張申請*/

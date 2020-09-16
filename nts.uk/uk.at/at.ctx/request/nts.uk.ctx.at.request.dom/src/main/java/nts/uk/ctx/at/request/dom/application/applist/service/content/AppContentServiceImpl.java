@@ -343,6 +343,16 @@ public class AppContentServiceImpl implements AppContentService {
 						companyID);
 				listOfApp.setAppContent(contentBusinessTrip);
 				break;
+			case WORK_CHANGE_APPLICATION:
+				// 勤務変更申請データを作成
+				String contentWorkChange = appContentDetailCMM045.getContentWorkChange(
+						application, 
+						approvalListDisplaySetting.getAppReasonDisAtr(), 
+						lstWkTime, 
+						lstWkType, 
+						companyID);
+				listOfApp.setAppContent(contentWorkChange);
+				break;
 			default:
 				listOfApp.setAppContent("-1");
 				break;
