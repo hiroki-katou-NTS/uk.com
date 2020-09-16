@@ -652,7 +652,7 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion(colorBackGr, false);
                 // self.reloadGridApplicaion(colorBackGr, self.isHidden());
           	}
-
+			self.isLimit500(appListInfo.moreThanDispLineNO);
 
 			/*self.appList(data.appListInfo);
             if(self.appList().appLst.length > 500) {
