@@ -426,7 +426,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 name: '名称',
             };
             const keyword: string = word.substring(
-                word.lastIndexOf("{#") + 1,
+                word.lastIndexOf("{#") + 2,
                 word.lastIndexOf("#}")
             );
             const reveseWord: string = mapReveseWord[keyword];
