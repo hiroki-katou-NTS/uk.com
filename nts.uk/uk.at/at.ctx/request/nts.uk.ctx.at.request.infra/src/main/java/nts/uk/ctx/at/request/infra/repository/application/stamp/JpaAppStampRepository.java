@@ -74,34 +74,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 	public void updateStamp(AppStamp appStamp) {
 		List<KrqdtAppStamp> listKrqdtAppStamp = toEntityList(appStamp);
 		if (CollectionUtil.isEmpty(listKrqdtAppStamp)) return;
-		List<KrqdtAppStampPK> listKrqdtAppStampPK = listKrqdtAppStamp.stream().map(x -> x.krqdtAppStampPK).collect(Collectors.toList());
-		List<Optional<KrqdtAppStamp>> listKrqdtAppStampTemp = listKrqdtAppStampPK.stream().map(x -> this.queryProxy().find(x, KrqdtAppStamp.class)).collect(Collectors.toList());
-		listKrqdtAppStampTemp.stream().forEach(x -> {
-			if (x.isPresent()) {
-				KrqdtAppStamp krqdtAppStamp = x.get();
-				listKrqdtAppStamp.stream().forEach(y -> {
-					if (y.krqdtAppStampPK.appID == krqdtAppStamp.krqdtAppStampPK.appID 
-							&& y.krqdtAppStampPK.stampAtr == krqdtAppStamp.krqdtAppStampPK.stampAtr
-							&& y.krqdtAppStampPK.stampFrameNo == krqdtAppStamp.krqdtAppStampPK.stampFrameNo) {
-						krqdtAppStamp.startTime = y.startTime;
-						krqdtAppStamp.endTime = y.endTime;
-						krqdtAppStamp.startCancelAtr = y.startCancelAtr;
-						krqdtAppStamp.endCancelAtr = y.endCancelAtr;
-						krqdtAppStamp.goOutAtr = y.goOutAtr;
-						
-					}
-				});
-			}
-		});
-		this.commandProxy().removeAll(KrqdtAppStamp.class, listKrqdtAppStampPK);
-		List<KrqdtAppStamp> listInsert = new ArrayList<KrqdtAppStamp>();
-		listKrqdtAppStampTemp.stream().forEach(x -> {
-			if (x.isPresent()) {
-				listInsert.add(x.get());
-			}
-		});
-		
-		this.commandProxy().insertAll(listInsert);
+		this.delete(AppContexts.user().companyId(), appStamp.getAppID());
+		this.commandProxy().insertAll(listKrqdtAppStamp);
 		this.getEntityManager().flush();
 
 	}
@@ -180,6 +154,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
 								x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null);
+						listStamps.add(krqdtAppStamp);
 					}
 				} else {
 					krqdtAppStamp = new KrqdtAppStamp(
@@ -195,9 +170,10 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
 							x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null);
+					listStamps.add(krqdtAppStamp);
 				}
 
-				listStamps.add(krqdtAppStamp);
+				
 			});
 		}
 
@@ -224,6 +200,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								null, null, x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
 								x.getStartEndClassification() == StartEndClassification.END ? END_CANCEL : null, 
 										null);
+						listStamps.add(krqdtAppStamp);
 					}
 				} else {
 					krqdtAppStamp = new KrqdtAppStamp(
@@ -232,8 +209,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							null, null, x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
 							x.getStartEndClassification() == StartEndClassification.END ? END_CANCEL : null, 
 									null);
+					listStamps.add(krqdtAppStamp);
 				}
-				listStamps.add(krqdtAppStamp);
+				
 
 			});
 		}
