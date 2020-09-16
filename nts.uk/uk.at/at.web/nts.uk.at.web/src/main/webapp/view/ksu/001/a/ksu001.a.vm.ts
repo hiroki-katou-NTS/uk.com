@@ -396,7 +396,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.creatDataLocalStorege(data.dataBasicDto);
                 
                 __viewContext.viewModel.viewAB.workPlaceId(data.dataBasicDto.unit == 0 ? data.dataBasicDto.workplaceId : data.dataBasicDto.workplaceGroupId);
-        
+                
                 self.getSettingDisplayWhenStart(viewMode);
                 
                  if (viewMode == 'shift') {
@@ -510,6 +510,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 userInfor.workplaceId= dataBasic.workplaceId;
                 userInfor.workplaceGroupId = dataBasic.workplaceGroupId;
                 userInfor.workPlaceName= dataBasic.targetOrganizationName;
+                userInfor.code = dataBasic.code;
                 userInfor.workType = {}; 
                 userInfor.workTime = {}; 
                 userInfor.shiftMasterWithWorkStyleLst = [];
@@ -2506,7 +2507,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         targetOrganizationName: string,
         unit: number,
         workplaceId: string,
-        workplaceGroupId: string
+        workplaceGroupId: string,
+        code: string
     }
 
     interface IDisplayControlPersonalCond {
@@ -2651,6 +2653,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         updateMode : string; // updatemode cua grid
         startDate : string;
         endDate : string;
+        code: string;
         shiftMasterWithWorkStyleLst : Array<IShiftMasterMapWithWorkStyle>;
     }
     
