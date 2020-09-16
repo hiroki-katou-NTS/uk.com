@@ -12,7 +12,7 @@
         </button>
       </div>
       <div>
-        <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" />
+        <kafs00-b v-if="kaf000_B_Params != null" v-bind:params="kaf000_B_Params" v-on:hungdeptrai="(value) => { }" />
         <!-- <template v-else /> -->
       </div>
       <!-- A5 -->

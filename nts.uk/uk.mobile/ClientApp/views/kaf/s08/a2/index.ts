@@ -48,7 +48,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
     @Prop({ default: {} }) public readonly comment!: Object;
 
     //A2 nhan ve props businessTripInfoOutput
-    @Prop({default : { }}) public readonly businessTripInfoOutput !: Object;
+    @Prop({ default: {} }) public readonly businessTripInfoOutput !: Object;
+
+    //A2 nhan ve props application
+    @Prop({ default: {} }) public readonly application!: Object;
+
+    //A2 nhan ve props listDate
+    @Prop({ default: [] }) public readonly listDate!: [];
 
     //public readonly params!: any;
     public name: string = 'hello my dialog';
@@ -61,15 +67,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public created() {
         const vm = this;
         vm.fetchStart();
-        //vm.register();
     }
 
-
-    //hàm khởi động màn hình
     public fetchStart() {
         const vm = this;
-        vm.mode = false;
+
         vm.$mask('show');
+
         vm.$auth.user.then((usr: any) => {
             vm.user = usr;
         }).then(() => {
@@ -80,19 +84,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
                     mode: vm.mode,
                     companyId: vm.user.companyId,
                     employeeId: vm.user.employeeId,
-                    listDates: ['2020/03/12', '2020/03/13', '2020/03/14', '2020/03/15', '2020/03/16'],
-                    businessTripInfoOutput: null,
-                    businessTrip: { departureTime: vm.departureTime, returnTime: vm.returnTime, tripInfos: vm.table }
-                }).then((res: any) => {
-                    if (!res) {
-                        return;
-                    }
-                    vm.data = res.data;
-                    vm.$mask('hide');
+                    listDates: vm.listDate,
+                    businessTripInfoOutput: vm.mode ? null : vm.data,
+                    //businessTrip: vm.mode ? null : vm.data.appWorkChange
+                }).then(() => {
+                    alert('start');
                 });
             }
-        }).catch((err: any) => {
-            vm.$mask('hide');
         });
     }
 
@@ -179,16 +177,17 @@ export class KafS08A2Component extends KafS00ShrComponent {
         let paramsBusinessTrip = {
             departureTime: vm.departureTime,
             returnTime: vm.returnTime,
-            tripInfos: vm.table,
+            tripInfos: vm.businessTripInfoOutput
         };
         this.$http.post('at', API.register, {
             businessTrip: paramsBusinessTrip,
             businessTripInfoOutput: vm.businessTripInfoOutput,
-            //application: this.application
+            application: vm.application
         }).then((res: any) => {
+            alert('đăng ký thành công');
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+            //this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
         }).catch((res: any) => {
             vm.handleErrorMessage(res);
         });

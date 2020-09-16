@@ -14,6 +14,8 @@
     v-bind:comment="comment" 
     v-bind:table="achievementDetails"
     v-bind:businessTripInfoOutput="businessTripInfoOutput"
+    v-bind:application="application"
+    v-bind:listDate="listDate"
     v-if="step == 'KAFS08_11'" />
     <kafs08c v-if="step =='KAFS08_12'" />
 </div>

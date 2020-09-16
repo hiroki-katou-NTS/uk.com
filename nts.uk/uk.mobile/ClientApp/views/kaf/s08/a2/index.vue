@@ -19,7 +19,7 @@
       <label class="uk-text-dark-gray">{{'KAFS08_23' | i18n}}</label>
       <!-- A7_4 -->
       <div class="a7_4">
-        <label>申請日付</label>
+        <label>{{application.opAppStartDate + ' ~ ' + application.opAppEndDate}}</label>
       </div>
       <!-- A7_5 -->
       <div class="uk-text-dark-gray">
