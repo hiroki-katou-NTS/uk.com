@@ -106,12 +106,14 @@ public class GetScheduleOfShift {
 		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + duration + "ms");	
 		
 		List<WorkInfoOfDailyAttendance>  workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
-		mngStatusAndWScheMap.forEach((k,v)->{
+		mngStatusAndWScheMap.forEach((k, v) -> {
 			if (v.isPresent()) {
 				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInfo();
-				workInfoOfDailyAttendances.add(workInfo);
+				if (workInfo.getRecordInfo().getWorkTypeCode() != null) {
+					workInfoOfDailyAttendances.add(workInfo);
+				}
 			}
-		});	
+		});
 		// step 1 end
 		
 		// step 2 
@@ -152,7 +154,11 @@ public class GetScheduleOfShift {
 				WorkInformation workInformation = workSchedule.getWorkInfo().getRecordInfo();
 				// 4.2.1
 				WorkInformation.Require require2 = new RequireWorkInforImpl(workTypeRepo,workTimeSettingRepository,workTimeSettingService, basicScheduleService);
-				Optional<WorkStyle> workStyle = workInformation.getWorkStyle(require2);
+				Optional<WorkStyle> workStyle = Optional.empty();
+				if(workInformation.getWorkTypeCode() != null){
+					workStyle = workInformation.getWorkStyle(require2);
+				}		
+						
 				// 4.2.2
 				ShiftEditState shiftEditState = DeterEditStatusShiftService.toDecide(workSchedule);
 				ShiftEditStateDto shiftEditStateDto = ShiftEditStateDto.toDto(shiftEditState);

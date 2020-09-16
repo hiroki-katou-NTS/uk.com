@@ -1023,7 +1023,6 @@ module nts.uk.ui.exTable {
                                         $.data(cell, "hide", cell.innerText);
                                         cell.innerText = "";
                                     }
-                                    return false;
                                 }
                             }
                         });
@@ -5923,15 +5922,24 @@ module nts.uk.ui.exTable {
                 if (!exTable) return;
                 let ui: any = evt.detail;
                 if ((util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                    let $grid = helper.getMainTable($exTable);
+                    let gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                    let view = (gen.options || {}).view;
+                    if (!_.isFunction(view)) return;
+                    let fields = view(exTable.viewMode);
                     if (ui.value.constructor === Array) {
-                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
-                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                        for (let i = 0; i < fields.length; i++) {
+                            pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[i], i));
+                        }
                     } else {
-                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 0));
-                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 1));
+                        for (let i = 0; i < fields.length; i++) {
+                            pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, i));
+                        }
                     }
+                    
                     return;
                 }
+                
                 pushChange(exTable, ui.rowIndex, ui); 
             });
             
