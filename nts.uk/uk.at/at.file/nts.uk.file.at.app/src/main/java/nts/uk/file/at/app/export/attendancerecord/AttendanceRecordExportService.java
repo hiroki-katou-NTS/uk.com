@@ -35,11 +35,17 @@ import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.ItemSelectedTypeSettingDto;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.NameUseAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
@@ -47,6 +53,8 @@ import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRe
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
+import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
@@ -139,20 +147,56 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 	
 	@Inject
 	private FileService service;
+	
+	@Inject
+	private AttendanceRecordStandardSettingRepository standardSettingRepo;
+	
+	@Inject
+	private AttendanceRecordFreeSettingRepository freeSettingRepo;
+	
+	@Inject
+	private SEmpHistExportAdapter sEmpHistExportAdapter;
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
 
 		// get Dto
 		AttendanceRecordRequest request = context.getQuery();
+		AttendanceRecordOutputConditions condition = AttendanceRecordOutputConditions.createFromJavaType(request.getCondition());
 		String companyId = AppContexts.user().companyId();
+		String employeeId = AppContexts.user().employeeId();
+		String layoutId = condition.getSelectionType() == ItemSelectionType.FREE_SETTING
+				? condition.getFreeSettingLayoutId()
+				: condition.getStandardSelectionLayoutId();
+		if (condition.getSelectionType() == ItemSelectionType.STANDARD_SETTING) {
+			// ドメインモデル「出勤簿の出力項目定型設定」を取得する
+			Optional<AttendanceRecordStandardSetting> standardDomain = this.standardSettingRepo
+					.findByCompanyCodeAndSelectType(companyId, request.getLayout(), condition.getSelectionType().value);
+			if (!standardDomain.isPresent()) {
+				throw new BusinessException("msg_1141");
+			}
+		} else {
+			// ドメインモデル「出勤簿の出力項目自由設定」を取得する
+			Optional<AttendanceRecordFreeSetting> freeDomain = this.freeSettingRepo
+					.findByCompanyEmployeeAndCodeAndSelection(companyId, employeeId, request.getLayout(),
+							condition.getSelectionType().value);
+			if (!freeDomain.isPresent()) {
+				throw new BusinessException("msg_1141");
+			}
+		}
+		//	ユーザ固有情報「出勤簿の出力条件」を取得する
+		if(condition == null) {
+			//	ユーザ固有情報「出勤簿の出力条件」を新規追加する
+			condition = new AttendanceRecordOutputConditions();
+		}
 		Map<String, List<AttendanceRecordReportEmployeeData>> reportData = new LinkedHashMap<>();
 		List<AttendanceRecordReportEmployeeData> attendanceRecRepEmpDataList = new ArrayList<AttendanceRecordReportEmployeeData>();
 		BundledBusinessException exceptions = BundledBusinessException.newInstance();
 		TaskDataSetter setter = context.getDataSetter();
 		// Get layout info
+		// ユーザ固有情報「出勤簿の出力条件」を取得する
 		Optional<AttendanceRecordExportSetting> optionalAttendanceRecExpSet = attendanceRecExpSetRepo
-				.getAttendanceRecExpSet(companyId, request.getLayoutId());
+				.getAttendanceRecExpSet(companyId, condition.getStandardSelectionCode().v());
 
 		List<Employee> unknownEmployeeList = new ArrayList<>();
 		List<Employee> nullDataEmployeeList = new ArrayList<>();
@@ -173,7 +217,13 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		GeneralDate startByClosure = GeneralDate.ymd(startTime.year(), startTime.month(), 1);
 		//remove warning
 		//DatePeriod period = new DatePeriod(startByClosure, endByClosure);
-		List<WkpHistImport> wkps = workplaceAdapter.findWkpBySid(empIDs, startByClosure);
+		//	対応する「月別実績」をすべて取得する  - Param ( List <employee ID> ,  Period (year / month). Start date ≤ year / month (YM) ≤ parameter. Period (year / month). End date ,
+		//	月２回締めがある場合でも対応できる
+// AttendanceTimeOfMonthly
+// AffiliationInfoOfMonthly
+// AnyItemOfMonthly
+		Comparator<WkpHistImport> compareByEmployeeAndDate = Comparator.comparing(WkpHistImport::getEmployeeId);
+		List<WkpHistImport> wkps = workplaceAdapter.findWkpBySid(empIDs, startByClosure).stream().sorted(compareByEmployeeAndDate).collect(Collectors.toList());
 		// Get workplace history
 		for (Employee e : request.getEmployeeList()) {
 			WkpHistImport hist = wkps.stream().filter(w -> w.getEmployeeId().equals(e.getEmployeeId())).findFirst().orElse(null);
@@ -228,29 +278,29 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 
 		List<Integer> attendanceItemList = new ArrayList<>();
 		// get upper-daily-singleItem list
-		List<Integer> singleIdUpper = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(request.getLayoutId(), UPPER_POSITION);
+		List<Integer> singleIdUpper = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(layoutId, UPPER_POSITION);
 		attendanceItemList.addAll(singleIdUpper);
 		// get upper-daily-calculateItem list
 
 		List<CalculateAttendanceRecord> calculateUpperDaily = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordDailyByPosition(request.getLayoutId(), UPPER_POSITION);
+				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, UPPER_POSITION);
 
 		// get lower-daily-singleItem list
-		List<Integer> singleIdLower = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(request.getLayoutId(), LOWER_POSITION);
+		List<Integer> singleIdLower = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(layoutId, LOWER_POSITION);
 
 		attendanceItemList.addAll(singleIdLower);
 		// get lower-daily-CalculateItem list
 
 		List<CalculateAttendanceRecord> calculateLowerDaily = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordDailyByPosition(request.getLayoutId(), LOWER_POSITION);
+				.getIdCalculateAttendanceRecordDailyByPosition(layoutId, LOWER_POSITION);
 
 		// get upper-monthly-Item list
 		List<CalculateAttendanceRecord> calculateUpperMonthly = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordMonthlyByPosition(request.getLayoutId(), UPPER_POSITION);
+				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, UPPER_POSITION);
 
 		// get lower-monthly-Item list
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
-				.getIdCalculateAttendanceRecordMonthlyByPosition(request.getLayoutId(), LOWER_POSITION);
+				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, LOWER_POSITION);
 
 		List<ScreenUseAtr> screenUseAtrList = Arrays.asList(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE,
 				ScreenUseAtr.EMPLOYEE_BOOKING_HOURS);
@@ -369,6 +419,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							endDateByClosure = GeneralDate.ymd(yearMonth.addMonths(1).year(),
 									yearMonth.addMonths(1).month(), closureDate.getClosureDay().v());
 						}
+//						this.checkEmployeeCodeInMonth(employeeId, startDateByClosure, endDateByClosure, firstEmpCode,
+//								lastEmpCode);
 
 						// amount day in month
 						int flag = 0;
@@ -653,6 +705,8 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 							startDateByClosure = startDateByClosure.addDays(1);
 
 						}
+						// End while 
+						
 						// Day of the last week in month
 						if (dailyDataList.size() > 0) {
 							AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
@@ -938,7 +992,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		List<String> sealStamp = attendanceRecExpSetRepo.getSealStamp(companyId, request.getLayout());
 
 		// Get daily header info
-		List<AttendanceRecordExport> dailyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportDaily(request.getLayoutId());
+		List<AttendanceRecordExport> dailyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportDaily(layoutId);
 		List<AttendanceRecordExport> dailyRecordTotal = new ArrayList<>();
 
 		for (int i = 1; i <= 9; i++) {
@@ -953,7 +1007,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		}
 
 		// get monthly header info
-		List<AttendanceRecordExport> monthlyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportMonthly(request.getLayoutId());
+		List<AttendanceRecordExport> monthlyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportMonthly(layoutId);
 		List<AttendanceRecordExport> monthlyRecordTotal = new ArrayList<>();
 		for (int i = 1; i <= 12; i++) {
 			if (this.findIndexInList(i, monthlyRecord) == null) {
@@ -1016,6 +1070,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		recordReportData.setReportName(optionalAttendanceRecExpSet.get().getName().v());
 		recordReportData.setSealColName(
 				optionalAttendanceRecExpSet.get().getSealUseAtr() ? sealStamp : new ArrayList<String>());
+		recordReportData.setFontSize(optionalAttendanceRecExpSet.get().getExportFontSize().value);
 
 		AttendanceRecordReportDatasource recordReportDataSource = new AttendanceRecordReportDatasource(recordReportData,
 				request.getMode());
@@ -1165,6 +1220,14 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		String lowerValue8th = "";
 		String upperValue9th = "";
 		String lowerValue9th = "";
+		String upperValue10th = "";
+		String lowerValue10th = "";
+		String upperValue11th = "";
+		String lowerValue11th = "";
+		String upperValue12th = "";
+		String lowerValue12th = "";
+		String upperValue13th = "";
+		String lowerValue13th = "";
 
 		for (AttendanceRecordReportDailyData item : list) {
 			if (item.getColumnDatas().get(6) != null) {
@@ -1179,6 +1242,22 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 				upperValue9th = this.add(upperValue9th, item.getColumnDatas().get(8).getUper());
 				lowerValue9th = this.add(lowerValue9th, item.getColumnDatas().get(8).getLower());
 			}
+			if (item.getColumnDatas().get(9) != null) {
+				upperValue9th = this.add(upperValue10th, item.getColumnDatas().get(9).getUper());
+				lowerValue9th = this.add(lowerValue10th, item.getColumnDatas().get(9).getLower());
+			}
+			if (item.getColumnDatas().get(10) != null) {
+				upperValue9th = this.add(upperValue11th, item.getColumnDatas().get(10).getUper());
+				lowerValue9th = this.add(lowerValue11th, item.getColumnDatas().get(10).getLower());
+			}
+			if (item.getColumnDatas().get(11) != null) {
+				upperValue9th = this.add(upperValue12th, item.getColumnDatas().get(11).getUper());
+				lowerValue9th = this.add(lowerValue12th, item.getColumnDatas().get(11).getLower());
+			}
+			if (item.getColumnDatas().get(12) != null) {
+				upperValue9th = this.add(upperValue13th, item.getColumnDatas().get(12).getUper());
+				lowerValue9th = this.add(lowerValue13th, item.getColumnDatas().get(12).getLower());
+			}
 
 		}
 		List<AttendanceRecordReportColumnData> columnDatas = new ArrayList<>();
@@ -1191,6 +1270,18 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		AttendanceRecordReportColumnData columnData9 = new AttendanceRecordReportColumnData(upperValue9th,
 				lowerValue9th);
 		columnDatas.add(columnData9);
+		AttendanceRecordReportColumnData columnData10 = new AttendanceRecordReportColumnData(upperValue10th,
+				lowerValue10th);
+		columnDatas.add(columnData10);
+		AttendanceRecordReportColumnData columnData11 = new AttendanceRecordReportColumnData(upperValue11th,
+				lowerValue11th);
+		columnDatas.add(columnData11);
+		AttendanceRecordReportColumnData columnData12 = new AttendanceRecordReportColumnData(upperValue12th,
+				lowerValue12th);
+		columnDatas.add(columnData12);
+		AttendanceRecordReportColumnData columnData13 = new AttendanceRecordReportColumnData(upperValue13th,
+				lowerValue13th);
+		columnDatas.add(columnData13);
 
 		result.setDateRange(list.get(0).getDate() + "-" + list.get(list.size() - 1).getDate());
 		result.setColumnDatas(columnDatas);
@@ -1395,5 +1486,40 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 					map.get(key).stream().map(x -> WorkplaceHierarchy.newInstance(x.getWorkplaceId(), x.getHierarchyCode().v())).collect(Collectors.toList())));
 		}
 		return returnList;
+	}
+	
+	//	月別実績の月初と月末の雇用コードをチェックする
+	private MonthlyResultCheck checkEmployeeCodeInMonth(String employeeId, GeneralDate startDate, GeneralDate endDate,
+			String firstEmpCode, String lastEmpCode) {
+		String companyId = AppContexts.user().companyId();
+		MonthlyResultCheck monthlyResultCheck = new MonthlyResultCheck();
+		// step 1
+		monthlyResultCheck.setEmployeeResult(true);
+		monthlyResultCheck.setCheckResult(true);
+		// Imported「（就業）所属雇用履歴」を取得する (Lấy Imported「（就業）所属雇用履歴」)
+		Optional<SEmpHistExportImported> empStartDate = sEmpHistExportAdapter.getSEmpHistExport(companyId, employeeId,
+				startDate);
+		if (!empStartDate.isPresent()) {
+			monthlyResultCheck.setEmployeeResult(false);
+			monthlyResultCheck.setCheckResult(true);
+			return monthlyResultCheck;
+		}
+
+		// Imported「（就業）所属雇用履歴」を取得する (Lấy Imported「（就業）所属雇用履歴」)
+		Optional<SEmpHistExportImported> empEndDate = sEmpHistExportAdapter.getSEmpHistExport(companyId, employeeId,
+				endDate);
+		if (!empEndDate.isPresent()) {
+			monthlyResultCheck.setEmployeeResult(false);
+			monthlyResultCheck.setCheckResult(true);
+			return monthlyResultCheck;
+		}
+
+		if (!firstEmpCode.equals(empStartDate.get().getEmploymentCode())
+				|| !lastEmpCode.equals(empEndDate.get().getEmploymentCode())) {
+			monthlyResultCheck.setEmployeeResult(true);
+			monthlyResultCheck.setCheckResult(false);
+			return monthlyResultCheck;
+		}
+		return monthlyResultCheck;
 	}
 }
