@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             this.appStampGoOutAtr = appStampGoOutAtr;
         }
     }
-    class ItemModel {
+    export class ItemModel {
         code: string;
         name: string;
 

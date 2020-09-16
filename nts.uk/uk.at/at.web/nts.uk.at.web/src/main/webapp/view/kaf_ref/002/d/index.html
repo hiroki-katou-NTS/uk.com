@@ -1,0 +1,37 @@
+<div >
+	<div class="label" data-bind="text: comment1" style="margin: 10px">
+	</div>
+
+	<div class="inlineBlockFirst">
+		<!-- B6_1 -->
+		<div class="labelFirst" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_79')}</div>
+		<div style="margin-left: 40px"
+			data-bind="ntsComboBox: {
+						options: dataSource,
+						optionsValue: 'code',
+						value: selectedCode,
+						optionsText: 'name',
+						required: true
+					}"></div>
+	</div>
+
+	<div class="blockSecond">
+		<input class="inputBlockSecond"
+			data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
+													}" />
+
+		<div class="dropListBlockSecond"
+			data-bind="visible: selectedCode() == 3, ntsComboBox: {
+						options: dataSourceReason,
+						optionsValue: 'code',
+						value: selectedCodeReason,
+						optionsText: 'name',
+						required: true
+					}"></div>
+	</div>
+
+	<div class="label" style="margin: 10px">1 2 3 4 5 6 7 8 9 1 2 3 4
+		5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9</div>
+
+
+</div>

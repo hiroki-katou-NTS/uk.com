@@ -52,7 +52,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         isCondition9: boolean = true;
         data : any;
         
-    created() {
+    created(param: any) {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
 
