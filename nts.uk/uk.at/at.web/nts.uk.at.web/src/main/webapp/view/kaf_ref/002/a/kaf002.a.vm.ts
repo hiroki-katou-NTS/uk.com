@@ -55,7 +55,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     created(param: any) {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
-
         self.loadData([], [], self.appType())
         .then((loadDataFlag: any) => {
             self.appDispInfoStartupOutput.subscribe(value => {
