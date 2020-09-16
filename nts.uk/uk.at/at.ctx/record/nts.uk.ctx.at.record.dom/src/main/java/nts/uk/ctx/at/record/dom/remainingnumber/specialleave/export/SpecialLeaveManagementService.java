@@ -188,6 +188,15 @@ public class SpecialLeaveManagementService {
 		
 		
 		// 特別休暇の消滅・付与・消化
+		for (val aggregatePeriodWork : aggregateWork){
+
+			// 特休の消滅・付与・消化
+			aggrResult = specialLeaveInfo.lapsedGrantDigest(
+					require,
+					companyId, employeeId, aggregatePeriodWork,
+					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
+		}
+		
 		
 		
 		

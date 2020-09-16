@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeavaRemainTime;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeave;
 import nts.uk.ctx.at.record.dom.monthly.vacation.specialholiday.SpecialLeaveRemainDay;
@@ -26,6 +27,7 @@ public class SpecialLeaveRemaining implements Cloneable {
 	/** 特休（マイナスあり） */
 	private SpecialLeave specialLeaveWithMinus;
 	/** 特休未消化数 */
+	@Setter
 	private Optional<SpecialLeaveUndigestNumber> specialLeaveUndigestNumber;
 
 	/**
@@ -92,7 +94,7 @@ public class SpecialLeaveRemaining implements Cloneable {
 	public void updateRemainingNumber(
 			List<SpecialLeaveGrantRemaining> remainingDataList, boolean afterGrantAtr){
 		
-		// 特休付与残数データから特休（マイナスあり）を作成
+		// 特別休暇付与残数データから実特別休暇の特別休暇残数を作成
 		this.specialLeaveWithMinus.createRemainingNumberFromGrantRemaining(
 				remainingDataList, afterGrantAtr);
 		

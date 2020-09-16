@@ -244,6 +244,11 @@ public class AnnualLeaveInfo implements Cloneable {
 		aggrResult = this.grantProcess(companyId, employeeId,
 				aggregatePeriodWork, isCalcAttendanceRate, aggrResult);
 		
+		
+		
+		
+		
+		
 		// 期間終了日翌日時点の期間かチェック
 		if (!aggregatePeriodWork.isNextDayAfterPeriodEnd()){
 			

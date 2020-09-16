@@ -54,7 +54,7 @@ public class SpecialLeaveRemainingNumberInfo implements Cloneable {
 	}
 	
 	/**
-	 * 特休付与残数データから特休残数を作成
+	 * 特別休暇付与残数データから実特別休暇の特別休暇残数を作成
 	 * @param remainingDataList 特休付与残数データリスト
 	 * @param afterGrantAtr 付与後フラグ
 	 */

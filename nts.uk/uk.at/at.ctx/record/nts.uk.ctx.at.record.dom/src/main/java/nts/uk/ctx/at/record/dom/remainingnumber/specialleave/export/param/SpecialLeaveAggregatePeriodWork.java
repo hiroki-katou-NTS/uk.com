@@ -44,7 +44,7 @@ public class SpecialLeaveAggregatePeriodWork {
 		this.nextDayAfterPeriodEnd = false;
 		this.afterGrant = false;
 		this.lapsedWork = new SpecialLeaveLapsedWork();
-		this.specialLeaveGrant = Optional.empty();
+		this.grantWork = new SpecialLeaveGrantWork();
 	}
 	
 	/**
@@ -54,7 +54,7 @@ public class SpecialLeaveAggregatePeriodWork {
 	 * @param afterGrant 付与後
 	 * @param lapsedAtr 消滅フラグ
 	 * @param specialLeaveGrant 特休付与
-	 * @return 年休集計期間WORK
+	 * @return 特休集計期間WORK
 	 */
 	public static SpecialLeaveAggregatePeriodWork of(
 			DatePeriod period,
@@ -62,7 +62,7 @@ public class SpecialLeaveAggregatePeriodWork {
 			boolean nextDayAfterPeriodEnd,
 			boolean afterGrant,
 			SpecialLeaveLapsedWork lapsedAtr,
-			Optional<NextSpecialLeaveGrant> specialLeaveGrant){
+			SpecialLeaveGrantWork grantWork){
 		
 		SpecialLeaveAggregatePeriodWork domain = new SpecialLeaveAggregatePeriodWork();
 		domain.period = period;
@@ -70,7 +70,7 @@ public class SpecialLeaveAggregatePeriodWork {
 		domain.nextDayAfterPeriodEnd = nextDayAfterPeriodEnd;
 		domain.afterGrant = afterGrant;
 		domain.lapsedWork = lapsedAtr;
-		domain.specialLeaveGrant = specialLeaveGrant;
+		domain.grantWork = grantWork;
 		return domain;
 	}
 }
