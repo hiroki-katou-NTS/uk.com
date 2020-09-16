@@ -606,17 +606,22 @@ module nts.uk.com.view.cli003.f {
                                 }
                             }
                         });
-                        // Generate table
-                        if (recordType == RECORD_TYPE.DATA_CORRECT) {
-                            vm.generateDataCorrectLogGrid();
-                        } else if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
-                            vm.generatePersionInforGrid();
-                        } else {
-                            vm.generateIgGrid();
+                        //Check listLogBasicInforModel after filter
+                        if (vm.listLogBasicInforModel.length <= 0) {
+                            vm.$dialog.alert({ messageId: "Msg_1220" });
+                            vm.$blockui('clear');
                         }
                     } else {
                         vm.$dialog.alert({ messageId: "Msg_1220" });
                         vm.$blockui('clear');
+                    }
+                    // Generate table
+                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                        vm.generateDataCorrectLogGrid();
+                    } else if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                        vm.generatePersionInforGrid();
+                    } else {
+                        vm.generateIgGrid();
                     }
                     dfd.resolve();
                 }).always(() => {
