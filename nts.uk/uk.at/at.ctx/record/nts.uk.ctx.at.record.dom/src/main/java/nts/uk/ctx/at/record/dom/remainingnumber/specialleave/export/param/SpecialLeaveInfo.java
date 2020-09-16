@@ -9,17 +9,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.SpecialLeaveGrant;
 import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.GetAnnLeaRemNumWithinPeriodProc;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.SpecialLeaveGrantDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.SpecialLeaveUsedDayNumber;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.SpecialLeaveMaxData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.interim.TmpSpecialLeaveMngWork;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDays;
@@ -30,9 +24,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdat
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.grantnumber.SpecialLeaveUndigestNumber;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.SpecialPaidLeaveSetting;
-import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.SpecialPriority;
 
 /**
  * 特別休暇情報
@@ -200,14 +193,14 @@ public class SpecialLeaveInfo implements Cloneable {
 		aggrResult = this.lapsedProcess(specialLeaveAggregatePeriodWork, aggrResult);
 		
 		// 付与処理
-		
-		
-		
-		
-		
-		// 付与処理
 		aggrResult = this.grantProcess(companyId, employeeId,
 				aggregatePeriodWork, isCalcAttendanceRate, aggrResult);
+		
+		
+		
+		
+		
+		
 		
 		// 期間終了日翌日時点の期間かチェック
 		if (!aggregatePeriodWork.isNextDayAfterPeriodEnd()){
@@ -361,6 +354,35 @@ public class SpecialLeaveInfo implements Cloneable {
 		// 特別休暇付与残数データを作成する
 		
 		// パラメータ「次回特別休暇付与.期限日」を取得
+		GeneralDate deadline = aggregatePeriodWork.getGrantWork().getSpecialLeaveGrant().getDeadLine();
+		
+		// 「特別休暇付与残数データ」を作成
+		val newRemainData = new SpecialLeaveGrantRemaining(
+				SpecialLeaveGrantRemainingData.createFromJavaType(
+				"",
+				companyId, employeeId, grantDate, deadline,
+				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
+				grantDays, null,
+				0.0, null, null,
+				grantDays, null,
+				0.0,
+				prescribedDays,
+				deductedDays,
+				workingDays));
+		newRemainData.setDummyAtr(false);
+		
+		
+		
+		
+		
+		
+		
+		// 作成した「特休付与残数データ」を付与残数データリストに追加
+		this.grantRemainingList.add(newRemainData);
+		
+		
+		
+		
 		
 		
 		
@@ -400,22 +422,22 @@ public class SpecialLeaveInfo implements Cloneable {
 			}
 		}
 		
-		// 「特休付与残数データ」を作成する
-		val newRemainData = new SpecialLeaveGrantRemaining(SpecialLeaveGrantRemainingData.createFromJavaType(
-				"",
-				companyId, employeeId, grantDate, deadline,
-				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
-				grantDays, null,
-				0.0, null, null,
-				grantDays, null,
-				0.0,
-				prescribedDays,
-				deductedDays,
-				workingDays));
-		newRemainData.setDummyAtr(false);
-		
-		// 作成した「特休付与残数データ」を付与残数データリストに追加
-		this.grantRemainingList.add(newRemainData);
+//		// 「特休付与残数データ」を作成する
+//		val newRemainData = new SpecialLeaveGrantRemaining(SpecialLeaveGrantRemainingData.createFromJavaType(
+//				"",
+//				companyId, employeeId, grantDate, deadline,
+//				LeaveExpirationStatus.AVAILABLE.value, GrantRemainRegisterType.MONTH_CLOSE.value,
+//				grantDays, null,
+//				0.0, null, null,
+//				grantDays, null,
+//				0.0,
+//				prescribedDays,
+//				deductedDays,
+//				workingDays));
+//		newRemainData.setDummyAtr(false);
+//		
+//		// 作成した「特休付与残数データ」を付与残数データリストに追加
+//		this.grantRemainingList.add(newRemainData);
 
 //		// 付与後フラグ　←　true
 //		this.afterGrantAtr = true;

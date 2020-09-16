@@ -25,12 +25,20 @@ public class SpecialLeaveNumberInfo extends LeaveNumberInfo implements Serializa
 //	//残数
 //	private SpecialLeaveRemainingNumber remainingNumber;
 	
-	public SpecialLeaveNumberInfo(double dayNumberOfGrant, Integer timeOfGrant, double dayNumberOfUse, Integer timeOfUse,
-			double useSavingDays, double numberOverDays, Integer timeOver, double dayNumberOfRemain, Integer timeOfRemain) {
+	public SpecialLeaveNumberInfo(
+			double dayNumberOfGrant, 
+			Integer timeOfGrant, 
+			double dayNumberOfUse, 
+			Integer timeOfUse,
+			double useSavingDays, 
+			double numberOverDays, 
+			Integer timeOver, 
+			double dayNumberOfRemain, 
+			Integer timeOfRemain) {
 		
 		this.grantNumber = SpecialLeaveGrantNumber.createFromJavaType(dayNumberOfGrant, timeOfGrant);
-	
-		this.usedNumber = SpecialLeaveUsedNumber.createFromJavaType(dayNumberOfUse, timeOfUse, useSavingDays, numberOverDays, timeOver);
+		this.usedNumber = SpecialLeaveUsedNumber.createFromJavaType(
+				dayNumberOfUse, timeOfUse, useSavingDays, numberOverDays, timeOver);
 		this.remainingNumber = SpecialLeaveRemainingNumber.createFromJavaType(dayNumberOfRemain, timeOfRemain);
 	}
 	

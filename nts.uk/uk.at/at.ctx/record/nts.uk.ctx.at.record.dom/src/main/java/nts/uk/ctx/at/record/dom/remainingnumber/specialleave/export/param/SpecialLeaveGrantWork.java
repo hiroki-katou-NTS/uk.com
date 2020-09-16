@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantRegular;
 
 /**
@@ -20,6 +21,6 @@ public class SpecialLeaveGrantWork {
 	private boolean grantAtr;
 	
 	/** 特別休暇付与 */
-	private GrantRegular grantRegular;
+	private NextSpecialLeaveGrant specialLeaveGrant;
 	
 }

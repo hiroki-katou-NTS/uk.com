@@ -16,7 +16,7 @@ public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 	@Setter
 	private boolean dummyAtr = false;
 	
-	public SpecialLeaveGrantRemaining(AnnualLeaveGrantRemainingData parent){
+	public SpecialLeaveGrantRemaining(SpecialLeaveGrantRemainingData parent){
 		
 		this.annLeavID = parent.getAnnLeavID();
 		this.cid = parent.getCid();

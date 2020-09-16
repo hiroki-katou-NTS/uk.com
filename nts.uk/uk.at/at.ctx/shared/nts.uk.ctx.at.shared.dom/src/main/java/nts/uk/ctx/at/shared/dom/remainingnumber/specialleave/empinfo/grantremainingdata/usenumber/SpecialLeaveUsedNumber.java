@@ -7,48 +7,63 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 // 特別休暇使用数
-public class SpecialLeaveUsedNumber {
+public class SpecialLeaveUsedNumber extends LeaveUsedNumber{
 
-	/**
-	 * 日数
-	 */
-	public DayNumberOfUse dayNumberOfUse;
-	/**
-	 * 時間
-	 */
-	public Optional<TimeOfUse> timeOfUse;
-	/**
-	 * 積み崩し日数
-	 */
-	public Optional<DayNumberOfUse> useSavingDays;
-	/**
-	 * 上限超過消滅日数
-	 */
-	public Optional<SpecialLeaveOverNumber> specialLeaveOverLimitNumber;
+//	/**
+//	 * 日数
+//	 */
+//	public DayNumberOfUse dayNumberOfUse;
+//	
+//	/**
+//	 * 時間
+//	 */
+//	public Optional<TimeOfUse> timeOfUse;
+//	
+//	/**
+//	 * 積み崩し日数
+//	 */
+//	public Optional<DayNumberOfUse> useSavingDays;
+//	
+//	/**
+//	 * 上限超過消滅日数
+//	 */
+//	public Optional<SpecialLeaveOverNumber> specialLeaveOverLimitNumber;
 
-	private SpecialLeaveUsedNumber(BigDecimal dayNumberOfUse, Integer timeOfUse, BigDecimal useSavingDays,
-			BigDecimal dayNumberOfExeeded, Integer timeOfExeeded) {
-		this.dayNumberOfUse = new DayNumberOfUse(dayNumberOfUse == null? 0.0d: dayNumberOfUse.doubleValue());
+	private SpecialLeaveUsedNumber(
+			BigDecimal dayNumberOfUse, 
+			Integer timeOfUse, 
+			BigDecimal useSavingDays,
+			BigDecimal dayNumberOfExeeded, 
+			Integer timeOfExeeded) {
+		
+		this.days = new DayNumberOfUse(dayNumberOfUse == null? 0.0d: dayNumberOfUse.doubleValue());
 		this.timeOfUse = timeOfUse != null ? Optional.of(new TimeOfUse(timeOfUse)) : Optional.empty();
 		this.useSavingDays = useSavingDays != null ? Optional.of(new DayNumberOfUse( useSavingDays.doubleValue()))
 				: Optional.empty();
 		if(dayNumberOfExeeded == null && timeOfExeeded  == null) {
 			this.specialLeaveOverLimitNumber = Optional.empty();
-		}else {
+		} else {
 		this.specialLeaveOverLimitNumber = Optional
 				.of(SpecialLeaveOverNumber.createFromJavaType(dayNumberOfExeeded == null? 0.0d: dayNumberOfExeeded.doubleValue(), timeOfExeeded));
 		}
 	}
 
-	public static SpecialLeaveUsedNumber createFromJavaType(BigDecimal dayNumberOfUse, Integer timeOfUse,
-			BigDecimal useSavingDays, BigDecimal dayNumberOfExeeded, Integer timeOfExeeded) {
-		return new SpecialLeaveUsedNumber(dayNumberOfUse, timeOfUse, useSavingDays, dayNumberOfExeeded,
+	public static SpecialLeaveUsedNumber createFromJavaType(
+			BigDecimal dayNumberOfUse, 
+			Integer timeOfUse,
+			BigDecimal useSavingDays, 
+			BigDecimal dayNumberOfExeeded, 
+			Integer timeOfExeeded) {
+		return new SpecialLeaveUsedNumber(
+				dayNumberOfUse, 
+				timeOfUse, 
+				useSavingDays, 
+				dayNumberOfExeeded,
 				timeOfExeeded);
 	}
 	
@@ -62,9 +77,17 @@ public class SpecialLeaveUsedNumber {
 				.of(SpecialLeaveOverNumber.createFromJavaType(dayNumberOfExeeded, timeOfExeeded));
 	}
 
-	public static SpecialLeaveUsedNumber createFromJavaType(double dayNumberOfUse, Integer timeOfUse,
-			Double dayNumberOfUsed, double dayNumberOfExeeded, Integer timeOfExeeded) {
-		return new SpecialLeaveUsedNumber(dayNumberOfUse, timeOfUse, dayNumberOfUsed, dayNumberOfExeeded,
+	public static SpecialLeaveUsedNumber createFromJavaType(
+			double dayNumberOfUse, 
+			Integer timeOfUse,
+			Double dayNumberOfUsed, 
+			double dayNumberOfExeeded, 
+			Integer timeOfExeeded) {
+		return new SpecialLeaveUsedNumber(
+				dayNumberOfUse, 
+				timeOfUse, 
+				dayNumberOfUsed, 
+				dayNumberOfExeeded,
 				timeOfExeeded);
 	}
 

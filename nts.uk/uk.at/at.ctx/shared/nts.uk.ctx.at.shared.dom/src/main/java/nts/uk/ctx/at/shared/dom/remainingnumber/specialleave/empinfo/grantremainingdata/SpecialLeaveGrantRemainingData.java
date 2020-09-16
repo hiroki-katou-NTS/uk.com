@@ -57,11 +57,26 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 //	private SpecialLeaveNumberInfo details;
 
 	
-	public static SpecialLeaveGrantRemainingData createFromJavaType(String annLeavID, String cID, String employeeId,
-			GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType, double grantDays,
-			Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays, double remainDays,
-			Integer remainMinutes, double usedPercent, Double prescribedDays, Double deductedDays, Double workingDays) {
-		
+	public static SpecialLeaveGrantRemainingData createFromJavaType(
+			String annLeavID, 
+			String cID, 
+			String employeeId,
+			GeneralDate grantDate, 
+			GeneralDate deadline, 
+			int expirationStatus, 
+			int registerType, 
+			double grantDays,
+			Integer grantMinutes, 
+			double usedDays, 
+			Integer usedMinutes, 
+			Double stowageDays, 
+			double remainDays,
+			Integer remainMinutes, 
+			double usedPercent, 
+			Double prescribedDays, 
+			Double deductedDays, 
+			Double workingDays) {
+
 			SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
 			domain.cid = cID;
 			domain.annLeavID = annLeavID;
@@ -71,7 +86,9 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 			domain.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
 			domain.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
 
-			domain.details = new SpecialLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
+			domain.details 
+				= new SpecialLeaveNumberInfo(
+					grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
 					remainDays, remainMinutes, usedPercent);
 
 			if (prescribedDays != null && deductedDays != null && workingDays != null) {
@@ -83,39 +100,39 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 			return domain;
 	}
 	
-	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
-			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays,
-			double remainDays, Integer remainMinutes, double usedPercent) {
-		this.grantDate = grantDate;
-		this.deadline = deadline;
-		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
-		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
-		
-		this.details = new SpecialLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
-				remainDays, remainMinutes, usedPercent);
-		
-	}
+//	public void updateData(GeneralDate grantDate, GeneralDate deadline, int expirationStatus, int registerType,
+//			double grantDays, Integer grantMinutes, double usedDays, Integer usedMinutes, Double stowageDays,
+//			double remainDays, Integer remainMinutes, double usedPercent) {
+//		this.grantDate = grantDate;
+//		this.deadline = deadline;
+//		this.expirationStatus = EnumAdaptor.valueOf(expirationStatus, LeaveExpirationStatus.class);
+//		this.registerType = EnumAdaptor.valueOf(registerType, GrantRemainRegisterType.class);
+//		
+//		this.details = new SpecialLeaveNumberInfo(grantDays, grantMinutes, usedDays, usedMinutes, stowageDays,
+//				remainDays, remainMinutes, usedPercent);
+//		
+//	}
 
-	/**
-	 * 特休付与残数履歴データを特休付与残数データに変換
-	 * @param history 特休付与残数履歴データ
-	 * @return 特休付与残数データ
-	 */
-	// 2019.3.3 ADD shuichi_ishida
-	public static SpecialLeaveGrantRemainingData createFromHistory(SpecialLeaveRemainingHistory history) {
-		
-		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
-		domain.cid = history.getCid();
-		domain.annLeavID = IdentifierUtil.randomUniqueId();
-		domain.employeeId = history.getEmployeeId();
-		domain.grantDate = history.getGrantDate();
-		domain.deadline = history.getDeadline();
-		domain.expirationStatus = EnumAdaptor.valueOf(history.getExpirationStatus().value, LeaveExpirationStatus.class);
-		domain.registerType = EnumAdaptor.valueOf(history.getRegisterType().value, GrantRemainRegisterType.class);
-		domain.details = history.getDetails();
-		domain.annualLeaveConditionInfo = history.getSpecialLeaveConditionInfo();
-		return domain;
-	}
+//	/**
+//	 * 特休付与残数履歴データを特休付与残数データに変換
+//	 * @param history 特休付与残数履歴データ
+//	 * @return 特休付与残数データ
+//	 */
+//	// 2019.3.3 ADD shuichi_ishida
+//	public static SpecialLeaveGrantRemainingData createFromHistory(SpecialLeaveRemainingHistory history) {
+//		
+//		SpecialLeaveGrantRemainingData domain = new SpecialLeaveGrantRemainingData();
+//		domain.cid = history.getCid();
+//		domain.annLeavID = IdentifierUtil.randomUniqueId();
+//		domain.employeeId = history.getEmployeeId();
+//		domain.grantDate = history.getGrantDate();
+//		domain.deadline = history.getDeadline();
+//		domain.expirationStatus = EnumAdaptor.valueOf(history.getExpirationStatus().value, LeaveExpirationStatus.class);
+//		domain.registerType = EnumAdaptor.valueOf(history.getRegisterType().value, GrantRemainRegisterType.class);
+//		domain.details = history.getDetails();
+//		domain.annualLeaveConditionInfo = history.getSpecialLeaveConditionInfo();
+//		return domain;
+//	}
 
 //	/**
 //	 * 特休を指定日数消化する

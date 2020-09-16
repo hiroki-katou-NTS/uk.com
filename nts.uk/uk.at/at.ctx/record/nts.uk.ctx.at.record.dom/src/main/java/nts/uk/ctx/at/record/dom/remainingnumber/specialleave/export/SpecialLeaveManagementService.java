@@ -536,7 +536,7 @@ public class SpecialLeaveManagementService {
 				// 付与情報WORK.期間の開始日に付与があるかどうか←true
 				specialLeaveGrantWork.setGrantAtr(true);
 				// 付与情報WORK.特休付与←次回特別休暇付与
-				specialLeaveGrantWork.setGrantRegular(c);
+				specialLeaveGrantWork.setSpecialLeaveGrant(c);
 				
 				// 年月日←次回特別休暇付与．付与年月日
 				c.getGrantDate();

@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.usenumber.SpecialLeaveOverNumber;
 
 /**
  * 休暇使用数  
@@ -28,6 +29,11 @@ public class LeaveUsedNumber{
 	 * 積み崩し日数
 	 */
 	protected Optional<LeaveUsedDayNumber> stowageDays;
+	
+	/**
+	 * 上限超過消滅日数
+	 */
+	public Optional<LeaveOverNumber> leaveOverLimitNumber;
 	
 	/**
 	 * 日数、時間ともに０のときはTrue,それ以外はfalseを返す
