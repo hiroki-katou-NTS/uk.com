@@ -90,7 +90,7 @@ public interface ApplicationRepository {
 	
 	public List<Application> getByListRefStatus(String companyID, String employeeID ,GeneralDate startDate, GeneralDate endDate , List<Integer> listReflecInfor  );
 	
-	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate);
+	public List<Application> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate);
 	/**
 	 * 検索
 	 * @param sid

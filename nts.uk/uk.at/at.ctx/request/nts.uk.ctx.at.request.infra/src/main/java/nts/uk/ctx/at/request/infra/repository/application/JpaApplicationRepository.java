@@ -93,13 +93,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID = :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
 
-	private static final String SELECT_LATE_LEAVE = "SELECT a FROM KrqdtApplication a"
-			+ " JOIN KrqdtAppReflectState ref ON a.pk.companyID = ref.pk.companyID  AND a.pk.appID = ref.pk.appID"
-			+ " WHERE a.pk.companyID = :companyID"
-			+ " AND a.appDate >= :startDate AND a.appDate <= :endDate "
-			+ "AND a.employeeID = :employeeID "
-			+ "AND ref.actualReflectStatus = 0 " + "AND a.appType = 9 ORDER BY a.appDate ASC";
-
 	private static final String SELECT_BY_SID_PERIOD_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
 			+ " WHERE c.employeeID = :employeeID" + " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals" + " AND c.appType IN :appTypes";
@@ -425,11 +418,23 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
+	public List<Application> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.queryProxy().query(SELECT_LATE_LEAVE, KrqdtApplication_New.class)
-				.setParameter("companyID", companyID).setParameter("employeeID", employeeID)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(x -> x.toDomain());
+		String sql = "SELECT * FROM KRQDT_APPLICATION app" 
+				+ " join KRQDT_APP_REFLECT_STATE ref"
+				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
+				+ " WHERE  app.CID =  @companyID "
+				+ " AND app.APPLICANTS_SID =  @employeeID "
+				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE = 9 " 
+				+ " AND ref.REFLECT_PER_STATE = 0" + " ORDER BY app.APP_DATE ASC";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyID", companyID)
+				.paramString("employeeID", employeeID)
+				.paramDate("strData", startDate)
+				.paramDate("endData", endDate)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
