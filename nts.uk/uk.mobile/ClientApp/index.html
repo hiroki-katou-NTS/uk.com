@@ -14,11 +14,16 @@
 
 <body>
     <div id="app_uk_mobile">
-        <nav-bar></nav-bar>
+        <nav-bar v-if="ready"></nav-bar>
+        <template v-else></template>
         <div class="wrapper">
-            <side-bar></side-bar>
+            <side-bar v-if="ready"></side-bar>
+            <template v-else></template>
             <div class="container-fluid px-3">
-                <router-view />
+                <template v-if="ready">
+                    <router-view />
+                </template>
+                <template v-else></template>
             </div>
         </div>
     </div>

@@ -5740,7 +5740,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 				verticalTotal,
 				totalCount,
 				new AttendanceDaysMonth(this.aggregateDays),
-				ouen.convertToOuen());
+				ouen == null ? OuenTimeOfMonthly.empty() : ouen.convertToOuen());
 		
 		domain.setVersion(this.version);
 		

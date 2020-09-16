@@ -83,12 +83,25 @@ public class StampSettingsEmbossFinder {
 	@Inject
 	private ConfirmUseOfStampEmbossCommandHandler confirmHandler;
 
+	@Inject
+	protected WorkingConditionRepository workingConditionRepo;
+	
+	@Inject
+	protected WorkingConditionItemRepository workingConditionItemRepo;
+
 	public KDP002AStartPageOutput getSettings() {
 
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 		
 		this.confirmHandler.handle(new ConfirmUseOfStampEmbossCommand());
+		//StampFunctionAvailableRequiredImpl checkFuncRq = new StampFunctionAvailableRequiredImpl();
+		
+		//boolean isAvailable = StampFunctionAvailableService.decide(checkFuncRq, employeeId);
+		
+		//if(!isAvailable) {
+		//	throw new BusinessException("Msg_1619");
+		//}
 		
 		// 1
 		Optional<StampSettingPerson> stampSetting = stampSetPerRepo.getStampSetting(companyId);
@@ -130,21 +143,18 @@ public class StampSettingsEmbossFinder {
 	public StampToSuppress getStampToSuppress(String employeeId) {
 		StampTypeToSuppressRequiredImpl stampTypeToSuppressR = new StampTypeToSuppressRequiredImpl(stampCardRepo,
 				stampRecordRepo, stampDakokuRepo, stampSetPerRepo, predetemineTimeSettingRepo,
-				settingsSmartphoneStampRepo, portalStampSettingsrepo);
+				settingsSmartphoneStampRepo, portalStampSettingsrepo, workingConditionItemRepo, workingConditionRepo);
 
 		return GetStampTypeToSuppressService.get(stampTypeToSuppressR, employeeId, StampMeans.INDIVITION);
 	}
 
 	public TimeCard getTimeCard(String employeeId, GeneralDate date) {
-		TimeCardRequiredImpl required = new TimeCardRequiredImpl(timeLeavingOfDailyPerformanceRepository);
+		TimeCardRequiredImpl required = new TimeCardRequiredImpl();
 		return GetTimeCardService.getTimeCard(required, employeeId, date.yearMonth());
 	}
 
 	@AllArgsConstructor
 	private class TimeCardRequiredImpl implements GetTimeCardService.Require {
-
-		@Inject
-		private TimeLeavingOfDailyPerformanceRepository timeLeavingOfDailyPerformanceRepository;
 
 		@Override
 		public List<TimeLeavingOfDailyPerformance> findbyPeriodOrderByYmd(String employeeId, DatePeriod datePeriod) {
@@ -207,12 +217,16 @@ public class StampSettingsEmbossFinder {
 				StampDakokuRepository stampDakokuRepo, StampSetPerRepository stampSetPerRepo,
 				PredetemineTimeSettingRepository predetemineTimeSettingRepo,
 				SettingsSmartphoneStampRepository settingsSmartphoneStampRepo,
-				PortalStampSettingsRepository portalStampSettingsrepo) {
+				PortalStampSettingsRepository portalStampSettingsrepo,
+				WorkingConditionItemRepository workingConditionItemRepo,
+				WorkingConditionRepository workingConditionRepo) {
 			super(stampCardRepo, stampRecordRepo, stampDakokuRepo);
 			this.stampSetPerRepo = stampSetPerRepo;
 			this.predetemineTimeSettingRepo = predetemineTimeSettingRepo;
 			this.settingsSmartphoneStampRepo = settingsSmartphoneStampRepo;
 			this.portalStampSettingsrepo = portalStampSettingsrepo;
+			this.workingConditionItemRepo = workingConditionItemRepo;
+			this.workingConditionRepo = workingConditionRepo;
 		}
 
 		@Override
@@ -243,13 +257,24 @@ public class StampSettingsEmbossFinder {
 
 		@Override
 		public Optional<WorkingCondition> workingCondition(String companyId, String employeeId, GeneralDate baseDate) {
-			return workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
+			return this.workingConditionRepo.getBySidAndStandardDate(companyId, employeeId, baseDate);
 		}
 
 		@Override
 		public Optional<WorkingConditionItem> workingConditionItem(String historyId) {
-			return workingConditionItemRepo.getByHistoryId(historyId);
+			return this.workingConditionItemRepo.getByHistoryId(historyId);
 		}
+
 	}
+	
+	//@AllArgsConstructor
+	//private class StampFunctionAvailableRequiredImpl implements StampFunctionAvailableService.Require {
+		
+	//	@Override
+	//	public List<StampCard> getListStampCard(String sid) {
+	//		return stampCardRepo.getListStampCard(sid);
+	//	}
+		
+	//}
 
 }

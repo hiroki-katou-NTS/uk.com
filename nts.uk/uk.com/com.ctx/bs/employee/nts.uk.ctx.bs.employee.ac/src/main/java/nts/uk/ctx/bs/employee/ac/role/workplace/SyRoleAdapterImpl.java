@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ac.role.workplace;
 
-import java.util.List;
+import java.util.OptionalInt;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.access.role.SyRoleAdapter;
 import nts.uk.ctx.bs.employee.dom.access.role.WorkplaceIDImport;
+import nts.uk.ctx.bs.employee.dom.employee.service.EmployeeReferenceRangeImport;
 import nts.uk.ctx.sys.auth.pub.role.RoleExportRepo;
 import nts.uk.ctx.sys.auth.pub.role.WorkplaceIdExport;
 
@@ -49,6 +50,16 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 		workplaceIDImport.setListWorkplaceIds(workplaceIdExport.getListWorkplaceIds());
 
 		return workplaceIDImport;
+	}
+	
+	@Override
+	public EmployeeReferenceRangeImport getRangeByRoleID(String roleID) {
+		OptionalInt data = roleExportRepo.findEmpRangeByRoleID(roleID);
+		if(!data.isPresent()){
+			throw new RuntimeException("Can't get Role ID");
+		}
+		EmployeeReferenceRangeImport reuslt =  EmployeeReferenceRangeImport.valueOf(data.getAsInt());
+		return reuslt;
 	}
 
 }

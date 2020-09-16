@@ -20,6 +20,6 @@ public class TopPageAlarmDetail {
 	/** 連番 */
 	private final int serialNumber;
 	
-	/** 社員ID */
-	private final String sid;
+	/** 対象社員ID */
+	private final String sid_tgt;
 }

@@ -427,6 +427,12 @@ public class JpaTimeOfMonthly extends JpaRepository implements TimeOfMonthlyRepo
 	}
 
 	private KrcdtMonTimeSup getOuen(KrcdtMonMergePk id) {
-		return this.getEntityManager().find(KrcdtMonTimeSup.class, id);
+		KrcdtMonTimeSup sup = this.getEntityManager().find(KrcdtMonTimeSup.class, id);
+		
+		if (sup == null) {
+			sup = new KrcdtMonTimeSup();
+			sup.id = id;
+		}
+		return sup;
 	}
 }

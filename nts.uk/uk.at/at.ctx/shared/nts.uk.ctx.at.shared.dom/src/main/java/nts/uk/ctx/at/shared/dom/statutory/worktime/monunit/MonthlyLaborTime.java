@@ -25,6 +25,8 @@ public class MonthlyLaborTime {
 			Optional<MonthlyEstimateTime> weekAvgTime) {
 		
 		this.legalLaborTime = legalTime;
+		this.withinLaborTime = withinLaborTime;
+		this.weekAvgTime = weekAvgTime;
 	}
 	
 	public static MonthlyLaborTime of (MonthlyEstimateTime legalTime) {

@@ -8,9 +8,12 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.LeaveOccurrDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.SeqVacationAssociationInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.vacation.algorithm.TimeLapseVacationSetting;
 
 /**
@@ -24,10 +27,10 @@ public class OffsetChronologicalOrder {
 	};
 
 	// 時系列順で相殺する
-	public static List<SeqVacationAssociationInfo> process(Require require, String employeeId,
+	public static Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> process(Require require, String employeeId,
 			List<TimeLapseVacationSetting> lstTimeLap, List<AccumulationAbsenceDetail> lstAccAbse,
 			TypeOffsetJudgment typeJudgment) {
-
+		Optional<DayOffError> error = Optional.empty();
 		List<SeqVacationAssociationInfo> lstSeqVacation = new ArrayList<>();
 		// INPUT．「逐次発生の休暇明細」．発生消化区分により、発生と消化で別ける
 
@@ -61,8 +64,10 @@ public class OffsetChronologicalOrder {
 						accAbsence, occur, typeJudgment);
 				if (offsetJudgment.getRight().isPresent())
 					lstSeqVacation.add(offsetJudgment.getRight().get());
-				if (offsetJudgment.getLeft() == OffsetJudgment.ERROR)
+				if (offsetJudgment.getLeft() == OffsetJudgment.ERROR) {
+					error = Optional.of(DayOffError.PREFETCH_ERROR);
 					break;
+				}
 				else {
 					// 「逐次発生の休暇明細」（消化）.未相殺数 > 0
 					if (checkUnbalNum(timeLapSet, accAbsence)) {
@@ -74,12 +79,13 @@ public class OffsetChronologicalOrder {
 			}
 
 			// 相殺できる「発生数」があるかチェックする
-			if (!lstAccOccur.stream().filter(x -> !x.getUnbalanceNumber().allFieldZero()).findAny().isPresent()) {
+			if (!lstAccOccur.stream().filter(x -> !x.getNumberOccurren().allFieldZero()).findAny().isPresent()) {
+				//全ての「逐次発生の休暇明細」(発生)．「発生数」が0の場合、相殺できる発生がないとする。
 				break;
 			}
 
 		}
-		return lstSeqVacation;
+		return Pair.of(error, lstSeqVacation);
 
 	}
 
@@ -89,7 +95,7 @@ public class OffsetChronologicalOrder {
 			AccumulationAbsenceDetail occur, TypeOffsetJudgment typeJudgment) {
 
 		// 期限切れかをチェックする
-		Optional<? extends LeaveOccurrDetail> occurrDetail = occurrDetail(occur, typeJudgment);
+		Optional<LeaveOccurrDetail> occurrDetail = occurrDetail(occur, typeJudgment);
 		if (!occurrDetail.isPresent() || !accdigest.getDateOccur().getDayoffDate().isPresent()
 				|| occurrDetail.get().getDeadline().before(accdigest.getDateOccur().getDayoffDate().get())) {
 			return Pair.of(OffsetJudgment.SUCCESS, Optional.empty());
@@ -124,12 +130,12 @@ public class OffsetChronologicalOrder {
 	}
 
 	// 期限切れかをチェックする
-	private static Optional<? extends LeaveOccurrDetail> occurrDetail(AccumulationAbsenceDetail occur,
+	private static Optional<LeaveOccurrDetail> occurrDetail(AccumulationAbsenceDetail occur,
 			TypeOffsetJudgment typeJudgment) {
 		if (typeJudgment == TypeOffsetJudgment.ABSENCE) {
-			return occur.getUnbalanceCompensation();
+			return Optional.of((UnbalanceCompensation) occur);
 		} else {
-			return occur.getUnbalanceVacation();
+			return Optional.of((UnbalanceVacation) occur);
 		}
 
 	}

@@ -435,7 +435,7 @@ public class OverTimeOfDaily {
 		//既に計算されてきた残業枠Noの一覧
 		val frameNoList = this.overTimeWorkFrameTime.stream().map(tc -> tc.getOverWorkFrameNo()).collect(Collectors.toList());
 		//実働就業<=法定労働(法定内)
-		if(actualWorkTime.lessThanOrEqualTo(statutoryTime)) {
+		if(actualWorkTime.lessThanOrEqualTo(statutoryTime.v())) {
 			if(unUseBreakTime.greaterThan(0)) {
 				if(frameNoList.contains(new OverTimeFrameNo(ootsukaFixedCalcSet.getInLawOT().v()))) {
 					this.overTimeWorkFrameTime.forEach(tc -> {if(tc.getOverWorkFrameNo().v().equals(ootsukaFixedCalcSet.getInLawOT().v())) 

@@ -2,10 +2,14 @@ package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.num
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.CarryForwardDayTimes;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.RemainUnDigestedDayTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.TotalRemainUndigestNumber.RemainUndigestResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
@@ -42,7 +46,10 @@ public class NumberRemainVacationLeaveRangeQuery {
 						.get().getNextDay().get().equals(inputParam.getDateData().start()))) {
 			// 月初時点の情報を整える
 			calcCarryForwardDays = AcquisitionRemainNumAtStartCount.acquisition(require, inputParam.getCid(),
-					inputParam.getSid(), inputParam.getDateData().start(), inputParam.isMode(), lstAccTemp);
+					inputParam.getSid(), inputParam.getDateData().start(), inputParam.getDateData().end(),
+					inputParam.isMode(), lstAccTemp, inputParam.getFixManaDataMonth());
+			result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
+			result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
 		} else {
 			// 繰越日数」と「繰越時間」に前回の修正結果の残数を格納
 			SubstituteHolidayAggrResult beforeResult = inputParam.getOptBeforeResult().get();
@@ -53,10 +60,12 @@ public class NumberRemainVacationLeaveRangeQuery {
 				calcCarryForwardDays.setCarryForwardTime(beforeResult.getCarryoverTime().v());
 				// result.setVacationDetails(beforeResult.getVacationDetails());
 				lstAccTemp.addAll(beforeResult.getVacationDetails().getLstAcctAbsenDetail());
+				result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
+				result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
+
 			}
 		}
-		result.setCarryoverDay(new ReserveLeaveRemainingDayNumber(calcCarryForwardDays.getCarryForwardDays()));
-		result.setCarryoverTime(new RemainingMinutes(calcCarryForwardDays.getCarryForwardTime()));
+		
 
 		// 今から処理が必要な代休、休出を全て集める
 		lstAccTemp.addAll(GetTemporaryData.process(require, inputParam));
@@ -65,9 +74,9 @@ public class NumberRemainVacationLeaveRangeQuery {
 		lstAccTemp.sort(new AccumulationAbsenceDetailComparator());
 
 		// 代休と休出の相殺処理
-		List<SeqVacationAssociationInfo> lstSeqVacation = OffsetProcessing.process(require, inputParam.getCid(),
-				inputParam.getSid(), inputParam.getScreenDisplayDate(), lstAccTemp);
-		result.setLstSeqVacation(lstSeqVacation);
+		Pair<Optional<DayOffError>, List<SeqVacationAssociationInfo>> lstSeqVacation = OffsetProcessing.process(require,
+				inputParam.getCid(), inputParam.getSid(), inputParam.getScreenDisplayDate(), lstAccTemp);
+		result.setLstSeqVacation(lstSeqVacation.getRight());
 		// 残った分を参照して、残数と未消化を計算
 		RemainUndigestResult remainUndigestResult = TotalRemainUndigestNumber.process(require, inputParam.getCid(),
 				inputParam.getSid(), inputParam.getScreenDisplayDate(), lstAccTemp, inputParam.isMode());
@@ -78,8 +87,11 @@ public class NumberRemainVacationLeaveRangeQuery {
 		// 発生数、使用数を計算
 		RemainUnDigestedDayTimes remainUnDigDayTime = CalcNumberOccurUses.process(lstAccTemp, inputParam.getDateData());
 		result.setCalcNumberOccurUses(remainUnDigDayTime);
+
 		// エラーチェック
 		CheckErrorDuringHoliday.check(result);
+		lstSeqVacation.getLeft().ifPresent(x -> result.getDayOffErrors().add(x));
+
 		result.setVacationDetails(new VacationDetails(lstAccTemp));
 		// 次の集計期間の開始日を計算する
 		result.setNextDay(Finally.of(inputParam.getDateData().end().addDays(1)));

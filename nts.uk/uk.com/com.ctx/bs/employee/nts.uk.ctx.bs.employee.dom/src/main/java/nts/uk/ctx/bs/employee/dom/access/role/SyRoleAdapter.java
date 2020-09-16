@@ -4,10 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.access.role;
 
-import java.util.List;
-
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
+import nts.uk.ctx.bs.employee.dom.employee.service.EmployeeReferenceRangeImport;
 
 /**
  * The Interface SyRoleWorkplaceAdapter.
@@ -30,5 +28,8 @@ public interface SyRoleAdapter {
 	 * @return the list
 	 */
 	WorkplaceIDImport findListWkpId(Integer systemType);
+	
+	//社員参照範囲を取得する
+	EmployeeReferenceRangeImport getRangeByRoleID(String roleID);
 	
 }

@@ -13,9 +13,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.GetTightSetting.GetTightSettingResult;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.ProcessDataTemporary;
-import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.SettingExpirationDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
@@ -30,7 +28,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
-import nts.uk.ctx.at.shared.dom.vacation.setting.ExpirationTime;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SettingSubstituteHolidayProcess;
 import nts.uk.ctx.at.shared.dom.vacation.setting.annualpaidleave.processten.SubstitutionHolidayOutput;
 
@@ -109,15 +106,15 @@ public class GetUnusedLeaveTemporary {
 			unUseDays -= interimBreakData.getUseDays().v();
 		}
 
-		// 締め設定を取得する
-		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
-				aggEndDate, ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()),
-				interimData.getLeft().getYmd());
-
-		// 使用期限を設定
-		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
-				ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()), tightSettingResult,
-				interimData.getRight().getExpirationDate());
+//		// 締め設定を取得する
+//		Optional<GetTightSettingResult> tightSettingResult = GetTightSetting.getTightSetting(require, cid, sid,
+//				aggEndDate, ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()),
+//				interimData.getLeft().getYmd());
+//
+//		// 使用期限を設定
+//		GeneralDate dateSettingExp = SettingExpirationDate.settingExp(
+//				ExpirationTime.valueOf(subsHolidaySetting.getExpirationOfsubstiHoliday()), tightSettingResult,
+//				interimData.getLeft().getYmd());
 
 		MngDataStatus dataAtr = MngDataStatus.NOTREFLECTAPP;
 		if (interimData.getLeft().getCreatorAtr() == CreateAtr.SCHEDULE) {
@@ -126,7 +123,7 @@ public class GetUnusedLeaveTemporary {
 			dataAtr = MngDataStatus.RECORD;
 		}
 
-		return new AccuVacationBuilder(interimData.getLeft().getSID(),
+		AccumulationAbsenceDetail detail = new AccuVacationBuilder(interimData.getLeft().getSID(),
 				new CompensatoryDayoffDate(false, Optional.of(interimData.getLeft().getYmd())),
 				OccurrenceDigClass.OCCURRENCE, dataAtr, interimData.getLeft().getRemainManaID())
 						.numberOccurren(new NumberConsecuVacation(
@@ -134,9 +131,10 @@ public class GetUnusedLeaveTemporary {
 								Optional.of(new AttendanceTime(interimData.getRight().getOccurrenceTimes().v()))))
 						.unbalanceNumber(new NumberConsecuVacation(new ManagementDataRemainUnit(unUseDays),
 								Optional.of(new AttendanceTime(unUseTimes))))
-						.unbalanceVacation(new UnbalanceVacation(dateSettingExp, DigestionAtr.USED, Optional.empty(),
-								interimData.getRight().getOnedayTime(), interimData.getRight().getHaftDayTime()))
 						.build();
+		return new UnbalanceVacation(interimData.getRight().getExpirationDate(), DigestionAtr.USED, Optional.empty(), detail,
+				interimData.getRight().getOnedayTime(), interimData.getRight().getHaftDayTime());
+
 	}
 
 	public static interface Require extends SettingSubstituteHolidayProcess.Require, GetTightSetting.Require {

@@ -14,8 +14,11 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.FixedManagementDataMonth;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.NumberConsecuVacation;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.interim.InterimBreakDayOffMng;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.DataManagementAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
 
@@ -31,15 +34,16 @@ public class GetUnusedLeaveFixed {
 	};
 
 	public static List<AccumulationAbsenceDetail> getUnbalanceUnused(Require require, String companyId,
-			String employeeId, GeneralDate startDateAggr) {
+			String employeeId, GeneralDate startDateAggr, GeneralDate endDateAggr,
+			FixedManagementDataMonth fixManaDataMonth) {
 		// アルゴリズム「確定休出から未使用の休出を取得する」を実行する
 		List<LeaveManagementData> lstUnBalPay = getUnbalancePayment(require, companyId, employeeId, startDateAggr);
 		if (lstUnBalPay.isEmpty())
 			return Collections.emptyList();
 
 		// アルゴリズム「暫定代休と紐付けをしない確定休出を取得する」を実行する
-		return lstUnBalPay.stream().map(x -> acquireTemporaryHoliday(x)).filter(x -> x.isPresent()).map(x -> x.get())
-				.collect(Collectors.toList());
+		return lstUnBalPay.stream().map(x -> acquireTemporaryHoliday(require, x)).filter(x -> x.isPresent())
+				.map(x -> x.get()).collect(Collectors.toList());
 	}
 
 	// 2-1.確定休出から未使用の休出を取得する
@@ -54,26 +58,40 @@ public class GetUnusedLeaveFixed {
 	}
 
 	// 2-3.暫定代休と紐付けをしない確定休出を取得する
-	public static Optional<AccumulationAbsenceDetail> acquireTemporaryHoliday(LeaveManagementData leaveManagement) {
+	public static Optional<AccumulationAbsenceDetail> acquireTemporaryHoliday(Require require,
+			LeaveManagementData leaveManagement) {
+
+		// ドメインモデル「暫定休出代休紐付け管理」を取得する
+		List<InterimBreakDayOffMng> interimTyingData = require.getBreakByIdAndDataAtr(DataManagementAtr.CONFIRM,
+				DataManagementAtr.INTERIM, leaveManagement.getID());
+
 		double unUseDays = leaveManagement.getUnUsedDays().v();
 		Integer unUseTimes = leaveManagement.getUnUsedTimes().v();
+
+		// 未使用日数と未使用時間を設定する
+		for (InterimBreakDayOffMng breakData : interimTyingData) {
+			// 未使用日数と未使用時間を設定する
+			unUseDays -= breakData.getUseDays().v();
+			unUseTimes -= breakData.getUseTimes().v();
+		}
+
 		// 未使用日数と未使用時間をチェックする
 		if (unUseDays <= 0 && unUseTimes <= 0) {
 			return Optional.empty();
 		}
 
-		AccumulationAbsenceDetail result = new AccuVacationBuilder(leaveManagement.getSID(),
+		AccumulationAbsenceDetail detail = new AccuVacationBuilder(leaveManagement.getSID(),
 				leaveManagement.getComDayOffDate(), OccurrenceDigClass.OCCURRENCE, MngDataStatus.CONFIRMED,
 				leaveManagement.getID()).numberOccurren(
 						new NumberConsecuVacation(new ManagementDataRemainUnit(leaveManagement.getOccurredDays().v()),
 								Optional.of(new AttendanceTime(leaveManagement.getOccurredTimes().v()))))
 						.unbalanceNumber(new NumberConsecuVacation(
-								new ManagementDataRemainUnit(leaveManagement.getUnUsedDays().v()),
-								Optional.of(new AttendanceTime(leaveManagement.getUnUsedTimes().v()))))
-						.unbalanceVacation(new UnbalanceVacation(leaveManagement.getExpiredDate(),
-								leaveManagement.getSubHDAtr(), leaveManagement.getDisapearDate(),
-								leaveManagement.getFullDayTime(), leaveManagement.getHalfDayTime()))
+								new ManagementDataRemainUnit(unUseDays),
+								Optional.of(new AttendanceTime(unUseTimes))))
 						.build();
+		UnbalanceVacation result = new UnbalanceVacation(leaveManagement.getExpiredDate(),
+				leaveManagement.getSubHDAtr(), leaveManagement.getDisapearDate(), detail,
+				leaveManagement.getFullDayTime(), leaveManagement.getHalfDayTime());
 		return Optional.of(result);
 	}
 
@@ -81,6 +99,9 @@ public class GetUnusedLeaveFixed {
 
 		// LeaveManaDataRepository DigestionAtr.UNUSED
 		List<LeaveManagementData> getBySidYmd(String cid, String sid, GeneralDate ymd, DigestionAtr state);
+
+		List<InterimBreakDayOffMng> getBreakByIdAndDataAtr(DataManagementAtr breakAtr, DataManagementAtr dayOffAtr,
+				String breakId);
 
 	}
 }

@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.infra.entity.statutory.worktime_new.share.KshmtLegal
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "KRCMT_LEGAL_TIME_M_EMP")
+@Table(name = "KSRMT_LEGAL_TIME_M_EMP")
 public class KshmtLegalTimeMEmp extends KshmtLegalMon implements Serializable {
 	
 	/** The Constant serialVersionUID. */
