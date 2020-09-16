@@ -54,13 +54,13 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.outsideot.service.MonthlyItems;
 import nts.uk.ctx.at.shared.dom.outsideot.service.OutsideOTSettingService;
 import nts.uk.ctx.at.shared.dom.outsideot.service.Time36AgreementTargetItem;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.require.RemainNumberTempRequireService;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -355,7 +355,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 	// 年間時間の作成
 	private void createAnnual(AppOvertimeDetail appOvertimeDetail, String employeeID, GeneralDate appDate, Optional<AgreementTimeYear> opAgreementTimeYear){
 		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setActualTime(opAgreementTimeYear.map(x -> x.getRecordTime()).orElse(new AttendanceTimeYear(0)));
-		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setLimitTime(opAgreementTimeYear.map(x -> x.getLimitTime()).orElse(new LimitOneYear(0)));
+		appOvertimeDetail.getTime36Agree().getAgreeAnnual().setLimitTime(opAgreementTimeYear.map(x -> x.getLimitTime()).orElse(new AgreementOneYearTime(0)));
 	}
 	
 	// 36協定上限時間の作成
@@ -483,7 +483,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				new AttendanceTimeMonth(agreeUpperLimitMonth.getOverTime().v() + applicationTime.v()), 
 				agreeUpperLimitMonth.getUpperLimitTime(), 
 				Optional.empty());
-		if(maxTimeStatus==AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME){
+		if(maxTimeStatus==AgreMaxTimeStatusOfMonthly.ALARM_OVER){
 			// エラー情報一覧に「上限月間時間エラー」を追加
 			String realTime = Integer.toString(agreeUpperLimitMonth.getOverTime().v() + applicationTime.v());
 			String limitTime = agreeUpperLimitMonth.getUpperLimitTime().toString();
@@ -510,7 +510,7 @@ public class Time36UpperLimitCheckImpl implements Time36UpperLimitCheck {
 				Optional.ofNullable(new AttendanceTime(applicationTime.v())), 
 				Optional.ofNullable(appDate));
 		for(AgreMaxAverageTime agreMaxAverageTime : agreMaxAverageTimeMulti.getAverageTimeList()){
-			if(agreMaxAverageTime.getStatus()==AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME){
+			if(agreMaxAverageTime.getStatus()==AgreMaxTimeStatusOfMonthly.ALARM_OVER){
 				// エラー情報一覧に「上限複数月平均時間エラー」を追加
 				String yearMonthStart = agreMaxAverageTime.getPeriod().start().toString();
 				String yearMonthEnd = agreMaxAverageTime.getPeriod().end().toString();

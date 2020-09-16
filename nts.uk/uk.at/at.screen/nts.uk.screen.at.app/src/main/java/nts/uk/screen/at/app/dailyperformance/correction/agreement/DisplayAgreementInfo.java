@@ -17,7 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.DaiPerformanceFun;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.screen.at.app.dailyperformance.correction.finddata.IFindData;
 
 /**

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.app.find.standardtime.dto.AgreementMonthSettingDto;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementMonthSetting;
 
 /**
  * 

@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeClass;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeClassPK;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
 
 @Stateless
 public class JpaAgreementTimeOfClassificationRepository extends JpaRepository

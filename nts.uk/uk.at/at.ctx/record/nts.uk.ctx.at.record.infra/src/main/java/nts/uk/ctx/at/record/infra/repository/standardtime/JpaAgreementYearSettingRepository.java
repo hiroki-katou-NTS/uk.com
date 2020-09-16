@@ -15,8 +15,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSettingPK;
-//import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementYearSetting;
 
 @Stateless
 public class JpaAgreementYearSettingRepository extends JpaRepository implements AgreementYearSettingRepository {

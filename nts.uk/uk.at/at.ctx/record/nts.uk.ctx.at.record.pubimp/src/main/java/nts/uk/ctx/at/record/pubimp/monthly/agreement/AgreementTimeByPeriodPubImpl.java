@@ -29,7 +29,7 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 /**
  * 指定期間36協定時間の取得
@@ -89,7 +89,7 @@ public class AgreementTimeByPeriodPubImpl implements AgreementTimeByPeriodPub {
 				domain.getYearMonth(),
 				AgreMaxTimeOfMonthly.of(
 						domain.getMaxTime().getAgreementTime(),
-						new LimitOneMonth(domain.getMaxTime().getMaxTime().v()),
+						new AgreementOneMonth(domain.getMaxTime().getMaxTime().v()),
 						domain.getMaxTime().getStatus()));
 	}
 	

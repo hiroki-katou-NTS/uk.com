@@ -115,23 +115,20 @@ public class AggregateTotalWorkingTime implements Cloneable, Serializable{
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
-	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void aggregateSharedItem(
 			RequireM3 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets){
+			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap){
 	
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
-				companySets);
+		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);
 		
 		// 所定労働時間を集計する
 		this.prescribedWorkingTime.confirm(datePeriod, attendanceTimeOfDailyMap);
 
 		// 就業時間を集計する
-		this.workTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap, companySets);
+		this.workTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);
 	}
 	
 	/**

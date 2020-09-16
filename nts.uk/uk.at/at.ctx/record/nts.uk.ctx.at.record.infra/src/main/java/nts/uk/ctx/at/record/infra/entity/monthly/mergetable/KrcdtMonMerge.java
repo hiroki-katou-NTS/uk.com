@@ -40,6 +40,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.monthly.calc.AggregateTotalTimeSpentAtWork;
 import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.monthly.calc.actualworkingtime.IrregularWorkingTimeOfMonthly;
@@ -121,7 +122,6 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.ouen.OuenTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
@@ -6207,12 +6207,12 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		return AgreementTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.agreementTime),
-				new LimitOneMonth(this.limitErrorTime),
-				new LimitOneMonth(this.limitAlarmTime),
+				new AgreementOneMonth(this.limitErrorTime),
+				new AgreementOneMonth(this.limitAlarmTime),
 		(this.exceptionLimitErrorTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
+						Optional.empty() : Optional.of(new AgreementOneMonth(this.exceptionLimitErrorTime))),
 		(this.exceptionLimitAlarmTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
+						Optional.empty() : Optional.of(new AgreementOneMonth(this.exceptionLimitAlarmTime))),
 				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
 	}
 	
@@ -6224,7 +6224,7 @@ public class KrcdtMonMerge extends UkJpaEntity implements Serializable {
 		
 		return AgreMaxTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.agreementRegTime),
-				new LimitOneMonth(0),
+				new AgreementOneMonth(0),
 				AgreMaxTimeStatusOfMonthly.NORMAL);
 	}
 	

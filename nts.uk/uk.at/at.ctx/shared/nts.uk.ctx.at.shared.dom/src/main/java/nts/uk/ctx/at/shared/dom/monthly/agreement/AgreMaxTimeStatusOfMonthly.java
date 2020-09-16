@@ -7,8 +7,10 @@ package nts.uk.ctx.at.shared.dom.monthly.agreement;
 public enum AgreMaxTimeStatusOfMonthly {
 	/** 正常 */
 	NORMAL(0),
-	/** 上限時間超過 */
-	EXCESS_MAXTIME(1);
+	/** アラーム時間超過 */
+	ALARM_OVER(1),
+	/** エラー時間超過 */
+	ERROR_OVER(2);
 	
 	public int value;
 	private AgreMaxTimeStatusOfMonthly(int value){

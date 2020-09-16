@@ -107,18 +107,18 @@ public class GetAgreementTimeProc {
 			// 確定情報の取得
 			val confirmedInfo = this.getConfirmedInfo(require, cacheCarrier, employeeId, aggrPeriod, employeeSets, Optional.of(confirmedAttdTimeList));
 			val confirmed = confirmedInfo.getAgreementTime().getAgreementTime();
-			val confirmedMax = confirmedInfo.getAgreementMaxTime().getAgreementTime();
+			val confirmedMax = confirmedInfo.getLegalUpperTime().getAgreementTime();
 			
 			// エラーがあるか確認する
-			if (confirmed.getConfirmedErrorMessage() != null){
-				errorMessages.add(confirmed.getConfirmedErrorMessage());
-				
-				// 36協定時間一覧にエラーメッセージを入れる
-				val employeeError = AgreementTimeDetail.of(employeeIds.get(0), null, null, null, null,
-						confirmed.getConfirmedErrorMessage());
-				results.add(employeeError);
-				return;
-			}
+//			if (confirmed.getConfirmedErrorMessage() != null){
+//				errorMessages.add(confirmed.getConfirmedErrorMessage());
+//				
+//				// 36協定時間一覧にエラーメッセージを入れる
+//				val employeeError = AgreementTimeDetail.of(employeeIds.get(0), null, null, null, null,
+//						confirmed.getConfirmedErrorMessage());
+//				results.add(employeeError);
+//				return;
+//			}
 			
 			// 社員の申請を反映　（反映結果の取得）
 			//*****（未）　申請反映側処理の完成後、本実装。（永続化でない）「取得モード」で貰う。

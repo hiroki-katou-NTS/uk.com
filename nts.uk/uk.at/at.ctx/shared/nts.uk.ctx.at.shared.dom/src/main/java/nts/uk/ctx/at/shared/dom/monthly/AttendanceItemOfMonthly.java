@@ -202,6 +202,49 @@ public enum AttendanceItemOfMonthly {
 	CALC_TRANSFER_TIME_10(163),
 	/** 計算振替時間合計 */
 	CALC_TOTAL_TRANSFER_TIME(164),
+	/** 法定内休出時間1 */
+	LEGAL_HOL_WORK_TIME_01(165),
+	/** 法定内休出時間2 */
+	LEGAL_HOL_WORK_TIME_02(166),
+	/** 法定内休出時間3 */
+	LEGAL_HOL_WORK_TIME_03(167),
+	/** 法定内休出時間4 */
+	LEGAL_HOL_WORK_TIME_04(168),
+	/** 法定内休出時間5 */
+	LEGAL_HOL_WORK_TIME_05(169),
+	/** 法定内休出時間6 */
+	LEGAL_HOL_WORK_TIME_06(170),
+	/** 法定内休出時間7 */
+	LEGAL_HOL_WORK_TIME_07(171),
+	/** 法定内休出時間8 */
+	LEGAL_HOL_WORK_TIME_08(172),
+	/** 法定内休出時間9 */
+	LEGAL_HOL_WORK_TIME_09(173),
+	/** 法定内休出時間10 */
+	LEGAL_HOL_WORK_TIME_10(174),
+	/** 法定内振替休出時間1 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_01(175),
+	/** 法定内振替休出時間2 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_02(176),
+	/** 法定内振替休出時間3 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_03(177),
+	/** 法定内振替休出時間4 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_04(178),
+	/** 法定内振替休出時間5 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_05(179),
+	/** 法定内振替休出時間6 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_06(180),
+	/** 法定内振替休出時間7 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_07(181),
+	/** 法定内振替休出時間8 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_08(182),
+	/** 法定内振替休出時間9 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_09(183),
+	/** 法定内振替休出時間10 */
+	LEGAL_HOL_TRANSFER_WORK_TIME_10(184),
+	/** 臨時勤務時間  */
+	/** TODO: 対応されていない */
+	TEMPORARY_TIME(9998),
 	
 	MAX_ID(9999);
 	

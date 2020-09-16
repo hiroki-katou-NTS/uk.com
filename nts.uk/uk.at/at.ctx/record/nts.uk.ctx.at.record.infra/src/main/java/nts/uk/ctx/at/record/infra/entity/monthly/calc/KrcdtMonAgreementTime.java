@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyKey;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -90,12 +90,12 @@ public class KrcdtMonAgreementTime extends UkJpaEntity implements Serializable {
 		
 		return AgreementTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.agreementTime),
-				new LimitOneMonth(this.limitErrorTime),
-				new LimitOneMonth(this.limitAlarmTime),
+				new AgreementOneMonth(this.limitErrorTime),
+				new AgreementOneMonth(this.limitAlarmTime),
 				(this.exceptionLimitErrorTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
+						Optional.empty() : Optional.of(new AgreementOneMonth(this.exceptionLimitErrorTime))),
 				(this.exceptionLimitAlarmTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
+						Optional.empty() : Optional.of(new AgreementOneMonth(this.exceptionLimitAlarmTime))),
 				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
 	}
 	

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.record.pub.monthly.agreement.CheckAgreementTimeStatusPub;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.agreement.AgreementTimeStatusAdapter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 @Stateless
 public class AgreementTimeStatusAdapterAcFinder implements AgreementTimeStatusAdapter {
@@ -18,8 +18,8 @@ public class AgreementTimeStatusAdapterAcFinder implements AgreementTimeStatusAd
 
 	@Override
 	public AgreementTimeStatusOfMonthly checkAgreementTimeStatus(AttendanceTimeMonth agreementTime,
-			LimitOneMonth limitAlarmTime, LimitOneMonth limitErrorTime, Optional<LimitOneMonth> exceptionLimitAlarmTime,
-			Optional<LimitOneMonth> exceptionLimitErrorTime) {
+			AgreementOneMonth limitAlarmTime, AgreementOneMonth limitErrorTime, Optional<AgreementOneMonth> exceptionLimitAlarmTime,
+			Optional<AgreementOneMonth> exceptionLimitErrorTime) {
 		return checkAgreementTimeStatusPub.algorithm(agreementTime, limitAlarmTime, limitErrorTime,
 				exceptionLimitAlarmTime, exceptionLimitErrorTime);
 	}

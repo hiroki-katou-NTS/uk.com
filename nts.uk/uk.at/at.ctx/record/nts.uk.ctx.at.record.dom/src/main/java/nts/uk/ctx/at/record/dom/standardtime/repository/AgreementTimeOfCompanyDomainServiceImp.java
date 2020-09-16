@@ -6,8 +6,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
 
 /**
  * 

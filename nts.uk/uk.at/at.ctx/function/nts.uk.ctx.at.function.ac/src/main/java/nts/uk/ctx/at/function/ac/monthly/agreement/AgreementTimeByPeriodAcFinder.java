@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.common.Month;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
@@ -62,7 +62,7 @@ public class AgreementTimeByPeriodAcFinder implements AgreementTimeByPeriodAdapt
 	private AgreMaxTimeOfMonthlyImport convertToAgreMaxTimeOfMonthly (AgreMaxTimeMonthOut export) {
 		return new AgreMaxTimeOfMonthlyImport(
 				export.getMaxTime().getAgreementTime(),
-				new LimitOneMonth(export.getMaxTime().getMaxTime().v()),
+				new AgreementOneMonth(export.getMaxTime().getMaxTime().v()),
 				export.getMaxTime().getStatus()
 				);
 	}

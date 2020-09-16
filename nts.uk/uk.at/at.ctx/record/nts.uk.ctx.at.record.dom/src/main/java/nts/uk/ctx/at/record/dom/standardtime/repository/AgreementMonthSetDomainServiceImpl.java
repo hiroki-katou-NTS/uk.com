@@ -8,11 +8,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,7 +37,7 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId(); 
 		
-		LimitOneMonth limitOneMonth = new LimitOneMonth(0);
+		AgreementOneMonth limitOneMonth = new AgreementOneMonth(0);
 		
 		if (workingConditionItem.isPresent()) {
 			if (workingConditionItem.get().getLaborSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
@@ -83,7 +83,7 @@ public class AgreementMonthSetDomainServiceImpl implements AgreementMonthSetDoma
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId(); 
 		
-		LimitOneMonth limitOneMonth = new LimitOneMonth(0);
+		AgreementOneMonth limitOneMonth = new AgreementOneMonth(0);
 		
 		if (workingConditionItem.isPresent()) {
 			if (workingConditionItem.get().getLaborSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {

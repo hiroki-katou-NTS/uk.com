@@ -18,6 +18,7 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexShortageLimit;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.InsufficientFlexHolidayMnt;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.monthly.roundingset.RoundingSetOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.GetVacationAddSet;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VacationAddSet;
@@ -34,7 +35,6 @@ import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimes;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.WorkingTimeSetting;
@@ -504,7 +504,7 @@ public class MonAggrCompanySettings {
 	 * @param workTypeCode 勤務種類コード
 	 * @return 勤務種類　（なければ、null）
 	 */
-	public WorkType getWorkTypeMap(RequireM4 require, String workTypeCode){
+	public WorkType getWorkTypeMap(RequireM4 require, String workTypeCode) {
 		
 		if (this.workTypeMap.containsKey(workTypeCode)){
 			val result = this.workTypeMap.get(workTypeCode);

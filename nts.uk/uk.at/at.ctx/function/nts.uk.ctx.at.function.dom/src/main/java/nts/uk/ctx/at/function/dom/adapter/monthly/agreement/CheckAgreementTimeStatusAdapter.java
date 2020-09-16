@@ -7,7 +7,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 public interface CheckAgreementTimeStatusAdapter {
 	/**
@@ -20,7 +20,7 @@ public interface CheckAgreementTimeStatusAdapter {
 	//RequestList540
 	AgreMaxTimeStatusOfMonthly maxTime(
 			AttendanceTimeMonth agreementTime,
-			LimitOneMonth maxTime,
+			AgreementOneMonth maxTime,
 			Optional<AttendanceTimeMonth> requestTimeOpt);
 
 	/**

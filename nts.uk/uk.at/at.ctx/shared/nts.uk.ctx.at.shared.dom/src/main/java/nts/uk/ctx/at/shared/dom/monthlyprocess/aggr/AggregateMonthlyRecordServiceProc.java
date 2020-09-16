@@ -37,6 +37,8 @@ import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.affiliation.AggregateAffiliationInfo;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.ClosingDateType;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyAggregateAtr;
@@ -107,8 +109,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeav
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveRemainNoMinus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.work.CompanyHolidayMngSetting;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateType;
 import nts.uk.ctx.at.shared.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
@@ -340,7 +340,7 @@ public class AggregateMonthlyRecordServiceProc {
 
 			// 手修正を戻してから計算必要な項目を再度計算
 			if (this.isRetouch) {
-				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(require, attendanceTime)));
+				this.aggregateResult.setAttendanceTime(Optional.of(this.recalcAttendanceTime(attendanceTime)));
 			}
 		}
 
@@ -1073,7 +1073,7 @@ public class AggregateMonthlyRecordServiceProc {
 	 *            月別実績の勤怠時間
 	 * @return 月別実績の勤怠時間
 	 */
-	private AttendanceTimeOfMonthly recalcAttendanceTime(RequireM9 require, AttendanceTimeOfMonthly attendanceTime) {
+	private AttendanceTimeOfMonthly recalcAttendanceTime(AttendanceTimeOfMonthly attendanceTime) {
 
 		val monthlyCalculation = attendanceTime.getMonthlyCalculation();
 
@@ -1084,7 +1084,7 @@ public class AggregateMonthlyRecordServiceProc {
 		monthlyCalculation.getAggregateTime().getHolidayWorkTime().recalcTotal();
 
 		// 総労働時間と36協定時間の再計算
-		monthlyCalculation.recalcTotalAndAgreement(require, attendanceTime.getDatePeriod(), MonthlyAggregateAtr.MONTHLY);
+		monthlyCalculation.recalcTotal();
 
 		return attendanceTime;
 	}
@@ -1522,10 +1522,8 @@ public class AggregateMonthlyRecordServiceProc {
 	/**
 	 * 処理期間との重複を確認する （重複期間を取り出す）
 	 * 
-	 * @param target
-	 *            処理期間
-	 * @param comparison
-	 *            比較対象期間
+	 * @param target 処理期間
+	 * @param comparison 比較対象期間
 	 * @return 重複期間 （null = 重複なし）
 	 */
 	private DatePeriod confirmProcPeriod(DatePeriod target, DatePeriod comparison) {
@@ -1706,10 +1704,6 @@ public class AggregateMonthlyRecordServiceProc {
 		MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
 	}
 	
-	public static interface RequireM9 extends MonthlyCalculation.RequireM3 {
-		
-	}
-	
 	public static interface RequireM8 extends RequireM7, RequireM6, RequireM5, RequireM4, RequireM3 {
 	}
 	
@@ -1737,7 +1731,7 @@ public class AggregateMonthlyRecordServiceProc {
 	}
 	
 	public static interface RequireM15 extends MonthlyCalculatingDailys.RequireM4, RequireM13,
-		MonthlyOldDatas.RequireM1, RequireM14, RequireM2, RequireM8, RequireM10, RequireM9,
+		MonthlyOldDatas.RequireM1, RequireM14, RequireM2, RequireM8, RequireM10,
 		MonthlyCalculation.RequireM2, AttendanceTimeOfMonthly.RequireM2, RequireM11, RequireM12 {
 
 		List<WorkingConditionItem> workingConditionItem(String employeeId, DatePeriod datePeriod);

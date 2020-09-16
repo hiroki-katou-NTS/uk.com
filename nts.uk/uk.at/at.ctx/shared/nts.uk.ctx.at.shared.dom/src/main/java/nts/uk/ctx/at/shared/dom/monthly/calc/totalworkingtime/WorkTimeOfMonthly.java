@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,12 +22,12 @@ import nts.uk.ctx.at.shared.dom.monthly.calc.actualworkingtime.RegularAndIrregul
 import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.HolidayWorkTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.OverTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.timeseries.WorkTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.weekly.RegAndIrgTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 月別実績の就業時間
@@ -102,12 +103,10 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInformationOfDailyMap 日別実績の勤務情報リスト
-	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void confirm(RequireM1 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			Map<GeneralDate, WorkInfoOfDailyAttendance> workInformationOfDailyMap,
-			MonAggrCompanySettings companySets){
+			Map<GeneralDate, WorkInfoOfDailyAttendance> workInformationOfDailyMap){
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.entrySet()) {
 			val ymd = attendanceTimeOfDaily.getKey();
@@ -151,7 +150,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 					val record = workInformationOfDailyMap.get(ymd).getRecordInfo();
 					if (record.getWorkTypeCode() != null) {
 						String workTypeCode = record.getWorkTypeCode().v();
-						workType = companySets.getWorkTypeMap(require, workTypeCode);
+						workType = require.workType(AppContexts.user().companyId(), workTypeCode).orElse(null);
 					}
 				}
 			}
@@ -290,12 +289,10 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
-	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void aggregateForByPeriod(RequireM1 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets){
+			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap){
 		
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.entrySet()) {
 			val ymd = attendanceTimeOfDaily.getKey();
@@ -323,7 +320,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 					val record = workInfoOfDailyMap.get(ymd).getRecordInfo();
 					if (record.getWorkTypeCode() != null) {
 						String workTypeCode = record.getWorkTypeCode().v();
-						workType = companySets.getWorkTypeMap(require, workTypeCode);
+						workType = require.workType(AppContexts.user().companyId(), workTypeCode).orElse(null);
 					}
 				}
 			}
@@ -383,7 +380,8 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 		this.actualWorkTime = this.actualWorkTime.addMinutes(target.actualWorkTime.v());
 	}
 	
-	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4 {
-
+	public static interface RequireM1 {
+		
+		Optional<WorkType> workType(String companyId, String workTypeCd);
 	}
 }

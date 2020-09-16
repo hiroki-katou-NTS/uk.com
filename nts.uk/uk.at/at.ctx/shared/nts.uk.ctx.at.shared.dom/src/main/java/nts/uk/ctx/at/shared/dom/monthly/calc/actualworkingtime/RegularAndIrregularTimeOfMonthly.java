@@ -137,7 +137,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 			String employmentCd, SettingRequiredByReg settingsByReg, SettingRequiredByDefo settingsByDefo,
 			AggregateTotalWorkingTime aggregateTotalWorkingTime, ExcessOutsideWorkMng excessOutsideWorkMng,
 			int startWeekNo, MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
-			MonthlyCalculatingDailys monthlyCalcDailys){
+			MonthlyCalculatingDailys monthlyCalcDailys) {
 		
 		List<AttendanceTimeOfWeekly> resultWeeks = new ArrayList<>();
 		
@@ -285,6 +285,32 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	}
 	
 	/**
+	 * 月別実績を集計する
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param datePeriod 期間
+	 * @param workingSystem 労働制
+	 * @param aggregateAtr 集計区分
+	 * @return 戻り値：月別実績を集計する
+	 */
+	public AggregateMonthlyValue aggregateMonthly(RequireM3 RequireM4, String cid, String sid,
+			DatePeriod datePeriod, WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr) {
+		
+	}
+	
+	private WeekStart getWeekStart(RequireM5 require, String cid, WorkingSystem workingSystem) {
+		
+	} 
+	
+	public static interface RequireM4 {
+		
+	}
+	
+	public static interface RequireM5 {
+		
+	}
+	
+	/**
 	 * 前月の最終週を集計する
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
@@ -347,7 +373,7 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 		
 		// 共有項目を集計する
 		prevTotalWorkingTime.aggregateSharedItem(require, lastWeekPeriod, attendanceTimeOfDailyMap,
-				monthlyCalcDailys.getWorkInfoOfDailyMap(), companySets);
+				monthlyCalcDailys.getWorkInfoOfDailyMap());
 
 		GeneralDate procDate = lastWeekPeriod.start();
 		while (procDate.beforeOrEquals(lastWeekPeriod.end())){

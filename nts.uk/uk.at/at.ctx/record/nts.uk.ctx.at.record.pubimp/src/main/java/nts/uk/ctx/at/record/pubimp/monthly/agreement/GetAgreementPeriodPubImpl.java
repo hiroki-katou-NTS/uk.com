@@ -10,11 +10,11 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.service.GetAgreementPeriod;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.pub.monthly.agreement.GetAgreementPeriodPub;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.GetAgreementPeriod;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 
 /**

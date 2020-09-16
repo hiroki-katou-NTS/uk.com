@@ -8,9 +8,9 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.primitivevalue.LimitWeek;
 import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitWeek;
 
 /**
  * 週別の36協定時間

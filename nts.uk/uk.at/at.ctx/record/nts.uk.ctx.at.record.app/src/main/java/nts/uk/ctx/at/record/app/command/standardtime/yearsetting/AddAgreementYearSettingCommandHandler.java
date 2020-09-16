@@ -13,9 +13,9 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSetDomainService;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.primitivevalue.AlarmOneYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.primitivevalue.ErrorOneYear;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 

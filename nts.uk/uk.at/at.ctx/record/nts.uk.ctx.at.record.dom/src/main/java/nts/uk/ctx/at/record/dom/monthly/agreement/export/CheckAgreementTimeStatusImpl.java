@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 /**
  * 実装：36協定時間の状態チェック
@@ -34,29 +34,29 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 	
 	/** 36協定時間の状態チェック */
 	@Override
-	public AgreementTimeStatusOfMonthly algorithm(AttendanceTimeMonth agreementTime, LimitOneMonth limitAlarmTime,
-			LimitOneMonth limitErrorTime, Optional<LimitOneMonth> exceptionLimitAlarmTime,
-			Optional<LimitOneMonth> exceptionLimitErrorTime) {
+	public AgreementTimeStatusOfMonthly algorithm(AttendanceTimeMonth agreementTime, AgreementOneMonth limitAlarmTime,
+			AgreementOneMonth limitErrorTime, Optional<AgreementOneMonth> exceptionLimitAlarmTime,
+			Optional<AgreementOneMonth> exceptionLimitErrorTime) {
 		
 		// 月別実績の36協定時間をパラメータから作成
 		int paramlimitAlarmTime = 0;
 		if (limitAlarmTime != null) paramlimitAlarmTime = limitAlarmTime.v();
 		int paramlimitErrorTime = 0;
 		if (limitErrorTime != null) paramlimitErrorTime = limitErrorTime.v();
-		LimitOneMonth paramExceptionLimitAlarmTime = null;
+		AgreementOneMonth paramExceptionLimitAlarmTime = null;
 		if (exceptionLimitAlarmTime.isPresent()){
-			paramExceptionLimitAlarmTime = new LimitOneMonth(
+			paramExceptionLimitAlarmTime = new AgreementOneMonth(
 					exceptionLimitAlarmTime.get().v());
 		}
-		LimitOneMonth paramExceptionLimitErrorTime = null;
+		AgreementOneMonth paramExceptionLimitErrorTime = null;
 		if (exceptionLimitErrorTime.isPresent()){
-			paramExceptionLimitErrorTime = new LimitOneMonth(
+			paramExceptionLimitErrorTime = new AgreementOneMonth(
 					exceptionLimitErrorTime.get().v());
 		}
 		AgreementTimeOfMonthly agreementTimeOfMonthly = AgreementTimeOfMonthly.of(
 				(agreementTime == null ? new AttendanceTimeMonth(0) : agreementTime),
-				new LimitOneMonth(paramlimitErrorTime),
-				new LimitOneMonth(paramlimitAlarmTime),
+				new AgreementOneMonth(paramlimitErrorTime),
+				new AgreementOneMonth(paramlimitAlarmTime),
 				Optional.ofNullable(paramExceptionLimitErrorTime),
 				Optional.ofNullable(paramExceptionLimitAlarmTime),
 				AgreementTimeStatusOfMonthly.NORMAL);
@@ -70,7 +70,7 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 	
 	/** 36協定上限時間の状態チェック */
 	@Override
-	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, LimitOneMonth maxTime,
+	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, AgreementOneMonth maxTime,
 			Optional<AttendanceTimeMonth> requestTimeOpt) {
 
 		// 申請時間を36協定時間に加算
@@ -83,7 +83,7 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 		// 月別実績の36協定上限時間をパラメータから作成
 		AgreMaxTimeOfMonthly agreMaxTimeOfMonthly = AgreMaxTimeOfMonthly.of(
 				checkAgreementTime,
-				new LimitOneMonth(maxTime.v()),
+				new AgreementOneMonth(maxTime.v()),
 				AgreMaxTimeStatusOfMonthly.NORMAL);
 		
 		// チェック処理
@@ -145,7 +145,7 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 		}
 		
 		// 36協定上限複数月平均時間を返す
-		return AgreMaxAverageTimeMulti.of(new LimitOneMonth(sourceTime.getMaxTime().v()), checkedTimeList);
+		return AgreMaxAverageTimeMulti.of(new AgreementOneMonth(sourceTime.getMaxTime().v()), checkedTimeList);
 	}
 	
 	/** 36協定年間時間の状態チェック */

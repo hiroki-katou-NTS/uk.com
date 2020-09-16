@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 @Data
 @NoArgsConstructor
@@ -36,7 +36,7 @@ public class AgreMaxTimeOfMonthlyDto implements ItemConst {
 	
 	public AgreMaxTimeOfMonthly toDomain() {
 		return AgreMaxTimeOfMonthly.of(new AttendanceTimeMonth(agreementTime),
-										new LimitOneMonth(maxTime),
+										new AgreementOneMonth(maxTime),
 										ConvertHelper.getEnum(status, AgreMaxTimeStatusOfMonthly.class));
 	}
 	

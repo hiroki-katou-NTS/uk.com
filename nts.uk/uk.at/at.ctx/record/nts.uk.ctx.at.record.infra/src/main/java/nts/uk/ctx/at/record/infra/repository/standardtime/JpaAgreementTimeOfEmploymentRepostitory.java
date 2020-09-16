@@ -11,8 +11,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfEmploymentRepostitory;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeEmployment;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeEmploymentPK;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
 @Stateless

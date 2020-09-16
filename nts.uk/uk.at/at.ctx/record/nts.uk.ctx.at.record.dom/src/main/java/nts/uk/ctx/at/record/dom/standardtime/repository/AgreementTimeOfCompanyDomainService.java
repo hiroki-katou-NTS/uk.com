@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.standardtime.repository;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
 
 public interface AgreementTimeOfCompanyDomainService {
 	

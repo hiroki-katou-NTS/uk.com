@@ -13,40 +13,92 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.service.GetAgreementPeriod;
 import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.GetAgreementPeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.BasicAgreementSettings;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.GetAgreementTimeProc;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.GetAgreementTimeProc.RequireM2;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * ドメインサービス：36協定時間の取得
  * @author shuichi_ishida
  */
 public class GetAgreementTime {
+	
+	/**
+	 * 36協定時間の取得
+	 * @param require
+	 * @param sid 社員ID
+	 * @param ym　年月
+	 * @param dailyRecord　日別勤怠（List）
+	 * @param baseDate　基準日
+	 * @param scheRecAtr　予実区分
+	 * @return 管理期間の36協定時間
+	 */
+	public static AgreementTimeOfManagePeriod get(RequireM6 require, String sid, YearMonth ym,
+			List<IntegrationOfDaily> dailyRecord, GeneralDate baseDate, ScheRecAtr scheRecAtr) {
+		
+		/** 「月別実績の月の計算」を取得する */
+		val monthlyCalc = getMonthlyCalcData(require, sid, ym, dailyRecord, baseDate, scheRecAtr);
+		
+		/** 管理期間の36協定時間の作成 */
+		val agreementTime = new AgreementTimeOfManagePeriod(sid, ym);
+		agreementTime.aggregate(require, baseDate, MonthlyAggregateAtr.MONTHLY, monthlyCalc);
+		
+		return agreementTime;
+	}
+	
+	/**
+	 * 36協定時間の取得
+	 * @param require
+	 * @param sid 社員ID
+	 * @param ym　年月
+	 * @param dailyRecord　日別勤怠（List）
+	 * @param baseDate　基準日
+	 * @param scheRecAtr　予実区分
+	 * @return 月別実績の月の計算
+	 */
+	private static MonthlyCalculation getMonthlyCalcData(RequireM6 require, String sid, YearMonth ym,
+			List<IntegrationOfDaily> dailyRecord, GeneralDate baseDate, ScheRecAtr scheRecAtr) {
+		
+		val agrementOperationSet = require.agreementOperationSetting(AppContexts.user().companyId());
+		
+		
+		
+		return null;
+	}
+	
+	public static interface RequireM6 extends AgreementTimeOfManagePeriod.RequireM2 {
+		
+		Optional<AgreementOperationSetting> agreementOperationSetting(String companyId);
+		
+	}
 
 	/**
 	 * 36協定時間の取得
@@ -145,7 +197,7 @@ public class GetAgreementTime {
 				
 				// 労働時間の合計
 				val breakdown = agreTimeOfMngPeriodOpt.get().getAgreementTime().getBreakdown();
-				totalMinutes += breakdown.getTotalTime().v();
+				totalMinutes += breakdown.calcLegalLimitTime().v();
 			}
 		}
 		
@@ -165,7 +217,7 @@ public class GetAgreementTime {
 		
 		// 36協定年間時間を作成
 		result = AgreementTimeYear.of(
-				new LimitOneYear(limitMinutes),
+				new AgreementOneYearTime(limitMinutes),
 				new AttendanceTimeYear(totalMinutes),
 				AgreTimeYearStatusOfMonthly.NORMAL);
 		
@@ -270,7 +322,7 @@ public class GetAgreementTime {
 
 		// 36協定上限複数月平均時間を作成する
 		AgreMaxAverageTimeMulti result = AgreementTimeOfManagePeriod.calcMaxAverageTimeMulti(
-				yearMonth, new LimitOneMonth(maxMinutes), agreTimeOfMngPeriodList);
+				yearMonth, new AgreementOneMonth(maxMinutes), agreTimeOfMngPeriodList);
 		
 		// 36協定上限複数月平均時間を返す
 		return Optional.of(result);
@@ -464,13 +516,13 @@ public class GetAgreementTime {
 					
 					// 労働時間の合計
 					val breakdown = agreTimeMap.get(yearYm).getAgreementTime().getBreakdown();
-					yearTotalMinutes += breakdown.getTotalTime().v();
+					yearTotalMinutes += breakdown.calcLegalLimitTime().v();
 				}
 			}
 			
 			// 36協定年間時間を作成
 			timeYear = AgreementTimeYear.of(
-					new LimitOneYear(limitMinutes),
+					new AgreementOneYearTime(limitMinutes),
 					new AttendanceTimeYear(yearTotalMinutes),
 					AgreTimeYearStatusOfMonthly.NORMAL);
 			
@@ -486,7 +538,7 @@ public class GetAgreementTime {
 			}
 		}
 		AgreMaxAverageTimeMulti timeAverage = AgreementTimeOfManagePeriod.calcMaxAverageTimeMulti(
-				averageMonth, new LimitOneMonth(maxMinutes), agreTimeOfMngPeriodList);
+				averageMonth, new AgreementOneMonth(maxMinutes), agreTimeOfMngPeriodList);
 		
 		// 36協定時間Outputを返す
 		result.setAgreementTimeYear(Optional.of(timeYear));
@@ -607,7 +659,7 @@ public class GetAgreementTime {
 		
 		Optional<AgreementOperationSetting> agreementOperationSetting(String companyId);
 		
-		BasicAgreementSettings getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
+		BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
 				WorkingSystem workingSystem);
 	}
 	

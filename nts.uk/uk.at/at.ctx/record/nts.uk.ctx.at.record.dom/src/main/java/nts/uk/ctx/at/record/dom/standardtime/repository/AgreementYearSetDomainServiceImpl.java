@@ -8,11 +8,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.shr.com.context.AppContexts;
@@ -37,7 +37,7 @@ public class AgreementYearSetDomainServiceImpl implements AgreementYearSetDomain
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId(); 
 		
-		LimitOneYear limitOneYear = new LimitOneYear(0);
+		AgreementOneYearTime limitOneYear = new AgreementOneYearTime(0);
 		
 		if (workingConditionItem.isPresent()) {
 			if (workingConditionItem.get().getLaborSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
@@ -81,7 +81,7 @@ public class AgreementYearSetDomainServiceImpl implements AgreementYearSetDomain
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId(); 
 		
-		LimitOneYear limitOneYear = new LimitOneYear(0);
+		AgreementOneYearTime limitOneYear = new AgreementOneYearTime(0);
 		
 		if (workingConditionItem.isPresent()) {
 			if (workingConditionItem.get().getLaborSystem() == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {

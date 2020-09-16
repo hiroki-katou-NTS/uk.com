@@ -22,7 +22,7 @@ import nts.uk.ctx.at.record.pub.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**
@@ -83,13 +83,13 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 			nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod fromDomain){
 		
 		val fromAgreementTime = fromDomain.getAgreementTime().getAgreementTime();
-		LimitOneMonth fromLimitErrorTime = null;
+		AgreementOneMonth fromLimitErrorTime = null;
 		if (fromAgreementTime.getExceptionLimitErrorTime().isPresent()){
-			fromLimitErrorTime = new LimitOneMonth(fromAgreementTime.getExceptionLimitErrorTime().get().v());
+			fromLimitErrorTime = new AgreementOneMonth(fromAgreementTime.getExceptionLimitErrorTime().get().v());
 		}
-		LimitOneMonth fromLimitAlarmTime = null;
+		AgreementOneMonth fromLimitAlarmTime = null;
 		if (fromAgreementTime.getExceptionLimitAlarmTime().isPresent()){
-			fromLimitAlarmTime = new LimitOneMonth(fromAgreementTime.getExceptionLimitAlarmTime().get().v());
+			fromLimitAlarmTime = new AgreementOneMonth(fromAgreementTime.getExceptionLimitAlarmTime().get().v());
 		}
 		val fromBreakdown = fromDomain.getAgreementTime().getBreakdown();
 		
@@ -99,8 +99,8 @@ public class AgreementTimeOfManagePeriodPubImpl implements AgreementTimeOfManage
 				fromDomain.getYear(),
 				AgreementTimeOfMonthly.of(
 						fromAgreementTime.getAgreementTime(),
-						new LimitOneMonth(fromAgreementTime.getLimitErrorTime().v()),
-						new LimitOneMonth(fromAgreementTime.getLimitAlarmTime().v()),
+						new AgreementOneMonth(fromAgreementTime.getLimitErrorTime().v()),
+						new AgreementOneMonth(fromAgreementTime.getLimitAlarmTime().v()),
 						Optional.ofNullable(fromLimitErrorTime),
 						Optional.ofNullable(fromLimitAlarmTime),
 						fromAgreementTime.getStatus()),

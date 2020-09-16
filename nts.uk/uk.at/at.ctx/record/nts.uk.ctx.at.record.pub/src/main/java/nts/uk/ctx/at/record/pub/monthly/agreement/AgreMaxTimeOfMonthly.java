@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 /**
  * 月別実績の36協定上限時間
@@ -17,7 +17,7 @@ public class AgreMaxTimeOfMonthly {
 	@Setter
 	private AttendanceTimeMonth agreementTime;
 	/** 上限時間 */
-	private LimitOneMonth maxTime;
+	private AgreementOneMonth maxTime;
 	/** 状態 */
 	private AgreMaxTimeStatusOfMonthly status;
 
@@ -27,7 +27,7 @@ public class AgreMaxTimeOfMonthly {
 	public AgreMaxTimeOfMonthly(){
 		
 		this.agreementTime = new AttendanceTimeMonth(0);
-		this.maxTime = new LimitOneMonth(0);
+		this.maxTime = new AgreementOneMonth(0);
 		this.status = AgreMaxTimeStatusOfMonthly.NORMAL;
 	}
 	
@@ -40,7 +40,7 @@ public class AgreMaxTimeOfMonthly {
 	 */
 	public static AgreMaxTimeOfMonthly of(
 			AttendanceTimeMonth agreementTime,
-			LimitOneMonth maxTime,
+			AgreementOneMonth maxTime,
 			AgreMaxTimeStatusOfMonthly status){
 
 		AgreMaxTimeOfMonthly domain = new AgreMaxTimeOfMonthly();

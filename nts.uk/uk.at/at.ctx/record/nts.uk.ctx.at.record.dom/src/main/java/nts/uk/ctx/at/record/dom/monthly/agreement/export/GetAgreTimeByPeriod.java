@@ -23,12 +23,12 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.PeriodAtrOfAgreement;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemCustom;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
@@ -220,7 +220,7 @@ public class GetAgreTimeByPeriod {
 
 		// 36協定上限複数月平均時間を作成する
 		AgreMaxAverageTimeMulti result = AgreementTimeOfManagePeriod.calcMaxAverageTimeMulti(
-				yearMonth, new LimitOneMonth(maxMinutes), agreTimeOfMngPeriodList);
+				yearMonth, new AgreementOneMonth(maxMinutes), agreTimeOfMngPeriodList);
 		
 		// 36協定上限複数月平均時間を返す
 		return Optional.of(result);
@@ -272,12 +272,12 @@ public class GetAgreTimeByPeriod {
 		for (val agreementTimeOfMngPrd : agreementTimeOfMngPrdList) {
 			
 			// 合計時間を合計する
-			totalMinutes += agreementTimeOfMngPrd.getAgreementTime().getBreakdown().getTotalTime().v();
+			totalMinutes += agreementTimeOfMngPrd.getAgreementTime().getBreakdown().calcLegalLimitTime().v();
 		}
 		
 		// 36協定年間時間を作成する
 		AgreementTimeYear result = AgreementTimeYear.of(
-				new nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear(maxMinutes),
+				new nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.AgreementOneYearTime(maxMinutes),
 				new AttendanceTimeYear(totalMinutes),
 				AgreTimeYearStatusOfMonthly.NORMAL);
 		// エラーチェック
@@ -360,33 +360,33 @@ public class GetAgreTimeByPeriod {
 				// 取得した限度時間をセット
 				switch (periodAtr){
 				case TWO_MONTHS:
-					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmTwoMonths().v()));
-					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorTwoMonths().v()));
+					result.setLimitAlarmTime(new AgreementOneYearTime(basicAgreementSet.getAlarmTwoMonths().v()));
+					result.setLimitErrorTime(new AgreementOneYearTime(basicAgreementSet.getErrorTwoMonths().v()));
 					break;
 				case THREE_MONTHS:
-					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmThreeMonths().v()));
-					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorThreeMonths().v()));
+					result.setLimitAlarmTime(new AgreementOneYearTime(basicAgreementSet.getAlarmThreeMonths().v()));
+					result.setLimitErrorTime(new AgreementOneYearTime(basicAgreementSet.getErrorThreeMonths().v()));
 					break;
 				case ONE_YEAR:
-					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmOneYear().v()));
-					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorOneYear().v()));
+					result.setLimitAlarmTime(new AgreementOneYearTime(basicAgreementSet.getAlarmOneYear().v()));
+					result.setLimitErrorTime(new AgreementOneYearTime(basicAgreementSet.getErrorOneYear().v()));
 					if (yearSetOpt.isPresent()){
 						val yearSet = yearSetOpt.get();
 						result.setExceptionLimitAlarmTime(Optional.of(
-								new LimitOneYear(yearSet.getAlarmOneYear().v())));
+								new AgreementOneYearTime(yearSet.getAlarmOneYear().v())));
 						result.setExceptionLimitErrorTime(Optional.of(
-								new LimitOneYear(yearSet.getErrorOneYear().v())));
+								new AgreementOneYearTime(yearSet.getErrorOneYear().v())));
 					}
 					break;
 				default:	// ONE_MONTH
-					result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmOneMonth().v()));
-					result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorOneMonth().v()));
+					result.setLimitAlarmTime(new AgreementOneYearTime(basicAgreementSet.getAlarmOneMonth().v()));
+					result.setLimitErrorTime(new AgreementOneYearTime(basicAgreementSet.getErrorOneMonth().v()));
 					if (monthSetOpt.isPresent()){
 						val monthSet = monthSetOpt.get();
 						result.setExceptionLimitAlarmTime(Optional.of(
-								new LimitOneYear(monthSet.getAlarmOneMonth().v())));
+								new AgreementOneYearTime(monthSet.getAlarmOneMonth().v())));
 						result.setExceptionLimitErrorTime(Optional.of(
-								new LimitOneYear(monthSet.getErrorOneMonth().v())));
+								new AgreementOneYearTime(monthSet.getErrorOneMonth().v())));
 					}
 					break;
 				}
@@ -447,33 +447,33 @@ public class GetAgreTimeByPeriod {
 				// 取得した限度時間をセット
 				switch (periodAtr) {
 					case TWO_MONTHS:
-						result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmTwoMonths().v()));
-						result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorTwoMonths().v()));
+						result.setLimitAlarmTime(new AgreementOneYearTime(basicAgreementSet.getAlarmTwoMonths().v()));
+						result.setLimitErrorTime(new AgreementOneYearTime(basicAgreementSet.getErrorTwoMonths().v()));
 						break;
 					case THREE_MONTHS:
-						result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmThreeMonths().v()));
-						result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorThreeMonths().v()));
+						result.setLimitAlarmTime(new AgreementOneYearTime(basicAgreementSet.getAlarmThreeMonths().v()));
+						result.setLimitErrorTime(new AgreementOneYearTime(basicAgreementSet.getErrorThreeMonths().v()));
 						break;
 					case ONE_YEAR:
-						result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmOneYear().v()));
-						result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorOneYear().v()));
+						result.setLimitAlarmTime(new AgreementOneYearTime(basicAgreementSet.getAlarmOneYear().v()));
+						result.setLimitErrorTime(new AgreementOneYearTime(basicAgreementSet.getErrorOneYear().v()));
 						if (yearSetByEmp != null) {
 							result.setExceptionLimitAlarmTime(Optional.of(
-									new LimitOneYear(yearSetByEmp.getAlarmOneYear().v())));
+									new AgreementOneYearTime(yearSetByEmp.getAlarmOneYear().v())));
 							result.setExceptionLimitErrorTime(Optional.of(
-									new LimitOneYear(yearSetByEmp.getErrorOneYear().v())));
+									new AgreementOneYearTime(yearSetByEmp.getErrorOneYear().v())));
 						}
 						break;
 					default:    // ONE_MONTH
-						result.setLimitAlarmTime(new LimitOneYear(basicAgreementSet.getAlarmOneMonth().v()));
-						result.setLimitErrorTime(new LimitOneYear(basicAgreementSet.getErrorOneMonth().v()));
+						result.setLimitAlarmTime(new AgreementOneYearTime(basicAgreementSet.getAlarmOneMonth().v()));
+						result.setLimitErrorTime(new AgreementOneYearTime(basicAgreementSet.getErrorOneMonth().v()));
 						int month = startYm.addMonths(i + 1).v();
 						if (monthSetByEmp.containsKey(month)) {
 							val monthSet = monthSetByEmp.get(month);
 							result.setExceptionLimitAlarmTime(Optional.of(
-									new LimitOneYear(monthSet.getAlarmOneMonth().v())));
+									new AgreementOneYearTime(monthSet.getAlarmOneMonth().v())));
 							result.setExceptionLimitErrorTime(Optional.of(
-									new LimitOneYear(monthSet.getErrorOneMonth().v())));
+									new AgreementOneYearTime(monthSet.getErrorOneMonth().v())));
 						}
 						break;
 				}

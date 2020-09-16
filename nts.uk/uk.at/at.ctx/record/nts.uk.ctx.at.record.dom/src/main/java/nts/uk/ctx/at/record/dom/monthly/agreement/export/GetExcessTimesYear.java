@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
 
 /**
  * 年間超過回数の取得

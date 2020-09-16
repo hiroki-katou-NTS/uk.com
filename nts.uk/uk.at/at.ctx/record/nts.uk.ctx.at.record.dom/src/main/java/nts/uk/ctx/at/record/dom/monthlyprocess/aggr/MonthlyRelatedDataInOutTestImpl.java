@@ -22,6 +22,7 @@ import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWork;
@@ -37,7 +38,6 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.goout.AggregateGo
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.medicaltime.MedicalTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.AggregatePremiumTime;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.AggregateMonthlyRecordValue;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.HolidayWorkFrameNo;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.overtime.overtimeframe.OverTimeFrameNo;
@@ -157,9 +157,9 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 		monthlyCalculation.setAgreementTime(
 				AgreementTimeOfMonthly.of(
 						new AttendanceTimeMonth(1300 + randomVal),
-						new LimitOneMonth(800 + randomVal),
-						new LimitOneMonth(0),
-						Optional.of(new LimitOneMonth(500 + randomVal)),
+						new AgreementOneMonth(800 + randomVal),
+						new AgreementOneMonth(0),
+						Optional.of(new AgreementOneMonth(500 + randomVal)),
 						Optional.empty(),
 						AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR)
 			);

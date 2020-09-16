@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 @Getter
 public class AgreementTimeOfMonthlyImport {
@@ -15,13 +15,13 @@ public class AgreementTimeOfMonthlyImport {
 	@Setter
 	private AttendanceTimeMonth agreementTime;
 	/** 限度エラー時間 */
-	private LimitOneMonth limitErrorTime;
+	private AgreementOneMonth limitErrorTime;
 	/** 限度アラーム時間 */
-	private LimitOneMonth limitAlarmTime;
+	private AgreementOneMonth limitAlarmTime;
 	/** 特例限度エラー時間 */
-	private Optional<LimitOneMonth> exceptionLimitErrorTime;
+	private Optional<AgreementOneMonth> exceptionLimitErrorTime;
 	/** 特例限度アラーム時間 */
-	private Optional<LimitOneMonth> exceptionLimitAlarmTime;
+	private Optional<AgreementOneMonth> exceptionLimitAlarmTime;
 	/** 状態 */
 	private AgreementTimeStatusOfMonthly status;
 	
@@ -30,8 +30,8 @@ public class AgreementTimeOfMonthlyImport {
 	 */
 	public AgreementTimeOfMonthlyImport() {
 		this.agreementTime = new AttendanceTimeMonth(0);
-		this.limitErrorTime = new LimitOneMonth(0);
-		this.limitAlarmTime = new LimitOneMonth(0);
+		this.limitErrorTime = new AgreementOneMonth(0);
+		this.limitAlarmTime = new AgreementOneMonth(0);
 		this.exceptionLimitErrorTime = Optional.empty();
 		this.exceptionLimitAlarmTime = Optional.empty();
 		this.status = AgreementTimeStatusOfMonthly.NORMAL;
@@ -49,10 +49,10 @@ public class AgreementTimeOfMonthlyImport {
 	 */
 	public static AgreementTimeOfMonthlyImport of(
 			AttendanceTimeMonth agreementTime,
-			LimitOneMonth limitErrorTime,
-			LimitOneMonth limitAlarmTime,
-			Optional<LimitOneMonth> exceptionLimitErrorTime,
-			Optional<LimitOneMonth> exceptionLimitAlarmTime,
+			AgreementOneMonth limitErrorTime,
+			AgreementOneMonth limitAlarmTime,
+			Optional<AgreementOneMonth> exceptionLimitErrorTime,
+			Optional<AgreementOneMonth> exceptionLimitAlarmTime,
 			AgreementTimeStatusOfMonthly status){
 
 		AgreementTimeOfMonthlyImport domain = new AgreementTimeOfMonthlyImport();

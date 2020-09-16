@@ -9,8 +9,8 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.pub.standardtime.GetAgreementPeriodFromYearPub;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.GetAgreementPeriodFromYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.GetAgreementPeriodFromYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 
 /**

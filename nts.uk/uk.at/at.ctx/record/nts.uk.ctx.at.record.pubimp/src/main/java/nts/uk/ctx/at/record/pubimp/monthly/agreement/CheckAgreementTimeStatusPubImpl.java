@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 /**
  * 実装：36協定時間の状態チェック
@@ -31,9 +31,9 @@ public class CheckAgreementTimeStatusPubImpl implements CheckAgreementTimeStatus
 	
 	/** 36協定時間の状態チェック */
 	@Override
-	public AgreementTimeStatusOfMonthly algorithm(AttendanceTimeMonth agreementTime, LimitOneMonth limitAlarmTime,
-			LimitOneMonth limitErrorTime, Optional<LimitOneMonth> exceptionLimitAlarmTime,
-			Optional<LimitOneMonth> exceptionLimitErrorTime) {
+	public AgreementTimeStatusOfMonthly algorithm(AttendanceTimeMonth agreementTime, AgreementOneMonth limitAlarmTime,
+			AgreementOneMonth limitErrorTime, Optional<AgreementOneMonth> exceptionLimitAlarmTime,
+			Optional<AgreementOneMonth> exceptionLimitErrorTime) {
 		
 		return this.checkAgreementTimeStatus.algorithm(
 				agreementTime, limitAlarmTime, limitErrorTime, exceptionLimitAlarmTime, exceptionLimitErrorTime);
@@ -41,7 +41,7 @@ public class CheckAgreementTimeStatusPubImpl implements CheckAgreementTimeStatus
 	
 	/** 36協定上限時間の状態チェック */
 	@Override
-	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, LimitOneMonth maxTime,
+	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, AgreementOneMonth maxTime,
 			Optional<AttendanceTimeMonth> requestTimeOpt) {
 		
 		return this.checkAgreementTimeStatus.maxTime(agreementTime, maxTime, requestTimeOpt);

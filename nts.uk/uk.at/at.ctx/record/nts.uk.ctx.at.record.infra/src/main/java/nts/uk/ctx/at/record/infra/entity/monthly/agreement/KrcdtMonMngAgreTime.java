@@ -23,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeManage;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -139,12 +139,12 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 		// 月別実績の36協定時間
 		val agreementTime = AgreementTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.agreementTime),
-				new LimitOneMonth(this.limitErrorTime),
-				new LimitOneMonth(this.limitAlarmTime),
+				new AgreementOneMonth(this.limitErrorTime),
+				new AgreementOneMonth(this.limitAlarmTime),
 				(this.exceptionLimitErrorTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitErrorTime))),
+						Optional.empty() : Optional.of(new AgreementOneMonth(this.exceptionLimitErrorTime))),
 				(this.exceptionLimitAlarmTime == null ?
-						Optional.empty() : Optional.of(new LimitOneMonth(this.exceptionLimitAlarmTime))),
+						Optional.empty() : Optional.of(new AgreementOneMonth(this.exceptionLimitAlarmTime))),
 				EnumAdaptor.valueOf(this.status, AgreementTimeStatusOfMonthly.class));
 		
 		// 36協定時間内訳
@@ -162,7 +162,7 @@ public class KrcdtMonMngAgreTime extends UkJpaEntity implements Serializable {
 		// 月別実績の36協定上限時間
 		val agreMaxTime = AgreMaxTimeOfMonthly.of(
 				new AttendanceTimeMonth(this.agreementRegTime),
-				new LimitOneMonth(this.agreementRegLimitTime),
+				new AgreementOneMonth(this.agreementRegLimitTime),
 				EnumAdaptor.valueOf(this.agreementRegLimitStatus, AgreMaxTimeStatusOfMonthly.class));
 		
 		// 36協定上限時間内訳

@@ -12,9 +12,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.timeseries.CompensatoryLeaveUseTimeOfTimeSeries;
 import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 月別実績の代休使用時間
@@ -72,12 +73,10 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 	 * @param datePeriod 期間
 	 * @param attendanceTimeOfDailyMap 日別実績の勤怠時間リスト
 	 * @param workInfoOfDailyMap 日別実績の勤務情報リスト
-	 * @param companySets 月別集計で必要な会社別設定
 	 */
 	public void confirm(RequireM1 require, DatePeriod datePeriod,
 			Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailyMap,
-			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap,
-			MonAggrCompanySettings companySets){
+			Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoOfDailyMap){
 
 		for (val attendanceTimeOfDaily : attendanceTimeOfDailyMap.entrySet()) {
 			val ymd = attendanceTimeOfDaily.getKey();
@@ -107,7 +106,7 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 			// 取得した使用時間を「月別実績の代休使用時間」に入れる
 			HolidayAtr holidayAtr = HolidayAtr.STATUTORY_HOLIDAYS;
 			if (workTypeCode != null) {
-				val workType = companySets.getWorkTypeMap(require, workTypeCode);
+				val workType = require.workType(AppContexts.user().companyId(), workTypeCode).orElse(null);
 				if (workType != null) {
 					Optional<HolidayAtr> holidayAtrOpt = workType.getHolidayAtr();
 					if (holidayAtrOpt.isPresent()) holidayAtr = holidayAtrOpt.get();
@@ -175,7 +174,8 @@ public class CompensatoryLeaveUseTimeOfMonthly implements Cloneable, Serializabl
 		this.useTime = this.useTime.addMinutes(minutes);
 	}
 	
-	public static interface RequireM1 extends MonAggrCompanySettings.RequireM4 { 
+	public static interface RequireM1 { 
 
+		Optional<WorkType> workType(String companyId, String workTypeCd);
 	}
 }

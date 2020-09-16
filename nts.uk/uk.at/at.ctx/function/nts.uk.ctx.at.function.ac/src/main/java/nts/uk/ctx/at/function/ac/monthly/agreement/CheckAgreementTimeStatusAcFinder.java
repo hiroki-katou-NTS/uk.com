@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 @Stateless
 public class CheckAgreementTimeStatusAcFinder implements CheckAgreementTimeStatusAdapter {
 
@@ -20,7 +20,7 @@ public class CheckAgreementTimeStatusAcFinder implements CheckAgreementTimeStatu
 	private CheckAgreementTimeStatusPub checkAgreementTimeStatusPub;
 	
 	@Override
-	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, LimitOneMonth maxTime,
+	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, AgreementOneMonth maxTime,
 			Optional<AttendanceTimeMonth> requestTimeOpt) {
 		return checkAgreementTimeStatusPub.maxTime(agreementTime, maxTime, requestTimeOpt);
 	}

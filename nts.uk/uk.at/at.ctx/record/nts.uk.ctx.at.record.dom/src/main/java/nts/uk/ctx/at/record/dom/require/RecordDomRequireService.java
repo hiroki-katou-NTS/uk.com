@@ -38,6 +38,7 @@ import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSettingService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreTimeByPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.service.GetAgreementPeriod;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
@@ -110,7 +111,16 @@ import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.GetAgreementPeriod;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.monthly.flex.CalcFlexChangeDto;
@@ -209,17 +219,6 @@ import nts.uk.ctx.at.shared.dom.scherec.totaltimes.TotalTimesRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTblRepository;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfWorkPlace;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementUnitSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.flex.GetFlexPredWorkTime;
@@ -291,6 +290,8 @@ import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegu
 import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.wkp.WkpRegulaMonthActCalSetRepo;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWork;
 import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleofovertimework.RoleOvertimeWorkRepository;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodRepository;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageInfo;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
@@ -606,6 +607,8 @@ public class RecordDomRequireService {
 	protected YearHolidayRepository yearHolidayRepo;
 	@Inject
 	protected SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter;
+	@Inject
+	protected RoleOfOpenPeriodRepository roleOfOpenPeriodRepo;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
@@ -620,7 +623,8 @@ public class RecordDomRequireService {
 		AgeementTimeCommonSettingService.RequireM1, CreateTempAnnLeaMngProc.RequireM3,
 		AggregateSpecifiedDailys.RequireM1, ClosureService.RequireM6, ClosureService.RequireM5,
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1,
-		ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2 {
+		ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2, AgreementDomainService.RequireM5,
+		AgreementDomainService.RequireM6 {
 		
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 		
@@ -692,7 +696,7 @@ public class RecordDomRequireService {
 				comDeforLaborMonthActCalSetRepo, comRegulaMonthActCalSetRepo, 
 				shaDeforLaborMonthActCalSetRepo, shaRegulaMonthActCalSetRepo, 
 				wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo, 
-				monthlyWorkTimeSetRepo, executionLogRepo, 
+				monthlyWorkTimeSetRepo, executionLogRepo, roleOfOpenPeriodRepo,
 				lockStatusService, sharedAffWorkPlaceHisAdapter);
 	}
 	
@@ -808,7 +812,7 @@ public class RecordDomRequireService {
 				ShaRegulaMonthActCalSetRepo shaRegulaMonthActCalSetRepo,
 				WkpDeforLaborMonthActCalSetRepo wkpDeforLaborMonthActCalSetRepo,
 				WkpRegulaMonthActCalSetRepo wkpRegulaMonthActCalSetRepo, MonthlyWorkTimeSetRepo monthlyWorkTimeSetRepo,
-				ExecutionLogRepository executionLogRepo,
+				ExecutionLogRepository executionLogRepo, RoleOfOpenPeriodRepository roleOfOpenPeriodRepo,
 				DetermineActualResultLock lockStatusService, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter) {
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo2, 
 					empEmployeeAdapter, grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo2,
@@ -941,7 +945,10 @@ public class RecordDomRequireService {
 			this.monthlyWorkTimeSetRepo = monthlyWorkTimeSetRepo;
 			this.executionLogRepo = executionLogRepo;
 			this.lockStatusService = lockStatusService;
+			this.roleOfOpenPeriodRepo = roleOfOpenPeriodRepo;
 		}
+		
+		private RoleOfOpenPeriodRepository roleOfOpenPeriodRepo;
 
 		private TmpResereLeaveMngRepository tmpResereLeaveMngRepo;
 	
@@ -1697,11 +1704,6 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public Optional<BasicAgreementSetting> basicAgreementSetting(String basicSettingId) {
-			return basicAgreementSettingRepo.find(basicSettingId);
-		}
-
-		@Override
 		public List<BasicAgreementSetting> basicAgreementSetting(List<String> basicSettingId) {
 			return basicAgreementSettingRepo.find(basicSettingId);
 		}
@@ -2121,7 +2123,6 @@ public class RecordDomRequireService {
 
 		@Override
 		public boolean isUseWorkLayer(String companyId) {
-			// TODO Auto-generated method stub
 			return false;
 		}
 		
@@ -2264,9 +2265,19 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public BasicAgreementSettings getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
+		public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
 				WorkingSystem workingSystem) {
 			return AgreementDomainService.getBasicSet(this, companyId, employeeId, criteriaDate, workingSystem);
+		}
+
+		@Override
+		public BasicAgreementSetting basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate) {
+			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, ym);
+		}
+
+		@Override
+		public List<RoleOfOpenPeriod> roleOfOpenPeriod(String cid) {
+			return roleOfOpenPeriodRepo.findByCID(cid);
 		}
 	}
 }

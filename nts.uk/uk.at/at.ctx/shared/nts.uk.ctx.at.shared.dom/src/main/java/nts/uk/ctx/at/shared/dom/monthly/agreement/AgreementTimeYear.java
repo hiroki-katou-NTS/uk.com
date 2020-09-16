@@ -1,8 +1,7 @@
 package nts.uk.ctx.at.shared.dom.monthly.agreement;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.AgreementOneYearTime;
 
 /**
  * 36協定年間時間
@@ -11,33 +10,33 @@ import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
 @Getter
 public class AgreementTimeYear implements Cloneable {
 
-	/** 限度時間 */
-	private LimitOneYear limitTime;
-	/** 実績時間 */
-	private AttendanceTimeYear recordTime;
+	/** 法定上限対象時間 */
+	private AgreementTimeOfYear limitTime;
+	/** 36協定対象時間 */
+	private AgreementTimeOfYear recordTime;
 	/** 状態 */
-	private AgreTimeYearStatusOfMonthly status;
+	private AgreementTimeStatusOfMonthly status;
 	
 	/**
 	 * コンストラクタ
 	 */
 	public AgreementTimeYear() {
-		this.limitTime = new LimitOneYear(0);
-		this.recordTime = new AttendanceTimeYear(0);
-		this.status = AgreTimeYearStatusOfMonthly.NORMAL;
+		this.limitTime = new AgreementTimeOfYear();
+		this.recordTime = new AgreementTimeOfYear();
+		this.status = AgreementTimeStatusOfMonthly.NORMAL;
 	}
 	
 	/**
 	 * ファクトリー
-	 * @param limitTime 限度時間
-	 * @param recordTime 実績時間
+	 * @param limitTime 法定上限対象時間
+	 * @param recordTime 36協定対象時間
 	 * @param status 状態
 	 * @return 36協定年間時間
 	 */
 	public static AgreementTimeYear of(
-			LimitOneYear limitTime,
-			AttendanceTimeYear recordTime,
-			AgreTimeYearStatusOfMonthly status){
+			AgreementTimeOfYear limitTime,
+			AgreementTimeOfYear recordTime,
+			AgreementTimeStatusOfMonthly status){
 		
 		AgreementTimeYear domain = new AgreementTimeYear();
 		domain.limitTime = limitTime;
@@ -50,31 +49,17 @@ public class AgreementTimeYear implements Cloneable {
 	public AgreementTimeYear clone() {
 		AgreementTimeYear cloned = new AgreementTimeYear();
 		try {
-			cloned.limitTime = new LimitOneYear(this.limitTime.v());
-			cloned.recordTime = new AttendanceTimeYear(this.recordTime.v());
+			cloned.limitTime = AgreementTimeOfYear.of(
+											new AgreementOneYearTime(this.limitTime.getTargetTime().v()),
+											this.limitTime.getThreshold());
+			cloned.recordTime = AgreementTimeOfYear.of(
+											new AgreementOneYearTime(this.recordTime.getTargetTime().v()),
+											this.recordTime.getThreshold());
 			cloned.status = this.status;
 		}
 		catch (Exception e){
 			throw new RuntimeException("AgreementTimeYear clone error.");
 		}
 		return cloned;
-	}
-	
-	/**
-	 * 実績時間に分を加算する
-	 * @param minutes 分
-	 */
-	public void addRecordTime(int minutes){
-		this.recordTime = this.recordTime.addMinutes(minutes);
-	}
-	
-	/**
-	 * エラーチェック
-	 */
-	public void errorCheck(){
-		this.status = AgreTimeYearStatusOfMonthly.NORMAL;
-		if (this.limitTime.v() > 0 && this.recordTime.v() > this.limitTime.v()) {
-			this.status = AgreTimeYearStatusOfMonthly.EXCESS_LIMIT;
-		}
 	}
 }

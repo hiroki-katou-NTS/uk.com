@@ -6,7 +6,10 @@ package nts.uk.ctx.at.shared.dom.outsideot;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.val;
@@ -14,9 +17,17 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
+import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeBreakdown;
+import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.monthly.roundingset.RoundingSetOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.converter.MonthlyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriod;
+import nts.uk.ctx.at.shared.dom.workrecord.monthlyresults.roleopenperiod.RoleOfOpenPeriodEnum;
 
 /**
  * OT = Overtime
@@ -185,5 +196,106 @@ public class OutsideOTSetting extends AggregateRoot implements Serializable{
 		List<Integer> allIds = new ArrayList<>();
 		for (val breakdownItem : this.breakdownItems) allIds.addAll(breakdownItem.getAttendanceItemIds());
 		return allIds;
+	}
+	
+	/** 36協定対象時間を取得 */
+	public AgreementTimeBreakdown getTargetTime(RequireM1 require, String cid, 
+			MonthlyCalculation monthlyCalculation) {
+		
+		val breakdown = new AgreementTimeBreakdown();
+		/** 月別実績の丸め設定を取得 */
+		val roundSet = require.monthRoundingSet(cid);
+		
+		/** 内訳項目に設定されている勤怠項目IDを全て取得 */
+		val breakdownItems = getBreakDownItemIds();
+		
+		/** ○法定内休出の勤怠項目IDを全て取得 */
+		breakdownItems.addAll(getLegalHolidayWorkItems(require, cid));
+		
+		/** 取得した件数分ループ */
+		val converter = require.createMonthlyConverter();
+		val attendanceTime = new AttendanceTimeOfMonthly(monthlyCalculation.getEmployeeId(), 
+														monthlyCalculation.getYearMonth(), 
+														monthlyCalculation.getClosureId(),
+														monthlyCalculation.getClosureDate(), 
+														monthlyCalculation.getProcPeriod());
+		attendanceTime.setMonthlyCalculation(monthlyCalculation);
+		converter.withAttendanceTime(attendanceTime);
+		val attendanceItemValues = converter.convert(breakdownItems);
+		
+		/** ○丸め処理 */
+		attendanceItemValues.stream().forEach(v -> {
+			val value = new AttendanceTimeMonth(v.value());
+			val rounded = roundSet.map(r -> r.itemRound(v.getItemId(), value)).orElse(value);
+			breakdown.addTimeByAttendanceItemId(v.getItemId(), rounded);
+		});
+		
+		return breakdown;
+	}
+
+	/** 内訳項目に設定されている勤怠項目IDを全て取得 */
+	public List<Integer> getBreakDownItemIds() {
+		return this.breakdownItems.stream().map(b -> b.getAttendanceItemIds())
+											.flatMap(List::stream)
+											.collect(Collectors.toList());
+	}
+	
+	/** 法定内休出の勤怠項目IDを全て取得 */
+	public List<Integer> getLegalHolidayWorkItems(RequireM2 require, String cid) {
+		
+		/** ドメインモデル「休出枠の役割」を取得 */
+		val legalHolWork = require.roleOfOpenPeriod(cid).stream()
+				.filter(r -> r.getRoleOfOpenPeriodEnum() == RoleOfOpenPeriodEnum.STATUTORY_HOLIDAYS)
+				.collect(Collectors.toList());
+		
+		/** 取得したNOに該当する勤怠項目IDを取得 */
+		val legalHolWorkItemIds = legalHolWork.stream()
+				.map(hw -> mapLegalHolidayWorkItemNoToId(hw.getBreakoutFrNo().v()))
+				.flatMap(List::stream).collect(Collectors.toList());
+		
+		/**内訳項目一覧に設定されていない法定内休出の勤怠項目IDを判断 */
+		legalHolWorkItemIds.removeAll(getBreakDownItemIds());
+		
+		/** 取得した勤怠項目ID（List）を返す */
+		return legalHolWorkItemIds;
+	}
+	
+	private List<Integer> mapLegalHolidayWorkItemNoToId(int no) {
+		switch (no) {
+		case 1:
+			return Arrays.asList(165, 175);
+		case 2:
+			return Arrays.asList(166, 176);
+		case 3:
+			return Arrays.asList(167, 177);
+		case 4:
+			return Arrays.asList(168, 178);
+		case 5:
+			return Arrays.asList(169, 179);
+		case 6:
+			return Arrays.asList(170, 180);
+		case 7:
+			return Arrays.asList(171, 181);
+		case 8:
+			return Arrays.asList(172, 182);
+		case 9:
+			return Arrays.asList(173, 183);
+		case 10:
+			return Arrays.asList(174, 184);
+		default:
+			return new ArrayList<>();
+		}
+	}
+	
+	public static interface RequireM2 {
+		
+		List<RoleOfOpenPeriod> roleOfOpenPeriod(String cid);
+	}
+	
+	public static interface RequireM1 extends RequireM2 {
+		
+		Optional<RoundingSetOfMonthly> monthRoundingSet(String cid);
+		
+		MonthlyRecordToAttendanceItemConverter createMonthlyConverter();
 	}
 }

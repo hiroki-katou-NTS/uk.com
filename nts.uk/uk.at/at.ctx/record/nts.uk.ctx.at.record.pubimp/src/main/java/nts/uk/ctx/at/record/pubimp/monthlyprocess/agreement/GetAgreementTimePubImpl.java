@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
@@ -57,18 +57,18 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 			AgreementTimeOfMonthly confirmed = null;
 			if (srcConfirmedOpt.isPresent()){
 				val srcConfirmed = srcConfirmedOpt.get();
-				LimitOneMonth srcCnfExcLimitErrorTime = null;
+				AgreementOneMonth srcCnfExcLimitErrorTime = null;
 				if (srcConfirmed.getExceptionLimitErrorTime().isPresent()){
-					srcCnfExcLimitErrorTime = new LimitOneMonth(srcConfirmed.getExceptionLimitErrorTime().get().v());
+					srcCnfExcLimitErrorTime = new AgreementOneMonth(srcConfirmed.getExceptionLimitErrorTime().get().v());
 				}
-				LimitOneMonth srcCnfExcLimitAlarmTime = null;
+				AgreementOneMonth srcCnfExcLimitAlarmTime = null;
 				if (srcConfirmed.getExceptionLimitAlarmTime().isPresent()){
-					srcCnfExcLimitAlarmTime = new LimitOneMonth(srcConfirmed.getExceptionLimitAlarmTime().get().v());
+					srcCnfExcLimitAlarmTime = new AgreementOneMonth(srcConfirmed.getExceptionLimitAlarmTime().get().v());
 				}
 				confirmed = AgreementTimeOfMonthly.of(
 						srcConfirmed.getAgreementTime(),
-						new LimitOneMonth(srcConfirmed.getLimitErrorTime().v()),
-						new LimitOneMonth(srcConfirmed.getLimitAlarmTime().v()),
+						new AgreementOneMonth(srcConfirmed.getLimitErrorTime().v()),
+						new AgreementOneMonth(srcConfirmed.getLimitAlarmTime().v()),
 						Optional.ofNullable(srcCnfExcLimitErrorTime),
 						Optional.ofNullable(srcCnfExcLimitAlarmTime),
 						srcConfirmed.getStatus());
@@ -78,18 +78,18 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 			AgreementTimeOfMonthly afterAppReflect = null;
 			if (srcAfterAppReflectOpt.isPresent()){
 				val srcAfterAppReflect = srcAfterAppReflectOpt.get();
-				LimitOneMonth srcAppExcLimitErrorTime = null;
+				AgreementOneMonth srcAppExcLimitErrorTime = null;
 				if (srcAfterAppReflect.getExceptionLimitErrorTime().isPresent()){
-					srcAppExcLimitErrorTime = new LimitOneMonth(srcAfterAppReflect.getExceptionLimitErrorTime().get().v());
+					srcAppExcLimitErrorTime = new AgreementOneMonth(srcAfterAppReflect.getExceptionLimitErrorTime().get().v());
 				}
-				LimitOneMonth srcAppExcLimitAlarmTime = null;
+				AgreementOneMonth srcAppExcLimitAlarmTime = null;
 				if (srcAfterAppReflect.getExceptionLimitAlarmTime().isPresent()){
-					srcAppExcLimitAlarmTime = new LimitOneMonth(srcAfterAppReflect.getExceptionLimitAlarmTime().get().v());
+					srcAppExcLimitAlarmTime = new AgreementOneMonth(srcAfterAppReflect.getExceptionLimitAlarmTime().get().v());
 				}
 				afterAppReflect = AgreementTimeOfMonthly.of(
 						srcAfterAppReflect.getAgreementTime(),
-						new LimitOneMonth(srcAfterAppReflect.getLimitErrorTime().v()),
-						new LimitOneMonth(srcAfterAppReflect.getLimitAlarmTime().v()),
+						new AgreementOneMonth(srcAfterAppReflect.getLimitErrorTime().v()),
+						new AgreementOneMonth(srcAfterAppReflect.getLimitAlarmTime().v()),
 						Optional.ofNullable(srcAppExcLimitErrorTime),
 						Optional.ofNullable(srcAppExcLimitAlarmTime),
 						srcAfterAppReflect.getStatus());
@@ -101,7 +101,7 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 				val srcConfirmedMax = srcConfirmedMaxOpt.get();
 				confirmedMax = AgreMaxTimeOfMonthly.of(
 						srcConfirmedMax.getAgreementTime(),
-						new LimitOneMonth(srcConfirmedMax.getMaxTime().v()),
+						new AgreementOneMonth(srcConfirmedMax.getMaxTime().v()),
 						srcConfirmedMax.getStatus());
 			}
 			
@@ -111,7 +111,7 @@ public class GetAgreementTimePubImpl implements GetAgreementTimePub {
 				val srcAfterAppReflectMax = srcAfterAppReflectMaxOpt.get();
 				afterAppReflectMax = AgreMaxTimeOfMonthly.of(
 						srcAfterAppReflectMax.getAgreementTime(),
-						new LimitOneMonth(srcAfterAppReflectMax.getMaxTime().v()),
+						new AgreementOneMonth(srcAfterAppReflectMax.getMaxTime().v()),
 						srcAfterAppReflectMax.getStatus());
 			}
 			

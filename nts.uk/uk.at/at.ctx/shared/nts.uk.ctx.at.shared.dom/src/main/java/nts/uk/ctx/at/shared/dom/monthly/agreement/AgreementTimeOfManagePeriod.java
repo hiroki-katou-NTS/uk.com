@@ -1,24 +1,20 @@
 package nts.uk.ctx.at.shared.dom.monthly.agreement;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.common.Year;
-import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
-import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.weekly.WeeklyCalculation;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 管理期間の36協定時間
@@ -28,18 +24,17 @@ import nts.uk.ctx.at.shared.dom.weekly.WeeklyCalculation;
 public class AgreementTimeOfManagePeriod extends AggregateRoot {
 
 	/** 社員ID */
-	private String employeeId;
+	private String sid;
 	/** 月度 */
-	private YearMonth yearMonth;
-	/** 年度 */
-	private Year year;
-	/** 36協定時間 */
-	private AgreementTimeManage agreementTime;
-	/** 36協定上限時間 */
-	private AgreMaxTimeManage agreementMaxTime;
-
-	/** エラー情報 */
-	private List<MonthlyAggregationErrorInfo> errorInfos;
+	private YearMonth ym;
+	/** 36協定対象時間 */
+	private AgreementTimeOfMonthly agreementTime;
+	/** 法定上限対象時間 */
+	private AgreementTimeOfMonthly legalMaxTime;
+	/** 内訳 */
+	private AgreementTimeBreakdown breakdown;
+	/** 状態 */
+	private AgreementTimeStatusOfMonthly status;
 	
 	/**
 	 * コンストラクタ
@@ -47,83 +42,93 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	 * @param yearMonth 月度
 	 */
 	public AgreementTimeOfManagePeriod(String employeeId, YearMonth yearMonth){
-		
 		super();
-		this.employeeId = employeeId;
-		this.yearMonth = yearMonth;
-		this.year = new Year(yearMonth.year());
-		this.agreementTime = new AgreementTimeManage();
-		this.agreementMaxTime = new AgreMaxTimeManage();
-		
-		this.errorInfos = new ArrayList<>();
+		this.sid = employeeId;
+		this.ym = yearMonth;
+		this.agreementTime = new AgreementTimeOfMonthly();
+		this.legalMaxTime = new AgreementTimeOfMonthly();
+		this.breakdown = new AgreementTimeBreakdown();
+		this.status = AgreementTimeStatusOfMonthly.NORMAL;
 	}
 	
 	/**
 	 * ファクトリー
 	 * @param employeeId 社員ID
 	 * @param yearMonth 月度
-	 * @param year 年度
 	 * @param agreementTime 36協定時間
-	 * @param agreementMaxTime 36協定上限時間
+	 * @param legalUpperTime 36協定上限時間
+	 * @param breakdown 内訳
+	 * @param status 状態
 	 * @return 管理期間の36協定時間
 	 */
 	public static AgreementTimeOfManagePeriod of(
 			String employeeId,
 			YearMonth yearMonth,
-			Year year,
-			AgreementTimeManage agreementTime,
-			AgreMaxTimeManage agreementMaxTime){
+			AgreementTimeOfMonthly agreementTime,
+			AgreementTimeOfMonthly legalUpperTime,
+			AgreementTimeBreakdown breakdown,
+			AgreementTimeStatusOfMonthly status){
 	
 		AgreementTimeOfManagePeriod domain = new AgreementTimeOfManagePeriod(employeeId, yearMonth);
-		domain.year = year;
 		domain.agreementTime = agreementTime;
-		domain.agreementMaxTime = agreementMaxTime;
+		domain.legalMaxTime = legalUpperTime;
+		domain.breakdown = breakdown;
+		domain.status = status;
 		return domain;
 	}
 	
 	/**
-	 * ファクトリー　（エラー出力用）
-	 * @param employeeId 社員ID
-	 * @param yearMonth 月度
-	 * @param errorInfos エラー情報　（月の計算の結果より）
-	 * @return 管理期間の36協定時間
-	 */
-	public static AgreementTimeOfManagePeriod of(
-			String employeeId,
-			YearMonth yearMonth,
-			List<MonthlyAggregationErrorInfo> errorInfos){
-	
-		AgreementTimeOfManagePeriod domain = new AgreementTimeOfManagePeriod(employeeId, yearMonth);
-		domain.errorInfos.addAll(errorInfos);
-		return domain;
-	}
-	
-	/**
-	 * 作成
+	 * 管理期間の36協定時間の作成
+	 * @param sid 社員ID
+	 * @param ym 年月
 	 * @param criteriaDate 基準日
-	 * @param aggregateAtr 集計区分
 	 * @param monthlyCalculation 月の計算
 	 */
-	public void aggregate(
-			RequireM2 require,
-			GeneralDate criteriaDate,
-			MonthlyAggregateAtr aggregateAtr,
-			MonthlyCalculation monthlyCalculation) {
-
-		this.year = monthlyCalculation.getYear();
+	public static AgreementTimeOfManagePeriod aggregate(RequireM2 require, String sid,
+													GeneralDate criteriaDate, YearMonth ym,
+													MonthlyCalculation monthlyCalculation) {
+		val cid = AppContexts.user().companyId();
+		/** ○パラメータ「cls<月別実績の月の計算>」を受け取る */
 		
-		// 36協定時間の作成
-		this.agreementTime.aggregate(require, criteriaDate, aggregateAtr, monthlyCalculation);
+		/** 時間外超過設定を取得 */
+		val outsideOTSetting = require.outsideOTSetting(cid).orElse(null);
+		if (outsideOTSetting == null) {
+			return new AgreementTimeOfManagePeriod(sid, ym);
+		}
 		
-		// 36協定上限時間の作成
-		this.agreementMaxTime.aggregate(require, criteriaDate, aggregateAtr, monthlyCalculation);
+		/** 36協定限度時間の対象時間を取得 */
+		val breakdown = outsideOTSetting.getTargetTime(require, cid, monthlyCalculation);
+		
+		/** 閾値の取得 */
+		val agreementSet = require.basicAgreementSetting(cid, sid, ym, criteriaDate);
+		
+		/** 36協定対象時間を計算 */
+		val agreementTime = breakdown.calcAgreementTime();
+		/** 項目移送により、月別実績の36協定時間を作成する */
+		val monthlyAgreementTime = AgreementTimeOfMonthly.of(agreementTime, 
+																agreementSet.getOneMonth().getBasic());
+		
+		/** 法定上限時間を計算 */
+		val legalLimitTime = breakdown.calcLegalLimitTime();
+		/** 項目移送により、月別実績の36協定時間を作成する */
+		val monthlyLegalLimitTime = AgreementTimeOfMonthly.of(legalLimitTime, 
+																agreementSet.getOneMonth().getSpecConditionLimit());
+		
+		/** エラーチェック */
+		val state = agreementSet.getOneMonth().check(agreementTime, legalLimitTime);
+		
+		return AgreementTimeOfManagePeriod.of(sid, ym, monthlyAgreementTime, 
+												monthlyLegalLimitTime, breakdown, state);
 	}
 	
-	public static interface RequireM2 extends AgreementTimeManage.RequireM2, AgreMaxTimeManage.RequireM1 {
+	public static interface RequireM2 extends OutsideOTSetting.RequireM1 {
 
+		Optional<OutsideOTSetting> outsideOTSetting(String cid);
+		
+		BasicAgreementSetting basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate);
 	}
 	
-	public static interface RequireM1 extends AgreementTimeManage.RequireM1 {
+	public static interface RequireM1 {
 
 	}
 	
@@ -142,10 +147,10 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 			WeeklyCalculation weeklyCalculation,
 			MonAggrCompanySettings companySets){
 		
-		this.year = year;
-		
-		// 36協定時間の作成（週用）
-		this.agreementTime.aggregateForWeek(require, criteriaDate, aggregateAtr, weeklyCalculation, companySets);
+//		this.year = year;
+//		
+//		// 36協定時間の作成（週用）
+//		this.agreementTime.aggregateForWeek(require, criteriaDate, aggregateAtr, weeklyCalculation, companySets);
 	}
 	
 	/**
@@ -155,57 +160,57 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	 * @param agreTimeOfMngPeriodList 管理期間の36協定時間リスト
 	 * @return 36協定上限複数月平均時間
 	 */
-	public static AgreMaxAverageTimeMulti calcMaxAverageTimeMulti(
-			YearMonth yearMonth,
-			LimitOneMonth maxTime,
-			List<AgreementTimeOfManagePeriod> agreTimeOfMngPeriodList){
-
-		// Mapに組み換え
-		Map<YearMonth, AgreementTimeOfManagePeriod> agreTimeOfMngPeriodMap = new HashMap<>();
-		for (val agreTimeOfMngPeriod : agreTimeOfMngPeriodList) {
-			agreTimeOfMngPeriodMap.putIfAbsent(agreTimeOfMngPeriod.getYearMonth(), agreTimeOfMngPeriod);
-		}
-		
-		// 36協定上限複数月平均時間を作成する
-		AgreMaxAverageTimeMulti result = AgreMaxAverageTimeMulti.of(
-				new LimitOneMonth(maxTime.v()), new ArrayList<>());
-		
-		// 月数分ループ
-		for (Integer monNum = 6; monNum >= 2; monNum--) {
-		
-			// 期間を計算
-			YearMonthPeriod period = new YearMonthPeriod(yearMonth.addMonths(-(monNum-1)), yearMonth);
-			
-			// 36協定上限各月平均時間の計算
-			{
-				// 合計時間の計算
-				Integer totalMinutes = 0;
-				for (val procYm : period.yearMonthsBetween()) {
-					
-					// 労働時間の合計
-					if (agreTimeOfMngPeriodMap.containsKey(procYm)) {
-						val breakdown = agreTimeOfMngPeriodMap.get(procYm).getAgreementMaxTime().getBreakdown();
-						totalMinutes += breakdown.getTotalTime().v();
-					}
-				}
-
-				// 36協定上限各月平均時間を作成
-				AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
-						period,
-						new AttendanceTimeYear(totalMinutes),
-						AgreMaxTimeStatusOfMonthly.NORMAL);
-				
-				// 36協定複数月平均時間の状態チェック
-				agreMaxAveTime.errorCheck(result.getMaxTime());
-				
-				// 36協定上限各月平均時間を返す
-				result.getAverageTimeList().add(agreMaxAveTime);
-			}
-		}
-		
-		// 36協定上限複数月平均時間を返す
-		return result;
-	}
+//	public static AgreMaxAverageTimeMulti calcMaxAverageTimeMulti(
+//			YearMonth yearMonth,
+//			AgreementOneMonthTime maxTime,
+//			List<AgreementTimeOfManagePeriod> agreTimeOfMngPeriodList){
+//
+//		// Mapに組み換え
+//		Map<YearMonth, AgreementTimeOfManagePeriod> agreTimeOfMngPeriodMap = new HashMap<>();
+//		for (val agreTimeOfMngPeriod : agreTimeOfMngPeriodList) {
+//			agreTimeOfMngPeriodMap.putIfAbsent(agreTimeOfMngPeriod.getYm(), agreTimeOfMngPeriod);
+//		}
+//		
+//		// 36協定上限複数月平均時間を作成する
+//		AgreMaxAverageTimeMulti result = AgreMaxAverageTimeMulti.of(
+//				new AgreementOneMonthTime(maxTime.v()), new ArrayList<>());
+//		
+//		// 月数分ループ
+//		for (Integer monNum = 6; monNum >= 2; monNum--) {
+//		
+//			// 期間を計算
+//			YearMonthPeriod period = new YearMonthPeriod(yearMonth.addMonths(-(monNum-1)), yearMonth);
+//			
+//			// 36協定上限各月平均時間の計算
+//			{
+//				// 合計時間の計算
+//				Integer totalMinutes = 0;
+//				for (val procYm : period.yearMonthsBetween()) {
+//					
+//					// 労働時間の合計
+//					if (agreTimeOfMngPeriodMap.containsKey(procYm)) {
+//						val breakdown = agreTimeOfMngPeriodMap.get(procYm).getBreakdown();
+//						totalMinutes += breakdown.calcLegalLimitTime().v();
+//					}
+//				}
+//
+//				// 36協定上限各月平均時間を作成
+//				AgreMaxAverageTime agreMaxAveTime = AgreMaxAverageTime.of(
+//						period,
+//						new AttendanceTimeYear(totalMinutes),
+//						AgreMaxTimeStatusOfMonthly.NORMAL);
+//				
+//				// 36協定複数月平均時間の状態チェック
+//				agreMaxAveTime.errorCheck(result.getMaxTime());
+//				
+//				// 36協定上限各月平均時間を返す
+//				result.getAverageTimeList().add(agreMaxAveTime);
+//			}
+//		}
+//		
+//		// 36協定上限複数月平均時間を返す
+//		return result;
+//	}
 	
 	/**
 	 * 合算する
@@ -213,6 +218,7 @@ public class AgreementTimeOfManagePeriod extends AggregateRoot {
 	 */
 	public void sum(AgreementTimeOfManagePeriod target){
 		this.agreementTime.sum(target.agreementTime);
-		this.agreementMaxTime.sum(target.agreementMaxTime);
+		this.legalMaxTime.sum(target.legalMaxTime);
+		this.breakdown.sum(target.breakdown);
 	}
 }

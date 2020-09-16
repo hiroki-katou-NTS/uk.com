@@ -3,10 +3,10 @@ package nts.uk.ctx.at.shared.dom.monthly.agreement;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
-import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.OneMonthErrorAlarmTime;
 
 /**
  * 36協定上限各月平均時間
@@ -57,6 +57,48 @@ public class AgreMaxAverageTime implements Cloneable {
 		return domain;
 	}
 	
+	/**
+	 * ファクトリー
+	 * @param period 期間
+	 * @param totalTime 合計時間
+	 * @param averageTime 平均時間
+	 * @param status 状態
+	 * @return 36協定上限各月平均時間
+	 */
+	public static AgreMaxAverageTime of(
+			YearMonthPeriod period,
+			AttendanceTimeYear totalTime,
+			AttendanceTimeMonth averageTime,
+			AgreMaxTimeStatusOfMonthly status) {
+		
+		AgreMaxAverageTime domain = new AgreMaxAverageTime();
+		domain.period = period;
+		domain.totalTime = totalTime;
+		domain.status = status;
+		domain.averageTime = averageTime;
+		return domain;
+	}
+	
+	/**
+	 * ファクトリー
+	 * @param period 期間
+	 * @param totalTime 合計時間
+	 * @param averageTime 平均時間
+	 * @return 36協定上限各月平均時間
+	 */
+	public static AgreMaxAverageTime of(
+			YearMonthPeriod period,
+			AttendanceTimeYear totalTime,
+			AttendanceTimeMonth averageTime) {
+		
+		AgreMaxAverageTime domain = new AgreMaxAverageTime();
+		domain.period = period;
+		domain.totalTime = totalTime;
+		domain.status = AgreMaxTimeStatusOfMonthly.NORMAL;
+		domain.averageTime = averageTime;
+		return domain;
+	}
+	
 	@Override
 	public AgreMaxAverageTime clone() {
 		AgreMaxAverageTime cloned = new AgreMaxAverageTime();
@@ -103,11 +145,15 @@ public class AgreMaxAverageTime implements Cloneable {
 	 * エラーチェック
 	 * @param limitTime 上限時間
 	 */
-	public void errorCheck(LimitOneMonth limitTime){
-		this.status = AgreMaxTimeStatusOfMonthly.NORMAL;
-		if (limitTime.v() <= 0) return;
-		if (this.averageTime.v() > limitTime.v()) {
-			this.status = AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME;
+	public void errorCheck(OneMonthErrorAlarmTime limitTime){
+		if (this.averageTime.greaterThanOrEqualTo(limitTime.getError())) {
+			this.status = AgreMaxTimeStatusOfMonthly.ERROR_OVER;
 		}
+		
+		if (this.averageTime.greaterThanOrEqualTo(limitTime.getError())) {
+			this.status = AgreMaxTimeStatusOfMonthly.ALARM_OVER;
+		}
+		
+		this.status = AgreMaxTimeStatusOfMonthly.NORMAL;
 	}
 }

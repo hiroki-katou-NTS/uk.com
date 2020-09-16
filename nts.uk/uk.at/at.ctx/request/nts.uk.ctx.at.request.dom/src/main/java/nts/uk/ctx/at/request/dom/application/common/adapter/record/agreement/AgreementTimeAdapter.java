@@ -14,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 /**
@@ -30,7 +30,7 @@ public interface AgreementTimeAdapter {
 	
 	public AgreTimeYearStatusOfMonthly timeYear(AgreementTimeYear agreementTimeYear, Optional<AttendanceTimeYear> requestTimeOpt);
 	
-	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, LimitOneMonth maxTime, Optional<AttendanceTimeMonth> requestTimeOpt);
+	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, AgreementOneMonth maxTime, Optional<AttendanceTimeMonth> requestTimeOpt);
 	
 	public AgreMaxAverageTimeMulti maxAverageTimeMulti(
 			String companyId,

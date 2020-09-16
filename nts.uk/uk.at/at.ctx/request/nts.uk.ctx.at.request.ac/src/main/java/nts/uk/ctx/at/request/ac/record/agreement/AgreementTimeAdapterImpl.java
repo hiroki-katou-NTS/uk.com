@@ -25,7 +25,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
@@ -86,7 +86,7 @@ public class AgreementTimeAdapterImpl implements AgreementTimeAdapter {
 	}
 
 	@Override
-	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, LimitOneMonth maxTime,
+	public AgreMaxTimeStatusOfMonthly maxTime(AttendanceTimeMonth agreementTime, AgreementOneMonth maxTime,
 			Optional<AttendanceTimeMonth> requestTimeOpt) {
 		return checkAgreementTimeStatusPub.maxTime(agreementTime, maxTime, requestTimeOpt);
 	}

@@ -261,7 +261,7 @@ public class MonthlyCalculatingDailys {
 	/**
 	 * 大塚カスタマイズ（試験日対応）
 	 */
-	private static AttendanceTimeOfDailyAttendance examDayTimeCorrect(AttendanceTimeOfDailyAttendance atTime,
+	public static AttendanceTimeOfDailyAttendance examDayTimeCorrect(AttendanceTimeOfDailyAttendance atTime,
 			WorkInfoOfDailyAttendance workInfo) {
 		
 		if (workInfo.getRecordInfo().isExamWorkTime()) {

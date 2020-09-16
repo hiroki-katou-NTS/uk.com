@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 /**
  * 36協定時間の状態チェック
@@ -31,10 +31,10 @@ public interface CheckAgreementTimeStatusPub {
 	// RequestList514
 	AgreementTimeStatusOfMonthly algorithm(
 			AttendanceTimeMonth agreementTime,
-			LimitOneMonth limitAlarmTime,
-			LimitOneMonth limitErrorTime,
-			Optional<LimitOneMonth> exceptionLimitAlarmTime,
-			Optional<LimitOneMonth> exceptionLimitErrorTime);
+			AgreementOneMonth limitAlarmTime,
+			AgreementOneMonth limitErrorTime,
+			Optional<AgreementOneMonth> exceptionLimitAlarmTime,
+			Optional<AgreementOneMonth> exceptionLimitErrorTime);
 
 	/**
 	 * 36協定上限時間の状態チェック
@@ -46,7 +46,7 @@ public interface CheckAgreementTimeStatusPub {
 	// RequestList540
 	AgreMaxTimeStatusOfMonthly maxTime(
 			AttendanceTimeMonth agreementTime,
-			LimitOneMonth maxTime,
+			AgreementOneMonth maxTime,
 			Optional<AttendanceTimeMonth> requestTimeOpt);
 
 	/**

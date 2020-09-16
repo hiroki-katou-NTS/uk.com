@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 /**
  * 36協定上限複数月平均時間
  * @author Doan Duy Hung
@@ -26,10 +26,10 @@ public class Time36AgreeUpperLimitAverage extends DomainObject {
 	/*
 	 * 上限時間
 	 */
-	private LimitOneMonth upperLimitTime;
+	private AgreementOneMonth upperLimitTime;
 	
 	public Time36AgreeUpperLimitAverage(){
 		this.averageTimeLst = new ArrayList<>();
-		this.upperLimitTime = new LimitOneMonth(0);
+		this.upperLimitTime = new AgreementOneMonth(0);
 	}
 }

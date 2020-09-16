@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
 
 @Data
 @NoArgsConstructor
@@ -54,12 +54,12 @@ public class AgreementTimeOfMonthlyDto implements ItemConst {
 
 	public AgreementTimeOfMonthly toDomain() {
 		return AgreementTimeOfMonthly.of(new AttendanceTimeMonth(agreementTime),
-										new LimitOneMonth(limitErrorTime),
-										new LimitOneMonth(limitAlarmTime),
+										new AgreementOneMonth(limitErrorTime),
+										new AgreementOneMonth(limitAlarmTime),
 										exceptionLimitErrorTime == null ? Optional.empty()
-												: Optional.of(new LimitOneMonth(exceptionLimitErrorTime)),
+												: Optional.of(new AgreementOneMonth(exceptionLimitErrorTime)),
 										exceptionLimitAlarmTime == null ? Optional.empty()
-												: Optional.of(new LimitOneMonth(exceptionLimitAlarmTime)),
+												: Optional.of(new AgreementOneMonth(exceptionLimitAlarmTime)),
 										ConvertHelper.getEnum(status, AgreementTimeStatusOfMonthly.class));
 	}
 	
@@ -76,7 +76,7 @@ public class AgreementTimeOfMonthlyDto implements ItemConst {
 		return dto;
 	}
 	
-	private static Integer from(LimitOneMonth domain) {
+	private static Integer from(AgreementOneMonth domain) {
 		return domain == null ? 0 : domain.valueAsMinutes();
 	}
 }
