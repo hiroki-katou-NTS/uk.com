@@ -448,6 +448,7 @@ module nts.uk.com.view.cli003.b {
         logSet.recordType === 10 ||
         logSet.recordType === 11 ){
         vm.showTarget(false);
+        vm.b6_2SelectedRuleCode(2);
       }else {
         vm.showTarget(true);
       } 
