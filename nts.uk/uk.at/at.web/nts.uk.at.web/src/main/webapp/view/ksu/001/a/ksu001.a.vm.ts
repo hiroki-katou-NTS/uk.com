@@ -113,17 +113,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         // data grid
         listEmpInfo = [];
-        listWorkScheduleWorkInfor = [];
-        listWorkScheduleShift = [];
-        listPersonalConditions = [];
+        listWorkScheduleWorkInfor  = [];
+        listWorkScheduleShift      = [];
+        listPersonalConditions     = [];
         displayControlPersonalCond = {};
-        listDateInfo = [];
+        listDateInfo     = [];
+        listCellNotEdit  = [];
         
         showTeamCol = false;
         showRankCol = false;
         showQualificCol = false;
         widthMid : number = 0;
-
+        
         constructor() {
             let self = this;
 
@@ -247,6 +248,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     return;
                 let shiftMasterWithWorkStyleLst;
                 let detailContentDeco = [];
+                let listCellNotEdit   = self.listCellNotEdit;
 
                 uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                     let userInfor: IUserInfor = JSON.parse(data);
@@ -254,6 +256,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                     uk.localStorage.setItemAsJson(self.KEY, userInfor);
                 });
+                
+                // lay data tai thời điểm chuyển combobox
+                let dataSource = $("#extable").exTable('dataSource', 'detail').body;
 
                 for (let i = 0; i < self.listEmpInfo.length; i++) {
                     let rowId = i + '';
@@ -261,7 +266,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     let objDetailContentDs = new Object();
 
                     let listWorkScheduleShiftByEmp: Array<IWorkScheduleShiftInforDto> = _.filter(self.listWorkScheduleShift, function(workSchedul: IWorkScheduleShiftInforDto) { return workSchedul.employeeId === emp.employeeId });
-
+                    let dataOnGrid: any = _.filter(dataSource, function(workSchedul: any) { return workSchedul.employeeId === emp.employeeId })[0];
+                    
                     // set data to detailContent : datasource v        
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
@@ -270,11 +276,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     style.type = 'text/css';
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
-
                         let rowOfSelf = cell.employeeId == self.employeeIdLogin ? true : false;
-
                         let time = new Time(new Date(cell.date));
                         let ymd = time.yearMonthDay;
+                        
+                        let dataCellOnGrid = dataOnGrid['_'+ ymd];
 
                         // set Deco background
                         if (value == 1) {
@@ -293,11 +299,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
                         // set Deco text color
                         // A10_color⑥ スケジュール明細の文字色  (Màu chữ của "Schedule detail")  
-                        if (util.isNullOrUndefined(cell.shiftCode) || util.isNullOrEmpty(cell.shiftCode)) {
+                        if (util.isNullOrUndefined(dataCellOnGrid.shiftCode) || util.isNullOrEmpty(dataCellOnGrid.shiftCode)) {
                             // デフォルト（黒）  Default (black)
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "color-default", 0));
                         } else {
-                            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
+                            let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == dataCellOnGrid.shiftCode; });
                             if (objShiftMasterWithWorkStyle.length > 0) {
                                 /**
                                  *  1日休日系  ONE_DAY_REST(0)
@@ -326,7 +332,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                     };
                 }
-                self.updateExTableWhenChangeModeBg(detailContentDeco);
+                self.updateExTableWhenChangeModeBg($.merge(detailContentDeco,listCellNotEdit));
                 self.stopRequest(true);
             });
 
@@ -348,6 +354,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.dataCell = {};
 
             $("#extable").on("extablecellupdated", (dataCell) => {
+                self.checkExitCellUpdated();
+            });
+            
+            $("#extable").on("extablerowupdated", (dataCell) => {
                 self.checkExitCellUpdated();
             });
         }
@@ -435,6 +445,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataWhenChangeModePeriod(param).done((data: any) => {
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                
+                self.saveDataGrid(data);
 
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
@@ -794,6 +806,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let detailContentDs   = [];
             let detailContentDeco = [];
             let htmlToolTip       = [];
+            let listCellNotEdit   = [];
             
             let arrListCellLock = [];
             
@@ -802,6 +815,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.listEmpData = [];
             self.listSid([]);
             self.arrListCellLock = [];
+            self.listCellNotEdit = [];
             
             for (let i = 0; i < data.listEmpInfo.length; i++) {
                 let rowId = i+'';
@@ -898,6 +912,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // điều kiện ※Aa1
                         if (cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
+                            listCellNotEdit.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                         }
                         // điều kiện ※Aa2
                         if (cell.isActive == false) {
@@ -1069,6 +1084,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.arrListCellLock = arrListCellLock;
                 }
             }
+            
+            self.listCellNotEdit = listCellNotEdit;
 
             // set width cho column cho tung mode
             let widthColumn = 0;
@@ -1188,6 +1205,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
          */
         getSettingDisplayWhenStart(viewMode) {
             let self = this;
+            
+            $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
+            $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
+
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
 
@@ -1820,7 +1841,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             service.getDataChangeMonth(param).done((data: any) => {
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
-                
+                self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
                 
@@ -1876,7 +1897,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             service.getDataChangeMonth(param).done((data: any) => {
                 self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
-
+                self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
 
@@ -1910,15 +1931,30 @@ module nts.uk.at.view.ksu001.a.viewmodel {
 
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
-            let arrLockCellAfterSave = $("#extable").exTable("lockCells");
-
-            if (arrCellUpdated.length > 0) {
+            let lockCells = $("#extable").exTable("lockCells");
+            
+            $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
+            $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
+            
+            if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.editModeToConfirmMode();
                     self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
+                    // tam thoi dung cach thay doi mode nay de load lai data ban dau
+                    $("#extable").exTable("updateMode", "copyPaste");
+                    $("#extable").exTable("updateMode", "stick");
+                    if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                        $("#extable").exTable("stickMode", "single");
+                        self.pasteData();
+                    } else if (self.selectedModeDisplayInBody() == 'shift') {
+                        $("#extable").exTable("stickMode", "multi");
+                        self.pasteData();
+                    }
+                }).ifNo(() => {
+                    self.editModeToConfirmMode();
                     self.pasteData();
-                }).ifNo(() => { });
+                });
             } else {
                 self.editModeToConfirmMode();
                 self.enableBtnRedo(false);
@@ -1957,6 +1993,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.mode() == 'confirm')
                 return;
+            
+             $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
+             $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
 
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
@@ -1965,8 +2004,20 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.confirmModeToeditMode();
+                    // tam thoi dung cach thay doi mode nay de load lai data ban dau
+                    $("#extable").exTable("updateMode", "copyPaste");
+                    $("#extable").exTable("updateMode", "stick");
+                    if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
+                        $("#extable").exTable("stickMode", "single");
+                        self.pasteData();
+                    } else if (self.selectedModeDisplayInBody() == 'shift') {
+                        $("#extable").exTable("stickMode", "multi");
+                        self.pasteData();
+                    }
+                }).ifNo(() => {
+                    self.confirmModeToeditMode();
                     self.pasteData();
-                }).ifNo(() => { });
+                });
             } else {
                 self.confirmModeToeditMode();
                 self.pasteData();
@@ -2003,9 +2054,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         removeClass() {
             let self = this;
-            $("#paste").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#coppy").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#input").removeClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#paste").addClass("A6_not_hover").removeClass("A6_hover btnControlUnSelected btnControlSelected");
+            $("#coppy").addClass("A6_not_hover").removeClass("A6_hover btnControlUnSelected btnControlSelected");
+            $("#input").addClass("A6_not_hover").removeClass("A6_not_hover btnControlUnSelected btnControlSelected");
         }
 
         /**
@@ -2017,9 +2068,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.mode() == 'confirm')
                 return;
             nts.uk.ui.block.grayout();
-            $("#paste").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
+            $("#paste").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
+            $("#coppy").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            
             $("#extable").exTable("updateMode", "stick");
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 $("#extable").exTable("stickMode", "single");
@@ -2073,11 +2125,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.mode() == 'confirm')
                 return;
             nts.uk.ui.block.grayout();
-            $("#paste").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#coppy").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-            $("#input").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#extable").exTable("updateMode", "copyPaste");
+            $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
+            $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             
+            $("#extable").exTable("updateMode", "copyPaste");
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor : IUserInfor = JSON.parse(data);
                 userInfor.updateMode =  'copyPaste';
@@ -2091,10 +2143,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.mode() == 'confirm')
                 return;
             nts.uk.ui.block.grayout();
-            $("#paste").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#coppy").addClass("btnControlUnSelected").removeClass("btnControlSelected");
-            $("#input").addClass("btnControlSelected").removeClass("btnControlUnSelected");
-
+            $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            $("#coppy").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
+            $("#input").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
+            
             $("#extable").exTable("updateMode", "edit");
             
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {

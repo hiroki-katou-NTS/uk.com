@@ -1,3 +1,6 @@
+/**
+ * 
+ */
 package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 
 import java.util.ArrayList;
@@ -16,15 +19,13 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 
 /**
- * 社員を並び替える
- * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.社員並び替え
- * 
- * @author HieuLt
+ * @author laitv
+ *
  */
-public class SortEmpService {
+public class SortEmpServiceNew {
 	
 	// [1] 並び順に基づいて社員を並び替える
-	public static List<String> sortEmpTheirOrder(Require require, GeneralDate ymd, List<String> lstEmpId) {
+	public List<String> sortEmpTheirOrder(Require require, GeneralDate ymd, List<String> lstEmpId) {
 		// $並び替え設定 = require.並び替え設定を取得する()
 		Optional<SortSetting> sortSetting = require.get();
 		// if $並び替え設定.empty---return 社員IDリスト
@@ -37,7 +38,7 @@ public class SortEmpService {
 	}
 
 	// [2] 並び順を指定して社員を並び替える
-	public static List<String> sortBySpecSortingOrder(Require require, GeneralDate ymd, List<String> lstEmpId, SortSetting sortSetting) {
+	public  List<String> sortBySpecSortingOrder(Require require, GeneralDate ymd, List<String> lstEmpId, SortSetting sortSetting) {
 		
 	
 		// return [prv-1] 並び替える(require, 基準日, 社員IDリスト, 並び替え設定)
@@ -58,13 +59,9 @@ public class SortEmpService {
 		List<String> result = new ArrayList<>();
 		List<OrderedList> sortPriorities = sortSetting.getOrderedList();
 		if(sortPriorities.size() == 1){
-			long start1 = System.nanoTime();
 			result = sort(require,ymd,lstEmpId,sortSetting);
-			System.out.println("time run sortService "+  ((System.nanoTime() - start1 )/1000000) + "ms");
 		}else{
-			long start2 = System.nanoTime();
 			result = sortMultiCond(require,ymd,lstEmpId,sortSetting);
-			System.out.println("time run sortService  "+  ((System.nanoTime() - start2 )/1000000) + "ms");
 		}
 		return result;
 	}

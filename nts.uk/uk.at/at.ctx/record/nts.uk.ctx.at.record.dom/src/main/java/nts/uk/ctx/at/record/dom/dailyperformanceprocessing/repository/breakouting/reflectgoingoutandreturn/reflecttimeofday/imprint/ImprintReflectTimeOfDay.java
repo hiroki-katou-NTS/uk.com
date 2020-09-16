@@ -48,18 +48,18 @@ public class ImprintReflectTimeOfDay {
 				if(isStartTime) {
 					//⁂開始時刻か＝True
 					//True＝反映先時間帯枠（Temporary）。終了。時刻＞＝打刻。時刻
-					if(timeFrame.getEnd().isPresent() && !timeFrame.getEnd().get().getStamp().isPresent()
-							&& timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-							&& timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
+					if(!timeFrame.getEnd().isPresent() || !timeFrame.getEnd().get().getStamp().isPresent()
+							|| !timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+							|| timeFrame.getEnd().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
 								>= stamp.getStampDateTime().clockHourMinute().valueAsMinutes()) {
 						check = true;
 					}
 				}else {
 					//⁂開始時刻か＝False
 					//True＝次の時間帯枠（Temporary）。開始。時刻＞打刻。時刻
-					if(timeFrameNext.isPresent() && timeFrameNext.get().getStart().isPresent() && timeFrameNext.get().getStart().get().getStamp().isPresent()
-							&& timeFrameNext.get().getStart().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
-							&& timeFrameNext.get().getStart().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
+					if(!timeFrameNext.isPresent() || !timeFrameNext.get().getStart().isPresent() || !timeFrameNext.get().getStart().get().getStamp().isPresent()
+							|| !timeFrameNext.get().getStart().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()
+							|| timeFrameNext.get().getStart().get().getStamp().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() 
 								> stamp.getStampDateTime().clockHourMinute().valueAsMinutes()) {
 						check = true;
 					}
