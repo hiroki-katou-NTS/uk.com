@@ -5,6 +5,7 @@
 package nts.uk.file.at.app.export.monthlyschedule;
 
 import lombok.Data;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.file.at.app.export.dailyschedule.WorkScheduleSettingTotalOutput;
 
 /**
@@ -40,6 +41,18 @@ public class MonthlyWorkScheduleCondition {
 	/** The total output setting. */
 	// 月別勤務表用明細・合計出力設定
 	private WorkScheduleSettingTotalOutput totalOutputSetting;
+	
+	/** The display type. */
+	//  ゼロ表示区分
+	private DisplayTypeEnum displayType;
+	
+	/** The item setting classify. */
+	//  項目設定区分
+	private ItemSelectionEnum itemSettingType;
+	
+	/** The item display switch. */
+	//  項目表示切替
+	private ItemDisplaySwitchEnum itemDisplaySwitch;
 	
 	/**
 	 * Checks if is show workplace.

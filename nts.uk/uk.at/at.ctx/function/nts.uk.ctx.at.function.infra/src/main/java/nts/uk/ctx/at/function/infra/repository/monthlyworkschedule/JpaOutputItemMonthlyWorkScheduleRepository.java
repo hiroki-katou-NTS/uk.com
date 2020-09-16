@@ -6,46 +6,56 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaDelete;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkSchedule;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleRepository;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtMonAttenDisplay;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtMonAttenDisplayPK_;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtMonAttenDisplay_;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtMonthlyWorkSche;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtMonthlyWorkSchePK;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtMonthlyWorkSchePK_;
-import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtMonthlyWorkSche_;
+import nts.uk.ctx.at.function.infra.entity.monthlyworkschedule.KfnmtRptWkMonOut;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class JpaOutputItemMonthlyWorkScheduleRepository.
- */
 @Stateless
 public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 		implements OutputItemMonthlyWorkScheduleRepository {
 
+	private static final String FIND_BY_CODE_CID = "SELECT c FROM KfnmtRptWkMonOut c"
+			+ "	WHERE c.companyID = :companyID" 
+			+ " AND c.itemCode = :itemCode";
+
+	private static final String FIND_BY_CID_ODER_BY = "SELECT c FROM KfnmtRptWkMonOut c"
+			+ " WHERE c.companyID = :companyID"
+			+ " ORDER BY c.companyID ASC ";
+	
+	private static final String FINDBY_SELECTION_CID = "SELECT c FROM KfnmtRptWkMonOut c"
+			+ " WHERE c.companyID = :companyID "
+			+ " AND c.itemSelectionType = :itemSelectionType";;
+	
+	private static final String FINDBY_SELECTION_CID_SID = "SELECT c FROM KfnmtRptWkMonOut c"
+			+ " WHERE c.companyID = :companyID"
+			+ " AND c.employeeID = :employeeID"
+			+ " AND c.itemSelectionType = :itemSelectionType";
+
+	private static final String FINDBY_SELECTION_CID_CODE = "SELECT c FROM KfnmtRptWkMonOut c"
+			+ " WHERE c.companyID = :companyID"
+			+ " AND c.itemSelectionType = :itemSelectionType"
+			+ " AND c.itemCode = :itemCode";
+	
+	private static final String FINDBY_SELECTION_CID_CODE_SID = "SELECT c FROM KfnmtRptWkMonOut c"
+			+ " WHERE c.companyID = :companyID"
+			+ " AND c.itemCode = :itemCode"
+			+ " AND c.employeeID = :employeeID"
+			+ " AND c.itemSelectionType = :itemSelectionType";
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.monthlyworkschedule.
-	 * OutputItemMonthlyWorkScheduleRepository#findByCidAndCode(java.lang.
-	 * String, java.lang.String)
+	 * OutputItemMonthlyWorkScheduleRepository#findByCidAndCode(java.lang. String,
+	 * java.lang.String)
 	 */
 	@Override
 	public Optional<OutputItemMonthlyWorkSchedule> findByCidAndCode(String companyId, String code) {
-		// TODO Auto-generated method stub
-		KfnmtMonthlyWorkSchePK key = new KfnmtMonthlyWorkSchePK();
-		key.setCid(companyId);
-		key.setItemCd(code);
-		return this.queryProxy().find(key, KfnmtMonthlyWorkSche.class).map(entity -> this.toDomain(entity));
+		return this.queryProxy().query(FIND_BY_CODE_CID, KfnmtRptWkMonOut.class).setParameter("companyID", companyId)
+				.setParameter("itemCode", code).getSingle(entity -> this.toDomain(entity));
 	}
 
 	/*
@@ -56,34 +66,15 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public List<OutputItemMonthlyWorkSchedule> findByCid(String companyId) {
-		// TODO Auto-generated method stub
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-
-		// Create builder
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-
-		// Create query
-		CriteriaQuery<KfnmtMonthlyWorkSche> cq = builder.createQuery(KfnmtMonthlyWorkSche.class);
-
-		// From table
-		Root<KfnmtMonthlyWorkSche> root = cq.from(KfnmtMonthlyWorkSche.class);
-
-		// Add where condition
-		cq.where(builder.equal(root.get(KfnmtMonthlyWorkSche_.id).get(KfnmtMonthlyWorkSchePK_.cid), companyId));
-		cq.orderBy(builder.asc(root.get(KfnmtMonthlyWorkSche_.id).get(KfnmtMonthlyWorkSchePK_.cid)));
-
 		// Get results
-		List<KfnmtMonthlyWorkSche> results = em.createQuery(cq).getResultList();
-
+		List<KfnmtRptWkMonOut> results = this.queryProxy().query(FIND_BY_CID_ODER_BY, KfnmtRptWkMonOut.class)
+				.setParameter("companyID", companyId).getList();
 		// Check empty
 		if (CollectionUtil.isEmpty(results)) {
 			return Collections.emptyList();
 		}
 
-		return results.stream()
-				.map(item -> new OutputItemMonthlyWorkSchedule(new JpaOutputItemMonthlyWorkScheduleGetMemento(item)))
-				.collect(Collectors.toList());
+		return results.stream().map(item -> new OutputItemMonthlyWorkSchedule(item)).collect(Collectors.toList());
 	}
 
 	/*
@@ -95,7 +86,6 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void add(OutputItemMonthlyWorkSchedule domain) {
-		// TODO Auto-generated method stub
 		this.commandProxy().insert(this.toEntity(domain));
 	}
 
@@ -108,25 +98,6 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void update(OutputItemMonthlyWorkSchedule domain) {
-		// TODO Auto-generated method stub
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-
-		// create delete
-		CriteriaDelete<KfnmtMonAttenDisplay> delete = cb.createCriteriaDelete(KfnmtMonAttenDisplay.class);
-
-		// set the root class
-		Root<KfnmtMonAttenDisplay> root = delete.from(KfnmtMonAttenDisplay.class);
-
-		// set where clause
-		delete.where(
-				cb.equal(root.get(KfnmtMonAttenDisplay_.id).get(KfnmtMonAttenDisplayPK_.cid), domain.getCompanyID()),
-				cb.equal(root.get(KfnmtMonAttenDisplay_.id).get(KfnmtMonAttenDisplayPK_.itemCd),
-						domain.getItemCode().v()));
-
-		// perform update
-		em.createQuery(delete).executeUpdate();
-
 		this.commandProxy().update(this.toEntity(domain));
 
 	}
@@ -140,7 +111,6 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 */
 	@Override
 	public void delete(OutputItemMonthlyWorkSchedule domain) {
-		// TODO Auto-generated method stub
 		this.commandProxy().remove(this.toEntity(domain));
 
 	}
@@ -149,16 +119,19 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.at.function.dom.monthlyworkschedule.
-	 * OutputItemMonthlyWorkScheduleRepository#deleteByCidAndCode(java.lang.
-	 * String, java.lang.String)
+	 * OutputItemMonthlyWorkScheduleRepository#deleteByCidAndCode(java.lang. String,
+	 * java.lang.String)
 	 */
 	@Override
 	public void deleteByCidAndCode(String companyId, String code) {
-		// TODO Auto-generated method stub
-		KfnmtMonthlyWorkSchePK primaryKey = new KfnmtMonthlyWorkSchePK();
-		primaryKey.setCid(companyId);
-		primaryKey.setItemCd(code);
-		this.commandProxy().remove(KfnmtMonthlyWorkSche.class, primaryKey);
+		Optional<KfnmtRptWkMonOut> kfnmtRptWkMonOut = this.queryProxy().query(FIND_BY_CODE_CID, KfnmtRptWkMonOut.class)
+				 .setParameter("companyID", companyId)
+				 .setParameter("itemCode", code)
+				 .getSingle();
+		if (kfnmtRptWkMonOut.isPresent()) {
+			this.commandProxy().remove(kfnmtRptWkMonOut);
+		}
+		this.commandProxy().remove(kfnmtRptWkMonOut);
 	}
 
 	/**
@@ -167,21 +140,66 @@ public class JpaOutputItemMonthlyWorkScheduleRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the output item monthly work schedule
 	 */
-	private OutputItemMonthlyWorkSchedule toDomain(KfnmtMonthlyWorkSche entity) {
-		return new OutputItemMonthlyWorkSchedule(new JpaOutputItemMonthlyWorkScheduleGetMemento(entity));
+	private OutputItemMonthlyWorkSchedule toDomain(KfnmtRptWkMonOut entity) {
+		return new OutputItemMonthlyWorkSchedule(entity);
 	}
 
 	/**
 	 * To entity.
 	 *
-	 * @param domain
-	 *            the domain
+	 * @param domain the domain
 	 * @return the kfnmt monthly work sche
 	 */
-	private KfnmtMonthlyWorkSche toEntity(OutputItemMonthlyWorkSchedule domain) {
-		KfnmtMonthlyWorkSche entity = new KfnmtMonthlyWorkSche();
-		domain.saveToMemento(new JpaOutputItemMonthlyWorkScheduleSetMemento(entity));
+	private KfnmtRptWkMonOut toEntity(OutputItemMonthlyWorkSchedule domain) {
+		KfnmtRptWkMonOut entity = new KfnmtRptWkMonOut();
+		domain.saveToMemento(entity);
 		return entity;
 	}
 
+	@Override
+	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSid(ItemSelectionEnum itemSelectionEnum,
+			String companyId, Optional<String> employeeId) {
+		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
+			return this.queryProxy().query(FINDBY_SELECTION_CID, KfnmtRptWkMonOut.class)
+					.setParameter("companyID", companyId)
+					.setParameter("itemSelectionType", itemSelectionEnum)
+					.getList(item -> new OutputItemMonthlyWorkSchedule(item));
+		}
+		if (itemSelectionEnum == ItemSelectionEnum.STANDARD_SELECTION && employeeId.isPresent()) {
+			return this.queryProxy().query(FINDBY_SELECTION_CID_SID, KfnmtRptWkMonOut.class)
+				  .setParameter("companyID", companyId)
+				  .setParameter("employeeID", employeeId)
+				  .setParameter("itemSelectionType", itemSelectionEnum)
+				  .getList(item -> new OutputItemMonthlyWorkSchedule(item));
+		}
+		return Collections.emptyList();
+	}
+
+	@Override
+	public void deleteBySelectionAndCidAndSidAndCode(ItemSelectionEnum itemSelectionEnum, 
+			String code, String companyId,Optional<String> employeeId) {
+		
+	}
+
+	@Override
+	public Optional<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSidAndCode(
+			ItemSelectionEnum itemSelectionEnum, String companyId, String itemCode, Optional<String> employeeId) {
+		if (itemSelectionEnum == ItemSelectionEnum.FREE_SETTING) {
+			return this.queryProxy().query(FINDBY_SELECTION_CID, KfnmtRptWkMonOut.class)
+					.setParameter("companyID", companyId)
+					.setParameter("itemSelectionType", itemSelectionEnum)
+					.setParameter("itemCode", itemCode)
+					.getSingle(entity -> this.toDomain(entity));
+		}
+		if (itemSelectionEnum == ItemSelectionEnum.STANDARD_SELECTION && employeeId.isPresent()) {
+			return this.queryProxy().query(FINDBY_SELECTION_CID_SID, KfnmtRptWkMonOut.class)
+				  .setParameter("companyID", companyId)
+				  .setParameter("employeeID", employeeId)
+				  .setParameter("itemCode", itemCode)
+				  .setParameter("itemSelectionType", itemSelectionEnum)
+				  .getSingle(entity -> this.toDomain(entity));
+		}
+		return Optional.empty();
+	}
+	
 }
