@@ -184,6 +184,17 @@
 							params: childParam
 						}"></div>
 				</div>
+				<div data-bind="if: ko.unwrap(appType) === 7">
+					<div data-bind="if: ko.toJS(application).opStampRequestMode == 0">
+						<div data-bind="component: {
+							name: 'kaf002-c',
+							params: childParam
+						}"></div>
+					</div>
+					<div data-bind="if: ko.toJS(application).opStampRequestMode == 1">
+						kaf002D
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

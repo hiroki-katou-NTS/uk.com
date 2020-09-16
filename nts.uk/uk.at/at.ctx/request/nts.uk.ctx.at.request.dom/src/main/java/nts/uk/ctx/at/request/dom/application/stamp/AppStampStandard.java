@@ -43,11 +43,12 @@ public class AppStampStandard {
 							.findFirst();
 					if (optional.isPresent()) {
 						appStampStandar = optional.get();
-						if (appStampStandar.startTime == null) {
-							appStampStandar.endTime = x.getTimeOfDay().getDayTime();
-						} else {
+						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
 							appStampStandar.startTime = x.getTimeOfDay().getDayTime();
-						}	
+						} 
+						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END)  {
+							appStampStandar.endTime = x.getTimeOfDay().getDayTime();
+						}
 					} else {
 						appStampStandar = new AppStampStandard();
 						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
@@ -68,12 +69,14 @@ public class AppStampStandard {
 							stampAtr = StampAtrOther.CHEERING;
 						}
 						appStampStandar.stampAtrOther = stampAtr;
+						listAppStampStandard.add(appStampStandar);
 					}
 				} else {
 					appStampStandar = new AppStampStandard();
 					if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
 						appStampStandar.startTime = x.getTimeOfDay().getDayTime();
-					} else {
+					} 
+					if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END)  {
 						appStampStandar.endTime = x.getTimeOfDay().getDayTime();
 					}
 					appStampStandar.framNo = x.getDestinationTimeApp().getEngraveFrameNo();
@@ -89,9 +92,10 @@ public class AppStampStandard {
 						stampAtr = StampAtrOther.CHEERING;
 					}
 					appStampStandar.stampAtrOther = stampAtr;
+					listAppStampStandard.add(appStampStandar);
 				}
 
-				listAppStampStandard.add(appStampStandar);
+				
 			});
 		}
 		
@@ -120,6 +124,7 @@ public class AppStampStandard {
 						}
 						appStampStandar.stampAtrOther = stampAtr;
 						appStampStandar.setFramNo(x.getEngraveFrameNo());
+						listAppStampStandard.add(appStampStandar);
 					}
 				} else {
 					
@@ -137,8 +142,9 @@ public class AppStampStandard {
 					}
 					appStampStandar.stampAtrOther = stampAtr;
 					appStampStandar.setFramNo(x.getEngraveFrameNo());
+					listAppStampStandard.add(appStampStandar);
 				}
-				listAppStampStandard.add(appStampStandar);
+				
 
 			});
 		}

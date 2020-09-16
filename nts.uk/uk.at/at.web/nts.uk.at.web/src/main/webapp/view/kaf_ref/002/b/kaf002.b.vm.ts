@@ -62,9 +62,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         mounted() {
             
         }
-        public testGetDetail() {
-            
-        }
+
         public register() {
             console.log('register');
             const self = this;
