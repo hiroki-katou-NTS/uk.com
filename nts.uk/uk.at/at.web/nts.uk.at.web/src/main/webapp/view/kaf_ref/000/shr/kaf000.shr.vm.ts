@@ -10,6 +10,7 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
         opReversionReason: KnockoutObservable<string>;
         opAppStartDate: KnockoutObservable<string>;
         opAppEndDate: KnockoutObservable<string>;
+        opStampRequestMode: KnockoutObservable<number>
         constructor(appType: number) {
             this.appID = ko.observable(null);
             this.prePostAtr = ko.observable(null);
@@ -21,6 +22,7 @@ module nts.uk.at.view.kaf000_ref.shr.viewmodel {
             this.opReversionReason = ko.observable(null);
             this.opAppStartDate = ko.observable("");
             this.opAppEndDate = ko.observable("");
+            this.opStampRequestMode = ko.observable(null);
         }        
     }       
     

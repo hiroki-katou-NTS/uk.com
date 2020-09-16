@@ -311,6 +311,16 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 						
 						throw new BusinessException("Msg_307");
 					}
+					if (temp.getEndTime() != null) {
+						if (temp.getEndTime() > item.getStartTime()) {
+							throw new BusinessException("Msg_307");
+						} 
+					} else if (temp.getStartTime() != null) {
+						if (temp.getStartTime() > item.getStartTime()) {
+							throw new BusinessException("Msg_307");
+						} 
+					}
+					
 				}else {
 					if (item.getStartTime() != null) {
 						
@@ -325,7 +335,19 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 								throw new BusinessException("Msg_307");
 							}
 						}
-					} 
+					} else if (item.getEndTime() != null) {
+						if (temp.getEndTime() != null) {
+							if (item.getEndTime() < temp.getEndTime() ) {
+								// throw msg	
+								throw new BusinessException("Msg_307");
+							}							
+						} else if (temp.getStartTime() != null) {
+							if (item.getEndTime() < temp.getStartTime() ) {
+								// throw msg	
+								throw new BusinessException("Msg_307");
+							}
+						}
+					}
 					
 				}
 				

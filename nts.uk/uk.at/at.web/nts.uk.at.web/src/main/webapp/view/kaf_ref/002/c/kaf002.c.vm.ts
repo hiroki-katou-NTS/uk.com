@@ -19,10 +19,35 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       // set visible for flag column
       isVisibleComlumn: boolean = true;
       isPreAtr: KnockoutObservable<boolean> = ko.observable(true);
+    
+       fetchData() {
+            const self = this;
+            self.$blockui('show');
+            let appId = '4a3faf4d-e38b-402b-a494-95e0e1971240';
+            let companyId = __viewContext.user.companyId;
+            let appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+            let recoderFlag = false;
+            let command = {
+                    appId,
+                    companyId,
+                    appDispInfoStartupDto,
+                    recoderFlag
+            }
+            self.$ajax(API.getDetail, command)
+                .done(res => {
+                    console.log(res);
+                }).fail(res => {
+                    console.log('fail');
+                }).always(() => {
+                    self.$blockui('hide');
+                });
+            
+            
+        }
         created() {
             const self = this;
             self.dataSourceOb = ko.observableArray( [] );
-
+            self.fetchData();
             let items1 = (function() {
                 let list = []; 
                 for (let i = 1; i < 3; i++) {
@@ -101,4 +126,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         }
 
     }
+    const API = {
+            start: "at/request/application/stamp/startStampApp",
+            checkRegister: "at/request/application/stamp/checkBeforeRegister",
+            register: "at/request/application/stamp/register",
+            getDetail: "at/request/application/stamp/detailAppStamp"
+            
+        }
 }
