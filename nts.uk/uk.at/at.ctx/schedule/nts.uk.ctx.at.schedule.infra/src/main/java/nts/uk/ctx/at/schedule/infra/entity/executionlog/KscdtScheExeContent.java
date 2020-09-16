@@ -174,7 +174,7 @@ public class KscdtScheExeContent extends UkJpaEntity implements Serializable {
                 contractCode,
                 companyId,
                 domain.getConfirm(),
-                domain.getCreationType().value,
+                domain.getImplementAtr().value,
                 domain.getSpecifyCreation().getCreationMethod().value,
                 domain.getSpecifyCreation().getCopyStartDate().isPresent()? domain.getSpecifyCreation().getCopyStartDate().get():null,
                 domain.getSpecifyCreation().getReferenceMaster().isPresent()?domain.getSpecifyCreation().getReferenceMaster().get().value:null,
