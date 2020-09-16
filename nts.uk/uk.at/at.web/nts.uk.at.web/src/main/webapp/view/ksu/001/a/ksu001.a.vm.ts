@@ -1948,8 +1948,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.pasteData();
                     }
                 }).ifNo(() => {
-                    $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
-                    $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
                     self.editModeToConfirmMode();
                     self.pasteData();
                 });
@@ -2013,8 +2011,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         self.pasteData();
                     }
                 }).ifNo(() => {
-                    $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
-                    $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
                     self.confirmModeToeditMode();
                     self.pasteData();
                 });
