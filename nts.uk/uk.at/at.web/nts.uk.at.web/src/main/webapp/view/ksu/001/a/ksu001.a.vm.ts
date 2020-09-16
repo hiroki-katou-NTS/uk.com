@@ -356,6 +356,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").on("extablecellupdated", (dataCell) => {
                 self.checkExitCellUpdated();
             });
+            
+            $("#extable").on("extablerowupdated", (dataCell) => {
+                self.checkExitCellUpdated();
+            });
         }
         // end constructor
         
