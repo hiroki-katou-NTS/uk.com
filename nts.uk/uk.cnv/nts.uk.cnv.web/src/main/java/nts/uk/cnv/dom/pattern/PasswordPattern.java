@@ -14,19 +14,27 @@ import nts.uk.cnv.dom.service.ConversionInfo;
 
 public class PasswordPattern extends ConversionPattern {
 
-	public PasswordPattern(ConversionInfo info) {
+	private Join sourceJoin;
+
+	private String sourceColumnName;
+
+	public PasswordPattern(ConversionInfo info, Join sourceJoin, String sourceColumnName) {
 		super(info);
+		this.sourceJoin = sourceJoin;
+		this.sourceColumnName = sourceColumnName;
 	}
 
 	@Override
 	public ConversionSQL apply(ConversionSQL conversionSql) {
-		Join join = new Join(
+		conversionSql.getFrom().addJoin(sourceJoin);
+
+		Join mappingTableJoin = new Join(
 				new TableName(info.getTargetDatabaseName(), info.getTargetSchema(), Constants.EncryptionTableName, Constants.EncryptionTableAlias),
 				JoinAtr.InnerJoin,
 				Arrays.asList(new OnSentence(
 						new ColumnName(
-							Constants.BaseTableAlias,
-							Constants.kojin_id
+							this.sourceJoin.tableName.getAlias(),
+							this.sourceColumnName
 						),
 						new ColumnName(
 							Constants.EncryptionTableAlias,
@@ -34,8 +42,8 @@ public class PasswordPattern extends ConversionPattern {
 						)
 					))
 			);
-		
-		conversionSql.getFrom().addJoin(join);
+
+		conversionSql.getFrom().addJoin(mappingTableJoin);
 
 		conversionSql.getSelect().add(
 				SelectSentence.createNotFormat(Constants.EncryptionTableAlias, Constants.EncryptionColumnName));

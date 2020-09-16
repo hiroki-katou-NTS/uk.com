@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package nts.uk.cnv.dom.pattern;
 
@@ -22,7 +22,7 @@ import nts.uk.cnv.dom.service.ConversionInfo;
  *
  */
 public class CodeToIdPatternTest {
-	
+
 	@Test
 	public void test_sql() {
 		ConversionSQL cs = ConversionSQLHelper.create();
@@ -34,15 +34,16 @@ public class CodeToIdPatternTest {
 				JoinAtr.InnerJoin,
 				Arrays.asList(new OnSentence(new ColumnName("main", "職位CD"), new ColumnName("jobinfo", "JOB_CD")))
 			);
-		
+
 		CodeToIdPattern target = new CodeToIdPattern(
 				info,
 				join,
-				"JOB_ID");
+				"JOB_ID",
+				"TO_JOB_ID");
 
 		ConversionSQL result = target.apply(cs);
 		String sql = result.build();
-        
+
         //assertTrue(result);
 	}
 }

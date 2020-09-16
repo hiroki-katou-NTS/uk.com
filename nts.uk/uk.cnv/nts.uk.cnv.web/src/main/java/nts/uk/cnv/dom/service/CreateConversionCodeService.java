@@ -7,8 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.uk.cnv.dom.constants.Constants;
-import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.conversionsql.TableName;
+import nts.uk.cnv.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.dom.conversiontable.ConversionSource;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.databasetype.DataType;
 
@@ -23,30 +24,57 @@ public class CreateConversionCodeService {
 	 * コンバートコードを生成する
 	 */
 	public String create(Require require, ConversionInfo info) {
-		
+
 		List<String> categorys = require.getCategoryPriorities();
-		
+
 		List<String> conversionSqlList = categorys.stream()
-			.map(category -> {
-				ConversionTable convertTable = require.getConversionTableRepository(info, category)
-						.orElseThrow(() -> new RuntimeException("can not found conversion table"));
-				ConversionSQL conversionSql = convertTable.createConversionSql();
-				return conversionSql.build();
-			})
+			.map(category -> createByCategory(require, category, info))
 			.collect(Collectors.toList());
-		
+
 		return this.preprocessing(info) + "\r\n" +
 				String.join("\r\n\r\n", conversionSqlList) + "\r\n\r\n" +
 				this.postprocessing(info);
 	}
 
+	private String createByCategory(Require require, String category, ConversionInfo info){
+
+		List<String> tables = require.getCategoryTables(category);
+		List<String> sqlList = tables.stream()
+			.map(table -> createByTables(require, category, table, info))
+			.collect(Collectors.toList());
+
+		return String.join("\r\n\r\n", sqlList);
+	}
+
+	private String createByTables(Require require, String category, String table, ConversionInfo info) {
+
+		List<ConversionRecord> records = require.getRecords(category, table);
+
+		List<String> convertCodes = records.stream()
+			.map(record -> {
+
+				ConversionSource source = require.getSource(category, record.getSourceId());
+
+				return require.getConversionTable(info, category, table, record.getRecordNo(), source);
+			})
+			.filter(ct -> ct.isPresent())
+			.map(recordNo -> recordNo.get().createConversionSql())
+			.map(conversionSql -> conversionSql.build())
+			.collect(Collectors.toList());
+
+		return String.join("\r\n\r\n", convertCodes);
+	}
+
 	public static interface Require {
 
 		List<String> getCategoryPriorities();
-		Optional<ConversionTable> getConversionTableRepository(ConversionInfo info, String category);
-		
+		List<String> getCategoryTables(String category);
+		List<ConversionRecord> getRecords(String category, String tableName);
+		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source);
+		ConversionSource getSource(String category, String sourceId);
+
 	}
-	
+
 	/**
 	 * 【前処理】
 	 * ・契約コードのパラメータ定義
@@ -60,7 +88,7 @@ public class CreateConversionCodeService {
 		sb.append("\r\n");
 		sb.append(info.getDatebaseType().spec().initialization(Constants.ContractCodeParamName, info.getContractCode()));
 		sb.append("\r\n");
-		
+
 		// 会社IDの変換テーブルの作成
 		TableName mappingTable = new TableName(
 				info.getSourceDatabaseName(), info.getSourceSchema(), Constants.CidMappingTableName, "");
@@ -85,10 +113,10 @@ public class CreateConversionCodeService {
 		sb.append(cid + ", " + ccd);
 		sb.append(" FROM " + source.fullName());
 		sb.append(")\r\n");
-		
+
 		return sb.toString();
 	}
-	
+
 	/**
 	 * 【後処理】
 	 * ・一時テーブルの削除コード
@@ -101,7 +129,7 @@ public class CreateConversionCodeService {
 				info.getSourceDatabaseName(), info.getSourceSchema(), Constants.CidMappingTableName, "");
 
 		sb.append("DROP TABLE " + mappingTable.fullName() + "\r\n");
-		
+
 		return sb.toString();
 	}
 }

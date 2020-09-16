@@ -18,8 +18,8 @@ public class ScvmtUkIndexDesignPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "TABLE_ID")
-	public String tableId;
-	
+	private String tableId;
+
 	@Column(name = "NAME")
 	private String name;
 }

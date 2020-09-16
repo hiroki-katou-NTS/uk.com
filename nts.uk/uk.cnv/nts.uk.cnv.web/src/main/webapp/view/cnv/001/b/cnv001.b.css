@@ -1,0 +1,73 @@
+
+#header {
+	height: 61px;
+}
+
+#category {
+	width: 200px;
+}
+
+#uktableSelected {
+	width: 280px;
+}
+
+#uktableUnSelected {
+	width: 280px;
+}
+
+
+#toLeft {
+	margin: 5px 0px;
+}
+#toRight {
+	margin: 5px 0px;
+}
+
+#toUp {
+	margin: 5px 0px;
+}
+#toDown {
+	margin: 5px 0px;
+}
+
+fieldset {
+	text-align: center;
+	margin: 10px 0px 0px 10px;
+}
+
+legend {
+	text-align: left;
+	margin: 10px 10px;
+}
+
+textarea {
+	resize: none
+}
+
+label.title {
+	font-size: 24px;
+	margin: 10px 10px;
+}
+
+div.form-label{
+	margin: 10px 0px;
+}
+
+div.fixed-flex-layout-left{
+	width: 250px;
+}
+
+button {
+	margin: 0px 10px;
+}
+
+.caret-left.outline {
+	font-size: 10px;
+	margin: 0px 0px;
+	height: 30em;
+}
+
+.caret-left.outline:after {
+	border-width: 1.4em 0.5em;
+	font-size: 5em;
+}

@@ -32,7 +32,7 @@ import nts.uk.cnv.app.dto.ImportFromFileDto;
 import nts.uk.cnv.app.dto.ImportFromFileResult;
 import nts.uk.cnv.app.dto.TableDesignExportDto;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
-import nts.uk.cnv.dom.conversiontable.OneColumnConversion;
+import nts.uk.cnv.dom.databasetype.UkDataType;
 import nts.uk.cnv.dom.service.ExportDdlService;
 import nts.uk.cnv.dom.tabledesign.ErpTableDesignRepository;
 import nts.uk.cnv.dom.tabledesign.TableDesign;
@@ -299,16 +299,14 @@ public class TableDesignerService {
 		TableDesign td = ukTableDesignRepository.find(name)
 				.orElseThrow(RuntimeException::new);
 
-		List<OneColumnConversion> oneColumnConversion = conversionTableRepository.findColumns(td.getName());
+		UkDataType dataType = new UkDataType();
+
 
 		return td.getColumns().stream()
 				.map(col -> new GetUkColumnsDto(
 						col.getId(),
 						col.getName(),
-						oneColumnConversion.stream()
-							.filter(cc -> cc.getTargetColumn().equals(col.getName()))
-							.map(cc -> cc.getConversionType())
-							.findFirst().orElse(null)
+						dataType.dataType(col.getType(), col.getMaxLength(), col.getScale())
 					))
 				.collect(Collectors.toList());
 	}

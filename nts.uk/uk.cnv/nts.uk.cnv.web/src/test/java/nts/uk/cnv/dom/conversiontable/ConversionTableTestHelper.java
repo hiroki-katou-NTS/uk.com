@@ -35,7 +35,8 @@ public class ConversionTableTestHelper {
 									new TableName(info.getSourceDatabaseName(), info.getSourceSchema(), Constants.CidMappingTableName, "ccd_cid"),
 									JoinAtr.InnerJoin,
 									Arrays.asList(new OnSentence(new ColumnName(Constants.BaseTableAlias, "会社CD"), new ColumnName("ccd_cid", "会社CD")))),
-							"CID"
+							"CID",
+							"TO_CID"
 						)
 					),
 					new OneColumnConversion(

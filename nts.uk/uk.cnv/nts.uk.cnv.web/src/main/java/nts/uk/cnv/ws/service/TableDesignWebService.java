@@ -70,4 +70,5 @@ public class TableDesignWebService extends WebService{
 	public List<GetUkColumnsDto> getUkColumns(String tableName) {
 		return tdService.getUkColumns(tableName);
 	}
+
 }

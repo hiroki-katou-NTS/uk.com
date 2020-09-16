@@ -8,11 +8,11 @@ import nts.uk.cnv.dom.service.ConversionInfo;
 public class ParentJoinPattern extends ConversionPattern {
 
 	private Join sourceJoin;
-	
+
 	private Join parentJoin;
-	
+
 	private String parentColumn;
-	
+
 	public ParentJoinPattern(ConversionInfo info, Join sourceJoin, Join parentJoin, String parentColumn) {
 		super(info);
 		this.sourceJoin = sourceJoin;
@@ -22,6 +22,7 @@ public class ParentJoinPattern extends ConversionPattern {
 
 	@Override
 	public ConversionSQL apply(ConversionSQL conversionSql) {
+		//TODO:これじゃあだめ
 		conversionSql.getFrom().addJoin(sourceJoin);
 		conversionSql.getFrom().addJoin(parentJoin);
 

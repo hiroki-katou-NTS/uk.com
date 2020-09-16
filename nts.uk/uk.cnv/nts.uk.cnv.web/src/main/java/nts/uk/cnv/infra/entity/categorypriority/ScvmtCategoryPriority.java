@@ -26,14 +26,14 @@ public class ScvmtCategoryPriority extends JpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "SEQ_NO")
-	private int sequenceNo;
-
 	@Column(name = "CATEGORY_NAME")
 	private String categoryName;
 
+	@Column(name = "SEQ_NO")
+	private int sequenceNo;
+
 	@Override
 	protected Object getKey() {
-		return sequenceNo;
+		return categoryName;
 	}
 }

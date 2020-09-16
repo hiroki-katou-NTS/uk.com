@@ -1,6 +1,7 @@
 package nts.uk.cnv.dom.pattern;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.cnv.dom.conversionsql.ConversionSQL;
 import nts.uk.cnv.dom.service.ConversionInfo;
 
@@ -9,6 +10,7 @@ import nts.uk.cnv.dom.service.ConversionInfo;
  * @author ai_muto
  *
  */
+@Getter
 @AllArgsConstructor
 public abstract class ConversionPattern {
 	protected ConversionInfo info;

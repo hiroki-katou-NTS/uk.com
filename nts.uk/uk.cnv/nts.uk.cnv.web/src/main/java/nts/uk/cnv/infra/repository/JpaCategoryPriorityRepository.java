@@ -21,4 +21,21 @@ public class JpaCategoryPriorityRepository  extends JpaRepository implements Cat
 				.collect(Collectors.toCollection(LinkedList::new));
 	}
 
+	@Override
+	public void register(int seq, String category) {
+		ScvmtCategoryPriority entity = new ScvmtCategoryPriority(category, seq);
+		this.commandProxy().insert(entity);
+	}
+
+	@Override
+	public void deleteAll() {
+		String sqlDelete = "DELETE SCVMT_CATEGORY_PRIORITY";
+		jdbcProxy().query(sqlDelete.toString()).execute();
+	}
+
+	@Override
+	public void delete(String category) {
+		this.commandProxy().remove(ScvmtCategoryPriority.class, category);
+	}
+
 }

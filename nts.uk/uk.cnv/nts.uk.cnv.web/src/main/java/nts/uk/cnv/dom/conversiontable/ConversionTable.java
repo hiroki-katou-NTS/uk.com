@@ -17,7 +17,6 @@ import nts.uk.cnv.dom.conversionsql.WhereSentence;
  */
 @AllArgsConstructor
 public class ConversionTable {
-
 	private TableName targetTableName;
 
 	private List<WhereSentence> whereList;
