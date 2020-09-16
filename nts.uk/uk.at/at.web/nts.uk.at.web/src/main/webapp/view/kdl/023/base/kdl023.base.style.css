@@ -1,8 +1,12 @@
 
 .kdl023-content-area {
-	font-size: 0.85rem;
 	height: calc(-110px + 100vh) !important;
 }
+
+.kdl023-content-area .pull-left * {
+    font-size: 0.9rem;
+}
+
 #calendar-reflect-pattern {
 	width: 990px;
 }
