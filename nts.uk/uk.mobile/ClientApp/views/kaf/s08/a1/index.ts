@@ -100,12 +100,12 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public nextToStepTwo() {
         const vm = this;
         //kiểm tra nghiệp vụ trước khi nhảy đến step tiếp theo
-        if (vm.derpartureTime == null || vm.returnTime == null ) {
-           vm.toggleErrorAlert();
-           vm.scrollToTop();
+        // if (vm.derpartureTime == null || vm.returnTime == null ) {
+        //    vm.toggleErrorAlert();
+        //    vm.scrollToTop();
 
-           return ;
-        }
+        //    return ;
+        // }
         //gửi table sang màn hình A2
         vm.checkNextButton();
         let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
