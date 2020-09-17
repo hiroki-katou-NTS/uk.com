@@ -101,29 +101,29 @@ public class SortEmpService {
 		Comparator<EmployeeInfo> compare = null;
 		List<OrderedList> sortPriorities = sortSetting.getOrderedList();
 		for (OrderedList condition : sortPriorities) {
-			Function<EmployeeInfo, String> keyExtractor = null;
+			Comparator<EmployeeInfo> compare2 = null;
 			switch (condition.getType()) {
 			case SCHEDULE_TEAM:
-				keyExtractor = e -> e. scheduleTeamCd;
+				compare2  = Comparator.comparing(EmployeeInfo::getScheduleTeamCd, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			case RANK:
-				keyExtractor = e -> e. emplRankCode;
+				compare2  = Comparator.comparing(EmployeeInfo::getEmplRankCode, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			case LISENCE_ATR:
-				keyExtractor = e -> String.valueOf(e. optLicenseClassification);
+				compare2  = Comparator.comparing(EmployeeInfo::getOptLicenseClassification, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			case POSITION:
-				keyExtractor = e -> e.jobtitleID ;
+				compare2  = Comparator.comparing(EmployeeInfo::getJobtitleID, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			case CLASSIFY:
-				keyExtractor = e -> e. classificationCode;
+				compare2  = Comparator.comparing(EmployeeInfo::getClassificationCode, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			}
 			
 			if (compare == null) {
-				compare = Comparator.comparing(keyExtractor);
+				compare = compare2;
 			} else {
-				compare = compare.thenComparing(keyExtractor);
+				compare = compare.thenComparing(compare2);
 			}
 		}
 		
@@ -187,11 +187,11 @@ public class SortEmpService {
 			
 			EmployeeInfo employeeInfo = EmployeeInfo.builder()
 					.empId(sid)
-					.scheduleTeamCd(team.isPresent() ? team.get().getScheduleTeamCd().toString() : "")
-					.emplRankCode(rank.isPresent() ? rank.get().getEmplRankCode().toString() : "")
-					.optLicenseClassification(empLicenseCls.isPresent() ? empLicenseCls.get().getOptLicenseClassification().get().value : 0)
-					.jobtitleID(employeePosition.isPresent() ? employeePosition.get().getJobtitleID() : "")
-					.classificationCode(empClassifiImport.isPresent() ? empClassifiImport.get().getClassificationCode() : "")
+					.scheduleTeamCd(team.isPresent() ? team.get().getScheduleTeamCd().toString() : null)
+					.emplRankCode(rank.isPresent() ? rank.get().getEmplRankCode().toString() : null)
+					.optLicenseClassification(empLicenseCls.isPresent() ? empLicenseCls.get().getOptLicenseClassification().get().value : null)
+					.jobtitleID(employeePosition.isPresent() ? employeePosition.get().getJobtitleID() : null)
+					.classificationCode(empClassifiImport.isPresent() ? empClassifiImport.get().getClassificationCode() : null)
 					.build();
 			result.add(employeeInfo);
 		}
