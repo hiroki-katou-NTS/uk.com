@@ -340,11 +340,16 @@ module nts.uk.at.view.ksm005.b {
                         }
                         self.monthlyPatternSettingBatchWorkDays().workingCode = childData.selectedWorkTimeCode;
 
-                        if(childData.selectedWorkTimeName) {
-                            self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + '   ' + childData.selectedWorkTimeName);
+                        if (childData.selectedWorkTimeCode){
+                            if(childData.selectedWorkTimeName) {
+                                self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + '   ' + childData.selectedWorkTimeName);
+                            } else {
+                                self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + '   ' + getText('KSM005_84'));
+                            }
                         } else {
-                            self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + '   ' + getText('KSM005_84'));
+                            self.worktimeInfoWorkDays("");
                         }
+
                     }
                 });
             }
