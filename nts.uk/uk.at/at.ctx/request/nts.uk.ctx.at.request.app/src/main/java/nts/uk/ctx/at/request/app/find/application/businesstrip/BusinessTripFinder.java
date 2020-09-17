@@ -145,8 +145,8 @@ public class BusinessTripFinder {
         BusinessTripInfoOutput output = new BusinessTripInfoOutput(
                 tripRequestSet.isPresent() ? tripRequestSet.get() : null,
                 appDispInfoStartupOutput,
-                Optional.of(workDays),
                 Optional.of(holidayWorkType),
+                Optional.of(workDays),
                 opActualContentDisplayLst,
                 Optional.of(businessTripWorkTypes),
                 Optional.empty()
