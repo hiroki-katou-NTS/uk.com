@@ -73,22 +73,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
         self.selectedTab.subscribe(value => {
-           if (value == 'tab-1') {
-               if(self.selectedCode() != 0) {
-//                   出勤／退勤
-                   self.selectedCode(0);
-               }
-           } else if(value == 'tab-2') {
-//               外出／戻り
-               self.selectedCode(1);
-           } else if(value == 'tab-3') {
-               self.selectedCode(2);
-           } else if(value == 'tab-4') {
-               self.selectedCode(3);
-           } else if(value == 'tab-5') {
-               self.selectedCode(4);
-           } else if(value == 'tab-6') {
-               
+           if (value) {
+               self.selectedCode(Number(value));
            }
         });
         self.selectedCode.subscribe(value => {

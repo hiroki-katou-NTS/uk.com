@@ -24,6 +24,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        approvalReason: KnockoutObservable<string>;
        application: KnockoutObservable<Application>;
        dataSourceOb: KnockoutObservableArray<any>;
+       selectedTab: KnockoutObservable<string> = ko.observable('');
        // display condition
        isM: KnockoutObservable<boolean> = ko.observable(false);
        // select tab M
@@ -344,7 +345,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 ) {
             const self = this;
             self.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
-            
+            self.selectedTab.subscribe(value => {
+                if (value) {
+                    self.selectedCode(Number(value));
+                }
+             });
             self.selectedCode.subscribe(value => {
                 if (value && self.data) {
                     self.bindComment(self.data);
