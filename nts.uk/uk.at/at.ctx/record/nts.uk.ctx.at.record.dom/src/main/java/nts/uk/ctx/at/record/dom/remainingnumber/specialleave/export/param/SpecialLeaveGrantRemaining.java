@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.remainingnumber.specialleave.export.param;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 /**
@@ -10,13 +11,13 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  * @author shuichu_ishida
  */
 @Getter
-public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
+public class SpecialLeaveGrantRemaining extends LeaveGrantRemaining {
 
-	/** 特休不足ダミーフラグ */
-	@Setter
-	private boolean dummyAtr = false;
+//	/** 特休不足ダミーフラグ */
+//	@Setter
+//	private boolean dummyAtr = false;
 	
-	public SpecialLeaveGrantRemaining(SpecialLeaveGrantRemainingData parent){
+	public SpecialLeaveGrantRemaining(LeaveGrantRemaining parent){
 		
 		this.annLeavID = parent.getAnnLeavID();
 		this.cid = parent.getCid();
@@ -27,8 +28,5 @@ public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 		this.registerType = parent.getRegisterType();
 		this.details = parent.getDetails();
 		
-		// this.annualLeaveConditionInfo = parent.getAnnualLeaveConditionInfo();
-		
-		this.dummyAtr = false;
 	}
 }

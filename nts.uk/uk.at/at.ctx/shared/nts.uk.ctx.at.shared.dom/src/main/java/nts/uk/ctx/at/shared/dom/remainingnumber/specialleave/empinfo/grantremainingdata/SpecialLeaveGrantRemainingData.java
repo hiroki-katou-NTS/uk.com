@@ -13,15 +13,16 @@ import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveNumberInfo;
 
 @Getter
-@NoArgsConstructor
+//@NoArgsConstructor
 //@AllArgsConstructor
 // 特休付与残数
-public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
+public class SpecialLeaveGrantRemainingData extends LeaveGrantRemaining {
 
 //	private String annLeavID;
 //	
@@ -224,25 +225,25 @@ public class SpecialLeaveGrantRemainingData extends LeaveGrantRemainingData {
 		return true;
 	}
 
-	/**
-	 * コンストラクタ
-	 * @param employeeId // 社員ID
-	 * @param grantDate	// 付与日
-	 * @param deadline	// 期限日
-	 * @param expirationStatus //　期限切れ状態
-	 * @param grantRemainRegisterType // 登録種別
-	 * @param annualLeaveNumberInfo //　明細
-	 */
-	public SpecialLeaveGrantRemainingData(
-			String employeeId, GeneralDate grantDate, GeneralDate deadline,
-			LeaveExpirationStatus expirationStatus,
-			GrantRemainRegisterType grantRemainRegisterType,
-			SpecialLeaveNumberInfo spacialLeaveNumberInfo) {
-		this.employeeId = employeeId;
-		this.grantDate = grantDate;
-		this.deadline = deadline;
-		this.expirationStatus = expirationStatus;
-		this.registerType = grantRemainRegisterType;
-		this.details = spacialLeaveNumberInfo;
-	}
+//	/**
+//	 * コンストラクタ
+//	 * @param employeeId // 社員ID
+//	 * @param grantDate	// 付与日
+//	 * @param deadline	// 期限日
+//	 * @param expirationStatus //　期限切れ状態
+//	 * @param grantRemainRegisterType // 登録種別
+//	 * @param annualLeaveNumberInfo //　明細
+//	 */
+//	public SpecialLeaveGrantRemainingData(
+//			String employeeId, GeneralDate grantDate, GeneralDate deadline,
+//			LeaveExpirationStatus expirationStatus,
+//			GrantRemainRegisterType grantRemainRegisterType,
+//			SpecialLeaveNumberInfo spacialLeaveNumberInfo) {
+//		this.employeeId = employeeId;
+//		this.grantDate = grantDate;
+//		this.deadline = deadline;
+//		this.expirationStatus = expirationStatus;
+//		this.registerType = grantRemainRegisterType;
+//		this.details = spacialLeaveNumberInfo;
+//	}
 }

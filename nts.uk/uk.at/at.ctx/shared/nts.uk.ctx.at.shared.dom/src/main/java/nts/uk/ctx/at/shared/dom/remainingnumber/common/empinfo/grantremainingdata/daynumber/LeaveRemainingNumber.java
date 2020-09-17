@@ -63,6 +63,7 @@ public class LeaveRemainingNumber {
 	 * @param aLeaveRemainingNumber
 	 */
 	public void add(LeaveRemainingNumber aLeaveRemainingNumber){
+		
 		// 日付加算
 		days = days.add(getDays());
 		

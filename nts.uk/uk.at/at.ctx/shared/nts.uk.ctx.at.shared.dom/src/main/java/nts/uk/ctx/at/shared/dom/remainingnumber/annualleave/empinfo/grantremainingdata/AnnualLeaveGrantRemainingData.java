@@ -15,13 +15,14 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremaini
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.GrantRemainRegisterType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.LeaveExpirationStatus;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 
 @Getter
 @NoArgsConstructor
 //@AllArgsConstructor
 // domain name CS00037: 年休付与残数データ
-public class AnnualLeaveGrantRemainingData extends LeaveGrantRemainingData {
+public class AnnualLeaveGrantRemainingData extends LeaveGrantRemaining {
 
 //	private String annLeavID;
 //	

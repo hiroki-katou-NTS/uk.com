@@ -11,7 +11,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 
 /**
  * 暫定管理データ
- * @author masaaki_jinno
  *
  */
 @AllArgsConstructor
@@ -20,5 +19,5 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.Interi
 @Getter
 public class SpecialHolidayInterimMngData {
 	private List<InterimSpecialHolidayMng> lstSpecialInterimMng;
-	private List<InterimRemain> lstInterimMng;
+	// private List<InterimRemain> lstInterimMng;
 }

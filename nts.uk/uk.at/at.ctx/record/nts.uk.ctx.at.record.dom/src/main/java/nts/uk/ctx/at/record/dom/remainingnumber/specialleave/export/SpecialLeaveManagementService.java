@@ -20,6 +20,10 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.ConfirmLeavePeriod;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveNumberInfo;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.daynumber.LeaveUsedNumber;
 import nts.uk.ctx.at.record.dom.adapter.company.AffCompanyHistImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CalcAnnLeaAttendanceRate;
@@ -64,6 +68,8 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.base.SpecialVacationCD;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.YearDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemain;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.InterimRemainRepository;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.CreateAtr;
+import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.RemainType;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMng;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialholidaymng.interim.InterimSpecialHolidayMngRepository;
@@ -158,7 +164,6 @@ public class SpecialLeaveManagementService {
 						param.getOptBeforeResult(),
 						param.getSpecialLeaveCode());
 
-		
 		// 次回特休付与日を計算
 		CalcNextSpecialLeaveGrantDate calcNextSpecialLeaveGrantDate
 			= new CalcNextSpecialLeaveGrantDate();
@@ -186,23 +191,62 @@ public class SpecialLeaveManagementService {
 			= specialHolidayData(require, param);
 		
 		// 特別休暇集計期間でループ
-		
-		
-		// 特別休暇の消滅・付与・消化
 		for (val aggregatePeriodWork : aggregateWork){
 
 			// 特休の消滅・付与・消化
-			aggrResult = specialLeaveInfo.lapsedGrantDigest(
-					require,
-					companyId, employeeId, aggregatePeriodWork,
-					tempAnnualLeaveMngs, isGetNextMonthData, isCalcAttendanceRate, aggrResult, annualLeaveSet);
+			outputData = specialLeaveInfo.lapsedGrantDigest(
+					require, // ooooo
+					param.getCid(), 
+					param.getSid(),
+					aggregatePeriodWork,
+					specialHolidayInterimMngData, 
+					param.getSpecialLeaveCode(),
+					outputData);
 		}
 		
+		// マイナス分の年休付与残数を1レコードにまとめる --------------------------------
 		
-//		private static SpecialHolidayInterimMngData specialHolidayData(
-//				RequireM2 require, ComplileInPeriodOfSpecialLeaveParam param) {
-//		
-//		
+		// ダミーとして作成した「年休付与残数(List)」を取得
+		
+		// 【渡すパラメータ】 特別休暇情報　←　特別休暇の集計結果．特別休暇情報（期間終了日時点）
+		SpecialLeaveInfo specialLeaveInfoEnd = outputData.getAsOfPeriodEnd();
+		
+		// ダミーとして作成した「特別休暇付与残数(List)」を取得
+		List<SpecialLeaveGrantRemaining> remainingList
+			= specialLeaveInfoEnd.getGrantRemainingList();
+		List<SpecialLeaveGrantRemaining> dummyRemainingList
+			= remainingList.stream()
+				.filter(c -> c.isDummyAtr())
+				.collect(Collectors.toList());
+				
+		// 取得した特別休暇付与残数の「特別休暇使用数」、「特別休暇残数」をそれぞれ合計
+		LeaveRemainingNumber leaveRemainingNumberTotal = new LeaveRemainingNumber();
+		LeaveUsedNumber leaveUsedNumberTotal = new LeaveUsedNumber();
+		dummyRemainingList.forEach(c->{
+			leaveRemainingNumberTotal.add(c.getDetails().getRemainingNumber());
+			leaveUsedNumberTotal.add(c.getDetails().getUsedNumber());
+		});
+		
+		// 合計した「特別休暇使用数」「特別休暇残数」から特別休暇付与残数を作成
+		LeaveGrantRemaining leaveGrantRemainingTotal = new LeaveGrantRemaining();
+		LeaveNumberInfo leaveNumberInfo = new LeaveNumberInfo();
+		// 明細．残数　←　合計した「特別休暇残数」
+		leaveNumberInfo.setRemainingNumber(leaveRemainingNumberTotal);
+		// 明細．使用数　←　合計した「特別休暇使用数」
+		leaveNumberInfo.setUsedNumber(leaveUsedNumberTotal);
+		leaveGrantRemainingTotal.setDetails(leaveNumberInfo);
+		// 年休不足ダミーフラグ　←　false
+		leaveGrantRemainingTotal.setDummyAtr(false);
+		
+		// 特別休暇情報．付与残数データに作成した特別休暇付与残数を追加
+		SpecialLeaveGrantRemaining specialLeaveGrantRemaining
+			= new SpecialLeaveGrantRemaining(leaveGrantRemainingTotal);
+		
+		specialLeaveInfoEnd.getGrantRemainingNumberList().add(specialLeaveGrantRemaining);
+		
+		// 特別休暇不足分として作成した特別休暇付与データを削除する -------------------------
+		
+		
 		
 		
 		
@@ -1026,7 +1070,7 @@ public class SpecialLeaveManagementService {
 		RequireM2 require, ComplileInPeriodOfSpecialLeaveParam param) {
 		
 		List<InterimSpecialHolidayMng> lstOutput = new ArrayList<>();
-		List<InterimRemain> lstInterimMng = new ArrayList<>();
+		//List<InterimRemain> lstInterimMng = new ArrayList<>();
 		
 		// パラメータ「実績のみ参照区分」をチェック
 		if(param.isMode()) { // 月次モード
@@ -1041,49 +1085,56 @@ public class SpecialLeaveManagementService {
 					RemainType.SPECIAL);
 			
 			lstInterimMngTmp.stream().forEach(a -> {
+				
 				List<InterimSpecialHolidayMng> lstSpecialData 
 					= require.interimSpecialHolidayMng(a.getRemainManaID())
 						.stream().filter(x -> x.getSpecialHolidayCode() == param.getSpecialLeaveCode())
 						.collect(Collectors.toList());
 				if(!lstSpecialData.isEmpty()) {
+					lstSpecialData.forEach(specialData->{
+						specialData.setParentValue(a);
+					});
 					lstOutput.addAll(lstSpecialData);
-					lstInterimMng.add(a);
 				}
 			});
 		}
-		List<InterimRemain> lstInterimMngTmpCreate = new ArrayList<>(lstInterimMng);
+		//List<InterimRemain> lstInterimMngTmpCreate = new ArrayList<>(lstInterimMng);
 		List<InterimSpecialHolidayMng> speHolidayMngTempCreate = new ArrayList<>(lstOutput);
 		
 		//INPUT．上書きフラグをチェックする
 		if(param.isOverwriteFlg()) {
+			
+			// パラメータの「暫定管理データ」をループ
 			for (InterimRemain interimRemain : param.getRemainData()) {
-				List<InterimRemain> interimMngChk = lstInterimMngTmpCreate.stream()
+				
+				// パラメータの「暫定管理データ」と比較して、
+				// 以下の項目が全て同じ「特別休暇暫定管理データ」がある場合、重複したものは上書きする
+				// ・社員ID
+				// ・対象日
+				// ・残数種類
+				// ・残数分類
+				List<InterimSpecialHolidayMng> speMngReplace
+					= speHolidayMngTempCreate.stream()
+						.filter(x -> x.getSID().equals(interimRemain.getSID()))
 						.filter(x -> x.getYmd().equals(interimRemain.getYmd()))
+						.filter(x -> x.getRemainType().equals(interimRemain.getRemainType()))
+						.filter(x -> x.getRemainAtr().equals(interimRemain.getRemainAtr()))
 						.collect(Collectors.toList());
-				List<InterimSpecialHolidayMng> speMngReplace = param.getInterimSpecialData().stream()
-						.filter(y -> y.getSpecialHolidayId().equals(interimRemain.getRemainManaID())
-									&& y.getSpecialHolidayCode() == param.getSpecialLeaveCode())
-						.collect(Collectors.toList());
-				if(!interimMngChk.isEmpty()) {
-					InterimRemain temMng = interimMngChk.get(0);
-					lstInterimMng.remove(temMng);
-					
-					if(!speMngReplace.isEmpty()) {
-						List<InterimSpecialHolidayMng> speMngTmp = speHolidayMngTempCreate.stream()
-								.filter(z -> z.getSpecialHolidayId().equals(temMng.getRemainManaID()))
-								.collect(Collectors.toList());
-						if(!speMngTmp.isEmpty()) {
-							lstOutput.remove(speMngTmp.get(0));	
-						}
-					}
+				
+				if ( !speMngReplace.isEmpty() ){ //重複したものは上書きする
+					speMngReplace.forEach(a->{
+						a.setParentValue(interimRemain);
+					});
+				} else { // 重複がない「暫定管理データ」の場合、特別休暇暫定管理データのListに追加
+					InterimSpecialHolidayMng interimSpecialHolidayMng
+						= new InterimSpecialHolidayMng();
+					interimSpecialHolidayMng.setParentValue(interimRemain);
+					lstOutput.add(interimSpecialHolidayMng);
 				}
-				lstInterimMng.add(interimRemain);
-				if(!speMngReplace.isEmpty()) {
-					lstOutput.add(speMngReplace.get(0));
-				}
+				
 			}
 		}
-		return new SpecialHolidayInterimMngData(lstOutput, lstInterimMng);
+		return new SpecialHolidayInterimMngData(lstOutput);
 	}
 	
 //	/**

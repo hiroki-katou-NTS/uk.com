@@ -36,6 +36,7 @@ public class RemNumShiftListWork {
 			LeaveGrantRemainingData leaveGrantRemainingData){
 		
 		if ( !remNumShiftWorkListOpt.isPresent() ){ // リストが存在しないとき
+			// 作成
 			remNumShiftWorkListOpt = Optional.of(new ArrayList<RemNumShiftWork>());
 		}
 		
