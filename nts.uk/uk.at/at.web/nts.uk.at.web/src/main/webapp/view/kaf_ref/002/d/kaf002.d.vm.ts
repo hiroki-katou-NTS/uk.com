@@ -22,10 +22,19 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
         time: KnockoutObservable<number>;
         isSendMail: KnockoutObservable<boolean> = ko.observable(false);
         data: any;
-        comment1: KnockoutObservable<string> = ko.observable('comment1');
-        comment2: KnockoutObservable<string> = ko.observable('comment2');
+        comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+        comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
     
-    
+        public bindDataStart(data: any) {
+            const self = this;
+    //        let listType = self.data.appStampSetting.goOutTypeDispControl;
+    //        let listTypeItem = [];
+    //        _.forEach(listType, i => {
+    //            listTypeItem.push(new ItemModel(String(i.goOutType), i.display))
+    //        })
+    //        self.dataSourceReason(listTypeItem);
+            self.bindComment(data);
+        }
        fetchData() {
            const self = this;
            self.$blockui('show');
@@ -43,12 +52,17 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.$ajax(API.getDetail, command)
                .done(res => {
                    console.log(res);
+                   if(!res) {
+                       
+                       return;
+                   }
                    self.data = res;
                    self.selectedCode(String(self.data.appRecordImage.appStampCombinationAtr));
                    self.time(Number(self.data.appRecordImage.attendanceTime));
                    if (self.data.appRecordImage.appStampGoOutAtr) {
                        self.selectedCodeReason(String(self.data.appRecordImage.appStampGoOutAtr));
                    }
+                   self.bindDataStart(self.data);
                    
                    
                }).fail(res => {
@@ -57,6 +71,18 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    self.$blockui('hide');
                });
        }
+       bindComment(data: any) {
+           const self = this;
+           _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
+              if (i.stampAtr == ko.toJS(self.selectedCode)) {
+                  let commentBot = i.bottomComment;
+                  self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
+                  let commentTop = i.bottomComment;
+                  self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
+              }
+           });
+       }
+       
        created( params: { 
            application: any,
            printContentOfEachAppDto: PrintContentOfEachAppDto,
@@ -84,6 +110,13 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.dataSourceReason = ko.observableArray(itemModelReasonList);
            
            self.selectedCode = ko.observable('1');
+           
+           self.selectedCode.subscribe(value => {
+               if (value) {
+                   self.bindComment(self.data);
+               } 
+            });
+           
            self.selectedCodeReason = ko.observable('0');
            
            // initial time 
@@ -163,7 +196,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    applicationDto: applicationDto
            }
            self.$blockui("show");
-           self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+           self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
            .then(isValid => {
                if ( isValid ) {
                    return true;
@@ -173,6 +206,10 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    return self.$ajax(API.checkUpdate, commandCheck);
                }
            }).then(res => {
+               if (!res) {
+                   
+                   return;
+               }
                if (_.isEmpty(res)) {
                    return self.$ajax(API.update, command);
                } else {
@@ -186,6 +223,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    } );
                }
            }).fail(res => {
+               if (!res) return;
                let param;
                if (res.message && res.messageId) {
                    param = {messageId: res.messageId, messageParams: res.parameterIds};
@@ -279,6 +317,18 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
          * 組合
          */
         UNION
+    }
+    
+    class Comment{
+        public content: string;
+        public isBold: boolean;
+        public color: string;
+        constructor( content: string, isBold: boolean, color: string) {
+            this.content = content;
+            this.isBold = isBold;
+            this.color = color;
+        }
+        
     }
     class ItemModel {
         code: string;
