@@ -480,8 +480,7 @@ module nts.uk.com.view.cli003.f {
         endDateOperator: KnockoutObservable<string> = ko.observable('');
 
         ////just add 2
-        selectedRuleCode: KnockoutObservable<number> = ko.observable(2);
-        selectedRuleCodeOperator: KnockoutObservable<number> = ko.observable(2);
+
         listEmployeeIdOperator: KnockoutObservableArray<any> = ko.observableArray([]);
         logSetOutputs: KnockoutObservableArray<logSetOutputs> = ko.observableArray([]);
         initComponentScreenF(data: any) {
@@ -496,14 +495,8 @@ module nts.uk.com.view.cli003.f {
                 vm.dateValue(data.dateValue);
                 vm.startDateOperator(data.startDateOperator);
                 vm.endDateOperator(data.endDateOperator);
-                vm.selectedRuleCode(data.selectedRuleCode);
-                vm.selectedRuleCodeOperator(data.selectedRuleCodeOperator);
-                if (vm.selectedRuleCode() !== 2) {
-                    vm.targetEmployeeIdList = ko.observableArray(data.targetEmployeeIdList);
-                }
-                if (vm.selectedRuleCodeOperator() !== 2) {
-                    vm.listEmployeeIdOperator = ko.observableArray(data.listEmployeeIdOperator);
-                }
+                data.selectedRuleCode == 2 ?  vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
+                data.selectedRuleCodeOperator == 2 ? vm.listEmployeeIdOperator([]) : vm.listEmployeeIdOperator(data.listEmployeeIdOperator);
             }
 
             // set param log
@@ -529,7 +522,7 @@ module nts.uk.com.view.cli003.f {
             if (recordType === 9 || recordType === 10 || recordType === 11) {
                 //TODO F：データ保存・復旧・削除の操作ログを取得
             } else {
-                //TODO I：出力ボタン押下時処理
+                //I：出力ボタン押下時処理
                 vm.getLogFromAnother(paramLog);
 
             }
@@ -547,6 +540,7 @@ module nts.uk.com.view.cli003.f {
             //記録を取得する
             service.getLogSettingsBySystem(systemType).done((logSettings: Array<LogSettingParam>) => {
                 // Get Log basic info
+                console.log(paramLog);
                 service.getLogBasicInfoByModifyDate(paramLog).done((data: Array<LogBasicInfoModel>) => {
                     if (data.length > 0) {
                         // order by list
@@ -566,7 +560,6 @@ module nts.uk.com.view.cli003.f {
                         logSettingEdit.forEach(item => logSettingEditProgramId[item.programId] = item);
                         const logSettingBootProgramId = {};
                         logSettingBoot.forEach(item => logSettingBootProgramId[item.programId] = item);
-                        // process sub header with record type = persion info and data correct
                         data.map((logBasicInfoModel, index) => {
                             //記録の絞り込み
                             if (index + 1 <= vm.maxlength()) {
@@ -587,6 +580,7 @@ module nts.uk.com.view.cli003.f {
                                     if(vm.filterLogPersonInfoUpdate(logBasicInfoModel)){
                                             if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
                                                 if (logBasicInfoModel.processAttr !== '新規') {
+                                                    // process sub header
                                                     const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
                                                     vm.listLogBasicInforModel.push(logtemp);
                                                 };
@@ -599,6 +593,7 @@ module nts.uk.com.view.cli003.f {
                                     // Log DATA CORRECTION
                                     if(vm.filterLogDataCorrection(logBasicInfoModel)){
                                             if (vm.validateForDataCorrection(dataType, logSettingEditProgramId)) {
+                                                // process sub header
                                                 const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
                                                 vm.listLogBasicInforModel.push(logtemp);
                                             }
