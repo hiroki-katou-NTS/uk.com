@@ -32,7 +32,8 @@ public class BentoReserveModifyServiceTest {
 	public void reserve_fail_canNotCancel() {
 		
 		val dummyDetails = Collections.singletonMap(1, Helper.count(1));
-	
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
+
 		new Expectations() {{
 			
 			require.getBefore(
@@ -42,6 +43,7 @@ public class BentoReserveModifyServiceTest {
 					null,
 					null,
 					true, // ordered!!
+					workLocationCode,
 					Helper.Reservation.Detail.DUMMY_LIST));
 		}};
 		
@@ -52,7 +54,8 @@ public class BentoReserveModifyServiceTest {
 					Helper.Reservation.RegInfo.DUMMY,
 					Helper.Reservation.Date.DUMMY,
 					now(),
-					dummyDetails);
+					dummyDetails,
+					workLocationCode);
 			
 			persist.run();
 			
@@ -63,6 +66,7 @@ public class BentoReserveModifyServiceTest {
 	public void reserve_success_not_Delete() {
 		
 		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
 
 		BentoMenu menu = new BentoMenu(
@@ -73,7 +77,7 @@ public class BentoReserveModifyServiceTest {
 		Map<Integer, BentoReservationCount> details = Collections.singletonMap(1, Helper.count(10));
 		
 		new Expectations() {{
-			require.getBentoMenu(todayReserve);
+			require.getBentoMenu(todayReserve,workLocationCode);
 			result = menu;
 			
 			require.getBefore(dummyRegInfo, todayReserve);
@@ -85,7 +89,8 @@ public class BentoReserveModifyServiceTest {
 						dummyRegInfo,
 						todayReserve,
 						now(),
-						details),
+						details,
+						workLocationCode),
 				any -> require.reserve(any.get()));
 	}
 	
@@ -94,16 +99,18 @@ public class BentoReserveModifyServiceTest {
 	public void reserve_success_not_Update() {
 
 		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
 
 		// oldReservation should be deleted
 		BentoReservation oldReservation = BentoReservation.reserve(
 				dummyRegInfo,
 				todayReserve,
+				workLocationCode,
 				Helper.Reservation.Detail.DUMMY_LIST);
-		
+
 		new Expectations() {{
-			require.getBentoMenu(todayReserve);
+			require.getBentoMenu(todayReserve,workLocationCode);
 			result = Helper.Menu.DUMMY;
 			
 			require.getBefore(dummyRegInfo, todayReserve);
@@ -116,7 +123,8 @@ public class BentoReserveModifyServiceTest {
 						dummyRegInfo,
 						todayReserve,
 						now(),
-						Collections.emptyMap()),
+						Collections.emptyMap(),
+						workLocationCode),
 				any -> require.delete(any.get()));
 	}
 
@@ -125,6 +133,7 @@ public class BentoReserveModifyServiceTest {
 	public void reserve_success_Update() {
 
 		ReservationRegisterInfo dummyRegInfo = Helper.Reservation.RegInfo.DUMMY;
+		Optional<WorkLocationCode> workLocationCode = Helper.Reservation.WorkLocationCodeReg.DUMMY;
 		ReservationDate todayReserve = Helper.Reservation.Date.of(today());
 		
 		BentoMenu menu = new BentoMenu(
@@ -138,10 +147,11 @@ public class BentoReserveModifyServiceTest {
 		BentoReservation oldReservation = BentoReservation.reserve(
 				dummyRegInfo,
 				todayReserve,
+				workLocationCode,
 				Helper.Reservation.Detail.DUMMY_LIST);
 		
 		new Expectations() {{
-			require.getBentoMenu(todayReserve);
+			require.getBentoMenu(todayReserve,workLocationCode);
 			result = menu;
 			
 			require.getBefore(dummyRegInfo, todayReserve);
@@ -154,7 +164,8 @@ public class BentoReserveModifyServiceTest {
 						dummyRegInfo,
 						todayReserve,
 						now(),
-						bentoDetails),
+						bentoDetails,
+						workLocationCode),
 				any -> require.delete(any.get()),
 				any -> require.reserve(any.get()));
 	}
