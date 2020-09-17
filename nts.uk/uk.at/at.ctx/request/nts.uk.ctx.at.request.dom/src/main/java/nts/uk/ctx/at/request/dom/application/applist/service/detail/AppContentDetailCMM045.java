@@ -40,16 +40,19 @@ public interface AppContentDetailCMM045 {
 	 */
 	public String getContentAbsence(AppAbsenceFull absence, String companyId, String appId, Integer appReasonDisAtr, String appReason,
 			int day, int screenAtr, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
+
 	/**
-	 * 勤務変更申請データを作成
-	 * get content work change
-	 * 勤務変更申請 kaf007 - appType = 2
-	 * @param appId
-	 * @param detailSet
+	 * refactor 4
+	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.勤務変更申請データを作成.勤務変更申請データを作成
+	 * @param application 申請
+	 * @param appReasonDisAtr 申請理由表示区分
+	 * @param workTimeLst 就業時間帯リスト
+	 * @param workTypeLst 勤務種類リスト
+	 * @param companyID 会社ID
 	 * @return
 	 */
-	public String getContentWorkChange(AppWorkChangeFull wkChange, String companyId, String appId, Integer appReasonDisAtr,
-			String appReason, int screenAtr, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime);
+	public String getContentWorkChange(Application application, DisplayAtr appReasonDisAtr, List<WorkTimeSetting> workTimeLst, List<WorkType> workTypeLst, String companyID);
+	
 	/**
 	 * refactor 4
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.直行直帰申請データを作成.直行直帰申請データを作成

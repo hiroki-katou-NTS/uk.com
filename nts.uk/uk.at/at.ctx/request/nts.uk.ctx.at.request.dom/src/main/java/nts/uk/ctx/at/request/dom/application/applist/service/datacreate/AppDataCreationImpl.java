@@ -69,11 +69,13 @@ public class AppDataCreationImpl implements AppDataCreation {
 		if(opApprovalListDisplaySetting.isPresent()) {
 			appListInfo.getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
 		}
+		List<WorkType> workTypeLst = new ArrayList<>();
+		List<WorkTimeSetting> workTimeSettingLst = new ArrayList<>();
 		if(device==PC) {
 			// ドメインモデル「就業時間帯」を取得
-			List<WorkType> workTypeLst = workTypeRepository.findByCompanyId(companyID);
+			workTypeLst = workTypeRepository.findByCompanyId(companyID);
 			// ドメインモデル「勤務種類」を取得
-			List<WorkTimeSetting> workTimeSettingLst = workTimeSettingRepository.findByCId(companyID);
+			workTimeSettingLst = workTimeSettingRepository.findByCId(companyID);
 			// 勤怠名称を取得 ( Lấy tên working time)
 		}
 		
@@ -93,8 +95,8 @@ public class AppDataCreationImpl implements AppDataCreation {
 			ListOfApplication listOfApp = appContentService.createEachAppData(
 					app, 
 					companyID, 
-					Collections.emptyList(), 
-					Collections.emptyList(), 
+					workTimeSettingLst, 
+					workTypeLst, 
 					Collections.emptyList(), 
 					mode, 
 					opApprovalListDisplaySetting.get(), 

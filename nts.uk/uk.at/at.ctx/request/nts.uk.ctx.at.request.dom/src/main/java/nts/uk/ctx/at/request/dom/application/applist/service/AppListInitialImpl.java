@@ -2052,8 +2052,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 			case WORK_CHANGE_APPLICATION: {//勤務変更申請
 				AppWorkChangeFull wkChange = this.find007(lstAppWkChange, appID);
-				content = contentDtail.getContentWorkChange(wkChange, companyID, appID, appReasonDisAtr, appReason,
-						ScreenAtr.CMM045.value, lstWkType, lstWkTime);
+//				content = contentDtail.getContentWorkChange(wkChange, companyID, appID, appReasonDisAtr, appReason,
+//						ScreenAtr.CMM045.value, lstWkType, lstWkTime);
+				content = "";
 				break;
 			}
 			case GO_RETURN_DIRECTLY_APPLICATION: {//直行直帰申請

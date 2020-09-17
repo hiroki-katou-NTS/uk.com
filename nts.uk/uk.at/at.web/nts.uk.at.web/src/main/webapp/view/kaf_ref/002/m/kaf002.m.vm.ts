@@ -65,7 +65,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.tabs = ko.observableArray(paramTabs);
             // select first tab
             self.selectedTab = ko.observable( paramTabs[0].id );
-            
+            params.selectedTab = self.selectedTab;
             self.isPreAtr.subscribe((value) => {
                if(!_.isNull(value)) {
                    self.loadAll();
@@ -209,7 +209,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
             let optionGrid = { 
-                    width: '100%',
+                    width: '450px',
                     height: '360px',
                     dataSource: dataSource,
                     primaryKey: 'id',
@@ -264,7 +264,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                new ItemModel('2', '有償'),
                                new ItemModel('3', '組合')];
             let option2 = { 
-              width: '100%',
+              width: '450px',
               height: '360px',
               dataSource: dataSource,
               primaryKey: 'id',
@@ -548,12 +548,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
     
     export enum STAMPTYPE {
         ATTENDENCE = 0,
-        EXTRAORDINARY = 1,
-        GOOUT_RETURNING = 2,
+        PARENT = 2,
+        GOOUT_RETURNING = 1,
         CHEERING = 3,
-        PARENT = 4,
-        NURSE = 5,
-        BREAK = 6
+        EXTRAORDINARY = 4,
+        BREAK = 5,
+        NURSE = 6,
 
     }
     export class TabM {

@@ -14,7 +14,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         isSendMail: KnockoutObservable<boolean> = ko.observable(false);
         data: any;
         comment1: KnockoutObservable<string> = ko.observable('comment1');
-        comment2: KnockoutObservable<string> = ko.observable('');
+        comment2: KnockoutObservable<string> = ko.observable('comment2');
         created() {
             
             const self = this;
@@ -50,9 +50,22 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                 
                     return self.$ajax(API.start, command);
                 }
-            }).then((res: any) => {
-                console.log(res);
+            }).done((res: any) => {
                 self.data = res;
+                
+            }).fail(res => {
+                let param;
+                if (res.message && res.messageId) {
+                    param = {messageId: res.messageId, messageParams: res.parameterIds};
+                } else {
+
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    }
+                }
+                self.$dialog.error(param);
             }).always(() => {
                 self.$blockui('hide');
             });
@@ -62,7 +75,56 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         mounted() {
             
         }
+        
+        public changeDate() {
+            const self = this;
+            let dataClone = _.clone(self.data);
+            if (_.isNull(dataClone)) {
+                return;
+            }
+            self.$blockui( "show" );
+            let companyId = self.$user.companyId;
+            let command = { 
+                    appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
+                    recoderFlag: false,
+                    companyId
+            };
+            self.$ajax(API.start, command)
+                .done((res: any) => {
+                    console.log(res);
+                    self.data = res;
+                }).fail(res => {
+                    
+                }).always(() => {
+                    self.$blockui('hide');
+                });
+        }
+        public handleConfirmMessage(listMes: any, res: any) {
+            let vm = this;
+            if (!_.isEmpty(listMes)) {
+                let item = listMes.shift();
+                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                    if (value == 'yes') {
+                        if (_.isEmpty(listMes)) {
+                            // vm.registerData(res);
+                        } else {
+                            // vm.handleConfirmMessage(listMes, res);
+                        }
 
+                    }
+                });
+            }
+        }
+        registerData(command) {
+            let vm = this; 
+            return vm.$ajax( API.register, command )
+                .done( resRegister => {
+                    console.log( resRegister );
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    } );
+                })
+        }
         public register() {
             console.log('register');
             const self = this;
@@ -84,20 +146,53 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     appRecordImageDto: appRecordImage
                     
             };
+            let commandCheck = {
+                    companyId,
+                    agentAtr,
+                    appStampOutputDto: data,
+                    applicationDto: ko.toJS(self.application)
+            }
+            self.$blockui("show");
+            self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+            .then(isValid => {
+                if ( isValid ) {
+                    return true;
+                }
+            }).then(result => {
+                if (result) {
+                    return self.$ajax(API.checkRegister, commandCheck);
+                }
+            }).then(res => {
+                if (_.isEmpty(res)) {
+                    return self.$ajax(API.register, command);
+                } else {
+                    let listConfirm = _.clone(res);
+                    self.handleConfirmMessage(listConfirm, command);
+                }
+            }).done(res => {
+                if (res) {
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    } );
+                }
+            }).fail(res => {
+                let param;
+                if (res.message && res.messageId) {
+                    param = {messageId: res.messageId, messageParams: res.parameterIds};
+                } else {
+
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    }
+                }
+                self.$dialog.error(param);
+            }).always(() => {
+                self.$blockui('hide');
+            });
             
-            self.$ajax(API.register, command)
-                .then(res => {
-                    console.log('done');
-                }).fail(res => {
-                    console.log('fail');
-                }).always(() => {
-                    self.$blockui('hide');
-                })
         }
-        
-        
-        
-        
         
     }
     class AppRecordImage {
