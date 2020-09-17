@@ -159,7 +159,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
              self.tabs()[1].visible(reflect.outingHourse == 1);
              self.tabs()[2].visible(reflect.breakTime == 1);
              self.tabs()[3].visible(reflect.parentHours == 1);
-             self.tabs()[4].visible(reflect.nurseTime);
+             self.tabs()[4].visible(reflect.nurseTime == 1);
              // not use
              self.tabs()[5].visible(false);
              
@@ -172,6 +172,33 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }
     changeDataSource() {
        
+    }
+    
+    public handleConfirmMessage(listMes: any, res: any) {
+        let vm = this;
+        if (!_.isEmpty(listMes)) {
+            let item = listMes.shift();
+            vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                if (value == 'yes') {
+                    if (_.isEmpty(listMes)) {
+                         return vm.registerData(res);
+                    } else {
+                         vm.handleConfirmMessage(listMes, res);
+                    }
+
+                }
+            });
+        }
+    }
+    registerData(command) {
+        let vm = this; 
+        return vm.$ajax( API.register, command )
+            .done( resRegister => {
+                console.log( resRegister );
+                this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                    location.reload();
+                } );
+            })
     }
     
     public createCommandCheckRegister() {
@@ -200,15 +227,20 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             if (result) {
                 self.$ajax(API.checkRegister, command)
                 .then(res => {
-                    if (res) {
                         let command = {
                                 applicationDto: ko.toJS(self.application),
                                 appStampDto: data.appStampOptional,
                                 appStampOutputDto: self.data,
                                 recoderFlag: RECORD_FLAG_STAMP
                         };
-                        return self.$ajax(API.register, command);
-                    }
+//                        return self.$ajax(API.register, command);
+                        if (_.isEmpty(res)) {
+                            return self.$ajax(API.register, command);
+                        } else {
+                            let listConfirm = _.clone(res);
+                            return self.handleConfirmMessage(listConfirm, command);
+                        }
+
                 })
                 .done(res => {
                     this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
@@ -259,7 +291,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 console.log(res);
                 self.data = res;
             }).fail(res => {
-                
+                let param;
+                if (res.message) {
+                    param = {message: res.message, messageParams: res.parameterIds};
+                } else {
+                    param = {messageId: res.messageId, messageParams: res.parameterIds}
+                }
+                self.$dialog.error(param);
             }).always(() => {
                 self.$blockui('hide');
             });

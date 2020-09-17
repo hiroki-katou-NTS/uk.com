@@ -81,7 +81,18 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.bindComment(self.data);
                     self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
-                    console.log('fail');
+                    let param;
+                    if (res.message && res.messageId) {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    } else {
+
+                        if (res.message) {
+                            param = {message: res.message, messageParams: res.parameterIds};
+                        } else {
+                            param = {messageId: res.messageId, messageParams: res.parameterIds};
+                        }
+                    }
+                    self.$dialog.error(param);
                 }).always(() => {
                     self.$blockui('hide');
                 });
@@ -373,14 +384,90 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     appStampDto,
                     appStampOutputDto
             }
-            self.$blockui('show');
-            self.$ajax(API.update, command)
-                .done(res => {
-                    console.log(res);
-                }).fail(res => {
-                    console.log(res);
-                }).always(() => {
-                    self.$blockui('hide');
+            let data = _.clone(self.data);
+            let companyId = self.$user.companyId
+            let agentAtr = false;
+            let commandCheck = {
+                    companyId,
+                    agentAtr,
+                    appStampOutputDto: data,
+                    applicationDto: applicationDto
+            }
+            self.$blockui("show");
+            
+            self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
+            .then(isValid => {
+                if ( isValid ) {
+                    return true;
+                }
+            }).then(result => {
+                if (result) {
+                    return self.$ajax(API.checkUpdate, commandCheck);
+                }
+            }).then(res => {
+                if (_.isEmpty(res)) {
+                    return self.$ajax(API.update, command);
+                } else {
+                    let listConfirm = _.clone(res);
+                    return self.handleConfirmMessage(listConfirm, command);
+                }
+            }).then(res => {
+                this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                    location.reload();
+                } );
+            }).fail(res => {
+                if (!res) return;
+                let param;
+                if (res.message && res.messageId) {
+                    param = {messageId: res.messageId, messageParams: res.parameterIds};
+                } else {
+    
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    }
+                }
+                self.$dialog.error(param);
+            }).always(() => {
+                self.$blockui('hide');
+            });
+            
+            
+//            self.$ajax(API.update, command)
+//                .done(res => {
+//                    console.log(res);
+//                }).fail(res => {
+//                    console.log(res);
+//                }).always(() => {
+//                    self.$blockui('hide');
+//                })
+        }
+        
+        public handleConfirmMessage(listMes: any, res: any) {
+            let vm = this;
+            if (!_.isEmpty(listMes)) {
+                let item = listMes.shift();
+                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                    if (value == 'yes') {
+                        if (_.isEmpty(listMes)) {
+                             return vm.registerData(res);
+                        } else {
+                             vm.handleConfirmMessage(listMes, res);
+                        }
+
+                    }
+                });
+            }
+        }
+        registerData(command) {
+            let vm = this; 
+            return vm.$ajax( API.register, command )
+                .done( resRegister => {
+                    console.log( resRegister );
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    } );
                 })
         }
         
