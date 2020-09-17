@@ -2135,7 +2135,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.mode() == 'confirm')
                 return;
-            $("#extable").exTable("stickStyler", () => {});
+            $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                return { textColor: "" };
+            });
             nts.uk.ui.block.grayout();
             $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
@@ -2172,13 +2174,25 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         undoData(): void {
             let self = this;
-            $("#extable").exTable("stickUndo");
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'stick') {
+                $("#extable").exTable("stickUndo");
+            } else if (userInfor.updateMode = 'copyPaste') {
+                $("#extable").exTable("copyUndo");
+            }
             self.checkExitCellUpdated();
         }
 
         redoData(): void {
             let self = this;
-            $("#extable").exTable("stickRedo");
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'stick') {
+                $("#extable").exTable("stickRedo");
+            } else if (userInfor.updateMode = 'copyPaste') {
+                $("#extable").exTable("copyRedo");
+            }
             self.checkExitCellUpdated();
         }
         

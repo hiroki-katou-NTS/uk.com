@@ -156,7 +156,9 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
             if (item.isPresent()) {
                 let userInfor = JSON.parse(item.get());
                 if (userInfor.updateMode == 'copyPaste') {
-                    $("#extable").exTable("stickStyler", () => { });
+                    $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                        return { textColor: "" };
+                    });
                 }
             }
             let obj = {};
