@@ -29,7 +29,7 @@ public class PGInfomationQuery {
 
 	public List<PGInfomationDto> findBySystem(int systemType) {
 		String companyId = AppContexts.user().companyId();
-		String programId = AppContexts.programId();
+		String programId = AppContexts.programId().substring(0, 6);
 
 		/**
 		 * システムからログ設定を取得
