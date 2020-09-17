@@ -128,7 +128,7 @@ public class SortEmpService {
 		}
 		
 		List<String> sortedIds = getListEmpInfo.stream()
-				.sorted(Comparator.nullsLast(compare))
+				.sorted(compare)
 				.map(e -> e.empId)
 				.collect(Collectors.toList());
 		
@@ -187,11 +187,11 @@ public class SortEmpService {
 			
 			EmployeeInfo employeeInfo = EmployeeInfo.builder()
 					.empId(sid)
-					.scheduleTeamCd(team.isPresent() ? team.get().getScheduleTeamCd().toString() : null)
-					.emplRankCode(rank.isPresent() ? rank.get().getEmplRankCode().toString() : null)
-					.optLicenseClassification(empLicenseCls.isPresent() ? empLicenseCls.get().getOptLicenseClassification().get().value : null)
-					.jobtitleID(employeePosition.isPresent() ? employeePosition.get().getJobtitleID() : null)
-					.classificationCode(empClassifiImport.isPresent() ? empClassifiImport.get().getClassificationCode() : null)
+					.scheduleTeamCd(team.isPresent() ? team.get().getScheduleTeamCd().toString() : "")
+					.emplRankCode(rank.isPresent() ? rank.get().getEmplRankCode().toString() : "")
+					.optLicenseClassification(empLicenseCls.isPresent() ? empLicenseCls.get().getOptLicenseClassification().get().value : 0)
+					.jobtitleID(employeePosition.isPresent() ? employeePosition.get().getJobtitleID() : "")
+					.classificationCode(empClassifiImport.isPresent() ? empClassifiImport.get().getClassificationCode() : "")
 					.build();
 			result.add(employeeInfo);
 		}
