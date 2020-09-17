@@ -1215,7 +1215,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// result.setOpTimeCalcUseAtr();
 		result.setVersion(application.getVersion());
 		result.setApplication(application);
-		return new AppInfoMasterOutput(result, mapEmpInfo);
+		return new AppInfoMasterOutput(result, mapEmpInfo, mapWkpInfo);
 		
 //		if (lstApp.isEmpty()) {
 //			return new DataMasterOutput(Collections.emptyList(), Collections.emptyList(), new HashMap<>());

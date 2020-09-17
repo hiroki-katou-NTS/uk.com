@@ -22,10 +22,19 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
         time: KnockoutObservable<number>;
         isSendMail: KnockoutObservable<boolean> = ko.observable(false);
         data: any;
-        comment1: KnockoutObservable<string> = ko.observable('comment1');
-        comment2: KnockoutObservable<string> = ko.observable('comment2');
+        comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+        comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
     
-    
+        public bindDataStart(data: any) {
+            const self = this;
+    //        let listType = self.data.appStampSetting.goOutTypeDispControl;
+    //        let listTypeItem = [];
+    //        _.forEach(listType, i => {
+    //            listTypeItem.push(new ItemModel(String(i.goOutType), i.display))
+    //        })
+    //        self.dataSourceReason(listTypeItem);
+            self.bindComment(data);
+        }
        fetchData() {
            const self = this;
            self.$blockui('show');
@@ -43,12 +52,17 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.$ajax(API.getDetail, command)
                .done(res => {
                    console.log(res);
+                   if(!res) {
+                       
+                       return;
+                   }
                    self.data = res;
                    self.selectedCode(String(self.data.appRecordImage.appStampCombinationAtr));
                    self.time(Number(self.data.appRecordImage.attendanceTime));
                    if (self.data.appRecordImage.appStampGoOutAtr) {
                        self.selectedCodeReason(String(self.data.appRecordImage.appStampGoOutAtr));
                    }
+                   self.bindDataStart(self.data);
                    
                    
                }).fail(res => {
@@ -57,6 +71,18 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    self.$blockui('hide');
                });
        }
+       bindComment(data: any) {
+           const self = this;
+           _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
+              if (i.stampAtr == ko.toJS(self.selectedCode)) {
+                  let commentBot = i.bottomComment;
+                  self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
+                  let commentTop = i.bottomComment;
+                  self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
+              }
+           });
+       }
+       
        created( params: { 
            application: any,
            printContentOfEachAppDto: PrintContentOfEachAppDto,
@@ -84,6 +110,13 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.dataSourceReason = ko.observableArray(itemModelReasonList);
            
            self.selectedCode = ko.observable('1');
+           
+           self.selectedCode.subscribe(value => {
+               if (value) {
+                   self.bindComment(self.data);
+               } 
+            });
+           
            self.selectedCodeReason = ko.observable('0');
            
            // initial time 
@@ -94,18 +127,52 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.fetchData();
            
        }
+       
+       public handleConfirmMessage(listMes: any, res: any) {
+           let self = this;
+           if (!_.isEmpty(listMes)) {
+               let item = listMes.shift();
+               self.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                   if (value == 'yes') {
+                       if (_.isEmpty(listMes)) {
+                            return self.registerData(res);
+                       } else {
+                            self.handleConfirmMessage(listMes, res);
+                       }
+
+                   }
+               });
+           }
+       }
+       registerData(command) {
+           let vm = this; 
+           return vm.$ajax( API.update, command )
+               .done( update => {
+                   this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                       location.reload();
+                   } );
+               })
+       }
        update() {
            console.log('update');
            const self = this;
            if (!self.appDispInfoStartupOutput().appDetailScreenInfo) {
                return;
            }
-           let application = ko.toJS(self.application);
-           let applicationDto = self.appDispInfoStartupOutput().appDetailScreenInfo.application as any;
-           applicationDto.prePostAtr = application.prePostAtr;
-           applicationDto.opAppReason = application.opAppReason;
-           applicationDto.opAppStandardReasonCD = application.opAppStandardReasonCD;    
-           applicationDto.opReversionReason = application.opReversionReason;
+//           let application = ko.toJS(self.application);
+//           let applicationDto = self.appDispInfoStartupOutput().appDetailScreenInfo.application as any;
+//           applicationDto.prePostAtr = application.prePostAtr;
+//           applicationDto.opAppReason = application.opAppReason;
+//           applicationDto.opAppStandardReasonCD = application.opAppStandardReasonCD;    
+//           applicationDto.opReversionReason = application.opReversionReason;
+//           applicationDto.enteredPerson = application.enteredPerson;
+//           applicationDto.employeeID = application.employeeID;
+           self.application().enteredPerson = __viewContext.user.employeeId;
+           self.application().employeeID = __viewContext.user.employeeId;
+           let applicationDto = ko.toJS(self.application);
+           applicationDto.inputDate = moment(new Date()).format('YYYY/MM/DD HH:mm:ss');
+           applicationDto.reflectionStatus= self.appDispInfoStartupOutput().appDetailScreenInfo.application.reflectionStatus;
+           applicationDto.version = self.appDispInfoStartupOutput().appDetailScreenInfo.application.version
            let recoderFlag = true;
            let appStampOutputDto = self.data;
            let appRecordImageDto = {
@@ -119,15 +186,53 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    appRecordImageDto,
                    appStampOutputDto
            }
-           self.$blockui('show');
-           self.$ajax(API.update, command)
-               .done(res => {
-                   console.log(res);
-               }).fail(res => {
-                   console.log(res);
-               }).always(() => {
-                   self.$blockui('hide');
-               })
+           let data = _.clone(self.data);
+           let companyId = self.$user.companyId
+           let agentAtr = false;
+           let commandCheck = {
+                   companyId,
+                   agentAtr,
+                   appStampOutputDto: data,
+                   applicationDto: applicationDto
+           }
+           self.$blockui("show");
+           self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
+           .then(isValid => {
+               if ( isValid ) {
+                   return true;
+               }
+           }).then(result => {
+               if (result) {
+                   return self.$ajax(API.checkUpdate, commandCheck);
+               }
+           }).then(res => {
+               if (_.isEmpty(res)) {
+                   return self.$ajax(API.update, command);
+               } else {
+                   let listConfirm = _.clone(res);
+                   return self.handleConfirmMessage(listConfirm, command);
+               }
+           }).then(res => {
+                   this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                       location.reload();
+                   } );
+           }).fail(res => {
+               if (!res) return;
+               let param;
+               if (res.message && res.messageId) {
+                   param = {messageId: res.messageId, messageParams: res.parameterIds};
+               } else {
+
+                   if (res.message) {
+                       param = {message: res.message, messageParams: res.parameterIds};
+                   } else {
+                       param = {messageId: res.messageId, messageParams: res.parameterIds};
+                   }
+               }
+               self.$dialog.error(param);
+           }).always(() => {
+               self.$blockui('hide');
+           });
        }
         
     }
@@ -207,6 +312,18 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
          */
         UNION
     }
+    
+    class Comment{
+        public content: string;
+        public isBold: boolean;
+        public color: string;
+        constructor( content: string, isBold: boolean, color: string) {
+            this.content = content;
+            this.isBold = isBold;
+            this.color = color;
+        }
+        
+    }
     class ItemModel {
         code: string;
         name: string;
@@ -219,7 +336,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
     const API = {
             getDetail: "at/request/application/stamp/detailAppStamp",
             update: "at/request/application/stamp/updateNew",
-            checkUpdate: "at/request/application/stamp/checkBeforeUpdate"
+            checkUpdate: "at/request/application/stamp/checkBeforeUpdate",
+            checkRegister: "at/request/application/stamp/checkBeforeRegister",
             
         }
 }

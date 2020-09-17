@@ -273,7 +273,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			AppStampOutput appStampOutput) {
 		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
 		// check 
-		this.checkRegisterAndUpdate((AppStamp)application);
+		this.checkRegisterAndUpdate(appStampOutput.getAppStampOptional().orElse(null));
 		
 		
 //		4-1.詳細画面登録前の処理
@@ -455,6 +455,9 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			AppDispInfoStartupOutput appDispInfoStartupOutput, Boolean recoderFlag) {
 		
 		AppStampOutput appStampOutput = new AppStampOutput();
+//		ドメイン「打刻申請の反映」を取得する
+		Optional<AppStampReflect> appStampReflect = appStampReflectRepo.findByAppID(companyId);
+		appStampOutput.setAppStampReflectOptional(appStampReflect);
 		
 		if (recoderFlag) {			
 //			ドメインモデル「レコーダイメージ申請」を取得する
