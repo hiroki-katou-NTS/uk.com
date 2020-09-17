@@ -71,7 +71,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             vm.$blockui('show');
             vm.$ajax(API.getDetail, {
                 companyId: vm.$user.companyId,
-                applicationId: ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.application.appID
+                applicationId: vm.application().appID()
             }).done(res => {
                 if (res) {
                     let businessTripContent = res.businessTripDto;
