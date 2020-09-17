@@ -139,6 +139,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            let applicationDto = ko.toJS(self.application);
            applicationDto.inputDate = moment(new Date()).format('YYYY/MM/DD HH:mm:ss');
            applicationDto.reflectionStatus= self.appDispInfoStartupOutput().appDetailScreenInfo.application.reflectionStatus;
+           applicationDto.version = self.appDispInfoStartupOutput().appDetailScreenInfo.application.version
            let recoderFlag = true;
            let appStampOutputDto = self.data;
            let appRecordImageDto = {
