@@ -898,18 +898,19 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 									.map(y -> {
 										return new ApprovalFrameExport(
 												y.getFrameOrder(), 
-												y.getLstApproverInfo().stream().map(z -> { 
-													String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
+												y.getLstApproverInfo().stream().map(z -> {
+													String approverName = "";
+													// String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
 													String representerID = "";
 													String representerName = "";
-													ApprovalRepresenterOutput approvalRepresenterOutput = 
-															collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
-													if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
-														if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
-															representerID = approvalRepresenterOutput.getListAgent().get(0);
-															representerName = personAdapter.getPersonInfo(representerID).getEmployeeName();
-														}
-													}
+//													ApprovalRepresenterOutput approvalRepresenterOutput = 
+//															collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
+//													if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
+//														if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
+//															representerID = approvalRepresenterOutput.getListAgent().get(0);
+//															representerName = personAdapter.getPersonInfo(representerID).getEmployeeName();
+//														}
+//													}
 													return new ApproverStateExport(
 															z.getApproverID(), 
 															EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),
