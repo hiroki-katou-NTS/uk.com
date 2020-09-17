@@ -78,6 +78,7 @@ public class CreateDailyOneDay {
 		OutputAcquireReflectEmbossingNew outputAcquireReflectEmbossingNew = reflectStampDomainServiceImpl
 				.acquireReflectEmbossingNew(companyId, employeeId, ymd, executionType, flag,
 						integrationOfDaily);
+		integrationOfDaily = outputAcquireReflectEmbossingNew.getIntegrationOfDaily();
         listErrorMessageInfo.addAll(outputAcquireReflectEmbossingNew.getListErrorMessageInfo());
         if(!listErrorMessageInfo.isEmpty()) {
         	//エラー返す
