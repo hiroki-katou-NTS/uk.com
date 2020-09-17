@@ -126,6 +126,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }).done((res: any) => {
             console.log(res);
             self.data = res;
+            self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
             self.bindTabM(self.data);
             self.bindComment(self.data);
         }).fail(res => {
