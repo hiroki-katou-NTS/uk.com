@@ -154,7 +154,7 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
-					return self.reload(null, data);
+					return self.reload(data.appListExtractCondition, data.appListInfo);
 					/*self.approvalLstDispSet = data.displaySet;
 					let newItemLst = [];
 					_.each(data.appLst, item => {
