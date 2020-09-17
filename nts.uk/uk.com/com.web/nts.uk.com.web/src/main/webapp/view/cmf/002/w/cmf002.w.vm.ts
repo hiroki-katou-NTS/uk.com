@@ -1,15 +1,15 @@
 /// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 
 module nts.uk.com.view.cmf002.w {
-
+  const getTextResource = nts.uk.resource.getText;
   @bean()
   export class CMF002WViewModel extends ko.ViewModel {
     isNew: boolean = true;
     conditionSetCode: string = null;
     // W1
     listPeriodSetting: KnockoutObservableArray<any> = ko.observableArray([
-      { code: 1, name: nts.uk.resource.getText("CMF002_275") },
-      { code: 0, name: nts.uk.resource.getText("CMF002_276") },
+      { code: 1, name: getTextResource("CMF002_275") },
+      { code: 0, name: getTextResource("CMF002_276") },
     ]);
     selectedPeriodSetting: KnockoutObservable<any> = ko.observable(null);
     // W2
@@ -17,11 +17,11 @@ module nts.uk.com.view.cmf002.w {
     selectedClosureDayAtr: KnockoutObservable<any> = ko.observable(null);
     // W3
     listStartDateSegment: KnockoutObservableArray<any> = ko.observableArray([
-      { code: StartDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
-      { code: StartDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_543') },
-      { code: StartDateClassificationCode.DEADLINE_PROCESSING, name: nts.uk.resource.getText('CMF002_544') },
-      { code: StartDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
-      { code: StartDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
+      { code: StartDateClassificationCode.DEADLINE_START, name: getTextResource('CMF002_542') },
+      { code: StartDateClassificationCode.DEADLINE_END, name: getTextResource('CMF002_543') },
+      { code: StartDateClassificationCode.DEADLINE_PROCESSING, name: getTextResource('CMF002_544') },
+      { code: StartDateClassificationCode.SYSTEM_DATE, name: getTextResource('CMF002_545') },
+      { code: StartDateClassificationCode.DATE_SPECIFICATION, name: getTextResource('CMF002_546') },
     ]);
     selectedStartDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W4
@@ -30,11 +30,11 @@ module nts.uk.com.view.cmf002.w {
     startDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W5
     listEndDateSegment: KnockoutObservableArray<any> = ko.observableArray([
-      { code: EndDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_542') },
-      { code: EndDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_543') },
-      { code: EndDateClassificationCode.DEADLINE_PROCESSING, name: nts.uk.resource.getText('CMF002_544') },
-      { code: EndDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
-      { code: EndDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
+      { code: EndDateClassificationCode.DEADLINE_START, name: getTextResource('CMF002_542') },
+      { code: EndDateClassificationCode.DEADLINE_END, name: getTextResource('CMF002_543') },
+      { code: EndDateClassificationCode.DEADLINE_PROCESSING, name: getTextResource('CMF002_544') },
+      { code: EndDateClassificationCode.SYSTEM_DATE, name: getTextResource('CMF002_545') },
+      { code: EndDateClassificationCode.DATE_SPECIFICATION, name: getTextResource('CMF002_546') },
     ]);
     selectedEndDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W6
@@ -43,12 +43,12 @@ module nts.uk.com.view.cmf002.w {
     endDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W7
     listBaseDateSegment: KnockoutObservableArray<any> = ko.observableArray([
-      { code: BaseDateClassificationCode.DEADLINE_START, name: nts.uk.resource.getText('CMF002_547') },
-      { code: BaseDateClassificationCode.DEADLINE_END, name: nts.uk.resource.getText('CMF002_548') },
-      { code: BaseDateClassificationCode.SYSTEM_DATE, name: nts.uk.resource.getText('CMF002_545') },
-      { code: BaseDateClassificationCode.OUTPUT_PERIOD_START, name: nts.uk.resource.getText('CMF002_549') },
-      { code: BaseDateClassificationCode.OUTPUT_PERIOD_END, name: nts.uk.resource.getText('CMF002_550') },
-      { code: BaseDateClassificationCode.DATE_SPECIFICATION, name: nts.uk.resource.getText('CMF002_546') },
+      { code: BaseDateClassificationCode.DEADLINE_START, name: getTextResource('CMF002_547') },
+      { code: BaseDateClassificationCode.DEADLINE_END, name: getTextResource('CMF002_548') },
+      { code: BaseDateClassificationCode.SYSTEM_DATE, name: getTextResource('CMF002_545') },
+      { code: BaseDateClassificationCode.OUTPUT_PERIOD_START, name: getTextResource('CMF002_549') },
+      { code: BaseDateClassificationCode.OUTPUT_PERIOD_END, name: getTextResource('CMF002_550') },
+      { code: BaseDateClassificationCode.DATE_SPECIFICATION, name: getTextResource('CMF002_546') },
     ]);
     selectedBaseDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W8
@@ -146,7 +146,10 @@ module nts.uk.com.view.cmf002.w {
           return service.saveOutputPeriodSetting(command);
         })
         // 情報メッセージ（ID：Msg_15）を表示する
-        .then((response) => vm.$dialog.info({ messageId: 'Msg_15' }))
+        .then((response) => {
+          vm.$blockui('clear');
+          return vm.$dialog.info({ messageId: 'Msg_15' });
+        })
         // 画面を閉じる
         .then(() => {
           nts.uk.ui.windows.setShared('CMF002_B_PARAMS_FROM_W', command);

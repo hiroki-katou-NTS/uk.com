@@ -55,7 +55,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         mode :KnockoutObservable<number> = ko.observable(MODE.NEW);
 
         isLoadScreenQ: boolean = false;
-        
+
         roleAuthority: any;
 
         constructor() {
@@ -75,9 +75,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
-            
-            self.roleAuthority = getShared("CMF002O_PARAMS"); 
-            
+
+            self.roleAuthority = getShared("CMF002O_PARAMS");
+
             //set up kcp005
             let self = this;
             self.baseDate = ko.observable(new Date());
@@ -147,7 +147,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
-                    $('#ex_output_wizard').ntsWizard("next");        
+                    $('#ex_output_wizard').ntsWizard("next");
                     $("#grd_Condition_container").focus();
 
                     block.clear();
@@ -261,7 +261,12 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         initScreenR() {
             let self = this;
             service.getExOutSummarySetting(self.selectedConditionCd()).done(res => {
-                self.listOutputCondition(_.map(res.ctgItemDataCustomList, (itemData) =>{
+                self.listOutputCondition(_.map(res.ctgItemDataCustomList, (itemData: OutputCondition) => {
+                    // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
+                    const itemName: string = itemData.displayClassfication === 1
+                        ? self.reverseWord(itemData.itemName)
+                        : itemData.itemName;
+                    itemData.itemName = itemName;
                     itemData.conditions = self.formatData(itemData.conditions, itemData.dataType);
                     return itemData;
                 }));
@@ -289,7 +294,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             }
             return "";
         }
-        
+
         createExOutText() {
             block.invisible();
 
@@ -342,7 +347,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
 //          fix bug 102743
 //            if(self.isLoadScreenQ){
-//                return;    
+//                return;
 //            }
 //            self.isLoadScreenQ = true;
 
@@ -394,6 +399,42 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             });
             $('#com-ccg001').ntsGroupComponent(self.ccgcomponent);
         }
+
+        // Reverse word
+        private reverseWord(word: string): string {
+            const mapReveseWord = {
+                employment: '雇用呼称',
+                department: '部門呼称',
+                class: '分類呼称',
+                jobTitle: '職位呼称',
+                person: '社員呼称',
+                office: '事業所呼称',
+                work: '作業呼称',
+                workPlace: '職場呼称',
+                project: 'プロジェクト',
+                adHocWork: '臨時勤務',
+                substituteHoliday: '振休',
+                substituteWork: '振出',
+                compensationHoliday: '代休',
+                exsessHoliday: '60H超過休暇',
+                bindingTime: '拘束時間',
+                payAbsenseDays: '給与欠勤日数',
+                payAttendanceDays: '給与出勤日数',
+                import: '取込',
+                toppage: 'トップページ',
+                code: 'コード',
+                name: '名称',
+            };
+            const keyword: string = word.substring(
+                word.lastIndexOf("{#") + 2,
+                word.lastIndexOf("#}")
+            );
+            const reveseWord: string = mapReveseWord[keyword];
+            if (!reveseWord) {
+                return word;
+            }
+            return word.replace(`{#${keyword}#}`, reveseWord);
+        }
     }
 
     export class ListType {
@@ -424,11 +465,16 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     class OutputCondition {
         seriNum: number;
         itemName: string;
-        condition: string;
-        constructor(seriNum: number, itemName: string, condition: string) {
+        conditions: string;
+        dataType: number;
+        displayClassfication: number;
+
+        constructor(seriNum: number, itemName: string, condition: string, dataType: number, displayClassfication: number) {
             this.seriNum = seriNum;
             this.itemName = itemName;
-            this.condition = condition;
+            this.conditions = condition;
+            this.dataType = dataType;
+            this.displayClassfication = displayClassfication;
         }
     }
     class ParamToScreenP {

@@ -16,6 +16,8 @@
 
 .div-line {
 	margin-bottom: 10px;
+    display: flex;
+    align-items: center;
 }
 .column-1 {
 	width: 170px;

@@ -463,33 +463,6 @@ module nts.uk.at.view.kmk003.a {
             }
 
             /**
-             * reload worktime setting
-             */
-            private reloadWorktimeSetting(): void {
-                let self = this;
-                let currentCode = self.mainSettingModel.workTimeSetting.worktimeCode();
-                if (!currentCode) {
-                    return;
-                }
-                // block ui.
-                _.defer(() => nts.uk.ui.block.invisible());
-                // clear all errors
-                self.clearAllError();
-
-                self.isLoading(false);
-                service.findWorktimeSetingInfoByCode(currentCode)
-                    .done(worktimeSettingInfo => {
-                        
-                        // update mainSettingModel data
-                        self.mainSettingModel.updateData(worktimeSettingInfo).done(()=>{
-                            self.isLoading(false);
-                            self.isLoading(true);    
-                        });
-                        self.mainSettingModel.isChangeItemTable.valueHasMutated();
-                    }).always(() => _.defer(() => nts.uk.ui.block.clear()));
-            }
-
-            /**
              * Load work time setting detail
              */
             private loadWorktimeSetting(worktimeCode: string): JQueryPromise<void> {
@@ -594,8 +567,8 @@ module nts.uk.at.view.kmk003.a {
                 {
                     $('#shiftTwoStart').ntsError('clear');
                     $('#shiftTwoEnd').ntsError('clear');
-                    self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start(0);
-                    self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.end(0);
+                    self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.start(null);
+                    self.mainSettingModel.predetemineTimeSetting.prescribedTimezoneSetting.shiftTwo.end(null);
                 }
             }
             
@@ -1222,10 +1195,10 @@ module nts.uk.at.view.kmk003.a {
                             _self.fixedWorkSetting.getGoWork1Stamp().endTime(workEnd);
                             _self.fixedWorkSetting.getLeaveWork1Stamp().endTime(workEnd);
                             
-                            _self.fixedWorkSetting.getGoWork2Stamp().startTime(0);
-                            _self.fixedWorkSetting.getLeaveWork2Stamp().startTime(0);                            
-                            _self.fixedWorkSetting.getGoWork2Stamp().endTime(1440);
-                            _self.fixedWorkSetting.getLeaveWork2Stamp().endTime(1440);
+                            _self.fixedWorkSetting.getGoWork2Stamp().startTime(null);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().startTime(null);                            
+                            _self.fixedWorkSetting.getGoWork2Stamp().endTime(null);
+                            _self.fixedWorkSetting.getLeaveWork2Stamp().endTime(null);
                         }
                     }   
                     if (_self.workTimeSetting.isFlex()) {

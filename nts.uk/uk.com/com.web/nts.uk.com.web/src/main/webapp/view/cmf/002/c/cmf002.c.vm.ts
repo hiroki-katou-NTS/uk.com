@@ -119,7 +119,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(listExOutCateItemData, x => {
                             // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
                             const itemName: string = x.displayClassfication === 1
-                                ? x.itemName
+                                ? self.reverseWord(x.itemName)
                                 : x.itemName;
                             return new model.ExternalOutputCategoryItemData(x.itemNo, itemName, x.displayClassfication);
                         });
@@ -671,7 +671,7 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                 name: '名称',
             };
             const keyword: string = word.substring(
-                word.lastIndexOf("{#") + 1,
+                word.lastIndexOf("{#") + 2,
                 word.lastIndexOf("#}")
             );
             const reveseWord: string = mapReveseWord[keyword];

@@ -42,10 +42,21 @@ public class CtgItemDataDto {
 	 */
 	private String searchValueCd;
 
+	/**
+	 * 表示区分
+	 */
+	private Integer displayClassfication;
+
 	public static CtgItemDataDto fromDomain(CtgItemData domain) {
-		CtgItemDataDto dto = new CtgItemDataDto(domain.getCategoryId().v(), domain.getItemNo().v(),
-				domain.getTableName(), domain.getDisplayTableName(), domain.getItemName().v(), domain.getDataType().value,
-				domain.getSearchValueCd().orElse(null));
+		CtgItemDataDto dto = new CtgItemDataDto(
+				domain.getCategoryId().v(), 
+				domain.getItemNo().v(),
+				domain.getTableName(), 
+				domain.getDisplayTableName(), 
+				domain.getItemName().v(), 
+				domain.getDataType().value,
+				domain.getSearchValueCd().orElse(null),
+				domain.getDisplayClassfication().value);
 		return dto;
 	}
 }

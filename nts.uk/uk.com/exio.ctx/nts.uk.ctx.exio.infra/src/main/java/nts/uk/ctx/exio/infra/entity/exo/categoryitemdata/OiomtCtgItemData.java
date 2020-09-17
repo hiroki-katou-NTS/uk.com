@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_CTG_ITEM_DATA")
+@Table(name = "OIOMT_EX_OUT_CTG_ITEM_DT")
 public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -111,6 +111,13 @@ public class OiomtCtgItemData extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "SEARCH_VALUE_CD")
 	public String searchValueCd;
+	
+	/**
+	 * KEYWORD_ATR
+	 */
+	@Basic(optional = false)
+	@Column(name = "KEYWORD_ATR")
+	public int keywordAtr;
 
 	@Override
 	protected Object getKey() {

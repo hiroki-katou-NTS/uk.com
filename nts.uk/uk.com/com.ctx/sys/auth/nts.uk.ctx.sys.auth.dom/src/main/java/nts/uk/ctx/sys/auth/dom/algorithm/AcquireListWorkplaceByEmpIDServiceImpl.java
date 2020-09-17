@@ -17,9 +17,11 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class AcquireListWorkplaceByEmpIDServiceImpl implements AcquireListWorkplaceByEmpIDService {
+	
 	@Inject
 	private EmpWorkplaceHistoryAdapter empWorkplaceHistoryAdapter;
-
+	
+	@Inject
 	private WorkplaceAdapter workplaceAdapter;
 	
 	@Override

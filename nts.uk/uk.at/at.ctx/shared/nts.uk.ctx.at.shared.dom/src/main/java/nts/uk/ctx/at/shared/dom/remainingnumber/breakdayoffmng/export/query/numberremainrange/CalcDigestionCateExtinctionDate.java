@@ -5,9 +5,11 @@ import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
+import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.LeaveOccurrDetail;
+import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.UnbalanceVacation;
 
 /**
  * @author ThanhNX
@@ -26,11 +28,10 @@ public class CalcDigestionCateExtinctionDate {
 		// 「INPUT．逐次発生の休暇明細」でループ
 		for (AccumulationAbsenceDetail data : lstAccAbs) {
 
-			Optional<? extends LeaveOccurrDetail> leavOcc = occurrDetail(data, typeJudgment);
-
-			if (data.getOccurrentClass() == OccurrenceDigClass.DIGESTION || !leavOcc.isPresent())
+			if (data.getOccurrentClass() == OccurrenceDigClass.DIGESTION)
 				continue;
 
+			Optional<LeaveOccurrDetail> leavOcc = occurrDetail(data, typeJudgment);
 			// ループ中の「逐次発生の休暇明細（発生）」の「未相殺」をチェックする
 			if (data.getUnbalanceNumber().allFieldZero()) {
 
@@ -47,9 +48,9 @@ public class CalcDigestionCateExtinctionDate {
 					leavOcc.get().setDigestionCate(DigestionAtr.EXPIRED);
 
 					// 休暇発生明細．消滅日 ← 休暇発生明細．期限日
-					if (leavOcc.get().getExtinctionDate().isPresent()) {
-						leavOcc.get().setExtinctionDate(Optional.of(leavOcc.get().getExtinctionDate().get()));
-					}
+					// if (leavOcc.get().getExtinctionDate().isPresent()) {
+					leavOcc.get().setExtinctionDate(Optional.of(leavOcc.get().getDeadline()));
+					// }
 
 				}
 			}
@@ -57,12 +58,12 @@ public class CalcDigestionCateExtinctionDate {
 
 	}
 
-	private static Optional<? extends LeaveOccurrDetail> occurrDetail(AccumulationAbsenceDetail occur,
+	private static Optional<LeaveOccurrDetail> occurrDetail(AccumulationAbsenceDetail occur,
 			TypeOffsetJudgment typeJudgment) {
 		if (typeJudgment == TypeOffsetJudgment.ABSENCE) {
-			return occur.getUnbalanceCompensation();
+			return Optional.of((UnbalanceCompensation) occur);
 		} else {
-			return occur.getUnbalanceVacation();
+			return Optional.of((UnbalanceVacation) occur);
 		}
 
 	}
