@@ -52,12 +52,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(data,index) in table" v-bind:key="index">
+            <tr v-for="(data,index) in businessTripActualContent" v-bind:key="index">
               <td class="px-1" v-date="data.date">{{data.date }}</td>
               <td class="px-1">{{data.opAchievementDetail.opWorkTypeName}}</td>
               <td class="px-1">{{data.opAchievementDetail.opWorkTimeName}}</td>
-              <td class="px-1">{{data.opAchievementDetail.opLeaveTime | timewd}}</td>
-              <td class="border-right-0 px-1">{{data.opAchievementDetail.opWorkTime | timewd}}</td>
+              <td class="px-1">{{data.opAchievementDetail.opWorkTime | timewd}}</td>
+              <td class="border-right-0 px-1">{{data.opAchievementDetail.opLeaveTime | timewd}}</td>
               <td class="text-center px-0 border-left-0" @click="selectRowDate(data)">
                 <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" />
               </td>

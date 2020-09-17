@@ -63,6 +63,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public mode: boolean = true;
     public user: any;
     public data: any;
+    public businessTripActualContent: [] = [] ;
 
     public created() {
         const vm = this;
@@ -86,9 +87,10 @@ export class KafS08A2Component extends KafS00ShrComponent {
                     employeeId: vm.user.employeeId,
                     listDates: vm.listDate,
                     businessTripInfoOutput: vm.mode ? null : vm.data,
-                    //businessTrip: vm.mode ? null : vm.data.appWorkChange
-                }).then(() => {
-                    alert('start');
+                }).then((res: any) => {
+                    vm.data = res.data;
+                    vm.businessTripActualContent = vm.data.businessTripInfoOutput.businessTripActualContent;
+                    //console.log(vm.businessTripActualContent.length);
                 });
             }
         });
@@ -141,7 +143,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             businessTripDto: {
                 departureTime: vm.departureTime,
                 returnTime: vm.returnTime,
-                tripInfos: vm.table
+                tripInfos: vm.businessTripActualContent
             }
         }).then((res: any) => {
             //nếu không có lỗi gọi hàm register
@@ -174,14 +176,21 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public registerData() {
         const vm = this;
         this.$mask('show');
+        let paramsTripInfos = {
+            date : '',
+            wkTypeCd : '', 
+            wkTimeCd : '',
+            startWorkTime : '',
+            endWorkTime : ''
+        };
         let paramsBusinessTrip = {
             departureTime: vm.departureTime,
             returnTime: vm.returnTime,
-            tripInfos: vm.businessTripInfoOutput
+            tripInfos: vm.businessTripActualContent,
         };
         this.$http.post('at', API.register, {
             businessTrip: paramsBusinessTrip,
-            businessTripInfoOutput: vm.businessTripInfoOutput,
+            businessTripInfoOutput: vm.data.businessTripInfoOutput,
             application: vm.application
         }).then((res: any) => {
             alert('đăng ký thành công');

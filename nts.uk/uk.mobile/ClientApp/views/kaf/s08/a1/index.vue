@@ -5,7 +5,7 @@
         <template v-else />
       </div>
       <!-- A2_1 -->
-      <div id="error" v-if="!$valid || !isValidateAll" class="card bg-danger top-alert uk-text-danger topError">
+      <div id="error" class="card bg-danger top-alert uk-text-danger topError">
         <button class="btn btn-link uk-text-danger">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
           {{ 'KAFS08_13' | i18n }}
@@ -29,15 +29,19 @@
           v-model="derpartureTime"
           :name="'KAFS08_28'"
           time-input-type="time-with-day"
+          v-validate="$errors.checked"
           :columns="{ title: 'col-3', input: 'col-5' }"
         />
+        <v-errors v-model="$errors.checked" v-bind:name="'name_of_control'" class="d-block mt-0" />
         <!-- A5_5 -->
         <nts-time-editor
           v-model="returnTime"
           :name="'KAFS08_29'"
           time-input-type="time-with-day"
+          v-validate="$errors.checked"
           :columns="{ title: 'col-3', input: 'col-5' }"
         />
+        <v-errors v-model="$errors.checked" v-bind:name="'name_of_control'" class="d-block mt-0" />
         <!-- A_20 -->
         <div>
           <kafs00-c v-if="kaf000_C_Params != null" v-bind:params="kaf000_C_Params" />

@@ -11,6 +11,14 @@ import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
     name: 'kafs08a1',
     route: '/kaf/s08/a1',
     template: require('./index.vue'),
+    validations : {
+        derpartureTime : {
+            required : true
+        },
+        returnTime : {
+            required : true
+        }
+    },
     style: require('./style.scss'),
     components: {
         'kafs00-a': KafS00AComponent,
@@ -92,9 +100,12 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public nextToStepTwo() {
         const vm = this;
         //kiểm tra nghiệp vụ trước khi nhảy đến step tiếp theo
-        //if (vm.params1.derpartureTime == null || vm.params1.returnTime == null ) {
-        //    return ;
-        //}
+        if (vm.derpartureTime == null || vm.returnTime == null ) {
+           vm.toggleErrorAlert();
+           vm.scrollToTop();
+
+           return ;
+        }
         //gửi table sang màn hình A2
         vm.checkNextButton();
         let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
@@ -102,6 +113,11 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         //gửi comment sang màn hình A2
         let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
         this.$emit('nextToStepTwo',vm.listDate,this.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet);
+    }
+
+    //scroll to Top
+    public scrollToTop() {
+        window.scrollTo(500,0);
     }
 
     //check button next

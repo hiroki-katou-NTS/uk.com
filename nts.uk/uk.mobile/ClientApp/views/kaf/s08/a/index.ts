@@ -11,7 +11,14 @@ import { StepwizardComponent } from '@app/components';
     style: require('./style.scss'),
     template: require('./index.vue'),
     resource: require('./resources.json'),
-    validations: {},
+    validations: {
+        derpartureTime : {
+            required :true,
+        },
+        returnTime : {
+            required : true
+        }
+    },
     components : {
         'kafs08a1' : KAFS08A1Component,
         'kafs08a2' : KafS08A2Component,
