@@ -83,25 +83,35 @@ public class SaveComStatWorkTimeSetCommand{
 	public List<MonthlyWorkTimeSetCom> flex(String cid) {
 		List<MonthlyWorkTimeSetCom> flex = new ArrayList<>();
 		
-		for (int i = 0; i <= 12; i++ ) {
+		for (int i = 1; i <= 12; i++ ) {
 			
 			val sta = find(flexSetting.getStatutorySetting(), i);
 			val spe = find(flexSetting.getSpecifiedSetting(), i);
 			val wat = find(flexSetting.getWeekAveSetting(), i);
 			
-			if (sta.isPresent() || spe.isPresent() || wat.isPresent()) {
-				flex.add(MonthlyWorkTimeSetCom.of(cid, 
-											LaborWorkTypeAttr.FLEX, 
-											YearMonth.of(year, i), 
-											MonthlyLaborTime.of(new MonthlyEstimateTime(0))));
-			}
+
+			flex.add(MonthlyWorkTimeSetCom.of(cid,
+										LaborWorkTypeAttr.FLEX, 
+										YearMonth.of(year, i), 
+										MonthlyLaborTime.of(
+												get(sta), 
+												Optional.of(get(spe)),
+												Optional.of(get(wat)))));
 		}
 		
 		return flex;
 	}
+	private MonthlyEstimateTime get(Optional<MonthlyUnitDto> data) {
+		
+		return data.map(c -> new MonthlyEstimateTime(c.getMonthlyTime()))
+				.orElseGet(() -> new MonthlyEstimateTime(0));
+	}
+	
 	
 	private Optional<MonthlyUnitDto> find(List<MonthlyUnitDto> s, int m) {
-		
+		if (s == null) {
+			return Optional.of(new MonthlyUnitDto(m, 0));
+		}
 		return s.stream().filter(f -> f.getMonth() == m).findFirst();
 	}
 

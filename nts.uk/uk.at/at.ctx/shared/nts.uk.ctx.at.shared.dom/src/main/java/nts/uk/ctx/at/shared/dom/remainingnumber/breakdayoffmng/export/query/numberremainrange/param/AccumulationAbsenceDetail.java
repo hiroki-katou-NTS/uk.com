@@ -7,17 +7,10 @@ import lombok.Data;
 import lombok.Getter;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.AbsRecDetailPara;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.MngDataStatus;
 import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.OccurrenceDigClass;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnOffsetOfAbs;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.UnUseOfRec;
-import nts.uk.ctx.at.shared.dom.remainingnumber.absencerecruitment.export.query.algorithm.param.UnbalanceCompensation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnOffSetOfDayOff;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.UnUserOfBreak;
 
 /**
  * @author ThanhNX
@@ -69,12 +62,12 @@ public class AccumulationAbsenceDetail {
 	/**
 	 * 休暇発生明細
 	 */
-	private Optional<UnbalanceVacation> unbalanceVacation;
+	// private Optional<UnbalanceVacation> unbalanceVacation;
 
 	/**
 	 * 振出の未相殺
 	 */
-	private Optional<UnbalanceCompensation> unbalanceCompensation;
+	// private Optional<UnbalanceCompensation> unbalanceCompensation;
 
 	public AccumulationAbsenceDetail(AccuVacationBuilder builder) {
 
@@ -92,42 +85,6 @@ public class AccumulationAbsenceDetail {
 
 		this.unbalanceNumber = builder.getUnbalanceNumber();
 
-		this.unbalanceVacation = builder.getUnbalanceVacation();
-
-		this.unbalanceCompensation = builder.getUnbalanceCompensation();
-
-	}
-
-	public BreakDayOffDetail convertDefault() {
-
-		/** 休出の未使用 */
-		Optional<UnUserOfBreak> unUserOfBreak = unbalanceVacation.isPresent() ? Optional.of(new UnUserOfBreak(manageId,
-				unbalanceVacation.get().getTimeOneDay().v(), unbalanceVacation.get().getDeadline(),
-				numberOccurren.getTime().map(x -> x.v()).orElse(0), numberOccurren.getDay().v(),
-				unbalanceVacation.get().getTimeHalfDay().v(), unbalanceNumber.getTime().map(x -> x.v()).orElse(0),
-				unbalanceNumber.getDay().v(), unbalanceVacation.get().getDigestionCate(),
-				unbalanceVacation.get().getExtinctionDate(), Optional.empty())) : Optional.empty();
-		/** 代休の未相殺 */
-		Optional<UnOffSetOfDayOff> unOffsetOfDayoff = Optional.of(new UnOffSetOfDayOff(manageId,
-				numberOccurren.getTime().map(x -> x.v()).orElse(0), numberOccurren.getDay().v(),
-				unbalanceNumber.getTime().map(x -> x.v()).orElse(0), unbalanceNumber.getDay().v()));
-
-		return new BreakDayOffDetail(this.employeeId, dataAtr, dateOccur, occurrentClass, unUserOfBreak,
-				unOffsetOfDayoff);
-	}
-
-	public AbsRecDetailPara convertDefaultAbs() {
-
-		Optional<UnOffsetOfAbs> unOffsetAbs = Optional
-				.of(new UnOffsetOfAbs(manageId, numberOccurren.getDay().v(), unbalanceNumber.getDay().v()));
-
-		Optional<UnUseOfRec> unUseOfRec = unbalanceCompensation.isPresent() ? Optional
-				.of(new UnUseOfRec(unbalanceCompensation.get().getDeadline(), manageId, numberOccurren.getDay().v(),
-						unbalanceCompensation.get().getLegalInExClassi(), unbalanceNumber.getDay().v(), unbalanceCompensation.get().getDigestionCate(),
-						unbalanceCompensation.get().getExtinctionDate(), Optional.empty()))
-				: Optional.empty();
-
-		return new AbsRecDetailPara(this.employeeId, dataAtr, dateOccur, occurrentClass, unOffsetAbs, unUseOfRec);
 	}
 
 	public boolean checkDataInPeriod(DatePeriod periodCheck) {
@@ -168,12 +125,12 @@ public class AccumulationAbsenceDetail {
 		/**
 		 * 休暇発生明細
 		 */
-		private Optional<UnbalanceVacation> unbalanceVacation;
+		// private Optional<UnbalanceVacation> unbalanceVacation;
 
 		/**
 		 * 振出の未相殺
 		 */
-		private Optional<UnbalanceCompensation> unbalanceCompensation;
+		// private Optional<UnbalanceCompensation> unbalanceCompensation;
 
 		public AccuVacationBuilder(String employeeId, CompensatoryDayoffDate dateOccur,
 				OccurrenceDigClass occurrentClass, MngDataStatus dataAtr, String manageId) {
@@ -182,8 +139,8 @@ public class AccumulationAbsenceDetail {
 			this.occurrentClass = occurrentClass;
 			this.dataAtr = dataAtr;
 			this.manageId = manageId;
-			this.unbalanceVacation = Optional.empty();
-			this.unbalanceCompensation = Optional.empty();
+			// this.unbalanceVacation = Optional.empty();
+			// this.unbalanceCompensation = Optional.empty();
 		}
 
 		public AccuVacationBuilder numberOccurren(NumberConsecuVacation numberOccurren) {
@@ -193,16 +150,6 @@ public class AccumulationAbsenceDetail {
 
 		public AccuVacationBuilder unbalanceNumber(NumberConsecuVacation unbalanceNumber) {
 			this.unbalanceNumber = unbalanceNumber;
-			return this;
-		}
-
-		public AccuVacationBuilder unbalanceVacation(UnbalanceVacation unbalanceVacation) {
-			this.unbalanceVacation = Optional.ofNullable(unbalanceVacation);
-			return this;
-		}
-
-		public AccuVacationBuilder unbalanceCompensation(UnbalanceCompensation unbalanceCompensation) {
-			this.unbalanceCompensation = Optional.ofNullable(unbalanceCompensation);
 			return this;
 		}
 

@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<script type="text/javascript">
+				var ScreenModel = (function () {
+	                function ScreenModel() {
+	                }
+	                ScreenModel.prototype.start = function (){
+		                var self = this;
+		            }
+	                ScreenModel.prototype.openDailog = function () {
+	 				   	nts.uk.ui.windows.sub.modal('/view/kdl/006/a/index.xhtml');
+	                } 
+	                return ScreenModel;
+				}());
+				__viewContext.ready(function() {
+					var a = new ScreenModel();
+					__viewContext.bind(a);
+			    });
+			</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<button data-bind="click: openDailog">open Dialog</button>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>

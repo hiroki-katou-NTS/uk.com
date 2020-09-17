@@ -142,7 +142,6 @@ subprojects {
 		// Jackson
 		compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.3'
 		compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
-		compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.9.3'
 
 		// servlet
 		compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
@@ -541,6 +540,60 @@ project (':at.ctx:request:nts.uk.ctx.at.request.pubimp') {
 }
 //=========================at:request�====================================
 
+//=========================at:schedulealarm↓==================================
+project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.ws') {
+	dependencies {
+		compile project(':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.app')
+	}
+}
+
+project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.dom') {
+	dependencies {
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
+		compile project(':at.ctx:record:nts.uk.ctx.at.record.dom')
+	}
+}
+
+project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.app') {
+	dependencies {
+		compile project(':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.dom')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.dom')
+		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')
+	}
+}
+
+project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.infra') {
+	dependencies {
+		compile project(':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.dom')
+		compile group: 'aspose', name: 'cells', version: '9.0.0'
+        compile group: 'aspose', name: 'aspose.pdf', version: '11.7.0'
+	}
+}
+
+project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.ac') {
+	dependencies {
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.pub', version: version)
+		compile(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: version)
+		compile(group: 'com.sys.assist', name: 'nts.uk.ctx.sys.assist.pub', version: version)
+	}
+}
+
+project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.pub') {
+	dependencies {
+	}
+}
+
+project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.pubimp') {
+	dependencies {
+		compile project(':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.pub')
+		compile project(':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.dom')
+		compile project(':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.app')
+	}
+}
+//=========================at:schedulealarm↑====================================
+
+
 //=====================at.screen�=============================
 project (':at.screen:nts.uk.screen.at.ws') {
 	dependencies {
@@ -731,6 +784,14 @@ project (':at.web:nts.uk.at.web') {
 		runtime project (':at.ctx:record:nts.uk.ctx.at.record.pub')
 		runtime project (':at.ctx:record:nts.uk.ctx.at.record.pubimp')
 		runtime project (':at.ctx:record:nts.uk.ctx.at.record.ws')
+
+		runtime project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.ac')
+		runtime project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.app')
+		runtime project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.dom')
+		runtime project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.infra')
+		runtime project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.pub')
+		runtime project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.pubimp')
+		runtime project (':at.ctx:schedulealarm:nts.uk.ctx.at.schedulealarm.ws')
 
 		runtime project (':at.screen:nts.uk.screen.at.ws')
 		runtime project (':at.screen:nts.uk.screen.at.app')
