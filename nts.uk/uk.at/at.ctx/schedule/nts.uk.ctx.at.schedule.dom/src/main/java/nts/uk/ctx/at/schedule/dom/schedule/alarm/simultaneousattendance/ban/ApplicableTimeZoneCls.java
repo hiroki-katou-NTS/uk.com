@@ -1,9 +1,14 @@
 package nts.uk.ctx.at.schedule.dom.schedule.alarm.simultaneousattendance.ban;
+
+import lombok.RequiredArgsConstructor;
+import nts.arc.enums.EnumAdaptor;
+
 /**
  * 適用する時間帯
  * @author lan_lt
  *
  */
+@RequiredArgsConstructor
 public enum ApplicableTimeZoneCls {
 	/** 0 - 全日帯 **/
 	ALLDAY(0),
@@ -11,8 +16,10 @@ public enum ApplicableTimeZoneCls {
 	NIGHTSHIFT(1);
 
 	public final int value;
-
-	private ApplicableTimeZoneCls(int value) {
-		this.value = value;
+	
+	public static   ApplicableTimeZoneCls of(int value) {
+		
+		return EnumAdaptor.valueOf(value,  ApplicableTimeZoneCls.class);
 	}
+	
 }
