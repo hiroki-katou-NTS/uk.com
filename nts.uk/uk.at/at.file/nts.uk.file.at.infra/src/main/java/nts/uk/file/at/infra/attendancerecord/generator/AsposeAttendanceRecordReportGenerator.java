@@ -89,7 +89,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private String SEAL_RANGE_TMPL_ADDR = "AQ14:AR17";
 
 	/** The Constant SEAL_COL_ADDR. */
-	private static final List<String> SEAL_COL_ADDR = Arrays
+	private List<String> SEAL_COL_ADDR = Arrays
 			.asList(new String[] { "AN1", "AL1", "AJ1", "AH1", "AF1", "AD1" });
 	
 	/** The Constant END_REPORT_COL2. */
@@ -198,6 +198,10 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			SEAL_RANGE_TMPL_ADDR = "AY14:BV17";
 			
 			FONT_SIZE = 14;
+			
+			SEAL_COL_ADDR = Arrays
+					.asList(new String[] { "AW1", "AU1", "AS1", "AQ1", "AO1", "AM1" });
+			
 		} else if( dataSource.getData().getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
 			TEMPLATE_FILE = "report/KWR002_FS.xlsx";
 			
@@ -220,6 +224,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			MAX_ROW_PER_EMPL = 80;
 			
 			FONT_SIZE = 12;
+			
+			SEAL_COL_ADDR = Arrays
+					.asList(new String[] { "BE1", "BC1", "BA1", "AY1", "AW1", "AU1" });
 		}
 
 		try (val reportContext = this.createContext(TEMPLATE_FILE, data.getExportDateTime())) {
@@ -285,11 +292,11 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					
 					// Delete template column
 					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
-						worksheet.getCells().deleteColumns(42, 20, true);
+						worksheet.getCells().deleteColumns(58, 28, true);
 					} else if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
 						worksheet.getCells().deleteColumns(50, 24, true);
 					} else {
-						worksheet.getCells().deleteColumns(50, 24, true);
+						worksheet.getCells().deleteColumns(42, 20, true);
 					}
 					
 					
