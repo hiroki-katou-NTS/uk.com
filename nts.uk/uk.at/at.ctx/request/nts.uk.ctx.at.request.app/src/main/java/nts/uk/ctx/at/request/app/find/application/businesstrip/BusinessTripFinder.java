@@ -400,9 +400,9 @@ public class BusinessTripFinder {
         BusinessTrip businessTrip = appBusinessParam.getBusinessTrip() == null ? null : appBusinessParam.getBusinessTrip().toDomain(businessTripInfoOutput.getAppDispInfoStartup().getAppDetailScreenInfo().get().getApplication());
         // new mode thì thực hiện thuật toán 申請共通起動処理
         if (mode) {
-            AppDispInfoStartupOutput appDispInfoStartupOutput = algorithmMobile.appCommonStartProcess(mode, cid,
-                    AppContexts.user().employeeId(), ApplicationType.BUSINESS_TRIP_APPLICATION, Optional.ofNullable(null),
-                    dateList, Optional.ofNullable(null));
+            AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(cid,
+            		ApplicationType.BUSINESS_TRIP_APPLICATION, Arrays.asList(AppContexts.user().employeeId()),dateList, mode, Optional.ofNullable(null),
+                    Optional.ofNullable(null));
             BusinessTripInfoOutputDto businessTripInfoOutputDto = this.businessScreenInit_New(cid, applicantlist,
                     dateList, appDispInfoStartupOutput);
             result.setBusinessTripInfoOutput(businessTripInfoOutputDto);

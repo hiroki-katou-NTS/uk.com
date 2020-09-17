@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommand;
 import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.AppBusinessParam;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripFinder;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobil
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.StartScreenBDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripOutputDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailScreenDto;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 
 @Path("at/request/application/businesstrip/mobile")
@@ -24,6 +26,9 @@ public class BusinessTripWebServiceSmartphone extends WebService {
 
 	@Inject
 	private BusinessTripFinder businessTripFinder;
+	
+	 @Inject
+	    private AddBusinessTripCommandHandler addBusinessTripCommandHandler;
 
 	
 	@Path("startMobile")
@@ -52,4 +57,11 @@ public class BusinessTripWebServiceSmartphone extends WebService {
 	public void checkBeforeRegister(DetailScreenDto param){
 		this.businessTripFinder.checkBeforeRegisterMobile(param);
 	}
+	
+	//Register A2
+	@POST
+    @Path("register")
+    public ProcessResult register(AddBusinessTripCommand param) {
+        return this.addBusinessTripCommandHandler.handle(param);
+    }
 }

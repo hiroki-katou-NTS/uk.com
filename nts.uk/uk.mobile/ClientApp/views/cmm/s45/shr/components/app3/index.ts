@@ -10,6 +10,8 @@ import * as _ from 'lodash';
 })
 export class CmmS45ComponentsApp3Component extends Vue {
     public title: string = 'CmmS45ComponentsApp3';
+    public mtable = require('../../../../../kaf/s08/a2/mock_data.json');
+
     @Prop({
         default: () => ({
             appDispInfoStartupOutput: null,
@@ -56,7 +58,7 @@ export class CmmS45ComponentsApp3Component extends Vue {
         })
             .then((res: any) => {
                 vm.dataFetch = res.data;
-                // vm.bindStart();
+                //vm.bindStart();
                 vm.params.appDetail = vm.dataFetch;
                 // self.bindCodition(self.dataFetch.appWorkChangeDispInfo);
             })

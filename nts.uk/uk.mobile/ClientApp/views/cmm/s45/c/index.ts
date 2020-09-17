@@ -298,9 +298,9 @@ export class CmmS45CComponent extends Vue {
             case 2:
                 self.$goto('kafs07a', self.appTransferData.appDetail);
                 break;
-            // case 3:
-            //     self.$goto('kafs08a', self.appTransferData.appDetail);
-            //     break;
+            case 3:
+                self.$goto('kafs08a', self.appTransferData.appDetail);
+                break;
             case 4:
                 self.$goto('kafs09a', self.appTransferData.appDetail);
                 break;
