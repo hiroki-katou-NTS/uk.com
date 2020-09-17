@@ -23,63 +23,114 @@ public class Ksrmt36AgrMgtWkp extends UkJpaEntity implements Serializable {
     @EmbeddedId
     public Ksrmt36AgrMgtWkpPk ksrmt36AgrMgtWkpPk;
 
-    /** The exclus ver. */
+    /**
+     * 排他バージョン
+     * */
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
-
+    /**
+     * 契約コード
+     */
     @Column(name = "CONTRACT_CD")
     public String contractCD;
-
+    /**
+     * 会社ID
+     */
     @Column(name = "CID")
     public String companyID;
-
+    /**
+     * 基本設定の1ヶ月アラーム時間
+     * 職場３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
+     */
     @Column(name = "BASIC_M_AL_TIME")
     public double basicMAllTime;
-
+    /**
+     * 基本設定の1ヶ月エラー時間
+     * 職場３６協定時間.３６協定基本設定.1ヶ月.基本設定.エラーアラーム時間
+     */
     @Column(name = "BASIC_M_ER_TIME")
     public double basicMArlTime;
-
+    /**
+     * 基本設定の1ヶ月上限時間
+     * 職場３６協定時間.３６協定基本設定.1ヶ月.基本設定
+     */
     @Column(name = "BASIC_M_LIMIT_TIME")
     public double basicMLimitTime;
-
+    /**
+     * 特例設定の1ヶ月アラーム時間
+     * 職場３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
+     */
     @Column(name = "SP_M_AL_TIME")
     public double spMAlTime;
-
+    /**
+     * 特例設定の1ヶ月エラー時間
+     * 職場３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限.エラーアラーム時間
+     */
     @Column(name = "SP_M_ER_TIME")
     public double spMErTime;
-
+    /**
+     * 特例設定の1ヶ月上限時間
+     * 職場３６協定時間.３６協定基本設定.1ヶ月.特例条項による上限
+     */
     @Column(name = "SP_M_LIMIT_TIME")
     public double spMLimitTime;
-
+    /**
+     * 基本設定の1年間アラーム時間
+     * 職場３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
+     */
     @Column(name = "BASIC_Y_AL_TIME")
     public double basisYAlTime;
-
+    /**
+     * 基本設定の1年間エラー時間
+     * 職場３６協定時間.３６協定基本設定.1年間.基本設定.エラーアラーム時間
+     */
     @Column(name = "BASIC_Y_ER_TIME")
     public double basisYErTime;
-
+    /**
+     * 基本設定の1年間上限時間
+     * 職場３６協定時間.３６協定基本設定.1年間.基本設定
+     */
     @Column(name = "BASIC_Y_LIMIT_TIME")
     public double basisYLimitTime;
-
+    /**
+     * 特例設定の1年間アラーム時間
+     * 職場３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
+     */
     @Column(name = "SP_Y_AL_TIME")
     public double spYAlTime;
-
+    /**
+     * 特例設定の1年間エラー時間
+     * 職場３６協定時間.３６協定基本設定.1年間.特例条項による上限.エラーアラーム時間
+     */
     @Column(name = "SP_Y_ER_TIME")
     public double spYErlTime;
-
+    /**
+     * 特例設定の1年間上限時間
+     * 職場３６協定時間.３６協定基本設定.1年間.特例条項による上限
+     */
     @Column(name = "SP_Y_LIMIT_TIME")
     public double spYLimitTime;
-
+    /**
+     * 複数月平均のアラーム時間
+     * 職場３６協定時間.３６協定基本設定.複数月平均.複数月平均
+     */
     @Column(name = "MULTI_M_AVG_AL_TIME")
     public double multiMAvgAlTime;
-
+    /**
+     * 複数月平均のエラー時間
+     * 職場３６協定時間.３６協定基本設定.複数月平均.複数月平均
+     */
     @Column(name = "MULTI_M_AVG_ER_TIME")
     public double multiMAvgErTime;
-
+    /**
+     * 超過上限回数
+     * 職場３６協定時間.３６協定基本設定
+     */
     @Column(name = "UPPER_LIMIT_CNT")
     public double upperLimitCnt;
 
     @Override
     protected Object getKey() {
-        return null;
+        return this.ksrmt36AgrMgtWkpPk;
     }
 }
