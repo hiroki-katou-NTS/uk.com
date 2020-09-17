@@ -42,5 +42,20 @@ public enum TimeOverLimitType {
 	private TimeOverLimitType(int type) {
 		this.value = type;
 	}
+	public static TimeOverLimitType valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
 
+		// Find value.
+		for (TimeOverLimitType val : TimeOverLimitType.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
 }
