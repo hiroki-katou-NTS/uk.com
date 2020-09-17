@@ -620,6 +620,18 @@ public class SpecialLeaveInfo implements Cloneable {
 		// 「特休の集計結果」を返す
 		return aggrResult;
 	}
+	
+	/**
+	 * 付与残数データから特別休暇不足分の特別休暇付与残数を削除
+	 */
+	public void deleteDummy(){
+		// 「特別休暇付与残数．特別休暇不足ダミーフラグ」=trueの特別休暇付与残数をListから削除
+		List<SpecialLeaveGrantRemaining> noDummyList
+			= this.getGrantRemainingNumberList().stream()
+				.filter(c->!c.isDummyAtr())
+				.collect(Collectors.toList());
+		this.setGrantRemainingList(noDummyList);
+	}
 }
 
 
