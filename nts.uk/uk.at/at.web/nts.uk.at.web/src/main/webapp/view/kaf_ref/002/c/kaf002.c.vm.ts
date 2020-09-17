@@ -22,6 +22,10 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        approvalReason: KnockoutObservable<string>;
        application: KnockoutObservable<Application>;
        dataSourceOb: KnockoutObservableArray<any>;
+       // display condition
+       isM: KnockoutObservable<boolean> = ko.observable(false);
+       // select tab M
+       selectedCode: KnockoutObservable<number> = ko.observable(0);
        tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
                               new TabM(this.$i18n('KAF002_31'), true, true),
                               new TabM(this.$i18n('KAF002_76'), true, true),
@@ -34,16 +38,29 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       // set visible for flag column
       isVisibleComlumn: boolean = true;
       isPreAtr: KnockoutObservable<boolean> = ko.observable(true);
-      comment1: KnockoutObservable<string> = ko.observable('comment1');
-      comment2: KnockoutObservable<string> = ko.observable('comment2');
+      comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+      comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       data: any;
     
+    
+    
+        bindComment(data: any) {
+            const self = this;
+            _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
+               if (i.stampAtr == ko.toJS(self.selectedCode)) {
+                   let commentBot = i.bottomComment;
+                   self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
+                   let commentTop = i.bottomComment;
+                   self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
+               }
+            });
+        }  
        fetchData() {
             const self = this;
             self.$blockui('show');
             let appplication = ko.toJS(self.application) as Application;
             let appId = appplication.appID;
-            let companyId = __viewContext.user.companyId;
+            let companyId = self.$user.companyId;
             let appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
             let recoderFlag = false;
             let command = {
@@ -57,6 +74,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     console.log(res);
                     self.data = res;
                     self.bindActualData();
+                    self.bindTabM(self.data);
+                    self.bindComment(self.data);
                 }).fail(res => {
                     console.log('fail');
                 }).always(() => {
@@ -65,6 +84,22 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             
             
         }
+       
+       bindTabM(data: any) {
+           const self = this;
+           if (data.appStampReflectOptional) {
+               let reflect = data.appStampReflectOptional;
+               self.tabMs[0].visible = reflect.temporaryAttendence && reflect.attendence;
+               self.tabMs[1].visible = reflect.outingHourse;
+               self.tabMs[2].visible = reflect.breakTime;
+               self.tabMs[3].visible = reflect.parentHours;
+               self.tabMs[4].visible = reflect.nurseTime;
+               // not use
+               self.tabMs[5].visible = false;
+               
+           }
+           self.isM(true);
+       }  
     bindDataRequest(element: GridItem, type: number) {
        const self = this;
        let appStampDto = self.data.appStampOptional as AppStampDto,
@@ -289,7 +324,11 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 }
                 ) {
             const self = this;
-            
+            self.selectedCode.subscribe(value => {
+                if (value && self.data) {
+                    self.bindComment(self.data);
+                }
+            });
             self.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             self.application = params.application;
             self.approvalReason = params.approvalReason;
@@ -428,6 +467,17 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         }
         
 
+    }
+    class Comment{
+        public content: string;
+        public isBold: boolean;
+        public color: string;
+        constructor( content: string, isBold: boolean, color: string) {
+            this.content = content;
+            this.isBold = isBold;
+            this.color = color;
+        }
+        
     }
     const API = {
             start: "at/request/application/stamp/startStampApp",

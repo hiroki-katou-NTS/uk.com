@@ -60,7 +60,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     let companyId = self.$user.companyId;
                     let command = { 
                             appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
-                            recoderFlag: false,
+                            recoderFlag: RECORD_FLAG_IMAGE,
                             companyId
                     };
                 
@@ -112,7 +112,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             let companyId = self.$user.companyId;
             let command = { 
                     appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
-                    recoderFlag: false,
+                    recoderFlag: RECORD_FLAG_IMAGE,
                     companyId
             };
             self.$ajax(API.start, command)
@@ -120,7 +120,18 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     console.log(res);
                     self.data = res;
                 }).fail(res => {
-                    
+                    let param;
+                    if (res.message && res.messageId) {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    } else {
+
+                        if (res.message) {
+                            param = {message: res.message, messageParams: res.parameterIds};
+                        } else {
+                            param = {messageId: res.messageId, messageParams: res.parameterIds};
+                        }
+                    }
+                    self.$dialog.error(param);
                 }).always(() => {
                     self.$blockui('hide');
                 });
@@ -168,7 +179,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             let command = {
                     appStampOutputDto: data,
                     applicationDto: ko.toJS(self.application),
-                    recoderFlag: true,
+                    recoderFlag: RECORD_FLAG_IMAGE,
                     appRecordImageDto: appRecordImage
                     
             };
@@ -335,6 +346,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         UNION = {value: GoOutReasonAtr.UNION, name: '組合'};
         
     }
+    const RECORD_FLAG_IMAGE = true;
     const API = {
             start: "at/request/application/stamp/startStampApp",
             checkRegister: "at/request/application/stamp/checkBeforeRegister",

@@ -206,10 +206,6 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    return self.$ajax(API.checkUpdate, commandCheck);
                }
            }).then(res => {
-               if (!res) {
-                   
-                   return;
-               }
                if (_.isEmpty(res)) {
                    return self.$ajax(API.update, command);
                } else {
@@ -217,11 +213,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    return self.handleConfirmMessage(listConfirm, command);
                }
            }).then(res => {
-               if (res) {
                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
                        location.reload();
                    } );
-               }
            }).fail(res => {
                if (!res) return;
                let param;
