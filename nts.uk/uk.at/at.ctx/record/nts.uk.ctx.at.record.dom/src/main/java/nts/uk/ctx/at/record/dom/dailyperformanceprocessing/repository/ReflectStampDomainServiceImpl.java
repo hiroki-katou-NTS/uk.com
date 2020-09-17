@@ -1094,7 +1094,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		default: //NORMAL
 		}
 		if(!listErrorMessageInfo.isEmpty()) {
-			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>());
+			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>(),integrationOfDaily);
 		}
 		OutputGetTimeStamReflect outputGetTimeStamReflect = new OutputGetTimeStamReflect();
 		WorkInfoOfDailyPerformance workInfoOfDailyPerformanceNew = new WorkInfoOfDailyPerformance(employeeID,
@@ -1113,7 +1113,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				outputGetTimeStamReflect.getStampReflectRangeOutput().getStampRange().getEnd() == null) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyID, employeeID, processingDate, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("022"), new ErrMessageContent(TextResource.localize("Msg_591"))));
-			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>());
+			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>(),integrationOfDaily);
 		}
 		
 		//打刻を取得する
@@ -1121,7 +1121,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
                 processingDate, employeeID, companyID,flag);
 		if(lstStamp.isEmpty()) {
 			//取得した打刻の件数　＜＝　0
-			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>());
+			return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,new ArrayList<>(),integrationOfDaily);
 		}
 		
 		//日別実績のコンバーターを作成する
@@ -1142,7 +1142,7 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 		integrationOfDaily = createDailyResults.restoreData(converter, integrationOfDaily, listItemValue);
 		// エラーチェック
 		integrationOfDaily = calculationErrorCheckService.errorCheck(companyID, employeeID, processingDate, integrationOfDaily, true);
-		return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,lstStamp);
+		return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,lstStamp,integrationOfDaily);
 	}
 	
 	
