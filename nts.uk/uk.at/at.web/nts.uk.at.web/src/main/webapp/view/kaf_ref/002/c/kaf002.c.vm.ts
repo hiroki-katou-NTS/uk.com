@@ -17,6 +17,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/002/c/index.html'
     })
     class Kaf002CViewModel extends ko.ViewModel {
+       printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
        appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
        appDispInfoStartupOutput: any;
@@ -77,7 +78,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                     self.bindActualData();
                     self.bindTabM(self.data);
-                    self.bindComment(self.data);                 
+                    self.bindComment(self.data);
+                    self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
                     console.log('fail');
                 }).always(() => {
@@ -330,6 +332,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 }
                 ) {
             const self = this;
+            self.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
+            
             self.selectedCode.subscribe(value => {
                 if (value && self.data) {
                     self.bindComment(self.data);
