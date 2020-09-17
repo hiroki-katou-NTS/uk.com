@@ -126,7 +126,7 @@ public class LeaveEarlyTimeSheet {
 				}
 			}
 		}
-		if(leave!=null && leaveEarlyDesClock.isPresent()) {
+		if(leave!=null && leaveEarlyDesClock.isPresent() && predetermineTime.isPresent()) {
 			//退勤時刻と早退判断時刻を比較	
 			if(leaveEarlyDesClock.get().getLeaveEarlyDecisionClock().greaterThan(leave)) {
 					
@@ -289,7 +289,10 @@ public class LeaveEarlyTimeSheet {
 			boolean leaveEarly //日別実績の計算区分.遅刻早退の自動計算設定.早退
 			) {
 		//早退時間の計算
-		AttendanceTime calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime();
+		AttendanceTime calcforRecordTime = AttendanceTime.ZERO;
+		if(this.forRecordTimeSheet.isPresent()) {
+			calcforRecordTime = this.forRecordTimeSheet.get().calcTotalTime();
+		}
 		//インターバル免除時間を控除する
 		
 		//早退計上時間の作成

@@ -16,6 +16,7 @@ public class UpdateBusinessTripCommand {
     // 出張申請
     private BusinessTripCommand businessTrip;
 
+    // 出張申請の表示情報
     private BusinessTripInfoOutputCommand businessTripInfoOutput;
 
     // 申請

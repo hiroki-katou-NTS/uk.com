@@ -14,14 +14,19 @@ import java.util.Optional;
 @Value
 public class BusinessTripInfoDto {
 
+    // 年月日
     private String date;
 
+    // 勤務情報.勤務種類コード
     private String wkTypeCd;
 
+    // 勤務情報.就業時間帯コード
     private String wkTimeCd;
 
+    // 勤務時間帯.時間帯.開始時刻
     private Integer startWorkTime;
 
+    // 勤務時間帯.時間帯.終了時刻
     private Integer endWorkTime;
 
     public BusinessTripInfo toDomain() {

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -302,6 +303,32 @@ public class CollectAchievementImpl implements CollectAchievement {
 			opOutlawHolidayMidnightTime = recordWorkInfoImport.getOutOfMidnight().map(x -> x.getCalcTime());
 			//・実績詳細．祝日休出深夜時間＝OUTPUT．勤務実績．祝日休出深夜時間
 			opPublicHolidayMidnightTime = recordWorkInfoImport.getMidnightPublicHoliday().map(x -> x.getCalcTime());
+			// 打刻実績．育児時間帯．時刻開始/時刻終了
+			if(CollectionUtil.isEmpty(recordWorkInfoImport.getChildCareShortWorkingTimeList())) {
+				stampRecordOutput.setParentingTime(Collections.emptyList());
+			} else {
+				stampRecordOutput.setParentingTime(recordWorkInfoImport.getChildCareShortWorkingTimeList().stream()
+						.map(x -> new TimePlaceOutput(
+								Optional.empty(), 
+								Optional.empty(), 
+								new StampFrameNo(x.getShortWorkTimeFrameNo().v()), 
+								Optional.of(x.getEndTime()), 
+								Optional.of(x.getStartTime())))
+						.collect(Collectors.toList()));
+			}
+			// 打刻実績．介護時間帯．時刻開始/時刻終了
+			if(CollectionUtil.isEmpty(recordWorkInfoImport.getCareShortWorkingTimeList())) {
+				stampRecordOutput.setNursingTime(Collections.emptyList());
+			} else {
+				stampRecordOutput.setNursingTime(recordWorkInfoImport.getCareShortWorkingTimeList().stream()
+						.map(x -> new TimePlaceOutput(
+								Optional.empty(), 
+								Optional.empty(), 
+								new StampFrameNo(x.getShortWorkTimeFrameNo().v()), 
+								Optional.of(x.getEndTime()), 
+								Optional.of(x.getStartTime())))
+						.collect(Collectors.toList()));
+			}
 		}
 		//ドメインモデル「勤務種類」を1件取得する - (lấy 1 dữ liệu của domain 「WorkType」)
 		opWorkTypeName = workTypeRepository.findByPK(companyID, workTypeCD).map(x -> x.getName().v());

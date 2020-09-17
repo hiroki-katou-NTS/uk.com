@@ -46,6 +46,8 @@
 				path="/view/kaf_ref/000/a/component6/kaf000.a.component6.js" />
 			<com:scriptfile
 				path="/view/kaf_ref/000/a/component7/kaf000.a.component7.js" />
+			<com:scriptfile 
+				path="/view/kaf_ref/000/a/component8/kaf000.a.component8.js" />
 				
 				
 			<com:stylefile path="/view/kaf_ref/002/b/kaf002.b.main.css" />
@@ -55,11 +57,12 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="text:this.$i18n('KAF009_3')"></button>
+				<button class="proceed" data-bind="text:this.$i18n('KAF009_3'), click: register"></button>
 				<div
 					data-bind="component: { name: 'kaf000-a-component7', 
 											params: {
 												appType: appType,
+												checkBoxValue: isSendMail,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"
 					style="display: inline-block;"></div>
@@ -71,13 +74,20 @@
 												appType: appType,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-				<div
-					data-bind="component: { name: 'kaf000-a-component2', 
-											params: {
-												appType: appType,
-												application: application,
-												appDispInfoStartupOutput: appDispInfoStartupOutput
-											} }"></div>
+				<div class="table">
+					<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-a-component2',
+									params: {
+										appType: appType,
+										application: application,
+										appDispInfoStartupOutput: appDispInfoStartupOutput
+                                          } }"></div>
+                  	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-a-component8',
+									params: {
+										appType: appType,
+										application: application,
+										appDispInfoStartupOutput: appDispInfoStartupOutput
+									} }"></div>
+				</div>
 				<div
 					data-bind="component: { name: 'kaf000-a-component3', 
 											params: {
@@ -92,8 +102,7 @@
 												application: application,
 												appDispInfoStartupOutput: appDispInfoStartupOutput
 											} }"></div>
-				<div class="label" style="margin: 10px">1 2 3 4 5 6 7 8 9 1 2
-					3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9
+				<div class="label" data-bind="text: comment1" style="margin: 10px">
 				</div>
 				
 				<div class="inlineBlockFirst">
@@ -122,9 +131,7 @@
 					}"></div>
 				</div>
 				
-				<div class="label" style="margin: 10px">1 2 3 4 5 6 7 8 9 1 2
-					3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9 1 2 3 4 5 6 7 8 9
-				</div>
+				<div data-bind="text: comment2" class="label" style="margin: 10px"></div>
 				<div
 					data-bind="component: { name: 'kaf000-a-component5', 
 											params: {

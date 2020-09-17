@@ -227,8 +227,19 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                             };
                             vm.$errors("#kaf000-a-component4-singleDate", message);
                         }
+                        vm.workManagement.scheWorkTime("--:--");
+                        vm.workManagement.scheWorkTime2("--:--");
+                        vm.workManagement.scheAttendanceTime("--:--");
+                        vm.workManagement.scheAttendanceTime2("--:--");
+                        vm.workManagement.workTime(null);
+                        vm.workManagement.workTime2(null);
+                        vm.workManagement.leaveTime(null);
+                        vm.workManagement.leaveTime2(null);
+
                         vm.arrivedLateLeaveEarlyInfo().info = success.errorInfo;
                     } else {
+                        vm.arrivedLateLeaveEarlyInfo().info = null;
+
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
                         vm.lateOrEarlyInfos(success.lateOrEarlyInfoLst);
                         if (vm.lateOrEarlyInfos().length > 0) {

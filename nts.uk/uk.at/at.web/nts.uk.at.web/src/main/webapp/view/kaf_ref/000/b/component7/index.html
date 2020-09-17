@@ -1,5 +1,5 @@
 <div id="kaf000-b-component7">
-	<div class="table" style="margin-bottom: 5px;">
+	<div class="table" style="margin-bottom: 5px;" data-bind="if: appReasonCDDisp">
 		<div class="cell col-1">
 			<div class="cell valign-center" data-bind="ntsFormLabel: {required: appReasonCDRequired}, text: $i18n('KAF000_51')"></div>
 		</div>
@@ -16,7 +16,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="table" style="margin-top: 5px;">
+	<div class="table" style="margin-top: 5px;" data-bind="if: appReasonDisp">
 		<div class="cell col-1">
 			<div class="cell valign-center" data-bind="ntsFormLabel: {
 									required: appReasonRequired,

@@ -21,7 +21,7 @@ module nts.uk.at.view.kaf000_ref.b.component1.viewmodel {
             vm.message = ko.observable("line111111111111111111");
             vm.deadline = ko.observable("line222222222222222222");
             vm.displayArea = ko.pureComputed(() => {
-                return vm.displayMsg() && vm.displayDeadline();
+                return vm.displayMsg() || vm.displayDeadline();
             });
             vm.displayMsg = ko.observable(false);
             vm.displayDeadline = ko.observable(false);

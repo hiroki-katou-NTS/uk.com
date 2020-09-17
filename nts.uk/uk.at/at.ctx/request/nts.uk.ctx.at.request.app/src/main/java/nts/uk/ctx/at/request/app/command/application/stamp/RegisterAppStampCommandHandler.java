@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonForReversion;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.stamp.AppCommonDomainServiceRegister;
+import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
@@ -58,13 +59,17 @@ public class RegisterAppStampCommandHandler extends CommandHandlerWithResult<Reg
 			as.setAppID(application.getAppID());
 			application.setOpStampRequestMode(Optional.ofNullable(StampRequestMode.STAMP_ADDITIONAL));
 		}
+		AppRecordImage ar = null;
 		if (appRecordImageDto != null) {
-			appRecordImageDto.setAppID(application.getAppID());			
+//			appRecordImageDto.setAppID(application.getAppID());
+			ar = appRecordImageDto.toDomain();
+			ar.setAppID(application.getAppID());
+			application.setOpStampRequestMode(Optional.ofNullable(StampRequestMode.STAMP_ONLINE_RECORD));
 		}
 		return appCommonDomainServiceRegister.registerAppStamp(
 				application,
 				Optional.ofNullable(as),
-				appRecordImageDto != null ? Optional.of(appRecordImageDto.toDomain()): Optional.empty(),
+				Optional.ofNullable(ar),
 				param.getAppStampOutputDto().toDomain(),
 				param.getRecoderFlag());
 	}

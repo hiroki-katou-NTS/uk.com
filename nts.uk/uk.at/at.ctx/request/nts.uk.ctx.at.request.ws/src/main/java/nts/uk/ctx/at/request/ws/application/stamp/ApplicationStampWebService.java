@@ -115,7 +115,7 @@ public class ApplicationStampWebService extends WebService {
 	}
 	
 	@POST
-	@Path("update")
+	@Path("updateNew")
 	public ProcessResult update(RegisterOrUpdateAppStampParam command) {
 		return updateApplicationStampCommandHandlerNew.handle(command);
 	}

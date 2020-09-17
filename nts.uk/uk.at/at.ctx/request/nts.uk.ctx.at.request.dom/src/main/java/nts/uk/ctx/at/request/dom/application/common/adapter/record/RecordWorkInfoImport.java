@@ -149,5 +149,10 @@ public class RecordWorkInfoImport {
 //	祝日休出深夜時間
 	private Optional<TimeDivergenceWithCalculation> midnightPublicHoliday = Optional.empty();
 	
+	
+	// 育児時間帯
+	private List<ShortWorkingTimeSheet> childCareShortWorkingTimeList;
+	// 介護時間帯
+	private List<ShortWorkingTimeSheet> careShortWorkingTimeList;
 
 }

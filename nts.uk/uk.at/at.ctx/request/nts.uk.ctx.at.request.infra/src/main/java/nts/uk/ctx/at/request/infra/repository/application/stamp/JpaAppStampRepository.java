@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.request.infra.repository.application.stamp;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -70,14 +72,35 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 
 	@Override
 	public void updateStamp(AppStamp appStamp) {
-		// TODO Auto-generated method stub
+		String companyID = AppContexts.user().companyId();
+		List<KrqdtAppStamp> listKrqdtAppStamp = toEntityList(appStamp);
+//		List<KrqdtAppStamp> krqdtAppStampList = new NtsStatement(FIND_BY_APPID, this.jdbcProxy())
+//				.paramString("cid", companyID).paramString("appId", appStamp.getAppID()).getList(res -> toEntity(res));
+//		List<KrqdtAppStampPK> keys = krqdtAppStampList.stream().map(
+//				x -> new KrqdtAppStampPK(companyID, appStamp.getAppID(), x.krqdtAppStampPK.stampAtr, x.krqdtAppStampPK.stampFrameNo)).collect(Collectors.toList());
+//		List<KrqdtAppStampPK> keysDelete = keys.stream().filter(x -> isNotExistKey(x, listKrqdtAppStamp)).collect(Collectors.toList());
+//		this.commandProxy().removeAll(KrqdtAppStamp.class, keysDelete);
+		this.delete(companyID, appStamp.getAppID());
+		this.getEntityManager().flush();
+		this.commandProxy().insertAll(listKrqdtAppStamp);
+		this.getEntityManager().flush();
 
+	}
+	public Boolean isNotExistKey(KrqdtAppStampPK key, List<KrqdtAppStamp> listKrqdtAppStamp) {
+		if (CollectionUtil.isEmpty(listKrqdtAppStamp)) return true;
+		return listKrqdtAppStamp.stream().filter( x -> x.krqdtAppStampPK.appID == key.appID
+				&& x.krqdtAppStampPK.stampAtr == key.stampAtr
+				&& x.krqdtAppStampPK.stampFrameNo == key.stampFrameNo).findFirst().isPresent() ?  true : false;
+		
 	}
 
 	@Override
 	public void delete(String companyID, String appID) {
-//		this.commandProxy().remove(KrqdtAppStamp.class, new KrqdtAppStampPK(companyID, appID, stampAtr, stampFrameNo));
-
+		List<KrqdtAppStamp> krqdtAppStampList = new NtsStatement(FIND_BY_APPID, this.jdbcProxy())
+				.paramString("cid", companyID).paramString("appId", appID).getList(res -> toEntity(res));
+		List<KrqdtAppStampPK> keys = krqdtAppStampList.stream().map(
+				x -> new KrqdtAppStampPK(companyID, appID, x.krqdtAppStampPK.stampAtr, x.krqdtAppStampPK.stampFrameNo)).collect(Collectors.toList());
+		this.commandProxy().removeAll(KrqdtAppStamp.class, keys);
 	}
 
 	public Integer convertEnumTimeStamApp(TimeStampAppEnum timeStampAppEnum) {
@@ -145,6 +168,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
 								x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null);
+						listStamps.add(krqdtAppStamp);
 					}
 				} else {
 					krqdtAppStamp = new KrqdtAppStamp(
@@ -160,9 +184,10 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
 							x.getAppStampGoOutAtr().isPresent() ? x.getAppStampGoOutAtr().get().value : null);
+					listStamps.add(krqdtAppStamp);
 				}
 
-				listStamps.add(krqdtAppStamp);
+				
 			});
 		}
 
@@ -189,6 +214,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 								null, null, x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
 								x.getStartEndClassification() == StartEndClassification.END ? END_CANCEL : null, 
 										null);
+						listStamps.add(krqdtAppStamp);
 					}
 				} else {
 					krqdtAppStamp = new KrqdtAppStamp(
@@ -197,8 +223,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 							null, null, x.getStartEndClassification() == StartEndClassification.START ? START_CANCEL : null,
 							x.getStartEndClassification() == StartEndClassification.END ? END_CANCEL : null, 
 									null);
+					listStamps.add(krqdtAppStamp);
 				}
-				listStamps.add(krqdtAppStamp);
+				
 
 			});
 		}
@@ -227,8 +254,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				listStamps.add(krqdtAppStamp);
 			});
 		}
-		this.commandProxy().insertAll(listStamps);
-		this.getEntityManager().flush();
+//		this.commandProxy().insertAll(listStamps);
+//		this.getEntityManager().flush();
 		
 
 		return listStamps;

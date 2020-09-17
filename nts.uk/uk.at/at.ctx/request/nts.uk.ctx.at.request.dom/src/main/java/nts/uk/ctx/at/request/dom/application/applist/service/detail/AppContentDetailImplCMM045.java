@@ -54,6 +54,8 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeStampApp;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppEnum;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeStampAppOther;
 import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChangeRepository;
 import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -92,6 +94,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	
 	@Inject
 	private BusinessTripRepository businessTripRepository;
+	
+	@Inject
+	private AppWorkChangeRepository appWorkChangeRepository;
 	
 	private final static String KDL030 = "\n";
 	private final static String CMM045 = "<br/>";
@@ -195,32 +200,51 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	 * @return
 	 */
 	@Override
-	public String getContentWorkChange(AppWorkChangeFull wkChange, String companyId, String appId, Integer appReasonDisAtr,
-			String appReason, int screenAtr, List<WorkType> lstWkType, List<WorkTimeSetting> lstWkTime) {
-		if(wkChange == null){
-			//ドメインモデル「勤務変更申請」を取得
-			wkChange = appDetailInfoRepo.getAppWorkChangeInfo(companyId, appId, lstWkType, lstWkTime);
-		}
-		//申請内容　＝　申請内容（勤務変更申請、直行直帰申請）
-		String go1 = wkChange.getGoWorkAtr1() == 0 ? "" + I18NText.getText("CMM045_252") + wkChange.getWorkTimeStart1() :
-				wkChange.getWorkTimeStart1();
-		String back1 = wkChange.getBackHomeAtr1() == 0 ? I18NText.getText("CMM045_252") + wkChange.getWorkTimeEnd1() :
-				wkChange.getWorkTimeEnd1();
-		String time1 = go1 == "" ? "" : go1 + I18NText.getText("CMM045_100") + back1;
-		String go2 = (wkChange.getGoWorkAtr2() == null || wkChange.getGoWorkAtr2() == 1) ? wkChange.getWorkTimeStart2() : 
-				"" + I18NText.getText("CMM045_252") + wkChange.getWorkTimeStart2();
-		String back2 = (wkChange.getBackHomeAtr2() == null || wkChange.getBackHomeAtr2() == 1) ? wkChange.getWorkTimeEnd2() :
-				I18NText.getText("CMM045_252") + wkChange.getWorkTimeEnd2();
-		String time2 = go2 == "" ? "" : go2 + I18NText.getText("CMM045_100") + back2;
-		String breakTime = wkChange.getBreakTimeStart1() == "" ? "" : I18NText.getText("CMM045_251") +
-				wkChange.getBreakTimeEnd1() + I18NText.getText("CMM045_100") + wkChange.getBreakTimeEnd1();
-		String workName = wkChange.getWorkTypeName() == "" ? wkChange.getWorkTimeName() : wkChange.getWorkTimeName() == "" ?  
-				wkChange.getWorkTypeName() : wkChange.getWorkTypeName() + "　" + wkChange.getWorkTimeName();
-		String time = time1 == "" ? time2 : time2 == "" ? time1 : time1 + "　" + time2;
-		String cont1 = workName == "" ? time : time == "" ? workName : workName + "　" + time;
-        String cont2 = cont1 == "" ? breakTime : breakTime == "" ? cont1 : cont1 + "　" + breakTime;
-		return this.checkAddReason(cont2, appReason, appReasonDisAtr, screenAtr);
+	public String getContentWorkChange(Application application, DisplayAtr appReasonDisAtr, List<WorkTimeSetting> workTimeLst, List<WorkType> workTypeLst, String companyID) {
+		// ドメインモデル「勤務変更申請」を取得
+		AppWorkChange appWorkChange = appWorkChangeRepository.findbyID(companyID, application.getAppID()).get();
+		// 勤務就業名称を作成
+		String workTypeName = appDetailInfoRepo.findWorkTypeName(workTypeLst, appWorkChange.getOpWorkTypeCD().map(x -> x.v()).orElse(null));
+		String workTimeName = appDetailInfoRepo.findWorkTimeName(workTimeLst, appWorkChange.getOpWorkTimeCD().map(x -> x.v()).orElse(null));
+		// 申請内容　＝　申請内容（勤務変更申請、直行直帰申請）
+		return appContentService.getWorkChangeGoBackContent(
+				ApplicationType.WORK_CHANGE_APPLICATION, 
+				workTypeName, 
+				workTimeName, 
+				appWorkChange.getStraightGo(), 
+				appWorkChange.getTimeZoneWithWorkNoLst().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getStartTime()).orElse(null), 
+				appWorkChange.getStraightBack(), 
+				appWorkChange.getTimeZoneWithWorkNoLst().stream().filter(x -> x.getWorkNo().v()==1).findAny().map(x -> x.getTimeZone().getEndTime()).orElse(null), 
+				null, 
+				null, 
+				appReasonDisAtr, 
+				application.getOpAppReason().orElse(null), 
+				application);
+//		if(wkChange == null){
+//			//ドメインモデル「勤務変更申請」を取得
+//			wkChange = appDetailInfoRepo.getAppWorkChangeInfo(companyId, appId, lstWkType, lstWkTime);
+//		}
+//		//申請内容　＝　申請内容（勤務変更申請、直行直帰申請）
+//		String go1 = wkChange.getGoWorkAtr1() == 0 ? "" + I18NText.getText("CMM045_252") + wkChange.getWorkTimeStart1() :
+//				wkChange.getWorkTimeStart1();
+//		String back1 = wkChange.getBackHomeAtr1() == 0 ? I18NText.getText("CMM045_252") + wkChange.getWorkTimeEnd1() :
+//				wkChange.getWorkTimeEnd1();
+//		String time1 = go1 == "" ? "" : go1 + I18NText.getText("CMM045_100") + back1;
+//		String go2 = (wkChange.getGoWorkAtr2() == null || wkChange.getGoWorkAtr2() == 1) ? wkChange.getWorkTimeStart2() : 
+//				"" + I18NText.getText("CMM045_252") + wkChange.getWorkTimeStart2();
+//		String back2 = (wkChange.getBackHomeAtr2() == null || wkChange.getBackHomeAtr2() == 1) ? wkChange.getWorkTimeEnd2() :
+//				I18NText.getText("CMM045_252") + wkChange.getWorkTimeEnd2();
+//		String time2 = go2 == "" ? "" : go2 + I18NText.getText("CMM045_100") + back2;
+//		String breakTime = wkChange.getBreakTimeStart1() == "" ? "" : I18NText.getText("CMM045_251") +
+//				wkChange.getBreakTimeEnd1() + I18NText.getText("CMM045_100") + wkChange.getBreakTimeEnd1();
+//		String workName = wkChange.getWorkTypeName() == "" ? wkChange.getWorkTimeName() : wkChange.getWorkTimeName() == "" ?  
+//				wkChange.getWorkTypeName() : wkChange.getWorkTypeName() + "　" + wkChange.getWorkTimeName();
+//		String time = time1 == "" ? time2 : time2 == "" ? time1 : time1 + "　" + time2;
+//		String cont1 = workName == "" ? time : time == "" ? workName : workName + "　" + time;
+//        String cont2 = cont1 == "" ? breakTime : breakTime == "" ? cont1 : cont1 + "　" + breakTime;
+//		return this.checkAddReason(cont2, appReason, appReasonDisAtr, screenAtr);
 	}
+	
 	/**
 	 * get content go back
 	 * 直行直帰申請 kaf009 - appType = 4
@@ -232,7 +256,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	@Override
 	public String getContentGoBack(Application application, DisplayAtr appReasonDisAtr, List<WorkTimeSetting> workTimeLst, List<WorkType> workTypeLst, ScreenAtr screenAtr) {
 		String companyID = AppContexts.user().companyId();
+		// ドメインモデル「直行直帰申請」を取得 ( Lấy domain 「直行直帰申請」)
 		GoBackDirectly goBackDirectly = goBackDirectlyRepository.find(companyID, application.getAppID()).get();
+		// 申請内容　＝　申請内容（勤務変更申請、直行直帰申請） ( Nội dung application = Nội dung application (Work change application, application đi thẳng về nhà)
 		return appContentService.getWorkChangeGoBackContent(
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
 				Strings.EMPTY, 
