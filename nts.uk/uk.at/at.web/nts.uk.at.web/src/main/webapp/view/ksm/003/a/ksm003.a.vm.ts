@@ -225,9 +225,10 @@ module nts.uk.at.view.ksm003.a {
 
                             vm.$blockui('hide');
 
-                        }).always(() => vm.$blockui('hide'));
-                    } else {
-                        $('#inpPattern').focus();
+                        }).always(() => {
+                            vm.$blockui('hide');
+                            $("#inpPattern").focus();
+                        });
                     }
                 }).always(() => vm.$blockui('hide'));
         }
@@ -387,10 +388,11 @@ module nts.uk.at.view.ksm003.a {
             let vm = this;
             vm.$dialog.confirm({ messageId: "Msg_18" }).then((result) => {
 
-                if (result === 'yes') {
-                    let dataHistory: DailyPatternItemDto[] = vm.itemLst();
+                vm.$blockui('show');
 
-                    vm.$blockui('grayout');
+                if (result === 'yes') {
+
+                    let dataHistory: DailyPatternItemDto[] = vm.itemLst();
 
                     if (nts.uk.util.isNullOrEmpty(vm.selectedCode())) {
                         vm.$blockui('hide');
@@ -497,7 +499,7 @@ module nts.uk.at.view.ksm003.a {
             let vm = this;
             let workingTimeCycleList = vm.mainModel().dailyPatternVals();
 
-            vm.$blockui('grayout');
+            vm.$blockui('show');
 
             //登録の時には勤務内容一覧に一行もない //register & update
             if (workingTimeCycleList.length <= 0) {
@@ -596,23 +598,23 @@ module nts.uk.at.view.ksm003.a {
                 }
 
                 //register / update i ok
-                //nts.uk.ui.dialog.info({messageId: "Msg_15"});
-                vm.$dialog.info({ messageId: "Msg_15" }).then(() => {
-                    let patternCode = vm.mainModel().patternCode();
+                //nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                vm.$dialog.info({ messageId: "Msg_15" }).then(() => { });
 
-                    vm.selectedCode(patternCode);
-                    vm.selectedCheckAll(false);
-                    vm.enableRemoveItem(false);
+                let patternCode = vm.mainModel().patternCode();
 
-                    $("#inpPattern").focus();
+                vm.selectedCode(patternCode);
+                vm.selectedCheckAll(false);
+                vm.enableRemoveItem(false);
 
-                    if (!vm.isEditting()) vm.isEditting(true);
+                $("#inpPattern").focus();
 
-                    vm.getListWorkingCycle();
-                    vm.getPatternValByPatternCd(patternCode);
+                if (!vm.isEditting()) vm.isEditting(true);
 
-                    vm.$blockui("hide");
-                });
+                vm.getListWorkingCycle();
+                //vm.getPatternValByPatternCd(patternCode);
+
+                vm.$blockui("hide");
 
             }).fail(function (res) {
                 let isSetError = messageIds.some(item => item == res.messageId);
