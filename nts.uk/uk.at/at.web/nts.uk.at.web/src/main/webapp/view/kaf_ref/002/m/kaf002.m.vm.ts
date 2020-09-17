@@ -559,12 +559,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
     }
     
     export enum STAMPTYPE {
+//        出勤／退勤
         ATTENDENCE = 0,
+//        育児
         PARENT = 2,
+//        外出／戻り
         GOOUT_RETURNING = 1,
+//        応援
         CHEERING = 3,
+//        臨時
         EXTRAORDINARY = 4,
+//        休憩
         BREAK = 5,
+//        介護
         NURSE = 6,
 
     }

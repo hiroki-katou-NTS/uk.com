@@ -87,17 +87,17 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        
        bindTabM(data: any) {
            const self = this;
-           if (data.appStampReflectOptional) {
-               let reflect = data.appStampReflectOptional;
-               self.tabMs[0].visible = reflect.temporaryAttendence && reflect.attendence;
-               self.tabMs[1].visible = reflect.outingHourse;
-               self.tabMs[2].visible = reflect.breakTime;
-               self.tabMs[3].visible = reflect.parentHours;
-               self.tabMs[4].visible = reflect.nurseTime;
-               // not use
-               self.tabMs[5].visible = false;
-               
-           }
+//           if (data.appStampReflectOptional) {
+//               let reflect = data.appStampReflectOptional;
+//               self.tabMs[0].visible = reflect.temporaryAttendence && reflect.attendence;
+//               self.tabMs[1].visible = reflect.outingHourse;
+//               self.tabMs[2].visible = reflect.breakTime;
+//               self.tabMs[3].visible = reflect.parentHours;
+//               self.tabMs[4].visible = reflect.nurseTime;
+//               // not use
+//               self.tabMs[5].visible = false;
+//               
+//           }
            self.isM(true);
        }  
     bindDataRequest(element: GridItem, type: number) {

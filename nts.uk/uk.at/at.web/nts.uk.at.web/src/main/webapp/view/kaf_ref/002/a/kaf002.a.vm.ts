@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
+        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
         isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
         dataSourceOb: KnockoutObservableArray<any>;
@@ -71,6 +72,25 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     created(param: any) {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
+        self.selectedTab.subscribe(value => {
+           if (value == 'tab-1') {
+               if(self.selectedCode() != 0) {
+//                   出勤／退勤
+                   self.selectedCode(0);
+               }
+           } else if(value == 'tab-2') {
+//               外出／戻り
+               self.selectedCode(1);
+           } else if(value == 'tab-3') {
+               self.selectedCode(2);
+           } else if(value == 'tab-4') {
+               self.selectedCode(3);
+           } else if(value == 'tab-5') {
+               self.selectedCode(4);
+           } else if(value == 'tab-6') {
+               
+           }
+        });
         self.selectedCode.subscribe(value => {
             if (value && self.data) {
                 self.bindComment(self.data);
@@ -129,18 +149,22 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }
     bindTabM(data: any) {
         const self = this;
-        if (data.appStampReflectOptional) {
-            let reflect = data.appStampReflectOptional;
-            self.tabMs[0].visible = reflect.temporaryAttendence && reflect.attendence;
-            self.tabMs[1].visible = reflect.outingHourse;
-            self.tabMs[2].visible = reflect.breakTime;
-            self.tabMs[3].visible = reflect.parentHours;
-            self.tabMs[4].visible = reflect.nurseTime;
-            // not use
-            self.tabMs[5].visible = false;
-            
-        }
         self.isM(true);
+//        self.tabs.subscribe(value => {
+//           if (value) {
+//               if (data.appStampReflectOptional) {
+//                   let reflect = data.appStampReflectOptional;
+//                   self.tabs()[0].visible((reflect.temporaryAttendence && reflect.attendence) == 1);
+//                   self.tabs()[1].visible(reflect.outingHourse == 1);
+//                   self.tabs()[2].visible(reflect.breakTime == 1);
+//                   self.tabs()[3].visible(reflect.parentHours == 1);
+//                   self.tabs()[4].visible(false);
+//                   // not use
+//                   self.tabs()[5].visible(false);
+//                   
+//               } 
+//           } 
+//        });
     }
     changeDataSource() {
        
@@ -428,6 +452,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             } )();
             
             let items6 = (function() {
+                let list = [];
+                for (let i = 1; i < 3; i++) {
+                    let dataObject = new TimePlaceOutput(i);
+                    list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
+                }
+                
+                return list;
+            })();
+            
+            let items7 = (function() {
                 let list = [];
                 for (let i = 1; i < 3; i++) {
                     let dataObject = new TimePlaceOutput(i);
