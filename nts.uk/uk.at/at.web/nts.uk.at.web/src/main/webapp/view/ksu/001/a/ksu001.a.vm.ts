@@ -1937,6 +1937,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $(".editMode").addClass("A6_hover").removeClass("A6_not_hover");
             $(".confirmMode").addClass("A6_not_hover").removeClass("A6_hover");
             
+            let listLink = $('div.ex-body-leftmost a');
+            for (let i = 0; i < listLink.length; i++) {
+                $(listLink[i]).css("pointer-events", "");
+            }
+            
             if (lockCells.length > 0 || arrCellUpdated.length > 0) {
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_1732" }).ifYes(() => {
                     self.editModeToConfirmMode();
@@ -1998,6 +2003,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
              $(".editMode").addClass("A6_not_hover").removeClass("A6_hover");
              $(".confirmMode").addClass("A6_hover").removeClass("A6_not_hover");
 
+            let listLink = $('div.ex-body-leftmost a');
+            for (let i = 0; i < listLink.length; i++) {
+                $(listLink[i]).css("pointer-events", "none");
+            }
+            
             let arrCellUpdated = $("#extable").exTable("updatedCells");
             let arrTmp = _.clone(arrCellUpdated);
             let arrLockCellAfterSave = $("#extable").exTable("lockCells");
