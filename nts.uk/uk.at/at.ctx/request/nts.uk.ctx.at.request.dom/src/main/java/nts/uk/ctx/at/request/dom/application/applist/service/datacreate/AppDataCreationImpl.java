@@ -99,6 +99,7 @@ public class AppDataCreationImpl implements AppDataCreation {
 					mapWkpInfo,
 					device);
 			mapEmpInfo.putAll(appInfoMasterOutput.getMapEmpInfo());
+			mapWkpInfo.putAll(appInfoMasterOutput.getMapWkpInfo());
 			// 各申請データを作成 ( Tạo data tên application)
 			ListOfApplication listOfApp = appContentService.createEachAppData(
 					app, 
@@ -126,7 +127,13 @@ public class AppDataCreationImpl implements AppDataCreation {
 			}
 		//}
 		});
-		appListInfo.setAppLst(appOutputLst);
+		// sửa response cho list application (giảm 2s): check null và distinct khi dùng parallel
+		for(ListOfApplication app : appOutputLst.stream().filter(x -> x!=null).collect(Collectors.toList())) {
+			if(appListInfo.getAppLst().stream().map(x -> x.getAppID()).collect(Collectors.toList()).contains(app.getAppID())) {
+				continue;
+			}
+			appListInfo.getAppLst().add(app);
+		}
 		// アルゴリズム「申請一覧の並び順を変更する」を実行する
 		appListInfo = this.changeOrderOfAppLst(appListInfo, appListExtractCondition, device);
 		if(mode == ApplicationListAtr.APPROVER && device == PC) {

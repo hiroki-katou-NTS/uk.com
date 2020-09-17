@@ -11,21 +11,21 @@
 				</div>
 				<div class="table" style="margin-bottom: 1px; margin-top: 1px;">
 					<div class="cell" data-bind="i18n: 'KAF000_56'"></div>
-					<div class="cell">
+					<div class="cell" data-bind="if: opAchievementDetail">
 						<span data-bind="text: opAchievementDetail.workTypeCD"></span>
 						<span data-bind="text: opAchievementDetail.opWorkTypeName"></span>
 					</div>
 				</div>
 				<div class="table" style="margin-bottom: 1px; margin-top: 1px;">
 					<div class="cell" data-bind="i18n: 'KAF000_57'"></div>
-					<div class="cell">
+					<div class="cell" data-bind="if: opAchievementDetail">
 						<span data-bind="text: opAchievementDetail.workTimeCD"></span>
 						<span data-bind="text: opAchievementDetail.opWorkTimeName"></span>
 					</div>
 				</div>
 				<div class="table" style="margin-top: 1px;">
 					<div class="cell" data-bind="i18n: 'KAF000_58'"></div>
-					<div class="cell">
+					<div class="cell" data-bind="if: opAchievementDetail">
 						<span data-bind="text: opAchievementDetail.opWorkTime"></span>
 						<span data-bind="text: opAchievementDetail.opLeaveTime"></span>
 					</div>
