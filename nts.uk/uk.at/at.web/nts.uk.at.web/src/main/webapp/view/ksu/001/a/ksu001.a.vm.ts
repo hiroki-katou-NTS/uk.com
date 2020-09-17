@@ -2167,7 +2167,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
-            
+             $("#extable").exTable("updateMode", "stick");
             $("#extable").exTable("updateMode", "copyPaste");
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor : IUserInfor = JSON.parse(data);
