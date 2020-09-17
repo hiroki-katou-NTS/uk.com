@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         tabMs: Array<TabM>;
         
         isPreAtr: KnockoutObservable<boolean>;
-        
+        tabsTemp: any;
         created(params) {
             
             const self = this;
@@ -63,6 +63,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             } );
             self.nameGrids = ko.observableArray(nameGridsArray);
             self.tabs = ko.observableArray(paramTabs);
+            // must assign param.tabs at mounted since tabs is not render
+            self.tabsTemp = params.tabs;
             // select first tab
             self.selectedTab = ko.observable( paramTabs[0].id );
             params.selectedTab = self.selectedTab;
@@ -114,6 +116,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         mounted() {
             const self = this;
             self.loadAll();
+            // change tabs by root component
+            self.tabsTemp(self.tabs());
             
         }
         loadAll() {

@@ -17,6 +17,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/002/c/index.html'
     })
     class Kaf002CViewModel extends ko.ViewModel {
+       tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
        appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
        appDispInfoStartupOutput: any;
        approvalReason: KnockoutObservable<string>;
@@ -87,18 +88,22 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        
        bindTabM(data: any) {
            const self = this;
-//           if (data.appStampReflectOptional) {
-//               let reflect = data.appStampReflectOptional;
-//               self.tabMs[0].visible = reflect.temporaryAttendence && reflect.attendence;
-//               self.tabMs[1].visible = reflect.outingHourse;
-//               self.tabMs[2].visible = reflect.breakTime;
-//               self.tabMs[3].visible = reflect.parentHours;
-//               self.tabMs[4].visible = reflect.nurseTime;
-//               // not use
-//               self.tabMs[5].visible = false;
-//               
-//           }
            self.isM(true);
+           self.tabs.subscribe(value => {
+              if (value) {
+                if (data.appStampReflectOptional && self.tabs()) {
+                let reflect = data.appStampReflectOptional;
+                self.tabs()[0].visible((reflect.temporaryAttendence && reflect.attendence) == 1);
+                self.tabs()[1].visible(reflect.outingHourse == 1);
+                self.tabs()[2].visible(reflect.breakTime == 1);
+                self.tabs()[3].visible(reflect.parentHours == 1);
+                self.tabs()[4].visible(reflect.nurseTime);
+                // not use
+                self.tabs()[5].visible(false);
+                
+             } 
+              } 
+           });
        }  
     bindDataRequest(element: GridItem, type: number) {
        const self = this;
