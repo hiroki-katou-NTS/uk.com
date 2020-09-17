@@ -72,12 +72,26 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 
 	@Override
 	public void updateStamp(AppStamp appStamp) {
+		String companyID = AppContexts.user().companyId();
 		List<KrqdtAppStamp> listKrqdtAppStamp = toEntityList(appStamp);
-		if (CollectionUtil.isEmpty(listKrqdtAppStamp)) return;
-		this.delete(AppContexts.user().companyId(), appStamp.getAppID());
+//		List<KrqdtAppStamp> krqdtAppStampList = new NtsStatement(FIND_BY_APPID, this.jdbcProxy())
+//				.paramString("cid", companyID).paramString("appId", appStamp.getAppID()).getList(res -> toEntity(res));
+//		List<KrqdtAppStampPK> keys = krqdtAppStampList.stream().map(
+//				x -> new KrqdtAppStampPK(companyID, appStamp.getAppID(), x.krqdtAppStampPK.stampAtr, x.krqdtAppStampPK.stampFrameNo)).collect(Collectors.toList());
+//		List<KrqdtAppStampPK> keysDelete = keys.stream().filter(x -> isNotExistKey(x, listKrqdtAppStamp)).collect(Collectors.toList());
+//		this.commandProxy().removeAll(KrqdtAppStamp.class, keysDelete);
+		this.delete(companyID, appStamp.getAppID());
+		this.getEntityManager().flush();
 		this.commandProxy().insertAll(listKrqdtAppStamp);
 		this.getEntityManager().flush();
 
+	}
+	public Boolean isNotExistKey(KrqdtAppStampPK key, List<KrqdtAppStamp> listKrqdtAppStamp) {
+		if (CollectionUtil.isEmpty(listKrqdtAppStamp)) return true;
+		return listKrqdtAppStamp.stream().filter( x -> x.krqdtAppStampPK.appID == key.appID
+				&& x.krqdtAppStampPK.stampAtr == key.stampAtr
+				&& x.krqdtAppStampPK.stampFrameNo == key.stampFrameNo).findFirst().isPresent() ?  true : false;
+		
 	}
 
 	@Override

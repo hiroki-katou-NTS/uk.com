@@ -104,6 +104,28 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                }
            }
            
+       } else if (type == 2) {
+           if (timeStampAppOtherDto) {
+               let items = _.filter(timeStampAppOtherDto, (x: TimeStampAppOtherDto) => {
+                   let destinationTimeZoneAppDto = x.destinationTimeZoneApp as DestinationTimeZoneAppDto;
+                   return destinationTimeZoneAppDto.timeZoneStampClassification == element.convertTimeStampAppEnum() 
+                           && destinationTimeZoneAppDto.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+               }) as Array<TimeStampAppOtherDto>;
+               if (items.length > 0) {
+                   let item = items[0] as TimeStampAppOtherDto;
+                   element.startTimeRequest(item.timeZone.startTime);
+                   element.endTimeRequest(item.timeZone.endTime);
+               }
+           }
+           if (destinationTimeZoneAppDto) {
+               let itemDes = _.findLast(destinationTimeZoneAppDto, (x: any) => {
+                   return x.timeStampAppEnum == element.typeStamp.valueOf() 
+                   && x.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+               }) as DestinationTimeZoneAppDto;
+               if (itemDes) {
+                   element.flagObservable(true);
+               }
+           }
        }
         
     }
@@ -149,7 +171,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push(new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY));
+                let gridItem = new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY);
+                self.bindDataRequest(gridItem, 1);
+                list.push(gridItem);
     
             }
             
@@ -169,7 +193,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push( new GridItem( dataObject, STAMPTYPE.GOOUT_RETURNING ) );
+                let gridItem = new GridItem( dataObject, STAMPTYPE.GOOUT_RETURNING );
+                self.bindDataRequest(gridItem, 1);
+                list.push(gridItem);
             }
 
             return list;
@@ -188,7 +214,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push( new GridItem( dataObject, STAMPTYPE.BREAK ) );
+                let gridItem = new GridItem(dataObject, STAMPTYPE.BREAK);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
             }
 
             return list;
@@ -207,7 +235,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push( new GridItem( dataObject, STAMPTYPE.PARENT ) );
+                let gridItem = new GridItem(dataObject, STAMPTYPE.PARENT);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
             }
 
             return list;
@@ -226,7 +256,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
+                let gridItem = new GridItem(dataObject, STAMPTYPE.NURSE);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
             }
             
             return list;
