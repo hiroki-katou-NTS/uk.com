@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author son.tc
  *
  */
-@StringMaxLength(4)
+@StringMaxLength(5)
 public class OutputItemCode extends StringPrimitiveValue<OutputItemCode> {
 	/**
 	 * 
