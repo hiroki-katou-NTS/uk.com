@@ -76,17 +76,30 @@ module nts.uk.com.view.cli002.a {
             const vm = this;
             vm.logSettings = [];
             vm.dataSourceItem().map((item: any) => {
-                console.log(item);
                 vm.logSettings.push(new LogSetting(vm.selectedSystemCode(), item.programId, item.menuClassification,
                     item.loginHistoryRecord ? 1 : 0,
                     item.editHistoryRecord ? 1 : 0,
                     item.bootHistoryRecord ? 1 : 0));
             })
+            /**
+             * ログ設定更新
+             */
             vm.$ajax(API.updateLogSetting, vm.logSettings).then(() => {
+                /**
+                 * 情報メッセージ（Msg_15）を表示する
+                 */
                 vm.$dialog.alert({ messageId: 'Msg_15' });
+            }).fail((error: any) => {
+                vm.$dialog.alert(error);
+                vm.$blockui('clear');
+                vm.$errors('clear');
             });
         }
 
+        /**
+         * ログ設定画面を表示する
+         * @param systemType 
+         */
         private getData(systemType: number) {
             const vm = this;
             vm.$blockui("grayout");
@@ -97,7 +110,11 @@ module nts.uk.com.view.cli002.a {
                 vm.dataSourceItem(listPG);
                 vm.getItemList(response);
 
-            }).always(() => vm.$blockui("clear")); 
+            }).always(() => vm.$blockui("clear")).fail((error: any) => {
+                vm.$dialog.alert(error);
+                vm.$blockui('clear');
+                vm.$errors('clear');
+            });
         }
 
         public updateData(a, b, val) {
@@ -115,7 +132,6 @@ module nts.uk.com.view.cli002.a {
                     }
                 }
             });
-            console.log(vm.dataSourceItem());
         }
 
         private getItemList(response: Array<PGList>) {

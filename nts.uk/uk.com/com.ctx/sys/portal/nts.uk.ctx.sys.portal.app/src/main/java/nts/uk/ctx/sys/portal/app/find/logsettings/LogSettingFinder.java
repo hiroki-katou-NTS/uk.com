@@ -63,6 +63,9 @@ public class LogSettingFinder {
 			String companyId = AppContexts.user().companyId();
 			int systemType = logSettingDtos.get(0).getSystem();
 			
+			/**
+			 * ループを開始する　
+			 */
 			for (LogSetting l : logSettings) {
 				/**
 				 * ドメインモデル「ログ設定」を削除
