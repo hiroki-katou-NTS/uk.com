@@ -18,12 +18,10 @@ public class IndexReconstructionTable extends AggregateRoot {
 	private IndexName indexNo;
 	
 	/** テーブル日本語名 */
-	//QA111441
-	private String tableJapaneseName;
+	private TableName tableJapaneseName;
 	
 	/** テーブル物理名 */
-	//QA111441
-	private String tablePhysicalName;
+	private TableName tablePhysicalName;
 	
 	public static IndexReconstructionTable createFromMemento(MementoGetter memento) {
 		IndexReconstructionTable domain = new IndexReconstructionTable();
@@ -49,13 +47,13 @@ public class IndexReconstructionTable extends AggregateRoot {
 	
 	public static interface MementoSetter {
 		void setIndexNo(IndexName indexNo);
-		void setTableJapaneseName(String tableJapaneseName);
-		void setTablePhysicalName(String tablePhysicalName);
+		void setTableJapaneseName(TableName tableJapaneseName);
+		void setTablePhysicalName(TableName tablePhysicalName);
 	}
 	
 	public static interface MementoGetter {
-		String getTableJapaneseName();
-		String getTablePhysicalName();
+		TableName getTableJapaneseName();
+		TableName getTablePhysicalName();
 		IndexName getIndexNo();
 	}
 }

@@ -116,11 +116,18 @@ public class SaveExecutionTaskSettingCommandHandler
 		// if(command.getRepeatContent()==null){
 		// command.setRepeatContent(0);
 		// }
-		ExecutionTaskSetting taskSetting = new ExecutionTaskSetting(oneDayRepInr,
-				new ExecutionCode(command.getExecItemCd()), companyId, command.isEnabledSetting(), null, endDate,
-				endTime, command.isRepeatCls(),
-				EnumAdaptor.valueOf(command.getRepeatContent(), RepeatContentItem.class), detailSetting,
-				command.getStartDate(), new StartTime(command.getStartTime()));
+		ExecutionTaskSetting taskSetting = new ExecutionTaskSetting(
+				oneDayRepInr,
+				new ExecutionCode(command.getExecItemCd()), 
+				companyId, 
+				command.isEnabledSetting(), 
+				null, 
+				endDate,
+				endTime,
+				EnumAdaptor.valueOf(command.getRepeatContent(), RepeatContentItem.class), 
+				detailSetting,
+				command.getStartDate(), 
+				new StartTime(command.getStartTime()));
 		/*
 		 * // Calculate next execution date time taskSetting.setNextExecDateTime();
 		 */
