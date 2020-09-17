@@ -74,7 +74,6 @@ module nts.uk.com.view.cli002.a {
 
         public register() {
             const vm = this;
-            vm.dataSourceItem.valueHasMutated();
             vm.logSettings = [];
             vm.dataSourceItem().map((item: any) => {
                 console.log(item);
@@ -83,7 +82,6 @@ module nts.uk.com.view.cli002.a {
                     item.editHistoryRecord ? 1 : 0,
                     item.bootHistoryRecord ? 1 : 0));
             })
-            console.log(vm.logSettings);
             vm.$ajax(API.updateLogSetting, vm.logSettings).then(() => {
                 vm.$dialog.alert({ messageId: 'Msg_15' });
             });
@@ -100,6 +98,24 @@ module nts.uk.com.view.cli002.a {
                 vm.getItemList(response);
 
             }).always(() => vm.$blockui("clear")); 
+        }
+
+        public updateData(a, b, val) {
+            const vm = this;
+            vm.dataSourceItem().map((item: PGInfomation) => {
+                if(item.rowNumber == a) {
+                    if(b == 'logLoginDisplay') {
+                        item.logLoginDisplay = val;
+                    }
+                    if(b == 'logStartDisplay') {
+                        item.logStartDisplay = val;
+                    }
+                    if(b == 'logUpdateDisplay') {
+                        item.logUpdateDisplay = val;
+                    }
+                }
+            });
+            console.log(vm.dataSourceItem());
         }
 
         private getItemList(response: Array<PGList>) {
@@ -169,8 +185,8 @@ module nts.uk.com.view.cli002.a {
                 ntsFeatures: [],
 
                 ntsControls: [
-                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: function() {
-                        vm.dataSourceItem.valueHasMutated();
+                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: (a, b, val) => {
+                        vm.updateData(a, b, val);
                     }}
                 ],
             }).create();
