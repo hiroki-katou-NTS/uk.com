@@ -1139,7 +1139,9 @@ public class ReflectStampDomainServiceImpl implements ReflectStampDomainService 
 				.map(editState -> editState.getAttendanceItemId()).distinct().collect(Collectors.toList());
 		List<ItemValue> listItemValue = converter.convert(attendanceItemIdList);
 		// 手修正項目のデータを元に戻す
-		integrationOfDaily = createDailyResults.restoreData(converter, integrationOfDaily, listItemValue);
+		if(!attendanceItemIdList.isEmpty()) {
+			integrationOfDaily = createDailyResults.restoreData(converter, integrationOfDaily, listItemValue);
+		}
 		// エラーチェック
 		integrationOfDaily = calculationErrorCheckService.errorCheck(companyID, employeeID, processingDate, integrationOfDaily, true);
 		return new OutputAcquireReflectEmbossingNew( listErrorMessageInfo,lstStamp,integrationOfDaily);
