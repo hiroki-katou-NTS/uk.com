@@ -31,7 +31,7 @@ public class ScheduleCreateContent extends AggregateRoot{
 
 	/** The creation type. */
 	//作成種類
-	private ImplementAtr creationType;
+	private ImplementAtr implementAtr;
 
 	/** The specify creation. */
 	// 作成方法の指定
@@ -41,14 +41,13 @@ public class ScheduleCreateContent extends AggregateRoot{
 	private Optional<RecreateCondition> recreateCondition;
 
 //	//TODO: bien tam thoi, se xoa sau khi co tai lieu moi
-	private ImplementAtr implementAtr;
 	private ReCreateContent reCreateContent;
 	private CreateMethodAtr createMethodAtr;
 	public ScheduleCreateContent (String executionId,Boolean confirm,ImplementAtr creationType,
 								  SpecifyCreation specifyCreation,Optional<RecreateCondition> recreateCondition){
 		this.executionId = executionId;
 		this.confirm =confirm;
-		this.creationType = creationType;
+		this.implementAtr = creationType;
 		this.specifyCreation = specifyCreation;
 		this.recreateCondition =recreateCondition;
 	}
@@ -61,7 +60,7 @@ public class ScheduleCreateContent extends AggregateRoot{
 	public ScheduleCreateContent (ScheduleCreateContentGetMemento memento){
 		this.executionId = memento.getExecutionId();
 		this.confirm = memento.getConfirm();
-		this.creationType = memento.getCreationType();
+		this.implementAtr = memento.getCreationType();
 		this.specifyCreation = memento.getSpecifyCreation();
 		this.recreateCondition = memento.getRecreateCondition();
 	}
@@ -73,17 +72,16 @@ public class ScheduleCreateContent extends AggregateRoot{
 	 */
 	public void saveToMemento(ScheduleCreateContentSetMemento memento){
 		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
-//		memento.setConfirm(this.confirm);
-//		memento.setImplementAtr(this.implementAtr);
-//		memento.setExecutionId(this.executionId);
-//		memento.setCopyStartDate(this.copyStartDate);
-//		memento.setCreateMethodAtr(this.createMethodAtr);
-//		reCreateContent.saveToMemento(memento);
+		memento.setConfirm(this.confirm);
+		memento.setcreationType(this.implementAtr);
+		memento.setExecutionId(this.executionId);
+		//memento.setCopyStartDate(this.copyStartDate);
+		//memento.setCreateMethodAtr(this.createMethodAtr);
+		//reCreateContent.saveToMemento(memento);
 	}
 
 	public void setImplementAtr(ImplementAtr implementAtr) {
-		//TODO Sua domain: スケジュール作成内容 se tiep tuc khi co tai lieu moi cua man ksc001
-		this.creationType = implementAtr;
+		this.implementAtr = implementAtr;
 	}
 
 
