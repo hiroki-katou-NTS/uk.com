@@ -262,7 +262,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         self.bindActualData();
         let dataClone = _.clone(self.data);
-        if (_.isNull(dataClone)) {
+        if (!_.isNull(dataClone)) {
             return;
         }
         self.$blockui( "show" );
