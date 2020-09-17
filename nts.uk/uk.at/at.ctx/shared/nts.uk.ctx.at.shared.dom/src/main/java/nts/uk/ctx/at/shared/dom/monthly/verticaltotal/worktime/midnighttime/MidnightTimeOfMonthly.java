@@ -87,12 +87,7 @@ public class MidnightTimeOfMonthly implements Serializable{
 		WithinStatutoryTimeOfDaily legalTime = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 		val illegalTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
 		if (legalTime == null){
-			legalTime = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-					new AttendanceTime(0),
-					new AttendanceTime(0),
-					new AttendanceTime(0),
-					new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-					new AttendanceTime(0));
+			legalTime = WithinStatutoryTimeOfDaily.defaultValue();
 		}
 		
 		// 所定内深夜時間を累積

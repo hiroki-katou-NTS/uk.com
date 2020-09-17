@@ -130,7 +130,7 @@ public class LateTimeSheet{
 				}
 			}
 		}
-		if(attendance != null && lateDesClock.isPresent()) {
+		if(attendance != null && lateDesClock.isPresent() && predetermineTimeSet.isPresent()) {
 			//出勤時刻と遅刻判断時刻を比較	
 			if(lateDesClock.get().getLateDecisionClock().lessThan(attendance)) {
 
@@ -628,7 +628,7 @@ public class LateTimeSheet{
 		if(flowRestTime.isFixRestTime()){
 			deductionTimeSheets = timeSheetOfDeductionItems.stream()
 					.filter(t -> t.getDeductionAtr() == DeductionClassification.CHILD_CARE
-							&& t.getDeductionAtr() == DeductionClassification.BREAK)
+							|| t.getDeductionAtr() == DeductionClassification.BREAK)
 					.collect(Collectors.toList());
 		}
 		//流動休憩
