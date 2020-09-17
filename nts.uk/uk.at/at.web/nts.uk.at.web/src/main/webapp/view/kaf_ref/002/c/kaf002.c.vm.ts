@@ -137,6 +137,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                _.forEach(items, (x: TimeStampAppDto) => {
                      if (x) {
                          let desItem = x.destinationTimeApp as DestinationTimeAppDto;
+                         if (x.appStampGoOutAtr) {
+                             element.typeReason = String(x.appStampGoOutAtr);
+                         }
                          if (desItem.startEndClassification == 0) {
                              element.startTimeRequest(x.timeOfDay);
                          }
