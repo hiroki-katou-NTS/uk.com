@@ -54,7 +54,7 @@ public class FurikyuMngDataExtractionService {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;	
+	private ShareEmploymentAdapter shareEmploymentAdapter;		
 	
 	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, boolean isPeriod) {
 		List<PayoutManagementData> payoutManagementData;
@@ -188,7 +188,7 @@ public class FurikyuMngDataExtractionService {
 			PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
 			if (!employeeBasicInfo.isEmpty()){
 				personEmpBasicInfoImport = employeeBasicInfo.get(0);
-			}			
+			}	
 			return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, useDays, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
 		}
 	}
@@ -239,19 +239,10 @@ public class FurikyuMngDataExtractionService {
 			// Step 取得したドメインモデル「振休管理設定」を返す
 			return optComSubData.get();
 		}
-	}
-	
-	// Step 振休残数データ情報を作成
-	public List<RemainingNumberDataInformation> getRemainNumDtInfor(List<PayoutManagementData> payoutManagementData,
-			List<SubstitutionOfHDManagementData> substitutionOfHDManagementData,
-			List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout) {
-		List<RemainingNumberDataInformation> remainingNumberDataInformation = new ArrayList<RemainingNumberDataInformation>();
-		return remainingNumberDataInformation;
-	}
+	}	
 	
 	// Step 月初の振休残数を取得
 	public double getNumberOfRemainingHolidays(String empId) {
-		String cid = AppContexts.user().companyId();
 		// Step ドメインモデル「振出管理データ」を取得
 		List<PayoutManagementData> payoutManagementData = payoutManagementDataRepository.getByStateAtr(empId, DigestionAtr.UNUSED);
 		// Step 取得した「振出管理データ」の未使用日数を合計

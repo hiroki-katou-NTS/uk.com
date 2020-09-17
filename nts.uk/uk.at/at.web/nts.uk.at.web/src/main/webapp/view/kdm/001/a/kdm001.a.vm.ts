@@ -220,26 +220,26 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         }
 
         // A4_2_9 削除
-        public removeData(value) {
+        public removeData(value: CompositePayOutSubMngData) {
             block.invisible();
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                console.log('id: '+value.id);
                 let self = this;
                 let data = {
-                    payoutId: value.id,
-                    employeeId: self.selectedEmployeeObject.employeeId,
-                    dayoffDate: moment.utc(value.dayoffDatePyout, 'YYYY/MM/DD').toISOString()
+                    payoutId: value.dataType.toString() === '0' ? value.id : null,
+                    subOfHDID: value.dataType.toString() === '1' ? value.id : null
+                    // employeeId: self.selectedEmployeeObject.employeeId,
+                    // dayoffDate: moment.utc(value.dayoffDatePyout, 'YYYY/MM/DD').toISOString()
                 };
 
                 service.removePayout(data).done(() => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
                         nts.uk.ui.windows.close();
-                        self.updateDataList(false);
                     });
                 }).fail(function (res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
+                    self.updateDataList(false);
                 });
             }).then(() => {
                 block.clear();
@@ -355,6 +355,7 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         };
                     }
                 }).fail(function (res: any) {
+                    dialog.alertError({ messageId: res.messageId });
                     console.log(res);
                 });
 

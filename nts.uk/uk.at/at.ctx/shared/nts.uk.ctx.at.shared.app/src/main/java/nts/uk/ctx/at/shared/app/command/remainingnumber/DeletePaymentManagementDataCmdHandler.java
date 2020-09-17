@@ -27,13 +27,20 @@ public class DeletePaymentManagementDataCmdHandler extends CommandHandler<Delete
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeletePaymentManagementDataCommand> context) {
-		DeletePaymentManagementDataCommand command = context.getCommand();
-		// step ドメインモデル「振出管理データ」を削除 (Delete domain model「振出管理データ」) 
-		this.payoutManagementDataRepo.delete(command.getPayoutId());
-		// step ドメインモデル「振休管理データ」を削除 (Delete domain model 「振休管理データ」)
-		this.substitutionOfHDManaDataRepo.delete(command.getSubOfHDID()); 
-		// step ドメインモデル「振出振休紐付け管理」を削除 (Delete domain model 「振出振休紐付け管理」)
-		this.payoutSubofHDManaRepository.delete(command.getPayoutId(), command.getSubOfHDID());
+		DeletePaymentManagementDataCommand command = context.getCommand();		
+		if(command.getPayoutId() != null) {
+			// step ドメインモデル「振出管理データ」を削除 (Delete domain model「振出管理データ」) 
+			this.payoutManagementDataRepo.delete(command.getPayoutId());
+			// step ドメインモデル「振出振休紐付け管理」を削除 (Delete domain model 「振出振休紐付け管理」)
+			this.payoutSubofHDManaRepository.delete(command.getPayoutId());
+		} else {
+			// step ドメインモデル「振休管理データ」を削除 (Delete domain model 「振休管理データ」)
+			this.substitutionOfHDManaDataRepo.delete(command.getSubOfHDID()); 
+			this.payoutSubofHDManaRepository.deleteBySubID(command.getSubOfHDID());
+		}
+		
+		
+		
 	}
 
 }

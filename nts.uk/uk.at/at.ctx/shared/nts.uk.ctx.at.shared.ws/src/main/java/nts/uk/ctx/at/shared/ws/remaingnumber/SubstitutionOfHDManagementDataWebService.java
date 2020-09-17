@@ -88,7 +88,5 @@ public class SubstitutionOfHDManagementDataWebService extends WebService {
 	@Path("getExtraHolidayData")
 	public ExtraHolidayManagementDataDto getExtraHolidayData(SubDataSearchConditionDto dto){
 		return subManagementFinder.getExtraHolidayManagementData(dto);
-	}
-	
-	
+	}	
 }

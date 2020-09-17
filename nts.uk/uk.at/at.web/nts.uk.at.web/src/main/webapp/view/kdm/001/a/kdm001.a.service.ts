@@ -7,7 +7,7 @@ module nts.uk.at.view.kdm001.a.service {
         getWpName: "screen/com/kcp010/getLoginWkp",
         getFurikyuMngDataExtraction: "at/record/remainnumber/paymana/getFurikyuMngDataExtraction/{0}/{1}",
         /* A4_2_9 削除 */
-        removePayout: "at/record/remainnumber/delete"
+        removePayout: "at/record/remainnumber/paymana/deletePaymentManagementData"
     }
     
     export function getInfoEmLogin(): JQueryPromise<any> {

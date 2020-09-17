@@ -19,6 +19,7 @@ public class FurikyuMngDataExtractionFinder {
 
 	@Inject
 	private FurikyuMngDataExtractionService furikyuMngDataExtractionService;
+	
 
 	public FurikyuMngDataExtractionDto getFurikyuMngDataExtraction(String empId, boolean isPeriod) {
 

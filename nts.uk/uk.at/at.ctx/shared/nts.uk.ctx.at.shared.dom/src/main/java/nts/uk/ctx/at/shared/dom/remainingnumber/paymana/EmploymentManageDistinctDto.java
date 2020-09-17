@@ -12,11 +12,11 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 @NoArgsConstructor
 public class EmploymentManageDistinctDto {
 	/**
-	 *  管理区分 
+	 *  雇用コード
 	 */
 	private String employmentCode;
 	/**
-	 *  雇用コード
+	 *  管理区分 
 	 */
 	private ManageDistinct isManage;
 }

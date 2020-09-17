@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.EmploymentManageDistinctDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
@@ -22,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -60,8 +62,7 @@ public class ExtraHolidayManagementService {
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
 	
-	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId,
-			GeneralDate startDate, GeneralDate endDate) {
+	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId) {
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
@@ -120,5 +121,11 @@ public class ExtraHolidayManagementService {
 		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement,
 				empHistoryImport, closureEmploy, compenLeaveEmpSetting, compensatoryLeaveComSetting,
 				sWkpHistImport.orElse(null), personEmpBasicInfoImport);
+	}
+	
+	// Step 代休管理データを管理するかチェック
+	public void CheckManageSubstituteHolidayManagementData(String empId) {
+		EmploymentManageDistinctDto empManage = new EmploymentManageDistinctDto();
+		empManage.setIsManage(ManageDistinct.NO);
 	}
 }

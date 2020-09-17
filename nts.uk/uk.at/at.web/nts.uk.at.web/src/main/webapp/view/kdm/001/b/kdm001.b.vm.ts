@@ -480,14 +480,14 @@
             service.deleteHolidaySetting(command).done(() => {
                 //情報メッセージ　Msg-16を表示する
                 dialog.info({ messageId: "Msg_16" }).then(() => {           
-                    self.closeDialog();
-                    self.startPage()
-                    self.getSubstituteDataList(self.getSearchCondition());
+                    self.closeDialog();               
                     nts.uk.ui.block.clear();
                 });
             }).fail(error => {
                 dialog.alertError(error);
             }).always(function() {
+            self.startPage()
+            self.getSubstituteDataList(self.getSearchCondition());
             block.clear();
         });
     }).then(() => {
