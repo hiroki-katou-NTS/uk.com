@@ -469,6 +469,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setUpdateMode();
 
                 self.setPositionButonToRightToLeft();
+                
+                // fix bug khong coppyPaste dc 
+                if (userInfor.updateMode == 'copyPaste') {
+                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("updateMode", "copyPaste");
+                }
 
                 self.stopRequest(true);
             }).fail(function() {
@@ -1865,6 +1871,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.setPositionButonToRightToLeft();
                 
+                // fix khi nextMonth|backMonth dang khong coppyPaste dc 
+                if (userInfor.updateMode == 'copyPaste') {
+                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("updateMode", "copyPaste");
+                }
+                
                 self.stopRequest(true);
             }).fail(function() {
                 self.stopRequest(true);
@@ -1923,6 +1935,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setUpdateMode();
                 
                 self.setPositionButonToRightToLeft();
+                
+                // fix khi nextMonth|backMonth dang khong coppyPaste dc 
+                if (userInfor.updateMode == 'copyPaste') {
+                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("updateMode", "copyPaste");
+                }
                 
                 self.stopRequest(true);
             }).fail(function() {
