@@ -206,37 +206,54 @@ public class SpecialLeaveInfo implements Cloneable {
 		aggrResult = this.digestProcess(
 				require, companyId, employeeId,
 				specialLeaveAggregatePeriodWork, specialHolidayInterimMngData, aggrResult);
-		
-		
-		
-		
-		
-		
-		
-		// 期間終了日翌日時点の期間かチェック
-		if (!aggregatePeriodWork.isNextDayAfterPeriodEnd()){
-			
-			// 消化処理
-			aggrResult = this.digestProcess(
-					require, companyId, employeeId,
-					aggregatePeriodWork, interimSpecialData, aggrResult);
-			
-			// 年月日を更新　←　終了日
-			this.ymd = aggregatePeriodWork.getPeriod().end();
-			
-			// 「特休の集計結果」を返す
-			return aggrResult;
-		}
 
+		// 残数不足エラーをチェックする -----------------------------
+		{
+			// 特休残数がマイナスかチェック
+			val withMinus = this.remainingNumber.getSpecialLeaveWithMinus();
+			if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
+				if (specialLeaveAggregatePeriodWork.isAfterGrant()){
+					// 「日単位特休不足エラー（付与後）」を追加
+					aggrResult.addError(SpecialLeaveError.AFTERGRANT);
+				}
+				else {
+					// 「日単位特休不足エラー（付与前）」を追加
+					aggrResult.addError(SpecialLeaveError.BEFOREGRANT);
+				}
+			}
+		}
+		
+		// 期間終了退避処理  -----------------------------
+		
 		// 期間終了日時点の特休情報を消化後に退避するかチェック
-		if (isGetNextMonthData){
+		// 処理中の「特別休暇集計期間WORK．終了日の期間かどうか」=true
+		if (specialLeaveAggregatePeriodWork.isDayBeforePeriodEnd()){
 			
-			// 「特休の集計結果．特休情報（期間終了日時点）」　←　処理中の「特休情報」
+			// 「特別休暇の集計結果．特別休暇情報(期間終了日時点)」←処理中の「特別休暇情報」
 			aggrResult.setAsOfPeriodEnd(this.clone());
 		}
 		
-		// 「特休の集計結果．特休情報（期間終了日の翌日開始時点）」　←　処理中の「特休情報」
-		aggrResult.setAsOfStartNextDayOfPeriodEnd(this.clone());
+		// 期間終了日翌日時点の期間かチェック
+		if (specialLeaveAggregatePeriodWork.isNextDayAfterPeriodEnd()){
+			
+			// 「特別休暇の集計結果．特別休暇情報(期間終了日の翌日開始時点)」←処理中の「特別休暇情報」
+			aggrResult.setAsOfStartNextDayOfPeriodEnd(this.clone());
+		}
+			
+		// 終了時点更新処理 -------------------------------------
+		
+		// 期間終了日翌日時点の期間かチェック 
+		// 処理中の「特別休暇集計期間WORK．終了日の翌日の期間かどうか」= true
+		if (specialLeaveAggregatePeriodWork.isNextDayAfterPeriodEnd()){
+			// 何もしない
+		} else {
+			// 「特別休暇の集計結果．特別休暇エラー情報」に受け取った特別休暇エラーを全て追加
+			// ※既に「特別休暇エラー情報」に存在する特別休暇エラーは追加不要。
+			// ooooo ???
+			
+			// 年月日を更新　←　終了日
+			this.ymd = specialLeaveAggregatePeriodWork.getPeriod().end();
+		}
 		
 		// 「特休の集計結果」を返す
 		return aggrResult;
@@ -521,6 +538,9 @@ public class SpecialLeaveInfo implements Cloneable {
 		List<InterimSpecialHolidayMng> listInterimSpecialHolidayMng
 			 = specialHolidayInterimMngData.getLstSpecialInterimMng();
 		
+		// 時間休暇消化日一覧（List）
+		List<GeneralDate> digestDateList = new ArrayList<GeneralDate>();
+		
 		// パラメータ「List<特別休暇暫定管理データ」を取得する
 		// 【条件】 対象日 >= 特別休暇集計期間WORK．期間．開始日
 		// 		AND 対象日 <= 特別休暇集計期間WORK．期間．終了日
@@ -585,8 +605,29 @@ public class SpecialLeaveInfo implements Cloneable {
 					// 時間休暇消化数を求める
 					// 消化できた時間を求める
 					// 消化できた時間　←特別休暇使用数．使用時間 ー INPUT.消化できなかった休暇使用数．時間
+					
+					// 特別休暇使用数．使用時間
+					int usedTime = 0;
+					if ( a.getDetails().getUsedNumber().getMinutes().isPresent() ){
+						usedTime = a.getDetails().getUsedNumber().getMinutes().get().v();
+					}
+					// 消化できなかった休暇使用数．時間
+					int unDigestTime = 0;
+					if ( remNumShiftListWork.getUnusedNumber().getMinutes().isPresent() ){
+						unDigestTime = remNumShiftListWork.getUnusedNumber().getMinutes().get().v();
+					}
+					usedTime -= unDigestTime;
 
-//					int digestTime = ??????
+					// 時間休暇消化日一覧に追加をするか
+					
+					// 消化できた時間があるか （消化できた時間　＞０）
+					if ( 0 < usedTime ){
+						// 消化日を追加
+						digestDateList.add(interimSpecialHolidayMng.getYmd());
+					}
+					
+					// 残数（現在）を消化後の状態にする
+					this.updateRemainingNumber(aggregatePeriodWork.isAfterGrant());
 					
 				});
 				
@@ -598,24 +639,12 @@ public class SpecialLeaveInfo implements Cloneable {
 //				
 //				// 特休情報残数を更新
 //				this.updateRemainingNumber();
+				
+				
+				
 			}
 		}
 		
-//		// 残数不足エラーをチェックする
-//		{
-//			// 特休残数がマイナスかチェック
-//			val withMinus = this.remainingNumber.getSpecialLeaveWithMinus();
-//			if (withMinus.getRemainingNumberInfo().getRemainingNumber().isMinus()){
-//				if (aggregatePeriodWork.isAfterGrant()){
-//					// 「日単位特休不足エラー（付与後）」を追加
-//					aggrResult.addError(SpecialLeaveError.SHORTAGE_AL_OF_UNIT_DAY_AFT_GRANT);
-//				}
-//				else {
-//					// 「日単位特休不足エラー（付与前）」を追加
-//					aggrResult.addError(SpecialLeaveError.SHORTAGE_AL_OF_UNIT_DAY_BFR_GRANT);
-//				}
-//			}
-//		}
 		
 		// 「特休の集計結果」を返す
 		return aggrResult;

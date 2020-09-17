@@ -165,11 +165,12 @@ public class SpecialLeaveManagementService {
 						param.getSpecialLeaveCode());
 
 		// 次回特休付与日を計算
-		CalcNextSpecialLeaveGrantDate calcNextSpecialLeaveGrantDate
-			= new CalcNextSpecialLeaveGrantDate();
+//		CalcNextSpecialLeaveGrantDate calcNextSpecialLeaveGrantDate
+//			= new CalcNextSpecialLeaveGrantDate();
 		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
-			= calcNextSpecialLeaveGrantDate.algorithm(
-				require, cacheCarrier, 
+			= CalcNextSpecialLeaveGrantDate.algorithm(
+				require, 
+				cacheCarrier, 
 				param.getCid(), 
 				param.getSid(), 
 				param.getSpecialLeaveCode(), 
@@ -218,7 +219,7 @@ public class SpecialLeaveManagementService {
 			= remainingList.stream()
 				.filter(c -> c.isDummyAtr())
 				.collect(Collectors.toList());
-				
+
 		// 取得した特別休暇付与残数の「特別休暇使用数」、「特別休暇残数」をそれぞれ合計
 		LeaveRemainingNumber leaveRemainingNumberTotal = new LeaveRemainingNumber();
 		LeaveUsedNumber leaveUsedNumberTotal = new LeaveUsedNumber();

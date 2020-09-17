@@ -56,6 +56,22 @@ public class SpecialLeaveRemainingNumber {
 	}
 	
 	/**
+	 * 残数がマイナスのときにはTrueを返す
+	 * @return
+	 */
+	public boolean isMinus(){
+		if ( dayNumberOfRemain.v() < 0.0 ){
+			return true;
+		}
+		if ( timeOfRemain.isPresent() ){
+			if ( timeOfRemain.get().v() < 0 ){
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * クリア
 	 */
 	public void clear(){

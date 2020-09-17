@@ -78,11 +78,18 @@ public class CalcNextSpecialLeaveGrantDate {
 		if ( specialLeaveBasicInfoOpt.isPresent() ){
 			if ( specialLeaveBasicInfoOpt.get().getUsed().isUse() ){ // 使用するとき
 				
+				// 次回特別休暇付与を計算
+				List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+					= algorithm１(require, cacheCarrier, companyId, employeeId, spLeaveCD, period );
+				
+					
+					
+					
 				
 				
 				
 			} else { // 使用しないとき
-				
+				// List「次回特別休暇付与」を空で作成
 				
 				
 				
@@ -123,7 +130,8 @@ public class CalcNextSpecialLeaveGrantDate {
 		}
 		
 		// 付与日数情報を取得する
-		// ooooo
+		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+			= getSpecialLeaveGrantInfo(require, cacheCarrier, companyId, employeeId, spLeaveCD, period);
 		
 		
 		
@@ -195,7 +203,18 @@ public class CalcNextSpecialLeaveGrantDate {
 					}
 					
 				} else if (typeTime.equals(TypeTime.REFER_GRANT_DATE_TBL)){ // 付与テーブルを参照して付与する
+					
 					// 付与テーブルの付与日一覧を求める
+					List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+						= getTableSpecialLeaveGrantInfo(
+							require, 
+							cacheCarrier, 
+							companyId, 
+							employeeId,
+							spLeaveCD, 
+							CALL_FROM.PERIOD, // ooooo 要確認
+							period,
+							grantDate);
 					
 				
 				}
