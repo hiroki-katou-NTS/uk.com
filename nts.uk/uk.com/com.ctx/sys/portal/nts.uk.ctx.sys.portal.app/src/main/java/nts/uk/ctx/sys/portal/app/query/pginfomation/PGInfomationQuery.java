@@ -35,7 +35,10 @@ public class PGInfomationQuery {
 		 * システムからログ設定を取得
 		 */
 		List<LogSetting> logSettings = this.logSettingRepository.findBySystem(companyId, systemType);
-		
+		if (logSettings == null || logSettings.size() == 0) {
+			return new ArrayList<PGInfomationDto>();
+		}
+
 		List<MenuClassification> menuClassifications = logSettings.stream().map(s -> s.getMenuClassification())
 				.collect(Collectors.toList());
 
