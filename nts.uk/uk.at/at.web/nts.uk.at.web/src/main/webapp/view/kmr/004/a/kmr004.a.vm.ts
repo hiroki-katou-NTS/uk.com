@@ -387,6 +387,14 @@ module nts.uk.at.view.kmr004.a {
 				return;
 			}
 
+			if (c13sData.reservationClosingTimeFrame != 1 && c13sData.reservationClosingTimeFrame != 2) {
+				vm.model().reservationClosingTimeFrame(1);
+			}
+
+			if (vm.closingTimeOptions().length == 1) {
+				vm.model().reservationClosingTimeFrame(1);
+			}
+
 			vm.model().reservationClosingTimeFrame(c13sData.reservationClosingTimeFrame);
 			vm.outputConditionChecked(c13sData.outputConditionChecked);
 			vm.selectedTab(c13sData.selectedTab);
