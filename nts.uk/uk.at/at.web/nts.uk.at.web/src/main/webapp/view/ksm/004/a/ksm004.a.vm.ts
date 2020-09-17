@@ -1155,7 +1155,7 @@ module nts.uk.at.view.ksm004.a {
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Class.toString()];
                         break;
                     default:
-                        this.textColor = '#31859C';
+                        this.textColor = '#558ED5'; //rgb(85,142,213)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
                 }
@@ -1172,7 +1172,7 @@ module nts.uk.at.view.ksm004.a {
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Class.toString()];
                         break;
                     default:
-                        this.textColor = '#31859C';
+                        this.textColor = '#558ED5'; //rgb(85,142,213)
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
                 }
