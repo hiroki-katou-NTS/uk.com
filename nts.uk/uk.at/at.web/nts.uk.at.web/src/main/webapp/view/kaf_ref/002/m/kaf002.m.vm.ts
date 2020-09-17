@@ -31,6 +31,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         
         isPreAtr: KnockoutObservable<boolean>;
         tabsTemp: any;
+        selectedTemp: any;
         created(params) {
             
             const self = this;
@@ -67,7 +68,23 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.tabsTemp = params.tabs;
             // select first tab
             self.selectedTab = ko.observable( paramTabs[0].id );
-            params.selectedTab = self.selectedTab;
+            self.selectedTemp = params.selectedTab;
+            self.selectedTab.subscribe(value => {
+                if (value) {
+                    if (value == 'tab-1') {
+                        self.selectedTemp(0);
+                    } else if (value == 'tab-2') {
+                        self.selectedTemp(1);
+                    } else if (value == 'tab-3') {
+                        self.selectedTemp(5);
+                    } else if (value == 'tab-4') {
+                        self.selectedTemp(2);
+                    } else if (value == 'tab-5') {
+                        self.selectedTemp(4);
+                    }
+                    
+                }
+            })
             self.isPreAtr.subscribe((value) => {
                if(!_.isNull(value)) {
                    self.loadAll();
