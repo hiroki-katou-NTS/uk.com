@@ -52,7 +52,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                 }
             }).done((res: any) => {
                 self.data = res;
-                
+                self.bindDataStart(self.data);
             }).fail(res => {
                 let param;
                 if (res.message && res.messageId) {
@@ -75,7 +75,15 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         mounted() {
             
         }
-        
+        public bindDataStart(data: any) {
+            const self = this;
+//            let listType = self.data.appStampSetting.goOutTypeDispControl;
+//            let listTypeItem = [];
+//            _.forEach(listType, i => {
+//                listTypeItem.push(new ItemModel(String(i.goOutType), i.display))
+//            })
+//            self.dataSourceReason(listTypeItem);
+        }
         public changeDate() {
             const self = this;
             let dataClone = _.clone(self.data);
@@ -106,9 +114,9 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                 vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
                     if (value == 'yes') {
                         if (_.isEmpty(listMes)) {
-                            // vm.registerData(res);
+                             return vm.registerData(res);
                         } else {
-                            // vm.handleConfirmMessage(listMes, res);
+                             vm.handleConfirmMessage(listMes, res);
                         }
 
                     }
@@ -134,7 +142,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                 appRecordImage.appStampGoOutAtr = Number(ko.toJS(self.selectedCodeReason));
             }
             data.appRecordImage = null;
-            let companyId = __viewContext.user.companyId;
+            let companyId = self.$user.companyId;
             let agentAtr = false;
             self.application().enteredPerson = __viewContext.user.employeeId;
             self.application().employeeID = __viewContext.user.employeeId;
@@ -167,7 +175,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     return self.$ajax(API.register, command);
                 } else {
                     let listConfirm = _.clone(res);
-                    self.handleConfirmMessage(listConfirm, command);
+                    return self.handleConfirmMessage(listConfirm, command);
                 }
             }).done(res => {
                 if (res) {

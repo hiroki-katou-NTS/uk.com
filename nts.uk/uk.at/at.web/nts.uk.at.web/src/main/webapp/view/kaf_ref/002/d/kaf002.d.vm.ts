@@ -94,18 +94,51 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.fetchData();
            
        }
+       
+       public handleConfirmMessage(listMes: any, res: any) {
+           let self = this;
+           if (!_.isEmpty(listMes)) {
+               let item = listMes.shift();
+               self.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                   if (value == 'yes') {
+                       if (_.isEmpty(listMes)) {
+                            return self.registerData(res);
+                       } else {
+                            self.handleConfirmMessage(listMes, res);
+                       }
+
+                   }
+               });
+           }
+       }
+       registerData(command) {
+           let vm = this; 
+           return vm.$ajax( API.update, command )
+               .done( update => {
+                   this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                       location.reload();
+                   } );
+               })
+       }
        update() {
            console.log('update');
            const self = this;
            if (!self.appDispInfoStartupOutput().appDetailScreenInfo) {
                return;
            }
-           let application = ko.toJS(self.application);
-           let applicationDto = self.appDispInfoStartupOutput().appDetailScreenInfo.application as any;
-           applicationDto.prePostAtr = application.prePostAtr;
-           applicationDto.opAppReason = application.opAppReason;
-           applicationDto.opAppStandardReasonCD = application.opAppStandardReasonCD;    
-           applicationDto.opReversionReason = application.opReversionReason;
+//           let application = ko.toJS(self.application);
+//           let applicationDto = self.appDispInfoStartupOutput().appDetailScreenInfo.application as any;
+//           applicationDto.prePostAtr = application.prePostAtr;
+//           applicationDto.opAppReason = application.opAppReason;
+//           applicationDto.opAppStandardReasonCD = application.opAppStandardReasonCD;    
+//           applicationDto.opReversionReason = application.opReversionReason;
+//           applicationDto.enteredPerson = application.enteredPerson;
+//           applicationDto.employeeID = application.employeeID;
+           self.application().enteredPerson = __viewContext.user.employeeId;
+           self.application().employeeID = __viewContext.user.employeeId;
+           let applicationDto = ko.toJS(self.application);
+           applicationDto.inputDate = moment(new Date()).format('YYYY/MM/DD HH:mm:ss');
+           applicationDto.reflectionStatus= self.appDispInfoStartupOutput().appDetailScreenInfo.application.reflectionStatus;
            let recoderFlag = true;
            let appStampOutputDto = self.data;
            let appRecordImageDto = {
@@ -119,15 +152,54 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    appRecordImageDto,
                    appStampOutputDto
            }
-           self.$blockui('show');
-           self.$ajax(API.update, command)
-               .done(res => {
-                   console.log(res);
-               }).fail(res => {
-                   console.log(res);
-               }).always(() => {
-                   self.$blockui('hide');
-               })
+           let data = _.clone(self.data);
+           let companyId = self.$user.companyId
+           let agentAtr = false;
+           let commandCheck = {
+                   companyId,
+                   agentAtr,
+                   appStampOutputDto: data,
+                   applicationDto: applicationDto
+           }
+           self.$blockui("show");
+           self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
+           .then(isValid => {
+               if ( isValid ) {
+                   return true;
+               }
+           }).then(result => {
+               if (result) {
+                   return self.$ajax(API.checkUpdate, commandCheck);
+               }
+           }).then(res => {
+               if (_.isEmpty(res)) {
+                   return self.$ajax(API.update, command);
+               } else {
+                   let listConfirm = _.clone(res);
+                   return self.handleConfirmMessage(listConfirm, command);
+               }
+           }).then(res => {
+               if (res) {
+                   this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                       location.reload();
+                   } );
+               }
+           }).fail(res => {
+               let param;
+               if (res.message && res.messageId) {
+                   param = {messageId: res.messageId, messageParams: res.parameterIds};
+               } else {
+
+                   if (res.message) {
+                       param = {message: res.message, messageParams: res.parameterIds};
+                   } else {
+                       param = {messageId: res.messageId, messageParams: res.parameterIds};
+                   }
+               }
+               self.$dialog.error(param);
+           }).always(() => {
+               self.$blockui('hide');
+           });
        }
         
     }
@@ -219,7 +291,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
     const API = {
             getDetail: "at/request/application/stamp/detailAppStamp",
             update: "at/request/application/stamp/updateNew",
-            checkUpdate: "at/request/application/stamp/checkBeforeUpdate"
+            checkUpdate: "at/request/application/stamp/checkBeforeUpdate",
+            checkRegister: "at/request/application/stamp/checkBeforeRegister",
             
         }
 }

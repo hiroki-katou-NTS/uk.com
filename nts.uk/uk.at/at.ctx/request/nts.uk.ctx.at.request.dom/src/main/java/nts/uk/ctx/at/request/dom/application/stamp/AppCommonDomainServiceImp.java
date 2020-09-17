@@ -273,7 +273,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			AppStampOutput appStampOutput) {
 		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
 		// check 
-		this.checkRegisterAndUpdate((AppStamp)application);
+		this.checkRegisterAndUpdate(appStampOutput.getAppStampOptional().orElse(null));
 		
 		
 //		4-1.詳細画面登録前の処理
