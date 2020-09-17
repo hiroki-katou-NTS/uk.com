@@ -5,6 +5,10 @@
 package nts.uk.ctx.at.shared.dom.worktime.flowset;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimezoneCommonSet;
@@ -19,7 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeMethodSet;
  */
 // 流動勤務設定
 @Getter
-public class FlowWorkSetting extends WorkTimeAggregateRoot {
+public class FlowWorkSetting extends WorkTimeAggregateRoot implements WorkSetting {
 
 	/** The company id. */
 	// 会社ID
@@ -103,10 +107,10 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	 * @param other
 	 *            the other
 	 */
-	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {		
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FlowWorkSetting other) {
 		// Dialog J: list stamp timezone
 		this.stampReflectTimezone.correctData(screenMode, other.getStampReflectTimezone());
-		
+
 		// Tab 2 + 5 + 7
 		if (workTimeType.getWorkTimeDailyAtr() == WorkTimeDailyAtr.REGULAR_WORK
 				&& workTimeType.getWorkTimeMethodSet() == WorkTimeMethodSet.FLOW_WORK) {
@@ -116,7 +120,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 			this.halfDayWorkTimezone.correctData(screenMode, other.getHalfDayWorkTimezone());
 			// Tab 7
 			this.offdayWorkTimezone.correctData(screenMode, other.getOffdayWorkTimezone());
-			
+
 			this.restSetting.correctData(screenMode,other.getRestSetting(),other.getHalfDayWorkTimezone().getRestTimezone().isFixRestTime());
 		} else {
 			// Tab 2
@@ -126,7 +130,7 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 			// Tab 7
 			this.offdayWorkTimezone = other.getOffdayWorkTimezone();
 		}
-		
+
 		// Tab 8 -> 16
 		this.commonSetting.correctData(screenMode, other.getCommonSetting());
 	}
@@ -140,13 +144,13 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 	public void correctDefaultData(ScreenMode screenMode) {
 		// Dialog J: list stamp timezone
 		this.stampReflectTimezone.correctDefaultData(screenMode);
-		
+
 		// Tab 2 + 5: restore 平日勤務時間帯
 		this.halfDayWorkTimezone.correctDefaultData(screenMode);
-		
+
 		// Tab 7
 		this.offdayWorkTimezone.correctDefaultData(screenMode);
-		
+
 		// Tab 8 -> 16
 		this.commonSetting.correctDefaultData(screenMode);
 		//Dialog H
@@ -164,4 +168,29 @@ public class FlowWorkSetting extends WorkTimeAggregateRoot {
 			this.halfDayWorkTimezone.correctDefaultData();
 		}
 	}
+
+
+	/**
+	 * 変更可能な勤務時間帯を取得する
+	 * @param require Require
+	 * @return 変更可能な時間帯
+	 */
+	@Override
+	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(Require require) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	/**
+	 * 休憩時間帯を取得する
+	 * @param isWorkingOnDayOff 休出か
+	 * @param amPmAtr 午前午後区分
+	 * @return 休憩時間
+	 */
+	@Override
+	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
 }

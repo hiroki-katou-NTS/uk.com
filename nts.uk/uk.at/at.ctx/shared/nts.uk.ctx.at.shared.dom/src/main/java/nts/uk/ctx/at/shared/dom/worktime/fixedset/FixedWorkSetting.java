@@ -15,6 +15,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.FixedWorkRestSet;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.LegalOTSetting;
@@ -32,7 +36,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 @Getter
 @NoArgsConstructor
 // 固定勤務設定
-public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
+public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
 	// 会社ID
@@ -114,7 +118,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -128,7 +132,7 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -163,22 +167,22 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	 * @param oldDomain
 	 *            the old domain
 	 */
-	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {		
+	public void correctData(ScreenMode screenMode, WorkTimeDivision workTimeType, FixedWorkSetting oldDomain) {
 		// Dialog J: list stamp timezone
 		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = oldDomain.getLstStampReflectTimezone().stream()
 				.collect(Collectors.toMap(
-						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()), 
+						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()),
 						Function.identity()));
 		this.lstStampReflectTimezone.forEach(item -> item.correctData(screenMode, mapStampReflectTimezone.get(
 				new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()))));
-		
+
 		// Tab 8 -> 16
 		this.commonSetting.correctData(screenMode, oldDomain.getCommonSetting());
-		
+
 		// Tab 17
 		if (this.calculationSetting.isPresent()) {
 			this.calculationSetting.get().correctData(screenMode, oldDomain.getCalculationSetting());
-		}		
+		}
 	}
 
 	/**
@@ -190,17 +194,17 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 	public void correctDefaultData(ScreenMode screenMode) {
 		// Tab 2 + 3 + 5: restore 平日勤務時間帯
 		this.lstHalfDayWorkTimezone.forEach(item -> item.correctDefaultData(screenMode));
-		
+
 		// Dialog J: list stamp timezone
 		this.lstStampReflectTimezone.forEach(item -> item.correctDefaultData(screenMode));
 
 		// Tab 8 -> 16
 		this.commonSetting.correctDefaultData(screenMode);
-		
+
 		// Tab 17
 		if (this.calculationSetting.isPresent()) {
 			this.calculationSetting.get().correctDefaultData(screenMode);
-		}	
+		}
 	}
 
 	/**
@@ -245,4 +249,29 @@ public class FixedWorkSetting extends WorkTimeAggregateRoot implements Cloneable
 		}
 		return cloned;
 	}
+
+
+	/**
+	 * 変更可能な勤務時間帯を取得する
+	 * @param require Require
+	 * @return 変更可能な時間帯
+	 */
+	@Override
+	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(Require require) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	/**
+	 * 休憩時間帯を取得する
+	 * @param isWorkingOnDayOff 休出か
+	 * @param amPmAtr 午前午後区分
+	 * @return 休憩時間
+	 */
+	@Override
+	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
 }

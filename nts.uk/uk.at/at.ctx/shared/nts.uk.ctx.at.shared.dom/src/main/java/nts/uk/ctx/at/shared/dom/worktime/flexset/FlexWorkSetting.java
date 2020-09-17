@@ -15,6 +15,10 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 //import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.workrule.BreakTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.ChangeableWorkingTimeZone;
+import nts.uk.ctx.at.shared.dom.worktime.WorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.common.AmPmAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.GoLeavingWorkAtr;
 import nts.uk.ctx.at.shared.dom.worktime.common.StampReflectTimezone;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkNo;
@@ -31,7 +35,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeDivision;
 @Getter
 @NoArgsConstructor
 // フレックス勤務設定
-public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
+public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable, WorkSetting {
 
 	/** The company id. */
 	// 会社ID
@@ -72,7 +76,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 	/** The calculate setting. */
 	// 計算設定
 	private FlexCalcSetting calculateSetting;
-	
+
 	/**
 	 * Instantiates a new flex work setting.
 	 *
@@ -90,7 +94,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		this.lstStampReflectTimezone = memento.getLstStampReflectTimezone();
 		this.calculateSetting = memento.getCalculateSetting();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
@@ -108,7 +112,7 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		memento.setLstStampReflectTimezone(this.lstStampReflectTimezone);
 		memento.setCalculateSetting(this.calculateSetting);
 	}
-	
+
 	/**
 	 * Restore data.
 	 *
@@ -120,21 +124,21 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		// Dialog J: list stamp timezone
 		Map<Entry<WorkNo, GoLeavingWorkAtr>, StampReflectTimezone> mapStampReflectTimezone = other.getLstStampReflectTimezone().stream()
 				.collect(Collectors.toMap(
-						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()), 
+						item -> new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()),
 						Function.identity()));
 		this.lstStampReflectTimezone.forEach(item -> item.correctData(screenMode, mapStampReflectTimezone.get(
 				new ImmutablePair<WorkNo, GoLeavingWorkAtr>(item.getWorkNo(), item.getClassification()))));
-		
+
 		this.commonSetting.correctData(screenMode, other.getCommonSetting());
-		
+
 		this.offdayWorkTime.correctData(screenMode, other);
-		
+
 		this.coreTimeSetting.correctData(screenMode, other.getCoreTimeSetting());
 		//for dialog H
 		this.restSetting.correctData(screenMode, other.getRestSetting(), this.getLstHalfDayWorkTimezone().size() > 0
 				? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime() : false);
 	}
-	
+
 	/**
 	 * Restore default data.
 	 *
@@ -143,11 +147,11 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 	public void correctDefaultData(ScreenMode screenMode) {
 		// Dialog J: list stamp timezone
 		this.lstStampReflectTimezone.forEach(item -> item.correctDefaultData(screenMode));
-		
+
 		this.commonSetting.correctDefaultData(screenMode);
-		
+
 		this.coreTimeSetting.correctDefaultData(screenMode);
-		
+
 		//for dialog H
 		this.restSetting.correctDefaultData(screenMode,this.getLstHalfDayWorkTimezone().size() > 0
 				? this.getLstHalfDayWorkTimezone().get(0).getRestTimezone().isFixRestTime() : false);
@@ -177,5 +181,29 @@ public class FlexWorkSetting extends WorkTimeAggregateRoot implements Cloneable{
 		}
 		return cloned;
 	}
-	
+
+
+	/**
+	 * 変更可能な勤務時間帯を取得する
+	 * @param require Require
+	 * @return 変更可能な時間帯
+	 */
+	@Override
+	public ChangeableWorkingTimeZone getChangeableWorkingTimeZone(Require require) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	/**
+	 * 休憩時間帯を取得する
+	 * @param isWorkingOnDayOff 休出か
+	 * @param amPmAtr 午前午後区分
+	 * @return 休憩時間
+	 */
+	@Override
+	public BreakTimeZone getBreakTimeZone(boolean isWorkingOnDayOff, AmPmAtr amPmAtr) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
 }
