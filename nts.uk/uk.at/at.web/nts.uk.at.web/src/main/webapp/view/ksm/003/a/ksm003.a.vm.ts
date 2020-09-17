@@ -1,6 +1,11 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.ksm003.a {
+
+    import baseService = nts.uk.at.view.kdl023.base.service;
+    import ReflectionSetting = baseService.model.ReflectionSetting;
+    import DayOffSetting = baseService.model.DayOffSetting;
+
     const PATH_API = {
         getListWorkCycleDto: 'screen/at/ksm003/a/get',
         getListWorkCycleDtoByCode: 'screen/at/ksm003/a/getByCode/',
@@ -47,6 +52,7 @@ module nts.uk.at.view.ksm003.a {
         }
 
         mounted() {
+
             let vm = this;
 
             $("#fixedTable").ntsFixedTable({ height: 442, width: 450 });
@@ -56,7 +62,7 @@ module nts.uk.at.view.ksm003.a {
             });
 
             //enable remove button
-            vm.currentCodeList.subscribe(function (codeSelected: string) {
+            vm.currentCodeList.subscribe(function (codeSelected) {
                 vm.enableRemoveItem(codeSelected.length > 0);
             });
 
@@ -112,21 +118,21 @@ module nts.uk.at.view.ksm003.a {
 
         public switchNewMode(): void {
             let self = this;
-            self.$errors('clear').then(() => {
+            //self.$errors('clear');
+            nts.uk.ui.errors.clearAll();
 
-                self.isEditting(false);
-                //model
-                self.selectedCode("");
-                self.selectedName("");
+            self.isEditting(false);
+            //model
+            self.selectedCode("");
+            self.selectedName("");
 
-                self.mainModel().patternName("");
-                self.mainModel().resetModel();
+            self.mainModel().patternName("");
+            self.mainModel().resetModel();
 
-                self.selectedCheckAll(false);
-                self.addNewLineItem(true);
+            self.selectedCheckAll(false);
+            self.addNewLineItem(true);
 
-                $("#inpCode").focus();
-            });
+            $("#inpCode").focus();
         }
 
         enableDisableRemove(flag: boolean, obj: any) {
@@ -159,13 +165,14 @@ module nts.uk.at.view.ksm003.a {
             let lstWorkType: Array<WorkTypeDto> = [];
             let lstWorkTime: Array<WorkTimeDto> = [];
 
-            vm.$blockui('grayout');
+            vm.$blockui('show');
 
             vm.$ajax(PATH_API.getListWorkCycleDtoByCode + patternCode)
                 .done(function (dataRes) {
                     if (dataRes !== undefined) {
 
-                        vm.$errors('clear').then(() => { });
+                        //vm.$errors('clear').then(() => { });
+                        nts.uk.ui.errors.clearAll();
 
                         vm.isEditting(true);
                         vm.dayIsRequired(true);
@@ -219,6 +226,8 @@ module nts.uk.at.view.ksm003.a {
                             vm.$blockui('hide');
 
                         }).always(() => vm.$blockui('hide'));
+                    } else {
+                        $('#inpPattern').focus();
                     }
                 }).always(() => vm.$blockui('hide'));
         }
@@ -231,6 +240,7 @@ module nts.uk.at.view.ksm003.a {
             //sort list by order
             let lstVal: Array<DailyPatternValDto> = dataRes.infos;
             lstVal = _.sortBy(lstVal, (item) => item.dispOrder);
+
             dataRes.infos = lstVal;
 
             //reset pattern Code & Name
@@ -291,6 +301,8 @@ module nts.uk.at.view.ksm003.a {
                 return;
             }
 
+            nts.uk.ui.errors.clearAll();
+
             let maxDisplayOrder = 0;
             dailyPatternVals && dailyPatternVals.map((item, i) => {
                 if (item.dispOrder > maxDisplayOrder) maxDisplayOrder = item.dispOrder;
@@ -347,9 +359,27 @@ module nts.uk.at.view.ksm003.a {
         //click button open Dialog Working
         openDialogWorking() {
             let self = this;
-            self.$window.storage("patternCode", self.selectedCode());
-            self.$window.modal('/view/kdl/023/a/index.xhtml', { title: self.$i18n("KDL023_1") })
-                .then((result: any) => { });
+            let data: ReflectionSetting = {
+                selectedPatternCd: self.selectedCode(),
+                patternStartDate: moment(new Date()).startOf('month').format('YYYY-MM-DD').toString(),
+                reflectionMethod: 0,
+                statutorySetting: self.convertWorktypeSetting(true, ''),
+                holidaySetting: self.convertWorktypeSetting(true, ''),
+                nonStatutorySetting: self.convertWorktypeSetting(true, '')
+            };
+
+            self.$window.storage('reflectionSetting', ko.toJS(data));
+            self.$window.modal("/view/kdl/023/a/index.xhtml", {
+                title: nts.uk.resource.getText("KDL023_1"),
+            }).then(() => { });
+        }
+
+        convertWorktypeSetting(use: boolean, worktypeCode: string): DayOffSetting {
+            let data: DayOffSetting = {
+                useClassification: use,
+                workTypeCode: worktypeCode
+            };
+            return data;
         }
 
         // delete Pattern
@@ -749,7 +779,8 @@ module nts.uk.at.view.ksm003.a {
             vm.selectedCheckAll(false);
             vm.enableRemoveItem(false);
 
-            vm.$errors('clear');
+            //vm.$errors('clear');
+            nts.uk.ui.errors.clearAll();
 
             if (!nts.uk.util.isNullOrEmpty(patternCode)) {
                 vm.getPatternValByPatternCd(patternCode);
