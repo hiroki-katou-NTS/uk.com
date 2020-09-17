@@ -444,7 +444,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             service.getDataWhenChangeModePeriod(param).done((data: any) => {
-                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                }
                 
                 self.saveDataGrid(data);
 
@@ -698,8 +700,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             $("#extable").children().remove();
             $("#extable").removeData();
-//            let ex = "<div id='extable'></div>";
-//            $("#extable-outside").append(ex);
             self.initExTable(dataBindGrid, viewMode, 'stick');
             if (!self.showA9) {
                 $(".toLeft").css("display", "none");
@@ -1841,7 +1841,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             
             service.getDataChangeMonth(param).done((data: any) => {
-                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                }
                 self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
@@ -1897,7 +1899,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             service.getDataChangeMonth(param).done((data: any) => {
-                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                }
+                
                 self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
@@ -1924,6 +1929,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.stopRequest(true);
             });
         }
+        
 
         editMode() {
             let self = this;
@@ -2084,6 +2090,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             
             $("#extable").exTable("updateMode", "stick");
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor : IUserInfor = JSON.parse(data);
+                userInfor.updateMode = 'stick';
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+            
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 $("#extable").exTable("stickMode", "single");
                 // set lai data stick
@@ -2120,11 +2132,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
             
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor : IUserInfor = JSON.parse(data);
-                userInfor.updateMode = 'stick';
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
             nts.uk.ui.block.clear();
         }
 
@@ -2180,6 +2187,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("stickUndo");
             } else if (userInfor.updateMode = 'copyPaste') {
                 $("#extable").exTable("copyUndo");
+            } else if (userInfor.updateMode = 'edit') {
+                console.log('grid chua support undo o mode nay');
             }
             self.checkExitCellUpdated();
         }
@@ -2192,6 +2201,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 $("#extable").exTable("stickRedo");
             } else if (userInfor.updateMode = 'copyPaste') {
                 $("#extable").exTable("copyRedo");
+            } else if (userInfor.updateMode = 'edit') {
+                console.log('grid chua support redo o mode nay');
             }
             self.checkExitCellUpdated();
         }
