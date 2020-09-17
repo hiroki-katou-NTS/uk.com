@@ -1,7 +1,9 @@
 package nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -10,6 +12,8 @@ import java.io.Serializable;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 public class Ksrmt36AgrMgtCmpPk implements Serializable {
 
     private static final long serialVersionUID = 1L;

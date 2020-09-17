@@ -7,9 +7,6 @@ import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtC
 
 public class JpaCompany36AgreedHoursRepository extends JpaRepository implements Company36AgreedHoursRepository {
     private static String FIND_BY_CID;
-
-    private static String FIND_BY_CID_AND_CD;
-
     static {
         StringBuilder builderString = new StringBuilder();
         builderString.append("SELECT");
@@ -19,22 +16,21 @@ public class JpaCompany36AgreedHoursRepository extends JpaRepository implements 
     }
     @Override
     public void insert(AgreementTimeOfCompany domain) {
-
+        this.commandProxy().insert(Ksrmt36AgrMgtCmp.toEntity(domain));
+        this.getEntityManager().flush();
     }
 
     @Override
     public void update(AgreementTimeOfCompany domain) {
 
+        this.commandProxy().update(Ksrmt36AgrMgtCmp.toEntity(domain));
     }
 
     @Override
     public AgreementTimeOfCompany getByCid(String cid) {
         return this.queryProxy().query(FIND_BY_CID, Ksrmt36AgrMgtCmp.class)
                 .setParameter("cid",cid)
-                .getSingle(d->convertToDomain(d)).get();
-    }
-    private AgreementTimeOfCompany convertToDomain(Ksrmt36AgrMgtCmp entity) {
-        return new AgreementTimeOfCompany();
+                .getSingle(Ksrmt36AgrMgtCmp::toDomain).get();
     }
 
 }

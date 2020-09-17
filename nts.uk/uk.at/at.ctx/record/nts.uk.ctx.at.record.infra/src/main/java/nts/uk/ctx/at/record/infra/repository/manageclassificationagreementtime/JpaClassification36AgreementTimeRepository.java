@@ -1,9 +1,16 @@
 package nts.uk.ctx.at.record.infra.repository.manageclassificationagreementtime;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
+import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExecutionLog;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
+import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHist;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHistPK;
+import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuPK;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,22 +39,28 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
     }
     @Override
     public void insert(AgreementTimeOfClassification domain) {
-
+        this.commandProxy().insert(Ksrmt36AgrMgtCls.toEntity(domain));
+        this.getEntityManager().flush();
     }
 
     @Override
     public void update(AgreementTimeOfClassification domain) {
-
+        this.commandProxy().update(Ksrmt36AgrMgtCls.toEntity(domain));
     }
 
     @Override
     public void delete(AgreementTimeOfClassification domain) {
-
+        val entity = this.queryProxy().find(new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode()
+                ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtCls.class);
+        if(entity.isPresent()){
+            this.commandProxy().remove(Ksrmt36AgrMgtCls.class,new Ksrmt36AgrMgtClsPk(domain.getCompanyId(),domain.getClassificationCode()
+                    ,domain.getLaborSystemAtr().value));
+        }
     }
 
     @Override
     public List<AgreementTimeOfClassification> getByCid(String cid) {
-        return this.queryProxy().query(FIND_BY_CID,Ksrmt36AgrMgtCls.class).setParameter("cid",cid).getList(d->convertToDomain(d));
+        return this.queryProxy().query(FIND_BY_CID,Ksrmt36AgrMgtCls.class).setParameter("cid",cid).getList(Ksrmt36AgrMgtCls::toDomain);
     }
 
     @Override
@@ -55,11 +68,9 @@ public class JpaClassification36AgreementTimeRepository extends JpaRepository im
         return this.queryProxy().query(FIND_BY_CID,Ksrmt36AgrMgtCls.class)
                 .setParameter("cid",cid)
                 .setParameter("classificationCode",classificationCode)
-                .getSingle(d->convertToDomain(d));
+                .getSingle(Ksrmt36AgrMgtCls::toDomain);
 
     }
-    private AgreementTimeOfClassification convertToDomain(Ksrmt36AgrMgtCls entity) {
-        return new AgreementTimeOfClassification();
-    }
+
 
 }
