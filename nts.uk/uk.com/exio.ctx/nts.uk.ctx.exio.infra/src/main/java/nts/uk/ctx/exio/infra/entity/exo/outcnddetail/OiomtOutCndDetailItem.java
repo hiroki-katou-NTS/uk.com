@@ -168,7 +168,7 @@ public class OiomtOutCndDetailItem extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
-		@PrimaryKeyJoinColumn(name = "CONDITION_SETTING_CD", referencedColumnName = "CONDITION_SETTING_CD")
+		@PrimaryKeyJoinColumn(name = "CND_SET_CD", referencedColumnName = "CND_SET_CD")
 	})	
 	private OiomtOutCndDetail oiomtOutCndDetail;
 
