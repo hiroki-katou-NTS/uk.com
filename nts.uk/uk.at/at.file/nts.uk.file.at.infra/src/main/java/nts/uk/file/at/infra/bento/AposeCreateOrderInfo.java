@@ -299,8 +299,7 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             Cells cells = worksheet.getCells();
             StringBuilder printArea = new StringBuilder();
             printArea.append("A0:");
-            int startIndex = 3;
-            printHeadData(cells, exportData);
+            int startIndex = printHeadData(3, cells, exportData);
             List<TotalOrderInfoDto> dataRaw = orderInfoDto.getTotalOrderInfoDtoList();
             Map<GeneralDate, List<TotalOrderInfoDto>> map = dataRaw.stream()
                     .collect(Collectors.groupingBy(TotalOrderInfoDto::getReservationDate));
@@ -356,33 +355,41 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
         return result.stream().sorted(Comparator.comparing(TotalOrderInfoDto::getReservationDate)).collect(Collectors.toList());
     }
 
-    private void printHeadData(Cells cells, OrderInfoExportData exportData){
+    private int printHeadData(int startIndex, Cells cells, OrderInfoExportData exportData){
         if(!CollectionUtil.isEmpty(exportData.getOrderInfoDto().getTotalOrderInfoDtoList())){
-            printOutputExt(cells, exportData, 0,2,5);
-        }else if(!CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())){
-            printOutputExt(cells, exportData, 0,1,3);
+            return printOutputExt(startIndex, cells, exportData, 0,2,5);
+        } else if(!CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())){
+            return printOutputExt(startIndex, cells, exportData, 0,1,3);
         }
+		
+		return startIndex;
     }
 
-    private void printOutputExt(Cells cells, OrderInfoExportData exportData,
+    private int printOutputExt(int startIndex, Cells cells, OrderInfoExportData exportData,
                                 int labelCol, int startDataCol, int endDataCol){
         List<PlaceOfWorkInfoDto> placeOfWorkInfoDtos = CollectionUtil.isEmpty(exportData.getOrderInfoDto().getDetailOrderInfoDtoList())
                 ? exportData.getOrderInfoDto().getTotalOrderInfoDtoList().get(0).getPlaceOfWorkInfoDto()
                 : exportData.getOrderInfoDto().getDetailOrderInfoDtoList().get(0).getPlaceOfWorkInfoDtos();
+
         if (exportData.isWorkLocationExport()) {
-            cells.get(0, labelCol).setValue(WOKR_LOCATION_LABEL);
-            cells.get(0, startDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
-            cells.get(0, endDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
-        } else {
-            cells.get(0, labelCol).setValue(WOKR_PLACE_LABEL);
-            cells.get(0, startDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
-            cells.get(0, endDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
-            cells.get(1, startDataCol).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceCode());
-            cells.get(1, endDataCol).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceName());
+            cells.get(startIndex, labelCol).setValue(WOKR_LOCATION_LABEL);
+            cells.get(startIndex, startDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
+            cells.get(startIndex, endDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
+
+			return startIndex + 3;
         }
+
+		cells.get(startIndex, labelCol).setValue(WOKR_PLACE_LABEL);
+		cells.get(startIndex, startDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceCode());
+		cells.get(startIndex, endDataCol).setValue(placeOfWorkInfoDtos.get(0).getPlaceName());
+		cells.get(startIndex + 1, startDataCol).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceCode());
+		cells.get(startIndex + 1, endDataCol).setValue(placeOfWorkInfoDtos.get(placeOfWorkInfoDtos.size()-1).getPlaceName());
+
+		return startIndex + 4;
     }
 
     private int setRowReservationDate(Cells cells, Worksheet template, int startIndex, int col, String dataPrint){
+
         copyRowFromTemplateSheet(cells, template, 7, startIndex - 1);
         copyRowFromTemplateSheet(cells, template, 8, startIndex);
         cells.setRowHeight(startIndex, 9.5);
@@ -457,18 +464,33 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             Worksheet tempSheet = worksheets.get(1);
             settingPage(worksheet, orderInfoDto.getCompanyName(), orderInfoExportData.getOrderInfoDto().getDetailTittle());
             Cells cells = worksheet.getCells();
-            int startIndex = 4;
             StringBuilder printArea = new StringBuilder();
             printArea.append("A0:");
-            printHeadData(cells, orderInfoExportData);
+            int startIndex = printHeadData(0, cells, orderInfoExportData);
 
             List<DetailOrderInfoDto> dataPrint = honeDetailData(orderInfoDto.getDetailOrderInfoDtoList());
+            int page = 0;
             for (DetailOrderInfoDto detailInfo : dataPrint){
+				if (page > 0) {
+					startIndex++;
+					breakPage("M", startIndex, worksheet);
+					// khaidh
+					copyRowFromTemplateSheet(cells, worksheet, 0, startIndex);
+					startIndex++;
+					copyRowFromTemplateSheet(cells, worksheet, 1, startIndex);
+					startIndex++;
+					copyRowFromTemplateSheet(cells, worksheet, 2, startIndex);
+					startIndex += 3;
+					// startIndex = printHeadData(startIndex, cells, orderInfoExportData);
+				}
+
                 GeneralDate start = detailInfo.getReservationDate();
                 String timezone = detailInfo.getClosingTimeName();
                 startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString() + " " + timezone);
                 for (BentoReservedInfoDto item : detailInfo.getBentoReservedInfoDtos())
                     startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
+
+				page++;
             }
             printArea.append("M"+(startIndex-1));
             worksheet.getVerticalPageBreaks().add(12);
