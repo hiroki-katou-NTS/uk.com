@@ -18,11 +18,11 @@ td .control-group {
 }
 
 .nts-fixed-table.cf {
-    padding: 10px 0;
+    padding: 10px;
 }
 
 .panel-frame {
-    margin: 10px 0;
+    margin: 10px;
 }
 
 .inline-radio {
@@ -80,7 +80,7 @@ td .form-label {
 }
 
 .panel.panel-frame {
-    width: fit-content;
+    width: 860px;
 }
 
 #tab-01, #tab-02, #tab-03, #tab-04, #tab-05,
@@ -88,6 +88,7 @@ td .form-label {
 #tab-11, #tab-12, #tab-13, #tab-14, #tab-15 {
     overflow: auto;
     max-height: calc(100vh - 200px);
+    width: auto;
 }
 
 .ui-widget.ui-tabs.vertical > .ui-tabs-nav > li {

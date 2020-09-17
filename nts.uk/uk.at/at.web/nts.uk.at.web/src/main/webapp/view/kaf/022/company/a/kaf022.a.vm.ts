@@ -262,7 +262,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                         )
                     );
                 } else {
-                    self.appTypeSettings.push(new AppTypeSetting(appType.value, getText(self.appTypeLabels[index]),  false, 0));
+                    self.appTypeSettings.push(new AppTypeSetting(appType.value, getText(self.appTypeLabels[index]),  true, 0));
                 }
             });
 
@@ -463,6 +463,12 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             this.appTypeName = appName;
             this.canClassificationChange = ko.observable(canChangeCls);
             this.displayInitialSegment = ko.observable(displayInitSegment);
+
+            this.displayInitialSegment.subscribe(value => {
+                if (value == 2) {
+                    this.canClassificationChange(true);
+                }
+            });
         }
     }
 

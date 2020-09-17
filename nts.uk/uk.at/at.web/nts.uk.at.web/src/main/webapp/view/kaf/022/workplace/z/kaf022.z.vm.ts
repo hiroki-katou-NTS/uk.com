@@ -8,10 +8,11 @@ module nts.uk.at.view.kaf022.z.viewmodel {
     export class ScreenModelZ {
         settings: KnockoutObservableArray<SettingData>;
         colAtrs: Array<any> = [
-            { width: "150px"},
-            { width: "250px"},
-            { width: "327px"}
+            { width: 150 },
+            { width: 250 },
+            { width: 426 }
         ];
+        tableId: string = "fixed-table-cmp";
 
         constructor() {
             const self = this;

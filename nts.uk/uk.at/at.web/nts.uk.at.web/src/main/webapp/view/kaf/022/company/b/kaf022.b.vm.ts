@@ -132,11 +132,11 @@ module nts.uk.at.view.kaf022.b.viewmodel {
         constructor(otLeaveAppCommonSet?: any) {
             this.preExcessDisplaySetting = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.preExcessDisplaySetting : 0);
             this.extratimeExcessAtr = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.extratimeExcessAtr : 0);
-            this.extratimeDisplayAtr = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.extratimeDisplayAtr : 0);
+            this.extratimeDisplayAtr = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.extratimeDisplayAtr : 1);
             this.performanceExcessAtr = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.performanceExcessAtr : 0);
             this.checkOvertimeInstructionRegister = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.checkOvertimeInstructionRegister : 0);
             this.checkDeviationRegister = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.checkDeviationRegister : 0);
-            this.overrideSet = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.overrideSet : 0);
+            this.overrideSet = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.overrideSet : 1);
         }
     }
 
@@ -152,7 +152,7 @@ module nts.uk.at.view.kaf022.b.viewmodel {
             this.requiredInstruction = ko.observable(appDetailSetting ? appDetailSetting.requiredInstruction : 0);
             this.preRequireSet = ko.observable(appDetailSetting ? appDetailSetting.preRequireSet : 0);
             this.timeInputUse = ko.observable(appDetailSetting ? appDetailSetting.timeInputUse : 0);
-            this.timeCalUse = ko.observable(appDetailSetting ? appDetailSetting.timeCalUse : 0);
+            this.timeCalUse = ko.observable(appDetailSetting ? appDetailSetting.timeCalUse : 1);
             this.atworkTimeBeginDisp = ko.observable(appDetailSetting ? appDetailSetting.atworkTimeBeginDisp : 0);
             this.dispSystemTimeWhenNoWorkTime = ko.observable(appDetailSetting ? appDetailSetting.dispSystemTimeWhenNoWorkTime : 0);
         }

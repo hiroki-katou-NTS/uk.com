@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 1060, height: 560 };</script>
+        <script>var dialogSize = { width: 1114, height: 617 };</script>
 
         <com:scriptfile set="IGNITE" />
 
@@ -32,16 +32,18 @@
         </div>
         <div id="contents-area" class="fixed-flex-layout">
             <div class="fixed-flex-layout-left">
-                <span class="label">#{i18n.getText('KAF022_680')}</span>
-                <table id="grid-setting-optional-item"
-                       data-bind="ntsGridList: {
-                                rows: 12,
+                <div style="padding-left: 15px">
+                    <span style="padding-bottom: 10px;" class="label">#{i18n.getText('KAF022_680')}</span>
+                    <table id="grid-setting-optional-item"
+                           data-bind="ntsGridList: {
+                                height: 456,
                                 dataSource: settings,
                                 primaryKey: 'code',
                                 columns: columns,
                                 value: selectedCode,
                                 multiple: false
                             }" />
+                </div>
             </div>
             <div class="fixed-flex-layout-right" data-bind="with: selectedSetting">
                 <div class="control-group valign-center">
@@ -58,7 +60,7 @@
                         constraint: 'OptionalItemApplicationTypeCode',
                         required: true,
                         enable: !$parent.isUpdate()}" />
-                    <input data-bind="ntsTextEditor: {
+                    <input id="optItemAppTypeName" data-bind="ntsTextEditor: {
                         name:'#{i18n.getText('KAF022_629')}',
                         value: name,
                         constraint: 'OptionalItemApplicationTypeName',
@@ -96,7 +98,7 @@
                         <div style="display: inline-block;">
                             <div id="swap-list"
                                  data-bind="ntsSwapList: {
-                                                height: 216,
+                                                height: 288,
                                                 dataSource: $parent.optionalItems,
                                                 primaryKey: 'no',
                                                 columns: $parent.swapColumns,

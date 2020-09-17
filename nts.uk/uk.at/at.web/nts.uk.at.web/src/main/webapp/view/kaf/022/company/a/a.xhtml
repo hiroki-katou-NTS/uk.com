@@ -365,8 +365,8 @@
         <!--A12-->
         <table class="viewmodel-a" id="fixed-table-a12">
             <colgroup>
-                <col width="290px" />
-                <col width="570px" />
+                <col width="280px" />
+                <col width="560px" />
             </colgroup>
             <thead>
                 <tr>
@@ -393,9 +393,9 @@
         <!--A22-->
         <table class="viewmodel-a" id="fixed-table-a22">
             <colgroup>
-                <col width="290px" />
-                <col width="285px" />
-                <col width="285px" />
+                <col width="280px" />
+                <col width="280px" />
+                <col width="280px" />
             </colgroup>
             <thead>
                 <tr>
@@ -418,7 +418,10 @@
                                     enable: $parent.prePostDisplayAtr() == 1 }"/>
                     </td>
                     <td style="text-align: center">
-                        <span data-bind="ntsCheckBox: { checked: canClassificationChange, enable: $parent.prePostDisplayAtr() == 1 }">#{i18n.getText('KAF022_75')}</span>
+                        <span data-bind="ntsCheckBox: {
+                                            checked: canClassificationChange,
+                                            enable: $parent.prePostDisplayAtr() == 1 &amp;&amp; displayInitialSegment() != 2
+                                        }">#{i18n.getText('KAF022_75')}</span>
                     </td>
                 </tr>
             </tbody>
@@ -429,8 +432,8 @@
         <!--A20-->
         <table class="viewmodel-a" id="fixed-table-a20" data-bind="with: appLimitSetting">
             <colgroup>
-                <col width="290px" />
-                <col width="570px" />
+                <col width="280px" />
+                <col width="560px" />
             </colgroup>
             <thead>
                 <tr>
@@ -469,9 +472,9 @@
         <!-- A8 -->
         <table class="viewmodel-a" id="fixed-table-a8">
             <colgroup>
-                <col width="290px" />
-                <col width="285px" />
-                <col width="285px" />
+                <col width="280px" />
+                <col width="280px" />
+                <col width="280px" />
             </colgroup>
             <thead>
                 <tr>
@@ -495,21 +498,21 @@
                         <div
                             data-bind="ntsCheckBox: {
                                         checked: displayFixedReason,
-                                        enable: true
+                                        enable: $parent.prePostDisplayAtr() == 1
                                 }">#{i18n.getText('KAF022_61')}</div>
                     </td>
                     <td style="text-align: center">
                         <div
                             data-bind="ntsCheckBox: {
                                         checked: displayAppReason,
-                                        enable: true
+                                        enable: $parent.prePostDisplayAtr() == 1
                                 }">#{i18n.getText('KAF022_61')}</div>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <button data-bind="click: openScreenS">#{i18n.getText('KAF022_444')}</button>
-        <span class="label">#{i18n.getText('KAF022_742')}</span>
+        <button style="margin-left: 10px" data-bind="click: openScreenS">#{i18n.getText('KAF022_444')}</button>
+        <span style="padding-left: 10px" class="label">#{i18n.getText('KAF022_742')}</span>
     </div>
     <!--A21-->
     <table class="viewmodel-a" id="fixed-table-a21">

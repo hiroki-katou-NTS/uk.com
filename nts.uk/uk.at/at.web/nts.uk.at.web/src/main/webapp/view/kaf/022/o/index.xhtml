@@ -7,7 +7,7 @@
 <body>
 <ui:composition template="../../../../master/dialog.xhtml">
     <ui:define name="htmlHead">
-        <script>var dialogSize = { width: 500, height: 550 };</script>
+        <script>var dialogSize = { width: 670, height: 550 };</script>
         <com:scriptfile set="IGNITE" />
 
         <com:scriptfile path="kaf022.o.service.js" />
@@ -23,12 +23,12 @@
     <ui:define name="content">
         <div id="functions-area">
             <button class="proceed" data-bind="click: saveOTQuotaSet">#{i18n.getText('KAF022_1')}</button>
-            <button style="float: right; margin-right: 20px" data-bind="click: closeDialog">#{i18n.getText('KAF022_435')}</button>
+            <button style="float: right; margin-right: 100px" data-bind="click: closeDialog">#{i18n.getText('KAF022_435')}</button>
         </div>
         <div id="contents-area">
-            <div class="control-group valign-center">
+            <div class="control-group valign-center" style="margin-top: 10px; margin-left: 15px;">
                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_689')}</div>
-                <div id="o2_2"
+                <div id="o2_2" style="width: 185px"
                      data-bind="ntsComboBox: {
 							options: flexWorkOptions,
 							optionsValue: 'code',
@@ -40,12 +40,12 @@
 								{ prop: 'name', length: 8 },
 							]}" />
             </div>
-            <div style="float: left;">
+            <div style="float: left; margin-left: 15px">
                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_19')}</div>
                 <div style="padding-top: 10px">
                     <table id="o3_2"
                            data-bind="ntsGridList: {
-                            rows: 4,
+                            height: 96,
                             dataSource: overtimeAppOptions,
                             primaryKey: 'code',
                             columns: columns,
@@ -54,7 +54,7 @@
                         }" />
                 </div>
             </div>
-            <div id="right-content" style="float: left; padding-left: 40px">
+            <div id="right-content" style="float: left; padding-left: 200px">
                 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_690')}</div>
                 <div style="padding-top: 10px">
                     <table id="fixed-table-o4">
@@ -70,7 +70,7 @@
                         </thead>
                         <tbody data-bind="foreach : overtimeWorkFrames">
                             <tr>
-                                <td>
+                                <td style="text-align: center">
                                     <div data-bind="ntsCheckBox: { checked: checked }"/>
                                 </td>
                                 <td>
