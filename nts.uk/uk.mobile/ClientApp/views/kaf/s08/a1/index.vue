@@ -5,7 +5,7 @@
         <template v-else />
       </div>
       <!-- A2_1 -->
-      <div id="error" class="card bg-danger top-alert uk-text-danger topError">
+      <div v-if="hidden" class="card bg-danger top-alert uk-text-danger topError">
         <button class="btn btn-link uk-text-danger">
           <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
           {{ 'KAFS08_13' | i18n }}
