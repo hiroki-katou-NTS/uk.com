@@ -1,11 +1,12 @@
 package nts.uk.ctx.sys.portal.app.query.pginfomation;
 
+import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.sys.portal.dom.logsettings.PGInfomation;
-import nts.uk.ctx.sys.portal.dom.logsettings.TargetSetting;
 
 @Data
+@Builder
 public class PGInfomationDto {
+	
 	/**
 	 * プログラムID
 	 */
@@ -14,12 +15,12 @@ public class PGInfomationDto {
 	/**
 	 * ログイン履歴の記録
 	 */
-	private TargetSetting loginHistoryRecord;
+	private TargetSettingDto loginHistoryRecord;
 	
 	/**
 	 * 修正履歴の記録
 	 */
-	private TargetSetting editHistoryRecord;
+	private TargetSettingDto editHistoryRecord;
 	
 	/**
 	 * 機能名
@@ -34,16 +35,6 @@ public class PGInfomationDto {
 	/**
 	 * 起動履歴の記録
 	 */
-	private TargetSetting bootHistoryRecord;
+	private TargetSettingDto bootHistoryRecord;
 
-	public static PGInfomationDto fromDomain(PGInfomation pgInfomation) {
-		PGInfomationDto pgInfomationDto = new PGInfomationDto();
-		pgInfomationDto.loginHistoryRecord = pgInfomation.getLoginHistoryRecord();
-		pgInfomationDto.editHistoryRecord = pgInfomation.getEditHistoryRecord();
-		pgInfomationDto.functionName = pgInfomation.getFunctionName();
-		pgInfomationDto.bootHistoryRecord = pgInfomation.getBootHistoryRecord();
-		pgInfomationDto.menuClassification = pgInfomation.getMenuClassification();
-		pgInfomationDto.programId = pgInfomation.getProgramId();
-		return pgInfomationDto;
-	}
 }

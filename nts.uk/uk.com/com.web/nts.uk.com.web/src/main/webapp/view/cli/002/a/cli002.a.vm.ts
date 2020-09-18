@@ -56,6 +56,7 @@ module nts.uk.com.view.cli002.a {
         if ($("#item-list").data("mGrid")) {
           $("#item-list").mGrid("destroy");
         }
+        // アルゴリズム「ログ設定画面表示」を実行する
         vm.getData(newValue);
       });
       vm.selectedSystemCode(0);
@@ -190,7 +191,6 @@ module nts.uk.com.view.cli002.a {
             ]
           },
         ],
-
         features: [
           {
             name: 'CellStyles',

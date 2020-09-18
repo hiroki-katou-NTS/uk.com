@@ -1,26 +1,26 @@
 package nts.uk.ctx.sys.portal.dom.logsettings;
 
 import lombok.Getter;
-import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * ログ設定
- * 
- * @author admin
- *
  */
 @Getter
-@Setter
 public class LogSetting extends AggregateRoot {
+	
 	/**
 	 * システム
 	 */
-	private int system;
+	private System system;
 
-	/** プログラムID **/
+	/**
+	 *  プログラムID 
+	 */
 	private String programId;
 
 	/**
@@ -34,19 +34,19 @@ public class LogSetting extends AggregateRoot {
 	private NotUseAtr loginHistoryRecord;
 
 	/**
-	 * 会社ID
+	 * 起動履歴記録
 	 */
-	private String companyId;
+	private NotUseAtr startHistoryRecord;
 
 	/**
 	 * 修正履歴（データ）記録
 	 */
-	private NotUseAtr editHistoryRecord;
+	private NotUseAtr updateHistoryRecord;
 
 	/**
-	 * 起動履歴記録
+	 * 会社ID
 	 */
-	private NotUseAtr bootHistoryRecord;
+	private String companyId;
 
 	/**
 	 * Hàm khởi tạo domain thông qua memento
@@ -72,13 +72,13 @@ public class LogSetting extends AggregateRoot {
 	 *                                entity
 	 */
 	public void getMemento(MementoGetter mementoGetter) {
-		this.system = mementoGetter.getSystem();
+		this.system = EnumAdaptor.valueOf(mementoGetter.getSystem(), System.class);
 		this.programId = mementoGetter.getProgramId();
-		this.menuClassification = MenuClassification.valueOf(mementoGetter.getMenuClassification());
-		this.loginHistoryRecord = NotUseAtr.valueOf(mementoGetter.getLoginHistoryRecord());
 		this.companyId = mementoGetter.getCompanyId();
-		this.editHistoryRecord = NotUseAtr.valueOf(mementoGetter.getEditHistoryRecord());
-		this.bootHistoryRecord = NotUseAtr.valueOf(mementoGetter.getBootHistoryRecord());
+		this.menuClassification = EnumAdaptor.valueOf(mementoGetter.getMenuClassification(), MenuClassification.class);
+		this.loginHistoryRecord = EnumAdaptor.valueOf(mementoGetter.getLoginHistoryRecord(), NotUseAtr.class);
+		this.startHistoryRecord = EnumAdaptor.valueOf(mementoGetter.getStartHistoryRecord(), NotUseAtr.class);
+		this.updateHistoryRecord = EnumAdaptor.valueOf(mementoGetter.getUpdateHistoryRecord(), NotUseAtr.class);
 	}
 
 	/**
@@ -90,13 +90,13 @@ public class LogSetting extends AggregateRoot {
 	 *                                được quản lý bởi domain
 	 */
 	public void setMemento(MementoSetter mementoSetter) {
-		mementoSetter.setSystem(this.system);
+		mementoSetter.setSystem(this.system.value);
 		mementoSetter.setProgramId(this.programId);
+		mementoSetter.setCompanyId(this.companyId);
 		mementoSetter.setMenuClassification(this.menuClassification.value);
 		mementoSetter.setLoginHistoryRecord(this.loginHistoryRecord.value);
-		mementoSetter.setCompanyId(this.companyId);
-		mementoSetter.setEditHistoryRecord(this.editHistoryRecord.value);
-		mementoSetter.setBootHistoryRecord(this.bootHistoryRecord.value);
+		mementoSetter.setStartHistoryRecord(this.startHistoryRecord.value);
+		mementoSetter.setUpdateHistoryRecord(this.updateHistoryRecord.value);
 	}
 
 	/**
@@ -113,15 +113,15 @@ public class LogSetting extends AggregateRoot {
 
 		void setProgramId(String programId);
 
-		void setMenuClassification(int menuClassification);
-
-		void setLoginHistoryRecord(int loginHistoryRecord);
-
 		void setCompanyId(String companyId);
 
-		void setEditHistoryRecord(int editHistoryRecord);
+		void setMenuClassification(Integer menuClassification);
+		
+		void setLoginHistoryRecord(Integer loginHistoryRecord);
 
-		void setBootHistoryRecord(int bootHistoryRecord);
+		void setStartHistoryRecord(Integer bootHistoryRecord);
+		
+		void setUpdateHistoryRecord(Integer editHistoryRecord);
 	}
 
 	/**
@@ -133,18 +133,18 @@ public class LogSetting extends AggregateRoot {
 	 *
 	 */
 	public static interface MementoGetter {
-		int getSystem();
+		Integer getSystem();
 
 		String getProgramId();
 
-		int getMenuClassification();
-
-		int getLoginHistoryRecord();
-
 		String getCompanyId();
 
-		int getEditHistoryRecord();
+		Integer getMenuClassification();
 
-		int getBootHistoryRecord();
+		Integer getLoginHistoryRecord();
+
+		Integer getStartHistoryRecord();
+
+		Integer getUpdateHistoryRecord();
 	}
 }
