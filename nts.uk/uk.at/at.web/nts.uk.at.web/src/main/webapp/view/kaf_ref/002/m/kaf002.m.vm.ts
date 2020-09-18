@@ -31,6 +31,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         
         isPreAtr: KnockoutObservable<boolean>;
         tabsTemp: any;
+        selectedTemp: any;
         created(params) {
             
             const self = this;
@@ -67,7 +68,23 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.tabsTemp = params.tabs;
             // select first tab
             self.selectedTab = ko.observable( paramTabs[0].id );
-            params.selectedTab = self.selectedTab;
+            self.selectedTemp = params.selectedTab;
+            self.selectedTab.subscribe(value => {
+                if (value) {
+                    if (value == 'tab-1') {
+                        self.selectedTemp(0);
+                    } else if (value == 'tab-2') {
+                        self.selectedTemp(1);
+                    } else if (value == 'tab-3') {
+                        self.selectedTemp(5);
+                    } else if (value == 'tab-4') {
+                        self.selectedTemp(2);
+                    } else if (value == 'tab-5') {
+                        self.selectedTemp(4);
+                    }
+                    
+                }
+            })
             self.isPreAtr.subscribe((value) => {
                if(!_.isNull(value)) {
                    self.loadAll();
@@ -324,7 +341,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             }
             
             
-            if (type == 2) {
+            if (type == STAMPTYPE.GOOUT_RETURNING) {
                 if ($('#' + id)) {
                     $('#' + id).ntsGrid(option2);                    
                 }
@@ -341,7 +358,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
                 if ($('#' + id)) {
-                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');                    
+//                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');                    
+                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource['+ items[0].index +']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
                 }
  
             } else {

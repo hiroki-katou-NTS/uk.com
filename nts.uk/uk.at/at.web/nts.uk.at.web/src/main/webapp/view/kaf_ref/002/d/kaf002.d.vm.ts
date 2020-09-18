@@ -9,6 +9,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/002/d/index.html'
     })
     class Kaf002DViewModel extends ko.ViewModel {
+        printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
         appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
         appDispInfoStartupOutput: any;
         approvalReason: KnockoutObservable<string>;
@@ -63,7 +64,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                        self.selectedCodeReason(String(self.data.appRecordImage.appStampGoOutAtr));
                    }
                    self.bindDataStart(self.data);
-                   
+                   self.printContentOfEachAppDto().opAppStampOutput = res;
                    
                }).fail(res => {
                    console.log('fail');
@@ -77,7 +78,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
               if (i.stampAtr == ko.toJS(self.selectedCode)) {
                   let commentBot = i.bottomComment;
                   self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
-                  let commentTop = i.bottomComment;
+                  let commentTop = i.topComment;
                   self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
               }
            });
@@ -92,6 +93,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
        }) {
            
            const self = this;
+           self.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
            // bind common
            self.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
            self.application = params.application;
@@ -206,6 +208,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    return self.$ajax(API.checkUpdate, commandCheck);
                }
            }).then(res => {
+               if (!res) {
+                   return;
+               }
                if (_.isEmpty(res)) {
                    return self.$ajax(API.update, command);
                } else {

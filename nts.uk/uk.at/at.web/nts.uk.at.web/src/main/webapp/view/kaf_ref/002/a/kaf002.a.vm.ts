@@ -64,7 +64,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
            if (i.stampAtr == ko.toJS(self.selectedCode)) {
                let commentBot = i.bottomComment;
                self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
-               let commentTop = i.bottomComment;
+               let commentTop = i.topComment;
                self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
            }
         });
@@ -73,22 +73,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
         self.selectedTab.subscribe(value => {
-           if (value == 'tab-1') {
-               if(self.selectedCode() != 0) {
-//                   出勤／退勤
-                   self.selectedCode(0);
-               }
-           } else if(value == 'tab-2') {
-//               外出／戻り
-               self.selectedCode(1);
-           } else if(value == 'tab-3') {
-               self.selectedCode(2);
-           } else if(value == 'tab-4') {
-               self.selectedCode(3);
-           } else if(value == 'tab-5') {
-               self.selectedCode(4);
-           } else if(value == 'tab-6') {
-               
+           if (value) {
+               self.selectedCode(Number(value));
            }
         });
         self.selectedCode.subscribe(value => {
@@ -159,7 +145,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
              self.tabs()[1].visible(reflect.outingHourse == 1);
              self.tabs()[2].visible(reflect.breakTime == 1);
              self.tabs()[3].visible(reflect.parentHours == 1);
-             self.tabs()[4].visible(reflect.nurseTime);
+             self.tabs()[4].visible(reflect.nurseTime == 1);
              // not use
              self.tabs()[5].visible(false);
              
@@ -172,6 +158,33 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }
     changeDataSource() {
        
+    }
+    
+    public handleConfirmMessage(listMes: any, res: any) {
+        let vm = this;
+        if (!_.isEmpty(listMes)) {
+            let item = listMes.shift();
+            vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                if (value == 'yes') {
+                    if (_.isEmpty(listMes)) {
+                         return vm.registerData(res);
+                    } else {
+                         vm.handleConfirmMessage(listMes, res);
+                    }
+
+                }
+            });
+        }
+    }
+    registerData(command) {
+        let vm = this; 
+        return vm.$ajax( API.register, command )
+            .done( resRegister => {
+                console.log( resRegister );
+                this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                    location.reload();
+                } );
+            })
     }
     
     public createCommandCheckRegister() {
@@ -197,18 +210,23 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return true;
             }
         }).then(result => {
-            if (result) {
+                if(!result) return;
                 self.$ajax(API.checkRegister, command)
                 .then(res => {
-                    if (res) {
                         let command = {
                                 applicationDto: ko.toJS(self.application),
                                 appStampDto: data.appStampOptional,
                                 appStampOutputDto: self.data,
                                 recoderFlag: RECORD_FLAG_STAMP
                         };
-                        return self.$ajax(API.register, command);
-                    }
+//                        return self.$ajax(API.register, command);
+                        if (_.isEmpty(res)) {
+                            return self.$ajax(API.register, command);
+                        } else {
+                            let listConfirm = _.clone(res);
+                            return self.handleConfirmMessage(listConfirm, command);
+                        }
+
                 })
                 .done(res => {
                     this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
@@ -227,7 +245,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 .always(err => {
                     self.$blockui("hide");
                 })
-            }
         })
         .always(err => {
             self.$blockui("hide");
@@ -244,7 +261,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         self.bindActualData();
         let dataClone = _.clone(self.data);
-        if (_.isNull(dataClone)) {
+        if (!_.isNull(dataClone)) {
             return;
         }
         self.$blockui( "show" );
@@ -259,7 +276,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 console.log(res);
                 self.data = res;
             }).fail(res => {
-                
+                let param;
+                if (res.message) {
+                    param = {message: res.message, messageParams: res.parameterIds};
+                } else {
+                    param = {messageId: res.messageId, messageParams: res.parameterIds}
+                }
+                self.$dialog.error(param);
             }).always(() => {
                 self.$blockui('hide');
             });
@@ -508,7 +531,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -522,7 +545,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -534,14 +557,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                             if (el.endTimeActual) {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                         }   

@@ -86,10 +86,10 @@ public class AppDataCreationImpl implements AppDataCreation {
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
 		List<ListOfApplication> appOutputLst = new ArrayList<>();
-		final List<WorkTimeSetting> workTimeSettingLstFinal = workTimeSettingLst;
-		final List<WorkType> workTypeLstFinal = workTypeLst;
-		this.parallel.forEach(appLst, app -> {
-		// for(Application app : appLst) {
+//		final List<WorkTimeSetting> workTimeSettingLstFinal = workTimeSettingLst;
+//		final List<WorkType> workTypeLstFinal = workTypeLst;
+		// this.parallel.forEach(appLst, app -> {
+		for(Application app : appLst) {
 			// 申請一覧リスト取得マスタ情報 ( Thông tin master lấy applicationLisst)
 			AppInfoMasterOutput appInfoMasterOutput = appListInitialRepository.getListAppMasterInfo(
 					app, 
@@ -104,8 +104,8 @@ public class AppDataCreationImpl implements AppDataCreation {
 			ListOfApplication listOfApp = appContentService.createEachAppData(
 					app, 
 					companyID, 
-					workTimeSettingLstFinal, 
-					workTypeLstFinal, 
+					workTimeSettingLst, 
+					workTypeLst, 
 					Collections.emptyList(), 
 					mode, 
 					opApprovalListDisplaySetting.get(), 
@@ -125,15 +125,15 @@ public class AppDataCreationImpl implements AppDataCreation {
 				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
 				appOutputLst.remove(listOfApp);
 			}
-		//}
-		});
-		// sửa response cho list application (giảm 2s): check null và distinct khi dùng parallel
-		for(ListOfApplication app : appOutputLst.stream().filter(x -> x!=null).collect(Collectors.toList())) {
-			if(appListInfo.getAppLst().stream().map(x -> x.getAppID()).collect(Collectors.toList()).contains(app.getAppID())) {
-				continue;
-			}
-			appListInfo.getAppLst().add(app);
 		}
+		// sửa response cho list application (giảm 2s): check null và distinct khi dùng parallel
+//		for(ListOfApplication app : appOutputLst.stream().filter(x -> x!=null).collect(Collectors.toList())) {
+//			if(appListInfo.getAppLst().stream().map(x -> x.getAppID()).collect(Collectors.toList()).contains(app.getAppID())) {
+//				continue;
+//			}
+//			appListInfo.getAppLst().add(app);
+//		}
+		appListInfo.setAppLst(appOutputLst);
 		// アルゴリズム「申請一覧の並び順を変更する」を実行する
 		appListInfo = this.changeOrderOfAppLst(appListInfo, appListExtractCondition, device);
 		if(mode == ApplicationListAtr.APPROVER && device == PC) {

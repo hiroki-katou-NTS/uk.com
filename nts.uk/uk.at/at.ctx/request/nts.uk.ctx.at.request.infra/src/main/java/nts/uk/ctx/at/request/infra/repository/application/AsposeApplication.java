@@ -17,7 +17,6 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
-import lombok.val;
 import nts.arc.i18n.I18NText;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.time.GeneralDate;
@@ -27,10 +26,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApplicationGenerator;
 import nts.uk.ctx.at.request.dom.application.common.service.print.ApproverPrintDetails;
 import nts.uk.ctx.at.request.dom.application.common.service.print.PrintContentOfApp;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.repository.application.businesstrip.AposeBusinessTrip;
 import nts.uk.ctx.at.request.infra.repository.application.lateleaveearly.AsposeLateLeaveEarly;
 import nts.uk.ctx.at.request.infra.repository.application.stamp.AsposeAppStamp;
 import nts.uk.ctx.at.request.infra.repository.application.workchange.AsposeWorkChange;
+import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -57,26 +58,84 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	@Override
 	public void generate(FileGeneratorContext generatorContext, PrintContentOfApp printContentOfApp, ApplicationType appType) {
 		try {
-			val designer = this.createContext(this.getFileTemplate(appType));
+			AsposeCellsReportContext designer;
+			if (appType == ApplicationType.STAMP_APPLICATION) {
+				if (printContentOfApp.getOpAppStampOutput().isPresent()
+						&& printContentOfApp.getOpAppStampOutput().get().getAppDispInfoStartupOutput()
+								.getAppDetailScreenInfo().isPresent()
+						&& printContentOfApp.getOpAppStampOutput().get().getAppDispInfoStartupOutput()
+								.getAppDetailScreenInfo().get().getApplication().getOpStampRequestMode().isPresent()) {
+					// AnhNM
+					// get file template for KAF002
+					designer = this.createContext(this.getFileTemplateStamp(
+							printContentOfApp.getOpAppStampOutput().get().getAppDispInfoStartupOutput()
+									.getAppDetailScreenInfo().get().getApplication().getOpStampRequestMode().get()));
+				} else {
+					throw new RuntimeException("No data to print");
+				}
+			} else {
+				designer = this.createContext(this.getFileTemplate(appType));
+			}
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
+
+			// AnhNM
+			// copy cell 7th to 8th before import value to header
+			if (appType == ApplicationType.STAMP_APPLICATION) {
+				this.asposeAppStamp.copyCells(worksheet);
+			}
+
 			printPageHeader(worksheet, printContentOfApp);
 			printTopKAF000(worksheet, printContentOfApp);
-			printEachAppContent(worksheet, printContentOfApp, appType);
+
+			// AnhNM
+			// condition for mode: KAF002
+			if (appType == ApplicationType.STAMP_APPLICATION) {
+				printEachAppContent(worksheet, printContentOfApp, appType,
+						printContentOfApp.getOpAppStampOutput().get().getAppDispInfoStartupOutput()
+								.getAppDetailScreenInfo().get().getApplication().getOpStampRequestMode().get());
+			} else {
+				printEachAppContent(worksheet, printContentOfApp, appType, null);
+			}
+
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
-			//SaveOptions saveOptions = SaveOptions.;
-			//designer.saveWithOtherOption(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))), saveOptions);
-			designer.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))));
 
+			if (appType == ApplicationType.STAMP_APPLICATION) {
+				designer.saveAsExcel(this.createNewFile(generatorContext,
+						this.getReportName(this.getFileNameStamp(printContentOfApp.getOpAppStampOutput().get()
+								.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication()
+								.getOpStampRequestMode().get()))));
+			} else {
+				designer.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))));
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
 	}
 
-	private void printEachAppContent(Worksheet worksheet, PrintContentOfApp printContentOfApp, ApplicationType appType) {
+	// AnhNM
+	private String getFileTemplateStamp(StampRequestMode stampRequestMode) {
+		if (stampRequestMode.value == 0) {
+			return "application/KAF002_打刻申請_template.xlsx";
+		} else {
+			return "application/KAF002_レコーダーイメージ申請_template.xlsx";
+		}
+	}
+
+	// AnhNM
+	private String getFileNameStamp(StampRequestMode stampRequestMode) {
+		if (stampRequestMode.value == 0) {
+			return "打刻申請.xlsx";
+		} else {
+			return "レコーダーイメージ申請.xlsx";
+		}
+	}
+
+	private void printEachAppContent(Worksheet worksheet, PrintContentOfApp printContentOfApp, ApplicationType appType,
+			StampRequestMode mode) {
 		Cell reasonLabel;
 		Cell remarkLabel;
 		Cell reasonContent;
@@ -105,12 +164,15 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		case HOLIDAY_WORK_APPLICATION:
 			break;
 		case STAMP_APPLICATION:
-
-			asposeAppStamp.printAppStampContent(worksheet, printContentOfApp);
-			reasonLabel = worksheet.getCells().get("B15");
-			remarkLabel = worksheet.getCells().get("B18");
-			reasonContent = worksheet.getCells().get("D15");
-			printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
+			if (mode.value == 0) {
+				asposeAppStamp.printAppStampContent(worksheet, printContentOfApp);
+			} else {
+				asposeAppStamp.printAppStampContent(worksheet, printContentOfApp);
+				reasonLabel = worksheet.getCells().get("B11");
+				remarkLabel = worksheet.getCells().get("B14");
+				reasonContent = worksheet.getCells().get("D11");
+				printBottomKAF000(reasonLabel, remarkLabel, reasonContent, printContentOfApp);
+			}
 			break;
 		case ANNUAL_HOLIDAY_APPLICATION:
 			break;
@@ -229,7 +291,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				textBoxStatus1.setText(approverPrintDetails1.getApprovalBehaviorAtr().name);
 			} else {
 				sc.get("APPORVAL1").setPrintable(false);
-				
+
 			}
 		} else {
 			sc.get("APPORVAL1").setPrintable(false);
@@ -245,7 +307,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxDate2 = textBoxCollection.get("DATE2");
 				textBoxDate2.setText(approverPrintDetails2.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus2 = textBoxCollection.get("STATUS2");
-				textBoxStatus2.setText(approverPrintDetails2.getApprovalBehaviorAtr().name);			
+				textBoxStatus2.setText(approverPrintDetails2.getApprovalBehaviorAtr().name);
 			} else {
 				sc.get("APPORVAL2").setPrintable(false);
 			}
@@ -254,7 +316,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 		if(printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().size() > 2) {
 			ApproverPrintDetails approverPrintDetails3 = printContentOfApp.getApproverColumnContents().getApproverPrintDetailsLst().get(2);
-			if (approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {				
+			if (approverPrintDetails3.getApprovalBehaviorAtr() == ApprovalBehaviorAtrImport_New.APPROVED) {
 				sc.get("APPORVAL3").setPrintable(true);
 				Cell cellI1 = cells.get("I1");
 				cellI1.setValue(approverPrintDetails3.getAffJobTitleHistoryImport().getJobTitleName());
@@ -281,7 +343,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxDate4 = textBoxCollection.get("DATE4");
 				textBoxDate4.setText(approverPrintDetails4.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus4 = textBoxCollection.get("STATUS4");
-				textBoxStatus4.setText(approverPrintDetails4.getApprovalBehaviorAtr().name);			
+				textBoxStatus4.setText(approverPrintDetails4.getApprovalBehaviorAtr().name);
 			} else {
 				sc.get("APPORVAL4").setPrintable(false);
 			}
@@ -299,7 +361,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 				TextBox textBoxDate5 = textBoxCollection.get("DATE5");
 				textBoxDate5.setText(approverPrintDetails5.getOpApprovalDate().map(x -> x.toString()).orElse(null));
 				TextBox textBoxStatus5 = textBoxCollection.get("STATUS5");
-				textBoxStatus5.setText(approverPrintDetails5.getApprovalBehaviorAtr().name);			
+				textBoxStatus5.setText(approverPrintDetails5.getApprovalBehaviorAtr().name);
 			} else {
 				sc.get("APPORVAL5").setPrintable(false);
 			}
@@ -328,7 +390,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	private void printBottomKAF000(Cell reasonLabel, Cell remarkLabel, Cell reasonContent, PrintContentOfApp printContentOfApp) {
 		reasonLabel.setValue(I18NText.getText("KAF000_52"));
 		remarkLabel.setValue(I18NText.getText("KAF000_59"));
-		String appReasonStandard = Strings.EMPTY; 
+		String appReasonStandard = Strings.EMPTY;
 		if(printContentOfApp.getAppReasonStandard() != null) {
 			appReasonStandard = printContentOfApp.getAppReasonStandard().getReasonTypeItemLst().stream().findFirst()
 				.map(x -> x.getReasonForFixedForm().v()).orElse(null);
@@ -336,7 +398,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		String appReason = Strings.EMPTY;
 		if(printContentOfApp.getOpAppReason() != null) {
 			appReason = printContentOfApp.getOpAppReason().v();
-		} 
+		}
 		reasonContent.setValue(appReasonStandard + "\n" + appReason);
 	}
 

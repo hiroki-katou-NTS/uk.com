@@ -154,7 +154,7 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
-					return self.reload(null, data);
+					return self.reload(data.appListExtractCondition, data.appListInfo);
 					/*self.approvalLstDispSet = data.displaySet;
 					let newItemLst = [];
 					_.each(data.appLst, item => {
@@ -885,7 +885,10 @@ module cmm045.a.viewmodel {
                         // var date = nts.uk.time.formatDate(new Date(item.opAppStartDate), "M/dD");
                         var date = moment(item.opAppStartDate).format("M/D(ddd)");
                         if(item.opAppStartDate !== item.opAppEndDate) {
-                            date.concat("－").concat(moment(item.opAppEndDate).format("M/D(ddd)"))
+                            date = date + "－" + moment(item.opAppEndDate).format("M/D(ddd)");
+                        }
+                        if(item.appType === 10) {
+
                         }
                         $td.html(self.appDateColor(date, "", ""));
                     }
@@ -1008,7 +1011,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
                 ];
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 342 : 325;
+                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 345 : 325;
                 // let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
                 this.setupGrid({
                     withCcg001: true,
@@ -1289,7 +1292,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
                 ]
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 342 : 292;
+                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 357 : 292;
                 // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
                     withCcg001: true,
