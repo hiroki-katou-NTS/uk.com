@@ -1,6 +1,7 @@
 package nts.uk.screen.at.ws.ktgwidget;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -9,8 +10,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.screen.at.app.ktgwidget.KTG027QueryProcessor;
+import nts.uk.screen.at.app.ktgwidget.find.dto.AcquisitionOfOvertimeHoursOfEmployeesDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHours;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimeHoursDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.OvertimedDisplayForSuperiorsDto;
@@ -41,5 +44,12 @@ public class OvertimeHoursWebService extends WebService{
 	@Path("getOvertimedDisplayForSuperiorsDto/{currentOrNextMonth}")
 	public OvertimedDisplayForSuperiorsDto getOvertimeDisplayForSuperiorsDto(@PathParam("currentOrNextMonth") int currentOrNextMonth) {
 		return finder.getOvertimeDisplayForSuperiorsDto(currentOrNextMonth);
+	}
+	
+	@POST
+	@Path("onChangeDate/{closureId}/{targetDate}")
+	public AcquisitionOfOvertimeHoursOfEmployeesDto onChangeDate(@PathParam("closureId") int closureId, @PathParam("targetDate") Integer targetDate) {
+		return finder.getAcquisitionOfOvertimeHoursOfEmployeesDto(closureId, YearMonth.of(targetDate), Optional.ofNullable(null));
+		
 	}
 }

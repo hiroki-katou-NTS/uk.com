@@ -7,20 +7,55 @@ module nts.uk.at.view.ktg027.a.viewmodel {
   export class ViewModel extends ko.ViewModel {
     width: KnockoutObservable<string> = ko.observable("90px");
     width2: KnockoutObservable<string> = ko.observable("30px");
-    year: KnockoutObservable<any> = ko.observable(moment.utc());
+    year: KnockoutObservable<number> = ko.observable(0);
     currentOrNextMonth: KnockoutObservable<number> = ko.observable(0);
+    listEmp: KnockoutObservableArray<PersonEmpBasicInfoImport> = ko.observableArray([]);
+    listOvertimeByEmp: KnockoutObservableArray<any> = ko.observableArray([]);
+    closureId: KnockoutObservable<number> = ko.observable(0);
+    dataRes: any;
     created() {
       const vm = this;
       vm.currentOrNextMonth(parseInt(getShared('cache').currentOrNextMonth));
+      service.getDataInit(vm.currentOrNextMonth()).then((response) => {
+        if(!response.closingInformationForNextMonth){
+          vm.year(response.closingInformationForCurrentMonth.processingYm);
+        }else{
+          vm.year(response.closingInformationForNextMonth.processingYm);
+        }
+        vm.listEmp(response.personalInformationOfSubordinateEmployees);
+        vm.listOvertimeByEmp(response.overtimeOfSubordinateEmployees);
+        vm.closureId(response.closureId);
+      })
+      
     }
 
     mounted() {
       const vm = this;
-      if(vm.currentOrNextMonth() === 1){
-        vm.year(moment(vm.$date.today()));
-      }else {
-        vm.year(moment(vm.$date.today().setMonth(vm.$date.today().getMonth() + 1)));
-      }
+      
+        vm.year.subscribe(function (dateChange) {
+          if(vm.closureId() != 0){
+          vm.onChangeDate(dateChange);
+        }
+      })
+    }
+    
+    // format int to HM
+    public  genTime(data){
+      return formatById("Clock_Short_HM", data);
+    }
+
+    // show chart
+    public genWidthByTime(data){
+      return data/60*2 + "" + "px"
+    }
+    
+    // event when change date
+    private onChangeDate(dateChange: number){
+      const vm = this;
+      service.onChangeDate(vm.closureId(), dateChange).then((response) => {
+        vm.listEmp(response.personalInformationOfSubordinateEmployees);
+        vm.listOvertimeByEmp(response.overtimeOfSubordinateEmployees);
+      });
     }
   }
 
@@ -258,6 +293,7 @@ module nts.uk.at.view.ktg027.a.viewmodel {
     personId: string;
     employeeId: string;
     gender: number;
+    businessName: string;
     birthday: number;
     employeeCode: string;
     jobEntryDate: number;

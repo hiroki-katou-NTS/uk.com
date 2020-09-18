@@ -27,7 +27,7 @@ import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SWkpHistImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriod;
+import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriodExport;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.ClosureResultModel;
 import nts.uk.ctx.at.shared.app.query.workrule.closure.WorkClosureQueryProcessor;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
@@ -364,52 +364,61 @@ public class KTG027QueryProcessor {
 		val cacheCarrier = new CacheCarrier();
 		String sID = AppContexts.user().employeeId();
 		GeneralDate baseDate = GeneralDate.today();
-		//	社員に対応する処理締めを取得する
+		// 社員に対応する処理締めを取得する
 		Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sID, baseDate);
 		OvertimedDisplayForSuperiorsDto result = OvertimedDisplayForSuperiorsDto.builder().build();
-		//	指定した年月の締め期間を取得する
-		List<ClosureHistPeriod> lstClosure = getSpecifyPeriod.getSpecifyPeriod(closure.getClosureMonth().getProcessingYm());
-		//	上長用の時間外時間表示．当月の締め情報．処理年月＝取得したドメインモデル「締め」．当月
-		//	上長用の時間外時間表示．当月の締め情報．締め開始日＝取得した締め期間．開始日
-		//	上長用の時間外時間表示．当月の締め情報．締め終了日＝取得した締め期間．終了日
-		//	上長用の時間外時間表示．ログイン者の締めID＝取得したドメインモデル「締め」．締めID
-		CurrentClosingPeriod closingInformationForCurrentMonth = CurrentClosingPeriod.builder()
-				.processingYm(closure.getClosureMonth().getProcessingYm())
-				.closureEndDate(lstClosure.get(0).getPeriod().end())
-				.closureStartDate(lstClosure.get(0).getPeriod().start()).build();
+		// 指定した年月の締め期間を取得する
+		List<ClosureHistPeriod> lstClosure = getSpecifyPeriod
+				.getSpecifyPeriod(closure.getClosureMonth().getProcessingYm());
+		// 上長用の時間外時間表示．当月の締め情報．処理年月＝取得したドメインモデル「締め」．当月
+		// 上長用の時間外時間表示．当月の締め情報．締め開始日＝取得した締め期間．開始日
+		// 上長用の時間外時間表示．当月の締め情報．締め終了日＝取得した締め期間．終了日
+		// 上長用の時間外時間表示．ログイン者の締めID＝取得したドメインモデル「締め」．締めID
+		CurrentClosingPeriodExport closingInformationForCurrentMonth = CurrentClosingPeriodExport.builder()
+				.processingYm(closure.getClosureMonth().getProcessingYm().v())
+				.closureEndDate(lstClosure.get(0).getPeriod().end().toString())
+				.closureStartDate(lstClosure.get(0).getPeriod().start().toString()).build();
 		result.setClosingInformationForCurrentMonth(closingInformationForCurrentMonth);
 		result.setClosureId(closure.getClosureId().value);
 		// INPUT．表示年月＝当月表示
-		if(currentOrNextMonth == 1) {
-			//	対象年月を指定するログイン者の配下社員の時間外時間の取得
-			AcquisitionOfOvertimeHoursOfEmployeesDto acquisitionOfOvertimeHoursOfEmployeesDto = this.getAcquisitionOfOvertimeHoursOfEmployeesDto(
-					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm(), Optional.of(lstClosure.get(0).getPeriod()));
-			//	上長用の時間外時間表示．配下社員の個人情報＝取得したList＜個人社員基本情報＞
-			//	上長用の時間外時間表示．配下社員の時間外時間＝取得したList＜管理期間の36協定時間＞
-			result.setOvertimeOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getOvertimeOfSubordinateEmployees());
-			result.setPersonalInformationOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees());
-		
-		}else {
-			//	INPUT．表示年月＝翌月表示
-			//	指定した年月の期間を算出する
-			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
-					requireService.createRequire(),result.getClosureId(),closure.getClosureMonth().getProcessingYm().addMonths(1));
-			//	上長用の時間外時間表示．翌月の締め情報．処理年月＝上長用の時間外時間表示．当月の締め情報．処理年月．AddMonth(1)
-			//	上長用の時間外時間表示．翌月の締め情報．締め期間＝取得した締め期間
-			CurrentClosingPeriod closingInformationForNextMonth = CurrentClosingPeriod.builder()
-					.processingYm(closure.getClosureMonth().getProcessingYm().addMonths(1))
-					.closureEndDate(datePeriodClosure.end())
-					.closureStartDate(datePeriodClosure.start()).build();
+		if (currentOrNextMonth == 1) {
+			// 対象年月を指定するログイン者の配下社員の時間外時間の取得
+			AcquisitionOfOvertimeHoursOfEmployeesDto acquisitionOfOvertimeHoursOfEmployeesDto = this
+					.getAcquisitionOfOvertimeHoursOfEmployeesDto(closure.getClosureId().value,
+							closure.getClosureMonth().getProcessingYm(), Optional.of(lstClosure.get(0).getPeriod()));
+			// 上長用の時間外時間表示．配下社員の個人情報＝取得したList＜個人社員基本情報＞
+			// 上長用の時間外時間表示．配下社員の時間外時間＝取得したList＜管理期間の36協定時間＞
+
+			result.setOvertimeOfSubordinateEmployees(
+					acquisitionOfOvertimeHoursOfEmployeesDto.getOvertimeOfSubordinateEmployees());
+			result.setPersonalInformationOfSubordinateEmployees(
+					acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees());
+
+		} else {
+			// INPUT．表示年月＝翌月表示
+			// 指定した年月の期間を算出する
+			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(requireService.createRequire(),
+					result.getClosureId(), closure.getClosureMonth().getProcessingYm().addMonths(1));
+			// 上長用の時間外時間表示．翌月の締め情報．処理年月＝上長用の時間外時間表示．当月の締め情報．処理年月．AddMonth(1)
+			// 上長用の時間外時間表示．翌月の締め情報．締め期間＝取得した締め期間
+			CurrentClosingPeriodExport closingInformationForNextMonth = CurrentClosingPeriodExport.builder()
+					.processingYm(closure.getClosureMonth().getProcessingYm().addMonths(1).v())
+					.closureEndDate(datePeriodClosure.end().toString())
+					.closureStartDate(datePeriodClosure.start().toString()).build();
 			result.setClosingInformationForNextMonth(closingInformationForNextMonth);
-			//	/対象年月を指定するログイン者の配下社員の時間外時間の取得
-			AcquisitionOfOvertimeHoursOfEmployeesDto acquisitionOfOvertimeHoursOfEmployeesDto = this.getAcquisitionOfOvertimeHoursOfEmployeesDto(
-					closure.getClosureId().value, closure.getClosureMonth().getProcessingYm().addMonths(1), Optional.ofNullable(datePeriodClosure));
-			//	上長用の時間外時間表示．配下社員の個人情報＝取得したList＜個人社員基本情報＞
-			//	上長用の時間外時間表示．配下社員の時間外時間＝取得したList＜管理期間の36協定時間＞
-			result.setOvertimeOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getOvertimeOfSubordinateEmployees());
-			result.setPersonalInformationOfSubordinateEmployees(acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees());
-			}
-				
+			// /対象年月を指定するログイン者の配下社員の時間外時間の取得
+			AcquisitionOfOvertimeHoursOfEmployeesDto acquisitionOfOvertimeHoursOfEmployeesDto = this
+					.getAcquisitionOfOvertimeHoursOfEmployeesDto(closure.getClosureId().value,
+							closure.getClosureMonth().getProcessingYm().addMonths(1),
+							Optional.ofNullable(datePeriodClosure));
+			// 上長用の時間外時間表示．配下社員の個人情報＝取得したList＜個人社員基本情報＞
+			// 上長用の時間外時間表示．配下社員の時間外時間＝取得したList＜管理期間の36協定時間＞
+			result.setOvertimeOfSubordinateEmployees(
+					acquisitionOfOvertimeHoursOfEmployeesDto.getOvertimeOfSubordinateEmployees());
+			result.setPersonalInformationOfSubordinateEmployees(
+					acquisitionOfOvertimeHoursOfEmployeesDto.getPersonalInformationOfSubordinateEmployees());
+		}
+
 		return result;
 	}
 	
@@ -420,41 +429,66 @@ public class KTG027QueryProcessor {
 	 * @param referencePeriod
 	 * @return
 	 */
-	 public AcquisitionOfOvertimeHoursOfEmployeesDto getAcquisitionOfOvertimeHoursOfEmployeesDto(int closureId, YearMonth
-	 targetDate, Optional<DatePeriod> referencePeriodParam) {
+	public AcquisitionOfOvertimeHoursOfEmployeesDto getAcquisitionOfOvertimeHoursOfEmployeesDto(int closureId,
+			YearMonth targetDate, Optional<DatePeriod> referencePeriodParam) {
 		String cID = AppContexts.user().companyId();
 		String sID = AppContexts.user().employeeId();
 		Optional<DatePeriod> referencePeriod;
-	 if(referencePeriodParam.isPresent()) { 
-		//	基準期間＝INPUT．基準期間
-		referencePeriod = referencePeriodParam;
-	 }else {
-		//	指定した年月の期間を算出する
-		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(requireService.createRequire(),closureId,targetDate);
-		//	基準期間＝取得した締め期間
-		referencePeriod = Optional.ofNullable(datePeriodClosure);
-	 }
-	 //	[RQ30]社員所属職場履歴を取得
-	SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriod.get().end());
-	
-	//	[No.573]職場の下位職場を基準職場を含めて取得する
-	List<String> lstWorkPlaceId = workplacePub.getAllChildrenOfWorkplaceId(cID, referencePeriod.get().end(),sWkpHistImport.getWorkplaceId());
-	
-	//	期間内に特定の職場（List）に所属している社員一覧を取得
-	List<String> lstEmployeeId = syEmployeeFnAdapter.getListEmployeeId(lstWorkPlaceId, referencePeriodParam.get());
-	
-	//	社員ID(List)から個人社員基本情報を取得
-	List<PersonEmpBasicInfoImport> listPersonEmp = empEmployeeAdapter.getPerEmpBasicInfo(lstEmployeeId);
-	//	指定する年月と指定する社員の時間外時間の取得
-	List<AgreementTimeDetail> listAgreementTimeDetail = this.getOvertimeByEmployee(lstEmployeeId, targetDate, referencePeriod.get().end());
-	
-	//	OUTPUT：
-	//	List＜個人社員基本情報＞
-	//	List＜管理期間の36協定時間＞
-	AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
-			.personalInformationOfSubordinateEmployees(listPersonEmp)
-			.OvertimeOfSubordinateEmployees(listAgreementTimeDetail).build();
-	return result;
+		List<AgreementTimeList36> lstAgreementTimeList36 = new ArrayList<AgreementTimeList36>();
+		if (referencePeriodParam.isPresent()) {
+			// 基準期間＝INPUT．基準期間
+			referencePeriod = referencePeriodParam;
+		} else {
+			// 指定した年月の期間を算出する
+			DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(requireService.createRequire(), closureId,
+					targetDate);
+			// 基準期間＝取得した締め期間
+			referencePeriod = Optional.ofNullable(datePeriodClosure);
+		}
+		// [RQ30]社員所属職場履歴を取得
+		SWkpHistImport sWkpHistImport = employeeAdapter.getSWkpHistByEmployeeID(sID, referencePeriod.get().end());
+
+		// [No.573]職場の下位職場を基準職場を含めて取得する
+		List<String> lstWorkPlaceId = workplacePub.getAllChildrenOfWorkplaceId(cID, referencePeriod.get().end(),
+				sWkpHistImport.getWorkplaceId());
+
+		// 期間内に特定の職場（List）に所属している社員一覧を取得
+		List<String> lstEmployeeId = syEmployeeFnAdapter.getListEmployeeId(lstWorkPlaceId, referencePeriod.get());
+
+		// 社員ID(List)から個人社員基本情報を取得
+		List<PersonEmpBasicInfoImport> listPersonEmp = empEmployeeAdapter.getPerEmpBasicInfo(lstEmployeeId);
+		// 指定する年月と指定する社員の時間外時間の取得
+		List<AgreementTimeDetail> listAgreementTimeDetail = this.getOvertimeByEmployee(lstEmployeeId, targetDate,
+				referencePeriod.get().end());
+
+		for (AgreementTimeDetail item : listAgreementTimeDetail) {
+			Optional<PersonEmpBasicInfoImport> personInfor = listPersonEmp.stream()
+					.filter(c -> c.getEmployeeId().equals(item.getEmployeeId())).findFirst();
+			if (!personInfor.isPresent()) {
+				break;
+			}
+			AgreementTimeList36 agreementTimeList36 = new AgreementTimeList36(item.getEmployeeId(), personInfor.get().getBusinessName(), null,
+					new AgreementTimeOfMonthlyDto(!item.getConfirmed().isPresent()? 0 : item.getConfirmed().get().getAgreementTime().v(),
+							!item.getConfirmed().isPresent() ? 0 : item.getConfirmed().get().getLimitErrorTime().v(),
+							!item.getConfirmed().isPresent() ? 0 : item.getConfirmed().get().getLimitAlarmTime().v(),
+							!item.getConfirmed().isPresent() ? 0 : (!item.getConfirmed().get().getExceptionLimitErrorTime().isPresent() ? item.getConfirmed().get().getLimitErrorTime().v() :item.getConfirmed().get().getExceptionLimitErrorTime().get().v()),
+							!item.getConfirmed().isPresent() ? 0 : (!item.getConfirmed().get().getExceptionLimitAlarmTime().isPresent() ? 0 :item.getConfirmed().get().getExceptionLimitAlarmTime().get().v()),
+							!item.getConfirmed().isPresent() ? 0 : item.getConfirmed().get().getStatus().value),
+					new AgreementTimeOfMonthlyDto(!item.getAfterAppReflect().isPresent()? 0 : item.getAfterAppReflect().get().getAgreementTime().v(),
+							!item.getAfterAppReflect().isPresent() ? 0 : item.getAfterAppReflect().get().getLimitErrorTime().v(),
+							!item.getAfterAppReflect().isPresent() ? 0 : item.getAfterAppReflect().get().getLimitAlarmTime().v(),
+							!item.getAfterAppReflect().isPresent() ? 0 : (!item.getAfterAppReflect().get().getExceptionLimitErrorTime().isPresent() ? 0 :item.getAfterAppReflect().get().getExceptionLimitErrorTime().get().v()),
+							!item.getAfterAppReflect().isPresent() ? 0 : (!item.getAfterAppReflect().get().getExceptionLimitAlarmTime().isPresent() ? 0 :item.getAfterAppReflect().get().getExceptionLimitAlarmTime().get().v()),
+							!item.getAfterAppReflect().isPresent() ? 0 : item.getAfterAppReflect().get().getStatus().value));
+			lstAgreementTimeList36.add(agreementTimeList36);
+		}
+		// OUTPUT：
+		// List＜個人社員基本情報＞
+		// List＜管理期間の36協定時間＞
+		AcquisitionOfOvertimeHoursOfEmployeesDto result = AcquisitionOfOvertimeHoursOfEmployeesDto.builder()
+				.personalInformationOfSubordinateEmployees(listPersonEmp)
+				.OvertimeOfSubordinateEmployees(lstAgreementTimeList36).build();
+		return result;
 	}
 	 
 	 /**
@@ -464,52 +498,46 @@ public class KTG027QueryProcessor {
 	 * @param endDate
 	 * @return
 	 */ 
-	public List<AgreementTimeDetail> getOvertimeByEmployee(List<String> lstEmployeeId, YearMonth targetDate, GeneralDate endDate){
+	public List<AgreementTimeDetail> getOvertimeByEmployee(List<String> lstEmployeeId, YearMonth targetDate,
+			GeneralDate endDate) {
 		val require = requireService.createRequire();
 		val cacheCarrier = new CacheCarrier();
 		String cId = AppContexts.user().companyId();
 		GeneralDate baseDate = GeneralDate.today();
 		List<AgreementTimeDetail> listAgreementTimeDetail = new ArrayList<AgreementTimeDetail>();
-		for(String empCode: lstEmployeeId) {
-			//	社員に対応する処理締めを取得する
+		for (String empCode : lstEmployeeId) {
+			// 社員に対応する処理締めを取得する
 			Closure closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, empCode, baseDate);
-			//	[取得したドメインモデル「締め」．当月<=INPUT．対象年月]がtrue
-			if(closure.getClosureMonth().getProcessingYm().lessThanOrEqualTo(targetDate) ) {
-				// sau khi có update cần phải sửa
-				// 【NO.333】36協定時間の取得: 
-				 listAgreementTimeDetail = GetAgreementTime.get(
-						requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate, closure.getClosureId());
-			}else {
-				// 【NO.333】36協定時間の取得: 
-				 listAgreementTimeDetail = GetAgreementTime.get(
-						requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate, closure.getClosureId());
+			// [取得したドメインモデル「締め」．当月<=INPUT．対象年月]がtrue
+			if (closure != null) {
+				if (closure.getClosureMonth().getProcessingYm().lessThanOrEqualTo(targetDate)) {
+					// sau khi có update cần phải sửa
+					// 【NO.333】36協定時間の取得:
+					List<AgreementTimeDetail> lstAgreementTimeDetail = GetAgreementTime.get(
+							requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate,
+							closure.getClosureId());
+					if (lstAgreementTimeDetail.isEmpty()) {
+						throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
+					}
+					for (AgreementTimeDetail item : lstAgreementTimeDetail) {
+						listAgreementTimeDetail.add(item);
+					}
+				} else {
+					// 【NO.333】36協定時間の取得:
+					List<AgreementTimeDetail> lstAgreementTimeDetail = GetAgreementTime.get(
+							requireService.createRequire(), new CacheCarrier(), cId, lstEmployeeId, targetDate,
+							closure.getClosureId());
+					if (lstAgreementTimeDetail.isEmpty()) {
+						throw new RuntimeException("ListAgreementTimeDetailRQ333 Empty");
+					}
+					for (AgreementTimeDetail item : lstAgreementTimeDetail) {
+						listAgreementTimeDetail.add(item);
+					}
+				}
 			}
-		} 
+		}
+
 		// sủa lại sau khi có update 30/09
 		return listAgreementTimeDetail;
-	}
-	
-	/**
-	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG027_時間外労働時間の表示(上長用).ユースケース.表示期間を切り替える.システム.翌月の締め情報を取得する
-	 * @param data
-	 * @return
-	 */ 
-	public OvertimedDisplayForSuperiorsDto getClosingInfomationForNextMonth(OvertimedDisplayForSuperiorsDto data) {
-		//	上長用の時間外時間表示．翌月の締め情報をチェックするNullじゃない
-		if(data.getClosingInformationForNextMonth() != null) {
-			return data;
-		}
-		//	上長用の時間外時間表示．翌月の締め情報をチェックするNull
-		//	指定した年月の期間を算出する
-		DatePeriod datePeriodClosure = ClosureService.getClosurePeriod(
-					requireService.createRequire(),data.getClosureId(),data.getClosingInformationForCurrentMonth().getProcessingYm());
-		//	上長用の時間外時間表示．翌月の締め情報を更新する
-		CurrentClosingPeriod closingInformationForNextMonth = CurrentClosingPeriod.builder()
-				.processingYm(data.getClosingInformationForCurrentMonth().getProcessingYm().addMonths(1))
-				.closureEndDate(datePeriodClosure.end())
-				.closureStartDate(datePeriodClosure.start()).build();
-		data.setClosingInformationForNextMonth(closingInformationForNextMonth);
-		//	更新後の上長用の時間外時間表示を返す
-		return data;
 	}
 }

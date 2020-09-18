@@ -4,8 +4,7 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
-import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriod;
+import nts.uk.ctx.at.request.dom.application.common.adapter.closure.CurrentClosingPeriodExport;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 
 @Data
@@ -18,15 +17,15 @@ public class OvertimedDisplayForSuperiorsDto {
 	private Integer closureId;
 
 	//	当月の締め情報
-	private CurrentClosingPeriod closingInformationForCurrentMonth;
+	private CurrentClosingPeriodExport closingInformationForCurrentMonth;
 	
 	//	配下社員の個人情報
 	private List<PersonEmpBasicInfoImport> personalInformationOfSubordinateEmployees;
 	
 	//	配下社員の時間外時間
-	private List<AgreementTimeDetail> overtimeOfSubordinateEmployees;
+	private List<AgreementTimeList36> overtimeOfSubordinateEmployees;
 	
 	//	翌月の締め情報
-	private CurrentClosingPeriod closingInformationForNextMonth;
+	private CurrentClosingPeriodExport closingInformationForNextMonth;
 	
 }

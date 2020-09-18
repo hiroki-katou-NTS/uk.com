@@ -62,7 +62,19 @@
               </tr>
             </thead>
             <tbody>
-              <tr class="mw-200">
+              <com:ko-foreach bind="listOvertimeByEmp">
+                <tr class="mw-200">
+                  <td class="border-bot"><a href="#" data-bind="text: empName"></a></td>
+                  <td class="border-bot text-center"><a href="#" data-bind="text: $parent.genTime(confirmed.limitAlarmTime)"></a></td>
+                  <td class="pl-20 inline-flex position-relative">
+                    <div class="label non-statutory-bg-color" data-bind="style: { width: $parent.genWidthByTime(confirmed.limitAlarmTime)}"></div>
+                    <div class="label time-outside-bg-color" data-bind="style: { width: $parent.genWidthByTime(confirmed.limitAlarmTime)}"></div> 
+                    <div class="dashed45"></div>
+                    <div class="dashed80"></div>
+                  </td>
+                </tr>
+              </com:ko-foreach>
+              <!-- <tr class="mw-200">
                 <td class="border-bot pr-20"><a href="#">大塚　太郎B</a></td>
                 <td class="border-bot"><a href="#">60:00</a></td>
                 <td class="pl-20 inline-flex position-relative">
@@ -191,7 +203,7 @@
                   <div class="dashed45"></div>
                   <div class="dashed80"></div>
                 </td>
-              </tr>
+              </tr> -->
             </tbody>
           </table>  
         </div>
