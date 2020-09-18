@@ -132,9 +132,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
         mounted() {
             const self = this;
-            self.loadAll();
             // change tabs by root component
             self.tabsTemp(self.tabs());
+            self.loadAll();
             
         }
         loadAll() {

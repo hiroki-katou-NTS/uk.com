@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.breakouting.reflectgoingoutandreturn.reflecttimeofday;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,6 +17,7 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 /**
@@ -35,7 +37,7 @@ public class ReflectTimeOfDay {
 			List<TimeFrame> listTimeFrame, AttendanceAtr attendanceAtr,WorkTimeCode workTimeCode) {
 		//時間帯の枠を用意する
 		prepareTimeFrame.prepareTimeFrame(maxNumberOfUses, listTimeFrame, attendanceAtr);
-		
+		listTimeFrame = listTimeFrame.stream().sorted(Comparator.comparing(TimeFrame::getFrameNo)).collect(Collectors.toList());
 		for(int i = 0;i<listTimeFrame.size();i++) {
 			TimeFrame timeFrame = listTimeFrame.get(i);
 			Optional<TimeFrame> timeFrameNext = Optional.empty();

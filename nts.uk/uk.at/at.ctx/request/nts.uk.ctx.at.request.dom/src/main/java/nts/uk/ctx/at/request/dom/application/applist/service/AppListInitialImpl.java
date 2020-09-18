@@ -454,12 +454,6 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public AppListInfo getAppListByApproval(AppListExtractCondition param, int device, AppListInfo appListInfo) {
-		String employeeID = AppContexts.user().employeeId();
-		if(param.getOpListEmployeeID().isPresent()) {
-			if(!CollectionUtil.isEmpty(param.getOpListEmployeeID().get())) {
-				employeeID = param.getOpListEmployeeID().get().get(0);
-			}
-		}
 		// 承認区分から承認ルートを取得
 		Map<String, List<ApprovalPhaseStateImport_New>> mapApprInfo = this.mergeAppAndPhase_New(
 			new DatePeriod(param.getPeriodStartDate(), param.getPeriodEndDate()), 
@@ -469,7 +463,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			param.getOpAgentApprovalStatus().orElse(false), 
 			param.getOpRemandStatus().orElse(false),
 			param.getOpCancelStatus().orElse(false),
-			employeeID,
+			AppContexts.user().employeeId(),
 			Collections.emptyList());
 		// 取得したドメインモデル「承認ルートインスタンス」をチェック
 		if(mapApprInfo.isEmpty()) {
@@ -497,7 +491,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				param.getOpListOfAppTypes().map(x -> {
 					return x.stream().filter(y -> y.isChoice()).map(y -> y.getAppType().value).collect(Collectors.toList());
 				}).orElse(Collections.emptyList()),
-				prePostAtrLst);
+				prePostAtrLst,
+				param.getOpListEmployeeID().isPresent() ? param.getOpListEmployeeID().get() : Collections.emptyList());
 		// 申請一覧リストのデータを作成
 		appListInfo = appDataCreation.createAppLstData(
 				companyID, 

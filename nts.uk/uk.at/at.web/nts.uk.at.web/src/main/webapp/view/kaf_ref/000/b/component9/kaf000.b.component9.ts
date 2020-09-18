@@ -23,5 +23,10 @@ module nts.uk.at.view.kaf000_ref.a.component9.viewmodel {
         mounted() {
             const vm = this;
         }
+
+		formatTime(value: any) {
+			let s = nts.uk.time.format.byId(`ClockDay_Short_HM`, value);	
+			return s.replace(/当日/g,'');
+		}
     }
 }

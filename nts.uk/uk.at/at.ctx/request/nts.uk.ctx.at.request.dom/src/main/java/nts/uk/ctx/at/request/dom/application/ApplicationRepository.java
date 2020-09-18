@@ -67,7 +67,7 @@ public interface ApplicationRepository {
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus, List<Integer> lstType,
-			List<PrePostAtr> prePostAtrLst);
+			List<PrePostAtr> prePostAtrLst, List<String> employeeIDLst);
 
 	/**
 	 * get List Application Pre

@@ -106,12 +106,14 @@ public class GetScheduleOfShift {
 		System.out.println("thoi gian get data Schedule cua "+ param.listSid.size() + " employee: " + duration + "ms");	
 		
 		List<WorkInfoOfDailyAttendance>  workInfoOfDailyAttendances = new ArrayList<WorkInfoOfDailyAttendance>();
-		mngStatusAndWScheMap.forEach((k,v)->{
+		mngStatusAndWScheMap.forEach((k, v) -> {
 			if (v.isPresent()) {
 				WorkInfoOfDailyAttendance workInfo = v.get().getWorkInfo();
-				workInfoOfDailyAttendances.add(workInfo);
+				if (workInfo.getRecordInfo().getWorkTypeCode() != null) {
+					workInfoOfDailyAttendances.add(workInfo);
+				}
 			}
-		});	
+		});
 		// step 1 end
 		
 		// step 2 
