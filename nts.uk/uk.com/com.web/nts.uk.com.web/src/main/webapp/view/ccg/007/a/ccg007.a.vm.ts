@@ -11,9 +11,9 @@ module nts.uk.pr.view.ccg007.a {
                 var self = this;
                 self.contractCode = ko.observable('');
                 self.password = ko.observable('');
-                let bottomLabels = nts.uk.resource.getText("CCG007_11").split('|');
+                let bottomLabels = nts.uk.resource.getText("CCG007_11").split(' 　');
                 self.bottomText1 = ko.observable(bottomLabels[0]);
-                self.bottomText2 = ko.observable(bottomLabels[1]);
+                self.bottomText2 = ko.observable(' 　' + bottomLabels[1]);
             }
             start(): JQueryPromise<void> {
                 var self = this;

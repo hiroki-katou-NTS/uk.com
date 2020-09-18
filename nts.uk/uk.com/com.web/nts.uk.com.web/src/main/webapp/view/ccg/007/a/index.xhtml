@@ -14,16 +14,16 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div style="padding: 10px; position: relative;" data-bind="text: '#{i18n.getText('CCG007_10')}'"></div>
+				<div class="p10" style="position: relative;" data-bind="text: '#{i18n.getText('CCG007_10')}'"></div>
 				<div>
 					<table>
 						<tr>
-							<td style="width: 100px; padding: 10px;">
+							<td class="w100 p10">
 								<div data-bind="ntsLabel">
 									<label data-bind="text: '#{i18n.getText('CCG007_1')}'"><br /></label>
 								</div>
 							</td>
-							<td style="width: 230px; padding: 10px;">
+							<td class="w230 p10">
 								<div>
 									<input tabindex="1" id="contract-code-inp" data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_1')}',
@@ -37,12 +37,12 @@
 							</td>
 						</tr>
 						<tr>
-							<td style="width: 100px; padding: 10px;">
+							<td class="w100 p10">
 								<div data-bind="ntsLabel">
 									<label data-bind="text: '#{i18n.getText('CCG007_61')}'"><br /></label>
 								</div>
 							</td>
-							<td style="width: 230px; padding: 10px;">
+							<td class="w230 p10">
 								<div>
 									<input tabindex="2" id="password-input" data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_2')}',
@@ -58,8 +58,8 @@
 					</table>
 				</div>
 			</div>
-			<div id="functions-area-bottom" style="height: 75px;">
-				<div style="padding: 0px 10px 5px 10px; text-align: left; line-height: 0.6em; height: 2em;">
+			<div id="functions-area-bottom">
+				<div id="functions-area-bottom-label">
 					<div data-bind="text: bottomText1"></div>
 					<br />
 					<div data-bind="text: bottomText2"></div>
