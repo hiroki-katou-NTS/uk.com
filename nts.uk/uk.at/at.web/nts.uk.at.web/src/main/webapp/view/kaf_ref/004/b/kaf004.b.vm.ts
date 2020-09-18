@@ -153,35 +153,67 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 vm.workManagement.scheWorkTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2));
 
 
+            // if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 0 }).length > 0) {
+            //     vm.workManagement.workTime(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr));
+            // } else {
+            //     if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime !== null) {
+            //         vm.workManagement.workTime(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime));
+            //     }
+            // }
+
+            // if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 }).length > 0) {
+            //     vm.workManagement.leaveTime(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr));
+            // } else {
+            //     if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime !== null) {
+            //         vm.workManagement.leaveTime(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime));
+            //     }
+            // }
+
+            // if (_.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 0 }).length > 0) {
+            //     vm.workManagement.workTime2(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr));
+            // } else {
+            //     if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2 !== null) {
+            //         vm.workManagement.workTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2));
+            //     }
+            // }
+
+            // if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 }).length > 0) {
+            //     vm.workManagement.leaveTime2(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr));
+            // } else {
+            //     if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2 !== null) {
+            //         vm.workManagement.leaveTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2));
+            //     }
+            // }
+
             if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 0 }).length > 0) {
-                vm.workManagement.workTime(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr));
+                vm.workManagement.workTime(_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr);
             } else {
                 if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime !== null) {
-                    vm.workManagement.workTime(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime));
+                    vm.workManagement.workTime(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
                 }
             }
 
             if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 }).length > 0) {
-                vm.workManagement.leaveTime(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr));
+                vm.workManagement.leaveTime(_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr);
             } else {
                 if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime !== null) {
-                    vm.workManagement.leaveTime(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime));
+                    vm.workManagement.leaveTime(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
                 }
             }
 
             if (_.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 0 }).length > 0) {
-                vm.workManagement.workTime2(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr));
+                vm.workManagement.workTime2(_.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 0 })[0].timeWithDayAttr);
             } else {
                 if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2 !== null) {
-                    vm.workManagement.workTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2));
+                    vm.workManagement.workTime2(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
                 }
             }
 
             if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 }).length > 0) {
-                vm.workManagement.leaveTime2(nts.uk.time.format.byId("Clock_Short_HM", _.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr));
+                vm.workManagement.leaveTime2(_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr);
             } else {
                 if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2 !== null) {
-                    vm.workManagement.leaveTime2(nts.uk.time.format.byId("Clock_Short_HM", vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2));
+                    vm.workManagement.leaveTime2(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
                 }
             }
 
