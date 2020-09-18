@@ -64,7 +64,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public mode: boolean = true;
     public user: any;
     public data: any;
+    public hidden: boolean = false;
     public businessTripActualContent: [] = [];
+    public appID: string = ' ' ;
 
     public created() {
         const vm = this;
@@ -113,12 +115,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
     }
 
     //nhảy đến step three với các điều kiện
-    public nextToStepThree() {
+    public nextToStepThree(appID: string) {
         const vm = this;
-        //vm.checkBeforeRegister();
         vm.registerData();
+        vm.appID = appID;
+        //vm.checkBeforeRegister();
         //vm.toggleErrorAlert();
-        this.$emit('nextToStepThree');
+        //this.$emit('nextToStepThree');
     }
     //hàm xử lý ẩn/hiện alert error
     public toggleErrorAlert() {
@@ -134,7 +137,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
 
     //quay trở lại step one
     public prevStepOne() {
-        this.$emit('prevStepOne', {});
+        const vm = this;
+        vm.$emit('prevStepOne', {});
     }
 
     //hàm check trước khi register
@@ -155,15 +159,19 @@ export class KafS08A2Component extends KafS00ShrComponent {
             tripInfos
         };
         // check before registering application
-        this.$http.post('at', API.checkBeforeApply, {
+        vm.$http.post('at', API.checkBeforeApply, {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
             businessTripDto: paramsBusinessTrip
         }).then((res: any) => {
-            //nếu không có lỗi gọi hàm register
-            alert('no error');
             vm.registerData();
         }).catch((res: any) => {
+            vm.hidden = true;
+            vm.$mask('hide');
+            if (_.isEmpty(res.data)) {
+                vm.$modal.error({ messageId: 'Msg_1703', messageParams: ['Com_Employment'] }).then(() => vm.$close());
+            }
 
+            return;
         }
         );
     }
@@ -187,7 +195,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //hàm register when click A50_2 button
     public registerData() {
         const vm = this;
-        this.$mask('show');
+        vm.$mask('show');
         let tripInfos: Array<BusinessTripInfo> = _.map(vm.businessTripActualContent, function (item: any) {
             return {
                 date: item.date,
@@ -203,20 +211,23 @@ export class KafS08A2Component extends KafS00ShrComponent {
             tripInfos,
         };
 
-        this.$http.post('at', API.register, {
-            businessTrip: paramsBusinessTrip,
-            businessTripInfoOutput: vm.data.businessTripInfoOutput,
-            application: vm.application
-        }).then((res: any) => {
-            alert('đăng ký thành công');
-            let data = res.data;
-            console.log (res.data);
-            this.$mask('hide');
-            // KAFS00_D_申請登録後画面に移動する
-            //this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
-        }).catch((res: any) => {
-            vm.handleErrorMessage(res);
-        });
+        if (paramsBusinessTrip.tripInfos.length != 0) {
+            vm.$http.post('at', API.register, {
+                businessTrip: paramsBusinessTrip,
+                businessTripInfoOutput: vm.data.businessTripInfoOutput,
+                application: vm.application
+            }).then((res: any) => {
+                vm.appID = res.data.appID;
+                vm.$emit('nextToStepThree');
+                vm.$mask('hide');
+                // KAFS00_D_申請登録後画面に移動する
+                //this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+            });
+        } else {
+            vm.$modal.error({ messageId: 'Msg_1703' });
+
+            return ;
+        }
     }
 }
 

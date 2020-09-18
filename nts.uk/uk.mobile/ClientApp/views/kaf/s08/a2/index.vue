@@ -1,7 +1,7 @@
 <template>
   <div class="kafs08a2 mt-4 mx-n3">
     <!-- A2_1 -->
-    <div id="error" class="card bg-danger top-alert uk-text-danger topError">
+    <div v-if="hidden" class="card bg-danger top-alert uk-text-danger topError">
               <button class="btn btn-link uk-text-danger">
                 <i class="fa fa-exclamation-circle" aria-hidden="true" ></i>
                 {{ 'KAFS08_13' | i18n }}
@@ -19,13 +19,14 @@
       <label class="uk-text-dark-gray">{{'KAFS08_23' | i18n}}</label>
       <!-- A7_4 -->
       <div class="a7_4">
-        <label>{{application.opAppStartDate + ' ~ ' + application.opAppEndDate}}</label>
+        <label v-if="application.opAppStartDate == application.opAppEndDate">{{application.opAppStartDate}}</label>
+        <label v-else >{{application.opAppStartDate + ' ~ ' + application.opAppEndDate}} </label>
       </div>
       <!-- A7_5 -->
       <div class="uk-text-dark-gray">
         <label class="a7_5">{{'KAFS08_28' | i18n}}</label>
         <!-- A7_6 -->
-        <label>{{(departureTime || 0) | timewd}}</label>
+        <label>{{(departureTime || 0 ) | timewd}}</label>
       </div>
       <!-- A7_7 -->
       <div class="uk-text-dark-gray">
