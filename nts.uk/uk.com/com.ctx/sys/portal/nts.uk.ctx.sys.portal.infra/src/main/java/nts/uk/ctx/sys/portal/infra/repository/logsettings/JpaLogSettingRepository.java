@@ -7,6 +7,7 @@ import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSettingRepository;
 import nts.uk.ctx.sys.portal.infra.entity.logsettings.SrcdtLogSetting;
 import nts.uk.ctx.sys.portal.infra.entity.logsettings.SrcdtLogSettingPK;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class JpaLogSettingRepository extends JpaRepository implements LogSettingRepository {
@@ -37,12 +38,14 @@ public class JpaLogSettingRepository extends JpaRepository implements LogSetting
 
 	public SrcdtLogSetting insertToEntity(LogSetting domain) {
 		SrcdtLogSettingPK srcdtLogSettingPK = new SrcdtLogSettingPK(domain.getCompanyId(), domain.getSystem(),
-				domain.getMenuClassification().value, domain.getProgramId());
+				domain.getProgramId());
 		SrcdtLogSetting srcdtLogSetting = new SrcdtLogSetting();
 		srcdtLogSetting.srcdtLogSettingPK = srcdtLogSettingPK;
+		srcdtLogSetting.menuClassification = domain.getMenuClassification().value;
 		srcdtLogSetting.loginLogUseAtr = domain.getLoginHistoryRecord().value;
 		srcdtLogSetting.startupLogUseAtr = domain.getBootHistoryRecord().value;
 		srcdtLogSetting.updateLogUseAtr = domain.getEditHistoryRecord().value;
+		srcdtLogSetting.contractCd = AppContexts.user().contractCode();
 		return srcdtLogSetting;
 	}
 

@@ -64,14 +64,14 @@ public class LogSettingFinder {
 			int systemType = logSettingDtos.get(0).getSystem();
 			
 			/**
-			 * ドメインモデル「ログ設定」を削除
-			 */
-			this.deleteLogSetting(companyId, systemType);
-			
-			/**
 			 * ループを開始する　
 			 */
-			for (LogSetting l : logSettings) {		
+			for (LogSetting l : logSettings) {
+				/**
+				 * ドメインモデル「ログ設定」を削除
+				 */
+				this.deleteLogSetting(companyId, systemType);
+				
 				/**
 				 * ドメインモデル「ログ設定」に追加する
 				 */

@@ -30,6 +30,12 @@ public class SrcdtLogSetting extends UkJpaEntity
 
 	@EmbeddedId
 	public SrcdtLogSettingPK srcdtLogSettingPK;
+	
+	@Column(name = "MENU_ATR")
+	public int menuClassification;
+	
+	@Column(name = "CONTRACT_CD")
+	public String contractCd;
 
 	/**
 	 * ログイン履歴記録.するしない区分
@@ -107,14 +113,6 @@ public class SrcdtLogSetting extends UkJpaEntity
 			return this.srcdtLogSettingPK.getProgramId();
 		}
 		return null;
-	}
-
-	@Override
-	public int getMenuClassification() {
-		if (this.srcdtLogSettingPK != null) {
-			return this.srcdtLogSettingPK.getMenuClassification();
-		}
-		return 0;
 	}
 
 	@Override

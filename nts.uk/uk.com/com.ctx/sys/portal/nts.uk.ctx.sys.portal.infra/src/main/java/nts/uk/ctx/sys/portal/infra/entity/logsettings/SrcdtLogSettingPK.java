@@ -20,9 +20,6 @@ public class SrcdtLogSettingPK {
 	@Column(name = "SYSTEM")
 	public int system;
 	
-	@Column(name = "MENU_ATR")
-	public int menuClassification;
-	
 	@Column(name = "PROGRAM_ID")
 	public String programId;
 }
