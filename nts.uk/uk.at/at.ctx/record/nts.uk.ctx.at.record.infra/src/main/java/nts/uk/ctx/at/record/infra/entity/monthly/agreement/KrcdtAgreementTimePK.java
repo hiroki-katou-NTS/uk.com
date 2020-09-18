@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class KrcdtMonMngAgreTimePK implements Serializable {
+public class KrcdtAgreementTimePK implements Serializable {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;

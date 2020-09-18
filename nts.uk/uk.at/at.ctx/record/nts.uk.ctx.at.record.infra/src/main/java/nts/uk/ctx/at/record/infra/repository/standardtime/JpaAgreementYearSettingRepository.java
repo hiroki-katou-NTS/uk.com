@@ -116,8 +116,9 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		
 		if (entity.isPresent()) {
 			KmkmtAgeementYearSetting data = entity.get();
-			data.errorOneYear = new BigDecimal(agreementYearSetting.getErrorOneYear().valueAsMinutes());
-			data.alarmOneYear = new BigDecimal(agreementYearSetting.getAlarmOneYear().valueAsMinutes());
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			data.errorOneYear = new BigDecimal(agreementYearSetting.getErrorOneYear().valueAsMinutes());
+//			data.alarmOneYear = new BigDecimal(agreementYearSetting.getAlarmOneYear().valueAsMinutes());
 			
 			this.commandProxy().update(data);
 		}
@@ -165,9 +166,10 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 
 		entity.kmkmtAgeementYearSettingPK = new KmkmtAgeementYearSettingPK();
 		entity.kmkmtAgeementYearSettingPK.employeeId = agreementYearSetting.getEmployeeId();
-		entity.kmkmtAgeementYearSettingPK.yearValue = new BigDecimal(agreementYearSetting.getYearValue());
-		entity.alarmOneYear = new BigDecimal(agreementYearSetting.getAlarmOneYear().v());
-		entity.errorOneYear = new BigDecimal(agreementYearSetting.getErrorOneYear().v());
+		entity.kmkmtAgeementYearSettingPK.yearValue = new BigDecimal(agreementYearSetting.getYearValue().v());
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		entity.alarmOneYear = new BigDecimal(agreementYearSetting.getAlarmOneYear().v());
+//		entity.errorOneYear = new BigDecimal(agreementYearSetting.getErrorOneYear().v());
 
 		return entity;
 	}

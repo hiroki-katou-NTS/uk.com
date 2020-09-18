@@ -29,4 +29,11 @@ public class BasicAgreementSetting extends AggregateRoot {
 		this.multiMonth = multiMonth;
 		this.overMaxTimes = overMaxTimes;
 	}
+	
+	/** 上限超過の残回数を計算する */
+	public int calcRemainTimes(int overTimes) {
+		
+		/** 上限超過の残回数を計算する */
+		return this.overMaxTimes.value - overTimes;
+	}
 }

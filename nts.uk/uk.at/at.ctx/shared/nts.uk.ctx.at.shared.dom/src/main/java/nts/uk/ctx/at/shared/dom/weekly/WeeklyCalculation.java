@@ -41,8 +41,6 @@ public class WeeklyCalculation implements Cloneable {
 	private AggregateTotalWorkingTime totalWorkingTime;
 	/** 総拘束時間 */
 	private AggregateTotalTimeSpentAtWork totalSpentTime;
-	/** 36協定時間 */
-	private AgreementTimeOfWeekly agreementTime;
 
 	/** 会社ID */
 	private String companyId;
@@ -60,7 +58,6 @@ public class WeeklyCalculation implements Cloneable {
 		this.flexTime = new FlexTimeByPeriod();
 		this.totalWorkingTime = new AggregateTotalWorkingTime();
 		this.totalSpentTime = new AggregateTotalTimeSpentAtWork();
-		this.agreementTime = new AgreementTimeOfWeekly();
 	}
 
 	/**
@@ -69,22 +66,19 @@ public class WeeklyCalculation implements Cloneable {
 	 * @param flexTime フレックス時間
 	 * @param totalWorkingTime 総労働時間
 	 * @param totalSpentTime 総拘束時間
-	 * @param agreementTime 36協定時間
 	 * @return 月別実績の月の計算
 	 */
 	public static WeeklyCalculation of(
 			RegAndIrgTimeOfWeekly regAndIrgTime,
 			FlexTimeByPeriod flexTime,
 			AggregateTotalWorkingTime totalWorkingTime,
-			AggregateTotalTimeSpentAtWork totalSpentTime,
-			AgreementTimeOfWeekly agreementTime){
+			AggregateTotalTimeSpentAtWork totalSpentTime){
 		
 		WeeklyCalculation domain = new WeeklyCalculation();
 		domain.regAndIrgTime = regAndIrgTime;
 		domain.flexTime = flexTime;
 		domain.totalWorkingTime = totalWorkingTime;
 		domain.totalSpentTime = totalSpentTime;
-		domain.agreementTime = agreementTime;
 		return domain;
 	}
 	
@@ -96,7 +90,6 @@ public class WeeklyCalculation implements Cloneable {
 			cloned.flexTime = this.flexTime.clone();
 			cloned.totalWorkingTime = this.totalWorkingTime.clone();
 			cloned.totalSpentTime = this.totalSpentTime.clone();
-			cloned.agreementTime = this.agreementTime.clone();
 		}
 		catch (Exception e){
 			throw new RuntimeException("WeeklyCalculation clone error.");

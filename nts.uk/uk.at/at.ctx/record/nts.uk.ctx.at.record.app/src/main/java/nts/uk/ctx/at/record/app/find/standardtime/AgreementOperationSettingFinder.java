@@ -57,15 +57,16 @@ public class AgreementOperationSettingFinder {
 		agreementOperationSettingDto.setYearlyWorkTableAtrEnum(yearlyWorkTableAtrEnum);
 		if (agreementOperationSetting.isPresent()) {
 			AgreementOperationSettingDetailDto agreementOperationSettingDetailDto = new AgreementOperationSettingDetailDto();
-			agreementOperationSettingDetailDto.setAlarmListAtr(agreementOperationSetting.get().getAlarmListAtr().value);
-			agreementOperationSettingDetailDto.setClosingDateAtr(agreementOperationSetting.get().getClosingDateAtr().value);
-			agreementOperationSettingDetailDto.setClosingDateType(agreementOperationSetting.get().getClosingDateType().value);
-			agreementOperationSettingDetailDto
-					.setNumberTimesOverLimitType(agreementOperationSetting.get().getNumberTimesOverLimitType().value);
-			agreementOperationSettingDetailDto.setStartingMonth(agreementOperationSetting.get().getStartingMonth().value);
-			agreementOperationSettingDetailDto
-					.setYearlyWorkTableAtr(agreementOperationSetting.get().getYearlyWorkTableAtr().value);
-			agreementOperationSettingDto.setAgreementOperationSettingDetailDto(agreementOperationSettingDetailDto);
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			agreementOperationSettingDetailDto.setAlarmListAtr(agreementOperationSetting.get().getAlarmListAtr().value);
+//			agreementOperationSettingDetailDto.setClosingDateAtr(agreementOperationSetting.get().getClosingDateAtr().value);
+//			agreementOperationSettingDetailDto.setClosingDateType(agreementOperationSetting.get().getClosingDateType().value);
+//			agreementOperationSettingDetailDto
+//					.setNumberTimesOverLimitType(agreementOperationSetting.get().getNumberTimesOverLimitType().value);
+//			agreementOperationSettingDetailDto.setStartingMonth(agreementOperationSetting.get().getStartingMonth().value);
+//			agreementOperationSettingDetailDto
+//					.setYearlyWorkTableAtr(agreementOperationSetting.get().getYearlyWorkTableAtr().value);
+//			agreementOperationSettingDto.setAgreementOperationSettingDetailDto(agreementOperationSettingDetailDto);
 		}
 
 		return agreementOperationSettingDto;

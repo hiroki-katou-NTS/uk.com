@@ -55,20 +55,23 @@ public class JpaAgreementTimeCompanyRepository extends JpaRepository implements 
 
 		entity.kmkmtAgeementTimeCompanyPK = new KmkmtAgeementTimeCompanyPK();
 		entity.kmkmtAgeementTimeCompanyPK.companyId = agreementTimeOfCompany.getCompanyId();
-		entity.kmkmtAgeementTimeCompanyPK.basicSettingId = agreementTimeOfCompany.getBasicSettingId();
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		entity.kmkmtAgeementTimeCompanyPK.basicSettingId = agreementTimeOfCompany.getBasicSettingId();
 		entity.laborSystemAtr = agreementTimeOfCompany.getLaborSystemAtr().value;
-		entity.upperMonth = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
-		entity.upperMonthAverage = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
+//		entity.upperMonth = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonth().valueAsMinutes();
+//		entity.upperMonthAverage = agreementTimeOfCompany.getUpperAgreementSetting().getUpperMonthAverage().valueAsMinutes();
 
 		return entity;
 	}
 
 	private static AgreementTimeOfCompany toDomain(KmkmtAgeementTimeCompany kmkmtAgeementTimeCompany) {
-		AgreementTimeOfCompany agreementTimeOfCompany = AgreementTimeOfCompany.createFromJavaType(
-				kmkmtAgeementTimeCompany.kmkmtAgeementTimeCompanyPK.companyId,
-				kmkmtAgeementTimeCompany.kmkmtAgeementTimeCompanyPK.basicSettingId,
-				kmkmtAgeementTimeCompany.laborSystemAtr, kmkmtAgeementTimeCompany.upperMonth, kmkmtAgeementTimeCompany.upperMonthAverage);
-		return agreementTimeOfCompany;
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return null;
+//		AgreementTimeOfCompany agreementTimeOfCompany = AgreementTimeOfCompany.createFromJavaType(
+//				kmkmtAgeementTimeCompany.kmkmtAgeementTimeCompanyPK.companyId,
+//				kmkmtAgeementTimeCompany.kmkmtAgeementTimeCompanyPK.basicSettingId,
+//				kmkmtAgeementTimeCompany.laborSystemAtr, kmkmtAgeementTimeCompany.upperMonth, kmkmtAgeementTimeCompany.upperMonthAverage);
+//		return agreementTimeOfCompany;
 	}
 
 }

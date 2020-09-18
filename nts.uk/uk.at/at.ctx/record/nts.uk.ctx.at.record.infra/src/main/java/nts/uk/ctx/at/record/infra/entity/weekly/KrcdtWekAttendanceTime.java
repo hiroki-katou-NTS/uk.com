@@ -95,7 +95,6 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.Reser
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
 import nts.uk.ctx.at.shared.dom.shortworktime.ChildCareAtr;
-import nts.uk.ctx.at.shared.dom.weekly.AgreementTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.weekly.AttendanceTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.weekly.RegAndIrgTimeOfWeekly;
 import nts.uk.ctx.at.shared.dom.weekly.WeeklyCalculation;
@@ -751,16 +750,12 @@ public class KrcdtWekAttendanceTime extends UkJpaEntity implements Serializable 
 				new AttendanceTimeMonth(this.spentVarienceTime),
 				new AttendanceTimeMonth(this.totalSpentTime));
 		
-		// 週別の36協定時間
-		val agreementTime = new AgreementTimeOfWeekly();
-		
 		// 週別の計算
 		val weeklyCalculation = WeeklyCalculation.of(
 				regAndIrgTime,
 				flexTime,
 				totalWorkingTime,
-				totalSpentTime,
-				agreementTime);
+				totalSpentTime);
 
 		// 月別実績の休業
 		List<AggregateLeaveDays> fixLeaveDaysList = new ArrayList<>();

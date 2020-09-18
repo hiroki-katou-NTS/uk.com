@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonthTime;
 /**
  * 36協定上限月間時間
  * @author Doan Duy Hung
@@ -22,11 +22,11 @@ public class Time36AgreeUpperLimitMonth extends DomainObject {
 	/*
 	 * 上限時間
 	 */
-	private AgreementOneMonth upperLimitTime;
+	private AgreementOneMonthTime upperLimitTime;
 	
 	public Time36AgreeUpperLimitMonth(){
 		this.overTime = new AttendanceTimeMonth(0);
-		this.upperLimitTime = new AgreementOneMonth(0);
+		this.upperLimitTime = new AgreementOneMonthTime(0);
 	}
 	
 	public void updateOverTime(Integer overTime){
@@ -34,6 +34,6 @@ public class Time36AgreeUpperLimitMonth extends DomainObject {
 	}
 	
 	public void updateUpperLimitTime(Integer upperLimitTime){
-		this.upperLimitTime = new AgreementOneMonth(upperLimitTime);
+		this.upperLimitTime = new AgreementOneMonthTime(upperLimitTime);
 	}
 }

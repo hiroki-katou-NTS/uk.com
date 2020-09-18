@@ -131,8 +131,9 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		if (entity.isPresent()) {
 			KmkmtAgreementMonthSet data = entity.get();
 			
-			data.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().valueAsMinutes());
-			data.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().valueAsMinutes());
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			data.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().valueAsMinutes());
+//			data.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().valueAsMinutes());
 			
 			this.commandProxy().update(data);
 		}
@@ -174,8 +175,9 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		entity.kmkmtAgreementMonthSetPK = new KmkmtAgreementMonthSetPK();
 		entity.kmkmtAgreementMonthSetPK.employeeId = agreementMonthSetting.getEmployeeId();
 		entity.kmkmtAgreementMonthSetPK.yearmonthValue = new BigDecimal(agreementMonthSetting.getYearMonthValue().v());
-		entity.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().v());
-		entity.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().v());
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		entity.alarmOneMonth = new BigDecimal(agreementMonthSetting.getAlarmOneMonth().v());
+//		entity.errorOneMonth = new BigDecimal(agreementMonthSetting.getErrorOneMonth().v());
 
 		return entity;
 	}

@@ -100,6 +100,12 @@ public class MonthlyCalculatingDailys {
 	public static MonthlyCalculatingDailys loadData(RequireM4 require, String employeeId,
 			DatePeriod period, MonAggrEmployeeSettings settings){
 		
+		MonthlyCalculatingDailys result = load(require, employeeId, period);
+		
+		return correctExamDayTime(result, settings);
+	}
+
+	private static MonthlyCalculatingDailys load(RequireM4 require, String employeeId, DatePeriod period) {
 		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
 		
 		// 取得期間を　開始日-1月～終了日+1月　とする　（前月の最終週、36協定締め日違いの集計のため）
@@ -112,9 +118,8 @@ public class MonthlyCalculatingDailys {
 		}
 		
 		// 共通処理
-		result.loadDataCommon(require, employeeId, period, settings);
-		
-		return correctExamDayTime(result, settings);
+		result.loadDataCommon(require, employeeId, period);
+		return result;
 	}
 	
 	/**
@@ -231,6 +236,92 @@ public class MonthlyCalculatingDailys {
 
 	}
 	
+	public static MonthlyCalculatingDailys create(RequireM4 require, String sid, 
+			DatePeriod period, List<IntegrationOfDaily> dailyWorks, 
+			WorkingConditionItem workingConditionItem) {
+		
+		MonthlyCalculatingDailys result;
+		
+		if (dailyWorks.isEmpty()) {
+			
+			result = MonthlyCalculatingDailys.load(require, sid, period);
+		} else {
+			
+			result = createFrom(dailyWorks);	
+		}
+		
+		return correctExamDayTime(result, workingConditionItem);
+
+	}
+
+	private static MonthlyCalculatingDailys createFrom(List<IntegrationOfDaily> dailyWorks) {
+		// 期間内の全データ読み込み
+		MonthlyCalculatingDailys result = new MonthlyCalculatingDailys();
+		
+		for (val dailyWork : dailyWorks){
+			
+			// 日別実績の勤怠時間がない日は、反映しない
+			if (!dailyWork.getAttendanceTimeOfDailyPerformance().isPresent()) continue;
+			
+			// 日別実績の勤怠時間
+			val attendanceTimeOfDaily = dailyWork.getAttendanceTimeOfDailyPerformance().get();
+			val ymd = dailyWork.getYmd();
+			result.attendanceTimeOfDailyMap.put(ymd, attendanceTimeOfDaily);
+			
+			// 日別実績の出退勤
+			if (dailyWork.getAttendanceLeave().isPresent()){
+				val timeLeaveOfDaily = dailyWork.getAttendanceLeave().get();
+				result.timeLeaveOfDailyMap.put(ymd, timeLeaveOfDaily);
+			}
+			
+			// 日別実績の勤務情報
+			if (dailyWork.getWorkInformation() != null){
+				val workInfoOfDaily = dailyWork.getWorkInformation();
+				result.workInfoOfDailyMap.put(ymd, workInfoOfDaily);
+			}
+			
+			// 日別実績の臨時出退勤
+			if (dailyWork.getTempTime().isPresent()){
+				val temporaryTimeOfDaily = dailyWork.getTempTime().get();
+				result.temporaryTimeOfDailyMap.put(ymd, temporaryTimeOfDaily);
+			}
+			
+			// 日別実績の特定日区分
+			if (dailyWork.getSpecDateAttr().isPresent()){
+				val specificDateAttrOfDaily = dailyWork.getSpecDateAttr().get();
+				result.specificDateAttrOfDailyMap.put(ymd, specificDateAttrOfDaily);
+			}
+			
+			// 社員の日別実績エラー一覧
+			if (dailyWork.getEmployeeError() != null){
+				val itrPerError = result.employeeDailyPerErrorList.listIterator();
+				while (itrPerError.hasNext()){
+					val perError = itrPerError.next();
+					if (perError == null){
+						itrPerError.remove();
+						continue;
+					}
+					if (perError.getDate() == null) continue;
+					if (perError.getDate().compareTo(ymd) != 0) continue;
+					itrPerError.remove();
+				}
+				result.employeeDailyPerErrorList.addAll(dailyWork.getEmployeeError());
+			}
+			
+			// 日別実績の任意項目
+			if (dailyWork.getAnyItemValue().isPresent()){
+				result.anyItemValueOfDailyList.replace(ymd, dailyWork.getAnyItemValue().get());
+			}
+			
+			// PCログオン情報
+			if (dailyWork.getPcLogOnInfo().isPresent()){
+				val pcLogonInfo = dailyWork.getPcLogOnInfo().get();
+				result.pcLogonInfoMap.put(ymd, pcLogonInfo);
+			}
+		}
+		return result;
+	}
+	
 	private static MonthlyCalculatingDailys correctExamDayTime(MonthlyCalculatingDailys calcDaily, 
 			MonAggrEmployeeSettings settings){
 		
@@ -254,6 +345,27 @@ public class MonthlyCalculatingDailys {
 								examDayTimeCorrect(dailyAttenTime.getValue(), wi));
 					}
 				});
+			}
+		}
+		
+		return calcDaily;
+	}
+	
+	private static MonthlyCalculatingDailys correctExamDayTime(MonthlyCalculatingDailys calcDaily, 
+			WorkingConditionItem workingConditionItem){
+		
+		
+		for (Entry<GeneralDate, AttendanceTimeOfDailyAttendance> dailyAttenTime : calcDaily.attendanceTimeOfDailyMap.entrySet()) {
+			
+			GeneralDate currentDate = dailyAttenTime.getKey();
+			
+			if (calcDaily.workInfoOfDailyMap.containsKey(currentDate)) {
+				WorkInfoOfDailyAttendance wi = calcDaily.workInfoOfDailyMap.get(currentDate);
+				
+				if (workingConditionItem.getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) {
+					calcDaily.attendanceTimeOfDailyMap.put(currentDate, 
+							examDayTimeCorrect(dailyAttenTime.getValue(), wi));
+				}
 			}
 		}
 		
@@ -324,7 +436,7 @@ public class MonthlyCalculatingDailys {
 	 * @param employeeId 社員ID
 	 * @param period 期間
 	 */
-	public void loadDataCommon(RequireM1 require, String employeeId, DatePeriod period, MonAggrEmployeeSettings settings){
+	public void loadDataCommon(RequireM1 require, String employeeId, DatePeriod period){
 		
 		List<String> employeeIds = new ArrayList<>();
 		employeeIds.add(employeeId);

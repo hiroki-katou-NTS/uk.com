@@ -305,11 +305,13 @@ public class OvertimeServiceImpl implements OvertimeService {
 		if(appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime().v() <= 0){
 			return null;
 		}
-		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
-				new AttendanceTimeMonth(appOvertimeDetail.getTime36Agree().getApplicationTime().v()+appOvertimeDetail.getTime36Agree().getAgreeMonth().getActualTime().v()), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
-				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+		return null;
+//		return agreementTimeStatusAdapter.checkAgreementTimeStatus(
+//				new AttendanceTimeMonth(appOvertimeDetail.getTime36Agree().getApplicationTime().v()+appOvertimeDetail.getTime36Agree().getAgreeMonth().getActualTime().v()), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitAlarmTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getLimitErrorTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitAlarmTime(), 
+//				appOvertimeDetail.getTime36Agree().getAgreeMonth().getExceptionLimitErrorTime());
 	}
 }

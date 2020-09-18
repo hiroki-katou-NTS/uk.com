@@ -9,27 +9,26 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.diagnose.stopwatch.concurrent.ConcurrentStopwatches;
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.serialize.binary.SerializableWithOptional;
 import nts.gul.util.Time;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmployeeImport;
-import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceItemOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.calc.actualworkingtime.RegularAndIrregularTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.AggregateTotalWorkingTime;
@@ -638,70 +637,6 @@ public class MonthlyCalculation implements SerializableWithOptional {
 
 		ConcurrentStopwatches.stop("12226:総労働時間：");
 	}
-	
-	/**
-	 * 履歴ごとに月別実績を集計する
-	 * 
-	 * @param aggrPeriod 集計期間
-	 * @param aggrAtr 集計区分
-	 * @param workSystem 労働制
-	 * @param annualLeaveDeductDays 年休控除日数 (Optional)
-	 * @param absenceDeductTime 欠勤控除時間 (Optional)
-	 * @param dailyRecords 日別実績(Work) (Optional)
-	 * @param monthlyRecord 月別実績(Work) (Optional)
-	 */
-	public static MonthlyCalculation aggregate(RequireM6 require, CacheCarrier cacheCarrier, String sid,
-			DatePeriod aggrPeriod, MonthlyAggregateAtr aggrAtr, WorkingSystem workSystem,
-			Optional<AttendanceDaysMonth> annualLeaveDeductDays, Optional<AttendanceTimeMonth> absenceDeductTime,
-			List<IntegrationOfDaily> dailyRecords, Optional<IntegrationOfMonthly> monthlyRecord) {
-		
-		MonthlyCalculation result = new MonthlyCalculation();
-		
-		if (dailyRecords.isEmpty()) {
-			dailyRecords = require.integrationOfDaily(sid, aggrPeriod);
-		}
-		
-		Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeMap = new HashMap<>();
-		Map<GeneralDate, WorkInfoOfDailyAttendance> workInfoMap = new HashMap<>();
-		
-		dailyRecords.stream().forEach(dr -> {
-			dr.getAttendanceTimeOfDailyPerformance().ifPresent(at -> {
-				attendanceTimeMap.put(dr.getYmd(), at);	
-			});
-			
-			workInfoMap.put(dr.getYmd(), dr.getWorkInformation());
-		});
-		
-		/** ○共有項目を集計する */
-		result.aggregateTime.aggregateSharedItem(require, aggrPeriod, attendanceTimeMap, workInfoMap);
-		
-		/** ○パラメータ「労働制」を確認する */
-		if (workSystem == WorkingSystem.REGULAR_WORK || workSystem == WorkingSystem.VARIABLE_WORKING_TIME_WORK) {
-			
-			/** ○通常・変形労働勤務の月別実績を集計する */
-			val aggrValue = result.actualWorkingTime.aggregateMonthly(require, result.companyId, result.employeeId, result.yearMonth,
-					result.closureId, result.closureDate, aggrPeriod, result.workingSystem, result.closureOpt, aggrAtr,
-					result.employmentCd, result.settingsByReg, result.settingsByDefo, result.aggregateTime, null,
-					result.startWeekNo, result.companySets, result.employeeSets, result.monthlyCalculatingDailys);
-			result.aggregateTime = aggrValue.getAggregateTotalWorkingTime();
-			result.attendanceTimeWeeks.addAll(aggrValue.getAttendanceTimeWeeks());
-
-			ConcurrentStopwatches.stop("12222:通常変形の月別実績：");
-			ConcurrentStopwatches.start("12223:通常変形の月単位：");
-
-			/** ○通常・変形労働勤務の月単位の時間を集計する */
-			result.actualWorkingTime.aggregateMonthlyHours(require, result.companyId, result.employeeId, result.yearMonth,
-					result.closureId, result.closureDate, aggrPeriod, result.workingSystem, aggrAtr, result.isRetireMonth,
-					result.workplaceId, result.employmentCd, result.settingsByReg, result.settingsByDefo, result.aggregateTime);
-			
-		} else if (workSystem == WorkingSystem.FLEX_TIME_WORK) {
-			
-		} else {
-			
-		}
-		
-		return result;
-	}
 
 	/**
 	 * 総労働時間と36協定時間の再計算
@@ -802,6 +737,218 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		this.totalWorkingTime = new AttendanceTimeMonth(this.aggregateTime.getTotalWorkingTargetTime().v()
 				+ this.actualWorkingTime.getTotalWorkingTargetTime().v()
 				+ this.flexTime.getTotalWorkingTargetTime().v());
+	}
+	
+	/**
+	 * 36協定時間の集計
+	 * 
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param yearMonth 年月
+	 * @param closureId 締めID
+	 * @param closureDate 締め日付
+	 * @param procPeriod 期間
+	 * @param isRetireMonth 退職月度かどうか
+	 * @param annualLeaveDeductDays 年休控除日数
+	 * @param absenceDeductTime 欠勤控除時間
+	 * @param flexSettleTime 当月清算フレックス時間
+	 * @param companySets 月別集計で必要な会社別設定
+	 * @param employeeSets 月別集計で必要な社員別設定
+	 * @param monthlyCalcDailys 月の計算中の日別実績データ
+	 * @param monthlyOldDatas 集計前の月別実績データ
+	 * @param basicCalced 月の計算結果（基本計算）
+	 */
+	public AgreementTimeResult aggregateAgreementTime(RequireM2 require, CacheCarrier cacheCarrier,
+			String companyId, String employeeId,YearMonth yearMonth, ClosureId closureId, ClosureDate closureDate,
+			DatePeriod procPeriod, Optional<AttendanceDaysMonth> annualLeaveDeductDays, 
+			Optional<AttendanceTimeMonth> absenceDeductTime, Optional<AttendanceTimeMonthWithMinus> flexSettleTime,
+			MonAggrCompanySettings companySets, MonAggrEmployeeSettings employeeSets,
+			MonthlyCalculatingDailys monthlyCalcDailys, MonthlyOldDatas monthlyOldDatas,
+			Optional<MonthlyCalculation> basicCalced){
+		
+		// 36協定運用設定を取得
+		val agreementOperationSetOpt = companySets.getAgreementOperationSet();
+		if (!agreementOperationSetOpt.isPresent()) {
+			this.errorInfos.add(
+					new MonthlyAggregationErrorInfo("017", new ErrMessageContent(TextResource.localize("Msg_1246"))));
+			return AgreementTimeResult.fail(this.errorInfos);
+		}
+		val agreementOperationSet = agreementOperationSetOpt.get();
+
+		// 集計期間を取得
+		val aggrPeriod = agreementOperationSet.getAggregatePeriod(procPeriod);
+
+		// 「労働条件項目」を取得
+		List<WorkingConditionItem> workingConditionItems = require
+				.workingConditionItem(employeeId, aggrPeriod.getPeriod());
+		if (workingConditionItems.isEmpty()) {
+			this.errorInfos.add(
+					new MonthlyAggregationErrorInfo("006", new ErrMessageContent(TextResource.localize("Msg_430"))));
+			return AgreementTimeResult.fail(this.errorInfos);
+		}
+
+		// 同じ労働制の履歴を統合
+		this.IntegrateHistoryOfSameWorkSys(require, workingConditionItems);
+
+		// 項目の数だけループ
+		MonthlyCalculation agreementCalc = null;
+		int weekNo = 1;
+		for (val workingConditionItem : this.workingConditionItems) {
+
+			// 「労働条件」の該当履歴から期間を取得
+			val historyId = workingConditionItem.getHistoryId();
+			if (!this.workingConditions.containsKey(historyId))
+				continue;
+
+			// 処理期間を計算 （36協定の集計期間と労働条件履歴期間の重複を確認する）
+			val term = this.workingConditions.get(historyId);
+			DatePeriod period = MonthlyCalculation.confirmProcPeriod(aggrPeriod.getPeriod(), term);
+			if (period == null) {
+				// 履歴の期間と重複がない時
+				continue;
+			}
+
+			// 基本計算結果と計算期間が異なる場合に、集計する
+			boolean isSameBasic = false;
+			if (basicCalced.isPresent()) {
+				if (period.start().compareTo(basicCalced.get().getProcPeriod().start()) == 0
+						&& period.end().compareTo(basicCalced.get().getProcPeriod().end()) == 0) {
+					isSameBasic = true;
+				}
+			}
+			MonthlyCalculation calcWork = new MonthlyCalculation();
+			if (isSameBasic) {
+				calcWork = basicCalced.get();
+			} else {
+
+				// 集計準備
+				calcWork.prepareAggregation(require, cacheCarrier, 
+						companyId, employeeId, aggrPeriod.getYearMonth(), closureId, closureDate,
+						period, workingConditionItem, weekNo, companySets, employeeSets, monthlyCalcDailys,
+						monthlyOldDatas);
+				if (calcWork.errorInfos.size() > 0) {
+					return AgreementTimeResult.fail(this.errorInfos);
+				}
+				calcWork.year = aggrPeriod.getYear();
+
+				// 集計中の労働制を確認する
+				if (calcWork.workingSystem == WorkingSystem.FLEX_TIME_WORK) {
+
+					// 年休控除日数と欠勤控除時間があるか確認する
+					if (annualLeaveDeductDays.isPresent() || absenceDeductTime.isPresent()) {
+						if (!annualLeaveDeductDays.isPresent()) {
+							annualLeaveDeductDays = Optional.of(new AttendanceDaysMonth(0.0));
+						}
+						if (!absenceDeductTime.isPresent()) {
+							absenceDeductTime = Optional.of(new AttendanceTimeMonth(0));
+						}
+					}
+				}
+
+				// 履歴ごとに月別実績を集計する
+				calcWork.aggregate(require, cacheCarrier, period, MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, annualLeaveDeductDays,
+						absenceDeductTime, flexSettleTime);
+			}
+
+			// データを合算する
+			if (agreementCalc == null) {
+				agreementCalc = calcWork;
+			} else {
+				calcWork.sum(agreementCalc);
+				agreementCalc = calcWork;
+			}
+		}
+		
+		if (agreementCalc == null)
+			return AgreementTimeResult.fail(this.errorInfos);
+		
+		/** ○ドメインモデル「管理期間の36協定時間」を作成 */
+		val result = AgreementTimeOfManagePeriod.aggregate(require, this.employeeId, 
+				procPeriod.end(), this.yearMonth, agreementCalc);
+		
+		/** 管理時間の36協定時間を返す */
+		return AgreementTimeResult.success(result);
+	}
+	
+	@Getter
+	@AllArgsConstructor
+	public static class AgreementTimeResult {
+		
+		private List<MonthlyAggregationErrorInfo> error = new ArrayList<>();
+		
+		private Optional<AgreementTimeOfManagePeriod> agreementTime;
+		
+		public static AgreementTimeResult fail(List<MonthlyAggregationErrorInfo> error) {
+			return new AgreementTimeResult(error, Optional.empty());
+		}
+		
+		public static AgreementTimeResult success(AgreementTimeOfManagePeriod monthlyCalc) {
+			return new AgreementTimeResult(new ArrayList<>(), Optional.of(monthlyCalc));
+		}
+	}
+
+	/**
+	 * 同じ労働制の履歴を統合
+	 * 
+	 * @param target
+	 *            労働条件項目リスト （統合前）
+	 * @param attendanceTimeOfDailysOpt
+	 *            日別実績の勤怠時間リスト
+	 * @return 労働条件項目リスト （統合後）
+	 */
+	private void IntegrateHistoryOfSameWorkSys(RequireM1 require,
+			List<WorkingConditionItem> target) {
+
+		this.workingConditionItems = new ArrayList<>();
+		this.workingConditions = new HashMap<>();
+
+		val itrTarget = target.listIterator();
+		while (itrTarget.hasNext()) {
+
+			// 要素[n]を取得
+			WorkingConditionItem startItem = itrTarget.next();
+			val startHistoryId = startItem.getHistoryId();
+			val startConditionOpt = require.workingCondition(startHistoryId);
+			if (!startConditionOpt.isPresent())
+				continue;
+			val startCondition = startConditionOpt.get();
+			if (startCondition.getDateHistoryItem().isEmpty())
+				continue;
+			DatePeriod startPeriod = startCondition.getDateHistoryItem().get(0).span();
+
+			// 要素[n]と要素[n+1]以降を順次比較
+			WorkingConditionItem endItem = null;
+			while (itrTarget.hasNext()) {
+				WorkingConditionItem nextItem = target.get(itrTarget.nextIndex());
+				if (startItem.getLaborSystem() != nextItem.getLaborSystem()
+						|| startItem.getHourlyPaymentAtr() != nextItem.getHourlyPaymentAtr()) {
+
+					// 労働制または時給者区分が異なる履歴が見つかった時点で、労働条件の統合をやめる
+					break;
+				}
+
+				// 労働制と時給者区分が同じ履歴の要素を順次取得
+				endItem = itrTarget.next();
+			}
+
+			// 次の要素がなくなった、または、異なる履歴が見つかれば、集計要素を確定する
+			if (endItem == null) {
+				this.workingConditionItems.add(startItem);
+				this.workingConditions.putIfAbsent(startHistoryId, startPeriod);
+				continue;
+			}
+			val endHistoryId = endItem.getHistoryId();
+			val endConditionOpt = require.workingCondition(endHistoryId);
+			if (!endConditionOpt.isPresent())
+				continue;
+			;
+			val endCondition = endConditionOpt.get();
+			if (endCondition.getDateHistoryItem().isEmpty())
+				continue;
+			this.workingConditionItems.add(endItem);
+			this.workingConditions.putIfAbsent(endHistoryId,
+					new DatePeriod(startPeriod.start(), endCondition.getDateHistoryItem().get(0).end()));
+		}
 	}
 
 	/**
@@ -1213,7 +1360,8 @@ public class MonthlyCalculation implements SerializableWithOptional {
 		FlexTimeOfMonthly.RequireM6, FlexTimeOfMonthly.RequireM5 {
 	}
 	
-	public static interface RequireM2 extends RequireM5, RequireM4, RequireM1 {
+	public static interface RequireM2 extends RequireM5, RequireM4, RequireM1, 
+		AgreementTimeOfManagePeriod.RequireM2 {
 	}
 	
 	public static interface RequireM1 {

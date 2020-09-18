@@ -17,6 +17,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.Year;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
 import nts.uk.ctx.at.record.dom.adapter.basicschedule.BasicScheduleAdapter;
@@ -36,11 +37,14 @@ import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.PCLogOnInfoOfDa
 import nts.uk.ctx.at.record.dom.daily.optionalitemtime.AnyItemValueOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeOfDailyRepo;
 import nts.uk.ctx.at.record.dom.daily.ouen.OuenWorkTimeSheetOfDailyRepo;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSettingService;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreTimeByPeriod;
-import nts.uk.ctx.at.record.dom.monthly.agreement.service.GetAgreementPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementTime;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetYearAndMultiMonthAgreementTime;
 import nts.uk.ctx.at.record.dom.monthly.mergetable.RemainMergeRepository;
 import nts.uk.ctx.at.record.dom.monthly.updatedomain.UpdateAllDomainMonthService;
+import nts.uk.ctx.at.record.dom.monthly.verticaltotal.VerticalTotalAggregateService;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInfor;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateErrorInforRepository;
 import nts.uk.ctx.at.record.dom.monthlyclosureupdatelog.MonthlyClosureUpdateLog;
@@ -53,7 +57,6 @@ import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.monthlyupdatemgr.Mon
 import nts.uk.ctx.at.record.dom.monthlyclosureupdateprocess.ymupdate.ProcessYearMonthUpdate;
 import nts.uk.ctx.at.record.dom.monthlycommon.aggrperiod.GetClosurePeriod;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationService;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
 import nts.uk.ctx.at.record.dom.raisesalarytime.repo.SpecificDateAttrOfDailyPerforRepo;
 import nts.uk.ctx.at.record.dom.remainingnumber.annualleave.export.CreateTempAnnLeaMngProc;
 import nts.uk.ctx.at.record.dom.reservation.bento.BentoReservation;
@@ -105,6 +108,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceIt
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.affiliationinfor.AffiliationInforOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.entranceandexit.PCLogOnInfoOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.optionalitemvalue.AnyItemValueOfDailyAttd;
@@ -145,6 +149,7 @@ import nts.uk.ctx.at.shared.dom.monthly.vacation.dayoff.monthremaindata.MonthlyD
 import nts.uk.ctx.at.shared.dom.monthly.vacation.reserveleave.RsvLeaRemNumEachMonth;
 import nts.uk.ctx.at.shared.dom.monthly.vacation.specialholiday.monthremaindata.SpecialHolidayRemainData;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.VerticalTotalOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.ReservationOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.PayItemCountOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.PayItemCountOfMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.monthly.vtotalmethod.VerticalTotalMethodOfMonthly;
@@ -268,10 +273,8 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.subst.EmpSubstVacationRepositor
 import nts.uk.ctx.at.shared.dom.workdayoff.frame.WorkdayoffFrameRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingCondition;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemCustom;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSet;
 import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.flex.com.ComFlexMonthActCalSetRepo;
@@ -630,22 +633,24 @@ public class RecordDomRequireService {
 	private BentoMenuRepository bentoMenuRepo;
 	@Inject
 	private WeekRuleManagementRepo weekRuleManagementRepo;
+	@Inject
+	private DailyCalculationEmployeeService dailyCalculationEmployeeService;
 
 	public static interface Require extends RemainNumberTempRequireService.Require, GetAnnAndRsvRemNumWithinPeriod.RequireM2,
 		CalcAnnLeaAttendanceRate.RequireM3, GetClosurePeriod.RequireM1, GetClosureStartForEmployee.RequireM1,
 		CalcNextAnnLeaGrantInfo.RequireM1, GetNextAnnualLeaveGrantProcKdm002.RequireM1,
+		GetYearAndMultiMonthAgreementTime.RequireM1,
 		InterimRemainOffPeriodCreateData.RequireM2, DailyStatutoryLaborTime.RequireM1, 
 		AggregateMonthlyRecordService.RequireM1, MonAggrCompanySettings.RequireM6, WorkTimeIsFluidWork.RequireM2,
 		MonAggrEmployeeSettings.RequireM2, MonthlyCalculationByPeriod.RequireM1, GetClosurePeriod.RequireM2,
-		VerticalTotalOfMonthly.RequireM1, TotalCountByPeriod.RequireM1, GetAgreementTime.RequireM5,
-		GetAgreementTime.RequireM3, GetAgreementTime.RequireM4, GetAgreementPeriod.RequireM2,
-		GetAgreTimeByPeriod.RequireM8, GetAgreTimeByPeriod.RequireM7, GetAgreTimeByPeriod.RequireM5, 
-		GetAgreTimeByPeriod.RequireM3, WorkingConditionService.RequireM1, MonthlyAggregationService.RequireM1,
+		VerticalTotalOfMonthly.RequireM1, TotalCountByPeriod.RequireM1,
+		GetAgreementTime.RequireM4, WorkingConditionService.RequireM1, MonthlyAggregationService.RequireM1,
 		AgeementTimeCommonSettingService.RequireM1, CreateTempAnnLeaMngProc.RequireM3,
 		AggregateSpecifiedDailys.RequireM1, ClosureService.RequireM6, ClosureService.RequireM5,
 		MonthlyUpdateMgr.RequireM4, MonthlyClosureUpdateLogProcess.RequireM3, CancelActualLock.RequireM1,
 		ProcessYearMonthUpdate.RequireM1, BreakDayOffMngInPeriodQuery.RequireM2, AgreementDomainService.RequireM5,
-		AgreementDomainService.RequireM6 {
+		AgreementDomainService.RequireM6, GetAgreementTime.RequireM5, VerticalTotalAggregateService.RequireM1,
+		GetExcessTimesYear.RequireM2 {
 		
 		Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate);
 		
@@ -719,7 +724,8 @@ public class RecordDomRequireService {
 				wkpDeforLaborMonthActCalSetRepo, wkpRegulaMonthActCalSetRepo, 
 				monthlyWorkTimeSetRepo, executionLogRepo, 
 				lockStatusService, verticalTotalMethodOfMonthlyRepo, stampCardRepo,
-				bentoReservationRepo, bentoMenuRepo, weekRuleManagementRepo);
+				bentoReservationRepo, bentoMenuRepo, dailyCalculationEmployeeService, 
+				weekRuleManagementRepo, sharedAffWorkPlaceHisAdapter);
 	}
 	
 	public static class RequireImpl extends RemainNumberTempRequireService.RequireImp implements Require {
@@ -839,8 +845,8 @@ public class RecordDomRequireService {
 				VerticalTotalMethodOfMonthlyRepository verticalTotalMethodOfMonthlyRepo,
 				StampCardRepository stampCardRepo,
 				BentoReservationRepository bentoReservationRepo,
-				BentoMenuRepository bentoMenuRepo,
-				WeekRuleManagementRepo weekRuleManagementRepo) {
+				BentoMenuRepository bentoMenuRepo, DailyCalculationEmployeeService dailyCalculationEmployeeService,
+				WeekRuleManagementRepo weekRuleManagementRepo, SharedAffWorkPlaceHisAdapter sharedAffWorkPlaceHisAdapter) {
 			super(comSubstVacationRepo, compensLeaveComSetRepo, specialLeaveGrantRepo, empEmployeeAdapter,
 					grantDateTblRepo, annLeaEmpBasicInfoRepo, specialHolidayRepo, interimSpecialHolidayMngRepo,
 					specialLeaveBasicInfoRepo, interimRecAbasMngRepo, empSubstVacationRepo, interimRemainRepo,
@@ -975,6 +981,7 @@ public class RecordDomRequireService {
 			this.bentoReservationRepo = bentoReservationRepo;
 			this.bentoMenuRepo = bentoMenuRepo;
 			this.weekRuleManagementRepo = weekRuleManagementRepo;
+			this.dailyCalculationEmployeeService = dailyCalculationEmployeeService;
 		}
 		
 		private RoleOfOpenPeriodRepository roleOfOpenPeriodRepo;
@@ -1218,6 +1225,8 @@ public class RecordDomRequireService {
 		private BentoMenuRepository bentoMenuRepo;
 		
 		private WeekRuleManagementRepo weekRuleManagementRepo;
+		
+		private DailyCalculationEmployeeService dailyCalculationEmployeeService;
 		
 		@Override
 		public Optional<SEmpHistoryImport> employeeEmploymentHis(CacheCarrier cacheCarrier, String companyId,
@@ -1474,12 +1483,6 @@ public class RecordDomRequireService {
 				YearMonth yearMonth) {
 			return attendanceTimeOfMonthlyRepo.findByYearMonthOrderByStartYmd(employeeId, yearMonth);
 		}
-
-		@Override
-		public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, YearMonth yearMonth,
-				ClosureId closureId) {
-			return attendanceTimeOfMonthlyRepo.findByYMAndClosureIdOrderByStartYmd(employeeId, yearMonth, closureId);
-		}	
 		
 		@Override
 		public List<AttendanceTimeOfMonthly> attendanceTimeOfMonthly(String employeeId, DatePeriod period) {
@@ -1533,18 +1536,8 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public List<AgreementYearSetting> agreementYearSetting(List<String> employeeIds, int yearMonth) {
-			return agreementYearSettingRepo.findByKey(employeeIds, yearMonth);
-		}
-
-		@Override
 		public Optional<AgreementYearSetting> agreementYearSetting(String employeeId, int yearMonth) {
 			return agreementYearSettingRepo.findByKey(employeeId, yearMonth);
-		}
-
-		@Override
-		public List<AgreementMonthSetting> agreementMonthSetting(List<String> employeeIds, List<YearMonth> yearMonths) {
-			return agreementMonthSettingRepo.findByKey(employeeIds, yearMonths);
 		}
 
 		@Override
@@ -1629,12 +1622,6 @@ public class RecordDomRequireService {
 			updateAllDomainMonthService.merge(domains, targetDate);
 		}
 		
-		@Override
-		public List<WorkingConditionItemCustom> workingConditionItemCustom(List<String> employeeIds,
-				GeneralDate baseDate) {
-			return workingConditionItemRepo.getBySidsAndStandardDate(employeeIds, baseDate);
-		}
-
 		@Override
 		public Optional<WorkingConditionItem> workingConditionItem(String employeeId, GeneralDate baseDate) {
 			return workingConditionItemRepo.getBySidAndStandardDate(employeeId, baseDate);
@@ -2301,14 +2288,87 @@ public class RecordDomRequireService {
 		}
 
 		@Override
-		public BasicAgreementSetting getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
-				WorkingSystem workingSystem) {
-			return AgreementDomainService.getBasicSet(this, companyId, employeeId, criteriaDate, workingSystem);
+		public BasicAgreementSetting basicAgreementSetting(String companyId, String employeeId, GeneralDate criteriaDate) {
+			return AgreementDomainService.getBasicSet(this, companyId, employeeId, criteriaDate);
 		}
 		
 
 		public Optional<VerticalTotalMethodOfMonthly> verticalTotalMethodOfMonthly(String cid) {
 			return verticalTotalMethodOfMonthlyRepo.findByCid(cid);
+		}
+
+		@Override
+		public BasicAgreementSetting basicAgreementSetting(String cid, String sid, GeneralDate baseDate, Year year) {
+			
+			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, year);
+		}
+
+		@Override
+		public Optional<WorkingConditionItem> workingConditionItem(String cid, GeneralDate ymd, String sid) {
+			
+			return workingConditionRepo.getWorkingConditionItemByEmpIDAndDate(cid, ymd, sid);
+		}
+
+		@Override
+		public BasicAgreementSetting basicAgreementSetting(String cid, String sid, YearMonth ym, GeneralDate baseDate) {
+			
+			return AgreementDomainService.getBasicSet(this, cid, sid, baseDate, ym);
+		}
+
+		@Override
+		public List<RoleOfOpenPeriod> roleOfOpenPeriod(String cid) {
+			
+			return roleOfOpenPeriodRepo.findByCID(cid);
+		}
+
+		@Override
+		public List<IntegrationOfDaily> integrationOfDaily(String sid, DatePeriod period) {
+			
+			return dailyCalculationEmployeeService.getIntegrationOfDaily(sid, period);
+		}
+
+		@Override
+		public MonAggrCompanySettings monAggrCompanySettings(String cid) {
+			
+			return MonAggrCompanySettings.loadSettings(this, cid);
+		}
+
+		@Override
+		public MonAggrEmployeeSettings monAggrEmployeeSettings(CacheCarrier cacheCarrier, String companyId,
+				String employeeId, DatePeriod period) {
+			
+			return MonAggrEmployeeSettings.loadSettings(this, cacheCarrier, companyId, employeeId, period);
+		}
+
+		@Override
+		public Optional<WeekRuleManagement> weekRuleManagement(String cid) {
+			
+			return weekRuleManagementRepo.find(cid);
+		}
+
+		@Override
+		public ReservationOfMonthly reservation(String sid, GeneralDate date) {
+			
+			return VerticalTotalAggregateService.aggregate(this, sid, date);
+		}
+
+		@Override
+		public List<StampCard> stampCard(String empId) {
+
+			return stampCardRepo.getListStampCard(empId);
+		}
+
+		@Override
+		public List<BentoReservation> bentoReservation(List<ReservationRegisterInfo> inforLst, GeneralDate date,
+				boolean ordered) {
+			
+			return bentoReservationRepo.findByOrderedPeriodEmpLst(inforLst, new DatePeriod(date, date), ordered);
+		}
+
+		@Override
+		public Bento bento(String companyID, GeneralDate date, int frameNo) {
+			
+			return bentoMenuRepo.getBento(companyID, date, frameNo);
 		}
 	}
 }

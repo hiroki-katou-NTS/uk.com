@@ -10,7 +10,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.NumberOfMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonthTime;
 /**
  * 36協定月間時間
  * @author Doan Duy Hung
@@ -28,12 +28,12 @@ public class Time36AgreeMonth extends DomainObject {
 	/*
 	 * 限度アラーム時間
 	 */
-	private AgreementOneMonth limitAlarmTime;
+	private AgreementOneMonthTime limitAlarmTime;
 	
 	/*
 	 * 限度エラー時間
 	 */
-	private AgreementOneMonth limitErrorTime;
+	private AgreementOneMonthTime limitErrorTime;
 	
 	/*
 	 * 36年間超過回数
@@ -48,17 +48,17 @@ public class Time36AgreeMonth extends DomainObject {
 	/*
 	 * 特例限度アラーム時間
 	 */
-	private Optional<AgreementOneMonth> exceptionLimitAlarmTime;
+	private Optional<AgreementOneMonthTime> exceptionLimitAlarmTime;
 	
 	/*
 	 * 特例限度エラー時間
 	 */
-	private Optional<AgreementOneMonth> exceptionLimitErrorTime;
+	private Optional<AgreementOneMonthTime> exceptionLimitErrorTime;
 	
 	public Time36AgreeMonth(){
 		this.actualTime = new AttendanceTimeMonth(0);
-		this.limitAlarmTime = new AgreementOneMonth(0);
-		this.limitErrorTime = new AgreementOneMonth(0);
+		this.limitAlarmTime = new AgreementOneMonthTime(0);
+		this.limitErrorTime = new AgreementOneMonthTime(0);
 		this.numOfYear36Over = new NumberOfMonth(0);
 		this.year36OverMonth = new ArrayList<>();
 		this.exceptionLimitAlarmTime = Optional.empty();
@@ -70,11 +70,11 @@ public class Time36AgreeMonth extends DomainObject {
 	}
 
 	public void setLimitAlarmTime(Integer limitAlarmTime){
-		this.limitAlarmTime = new AgreementOneMonth(limitAlarmTime);
+		this.limitAlarmTime = new AgreementOneMonthTime(limitAlarmTime);
 	}
 	
 	public void setLimitErrorTime(Integer limitErrorTime){
-		this.limitErrorTime = new AgreementOneMonth(limitErrorTime);
+		this.limitErrorTime = new AgreementOneMonthTime(limitErrorTime);
 	}
 	
 	public void setNumOfYear36Over(Integer numOfYear36Over){
@@ -86,11 +86,11 @@ public class Time36AgreeMonth extends DomainObject {
 	}
 
 	public void setExceptionLimitAlarmTime(Integer exceptionLimitAlarmTime){
-		this.exceptionLimitAlarmTime = exceptionLimitAlarmTime==null ? Optional.empty() : Optional.ofNullable(new AgreementOneMonth(exceptionLimitAlarmTime));
+		this.exceptionLimitAlarmTime = exceptionLimitAlarmTime==null ? Optional.empty() : Optional.ofNullable(new AgreementOneMonthTime(exceptionLimitAlarmTime));
 	}
 	
 	public void setExceptionLimitErrorTime(Integer exceptionLimitErrorTime){
-		this.exceptionLimitErrorTime = exceptionLimitErrorTime==null ? Optional.empty() : Optional.ofNullable(new AgreementOneMonth(exceptionLimitErrorTime));
+		this.exceptionLimitErrorTime = exceptionLimitErrorTime==null ? Optional.empty() : Optional.ofNullable(new AgreementOneMonthTime(exceptionLimitErrorTime));
 	}
 	
 }

@@ -33,15 +33,16 @@ public class UpdateAgreementOperationSettingCommandHandler
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
-		AgreementOperationSetting agreementOperationSetting = new AgreementOperationSetting(companyId,
-				EnumAdaptor.valueOf(command.getStartingMonth(), StartingMonthType.class) ,
-				EnumAdaptor.valueOf(command.getNumberTimesOverLimitType(), AgreementOverMaxTimes.class),
-				EnumAdaptor.valueOf(command.getClosingDateType(), ClosingDateType.class),
-				EnumAdaptor.valueOf(command.getClosingDateAtr(), ClosingDateAtr.class),
-				EnumAdaptor.valueOf(command.getYearlyWorkTableAtr(), TargetSettingAtr.class),
-				EnumAdaptor.valueOf(command.getAlarmListAtr(), TargetSettingAtr.class));
-
-		this.agreementOperationSettingRepository.update(agreementOperationSetting);
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		AgreementOperationSetting agreementOperationSetting = new AgreementOperationSetting(companyId,
+//				EnumAdaptor.valueOf(command.getStartingMonth(), StartingMonthType.class) ,
+//				EnumAdaptor.valueOf(command.getNumberTimesOverLimitType(), AgreementOverMaxTimes.class),
+//				EnumAdaptor.valueOf(command.getClosingDateType(), ClosingDateType.class),
+//				EnumAdaptor.valueOf(command.getClosingDateAtr(), ClosingDateAtr.class),
+//				EnumAdaptor.valueOf(command.getYearlyWorkTableAtr(), TargetSettingAtr.class),
+//				EnumAdaptor.valueOf(command.getAlarmListAtr(), TargetSettingAtr.class));
+//
+//		this.agreementOperationSettingRepository.update(agreementOperationSetting);
 	}
 
 }

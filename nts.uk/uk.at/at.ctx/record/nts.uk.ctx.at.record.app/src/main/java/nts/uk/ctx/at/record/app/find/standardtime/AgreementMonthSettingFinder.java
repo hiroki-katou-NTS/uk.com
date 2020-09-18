@@ -30,8 +30,9 @@ public class AgreementMonthSettingFinder {
 				AgreementMonthSettingDto agreementMonthSettingDto = new AgreementMonthSettingDto();
 
 				agreementMonthSettingDto.setYearMonthValue(f.getYearMonthValue().v());
-				agreementMonthSettingDto.setAlarmOneMonth(f.getAlarmOneMonth().v());
-				agreementMonthSettingDto.setErrorOneMonth(f.getErrorOneMonth().v());
+				/** TODO: 36協定時間対応により、コメントアウトされた */
+//				agreementMonthSettingDto.setAlarmOneMonth(f.getAlarmOneMonth().v());
+//				agreementMonthSettingDto.setErrorOneMonth(f.getErrorOneMonth().v());
 				agreementMonthSettingDtos.add(agreementMonthSettingDto);
 			});
 		} else {

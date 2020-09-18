@@ -7,16 +7,23 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
+import nts.arc.layer.app.cache.CacheCarrier;
+import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.AttendanceDaysMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeAggregateService.AggregateResult;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.MonthlyAggregationErrorInfo;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrMessageContent;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.shr.com.i18n.TextResource;
 
 /** 労働条件ごとに月別実績を集計する */
@@ -37,6 +44,9 @@ public class MonthlyCalculationByWorkCondition {
 			DatePeriod period, Optional<AttendanceDaysMonth> annualLeaveDeductDays, 
 			Optional<AttendanceTimeMonth> absenceDeductTime, MonthlyAggregateAtr aggrAtr,
 			List<IntegrationOfDaily> dailyRecords) {
+		val cacheCarrier = new CacheCarrier();
+		val companySets = require.monAggrCompanySettings(cid);
+		val employeeSets = require.monAggrEmployeeSettings(cacheCarrier, cid, sid, period);
 		
 		/** ○社員の労働条件を期間で取得する */
 		val workConditions = require.workingConditionItem(cid, Arrays.asList(sid), period);
@@ -47,22 +57,80 @@ public class MonthlyCalculationByWorkCondition {
 			return CalculateResult.fail(new MonthlyAggregationErrorInfo("006", 
 												new ErrMessageContent(TextResource.localize("Msg_430"))));
 		}
+		MonthlyCalculation result = new MonthlyCalculation();
 		
 		/** 履歴の数だけループ */
 		workConditions.stream().forEach(wc -> {
 			
 			/** ○処理期間を計算 */
 			val calcPeriod = MonthlyCalculation.confirmProcPeriod(wc.getDatePeriod(), period);
+			val baseDate = calcPeriod.end();
 			
-			/** ○処理中の労働制を確認する */
-			if (wc.getWorkingConditionItem().getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) {
-				
-				MonthlyCalculation monthCalc = new MonthlyCalculation();
-				monthCalc.aggregate(require, cacheCarrier, aggrPeriod, aggrAtr, annualLeaveDeductDays, absenceDeductTime, flexSettleTime);
-			}
+			val monthCalc = calcMonth(require, cid, sid, baseDate.yearMonth(), baseDate, 
+					annualLeaveDeductDays, absenceDeductTime, aggrAtr, dailyRecords, 
+					cacheCarrier, companySets, employeeSets, wc.getWorkingConditionItem(), calcPeriod);
+			
+			result.sum(monthCalc);
 		});
 		
-		return null;
+		return CalculateResult.success(result);
+	}
+	
+	public static MonthlyCalculation calcMonth(RequireM3 require, String cid, String sid, 
+			List<IntegrationOfDaily> dailyRecords, YearMonth ym, GeneralDate baseDate,
+			WorkingConditionItem wc, DatePeriod calcPeriod) {
+		
+		val cacheCarrier = new CacheCarrier();
+		val companySets = require.monAggrCompanySettings(cid);
+		val employeeSets = require.monAggrEmployeeSettings(cacheCarrier, cid, sid, calcPeriod);
+		
+		return calcMonth(require, cid, sid, ym, baseDate, Optional.empty(), Optional.empty(),
+				MonthlyAggregateAtr.EXCESS_OUTSIDE_WORK, dailyRecords, cacheCarrier,
+				companySets, employeeSets, wc, calcPeriod);
+	}
+
+	private static MonthlyCalculation calcMonth(RequireM2 require, String cid, String sid,
+			YearMonth ym, GeneralDate baseDate, Optional<AttendanceDaysMonth> annualLeaveDeductDays, 
+			Optional<AttendanceTimeMonth> absenceDeductTime,
+			MonthlyAggregateAtr aggrAtr, List<IntegrationOfDaily> dailyRecords,
+			CacheCarrier cacheCarrier, MonAggrCompanySettings companySets,
+			MonAggrEmployeeSettings employeeSets, WorkingConditionItem wc, DatePeriod calcPeriod) {
+		
+		val monthlyCalcDailys = MonthlyCalculatingDailys.create(require, sid, calcPeriod, dailyRecords, wc);
+		
+		MonthlyCalculation monthCalc = new MonthlyCalculation();
+		
+		val closure = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, baseDate);
+		val closureDate = closure.getClosureHistories().get(0).getClosureDate();
+		val startWeekNo = (baseDate.day() / 7) + 1;
+		
+		monthCalc.prepareAggregation(require, cacheCarrier, cid, sid, ym,
+				closure.getClosureId(), closureDate, calcPeriod, wc,
+				startWeekNo, companySets, employeeSets, monthlyCalcDailys, new MonthlyOldDatas());
+		
+		/** ○処理中の労働制を確認する */
+		if (wc.getLaborSystem() == WorkingSystem.FLEX_TIME_WORK) {
+			
+			monthCalc.aggregate(require, cacheCarrier, calcPeriod, aggrAtr, 
+					annualLeaveDeductDays, absenceDeductTime, Optional.empty());
+		} else {
+			monthCalc.aggregate(require, cacheCarrier, calcPeriod, aggrAtr, 
+					Optional.empty(), Optional.empty(), Optional.empty());
+		}
+		return monthCalc;
+	}
+	
+	public static interface RequireM3 extends RequireM2 {
+
+		MonAggrCompanySettings monAggrCompanySettings(String cid);
+		
+		MonAggrEmployeeSettings monAggrEmployeeSettings(CacheCarrier cacheCarrier, 
+				String companyId, String employeeId, DatePeriod period);
+	}
+	
+	public static interface RequireM2 extends MonthlyCalculatingDailys.RequireM4,
+		ClosureService.RequireM3, MonthlyCalculation.RequireM5, MonthlyCalculation.RequireM4 {
+		
 	}
 	
 	@Getter
@@ -82,8 +150,9 @@ public class MonthlyCalculationByWorkCondition {
 		}
 	}
 	
-	public static interface RequireM1 {
+	public static interface RequireM1 extends RequireM3 {
 		
 		List<WorkingConditionItemWithPeriod> workingConditionItem(String companyID, List<String> lstEmpID, DatePeriod datePeriod);
+		
 	}
 }

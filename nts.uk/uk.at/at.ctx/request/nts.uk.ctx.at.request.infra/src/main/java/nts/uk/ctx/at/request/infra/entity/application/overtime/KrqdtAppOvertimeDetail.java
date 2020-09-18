@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.YearMonth;
+import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.request.dom.application.overtime.AppOvertimeDetail;
 import nts.uk.ctx.at.request.dom.application.overtime.NumberOfMonth;
 import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36Agree;
@@ -31,9 +32,8 @@ import nts.uk.ctx.at.request.dom.application.overtime.time36.Time36AgreeUpperLim
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonth;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.onemonth.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.AgreementOneYearTime;
-import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -169,27 +169,27 @@ public class KrqdtAppOvertimeDetail extends UkJpaEntity implements Serializable 
 		return new AppOvertimeDetail(appOvertimeDetailPk.cid, appOvertimeDetailPk.appId, new YearMonth(yearMonth),
 				new Time36Agree(new AttendanceTimeMonth(appTimeAgree),
 						new Time36AgreeMonth(new AttendanceTimeMonth(actualTimeMonth),
-								new AgreementOneMonth(limitAlarmTime), new AgreementOneMonth(limitErrorTime),
+								new AgreementOneMonthTime(limitAlarmTime), new AgreementOneMonthTime(limitErrorTime),
 								new NumberOfMonth(numOfYear36Over),
 								year36OverMonth.stream().map(x -> new YearMonth(x.year36OverMonthPk.overMonth))
 										.collect(Collectors.toList()),
 								exceptionLimitAlarmTime == null ? Optional.empty()
-										: Optional.of(new AgreementOneMonth(exceptionLimitAlarmTime)),
+										: Optional.of(new AgreementOneMonthTime(exceptionLimitAlarmTime)),
 								exceptionLimitErrorTime == null ? Optional.empty()
-										: Optional.of(new AgreementOneMonth(exceptionLimitErrorTime))),
+										: Optional.of(new AgreementOneMonthTime(exceptionLimitErrorTime))),
 						new Time36AgreeAnnual(new AttendanceTimeYear(actualTimeAnnual),
 								new AgreementOneYearTime(limitTime))),
 				new Time36AgreeUpperLimit(
 						new AttendanceTimeMonth(
 								appTimeAgreeUpperLimit),
 						new Time36AgreeUpperLimitMonth(new AttendanceTimeMonth(overTime),
-								new AgreementOneMonth(upperLimitTimeMonth)),
+								new AgreementOneMonthTime(upperLimitTimeMonth)),
 						new Time36AgreeUpperLimitAverage(averageTimeLst.stream()
 								.map(x -> new Time36AgreeUpperLimitPerMonth(
 										new YearMonthPeriod(new YearMonth(x.pk.periodYearStart),
 												new YearMonth(x.pk.periodYearEnd)),
 										new AttendanceTimeMonth(x.averageTime), new AttendanceTimeYear(x.totalTime)))
-								.collect(Collectors.toList()), new AgreementOneMonth(upperLimitTimeAverage))));
+								.collect(Collectors.toList()), new AgreementOneMonthTime(upperLimitTimeAverage))));
 	}
 
 	public static KrqdtAppOvertimeDetail toEntity(Optional<AppOvertimeDetail> domainOtp) {

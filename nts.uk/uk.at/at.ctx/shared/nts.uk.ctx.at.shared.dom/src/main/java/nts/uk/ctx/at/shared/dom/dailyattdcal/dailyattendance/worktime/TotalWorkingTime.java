@@ -68,6 +68,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.v
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.VacationClass;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.withinstatutory.WithinWorkTimeFrame;

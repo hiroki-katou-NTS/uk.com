@@ -37,7 +37,6 @@ import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.IntegrationOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.affiliation.AffiliationInfoOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.affiliation.AggregateAffiliationInfo;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.enums.ClosingDateType;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.management.setting.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.monthly.anyitem.AggregateAnyItem;
 import nts.uk.ctx.at.shared.dom.monthly.anyitem.AnyItemOfMonthly;
@@ -357,26 +356,26 @@ public class AggregateMonthlyRecordServiceProc {
 			// 36協定時間の集計
 			MonthlyCalculation monthlyCalculationForAgreement = new MonthlyCalculation();
 			
-			val agreementTimeOpt = monthlyCalculationForAgreement.aggregateAgreementTime(require, cacheCarrier,
+			val agreementTime = monthlyCalculationForAgreement.aggregateAgreementTime(require, cacheCarrier,
 					this.companyId, this.employeeId, this.yearMonth, this.closureId, this.closureDate, monthPeriod,
 					Optional.empty(), Optional.empty(), Optional.empty(), this.companySets, this.employeeSets,
 					this.monthlyCalculatingDailys, this.monthlyOldDatas, basicCalced);
 			
-			if (agreementTimeOpt.isPresent()) {
-				val agreementTime = agreementTimeOpt.get();
-				this.aggregateResult.getAgreementTimeList().add(agreementTime);
+			if (agreementTime.getAgreementTime().isPresent()) {
+				
+				this.aggregateResult.getAgreementTimeList().add(agreementTime.getAgreementTime().get());
+			} else {
+				if (!agreementTime.getError().isEmpty()) {
+					val error = agreementTime.getError().get(0);
+					this.aggregateResult.addErrorInfos(error.getResourceId(), error.getMessage());
+				}
 			}
 
 			// 36協定運用設定を取得
 			if (this.companySets.getAgreementOperationSet().isPresent()) {
 				AgreementOperationSetting agreementOpeSet = this.companySets.getAgreementOperationSet().get();
 
-				// 締めと36協定期間の締め日が同じかどうか判断
-				int monthClosureDay = ClosingDateType.LASTDAY.value; // 締めを36協定期間の締め日の値に揃える
-				if (this.closureDate.getLastDayOfMonth() == false) {
-					monthClosureDay = this.closureDate.getClosureDay().v() - 1;
-				}
-				if (monthClosureDay != agreementOpeSet.getClosingDateType().value && // 締めが異なる
+				if (!this.closureDate.equals(agreementOpeSet.getClosureDate()) && // 締めが異なる
 																						// かつ
 						monthPeriod.start().after(employee.getEntryDate())) { // 開始日が入社日より後の時
 
@@ -391,14 +390,19 @@ public class AggregateMonthlyRecordServiceProc {
 							Optional.empty());
 					MonthlyCalculation prevCalculationForAgreement = new MonthlyCalculation();
 					
-					val prevAgreTimeOpt = prevCalculationForAgreement.aggregateAgreementTime(require,
+					val prevAgreTime = prevCalculationForAgreement.aggregateAgreementTime(require,
 							cacheCarrier, this.companyId, this.employeeId, prevYM, this.closureId, this.closureDate,
 							prevPeriod, Optional.empty(), Optional.empty(), Optional.empty(), this.companySets,
 							this.employeeSets, this.monthlyCalculatingDailys, prevOldDatas, Optional.empty());
 					
-					if (prevAgreTimeOpt.isPresent()) {
-						val prevAgreTime = prevAgreTimeOpt.get();
-						this.aggregateResult.getAgreementTimeList().add(prevAgreTime);
+					if (prevAgreTime.getAgreementTime().isPresent()) {
+						
+						this.aggregateResult.getAgreementTimeList().add(prevAgreTime.getAgreementTime().get());
+					} else {
+						if (!prevAgreTime.getError().isEmpty()) {
+							val error = prevAgreTime.getError().get(0);
+							this.aggregateResult.addErrorInfos(error.getResourceId(), error.getMessage());
+						}
 					}
 				}
 			}

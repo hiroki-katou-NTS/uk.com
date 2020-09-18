@@ -37,8 +37,6 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.D
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryMidNightTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOverTimeWorkMidNightTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.RaiseSalaryTimeOfDailyPerfor;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ShortWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimeDivergenceWithCalculationMinusExist;
@@ -58,6 +56,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.v
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SpecialHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.SubstituteHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TimeDigestOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.TransferHolidayOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.vacationusetime.YearlyReservedOfDaily;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
@@ -447,7 +446,7 @@ public class KscdtSchTime extends ContractUkJpaEntity {
 				new AttendanceTime(hdHourlyShortageTime));
 		AnnualOfDaily annual = new AnnualOfDaily(new AttendanceTime(hdPaidTime), new AttendanceTime(hdPaidHourlyTime));
 		HolidayOfDaily holidayOfDaily = new HolidayOfDaily(new AbsenceOfDaily(new AttendanceTime(absenceTime)),
-				timeDigest, yearlyReserved, substitute, overSalary, specialHoliday, annual);
+				timeDigest, yearlyReserved, substitute, overSalary, specialHoliday, annual, new TransferHolidayOfDaily(new AttendanceTime(0)));
 
 		DeductionTotalTime deductionTotalTime = DeductionTotalTime
 				.of(TimeWithCalculation.sameTime(new AttendanceTime(this.brkTotalTime)), TimeWithCalculation.sameTime(AttendanceTime.ZERO), TimeWithCalculation.sameTime(AttendanceTime.ZERO));

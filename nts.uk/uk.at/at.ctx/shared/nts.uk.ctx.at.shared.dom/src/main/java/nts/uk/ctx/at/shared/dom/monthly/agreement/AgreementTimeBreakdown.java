@@ -98,9 +98,9 @@ public class AgreementTimeBreakdown {
 		domain.withinPrescribedPremiumTime = withinPrescribedPremiumTime;
 		domain.weeklyPremiumTime = weeklyPremiumTime;
 		domain.monthlyPremiumTime = monthlyPremiumTime;
-		domain.temporaryTime = new AttendanceTimeMonth(0);
-		domain.legalHolidayWorkTime = new AttendanceTimeMonth(0);
-		domain.legalTransferTime = new AttendanceTimeMonth(0);
+		domain.temporaryTime = temporaryTime;
+		domain.legalHolidayWorkTime = legalHolidayWorkTime;
+		domain.legalTransferTime = legalTransferTime;
 		return domain;
 	}
 	

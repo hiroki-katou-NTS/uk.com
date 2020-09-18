@@ -12,8 +12,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSetDomainService;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.management.exceptsetting.AgreementYearSetting;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.primitivevalue.ErrorOneYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.management.oneyear.OneYearErrorAlarmTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.service.WorkingConditionService;
 
@@ -38,8 +37,10 @@ public class UpdateAgreementYearSettingCommandHandler extends CommandHandlerWith
 		AgreementYearSetting agreementYearSetting = new AgreementYearSetting(
 				command.getEmployeeId(),
 				command.getYearValue(),
-				new ErrorOneYear(command.getErrorOneYear()),
-				new AlarmOneYear(command.getAlarmOneYear()));
+				/** TODO: 36協定時間対応により、コメントアウトされた */
+				new OneYearErrorAlarmTime());
+//				new ErrorOneYear(command.getErrorOneYear()),
+//				new AlarmOneYear(command.getAlarmOneYear()));
 		
 //		agreementYearSetting.validate();
 		

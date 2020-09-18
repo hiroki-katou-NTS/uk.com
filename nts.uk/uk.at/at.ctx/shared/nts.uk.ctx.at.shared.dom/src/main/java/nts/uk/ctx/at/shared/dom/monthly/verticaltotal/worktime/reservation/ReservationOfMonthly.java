@@ -66,6 +66,7 @@ public class ReservationOfMonthly implements Serializable{
 	/** ○予約注文 */
 	public void aggregate(RequireM1 require, String sid, GeneralDate date) {
 		
+		/** VerticalTotalAggregateService参照 */
 		val reservation = require.reservation(sid, date);
 		
 		this.sum(reservation);

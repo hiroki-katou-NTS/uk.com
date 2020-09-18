@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.infra.repository.monthly.verticaltotal;
+package nts.uk.ctx.at.record.dom.monthly.verticaltotal;
 
 import java.util.List;
 import java.util.stream.Collectors;

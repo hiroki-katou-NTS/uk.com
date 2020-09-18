@@ -365,7 +365,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 		
 //		List<Boolean> isHappendOptimistLockError = new ArrayList<>(); 
 
-		List<IntegrationOfDaily> createListNew = createIntegrationOfDaily(employeeId, datePeriod);
+		List<IntegrationOfDaily> createListNew = getIntegrationOfDaily(employeeId, datePeriod);
 		if (createListNew.isEmpty()) {
 			check = 0;
 			return Pair.of(check, afterCalcRecord);
@@ -567,7 +567,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	private List<IntegrationOfDaily> createIntegrationList(List<String> employeeId, DatePeriod datePeriod) {
 		List<IntegrationOfDaily> returnList = new ArrayList<>();
 		for(String empId:employeeId) {
-			returnList.addAll(createIntegrationOfDaily(empId, datePeriod));
+			returnList.addAll(getIntegrationOfDaily(empId, datePeriod));
 		}
 		return returnList;
 	}
@@ -587,7 +587,7 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 	 * @return
 	 */
 	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	private List<IntegrationOfDaily> createIntegrationOfDaily(String employeeId, DatePeriod datePeriod) {
+	public List<IntegrationOfDaily> getIntegrationOfDaily(String employeeId, DatePeriod datePeriod) {
 		val attendanceTimeList= workInformationRepository.findByPeriodOrderByYmd(employeeId, datePeriod);
 		
 		List<IntegrationOfDaily> returnList = new ArrayList<>();

@@ -4,7 +4,6 @@ import lombok.Value;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 
 @Value
-
 public class AgreementTimeOfMonthlyDto {
 	private int agreementTime;
 	/** 限度エラー時間 */
@@ -28,13 +27,15 @@ public class AgreementTimeOfMonthlyDto {
 	}
 	
 	public static AgreementTimeOfMonthlyDto fromAgreementTimeOfMonthly(AgreementTimeOfMonthly agreementTimeOfMonthly) {
-		return new AgreementTimeOfMonthlyDto(
-				agreementTimeOfMonthly.getAgreementTime().v(), 
-				agreementTimeOfMonthly.getLimitErrorTime().v(), 
-				agreementTimeOfMonthly.getLimitAlarmTime().v(), 
-				agreementTimeOfMonthly.getExceptionLimitErrorTime().map(x -> x.v()).orElse(null), 
-				agreementTimeOfMonthly.getExceptionLimitAlarmTime().map(x -> x.v()).orElse(null), 
-				agreementTimeOfMonthly.getStatus().value);
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		return new AgreementTimeOfMonthlyDto(
+//				agreementTimeOfMonthly.getAgreementTime().v(), 
+//				agreementTimeOfMonthly.getLimitErrorTime().v(), 
+//				agreementTimeOfMonthly.getLimitAlarmTime().v(), 
+//				agreementTimeOfMonthly.getExceptionLimitErrorTime().map(x -> x.v()).orElse(null), 
+//				agreementTimeOfMonthly.getExceptionLimitAlarmTime().map(x -> x.v()).orElse(null), 
+//				agreementTimeOfMonthly.getStatus().value);
+		return new AgreementTimeOfMonthlyDto(0, 0, 0, 0, 0, 0);
 	}  
 
 }

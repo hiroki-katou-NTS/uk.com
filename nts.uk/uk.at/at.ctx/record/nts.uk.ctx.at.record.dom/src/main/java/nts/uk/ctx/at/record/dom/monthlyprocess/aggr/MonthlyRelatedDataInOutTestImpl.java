@@ -21,9 +21,6 @@ import nts.uk.ctx.at.shared.dom.monthly.AttendanceAmountMonth;
 import nts.uk.ctx.at.shared.dom.monthly.AttendanceTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthly.agreement.management.timesetting.AgreementOneMonth;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.hdwkandcompleave.AggregateHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.monthly.calc.totalworkingtime.overtime.AggregateOverTime;
 import nts.uk.ctx.at.shared.dom.monthly.excessoutside.ExcessOutsideWork;
@@ -153,17 +150,6 @@ public class MonthlyRelatedDataInOutTestImpl implements MonthlyRelatedDataInOutT
 				new AttendanceTimeMonthWithMinus(0),
 				excoutList);
 		attendanceTime.setExcessOutsideWork(excessOutsideWork);
-		
-		// 36協定時間追加　2018.3.16
-		monthlyCalculation.setAgreementTime(
-				AgreementTimeOfMonthly.of(
-						new AttendanceTimeMonth(1300 + randomVal),
-						new AgreementOneMonth(800 + randomVal),
-						new AgreementOneMonth(0),
-						Optional.of(new AgreementOneMonth(500 + randomVal)),
-						Optional.empty(),
-						AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR)
-			);
 		
 		// 縦計分追加　2018.2.8
 		val verticalTotal = attendanceTime.getVerticalTotal();

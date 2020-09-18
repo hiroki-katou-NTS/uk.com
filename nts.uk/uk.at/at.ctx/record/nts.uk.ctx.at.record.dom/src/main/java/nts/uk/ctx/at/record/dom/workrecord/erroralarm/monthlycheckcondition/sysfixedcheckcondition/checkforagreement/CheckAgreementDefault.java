@@ -33,8 +33,9 @@ public class CheckAgreementDefault implements CheckAgreementService {
 		if(!attdTimeOfMonthly.isPresent())
 			return Optional.empty();
 		//パラメータ．「36協定エラー状態」をチェックする
-		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
-		AgreementTimeStatusOfMonthly status = agreementTimeOfMonthly.getStatus();
+		/** TODO: 36協定時間対応により、コメントアウトされた */
+//		AgreementTimeOfMonthly agreementTimeOfMonthly = attdTimeOfMonthly.get().getMonthlyCalculation().getAgreementTime();
+		AgreementTimeStatusOfMonthly status = AgreementTimeStatusOfMonthly.NORMAL;//agreementTimeOfMonthly.getStatus();
 		
 		GeneralDate date = GeneralDate.ymd(ym.year(), ym.month(), 1);
 		

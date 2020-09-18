@@ -278,32 +278,6 @@ public class RegularAndIrregularTimeOfMonthly implements Serializable{
 	}
 	
 	/**
-	 * 月別実績を集計する
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param datePeriod 期間
-	 * @param workingSystem 労働制
-	 * @param aggregateAtr 集計区分
-	 * @return 戻り値：月別実績を集計する
-	 */
-//	public AggregateMonthlyValue aggregateMonthly(RequireM3 RequireM4, String cid, String sid,
-//			DatePeriod datePeriod, WorkingSystem workingSystem, MonthlyAggregateAtr aggregateAtr) {
-//		
-//	}
-//	
-//	private WeekStart getWeekStart(RequireM5 require, String cid, WorkingSystem workingSystem) {
-//		
-//	} 
-	
-	public static interface RequireM4 {
-		
-	}
-	
-	public static interface RequireM5 {
-		
-	}
-	
-	/**
 	 * 前月の最終週を集計する
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID

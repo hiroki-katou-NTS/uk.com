@@ -1,10 +1,8 @@
-package nts.uk.ctx.at.record.dom.monthly.agreement.service;
+package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
@@ -24,14 +22,11 @@ import nts.uk.shr.com.context.AppContexts;
 /** 指定する年度の時間をもとに36協定時間を集計する */
 public class AggregateAgreementTimeByYear {
 
-	private static final AgreementOneYearTime DEFAULT_AGREEMENT_TIME = new AgreementOneYearTime(0);
-
 	/** [No.684]指定する年度の時間をもとに36協定時間を集計する */
 	public static AgreementTimeYear aggregate(RequireM1 require, String sid,
-			GeneralDate baseDate, Year year, 
-			Map<YearMonth, AttendanceTimeMonth> agreementTimes) {
+			GeneralDate baseDate, Year year, Map<YearMonth, AttendanceTimeMonth> agreementTimes) {
 		
-		/**集計の年月期間を取得する */
+		/** 集計の年月期間を取得する */
 		val aggregatePeriod = getAggregatePeriod(require, year);
 		if (!aggregatePeriod.isPresent()) {
 			return new AgreementTimeYear();
@@ -46,15 +41,15 @@ public class AggregateAgreementTimeByYear {
 	}
 	
 	/** 36協定年間時間を取得する */
-	private static AgreementTimeYear aggregate(RequireM3 require, String sid,
+	public static AgreementTimeYear aggregate(RequireM3 require, String sid,
 			GeneralDate baseDate, Year year, YearMonthPeriod ymPeriod,
-			Map<YearMonth, Pair<AgreementOneYearTime, AgreementOneYearTime>> agreementTimes) {
+			Map<YearMonth, AgreementTimeYearTemporary> agreementTimes) {
 		
 		/** 対象者の３６協定年間設定を取得する */
 		val agreementSet = getAgreementSetting(require, sid, baseDate, year);
 		
 		/** 36協定年間時間（Temporary）を作成する */
-		Pair<AgreementOneYearTime, AgreementOneYearTime> yearTime = Pair.of(DEFAULT_AGREEMENT_TIME, DEFAULT_AGREEMENT_TIME);
+		AgreementTimeYearTemporary yearTime = AgreementTimeYearTemporary.builder().build();
 		
 		/** 年月期間をループする */
 		YearMonth current = ymPeriod.start();
@@ -64,29 +59,28 @@ public class AggregateAgreementTimeByYear {
 			val agreementTime = getAgreementTime(require, sid, current, agreementTimes);
 			
 			/** 36協定年間時間（Temporary）に加算する */
-			yearTime = Pair.of(yearTime.getLeft().addMinutes(agreementTime.getLeft().valueAsMinutes()), 
-								yearTime.getRight().addMinutes(agreementTime.getRight().valueAsMinutes()));
+			yearTime.add(agreementTime);
 			
 			current = current.addMonths(1);
 		}
 		
 		/** 36協定年間時間を作成して返す */
-		val state = agreementSet.check(yearTime.getLeft(), yearTime.getRight());
+		val state = agreementSet.check(yearTime.getAgreementTime(), yearTime.getLegalLimitTime());
 		
 		/** 36協定年間時間を作成して返す */
 		return AgreementTimeYear.of(AgreementTimeOfYear.of(
-											new AgreementOneYearTime(yearTime.getRight().valueAsMinutes()), 
+											new AgreementOneYearTime(yearTime.getLegalLimitTime().valueAsMinutes()), 
 											agreementSet.getSpecConditionLimit()),
 									AgreementTimeOfYear.of(
-											new AgreementOneYearTime(yearTime.getLeft().valueAsMinutes()), 
+											new AgreementOneYearTime(yearTime.getAgreementTime().valueAsMinutes()), 
 											agreementSet.getSpecConditionLimit()), 
 									state);
 	}
 	
 	/** 処理中の年月の36協定時間を取得する */
-	public static Pair<AgreementOneYearTime, AgreementOneYearTime> getAgreementTime(
+	private static AgreementTimeYearTemporary getAgreementTime(
 			RequireM5 require, String sid, YearMonth ym,
-			Map<YearMonth, Pair<AgreementOneYearTime, AgreementOneYearTime>> agreementTimes) {
+			Map<YearMonth, AgreementTimeYearTemporary> agreementTimes) {
 		
 		/** パラメータ。36協定時間に年月のデータが存在するかをチェックする */
 		if (agreementTimes.containsKey(ym)) {
@@ -115,20 +109,21 @@ public class AggregateAgreementTimeByYear {
 	}
 	
 	/** 36協定年間時間（Temporary）を作成する */
-	private static Pair<AgreementOneYearTime, AgreementOneYearTime> createYearData(AttendanceTimeMonth agreementTime) {
+	private static AgreementTimeYearTemporary createYearData(AttendanceTimeMonth agreementTime) {
 		
-		return Pair.of(new AgreementOneYearTime(agreementTime.valueAsMinutes()), DEFAULT_AGREEMENT_TIME);
+		return AgreementTimeYearTemporary.builder()
+				.agreementTime(new AgreementOneYearTime(agreementTime.valueAsMinutes()))
+				.build();
 	}
 	
 	/** 36協定年間時間（Temporary）を作成する */
-	private static Pair<AgreementOneYearTime, AgreementOneYearTime> createYearData(AgreementTimeOfManagePeriod agreementTime) {
+	private static AgreementTimeYearTemporary createYearData(AgreementTimeOfManagePeriod agreementTime) {
 		
-		return Pair.of(new AgreementOneYearTime(agreementTime.getAgreementTime().getAgreementTime().valueAsMinutes()),
-						new AgreementOneYearTime(agreementTime.getLegalMaxTime().getAgreementTime().valueAsMinutes()));
+		return AgreementTimeYearTemporary.map(agreementTime);
 	}
 	
 	/** 集計の年月期間を取得する */
-	private static Optional<YearMonthPeriod> getAggregatePeriod(RequireM2 require, Year year) {
+	public static Optional<YearMonthPeriod> getAggregatePeriod(RequireM2 require, Year year) {
 		
 		/** ログイン会社ID */
 		val cid = AppContexts.user().companyId();

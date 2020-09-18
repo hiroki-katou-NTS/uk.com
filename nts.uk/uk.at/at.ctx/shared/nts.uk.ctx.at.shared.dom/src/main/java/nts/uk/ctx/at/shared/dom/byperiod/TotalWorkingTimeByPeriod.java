@@ -109,7 +109,7 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 		{
 			// 日別実績の集計処理
 			this.workTime.aggregateForByPeriod(require, 
-					datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap, companySets);
+					datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);
 			
 			// 就業時間の合計処理
 			this.workTime.totalizeWorkTime(datePeriod);
@@ -132,8 +132,7 @@ public class TotalWorkingTimeByPeriod implements Cloneable {
 		this.holidayWorkTime.aggregateForByPeriod(datePeriod, attendanceTimeOfDailyMap, roleHolidayWorkFrameMap);
 		
 		// 休暇使用時間を集計する
-		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap,
-				companySets);
+		this.vacationUseTime.confirm(require, datePeriod, attendanceTimeOfDailyMap, workInfoOfDailyMap);
 		this.vacationUseTime.aggregate(datePeriod);
 		
 		// 所定労働時間を集計する

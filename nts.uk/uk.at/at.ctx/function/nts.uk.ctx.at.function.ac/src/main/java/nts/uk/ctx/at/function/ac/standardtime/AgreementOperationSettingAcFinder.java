@@ -24,10 +24,11 @@ public class AgreementOperationSettingAcFinder implements AgreementOperationSett
 	public Optional<AgreementOperationSettingImport> find(String cid) {
 		Optional<AgreementOperationSetting> dataOpt = agreementOperationSettingPub.find(cid);
 		if (dataOpt.isPresent()) {
-			AgreementOperationSetting data = dataOpt.get();
-			return Optional.of(new AgreementOperationSettingImport(data.getStartingMonth().value,
-					data.getNumberTimesOverLimitType().value, data.getClosingDateType().value,
-					data.getClosingDateAtr().value, data.getYearlyWorkTableAtr().value, data.getAlarmListAtr().value));
+			/** TODO: 36協定時間対応により、コメントアウトされた */
+//			AgreementOperationSetting data = dataOpt.get();
+//			return Optional.of(new AgreementOperationSettingImport(data.getStartingMonth().value,
+//					data.getNumberTimesOverLimitType().value, data.getClosingDateType().value,
+//					data.getClosingDateAtr().value, data.getYearlyWorkTableAtr().value, data.getAlarmListAtr().value));
 		}
 		return Optional.empty();
 	}

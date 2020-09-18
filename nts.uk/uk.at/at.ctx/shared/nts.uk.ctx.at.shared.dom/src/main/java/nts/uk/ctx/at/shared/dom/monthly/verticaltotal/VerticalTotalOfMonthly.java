@@ -202,7 +202,7 @@ public class VerticalTotalOfMonthly implements Serializable{
 					predetermineTimeSet, isAttendanceDay, isTwoTimesStampExists, predTimeSetOnWeekday);
 			
 			// 勤務時間集計
-			this.workTime.aggregate(require, workType, attendanceTimeOfDaily);
+			this.workTime.aggregate(require, employeeId, procYmd, workType, attendanceTimeOfDaily);
 			
 			// 勤務時刻集計
 			this.workClock.aggregate(workType, pcLogonInfoOpt, attendanceTimeOfDaily, timeLeavingOfDaily,
