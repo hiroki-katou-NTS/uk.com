@@ -47,12 +47,11 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 	@Override
 	public List<WorkSchedule> getList(List<String> sids, DatePeriod period) {
 		List<WorkSchedule> result = this.queryProxy().query(SELECT_BY_LIST, KscdtSchBasicInfo.class)
-				.setParameter("sids", sids)
-				.setParameter("startDate", period.start())
+				.setParameter("sids", sids).setParameter("startDate", period.start())
 				.setParameter("endDate", period.end()).getList(c -> c.toDomain(c.pk.sid, c.pk.ymd));
 		return result;
 	}
-	
+
 	@Override
 	public boolean checkExits(String employeeID, GeneralDate ymd) {
 		return this.queryProxy().query(SELECT_CHECK_UPDATE, Long.class).setParameter("employeeID", employeeID)
@@ -202,78 +201,93 @@ public class JpaWorkScheduleRepository extends JpaRepository implements WorkSche
 					}
 				}
 			}
-				// List<KscdtSchEditState> editStates;
-				if (!oldData.get().editStates.isEmpty()) {
-					for (KscdtSchEditState y : newData.editStates) {
-						oldData.get().editStates.forEach(x -> {
-							if (y.pk.atdItemId == x.pk.atdItemId) {
-								x.cid = y.cid;
-								x.sditState = y.sditState;
-							}
-						});
-					}
-				}
-
-				// List<KscdtSchAtdLvwTime> atdLvwTimes;
-				if (!oldData.get().atdLvwTimes.isEmpty()) {
-					for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
-						oldData.get().atdLvwTimes.forEach(x -> {
-							if (y.pk.workNo == x.pk.workNo) {
-								x.cid = y.cid;
-								x.atdClock = y.atdClock;
-								x.lwkClock = y.lwkClock;
-							}
-						});
-					}
-				}
-
-				if (newData.schShortTimeTs.isEmpty()) {
-					// if have not ShortWorkingTimeSheet delete all old data
-					this.deleteAllShortTime(workSchedule.getEmployeeID(), workSchedule.getYmd());
-				} else {
-					// List<KscdtSchShortTimeTs> schShortTimeTs
-					for (KscdtSchShortTimeTs ts : newData.schShortTimeTs) {
-						oldData.get().schShortTimeTs.forEach(x -> {
-							if (x.pk.frameNo == ts.pk.frameNo && x.pk.childCareAtr == ts.pk.childCareAtr) {
-								x.cid = ts.cid;
-								x.shortTimeTsStart = ts.shortTimeTsStart;
-								x.shortTimeTsEnd = ts.shortTimeTsEnd;
-							}
-
-							if (x.pk.frameNo == 2 && newData.schShortTimeTs.size() < 2) {
-								String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
-										+ " and o.pk.ymd = :ymd " + " and o.pk.childCareAtr = :childCareAtr "
-										+ "  and o.pk.frameNo = :frameNo";
-								this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
-										.setParameter("ymd", x.pk.ymd).setParameter("childCareAtr", x.pk.childCareAtr)
-										.setParameter("frameNo", x.pk.frameNo).executeUpdate();
-
-							}
-						});
-						if (ts.pk.frameNo == 2 && oldData.get().schShortTimeTs.size() < 2) {
-							ShortWorkingTimeSheet schShortTimeTs = workSchedule.getOptSortTimeWork().get()
-									.getShortWorkingTimeSheets().stream()
-									.filter(x -> x.getShortWorkTimeFrameNo().v() == 2).findFirst().get();
-							this.insert(schShortTimeTs, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+			// List<KscdtSchEditState> editStates;
+			if (!oldData.get().editStates.isEmpty()) {
+				for (KscdtSchEditState y : newData.editStates) {
+					oldData.get().editStates.forEach(x -> {
+						if (y.pk.atdItemId == x.pk.atdItemId) {
+							x.cid = y.cid;
+							x.sditState = y.sditState;
 						}
-					}
+					});
 				}
-
-				// List<KscdtSchBreakTs> breakTs;
-				if (!oldData.get().breakTs.isEmpty()) {
-					for (KscdtSchBreakTs y : newData.breakTs) {
-						oldData.get().breakTs.stream().forEach(x -> {
-							if (y.pk.frameNo == x.pk.frameNo) {
-								x.cid = y.cid;
-								x.breakTsStart = y.breakTsStart;
-								x.breakTsEnd = y.breakTsEnd;
-							}
-						});
-					}
-				}
-				this.commandProxy().update(oldData.get());
-
 			}
+
+			// List<KscdtSchAtdLvwTime> atdLvwTimes;
+			if (!oldData.get().atdLvwTimes.isEmpty()) {
+				for (KscdtSchAtdLvwTime y : newData.atdLvwTimes) {
+					oldData.get().atdLvwTimes.forEach(x -> {
+						if (y.pk.workNo == x.pk.workNo) {
+							x.cid = y.cid;
+							x.atdClock = y.atdClock;
+							x.lwkClock = y.lwkClock;
+						}
+					});
+				}
+			}
+
+			Optional<WorkSchedule> oldDatas = this.queryProxy().query(SELECT_BY_KEY, KscdtSchBasicInfo.class)
+					.setParameter("employeeID", workSchedule.getEmployeeID()).setParameter("ymd", workSchedule.getYmd())
+					.getSingle(c -> c.toDomain(workSchedule.getEmployeeID(), workSchedule.getYmd()));
+
+			if (newData.schShortTimeTs.isEmpty()) {
+				// if have not ShortWorkingTimeSheet delete all old data
+				this.deleteAllShortTime(workSchedule.getEmployeeID(), workSchedule.getYmd());
+				oldData.get().setSchShortTimeTs(newData.schShortTimeTs);
+			} else {
+
+			if (oldDatas.get().getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()
+					&& workSchedule.getOptSortTimeWork().isPresent()) {
+				if (!workSchedule.getOptSortTimeWork().get().getShortWorkingTimeSheets().isEmpty()) {
+					for (ShortWorkingTimeSheet ts : workSchedule.getOptSortTimeWork().get()
+							.getShortWorkingTimeSheets()) {
+						this.insert(ts, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+					}
+				}
+			} else {
+				// List<KscdtSchShortTimeTs> schShortTimeTs
+				for (KscdtSchShortTimeTs ts : newData.schShortTimeTs) {
+					oldData.get().schShortTimeTs.forEach(x -> {
+						if (x.pk.frameNo == ts.pk.frameNo && x.pk.childCareAtr == ts.pk.childCareAtr) {
+							x.cid = ts.cid;
+							x.shortTimeTsStart = ts.shortTimeTsStart;
+							x.shortTimeTsEnd = ts.shortTimeTsEnd;
+						}
+
+						if (x.pk.frameNo == 2 && newData.schShortTimeTs.size() < 2) {
+							String delete = "delete from KscdtSchShortTimeTs o " + " where o.pk.sid = :sid "
+									+ " and o.pk.ymd = :ymd " + " and o.pk.childCareAtr = :childCareAtr "
+									+ "  and o.pk.frameNo = :frameNo";
+							this.getEntityManager().createQuery(delete).setParameter("sid", x.pk.sid)
+									.setParameter("ymd", x.pk.ymd).setParameter("childCareAtr", x.pk.childCareAtr)
+									.setParameter("frameNo", x.pk.frameNo).executeUpdate();
+
+						}
+					});
+					if (ts.pk.frameNo == 2 && oldData.get().schShortTimeTs.size() < 2) {
+						ShortWorkingTimeSheet schShortTimeTs = workSchedule.getOptSortTimeWork().get()
+								.getShortWorkingTimeSheets().stream().filter(x -> x.getShortWorkTimeFrameNo().v() == 2)
+								.findFirst().get();
+						this.insert(schShortTimeTs, workSchedule.getEmployeeID(), workSchedule.getYmd(), cID);
+					}
+				}
+			}
+		}
+			// List<KscdtSchBreakTs> breakTs;
+			if (!oldData.get().breakTs.isEmpty()) {
+				for (KscdtSchBreakTs y : newData.breakTs) {
+					oldData.get().breakTs.stream().forEach(x -> {
+						if (y.pk.frameNo == x.pk.frameNo) {
+							x.cid = y.cid;
+							x.breakTsStart = y.breakTsStart;
+							x.breakTsEnd = y.breakTsEnd;
+						}
+					});
+				}
+			}
+			this.commandProxy().update(oldData.get());
+
+		}
 	}
 
 	@Override

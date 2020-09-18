@@ -8611,7 +8611,6 @@ var nts;
                                                     $.data(cell, "hide", cell.innerText);
                                                     cell.innerText = "";
                                                 }
-                                                return false;
                                             }
                                         }
                                     });
@@ -11287,7 +11286,9 @@ var nts;
                      */
                     function on($grid, updateMode) {
                         if (updateMode === COPY_PASTE) {
-                            new Printer().hook($grid);
+                            var printer = new Printer();
+                            $.data($grid, internal.PRINTER_INST, printer);
+                            printer.hook($grid);
                         }
                     }
                     copy.on = on;
@@ -11620,7 +11621,12 @@ var nts;
                         var targetTime = getComplement({ hour: hour, minute: minute, negative: negative });
                         if (!targetTime)
                             return false;
-                        if (compare(targetTime, maxTime) > 0 || compare(targetTime, minTime) < 0)
+                        var compareMax = compare(targetTime, maxTime);
+                        var compareMin = compare(targetTime, minTime);
+                        if (compareMax > 0 || compareMin < 0)
+                            return false;
+                        if ((targetTime.negative && maxTime.negative && compareMax === 0)
+                            || (targetTime.negative && minTime.negative && compareMin === 0))
                             return false;
                         return true;
                     }
@@ -12973,7 +12979,12 @@ var nts;
                         selector.queryAll($container, "div[class*='" + BODY_PRF + "']").forEach(function (e) {
                             if (e.classList.contains(BODY_PRF + HORIZONTAL_SUM) || e.classList.contains(BODY_PRF + LEFT_HORZ_SUM))
                                 return;
-                            e.style.height = height + "px";
+                            if (e.classList.contains(BODY_PRF + LEFTMOST)) {
+                                e.style.height = height - helper.getScrollWidth() + "px";
+                            }
+                            else {
+                                e.style.height = height + "px";
+                            }
                         });
                         var cHeight = 0, showCount = 0;
                         var stream = selector.queryAll($container, "div[class*='" + DETAIL + "'], div[class*='" + LEFT_HORZ_SUM + "']");
@@ -13583,13 +13594,21 @@ var nts;
                                 return;
                             var ui = evt.detail;
                             if ((uk.util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                                var $grid = helper.getMainTable($exTable);
+                                var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                                var view = (gen.options || {}).view;
+                                if (!_.isFunction(view))
+                                    return;
+                                var fields = view(exTable.viewMode);
                                 if (ui.value.constructor === Array) {
-                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
-                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                                    for (var i = 0; i < fields.length; i++) {
+                                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[i], i));
+                                    }
                                 }
                                 else {
-                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 0));
-                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 1));
+                                    for (var i = 0; i < fields.length; i++) {
+                                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, i));
+                                    }
                                 }
                                 return;
                             }
@@ -14164,6 +14183,12 @@ var nts;
                                 break;
                             case "stickRedo":
                                 redoStick(self);
+                                break;
+                            case "copyUndo":
+                                undoCopy(self);
+                                break;
+                            case "copyRedo":
+                                redoCopy(self);
                                 break;
                             case "clearHistories":
                                 clearHistories(self, params[0]);
@@ -14818,6 +14843,32 @@ var nts;
                         }
                     }
                     /**
+                     * Undo copy.
+                     */
+                    function undoCopy($container) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!exTable || exTable.updateMode !== COPY_PASTE)
+                            return;
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var printer = $grid.data(internal.PRINTER_INST);
+                        if (!printer)
+                            return;
+                        printer.undo();
+                    }
+                    /**
+                     * Redo copy.
+                     */
+                    function redoCopy($container) {
+                        var exTable = $container.data(NAMESPACE);
+                        if (!exTable || exTable.updateMode !== COPY_PASTE)
+                            return;
+                        var $grid = $container.find("." + (BODY_PRF + DETAIL));
+                        var printer = $grid.data(internal.PRINTER_INST);
+                        if (!printer)
+                            return;
+                        printer.redo();
+                    }
+                    /**
                      * Clear histories.
                      */
                     function clearHistories($container, type) {
@@ -15217,6 +15268,7 @@ var nts;
                     internal.INPUT_SELECTING = "input-selecting";
                     internal.ERR_MSG = "error-msg";
                     internal.ERR_POPUP = "error-popup";
+                    internal.PRINTER_INST = "printer-inst";
                     /**
                      * Get gem.
                      */
@@ -15253,7 +15305,9 @@ var nts;
                                 return false;
                             }
                         });
-                        exTable.modifications[cell.rowIndex].splice(index, 1);
+                        if (index !== -1) {
+                            exTable.modifications[cell.rowIndex].splice(index, 1);
+                        }
                     }
                     internal.removeChange = removeChange;
                     /**
@@ -15646,11 +15700,10 @@ var nts;
                      * Get partial data source.
                      */
                     function getPartialDataSource($table, name) {
-                        var obj = {
+                        return {
                             header: getClonedDs($table.querySelector("." + HEADER_PRF + name)),
                             body: getClonedDs($table.querySelector("." + BODY_PRF + name))
                         };
-                        return obj;
                     }
                     helper.getPartialDataSource = getPartialDataSource;
                     /**
@@ -18955,10 +19008,23 @@ var nts;
                                 var $message = $("<div></div>");
                                 $dialog.html("");
                                 $dialog.append($errorboard).append($message);
-                                $dialog.closest("[role='dialog']").show();
-                                // hide "x" button
-                                $dialog.closest("[role='dialog']").find(".ui-dialog-titlebar-close").hide();
-                                //$dialog.dialog("open");    
+                                var $container = $dialog.closest("[role='dialog']");
+                                $container
+                                    .show()
+                                    .find(".ui-dialog-titlebar-close").hide();
+                                //$dialog.dialog("open");
+                                var $dialogs = window.top.$('body>[role="dialog"]').toArray();
+                                var zIndex = _.chain($dialogs)
+                                    .map(function (el) { return document.defaultView.getComputedStyle(el, null).getPropertyValue('z-index'); })
+                                    .filter(function (index) { return index.match(/^\d+$/); })
+                                    .map(function (index) { return parseInt(index); })
+                                    .orderBy(function (index) { return index; })
+                                    .last();
+                                // fixbug show error dialog after main modal
+                                if (!$container.data('ziv')) {
+                                    var zIdx = zIndex.value() || 10000001;
+                                    $container.data('ziv', zIdx).css('z-index', zIdx);
+                                }
                             }
                             else {
                                 $dialog.closest("[role='dialog']").hide();
@@ -48686,7 +48752,7 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 /// <reference path="./viewcontext.d.ts" />
-var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
+var prefix = 'nts.uk.storage', OPENWD = 'OPEN_WINDOWS_DATA', _a = nts.uk, ui = _a.ui, request = _a.request, resource = _a.resource, windows = ui.windows, block = ui.block, dialog = ui.dialog, $storeSession = function (name, params) {
     if (arguments.length === 2) {
         // setter method
         var $value = JSON.stringify({ $value: params }), $saveValue_1 = btoa(_.map($value, function (s) { return s.charCodeAt(0); }).join('-'));
@@ -48718,7 +48784,7 @@ var prefix = 'nts.uk.storage', OPENWD = prefix + ".OPEN_WINDOWS_DATA", _a = nts.
         return $.Deferred().resolve()
             .then(function () { return $storeSession(OPENWD); })
             .then(function (value) {
-            nts.uk.localStorage.removeItem(OPENWD);
+            nts.uk.localStorage.removeItem(prefix + "." + OPENWD);
             return value;
         });
     }

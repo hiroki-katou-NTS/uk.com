@@ -5,8 +5,8 @@
 package nts.uk.ctx.at.schedule.infra.repository.pattern.work;
 
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.ctx.at.schedule.dom.shift.pattern.work.DayOfWeek;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.DayOfWeek;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSet;
 import nts.uk.ctx.at.schedule.infra.entity.shift.pattern.work.KscmtWeeklyWorkSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -67,6 +67,11 @@ public class JpaWeeklyWorkSettingSetMemento implements WeeklyWorkSettingSetMemen
 	@Override
 	public void setWorkdayDivision(WorkdayDivision workdayDivision) {
 		this.entity.setWorkDayAtr(workdayDivision.value);
+	}
+
+	@Override
+	public void setContractCode(String constractCode) {
+		this.entity.setContractCode(constractCode);
 	}
 
 }

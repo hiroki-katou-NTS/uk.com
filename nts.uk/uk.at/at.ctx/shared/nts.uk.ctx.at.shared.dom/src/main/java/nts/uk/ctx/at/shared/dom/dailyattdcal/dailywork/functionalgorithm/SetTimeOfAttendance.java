@@ -43,13 +43,13 @@ public class SetTimeOfAttendance {
 			lstTimeLeavingWork.addAll(workInfo.getScheduleTimeSheets().stream().map(x -> {
 				return new TimeLeavingWork(x.getWorkNo(),
 						new TimeActualStamp(null, new WorkStamp(x.getAttendance(),
-								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+								new WorkTimeInformation(new ReasonTimeChange(autoStampClasssifi.getAttendanceStamp(), null),
 										x.getAttendance()),
 								Optional.empty()), 0),
 						new TimeActualStamp(null,
 								new WorkStamp(x.getLeaveWork(),
 										new WorkTimeInformation(
-												new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+												new ReasonTimeChange(autoStampClasssifi.getLeaveStamp(), null),
 												x.getLeaveWork()),
 										Optional.empty()),
 								0));
@@ -82,7 +82,7 @@ public class SetTimeOfAttendance {
 
 	private boolean compareWorkInfo(WorkInformation recordInfo, WorkInformation scheduleInfo) {
 
-		if (recordInfo.getWorkTypeCode().v() == scheduleInfo.getWorkTimeCode().v()
+		if (recordInfo.getWorkTypeCode().v() == scheduleInfo.getWorkTypeCode().v()
 				&& ((recordInfo.getWorkTimeCode() == null && scheduleInfo.getWorkTimeCode() == null)
 						|| (recordInfo.getWorkTimeCode() != null && scheduleInfo.getWorkTimeCode() != null)
 								&& recordInfo.getWorkTimeCode().v().equals(scheduleInfo.getWorkTimeCode().v()))) {

@@ -8,10 +8,7 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
         modeCompany: KnockoutObservable<boolean> = ko.observable(true);
         workplaceModeName : KnockoutObservable<String > = ko.observable(getText("Com_Workplace"));
         
-        palletUnit: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: getText("Com_Company") },
-            { code: 2, name: getText("Com_Workplace") }
-        ]);
+        palletUnit: KnockoutObservableArray<any> = ko.observableArray([]);
         selectedpalletUnit: KnockoutObservable<number> ;
         overwrite: KnockoutObservable<boolean> = ko.observable(true);
 
@@ -49,6 +46,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 { id: "openPopup", text: getText("KSU001_1706"), action: self.openPopup.bind(self) },
                 { id: "delete", text: getText("KSU001_1707"), action: self.remove.bind(self) }
             ];
+            
+            self.palletUnit = ko.observableArray([
+                { code: 1, name: getText("Com_Company") },
+                { code: 2, name: self.workplaceModeName() }
+            ]);
             
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
@@ -454,7 +456,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 shiftPalletUnit: self.selectedpalletUnit(),
                 pageNumberCom: pageNumberSelected,
                 pageNumberOrg: pageNumberSelected,
-                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
+                unit            : userInfor.unit,
+                workplaceId     : self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
+                workplaceGroupId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 1 ? userInfor.workplaceGroupId : null )
             }
 
             service.getShiftPalletWhenChangePage(param).done((data) => {
@@ -623,7 +627,9 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                 shiftPalletUnit: self.selectedpalletUnit(),
                 pageNumberCom: pageNumber,
                 pageNumberOrg: pageNumber,
-                workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
+                unit            : userInfor.unit,
+                workplaceId     : self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : null ),
+                workplaceGroupId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 1 ? userInfor.workplaceGroupId : null )
             }
 
             service.getShiftPalletWhenChangePage(param).done((data) => {
@@ -729,8 +735,8 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
             
             setShared('dataForJB', {
                 selectedTab: self.selectedpalletUnit() == 1 ? 'company' : userInfor.unit == 0 ? 'workplace' : 'workplaceGroup',
-                workplaceName: self.workplaceModeName,
-                workplaceCode: '',
+                workplaceName: self.workplaceModeName(),
+                workplaceCode: userInfor.code,
                 workplaceId: self.selectedpalletUnit() === 1 ? null : (userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId ),
                 listWorkType: __viewContext.viewModel.viewAB.listWorkType(),
                 listWorkTime: __viewContext.viewModel.viewAB.listWorkTime(),

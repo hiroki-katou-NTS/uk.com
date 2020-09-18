@@ -135,12 +135,12 @@ public class ReflectAttendanceClock {
 				workStamp = timeActualStamp.get().getStamp();
 			}
 			if(!workStamp.isPresent() 
-					|| !workStamp.get().getLocationCode().isPresent()
+//					|| !workStamp.get().getLocationCode().isPresent()
 					|| !workStamp.get().getTimeDay().getTimeWithDay().isPresent()) {
 				return null;
 			}
 			
-			return new TimePrintDestinationOutput(workStamp.get().getLocationCode().get(),
+			return new TimePrintDestinationOutput(workStamp.get().getLocationCode().isPresent()? workStamp.get().getLocationCode().get():null,
 					workStamp.get().getTimeDay().getReasonTimeChange().getTimeChangeMeans(),
 					workStamp.get().getTimeDay().getTimeWithDay().get());
 		}
@@ -186,7 +186,7 @@ public class ReflectAttendanceClock {
 		Optional<WorkStamp> workStamp = getWorkStamp(attendanceAtr, actualStampAtr, integrationOfDaily, workNo);
 		
 		//出退勤打刻反映先がNullか確認する 
-		if(timePrintDestinationOutput == null) {
+ 		if(timePrintDestinationOutput == null) {
 			return ReflectStampOuput.REFLECT;	
 		}
 		//実打刻を反映するなのかをチェックする
@@ -215,6 +215,7 @@ public class ReflectAttendanceClock {
 		String companyId = AppContexts.user().companyId();
 		if (integrationOfDaily.getWorkInformation() != null) {
 			WorkInformation recordWorkInformation = integrationOfDaily.getWorkInformation().getRecordInfo();
+			if(recordWorkInformation.getWorkTimeCode() != null) {
 			WorkTimeCode workTimeCode = recordWorkInformation.getWorkTimeCode();
 
 			StampPiorityAtr stampPiorityAtr = StampPiorityAtr.GOING_WORK;
@@ -250,6 +251,7 @@ public class ReflectAttendanceClock {
 				}
 			}
 
+		}
 		}
 		
 		return ReflectStampOuput.REFLECT;
@@ -345,6 +347,7 @@ public class ReflectAttendanceClock {
 				workStamp.get().getTimeDay().setTimeWithDay(Optional.of(timeWithDayAttr));
 				workStamp.get().getTimeDay().getReasonTimeChange().setTimeChangeMeans(TimeChangeMeans.REAL_STAMP);
 				workStamp.get().getTimeDay().getReasonTimeChange().setEngravingMethod(Optional.of(EngravingMethod.TIME_RECORD_ID_INPUT));
+				workStamp.get().setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 			}else {
 				WorkStamp workStampNew = new WorkStamp();
 				WorkTimeInformation timeDay = new WorkTimeInformation(
@@ -354,12 +357,24 @@ public class ReflectAttendanceClock {
 				workStampNew.setLocationCode(Optional.empty());
 				workStampNew.setAfterRoundingTime(timeWithDayAttr);
 				workStamp = Optional.of(workStampNew);
-				timeActualStamp.get().setStamp(workStamp);
+				workStamp.get().setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
+				if(actualStampAtr == ActualStampAtr.STAMP ) {
+					timeActualStamp.get().setStamp(workStamp);
+				}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+					timeActualStamp.get().setActualStamp(workStamp);
+				}
+				
 			}
 			//打刻を丸める (làm tròn 打刻)
 			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
 					?integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp.get(),
 					attendanceAtr, actualStampAtr);
+			
+			if(actualStampAtr == ActualStampAtr.STAMP ) {
+				timeActualStamp.get().setStamp(workStamp);
+			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+				timeActualStamp.get().setActualStamp(workStamp);
+			}
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
 				//申告時刻を反映する
@@ -380,6 +395,7 @@ public class ReflectAttendanceClock {
 			workStamp.setTimeDay(timeDay);
 			workStamp.setLocationCode(Optional.empty());
 			workStamp.setAfterRoundingTime(timeWithDayAttr);
+			workStamp.setLocationCode(Optional.ofNullable(timePrintDestinationOutput.getLocationCode()));
 			if(actualStampAtr == ActualStampAtr.STAMP ) {
 				timeActualStamp.setStamp(Optional.of(workStamp));
 			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
@@ -452,7 +468,8 @@ public class ReflectAttendanceClock {
 				}else {
 					timeChange = (modTimeOfDay ==0)? numberMinuteTimeOfDay:numberMinuteTimeOfDay - modTimeOfDay + blockTime;
 				}
-				workStamp.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(timeChange)));
+				//workStamp.getTimeDay().setTimeWithDay(Optional.of(new TimeWithDayAttr(timeChange)));
+				workStamp.setAfterRoundingTime(new TimeWithDayAttr(timeChange));
 			}//end : nếu time khác giá trị default
 		}
 	}

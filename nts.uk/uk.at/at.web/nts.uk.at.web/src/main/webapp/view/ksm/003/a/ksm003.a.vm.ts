@@ -53,6 +53,8 @@ module nts.uk.at.view.ksm003.a {
 
                 vm.dayIsRequired(true);
                 vm.selectedCheckAll(false);
+                vm.enableRemoveItem(false);
+
                 if (codeChanged) {
                     vm.getPatternValByPatternCd(codeChanged);
                 } else {
@@ -249,24 +251,27 @@ module nts.uk.at.view.ksm003.a {
                     item.days
                 );
 
-                let workTypeName = _.find(lstWorkType, (element) => {
-                        return element.workTypeCode == item.typeCode
-                    }
-                );
+	            let workType = _.find(lstWorkType, (element) => {
+			            return element.workTypeCode == item.typeCode
+		            }
+	            );
 
-                workTypeName = workTypeName && workTypeName.name || '';
-                dailyPatternValModel.setWorkTypeName(workTypeName);
+	            let workTypeName = nts.uk.util.isNullOrUndefined(workType) ? vm.$i18n('KSM003_2') : workType.name;
+	            dailyPatternValModel.setWorkTypeName(workTypeName);
 
-                let workTimeName = _.find(lstWorkTime, (element) => {
-                        return element.code == item.timeCode
-                    }
-                );
-
-                workTimeName = workTimeName && workTimeName.name || '';
+	            let workTimeName = '';
+	            if( nts.uk.util.isNullOrEmpty(item.timeCode) ) {
+		            workTimeName = '';
+	            }  else {
+		            let workTime = _.find(lstWorkTime, (element) => {
+				            return element.code == item.timeCode
+			            }
+		            );
+		            workTimeName = nts.uk.util.isNullOrUndefined(workTime) ? vm.$i18n('KSM003_2') : workTime.name;
+	            }
                 dailyPatternValModel.setWorkTimeName(workTimeName);
 
                 dailyPatternVals.push(dailyPatternValModel);
-
             });
 
             vm.dailyPatternValModel(dailyPatternVals);
@@ -314,38 +319,24 @@ module nts.uk.at.view.ksm003.a {
          * Remove a/multiple item on grid
          * */
         removeLine() {
-            let vm = this;
-            vm.$dialog.confirm({messageId: "Msg_18"}).then((result: 'no' | 'yes' | 'cancel') => {
-                vm.$blockui("show"); //lock screen
-                if (result === 'no' || result === 'cancel') vm.$blockui("hide");
-                if (result === 'yes') {
-                    let currentCodeList = vm.currentCodeList();
-                    let currentDataList = vm.mainModel().dailyPatternVals();
-                    let newDataList = [];
-                    let dailyPatternValModel: Array<DailyPatternValModel> = [];
-
-                    currentCodeList && currentDataList && currentDataList.map((item, i) => {
-                        if (!item.isChecked()) {
-                            dailyPatternValModel.push(
-                                new DailyPatternValModel(
-                                    item.dispOrder, item.typeCode(),
-                                    item.timeCode(), item.days()
-                                ));
-                        }
-                    });
-                    //update model
-                    vm.mainModel().dailyPatternVals([]);
-                    vm.mainModel().dailyPatternVals(dailyPatternValModel);
-                    //update data resource
-                    vm.dailyPatternValModel([]);
-                    vm.dailyPatternValModel(dailyPatternValModel);
-                    vm.lessThan99Items(true);
-                    if( dailyPatternValModel.length <= 0 ) vm.selectedCheckAll(false);
-
-                    vm.enableRemoveItem(false);
-                    vm.$blockui("hide");
-                }
-            });
+            const vm = this;
+                let currentCodeList = vm.currentCodeList();
+                let currentDataList = vm.mainModel().dailyPatternVals();
+                let dailyPatternValModel: Array<DailyPatternValModel> = [];
+                currentCodeList && currentDataList && currentDataList.map((item, i) => {
+                    if (!item.isChecked()) {
+                        dailyPatternValModel.push(item);
+                    }
+                });
+                //update model
+                vm.mainModel().dailyPatternVals([]);
+                vm.mainModel().dailyPatternVals(dailyPatternValModel);
+                //update data resource
+                vm.dailyPatternValModel([]);
+                vm.dailyPatternValModel(dailyPatternValModel);
+                vm.lessThan99Items(true);
+                if( dailyPatternValModel.length <= 0 ) vm.selectedCheckAll(false);
+                vm.enableRemoveItem(false);
         }
 
         /*
@@ -481,7 +472,6 @@ module nts.uk.at.view.ksm003.a {
 
             //登録の時には勤務内容一覧に一行もない //register & update
             if (workingTimeCycleList.length <= 0) {
-
                 $('#fixed-table-list')
                     .ntsError('clear')
                     .ntsError('set', {
@@ -499,6 +489,7 @@ module nts.uk.at.view.ksm003.a {
             let messageIds: Array<string> = ["Msg_23", "Msg_24", , "Msg_25", "Msg_389", "Msg_390",
                 "Msg_416", "Msg_417", "Msg_434", "Msg_435", "Msg_3", "Msg_1608", "Msg_1609"];
 
+	        vm.$blockui('show');
             let detailDto = vm.mainModel().toDto();
             if (!vm.isEditting()) {
                 let selectedCode = vm.selectedCode();
@@ -529,7 +520,6 @@ module nts.uk.at.view.ksm003.a {
                 let infosData = detailDto.infos;
                 if(res.errorStatusList.length > 0 ) {
                     res.errorStatusList.map( (error_type, i) => {
-
                         switch ( error_type ) {
                             case 'WORKTIME_WAS_DELETE':
                                 MsgId = "Msg_1609";
@@ -569,14 +559,14 @@ module nts.uk.at.view.ksm003.a {
                 vm.selectedCheckAll(false);
                 let patternCode = vm.mainModel().patternCode();
                 vm.selectedCode(patternCode);
-
+				vm.enableRemoveItem(false);
                 $("#inpPattern").focus();
 
                 if (!vm.isEditting()) vm.isEditting(true);
 
                 vm.getListWorkingCycle();
                 vm.getPatternValByPatternCd(patternCode);
-
+	            vm.$blockui("hide");
             }).fail(function (res) {
                 let isSetError = messageIds.some(item => item == res.messageId);
                 if (isSetError) {
@@ -584,6 +574,7 @@ module nts.uk.at.view.ksm003.a {
                 } else {
                     nts.uk.ui.dialog.alertError(res.message);
                 }
+	            vm.$blockui("hide");
             }).always(function () {
                 vm.$blockui("hide");
             });
@@ -804,6 +795,9 @@ module nts.uk.at.view.ksm003.a {
                 selectWorkTypeCode: self.typeCode,
                 selectSiftCode: self.timeCode,
             });
+
+	        nts.uk.ui.errors.clearAll();
+
             nts.uk.ui.windows.sub
                 .modal("/view/kdl/003/a/index.xhtml", {
                     title: nts.uk.resource.getText("KDL003_1"),

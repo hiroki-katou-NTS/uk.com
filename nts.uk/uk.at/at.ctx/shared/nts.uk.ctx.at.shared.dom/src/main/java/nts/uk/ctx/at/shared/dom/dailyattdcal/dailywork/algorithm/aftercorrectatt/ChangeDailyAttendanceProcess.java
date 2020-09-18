@@ -40,7 +40,7 @@ public class ChangeDailyAttendanceProcess {
 				// 勤怠打刻を変更する
 				changeAttendanceTimeStamp.change(companyId,
 						timeLeavOpt.get().getAttendanceStamp().get().getStamp().get(),
-						timeLeavOpt.get().getAttendanceStamp().get().getStamp().get());
+						newData.getAttendanceStamp().get().getStamp().get());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
 				if (checkHasTimeDayAtt(timeLeavOpt.get()) && checkHasTimeDayAtt(newData))
@@ -52,7 +52,7 @@ public class ChangeDailyAttendanceProcess {
 			if (checkHasLeav(timeLeavOpt.get())) {
 				// 勤怠打刻を変更する
 				changeAttendanceTimeStamp.change(companyId, timeLeavOpt.get().getLeaveStamp().get().getStamp().get(),
-						timeLeavOpt.get().getLeaveStamp().get().getStamp().get());
+						newData.getLeaveStamp().get().getStamp().get());
 			} else {
 				// 処理中の「出退勤．出勤．打刻」 をセットする
 				if (checkHasTimeDayLeav(timeLeavOpt.get()) && checkHasTimeDayLeav(newData))
@@ -64,12 +64,12 @@ public class ChangeDailyAttendanceProcess {
 		return lstTimeLeav;
 	}
 
-	private boolean checkHasAtt(TimeLeavingWork timeLeav) {
+	public boolean checkHasAtt(TimeLeavingWork timeLeav) {
 		return checkHasTimeDayAtt(timeLeav)
 				&& timeLeav.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent();
 	}
 
-	private boolean checkHasLeav(TimeLeavingWork timeLeav) {
+	public boolean checkHasLeav(TimeLeavingWork timeLeav) {
 		return checkHasTimeDayLeav(timeLeav)
 				&& timeLeav.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent();
 	}
@@ -80,7 +80,6 @@ public class ChangeDailyAttendanceProcess {
 	}
 
 	private boolean checkHasTimeDayLeav(TimeLeavingWork timeLeav) {
-		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getStamp().isPresent()
-				&& timeLeav.getLeaveStamp().get().getStamp().isPresent();
+		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getStamp().isPresent();
 	}
 }

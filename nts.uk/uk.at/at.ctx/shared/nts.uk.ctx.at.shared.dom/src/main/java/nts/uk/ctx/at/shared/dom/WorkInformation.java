@@ -84,7 +84,7 @@ public class WorkInformation {
 	}
 
 	public void setWorkTimeCode(String workTimeCode) {
-		if (!StringUtils.isEmpty(workTimeCode)) {
+		if (StringUtils.isEmpty(workTimeCode)) {
 			this.workTimeCode = Optional.empty();
 		} else {
 			this.workTimeCode = Optional.of(new WorkTimeCode(workTimeCode));
