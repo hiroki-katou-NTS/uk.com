@@ -97,4 +97,13 @@ public interface PayoutManagementDataRepository {
 	List<PayoutManagementData> getByUnUseState(String cid, String sid, GeneralDate ymd, double unUse, DigestionAtr state);
 	
 	List<PayoutManagementData> getAllBySid(String sid);
+	
+	/**
+	 * ドメインモデル「振出管理データ」を取得
+	 * @param sid
+	 * @param unknownDates
+	 * @return
+	 */
+	List<PayoutManagementData> getAllByUnknownDate(String sid, List<String> unknownDates);
+	
 }

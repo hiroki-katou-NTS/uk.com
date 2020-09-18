@@ -5,6 +5,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
     import block = nts.uk.ui.block;
     import dialog    = nts.uk.ui.dialog;
     import getText = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
+
     export class ScreenModel {
         workCode: KnockoutObservable<string>                      = ko.observable('');
         workplaceName: KnockoutObservable<string>                 = ko.observable('');
@@ -32,6 +34,9 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         enableSplit: KnockoutObservable<boolean>              = ko.observable(true);
         unit: KnockoutObservable<string> = ko.observable(getText('KDM001_27'));
         baseDate: KnockoutObservable<string> = ko.observable('');
+        linkingDates: KnockoutObservableArray<any> = ko.observableArray([]);
+        checkLinkingDates: KnockoutObservable<boolean> = ko.observable(false);
+
         constructor() {
             let self = this;
             self.initScreen();
@@ -132,7 +137,8 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 checkedSplit: self.checkedSplit(),
                 closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
-                subDays: self.subDays()
+                subDays: self.subDays(),
+                linkingDates: self.checkLinkingDates()
             };
             
             service.save(data).done(result => {
@@ -231,9 +237,16 @@ module nts.uk.at.view.kdm001.d.viewmodel {
         }
 
         public openKDL035(){
-            // TODO open kdl 035
             const vm = this;
-            vm.baseDate('Hello cac ban');
+            // TODO open kdl 035
+            modal("/view/kdl/035/a/index.xhtml").onClosed(() => {
+                // get List<振休振出紐付け管理> from KDL035
+                const linkingDates: Array<any> = getShared('linkingDates');
+                if (linkingDates.length > 0) {
+                    vm.linkingDates(linkingDates);
+                    vm.checkLinkingDates(true);
+                }
+            });
         }
     }
 }

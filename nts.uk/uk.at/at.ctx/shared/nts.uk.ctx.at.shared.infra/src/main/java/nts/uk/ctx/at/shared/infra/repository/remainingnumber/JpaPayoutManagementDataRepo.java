@@ -75,7 +75,10 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " AND p.stateAtr = :stateAtr";
 
 	private static final String QUERY_BY_SID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId ORDER BY p.unknownDate, p.dayOff";
-	@Override
+	
+	private static final String QUERY_BY_UNKNOWN_DATE = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.unknownDate IN :unknownDates ORDER BY p.unknownDate ASC";
+	
+ 	@Override
 	public List<PayoutManagementData> getSidWithCodDate(String cid, String sid, int state, GeneralDate ymd) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_COND_DATE, KrcmtPayoutManaData.class)
 				.setParameter("cid", cid)
@@ -400,5 +403,13 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 	
+	@Override
+	public List<PayoutManagementData> getAllByUnknownDate(String sid, List<String> unknownDates) {
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_UNKNOWN_DATE, KrcmtPayoutManaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("unknownDates", unknownDates)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
 
 }
