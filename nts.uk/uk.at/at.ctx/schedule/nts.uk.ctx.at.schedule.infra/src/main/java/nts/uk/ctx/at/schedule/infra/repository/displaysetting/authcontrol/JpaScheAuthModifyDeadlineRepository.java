@@ -1,19 +1,15 @@
 package nts.uk.ctx.at.schedule.infra.repository.displaysetting.authcontrol;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
+import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadline;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadlineRepository;
-import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CorrectDeadline;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthModifyDadline;
-import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
  * 
@@ -54,19 +50,13 @@ public class JpaScheAuthModifyDeadlineRepository extends JpaRepository implement
 	@Override
 	public Optional<ScheAuthModifyDeadline> get (String companyId, String roleId) {
 		
-		String sql = "SELECT * FROM KSCMT_AUTH_MODIFYDEADLINE WHERE CID = ? AND ROLE_ID = ?";
+		String sql = "SELECT * FROM KSCMT_AUTH_MODIFYDEADLINE"
+				+ " WHERE CID = @companyId"
+				+ " AND ROLE_ID = @roleId";
 		
-		try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
-			stmt.setString(1, companyId);
-			stmt.setString(2, roleId);
-			
-			return new NtsResultSet(stmt.executeQuery()).getSingle(rec -> {
-				return new ScheAuthModifyDeadline (rec.getString("ROLE_ID")
-						, NotUseAtr.valueOf(rec.getInt("USE_ATR"))
-						, new CorrectDeadline(rec.getInt("DEADLINE")));
-			});
-		} catch (SQLException e) {
-			throw new RuntimeException (e);
-		}
+		return new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyId", companyId)
+				.paramString("roleId", roleId)
+				.getSingle(x -> KscmtAuthModifyDadline.MAPPER.toEntity(x).toDomain());
 	}
 }

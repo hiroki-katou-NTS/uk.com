@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.ArrayList;
 
-import org.assertj.core.util.Arrays;
 import org.junit.Test;
 
 import lombok.val;

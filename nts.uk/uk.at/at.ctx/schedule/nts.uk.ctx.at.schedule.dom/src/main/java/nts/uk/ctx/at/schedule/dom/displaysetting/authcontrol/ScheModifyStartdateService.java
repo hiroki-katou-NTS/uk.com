@@ -27,7 +27,7 @@ public class ScheModifyStartdateService {
 			modifyDeadline = Optional.of(new ScheAuthModifyDeadline(roleID, NotUseAtr.NOT_USE, new CorrectDeadline(0)));
 		}
 		
-		return modifyDeadline.get().modifyableDate();
+		return modifyDeadline.get().modifiableDate();
 	}
 	
 	public static interface Require{

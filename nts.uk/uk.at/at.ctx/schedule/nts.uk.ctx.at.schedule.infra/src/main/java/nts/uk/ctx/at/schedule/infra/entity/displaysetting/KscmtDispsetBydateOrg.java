@@ -11,6 +11,8 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.val;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplayRangeType;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDate;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForOrg;
@@ -30,8 +32,9 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Setter
 @Table(name = "KSCMT_DISPSET_BYDATE_ORG")
 public class KscmtDispsetBydateOrg extends ContractUkJpaEntity implements Serializable {
-
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<KscmtDispsetBydateOrg> MAPPER = new JpaEntityMapper<>(KscmtDispsetBydateOrg.class);
 	
 	@EmbeddedId
 	public KscmtDispsetBydateOrgPk pk;
@@ -59,33 +62,13 @@ public class KscmtDispsetBydateOrg extends ContractUkJpaEntity implements Serial
 		return this.pk;
 	}
 	
-	
-	/**
-	 * convert to domain
-	 * @param entity
-	 * @return domain
-	 */
-	public static DisplaySettingByDateForOrg of (KscmtDispsetBydateOrg entity) {
-		
-		TargetOrgIdenInfor targetOrg = new TargetOrgIdenInfor (
-				TargetOrganizationUnit.valueOf(entity.pk.targetUnit),
-				Optional.ofNullable(entity.pk.targetId),
-				Optional.ofNullable(entity.pk.targetId));
-		
-		DisplaySettingByDate dispDomain = new DisplaySettingByDate(
-				DisplayRangeType.of(entity.rangeAtr), 
-				new DisplayStartTime(entity.startClock), 
-				new DisplayStartTime(entity.initStartClock));
-		
-		return new DisplaySettingByDateForOrg(targetOrg, dispDomain);
-	}
-	
+
 	/**
 	 * convert to entity
 	 * @param domain
 	 * @return entity
 	 */
-	public static KscmtDispsetBydateOrg toEntity (String companyId, DisplaySettingByDateForOrg domain) {
+	public static KscmtDispsetBydateOrg of (String companyId, DisplaySettingByDateForOrg domain) {
 
 		KscmtDispsetBydateOrgPk entPk = new KscmtDispsetBydateOrgPk(
 				companyId,
@@ -97,5 +80,23 @@ public class KscmtDispsetBydateOrg extends ContractUkJpaEntity implements Serial
 				domain.getDispSetting().getDispRange().value,
 				domain.getDispSetting().getDispStart().v(),
 				domain.getDispSetting().getInitDispStart().v());
+	}
+	
+	/**
+	 * convert to domain
+	 * @return domain
+	 */
+	public DisplaySettingByDateForOrg toDomain () {
+		val targetOrg = new TargetOrgIdenInfor (
+				TargetOrganizationUnit.valueOf(this.pk.targetUnit),
+				Optional.ofNullable(this.pk.targetId),
+				Optional.ofNullable(this.pk.targetId));
+		
+		val dispDomain = new DisplaySettingByDate(
+				DisplayRangeType.of(this.rangeAtr), 
+				new DisplayStartTime(this.startClock), 
+				new DisplayStartTime(this.initStartClock));
+		
+		return new DisplaySettingByDateForOrg(targetOrg, dispDomain);
 	}
 }

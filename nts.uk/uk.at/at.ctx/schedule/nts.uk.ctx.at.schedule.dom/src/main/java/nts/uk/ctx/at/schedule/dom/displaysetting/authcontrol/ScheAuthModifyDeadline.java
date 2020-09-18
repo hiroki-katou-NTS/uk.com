@@ -30,9 +30,9 @@ public class ScheAuthModifyDeadline implements DomainAggregate {
 	 * @param targetDate
 	 * @return 修正可能な場合 : true
 	 */
-	public boolean isModify (GeneralDate targetDate) {
+	public boolean isModifiable (GeneralDate targetDate) {
 		if (this.useAtr == NotUseAtr.USE) {
-			return targetDate.afterOrEquals(this.modifyableDate());
+			return targetDate.afterOrEquals(this.modifiableDate());
 		}
 		
 		return true;
@@ -42,7 +42,7 @@ public class ScheAuthModifyDeadline implements DomainAggregate {
 	 * 修正が可能になる日
 	 * @return
 	 */
-	public GeneralDate modifyableDate () {
+	public GeneralDate modifiableDate () {
 		if (this.useAtr == NotUseAtr.NOT_USE) {
 			return GeneralDate.min();
 		}

@@ -13,17 +13,24 @@ import org.apache.commons.lang3.BooleanUtils;
 
 import lombok.AllArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.functioncontrol.ScheFunctionControl;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeForm;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
+/**
+ * 
+ * @author hiroko_miura
+ *
+ */
 @AllArgsConstructor
 @Entity
 @Setter
 @Table(name = "KSCMT_FUNC_CTR")
 public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
-
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<KscmtFuncCtr> MAPPER = new JpaEntityMapper<>(KscmtFuncCtr.class);
 	
 	@Override
 	protected Object getKey() {
@@ -63,33 +70,11 @@ public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 	
 	
 	/**
-	 * convert to domain
-	 * @param entity
-	 * @return domain
-	 */
-	public static ScheFunctionControl of (KscmtFuncCtr entity) {
-		
-		List<WorkTimeForm> lstWork = new ArrayList<>();
-		
-		if (entity.changeableFix == 1)
-			lstWork.add(WorkTimeForm.FIXED);
-		
-		if (entity.changeableFlex == 1)
-			lstWork.add(WorkTimeForm.FLEX);
-		
-		if (entity.changeableFluid == 1)
-			lstWork.add(WorkTimeForm.FLOW);
-		
-		
-		return new ScheFunctionControl(lstWork, (entity.displayActual == 1) );
-	}
-	
-	/**
 	 * convert to entity
 	 * @param domain
 	 * @return entity
 	 */
-	public static KscmtFuncCtr toEntity (String companyId, ScheFunctionControl domain) {
+	public static KscmtFuncCtr of (String companyId, ScheFunctionControl domain) {
 		
 		return new KscmtFuncCtr (
 				companyId,
@@ -97,5 +82,21 @@ public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 				BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLEX)),
 				BooleanUtils.toInteger(domain.isChangeableForm(WorkTimeForm.FLOW)),
 				BooleanUtils.toInteger(domain.isDisplayActual()));
+	}
+	
+	public ScheFunctionControl toDomain () {
+		
+		List<WorkTimeForm> lstWork = new ArrayList<>();
+		
+		if (this.changeableFix == 1)
+			lstWork.add(WorkTimeForm.FIXED);
+		
+		if (this.changeableFlex == 1)
+			lstWork.add(WorkTimeForm.FLEX);
+		
+		if (this.changeableFluid == 1)
+			lstWork.add(WorkTimeForm.FLOW);
+		
+		return new ScheFunctionControl (lstWork, (this.displayActual == 1));
 	}
 }

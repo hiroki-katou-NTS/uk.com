@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadline;
 import nts.uk.ctx.at.schedule.dom.schedule.setting.modify.control.CorrectDeadline;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -27,6 +28,8 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KSCMT_AUTH_MODIFYDEADLINE")
 public class KscmtAuthModifyDadline extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	public static final JpaEntityMapper<KscmtAuthModifyDadline> MAPPER = new JpaEntityMapper<>(KscmtAuthModifyDadline.class);
 
 	@EmbeddedId
 	public KscmtAuthModifyDadlinePk kscmtAuthModifyDadlinePk;
@@ -65,14 +68,13 @@ public class KscmtAuthModifyDadline extends ContractUkJpaEntity implements Seria
 	
 	/**
 	 * convert to domain
-	 * @param entity
-	 * @return domain
+	 * @return
 	 */
-	public static ScheAuthModifyDeadline toDomain(KscmtAuthModifyDadline entity) {
-		ScheAuthModifyDeadline domain = new ScheAuthModifyDeadline(entity.kscmtAuthModifyDadlinePk.roleId
-				, NotUseAtr.valueOf(entity.useAtr)
-				, new CorrectDeadline(entity.deadLine));
-		
-		return domain;
+	public ScheAuthModifyDeadline toDomain() {
+		return new ScheAuthModifyDeadline (
+				  this.kscmtAuthModifyDadlinePk.roleId
+				, NotUseAtr.valueOf(this.useAtr)
+				, new CorrectDeadline(this.deadLine));
+				
 	}
 }
