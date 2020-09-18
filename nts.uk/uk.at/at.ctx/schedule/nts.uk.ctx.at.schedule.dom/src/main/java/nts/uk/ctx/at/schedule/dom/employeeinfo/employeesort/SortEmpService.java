@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.schedule.dom.employeeinfo.employeesort;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import nts.arc.time.GeneralDate;
@@ -20,7 +22,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
  * @author HieuLt
  */
 public class SortEmpService {
-
+	
 	// [1] 並び順に基づいて社員を並び替える
 	public static List<String> sortEmpTheirOrder(Require require, GeneralDate ymd, List<String> lstEmpId) {
 		// $並び替え設定 = require.並び替え設定を取得する()
@@ -29,17 +31,19 @@ public class SortEmpService {
 		if (!sortSetting.isPresent()) {
 			return lstEmpId;
 		}
+		
 		// return [prv-1] 並び替える(require, 基準日, 社員IDリスト, 並び替え設定)
 		return rearranges(require, ymd, lstEmpId, sortSetting.get());
 	}
 
 	// [2] 並び順を指定して社員を並び替える
-	public static List<String> sortBySpecSortingOrder(Require require, GeneralDate ymd, List<String> lstEmpId,
-			SortSetting sortSetting) {
+	public static List<String> sortBySpecSortingOrder(Require require, GeneralDate ymd, List<String> lstEmpId, SortSetting sortSetting) {
+		
+	
 		// return [prv-1] 並び替える(require, 基準日, 社員IDリスト, 並び替え設定)
 		return rearranges(require, ymd, lstEmpId, sortSetting);
 	}
-
+	
 	/**
 	 * [prv-1] 並び替える //Sắp xếp
 	 * 
@@ -51,252 +55,245 @@ public class SortEmpService {
 	 */
 	private static List<String> rearranges(Require require, GeneralDate ymd, List<String> lstEmpId,
 			SortSetting sortSetting) {
-		/*
-		 * $リストのリスト = List: 社員IDリスト $並び順 in $並び替え設定.並び替え優先順:
-		 */
-		List<List<String>> listEmpIDs = new ArrayList<List<String>>();
-		listEmpIDs.add(lstEmpId);
-
-		List<SortType> litsOrderedList = sortSetting.getOrderedList().stream().map(c -> c.getType())
-				.collect(Collectors.toList());
-		for (SortType item : litsOrderedList) {
-			switch (item) {
-			case SCHEDULE_TEAM: {
-				/*
-				 * case スケジュールチーム: [prv-2] スケジュールチームで社員を並び替える(require, 社員IDリスト,
-				 * $リストのリスト)
-				 */
-				listEmpIDs = sortEmpByScheduleTeam(require, lstEmpId, listEmpIDs);
-				break;
-			}
-			case RANK: {
-				/*
-				 * case ランク: [prv-3] ランクで社員を並び替える(require, 社員IDリスト, $リストのリスト)
-				 */
-				listEmpIDs = sortEmpByRank(require, lstEmpId, listEmpIDs);
-				break;
-			}
-			case LISENCE_ATR: {
-				/*
-				 * case 免許区分: [prv-4] 免許区分で社員を並び替える(require, 基準日, 社員IDリスト,
-				 * $リストのリスト)
-				 */
-				listEmpIDs = sortEmpByLicenseClassification(require, ymd, lstEmpId, listEmpIDs);
-				break;
-			}
-			case POSITION: {
-				/*
-				 * case 職位: [prv-5] 職位で社員を並び替える(require, 基準日, 社員IDリスト, $リストのリスト)
-				 */
-				listEmpIDs = sortEmpByPosition(require, ymd, lstEmpId, listEmpIDs);
-				break;
-
-			}
-			default: {//CLASSIFY
-				/*
-				 * case 分類: [prv-6] 分類で社員を並び替える(require, 基準日, 社員IDリスト, $リストのリスト)
-				 */
-				listEmpIDs = sortEmpByClassification(require, ymd, lstEmpId, listEmpIDs);
-				break;
-			}
-			}
+		List<String> result = new ArrayList<>();
+		List<OrderedList> sortPriorities = sortSetting.getOrderedList();
+		if(sortPriorities.size() == 1){
+			long start1 = System.nanoTime();
+			result = sort(require,ymd,lstEmpId,sortSetting);
+			System.out.println("time run sortService "+  ((System.nanoTime() - start1 )/1000000) + "ms");
+		}else{
+			long start2 = System.nanoTime();
+			result = sortMultiCond(require,ymd,lstEmpId,sortSetting);
+			System.out.println("time run sortService  "+  ((System.nanoTime() - start2 )/1000000) + "ms");
 		}
-		return listEmpIDs.stream().flatMap(mapper -> mapper.stream()).collect(Collectors.toList());
-
+		return result;
 	}
-
-	/**
-	 * [prv-2] スケジュールチームで社員を並び替える //Sắp xếp employee theo "schedule Team"
-	 * 
-	 * @param require
-	 * @param empIDs
-	 * @param listEmpID
-	 * @return
-	 */
-	private static List<List<String>> sortEmpByScheduleTeam(Require require, List<String> empIDs,
-			List<List<String>> listEmpIDs) {
-		List<List<String>> listResult = new ArrayList<>();
-		//$所属チームリスト = require.所属スケジュールチームを取得する($社員IDリスト)
-		List<BelongScheduleTeam> listBelongScheduleTeam  = require.get(empIDs);
+	
+	private static List<String> sort(Require require, GeneralDate ymd, List<String> empIDs,
+			SortSetting sortSetting) {
 		
-		List<String> listEmpIDBelongSchedule = listBelongScheduleTeam.stream().map(c -> c.getEmployeeID()).collect(Collectors.toList());
-		for (List<String> list :listEmpIDs){
-			//$所属していない社員IDリスト = $社員リスト: except $所属チームリスト.constains($)
-			List<String> lstUnBelongSchedule =  list.stream().filter(x -> !listEmpIDBelongSchedule.contains(x)).collect(Collectors.toList());
-			//$所属している社員リスト = $所属チームリスト: filter $社員リスト.constains($)																
-			List<BelongScheduleTeam>  lstBelongScheduleTeam = listBelongScheduleTeam.stream().filter(x -> list.contains(x.getEmployeeID())).collect(Collectors.toList());
-			//Sort by ScheduleTeamCd
-			List<BelongScheduleTeam> lstBelongScheduleTeamSorted = lstBelongScheduleTeam.stream()
-					.sorted((x,y) -> x.getScheduleTeamCd().compareTo(y.getScheduleTeamCd()))
-					.collect(Collectors.toList());
-			//	:groupingBy $.チームコード  values :map $.社員ID
-			List<List<String>> result = lstBelongScheduleTeamSorted.stream().collect(Collectors.groupingBy(BelongScheduleTeam ::getScheduleTeamCd))
-					.values().stream().map(lst -> {
-						return lst.stream().map(t -> t.getEmployeeID()).collect(Collectors.toList());
-					}).collect(Collectors.toList());
-			result.add(lstUnBelongSchedule);
-			listResult.addAll(result);
+		List<String> result         = new ArrayList<>();
+		OrderedList  sortPriorities = sortSetting.getOrderedList().get(0);
+		switch (sortPriorities.getType()) {
+		case SCHEDULE_TEAM:		 
+			result = sortByTeams(require, empIDs, sortPriorities);
+			break;
+		case RANK:		 
+			result = sortByRank(require, empIDs, sortPriorities);
+			break;
+		case LISENCE_ATR:		 
+			result = sortByLicenseCls(require, empIDs, ymd, sortPriorities);
+			break;
+		case POSITION:		 
+			result = sortEmpByPosition(require, ymd, empIDs);
+			break;
+		case CLASSIFY:		 
+			result = sortEmpByClassification(require, ymd, empIDs);
+			break;
 		}
-		return listResult;
+		return result;
 	}
-
-	/**
-	 * [prv-3] ランクで社員を並び替える
-	 * 
-	 * @param require
-	 * @param empIDs
-	 * @param listEmpID
-	 * @return
-	 */
-	private static List<List<String>> sortEmpByRank(Require require, List<String> empIDs,
-			List<List<String>> listEmpIDs) {
-		List<List<String>> result = new ArrayList<>();
-		//$ランクの優先順 = require.ランクの優先順を取得する()														
-		/*if $ランクの優先順.empty																				
-		return リストのリスト*/
-		Optional<RankPriority> rankPriority = require.getRankPriority();
-		if(!rankPriority.isPresent()){
-			return listEmpIDs;
-		}
-		//$社員ランクリスト = require.社員ランクを取得する(社員IDリスト)		
-		List<EmployeeRank> lstEmpRank = require.getAll(empIDs) ;
-		List<String> lstEmpRankID = lstEmpRank.stream().map(c->c.getSID()).collect(Collectors.toList());
+	
+	private static List<String> sortMultiCond(Require require, GeneralDate ymd, List<String> empIDs,
+			SortSetting sortSetting) {
 		
-		for(List<String> list : listEmpIDs){
-			//$未付与社員IDリスト = $社員リスト: except $社員ランクリスト.contains($)
-			List<String> listEmpUnassigned = list.stream().filter(x-> !lstEmpRankID.contains(x)).collect(Collectors.toList());
-			//$付与済社員リスト = $社員ランクリスト: filter $社員リスト.contains($)															
-			List<EmployeeRank> listEmployeeRank = lstEmpRank.stream().filter(x -> list.contains(x.getSID())).collect(Collectors.toList()); 
-			List<String> listRankCode = rankPriority.get().getListRankCd().stream().map(x -> x.v()).collect(Collectors.toList());
-			//		$並び替えた社員IDリスト = $ランクの優先順.優先順リスト: map $																								
-			//$付与済社員リスト: filter $.ランクコード == $		
-			List<EmployeeRank> listEmployeeRankResult = listEmployeeRank.stream().filter(x->listRankCode.contains(x.getEmplRankCode().v())).collect(Collectors.toList());
+		List<EmployeeInfo> getListEmpInfo = getListEmpInfo(require, ymd, empIDs, sortSetting);
+		Comparator<EmployeeInfo> compare = null;
+		List<OrderedList> sortPriorities = sortSetting.getOrderedList();
+		for (OrderedList condition : sortPriorities) {
+			Comparator<EmployeeInfo> compare2 = null;
+			switch (condition.getType()) {
+			case SCHEDULE_TEAM:
+				compare2  = Comparator.comparing(EmployeeInfo::getScheduleTeamCd, Comparator.nullsLast(Comparator.naturalOrder()));
+				break;
+			case RANK:
+				compare2  = Comparator.comparing(EmployeeInfo::getEmplRankCode, Comparator.nullsLast(Comparator.naturalOrder()));
+				break;
+			case LISENCE_ATR:
+				compare2  = Comparator.comparing(EmployeeInfo::getOptLicenseClassification, Comparator.nullsLast(Comparator.naturalOrder()));
+				break;
+			case POSITION:
+				compare2  = Comparator.comparing(EmployeeInfo::getJobtitleID, Comparator.nullsLast(Comparator.naturalOrder()));
+				break;
+			case CLASSIFY:
+				compare2  = Comparator.comparing(EmployeeInfo::getClassificationCode, Comparator.nullsLast(Comparator.naturalOrder()));
+				break;
+			}
 			
-			List<String> lstSortEmpID =  listEmployeeRankResult.stream().map(c->c.getSID()).collect(Collectors.toList());
-			//		$並び替えた社員IDリスト.add($未付与社員IDリスト)											
-			lstSortEmpID.addAll(listEmpUnassigned);	
-			result.add(lstSortEmpID);
+			if (compare == null) {
+				compare = compare2;
+			} else {
+				compare = compare.thenComparing(compare2);
+			}
+		}
+		
+		List<String> sortedIds = getListEmpInfo.stream()
+				.sorted(compare)
+				.map(e -> e.empId)
+				.collect(Collectors.toList());
+		
+		return sortedIds;
+	}
+	
+	private static List<EmployeeInfo> getListEmpInfo(Require require, GeneralDate ymd, List<String> empIDs,
+			SortSetting sortSetting) {
+		List<EmployeeInfo> result = new ArrayList<>();
+		
+		List<BelongScheduleTeam> listBelongScheduleTeam = new ArrayList<>();
+		List<EmployeeRank> listEmployeeRank = new ArrayList<>();
+		List<EmpLicenseClassification> listEmpLicenseCls = new ArrayList<>();
+		List<EmployeePosition> listEmployeePosition = new ArrayList<>();
+		List<EmpClassifiImport> listEmpClassifiImport = new ArrayList<>();
+		
+		List<OrderedList> sortPriorities = sortSetting.getOrderedList();
+		
+		for (OrderedList condition : sortPriorities) {
+			switch (condition.getType()) {
+			case SCHEDULE_TEAM:
+				listBelongScheduleTeam = require.get(empIDs).stream()
+						.filter(x -> x.getScheduleTeamCd() != null).collect(Collectors.toList());
+				break;
+			case RANK:
+				listEmployeeRank = require.getAll(empIDs).stream()
+						.filter(x -> x.getEmplRankCode() != null).collect(Collectors.toList());
+				Optional<RankPriority> rankPriority = require.getRankPriority();
+				if (rankPriority.isPresent()) {
+					List<String > listRankCode = rankPriority.get().getListRankCd().stream().map(i ->i.toString()).collect(Collectors.toList());
+					listEmployeeRank.sort(Comparator.comparing(v-> listRankCode.indexOf(v.getEmplRankCode().v())));
+				}
+				break;
+			case LISENCE_ATR:
+				listEmpLicenseCls = GetEmpLicenseClassificationService.get(require, ymd, empIDs).stream()
+						.filter(x -> x.getOptLicenseClassification().isPresent()).collect(Collectors.toList());
+				break;
+			case POSITION:
+				listEmployeePosition =  require.getPositionEmp(ymd, empIDs);
+				List<PositionImport> listPositionImport = require.getCompanyPosition(ymd);
+				List<String> listjobIdPriority = listPositionImport.stream().map(x->x.getJobId()).collect(Collectors.toList());
+				listEmployeePosition.sort(Comparator.comparing(v-> listjobIdPriority.indexOf(v.getJobtitleID())));
+				break;
+			case CLASSIFY:
+				listEmpClassifiImport =  require.get(ymd, empIDs);
+				break;
+			}
+		}
+		
+		for (String sid : empIDs) {
+			Optional<BelongScheduleTeam> team = listBelongScheduleTeam.stream().filter(i -> i.getEmployeeID().equals(sid)).findFirst();
+			Optional<EmployeeRank> rank = listEmployeeRank.stream().filter(i -> i.getSID().equals(sid)).findFirst();
+			Optional<EmpLicenseClassification> empLicenseCls = listEmpLicenseCls.stream().filter(i -> i.getEmpID().equals(sid)).findFirst();
+			Optional<EmployeePosition> employeePosition = listEmployeePosition.stream().filter(i -> i.getEmpID().equals(sid)).findFirst();
+			Optional<EmpClassifiImport> empClassifiImport = listEmpClassifiImport.stream().filter(i -> i.getEmpID().equals(sid)).findFirst();
+			
+			EmployeeInfo employeeInfo = EmployeeInfo.builder()
+					.empId(sid)
+					.scheduleTeamCd(team.isPresent() ? team.get().getScheduleTeamCd().toString() : null)
+					.emplRankCode(rank.isPresent() ? rank.get().getEmplRankCode().toString() : null)
+					.optLicenseClassification(empLicenseCls.isPresent() ? empLicenseCls.get().getOptLicenseClassification().get().value : null)
+					.jobtitleID(employeePosition.isPresent() ? employeePosition.get().getJobtitleID() : null)
+					.classificationCode(empClassifiImport.isPresent() ? empClassifiImport.get().getClassificationCode() : null)
+					.build();
+			result.add(employeeInfo);
 		}
 		return result;
 	}
 
-	/**
-	 * [prv-4] 免許区分で並び替える
-	 * 
-	 * @param require
-	 * @param ymd
-	 * @param empIDs
-	 * @param listEmpID
-	 * @return
-	 */
-	private static List<List<String>> sortEmpByLicenseClassification(Require require, GeneralDate ymd,
-			List<String> empIDs, List<List<String>> listEmpIDs) {
-		List<List<String>> listResult = new ArrayList<>();
-		//$社員免許区分リスト = DS.社員の免許区分を取得する.取得する(基準日, 社員IDリスト) :filter $.免許区分.isPresent	
-		List<EmpLicenseClassification> listEmpLicenseClassification = GetEmpLicenseClassificationService
+	private static List<String> sortByTeams(Require require, List<String> empIDs, OrderedList sortPriorities) {
+		List<BelongScheduleTeam> listDomain = require.get(empIDs).stream().filter(x -> x.getScheduleTeamCd() != null)
+				.collect(Collectors.toList());
+		List<String> listSidDomain = listDomain.stream().map(i -> i.getEmployeeID()).collect(Collectors.toList());
+		List<String> result = new ArrayList<>();
+		
+		List<String> lstSidUnBelongSchedule =  empIDs.stream().filter(x -> !listSidDomain.contains(x)).collect(Collectors.toList());
+		
+		Comparator<BelongScheduleTeam> compare = Comparator.comparing(e -> e.getScheduleTeamCd());
+		List<String> sortedListSidASC = listDomain.stream().sorted(compare).map(i -> i.getEmployeeID()).collect(Collectors.toList());
+		
+		result.addAll(sortedListSidASC);
+		result.addAll(lstSidUnBelongSchedule);
+		return result;
+	}
+	
+	private static List<String> sortByRank(Require require, List<String> empIDs, OrderedList sortPriorities) {
+		List<EmployeeRank> listDomain  = require.getAll(empIDs).stream().filter(x -> x.getEmplRankCode() != null)
+				.collect(Collectors.toList());
+		List<String> listSidDomain = listDomain.stream().map(i -> i.getSID()).collect(Collectors.toList());
+		List<String> result = new ArrayList<>();
+		
+		List<String> lstSidUnEmployeeRank =  empIDs.stream().filter(x -> !listSidDomain.contains(x)).collect(Collectors.toList());
+		
+		Optional<RankPriority> rankPriority = require.getRankPriority();
+		if (!rankPriority.isPresent()) {
+			result.addAll(listDomain.stream().map(i -> i.getSID()).collect(Collectors.toList()));
+			result.addAll(lstSidUnEmployeeRank);
+			return result;
+		}
+		
+		List<String > listRankCode = rankPriority.get().getListRankCd().stream().map(i ->i.toString()).collect(Collectors.toList());
+		listDomain.sort(Comparator.comparing(v-> listRankCode.indexOf(v.getEmplRankCode().v())));
+		result.addAll(listDomain.stream().map(i -> i.getSID()).collect(Collectors.toList()));
+		result.addAll(lstSidUnEmployeeRank);
+		return result;
+	}
+	
+	private static List<String> sortByLicenseCls(Require require, List<String> empIDs,GeneralDate ymd, OrderedList sortPriorities) {
+		List<String> result = new ArrayList<>();
+		
+		List<EmpLicenseClassification> listEmpLicenseCls = GetEmpLicenseClassificationService
 				.get(require, ymd, empIDs).stream().filter(x -> x.getOptLicenseClassification().isPresent())
 				.collect(Collectors.toList());
-		List<String> listEmpIDEmpLicenseClassification = listEmpLicenseClassification.stream().map(x->x.getEmpID()).collect(Collectors.toList()); 
-		//$社員リスト in リストのリスト: map	
-		for(List<String> list :listEmpIDs ) {
-			//$未付与社員IDリスト = $社員リスト: except $社員免許区分リスト.contains($)
-			List<String> listEmpUnassigned = list.stream().filter(x->!listEmpIDEmpLicenseClassification.contains(x)).collect(Collectors.toList());
-			//$付与済社員リスト = $社員免許区分リスト: filter $社員リスト.contains($)	
-			List<EmpLicenseClassification> listEmpAssigned = listEmpLicenseClassification.stream().filter(x-> list.contains(x.getEmpID())).collect(Collectors.toList());
-			
-			//$並び替えた社員IDリスト = $付与済社員リスト: sort $.免許区分 ASC
-			List<EmpLicenseClassification> listEmpLicenseClassificationSorted = listEmpAssigned.stream()
-					.sorted((x, y) -> x.getOptLicenseClassification().get().value - y.getOptLicenseClassification().get().value)
-					.collect(Collectors.toList());
-			//groupingBy $.分類コード.values: map $.社員ID	
-			List<List<String>> result = listEmpLicenseClassificationSorted.stream().collect(Collectors.groupingBy(c->c.getOptLicenseClassification().get().value))
-					.values().stream().map(lst -> {
-						return lst.stream().map(t -> t.getEmpID()).collect(Collectors.toList());
-					}).collect(Collectors.toList());
-			result.add(listEmpUnassigned);
-			// return $並び替えた社員リスト
-			listResult.addAll(result);
-			
-		}
-		return listResult;
+		
+		List<String> listSidEmpLicenseCls   = listEmpLicenseCls.stream().map(x->x.getEmpID()).collect(Collectors.toList()); 
+		List<String> listSidUnEmpLicenseCls  = empIDs.stream().filter(x -> !listSidEmpLicenseCls.contains(x)).collect(Collectors.toList());
+		
+		Comparator<EmpLicenseClassification> compare = Comparator.comparing(e -> e.getOptLicenseClassification().get().value);
+		
+		List<String> sortedListASC = listEmpLicenseCls.stream()
+				.sorted(compare).map(i -> i.getEmpID())
+				.collect(Collectors.toList());
+		
+		result.addAll(sortedListASC);
+		result.addAll(listSidUnEmpLicenseCls);
+		return result;
 	}
-
-	/**
-	 * [prv-5] 職位で並び替える
-	 * 
-	 * @param require
-	 * @param ymd
-	 * @param empIDs
-	 * @param listEmpID
-	 * @return
-	 */
-	private static List<List<String>> sortEmpByPosition(Require require, GeneralDate ymd, List<String> empIDs,
-			List<List<String>> listEmpIDs) {
-		List<List<String>> listResult = new ArrayList<>();
+	
+	private static List<String> sortEmpByPosition(Require require, GeneralDate ymd, List<String> empIDs) {
+		List<String> result = new ArrayList<>();
 		//	$社員職位リスト = require.社員の職位を取得する(基準日, 社員IDリスト)
 		List<EmployeePosition> listEmployeePosition =  require.getPositionEmp(ymd, empIDs);
 		List<String> listEmpIDPosition = listEmployeePosition.stream().map(c->c.getEmpID()).collect(Collectors.toList());
 		//	$職位マスタリスト = require.会社の職位を取得する(基準日)
 		List<PositionImport> listPositionImport = require.getCompanyPosition(ymd);
+		List<String> listjobIdPriority = listPositionImport.stream().map(x->x.getJobId()).collect(Collectors.toList());
 		
-		//$社員リスト in リストのリスト: map
-		for(List<String> list :listEmpIDs ) {
-			//$職位がない社員IDリスト = $社員リスト: except $社員職位リスト.contains($)
-			List<String> listEmpUnpositions = list.stream().filter(x->!listEmpIDPosition.contains(x)).collect(Collectors.toList());
-			//$職位がある社員リスト = $社員職位リスト: filter $社員リスト.contains($)	
-			List<EmployeePosition> listEmpPosition = listEmployeePosition.stream().filter(x-> list.contains(x.getEmpID())).collect(Collectors.toList());
-			List<String> listPositionID = listPositionImport.stream().map(x->x.getJobId()).collect(Collectors.toList());
-			//$並び替えた社員IDリスト = $職位マスタリスト: map											
-			List<EmployeePosition> listPositionImportSorted = listEmpPosition.stream().filter(c->listPositionID.contains(c.getJobtitleID())).collect(Collectors.toList());
-			List<String> result = listPositionImportSorted.stream().map(c->c.getEmpID()).collect(Collectors.toList());
-			//$並び替えた社員IDリスト.add($職位がない社員IDリスト)
-			result.addAll(listEmpUnpositions);
-			//return $並び替えた社員リスト
-			listResult.add(result);
-		}
-		return listResult;
+		List<String> listEmpIDUnPosition  = empIDs.stream().filter(x -> !listEmpIDPosition.contains(x)).collect(Collectors.toList());
+		
+		listEmployeePosition.sort(Comparator.comparing(v-> listjobIdPriority.indexOf(v.getJobtitleID())));
+		result.addAll(listEmployeePosition.stream().map(i -> i.getEmpID()).collect(Collectors.toList()));
+		result.addAll(listEmpIDUnPosition);
+		return result;
 	}
-
-	/**
-	 * [prv-6] 分類で社員を並び替える //Sắp xếp employee theo phân loại "classification"
-	 * 
-	 * @param require
-	 * @param ymd
-	 * @param empIDs
-	 * @param listEmpID
-	 * @return
-	 */
-	private static List<List<String>> sortEmpByClassification(Require require, GeneralDate ymd, List<String> empIDs,
-			List<List<String>> listEmpIDs) {
+	
+	private static List<String> sortEmpByClassification(Require require, GeneralDate ymd, List<String> empIDs) {
 		
-		List<List<String>> listResult = new ArrayList<>();
+		List<String> result = new ArrayList<>();
 		//$社員分類リスト = require.社員の分類を取得する(年月日, 社員IDリスト)
 		List<EmpClassifiImport> listEmpClassifiImport =  require.get(ymd, empIDs);
 		List<String> listEmpIDClassifi = listEmpClassifiImport.stream().map(c->c.getEmpID()).collect(Collectors.toList());
-		// $社員リスト in リストのリスト: map
-		for(List<String> list :listEmpIDs ) {
-			// $分類がない社員IDリスト = $社員リスト: except $社員分類リスト.contains($)
-			List<String> listEmpUnclassification = list.stream().filter(x->!listEmpIDClassifi.contains(x)).collect(Collectors.toList());
-			// $分類がある社員リスト = $社員分類リスト: filter $社員リスト.contains($)															
-			List<EmpClassifiImport> listEmpclassification = listEmpClassifiImport.stream().filter(x-> list.contains(x.getEmpID())).collect(Collectors.toList());
-			//	sort $.分類コード ASC	
-			List<EmpClassifiImport> listEmpclassificationSorted = listEmpclassification.stream()
-					.sorted((x, y) -> x.getClassificationCode().compareTo(y.getClassificationCode()))
-					.collect(Collectors.toList());
-			//	groupingBy $.分類コード.values: map $.社員ID	
-			List<List<String>> result = listEmpclassificationSorted.stream().collect(Collectors.groupingBy(EmpClassifiImport::getClassificationCode))
-					.values().stream().map(lst -> {
-						return lst.stream().map(t -> t.getEmpID()).collect(Collectors.toList());
-					}).collect(Collectors.toList());
-			// $並び替えた社員IDリスト.add($分類がない社員IDリスト)												
-			result.add(listEmpUnclassification);
-			// return $並び替えた社員リスト
-			listResult.addAll(result);
-		}
 		
-		return listResult;
+		List<String> listEmpIDUnClassifi  = empIDs.stream().filter(x -> !listEmpIDClassifi.contains(x)).collect(Collectors.toList());
+		
+		Comparator<EmpClassifiImport> compare = Comparator.comparing(e -> e.getClassificationCode());
+		
+		List<String> sortedListASC = listEmpClassifiImport.stream()
+				.sorted(compare).map(i -> i.getEmpID())
+				.collect(Collectors.toList());
+		
+		result.addAll(sortedListASC);
+		result.addAll(listEmpIDUnClassifi);
+		return result;
 	}
-
+	
 	public static interface Require extends GetEmpLicenseClassificationService.Require {
 		/**
 		 * [R-1] 並び替え設定を取得する //Lấy "sort setting" 並び替え設定Repository.get（会社ID）

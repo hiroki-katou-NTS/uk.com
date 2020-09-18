@@ -17,11 +17,18 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/002/c/index.html'
     })
     class Kaf002CViewModel extends ko.ViewModel {
+       printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
+       tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
        appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
        appDispInfoStartupOutput: any;
        approvalReason: KnockoutObservable<string>;
        application: KnockoutObservable<Application>;
        dataSourceOb: KnockoutObservableArray<any>;
+       selectedTab: KnockoutObservable<string> = ko.observable('');
+       // display condition
+       isM: KnockoutObservable<boolean> = ko.observable(false);
+       // select tab M
+       selectedCode: KnockoutObservable<number> = ko.observable(0);
        tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
                               new TabM(this.$i18n('KAF002_31'), true, true),
                               new TabM(this.$i18n('KAF002_76'), true, true),
@@ -34,16 +41,29 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       // set visible for flag column
       isVisibleComlumn: boolean = true;
       isPreAtr: KnockoutObservable<boolean> = ko.observable(true);
-      comment1: KnockoutObservable<string> = ko.observable('comment1');
-      comment2: KnockoutObservable<string> = ko.observable('comment2');
+      comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+      comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       data: any;
     
+    
+    
+        bindComment(data: any) {
+            const self = this;
+            _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
+               if (i.stampAtr == ko.toJS(self.selectedCode)) {
+                   let commentBot = i.bottomComment;
+                   self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
+                   let commentTop = i.topComment;
+                   self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
+               }
+            });
+        }  
        fetchData() {
             const self = this;
             self.$blockui('show');
             let appplication = ko.toJS(self.application) as Application;
             let appId = appplication.appID;
-            let companyId = __viewContext.user.companyId;
+            let companyId = self.$user.companyId;
             let appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
             let recoderFlag = false;
             let command = {
@@ -56,15 +76,56 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 .done(res => {
                     console.log(res);
                     self.data = res;
+                    self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                     self.bindActualData();
+                    self.bindTabM(self.data);
+                    self.bindComment(self.data);
+                    self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
-                    console.log('fail');
+                    let param;
+                    if (res.message && res.messageId) {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    } else {
+
+                        if (res.message) {
+                            param = {message: res.message, messageParams: res.parameterIds};
+                        } else {
+                            param = {messageId: res.messageId, messageParams: res.parameterIds};
+                        }
+                    }
+                    self.$dialog.error(param);
                 }).always(() => {
                     self.$blockui('hide');
                 });
             
             
         }
+       
+       bindTabM(data: any) {
+           const self = this;
+           let reflect = data.appStampReflectOptional;
+           if (reflect.temporaryAttendence == 0) {
+               self.dataSourceOb()[0].pop();
+               self.dataSourceOb()[0].pop();
+               self.dataSourceOb()[0].pop();
+           }
+           self.isM(true);
+           self.tabs.subscribe(value => {
+              if (value) {
+                if (data.appStampReflectOptional && self.tabs()) {
+                    let reflect = data.appStampReflectOptional;
+                    self.tabs()[0].visible((reflect.attendence) == 1);
+                    self.tabs()[1].visible(reflect.outingHourse == 1);
+                    self.tabs()[2].visible(reflect.breakTime == 1);
+                    self.tabs()[3].visible(reflect.parentHours == 1);
+                    self.tabs()[4].visible(reflect.nurseTime == 1);
+                    // not use
+                    self.tabs()[5].visible(false);
+                
+                } 
+              } 
+           });
+       }  
     bindDataRequest(element: GridItem, type: number) {
        const self = this;
        let appStampDto = self.data.appStampOptional as AppStampDto,
@@ -76,12 +137,15 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (timeStampAppDto) {
                let items = _.filter(timeStampAppDto, (x: TimeStampAppDto) => {
                    let destinationTimeAppDto = x.destinationTimeApp as DestinationTimeAppDto;
-                   return destinationTimeAppDto.timeStampAppEnum == element.typeStamp.valueOf() 
-                           && destinationTimeAppDto.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+                   return destinationTimeAppDto.timeStampAppEnum == element.convertTimeStampAppEnum()
+                           && destinationTimeAppDto.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
                }) as Array<TimeStampAppDto>;
                _.forEach(items, (x: TimeStampAppDto) => {
                      if (x) {
                          let desItem = x.destinationTimeApp as DestinationTimeAppDto;
+                         if (x.appStampGoOutAtr) {
+                             element.typeReason = String(x.appStampGoOutAtr);
+                         }
                          if (desItem.startEndClassification == 0) {
                              element.startTimeRequest(x.timeOfDay);
                          }
@@ -95,8 +159,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            
            if (destinationTimeAppDto) {
                let itemDes = _.findLast(destinationTimeAppDto, (x: any) => {
-                   return x.timeStampAppEnum == element.typeStamp.valueOf() 
-                   && x.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+                   return x.timeStampAppEnum == element.convertTimeStampAppEnum()
+                   && x.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
                }) as DestinationTimeAppDto;
                
                if (itemDes) {
@@ -104,6 +168,28 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                }
            }
            
+       } else if (type == 2) {
+           if (timeStampAppOtherDto) {
+               let items = _.filter(timeStampAppOtherDto, (x: TimeStampAppOtherDto) => {
+                   let destinationTimeZoneAppDto = x.destinationTimeZoneApp as DestinationTimeZoneAppDto;
+                   return destinationTimeZoneAppDto.timeZoneStampClassification == element.convertTimeZoneStampClassification() 
+                           && destinationTimeZoneAppDto.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+               }) as Array<TimeStampAppOtherDto>;
+               if (items.length > 0) {
+                   let item = items[0] as TimeStampAppOtherDto;
+                   element.startTimeRequest(item.timeZone.startTime);
+                   element.endTimeRequest(item.timeZone.endTime);
+               }
+           }
+           if (destinationTimeZoneAppDto) {
+               let itemDes = _.findLast(destinationTimeZoneAppDto, (x: any) => {
+                   return x.timeZoneStampClassification == element.convertTimeZoneStampClassification()
+                   && x.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+               })
+               if (itemDes) {
+                   element.flagObservable(true);
+               }
+           }
        }
         
     }
@@ -149,7 +235,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push(new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY));
+                let gridItem = new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY);
+                self.bindDataRequest(gridItem, 1);
+                list.push(gridItem);
     
             }
             
@@ -169,7 +257,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push( new GridItem( dataObject, STAMPTYPE.GOOUT_RETURNING ) );
+                let gridItem = new GridItem( dataObject, STAMPTYPE.GOOUT_RETURNING );
+                self.bindDataRequest(gridItem, 1);
+                list.push(gridItem);
             }
 
             return list;
@@ -188,7 +278,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push( new GridItem( dataObject, STAMPTYPE.BREAK ) );
+                let gridItem = new GridItem(dataObject, STAMPTYPE.BREAK);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
             }
 
             return list;
@@ -207,7 +299,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push( new GridItem( dataObject, STAMPTYPE.PARENT ) );
+                let gridItem = new GridItem(dataObject, STAMPTYPE.PARENT);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
             }
 
             return list;
@@ -226,7 +320,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                         dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
                     }
                 });
-                list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
+                let gridItem = new GridItem(dataObject, STAMPTYPE.NURSE);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
             }
             
             return list;
@@ -257,7 +353,17 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 }
                 ) {
             const self = this;
-            
+            self.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
+            self.selectedTab.subscribe(value => {
+                if (value) {
+                    self.selectedCode(Number(value));
+                }
+             });
+            self.selectedCode.subscribe(value => {
+                if (value && self.data) {
+                    self.bindComment(self.data);
+                }
+            });
             self.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             self.application = params.application;
             self.approvalReason = params.approvalReason;
@@ -292,14 +398,91 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     appStampDto,
                     appStampOutputDto
             }
-            self.$blockui('show');
-            self.$ajax(API.update, command)
-                .done(res => {
-                    console.log(res);
-                }).fail(res => {
-                    console.log(res);
-                }).always(() => {
-                    self.$blockui('hide');
+            let data = _.clone(self.data);
+            let companyId = self.$user.companyId
+            let agentAtr = false;
+            let commandCheck = {
+                    companyId,
+                    agentAtr,
+                    appStampOutputDto: data,
+                    applicationDto: applicationDto
+            }
+            self.$blockui("show");
+            
+            self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
+            .then(isValid => {
+                if ( isValid ) {
+                    return true;
+                }
+            }).then(result => {
+                if (result) {
+                    return self.$ajax(API.checkUpdate, commandCheck);
+                }
+            }).then(res => {
+                if(!res) return;
+                if (_.isEmpty(res)) {
+                    return self.$ajax(API.update, command);
+                } else {
+                    let listConfirm = _.clone(res);
+                    return self.handleConfirmMessage(listConfirm, command);
+                }
+            }).then(res => {
+                this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                    location.reload();
+                } );
+            }).fail(res => {
+                if (!res) return;
+                let param;
+                if (res.message && res.messageId) {
+                    param = {messageId: res.messageId, messageParams: res.parameterIds};
+                } else {
+    
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    }
+                }
+                self.$dialog.error(param);
+            }).always(() => {
+                self.$blockui('hide');
+            });
+            
+            
+//            self.$ajax(API.update, command)
+//                .done(res => {
+//                    console.log(res);
+//                }).fail(res => {
+//                    console.log(res);
+//                }).always(() => {
+//                    self.$blockui('hide');
+//                })
+        }
+        
+        public handleConfirmMessage(listMes: any, res: any) {
+            let vm = this;
+            if (!_.isEmpty(listMes)) {
+                let item = listMes.shift();
+                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                    if (value == 'yes') {
+                        if (_.isEmpty(listMes)) {
+                             return vm.registerData(res);
+                        } else {
+                             vm.handleConfirmMessage(listMes, res);
+                        }
+
+                    }
+                });
+            }
+        }
+        registerData(command) {
+            let vm = this; 
+            return vm.$ajax( API.register, command )
+                .done( resRegister => {
+                    console.log( resRegister );
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    } );
                 })
         }
         
@@ -396,6 +579,17 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         }
         
 
+    }
+    class Comment{
+        public content: string;
+        public isBold: boolean;
+        public color: string;
+        constructor( content: string, isBold: boolean, color: string) {
+            this.content = content;
+            this.isBold = isBold;
+            this.color = color;
+        }
+        
     }
     const API = {
             start: "at/request/application/stamp/startStampApp",

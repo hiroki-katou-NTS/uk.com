@@ -46,13 +46,13 @@
 									application: application,
 									appDispInfoStartupOutput: appDispInfoStartupOutput
 								} }"></div>
-	<div class="label" data-bind="text: comment1" style="margin: 10px">
+	<div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="margin: 10px">
 	</div>
 
 	<div class="inlineBlockFirst">
 		<!-- B6_1 -->
 		<div class="labelFirst"
-			data-bind="ntsFormLabel: {}, html: $i18n.text('KAF002_79')"></div>
+			data-bind="ntsFormLabel: {required: true}, html: $i18n('KAF002_79')"></div>
 		<div style="margin-left: 40px"
 			data-bind="ntsComboBox: {
 						options: dataSource,
@@ -64,7 +64,7 @@
 	</div>
 
 	<div class="blockSecond">
-		<input class="inputBlockSecond"
+		<input class="inputBlockSecond" id="inputTimeKAF002"
 			data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
 													}" />
 
@@ -78,7 +78,7 @@
 					}"></div>
 	</div>
 
-	<div data-bind="text: comment2" class="label" style="margin: 10px"></div>
+	<div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="margin: 10px"></div>
 	<div
 		data-bind="component: { name: 'kaf000-b-component7', 
 								params: {

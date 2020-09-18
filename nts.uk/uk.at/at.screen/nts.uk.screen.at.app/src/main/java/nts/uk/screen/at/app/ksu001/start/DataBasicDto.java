@@ -22,6 +22,7 @@ public class DataBasicDto {
 	public  String workplaceGroupId;
 	public String designation ; // 
 	public String targetOrganizationName ;   //  表示名  Aa1_2_2
+	public String code;
 	public DataBasicDto(DataScreenQueryGetInforDto resultStep1) {
 		this.startDate = resultStep1.startDate;
 		this.endDate = resultStep1.endDate;
@@ -30,5 +31,6 @@ public class DataBasicDto {
 		this.workplaceGroupId = resultStep1.targetOrgIdenInfor.workplaceGroupId;
 		this.designation = resultStep1.displayInforOrganization.getDesignation();
 		this.targetOrganizationName = resultStep1.displayInforOrganization.getDisplayName();
+		this.code = resultStep1.displayInforOrganization.getCode();
 	}
 }

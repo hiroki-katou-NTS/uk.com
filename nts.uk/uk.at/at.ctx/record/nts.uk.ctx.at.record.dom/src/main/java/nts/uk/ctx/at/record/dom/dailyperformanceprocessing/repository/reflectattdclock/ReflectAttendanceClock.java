@@ -215,6 +215,7 @@ public class ReflectAttendanceClock {
 		String companyId = AppContexts.user().companyId();
 		if (integrationOfDaily.getWorkInformation() != null) {
 			WorkInformation recordWorkInformation = integrationOfDaily.getWorkInformation().getRecordInfo();
+			if(recordWorkInformation.getWorkTimeCode() != null) {
 			WorkTimeCode workTimeCode = recordWorkInformation.getWorkTimeCode();
 
 			StampPiorityAtr stampPiorityAtr = StampPiorityAtr.GOING_WORK;
@@ -250,6 +251,7 @@ public class ReflectAttendanceClock {
 				}
 			}
 
+		}
 		}
 		
 		return ReflectStampOuput.REFLECT;
@@ -367,6 +369,12 @@ public class ReflectAttendanceClock {
 			this.roundStamp(integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode() !=null
 					?integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTimeCode().v():null, workStamp.get(),
 					attendanceAtr, actualStampAtr);
+			
+			if(actualStampAtr == ActualStampAtr.STAMP ) {
+				timeActualStamp.get().setStamp(workStamp);
+			}else if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
+				timeActualStamp.get().setActualStamp(workStamp);
+			}
 			//パラメータの実打刻区分をチェックする
 			if(actualStampAtr == ActualStampAtr.STAMP_REAL ) {
 				//申告時刻を反映する

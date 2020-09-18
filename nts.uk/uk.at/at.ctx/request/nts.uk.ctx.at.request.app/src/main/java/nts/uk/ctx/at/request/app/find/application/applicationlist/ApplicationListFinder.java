@@ -628,7 +628,7 @@ public class ApplicationListFinder {
      * @param appListExtractCondition
      * @return
      */
-    public AppListInfoDto findByEmpIDLst(AppListExtractConditionCmd param) {
+    public AppListInitDto findByEmpIDLst(AppListExtractConditionCmd param) {
     	// ドメインモデル「申請一覧抽出条件」を保存する
     	// xử lý trên UI
     	// AppListExtractCondition appListExtractCondition = param.convertDtotoDomain();
@@ -636,7 +636,7 @@ public class ApplicationListFinder {
     	// approvalListService.checkBeforeSearch(appListExtractCondition);
     	// アルゴリズム「申請一覧リスト取得申請」を実行する - 2
     	AppListInfo appListInfo = new AppListInfo();
-    	return AppListInfoDto.fromDomain(repoAppListInit.getApplicationListByApp(param.toDomain(), 0, appListInfo));
+    	return AppListInitDto.fromDomain(repoAppListInit.getApplicationList(param.toDomain(), 0, appListInfo));
 	}
 }
 

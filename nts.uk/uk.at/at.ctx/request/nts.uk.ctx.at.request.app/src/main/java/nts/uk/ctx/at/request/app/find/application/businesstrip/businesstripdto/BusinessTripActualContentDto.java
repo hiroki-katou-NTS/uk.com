@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.app.find.application.common.service.other.output.AchievementDetailDto;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 
 @Data
@@ -23,7 +24,7 @@ public class BusinessTripActualContentDto {
     public static BusinessTripActualContentDto fromDomain(ActualContentDisplay domain) {
         return new BusinessTripActualContentDto(
                 domain.getDate().toString(),
-                domain.getOpAchievementDetail().isPresent() ? AchievementDetailDto.fromDomain(domain.getOpAchievementDetail().get()) : null
+                domain.getOpAchievementDetail().map(i -> AchievementDetailDto.fromDomain(i)).orElse(null)
         );
     }
 }

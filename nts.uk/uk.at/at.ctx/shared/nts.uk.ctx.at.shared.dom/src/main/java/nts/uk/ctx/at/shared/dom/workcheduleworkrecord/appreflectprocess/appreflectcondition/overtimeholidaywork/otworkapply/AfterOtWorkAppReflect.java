@@ -30,11 +30,11 @@ public class AfterOtWorkAppReflect {
      */
     private NotUseAtr workReflect;
 
-    public static AfterOtWorkAppReflect create(int workReflect, int reflectPaytime, int reflectOptional, int reflectDivergence, int reflectBreakOuting) {
+    public static AfterOtWorkAppReflect create(int workReflect, int reflectPaytime, int reflectDivergence, int reflectBreakOuting) {
         return new AfterOtWorkAppReflect(
                 new OthersReflect(
                         EnumAdaptor.valueOf(reflectDivergence, NotUseAtr.class),
-                        EnumAdaptor.valueOf(reflectOptional, NotUseAtr.class),
+//                        EnumAdaptor.valueOf(reflectOptional, NotUseAtr.class),
                         EnumAdaptor.valueOf(reflectPaytime, NotUseAtr.class)
                 ),
                 new BreakApplication(EnumAdaptor.valueOf(reflectBreakOuting, NotUseAtr.class)),

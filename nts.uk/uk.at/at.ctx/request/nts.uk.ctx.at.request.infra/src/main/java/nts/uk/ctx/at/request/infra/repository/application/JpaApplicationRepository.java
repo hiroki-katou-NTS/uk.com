@@ -245,7 +245,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
-			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst) {
+			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, List<String> employeeIDLst) {
 		if (lstAppId.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -286,13 +286,19 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 					"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
 					"WHERE a.APP_ID IN @subListId AND a.APP_TYPE IN @lstType AND b.REFLECT_PER_STATE IN @lstState " +
 					"AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
-			List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+			if(!CollectionUtil.isEmpty(employeeIDLst)) {
+				sql += " AND a.APPLICANTS_SID IN @employeeIDLst";
+			}	
+			NtsStatement ntsStatement = new NtsStatement(sql, this.jdbcProxy())
 					.paramString("subListId", subListId)
 					.paramInt("lstType", lstType)
 					.paramInt("lstState", lstState)
 					.paramString("companyID", companyID)
-					.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()))
-					.getList(rec -> toObject(rec));
+					.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()));
+			if(!CollectionUtil.isEmpty(employeeIDLst)) {
+				ntsStatement = ntsStatement.paramString("employeeIDLst", employeeIDLst);
+			}
+			List<Map<String, Object>> mapLst = ntsStatement.getList(rec -> toObject(rec));
 			List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 			if(!CollectionUtil.isEmpty(krqdtApplicationLst)) {
 				List<Application> sublstResult = krqdtApplicationLst.stream().map(i -> i.toDomain()).collect(Collectors.toList());
@@ -848,11 +854,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return krqdtApplicationLst.stream().map(x -> x.toDomain()).collect(Collectors.toList());
 	}
 
-	private static final String SELECT_APP_FOR_KAF008 = "SELECT a FROM KrqdtApplication a WHERE"
-			+ " a.employeeID = :applicantSID"
-			+ " AND a.startDate <= :opAppEndDate AND a.opAppStartDate >= :startDate and a.appType IN (1,2,3,4,6,10)"
-			+ " ORDER BY a.inputDate DESC";
-
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.KAF008_出張申請.A:出張の申請（新規）.アルゴリズム.出張申請未承認申請を取得.ドメインモデル「申請」を取得する
 	 * @param sID
@@ -874,6 +875,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
 				"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
 				"where a.APPLICANTS_SID = @sid and a.APP_START_DATE <= @endDate and a.APP_END_DATE >= @startDate " +
+				"and b.REFLECT_PER_STATE IN (0,1) and a.APP_TYPE IN (2,3,4,6,1,10) "+
 				"order by a.INPUT_DATE DESC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sID)

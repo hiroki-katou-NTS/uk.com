@@ -1,4 +1,4 @@
-<div id="kaf000-a-component8" style="width: 240px;">
+<div id="kaf000-a-component8" style="width: 300px;">
 	<div class="panel panel-frame panel-gray-bg">
 		<div class="table">
 			<div class="cell" data-bind="i18n: 'KAF000_54'"></div>
@@ -11,23 +11,24 @@
 				</div>
 				<div class="table" style="margin-bottom: 1px; margin-top: 1px;">
 					<div class="cell" data-bind="i18n: 'KAF000_56'"></div>
-					<div class="cell">
+					<div class="cell" data-bind="if: opAchievementDetail">
 						<span data-bind="text: opAchievementDetail.workTypeCD"></span>
 						<span data-bind="text: opAchievementDetail.opWorkTypeName"></span>
 					</div>
 				</div>
 				<div class="table" style="margin-bottom: 1px; margin-top: 1px;">
 					<div class="cell" data-bind="i18n: 'KAF000_57'"></div>
-					<div class="cell">
+					<div class="cell" data-bind="if: opAchievementDetail">
 						<span data-bind="text: opAchievementDetail.workTimeCD"></span>
 						<span data-bind="text: opAchievementDetail.opWorkTimeName"></span>
 					</div>
 				</div>
 				<div class="table" style="margin-top: 1px;">
 					<div class="cell" data-bind="i18n: 'KAF000_58'"></div>
-					<div class="cell">
-						<span data-bind="text: opAchievementDetail.opWorkTime"></span>
-						<span data-bind="text: opAchievementDetail.opLeaveTime"></span>
+					<div class="cell" data-bind="if: opAchievementDetail && opAchievementDetail.opWorkTime && opAchievementDetail.opLeaveTime">
+						<span data-bind="text: $parent.formatTime(opAchievementDetail.opWorkTime)"></span>
+						<span> ~ </span>
+						<span data-bind="text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
 					</div>
 				</div>
 			</div>

@@ -16,22 +16,22 @@
    {
       "date":"03/17",
       "wkTypeCd":"FT",
-      "workinghours":"10:00",
-      "wkTimeCd":120,
+      "wkTimeCd":"10:00",
+      "startWorkTime":120,
       "endWorkTime":180
    },
    {
       "date":"03/18",
       "wkTypeCd":"FT",
-      "workinghours":"11:00",
-      "wkTimeCd":120,
+      "wkTimeCd":"11:00",
+      "startWorkTime":120,
       "endWorkTime":180
    },
    {
       "date":"03/12",
       "wkTypeCd":"PT",
-      "workinghours":"16:00",
-      "wkTimeCd":120,
+      "wkTimeCd":"16:00",
+      "startWorkTime":120,
       "endWorkTime":180
    }
 ]

@@ -266,7 +266,7 @@ public class JpaWorkInformationRepository extends JpaRepository implements WorkI
 		}
 		
 		if (domain.getWorkInformation().getScheduleInfo() != null) {
-			WorkInformation sched = domain.getWorkInformation().getRecordInfo();
+			WorkInformation sched = domain.getWorkInformation().getScheduleInfo();
 			
 			data.scheduleWorkWorktypeCode = sched.getWorkTypeCode().v();
 			data.scheduleWorkWorktimeCode = sched.getWorkTimeCodeNotNull().map(m -> m.v()).orElse(null);

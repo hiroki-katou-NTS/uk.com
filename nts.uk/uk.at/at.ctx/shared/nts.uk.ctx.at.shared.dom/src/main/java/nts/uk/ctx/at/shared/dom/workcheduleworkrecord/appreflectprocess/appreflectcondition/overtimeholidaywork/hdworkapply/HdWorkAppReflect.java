@@ -23,10 +23,10 @@ public class HdWorkAppReflect {
      */
     private AfterHdWorkAppReflect after;
 
-    public static HdWorkAppReflect create(int reflectActualHolidayWorkAtr, int workReflect, int reflectPaytime, int reflectOptional, int reflectDivergence, int reflectBreakOuting) {
+    public static HdWorkAppReflect create(int reflectActualHolidayWorkAtr, int workReflect, int reflectPaytime, int reflectDivergence, int reflectBreakOuting) {
         return new HdWorkAppReflect(
                 new BeforeHdWorkAppReflect(EnumAdaptor.valueOf(reflectActualHolidayWorkAtr, NotUseAtr.class)),
-                AfterHdWorkAppReflect.create(workReflect, reflectPaytime, reflectOptional, reflectDivergence, reflectBreakOuting)
+                AfterHdWorkAppReflect.create(workReflect, reflectPaytime, reflectDivergence, reflectBreakOuting)
         );
     }
 }

@@ -491,7 +491,8 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				param.getOpListOfAppTypes().map(x -> {
 					return x.stream().filter(y -> y.isChoice()).map(y -> y.getAppType().value).collect(Collectors.toList());
 				}).orElse(Collections.emptyList()),
-				prePostAtrLst);
+				prePostAtrLst,
+				param.getOpListEmployeeID().isPresent() ? param.getOpListEmployeeID().get() : Collections.emptyList());
 		// 申請一覧リストのデータを作成
 		appListInfo = appDataCreation.createAppLstData(
 				companyID, 
@@ -1215,7 +1216,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// result.setOpTimeCalcUseAtr();
 		result.setVersion(application.getVersion());
 		result.setApplication(application);
-		return new AppInfoMasterOutput(result, mapEmpInfo);
+		return new AppInfoMasterOutput(result, mapEmpInfo, mapWkpInfo);
 		
 //		if (lstApp.isEmpty()) {
 //			return new DataMasterOutput(Collections.emptyList(), Collections.emptyList(), new HashMap<>());

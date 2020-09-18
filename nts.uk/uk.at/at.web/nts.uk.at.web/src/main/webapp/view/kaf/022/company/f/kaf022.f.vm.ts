@@ -4,10 +4,10 @@ module nts.uk.at.view.kaf022.f.viewmodel {
     export class ScreenModelF {
         selectedValueF13: KnockoutObservable<number>;
         itemListF13: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            new ItemModel(0, text("KAF022_198")),
-            new ItemModel(1, text("KAF022_199")),
-            new ItemModel(2, text("KAF022_200")),
-            new ItemModel(3, text("KAF022_201"))
+            new ItemModel(3, text("KAF022_198")),
+            new ItemModel(2, text("KAF022_199")),
+            new ItemModel(1, text("KAF022_200")),
+            new ItemModel(0, text("KAF022_201"))
         ]);
 
         constructor() {

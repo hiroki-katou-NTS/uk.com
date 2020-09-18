@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +30,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePla
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TrackRecordAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortWorkingTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
@@ -100,16 +101,16 @@ public class CollectAchievementImpl implements CollectAchievement {
 		}
 //		外出時間帯
 		if (type == 4) {
-			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PRIVATE), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(450)), Optional.of(new TimeWithDayAttr(100)));
-			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.COMPENSATION), new StampFrameNo(2), Optional.empty(), Optional.empty());
-			TimePlaceOutput t3 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PUBLIC), new StampFrameNo(3), Optional.empty(), Optional.empty());
-			TimePlaceOutput t4 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PRIVATE), new StampFrameNo(4), Optional.empty(), Optional.empty());
-			TimePlaceOutput t5 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PUBLIC), new StampFrameNo(5), Optional.empty(), Optional.empty());
-			TimePlaceOutput t6 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PUBLIC), new StampFrameNo(6), Optional.empty(), Optional.empty());
-			TimePlaceOutput t7 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PRIVATE), new StampFrameNo(7), Optional.empty(), Optional.empty());
-			TimePlaceOutput t8 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PUBLIC), new StampFrameNo(8), Optional.empty(), Optional.empty());
-			TimePlaceOutput t9 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.PRIVATE), new StampFrameNo(9), Optional.empty(), Optional.empty());
-			TimePlaceOutput t10 = new TimePlaceOutput(Optional.empty(), Optional.of(GoOutReasonAtr.UNION), new StampFrameNo(10), Optional.empty(), Optional.empty());
+			TimePlaceOutput t1 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PRIVATE), new StampFrameNo(1), Optional.of(new TimeWithDayAttr(450)), Optional.of(new TimeWithDayAttr(100)));
+			TimePlaceOutput t2 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.COMPENSATION), new StampFrameNo(2), Optional.empty(), Optional.empty());
+			TimePlaceOutput t3 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PUBLIC), new StampFrameNo(3), Optional.empty(), Optional.empty());
+			TimePlaceOutput t4 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PRIVATE), new StampFrameNo(4), Optional.empty(), Optional.empty());
+			TimePlaceOutput t5 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PUBLIC), new StampFrameNo(5), Optional.empty(), Optional.empty());
+			TimePlaceOutput t6 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PUBLIC), new StampFrameNo(6), Optional.empty(), Optional.empty());
+			TimePlaceOutput t7 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PRIVATE), new StampFrameNo(7), Optional.empty(), Optional.empty());
+			TimePlaceOutput t8 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PUBLIC), new StampFrameNo(8), Optional.empty(), Optional.empty());
+			TimePlaceOutput t9 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.PRIVATE), new StampFrameNo(9), Optional.empty(), Optional.empty());
+			TimePlaceOutput t10 = new TimePlaceOutput(Optional.empty(), Optional.of(GoingOutReason.UNION), new StampFrameNo(10), Optional.empty(), Optional.empty());
 			list.add(t1);
 			list.add(t2);
 			list.add(t3);
@@ -263,7 +264,8 @@ public class CollectAchievementImpl implements CollectAchievement {
 			workTimeCD = recordWorkInfoImport.getWorkTimeCode() == null ? null
 					: recordWorkInfoImport.getWorkTimeCode().v();
 			//・実績詳細．5出勤時刻＝OUTPUT．勤務実績．出勤時刻1
-			opWorkTime = recordWorkInfoImport.getStartTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
+			opWorkTime = recordWorkInfoImport.getStartTime1() == null ? Optional.empty() 
+					: recordWorkInfoImport.getStartTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
 			//・実績詳細．6退勤時刻＝OUTPUT．勤務実績．退勤時刻1
 			opLeaveTime = recordWorkInfoImport.getEndTime1() == null ? Optional.empty()
 					: recordWorkInfoImport.getEndTime1().map(x -> x.getTimeWithDay().map(y -> y.v())).orElse(Optional.empty());
@@ -325,6 +327,56 @@ public class CollectAchievementImpl implements CollectAchievement {
 								Optional.empty(), 
 								Optional.empty(), 
 								new StampFrameNo(x.getShortWorkTimeFrameNo().v()), 
+								Optional.of(x.getEndTime()), 
+								Optional.of(x.getStartTime())))
+						.collect(Collectors.toList()));
+			}
+			// 打刻実績．勤務時間帯
+			Optional<TimeWithDayAttr> opWorkingTimeStartTime = recordWorkInfoImport.getStartTime1() == null ? Optional.empty() 
+					: recordWorkInfoImport.getStartTime1().map(x -> x.getTimeWithDay()).orElse(Optional.empty());
+			Optional<TimeWithDayAttr> opWorkingTimeEndTime = recordWorkInfoImport.getEndTime1() == null ? Optional.empty()
+					: recordWorkInfoImport.getEndTime1().map(x -> x.getTimeWithDay()).orElse(Optional.empty());
+			stampRecordOutput.setWorkingTime(Arrays.asList(new TimePlaceOutput(
+					Optional.empty(), 
+					Optional.empty(), 
+					new StampFrameNo(1), 
+					opWorkingTimeEndTime, 
+					opWorkingTimeStartTime)));
+			// 打刻実績．臨時時間帯
+			if(CollectionUtil.isEmpty(recordWorkInfoImport.getTimeLeavingWorks())) {
+				stampRecordOutput.setExtraordinaryTime(Collections.emptyList());
+			} else {
+				stampRecordOutput.setExtraordinaryTime(recordWorkInfoImport.getTimeLeavingWorks().stream()
+						.map(x -> new TimePlaceOutput(
+								Optional.empty(), 
+								Optional.empty(), 
+								new StampFrameNo(x.getWorkNo().v()), 
+								x.getLeaveStamp().map(y -> y.getStamp().map(z -> z.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty()), 
+								x.getAttendanceStamp().map(y -> y.getStamp().map(z -> z.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty())))
+						.collect(Collectors.toList()));
+			}
+			// 打刻実績．外出時間帯
+			if(CollectionUtil.isEmpty(recordWorkInfoImport.getOutHoursLst())) {
+				stampRecordOutput.setOutingTime(Collections.emptyList());
+			} else {
+				stampRecordOutput.setOutingTime(recordWorkInfoImport.getOutHoursLst().stream()
+						.map(x -> new TimePlaceOutput(
+								Optional.empty(), 
+								Optional.of(x.getReasonForGoOut()), 
+								new StampFrameNo(x.getOutingFrameNo().v()), 
+								x.getComeBack().map(y -> y.getStamp().map(z -> z.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty()), 
+								x.getGoOut().map(y -> y.getStamp().map(z -> z.getTimeDay().getTimeWithDay()).orElse(Optional.empty())).orElse(Optional.empty())))
+						.collect(Collectors.toList()));
+			}
+			// 打刻実績．休憩時間帯
+			if(CollectionUtil.isEmpty(recordWorkInfoImport.getBreakTimeSheets())) {
+				stampRecordOutput.setBreakTime(Collections.emptyList());
+			} else {
+				stampRecordOutput.setBreakTime(recordWorkInfoImport.getBreakTimeSheets().stream()
+						.map(x -> new TimePlaceOutput(
+								Optional.empty(), 
+								Optional.empty(), 
+								new StampFrameNo(x.getBreakFrameNo().v()), 
 								Optional.of(x.getEndTime()), 
 								Optional.of(x.getStartTime())))
 						.collect(Collectors.toList()));

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.application.stamp;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -16,7 +15,6 @@ import nts.gul.collection.CollectionUtil;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeZoneApp;
@@ -29,10 +27,10 @@ import nts.uk.ctx.at.request.dom.application.stamp.TimeZoneStampClassification;
 
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampPK;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.com.time.TimeZone;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
 @Stateless
 public class JpaAppStampRepository extends JpaRepository implements AppStampRepository{
 	public static final String FIND_BY_APPID = "SELECT * FROM KRQDT_APP_STAMP WHERE CID = @cid and APP_ID = @appId";
@@ -72,12 +70,20 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 
 	@Override
 	public void updateStamp(AppStamp appStamp) {
+		String companyID = AppContexts.user().companyId();
 		List<KrqdtAppStamp> listKrqdtAppStamp = toEntityList(appStamp);
-		if (CollectionUtil.isEmpty(listKrqdtAppStamp)) return;
-		this.delete(AppContexts.user().companyId(), appStamp.getAppID());
+		this.delete(companyID, appStamp.getAppID());
+		this.getEntityManager().flush();
 		this.commandProxy().insertAll(listKrqdtAppStamp);
 		this.getEntityManager().flush();
 
+	}
+	public Boolean isNotExistKey(KrqdtAppStampPK key, List<KrqdtAppStamp> listKrqdtAppStamp) {
+		if (CollectionUtil.isEmpty(listKrqdtAppStamp)) return true;
+		return listKrqdtAppStamp.stream().filter( x -> x.krqdtAppStampPK.appID == key.appID
+				&& x.krqdtAppStampPK.stampAtr == key.stampAtr
+				&& x.krqdtAppStampPK.stampFrameNo == key.stampFrameNo).findFirst().isPresent() ?  true : false;
+		
 	}
 
 	@Override
@@ -303,9 +309,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						if (startCancelAtr == 1) {
 							listDestinationTimeApp.add(destinationTimeAppStart);
 						} else {
-							Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
+							Optional<GoingOutReason> appStampGoOutAtrOp = Optional.empty();
 							if (goOutAtr != null) {
-								GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
+								GoingOutReason appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoingOutReason.class);
 								appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
 							}
 							TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppStart,
@@ -317,9 +323,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						if (endCancelAtr == 1) {
 							listDestinationTimeApp.add(destinationTimeAppEnd);
 						} else {
-							Optional<GoOutReasonAtr> appStampGoOutAtrOp = Optional.empty();
+							Optional<GoingOutReason> appStampGoOutAtrOp = Optional.empty();
 							if (goOutAtr != null) {
-								GoOutReasonAtr appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoOutReasonAtr.class);
+								GoingOutReason appStampGoOutAtr = EnumAdaptor.valueOf(goOutAtr, GoingOutReason.class);
 								appStampGoOutAtrOp = Optional.of(appStampGoOutAtr);
 							}
 							TimeStampApp timeStampApp = new TimeStampApp(destinationTimeAppEnd,

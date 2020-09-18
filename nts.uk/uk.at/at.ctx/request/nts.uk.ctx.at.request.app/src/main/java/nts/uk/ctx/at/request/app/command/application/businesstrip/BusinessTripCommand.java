@@ -11,10 +11,13 @@ import java.util.stream.Collectors;
 @Value
 public class BusinessTripCommand {
 
+    // 出発時刻
     private Integer departureTime;
 
+    // 帰着時刻
     private Integer returnTime;
 
+    // 出張勤務情報
     private List<BusinessTripInfoDto> tripInfos;
 
     public BusinessTrip toDomain(Application app) {
