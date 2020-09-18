@@ -6,7 +6,8 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 /**
- * AR: 組織の連続出勤できる上限日数
+ * 組織の連続出勤できる上限日数
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.連続勤務.就業時間帯の期間内上限
  * @author lan_lt
  *
  */
