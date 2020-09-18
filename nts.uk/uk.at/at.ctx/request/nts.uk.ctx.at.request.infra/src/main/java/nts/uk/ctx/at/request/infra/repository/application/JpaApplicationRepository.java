@@ -245,7 +245,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
-			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst) {
+			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, List<String> employeeIDLst) {
 		if (lstAppId.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -286,13 +286,19 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 					"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
 					"WHERE a.APP_ID IN @subListId AND a.APP_TYPE IN @lstType AND b.REFLECT_PER_STATE IN @lstState " +
 					"AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
-			List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+			if(!CollectionUtil.isEmpty(employeeIDLst)) {
+				sql += " AND a.APPLICANTS_SID IN @employeeIDLst";
+			}	
+			NtsStatement ntsStatement = new NtsStatement(sql, this.jdbcProxy())
 					.paramString("subListId", subListId)
 					.paramInt("lstType", lstType)
 					.paramInt("lstState", lstState)
 					.paramString("companyID", companyID)
-					.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()))
-					.getList(rec -> toObject(rec));
+					.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()));
+			if(!CollectionUtil.isEmpty(employeeIDLst)) {
+				ntsStatement = ntsStatement.paramString("employeeIDLst", employeeIDLst);
+			}
+			List<Map<String, Object>> mapLst = ntsStatement.getList(rec -> toObject(rec));
 			List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 			if(!CollectionUtil.isEmpty(krqdtApplicationLst)) {
 				List<Application> sublstResult = krqdtApplicationLst.stream().map(i -> i.toDomain()).collect(Collectors.toList());
