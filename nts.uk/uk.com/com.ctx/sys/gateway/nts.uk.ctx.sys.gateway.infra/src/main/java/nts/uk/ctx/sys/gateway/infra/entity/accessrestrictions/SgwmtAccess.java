@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.NoArgsConstructor;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AccessRestrictions;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -20,6 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name="SGWMT_ACCESS")
+@NoArgsConstructor
 public class SgwmtAccess extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

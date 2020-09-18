@@ -6,12 +6,14 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 /**
  * @author thanhpv
  */
 @Embeddable
 @AllArgsConstructor
+@NoArgsConstructor
 public class SgwmtAccessIpPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.shr.com.security.audittrail.basic.IPAddress
+				nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressComment
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="cmm002.a.style.css" />
+			<com:scriptfile path="cmm002.a.start.js" />
+			<com:scriptfile path="cmm002.a.vm.js" />
+			<com:scriptfile path="cmm002.a.service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<!-- A1_1 -->
+				<button id="reset" tabindex="1" class="group-button-1"
+					data-bind="click: innit">#{i18n.getText('CMM001_1')}</button>
+				<!-- A1_2 -->
+				<button id="register" tabindex="2" class="proceed group-button-1"
+					data-bind="click: register, enable:  $root.errors.isEmpty">#{i18n.getText('CMM001_2')}</button>
+				<!-- A1_3 -->
+				<button id="setting" tabindex="3" class="group-button-1"
+					data-bind="click: openEDialog, enable: !checkInsert()">#{i18n.getText('CMM001_3')}</button>
+				<!-- A1_4 -->
+				<button id="masterLog" tabindex="4" class="group-button-1"
+				    data-bind="visible: false">#{i18n.getText('CMM001_4')}</button>
+				<button tabindex="5" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>  
+			</div>
+			<div id="contents-area" class="fixed-flex-layout" style="display: none" data-bind="visible: true">
+				
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
