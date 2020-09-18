@@ -10,12 +10,17 @@
 #calendar-reflect-pattern {
 	width: 990px;
 }
-.reflect-setting {
+
+#reflect-setting {
 	padding: 5px 5px 10px 5px;
 	width:360px;
 	height: auto;
 	margin-right: 20px;
 	float: left;
+}
+
+.pad-top {
+	margin-top: 37px;
 }
 
 .margin-left-30 {
