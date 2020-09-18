@@ -194,11 +194,19 @@ public class AppStampFinder {
 	}
 	
 	public void checkBeforeUpdate(BeforeRegisterOrUpdateParam beforeRegisterParam) {
+		String pattern2 = "yyyy/MM/dd";
+		ApplicationDto applicationDto = beforeRegisterParam.getApplicationDto();
+		Application application =applicationDto.toDomain();
+		AppStampOutput as = beforeRegisterParam.getAppStampOutputDto().toDomain();
+		as.getAppStampOptional().ifPresent(x -> {
+			x.setPrePostAtr(application.getPrePostAtr());
+		});
+		
 		appCommonStampDomainService.checkBeforeUpdate(
 				beforeRegisterParam.getCompanyId(),
 				beforeRegisterParam.getAgentAtr(),
-				beforeRegisterParam.getApplicationDto().toDomain(),
-				beforeRegisterParam.getAppStampOutputDto().toDomain());
+				application,
+				as);
 	}
 	
 	public AppStampOutputDto getDataDetailCommon(DetailAppStampParam detailAppStampParam) {

@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         tabMs: Array<TabM>;
         
         isPreAtr: KnockoutObservable<boolean>;
-        
+        tabsTemp: any;
         created(params) {
             
             const self = this;
@@ -63,6 +63,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             } );
             self.nameGrids = ko.observableArray(nameGridsArray);
             self.tabs = ko.observableArray(paramTabs);
+            // must assign param.tabs at mounted since tabs is not render
+            self.tabsTemp = params.tabs;
             // select first tab
             self.selectedTab = ko.observable( paramTabs[0].id );
             params.selectedTab = self.selectedTab;
@@ -114,6 +116,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         mounted() {
             const self = this;
             self.loadAll();
+            // change tabs by root component
+            self.tabsTemp(self.tabs());
             
         }
         loadAll() {
@@ -164,7 +168,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         
         loadGrid(id: string,items: any, type: number) {
             const self = this;
-            if (!items) {
+            if (!id) {
+                
+                return;
+            }
+                if (!items) {
                 
                 return;
             }
@@ -317,16 +325,24 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             
             
             if (type == 2) {
-                $('#' + id).ntsGrid(option2);
-            }else {                
-                $('#' + id).ntsGrid(optionGrid);
+                if ($('#' + id)) {
+                    $('#' + id).ntsGrid(option2);                    
+                }
+            }else {
+                if ($('#' + id)) {
+                    $('#' + id).ntsGrid(optionGrid);
+                }
             }
             // if isCondition2 => error state of text1
             let nameAtr = 'td[aria-describedby ="'+ id +'_text1"]';
-            $(nameAtr).addClass('titleColor');
+            if ($(nameAtr)) {
+                $(nameAtr).addClass('titleColor');                
+            }
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
-                $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                if ($('#' + id)) {
+                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');                    
+                }
  
             } else {
                 self.isLinkList[items[0].index] = false;
@@ -547,12 +563,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
     }
     
     export enum STAMPTYPE {
+//        出勤／退勤
         ATTENDENCE = 0,
+//        育児
         PARENT = 2,
+//        外出／戻り
         GOOUT_RETURNING = 1,
+//        応援
         CHEERING = 3,
+//        臨時
         EXTRAORDINARY = 4,
+//        休憩
         BREAK = 5,
+//        介護
         NURSE = 6,
 
     }

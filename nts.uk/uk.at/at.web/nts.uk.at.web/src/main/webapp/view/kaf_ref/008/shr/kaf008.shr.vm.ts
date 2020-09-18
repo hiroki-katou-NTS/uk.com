@@ -362,18 +362,11 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             const vm = this;
             let dispFlag: boolean = true;
             let selectedDate = data.date;
-            let workTypeCode = data.wkTypeCd();
-            let workTimeCode = data.wkTimeCd();
+            let selectedWorkTypeCode = data.wkTypeCd();
+            let selectedWorkTimeCode = data.wkTimeCd();
+            let listWorkCode = [];
 
             let selectedIndex = _.findIndex(ko.toJS(vm.items), {date: data.date});
-
-            let listWorkCode = _.map(vm.workTypeCds(), function (obj) {
-                return obj.workTypeCode
-            });
-
-            let listHolidayCode = _.map(vm.holidayTypeCds(), function (obj) {
-                return obj.workTypeCode
-            });
 
             let listWkTime = vm.businessTripOutput().appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
             let listWkTimeCd = _.map(listWkTime, function (obj) {
@@ -386,24 +379,41 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 businessTripInfoOutputDto: ko.toJS(vm.businessTripOutput)
             };
 
-            vm.$ajax(API.startKDL003, command).then(res => {
-                if(res) {
-                    dispFlag = res;
+            vm.$ajax(API.startKDL003, command).done(res => {
+                console.log(res);
+                dispFlag = res;
+            }).then(() =>{
+                if (dispFlag) {
+                    listWorkCode = _.map(vm.workTypeCds(), function (obj) {
+                        return obj.workTypeCode
+                    });
+                } else {
+                    listWorkCode = _.map(vm.holidayTypeCds(), function (obj) {
+                        return obj.workTypeCode
+                    });
                 }
-            });
 
-            vm.$window.storage('parentCodes', {
-                workTypeCodes: _.union(listHolidayCode, listWorkCode),
-                selectedWorkTypeCode: workTypeCode,
-                workTimeCodes: listWkTimeCd,
-                selectedWorkTimeCode: workTimeCode,
-                showNone: dispFlag
-            });
+                vm.$window.storage('parentCodes', {
+                    workTypeCodes: listWorkCode,
+                    selectedWorkTypeCode: selectedWorkTypeCode,
+                    workTimeCodes: listWkTimeCd,
+                    selectedWorkTimeCode: selectedWorkTimeCode,
+                    showNone: !dispFlag
+                });
 
-            vm.$errors("clear");
+                nts.uk.ui.windows.setShared( 'parentCodes', {
+                    workTypeCodes: listWorkCode,
+                    selectedWorkTypeCode: selectedWorkTypeCode,
+                    workTimeCodes: listWkTimeCd,
+                    selectedWorkTimeCode: selectedWorkTimeCode,
+                    showNone: !dispFlag
+                }, true);
 
-            vm.$window.modal('/view/kdl/003/a/index.xhtml').then((result: any) => {
-                vm.$window.storage('childData').then(rs => {
+                vm.$errors("clear");
+
+                nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml' ).onClosed( function(): any {
+                    //view all code of selected item
+                    let rs = nts.uk.ui.windows.getShared( 'childData' );
                     if (rs) {
                         let currentRow;
                         if (vm.mode == Mode.New) {
@@ -428,10 +438,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         vm.dataFetch.valueHasMutated();
                     }
                 });
-            }).then(() => {
-                setTimeout(() => {
-                    $('#' + data.id).focus();
-                }, 50);
+
+                $('#' + data.id).focus();
+
             });
 
         }

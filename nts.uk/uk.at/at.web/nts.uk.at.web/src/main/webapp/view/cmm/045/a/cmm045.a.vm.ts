@@ -154,7 +154,7 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
-					self.reload(null, data);
+					return self.reload(null, data);
 					/*self.approvalLstDispSet = data.displaySet;
 					let newItemLst = [];
 					_.each(data.appLst, item => {
@@ -297,7 +297,7 @@ module cmm045.a.viewmodel {
 
 			block.invisible();
 			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
-				self.reload(data.appListExtractCondition, data.appListInfo);
+				return self.reload(data.appListExtractCondition, data.appListInfo);
 				/*self.appListExtractConditionDto = data.appListExtractCondition;
 				self.updateFromAppListExtractCondition();
 				self.approvalLstDispSet = data.appListInfo.displaySet;
