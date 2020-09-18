@@ -605,10 +605,15 @@ public class AsposeAppStamp {
 			dReasonLabelStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
 			dReasonLabelStyle.setIndentLevel(1);
 
+			dReasonLabelStyle.setTextWrapped(true);
+
 			bReasonLabel.setStyle(bReasonLabelStyle);
 			cReasonLabel.setStyle(cReasonLabelStyle);
 			dReasonLabel.setStyle(dReasonLabelStyle);
 			kReasonLabel.setStyle(kReasonLabelStyle);
+
+			cells.merge(26 - deleteCnt - 1, 1, 1, 2);
+			cells.merge(26 - deleteCnt - 1, 3, 1, 8);
 
 			// under reason
 			Cell bReasonUnder = worksheet.getCells().get("B" + (26 - deleteCnt + 1));
@@ -715,6 +720,9 @@ public class AsposeAppStamp {
 			cRemarkLabel.setStyle(cReasonLabelStyle);
 			dRemarkLabel.setStyle(dReasonLabelStyle);
 			kRemarkLabel.setStyle(kReasonLabelStyle);
+
+			cells.merge(26 - deleteCnt + 2, 1, 1, 2);
+			cells.merge(26 - deleteCnt + 2, 3, 1, 8);
 
 			// under remark
 			Cell bRemarkUnder = worksheet.getCells().get("B" + (26 - deleteCnt + 4));

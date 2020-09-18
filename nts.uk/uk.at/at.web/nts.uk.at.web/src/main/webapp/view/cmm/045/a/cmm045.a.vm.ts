@@ -885,7 +885,10 @@ module cmm045.a.viewmodel {
                         // var date = nts.uk.time.formatDate(new Date(item.opAppStartDate), "M/dD");
                         var date = moment(item.opAppStartDate).format("M/D(ddd)");
                         if(item.opAppStartDate !== item.opAppEndDate) {
-                            date.concat("－").concat(moment(item.opAppEndDate).format("M/D(ddd)"))
+                            date = date + "－" + moment(item.opAppEndDate).format("M/D(ddd)");
+                        }
+                        if(item.appType === 10) {
+
                         }
                         $td.html(self.appDateColor(date, "", ""));
                     }

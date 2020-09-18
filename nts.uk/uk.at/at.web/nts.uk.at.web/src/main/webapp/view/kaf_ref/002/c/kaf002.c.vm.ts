@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                if (i.stampAtr == ko.toJS(self.selectedCode)) {
                    let commentBot = i.bottomComment;
                    self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
-                   let commentTop = i.bottomComment;
+                   let commentTop = i.topComment;
                    self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
                }
             });

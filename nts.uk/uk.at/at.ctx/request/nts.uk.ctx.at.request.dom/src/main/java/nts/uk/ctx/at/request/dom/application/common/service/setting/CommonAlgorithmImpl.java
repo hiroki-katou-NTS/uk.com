@@ -479,7 +479,7 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			List<WorkTimeSetting> workTimeLst, AchievementDetail achievementDetail) {
 		String companyID = AppContexts.user().companyId();
 		// 申請日付チェック
-		if(date != null) {
+		if(date != null && achievementDetail != null) {
 			// INPUT．「実績詳細」をチェックする
 			if(Strings.isNotBlank(achievementDetail.getWorkTypeCD()) 
 					&& Strings.isNotBlank(achievementDetail.getWorkTimeCD())) {
