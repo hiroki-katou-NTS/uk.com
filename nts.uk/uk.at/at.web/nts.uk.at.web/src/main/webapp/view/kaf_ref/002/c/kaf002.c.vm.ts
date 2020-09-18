@@ -413,6 +413,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     return self.$ajax(API.checkUpdate, commandCheck);
                 }
             }).then(res => {
+                if(!res) return;
                 if (_.isEmpty(res)) {
                     return self.$ajax(API.update, command);
                 } else {

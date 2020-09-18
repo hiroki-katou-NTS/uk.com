@@ -198,8 +198,9 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             }).then(result => {
                 if (result) {
                     return self.$ajax(API.checkRegister, commandCheck);
-                }
+                } 
             }).then(res => {
+                if (!res) return;
                 if (_.isEmpty(res)) {
                     return self.$ajax(API.register, command);
                 } else {

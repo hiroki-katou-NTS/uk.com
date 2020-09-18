@@ -210,7 +210,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return true;
             }
         }).then(result => {
-            if (result) {
+                if(!result) return;
                 self.$ajax(API.checkRegister, command)
                 .then(res => {
                         let command = {
@@ -245,7 +245,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 .always(err => {
                     self.$blockui("hide");
                 })
-            }
         })
         .always(err => {
             self.$blockui("hide");
