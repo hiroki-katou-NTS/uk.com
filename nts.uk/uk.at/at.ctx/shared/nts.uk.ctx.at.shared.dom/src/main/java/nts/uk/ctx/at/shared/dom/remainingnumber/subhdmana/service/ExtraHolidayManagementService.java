@@ -66,7 +66,7 @@ public class ExtraHolidayManagementService {
 	private EmpEmployeeAdapter empEmployeeAdapter;
 	
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;	
+	private ShareEmploymentAdapter shareEmploymentAdapter;
 	
 	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId) {
 		String cid = AppContexts.user().companyId();
@@ -133,12 +133,18 @@ public class ExtraHolidayManagementService {
 	public void CheckManageSubstituteHolidayManagementData(String empId) {
 		EmploymentManageDistinctDto empManage = new EmploymentManageDistinctDto();
 		empManage.setIsManage(ManageDistinct.NO);
-		List<EmploymentHistShareImport> empHistShrImp = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(empId);
-		if (empHistShrImp.isEmpty()) {
+		List<EmploymentHistShareImport> empHistShrImpList = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(empId);
+		if (empHistShrImpList.isEmpty()) {
 			// Step エラーメッセージ(Msg_1306)を表示する
 			throw new BusinessException("Msg_1306");
 		} else {
-			
+			for(EmploymentHistShareImport empHistShrImp : empHistShrImpList) {
+				
+			}
 		}
+	}
+	
+	public CompensatoryLeaveComSetting getSubstLeaveManagementDataSetting (String empCd) {
+		return null;
 	}
 }
