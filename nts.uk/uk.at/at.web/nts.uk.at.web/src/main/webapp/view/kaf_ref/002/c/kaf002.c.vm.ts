@@ -52,9 +52,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
                if (i.stampAtr == ko.toJS(self.selectedCode)) {
                    let commentBot = i.bottomComment;
-                   self.comment1(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
+                   self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
                    let commentTop = i.topComment;
-                   self.comment2(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
+                   self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
                }
             });
         }  
