@@ -9,11 +9,14 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingCode;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingName;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
+import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -35,7 +38,18 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 	
 	/** The remark input no. */
 	private int remarkInputNo;
-
+	
+	/** The Layout ID*/
+	private String layoutID;
+	
+	/** The Employee ID. */
+	private String employeeID;
+	
+	/** The text size */
+	private int textSize;
+	
+	/** The Item selection type*/
+	private int  itemType;
 	/** The new mode. */
 	// This variable used to know is new mode when save.
 
@@ -117,4 +131,23 @@ public class OutputItemMonthlyWorkScheduleCommand implements OutputItemMonthlyWo
 		return RemarkInputContent.valueOf(this.remarkInputNo);
 	}
 
+	@Override
+	public String getLayoutID() {
+		return this.layoutID;
+	}
+
+	@Override
+	public String getEmployeeID() {
+		return this.employeeID;
+	}
+
+	@Override
+	public ItemSelectionEnum getItemSelectionEnum() {
+		return ItemSelectionEnum.valueOf(this.itemType);
+	}
+
+	@Override
+	public TextSizeCommonEnum getTextSize() {
+		return TextSizeCommonEnum.valueOf(this.textSize);
+	}
 }

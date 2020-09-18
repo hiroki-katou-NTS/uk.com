@@ -24,11 +24,11 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	/** The company ID. */
 	// 会社ID
 	private String companyID;
-
+	
 	/** The item code. */
 	// コード
 	private MonthlyOutputItemSettingCode itemCode;
-
+	
 	/** The item name. */
 	// 名称
 	private MonthlyOutputItemSettingName itemName;
@@ -44,6 +44,26 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	/** The remark input no. */
 	// 備考入力No
 	private RemarkInputContent remarkInputNo;
+	
+	/** The remark input. */
+	// 備考入力
+	private boolean remarkInput;
+	
+	/** The Layout ID*/
+	// 出力項目ID
+	private String layoutID;
+	
+	/** The Employee ID. */
+	// 社員ID
+	private String employeeID;
+	
+	/** The text size */
+	// 文字の大きさ
+	private TextSizeCommonEnum textSize;
+	
+	/** The Item selection type*/
+	// 項目選択種類
+	private ItemSelectionEnum  itemSelectionType;
 	
 	/** The Constant MAX_ATTENDANCE_ITEM. */
 	private static final int MAX_ATTENDANCE_ITEM = 48;
@@ -65,6 +85,10 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		this.lstDisplayedAttendance = memento.getLstDisplayedAttendance();
 		this.printSettingRemarksColumn = memento.getPrintSettingRemarksColumn();
 		this.remarkInputNo = memento.getRemarkInputNo();
+		this.layoutID = memento.getLayoutID();
+		this.employeeID = memento.getEmployeeID();
+		this.textSize = memento.getTextSize();
+		this.itemSelectionType = memento.getItemSelectionEnum();
 	}
 
 	/**
@@ -83,6 +107,10 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 		memento.setLstDisplayedAttendance(this.lstDisplayedAttendance);
 		memento.setPrintRemarksColumn(this.printSettingRemarksColumn);
 		memento.setRemarkInputNo(this.remarkInputNo);
+		memento.setLayoutID(this.layoutID);
+		memento.setEmployeeID(this.employeeID);
+		memento.setTextSize(this.textSize);
+		memento.setItemSelectionEnum(this.itemSelectionType);
 	}
 
 	/*

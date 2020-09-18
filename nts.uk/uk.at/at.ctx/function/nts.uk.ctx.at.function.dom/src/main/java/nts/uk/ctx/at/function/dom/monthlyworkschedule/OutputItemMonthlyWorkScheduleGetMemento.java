@@ -50,4 +50,33 @@ public interface OutputItemMonthlyWorkScheduleGetMemento {
 	 * @return the remark input no
 	 */
 	RemarkInputContent getRemarkInputNo();
+	
+	/**
+	 * Gets the layout ID.
+	 *
+	 * @return the layout ID
+	 */
+	String getLayoutID();
+	 
+	/**
+	 * Gets the employee ID.
+	 *
+	 * @return the employee ID
+	 */
+	String getEmployeeID();
+	
+	/**
+	 * Gets the text size.
+	 *
+	 * @return the text size
+	 */
+	TextSizeCommonEnum getTextSize();
+	
+	/**
+	 * Gets item selection type.
+	 *
+	 * @return item selection type
+	 */
+	ItemSelectionEnum getItemSelectionEnum();
+	
 }
