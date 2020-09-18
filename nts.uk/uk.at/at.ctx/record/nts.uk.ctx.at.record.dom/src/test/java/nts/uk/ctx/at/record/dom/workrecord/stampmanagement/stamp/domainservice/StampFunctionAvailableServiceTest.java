@@ -55,7 +55,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", false, false, false, false, false, false));
 				
 			}
 		};
@@ -79,7 +79,7 @@ public class StampFunctionAvailableServiceTest{
 		new Expectations() {
 			{
 				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false));
+				result = Optional.of(new SettingsUsingEmbossing("companyId", false, false, true, false, false, false));
 				
 			}
 		};
@@ -88,38 +88,38 @@ public class StampFunctionAvailableServiceTest{
 		assertThat(data.getUsed()).isEqualTo(CanEngravingUsed.AVAILABLE);
 	}
 	
-	
-	@Test
-	public void testStampFunctionAvailableService_4() {
-		String employeeId = "employeeId";//dummy
-		
-		new Expectations() {
-			{
-				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false));
-				
-			}
-		};
-		
-		MakeUseJudgmentResults data = StampFunctionAvailableService.decide(require, employeeId, StampMeans.SMART_PHONE);
-		assertThat(data.getUsed()).isNotEqualTo(CanEngravingUsed.AVAILABLE);
-	}
-	
-	@Test
-	public void testStampFunctionAvailableService_5() {
-		String employeeId = "employeeId";//dummy
-		
-		new Expectations() {
-			{
-				require.get();
-				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false));
-				
-			}
-		};
-		
-		MakeUseJudgmentResults data = StampFunctionAvailableService.decide(require, employeeId, StampMeans.INDIVITION);
-		assertThat(data.getUsed()).isNotEqualTo(CanEngravingUsed.AVAILABLE);
-	}
+//	
+//	@Test
+//	public void testStampFunctionAvailableService_4() {
+//		String employeeId = "employeeId";//dummy
+//		
+//		new Expectations() {
+//			{
+//				require.get();
+//				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false));
+//				
+//			}
+//		};
+//		
+//		MakeUseJudgmentResults data = StampFunctionAvailableService.decide(require, employeeId, StampMeans.SMART_PHONE);
+//		assertThat(data.getUsed()).isNotEqualTo(CanEngravingUsed.AVAILABLE);
+//	}
+//	
+//	@Test
+//	public void testStampFunctionAvailableService_5() {
+//		String employeeId = "employeeId";//dummy
+//		
+//		new Expectations() {
+//			{
+//				require.get();
+//				result = Optional.of(new SettingsUsingEmbossing("companyId", true, false, false, false, false, false));
+//				
+//			}
+//		};
+//		
+//		MakeUseJudgmentResults data = StampFunctionAvailableService.decide(require, employeeId, StampMeans.INDIVITION);
+//		assertThat(data.getUsed()).isNotEqualTo(CanEngravingUsed.AVAILABLE);
+//	}
 	
 	@Test
 	public void testStampFunctionAvailableService_6() {
@@ -153,7 +153,7 @@ public class StampFunctionAvailableServiceTest{
 		};
 		
 		MakeUseJudgmentResults data = StampFunctionAvailableService.decide(require, employeeId, StampMeans.PORTAL);
-		assertThat(data.getUsed()).isEqualTo(CanEngravingUsed.AVAILABLE);
+		assertThat(data.getUsed()).isEqualTo(CanEngravingUsed.ENGTAVING_FUNCTION_CANNOT_USED);
 	}
 	
 }

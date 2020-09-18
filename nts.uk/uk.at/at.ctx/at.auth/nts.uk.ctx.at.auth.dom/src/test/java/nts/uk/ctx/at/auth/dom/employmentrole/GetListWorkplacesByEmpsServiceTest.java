@@ -117,6 +117,6 @@ public class GetListWorkplacesByEmpsServiceTest {
 		};
 		
 		List<String> s = GetListWorkplacesByEmpsService.get(require, companyId, employeeId, closureId);
-		System.out.println(s);
+		assertThat(s).isNotEmpty();
 	}
 }
