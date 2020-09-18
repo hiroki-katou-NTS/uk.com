@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.accessrestrictions;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,24 +31,21 @@ public class AccessRestrictions extends AggregateRoot{
 		for (AllowedIPAddress ip : this.allowedIPaddress) {
 			if(ip.getStartAddress().equals(e.getStartAddress())) {
 				throw new BusinessException("Msg_1835");
-			}else {
-				this.allowedIPaddress.add(e);
 			}
 		}
+		this.allowedIPaddress.add(e);
 	}
 	
 	/** [2] 許可IPアドレスを更新する */
-	public void updateIPAddress(AllowedIPAddress e) {
-		List<AllowedIPAddress> ipAddresse = this.allowedIPaddress.stream().filter(c->!c.getStartAddress().equals(e.getStartAddress())).collect(Collectors.toList());
-		ipAddresse.add(e);
-		ipAddresse.sort((AllowedIPAddress x, AllowedIPAddress y) -> x.getStartAddress().toString().compareTo(y.getStartAddress().toString()));
-		this.allowedIPaddress = ipAddresse;
+	public void updateIPAddress(AllowedIPAddress oldItem, AllowedIPAddress newItem) {
+		this.allowedIPaddress.removeIf(c->c.getStartAddress().equals(oldItem.getStartAddress()));
+		this.allowedIPaddress.add(newItem);
+		this.allowedIPaddress.sort((AllowedIPAddress x, AllowedIPAddress y) -> x.getStartAddress().toString().compareTo(y.getStartAddress().toString()));
 	}
 	
 	/** [3] 許可IPアドレスを削除する */
 	public void deleteIPAddress(IPAddressSetting e) {
-		List<AllowedIPAddress> ipAddresse = this.allowedIPaddress.stream().filter(c->!c.getStartAddress().equals(e)).collect(Collectors.toList());
-		this.allowedIPaddress = ipAddresse;
+		this.allowedIPaddress.removeIf(c->c.getStartAddress().equals(e));
 	}
 
 	public AccessRestrictions(int accessLimitUseAtr, String contractCode,
