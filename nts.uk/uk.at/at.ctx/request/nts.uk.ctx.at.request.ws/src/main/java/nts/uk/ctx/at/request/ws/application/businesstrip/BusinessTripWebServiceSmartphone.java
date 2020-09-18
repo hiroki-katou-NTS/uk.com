@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobil
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.StartScreenBDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripOutputDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailScreenDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ParamStartKDL003;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
 
@@ -63,5 +64,11 @@ public class BusinessTripWebServiceSmartphone extends WebService {
     @Path("register")
     public ProcessResult register(AddBusinessTripCommand param) {
         return this.addBusinessTripCommandHandler.handle(param);
+    }
+	
+	@POST
+    @Path("startKDLS02")
+    public boolean startKDL003(ParamStartKDL003 param) {
+        return this.businessTripFinder.getFlagStartKDL003(param);
     }
 }
