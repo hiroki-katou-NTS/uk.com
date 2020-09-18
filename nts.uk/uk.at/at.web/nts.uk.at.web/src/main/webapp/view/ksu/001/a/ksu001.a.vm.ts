@@ -444,7 +444,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             service.getDataWhenChangeModePeriod(param).done((data: any) => {
-                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                }
                 
                 self.saveDataGrid(data);
 
@@ -467,6 +469,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setUpdateMode();
 
                 self.setPositionButonToRightToLeft();
+                
+                // fix bug khong coppyPaste dc 
+                if (userInfor.updateMode == 'copyPaste') {
+                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("updateMode", "copyPaste");
+                }
 
                 self.stopRequest(true);
             }).fail(function() {
@@ -698,8 +706,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             $("#extable").children().remove();
             $("#extable").removeData();
-//            let ex = "<div id='extable'></div>";
-//            $("#extable-outside").append(ex);
             self.initExTable(dataBindGrid, viewMode, 'stick');
             if (!self.showA9) {
                 $(".toLeft").css("display", "none");
@@ -1841,7 +1847,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
             
             service.getDataChangeMonth(param).done((data: any) => {
-                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                }
                 self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
@@ -1862,6 +1870,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 self.setUpdateMode();
                 
                 self.setPositionButonToRightToLeft();
+                
+                // fix khi nextMonth|backMonth dang khong coppyPaste dc 
+                if (userInfor.updateMode == 'copyPaste') {
+                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("updateMode", "copyPaste");
+                }
                 
                 self.stopRequest(true);
             }).fail(function() {
@@ -1897,7 +1911,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             };
 
             service.getDataChangeMonth(param).done((data: any) => {
-                self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                if (userInfor.disPlayFormat == 'shift') {
+                    self.saveShiftMasterToLocalStorage(data.shiftMasterWithWorkStyleLst);
+                }
+                
                 self.saveDataGrid(data);
                 self.dtPrev(data.dataBasicDto.startDate);
                 self.dtAft(data.dataBasicDto.endDate);
@@ -1919,11 +1936,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
                 self.setPositionButonToRightToLeft();
                 
+                // fix khi nextMonth|backMonth dang khong coppyPaste dc 
+                if (userInfor.updateMode == 'copyPaste') {
+                    $("#extable").exTable("updateMode", "stick");
+                    $("#extable").exTable("updateMode", "copyPaste");
+                }
+                
                 self.stopRequest(true);
             }).fail(function() {
                 self.stopRequest(true);
             });
         }
+        
 
         editMode() {
             let self = this;
@@ -2084,6 +2108,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             
             $("#extable").exTable("updateMode", "stick");
+            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
+                let userInfor : IUserInfor = JSON.parse(data);
+                userInfor.updateMode = 'stick';
+                uk.localStorage.setItemAsJson(self.KEY, userInfor);
+            });
+            
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 $("#extable").exTable("stickMode", "single");
                 // set lai data stick
@@ -2120,11 +2150,6 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
             });
             
-            uk.localStorage.getItem(self.KEY).ifPresent((data) => {
-                let userInfor : IUserInfor = JSON.parse(data);
-                userInfor.updateMode = 'stick';
-                uk.localStorage.setItemAsJson(self.KEY, userInfor);
-            });
             nts.uk.ui.block.clear();
         }
 
@@ -2135,12 +2160,15 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this;
             if (self.mode() == 'confirm')
                 return;
-            $("#extable").exTable("stickStyler", () => {});
+            $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                return { textColor: "" };
+            });
             nts.uk.ui.block.grayout();
             $("#paste").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             $("#coppy").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
-            
+            $("#extable").exTable("updateMode", "copyPaste");
+            $("#extable").exTable("updateMode", "stick");
             $("#extable").exTable("updateMode", "copyPaste");
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor : IUserInfor = JSON.parse(data);
@@ -2172,13 +2200,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         
         undoData(): void {
             let self = this;
-            $("#extable").exTable("stickUndo");
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'stick') {
+                $("#extable").exTable("stickUndo");
+            } else if (userInfor.updateMode = 'copyPaste') {
+                $("#extable").exTable("copyUndo");
+            } else if (userInfor.updateMode = 'edit') {
+                console.log('grid chua support undo o mode nay');
+            }
             self.checkExitCellUpdated();
         }
 
         redoData(): void {
             let self = this;
-            $("#extable").exTable("stickRedo");
+            let item = uk.localStorage.getItem(self.KEY);
+            let userInfor = JSON.parse(item.get());
+            if (userInfor.updateMode == 'stick') {
+                $("#extable").exTable("stickRedo");
+            } else if (userInfor.updateMode = 'copyPaste') {
+                $("#extable").exTable("copyRedo");
+            } else if (userInfor.updateMode = 'edit') {
+                console.log('grid chua support redo o mode nay');
+            }
             self.checkExitCellUpdated();
         }
         
