@@ -1086,7 +1086,7 @@ module nts.uk.at.view.kaf006.a.viewmodel {
             setShared('KDL020A_PARAM', { baseDate: moment(new Date()).toDate(),
                                             employeeIds: lstid.length > 0 ? lstid : [self.employeeID()] } );
             if(lstid.length > 1 ) {
-              modal("/view/kdl/020/a/mutil.xhtml");
+              modal("/view/kdl/020/a/multi.xhtml");
             } else {
               modal("/view/kdl/020/a/single.xhtml");
             }
