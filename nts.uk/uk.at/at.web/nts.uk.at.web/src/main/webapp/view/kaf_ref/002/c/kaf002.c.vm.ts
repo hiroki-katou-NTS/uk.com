@@ -17,12 +17,14 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         template: '/nts.uk.at.web/view/kaf_ref/002/c/index.html'
     })
     class Kaf002CViewModel extends ko.ViewModel {
+       printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
        appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
        appDispInfoStartupOutput: any;
        approvalReason: KnockoutObservable<string>;
        application: KnockoutObservable<Application>;
        dataSourceOb: KnockoutObservableArray<any>;
+       selectedTab: KnockoutObservable<string> = ko.observable('');
        // display condition
        isM: KnockoutObservable<boolean> = ko.observable(false);
        // select tab M
@@ -51,7 +53,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                if (i.stampAtr == ko.toJS(self.selectedCode)) {
                    let commentBot = i.bottomComment;
                    self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
-                   let commentTop = i.bottomComment;
+                   let commentTop = i.topComment;
                    self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
                }
             });
@@ -77,9 +79,21 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                     self.bindActualData();
                     self.bindTabM(self.data);
-                    self.bindComment(self.data);                 
+                    self.bindComment(self.data);
+                    self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
-                    console.log('fail');
+                    let param;
+                    if (res.message && res.messageId) {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    } else {
+
+                        if (res.message) {
+                            param = {message: res.message, messageParams: res.parameterIds};
+                        } else {
+                            param = {messageId: res.messageId, messageParams: res.parameterIds};
+                        }
+                    }
+                    self.$dialog.error(param);
                 }).always(() => {
                     self.$blockui('hide');
                 });
@@ -117,12 +131,15 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (timeStampAppDto) {
                let items = _.filter(timeStampAppDto, (x: TimeStampAppDto) => {
                    let destinationTimeAppDto = x.destinationTimeApp as DestinationTimeAppDto;
-                   return destinationTimeAppDto.timeStampAppEnum == element.typeStamp.valueOf() 
-                           && destinationTimeAppDto.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+                   return destinationTimeAppDto.timeStampAppEnum == element.convertTimeStampAppEnum()
+                           && destinationTimeAppDto.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
                }) as Array<TimeStampAppDto>;
                _.forEach(items, (x: TimeStampAppDto) => {
                      if (x) {
                          let desItem = x.destinationTimeApp as DestinationTimeAppDto;
+                         if (x.appStampGoOutAtr) {
+                             element.typeReason = String(x.appStampGoOutAtr);
+                         }
                          if (desItem.startEndClassification == 0) {
                              element.startTimeRequest(x.timeOfDay);
                          }
@@ -136,8 +153,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            
            if (destinationTimeAppDto) {
                let itemDes = _.findLast(destinationTimeAppDto, (x: any) => {
-                   return x.timeStampAppEnum == element.typeStamp.valueOf() 
-                   && x.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+                   return x.timeStampAppEnum == element.convertTimeStampAppEnum()
+                   && x.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
                }) as DestinationTimeAppDto;
                
                if (itemDes) {
@@ -149,8 +166,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (timeStampAppOtherDto) {
                let items = _.filter(timeStampAppOtherDto, (x: TimeStampAppOtherDto) => {
                    let destinationTimeZoneAppDto = x.destinationTimeZoneApp as DestinationTimeZoneAppDto;
-                   return destinationTimeZoneAppDto.timeZoneStampClassification == element.convertTimeStampAppEnum() 
-                           && destinationTimeZoneAppDto.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
+                   return destinationTimeZoneAppDto.timeZoneStampClassification == element.convertTimeZoneStampClassification() 
+                           && destinationTimeZoneAppDto.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
                }) as Array<TimeStampAppOtherDto>;
                if (items.length > 0) {
                    let item = items[0] as TimeStampAppOtherDto;
@@ -160,9 +177,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            }
            if (destinationTimeZoneAppDto) {
                let itemDes = _.findLast(destinationTimeZoneAppDto, (x: any) => {
-                   return x.timeStampAppEnum == element.typeStamp.valueOf() 
-                   && x.engraveFrameNo == (element.typeStamp.valueOf() != 1 ? element.id : element.id - 2);
-               }) as DestinationTimeZoneAppDto;
+                   return x.timeZoneStampClassification == element.convertTimeZoneStampClassification()
+                   && x.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+               })
                if (itemDes) {
                    element.flagObservable(true);
                }
@@ -330,6 +347,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 }
                 ) {
             const self = this;
+            self.printContentOfEachAppDto = ko.observable(params.printContentOfEachAppDto);
+            self.selectedTab.subscribe(value => {
+                if (value) {
+                    self.selectedCode(Number(value));
+                }
+             });
             self.selectedCode.subscribe(value => {
                 if (value && self.data) {
                     self.bindComment(self.data);
@@ -369,14 +392,91 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     appStampDto,
                     appStampOutputDto
             }
-            self.$blockui('show');
-            self.$ajax(API.update, command)
-                .done(res => {
-                    console.log(res);
-                }).fail(res => {
-                    console.log(res);
-                }).always(() => {
-                    self.$blockui('hide');
+            let data = _.clone(self.data);
+            let companyId = self.$user.companyId
+            let agentAtr = false;
+            let commandCheck = {
+                    companyId,
+                    agentAtr,
+                    appStampOutputDto: data,
+                    applicationDto: applicationDto
+            }
+            self.$blockui("show");
+            
+            self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
+            .then(isValid => {
+                if ( isValid ) {
+                    return true;
+                }
+            }).then(result => {
+                if (result) {
+                    return self.$ajax(API.checkUpdate, commandCheck);
+                }
+            }).then(res => {
+                if(!res) return;
+                if (_.isEmpty(res)) {
+                    return self.$ajax(API.update, command);
+                } else {
+                    let listConfirm = _.clone(res);
+                    return self.handleConfirmMessage(listConfirm, command);
+                }
+            }).then(res => {
+                this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                    location.reload();
+                } );
+            }).fail(res => {
+                if (!res) return;
+                let param;
+                if (res.message && res.messageId) {
+                    param = {messageId: res.messageId, messageParams: res.parameterIds};
+                } else {
+    
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    }
+                }
+                self.$dialog.error(param);
+            }).always(() => {
+                self.$blockui('hide');
+            });
+            
+            
+//            self.$ajax(API.update, command)
+//                .done(res => {
+//                    console.log(res);
+//                }).fail(res => {
+//                    console.log(res);
+//                }).always(() => {
+//                    self.$blockui('hide');
+//                })
+        }
+        
+        public handleConfirmMessage(listMes: any, res: any) {
+            let vm = this;
+            if (!_.isEmpty(listMes)) {
+                let item = listMes.shift();
+                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                    if (value == 'yes') {
+                        if (_.isEmpty(listMes)) {
+                             return vm.registerData(res);
+                        } else {
+                             vm.handleConfirmMessage(listMes, res);
+                        }
+
+                    }
+                });
+            }
+        }
+        registerData(command) {
+            let vm = this; 
+            return vm.$ajax( API.register, command )
+                .done( resRegister => {
+                    console.log( resRegister );
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    } );
                 })
         }
         

@@ -16,6 +16,6 @@ import nts.uk.shr.com.enumcommon.NotUseAtr;
 @Getter
 public class OthersReflect extends DomainObject {
     private NotUseAtr reflectDivergentReasonAtr;
-    private NotUseAtr reflectOptionalItemsAtr;
+//    private NotUseAtr reflectOptionalItemsAtr;
     private NotUseAtr reflectPaytimeAtr;
 }

@@ -164,7 +164,7 @@ public class ApplicationListWebservice extends WebService{
 
 	@POST
 	@Path("findByEmpIDLst")
-	public AppListInfoDto findByEmpIDLst(AppListExtractConditionCmd param) {
+	public AppListInitDto findByEmpIDLst(AppListExtractConditionCmd param) {
 		return this.appListFinder.findByEmpIDLst(param);
 	}
 

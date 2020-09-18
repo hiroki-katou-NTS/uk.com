@@ -15,6 +15,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
 
         /* A11 - Application Limit Settings Table*/
         itemListA11_8: KnockoutObservableArray<ItemModel>;
+        itemListA20: KnockoutObservableArray<ItemModel>;
         appLimitSetting: KnockoutObservable<AppLimitSetting>; // A20 also
 
         /* A17 Approval settings Table*/
@@ -106,6 +107,10 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                 new ItemModel(1, getText('KAF022_437')),
                 new ItemModel(0, getText('KAF022_438'))
             ]);
+            self.itemListA20 = ko.observableArray([
+                new ItemModel(1, getText('KAF022_75')),
+                new ItemModel(0, getText('KAF022_82'))
+            ]);
             self.appLimitSetting = ko.observable(new AppLimitSetting(null));
 
             // A17
@@ -140,9 +145,9 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             // A22
             self.appTypeSettings = ko.observableArray([]);
             self.itemListA22_2 = ko.observableArray([
-                new ItemModel(0, getText('KAF022_775')),
-                new ItemModel(1, getText('KAF022_776')),
-                new ItemModel(2, getText('KAF022_777'))
+                new ItemModel(0, getText('KAF022_745')),
+                new ItemModel(1, getText('KAF022_746')),
+                new ItemModel(2, getText('KAF022_747'))
             ]);
 
             // A8
@@ -223,7 +228,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                         )
                     );
                 } else {
-                    self.dataReceptionRestrictionSettings.push(new ReceptionRestrictionSetting(getText(self.appTypeLabels[index]), appType.value, 0, 0, 0, 0, 0, 0, 0));
+                    self.dataReceptionRestrictionSettings.push(new ReceptionRestrictionSetting(getText(self.appTypeLabels[index]), appType.value, 0, 0, 1, null, null, null, 0));
                 }
             });
 
@@ -257,7 +262,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                         )
                     );
                 } else {
-                    self.appTypeSettings.push(new AppTypeSetting(appType.value, getText(self.appTypeLabels[index]),  false, 0));
+                    self.appTypeSettings.push(new AppTypeSetting(appType.value, getText(self.appTypeLabels[index]),  true, 0));
                 }
             });
 
@@ -384,7 +389,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             this.earlyNormalOvertime = ko.observable(earlyNormalOvertime);
             this.allowFutureDay = ko.observable(allowFutureDay == 1);
 
-            this.requiredA7_23 = ko.observable(methodCheck == 1);
+            this.requiredA7_23 = ko.observable(methodCheck == 0);
 
             this.methodCheck.subscribe((value) => {
                 if (value == 1) {
@@ -393,29 +398,29 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                 } else {
                     nts.uk.ui.errors.clearAll();
                     this.requiredA7_23(true);
-                    $('#a7_23').trigger("validate");
-                    $('#a7_23_2').trigger("validate");
-                    $('#a7_23_3').trigger("validate");
+                    // $('#a7_23').trigger("validate");
+                    // $('#a7_23_2').trigger("validate");
+                    // $('#a7_23_3').trigger("validate");
                 }
             });
-            this.earlyOvertime.subscribe((value) => {
-                if (value) {
-                    $('#a7_23').ntsError('clear');
-                    this.requiredA7_23.valueHasMutated();
-                }
-            });
-            this.normalOvertime.subscribe((value) => {
-                if (value) {
-                    $('#a7_23_2').ntsError('clear');
-                    this.requiredA7_23.valueHasMutated();
-                }
-            });
-            this.earlyNormalOvertime.subscribe((value) => {
-                if (value) {
-                    $('#a7_23_3').ntsError('clear');
-                    this.requiredA7_23.valueHasMutated();
-                }
-            });
+            // this.earlyOvertime.subscribe((value) => {
+            //     if (value) {
+            //         $('#a7_23').ntsError('clear');
+            //         this.requiredA7_23.valueHasMutated();
+            //     }
+            // });
+            // this.normalOvertime.subscribe((value) => {
+            //     if (value) {
+            //         $('#a7_23_2').ntsError('clear');
+            //         this.requiredA7_23.valueHasMutated();
+            //     }
+            // });
+            // this.earlyNormalOvertime.subscribe((value) => {
+            //     if (value) {
+            //         $('#a7_23_3').ntsError('clear');
+            //         this.requiredA7_23.valueHasMutated();
+            //     }
+            // });
         }
     }
 
@@ -458,6 +463,12 @@ module nts.uk.at.view.kaf022.a.viewmodel {
             this.appTypeName = appName;
             this.canClassificationChange = ko.observable(canChangeCls);
             this.displayInitialSegment = ko.observable(displayInitSegment);
+
+            this.displayInitialSegment.subscribe(value => {
+                if (value == 2) {
+                    this.canClassificationChange(true);
+                }
+            });
         }
     }
 

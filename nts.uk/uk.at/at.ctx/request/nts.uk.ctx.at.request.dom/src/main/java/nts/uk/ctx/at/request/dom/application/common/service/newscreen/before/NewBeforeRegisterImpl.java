@@ -108,6 +108,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 				// エラーメッセージ(Msg_328)
 				throw new BusinessException("Msg_328");
 			}
+			return;
 		}
 		// INPUT．申請表示情報(基準日関係なし)．事前申請の受付制限をチェックする
 		if(appDispInfoNoDateOutput.getAdvanceAppAcceptanceLimit()==NotUseAtr.NOT_USE) {

@@ -12,7 +12,7 @@ public class HdWorkAppReflectDto {
     private int reflectActualHolidayWorkAtr;
     private int workReflect;
     private int reflectPaytime;
-    private int reflectOptional;
+//    private int reflectOptional;
     private int reflectDivergence;
     private int reflectBreakOuting;
 
@@ -21,7 +21,7 @@ public class HdWorkAppReflectDto {
                 domain.getBefore().getReflectActualHolidayWorkAtr().value,
                 domain.getAfter().getWorkReflect().value,
                 domain.getAfter().getOthersReflect().getReflectPaytimeAtr().value,
-                domain.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
+//                domain.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
                 domain.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value,
                 domain.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value
         );

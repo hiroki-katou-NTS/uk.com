@@ -15,7 +15,7 @@ public class OtWorkAppReflectCommand {
     private int reflectBeforeBreak;
     private int workReflect;
     private int reflectPaytime;
-    private int reflectOptional;
+//    private int reflectOptional;
     private int reflectDivergence;
     private int reflectBreakOuting;
 
@@ -27,7 +27,7 @@ public class OtWorkAppReflectCommand {
                 reflectBeforeBreak,
                 workReflect,
                 reflectPaytime,
-                reflectOptional,
+//                reflectOptional,
                 reflectDivergence,
                 reflectBreakOuting
         );

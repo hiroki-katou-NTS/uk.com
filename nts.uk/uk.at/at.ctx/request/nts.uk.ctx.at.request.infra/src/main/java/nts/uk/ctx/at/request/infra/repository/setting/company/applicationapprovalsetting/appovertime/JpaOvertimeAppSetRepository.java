@@ -51,7 +51,7 @@ public class JpaOvertimeAppSetRepository extends JpaRepository implements Overti
                     entity.setPreBreakTimeReflectAtr(overtimeWorkAppReflect.getBefore().getBreakLeaveApplication().getBreakReflectAtr().value);
                     entity.setPostWorkTimeReflectAtr(overtimeWorkAppReflect.getAfter().getWorkReflect().value);
                     entity.setPostBpTimeReflectAtr(overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectPaytimeAtr().value);
-                    entity.setPostAnyvTimeReflectAtr(overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value);
+//                    entity.setPostAnyvTimeReflectAtr(overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value);
                     entity.setPostDvgcReflectAtr(overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value);
                     entity.setPostBreakTimeReflectAtr(overtimeWorkAppReflect.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value);
             this.commandProxy().update(entity);

@@ -20,8 +20,8 @@ module nts.uk.at.view.kaf022.k.viewmodel {
             {code: 0, name: text('KAF022_390')}
         ]);
         itemListCC1: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: text('KAF022_75')},
-            {code: 1, name: text('KAF022_82')},
+            {code: 1, name: text('KAF022_75')},
+            {code: 0, name: text('KAF022_82')},
         ]);
         itemListK13: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 1, name: text('KAF022_292')},
@@ -52,21 +52,21 @@ module nts.uk.at.view.kaf022.k.viewmodel {
         constructor() {
             const self = this;
 
-            self.oneDayLeaveDeleteAttendance = ko.observable(0);
-            self.reflectAttendance = ko.observable(0);
-            self.reflectWorkHour = ko.observable(0);
+            self.oneDayLeaveDeleteAttendance = ko.observable(1);
+            self.reflectAttendance = ko.observable(1);
+            self.reflectWorkHour = ko.observable(1);
             
-            self.simultaneousApplyRequired = ko.observable(0);
+            self.simultaneousApplyRequired = ko.observable(1);
             // self.allowanceForAbsence = ko.observable(0);
 
-            self.reflectAttendanceAtr = ko.observable(0);
+            self.reflectAttendanceAtr = ko.observable(1);
 
             self.texteditorD9 = ko.observable(null);
-            self.valueD10 = ko.observable(null);
+            self.valueD10 = ko.observable("#000000");
             self.enableD11 = ko.observable(false);
 
             self.texteditorD12 = ko.observable(null);
-            self.valueD10_1 = ko.observable(null);
+            self.valueD10_1 = ko.observable("#000000");
             self.enableD11_1 = ko.observable(false);
 
             $("#fixed-table-k1").ntsFixedTable({});
@@ -83,7 +83,7 @@ module nts.uk.at.view.kaf022.k.viewmodel {
             if (allData.substituteLeaveApplicationReflect) {
                 self.reflectWorkHour(allData.substituteLeaveApplicationReflect.reflectWorkHour || 0);
                 self.reflectAttendance(allData.substituteLeaveApplicationReflect.reflectAttendance || 0);
-                self.oneDayLeaveDeleteAttendance(allData.substituteLeaveApplicationReflect.oneDayLeaveDeleteAttendance || 0);
+                self.oneDayLeaveDeleteAttendance(allData.substituteLeaveApplicationReflect.oneDayLeaveDeleteAttendance);
             }
             if (allData.substituteHdWorkApplicationSetting) {
                 const data = allData.substituteHdWorkApplicationSetting;

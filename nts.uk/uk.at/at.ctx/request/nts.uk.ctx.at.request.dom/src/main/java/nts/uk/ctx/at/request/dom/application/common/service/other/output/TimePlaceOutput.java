@@ -5,7 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -27,7 +27,7 @@ public class TimePlaceOutput {
 	/**
 	 * 外出区分
 	 */
-	private Optional<GoOutReasonAtr> opGoOutReasonAtr;
+	private Optional<GoingOutReason> opGoOutReasonAtr;
 	
 	/**
 	 * 打刻枠No

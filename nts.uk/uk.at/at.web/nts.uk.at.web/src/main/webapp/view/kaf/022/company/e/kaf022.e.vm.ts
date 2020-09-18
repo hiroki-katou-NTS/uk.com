@@ -9,7 +9,7 @@ module nts.uk.at.view.kaf022.e.viewmodel {
         constructor() {
             const self = this;
             self.texteditorD9 = ko.observable(null);
-            self.valueD10 = ko.observable(null);
+            self.valueD10 = ko.observable("#000000");
             self.enableD11 = ko.observable(false);
 
             $("#fixed-table-e").ntsFixedTable({});

@@ -9,7 +9,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.TimePlaceOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.StampFrameNo;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -58,7 +58,7 @@ public class TimePlaceDto {
 	public TimePlaceOutput toDomain() {
 		return new TimePlaceOutput(
 				Strings.isBlank(opWorkLocationCD) ? Optional.empty() : Optional.of(new WorkLocationCD(opWorkLocationCD)), 
-				opGoOutReasonAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opGoOutReasonAtr, GoOutReasonAtr.class)), 
+				opGoOutReasonAtr == null ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(opGoOutReasonAtr, GoingOutReason.class)), 
 				new StampFrameNo(frameNo), 
 				opEndTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(opEndTime)), 
 				opStartTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(opStartTime)));
