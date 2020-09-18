@@ -150,7 +150,12 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             vm.applicationTest.opAppReason = application.opAppReason;
             vm.applicationTest.opAppStandardReasonCD = application.opAppStandardReasonCD;
             vm.applicationTest.opReversionReason = application.opReversionReason;
-
+            if (vm.model) {
+                if (vm.model.checkbox3() == true && !vm.model.workTimeCode()) {
+                    $('#workSelect').focus();
+                    return;
+                } 
+            }
             vm.$blockui( "show" );
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then( isValid => {
@@ -229,6 +234,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             if (!_.isNull(dataClone)) {
                 vm.dataFetch(dataClone);
                 vm.dataFetch().appDispInfoStartup = vm.appDispInfoStartupOutput;
+                
                 return;
             }
             vm.$blockui( "show" );
