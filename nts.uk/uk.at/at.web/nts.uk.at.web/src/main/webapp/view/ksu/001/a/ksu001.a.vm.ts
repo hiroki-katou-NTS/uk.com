@@ -272,8 +272,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleShiftByEmpSort = _.orderBy(listWorkScheduleShiftByEmp, ['date'], ['asc']);
-                    var style = document.createElement('style');
-                    style.type = 'text/css';
+                    
+                    let item = uk.localStorage.getItem(self.KEY);
+                    let userInfor: IUserInfor = JSON.parse(item.get());
+                    let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+                    
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
                         let rowOfSelf = cell.employeeId == self.employeeIdLogin ? true : false;
@@ -286,9 +289,16 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         if (value == 1) {
                             // A10_color② シフト表示：シフトの背景色  (Hiển thị Shift: màu nền của shift) 
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0));
-
+                            
+                            let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+                            if (cell.shiftCode != null) {
+                                let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
+                                if (objShiftMasterWithWorkStyle.length > 0) {
+                                    let color = '#'+ objShiftMasterWithWorkStyle[0].color;
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, color, 0)); 
+                                }
+                            }
                         } else if (value == 0) {
-
                             // set Deco BackGround
                             if (rowOfSelf) {
                                 detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 0));
@@ -875,8 +885,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     objDetailContentDs['sid'] = i.toString();
                     objDetailContentDs['employeeId'] = emp.employeeId;
                     let listWorkScheduleShiftByEmpSort = _.orderBy(listWorkScheduleShiftByEmp, ['date'],['asc']);
-                    var style = document.createElement('style');
-                    style.type = 'text/css';
+                    let item = uk.localStorage.getItem(self.KEY);
+                    let userInfor: IUserInfor = JSON.parse(item.get());
+                    let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
+                    
                     for (let j = 0; j < listWorkScheduleShiftByEmpSort.length; j++) {
                         let cell: IWorkScheduleShiftInforDto = listWorkScheduleShiftByEmpSort[j];
                         let time = new Time(new Date(cell.date));
@@ -890,13 +902,11 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         // set Deco background
                         if (userInfor.backgroundColor == 1) {
                             // A10_color② シフト表示：シフトの背景色  (Hiển thị Shift: màu nền của shift) 
-                            
-                            let shiftMasterWithWorkStyleLst = userInfor.shiftMasterWithWorkStyleLst;
                             if (cell.shiftCode != null) {
                                 let objShiftMasterWithWorkStyle = _.filter(shiftMasterWithWorkStyleLst, function(o) { return o.shiftMasterCode == cell.shiftCode; });
                                 if (objShiftMasterWithWorkStyle.length > 0) {
-                                    let color = objShiftMasterWithWorkStyle[0].color;
-                                    //detailContentDeco.push(new CellColor('_' + ymd, rowId, "background-white", 0)); 
+                                    let color = '#'+ objShiftMasterWithWorkStyle[0].color;
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, color, 0)); 
                                 }
                             }
                         } else if (userInfor.backgroundColor == 0) {
