@@ -18,7 +18,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     import RefImageEachDayDto = nts.uk.at.view.kdl023.base.service.model.RefImageEachDayDto;
     import MonthlyPatternRegisterCommand = nts.uk.at.view.kdl023.base.service.model.MonthlyPatternRegisterCommand;
     import WorkMonthlySetting = nts.uk.at.view.kdl023.base.service.model.WorkMonthlySetting;
-    import WorkInformationDto = nts.uk.at.view.kdl023.base.service.model.WorkInformationDto;
     import WorkInformationToRegis = nts.uk.at.view.kdl023.base.service.model.WorkInformationToRegis;
     const CONST = {
         DATE_FORMAT: 'yyyy-MM-yy',
@@ -121,8 +120,11 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             vm.holidayDisplay = ko.observable(true);
             vm.cellButtonDisplay = ko.observable(false);
             vm.reflectionOrderList1([
-                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+				{code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+				{code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+				{code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
             ]);
+
             vm.reflectionOrderList2([
                 {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
             ]);
@@ -184,89 +186,72 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                     });
 
                     vm.reflectionMethod.subscribe(val => {
-                        if(val === 2){
-                            vm.reflectionSetting().statutorySetting.useClassification(false);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(false);
-                            vm.reflectionSetting().holidaySetting.useClassification(false);
-                            vm.workCycleEnable1(true);
-                            vm.reflectionOrderList1([
-                                {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
-                                {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
-                                {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
-                            ]);
-                            $('#kdl023-holiday-warning-label').hide();
-                        } else {
-                            vm.reflectionOrderList1([
-                                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')}
-                            ]);
-                            vm.workCycleEnable1(false);
-                            vm.reflectionOrder1(WorkCreateMethod.NON)
-                            $('#kdl023-holiday-warning-label').show();
-                            vm.reflectionSetting().statutorySetting.useClassification(true);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(true);
-                            vm.reflectionSetting().holidaySetting.useClassification(true);
-                        }
-                    });
+						if(val === 2){
+							vm.reflectionSetting().statutorySetting.useClassification(false);
+							vm.reflectionSetting().nonStatutorySetting.useClassification(false);
+							vm.reflectionSetting().holidaySetting.useClassification(false);
+							vm.workCycleEnable1(true);
+							$('#kdl023-holiday-warning-label').hide();
+						} else {
+							vm.workCycleEnable1(false);
+							vm.workCycleEnable2(false);
+							vm.workCycleEnable3(false);
+							$('#kdl023-holiday-warning-label').show();
+							vm.reflectionSetting().statutorySetting.useClassification(true);
+							vm.reflectionSetting().nonStatutorySetting.useClassification(true);
+							vm.reflectionSetting().holidaySetting.useClassification(true);
+						}
+					});
 
                     vm.reflectionOrder1.subscribe(val =>{
-                        if(val === WorkCreateMethod.NON){
-                            vm.workCycleEnable2(false);
-                            vm.reflectionOrder2(WorkCreateMethod.NON);
-                        }else {
-                            let array2 = ([
-                                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
-                                {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
-                                {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
-                                {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
-                            ]);
-                            let array3 = ([
-                                {code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
-                                {code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
-                                {code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
-                                {code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
-                            ]);
+						let array2 = ([
+							{code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+							{code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+							{code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+							{code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+						]);
 
-                            let remove2 =  array2.indexOf(array2.filter(e => e.code === val)[0]);
-                            if(remove2 > -1){
-                                array2.splice(remove2, 1);
-                            }
-                            let remove3 = array3.indexOf(array3.filter(e => e.code === val)[0]);
-                            if(remove3 > -1){
-                                array3.splice(remove3, 1);
-                            }
-                            let remove4 = array3.indexOf(array3.filter(e => e.code === vm.reflectionOrder2())[0]);
-                            if(remove4 > -1 && vm.reflectionOrder2() > -1){
-                                array3.splice(remove4, 1);
-                            }
-                            vm.reflectionOrderList2(array2);
-                            vm.reflectionOrderList3(array3);
+						let array3 = ([
+							{code: WorkCreateMethod.NON, name: vm.$i18n('KDL023_39')},
+							{code: WorkCreateMethod.WORK_CYCLE, name: vm.$i18n('KDL023_3')},
+							{code: WorkCreateMethod.WEEKLY_WORK, name: vm.$i18n('KDL023_40')},
+							{code: WorkCreateMethod.PUB_HOLIDAY, name: vm.$i18n('KDL023_8')}
+						]);
 
-                            if(vm.reflectionOrder2() === val){
-                                vm.reflectionOrder2(WorkCreateMethod.NON);
-                            }
-                            if(vm.reflectionOrder3() === val){
-                                vm.reflectionOrder2(WorkCreateMethod.NON);
-                            }
-                            vm.workCycleEnable2(true);
-                        }
+						let remove2 =  array2.indexOf(array2.filter(e => e.code === val)[0]);
+						if(remove2 > -1){
+							array2.splice(remove2, 1);
+						}
+						let remove3 = array3.indexOf(array3.filter(e => e.code === val)[0]);
+						if(remove3 > -1){
+							array3.splice(remove3, 1);
+						}
+						let remove4 = array3.indexOf(array3.filter(e => e.code === vm.reflectionOrder2())[0]);
+						if(remove4 > -1 && vm.reflectionOrder2() > -1){
+							array3.splice(remove4, 1);
+						}
+						vm.reflectionOrderList2(array2);
+						vm.reflectionOrderList3(array3);
 
+						if(vm.reflectionOrder2() === val){
+							vm.reflectionOrder2(WorkCreateMethod.NON);
+						}
+						if(vm.reflectionOrder3() === val){
+							vm.reflectionOrder2(WorkCreateMethod.NON);
+						}
+						vm.workCycleEnable2(true);
                         let arrCheck = ([val,vm.reflectionOrder2(), vm.reflectionOrder3()]);
-                        let weeklyEnable = arrCheck.filter(e => e === WorkCreateMethod.WEEKLY_WORK).length;
-                        let holidayEnable = arrCheck.filter(e => e === WorkCreateMethod.PUB_HOLIDAY).length;
-                        if(weeklyEnable > 0){
-                            vm.reflectionSetting().statutorySetting.useClassification(true);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(true);
-                            //vm.reflectionSetting().holidaySetting.useClassification(true);
-                        }else{
-                            vm.reflectionSetting().statutorySetting.useClassification(false);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(false);
-                        }
-                        if(holidayEnable > 0){
-                            vm.reflectionSetting().holidaySetting.useClassification(true);
-                        }else{
-                            vm.reflectionSetting().holidaySetting.useClassification(false);
-                        }
+						vm.checkReflectionOrder(arrCheck)
                     });
+					
+					vm.workCycleEnable1.subscribe(isEnable => {
+						if (!isEnable) {
+							return;
+						}
+
+						vm.reflectionOrder1.valueHasMutated();
+					})
+
                     vm.reflectionOrder2.subscribe( val => {
                         if(val === WorkCreateMethod.NON){
                             vm.reflectionOrder3(WorkCreateMethod.NON);
@@ -295,40 +280,29 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                         }
 
                         let arrCheck = ([vm.reflectionOrder1(), val, vm.reflectionOrder3()]);
-                        let weeklyEnable = arrCheck.filter(e => e === WorkCreateMethod.WEEKLY_WORK).length;
-                        let holidayEnable = arrCheck.filter(e => e === WorkCreateMethod.PUB_HOLIDAY).length;
-                        if(weeklyEnable > 0){
-                            vm.reflectionSetting().statutorySetting.useClassification(true);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(true);
-                            //vm.reflectionSetting().holidaySetting.useClassification(true);
-                        }else{
-                            vm.reflectionSetting().statutorySetting.useClassification(false);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(false);
-                        }
-                        if(holidayEnable > 0){
-                            vm.reflectionSetting().holidaySetting.useClassification(true);
-                        }else{
-                            vm.reflectionSetting().holidaySetting.useClassification(false);
-                        }
+                        vm.checkReflectionOrder(arrCheck)
                     });
+					
+					vm.workCycleEnable2.subscribe(isEnable => {
+						if (!isEnable) {
+							return;
+						}
+
+						vm.reflectionOrder2.valueHasMutated();
+					})
 
                     vm.reflectionOrder3.subscribe(val => {
-                        let arrCheck = ([vm.reflectionOrder1(), vm.reflectionOrder2(), val]);
-                        let weeklyEnable = arrCheck.filter(e => e === WorkCreateMethod.WEEKLY_WORK).length;
-                        let holidayEnable = arrCheck.filter(e => e === WorkCreateMethod.PUB_HOLIDAY).length;
-                        if(weeklyEnable > 0){
-                            vm.reflectionSetting().statutorySetting.useClassification(true);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(true);
-                        }else{
-                            vm.reflectionSetting().statutorySetting.useClassification(false);
-                            vm.reflectionSetting().nonStatutorySetting.useClassification(false);
-                        }
-                        if(holidayEnable > 0){
-                            vm.reflectionSetting().holidaySetting.useClassification(true);
-                        }else{
-                            vm.reflectionSetting().holidaySetting.useClassification(false);
-                        }
-                    })
+						let arrCheck = ([vm.reflectionOrder1(), vm.reflectionOrder2(), val]);
+						vm.checkReflectionOrder(arrCheck);
+					})
+					
+					vm.workCycleEnable3.subscribe(isEnable => {
+						if (!isEnable) {
+							return;
+						}
+
+						vm.reflectionOrder3.valueHasMutated();
+					})
 
                     // Force change to set tab index.
                     vm.reflectionSetting().holidaySetting.useClassification.valueHasMutated();
@@ -356,6 +330,25 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 });
             return dfd.promise();
         }
+
+		private checkReflectionOrder(arrCheck : number[]) {
+        	const vm = this;
+
+			let weeklyEnable = arrCheck.filter(e => e === WorkCreateMethod.WEEKLY_WORK).length;
+			let holidayEnable = arrCheck.filter(e => e === WorkCreateMethod.PUB_HOLIDAY).length;
+			if (weeklyEnable > 0) {
+				vm.reflectionSetting().statutorySetting.useClassification(true);
+				vm.reflectionSetting().nonStatutorySetting.useClassification(true);
+			} else {
+				vm.reflectionSetting().statutorySetting.useClassification(false);
+				vm.reflectionSetting().nonStatutorySetting.useClassification(false);
+			}
+			if (holidayEnable > 0) {
+				vm.reflectionSetting().holidaySetting.useClassification(true);
+			} else {
+				vm.reflectionSetting().holidaySetting.useClassification(false);
+			}
+		}
 
         /**
          * Close dialog
@@ -1401,7 +1394,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             model.numOfSlideDays = ko.observable(data.numOfSlideDays)
             model.legalHolidayCd = ko.observable(data.legalHolidayCd)
             model.nonStatutoryHolidayCd = ko.observable(data.nonStatutoryHolidayCd)
-            model.holidayCd = ko.observable(data.holidayCd)
+            model.holidayCd = ko.observable	(data.holidayCd)
         }
     }
 }
