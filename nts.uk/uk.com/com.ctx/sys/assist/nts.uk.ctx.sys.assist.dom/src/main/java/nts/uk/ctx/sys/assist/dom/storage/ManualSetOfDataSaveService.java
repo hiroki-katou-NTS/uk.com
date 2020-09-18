@@ -121,7 +121,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			int targetNumberPeople = 0;
 			int saveStatus = 0;
 			String fileId = null;
-			LoginInfo loginInfo = new LoginInfo();
+			String ipAddress = AppContexts.requestedWebApi().getRequestIpAddress();
+			String pcName = AppContexts.requestedWebApi().getRequestPcName();
+			String account = AppContexts.windowsAccount().getUserName();
+			LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
 			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
 					saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles,
 					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId,loginInfo);
@@ -200,6 +203,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		for (CategoryFieldMt categoryFieldMt : categoryFieldMts) {
 
 			String categoryName = "";
+			int systemType = 1;
 			int storageRangeSaved = 0;
 			TimeStore retentionPeriodCls = null;
 			int anotherComCls = 0;
@@ -255,7 +259,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 			String internalFileName = cId + categoryName + categoryFieldMt.getTableJapanName();
 
-			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName, storeProcessingId, null,
+			TableList listtable = new TableList(categoryFieldMt.getCategoryId(), categoryName,storeProcessingId, systemType, null,
 					categoryFieldMt.getTableNo(), categoryFieldMt.getTableJapanName(),
 					categoryFieldMt.getTableEnglishName(), categoryFieldMt.getFieldAcqCid(),
 					categoryFieldMt.getFieldAcqDateTime(), categoryFieldMt.getFieldAcqEmployeeId(),
@@ -397,7 +401,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		Map<String, Object> rowCsv = new HashMap<>();
 		rowCsv.put(headerCsv.get(0), tableList.getDataStorageProcessingId());
 		rowCsv.put(headerCsv.get(1), tableList.getSaveForm());
-		rowCsv.put(headerCsv.get(2), tableList.getSaveSetCode().orElse(""));
+		rowCsv.put(headerCsv.get(2), tableList.getPatternCode());
 		rowCsv.put(headerCsv.get(3), tableList.getSaveSetName());
 		rowCsv.put(headerCsv.get(4), tableList.getSupplementaryExplanation().orElse(""));
 		rowCsv.put(headerCsv.get(5), tableList.getCategoryId());

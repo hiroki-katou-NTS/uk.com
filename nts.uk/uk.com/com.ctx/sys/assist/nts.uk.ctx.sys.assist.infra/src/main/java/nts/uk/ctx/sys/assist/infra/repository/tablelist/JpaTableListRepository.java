@@ -66,7 +66,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	public void add2(TableList domain) {
 		// Get entity by key
 		Optional<SspmtTableList> entityOpt = this.queryProxy().find(
-				new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId()),
+				new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value),
 				SspmtTableList.class);
 		if (!entityOpt.isPresent()) {
 			this.commandProxy().insert(SspmtTableList.toEntity(domain));
@@ -76,7 +76,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	@Override
 	public void update2(TableList domain) {
 		// Get entity by key
-		Optional<SspmtTableList> entityOpt = this.queryProxy().find(new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId()),SspmtTableList.class);
+		Optional<SspmtTableList> entityOpt = this.queryProxy().find(new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value),SspmtTableList.class);
 		if (entityOpt.isPresent()) {
 			SspmtTableList entity = entityOpt.get();
 			updateEntity(entity,domain);
@@ -87,10 +87,10 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	@Override
 	public void remove(TableList domain) {
 		// Get entity by key
-		Optional<SspmtTableList> entityOpt = this.queryProxy().find(new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId()),SspmtTableList.class);
+		Optional<SspmtTableList> entityOpt = this.queryProxy().find(new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value),SspmtTableList.class);
 		if (entityOpt.isPresent()) {
 			this.commandProxy().remove(SspmtTableList.class, new SspmtTableListPk(domain.getCategoryId(),
-					domain.getTableNo(), domain.getDataStorageProcessingId()));
+					domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value));
 		}
 	}
 
@@ -532,7 +532,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		entity.fieldAcqEmployeeId =		domain.getFieldAcqEmployeeId().orElse(null);
 		entity.fieldAcqEndDate = 		domain.getFieldAcqEndDate().orElse(null);
 		entity.fieldAcqStartDate = 		domain.getFieldAcqStartDate().orElse(null);
-		entity.saveSetCode	=	domain.getSaveSetCode().orElse(null);
+		entity.saveSetCode	=	domain.getPatternCode();
 		entity.saveSetName = 		domain.getSaveSetName();
 		entity.saveForm = domain.getSaveForm();
 		entity.saveDateFrom =		domain.getSaveDateFrom().orElse(null);
@@ -640,7 +640,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 	public boolean isPresent(TableList domain) {
 		// Get entity by key
 		Optional<SspmtTableList> entityOpt = this.queryProxy().find(
-				new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId()),
+				new SspmtTableListPk(domain.getCategoryId(), domain.getTableNo(), domain.getDataStorageProcessingId(), domain.getSystemType().value),
 				SspmtTableList.class);
 		return entityOpt.isPresent() ? true : false;
 	}

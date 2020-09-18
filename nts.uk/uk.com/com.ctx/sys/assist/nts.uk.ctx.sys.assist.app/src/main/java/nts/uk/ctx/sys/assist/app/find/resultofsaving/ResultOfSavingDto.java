@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.assist.app.find.resultofsaving;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 
 /**
@@ -96,6 +97,9 @@ public class ResultOfSavingDto {
 	 * ファイルID
 	 */
 	private String fileId;
+	
+	//field ログイン情報
+    private LoginInfo loginInfo;
 
 	public static ResultOfSavingDto fromDomain(ResultOfSaving domain) {
 		return new ResultOfSavingDto(domain.getStoreProcessingId(), domain.getCid(), domain.getSystemType().value,
@@ -103,7 +107,8 @@ public class ResultOfSavingDto {
 				domain.getSaveName().v(), domain.getSaveForm().value, domain.getSaveEndDatetime().orElse(null),
 				domain.getSaveStartDatetime().orElse(null), domain.getDeletedFiles().value, domain.getCompressedPassword().map(i -> i.v()).orElse(null),
 				domain.getPractitioner(), domain.getTargetNumberPeople().orElse(null), domain.getSaveStatus().map(i -> i.value).orElse(null),
-				domain.getSaveForInvest().value, domain.getFileId().orElse(null));
+				domain.getSaveForInvest().value, domain.getFileId().orElse(null),
+				domain.getLoginInfo());
 	}
 
 }
