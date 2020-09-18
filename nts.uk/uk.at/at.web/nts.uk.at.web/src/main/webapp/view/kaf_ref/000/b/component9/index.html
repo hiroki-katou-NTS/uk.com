@@ -1,4 +1,4 @@
-<div id="kaf000-b-component9" style="width: 240px;">
+<div id="kaf000-b-component9" style="width: 300px;">
 	<div class="panel panel-frame panel-gray-bg">
 		<div class="table">
 			<div class="cell" data-bind="i18n: 'KAF000_54'"></div>
@@ -26,9 +26,9 @@
 				<div class="table" style="margin-top: 1px;">
 					<div class="cell" data-bind="i18n: 'KAF000_58'"></div>
 					<div class="cell" data-bind="if: opAchievementDetail && opAchievementDetail.opWorkTime && opAchievementDetail.opLeaveTime">
-						<span data-bind="text: nts.uk.time.format.byId(`Clock_Short_HM`, opAchievementDetail.opWorkTime)"></span>
+						<span data-bind="text: $parent.formatTime(opAchievementDetail.opWorkTime)"></span>
 						<span> ~ </span>
-						<span data-bind="text: nts.uk.time.format.byId(`Clock_Short_HM`, opAchievementDetail.opLeaveTime)"></span>
+						<span data-bind="text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
 					</div>
 				</div>
 			</div>
