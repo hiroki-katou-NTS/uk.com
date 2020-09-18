@@ -2,283 +2,296 @@
 
 module nts.uk.com.view.cli002.a {
 
-    const mgrid = nts.uk.ui.mgrid as any;
-    const { MGrid, color } = mgrid as Mgrid;
+  const API = {
+    findBySystem: "sys/portal/pginfomation/findBySystem",
+    updateLogSetting: "sys/portal/logsettings/update"
+  }
 
-    interface Mgrid {
-        color: COLOR;
-        MGrid: { new (el: HTMLElement, option: any): { create: () => void } };
+  const mgrid = nts.uk.ui.mgrid as any;
+  const { MGrid, color } = mgrid as Mgrid;
+
+  @bean()
+  export class ScreenModel extends ko.ViewModel {
+    public logSettings: LogSettingModel[] = [];
+
+    public systemList: KnockoutObservableArray<SystemTypeModel> = ko.observableArray([
+      new SystemTypeModel({
+        index: 0,
+        localizedName: this.$i18n("Enum_SystemType_PERSON_SYSTEM"),
+      }),
+      new SystemTypeModel({
+        index: 1,
+        localizedName: this.$i18n("Enum_SystemType_ATTENDANCE_SYSTEM"),
+      }),
+      new SystemTypeModel({
+        index: 2,
+        localizedName: this.$i18n("Enum_SystemType_PAYROLL_SYSTEM"),
+      }),
+      new SystemTypeModel({
+        index: 3,
+        localizedName: this.$i18n("Enum_SystemType_OFFICE_HELPER"),
+      }),
+    ]);
+
+    public dataSourceItem: KnockoutObservableArray<PGInfomationModel> = ko.observableArray([]);
+    public selectedSystemCode: KnockoutObservable<number> = ko.observable(null);
+
+    public systemColumns = [
+      {
+        headerText: "",
+        prop: "index",
+        width: 160,
+        hidden: true,
+      },
+      {
+        headerText: this.$i18n("CLI002_2"),
+        prop: "localizedName",
+        width: 160,
+      }
+    ];
+
+    mounted() {
+      const vm = this;
+      vm.selectedSystemCode.subscribe((newValue) => {
+        if ($("#item-list").data("mGrid")) {
+          $("#item-list").mGrid("destroy");
+        }
+        vm.getData(newValue);
+      });
+      vm.selectedSystemCode(0);
     }
 
-    const API = {
-        findBySystem: "sys/portal/pginfomation/findBySystem",
-        updateLogSetting: "sys/portal/logsettings/update"
-    }
-    interface COLOR {
-        ALL: string[];
-        Alarm: "mgrid-alarm";
-        Calculation: "mgrid-calc";
-        Disable: "mgrid-disable";
-        Error: "mgrid-error";
-        HOVER: "ui-state-hover";
-        Hide: "mgrid-hide";
-        Lock: "mgrid-lock";
-        ManualEditOther: "mgrid-manual-edit-other";
-        ManualEditTarget: "mgrid-manual-edit-target";
-        Reflect: "mgrid-reflect";
-    }
-
-    @bean()
-    export class ScreenModel extends ko.ViewModel {
-        public logSettings: Array<LogSetting> = [];
-
-        public systemList: KnockoutObservableArray<systemType> = ko.observableArray([
-            new systemType(0, this.$i18n("Enum_SystemType_PERSON_SYSTEM")),
-            new systemType(1, this.$i18n("Enum_SystemType_ATTENDANCE_SYSTEM")),
-            new systemType(2, this.$i18n("Enum_SystemType_PAYROLL_SYSTEM")),
-            new systemType(3, this.$i18n("Enum_SystemType_OFFICE_HELPER")),
-        ]);
-
-        public dataSourceItem: KnockoutObservableArray<PGInfomation> = ko.observableArray([]);
-        public selectedSystemCode: KnockoutObservable<number> = ko.observable(0);
-
-        public systemColumns = [
-            {
-                headerText: "",
-                prop: "index",
-                width: 160,
-                hidden: true,
-            },
-            {
-                headerText:this.$i18n("CLI002_2"),
-                prop: "localizedName",
-                width: 160,
-            }
-        ];
-
-        constructor() {
-            super();
-            const vm = this;
-            vm.getData(vm.selectedSystemCode());
-        }
-
-        mounted() {
-            const vm = this;
-            vm.selectedSystemCode.subscribe((newValue) => {
-                if ($("#item-list").data("mGrid")) {
-                    $("#item-list").mGrid("destroy");
-                }
-                vm.getData(newValue);
-            });
-        }
-
-        public register() {
-            const vm = this;
-            vm.logSettings = [];
-            vm.dataSourceItem().map((item: any) => {
-                vm.logSettings.push(new LogSetting(vm.selectedSystemCode(), item.programId, item.menuClassification,
-                    item.loginHistoryRecord ? 1 : 0,
-                    item.editHistoryRecord ? 1 : 0,
-                    item.bootHistoryRecord ? 1 : 0));
-            })
-            /**
-             * ログ設定更新
-             */
-            vm.$ajax(API.updateLogSetting, vm.logSettings).then(() => {
-                /**
-                 * 情報メッセージ（Msg_15）を表示する
-                 */
-                vm.$dialog.alert({ messageId: 'Msg_15' });
-            }).fail((error: any) => {
-                vm.$dialog.alert(error);
-                vm.$blockui('clear');
-                vm.$errors('clear');
-            });
-        }
-
-        /**
-         * ログ設定画面を表示する
-         * @param systemType 
-         */
-        private getData(systemType: number) {
-            const vm = this;
-            vm.$blockui("grayout");
-            vm.$ajax(`${API.findBySystem}/${systemType}`).done((response: Array<PGList>) => {
-                let listPG: any[] = response.map((item, index) => {
-                    return new PGInfomation(index + 1, item.functionName, false, false, false, item.programId, item.menuClassification);
-                });
-                vm.dataSourceItem(listPG);
-                vm.getItemList(response);
-
-            }).always(() => vm.$blockui("clear")).fail((error: any) => {
-                vm.$dialog.alert(error);
-                vm.$blockui('clear');
-                vm.$errors('clear');
-            });
-        }
-
-        public updateData(a, b, val) {
-            const vm = this;
-            vm.dataSourceItem().map((item: PGInfomation) => {
-                if(item.rowNumber == a) {
-                    if(b == 'logLoginDisplay') {
-                        item.logLoginDisplay = val;
-                    }
-                    if(b == 'logStartDisplay') {
-                        item.logStartDisplay = val;
-                    }
-                    if(b == 'logUpdateDisplay') {
-                        item.logUpdateDisplay = val;
-                    }
-                }
-            });
-        }
-
-        private getItemList(response: Array<PGList>) {
-            const vm = this;
-            const $mgrid = $("#item-list");
-            const statesTable = [];
-
-            response.forEach((item: PGList, index) => {
-                if (item.loginHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index + 1, "logLoginDisplay", [color.Lock]));
-                }
-                if (item.bootHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index + 1, "logStartDisplay", [color.Lock]));
-                }
-                if (item.editHistoryRecord.activeCategory == 0) {
-                    statesTable.push(new CellState(index + 1, "logUpdateDisplay", [color.Lock]));
-                }
-            });
-
-            new MGrid($mgrid.get(0), {
-                height: "900px",
-                width: "600px",
-                headerHeight: '60px',
-                primaryKey: "rowNumber",
-                primaryKeyDataType: "number",
-                rowVirtualization: true,
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                enter: 'right',
-                dataSource: vm.dataSourceItem(),
-                columns: [
-                    { headerText: "", key: "rowNumber", dataType: "number", width: "30px"},
-                    { headerText: this.$i18n("CLI002_7"), key: "functionName", dataType: "string", width: "365x", ntsControl: 'Label'},
-                    { headerText: this.$i18n("CLI002_4"),
-                        group: [
-                            {headerText: "", key: "logLoginDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false}
-                        ] 
-                    },
-                    { headerText: this.$i18n("CLI002_5"),
-                        group: [
-                            {headerText: "", key: "logStartDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false}
-                        ] 
-                    },
-                    { headerText: this.$i18n("CLI002_6"),
-                        group: [
-                            {headerText: "", key: "logUpdateDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false}
-                        ]
-                    },
-                ],
-                
-                features: [
-                    { 
-                        name: 'CellStyles',
-                        states: statesTable
-                    },
-                    // {   
-                    //     name: 'ColumnFixing',
-                    //     fixingDirection: '',
-                    //     showFixButtons: false,
-                    //     columnSettings: [
-                    //         { columnKey: 'rowNumber', isFixed: true }
-                    //     ]
-                    // }
-                ],
-
-                ntsFeatures: [],
-
-                ntsControls: [
-                    { name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true, onChange: (a, b, val) => {
-                        vm.updateData(a, b, val);
-                    }}
-                ],
-            }).create();
-        }
-    }
-    class systemType {
-        index: number;
-        localizedName: string;
-        constructor(index: number, localizedName: string) {
-            this.index = index;
-            this.localizedName = localizedName;
-        }
+    /**
+     *
+     */
+    public register() {
+      const vm = this;
+      vm.logSettings = _.map(vm.dataSourceItem(), item => new LogSettingModel({
+        system: vm.selectedSystemCode(),
+        programId: item.programId,
+        menuClassification: item.menuClassification,
+        loginHistoryRecord: item.logLoginDisplay ? 1 : 0,
+        editHistoryRecord: item.logUpdateDisplay ? 1 : 0,
+        bootHistoryRecord: item.logStartDisplay ? 1 : 0,
+      }));
+      // ログ設定更新
+      vm.$blockui('grayout');
+      vm.$ajax(API.updateLogSetting, vm.logSettings)
+        .then(() => {
+          vm.$blockui('clear');
+          // 情報メッセージ（Msg_15）を表示する
+          vm.$dialog.alert({ messageId: 'Msg_15' });
+        })
+        .always(() => vm.$blockui("clear"));
     }
 
-    export interface TargetSetting {
-        usageCategory: number,
-        activeCategory: number
+    /**
+     * ログ設定画面を表示する
+     * @param systemType
+     */
+    private getData(systemType: number) {
+      const vm = this;
+      vm.$blockui("grayout");
+      vm.$ajax(`${API.findBySystem}/${systemType}`)
+        .then((response: PGListDto[]) => {
+          const listPG: PGInfomationModel[] = _.map(response, (item, index) => new PGInfomationModel({
+            rowNumber: index + 1,
+            functionName: item.functionName,
+            logLoginDisplay: false,
+            logStartDisplay: false,
+            logUpdateDisplay: false,
+            programId: item.programId,
+            menuClassification: item.menuClassification
+          }));
+          vm.dataSourceItem(listPG);
+          vm.initGrid(response);
+        })
+        .always(() => vm.$blockui("clear"));
     }
 
-    export interface PGList {
-        functionName: string,
-        loginHistoryRecord: TargetSetting,
-        bootHistoryRecord: TargetSetting,
-        editHistoryRecord: TargetSetting,
-        programId: string,
-        menuClassification: number,
-    }
-
-    class PGInfomation {
-        rowNumber: number;
-        functionName: string;
-        logLoginDisplay: boolean;
-        logStartDisplay: boolean;
-        logUpdateDisplay: boolean;
-        programId: string;
-        menuClassification: number;
-        constructor(rowNumber: number, functionName: string, logLoginDisplay: boolean, logStartDisplay: boolean, logUpdateDisplay: boolean, programId: string, menuClassification: number) {
-            this.rowNumber = rowNumber;
-            this.functionName = functionName;
-            this.logLoginDisplay = logLoginDisplay;
-            this.logStartDisplay = logStartDisplay;
-            this.logUpdateDisplay = logUpdateDisplay;
-            this.programId = programId;
-            this.menuClassification = menuClassification;
+    public updateData(rowNumber: number, columnName: string, val: any) {
+      const vm = this;
+      const newArray = _.map(vm.dataSourceItem(), (item: PGInfomationModel) => {
+        if (item.rowNumber === rowNumber) {
+          if (columnName === 'logLoginDisplay') {
+            item.logLoginDisplay = val;
+          } else if (columnName === 'logStartDisplay') {
+            item.logStartDisplay = val;
+          } else if (columnName === 'logUpdateDisplay') {
+            item.logUpdateDisplay = val;
+          }
         }
+        return item;
+      });
+      vm.dataSourceItem(newArray);
     }
 
-    class LogSetting {
-        system: number;
-        programId: string;
-        menuClassification: number;
-        loginHistoryRecord: number;
-        editHistoryRecord: number;
-        bootHistoryRecord: number;
-        constructor(system: number,
-            programId: string,
-            menuClassification: number,
-            loginHistoryRecord: number,
-            editHistoryRecord: number,
-            bootHistoryRecord: number) {
-                this.system = system;
-                this.programId = programId;
-                this.menuClassification = menuClassification;
-                this.loginHistoryRecord = loginHistoryRecord;
-                this.editHistoryRecord = editHistoryRecord;
-                this.bootHistoryRecord= bootHistoryRecord;
+    private initGrid(response: PGListDto[]) {
+      const vm = this;
+      const $mgrid = $("#item-list");
+      const statesTable = [];
+      response.forEach((item: PGListDto, index) => {
+        // ※１ PG一覧．PG情報．ログイン履歴の記録．活性区分　＝　True
+        if (item.loginHistoryRecord.activeCategory === 0) {
+          statesTable.push(new CellStateModel({
+            rowId: index + 1,
+            columnKey: "logLoginDisplay",
+            state: [color.Lock],
+          }));
         }
-    }
+        // ※2 PG一覧．PG情報．起動履歴記録．活性区分　＝　True
+        if (item.bootHistoryRecord.activeCategory === 0) {
+          statesTable.push(new CellStateModel({
+            rowId: index + 1,
+            columnKey: "logStartDisplay",
+            state: [color.Lock],
+          }));
+        }
+        // ※3 PG一覧．PG情報．起動履歴記録．活性区分　＝　True
+        if (item.editHistoryRecord.activeCategory === 0) {
+          statesTable.push(new CellStateModel({
+            rowId: index + 1,
+            columnKey: "logUpdateDisplay",
+            state: [color.Lock],
+          }));
+        }
+      });
 
-    class CellState {
-        rowId: number;
-        columnKey: string;
-        state: Array<any>
-        constructor(rowId: number, columnKey: string, state: Array<any>) {
-            this.rowId = rowId;
-            this.columnKey = columnKey;
-            this.state = state;
-        }
+      new MGrid($mgrid.get(0), {
+        height: "900px",
+        width: "600px",
+        headerHeight: '60px',
+        primaryKey: "rowNumber",
+        primaryKeyDataType: "number",
+        rowVirtualization: true,
+        virtualization: true,
+        virtualizationMode: 'continuous',
+        enter: 'right',
+        dataSource: vm.dataSourceItem(),
+        columns: [
+          { headerText: "", key: "rowNumber", dataType: "number", width: "30px" },
+          { headerText: this.$i18n("CLI002_7"), key: "functionName", dataType: "string", width: "365x", ntsControl: 'Label' },
+          {
+            headerText: this.$i18n("CLI002_4"),
+            group: [
+              { headerText: "", key: "logLoginDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false }
+            ]
+          },
+          {
+            headerText: this.$i18n("CLI002_5"),
+            group: [
+              { headerText: "", key: "logStartDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false }
+            ]
+          },
+          {
+            headerText: this.$i18n("CLI002_6"),
+            group: [
+              { headerText: "", key: "logUpdateDisplay", dataType: "boolean", width: "200px", ntsControl: "Checkbox", checkbox: true, hidden: false }
+            ]
+          },
+        ],
+
+        features: [
+          {
+            name: 'CellStyles',
+            states: statesTable
+          },
+          // {
+          //     name: 'ColumnFixing',
+          //     fixingDirection: '',
+          //     showFixButtons: false,
+          //     columnSettings: [
+          //         { columnKey: 'rowNumber', isFixed: true }
+          //     ]
+          // }
+        ],
+        ntsFeatures: [],
+        ntsControls: [
+          {
+            name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true,
+            onChange: (rowNumber: number, columnName: string, val: any) => vm.updateData(rowNumber, columnName, val)
+          }
+        ],
+      }).create();
     }
+  }
+
+  interface Mgrid {
+    color: COLOR;
+    MGrid: { new(el: HTMLElement, option: any): { create: () => void } };
+  }
+
+  interface COLOR {
+    ALL: string[];
+    Alarm: "mgrid-alarm";
+    Calculation: "mgrid-calc";
+    Disable: "mgrid-disable";
+    Error: "mgrid-error";
+    HOVER: "ui-state-hover";
+    Hide: "mgrid-hide";
+    Lock: "mgrid-lock";
+    ManualEditOther: "mgrid-manual-edit-other";
+    ManualEditTarget: "mgrid-manual-edit-target";
+    Reflect: "mgrid-reflect";
+  }
+
+  export interface TargetSettingDto {
+    usageCategory: number,
+    activeCategory: number
+  }
+
+  export interface PGListDto {
+    functionName: string,
+    loginHistoryRecord: TargetSettingDto,
+    bootHistoryRecord: TargetSettingDto,
+    editHistoryRecord: TargetSettingDto,
+    programId: string,
+    menuClassification: number,
+  }
+
+  export class PGInfomationModel {
+    rowNumber: number;
+    functionName: string;
+    logLoginDisplay: boolean;
+    logStartDisplay: boolean;
+    logUpdateDisplay: boolean;
+    programId: string;
+    menuClassification: number;
+
+    constructor(init?: Partial<PGInfomationModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class LogSettingModel {
+    system: number;
+    programId: string;
+    menuClassification: number;
+    loginHistoryRecord: number;
+    editHistoryRecord: number;
+    bootHistoryRecord: number;
+
+    constructor(init?: Partial<LogSettingModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class SystemTypeModel {
+    index: number;
+    localizedName: string;
+
+    constructor(init?: Partial<SystemTypeModel>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class CellStateModel {
+    rowId: number;
+    columnKey: string;
+    state: any[];
+
+    constructor(init?: Partial<CellStateModel>) {
+      $.extend(this, init);
+    }
+  }
 }
