@@ -18,8 +18,8 @@ public class CtgItemDataDto {
 	private String itemName;
 
 	/**
-	 * 表示区分
+	 * 予約語区分
 	 */
-	private Integer displayClassfication;
+	private Integer keywordAtr;
 
 }

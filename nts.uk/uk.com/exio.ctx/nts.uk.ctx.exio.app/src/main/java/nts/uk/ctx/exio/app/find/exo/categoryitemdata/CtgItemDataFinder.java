@@ -26,7 +26,7 @@ public class CtgItemDataFinder {
 				.map(item -> CtgItemDataDto.builder()
 						.itemNo(item.getItemNo().v())
 						.itemName(item.getItemName().v())
-						.displayClassfication(item.getDisplayClassfication().value)
+						.keywordAtr(item.getKeywordAtr().value)
 						.build())
 				.collect(Collectors.toList());
 	}

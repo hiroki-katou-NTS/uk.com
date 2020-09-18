@@ -72,7 +72,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                     }
                     const ctgItemDataList = _.map(res.ctgItemDataList, (item: any) => {
                         // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
-                        const itemName: string = item.displayClassfication === 1
+                        const itemName: string = item.keywordAtr === 1
                             ? self.reverseWord(item.itemName)
                             : item.itemName;
                         item.itemName = itemName;

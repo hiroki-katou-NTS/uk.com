@@ -21,9 +21,9 @@ public class CtgItemDataDto {
 	private int itemType;
 
 	/**
-	 * 表示区分
+	 * 予約語区分
 	 */
-	private Integer displayClassfication;
+	private Integer keywordAtr;
 
 	public static CtgItemDataDto fromdomain(CtgItemData domain) {
 		return new CtgItemDataDto(
@@ -31,7 +31,7 @@ public class CtgItemDataDto {
 				domain.getItemName().v(), 
 				domain.getCategoryId().v(),
 				domain.getDataType().value, 
-				domain.getDisplayClassfication().value);
+				domain.getKeywordAtr().value);
 	}
 
 }

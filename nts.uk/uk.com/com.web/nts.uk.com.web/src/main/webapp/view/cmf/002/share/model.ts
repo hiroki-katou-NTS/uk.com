@@ -471,15 +471,15 @@ module nts.uk.com.view.cmf002.share.model {
         dispItemNo: any;
         itemName: KnockoutObservable<string>;
         dispitemName: string;
-        displayClassfication: number;
+        keywordAtr: number;
         isCheck: KnockoutObservable<boolean>;
 
-        constructor(itemNo: any, itemName: string, displayClassfication: number) {
+        constructor(itemNo: any, itemName: string, keywordAtr: number) {
             this.itemNo = ko.observable(itemNo);
             this.dispItemNo = itemNo.toString();
             this.itemName = ko.observable(itemName);
             this.dispitemName = itemName;
-            this.displayClassfication = displayClassfication;
+            this.keywordAtr = keywordAtr;
             this.isCheck = ko.observable(false);
         }
     }

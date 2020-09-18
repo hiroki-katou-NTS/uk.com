@@ -118,10 +118,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                         listExOutCateItemData = _.sortBy(listExOutCateItemData, ['itemNo']);
                         let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(listExOutCateItemData, x => {
                             // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
-                            const itemName: string = x.displayClassfication === 1
+                            const itemName: string = x.keywordAtr === 1
                                 ? self.reverseWord(x.itemName)
                                 : x.itemName;
-                            return new model.ExternalOutputCategoryItemData(x.itemNo, itemName, x.displayClassfication);
+                            return new model.ExternalOutputCategoryItemData(x.itemNo, itemName, x.keywordAtr);
                         });
                         self.listExOutCateItemData(rsCategoryItems);
                         $('#C8_3').ntsError('clear');
@@ -156,10 +156,10 @@ module nts.uk.com.view.cmf002.c.viewmodel {
                     listExOutCateItemData = _.sortBy(listExOutCateItemData, ['itemNo']);
                     let rsCategoryItems: Array<model.ExternalOutputCategoryItemData> = _.map(listExOutCateItemData, x => {
                         // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
-                        const itemName: string = x.displayClassfication === 1
+                        const itemName: string = x.keywordAtr === 1
                             ? self.reverseWord(x.itemName)
                             : x.itemName;
-                        return new model.ExternalOutputCategoryItemData(x.itemNo, itemName, x.displayClassfication);
+                        return new model.ExternalOutputCategoryItemData(x.itemNo, itemName, x.keywordAtr);
                     });
                     self.listExOutCateItemData(rsCategoryItems);
                 }
