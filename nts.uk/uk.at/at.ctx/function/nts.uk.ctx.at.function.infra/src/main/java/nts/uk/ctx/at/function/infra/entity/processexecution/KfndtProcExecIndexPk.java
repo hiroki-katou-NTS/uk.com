@@ -15,21 +15,21 @@ public class KfndtProcExecIndexPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	/** The company id.
-	 * 	会社ID
+	/** The exec id.
+	 * 	実行ID
 	 */
-	@Column(name = "CID")
-	public String companyId;
+	@Column(name = "EXEC_ID")
+	public String execId;
 	
-	/** The exec item cd. 
-	 * 	コード
+	/** The table name. 
+	 * 	テーブル物理名
 	 */
-	@Column(name = "EXEC_ITEM_CD")
-	public String execItemCd;
+	@Column(name = "TABLE_NAME")
+	public String tableName;
 	
-	/** The ext accept cd. 
-	 *	 外部受入条件コード
+	/** The index name. 
+	 *	インデックス名
 	 */
-	@Column(name = "EXT_ACCEPT_CD")
-	public String extAcceptCd;
+	@Column(name = "INDEX_NAME")
+	public String indexName;
 }

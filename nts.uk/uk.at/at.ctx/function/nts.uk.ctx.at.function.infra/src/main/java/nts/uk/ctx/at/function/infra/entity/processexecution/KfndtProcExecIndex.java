@@ -30,12 +30,16 @@ public class KfndtProcExecIndex extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KfndtProcExecIndexPk pk;
 	
-	/** The exclus ver. */
+	/** The exclus ver. 	
+	 * 	排他バージョン									
+	 */
 	@Version
     @Column(name = "EXCLUS_VER")
     private int exclusVer;
     
-    /** The Contract Code. */
+    /** The Contract Code. 
+	 * 	契約コード	
+	 */
     @Column(name = "CONTRACT_CD")
     public String contractCode;
 
