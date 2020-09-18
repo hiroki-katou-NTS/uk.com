@@ -118,7 +118,7 @@ module nts.uk.at.view.ksm003.a {
 
         public switchNewMode(): void {
             let self = this;
-            //self.$errors('clear');
+
             nts.uk.ui.errors.clearAll();
 
             self.isEditting(false);
@@ -171,7 +171,6 @@ module nts.uk.at.view.ksm003.a {
                 .done(function (dataRes) {
                     if (dataRes !== undefined) {
 
-                        //vm.$errors('clear').then(() => { });
                         nts.uk.ui.errors.clearAll();
 
                         vm.isEditting(true);
@@ -598,7 +597,6 @@ module nts.uk.at.view.ksm003.a {
                 }
 
                 //register / update i ok
-                //nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 vm.$dialog.info({ messageId: "Msg_15" }).then(() => { });
 
                 let patternCode = vm.mainModel().patternCode();
@@ -663,7 +661,6 @@ module nts.uk.at.view.ksm003.a {
             let self = this,
                 apiUrl = (!this.isEditting()) ? PATH_API.patternDailyRegister : PATH_API.patternDailyUpdate;
             return self.$ajax(apiUrl, dto);
-            //return nts.uk.request.ajax("at", apiUrl, dto);
         }
 
         /**
@@ -767,7 +764,6 @@ module nts.uk.at.view.ksm003.a {
                             self.mainModel().dailyPatternVals([]);
                             self.mainModel().dailyPatternVals(dailyPatternVals);
 
-                            //self.$errors('clear').then(() => { });
                             nts.uk.ui.errors.clearAll();
                         }
                     });
