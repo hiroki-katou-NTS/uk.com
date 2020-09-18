@@ -57,6 +57,7 @@ module cmm045.a.viewmodel {
         isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
         isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
+        isApprove: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this;
@@ -85,8 +86,7 @@ module cmm045.a.viewmodel {
                 { id: 2, name: getText('CMM045_21') },
                 { id: 3, name: getText('CMM045_22') },
                 { id: 4, name: getText('CMM045_23') },
-                { id: 5, name: getText('CMM045_24') },
-                { id: 6, name: getText('CMM045_25') }
+                { id: 5, name: getText('CMM045_24') }
             ]);
 
             /*self.selectedCode.subscribe(function(codeChanged) {
@@ -652,7 +652,10 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion(colorBackGr, false);
                 // self.reloadGridApplicaion(colorBackGr, self.isHidden());
           	}
-			self.isLimit500(appListInfo.moreThanDispLineNO);
+            self.isLimit500(appListInfo.moreThanDispLineNO);
+            self.isApprove = ko.computed(() => {
+                return self.mode() == 1 && self.items().length > 0;
+            }, self);
 
 			/*self.appList(data.appListInfo);
             if(self.appList().appLst.length > 500) {
@@ -2017,6 +2020,7 @@ module cmm045.a.viewmodel {
 
             const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
             service.print(command);
+            $('#daterangepicker .ntsEndDatePicker').focus();
         }
 
         // getNtsFeatures(): Array<any> {
@@ -2141,7 +2145,7 @@ module cmm045.a.viewmodel {
 					if(data) {
 						return self.reload(data.appListExtractCondition, data.appListInfo);
 					}
-				}).always(() => { block.clear(); });
+				}).always(() => { $('#daterangepicker .ntsEndDatePicker').focus(); block.clear(); });
 			});
 		}
     }
