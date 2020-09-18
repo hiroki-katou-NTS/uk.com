@@ -80,7 +80,6 @@ public class ChangeDailyAttendanceProcess {
 	}
 
 	private boolean checkHasTimeDayLeav(TimeLeavingWork timeLeav) {
-		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getStamp().isPresent()
-				&& timeLeav.getLeaveStamp().get().getStamp().isPresent();
+		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getStamp().isPresent();
 	}
 }

@@ -547,9 +547,9 @@ html {
 .background-holiday {background-color: #ff0000 !important;}
 .background-half-day-work {background-color: #FF7F27 !important; }
 .background-schedule-performance {background-color:#008000 !important;}
-.bg-daily-alter-self {background-color:#94B7FE !important;}
-.bg-daily-alter-other {background-color:#CEE6FF !important;}
-.background-white {background-color: white !important;}
+.bg-daily-alter-self {background-color:#94B7FE;}
+.bg-daily-alter-other {background-color:#CEE6FF;}
+.background-white {background-color: white}
 .color-default {color : #000000;}
 .bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
 
