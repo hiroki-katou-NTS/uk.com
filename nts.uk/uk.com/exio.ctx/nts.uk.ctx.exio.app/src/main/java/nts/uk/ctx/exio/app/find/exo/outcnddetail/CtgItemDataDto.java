@@ -43,9 +43,9 @@ public class CtgItemDataDto {
 	private String searchValueCd;
 
 	/**
-	 * 表示区分
+	 * 予約語区分
 	 */
-	private Integer displayClassfication;
+	private Integer keywordAtr;
 
 	public static CtgItemDataDto fromDomain(CtgItemData domain) {
 		CtgItemDataDto dto = new CtgItemDataDto(
@@ -56,7 +56,7 @@ public class CtgItemDataDto {
 				domain.getItemName().v(), 
 				domain.getDataType().value,
 				domain.getSearchValueCd().orElse(null),
-				domain.getDisplayClassfication().value);
+				domain.getKeywordAtr().value);
 		return dto;
 	}
 }
