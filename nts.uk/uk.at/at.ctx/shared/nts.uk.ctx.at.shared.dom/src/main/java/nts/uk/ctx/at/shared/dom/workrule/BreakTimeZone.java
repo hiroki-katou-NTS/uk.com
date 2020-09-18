@@ -18,10 +18,10 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 public class BreakTimeZone {
 
 	/** 休憩時間帯を固定にする **/
-	public final boolean fixed;
+	private final boolean fixed;
 
 	/** 休憩時間帯 **/
-	public final List<TimeSpanForCalc> breakTimes;
+	private final List<TimeSpanForCalc> breakTimes;
 
 
 	/**

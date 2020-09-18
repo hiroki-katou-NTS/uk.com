@@ -20,13 +20,13 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class ChangeableWorkingTimeZonePerNo {
 
 	/** 勤務NO **/
-	public final WorkNo workNo;
+	private final WorkNo workNo;
 
 	/** 開始時刻の変更可能な時間帯 **/
-	public final TimeSpanForCalc forStart;
+	private final TimeSpanForCalc forStart;
 
 	/** 終了時刻の変更可能な時間帯 **/
-	public final TimeSpanForCalc forEnd;
+	private final TimeSpanForCalc forEnd;
 
 
 	/**
@@ -83,9 +83,9 @@ public class ChangeableWorkingTimeZonePerNo {
 				return this.forStart;
 			case END:	// 終了時刻
 				return this.forEnd;
-			default:	// その他
-				throw new RuntimeException("Out of Enum: " + atr.toString());
 		}
+
+		throw new RuntimeException("Out of Enum: " + atr.toString());
 
 	}
 

@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.dom.worktime;
 import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -247,17 +246,24 @@ public class ChangeableWorkingTimeZoneTest {
 			expected.put( AttendanceDayAttr.HALF_TIME_AM,	forAm );
 			expected.put( AttendanceDayAttr.HALF_TIME_PM,	forPm );
 			expected.put( AttendanceDayAttr.HOLIDAY_WORK,	forWorkOnDayOff );
-
-			expected.put( AttendanceDayAttr.HOLIDAY,		Collections.emptyList() );
 		}
 
-		// Execute
-		val result = Stream.of( AttendanceDayAttr.values() )
-				.collect(Collectors.toMap( e -> e, e -> instance.getByAtr( e ) ));
+		// Pattern: Normally
+		{
+			// Execute
+			val result = expected.keySet().stream()
+					.collect(Collectors.toMap( e -> e, e -> instance.getByAtr( e ) ));
 
-		// Assertion
-		assertThat( result ).containsExactlyInAnyOrderEntriesOf( expected );
+			// Assertion
+			assertThat( result ).containsExactlyInAnyOrderEntriesOf( expected );
+		}
 
+		// Pattern: SystemError
+		{
+			Stream.of( AttendanceDayAttr.values() )
+				.filter( e -> !expected.containsKey( e ) )
+				.forEach( e -> NtsAssert.systemError( () -> { instance.getByAtr( e ); }) );
+		}
 	}
 
 }

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -20,16 +19,16 @@ import nts.uk.ctx.at.shared.dom.worktype.AttendanceDayAttr;
 public class ChangeableWorkingTimeZone {
 
 	/** 1日の勤務時間帯リスト **/
-	public final List<ChangeableWorkingTimeZonePerNo> forWholeDay;
+	private final List<ChangeableWorkingTimeZonePerNo> forWholeDay;
 
 	/** 午前の勤務時間帯リスト **/
-	public final List<ChangeableWorkingTimeZonePerNo> forAm;
+	private final List<ChangeableWorkingTimeZonePerNo> forAm;
 
 	/** 午後の勤務時間帯リスト **/
-	public final List<ChangeableWorkingTimeZonePerNo> forPm;
+	private final List<ChangeableWorkingTimeZonePerNo> forPm;
 
 	/** 休出の勤務時間帯リスト **/
-	public final List<ChangeableWorkingTimeZonePerNo> forWorkOnDayOff;
+	private final List<ChangeableWorkingTimeZonePerNo> forWorkOnDayOff;
 
 
 	/**
@@ -114,6 +113,6 @@ public class ChangeableWorkingTimeZone {
 				break;
 		}
 
-		return Collections.emptyList();
+		throw new RuntimeException("Out of Enum: " + atr.toString());
 	}
 }
