@@ -25,7 +25,7 @@
 				</div>
 				<div class="table" style="margin-top: 1px;">
 					<div class="cell" data-bind="i18n: 'KAF000_58'"></div>
-					<div class="cell" data-bind="if: opAchievementDetail">
+					<div class="cell" data-bind="if: opAchievementDetail && opAchievementDetail.opWorkTime && opAchievementDetail.opLeaveTime">
 						<span data-bind="text: nts.uk.time.format.byId(`Clock_Short_HM`, opAchievementDetail.opWorkTime)"></span>
 						<span> ~ </span>
 						<span data-bind="text: nts.uk.time.format.byId(`Clock_Short_HM`, opAchievementDetail.opLeaveTime)"></span>
