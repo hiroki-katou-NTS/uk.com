@@ -94,7 +94,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public nextToStepTwo() {
         const vm = this;
         vm.checkNextButton();
-        if (vm.derpartureTime == null || vm.returnTime == null || vm.application.opAppReason == '') {
+        if (vm.derpartureTime == null || vm.returnTime == null || vm.application.opAppReason == '' || vm.derpartureTime == vm.returnTime) {
             vm.hidden = true;
             vm.scrollToTop();
 
