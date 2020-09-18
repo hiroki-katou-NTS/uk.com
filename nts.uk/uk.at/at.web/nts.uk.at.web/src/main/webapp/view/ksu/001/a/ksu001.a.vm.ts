@@ -1116,13 +1116,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                             if (cell.endTimeEditState != null) {
                                 if (cell.endTimeEditState.editStateSetting == 1) {
                                     // HAND_CORRECTION_MYSELF(0), 手修正（本人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 2));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-self", 3));
                                 } else if (cell.endTimeEditState.editStateSetting == 2) {
                                     //HAND_CORRECTION_OTHER(1), 手修正（他人）
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 2));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-alter-other", 3));
                                 } else if (cell.endTimeEditState.editStateSetting == 3) {
                                     //REFLECT_APPLICATION(2), 申請反映
-                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 2));
+                                    detailContentDeco.push(new CellColor('_' + ymd, rowId, "bg-daily-reflect-application", 3));
                                 }
                             }
                         }
