@@ -73,12 +73,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
         self.selectedTab.subscribe(value => {
-           if (value) {
+           if (!_.isNull(value)) {
                self.selectedCode(Number(value));
            }
         });
         self.selectedCode.subscribe(value => {
-            if (value && self.data) {
+            if (!_.isNull(value) && self.data) {
                 self.bindComment(self.data);
             }
         });
@@ -419,7 +419,15 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         
         
         let dataSource = [];
-        dataSource.push( items1.concat(items2) );
+        // case change date
+        if (self.data.appStampReflectOptional) {
+            if (self.data.appStampReflectOptional.temporaryAttendence == 0) {
+                dataSource.push(items1);
+                
+            } else {
+                dataSource.push(items1.concat(items2));
+            }
+        }
         dataSource.push( items3 );
         dataSource.push( items4 );
         dataSource.push( items5 );
