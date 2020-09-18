@@ -8,6 +8,7 @@ import { vmOf } from 'vue/types/umd';
 import * as _ from 'lodash';
 
 
+
 // import abc from './mock_data.json';
 
 @component({
@@ -63,7 +64,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public mode: boolean = true;
     public user: any;
     public data: any;
-    public businessTripActualContent: [] = [] ;
+    public businessTripActualContent: [] = [];
 
     public created() {
         const vm = this;
@@ -114,9 +115,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //nhảy đến step three với các điều kiện
     public nextToStepThree() {
         const vm = this;
-        vm.registerData();
         //vm.checkBeforeRegister();
-        vm.toggleErrorAlert();
+        vm.registerData();
+        //vm.toggleErrorAlert();
         this.$emit('nextToStepThree');
     }
     //hàm xử lý ẩn/hiện alert error
@@ -127,6 +128,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
         } else {
             x.style.display = 'none';
         }
+
+        return;
     }
 
     //quay trở lại step one
@@ -137,23 +140,32 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //hàm check trước khi register
     public checkBeforeRegister() {
         const vm = this;
+        let tripInfos: Array<BusinessTripInfo> = _.map(vm.businessTripActualContent, function (item: any) {
+            return {
+                date: item.date,
+                wkTypeCd: item.opAchievementDetail.workTypeCD,
+                wkTimeCd: item.opAchievementDetail.workTimeCD,
+                startWorkTime: item.opAchievementDetail.opWorkTime,
+                endWorkTime: item.opAchievementDetail.opLeaveTime
+            };
+        });
+        let paramsBusinessTrip = {
+            departureTime: vm.departureTime,
+            returnTime: vm.returnTime,
+            tripInfos
+        };
         // check before registering application
         this.$http.post('at', API.checkBeforeApply, {
             businessTripInfoOutputDto: vm.data.businessTripInfoOutput,
-            businessTripDto: {
-                departureTime: vm.departureTime,
-                returnTime: vm.returnTime,
-                tripInfos: vm.businessTripActualContent
-            }
+            businessTripDto: paramsBusinessTrip
         }).then((res: any) => {
             //nếu không có lỗi gọi hàm register
-            vm.registerData;
+            alert('no error');
+            vm.registerData();
         }).catch((res: any) => {
-            vm.handleErrorMessage(res).then((msgId: any) => {
-                if (res.messageId == 'Msg_426') {
-                }
-            });
-        });
+
+        }
+        );
     }
 
     //handle mess dialog
@@ -176,24 +188,29 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public registerData() {
         const vm = this;
         this.$mask('show');
-        let paramsTripInfos = {
-            date : '',
-            wkTypeCd : '', 
-            wkTimeCd : '',
-            startWorkTime : '',
-            endWorkTime : ''
-        };
+        let tripInfos: Array<BusinessTripInfo> = _.map(vm.businessTripActualContent, function (item: any) {
+            return {
+                date: item.date,
+                wkTypeCd: item.opAchievementDetail.workTypeCD,
+                wkTimeCd: item.opAchievementDetail.workTimeCD,
+                startWorkTime: item.opAchievementDetail.opWorkTime,
+                endWorkTime: item.opAchievementDetail.opLeaveTime
+            };
+        });
         let paramsBusinessTrip = {
             departureTime: vm.departureTime,
             returnTime: vm.returnTime,
-            tripInfos: vm.businessTripActualContent,
+            tripInfos,
         };
+
         this.$http.post('at', API.register, {
             businessTrip: paramsBusinessTrip,
             businessTripInfoOutput: vm.data.businessTripInfoOutput,
             application: vm.application
         }).then((res: any) => {
             alert('đăng ký thành công');
+            let data = res.data;
+            console.log (res.data);
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
             //this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
@@ -208,6 +225,14 @@ export enum ScreenMode {
     NEW = 0,
     // 詳細モード
     DETAIL = 1
+}
+
+export interface BusinessTripInfo {
+    date: String;
+    wkTypeCd: String;
+    wkTimeCd: String;
+    startWorkTime: number;
+    endWorkTime: number;
 }
 
 const API = {

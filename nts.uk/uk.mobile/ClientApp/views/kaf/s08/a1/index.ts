@@ -41,6 +41,8 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public isValidateAll: Boolean = true;
     public date: Date = null;
     public listDate: any[] = [] ;
+    public hidden: boolean = false;
+
 
     @Prop({ default: (): IParamsB => ({output : {startDate : null,prePostAtr : 0, endDate : null}}) })
     public readonly params?: IParamsB;
@@ -76,14 +78,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                 }
             }]
         },
-        // opStampRequestMode: 1,
-        // opReversionReason: '1',
-        // opAppStartDate: '2020/08/07',
-        // opAppEndDate: '2020/08/08',
-        // opAppReason: 'jdjadja',
-        // opAppStandardReasonCD: 1
-
-
     };
 
     public created() {
@@ -99,15 +93,13 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
-        //kiểm tra nghiệp vụ trước khi nhảy đến step tiếp theo
-        if (vm.derpartureTime == null || vm.returnTime == null ) {
-           vm.toggleErrorAlert();
-           vm.scrollToTop();
-
-           return ;
-        }
-        //gửi table sang màn hình A2
         vm.checkNextButton();
+        if (vm.derpartureTime == null || vm.returnTime == null || vm.application.opAppReason == '' || vm.derpartureTime == vm.returnTime) {
+            vm.hidden = true;
+            vm.scrollToTop();
+
+            return ;
+        }
         let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
         let businessTripInfoOutput = vm.data;
         //gửi comment sang màn hình A2
@@ -140,6 +132,22 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         // }
         vm.bindBusinessTripRegister();
         //console.log(this.appWorkChangeDto);
+    }
+
+    //handle message error
+    public handleErrorMessage(res: any) {
+        const self = this;
+        self.$mask('hide');
+        if (res.messageId) {
+            return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
+        } else {
+            
+            if (_.isArray(res.errors)) {
+                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+            } else {
+                return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
+            }
+        }
     }
 
     //thực hiện ẩn/hiện alert error

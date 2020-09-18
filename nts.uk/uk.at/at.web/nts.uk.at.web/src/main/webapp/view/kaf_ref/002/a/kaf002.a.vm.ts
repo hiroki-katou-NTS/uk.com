@@ -9,11 +9,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
+        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
         isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
         dataSourceOb: KnockoutObservableArray<any>;
         application: KnockoutObservable<Application>;
         selectedTab: KnockoutObservable<string> = ko.observable('');
+        isM: KnockoutObservable<boolean> = ko.observable(false);
+        comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+        comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+        // select tab M
+        selectedCode: KnockoutObservable<number> = ko.observable(0);
         tabMs: Array<TabM> = [new TabM(this.$i18n('KAF002_29'), true, true),
                           new TabM(this.$i18n('KAF002_31'), true, true),
                           new TabM(this.$i18n('KAF002_76'), true, true),
@@ -52,10 +58,44 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     
         isCondition9: boolean = true;
         data : any;
-        
+    bindComment(data: any) {
+        const self = this;
+        _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
+           if (i.stampAtr == ko.toJS(self.selectedCode)) {
+               let commentBot = i.bottomComment;
+               self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
+               let commentTop = i.bottomComment;
+               self.comment1(new Comment(commentTop.comment, commentTop.bold, commentTop.colorCode));
+           }
+        });
+    }    
     created(param: any) {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
+        self.selectedTab.subscribe(value => {
+           if (value == 'tab-1') {
+               if(self.selectedCode() != 0) {
+//                   出勤／退勤
+                   self.selectedCode(0);
+               }
+           } else if(value == 'tab-2') {
+//               外出／戻り
+               self.selectedCode(1);
+           } else if(value == 'tab-3') {
+               self.selectedCode(2);
+           } else if(value == 'tab-4') {
+               self.selectedCode(3);
+           } else if(value == 'tab-5') {
+               self.selectedCode(4);
+           } else if(value == 'tab-6') {
+               
+           }
+        });
+        self.selectedCode.subscribe(value => {
+            if (value && self.data) {
+                self.bindComment(self.data);
+            }
+        });
         self.loadData([], [], self.appType())
         .then((loadDataFlag: any) => {
             self.appDispInfoStartupOutput.subscribe(value => {
@@ -64,6 +104,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                     self.changeDate();
                 }
             });
+            
             if (!_.isNull(ko.toJS(self.application().prePostAtr))) {
                 self.isPreAtr(self.application().prePostAtr() == 0);                
             }
@@ -76,19 +117,58 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 let companyId = self.$user.companyId;
                 let command = { 
                         appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
-                        recoderFlag: false,
+                        recoderFlag: RECORD_FLAG_STAMP,
                         companyId
                 };
             
                 return self.$ajax(API.start, command);
             }
-        }).then((res: any) => {
+        }).done((res: any) => {
             console.log(res);
             self.data = res;
+            self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+            self.bindTabM(self.data);
+            self.bindComment(self.data);
+        }).fail(res => {
+            let param;
+                if (res.message && res.messageId) {
+                    param = {messageId: res.messageId, messageParams: res.parameterIds};
+                } else {
+
+                    if (res.message) {
+                        param = {message: res.message, messageParams: res.parameterIds};
+                    } else {
+                        param = {messageId: res.messageId, messageParams: res.parameterIds};
+                    }
+                }
+                self.$dialog.error(param);
         }).always(() => {
             self.$blockui('hide');
-        });;
+        });
+        // do not have actual data, or date is not selected
         self.initData();
+    }
+    bindTabM(data: any) {
+        const self = this;
+        self.isM(true);
+        self.tabs.subscribe(value => {
+           if (value) {
+             if (data.appStampReflectOptional && self.tabs()) {
+             let reflect = data.appStampReflectOptional;
+             self.tabs()[0].visible((reflect.temporaryAttendence && reflect.attendence) == 1);
+             self.tabs()[1].visible(reflect.outingHourse == 1);
+             self.tabs()[2].visible(reflect.breakTime == 1);
+             self.tabs()[3].visible(reflect.parentHours == 1);
+             self.tabs()[4].visible(reflect.nurseTime);
+             // not use
+             self.tabs()[5].visible(false);
+             
+          } 
+           } 
+        });
+        
+
+
     }
     changeDataSource() {
        
@@ -125,7 +205,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 applicationDto: ko.toJS(self.application),
                                 appStampDto: data.appStampOptional,
                                 appStampOutputDto: self.data,
-                                recoderFlag: false
+                                recoderFlag: RECORD_FLAG_STAMP
                         };
                         return self.$ajax(API.register, command);
                     }
@@ -163,6 +243,26 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     changeDate() {
         const self = this;
         self.bindActualData();
+        let dataClone = _.clone(self.data);
+        if (_.isNull(dataClone)) {
+            return;
+        }
+        self.$blockui( "show" );
+        let companyId = self.$user.companyId;
+        let command = { 
+                appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
+                recoderFlag: RECORD_FLAG_STAMP,
+                companyId
+        };
+        self.$ajax(API.start, command)
+            .done((res: any) => {
+                console.log(res);
+                self.data = res;
+            }).fail(res => {
+                
+            }).always(() => {
+                self.$blockui('hide');
+            });
     }
     bindActualData() {
         const self = this;
@@ -365,6 +465,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return list;
             })();
             
+            let items7 = (function() {
+                let list = [];
+                for (let i = 1; i < 3; i++) {
+                    let dataObject = new TimePlaceOutput(i);
+                    list.push(new GridItem(dataObject, STAMPTYPE.NURSE));
+                }
+                
+                return list;
+            })();
+            
             self.dataSourceOb.subscribe(a => {
                if (ko.toJS(a)) {
                    console.log(ko.toJS(a));
@@ -516,7 +626,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             this.supportWork = supportWork;
         }
     }
-    
+    class Comment{
+        public content: string;
+        public isBold: boolean;
+        public color: string;
+        constructor( content: string, isBold: boolean, color: string) {
+            this.content = content;
+            this.isBold = isBold;
+            this.color = color;
+        }
+        
+    }
     export class TimeStampAppOtherDto {
         public destinationTimeZoneApp: DestinationTimeZoneAppDto;
         public timeZone: TimeZone;
@@ -537,5 +657,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             register: "at/request/application/stamp/register"
             
         }
+    const RECORD_FLAG_STAMP = false;
     
 }

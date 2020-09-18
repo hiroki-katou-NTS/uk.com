@@ -14,6 +14,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -42,6 +43,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 @Stateless
 public class AppDataCreationImpl implements AppDataCreation {
 	
+	private static final int PC = 0;
+	private static final int MOBILE = 1;
+	
 	@Inject
 	private ApprovalListDispSetRepository approvalListDispSetRepository;
 
@@ -57,8 +61,8 @@ public class AppDataCreationImpl implements AppDataCreation {
 	@Inject
 	private AppContentService appContentService;
 	
-	private static final int PC = 0;
-	private static final int MOBILE = 1;
+	@Inject
+	private ManagedParallelWithContext parallel;
 
 	@Override
 	public AppListInfo createAppLstData(String companyID, List<Application> appLst, DatePeriod period,
@@ -81,7 +85,11 @@ public class AppDataCreationImpl implements AppDataCreation {
 		
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
-		for(Application app : appLst) {
+		List<ListOfApplication> appOutputLst = new ArrayList<>();
+		final List<WorkTimeSetting> workTimeSettingLstFinal = workTimeSettingLst;
+		final List<WorkType> workTypeLstFinal = workTypeLst;
+		this.parallel.forEach(appLst, app -> {
+		// for(Application app : appLst) {
 			// 申請一覧リスト取得マスタ情報 ( Thông tin master lấy applicationLisst)
 			AppInfoMasterOutput appInfoMasterOutput = appListInitialRepository.getListAppMasterInfo(
 					app, 
@@ -91,12 +99,13 @@ public class AppDataCreationImpl implements AppDataCreation {
 					mapWkpInfo,
 					device);
 			mapEmpInfo.putAll(appInfoMasterOutput.getMapEmpInfo());
+			mapWkpInfo.putAll(appInfoMasterOutput.getMapWkpInfo());
 			// 各申請データを作成 ( Tạo data tên application)
 			ListOfApplication listOfApp = appContentService.createEachAppData(
 					app, 
 					companyID, 
-					workTimeSettingLst, 
-					workTypeLst, 
+					workTimeSettingLstFinal, 
+					workTypeLstFinal, 
 					Collections.emptyList(), 
 					mode, 
 					opApprovalListDisplaySetting.get(), 
@@ -107,15 +116,23 @@ public class AppDataCreationImpl implements AppDataCreation {
 			// 申請内容＝-1(Nội dung đơn xin＝-1 )
 			if(listOfApp.getAppContent()=="-1") {
 				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
-				appListInfo.getAppLst().remove(listOfApp);
+				appOutputLst.remove(listOfApp);
 			} else {
 				// 取得した申請一覧を申請一覧情報．申請リストにセット(Set AppList đã lấy thành AppListInformation.AppList)
-				appListInfo.getAppLst().add(listOfApp);
+				appOutputLst.add(listOfApp);
 			}
 			if(mode == ApplicationListAtr.APPROVER && !listOfApp.getOpApprovalFrameStatus().isPresent()) {
 				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
-				appListInfo.getAppLst().remove(listOfApp);
+				appOutputLst.remove(listOfApp);
 			}
+		//}
+		});
+		// sửa response cho list application (giảm 2s): check null và distinct khi dùng parallel
+		for(ListOfApplication app : appOutputLst.stream().filter(x -> x!=null).collect(Collectors.toList())) {
+			if(appListInfo.getAppLst().stream().map(x -> x.getAppID()).collect(Collectors.toList()).contains(app.getAppID())) {
+				continue;
+			}
+			appListInfo.getAppLst().add(app);
 		}
 		// アルゴリズム「申請一覧の並び順を変更する」を実行する
 		appListInfo = this.changeOrderOfAppLst(appListInfo, appListExtractCondition, device);
