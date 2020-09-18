@@ -57,6 +57,7 @@ module cmm045.a.viewmodel {
         isBeforeCheck: KnockoutObservable<boolean> = ko.observable(true);
         isAfterCheck: KnockoutObservable<boolean> = ko.observable(true);
         isLimit500: KnockoutObservable<boolean> = ko.observable(false);
+        isApprove: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this;
@@ -651,7 +652,10 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion(colorBackGr, false);
                 // self.reloadGridApplicaion(colorBackGr, self.isHidden());
           	}
-			self.isLimit500(appListInfo.moreThanDispLineNO);
+            self.isLimit500(appListInfo.moreThanDispLineNO);
+            self.isApprove = ko.computed(() => {
+                return self.mode() == 1 && self.items().length > 0;
+            }, self);
 
 			/*self.appList(data.appListInfo);
             if(self.appList().appLst.length > 500) {
