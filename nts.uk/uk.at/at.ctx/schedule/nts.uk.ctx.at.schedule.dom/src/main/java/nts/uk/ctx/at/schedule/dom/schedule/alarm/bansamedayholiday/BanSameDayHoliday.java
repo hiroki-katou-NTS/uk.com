@@ -10,6 +10,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 /**
  * 同日休日禁止
+ * pathEA
  * @author lan_lt
  *
  */
@@ -26,7 +27,7 @@ public class BanSameDayHoliday implements DomainAggregate{
 	private BanSameDayHolidayName banSameDayHolidayName;
 	
 	//稼働日の参照先
-	private Optional<BussinessCalendarReference> workDayReference;
+	private Optional<CalendarReference> workDayReference;
 	
 	//同日の休日取得を禁止する社員
 	private List<String> empsCanNotSameHolidays;
@@ -35,7 +36,7 @@ public class BanSameDayHoliday implements DomainAggregate{
 	private SameDayMinOfNumberEmployee minNumberOfEmployeeToWork;
 	
 	/**
-	 * [C-1] 作成する
+	 * 作成する
 	 * @param targetOrg
 	 * @param banHolidayCode
 	 * @param banHolidayName
@@ -47,7 +48,7 @@ public class BanSameDayHoliday implements DomainAggregate{
 	public static BanSameDayHoliday create(TargetOrgIdenInfor targetOrg, 
 			BanSameDayHolidayCode banHolidayCode,
 			BanSameDayHolidayName banHolidayName,
-			Optional<BussinessCalendarReference> workDayReference,
+			Optional<CalendarReference> workDayReference,
 			List<String> empsCanNotSameHolidays,
 			SameDayMinOfNumberEmployee minNumberOfEmployeeToWork) {
 		

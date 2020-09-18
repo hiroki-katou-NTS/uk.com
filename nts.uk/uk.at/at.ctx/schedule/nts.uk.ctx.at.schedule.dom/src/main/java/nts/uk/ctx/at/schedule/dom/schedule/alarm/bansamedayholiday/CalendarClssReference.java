@@ -5,13 +5,12 @@ import java.util.Optional;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.ClassificationCode;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 営業日カレンダーの参照先(分類)
  * @author lan_lt
  *
  */
-public class BussinessCalendarClssReference implements BussinessCalendarReference{
+public class CalendarClssReference implements CalendarReference{
 	
 	private ClassificationCode clsCode;
 
@@ -22,9 +21,8 @@ public class BussinessCalendarClssReference implements BussinessCalendarReferenc
 	}
 
 	@Override
-	public Optional<WorkdayDivision> getWorkdayDivision(Require require, GeneralDate day) {
-		return require.getCalendarClassByDay(AppContexts.user().companyId(), this.clsCode.v(), day)
-				      .map(c -> c.getWorkDayDivision());
+	public Optional<WorkdayDivision> getWorkdayDivision(Require require, GeneralDate date) {
+		return require.getCalendarClassByDay(this.clsCode.v(), date).map(c -> c.getWorkDayDivision());
 	}
 
 }

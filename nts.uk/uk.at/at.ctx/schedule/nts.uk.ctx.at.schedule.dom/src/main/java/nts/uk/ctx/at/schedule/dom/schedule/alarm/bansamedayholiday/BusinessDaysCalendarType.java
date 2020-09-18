@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 
 /**
+ * 
  * 営業日カレンダー種類
+ * pathEA
  * @author lan_lt
  *
  */

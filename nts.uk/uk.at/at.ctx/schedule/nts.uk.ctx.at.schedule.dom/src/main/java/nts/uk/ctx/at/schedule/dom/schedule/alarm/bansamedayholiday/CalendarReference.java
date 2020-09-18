@@ -12,23 +12,23 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWor
  * @author lan_lt
  *
  */
-public interface BussinessCalendarReference {
+public interface CalendarReference {
   
 	// 参照している営業日カレンダーの種類を取得する
 	BusinessDaysCalendarType getBusinessDaysCalendarType();
 
 	// 稼働日区分を取得する
-	Optional<WorkdayDivision> getWorkdayDivision(Require require, GeneralDate day);
+	Optional<WorkdayDivision> getWorkdayDivision(Require require, GeneralDate date);
 
 	public  interface Require{
 		// [R-1] 指定日の会社営業日カレンダーを取得する
-		Optional<CalendarCompany> getCalendarCompanyByDay(String cid, GeneralDate day);
+		Optional<CalendarCompany> getCalendarCompanyByDay(GeneralDate date);
 		
 		// [R-2] 指定日の職場営業日カレンダーを取得する
-		Optional<CalendarWorkplace> getCalendarWorkplaceByDay(String cid, String workplaceId, GeneralDate day);
+		Optional<CalendarWorkplace> getCalendarWorkplaceByDay(String workplaceId, GeneralDate date);
 		
 		// [R-3] 指定日の分類営業日カレンダーを取得する
-		Optional<CalendarClass> getCalendarClassByDay(String cid, String clssCode, GeneralDate day);
+		Optional<CalendarClass> getCalendarClassByDay(String clssCode, GeneralDate date);
 	}
 
 }
