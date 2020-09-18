@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.agreementbasicsettings;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
@@ -10,6 +12,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
 /**
  * ３６協定1年間
  */
+@Getter
 public class AgreementsOneYear extends ValueObject {
 
     //	基本設定

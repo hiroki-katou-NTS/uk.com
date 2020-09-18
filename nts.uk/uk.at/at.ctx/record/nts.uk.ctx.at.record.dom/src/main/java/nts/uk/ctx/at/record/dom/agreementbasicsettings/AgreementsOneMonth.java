@@ -1,5 +1,8 @@
 package nts.uk.ctx.at.record.dom.agreementbasicsettings;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
@@ -8,9 +11,13 @@ import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.One
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
+import javax.ws.rs.GET;
+
 /**
  * 	３６協定1ヶ月
  */
+@Getter
+@Setter
 public class AgreementsOneMonth extends ValueObject{
     /**
      * 	基本設定

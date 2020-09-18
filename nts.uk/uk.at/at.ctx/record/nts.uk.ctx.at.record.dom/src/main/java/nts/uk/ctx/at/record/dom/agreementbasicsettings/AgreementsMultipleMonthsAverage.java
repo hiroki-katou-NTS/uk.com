@@ -1,19 +1,21 @@
 package nts.uk.ctx.at.record.dom.agreementbasicsettings;
 
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
 
 /**
  * ３６協定複数月平均
  */
+@Getter
 public class AgreementsMultipleMonthsAverage {
     //複数月平均
-    private ErrorTimeInMonth multiMonthAverage;
+    private ErrorTimeInMonth errorTimeInMonth;
 
     /**
      * 	[C-0] ３６協定複数月平均 (複数月平均)
-     * @param multiMonthAverage
+     * @param errorTimeInMonth
      */
-    public AgreementsMultipleMonthsAverage(ErrorTimeInMonth multiMonthAverage){
-        this.multiMonthAverage = multiMonthAverage;
+    public AgreementsMultipleMonthsAverage(ErrorTimeInMonth errorTimeInMonth){
+        this.errorTimeInMonth = errorTimeInMonth;
     }
 }

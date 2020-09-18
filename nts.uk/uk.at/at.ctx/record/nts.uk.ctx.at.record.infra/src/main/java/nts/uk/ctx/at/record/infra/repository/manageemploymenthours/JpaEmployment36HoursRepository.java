@@ -1,10 +1,15 @@
 package nts.uk.ctx.at.record.infra.repository.manageemploymenthours;
 
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
+import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
+import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
 import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmp;
+import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmpPk;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -36,24 +41,30 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
 
     @Override
     public void insert(AgreementTimeOfEmployment domain) {
-
+        this.commandProxy().insert(Ksrmt36AgrMgtEmp.toEntity(domain));
+        this.getEntityManager().flush();
     }
 
     @Override
     public void update(AgreementTimeOfEmployment domain) {
-
+        this.commandProxy().update(Ksrmt36AgrMgtEmp.toEntity(domain));
     }
 
     @Override
     public void delete(AgreementTimeOfEmployment domain) {
-
+        val entity = this.queryProxy().find(new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCD()
+                ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtEmp.class);
+        if(entity.isPresent()){
+            this.commandProxy().remove(Ksrmt36AgrMgtEmp.class,new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCD()
+                    ,domain.getLaborSystemAtr().value));
+        }
     }
 
     @Override
     public List<AgreementTimeOfEmployment> getByCid(String cid) {
         return this.queryProxy().query(FIND_BY_CID, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
-                .getList(d -> convertToDomain(d));
+                .getList(Ksrmt36AgrMgtEmp::toDomain);
     }
 
     @Override
@@ -62,10 +73,8 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
         return this.queryProxy().query(FIND_BY_CID_AND_CD, Ksrmt36AgrMgtEmp.class)
                 .setParameter("cid", cid)
                 .setParameter("cd", employCode)
-                .getSingle(d -> convertToDomain(d));
+                .getSingle(Ksrmt36AgrMgtEmp::toDomain);
     }
 
-    private AgreementTimeOfEmployment convertToDomain(Ksrmt36AgrMgtEmp ksrmt36AgrMgtEmp) {
-        return new AgreementTimeOfEmployment();
-    }
+
 }
