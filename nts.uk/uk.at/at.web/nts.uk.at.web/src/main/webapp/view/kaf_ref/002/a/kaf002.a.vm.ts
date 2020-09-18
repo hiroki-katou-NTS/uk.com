@@ -141,7 +141,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
            if (value) {
              if (data.appStampReflectOptional && self.tabs()) {
              let reflect = data.appStampReflectOptional;
-             self.tabs()[0].visible((reflect.temporaryAttendence && reflect.attendence) == 1);
+             self.tabs()[0].visible((reflect.attendence) == 1);
              self.tabs()[1].visible(reflect.outingHourse == 1);
              self.tabs()[2].visible(reflect.breakTime == 1);
              self.tabs()[3].visible(reflect.parentHours == 1);
