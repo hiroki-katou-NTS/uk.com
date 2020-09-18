@@ -165,14 +165,10 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                         if (err.messageId == "Msg_23" || err.messageId == "Msg_24") {
                             err.message = err.parameterIds[0] + err.message;
                             param = err;
+                            vm.$dialog.error(param);
                         } else {
-                            if (err.message) {
-                                param = {message: err.message, messageParams: err.parameterIds};
-                            } else {
-                                param = {messageId: err.messageId, messageParams: err.parameterIds}
-                            }
+                            vm.handleError(err);
                         }
-                        vm.$dialog.error(param);
                     });
                 }
             }).always(() => vm.$blockui("hide"));
