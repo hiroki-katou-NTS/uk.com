@@ -76,8 +76,7 @@ public class WorkExpectationOfOneDay implements DomainAggregate{
 			WorkInformation workInformation, 
 			List<TimeSpanForCalc> timeZoneList) {
 		
-		boolean result = this.workExpectation.isMatchingExpectation(require, workInformation, timeZoneList);
-		return result;
+		return this.workExpectation.isMatchingExpectation(require, workInformation, timeZoneList);
 				
 	}
 	
