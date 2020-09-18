@@ -50,7 +50,7 @@
     <div class="card card-label">
       <div class="card-header uk-bg-accordion">
         <span>{{'KAFS08_74' | i18n}}</span>
-        <span class="badge badge-warning">必須</span>
+        <span class="badge badge-info">任意</span>
       </div>
     </div>
     <!-- D4_2 -->

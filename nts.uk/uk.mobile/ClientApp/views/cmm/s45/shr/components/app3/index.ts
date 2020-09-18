@@ -1,16 +1,26 @@
-import { Vue } from '@app/provider';
+import { DirectiveBinding, Vue } from '@app/provider';
 import { component,Prop } from '@app/core/component';
 import * as _ from 'lodash';
+import * as moment from 'moment';
 
 @component({
     name: 'cmms45componentsapp3',
     template: require('./index.vue'),
     validations: {},
+    directives: {
+        'date': {
+            bind(el: HTMLElement, binding: DirectiveBinding) {
+                const mm = moment(binding.value, 'YYYY/MM/DD');
+                el.innerHTML = mm.format('MM/DD(ddd)');
+                el.className = mm.clone().locale('en').format('dddd').toLocaleLowerCase();
+            }
+        }
+    },
     constraints: []
 })
 export class CmmS45ComponentsApp3Component extends Vue {
     public title: string = 'CmmS45ComponentsApp3';
-    public mtable = require('../../../../../kaf/s08/a2/mock_data.json');
+    //public mtable = require('../../../../../kaf/s08/a2/mock_data.json');
 
     @Prop({
         default: () => ({
@@ -28,6 +38,8 @@ export class CmmS45ComponentsApp3Component extends Vue {
     public isCondition1: boolean = false;
     public isCondition2: boolean = false;
     public businessTrip: any = new BusinessTrip();
+    public table: [] = [] ;
+    public time: {} = {} ;
 
     public $app() {
         return this.businessTrip;
@@ -57,9 +69,11 @@ export class CmmS45ComponentsApp3Component extends Vue {
             appDispInfoStartup: vm.params.appDispInfoStartupOutput
         })
             .then((res: any) => {
-                vm.dataFetch = res.data;
+                vm.time = res.data.businessTripDto;
+                vm.table = res.data.businessTripDto.tripInfos;
+                //vm.dataFetch = res.data.
                 //vm.bindStart();
-                vm.params.appDetail = vm.dataFetch;
+                //vm.params.appDetail = vm.dataFetch;
                 // self.bindCodition(self.dataFetch.appWorkChangeDispInfo);
             })
             .catch((res: any) => {

@@ -26,13 +26,15 @@
       <div class="uk-text-dark-gray">
         <label class="a7_5">{{'KAFS08_28' | i18n}}</label>
         <!-- A7_6 -->
-        <label>{{(departureTime || 0 ) | timewd}}</label>
+        <label v-if="departureTime == null">{{''}}</label>
+        <label v-else>{{departureTime | timewd}}</label>
       </div>
       <!-- A7_7 -->
       <div class="uk-text-dark-gray">
         <label class="a7_7">{{'KAFS08_29' | i18n}}</label>
         <!-- A7_8 -->
-        <label>{{(returnTime || 0) | timewd}}</label>
+        <label v-if="returnTime == null">{{''}}</label>
+        <label v-else>{{returnTime | timewd}}</label>
       </div>
       <!-- A6 -->
       <div class="field-set">
