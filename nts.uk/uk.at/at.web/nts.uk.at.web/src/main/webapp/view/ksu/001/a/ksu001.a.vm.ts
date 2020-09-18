@@ -1154,12 +1154,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                         }
                         
                          // điều kiện ※Abc1
+                        // dieu kien ※Ac  
                         if (cell.isEdit == false) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 0));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 1));
-                        }
-                        // dieu kien ※Ac    
-                        if (!(cell.isEdit == true)) {
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 2));
                             detailContentDeco.push(new CellColor('_' + ymd, rowId, "xseal", 3));
                         }
