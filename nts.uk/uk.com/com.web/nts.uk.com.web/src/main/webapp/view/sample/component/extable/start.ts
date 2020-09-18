@@ -168,15 +168,19 @@ __viewContext.ready(function () {
             detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 0));
             detailContentDeco.push(new CellColor("_3", i.toString(), "xhidden", 1));
         }
-        // Add both child cells to mark them respectively
-        detailContentDeco.push(new CellColor("_2", "2", "blue-text", 0));
-        detailContentDeco.push(new CellColor("_2", "2", "blue-text", 1));
-        detailContentDeco.push(new CellColor("_3", "3", "black-corner-mark", 2));
-        detailContentDeco.push(new CellColor("_3", "4", "red-corner-mark", 3));
+        
         if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
         vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
         newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00"});
     }
+    
+    // Add both child cells to mark them respectively
+    detailContentDeco.push(new CellColor("_2", "2", "blue-text", 0));
+    detailContentDeco.push(new CellColor("_2", "2", "blue-text", 1));
+    detailContentDeco.push(new CellColor("_2", "2", "#00AABB", 0));
+    detailContentDeco.push(new CellColor("_3", "3", "black-corner-mark", 2));
+    detailContentDeco.push(new CellColor("_3", "4", "red-corner-mark", 3));
+    
     for (let i = 0; i < 10; i++) {
         horzSumContentDs.push({ itemId: i.toString(), empId: "", __25: "1.0", __26: "1.4", __27: "0.3", __28: "0.9", __29: "1.0", __30: "1.0", __31: "3.3", 
         _1: "1.0", _2: "1.0", _3: "0.5", _4: "1.0", _5: "1.0", _6: "1.0", _7: "0.5", _8: "0.5", _9: "1.0", _10: "0.5",
@@ -501,6 +505,30 @@ __viewContext.ready(function () {
         dataSource: vertSumContentDs,
         primaryKey: "empId"
     };
+    
+    function customValidate(idx, key, innerIdx, value, obj) {
+        let startTime, endTime;
+        if (innerIdx === 2) {
+            startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+            endTime = nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue();
+        } else if (innerIdx === 3) {
+            startTime = nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue();
+            endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+        }
+        
+        if (startTime > endTime) {
+            return { isValid: false, message: "start > end" };    
+        }
+        
+        if (innerIdx === 2) {
+            return { isValid: true, innerErrorClear: [3] };
+        } else if (innerIdx === 3) {
+            return { isValid: true, innerErrorClear: [2] };
+        }
+        
+        return { isValid: true };
+    };
+    
     let start = performance.now();
     new nts.uk.ui.exTable.ExTable($("#extable"), { 
             headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "400px", 
@@ -512,12 +540,13 @@ __viewContext.ready(function () {
             windowYOccupation: 300,
             manipulatorId: "6",
             manipulatorKey: "empId",
-            updateMode: "edit",
+            updateMode: "stick",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "time",
             showTooltipIfOverflow: true,
             errorMessagePopup: true,
+            customValidate: customValidate,
 //            secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
@@ -716,18 +745,25 @@ __viewContext.ready(function () {
 //            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: newDetailColumns }, { columns: newDetailColumns });
             $("#extable").exTable("scrollBack", 0, { h: 0 });
         });
-        $("#hide-last-week").click(function() {
-            $("#extable").exTable("updateTable", "detail", { columns: detailColumns }, { columns: detailColumns }, true);
-            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: detailColumns }, { columns: detailColumns });
+    
+        $("#update-detail-color").click(function() {
+            $("#extable").exTable("updateTable", "detail", null, 
+                { features: [{
+                    name: "BodyCellStyle",
+                    decorator: [new CellColor("_3", "2", "#00AABB", 0)]
+                }]});
+            
+            $("#extable").exTable("scrollBack", 0, { h: 1050 });
+//            $("#extable").exTable("updateTable", "horizontalSummaries", { columns: detailColumns }, { columns: detailColumns });
         });
         $("#set-sticker-multi").click(function() {
             return;
         });
         $("#set-sticker-multi2").click(function() {
-            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", "1", "通常８ｈ0"), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ", "7:30", "16:30"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
+            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", null, null), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ", "7:30", "16:30"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
         });
         $("#set-sticker-single").click(function() {
-            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", null, null));
+            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", null, null, "2:15"));
 //            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
 //            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
 //            $("#extable").exTable("stickData", 
@@ -750,18 +786,22 @@ __viewContext.ready(function () {
     
         $("#set-sticker-valid").click(function() {
             $("#extable").exTable("stickValidate", function(rowIdx, key, data) { 
+                let dfd = $.Deferred();
                 if (rowIdx > 6) {
-                    return function() {
+                    dfd.resolve(function() {
                         alert("error");
-                    };
+                    });
                 }
-                return true;
+                
+                dfd.resolve(true);
+                return dfd.promise();
             });
         });
     
         $("#stick-styler").click(function() {
-            $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                return { class: "red-text" };
+            $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
+                if (innerIdx === 0) return { class: "red-text" };
+                else if (innerIdx === 1) return { textColor: "#11BBAA" };
             });
         });    
     
