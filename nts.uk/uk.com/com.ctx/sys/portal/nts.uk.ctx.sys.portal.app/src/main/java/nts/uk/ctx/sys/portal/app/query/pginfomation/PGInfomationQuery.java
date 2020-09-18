@@ -29,24 +29,32 @@ public class PGInfomationQuery {
 
 	public List<PGInfomationDto> findBySystem(int systemType) {
 		String companyId = AppContexts.user().companyId();
-		String programId = AppContexts.programId().substring(0, 6);
+		String screenId = "A";
 
 		/**
 		 * システムからログ設定を取得
 		 */
 		List<LogSetting> logSettings = this.logSettingRepository.findBySystem(companyId, systemType);
 		if (logSettings == null || logSettings.size() == 0) {
-			return new ArrayList<PGInfomationDto>();
+			companyId = "000000000000-0000";
+			logSettings = this.logSettingRepository.findBySystem(companyId, systemType);
+			if (logSettings == null || logSettings.size() == 0) {
+				return new ArrayList<PGInfomationDto>();
+			}
 		}
 
 		List<MenuClassification> menuClassifications = logSettings.stream().map(s -> s.getMenuClassification())
 				.collect(Collectors.toList());
 
+		List<String> programIds = logSettings.stream().map(s -> s.getProgramId()).collect(Collectors.toList());
 		/**
 		 * コード一覧から標準メニューを取得
 		 */
 		List<StandardMenu> standardMenus = this.standardMenuRepository.findByProgram(companyId, systemType,
-				menuClassifications, programId);
+				menuClassifications, programIds, screenId);
+		if (standardMenus == null || standardMenus.size() == 0) {
+			return new ArrayList<PGInfomationDto>();
+		}
 
 		/**
 		 * 「PG一覧」を作成

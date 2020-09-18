@@ -164,5 +164,5 @@ public interface StandardMenuRepository {
 
 	Optional<StandardMenu> getMenuDisplayNameNoQuery(String companyId, String programId, String screenId);
 
-	List<StandardMenu> findByProgram(String companyId, int system, List<MenuClassification> classifications, String programId);
+	List<StandardMenu> findByProgram(String companyId, int system, List<MenuClassification> classifications, List<String> programIds, String screenId);
 }

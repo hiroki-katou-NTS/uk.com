@@ -10,9 +10,8 @@
 	float: left;
 }
 
-#search-box {
-  width: 80px;
-  margin-left: 300px;
+.ntsSearchBox {
+  width: 350px;
 }
 
 #item-list .mcell:not(.mgrid-no):not(.mlabel) {

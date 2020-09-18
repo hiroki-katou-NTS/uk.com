@@ -26,9 +26,6 @@
           >#{i18n.getText('CLI002_2')}</button>
         </div>
         <hr />
-        <div id="search-box" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'rowNumber', comId: 'item-list', 
-        items: dataSourceItem, selectedKey: 'rowNumber', fields: ['functionName', 'rowNumber'], mode: 'mgrid',
-        placeHolder: this.$i18n('CLI002_8'), searchText: this.$i18n('KMP001_23')}"></div>
         <div class="view-cli" style="margin: 5px;">
           <div class="float-left list-component">
             <div
@@ -45,6 +42,9 @@
             </div>
           </div>
           <div class="float-left model-component">
+			<div id="search-box" data-bind="ntsSearchBox: {searchMode: 'highlight', targetKey: 'rowNumber', comId: 'item-list', 
+			items: dataSourceItem, selectedKey: 'rowNumber', fields: ['functionName', 'rowNumber'], mode: 'mgrid',
+			placeHolder: this.$i18n('CLI002_8'), searchText: this.$i18n('KMP001_23')}"></div>
             <div>
               <div id="item-list"></div>
             </div>
