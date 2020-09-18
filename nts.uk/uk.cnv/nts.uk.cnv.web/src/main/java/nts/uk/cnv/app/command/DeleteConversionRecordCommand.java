@@ -1,13 +1,12 @@
 package nts.uk.cnv.app.command;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Value;
 
 @Value
 @AllArgsConstructor
-public class RegistConversionCategoryCommand {
+public class DeleteConversionRecordCommand {
 	String category;
-	List<String> tables;
+	String table;
+	int recordNo;
 }

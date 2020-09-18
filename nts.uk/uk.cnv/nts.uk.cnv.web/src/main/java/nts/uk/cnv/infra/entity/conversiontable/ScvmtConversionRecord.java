@@ -23,12 +23,15 @@ public class ScvmtConversionRecord {
 	@Column(name = "SOURCE_ID")
 	public String sourceId;
 
-//	@OrderBy(value = "pk.targetColumnName asc")
-//	@OneToMany(targetEntity = ScvmtConversionTable.class, mappedBy = "record", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinTable(name = "SCVMT_CONVERSION_TABLE")
-//	public List<ScvmtConversionTable> conversionTables;
+	@Column(name = "EXPLANATION")
+	private String explanation;
 
 	public ConversionRecord toDomain() {
-		return new ConversionRecord(this.pk.getRecordNo(), this.sourceId);
+		return new ConversionRecord(
+				this.pk.getCategoryName(),
+				this.pk.getTargetTableName(),
+				this.pk.getRecordNo(),
+				this.sourceId,
+				this.explanation);
 	}
 }

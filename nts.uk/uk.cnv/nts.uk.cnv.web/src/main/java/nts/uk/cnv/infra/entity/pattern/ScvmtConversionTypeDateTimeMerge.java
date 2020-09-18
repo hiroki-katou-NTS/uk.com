@@ -55,7 +55,7 @@ public class ScvmtConversionTypeDateTimeMerge extends JpaEntity implements Seria
 	@Column(name = "MI")
 	private String mi;
 
-	@Column(name = "HH:MI")
+	@Column(name = "HHMI")
 	private String hhmi;
 
 	@Column(name = "SS")

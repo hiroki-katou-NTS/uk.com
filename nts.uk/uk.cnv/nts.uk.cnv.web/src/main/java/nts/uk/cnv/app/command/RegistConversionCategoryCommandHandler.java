@@ -18,11 +18,11 @@ public class RegistConversionCategoryCommandHandler  extends CommandHandler<Regi
 	protected void handle(CommandHandlerContext<RegistConversionCategoryCommand> context) {
 		RegistConversionCategoryCommand command = context.getCommand();
 
-		repository.delete(command.category);
+		repository.delete(command.getCategory());
 
 		int seq = 0;
-		for(String table : command.tables) {
-			repository.regist(new ConversionCategoryTable(command.category, table, seq));
+		for(String table : command.getTables()) {
+			repository.regist(new ConversionCategoryTable(command.getCategory(), table, seq));
 			seq++;
 		}
 	}

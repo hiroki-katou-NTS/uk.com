@@ -12,7 +12,9 @@ import lombok.val;
 import nts.uk.cnv.dom.categorypriority.CategoryPriorityRepository;
 import nts.uk.cnv.dom.conversiontable.ConversionCategoryTableRepository;
 import nts.uk.cnv.dom.conversiontable.ConversionRecord;
+import nts.uk.cnv.dom.conversiontable.ConversionRecordRepository;
 import nts.uk.cnv.dom.conversiontable.ConversionSource;
+import nts.uk.cnv.dom.conversiontable.ConversionSourcesRepository;
 import nts.uk.cnv.dom.conversiontable.ConversionTable;
 import nts.uk.cnv.dom.conversiontable.ConversionTableRepository;
 import nts.uk.cnv.dom.service.ConversionInfo;
@@ -23,6 +25,12 @@ public class CodeGenerator {
 
 	@Inject
 	CategoryPriorityRepository categoryPriorityRepository;
+
+	@Inject
+	ConversionRecordRepository conversionRecordRepository;
+
+	@Inject
+	ConversionSourcesRepository conversionSourceRepository;
 
 	@Inject
 	ConversionTableRepository conversionTableRepository;
@@ -37,6 +45,8 @@ public class CodeGenerator {
 
 		val require = new RequireImpl(
 			categoryPriorityRepository,
+			conversionRecordRepository,
+			conversionSourceRepository,
 			conversionTableRepository,
 			conversionCategoryTableRepository);
 
@@ -47,6 +57,10 @@ public class CodeGenerator {
 	private static class RequireImpl implements CreateConversionCodeService.Require{
 
 		private final CategoryPriorityRepository categoryPriorityRepository;
+
+		private final ConversionRecordRepository conversionRecordRepository;
+
+		private final ConversionSourcesRepository conversionSourceRepository;
 
 		private final ConversionTableRepository conversionTableRepository;
 
@@ -71,13 +85,12 @@ public class CodeGenerator {
 
 		@Override
 		public List<ConversionRecord> getRecords(String category, String tableName) {
-			return conversionTableRepository.getRecords(category, tableName);
+			return conversionRecordRepository.getRecords(category, tableName);
 		}
 
 		@Override
-		public ConversionSource getSource(String category, String sourceId) {
-			// TODO 自動生成されたメソッド・スタブ
-			return null;
+		public ConversionSource getSource(String sourceId) {
+			return conversionSourceRepository.get(sourceId);
 		}
 
 	}

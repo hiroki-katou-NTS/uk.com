@@ -8,7 +8,9 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class Cnv001ALoadDataDto {
-	List<String> erpTableNames;
-	
-	List<String> whereConditions;
+	List<RecordDto> records;
+
+	List<SourceDto> sources;
+
+	List<String> erpTables;
 }

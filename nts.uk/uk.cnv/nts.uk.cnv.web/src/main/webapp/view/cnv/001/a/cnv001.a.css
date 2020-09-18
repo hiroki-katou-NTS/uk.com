@@ -2,31 +2,7 @@
 	height: 61px;
 }
 
-#left_frame{
-	background-color: #EEFFEE;
-	width: 330px;
-	height: 500px;
-	margin: 10px 10px;
-}
-
-#middle_frame{
-	background-color: #FFFFFF;
-	width: 340px;
-	height: 500px;
-	margin: 10px 0px;
-}
-
-#right_frame{
-	width: 500px;
-	height: 500px;
-	margin: 10px 0px;
-}
-
-#uktable {
-	width: 280px;
-}
-
-#ukcolumns {
+#selRecords {
 	width: 280px;
 }
 

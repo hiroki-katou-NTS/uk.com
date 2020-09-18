@@ -19,6 +19,6 @@ public class Cnv001BWebService extends WebService {
 	@POST
 	@Path("loaddata")
 	public Cnv001BLoadDataDto getUkColumns(String categoryName) {
-		return screenService.loadData(categoryName);
+		return screenService.loadData(categoryName.replace("\"", ""));
 	}
 }

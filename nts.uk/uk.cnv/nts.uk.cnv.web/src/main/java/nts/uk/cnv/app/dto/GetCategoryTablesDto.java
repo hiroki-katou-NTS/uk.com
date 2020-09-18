@@ -1,4 +1,4 @@
-package nts.uk.cnv.app.command;
+package nts.uk.cnv.app.dto;
 
 import java.util.List;
 
@@ -7,7 +7,6 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor
-public class RegistConversionCategoryCommand {
-	String category;
+public class GetCategoryTablesDto {
 	List<String> tables;
 }

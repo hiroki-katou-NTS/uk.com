@@ -53,7 +53,7 @@ public class CreateConversionCodeService {
 		List<String> convertCodes = records.stream()
 			.map(record -> {
 
-				ConversionSource source = require.getSource(category, record.getSourceId());
+				ConversionSource source = require.getSource(record.getSourceId());
 
 				return require.getConversionTable(info, category, table, record.getRecordNo(), source);
 			})
@@ -71,7 +71,7 @@ public class CreateConversionCodeService {
 		List<String> getCategoryTables(String category);
 		List<ConversionRecord> getRecords(String category, String tableName);
 		Optional<ConversionTable> getConversionTable(ConversionInfo info, String category, String tableName, int recordNo, ConversionSource source);
-		ConversionSource getSource(String category, String sourceId);
+		ConversionSource getSource(String sourceId);
 
 	}
 

@@ -22,7 +22,7 @@ public class Cnv001BService {
 	public Cnv001BLoadDataDto loadData(String category) {
 
 		List<String> conversionTableCategories = repository.get(category).stream()
-				.map(cate -> cate.getCategoryName())
+				.map(cate -> cate.getTablename())
 				.collect(Collectors.toList());
 
 		List<String> tables = ukTableDesignRepository.getAllTableList().stream()
