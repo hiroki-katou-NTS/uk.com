@@ -1525,7 +1525,13 @@ module nts.uk.ui.exTable {
                     
                     _.forEach(value, function(val: any, i: number) {
                         let $c = $childCells[i];
-                        $c.textContent = val;
+                        if ($c.classList.contains(style.HIDDEN_CLS)) {
+                            $.data($c, "hide", val);
+                            $c.innerHTML = "";
+                        } else {
+                            $c.textContent = val;
+                        }
+                        
                         let innerStyle = _.find(styles, style => style.innerIdx === i);
                         let makeup;
                         if (innerStyle && (makeup = innerStyle.makeup)) { 
@@ -1569,7 +1575,13 @@ module nts.uk.ui.exTable {
                     });
                 } else {
                     let $c = $childCells[innerIdx];
-                    $c.textContent = value;
+                    if ($c.classList.contains(style.HIDDEN_CLS)) {
+                        $.data($c, "hide", value);
+                        $c.innerHTML = "";
+                    } else {
+                        $c.textContent = value;
+                    }
+                    
                     let cellObj = new selection.Cell(rowIdx, columnKey, valueObj, innerIdx);
                     touched = trace(origDs, $c, cellObj, fields, x.manipulatorId, x.manipulatorKey);
                     if (touched && !touched.dirty) {
@@ -1580,7 +1592,6 @@ module nts.uk.ui.exTable {
                     }
                 }
             } else {
-                $cell.textContent = value;
                 if (styleMaker === true) {
                     let cellStyles = $.data($grid, internal.D_CELLS_STYLE);
                     if (cellStyles) {
@@ -1609,6 +1620,13 @@ module nts.uk.ui.exTable {
                     } else if (cStyle.class) {
                         $cell.classList.remove(cStyle.class);
                     }
+                }
+                
+                if ($cell.classList.contains(style.HIDDEN_CLS)) {
+                    $.data($cell, "hide", value);
+                    $cell.innerHTML = "";
+                } else {
+                    $cell.textContent = value;
                 }
                 
                 let cellObj = new selection.Cell(rowIdx, columnKey, valueObj, -1);
@@ -1668,9 +1686,9 @@ module nts.uk.ui.exTable {
                             let fieldArr;
                             if (_.isFunction(viewFn)) {
                                 cData = helper.viewData(viewFn, viewMode, data[key]);
-                                if (gen.painter.options.updateMode === STICK) {
+//                                if (gen.painter.options.updateMode === STICK) {
                                     fieldArr = viewFn(viewMode);
-                                }
+//                                }
                             }
                             if (cData.constructor === Array) {
                                 _.forEach(cData, function(d, i) {
@@ -1710,8 +1728,10 @@ module nts.uk.ui.exTable {
                                 validation.validate($exTable, $grid, childCells[1], rowIdx, key, 1, data[key]);
                             }
                         } else {
+                            let fieldArr;
                             if (_.isFunction(viewFn)) {
                                 cData = helper.viewData(viewFn, viewMode, data[key]);
+                                fieldArr = viewFn(viewMode);
                             }
                             
                             if ($target.classList.contains(style.HIDDEN_CLS)) {
@@ -1721,6 +1741,10 @@ module nts.uk.ui.exTable {
                                 $target.textContent = cData;
                             }
                             
+                            if (fieldArr) {
+                                fields = fieldArr;
+                            }
+                               
                             cellObj = new selection.Cell(rowIdx, key, data[key], -1);
                             touched = trace(origDs, $target, cellObj, fields, x.manipulatorId, x.manipulatorKey);
                             if (touched && !touched.dirty) {
@@ -3135,7 +3159,7 @@ module nts.uk.ui.exTable {
                     return objVal;
                 }
                 if (!util.isNullOrUndefined(src[key])) {
-                    if (fieldArr && _.isObject(srcVal)) {
+                    if (fieldArr && fieldArr.length > 1 && _.isObject(srcVal)) {
                         let srcValCloned = _.cloneDeep(srcVal), cellPartialUpdate = false;
                         _.forEach(fieldArr, (f, i) => {
                             if ((!exTable.stickOverWrite && !helper.isEmpty(objVal[f]))
@@ -3161,8 +3185,23 @@ module nts.uk.ui.exTable {
                         });
                         
                         if (cellPartialUpdate) return srcValCloned;
-                    } else if (!helper.isEqual(src[key], obj[key])) {
-                        changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                    } else {
+                        if (sticker && sticker.fields && sticker.fields[0] === fieldArr[0]) {
+                            let objValCloned = _.cloneDeep(objVal), tField = fieldArr[0];
+                            objValCloned[tField] = srcVal[tField];
+                            if (!helper.isEqual(src[key], obj[key], fieldArr)) {
+                                changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                                origData[key] = objValCloned;
+                            } else {
+                                delete origData[key];
+                            }
+                            
+                            return objValCloned;
+                        } else if (!helper.isEqual(src[key], obj[key])) {
+                            changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
+                        } else {
+                            delete origData[key];
+                        }
                     }
                 } else {
                     delete origData[key];
