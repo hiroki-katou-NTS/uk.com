@@ -115,10 +115,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
     }
 
     //nhảy đến step three với các điều kiện
-    public nextToStepThree(appID: string) {
+    public nextToStepThree() {
         const vm = this;
         vm.registerData();
-        vm.appID = appID;
         //vm.checkBeforeRegister();
         //vm.toggleErrorAlert();
         //this.$emit('nextToStepThree');
@@ -217,8 +216,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 businessTripInfoOutput: vm.data.businessTripInfoOutput,
                 application: vm.application
             }).then((res: any) => {
-                vm.appID = res.data.appID;
-                vm.$emit('nextToStepThree');
+                //vm.appID = res.data.appID;
+                vm.$emit('nextToStepThree',res.data.appID);
                 vm.$mask('hide');
                 // KAFS00_D_申請登録後画面に移動する
                 //this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
