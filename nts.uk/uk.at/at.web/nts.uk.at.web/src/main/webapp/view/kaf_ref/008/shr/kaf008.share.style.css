@@ -47,7 +47,7 @@
     text-align: center;
 }
 
-#fixed-table .nts-editor-wrapped {
+#kaf008-share #fixed-table .nts-editor-wrapped {
     box-sizing: border-box;
 }
 
@@ -76,6 +76,7 @@
 
 #kaf008-share .A10_D3, .A10_D5 {
     text-align: left !important;
+    margin-left: 5px;
 }
 
 

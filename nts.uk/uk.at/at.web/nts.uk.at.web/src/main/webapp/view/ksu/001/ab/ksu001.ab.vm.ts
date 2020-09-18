@@ -18,6 +18,7 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
         workPlaceId: KnockoutObservable<string>      = ko.observable('');
         workTimeCode:KnockoutObservable<string>;
         reInit =  false;
+        KEY: string = 'USER_INFOR';
 
         constructor(id, listWorkType) { //id : workplaceId || workplaceGroupId; 
             let self = this;
@@ -149,6 +150,16 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
                     return { textColor: "red" };
                 });
+            }
+            
+            let item = uk.localStorage.getItem(self.KEY);
+            if (item.isPresent()) {
+                let userInfor = JSON.parse(item.get());
+                if (userInfor.updateMode == 'copyPaste') {
+                    $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
+                        return { textColor: "" };
+                    });
+                }
             }
             let obj = {};
         }

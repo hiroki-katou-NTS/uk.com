@@ -73,12 +73,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
         self.selectedTab.subscribe(value => {
-           if (value) {
+           if (!_.isNull(value)) {
                self.selectedCode(Number(value));
            }
         });
         self.selectedCode.subscribe(value => {
-            if (value && self.data) {
+            if (!_.isNull(value) && self.data) {
                 self.bindComment(self.data);
             }
         });
@@ -136,20 +136,26 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }
     bindTabM(data: any) {
         const self = this;
+        let reflect = data.appStampReflectOptional;
+        if (reflect.temporaryAttendence == 0) {
+            self.dataSourceOb()[0].pop();
+            self.dataSourceOb()[0].pop();
+            self.dataSourceOb()[0].pop();
+        }
         self.isM(true);
         self.tabs.subscribe(value => {
            if (value) {
              if (data.appStampReflectOptional && self.tabs()) {
-             let reflect = data.appStampReflectOptional;
-             self.tabs()[0].visible((reflect.temporaryAttendence && reflect.attendence) == 1);
-             self.tabs()[1].visible(reflect.outingHourse == 1);
-             self.tabs()[2].visible(reflect.breakTime == 1);
-             self.tabs()[3].visible(reflect.parentHours == 1);
-             self.tabs()[4].visible(reflect.nurseTime == 1);
-             // not use
-             self.tabs()[5].visible(false);
+                 let reflect = data.appStampReflectOptional;
+                 self.tabs()[0].visible((reflect.attendence) == 1);
+                 self.tabs()[1].visible(reflect.outingHourse == 1);
+                 self.tabs()[2].visible(reflect.breakTime == 1);
+                 self.tabs()[3].visible(reflect.parentHours == 1);
+                 self.tabs()[4].visible(reflect.nurseTime == 1);
+                 // not use
+                 self.tabs()[5].visible(false);
              
-          } 
+             } 
            } 
         });
         
@@ -413,7 +419,15 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         
         
         let dataSource = [];
-        dataSource.push( items1.concat(items2) );
+        // case change date
+        if (self.data.appStampReflectOptional) {
+            if (self.data.appStampReflectOptional.temporaryAttendence == 0) {
+                dataSource.push(items1);
+                
+            } else {
+                dataSource.push(items1.concat(items2));
+            }
+        }
         dataSource.push( items3 );
         dataSource.push( items4 );
         dataSource.push( items5 );

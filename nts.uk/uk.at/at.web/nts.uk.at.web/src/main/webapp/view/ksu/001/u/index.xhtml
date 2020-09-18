@@ -29,9 +29,9 @@
                 <hr id="line" />
                 <div class="container-custom">
                     <button id="prev-btn" tabindex="4" class="auto-height" data-bind="click: Prev, enable: isEnableBtn">
-                        <div class="flex valign-center"><img src="img/prev.png" /> #{i18n.getText('KSU001_4008')}</div>
+                        <div class="flex valign-center btn-extra" ><img src="img/prev.png" /> #{i18n.getText('KSU001_4008')}</div>
                     </button>
-                    <div data-bind="ntsPanel:{width: '140px', height: '16px', direction: 'bottom', showIcon: false, visible: true}"
+                    <div tabindex="5" data-bind="ntsPanel:{width: '140px', height: '16px', direction: 'bottom', showIcon: false, visible: true}"
                         style="margin: 0px 10px;">
                         <div style="margin-top: -10px; margin-left: 14px;" data-bind="ntsSwitchButton:{
                                                                 name:'#[KSU001_4009]',
@@ -43,8 +43,8 @@
                                                                 enable: true  }">
                         </div>
                     </div>
-                    <button id="next-btn" tabindex="7" class="auto-height" data-bind="click: Forward, enable: isEnableBtn">
-                        <div class="flex valign-center">#{i18n.getText('KSU001_4012')} <img src="img/next.png" /></div>
+                    <button id="next-btn" tabindex="6" class="auto-height" data-bind="click: Forward, enable: isEnableBtn">
+                        <div class="flex valign-center btn-extra">#{i18n.getText('KSU001_4012')} <img src="img/next.png" /></div>
                     </button>
                 </div>
                 
@@ -52,7 +52,7 @@
                     <button tabindex="8" data-bind="click: clearBtn" >#{i18n.getText('KSU001_4013')}</button>
                 </div>
                 <div class="container-custom"> 
-                    <div class="nts-calendar-container ">
+                    <div class="nts-calendar-container " tabindex="7">
                         <com:ko-if bind="showCalendarHeader">
                             <div class="nts-calendar-header">
                                 <div data-bind="ntsDatePicker: {
@@ -78,7 +78,6 @@
                             holidayDisplay: holidayDisplay,
                             cellButtonDisplay: cellButtonDisplay}"></div>
                     </div>
-
                 </div>  
             </div>            
 

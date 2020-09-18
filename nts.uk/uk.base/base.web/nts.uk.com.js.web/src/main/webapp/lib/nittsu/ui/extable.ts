@@ -3643,7 +3643,9 @@ module nts.uk.ui.exTable {
          */
         export function on($grid: HTMLElement, updateMode: any) {
             if (updateMode === COPY_PASTE) {
-                new Printer().hook($grid);
+                let printer = new Printer();
+                $.data($grid, internal.PRINTER_INST, printer);
+                printer.hook($grid);
             }
         }
         
@@ -6511,6 +6513,12 @@ module nts.uk.ui.exTable {
                 case "stickRedo":
                     redoStick(self);
                     break;
+                case "copyUndo":
+                    undoCopy(self);
+                    break;
+                case "copyRedo":
+                    redoCopy(self);
+                    break;
                 case "clearHistories":
                     clearHistories(self, params[0]);
                     break;
@@ -7182,6 +7190,30 @@ module nts.uk.ui.exTable {
         }
         
         /**
+         * Undo copy.
+         */
+        function undoCopy($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== COPY_PASTE) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let printer = $grid.data(internal.PRINTER_INST);
+            if (!printer) return;
+            printer.undo();
+        }
+        
+        /**
+         * Redo copy.
+         */
+        function redoCopy($container: JQuery) {
+            let exTable = $container.data(NAMESPACE);
+            if (!exTable || exTable.updateMode !== COPY_PASTE) return;
+            let $grid = $container.find(`.${BODY_PRF + DETAIL}`);
+            let printer = $grid.data(internal.PRINTER_INST);
+            if (!printer) return;
+            printer.redo();
+        }
+        
+        /**
          * Clear histories.
          */
         function clearHistories($container: JQuery, type: string) {
@@ -7574,6 +7606,7 @@ module nts.uk.ui.exTable {
         export let INPUT_SELECTING: string = "input-selecting";
         export let ERR_MSG: string = "error-msg";
         export let ERR_POPUP: string = "error-popup";
+        export let PRINTER_INST: string = "printer-inst";
         
         /**
          * Get gem.
@@ -7608,7 +7641,10 @@ module nts.uk.ui.exTable {
                     return false;
                 }
             });
-            exTable.modifications[cell.rowIndex].splice(index, 1);
+            
+            if (index !== -1) {
+                exTable.modifications[cell.rowIndex].splice(index, 1);
+            }
         }
         
         /**
