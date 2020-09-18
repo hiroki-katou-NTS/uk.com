@@ -26,4 +26,12 @@ public class DivergenceTimePubImpl implements DivergenceTimePub{
 		}).collect(Collectors.toList());
 		return divergenceTimes;
 	}
+
+	@Override
+	public List<DivergenceTimePubDto> findByCompanyAndUseDistination(String comapanyId, int useDistination) {
+		return this.divergenceTimeRepository.findByCompanyAndUseDistination(comapanyId, useDistination).stream()
+				.map(f -> {
+					return new DivergenceTimePubDto(f.getCompanyId(), f.getDivergenceTimeNo(), f.getDivTimeName().v());
+				}).collect(Collectors.toList());
+	}
 }

@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-import com.aspose.cells.Font;
 import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageOrientationType;
 import com.aspose.cells.PageSetup;
@@ -22,9 +21,7 @@ import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
-import com.aspose.pdf.Document;
 
-import aspose.pdf.Cell;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
@@ -89,7 +86,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 	private String SEAL_RANGE_TMPL_ADDR = "AQ14:AR17";
 
 	/** The Constant SEAL_COL_ADDR. */
-	private static final List<String> SEAL_COL_ADDR = Arrays
+	private List<String> SEAL_COL_ADDR = Arrays
 			.asList(new String[] { "AN1", "AL1", "AJ1", "AH1", "AF1", "AD1" });
 	
 	/** The Constant END_REPORT_COL2. */
@@ -157,6 +154,9 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 	/** The Constant EXPORT_PDF. */
 	private static final int EXPORT_PDF = 1;
+	
+	/** The font size. */
+	private int FONT_SIZE = 16;
 
 	/*
 	 * (non-Javadoc)
@@ -193,6 +193,12 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			MAX_ROW_PER_EMPL = 80;
 			
 			SEAL_RANGE_TMPL_ADDR = "AY14:BV17";
+			
+			FONT_SIZE = 14;
+			
+			SEAL_COL_ADDR = Arrays
+					.asList(new String[] { "AW1", "AU1", "AS1", "AQ1", "AO1", "AM1" });
+			
 		} else if( dataSource.getData().getFontSize() == ExportFontSize.CHARS_SIZE_SMALL.value) {
 			TEMPLATE_FILE = "report/KWR002_FS.xlsx";
 			
@@ -213,6 +219,11 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 			WEEKLY_RANGE_TMPL_ADDR = "AY11:BV12";
 			
 			MAX_ROW_PER_EMPL = 80;
+			
+			FONT_SIZE = 12;
+			
+			SEAL_COL_ADDR = Arrays
+					.asList(new String[] { "BE1", "BC1", "BA1", "AY1", "AW1", "AU1" });
 		}
 
 		try (val reportContext = this.createContext(TEMPLATE_FILE, data.getExportDateTime())) {
@@ -278,11 +289,11 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 					
 					// Delete template column
 					if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
-						worksheet.getCells().deleteColumns(42, 20, true);
+						worksheet.getCells().deleteColumns(58, 28, true);
 					} else if (dataSource.getData().getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
 						worksheet.getCells().deleteColumns(50, 24, true);
 					} else {
-						worksheet.getCells().deleteColumns(50, 24, true);
+						worksheet.getCells().deleteColumns(42, 20, true);
 					}
 					
 					
@@ -382,15 +393,15 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 		employeeInfoL.get(0, EMPL_INVIDUAL_INDEX)
 				.setValue(TextResource.localize("KWR002_212") + employeeData.getInvidual());
 		employeeInfoL.get(0, EMPL_WORKPLACE_INDEX)
-				.setValue(TextResource.localize("KWR002_213", "#Com_Workplace") + " " + employeeData.getWorkplace());
+				.setValue(TextResource.localize("KWR002_213", "#Com_Workplace") + employeeData.getWorkplace());
 		employeeInfoR.get(0, EMPL_EMPLOYMENT_INDEX)
-				.setValue(TextResource.localize("KWR002_214", "#Com_Employment") + " " + employeeData.getEmployment());
+				.setValue(TextResource.localize("KWR002_214", "#Com_Employment") + employeeData.getEmployment());
 		employeeInfoR.get(0, EMPL_TITLE_INDEX)
-				.setValue(TextResource.localize("KWR002_215", "#Com_Jobtitle") + " " + employeeData.getTitle());
+				.setValue(TextResource.localize("KWR002_215", "#Com_Jobtitle") + employeeData.getTitle());
 		employeeInfoR.get(0, EMPL_WORKTYPE_INDEX)
-				.setValue(TextResource.localize("KWR002_216") + " " + employeeData.getWorkType());
+				.setValue(TextResource.localize("KWR002_216") + employeeData.getWorkType());
 		employeeYearInfo.get(0, EMPL_YEARMONTH_INDEX)
-				.setValue(TextResource.localize("KWR002_217") + " " + employeeData.getYearMonth());
+				.setValue(TextResource.localize("KWR002_217") + employeeData.getYearMonth());
 		// Create weekly data
 		List<AttendanceRecordReportWeeklyData> weeklyDatas = employeeData.getWeeklyDatas();
 		Map<String, Integer> dataRow = new HashMap<>();
