@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 500, height: 560 };</script>
+			<script>var dialogSize = { width: 500, height: 570 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksm004.d.main.css" />
 			<com:scriptfile path="ksm004.d.start.js" />
@@ -16,43 +16,41 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
-				<div>
-					<table id="table-top">
-						<tr>
-							<td>
-								<!-- D1_1 -->
-								<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM004_36')}</div>
-							</td>
-							<td>
-								<!-- D1_4 -->
-								 <div tabindex="1" id="daterangepicker"
-									data-bind="ntsDateRangePicker: {
-									name:'#[KSM004_36]',
-									valueFormat: 'YYYYMM',
-									required: true,
-									value: dateValue,
-									maxRange: 'oneYear',
-									type:'yearmonth'}"></div>
-							</td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-								<!-- D1_8 -->
-								<div tabindex="2" style="margin-top: 3px"
-									data-bind="ntsCheckBox:{
-									checked: checkHoliday,
-									text: '#{i18n.getText('KSM004_53')}'
-									}">
-								</div>
-							</td>
-						</tr>
-					</table>
-				</div>
+				<table id="table-top">
+					<tr>
+						<td>
+							<!-- D1_1 -->
+							<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM004_36')}</div>
+						</td>
+						<td>
+							<!-- D1_4 -->
+							 <div tabindex="1" id="daterangepicker"
+								data-bind="ntsDateRangePicker: {
+								name:'#[KSM004_36]',
+								valueFormat: 'YYYYMM',
+								required: true,
+								value: dateValue,
+								maxRange: 'oneYear',
+								type:'yearmonth'}"></div>
+						</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td>
+							<!-- D1_8 -->
+							<div tabindex="2" style="margin-top: 3px"
+								data-bind="ntsCheckBox:{
+								checked: checkHoliday,
+								text: '#{i18n.getText('KSM004_53')}'
+								}">
+							</div>
+						</td>
+					</tr>
+				</table>
 				<table id="table-bottom">
 					<colgroup>
 						<col width="60px"/>
-						<col width="320px"/>
+						<col width="310px"/>
 					</colgroup>
 					<thead>
 					<tr>

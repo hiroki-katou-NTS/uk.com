@@ -1,5 +1,7 @@
 #table-top {
 	width: 440px;
+	margin-top: 10px;
+	margin-left: 10px;
 }
 
 #table-top tr td:nth-child(1){
@@ -18,7 +20,7 @@
 }
 
 .nts-fixed-table{
-	margin-left: 80px;
+	margin-left: 90px;
 	margin-top: 10px;
 }
 
@@ -63,8 +65,7 @@
     padding: 5px;
 }
 .ntsCheckBox-label-bottom{
-    padding: 3px;
-    margin: 10px;
+    margin: 2px 0 10px 0;
 }
 
 #functions-area-bottom{
