@@ -242,13 +242,31 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
 
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
                         vm.lateOrEarlyInfos(success.lateOrEarlyInfoLst);
+
+                        success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1 == null ? vm.workManagement.scheAttendanceTime('--:--') :
+                        vm.workManagement.scheAttendanceTime(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1));
+                        success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1 == null ? vm.workManagement.scheWorkTime('--:--') :
+                        vm.workManagement.scheWorkTime(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1));
+                        success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2 == null ? vm.workManagement.scheAttendanceTime2('--:--') :
+                        vm.workManagement.scheAttendanceTime2(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2));
+                        success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2 == null ? vm.workManagement.scheWorkTime2('--:--') :
+                        vm.workManagement.scheWorkTime2(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2));
+
+
+                        vm.workManagement.workTime(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
+                        vm.workManagement.leaveTime(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
+                        vm.workManagement.workTime2(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
+                        vm.workManagement.leaveTime2(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
+
                         if (vm.lateOrEarlyInfos().length > 0) {
                             if (ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }).length > 0)) {
                                 vm.lateOrEarlyInfo1().isActive(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].isActive);
-                                vm.lateOrEarlyInfo1().isCheck(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].isCheck);
+                                vm.lateOrEarlyInfo1().isCheck(vm.workManagement.workTime()  ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].isCheck);
                                 vm.lateOrEarlyInfo1().isIndicated(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].isIndicated);
                                 vm.lateOrEarlyInfo1().category(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].category);
                                 vm.lateOrEarlyInfo1().workNo(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 0 }))[0].workNo);
+                            } else {
+                                vm.lateOrEarlyInfo1().isIndicated(false);
                             }
 
                             if (ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }).length > 0)) {
@@ -257,6 +275,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                                 vm.lateOrEarlyInfo2().isIndicated(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0].isIndicated);
                                 vm.lateOrEarlyInfo2().category(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0].category);
                                 vm.lateOrEarlyInfo2().workNo(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 1, 'category': 1 }))[0].workNo);
+                            } else {
+                                vm.lateOrEarlyInfo2().isIndicated(false);
                             }
 
                             if (ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }).length > 0)) {
@@ -265,6 +285,8 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                                 vm.lateOrEarlyInfo3().isIndicated(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0].isIndicated);
                                 vm.lateOrEarlyInfo3().category(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0].category);
                                 vm.lateOrEarlyInfo3().workNo(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 0 }))[0].workNo);
+                            } else {
+                                vm.lateOrEarlyInfo3().isIndicated(false);
                             }
 
                             if (ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }).length > 0)) {
@@ -273,47 +295,45 @@ module nts.uk.at.view.kaf004_ref.a.viewmodel {
                                 vm.lateOrEarlyInfo4().isIndicated(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0].isIndicated);
                                 vm.lateOrEarlyInfo4().category(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0].category);
                                 vm.lateOrEarlyInfo4().workNo(ko.toJS(_.filter(vm.lateOrEarlyInfos(), { 'workNo': 2, 'category': 1 }))[0].workNo);
+                            } else {
+                                vm.lateOrEarlyInfo4().isIndicated(false);
                             }
 
                         }
-
-                        success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1 == null ? vm.workManagement.scheAttendanceTime('--:--') :
-                            vm.workManagement.scheAttendanceTime(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime1));
-                        success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1 == null ? vm.workManagement.scheWorkTime('--:--') :
-                            vm.workManagement.scheWorkTime(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime1));
-                        success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2 == null ? vm.workManagement.scheAttendanceTime2('--:--') :
-                            vm.workManagement.scheAttendanceTime2(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheAttendanceTime2));
-                        success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2 == null ? vm.workManagement.scheWorkTime2('--:--') :
-                            vm.workManagement.scheWorkTime2(nts.uk.time.format.byId("Clock_Short_HM", success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.achievementEarly.scheDepartureTime2));
-
-
-                        vm.workManagement.workTime(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime);
-                        vm.workManagement.leaveTime(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opLeaveTime);
-                        vm.workManagement.workTime2(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opWorkTime2);
-                        vm.workManagement.leaveTime2(success.appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2);
-
                         vm.arrivedLateLeaveEarlyInfo().appDispInfoStartupOutput.appDispInfoWithDateOutput = success.appDispInfoWithDateOutput;
                     }
 
                     if (vm.workManagement.workTime() === null || vm.workManagement.workTime() === "") {
                         vm.lateOrEarlyInfo1().isActive(false);
+                        vm.lateOrEarlyInfo1().isCheck(false);
+                        vm.isEnable1(false);
                     } else {
                         vm.lateOrEarlyInfo1().isActive(true);
+                        vm.isEnable1(true);
                     }
                     if (vm.workManagement.leaveTime() === null || vm.workManagement.leaveTime() === "") {
                         vm.lateOrEarlyInfo2().isActive(false);
+                        vm.lateOrEarlyInfo2().isCheck(false);
+                        vm.isEnable2(false);
                     } else {
                         vm.lateOrEarlyInfo2().isActive(true);
+                        vm.isEnable2(true);
                     }
                     if (vm.workManagement.workTime2() === null || vm.workManagement.workTime2() === "") {
                         vm.lateOrEarlyInfo3().isActive(false);
+                        vm.lateOrEarlyInfo3().isCheck(false);
+                        vm.isEnable3(false);
                     } else {
                         vm.lateOrEarlyInfo3().isActive(true);
+                        vm.isEnable3(true);
                     }
                     if (vm.workManagement.leaveTime2() === null || vm.workManagement.leaveTime2() === "") {
                         vm.lateOrEarlyInfo4().isActive(false);
+                        vm.lateOrEarlyInfo4().isCheck(false);
+                        vm.isEnable4(false);
                     } else {
                         vm.lateOrEarlyInfo4().isActive(true);
+                        vm.isEnable4(true);
                     }
 
                 }).fail((error: any) => {

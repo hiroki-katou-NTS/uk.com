@@ -85,8 +85,7 @@ module cmm045.a.viewmodel {
                 { id: 2, name: getText('CMM045_21') },
                 { id: 3, name: getText('CMM045_22') },
                 { id: 4, name: getText('CMM045_23') },
-                { id: 5, name: getText('CMM045_24') },
-                { id: 6, name: getText('CMM045_25') }
+                { id: 5, name: getText('CMM045_24') }
             ]);
 
             /*self.selectedCode.subscribe(function(codeChanged) {
