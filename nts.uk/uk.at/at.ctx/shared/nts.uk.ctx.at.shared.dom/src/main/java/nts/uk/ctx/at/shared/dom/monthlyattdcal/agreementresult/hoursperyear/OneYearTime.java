@@ -23,7 +23,7 @@ public class OneYearTime extends ValueObject {
     /**
      * 上限時間
      */
-    private AgreementOneMonthTime upperLimitTime;
+    private AgreementOneMonthTime upperLimitTime; //todo thiếu primitiveValue
 
     /**
      * [C-1] １ヶ月時間

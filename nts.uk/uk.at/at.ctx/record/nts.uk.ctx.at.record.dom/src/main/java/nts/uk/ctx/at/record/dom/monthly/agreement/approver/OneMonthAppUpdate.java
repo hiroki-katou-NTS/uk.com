@@ -1,23 +1,11 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
-import lombok.val;
-import nts.arc.task.tran.AtomTask;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.agreementbasicsettings.AgreementsOneMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgeementTimeCommonSetting;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.OneMonthTime;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.SpecialProvisionsOfAgreement;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import java.util.List;
-import java.util.Optional;
 
 // import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
 

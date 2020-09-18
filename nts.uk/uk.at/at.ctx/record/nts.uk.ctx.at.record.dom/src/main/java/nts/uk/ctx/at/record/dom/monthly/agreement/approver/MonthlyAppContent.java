@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.SpecialProvisionsOfAgreement;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
@@ -11,6 +12,7 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  * @author khai.dh
  */
 @Getter
+@AllArgsConstructor
 public class MonthlyAppContent extends ValueObject {
 	// 対象者
 	private String applicant;

@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.ScreenDisplayInfo;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.SpecialProvisionsOfAgreement;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ScreenDisplayInfo;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;

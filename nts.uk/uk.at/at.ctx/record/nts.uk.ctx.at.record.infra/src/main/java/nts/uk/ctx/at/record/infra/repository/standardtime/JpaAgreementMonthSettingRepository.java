@@ -160,6 +160,21 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 				.setParameter("yearmonthValue", yearMonthValue).getSingle().get() > 0;
 	}
 
+//	@Override
+//	public List<AgreementMonthSetting> getByEmployeeId(String employeeId) {
+//		return this.queryProxy()
+//				.query(FIND_BY_ID, KmkmtAgreementMonthSet.class)
+//				.setParameter("employeeId", employeeId).getList(KmkmtAgreementMonthSet::toDomain);
+//	}
+//
+//	@Override
+//	public Optional<AgreementMonthSetting> getByEmployeeIdAndYm(String employeeId, YearMonth yearMonth) {
+//		return this.queryProxy()
+//				.query(FIND_BY_ID_YEAR_MONTH, KmkmtAgreementMonthSet.class)
+//				.setParameter("employeeId", employeeId)
+//				.setParameter("yearMonth", yearMonth).getSingle(KmkmtAgreementMonthSet::toDomain);
+//	}
+
 	private static AgreementMonthSetting toDomain(KmkmtAgreementMonthSet kmkmtAgreementMonthSet) {
 		AgreementMonthSetting agreementMonthSetting = AgreementMonthSetting.createFromJavaType(
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.employeeId,

@@ -8,6 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
 
 /**
  * 
@@ -21,9 +22,13 @@ public class AgreementMonthSetting extends AggregateRoot {
 
 	private YearMonth yearMonthValue;
 
+	//TODO #30161
 	private ErrorOneMonth errorOneMonth;
 
 	private AlarmOneMonth alarmOneMonth;
+
+	/** １ヶ月時間 */
+	private ErrorTimeInMonth oneMonthTime;
 
 	public AgreementMonthSetting(String employeeId, YearMonth yearMonthValue, ErrorOneMonth errorOneMonth,
 			AlarmOneMonth alarmOneMonth) {

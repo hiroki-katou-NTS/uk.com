@@ -5,6 +5,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
 import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 
 /**
  * ３６協定年度設定
@@ -17,10 +18,14 @@ public class AgreementYearSetting extends AggregateRoot{
 	private String employeeId;
 
 	private int yearValue;
-	
+
+	//TODO #30161
 	private ErrorOneYear errorOneYear;
 	
 	private AlarmOneYear alarmOneYear;
+
+	/** １年間時間 */
+	private ErrorTimeInYear errorTimeInYear;
 
 	public AgreementYearSetting(String employeeId, int yearValue, ErrorOneYear errorOneYear,
 			AlarmOneYear alarmOneYear) {

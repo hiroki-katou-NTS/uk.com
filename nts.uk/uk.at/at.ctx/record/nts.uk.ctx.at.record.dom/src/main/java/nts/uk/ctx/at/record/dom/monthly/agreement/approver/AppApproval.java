@@ -1,8 +1,8 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.AgreementApprovalComments;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.ApprovalStatus;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.AgreementApprovalComments;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ApprovalStatus;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
