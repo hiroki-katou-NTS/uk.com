@@ -111,7 +111,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.dataSource = ko.observableArray(itemModelList);
            self.dataSourceReason = ko.observableArray(itemModelReasonList);
            
-           self.selectedCode = ko.observable('1');
+           self.selectedCode = ko.observable('0');
            
           
            
