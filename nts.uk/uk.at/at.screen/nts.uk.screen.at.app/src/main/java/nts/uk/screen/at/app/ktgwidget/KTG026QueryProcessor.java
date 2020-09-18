@@ -1,8 +1,10 @@
 package nts.uk.screen.at.app.ktgwidget;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -14,9 +16,12 @@ import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.adapter.workrule.closure.PresentClosingPeriodImport;
+import nts.arc.time.calendar.period.YearMonthPeriod;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.dom.EmpBasicInfoImport;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.ClosureHistPeriod;
 import nts.uk.ctx.at.record.dom.approvalmanagement.dailyperformance.algorithm.closure.GetSpecifyPeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.export.AgreementExcessInfo;
 import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetExcessTimesYear;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.export.GetAgreementTime;
@@ -26,9 +31,14 @@ import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
+import nts.uk.ctx.sys.auth.dom.adapter.person.EmployeeBasicInforAuthImport;
+import nts.uk.ctx.sys.auth.dom.wkpmanager.EmpInfoAdapter;
+import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementExcessInfoDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.AgreementTimeOfManagePeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.EmployeesOvertimeDisplayDto;
+import nts.uk.screen.at.app.ktgwidget.find.dto.PresentClosingPeriodDto;
 import nts.uk.screen.at.app.ktgwidget.find.dto.YearAndEmpOtHoursDto;
-import nts.uk.screen.at.app.mobi.AgreementTimeToppage;
+import nts.uk.screen.at.app.ktgwidget.find.dto.YearMonthOvertime;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementPeriodFromYear;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.shr.com.context.AppContexts;
@@ -62,11 +72,15 @@ public class KTG026QueryProcessor {
 	@Inject
 	private GetAgreementTimeOfMngPeriod getAgreementTimeOfMngPeriod;
 	
+	// The employee info adapter
+	@Inject
+	private EmpInfoAdapter empInfoAdapter;
+	
 	/**
 	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG026_時間外労働時間の表示(従業員用).アルゴリズム.起動する.起動する
 	 * @param employeeId
 	 */
-	public void startScreenKtg026(String employeeId, Integer targetDate, Integer targetYear, String referenceMode, int currentOrNextMonth) {
+	public EmployeesOvertimeDisplayDto startScreenKtg026(String employeeId, Integer targetDate, Integer targetYear, int currentOrNextMonth) {
 		// 従業員用の時間外時間表示
 		EmployeesOvertimeDisplayDto result = EmployeesOvertimeDisplayDto.builder().build();
 
@@ -90,10 +104,11 @@ public class KTG026QueryProcessor {
 		// 従業員用の時間外時間表示．当月の締め情報．締め開始日＝取得した締め期間．開始日
 		// 従業員用の時間外時間表示．当月の締め情報．締め終了日＝取得した締め期間．終了日
 		if (!lstClosureHist.isEmpty()) {
-			PresentClosingPeriodImport closingPeriod = new PresentClosingPeriodImport(
-				closure.getClosureMonth().getProcessingYm(),
-				lstClosureHist.get(0).getPeriod().start(),
-				lstClosureHist.get(0).getPeriod().end());
+			PresentClosingPeriodDto closingPeriod = PresentClosingPeriodDto.builder()
+					.processingYm(closure.getClosureMonth().getProcessingYm().v())
+					.closureStartDate(lstClosureHist.get(0).getPeriod().start())
+					.closureEndDate(lstClosureHist.get(0).getPeriod().start())
+					.build();
 			result.setClosingPeriod(closingPeriod);
 		}
 
@@ -101,7 +116,7 @@ public class KTG026QueryProcessor {
 		Year year = this.getYearAgreementPeriod(closure.getClosureMonth().getProcessingYm());
 		
 		// 従業員用の時間外時間表示．当月含む年＝取得した年度
-		result.setYear(year.v());
+		result.setYearIncludeThisMonth(year.v());
 		// 従業員用の時間外時間表示．表示する年＝取得した年度
 		result.setDisplayYear(year.v());
 
@@ -120,14 +135,69 @@ public class KTG026QueryProcessor {
 
 			} else {
 				if (currentOrNextMonth == 2) {
-					Year year2 = this.getYearAgreementPeriod(result.getClosingPeriod().getProcessingYm().addMonths(1));
-					result.setYear2(year2.v());
-					result.setDisplayYear(year2.v());
+					Year yearIncludeNextMonth = this.getYearAgreementPeriod(YearMonth.of(result.getClosingPeriod().getProcessingYm()).addMonths(1));
+					result.setYearIncludeNextMonth(yearIncludeNextMonth.v());
+					result.setDisplayYear(yearIncludeNextMonth.v());
 				}
 			}
 
 		}
+		// 指定する年と指定する社員の時間外時間と超過回数の取得
+		YearAndEmpOtHoursDto otHours = this.getYearAndEmployeeOTHours(employeeId, closure.getClosureId().value,new Year(result.getDisplayYear()),
+																		YearMonth.of(result.getClosingPeriod().getProcessingYm()));
+		// 上長用の時間外時間表示．対象社員の各月の時間外時間＝取得した「年月ごとの時間外時間」
+		result.setYmOvertimes(otHours.getOvertimeHours());
+		
+		// 上長用の時間外時間表示．対象社員の年間超過回数＝取得した「36協定超過情報」
+		AgreementExcessInfoDto agreeInfo = AgreementExcessInfoDto.builder()
+												.excessTimes(otHours.getAgreeInfo().getExcessTimes())
+												.yearMonths(otHours.getAgreeInfo().getYearMonths().stream()
+													.map(x -> x.v())
+													.collect(Collectors.toList()))
+												.build();
+		result.setAgreeInfo(agreeInfo);
+		
+		// 社員ID(List)から個人社員基本情報を取得
+		List<EmpBasicInfoImport> empInfoLst = this.empInfoAdapter.getListPersonInfo(Arrays.asList(employeeId));
+
+		// 上長用の時間外時間表示．対象社員の個人情報＝取得した「個人社員基本情報」
+		if (!empInfoLst.isEmpty()) {
+			EmpBasicInfoImport empInfo = empInfoLst.get(0);
+			result.setEmpInfo(new EmployeeBasicInforAuthImport(
+									empInfo.getPId(), empInfo.getNamePerson(), empInfo.getEntryDate(),
+									empInfo.getGender(), empInfo.getBirthDay(), empInfo.getEmployeeId(),
+									empInfo.getEmployeeCode(), empInfo.getRetiredDate()));
+		}
+		
+		return result;
 	}
+	
+	/**
+	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG026_時間外労働時間の表示(従業員用).ユースケース.対象年の時間外労働時間を抽出する.対象年の時間外労働時間を抽出する
+	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG026_時間外労働時間の表示(従業員用).ユースケース.対象年を前年に切り替える.対象年を前年に切り替える
+	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG026_時間外労働時間の表示(従業員用).ユースケース.対象年を翌年に切り替える.対象年を翌年に切り替える
+	 * @param employeeId
+	 * @param closingId
+	 * @param targetYear
+	 * @param processingDate
+	 * @return 従業員用の時間外時間表示
+	 */
+	public EmployeesOvertimeDisplayDto extractOvertime(String employeeId, int closingId, Integer targetYear, int processingDate) {
+		// 指定する年と指定する社員の時間外時間と超過回数の取得
+		YearAndEmpOtHoursDto otHours = this.getYearAndEmployeeOTHours(employeeId, closingId, new Year(targetYear), YearMonth.of(processingDate));
+		AgreementExcessInfoDto agreeInfo = AgreementExcessInfoDto.builder()
+												.excessTimes(otHours.getAgreeInfo().getExcessTimes())
+												.yearMonths(otHours.getAgreeInfo().getYearMonths().stream()
+													.map(x -> x.v())
+													.collect(Collectors.toList()))
+												.build();
+		// 「従業員用の時間外時間表示」を更新する
+		return EmployeesOvertimeDisplayDto.builder()
+					.ymOvertimes(otHours.getOvertimeHours())
+					.agreeInfo(agreeInfo)
+					.build();
+	}
+	
 	
 	/**
 	 * 	年月を指定して、36協定期間の年度を取得する
@@ -152,21 +222,24 @@ public class KTG026QueryProcessor {
 	
 	/**
 	 * UKDesign.UniversalK.就業.KTG_ウィジェット.KTG026_時間外労働時間の表示(従業員用).アルゴリズム.指定する年と指定する社員の時間外時間と超過回数の取得.指定する年と指定する社員の時間外時間と超過回数の取得
-	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param closingId 締めID
 	 * @param targetYear 対象年
 	 * @param processingDate 当月の年月
 	 * @return year and employee overtime hours
 	 */
-	public YearAndEmpOtHoursDto getYearAndEmployeeOTHours(String companyId, String employeeId, String closingId, Year targetYear, YearMonth processingDate) {
-		YearAndEmpOtHoursDto result = YearAndEmpOtHoursDto.builder().build();
+	public YearAndEmpOtHoursDto getYearAndEmployeeOTHours(String employeeId, int closingId, Year targetYear, YearMonth processingDate) {
+		// 会社ID
+		String companyId = AppContexts.user().companyId();
+		// 年月ごとの時間外時間
+		List<YearMonthOvertime> ymOvertimes = new ArrayList<YearMonthOvertime>();
+		
 		val require = requireService.createRequire();
 		CacheCarrier cacheCarrier = new CacheCarrier();
 		GeneralDate systemDate = GeneralDate.today();
 		// [No.458]年間超過回数の取得
 		// OUTPUT．「36協定超過情報」＝取得した「36協定超過情報」
-		result.setAgreeInfo(getExcessTimesYear.algorithm(employeeId, targetYear));
+		AgreementExcessInfo agreeInfo = getExcessTimesYear.algorithm(employeeId, targetYear);
 		
 		// 年度から36集計期間を計算
 		// ○社員に対応する処理締めを取得する (Lấy closure xử lý ứng với employee)
@@ -179,33 +252,42 @@ public class KTG026QueryProcessor {
 		Optional<DatePeriod> datePeriod = GetAgreementPeriodFromYear.algorithm(targetYear, closure, agreeOperation);
 		
 		if (!datePeriod.isPresent()) {
-			return result;
+			return YearAndEmpOtHoursDto.builder().build();
 		}
 		
+		YearMonth loopYM = datePeriod.get().start().yearMonth();
+		int month = loopYM.month();
 		// 取得した期間の年月をループする
-		for (int i = datePeriod.get().start().yearMonth().month(); i <= 12; i++) {
+		for (int i = month; i <= 12; i++) {
+			int ym = loopYM.v();
 			// ループする年月とINPUT．当月の年月の大小比較
-			if (processingDate.addMonths(2).lessThanOrEqualTo(datePeriod.get(). start().yearMonth())) { // [INPUT．当月の年月．AddMonth(2)<=ループする年月]がtrue
+			if (processingDate.addMonths(2).lessThanOrEqualTo(loopYM)) { // [INPUT．当月の年月．AddMonth(2)<=ループする年月]がtrue
 				break;
 				
-			} else if (processingDate.lessThanOrEqualTo(datePeriod.get(). start().yearMonth())) { // [INPUT．当月の年月<=ループする年月]がtrue
+			} else if (processingDate.lessThanOrEqualTo(loopYM)) { // [INPUT．当月の年月<=ループする年月]がtrue
 				// 【NO.333】36協定時間の取得
 				List<AgreementTimeDetail> listAgreementTimeDetail = GetAgreementTime.get(
 					require, cacheCarrier, companyId, Arrays.asList(employeeId), datePeriod.get().end().yearMonth(), ClosureId.valueOf(closingId));
-				
+
+				listAgreementTimeDetail.stream().forEach(item -> ymOvertimes.add(YearMonthOvertime.builder().yearMonth(ym).build()));
 			} else { // [INPUT．当月の年月<=ループする年月]がfalse
 				// [NO.612]年月期間を指定して管理期間の36協定時間を取得する
-				List<AgreementTimeToppage> agreementTimeToppageLst = 
-						getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(Arrays.asList(employeeId), datePeriod.get().start().yearMonth());
+				List<AgreementTimeOfManagePeriod> agreementTimeToppageLst = 
+					getAgreementTimeOfMngPeriod.getAgreementTimeByMonths(
+						Arrays.asList(employeeId),
+						new YearMonthPeriod(datePeriod.get().start().yearMonth(), datePeriod.get().end().yearMonth()));
 				
+				agreementTimeToppageLst.stream().forEach(item -> 
+					ymOvertimes.add(YearMonthOvertime.builder().yearMonth(ym).agreeTime(AgreementTimeOfManagePeriodDto.from(item)).build())
+				);
 			}
 			
-			datePeriod.get().start().yearMonth().addMonths(1);
+			loopYM = loopYM.nextMonth();
 		}
+		// OUTPUT．年月ごとの時間外時間をソートする
+		ymOvertimes.stream().sorted((a, b) -> b.getYearMonth() - a.getYearMonth());
 		
-		return result;
-		
+		return YearAndEmpOtHoursDto.builder().agreeInfo(agreeInfo).overtimeHours(ymOvertimes).build();
 		
 	}
-	
 }

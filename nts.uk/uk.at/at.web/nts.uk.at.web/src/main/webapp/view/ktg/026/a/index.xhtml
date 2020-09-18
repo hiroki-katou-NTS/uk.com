@@ -16,7 +16,9 @@
 					<!-- A1_1 -->
 					<label class="big-text">#{i18n.getText('KTG026_5')}</label>
 					<!-- A1_7 -->
-					<button class="right">#{i18n.getText('KTG026_8')}</button>
+					<com:ko-if bind="referenceMode() === 1">
+						<button class="right" data-bind="click: onCloseWindow">#{i18n.getText('KTG026_8')}</button>
+					</com:ko-if>
 				</div>
 
 				<table class="flex">
@@ -26,15 +28,19 @@
 								<!-- A1_2 -->
 								<div data-bind="ntsDatePicker: {
 									name: '#[KTG026_1]',
-									value: year,
+									value: targetYear,
 									dateFormat: 'YYYY',
 									valueFormat: 'YYYY',
 									showJumpButtons: true
 								}"></div>
 								<!-- A1_6 -->
-								<label class="grid mt-10">日通 はるか</label>
+								<com:ko-if bind="referenceMode() === 2">
+									<label class="grid mt-10 bold" data-bind="text: employeeName"></label>
+								</com:ko-if>
 								<!-- A1_5 -->
-								<label class="grid mt-10" data-bind="text: textA1_5"></label>
+								<com:ko-if bind="referenceMode() === 1">
+									<label class="grid mt-10" data-bind="text: exceededNumber"></label>
+								</com:ko-if>
 							</td>
 							<td class="block p-10" style="width: 60%">
 								<div class="right">
@@ -47,7 +53,7 @@
 						</tr>
 				</tbody>
 				</table>
-				<table class="block pl-10 scroll">
+				<table class="block pl-10 scroll relative">
 					<thead>
 						<tr>
 							<!-- A2_1 -->
@@ -62,81 +68,23 @@
 							</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody data-bind="foreach: dataTable">
 						<tr class="mw-200">
-							<td class="border-bot data-text">2020/03</td>
-							<td class="border-bot">46:00</td>
+							<!-- A3_1 -->
+							<td class="border-bot data-text limited-label" data-bind="text: yearMonth"></td>
+							<!-- A3_2 -->
+							<td class="border-bot text-center limited-label" data-bind="text: agreementTime"></td>
 							<td class="pl-20 inline-flex">
 								<span class="dashed45"></span>
 								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" style="width: 80px;"></span>
-								<span class="label time-outside-bg-color" style="width: 12px;"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot data-text">2020/04</td>
-							<td class="border-bot">50:00</td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" style="width: 100px;"></span>
-								<span class="label time-outside-bg-color"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot data-text">2020/05</td>
-							<td class="border-bot">15:00</td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color"></span>
-								<span class="label time-outside-bg-color" style="width: 30px;"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot data-text">2020/06</td>
-							<td class="border-bot">20:00</td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" style="width: 40px;"></span>
-								<span class="label time-outside-bg-color"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot data-text">2020/07</td>
-							<td class="border-bot">30:00</td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" style="width: 60px;"></span>
-								<span class="label time-outside-bg-color"></span>
-							</td>
-						</tr>
-						<tr class="mw-200">
-							<td class="border-bot data-text">2020/08</td>
-							<td class="border-bot">55:00</td>
-							<td class="pl-20 inline-flex">
-								<span class="dashed45"></span>
-								<span class="dashed80"></span>
-								<span class="label non-statutory-bg-color" style="width: 70px;"></span>
-								<span class="label time-outside-bg-color" style="width: 40px;"></span>
+								<!-- A3_3 -->
+								<span class="label non-statutory-bg-color" data-bind="style: {width: nonStatutoryTime}"></span>
+								<!-- A3_4 -->
+								<span class="label time-outside-bg-color" data-bind="style: {width: legalTime}"></span>
 							</td>
 						</tr>
 					</tbody>
 				</table>
-
-				<div class="row-inline">
-					<div class="panel gray-bg custom-panel">
-						<div class="addSign"></div>
-					</div>
-					<div class="panel gray-bg custom-panel">
-						<div class="addSign"></div>
-					</div>
-					<div class="panel gray-bg custom-panel">
-						<div class="addSign"></div>
-					</div>
-				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

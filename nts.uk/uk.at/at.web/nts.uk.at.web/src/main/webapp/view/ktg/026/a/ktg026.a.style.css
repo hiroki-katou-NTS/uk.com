@@ -2,35 +2,7 @@
   padding-top: 5px;
   padding-left: 5px;
   width: 440px;
-  height: 555px;
   border: 1px groove;
-}
-.addSign {
-	background: url("../image/addSign.png");
-	border-radius: 5px;
-	height: 115px;
-	text-align: center;
-  padding-bottom: 5px;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-.sub {
-	margin: 10px;
-	border-radius: 5px;
-	height: 28px;
-	text-align: center;
-	word-wrap: break-word;
-}
-.row-inline{
-  display: inline-flex;
-}
-.custom-panel {
-  width: 115px;
-  height: 115px;
-  margin: 5px;
-  border-radius: 10px;
-  text-align: center;
-  word-wrap: break-word;
 }
 .grid {
   display: grid;
@@ -138,11 +110,23 @@ tr td .label {
   padding-left: 160px;
 }
 .data-text {
-  padding: 5px 20px 5px 0px;
+  padding: 3px 20px 3px 0px;
 }
 .mw-200 {
   max-width: 200px;
 }
 .gray-bg {
   background-color: #e0e0e0;
+}
+table thead tr th {
+  z-index: 1;
+}
+.bold {
+  font-weight: bold;
+}
+.relative {
+  position: relative;
+}
+.text-center {
+  text-align: center;
 }
