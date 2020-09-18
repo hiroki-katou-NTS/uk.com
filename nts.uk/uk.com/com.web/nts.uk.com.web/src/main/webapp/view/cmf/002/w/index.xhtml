@@ -99,14 +99,14 @@
               <div id="W4_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_535')}</div>
               <!-- W4_2 -->
               <com:ko tag="if" bind="isStartDateDateAdjustment">
-                <input id="W4_2" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
+                <input id="W4_2_1" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
                   name: '#[CMF002_535]',
                   value: startDateAdjustment,
                   constraint: ['DateAdjustment']
                 }" />
               </com:ko>
               <com:ko tag="ifnot" bind="isStartDateDateAdjustment">
-                <input id="W4_2" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
+                <input id="W4_2_2" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
                   name: '#[CMF002_535]',
                   value: startDateAdjustment,
                   constraint: ['MonthAdjustment']
@@ -153,11 +153,20 @@
               <!-- W6-1 -->
               <div id="W6_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_538')}</div>
               <!-- W6_2 -->
-              <input id="W6_2" tabindex="6" class="cmf002-w-input" data-bind="ntsNumberEditor: {
-                name: '#[CMF002_538]',
-                value: endDateAdjustment,
-                constraint: ['DateAdjustment']
-              }" />
+              <com:ko tag="if" bind="isEndDateDateAdjustment">
+                <input id="W6_2_1" tabindex="6" class="cmf002-w-input" data-bind="ntsNumberEditor: {
+                  name: '#[CMF002_538]',
+                  value: endDateAdjustment,
+                  constraint: ['DateAdjustment']
+                }" />
+              </com:ko>
+              <com:ko tag="ifnot" bind="isEndDateDateAdjustment">
+                <input id="W6_2_2" tabindex="6" class="cmf002-w-input" data-bind="ntsNumberEditor: {
+                  name: '#[CMF002_538]',
+                  value: endDateAdjustment,
+                  constraint: ['MonthAdjustment']
+                }" />
+              </com:ko>
             </div>
           </com:ko>
           <com:ko tag="if" bind="isEndDateAdjustment">

@@ -65,16 +65,21 @@ module nts.uk.com.view.cmf002.w {
       vm.selectedPeriodSetting(1);
       // ※W3_2「開始日区分ドロップダウンリスト」が「05 日付指定」の場合、開始日調整を開始日指定する項目に変更。
       vm.selectedStartDateSegment.subscribe((value) => {
+        vm.startDateAdjustment(null);
+        vm.startDateSpecified(null);
         vm.isStartDateAdjustment(value === StartDateClassificationCode.DATE_SPECIFICATION);
         vm.isStartDateDateAdjustment(value === StartDateClassificationCode.DEADLINE_PROCESSING);
       });
       // ※W5_2「開始日区分ドロップダウンリスト」が「05 日付指定」の場合、開始日調整を開始日指定する項目に変更。
       vm.selectedEndDateSegment.subscribe((value) => {
+        vm.endDateAdjustment(null);
+        vm.endDateSpecified(null);
         vm.isEndDateAdjustment(value === EndDateClassificationCode.DATE_SPECIFICATION);
         vm.isEndDateDateAdjustment(value === EndDateClassificationCode.DEADLINE_PROCESSING);
       });
       // W7_2で06を選択している場合
       vm.selectedBaseDateSegment.subscribe((value) => {
+        vm.baseDateSpecified(null);
         vm.isBaseDateSpecifiedEnable(value === BaseDateClassificationCode.DATE_SPECIFICATION);
       });
 
