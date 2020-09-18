@@ -40,6 +40,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         isSmallOrMedium: KnockoutObservable<boolean>;
         isSmall: KnockoutObservable<boolean>;
         useMonthApproverConfirm: KnockoutObservable<boolean>;
+        selectionType: number;
 
         action = {
             ADDITION: getText('KWR002_178'),
@@ -159,82 +160,81 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition();
                     attItem = self.attendanceRecExpMonthly()[columnIndex];
                 }
-                let attendanceItem: model.AttendanceItemShare = new model.AttendanceItemShare();
+
                 // アルゴリズム「出力項目画面設定」を実行する (Thực thi thuật toán Setting màn hình hạng mục output)
-                self.settingOutputScreen(attendanceItemName, columnIndex, position, exportAtr, positionText);
-                
+                self.settingOutputScreen(attendanceItemName, columnIndex, position, exportAtr, positionText)
+                .then(() => {
+                    var link: string;
+                    if (exportAtr == 1 && columnIndex <= 6) link = '/view/kdl/047/a/index.xhtml';
+                    else link = '/view/kdl/048/index.xhtml';
+                    blockUI.grayout();
 
-                var link: string;
-                if (exportAtr == 1 && columnIndex <= 6) link = '/view/kdl/047/a/index.xhtml';
-                else link = '/view/kdl/048/index.xhtml';
-                blockUI.grayout();
+                    nts.uk.ui.windows.sub.modal(link).onClosed(() => {
+                        if (attendanceItemName == '') {
 
-                nts.uk.ui.windows.sub.modal(link).onClosed(() => {
-                    if (attendanceItemName == '') {
+                            if (exportAtr == 1) {
 
-                        if (exportAtr == 1) {
+                                self.attendanceRecExpDaily()[columnIndex].exportAtr = exportAtr;
+                                self.attendanceRecExpDaily()[columnIndex].columnIndex = columnIndex;
+                                self.attendanceRecExpDaily()[columnIndex].userAtr = false;
 
-                            self.attendanceRecExpDaily()[columnIndex].exportAtr = exportAtr;
-                            self.attendanceRecExpDaily()[columnIndex].columnIndex = columnIndex;
-                            self.attendanceRecExpDaily()[columnIndex].userAtr = false;
+                            } else {
 
-                        } else {
+                                self.attendanceRecExpMonthly()[columnIndex].exportAtr = exportAtr;
+                                self.attendanceRecExpMonthly()[columnIndex].columnIndex = columnIndex;
+                                self.attendanceRecExpMonthly()[columnIndex].userAtr = false;
 
-                            self.attendanceRecExpMonthly()[columnIndex].exportAtr = exportAtr;
-                            self.attendanceRecExpMonthly()[columnIndex].columnIndex = columnIndex;
-                            self.attendanceRecExpMonthly()[columnIndex].userAtr = false;
+                            }
 
                         }
+                        var attendanceItem = getShared('attendanceRecordExport');
+                        if (attendanceItem) {
 
-                    }
-                    var attendanceItem = getShared('attendanceRecordExport');
-                    if (attendanceItem) {
+                            if (exportAtr == 1) {
+                                if (position == 1) {
+                                    self.attendanceRecExpDaily()[columnIndex].upperPosition(attendanceItem.attendanceItemName);
+                                    self.attendanceRecExpDaily()[columnIndex].upperShow(true);
+                                }
+                                else {
+                                    self.attendanceRecExpDaily()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
+                                    self.attendanceRecExpDaily()[columnIndex].lowerShow(true);
+                                }
+                            } else {
+                                if (position == 1) {
+                                    self.attendanceRecExpMonthly()[columnIndex].upperPosition(attendanceItem.attendanceItemName);
+                                    self.attendanceRecExpMonthly()[columnIndex].upperShow(true);
+                                }
+                                else {
+                                    self.attendanceRecExpMonthly()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
+                                    self.attendanceRecExpMonthly()[columnIndex].lowerShow(true);
+                                }
+                            }
 
-                        if (exportAtr == 1) {
-                            if (position == 1) {
-                                self.attendanceRecExpDaily()[columnIndex].upperPosition(attendanceItem.attendanceItemName);
-                                self.attendanceRecExpDaily()[columnIndex].upperShow(true);
-                            }
-                            else {
-                                self.attendanceRecExpDaily()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
-                                self.attendanceRecExpDaily()[columnIndex].lowerShow(true);
-                            }
-                        } else {
-                            if (position == 1) {
-                                self.attendanceRecExpMonthly()[columnIndex].upperPosition(attendanceItem.attendanceItemName);
-                                self.attendanceRecExpMonthly()[columnIndex].upperShow(true);
-                            }
-                            else {
-                                self.attendanceRecExpMonthly()[columnIndex].lowwerPosition(attendanceItem.attendanceItemName);
-                                self.attendanceRecExpMonthly()[columnIndex].lowerShow(true);
-                            }
-                        }
-
-                        var item: viewmodel.model.AttendanceRecItem;
-                        
-                        if (exportAtr == 1 && columnIndex <= 6) {
+                            var item: viewmodel.model.AttendanceRecItem;
                             
-                            item = new model.AttendanceRecItem(attendanceItem.attendanceItemName, attendanceItem.layoutCode, attendanceItem.layoutName,
-                                attendanceItem.columnIndex, attendanceItem.position, attendanceItem.exportAtr,
-                                attendanceItem.attendanceId, attendanceItem.attribute);
+                            if (exportAtr == 1 && columnIndex <= 6) {
+                                
+                                item = new model.AttendanceRecItem(attendanceItem.attendanceItemName, attendanceItem.layoutCode, attendanceItem.layoutName,
+                                    attendanceItem.columnIndex, attendanceItem.position, attendanceItem.exportAtr,
+                                    attendanceItem.attendanceId, attendanceItem.attribute);
 
-                        } else {
-                            item = new model.AttendanceRecItem(attendanceItem.attendanceItemName,
-                                attendanceItem.layoutCode,
-                                attendanceItem.layoutName,
-                                attendanceItem.columnIndex,
-                                attendanceItem.position,
-                                attendanceItem.exportAtr,
-                                attendanceItem.attendanceId.map(item => new model.SelectedItem({action: item.operator, code: item.itemId})),
-                                attendanceItem.attribute);
+                            } else {
+                                item = new model.AttendanceRecItem(attendanceItem.attendanceItemName,
+                                    attendanceItem.layoutCode,
+                                    attendanceItem.layoutName,
+                                    attendanceItem.columnIndex,
+                                    attendanceItem.position,
+                                    attendanceItem.exportAtr,
+                                    attendanceItem.attendanceId.map(item => new model.SelectedItem({action: item.operator, code: item.itemId})),
+                                    attendanceItem.attribute);
+                            }
+
+                            self.updateAttendanceRecItemList(item);
+
                         }
 
-                        self.updateAttendanceRecItemList(item);
-
-                    }
-
-
-                })
+                    })
+                });
 
             });
         }
@@ -248,6 +248,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
          */
         settingOutputScreen(attendanceItemName: String, columnIndex: number, position: any, exportAtr: number, positionText: string): JQueryPromise<any> {
             const vm = this;
+            // vm.attendanceRecItemList;???
             const dfd = $.Deferred();
             let attendanceItem: model.AttendanceItemShare = new model.AttendanceItemShare();
             attendanceItem.titleLine.displayFlag = true;
@@ -288,6 +289,12 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             attendanceItem.selectedTime = singleAttendanceRecord.itemId;
                             attendanceItem.attribute.selected = singleAttendanceRecord.attribute;
                         }
+                        
+                        const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
+                        if (index >= 0) {
+                            attendanceItem.selectedTime = vm.attendanceRecItemList()[index].attendanceId;
+                            attendanceItem.attribute.selected = vm.attendanceRecItemList()[index].attribute;
+                        }
 
                         setShared('attendanceItem', attendanceItem, true);
 
@@ -308,7 +315,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 $.when(service.getDailyAttendanceItems(), service.getCalculateAttendanceRecordDto(attendanceRecordKey))
                     .then((dailyAttendanceItems: Array<model.AttributeOfAttendanceItem>, calculateAttendanceRecord: any) => {
 
-                        if (dailyAttendanceItems !== null ) {
+                        if (!!dailyAttendanceItems) {
                             attendanceItem.diligenceProjectList = dailyAttendanceItems
                                 .map(item => new model.DiligenceProject({
                                     id: item.attendanceItemId,
@@ -319,7 +326,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             );
                         }
 
-                        if (calculateAttendanceRecord !== null) {
+                        if (!!calculateAttendanceRecord) {
                             let calculateAttendanceRecordList: Array<model.SelectedTimeItem> = [];
                             calculateAttendanceRecord.addedItem.forEach(function(item) {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.ADDITION}));
@@ -327,8 +334,15 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             calculateAttendanceRecord.subtractedItem.forEach(function(item) {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.SUBTRACTION}));
                             });
-                            calculateAttendanceRecordList.sort((a, b) => { return Number(a.itemId) - Number(b.itemId); });
                             attendanceItem.selectedTimeList = calculateAttendanceRecordList;
+                        }
+
+                        const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
+                        if (index >= 0) {
+                            // dungdv
+                            attendanceItem.selectedTimeList = vm.attendanceRecItemList()[index].attendanceId
+                                .map(item => new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.SUBTRACTION}));
+                            attendanceItem.attribute.selected = vm.attendanceRecItemList()[index].attribute;
                         }
 
                         setShared('attendanceItem', attendanceItem, true);
@@ -351,7 +365,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 $.when(service.getMonthlyAttendanceItems(), service.getCalculateAttendanceRecordDto(attendanceRecordKey))
                     .then((monthlyAttendanceItems: Array<model.AttributeOfAttendanceItem>, calculateAttendanceRecord: any) => {
 
-                        if (monthlyAttendanceItems !== null ) {
+                        if (!!monthlyAttendanceItems) {
 
                             attendanceItem.diligenceProjectList = monthlyAttendanceItems
                                 .map(item => new model.DiligenceProject({
@@ -363,7 +377,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             );
                         }
 
-                        if (calculateAttendanceRecord !== null) {
+                        if (!!calculateAttendanceRecord) {
                             let calculateAttendanceRecordList: Array<model.SelectedTimeItem> = [];
                             calculateAttendanceRecord.addedItem.forEach(function(item) {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.ADDITION}));
@@ -458,14 +472,16 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             let sealStamp: any = getShared('sealStamp');
             let useSeal: any = getShared('useSeal');
             const fontSzie = getShared('exportFontSize');
+            const dataFromScreenA = getShared("dataTranferScreenB");
+            self.selectionType = dataFromScreenA.selectionType;
 
             // Update Ver25
-            $.when(service.getApprovalProcessingUseSetting(), service.getAttendanceRecordExportSetting(attendanceRecExpSetCode))
+            $.when(service.getApprovalProcessingUseSetting(), service.getAttendanceRecordExportSetting(attendanceRecExpSetCode, self.selectionType))
                 .then((aPUS: any, aRES: any) => {
                     if (aPUS !== null) {
                         self.useMonthApproverConfirm(aPUS.useMonthApproverConfirm);
                     }
-                    if (aRES !== null) {
+                    if (aRES !== null && aRES.monthlyConfirmedDisplay !== null) {
                         self.monthlyConfirmedDisplay(aRES.monthlyConfirmedDisplay);
                     }
                 })

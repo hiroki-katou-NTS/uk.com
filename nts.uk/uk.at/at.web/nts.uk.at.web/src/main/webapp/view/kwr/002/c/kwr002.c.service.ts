@@ -28,15 +28,15 @@ module nts.uk.com.view.kwr002.c{
         }
 
         export function getAttendanceSingleList():JQueryPromise<any>{
-            return nts.uk.request.ajax("at",path.getAttendanceSingleList);    
+            return nts.uk.request.ajax("at", path.getAttendanceSingleList);    
         }
         
         export function getAttendanceCalculateList( attendanceType:number):JQueryPromise<any>{
-            return nts.uk.request.ajax("at",path.getAttendanceCalculateList + attendanceType);
+            return nts.uk.request.ajax("at", path.getAttendanceCalculateList + attendanceType);
         }
         
         export function getSealStamp(exportCode : number): JQueryPromise<Array<String>>{
-            return nts.uk.request.ajax("at",path.getSealStamp + exportCode); 
+            return nts.uk.request.ajax("at", path.getSealStamp + exportCode); 
         }
 
         // Ver25
@@ -65,8 +65,8 @@ module nts.uk.com.view.kwr002.c{
         }
 
         // Ver25 出勤簿の出力項目設定
-        export function getAttendanceRecordExportSetting(code : number): JQueryPromise<any>{
-            return nts.uk.request.ajax("at",path.getAttendanceRecordExportSetting + code);
+        export function getAttendanceRecordExportSetting(code : number, selectionType: number): JQueryPromise<any>{
+            return nts.uk.request.ajax("at",path.getAttendanceRecordExportSetting + code + '/' + selectionType);
         }
 
     }
