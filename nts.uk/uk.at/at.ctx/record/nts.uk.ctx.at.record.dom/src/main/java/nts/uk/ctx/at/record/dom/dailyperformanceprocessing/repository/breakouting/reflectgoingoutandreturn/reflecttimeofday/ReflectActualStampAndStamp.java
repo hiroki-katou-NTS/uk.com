@@ -55,7 +55,9 @@ public class ReflectActualStampAndStamp {
 	 */
 	public TimeActualStamp reflect(TimeActualStamp timeActualStamp,Stamp stamp,boolean isReflectTimeStamp,TimeFrame timeFrame,GeneralDate ymd,WorkTimeCode workTimeCode) {
 		//if not (False←普通打刻反映するか＝False　AND　勤怠打刻(実打刻付き)．実打刻に値が入っている)
-		if(!(!isReflectTimeStamp && timeActualStamp.getActualStamp().isPresent())) {
+		if(!(!isReflectTimeStamp && (timeActualStamp.getActualStamp().isPresent() 
+										&& timeActualStamp.getActualStamp().get().getAfterRoundingTime()!=null 
+										&& timeActualStamp.getActualStamp().get().getTimeDay().getTimeWithDay().isPresent() ))) {
 			
 			//日区分付き時刻を求める
 			TimeWithDayAttr timeWithDayAttr = TimeWithDayAttr.convertToTimeWithDayAttr(ymd,
@@ -78,7 +80,7 @@ public class ReflectActualStampAndStamp {
 			}
 			timeActualStamp = timeStampCopy;
 		}
-		int number = timeFrame.getNumberOfReflections()+1;
+		int number = timeActualStamp.getNumberOfReflectionStamp()!=null?timeActualStamp.getNumberOfReflectionStamp()+1:1;
 		//打刻反映回数を＋１する
 		timeFrame.setNumberOfReflections(number);
 		timeActualStamp.setNumberOfReflectionStamp(number);
