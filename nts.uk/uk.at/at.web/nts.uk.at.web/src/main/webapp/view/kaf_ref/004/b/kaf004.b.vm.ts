@@ -213,7 +213,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 }
             }
 
-            if (_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 }).length > 0) {
+            if (_.filter(lateEarliesApp, { 'workNo': 2, 'lateOrEarlyClassification': 1 }).length > 0) {
                 vm.workManagement.leaveTime2(_.filter(lateEarliesApp, { 'workNo': 1, 'lateOrEarlyClassification': 1 })[0].timeWithDayAttr);
             } else {
                 if (vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail.opDepartureTime2 !== null) {
