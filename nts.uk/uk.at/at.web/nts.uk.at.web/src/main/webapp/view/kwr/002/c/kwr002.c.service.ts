@@ -28,15 +28,15 @@ module nts.uk.com.view.kwr002.c{
         }
 
         export function getAttendanceSingleList():JQueryPromise<any>{
-            return nts.uk.request.ajax("at",path.getAttendanceSingleList);    
+            return nts.uk.request.ajax("at", path.getAttendanceSingleList);    
         }
         
         export function getAttendanceCalculateList( attendanceType:number):JQueryPromise<any>{
-            return nts.uk.request.ajax("at",path.getAttendanceCalculateList + attendanceType);
+            return nts.uk.request.ajax("at", path.getAttendanceCalculateList + attendanceType);
         }
         
         export function getSealStamp(exportCode : number): JQueryPromise<Array<String>>{
-            return nts.uk.request.ajax("at",path.getSealStamp + exportCode); 
+            return nts.uk.request.ajax("at", path.getSealStamp + exportCode); 
         }
 
         // Ver25

@@ -2,7 +2,7 @@
 
 module nts.uk.at.kmr003.b {
     @bean()
-    export class KMR003AViewModel extends ko.ViewModel {
+    export class KMR003BViewModel extends ko.ViewModel {
         errors: KnockoutObservableArray<any> = ko.observableArray([]);
         selected: KnockoutObservable<any>= ko.observable(null);
         constructor(params: any) {
