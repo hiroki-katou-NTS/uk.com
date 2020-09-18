@@ -2020,6 +2020,7 @@ module cmm045.a.viewmodel {
 
             const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
             service.print(command);
+            $('#daterangepicker .ntsEndDatePicker').focus();
         }
 
         // getNtsFeatures(): Array<any> {
@@ -2144,7 +2145,7 @@ module cmm045.a.viewmodel {
 					if(data) {
 						return self.reload(data.appListExtractCondition, data.appListInfo);
 					}
-				}).always(() => { block.clear(); });
+				}).always(() => { $('#daterangepicker .ntsEndDatePicker').focus(); block.clear(); });
 			});
 		}
     }
