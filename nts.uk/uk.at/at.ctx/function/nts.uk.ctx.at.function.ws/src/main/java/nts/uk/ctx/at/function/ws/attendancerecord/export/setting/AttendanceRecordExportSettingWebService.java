@@ -25,7 +25,7 @@ import nts.uk.ctx.at.function.app.find.attendancerecord.export.setting.Attendanc
  */
 @Path("com/function/attendancerecord/export/setting")
 @Produces("application/json")
-public class AttendanceRecordExportSettingWebService {
+public class AttendanceRecordExportSettingWebService { 
 
 	/** The attendance ec exp set finder. */
 	@Inject
@@ -65,9 +65,10 @@ public class AttendanceRecordExportSettingWebService {
 	 * @return the attendance rec out set
 	 */
 	@POST
-	@Path("getAttendanceRecExpSet/{code}")
-	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") String code) {
-		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(code);
+	@Path("getAttendanceRecExpSet/{code}/{selectionType}")
+	public AttendanceRecordExportSettingDto getAttendanceRecExpSet(@PathParam("code") String code
+			, @PathParam("selectionType") Integer selectionType) {
+		return attendanceEcExpSetFinder.getAttendanceRecordExportSettingDto(code, selectionType);
 	}
 
 	/**

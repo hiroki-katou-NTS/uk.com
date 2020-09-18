@@ -1,234 +1,138 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
-import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-//import javax.persistence.criteria.Order;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class JpaAttendanceRecordExportSettingRepository.
+ * The Class JpaAttendanceRecordExportSettingRepo.
+ *
+ * @author nws-lienptk
  */
 @Stateless
 public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
-		implements AttendanceRecordExportSettingRepository {
-
-	public static final String GET_FREE_SETTING_BY_EMPLOYEE_AND_COMPANY = "SELECT ot FROM KfnmtRptWkAtdOut ot"
-			+ "	WHERE ot.cid = :companyId"
-			+ "		AND ot.sid = :employeeId"
-			+ "		AND ot.itemSelType = :itemSelType";
+		implements AttendanceRecordFreeSettingRepository, AttendanceRecordStandardSettingRepository, AttendanceRecordExportSettingRepository {
 	
-	public static final String GET_STANDARD_SETTING_BY_COMPANY = "SELECT ot FROM KfnmtRptWkAtdOut ot"
-			+ "	WHERE ot.cid = :companyId"
-			+ "		AND ot.itemSelType = :itemSelType";
+	private static final String GET_STANDARD_SETTING_BY_CODE = "SELECT out FROM KfnmtRptWkAtdOut out"
+			+ " WHERE out.cid = :companyId"
+			+ " AND out.itemSelType = :selectionType"
+			+ " AND out.exportCD = :code";
+	private static final String GET_FREE_SETTING_BY_CODE = GET_STANDARD_SETTING_BY_CODE + " AND out.sid = :employeeId";
+
+	private static final String GET_SETTING_BY_LAYOUT_ID = "SELECT out FROM KfnmtRptWkAtdOut out"
+			+ " WHERE out.layoutId = :layoutId";
 	
-	public static final String GET_SETTING_BY_COMPANY_AND_CODE = "SELECT ot FROM KfnmtRptWkAtdOut ot"
-			+ "	WHERE ot.cid = :companyId"
-			+ "		AND ot.itemSelType = :itemSelType"
-			+ "		AND ot.itemCode = :itemCode";
-	
-	public static final String GET_SETTING_BY_EMPLOYEE_AND_COMPANY_AND_CODE = "SELECT ot FROM KfnmtRptWkAtdOut ot"
-			+ "	WHERE ot.cid = :companyId"
-			+ "		AND ot.sid = :employeeId"
-			+ "		AND ot.itemSelType = :itemSelType"
-			+ "		AND ot.itemCode = :itemCode";
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
-	 * AttendanceRecordExportSettingRepository#getAllAttendanceRecExpSet(java.
-	 * lang.String)
-	 */
+	private static final String GET_STANDARD_SETTING = "SELECT out FROM KfnmtRptWkAtdOut out"
+			+ " WHERE out.cid = :companyId"
+			+ " AND out.itemSelType = :selectionType";
+	private static final String GET_FREE_SETTING = GET_STANDARD_SETTING + " AND out.sid = :employeeId";
+
 	@Override
-	public List<AttendanceRecordExportSetting> getAllAttendanceRecExpSet(String companyId) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnmtRptWkAtdOut> cq = criteriaBuilder.createQuery(KfnmtRptWkAtdOut.class);
-		Root<KfnmtRptWkAtdOut> root = cq.from(KfnmtRptWkAtdOut.class);
-
-		// build query
-		cq.select(root);
-
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-//		predicates.add(
-//				criteriaBuilder.equal(root.get(KfnmtRptWkAtdOut_.cid), companyId));
-
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
-
-		// query data
-		List<KfnmtRptWkAtdOut> attendanceEntity = em.createQuery(cq).getResultList();
-
-		// return
-		return attendanceEntity.isEmpty() ? new ArrayList<AttendanceRecordExportSetting>()
-				: attendanceEntity.stream().map(entity -> toDomain(entity)).collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
-	 * AttendanceRecordExportSettingRepository#getAttendanceRecExpSet(java.lang.
-	 * String, java.lang.String)
-	 */
-	@Override
-	public Optional<AttendanceRecordExportSetting> getAttendanceRecExpSet(String companyId, String code) {
-		String sql = "SELECT ot FROM KfnmtRptWkAtdOut ot WHERE ot.exportCD = :exportCD AND ot.cid = :companyId ";
-		Optional<AttendanceRecordExportSetting> oKfnmtRptWkAtdOut = this.queryProxy().query(sql, KfnmtRptWkAtdOut.class)
-													.setParameter("exportCD", code)
-													.setParameter("companyId", companyId)
-													.getSingle(c -> toDomain(c));
-
-		return oKfnmtRptWkAtdOut;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
-	 * AttendanceRecordExportSettingRepository#updateAttendanceRecExpSet(nts.uk.
-	 * ctx.at.function.dom.attendancerecord.export.setting.
-	 * AttendanceRecordExportSetting)
-	 */
-	@Override
-	public void updateAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
-
-//		// update attendance info
-//		this.commandProxy().update(toEntity(attendanceRecordExpSet));
-//
-//		// Delete seal stamp List
-//		this.deleteSealStamp(attendanceRecordExpSet.getCompanyId(),attendanceRecordExpSet.getLayoutId());
-//
-//		// Add seal stamp List
-//		int order = 1;
-//		long expCode = Long.parseLong(attendanceRecordExpSet.getCode().v());
-//	
-//		String cid = attendanceRecordExpSet.getCompanyId();
-//		String layoutId = attendanceRecordExpSet.getLayoutId();
-//		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
-//			this.commandProxy().insert(toSealStampEntity(cid, layoutId, seal, order++));
-//		}
-
-	}
-
-	/**
-	 * To seal stamp entity.
-	 *
-	 * @param cId
-	 *            the c id
-	 * @param code
-	 *            the code
-	 * @param sealName
-	 *            the seal name
-	 * @return the kfnst seal column
-	 */
-	private KfnmtRptWkAtdOutseal toSealStampEntity(String cId, String layoutId, SealColumnName sealName, int order) {
-		UUID columnId = UUID.randomUUID();
-		
-		KfnmtRptWkAtdOutseal outseal = new KfnmtRptWkAtdOutseal();
-		outseal.setColumnId(columnId.toString());
-		outseal.setExclusVer(0);
-		outseal.setContractCd(AppContexts.user().contractCode());
-		outseal.setCid(cId);
-		outseal.setLayoutId(layoutId);
-		outseal.setSealStampName(sealName.toString());
-		outseal.setSealOrder(new BigDecimal(order));
-		return outseal;
-	}
-
-	/**
-	 * Delete seal stamp.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @param code
-	 *            the code
-	 */
-	private void deleteSealStamp(String companyId, String layoutId) {
-		// Delete seal Stamp list
-		List<KfnmtRptWkAtdOutseal> sealStampList = this.findAllSealColumn(companyId,layoutId);
-		this.commandProxy().removeAll(sealStampList);
-		this.getEntityManager().flush();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
-	 * AttendanceRecordExportSettingRepository#addAttendanceRecExpSet(nts.uk.ctx
-	 * .at.function.dom.attendancerecord.export.setting.
-	 * AttendanceRecordExportSetting)
-	 */
-	@Override
-	public void addAttendanceRecExpSet(AttendanceRecordExportSetting attendanceRecordExpSet) {
-		addKfnmtRptWkAtdOut(attendanceRecordExpSet);
-		if (attendanceRecordExpSet.getSealStamp() != null)
-			addKfnmtRptWkAtdOutseals(attendanceRecordExpSet);
-	}
-
-	private void addKfnmtRptWkAtdOutseals(AttendanceRecordExportSetting attendanceRecordExpSet) {
-//		String cid = attendanceRecordExpSet.getCompanyId();
-//		String layoutId = attendanceRecordExpSet.getLayoutId();
-//		ExportSettingCode settingCode = attendanceRecordExpSet.getCode();
-//		// remove Seal stamps
-//		deleteSealStamp(attendanceRecordExpSet.getCompanyId(),attendanceRecordExpSet.getLayoutId());
-//
-//		// Insert Seal Stamp List
-//		int order = 1;
-//		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
-//			this.commandProxy().insert(toSealStampEntity(cid, layoutId, seal, order++));
-//		}
-//		this.getEntityManager().flush();
-	}
-
-	private void addKfnmtRptWkAtdOut(AttendanceRecordExportSetting attendanceRecordExpSet) {
-		KfnmtRptWkAtdOut pk = new KfnmtRptWkAtdOut();
-		pk.setLayoutId(attendanceRecordExpSet.getLayoutId());
-		Optional<KfnmtRptWkAtdOut> entityFromDb = this.queryProxy().find(pk.getLayoutId(), KfnmtRptWkAtdOut.class);
-		if (entityFromDb.isPresent()) {
-			this.commandProxy().update(toEntity(attendanceRecordExpSet));
-		} else {
-			// Insert Attendance
-			this.commandProxy().insert(toEntity(attendanceRecordExpSet));
+	public Optional<AttendanceRecordExportSetting> findByCode(ItemSelectionType selectionType
+			, String companyId
+			, Optional<String> employeeId
+			, String code) {
+		if (selectionType == ItemSelectionType.STANDARD_SETTING) {
+			return this.queryProxy()
+					.query(GET_STANDARD_SETTING_BY_CODE, KfnmtRptWkAtdOut.class)
+					.setParameter("companyId", companyId)
+					.setParameter("selectionType", selectionType.value)
+					.setParameter("code", code)
+					.getSingle(t -> new AttendanceRecordExportSetting(t));
 		}
+		
+		if (selectionType == ItemSelectionType.FREE_SETTING && employeeId.isPresent()) {
+			return this.queryProxy()
+					.query(GET_FREE_SETTING_BY_CODE, KfnmtRptWkAtdOut.class)
+					.setParameter("companyId", companyId)
+					.setParameter("selectionType", selectionType.value)
+					.setParameter("code", code)
+					.setParameter("employeeId", employeeId.get())
+					.getSingle(t -> new AttendanceRecordExportSetting(t));
+		}
+
+		return Optional.empty();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.function.dom.attendancerecord.export.setting.
-	 * AttendanceRecordExportSettingRepository#deleteAttendanceRecExpSet(nts.uk.
-	 * ctx.at.function.dom.attendancerecord.export.setting.
-	 * AttendanceRecordExportSetting)
-	 */
 	@Override
-	public void deleteAttendanceRecExpSet(AttendanceRecordExportSetting domain) {
-		this.commandProxy().remove(toEntity(domain));
-//		deleteSealStamp(domain.getCompanyId(),domain.getLayoutId());
+	public Optional<AttendanceRecordExportSetting> findByLayoutId(String layoutId) {
+		return this.queryProxy()
+				.query(GET_SETTING_BY_LAYOUT_ID, KfnmtRptWkAtdOut.class)
+				.setParameter("layoutId", layoutId)
+				.getSingle(t -> new AttendanceRecordExportSetting(t));
+	}
+
+	@Override
+	public void add(AttendanceRecordStandardSetting domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(AttendanceRecordStandardSetting domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Optional<AttendanceRecordStandardSetting> getStandardByCompanyId(String companyId) {
+		List<KfnmtRptWkAtdOut> kfnmtRptWkAtdOut = this.queryProxy()
+				.query(GET_STANDARD_SETTING, KfnmtRptWkAtdOut.class)
+				.setParameter("companyId", companyId)
+				.setParameter("selectionType", ItemSelectionType.STANDARD_SETTING.value)
+				.getList();
+
+		if (kfnmtRptWkAtdOut.isEmpty()) {
+			return Optional.empty();
+		}
+
+		JpaAttendanceRecordStandardSettingGetMemento mementoGetter = new JpaAttendanceRecordStandardSettingGetMemento(
+				kfnmtRptWkAtdOut, companyId, ItemSelectionType.STANDARD_SETTING.value);
+		return Optional.of(AttendanceRecordStandardSetting.createFromMemento(mementoGetter));
+		
+	}
+
+	@Override
+	public void add(AttendanceRecordFreeSetting domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(AttendanceRecordFreeSetting domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Optional<AttendanceRecordFreeSetting> getOutputItemsByCompnayAndEmployee(String companyId,
+			String employeeId) {
+		List<KfnmtRptWkAtdOut> kfnmtRptWkAtdOut = this.queryProxy()
+				.query(GET_FREE_SETTING, KfnmtRptWkAtdOut.class)
+				.setParameter("companyId", companyId)
+				.setParameter("selectionType", ItemSelectionType.FREE_SETTING.value)
+				.setParameter("employeeId", employeeId)
+				.getList();
+
+		if (kfnmtRptWkAtdOut.isEmpty()) {
+			return Optional.empty();
+		}
+
+		JpaAttendanceRecordFreeSettingGetMemento mementoGetter = new JpaAttendanceRecordFreeSettingGetMemento(
+				kfnmtRptWkAtdOut, companyId, employeeId, ItemSelectionType.FREE_SETTING.value);
+		return Optional.of(AttendanceRecordFreeSetting.createFromMemento(mementoGetter));
 	}
 
 	/*
@@ -240,101 +144,12 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	 */
 	@Override
 	public List<String> getSealStamp(String companyId, long code) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnmtRptWkAtdOutseal> cq = criteriaBuilder.createQuery(KfnmtRptWkAtdOutseal.class);
-		Root<KfnmtRptWkAtdOutseal> root = cq.from(KfnmtRptWkAtdOutseal.class);
-
-		// build query
-		cq.select(root);
-
-		// create where conditions
-		List<Predicate> predicates = new ArrayList<>();
-
-		// add where to query
-		cq.where(predicates.toArray(new Predicate[] {}));
-
-		// order by
-		cq.orderBy(criteriaBuilder.asc(root.get("sealOrder")));
-
-		// query data
-		List<KfnmtRptWkAtdOutseal> sealStampEntity = em.createQuery(cq).getResultList();
-
-		// return
-		return sealStampEntity.isEmpty() ? new ArrayList<String>()
-				: sealStampEntity.stream().map(KfnmtRptWkAtdOutseal::getSealStampName).collect(Collectors.toList());
+		return new ArrayList<>();
 	}
 
-	/**
-	 * To domain.
-	 *
-	 * @param attendanceEntity the attendance entity
-	 * @return the attendance record export setting
-	 */
-	public AttendanceRecordExportSetting toDomain(KfnmtRptWkAtdOut attendanceEntity) {
-		return new AttendanceRecordExportSetting(attendanceEntity);
-	}
-
-
-	/**
-	 * To entity.
-	 *
-	 * @param domain the domain
-	 * @return the kfnmtrptwkatdout
-	 */
-	public KfnmtRptWkAtdOut toEntity(AttendanceRecordExportSetting domain) {
-		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
-		KfnmtRptWkAtdOut PK = new KfnmtRptWkAtdOut();
-		PK.setLayoutId(domain.getLayoutId());
-		PK.setContractCd("1");
-		PK.setExclusVer(0);
-		PK.setItemSelType(0);
-		PK.setCid(companyId);
-		PK.setSid(employeeId);
-		PK.setExportCD(domain.getCode().v());
-//		PK.setName(domain.getName().v());
-//		PK.setSealUseAtr(new BigDecimal(0));
-//		PK.setNameUseAtr(new BigDecimal(0));
-		PK.setCharSizeType(new BigDecimal(1));
-		PK.setMonthAppDispAtr(new BigDecimal(0));
-		KfnmtRptWkAtdOut entity = this.queryProxy().find(PK.getLayoutId(), KfnmtRptWkAtdOut.class)
-				.orElse(PK);
-		
-		// new decimal 
-		return entity;
-	}
-
-	/**
-	 * Find all seal column.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @param exportCode
-	 *            the export code
-	 * @return the list
-	 */
-	private List<KfnmtRptWkAtdOutseal> findAllSealColumn(String companyId, String layoutId) {
-
-		List<KfnmtRptWkAtdOutseal> listKfnmtRptWkAtdOutseal = new ArrayList<>();
-		String sql = "SELECT os FROM KfnmtRptWkAtdOutseal os WHERE os.cid = ? AND os.layoutId = ?";
-		try (PreparedStatement statement = this.connection().prepareStatement(sql)) {
-			statement.setString(1, companyId);
-			statement.setString(2, layoutId);
-			listKfnmtRptWkAtdOutseal.addAll(new NtsResultSet(statement.executeQuery()).getList(rec -> {
-				KfnmtRptWkAtdOutseal entity = new KfnmtRptWkAtdOutseal();
-				entity.setLayoutId(rec.getString("LAYOUT_ID"));
-				entity.setColumnId(rec.getString("COLUMN_ID"));
-				entity.setCid(rec.getString("CID"));
-				entity.setSealStampName(rec.getString("SEAL_STAMP_NAME"));
-				entity.setSealOrder(rec.getBigDecimal("SEAL_ORDER"));
-				return entity;
-			}));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		
-		return listKfnmtRptWkAtdOutseal;
+	@Override
+	public void deleteAttendanceRecExpSet(AttendanceRecordExportSetting domain) {
+		// TODO Auto-generated method stub
 		
 	}
 

@@ -25,34 +25,4 @@ public interface AttendanceRecordStandardSettingRepository {
      * @param compnayId
      */
     public Optional<AttendanceRecordStandardSetting> getStandardByCompanyId(String companyId);
-    
-    /**
-     * Find by company id and code.
-     *
-     * @param compayny the companyId
-     * @param code the code
-     * @return the optional
-     */
-    public Optional<AttendanceRecordStandardSetting> findByCompanyIdAndCode(String companyId, String code);
-    
-    
-    /**
-     * Find by company code layout id.
-     *
-     * @param compayny the companyId
-     * @param code the code
-     * @param layoutId the layout id
-     * @return the optional
-     */
-    public Optional<AttendanceRecordStandardSetting> findByCompanyCodeLayoutId(String companyId, String code, String layoutId);
-    
-    /**
-     * Find by compnay code and select type.
-     *
-     * @param companyId the company id
-     * @param code the code
-     * @param selectType the select type
-     * @return the optional
-     */
-    public Optional<AttendanceRecordStandardSetting> findByCompanyCodeAndSelectType(String companyId, long code, int selectType);
 }

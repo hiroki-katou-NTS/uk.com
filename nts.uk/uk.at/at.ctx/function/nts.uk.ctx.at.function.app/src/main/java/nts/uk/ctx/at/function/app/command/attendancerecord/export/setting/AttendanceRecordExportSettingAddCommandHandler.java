@@ -50,7 +50,7 @@ public class AttendanceRecordExportSettingAddCommandHandler
 			domain.setSealUseAtr(command.getSealUseAtr());
 		}
 		// Add
-		attendanceRecExpSetRepo.addAttendanceRecExpSet(domain);
+//		attendanceRecExpSetRepo.addAttendanceRecExpSet(domain);
 	}
 
 }

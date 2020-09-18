@@ -18,6 +18,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 //import nts.uk.ctx.at.function.dom.holidaysremaining.PermissionOfEmploymentForm;
 import nts.uk.ctx.at.function.dom.holidaysremaining.repository.PermissionOfEmploymentFormRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
@@ -31,7 +32,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AttendanceRecordExportSettingFinder {
 
-	/** The attendance rec exp set repo. */
 	@Inject
 	AttendanceRecordExportSettingRepository attendanceRecExpSetRepo;
 
@@ -46,16 +46,16 @@ public class AttendanceRecordExportSettingFinder {
 	/** Get Closure Month. */
 	@Inject
 	WorkScheduleOutputConditionFinder workScheduleOutputConditionFinder;
-	
+
 	@Inject
 	private DailyPerformAuthorRepo dailyPerAuthRepo;
-	
+
 	@Inject
 	private AttendanceRecordFreeSettingRepository freeSetting;
-	
+
 	@Inject
 	private AttendanceRecordStandardSettingRepository standardRepo;
-	
+
 	/**
 	 * Gets the all attendance record export setting.
 	 *
@@ -64,7 +64,7 @@ public class AttendanceRecordExportSettingFinder {
 	 */
 	public AttendanceRecordExportSettingWrapperDto getAllAttendanceRecordExportSetting() {
 		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId(); 
+		String employeeId = AppContexts.user().employeeId();
 		String roleId = AppContexts.user().roles().forPersonalInfo();
 		// ログイン社員の就業帳票の権限を取得する (Get the authority of work report of logged in employee)
 		boolean isFreeSetting = this.dailyPerAuthRepo.getAuthorityOfEmployee(roleId,
@@ -74,7 +74,7 @@ public class AttendanceRecordExportSettingFinder {
 		List<AttendanceRecordExportSettingDto> standardSettingLst = new ArrayList<AttendanceRecordExportSettingDto>();
 		// アルゴリズム「定型設定の出力項目を取得」を実行する (Execute algorithm 「定型設定の出力項目を取得」)
 		Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo.getStandardByCompanyId(companyId);
-		
+
 		if (standardSetting.isPresent()) {
 			// convert domain to Dto
 			standardSettingLst = standardSetting.get().getAttendanceRecordExportSettings().stream().map(item -> {
@@ -86,9 +86,10 @@ public class AttendanceRecordExportSettingFinder {
 				return dto;
 			}).collect(Collectors.toList());
 		}
-		
+
 		// アルゴリズム「自由設定の出力項目を取得」を実行する (Execute algorithm「自由設定の出力項目を取得」)
-		Optional<AttendanceRecordFreeSetting> freeSetting = this.freeSetting.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
+		Optional<AttendanceRecordFreeSetting> freeSetting = this.freeSetting
+				.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
 
 		if (freeSetting.isPresent()) {
 			// convert domain to Dto
@@ -102,26 +103,26 @@ public class AttendanceRecordExportSettingFinder {
 			}).collect(Collectors.toList());
 		}
 
-
 		// return
-		return AttendanceRecordExportSettingWrapperDto.builder()
-				.isFreeSetting(isFreeSetting)
-				.freeSettingLst(freeSettingLst)
-				.standardSettingLst(standardSettingLst)
-				.build();
+		return AttendanceRecordExportSettingWrapperDto.builder().isFreeSetting(isFreeSetting)
+				.freeSettingLst(freeSettingLst).standardSettingLst(standardSettingLst).build();
 	}
+
 	/**
 	 * Gets the attendance record export setting dto.
 	 *
 	 * @param companyId the company id
-	 * @param code the code
+	 * @param code      the code
 	 * @return the attendance record export setting dto
 	 */
-	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String code) {
+	public AttendanceRecordExportSettingDto getAttendanceRecordExportSettingDto(String code, Integer selectionType) {
 
 		String companyId = AppContexts.user().companyId();
+		Optional<String> employeeId = selectionType == ItemSelectionType.FREE_SETTING.value
+				? Optional.of(AppContexts.user().companyId())
+				: Optional.empty();
 		Optional<AttendanceRecordExportSetting> optionalDomain = attendanceRecExpSetRepo
-				.getAttendanceRecExpSet(companyId, code);
+				.findByCode(ItemSelectionType.valueOf(selectionType), companyId, employeeId, code);
 
 		if (optionalDomain.isPresent()) {
 			AttendanceRecordExportSetting domain = optionalDomain.get();
@@ -143,8 +144,7 @@ public class AttendanceRecordExportSettingFinder {
 	/**
 	 * Gets the seal stamp.
 	 *
-	 * @param code
-	 *            the code
+	 * @param code the code
 	 * @return the seal stamp
 	 */
 	public List<String> getSealStamp(long code) {
@@ -163,23 +163,24 @@ public class AttendanceRecordExportSettingFinder {
 
 		return permission;
 	}
-	
-	public AttendaceMonthDto getClosureMonth(){
-		Optional<Closure> closureMonth = workScheduleOutputConditionFinder.getDomClosure(AppContexts.user().employeeId(), GeneralDate.today());
+
+	public AttendaceMonthDto getClosureMonth() {
+		Optional<Closure> closureMonth = workScheduleOutputConditionFinder
+				.getDomClosure(AppContexts.user().employeeId(), GeneralDate.today());
 		Closure optCls = closureMonth.get();
 		return new AttendaceMonthDto(optCls.getClosureMonth().getProcessingYm().toString());
 	}
-	
+
 	public AttendanceAuthorityOfWorkPerform getAuthorityOfWorkPerformance() {
 		String roleId = AppContexts.user().roles().forAttendance();
 		String companyId = AppContexts.user().companyId();
 		String employeeId = AppContexts.user().employeeId();
 
 		AttendanceAuthorityOfWorkPerform attendanceDto = new AttendanceAuthorityOfWorkPerform();
-		
+
 		boolean isFreeSetting = this.dailyPerAuthRepo.getAuthorityOfEmployee(roleId,
 				new DailyPerformanceFunctionNo(BigDecimal.valueOf(51l)), true);
-		
+
 		if (isFreeSetting) {
 			Optional<AttendanceRecordFreeSetting> freeSetting = this.freeSetting
 					.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
@@ -195,20 +196,21 @@ public class AttendanceRecordExportSettingFinder {
 		attendanceDto.setFunctionNo(51);
 		return attendanceDto;
 	}
-	
+
 	/**
 	 * Gets the free setting.
 	 *
-	 * @param companyId the company id
+	 * @param companyId  the company id
 	 * @param employeeId the employee id
 	 * @return the free setting
 	 */
 	private AttendanceRecordFreeSettingDto getFreeSetting(String companyId, String employeeId) {
-		Optional<AttendanceRecordFreeSetting> oDomain = this.freeSetting.getOutputItemsByCompnayAndEmployee(companyId, employeeId);
-		
+		Optional<AttendanceRecordFreeSetting> oDomain = this.freeSetting.getOutputItemsByCompnayAndEmployee(companyId,
+				employeeId);
+
 		return oDomain.map(d -> toFreeSettingDto(d)).orElse(null);
 	}
-	
+
 	/**
 	 * Gets the standard setting.
 	 *
@@ -217,10 +219,10 @@ public class AttendanceRecordExportSettingFinder {
 	 */
 	private AttendanceRecordStandardSettingDto getStandardSetting(String companyId) {
 		Optional<AttendanceRecordStandardSetting> oDomain = this.standardRepo.getStandardByCompanyId(companyId);
-		
+
 		return oDomain.map(d -> toStandardSettingDto(d)).orElse(null);
 	}
-	
+
 	/**
 	 * To free setting dto.
 	 *
@@ -232,7 +234,7 @@ public class AttendanceRecordExportSettingFinder {
 		domain.setMemento(dto);
 		return dto;
 	}
-	
+
 	/**
 	 * To standard setting dto.
 	 *
@@ -246,4 +248,3 @@ public class AttendanceRecordExportSettingFinder {
 	}
 
 }
-

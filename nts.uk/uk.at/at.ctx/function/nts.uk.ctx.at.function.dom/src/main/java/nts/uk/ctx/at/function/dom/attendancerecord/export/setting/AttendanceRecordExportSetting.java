@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.function.dom.attendancerecord.export.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -66,13 +67,12 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	/**
 	 * Instantiates a new attendance record export setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public AttendanceRecordExportSetting(AttendanceRecordExportSettingGetMemento memento) {
 		this.layoutId = memento.getLayoutId();
-		this.dailyExportItem = memento.getDailyExportItem();
-		this.monthlyExportItem = memento.getMonthlyExportItem();
+		this.dailyExportItem = memento.getDailyExportItem() != null ? memento.getDailyExportItem() : new ArrayList<>();
+		this.monthlyExportItem = memento.getMonthlyExportItem() != null ? memento.getMonthlyExportItem() : new ArrayList<>();
 		this.sealUseAtr = memento.getSealUseAtr();
 		this.code = memento.getCode();
 		this.name = memento.getName();

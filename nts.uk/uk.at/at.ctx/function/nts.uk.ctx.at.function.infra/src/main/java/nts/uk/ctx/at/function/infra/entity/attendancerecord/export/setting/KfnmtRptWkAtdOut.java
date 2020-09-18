@@ -2,6 +2,7 @@ package nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -175,24 +176,28 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 
 	@Override
 	public List<AttendanceRecordExport> getDailyExportItem() {
-		return this.lstKfnmtRptWkAtdOutatd.stream()
+		return this.lstKfnmtRptWkAtdOutatd != null
+			 ? this.lstKfnmtRptWkAtdOutatd.stream()
 				.filter(r -> r.getOutputAtr() == ExportAtr.DAILY.value)
 				.map(t -> {
 					AttendanceRecordExport atd = new AttendanceRecordExport();
 					// TODO
 					return atd;
-				}).collect(Collectors.toList());
+				}).collect(Collectors.toList())
+			 : new ArrayList<>();
 	}
 
 	@Override
 	public List<AttendanceRecordExport> getMonthlyExportItem() {
-		return this.lstKfnmtRptWkAtdOutatd.stream()
-				.filter(r -> r.getOutputAtr() == ExportAtr.MONTHLY.value)
-				.map(t -> {
-					AttendanceRecordExport atd = new AttendanceRecordExport();
-					// TODO
-					return atd;
-				}).collect(Collectors.toList());
+		return this.lstKfnmtRptWkAtdOutatd != null
+				 ? this.lstKfnmtRptWkAtdOutatd.stream()
+					.filter(r -> r.getOutputAtr() == ExportAtr.MONTHLY.value)
+					.map(t -> {
+						AttendanceRecordExport atd = new AttendanceRecordExport();
+						// TODO
+						return atd;
+					}).collect(Collectors.toList())
+				 : new ArrayList<>();
 	}
 
 	@Override

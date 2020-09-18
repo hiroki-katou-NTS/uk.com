@@ -45,7 +45,7 @@ public class AttendanceRecordExportSettingSaveCommandHandler
 		domain.setSealUseAtr(command.getSealUseAtr());
 		domain.setExportFontSize(ExportFontSize.valueOf(command.getExportFontSize()));
 		// update
-		attendanceRecExpSetRepo.updateAttendanceRecExpSet(domain);
+//		attendanceRecExpSetRepo.updateAttendanceRecExpSet(domain);
 	}
 
 }
