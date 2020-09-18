@@ -37,8 +37,8 @@ module nts.uk.at.view.kaf022.b.viewmodel {
         ]);
 
         itemListB242: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: getText('KAF022_75')},
-            {code: 1, name: getText('KAF022_82')},
+            {code: 1, name: getText('KAF022_75')},
+            {code: 0, name: getText('KAF022_82')},
         ]);
 
         itemListB362: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -52,8 +52,8 @@ module nts.uk.at.view.kaf022.b.viewmodel {
         ]);
 
         itemListB5: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: getText('KAF022_44')},
-            {code: 1, name: getText('KAF022_396')},
+            {code: 1, name: getText('KAF022_44')},
+            {code: 0, name: getText('KAF022_396')},
         ]);
 
         itemListWorkTimeBeginDisplay: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -151,9 +151,9 @@ module nts.uk.at.view.kaf022.b.viewmodel {
         constructor(appDetailSetting?: any) {
             this.requiredInstruction = ko.observable(appDetailSetting ? appDetailSetting.requiredInstruction : 0);
             this.preRequireSet = ko.observable(appDetailSetting ? appDetailSetting.preRequireSet : 0);
-            this.timeInputUse = ko.observable(appDetailSetting ? appDetailSetting.timeInputUse : 0);
+            this.timeInputUse = ko.observable(appDetailSetting ? appDetailSetting.timeInputUse : 1);
             this.timeCalUse = ko.observable(appDetailSetting ? appDetailSetting.timeCalUse : 1);
-            this.atworkTimeBeginDisp = ko.observable(appDetailSetting ? appDetailSetting.atworkTimeBeginDisp : 0);
+            this.atworkTimeBeginDisp = ko.observable(appDetailSetting ? appDetailSetting.atworkTimeBeginDisp : 1);
             this.dispSystemTimeWhenNoWorkTime = ko.observable(appDetailSetting ? appDetailSetting.dispSystemTimeWhenNoWorkTime : 0);
         }
     }
@@ -170,15 +170,15 @@ module nts.uk.at.view.kaf022.b.viewmodel {
         reflectBreakOuting: KnockoutObservable<number>;
 
         constructor(overtimeAppReflect?: any) {
-            this.reflectActualWorkAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectActualWorkAtr : 0);
-            this.reflectWorkInfoAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectWorkInfoAtr : 0);
-            this.reflectActualOvertimeHourAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectActualOvertimeHourAtr : 0);
-            this.reflectBeforeBreak = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectBeforeBreak : 0);
-            this.workReflect = ko.observable(overtimeAppReflect ? overtimeAppReflect.workReflect : 0);
-            this.reflectPaytime = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectPaytime : 0);
-            this.reflectOptional = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectOptional : 0);
-            this.reflectDivergence = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectDivergence : 0);
-            this.reflectBreakOuting = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectBreakOuting : 0);
+            this.reflectActualWorkAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectActualWorkAtr : 1);
+            this.reflectWorkInfoAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectWorkInfoAtr : 1);
+            this.reflectActualOvertimeHourAtr = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectActualOvertimeHourAtr : 1);
+            this.reflectBeforeBreak = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectBeforeBreak : 1);
+            this.workReflect = ko.observable(overtimeAppReflect ? overtimeAppReflect.workReflect : 1);
+            this.reflectPaytime = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectPaytime : 1);
+            this.reflectOptional = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectOptional : 1);
+            this.reflectDivergence = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectDivergence : 1);
+            this.reflectBreakOuting = ko.observable(overtimeAppReflect ? overtimeAppReflect.reflectBreakOuting : 1);
         }
     }
 

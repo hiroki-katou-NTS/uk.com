@@ -24,14 +24,14 @@ module nts.uk.at.view.kaf022.d.viewmodel {
         constructor() {
             const self = this;
             self.selectedIdD15 = ko.observable(0);
-            self.selectedIdD13 = ko.observable(0);
+            self.selectedIdD13 = ko.observable(1);
 
             self.texteditorD9 = ko.observable(null);
-            self.valueD10 = ko.observable(null);
+            self.valueD10 = ko.observable("#000000");
             self.enableD11 = ko.observable(false);
 
             self.texteditorD12 = ko.observable(null);
-            self.valueD10_1 = ko.observable(null);
+            self.valueD10_1 = ko.observable("#000000");
             self.enableD11_1 = ko.observable(false);
 
             $("#fixed-table-d1").ntsFixedTable({});

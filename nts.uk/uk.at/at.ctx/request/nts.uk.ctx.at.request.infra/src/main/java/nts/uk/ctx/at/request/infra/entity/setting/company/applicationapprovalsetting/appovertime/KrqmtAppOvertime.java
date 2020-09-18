@@ -95,8 +95,8 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
     @Column(name = "POST_BP_TIME_REFLECT_ATR")
     private int postBpTimeReflectAtr;
 
-    @Column(name = "POST_ANYV_TIME_REFLECT_ATR")
-    private int postAnyvTimeReflectAtr;
+//    @Column(name = "POST_ANYV_TIME_REFLECT_ATR")
+//    private int postAnyvTimeReflectAtr;
 
     @Column(name = "POST_DVGC_REFLECT_ATR")
     private int postDvgcReflectAtr;
@@ -141,7 +141,7 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
                 AfterOtWorkAppReflect.create(
                         postWorkTimeReflectAtr,
                         postBpTimeReflectAtr,
-                        postAnyvTimeReflectAtr,
+//                        postAnyvTimeReflectAtr,
                         postDvgcReflectAtr,
                         postBreakTimeReflectAtr
                 ),
@@ -171,7 +171,7 @@ public class KrqmtAppOvertime extends ContractUkJpaEntity implements Serializabl
                 overtimeWorkAppReflect.getBefore().getBreakLeaveApplication().getBreakReflectAtr().value,
                 overtimeWorkAppReflect.getAfter().getWorkReflect().value,
                 overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectPaytimeAtr().value,
-                overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
+//                overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
                 overtimeWorkAppReflect.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value,
                 overtimeWorkAppReflect.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value,
                 KrqmtAppOvertimeFrame.fromDomains(overtimeAppSet.getCompanyID(), overtimeAppSet.getOvertimeQuotaSet())

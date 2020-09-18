@@ -228,7 +228,7 @@ module nts.uk.at.view.kaf022.a.viewmodel {
                         )
                     );
                 } else {
-                    self.dataReceptionRestrictionSettings.push(new ReceptionRestrictionSetting(getText(self.appTypeLabels[index]), appType.value, 0, 0, 0, 0, 0, 0, 0));
+                    self.dataReceptionRestrictionSettings.push(new ReceptionRestrictionSetting(getText(self.appTypeLabels[index]), appType.value, 0, 0, 1, null, null, null, 0));
                 }
             });
 

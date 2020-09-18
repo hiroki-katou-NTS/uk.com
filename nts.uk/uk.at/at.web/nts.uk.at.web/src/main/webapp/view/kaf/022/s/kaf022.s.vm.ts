@@ -44,6 +44,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     if (!isNullOrEmpty(reason)) {
                         self.selectedReason(new AppReasonStandard(reason.appType, reason));
                         self.isUpdate(true);
+                        $("#reasonTemp").focus();
                     }
                 } else {
                     self.selectedReason(new AppReasonStandard(self.selectedAppType()));

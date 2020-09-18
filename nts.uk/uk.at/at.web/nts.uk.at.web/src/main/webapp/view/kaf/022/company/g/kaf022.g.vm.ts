@@ -16,8 +16,8 @@ module nts.uk.at.view.kaf022.g.viewmodel {
             {code: 0, name: getText('KAF022_101')}
         ]);
         itemListB82: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 1, name: getText('KAF022_173')},
-            {code: 0, name: getText('KAF022_175')}
+            {code: 0, name: getText('KAF022_173')},
+            {code: 1, name: getText('KAF022_175')}
         ]);
         itemListB24: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 0, name: getText('KAF022_173')},
@@ -39,8 +39,8 @@ module nts.uk.at.view.kaf022.g.viewmodel {
         ]);
 
         itemListB242: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: getText('KAF022_75')},
-            {code: 1, name: getText('KAF022_82')},
+            {code: 1, name: getText('KAF022_75')},
+            {code: 0, name: getText('KAF022_82')},
         ]);
 
         itemListB362: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -54,8 +54,8 @@ module nts.uk.at.view.kaf022.g.viewmodel {
         ]);
 
         itemListB5: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: getText('KAF022_44')},
-            {code: 1, name: getText('KAF022_396')},
+            {code: 1, name: getText('KAF022_44')},
+            {code: 0, name: getText('KAF022_396')},
         ]);
 
         itemListWorkTimeBeginDisplay: KnockoutObservableArray<ItemModel> = ko.observableArray([
@@ -133,11 +133,11 @@ module nts.uk.at.view.kaf022.g.viewmodel {
         constructor(otLeaveAppCommonSet?: any) {
             this.preExcessDisplaySetting = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.preExcessDisplaySetting : 0);
             this.extratimeExcessAtr = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.extratimeExcessAtr : 0);
-            this.extratimeDisplayAtr = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.extratimeDisplayAtr : 0);
+            this.extratimeDisplayAtr = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.extratimeDisplayAtr : 1);
             this.performanceExcessAtr = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.performanceExcessAtr : 0);
             this.checkOvertimeInstructionRegister = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.checkOvertimeInstructionRegister : 0);
             this.checkDeviationRegister = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.checkDeviationRegister : 0);
-            this.overrideSet = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.overrideSet : 0);
+            this.overrideSet = ko.observable(otLeaveAppCommonSet ? otLeaveAppCommonSet.overrideSet : 1);
         }
     }
 
@@ -152,9 +152,9 @@ module nts.uk.at.view.kaf022.g.viewmodel {
         constructor(appDetailSetting?: any) {
             this.requiredInstruction = ko.observable(appDetailSetting ? appDetailSetting.requiredInstruction : 0);
             this.preRequireSet = ko.observable(appDetailSetting ? appDetailSetting.preRequireSet : 0);
-            this.timeInputUse = ko.observable(appDetailSetting ? appDetailSetting.timeInputUse : 0);
-            this.timeCalUse = ko.observable(appDetailSetting ? appDetailSetting.timeCalUse : 0);
-            this.atworkTimeBeginDisp = ko.observable(appDetailSetting ? appDetailSetting.atworkTimeBeginDisp : 0);
+            this.timeInputUse = ko.observable(appDetailSetting ? appDetailSetting.timeInputUse : 1);
+            this.timeCalUse = ko.observable(appDetailSetting ? appDetailSetting.timeCalUse : 1);
+            this.atworkTimeBeginDisp = ko.observable(appDetailSetting ? appDetailSetting.atworkTimeBeginDisp : 1);
             this.dispSystemTimeWhenNoWorkTime = ko.observable(appDetailSetting ? appDetailSetting.dispSystemTimeWhenNoWorkTime : 0);
         }
     }
@@ -169,11 +169,11 @@ module nts.uk.at.view.kaf022.g.viewmodel {
 
         constructor(holidayWorkAppReflect?: any) {
             this.reflectActualHolidayWorkAtr = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectActualHolidayWorkAtr : 0);
-            this.workReflect = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.workReflect : 0);
-            this.reflectPaytime = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectPaytime : 0);
-            this.reflectOptional = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectOptional : 0);
-            this.reflectDivergence = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectDivergence : 0);
-            this.reflectBreakOuting = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectBreakOuting : 0);
+            this.workReflect = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.workReflect : 1);
+            this.reflectPaytime = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectPaytime : 1);
+            this.reflectOptional = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectOptional : 1);
+            this.reflectDivergence = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectDivergence : 1);
+            this.reflectBreakOuting = ko.observable(holidayWorkAppReflect ? holidayWorkAppReflect.reflectBreakOuting : 1);
         }
     }
 

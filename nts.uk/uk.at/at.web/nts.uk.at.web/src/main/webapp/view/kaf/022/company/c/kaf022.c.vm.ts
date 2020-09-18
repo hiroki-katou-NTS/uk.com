@@ -17,24 +17,13 @@ module nts.uk.at.view.kaf022.c.viewmodel {
             {code: 1, name: text('KAF022_420')},
             {code: 0, name: text('KAF022_421')}
         ]);
-        itemListC29: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: text('KAF022_173')},
-            {code: 1, name: text('KAF022_174')},
-            {code: 2, name: text('KAF022_175')},
-        ]);
-        itemListC30: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: text('KAF022_173')},
-            {code: 1, name: text('KAF022_175')},
-        ]);
-
         itemListCC1: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: text('KAF022_75')},
-            {code: 1, name: text('KAF022_82')},
+            {code: 1, name: text('KAF022_75')},
+            {code: 0, name: text('KAF022_82')},
         ]);
-
         itemListC28: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 0, name: text('KAF022_75')},
-            {code: 1, name: text('KAF022_82')},
+            { code: 0, name: text('KAF022_173') },
+            { code: 1, name: text('KAF022_175') }
         ]);
 
         reflectWorkHour: KnockoutObservable<number>;
@@ -55,16 +44,16 @@ module nts.uk.at.view.kaf022.c.viewmodel {
         constructor() {
             const self = this;
 
-            self.oneDayLeaveDeleteAttendance = ko.observable(0);
-            self.reflectAttendance = ko.observable(0);
-            self.reflectWorkHour = ko.observable(0);
+            self.oneDayLeaveDeleteAttendance = ko.observable(1);
+            self.reflectAttendance = ko.observable(1);
+            self.reflectWorkHour = ko.observable(1);
 
-            self.annualVacationTime = ko.observable(0);
-            self.superHoliday60H = ko.observable(0);
-            self.substituteLeaveTime = ko.observable(0);
-            self.nursing = ko.observable(0);
-            self.childNursing = ko.observable(0);
-            self.specialVacationTime = ko.observable(0);
+            self.annualVacationTime = ko.observable(1);
+            self.superHoliday60H = ko.observable(1);
+            self.substituteLeaveTime = ko.observable(1);
+            self.nursing = ko.observable(1);
+            self.childNursing = ko.observable(1);
+            self.specialVacationTime = ko.observable(1);
 
             self.halfDayAnnualLeaveUsageLimitCheck = ko.observable(0);
 
@@ -87,7 +76,7 @@ module nts.uk.at.view.kaf022.c.viewmodel {
             const self = this;
             const dataSetting = allData.holidayApplicationSetting;
             if (dataSetting) {
-                self.halfDayAnnualLeaveUsageLimitCheck(dataSetting.halfDayAnnualLeaveUsageLimitCheck || 0);
+                self.halfDayAnnualLeaveUsageLimitCheck(dataSetting.halfDayAnnualLeaveUsageLimitCheck);
                 const dispNames = dataSetting.dispNames || [];
                 self.holidayAppTypeDispNames().forEach(d => {
                     const disp = _.find(dispNames, i => i.holidayAppType == d.holidayAppType);
@@ -98,17 +87,17 @@ module nts.uk.at.view.kaf022.c.viewmodel {
             const dataReflect = allData.holidayApplicationReflect;
             if (dataReflect) {
                 if (dataReflect.workAttendanceReflect) {
-                    self.oneDayLeaveDeleteAttendance(dataReflect.workAttendanceReflect.oneDayLeaveDeleteAttendance || 0);
-                    self.reflectAttendance(dataReflect.workAttendanceReflect.reflectAttendance || 0);
-                    self.reflectWorkHour(dataReflect.workAttendanceReflect.reflectWorkHour || 0);
+                    self.oneDayLeaveDeleteAttendance(dataReflect.workAttendanceReflect.oneDayLeaveDeleteAttendance);
+                    self.reflectAttendance(dataReflect.workAttendanceReflect.reflectAttendance);
+                    self.reflectWorkHour(dataReflect.workAttendanceReflect.reflectWorkHour);
                 }
                 if (dataReflect.timeLeaveReflect) {
-                    self.annualVacationTime(dataReflect.timeLeaveReflect.annualVacationTime || 0);
-                    self.childNursing(dataReflect.timeLeaveReflect.childNursing || 0);
-                    self.nursing(dataReflect.timeLeaveReflect.nursing || 0);
-                    self.specialVacationTime(dataReflect.timeLeaveReflect.specialVacationTime || 0);
-                    self.substituteLeaveTime(dataReflect.timeLeaveReflect.substituteLeaveTime || 0);
-                    self.superHoliday60H(dataReflect.timeLeaveReflect.superHoliday60H || 0);
+                    self.annualVacationTime(dataReflect.timeLeaveReflect.annualVacationTime);
+                    self.childNursing(dataReflect.timeLeaveReflect.childNursing);
+                    self.nursing(dataReflect.timeLeaveReflect.nursing);
+                    self.specialVacationTime(dataReflect.timeLeaveReflect.specialVacationTime);
+                    self.substituteLeaveTime(dataReflect.timeLeaveReflect.substituteLeaveTime);
+                    self.superHoliday60H(dataReflect.timeLeaveReflect.superHoliday60H);
 
                 }
             }
