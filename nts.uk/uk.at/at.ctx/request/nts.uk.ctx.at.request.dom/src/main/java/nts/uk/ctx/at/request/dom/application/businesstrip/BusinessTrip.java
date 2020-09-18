@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,16 +19,16 @@ public class BusinessTrip extends Application {
     private List<BusinessTripInfo> infos;
 
     // 出発時刻
-    private Optional<Integer> departureTime;
+    private Optional<TimeWithDayAttr> departureTime;
 
     // 帰着時刻
-    private Optional<Integer> returnTime;
+    private Optional<TimeWithDayAttr> returnTime;
 
     public BusinessTrip(List<BusinessTripInfo> infos, Integer departureTime, Integer returnTime, Application application) {
         super(application);
         this.infos = infos;
-        this.departureTime = Optional.ofNullable(departureTime);
-        this.returnTime = Optional.ofNullable(returnTime);
+        this.departureTime = departureTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(departureTime));
+        this.returnTime = returnTime == null ? Optional.empty() : Optional.of(new TimeWithDayAttr(returnTime));
     }
 
     public BusinessTrip(Application application) {

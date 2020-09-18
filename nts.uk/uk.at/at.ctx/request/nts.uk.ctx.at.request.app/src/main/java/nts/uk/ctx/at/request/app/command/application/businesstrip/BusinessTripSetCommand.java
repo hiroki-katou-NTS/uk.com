@@ -8,14 +8,14 @@ import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppC
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.stampsetting.Comment;
 import nts.uk.ctx.at.request.dom.setting.request.application.businesstrip.AppTripRequestSet;
 import nts.uk.shr.com.color.ColorCode;
+import nts.uk.shr.com.context.AppContexts;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BusinessTripSetCommand {
 
-    private String cid;
-
+    // コメント
     private AppCommentSetDto appCommentSet;
 
     public AppTripRequestSet toDomain() {
@@ -24,7 +24,7 @@ public class BusinessTripSetCommand {
         appCommentSet.setColorCode(new ColorCode(this.getAppCommentSet().getColorCode()));
         appCommentSet.setComment(new Comment(this.getAppCommentSet().getComment()));
         return new AppTripRequestSet(
-                this.getCid(),
+                AppContexts.user().companyId(),
                 appCommentSet
         );
     }

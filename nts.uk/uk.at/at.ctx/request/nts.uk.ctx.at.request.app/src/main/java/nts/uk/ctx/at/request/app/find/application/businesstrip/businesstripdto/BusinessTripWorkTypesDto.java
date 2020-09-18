@@ -19,7 +19,7 @@ public class BusinessTripWorkTypesDto {
     public static BusinessTripWorkTypesDto fromDomain(BusinessTripWorkTypes domain) {
         return new BusinessTripWorkTypesDto(
                 domain.getDate().toString(),
-                domain != null ? WorkTypeDto.fromDomain(domain.getWorkType()) : null
+                domain.getWorkType() != null ? WorkTypeDto.fromDomain(domain.getWorkType()) : null
         );
     }
 

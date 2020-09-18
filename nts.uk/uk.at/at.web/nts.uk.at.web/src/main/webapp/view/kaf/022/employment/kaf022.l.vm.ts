@@ -75,6 +75,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                     self.reloadData()
                 ).done((worktypes, data) => {
                     self.workTypeList = worktypes;
+                    self.updateWorkTypeName();
                     let employmentList: Array<UnitModel> = $('#empt-list-setting').getDataList();
                     if (_.size(employmentList))
                         self.selectedCode(employmentList[0].code);
@@ -142,7 +143,6 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                 })));
                 //Store for preview process
                 self.alreadySettingData = lstEmp;
-                self.updateWorkTypeName();
 
                 dfd.resolve();
             }).fail((res) => {
@@ -432,6 +432,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                             nts.uk.ui.block.invisible();
                             //Load data setting
                             self.reloadData().done(() => {
+                                self.updateWorkTypeName();
                                 self.selectedCode.valueHasMutated();
                             }).fail(error => {
                                 nts.uk.ui.dialog.alertError(error);
@@ -455,6 +456,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                         nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                             nts.uk.ui.block.invisible();
                             self.reloadData().done(() => {
+                                self.updateWorkTypeName();
                                 self.selectedCode.valueHasMutated();
                             }).fail(error => {
                                 nts.uk.ui.dialog.alertError(error);
@@ -554,6 +556,7 @@ module nts.uk.at.view.kaf022.l.viewmodel {
                             nts.uk.ui.dialog.info({messageId: "Msg_15"}).then(() => {
                                 nts.uk.ui.block.invisible();
                                 self.reloadData().done(() => {
+                                    self.updateWorkTypeName();
                                     self.selectedCode.valueHasMutated();
                                 }).fail(error => {
                                     nts.uk.ui.dialog.alertError(error);

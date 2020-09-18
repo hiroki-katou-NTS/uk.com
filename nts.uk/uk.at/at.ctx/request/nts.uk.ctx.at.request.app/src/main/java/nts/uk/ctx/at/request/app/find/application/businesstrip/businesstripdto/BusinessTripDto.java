@@ -39,8 +39,8 @@ public class BusinessTripDto {
     public static BusinessTripDto fromDomain(BusinessTrip domain) {
 
         return new BusinessTripDto(
-                domain.getDepartureTime().isPresent() ? domain.getDepartureTime().get() : null,
-                domain.getReturnTime().isPresent() ? domain.getReturnTime().get() : null,
+                domain.getDepartureTime().isPresent() ? domain.getDepartureTime().get().v() : null,
+                domain.getReturnTime().isPresent() ? domain.getReturnTime().get().v() : null,
                 domain.getInfos().stream().map(i -> BusinessTripInfoDto.fromDomain(i)).collect(Collectors.toList())
         );
     }

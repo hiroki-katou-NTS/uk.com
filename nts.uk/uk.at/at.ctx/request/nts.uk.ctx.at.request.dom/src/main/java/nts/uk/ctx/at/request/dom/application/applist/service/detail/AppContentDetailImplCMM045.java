@@ -1017,14 +1017,14 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 		// 出張申請.出発時刻が入力されている場合
 		if(businessTrip.getDepartureTime().isPresent()) {
 			// 申請内容＝#CMM045_290＋"　"＋出張申請.出発時刻＋”　”
-			content += I18NText.getText("CMM045_290") + " " + new TimeWithDayAttr(businessTrip.getDepartureTime().get()).getFullText() + " ";
+			content += I18NText.getText("CMM045_290") + " " + new TimeWithDayAttr(businessTrip.getDepartureTime().get().v()).getFullText() + " ";
 			// @＝'　'
 			paramString = " ";
 		}
 		// 出張申請.帰着時刻が入力されている場合
 		if(businessTrip.getReturnTime().isPresent()) {
 			// 申請内容＋＝@＋#CMM045_291＋"　"＋出張申請.帰着時刻
-			content += I18NText.getText("CMM045_291") + " " + new TimeWithDayAttr(businessTrip.getReturnTime().get()).getFullText();
+			content += I18NText.getText("CMM045_291") + " " + new TimeWithDayAttr(businessTrip.getReturnTime().get().v()).getFullText();
 		}
 		// アルゴリズム「申請内容の申請理由」を実行する
 		String appReasonContent = appContentService.getAppReasonContent(

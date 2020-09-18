@@ -22,8 +22,8 @@ module nts.uk.at.view.kaf022.y.viewmodel {
         constructor() {
             const self = this;
             self.appTypeSettings = ko.observableArray([]);
-            self.manualSendMailAtr = ko.observable(0);
-            self.appMailSetting = ko.observable(new AppMailSetting(0, [
+            self.manualSendMailAtr = ko.observable(1);
+            self.appMailSetting = ko.observable(new AppMailSetting(1, [
                 new EmailContent(Division.LEAVE_INSTRUCTION, getText("KAF022_111"), "", getText("KAF022_112"),""),
                 new EmailContent(Division.OVERTIME_INSTRUCTION, getText("KAF022_113"), "", getText("KAF022_114"),""),
                 new EmailContent(Division.APPLICATION_APPROVAL, getText("KAF022_115"), "", getText("KAF022_116"),""),
@@ -51,15 +51,16 @@ module nts.uk.at.view.kaf022.y.viewmodel {
                         )
                     );
                 } else {
-                    self.appTypeSettings.push(new AppTypeSetting(appType.value, getText(self.appTypeLabels[index]),  false, false));
+                    self.appTypeSettings.push(new AppTypeSetting(appType.value, getText(self.appTypeLabels[index]),  true, true));
                 }
             });
 
             if (allData.applicationSetting && allData.applicationSetting.appDisplaySetting) {
-                self.manualSendMailAtr(allData.applicationSetting.appDisplaySetting.manualSendMailAtr || 0);
+                self.manualSendMailAtr(allData.applicationSetting.appDisplaySetting.manualSendMailAtr);
             }
 
             if (allData.appMailSetting) {
+                self.appMailSetting().urlReason(allData.appMailSetting.urlReason);
                 const emailList = allData.appMailSetting.emailList || [];
                 self.appMailSetting().emailList().forEach(e => {
                     const email = _.find(emailList, i => i.division == e.division);

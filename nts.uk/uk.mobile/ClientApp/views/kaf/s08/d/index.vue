@@ -1,12 +1,21 @@
 <template>
   <div class="kafs08d">
+    <!-- custom modal-header -->
+    <div class="modal-header rounded-0 d-block p-0">
+      <div class="uk-bg-teal p-2">
+        <h4 class="modal-title text-white">
+          <i class="fas fa-angle-double-left mr-1" v-on:click="$close"></i>
+          <span>{{ '戻る' | i18n }}</span>
+        </h4>
+      </div>
+    </div>
     <!-- D1 -->
     <div class="d1">
       <!-- D1_1 -->
       <span class="mx-1">{{'KAFS08_70' | i18n}}</span>
       <!-- D1_2 -->
       <div>
-        <span class="mx-3">{{model.date | date('YYYY/MM/DD(ddd)')}}</span>
+        <span class="mx-3 date">{{params.date | date('YYYY/MM/DD(ddd)')}}</span>
       </div>
     </div>
     <!-- D2_0 -->
@@ -28,7 +37,7 @@
     </div>
     <!-- D3_1 -->
     <div class="pt-2 py-3">
-      <div>{{ 'KAFS08_72' | i18n }}</div>
+      <div>{{ 'KAFS08_73' | i18n }}</div>
       <div class="pl-3 pt-1">
         <button type="button" class="btn btn-selection" v-on:click="openKDLS01">
           <span class="badge badge-secondary">0001</span>
@@ -46,14 +55,14 @@
     </div>
     <!-- D4_2 -->
     <nts-time-editor
-      v-model="model.timetowork"
+      v-model="params.opAchievementDetail.opWorkTime"
       :name="'KAFS08_75'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
     />
     <!-- D4_4 -->
     <nts-time-editor
-      v-model="model.leavetime"
+      v-model="params.opAchievementDetail.opLeaveTime"
       :name="'KAFS08_76'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
@@ -61,6 +70,10 @@
     <!-- D50_F1 -->
     <button type="button" class="btn btn-success btn-block btn-lg">{{'KAFS08_77' | i18n}}</button>
     <!-- D50_F2 -->
-    <button type="button" class="btn btn-secondary btn-block btn-lg" v-on:click="close">{{'KAFS08_78' | i18n }}</button>
+    <button
+      type="button"
+      class="btn btn-secondary btn-block btn-lg"
+      v-on:click="close"
+    >{{'KAFS08_78' | i18n }}</button>
   </div>
 </template>

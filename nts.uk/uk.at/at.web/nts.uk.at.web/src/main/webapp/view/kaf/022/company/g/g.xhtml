@@ -216,91 +216,91 @@
             <col width="630px"/>
         </colgroup>
         <thead>
-        <tr>
-            <th class="ui-widget-header" id="b13" colspan="2">#{i18n.getText('KAF022_417')}</th>
-        </tr>
+            <tr>
+                <th class="ui-widget-header" id="b13" colspan="2">#{i18n.getText('KAF022_417')}</th>
+            </tr>
         </thead>
         <tbody data-bind="with: overtimeAppReflect">
-        <tr class="inline-radio">
-            <td class="color-header">#{i18n.getText('KAF022_622')}</td>
-            <td/>
-        </tr>
-        <tr class="inline-radio">
-            <td class="color-header">#{i18n.getText('KAF022_725')}</td>
-            <td class="two-radio">
-                <div data-bind="ntsRadioBoxGroup: {
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_622')}</td>
+                <td/>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_725')}</td>
+                <td class="two-radio">
+                    <div data-bind="ntsRadioBoxGroup: {
+                                options: $parent.itemListB5,
+                                optionsValue: 'code',
+                                optionsText: 'name',
+                                value: reflectActualHolidayWorkAtr,
+                                enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b14">#{i18n.getText('KAF022_611')}</td>
+                <td/>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b16">#{i18n.getText('KAF022_720')}</td>
+                <td class="two-radio">
+                    <div data-bind="ntsRadioBoxGroup: {
                             options: $parent.itemListB5,
                             optionsValue: 'code',
                             optionsText: 'name',
-                            value: reflectActualHolidayWorkAtr,
+                            value: workReflect,
                             enable: true}">
-                </div>
-            </td>
-        </tr>
-        <tr class="inline-radio">
-            <td class="color-header" id="b14">#{i18n.getText('KAF022_611')}</td>
-            <td/>
-        </tr>
-        <tr class="inline-radio">
-            <td class="color-header" id="b16">#{i18n.getText('KAF022_720')}</td>
-            <td class="two-radio">
-                <div data-bind="ntsRadioBoxGroup: {
-                        options: $parent.itemListB5,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: workReflect,
-                        enable: true}">
-                </div>
-            </td>
-        </tr>
-        <tr class="inline-radio">
-            <td class="color-header" id="b18">#{i18n.getText('KAF022_719')}</td>
-            <td class="two-radio">
-                <div data-bind="ntsRadioBoxGroup: {
-                        options: $parent.itemListB5,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: reflectBreakOuting,
-                        enable: true}">
-                </div>
-            </td>
-        </tr>
-        <tr class="inline-radio">
-            <td class="color-header" id="b20">#{i18n.getText('KAF022_721')}</td>
-            <td class="two-radio">
-                <div data-bind="ntsRadioBoxGroup: {
-                        options: $parent.itemListB5,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: reflectDivergence,
-                        enable: true}">
-                </div>
-            </td>
-        </tr>
-        <tr class="inline-radio">
-            <td class="color-header">#{i18n.getText('KAF022_722')}</td>
-            <td class="two-radio">
-                <div data-bind="ntsRadioBoxGroup: {
-                        options: $parent.itemListB5,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: reflectPaytime,
-                        enable: true}">
-                </div>
-            </td>
-        </tr>
-        <tr class="inline-radio">
-            <td class="color-header">#{i18n.getText('KAF022_723')}</td>
-            <td class="two-radio">
-                <div data-bind="ntsRadioBoxGroup: {
-                        options: $parent.itemListB5,
-                        optionsValue: 'code',
-                        optionsText: 'name',
-                        value: reflectOptional,
-                        enable: true}">
-                </div>
-            </td>
-        </tr>
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b18">#{i18n.getText('KAF022_719')}</td>
+                <td class="two-radio">
+                    <div data-bind="ntsRadioBoxGroup: {
+                            options: $parent.itemListB5,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: reflectBreakOuting,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header" id="b20">#{i18n.getText('KAF022_721')}</td>
+                <td class="two-radio">
+                    <div data-bind="ntsRadioBoxGroup: {
+                            options: $parent.itemListB5,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: reflectDivergence,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <tr class="inline-radio">
+                <td class="color-header">#{i18n.getText('KAF022_722')}</td>
+                <td class="two-radio">
+                    <div data-bind="ntsRadioBoxGroup: {
+                            options: $parent.itemListB5,
+                            optionsValue: 'code',
+                            optionsText: 'name',
+                            value: reflectPaytime,
+                            enable: true}">
+                    </div>
+                </td>
+            </tr>
+            <!--<tr class="inline-radio">-->
+                <!--<td class="color-header">#{i18n.getText('KAF022_723')}</td>-->
+                <!--<td class="two-radio">-->
+                    <!--<div data-bind="ntsRadioBoxGroup: {-->
+                            <!--options: $parent.itemListB5,-->
+                            <!--optionsValue: 'code',-->
+                            <!--optionsText: 'name',-->
+                            <!--value: reflectOptional,-->
+                            <!--enable: true}">-->
+                    <!--</div>-->
+                <!--</td>-->
+            <!--</tr>-->
         </tbody>
     </table>
 </ui:composition>
