@@ -154,7 +154,7 @@ module cmm045.a.viewmodel {
 
 				block.invisible();
 				service.findByEmpIDLst(self.appListExtractConditionDto).done((data: any) => {
-					self.reload(null, data);
+					return self.reload(data.appListExtractCondition, data.appListInfo);
 					/*self.approvalLstDispSet = data.displaySet;
 					let newItemLst = [];
 					_.each(data.appLst, item => {
@@ -297,7 +297,7 @@ module cmm045.a.viewmodel {
 
 			block.invisible();
 			service.findByPeriod(self.appListExtractConditionDto).done((data: any) => {
-				self.reload(data.appListExtractCondition, data.appListInfo);
+				return self.reload(data.appListExtractCondition, data.appListInfo);
 				/*self.appListExtractConditionDto = data.appListExtractCondition;
 				self.updateFromAppListExtractCondition();
 				self.approvalLstDispSet = data.appListInfo.displaySet;
@@ -632,10 +632,10 @@ module cmm045.a.viewmodel {
 			self.items(newItemLst);
 			//if (appListInfo.numberOfApp != null) {
             self.approvalCount(new vmbase.ApplicationStatus(
-				appListInfo.numberOfApp.unApprovalNumber, 
+				appListInfo.numberOfApp.unApprovalNumber,
 				appListInfo.numberOfApp.approvalNumber,
-                appListInfo.numberOfApp.approvalAgentNumber, 
-				appListInfo.numberOfApp.cancelNumber, 
+                appListInfo.numberOfApp.approvalAgentNumber,
+				appListInfo.numberOfApp.cancelNumber,
 				appListInfo.numberOfApp.remandNumner,
                 appListInfo.numberOfApp.denialNumber));
             //}
@@ -652,7 +652,7 @@ module cmm045.a.viewmodel {
                 self.reloadGridApplicaion(colorBackGr, false);
                 // self.reloadGridApplicaion(colorBackGr, self.isHidden());
           	}
-
+			self.isLimit500(appListInfo.moreThanDispLineNO);
 
 			/*self.appList(data.appListInfo);
             if(self.appList().appLst.length > 500) {
@@ -732,7 +732,8 @@ module cmm045.a.viewmodel {
                 options.columns.forEach(column => {
                     $("<col/>")
                         .attr("width", column.width)
-                        .appendTo($colgroup);
+                        .appendTo($colgroup)
+                        .addClass(column.key === 'appContent' ? 'appContent' : '');
 
                     let $th = $("<th/>")
                         .addClass("ui-widget-header");
@@ -884,7 +885,10 @@ module cmm045.a.viewmodel {
                         // var date = nts.uk.time.formatDate(new Date(item.opAppStartDate), "M/dD");
                         var date = moment(item.opAppStartDate).format("M/D(ddd)");
                         if(item.opAppStartDate !== item.opAppEndDate) {
-                            date.concat("－").concat(moment(item.opAppEndDate).format("M/D(ddd)"))
+                            date = date + "－" + moment(item.opAppEndDate).format("M/D(ddd)");
+                        }
+                        if(item.appType === 10) {
+
                         }
                         $td.html(self.appDateColor(date, "", ""));
                     }
@@ -912,7 +916,7 @@ module cmm045.a.viewmodel {
                         $td.html(self.customContent(column.key, item));
                     }
 
-                    $("td.appType").css("white-space", "normal")
+                    $("td.appType").css("white-space", "normal");
 
                     $td.appendTo($tr);
                 });
@@ -974,7 +978,7 @@ module cmm045.a.viewmodel {
             let widthAuto = isHidden == false ? 1175 : 1110;
             // let widthAuto = isHidden == false ? 1250 : 1185;
             // widthAuto = screen.width - 100 >= widthAuto ? widthAuto : screen.width - 100;
-            widthAuto = window.innerWidth - 130;
+            widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
 
             var contentWidth = 340;
             character.restore('TableColumnWidth').then((obj) => {
@@ -982,6 +986,8 @@ module cmm045.a.viewmodel {
                     if(self.mode() === 0 && obj.appLstAtr === true) {
                         contentWidth = obj.width;
                     }
+                } else {
+                    contentWidth = widthAuto - 55 - 120 - 90 - 65- 155 - 120 - 75 - 95;
                 }
             }).then(() => {
                 let columns = [
@@ -1005,7 +1011,8 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
                 ];
-                let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
+                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 345 : 325;
+                // let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
                 this.setupGrid({
                     withCcg001: true,
                     width: widthAuto,
@@ -1249,7 +1256,7 @@ module cmm045.a.viewmodel {
             var self = this;
             let widthAuto = isHidden == false ? 1175 : 1110;
             // widthAuto = screen.width - 35 >= widthAuto ? widthAuto : screen.width - 35;
-            widthAuto = window.innerWidth - 130;
+            widthAuto = window.innerWidth >= 1280 ? window.innerWidth - 130 : 1100;
 
             var contentWidth = 340;
             character.restore('TableColumnWidth').then((obj) => {
@@ -1257,6 +1264,8 @@ module cmm045.a.viewmodel {
                     if(self.mode() === 1 && obj.appLstAtr === false) {
                         contentWidth = obj.width;
                     }
+                } else {
+                    contentWidth = widthAuto - 35 - 55 - 120 - 90 - 65- 157 - 120 - 75 - 95;
                 }
             }).then(() => {
                 let columns = [
@@ -1283,7 +1292,8 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
                 ]
-                let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
+                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 357 : 292;
+                // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
                     withCcg001: true,
                     width: widthAuto,

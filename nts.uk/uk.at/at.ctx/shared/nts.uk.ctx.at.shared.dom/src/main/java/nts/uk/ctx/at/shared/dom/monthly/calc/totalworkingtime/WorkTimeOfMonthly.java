@@ -120,12 +120,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			WithinStatutoryTimeOfDaily withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 			if (withinPrescribedTimeOfDaily == null){
-				withinPrescribedTimeOfDaily = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-						new AttendanceTime(0),
-						new AttendanceTime(0),
-						new AttendanceTime(0),
-						new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-						new AttendanceTime(0));
+				withinPrescribedTimeOfDaily = WithinStatutoryTimeOfDaily.defaultValue();
 			}
 	
 			// 取得した就業時間・所定内割増時間を確認する
@@ -308,12 +303,7 @@ public class WorkTimeOfMonthly implements Cloneable, Serializable {
 			val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 			WithinStatutoryTimeOfDaily withinPrescribedTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 			if (withinPrescribedTimeOfDaily == null){
-				withinPrescribedTimeOfDaily = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-						new AttendanceTime(0),
-						new AttendanceTime(0),
-						new AttendanceTime(0),
-						new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-						new AttendanceTime(0));
+				withinPrescribedTimeOfDaily = WithinStatutoryTimeOfDaily.defaultValue();
 			}
 			
 			// 勤務種類を確認する

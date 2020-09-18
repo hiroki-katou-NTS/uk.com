@@ -6,7 +6,7 @@
 					data-bind="ntsFormLabel: {required:true , text: $i18n('KAF009_45')}"></div>
 		<div class="firstCheckBox" data-bind="ntsCheckBox: { checked: model.checkbox1, text: $i18n('KAF009_16'), enable: mode == 'edit'}"></div>
 		<div class="secondCheckBox"
-						data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_17'), enable: mode == 'edit'}"></div>
+						data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_18'), enable: mode == 'edit'}"></div>
 	</div>
 	
 	<!--Work Change-->
@@ -46,10 +46,10 @@
 					data-bind=" click: openDialogKdl003, text: $i18n('KAF009_24'), enable: (mode == 'edit' && model.checkbox3() || dataFetch().goBackReflect().reflectApplication == 1) "></button>
 			</div>
 			<div class="cell valign-center">
-				<label class="lblWorkTypeCd" data-bind="text: model.workTypeCode"></label>
-				<LABEL data-bind="text: model.workTypeName"></LABEL> <BR /> <label
-					class="lblSiftCd" data-bind="text: model.workTimeCode"></label> <LABEL
-					data-bind="text: model.workTimeName "></LABEL>
+				<label class="lblWorkTypeCd required" data-bind="text: model.workTypeCode"></label>
+				<label data-bind="text: model.workTypeName"></label> <br /> <label
+					class="lblSiftCd" data-bind="text: model.workTimeCode, required: true"></label> <label
+					data-bind="text: model.workTimeName "></label>
 			</div>
 		</div>
 	</div>

@@ -137,7 +137,7 @@
 	overflow: auto;
 }
 html {
-    overflow: hidden;
+    overflow: auto;
 }
 .grid-text-label {
 	padding-top: 10px;
@@ -156,5 +156,5 @@ td.appType {
 	white-space: normal !important;
 }
 td.appContent {
-	min-width: 45px;
+	min-width: 75px;
 }

@@ -109,12 +109,13 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             }).done((res: any) => {
                 if (res.result) {
                     let output = res.businessTripInfoOutputDto;
-                    let dataFetch = _.clone(vm.dataFetch());
 
-                    dataFetch.businessTripOutput = output;
-                    vm.dataFetch(dataFetch);
+                    vm.dataFetch().businessTripOutput = output;
+                    vm.dataFetch.valueHasMutated();
                 }
             }).fail(err => {
+                vm.dataFetch().businessTripOutput.businessTripActualContent = [];
+                vm.dataFetch.valueHasMutated();
                 vm.handleError(err);
             }).always(() => vm.$blockui("hide"));
         }
@@ -161,20 +162,14 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                         }
                     }).fail(err => {
                         let param;
-                        switch (err.messageId) {
-                            case "Msg_24" :
-                                param = err.parameterIds[0] + err.message;
-                                break;
-                            case "Msg_23" :
-                                param = err.parameterIds[0] + err.message;
-                                break;
-                            default: {
-                                if (err.message) {
-                                    param = {message: err.message, messageParams: err.parameterIds};
-                                } else {
-                                    param = {messageId: err.messageId, messageParams: err.parameterIds}
-                                }
-                                break;
+                        if (err.messageId == "Msg_23" || err.messageId == "Msg_24") {
+                            err.message = err.parameterIds[0] + err.message;
+                            param = err;
+                        } else {
+                            if (err.message) {
+                                param = {message: err.message, messageParams: err.parameterIds};
+                            } else {
+                                param = {messageId: err.messageId, messageParams: err.parameterIds}
                             }
                         }
                         vm.$dialog.error(param);

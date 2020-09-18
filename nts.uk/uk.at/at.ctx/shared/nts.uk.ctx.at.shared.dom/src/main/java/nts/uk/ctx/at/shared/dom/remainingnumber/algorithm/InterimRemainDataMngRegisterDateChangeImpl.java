@@ -72,8 +72,7 @@ public class InterimRemainDataMngRegisterDateChangeImpl implements InterimRemain
 		for(GeneralDate loopDate : lstDate){
 			DatePeriod datePeriod = new DatePeriod(loopDate, loopDate);
 			//「残数作成元の申請を取得する」
-			// List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cacheCarrier, cid, sid, datePeriod);
-			List<AppRemainCreateInfor> lstAppData = null;
+			List<AppRemainCreateInfor> lstAppData = remainAppData.lstRemainDataFromApp(cacheCarrier, cid, sid, datePeriod);
 			clearInterimWhenRecordScheAppNotData(sid, lstDate, lstRecordData, lstScheData, lstAppData);
 			//指定期間の暫定残数管理データを作成する
 			InterimRemainCreateDataInputPara inputData = new InterimRemainCreateDataInputPara(cid, 

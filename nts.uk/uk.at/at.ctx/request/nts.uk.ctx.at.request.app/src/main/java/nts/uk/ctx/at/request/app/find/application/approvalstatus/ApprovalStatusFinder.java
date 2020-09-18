@@ -523,7 +523,8 @@ public class ApprovalStatusFinder {
 				break;
 			// 勤務変更申請
 			case WORK_CHANGE_APPLICATION:
-				appContent = contentDtail.getContentWorkChange(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
+//				appContent = contentDtail.getContentWorkChange(null, companyID, appId, 0, "", ScreenAtr.KAF018.value, lstWkType, lstWkTime);
+				appContent = "";
 				// có endDate
 				break;
 			// 出張申請

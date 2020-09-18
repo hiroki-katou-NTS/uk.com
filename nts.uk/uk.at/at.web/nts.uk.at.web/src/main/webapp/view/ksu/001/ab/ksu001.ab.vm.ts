@@ -118,7 +118,6 @@ module nts.uk.at.view.ksu001.ab.viewmodel {
                 });
             } else {
                 $("#extable").exTable("stickStyler", function(rowIdx, key, data) {
-                    debugger;
                     let workInfo = _.filter(self.listWorkType(), function(o) { return o.workTypeCode == self.selectedWorkTypeCode(); });
                     if (__viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'time'
                         || __viewContext.viewModel.viewA.selectedModeDisplayInBody() == 'shortName') {

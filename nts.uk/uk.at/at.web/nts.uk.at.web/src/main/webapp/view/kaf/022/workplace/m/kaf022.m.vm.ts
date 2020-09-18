@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf022.m.viewmodel {
         alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 
         kcp004WorkplaceListOption: any = {
-            maxRows: 20,
+            maxRows: 11,
             treeType: 1,
             tabindex: 1,
             systemType: 2,
@@ -27,10 +27,11 @@ module nts.uk.at.view.kaf022.m.viewmodel {
         workplaceName: KnockoutObservable<string>;
         workplaceCode: KnockoutObservable<string>;
         colAtrs: Array<any> = [
-            { width: "130px"},
-            { width: "120px"},
-            { width: "327px"}
+            { width: 130 },
+            { width: 140 },
+            { width: jQuery(window).width() - 940 }
         ];
+        tableId: string = "fixed-table-wkp";
         alreadySettingData: Array<any>;
         isUpdate: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -55,7 +56,7 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                     self.workplaceName("");
                     self.workplaceCode("");
                     self.settings().forEach(s => {
-                        s.useAtr(0);
+                        s.useAtr(1);
                         s.memo("");
                     });
                     self.isUpdate(false);
@@ -75,14 +76,14 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                                     s.useAtr(setting.useDivision);
                                     s.memo(setting.memo);
                                 } else {
-                                    s.useAtr(0);
+                                    s.useAtr(1);
                                     s.memo("");
                                 }
                             });
                             self.isUpdate(true)
                         } else {
                             self.settings().forEach(s => {
-                                s.useAtr(0);
+                                s.useAtr(1);
                                 s.memo("");
                             });
                             self.isUpdate(false);
@@ -91,7 +92,7 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                         self.workplaceName("");
                         self.workplaceCode("");
                         self.settings().forEach(s => {
-                            s.useAtr(0);
+                            s.useAtr(1);
                             s.memo("");
                         });
                         self.isUpdate(false);

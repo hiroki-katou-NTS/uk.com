@@ -25,7 +25,7 @@ module nts.uk.at.view.kaf022.p.viewmodel {
 
             self.swapColumns = ko.observableArray([
                 {headerText: getText("KAF022_686"), key: 'no', width: 50, columnCssClass: "grid-col-text-right", formatter: _.escape},
-                {headerText: getText("KAF022_704"), key: 'name', width: 100, columnCssClass: 'limited-label', formatter: _.escape}
+                {headerText: getText("KAF022_704"), key: 'name', width: 120, columnCssClass: 'limited-label', formatter: _.escape}
             ]);
 
             self.optionalItems = ko.observableArray([]);
@@ -37,10 +37,12 @@ module nts.uk.at.view.kaf022.p.viewmodel {
                     self.selectedSetting(new OptionalItemAppSet(_.cloneDeep(setting)));
                     self.isUpdate(true);
                     nts.uk.ui.errors.clearAll();
+                    $("#optItemAppTypeName").focus();
                 } else {
                     self.selectedSetting(new OptionalItemAppSet());
                     self.isUpdate(false);
                     nts.uk.ui.errors.clearAll();
+                    $("#optItemAppTypeCode").focus();
                 }
                 self.optionalItems(_.cloneDeep(self.optionalItemsBak));
             });
@@ -135,6 +137,10 @@ module nts.uk.at.view.kaf022.p.viewmodel {
             if (!nts.uk.ui.errors.hasError()) {
                 const currentCode = self.selectedSetting().code();
                 const data = ko.toJS(self.selectedSetting);
+                if (!self.isUpdate() && _.find(self.settings(), i => i.code == data.code)) {
+                    dialog.alertError({ messageId: "Msg_3" });
+                    return;
+                }
                 data.settingItems.forEach((obj, index) => {
                     obj['dispOrder'] = index + 1;
                 });

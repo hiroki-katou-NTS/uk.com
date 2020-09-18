@@ -2,23 +2,19 @@ module nts.uk.at.view.kaf022.j.viewmodel {
     import text = nts.uk.resource.getText;
 
     export class ScreenModelJ {
-        itemListD15: KnockoutObservableArray<ItemModel> = ko.observableArray([
-            {code: 1, name: text('KAF022_391')},
-            {code: 0, name: text('KAF022_392')}
-        ]);
         itemListD13: KnockoutObservableArray<ItemModel> = ko.observableArray([
             {code: 1, name: text('KAF022_100')},
             {code: 0, name: text('KAF022_101')}
         ]);
         supportFrames: KnockoutObservableArray<ItemModel>;
 
-        cancelAtr: KnockoutObservable<number> = ko.observable(1);
+        cancelAtr: KnockoutObservable<number> = ko.observable(0);
 
         workComment1Content: KnockoutObservable<string> = ko.observable("");
-        workComment1Color: KnockoutObservable<string> = ko.observable("");
+        workComment1Color: KnockoutObservable<string> = ko.observable("#000000");
         workComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
         workComment2Content: KnockoutObservable<string> = ko.observable("");
-        workComment2Color: KnockoutObservable<string> = ko.observable("");
+        workComment2Color: KnockoutObservable<string> = ko.observable("#000000");
         workComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
         goOutPrivateDispAtr: KnockoutObservable<number> = ko.observable(1);
@@ -26,46 +22,46 @@ module nts.uk.at.view.kaf022.j.viewmodel {
         goOutCompensationDispAtr: KnockoutObservable<number> = ko.observable(1);
         goOutUnionDispAtr: KnockoutObservable<number> = ko.observable(1);
         goOutComment1Content: KnockoutObservable<string> = ko.observable("");
-        goOutComment1Color: KnockoutObservable<string> = ko.observable("");
+        goOutComment1Color: KnockoutObservable<string> = ko.observable("#000000");
         goOutComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
         goOutComment2Content: KnockoutObservable<string> = ko.observable("");
-        goOutComment2Color: KnockoutObservable<string> = ko.observable("");
+        goOutComment2Color: KnockoutObservable<string> = ko.observable("#000000");
         goOutComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
         childCareComment1Content: KnockoutObservable<string> = ko.observable("");
-        childCareComment1Color: KnockoutObservable<string> = ko.observable("");
+        childCareComment1Color: KnockoutObservable<string> = ko.observable("#000000");
         childCareComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
         childCareComment2Content: KnockoutObservable<string> = ko.observable("");
-        childCareComment2Color: KnockoutObservable<string> = ko.observable("");
+        childCareComment2Color: KnockoutObservable<string> = ko.observable("#000000");
         childCareComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
         supportFrameDispNO: KnockoutObservable<number> = ko.observable(1);
         supportComment1Content: KnockoutObservable<string> = ko.observable("");
-        supportComment1Color: KnockoutObservable<string> = ko.observable("");
+        supportComment1Color: KnockoutObservable<string> = ko.observable("#000000");
         supportComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
         supportComment2Content: KnockoutObservable<string> = ko.observable("");
-        supportComment2Color: KnockoutObservable<string> = ko.observable("");
+        supportComment2Color: KnockoutObservable<string> = ko.observable("#000000");
         supportComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
         careComment1Content: KnockoutObservable<string> = ko.observable("");
-        careComment1Color: KnockoutObservable<string> = ko.observable("");
+        careComment1Color: KnockoutObservable<string> = ko.observable("#000000");
         careComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
         careComment2Content: KnockoutObservable<string> = ko.observable("");
-        careComment2Color: KnockoutObservable<string> = ko.observable("");
+        careComment2Color: KnockoutObservable<string> = ko.observable("#000000");
         careComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
         breakComment1Content: KnockoutObservable<string> = ko.observable("");
-        breakComment1Color: KnockoutObservable<string> = ko.observable("");
+        breakComment1Color: KnockoutObservable<string> = ko.observable("#000000");
         breakComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
         breakComment2Content: KnockoutObservable<string> = ko.observable("");
-        breakComment2Color: KnockoutObservable<string> = ko.observable("");
+        breakComment2Color: KnockoutObservable<string> = ko.observable("#000000");
         breakComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
         imageRecordComment1Content: KnockoutObservable<string> = ko.observable("");
-        imageRecordComment1Color: KnockoutObservable<string> = ko.observable("");
+        imageRecordComment1Color: KnockoutObservable<string> = ko.observable("#000000");
         imageRecordComment1Bold: KnockoutObservable<boolean> = ko.observable(false);
         imageRecordComment2Content: KnockoutObservable<string> = ko.observable("");
-        imageRecordComment2Color: KnockoutObservable<string> = ko.observable("");
+        imageRecordComment2Color: KnockoutObservable<string> = ko.observable("#000000");
         imageRecordComment2Bold: KnockoutObservable<boolean> = ko.observable(false);
 
         workTimeReflectAtr: KnockoutObservable<number> = ko.observable(1);

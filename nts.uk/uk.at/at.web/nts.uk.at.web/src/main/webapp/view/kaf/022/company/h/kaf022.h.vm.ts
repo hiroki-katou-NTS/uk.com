@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf022.h.viewmodel {
             self.privateGoingOut = ko.observable(0);
             self.unionGoingOut = ko.observable(0);
 
-            self.reflectActualTimeZone = ko.observable(0);
+            self.reflectActualTimeZone = ko.observable(1);
 
             $("#fixed-table-h1").ntsFixedTable({});
             $("#fixed-table-h2").ntsFixedTable({});

@@ -138,7 +138,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
             List<Application> validApps = apps
                     .stream()
                     .filter(i -> i.getOpAppStartDate().get().getApplicationDate().beforeOrEquals(date) && date.beforeOrEquals(i.getOpAppEndDate().get().getApplicationDate()))
-                    .sorted(Comparator.nullsLast((e1, e2) -> e2.getAppDate().getApplicationDate().compareTo(e1.getAppDate().getApplicationDate())))
+                    .sorted(Comparator.nullsLast((e1, e2) -> e2.getInputDate().compareTo(e1.getInputDate())))
                     .collect(Collectors.toList());
 
             // Lấy Content của ngày loop
@@ -155,11 +155,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 ReflectedState reflectedState = newestApp.getAppReflectedState();
 
                 // 未反映、反映待ちの場合
-                if (reflectedState == ReflectedState.WAITREFLECTION) {
+                if (reflectedState == ReflectedState.WAITREFLECTION || reflectedState == ReflectedState.NOTREFLECTED) {
                     Optional<ReflectionStatusOfDay> actualReflectStatus = newestApp.getReflectionStatus().getListReflectionStatusOfDay().stream().filter(i -> i.getTargetDate().compareTo(date) == 0).findAny();
                     if (actualReflectStatus.isPresent()) {
                         // 未反映、反映待ちの場合
-                        if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION) {
+                        if (actualReflectStatus.get().getActualReflectStatus() == ReflectedState.WAITREFLECTION || actualReflectStatus.get().getActualReflectStatus() == ReflectedState.NOTREFLECTED) {
                             // アルゴリズム「出張申請内容より勤務情報を取得」を実行する
                             this.getWorkInfoFromTripReqContent(newestApp.getAppID(), newestApp.getAppType(), date, currentContent.get());
                         }
@@ -427,12 +427,12 @@ public class BusinessTripServiceImlp implements BusinessTripService {
      */
     private void getWorkInfoFromTripReqContent(String appId, ApplicationType appType, GeneralDate date, ActualContentDisplay content) {
         String cid = AppContexts.user().companyId();
-        String wkTypeCd = Strings.EMPTY;
-        String wkTimeCd = Strings.EMPTY;
-        Optional<String> wkTypeName;
-        Optional<String> wkTimeName;
-        Optional<Integer> opWorkTime = Optional.empty();
-        Optional<Integer> opLeaveTime = Optional.empty();
+        String wkTypeCd = content.getOpAchievementDetail().get().getWorkTypeCD();
+        String wkTimeCd = content.getOpAchievementDetail().get().getWorkTimeCD();
+        Optional<String> wkTypeName = content.getOpAchievementDetail().get().getOpWorkTypeName();
+        Optional<String> wkTimeName = content.getOpAchievementDetail().get().getOpWorkTimeName();
+        Optional<Integer> opWorkTime = content.getOpAchievementDetail().get().getOpWorkTime();
+        Optional<Integer> opLeaveTime = content.getOpAchievementDetail().get().getOpLeaveTime();
 
         switch (appType) {
             case HOLIDAY_WORK_APPLICATION:
@@ -440,7 +440,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<AppHolidayWork> appHolidayWork = appHolidayWorkRepository.getFullAppHolidayWork(cid, appId);
                 if (appHolidayWork.isPresent()) {
                     wkTypeCd = appHolidayWork.get().getWorkTypeCode().v();
-                    wkTimeCd = appHolidayWork.get().getWorkTimeCode().v();
+                    wkTimeCd = appHolidayWork.get().getWorkTimeCode() == null ? null : appHolidayWork.get().getWorkTimeCode().v();
                     opWorkTime = appHolidayWork.map(i -> i.getWorkClock1().getStartTime().v());
                     opLeaveTime = appHolidayWork.map(i -> i.getWorkClock1().getEndTime().v());
                 }
@@ -450,7 +450,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<GoBackDirectly> goBackDirectly = goBackDirectlyRepository.find(cid, appId);
                 if (goBackDirectly.isPresent() && goBackDirectly.get().getDataWork().isPresent()) {
                     wkTypeCd = goBackDirectly.get().getDataWork().get().getWorkTypeCode().v();
-                    wkTimeCd = goBackDirectly.get().getDataWork().get().getWorkTimeCode().v();
+                    wkTimeCd = goBackDirectly.get().getDataWork().get().getWorkTimeCode() == null ? null : goBackDirectly.get().getDataWork().get().getWorkTimeCode().v();
                 }
                 break;
             case WORK_CHANGE_APPLICATION:
@@ -460,11 +460,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                         && appWorkChange.get().getOpWorkTimeCD().isPresent()
                         && appWorkChange.get().getOpWorkTimeCD().isPresent()) {
                     wkTypeCd = appWorkChange.get().getOpWorkTypeCD().get().v();
-                    wkTimeCd = appWorkChange.get().getOpWorkTimeCD().get().v();
+                    wkTimeCd = appWorkChange.get().getOpWorkTimeCD().get() == null ? null : appWorkChange.get().getOpWorkTimeCD().get().v();
                     if (!appWorkChange.get().getTimeZoneWithWorkNoLst().isEmpty()) {
                         val workChangeStart = appWorkChange.get().getTimeZoneWithWorkNoLst().get(0);
                         opWorkTime = Optional.of(workChangeStart.getTimeZone().getStartTime().v());
                         opLeaveTime = Optional.of(workChangeStart.getTimeZone().getEndTime().v());
+                    } else {
+                        opWorkTime = Optional.empty();
+                        opLeaveTime = Optional.empty();
                     }
                 }
                 break;
@@ -474,7 +477,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 if (businessTrip.isPresent() && !businessTrip.get().getInfos().isEmpty()) {
                     Optional<BusinessTripInfo> info = businessTrip.get().getInfos().stream().filter(i -> i.getDate().compareTo(date) == 0).findFirst();
                     if (info.isPresent()) {
-                        wkTimeCd = info.get().getWorkInformation().getWorkTimeCode().v();
+                        wkTimeCd = info.get().getWorkInformation().getWorkTimeCode() == null ? null : info.get().getWorkInformation().getWorkTimeCode().v();
                         wkTypeCd = info.get().getWorkInformation().getWorkTypeCode().v();
                         opWorkTime = info.get().getWorkingHours().isPresent() ? Optional.of(info.get().getWorkingHours().get().get(0).getTimeZone().getStartTime().v()) : Optional.empty();
                         opLeaveTime = info.get().getWorkingHours().isPresent() ? Optional.of(info.get().getWorkingHours().get().get(0).getTimeZone().getEndTime().v()) : Optional.empty();
@@ -486,7 +489,7 @@ public class BusinessTripServiceImlp implements BusinessTripService {
                 Optional<AppAbsence> appAbsence = appAbsenceRepository.getAbsenceByAppId(cid, appId);
                 if (appAbsence.isPresent()) {
                     wkTypeCd = appAbsence.get().getWorkTypeCode().v();
-                    wkTimeCd = appAbsence.get().getWorkTimeCode().v();
+                    wkTimeCd = appAbsence.get().getWorkTimeCode() == null ? null : appAbsence.get().getWorkTimeCode().v();
                     opWorkTime = appAbsence.map(i -> i.getStartTime1().getDayTime());
                     opLeaveTime = appAbsence.map(i -> i.getEndTime1().getDayTime());
                 }
@@ -515,24 +518,14 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         wkTypeName = StringUtil.isNullOrEmpty(wkTypeCd, true) ? Optional.empty() : wkTypeRepo.findByPK(cid, wkTypeCd).map(x -> x.getName().v());
         //ドメインモデル「就業時間帯」を1件取得する - (lấy 1 dữ liệu của domain 「WorkTime」)
         wkTimeName = StringUtil.isNullOrEmpty(wkTimeCd, true) ? Optional.empty() : wkTimeRepo.findByCode(cid, wkTimeCd).map(x -> x.getWorkTimeDisplayName().getWorkTimeName().v());
-        if (Strings.isBlank(wkTypeCd)) {
-            content.getOpAchievementDetail().get().setWorkTypeCD(wkTypeCd);
-        }
-        if (Strings.isBlank(wkTimeCd)) {
-            content.getOpAchievementDetail().get().setWorkTimeCD(wkTimeCd);
-        }
-        if (wkTypeName.isPresent()) {
-            content.getOpAchievementDetail().get().setOpWorkTypeName(wkTypeName);
-        }
-        if (wkTimeName.isPresent()) {
-            content.getOpAchievementDetail().get().setOpWorkTimeName(wkTimeName);
-        }
-        if (opWorkTime.isPresent()) {
-            content.getOpAchievementDetail().get().setOpWorkTime(opWorkTime);
-        }
-        if (opLeaveTime.isPresent()) {
-            content.getOpAchievementDetail().get().setOpLeaveTime(opLeaveTime);
-        }
+
+        content.getOpAchievementDetail().get().setWorkTypeCD(wkTypeCd);
+        content.getOpAchievementDetail().get().setWorkTimeCD(wkTimeCd);
+        content.getOpAchievementDetail().get().setOpWorkTypeName(wkTypeName);
+        content.getOpAchievementDetail().get().setOpWorkTimeName(wkTimeName);
+        content.getOpAchievementDetail().get().setOpWorkTime(opWorkTime);
+        content.getOpAchievementDetail().get().setOpLeaveTime(opLeaveTime);
+
     }
 
 }

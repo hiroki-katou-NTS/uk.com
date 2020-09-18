@@ -855,15 +855,13 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 		return approveService.isApproveApprovalPhaseStateComplete(companyID, opCurrentPhase.get());
 	}
     @Override
-	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRootCMM045(String companyID, List<String> lstAgent, DatePeriod period,
+	public Map<String,List<ApprovalPhaseStateExport>> getApprovalRootCMM045(String companyID, String approverID, List<String> lstAgent, DatePeriod period,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
-			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus){ 
-		String approverID = AppContexts.user().employeeId();
-		lstAgent.add(approverID);
+			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus){
 		Map<String,List<ApprovalPhaseStateExport>> mapApprPhsStateEx = new LinkedHashMap<>();
 		ApprovalRootContentOutput apprRootContentOut =  null;
 		//ドメインモデル「承認ルートインスタンス」を取得する
-		List<ApprovalRootState> approvalRootStates = approvalRootStateRepository.findEmploymentAppCMM045(lstAgent, period, 
+		List<ApprovalRootState> approvalRootStates = approvalRootStateRepository.findEmploymentAppCMM045(approverID, lstAgent, period, 
 				unapprovalStatus, approvalStatus, denialStatus, agentApprovalStatus, remandStatus, cancelStatus);
 		if(approvalRootStates.isEmpty()){
 			return mapApprPhsStateEx;
@@ -900,18 +898,19 @@ public class ApprovalRootStatePubImpl implements ApprovalRootStatePub {
 									.map(y -> {
 										return new ApprovalFrameExport(
 												y.getFrameOrder(), 
-												y.getLstApproverInfo().stream().map(z -> { 
-													String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
+												y.getLstApproverInfo().stream().map(z -> {
+													String approverName = "";
+													// String approverName = personAdapter.getPersonInfo(z.getApproverID()).getEmployeeName();
 													String representerID = "";
 													String representerName = "";
-													ApprovalRepresenterOutput approvalRepresenterOutput = 
-															collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
-													if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
-														if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
-															representerID = approvalRepresenterOutput.getListAgent().get(0);
-															representerName = personAdapter.getPersonInfo(representerID).getEmployeeName();
-														}
-													}
+//													ApprovalRepresenterOutput approvalRepresenterOutput = 
+//															collectApprovalAgentInforService.getApprovalAgentInfor(companyID, Arrays.asList(z.getApproverID()));
+//													if(approvalRepresenterOutput.getAllPathSetFlag().equals(Boolean.FALSE)){
+//														if(!CollectionUtil.isEmpty(approvalRepresenterOutput.getListAgent())){
+//															representerID = approvalRepresenterOutput.getListAgent().get(0);
+//															representerName = personAdapter.getPersonInfo(representerID).getEmployeeName();
+//														}
+//													}
 													return new ApproverStateExport(
 															z.getApproverID(), 
 															EnumAdaptor.valueOf(z.getApprovalAtr().value, ApprovalBehaviorAtrExport.class),

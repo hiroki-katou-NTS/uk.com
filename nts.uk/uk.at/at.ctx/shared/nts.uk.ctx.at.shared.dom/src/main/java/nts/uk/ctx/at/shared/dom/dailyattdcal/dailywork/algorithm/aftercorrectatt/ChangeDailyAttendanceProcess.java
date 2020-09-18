@@ -64,12 +64,12 @@ public class ChangeDailyAttendanceProcess {
 		return lstTimeLeav;
 	}
 
-	private boolean checkHasAtt(TimeLeavingWork timeLeav) {
+	public boolean checkHasAtt(TimeLeavingWork timeLeav) {
 		return checkHasTimeDayAtt(timeLeav)
 				&& timeLeav.getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent();
 	}
 
-	private boolean checkHasLeav(TimeLeavingWork timeLeav) {
+	public boolean checkHasLeav(TimeLeavingWork timeLeav) {
 		return checkHasTimeDayLeav(timeLeav)
 				&& timeLeav.getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent();
 	}

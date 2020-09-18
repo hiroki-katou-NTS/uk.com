@@ -8611,7 +8611,6 @@ var nts;
                                                     $.data(cell, "hide", cell.innerText);
                                                     cell.innerText = "";
                                                 }
-                                                return false;
                                             }
                                         }
                                     });
@@ -13593,13 +13592,21 @@ var nts;
                                 return;
                             var ui = evt.detail;
                             if ((uk.util.isNullOrUndefined(ui.innerIdx) || ui.innerIdx === -1)) {
+                                var $grid = helper.getMainTable($exTable);
+                                var gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
+                                var view = (gen.options || {}).view;
+                                if (!_.isFunction(view))
+                                    return;
+                                var fields = view(exTable.viewMode);
                                 if (ui.value.constructor === Array) {
-                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[0], 0));
-                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[1], 1));
+                                    for (var i = 0; i < fields.length; i++) {
+                                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value[i], i));
+                                    }
                                 }
                                 else {
-                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 0));
-                                    pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, 1));
+                                    for (var i = 0; i < fields.length; i++) {
+                                        pushChange(exTable, ui.rowIndex, new selection.Cell(ui.rowIndex, ui.columnKey, ui.value, i));
+                                    }
                                 }
                                 return;
                             }
@@ -18967,7 +18974,6 @@ var nts;
                                 var $container = $dialog.closest("[role='dialog']");
                                 $container
                                     .show()
-                                    // hide "x" button
                                     .find(".ui-dialog-titlebar-close").hide();
                                 //$dialog.dialog("open");
                                 var $dialogs = window.top.$('body>[role="dialog"]').toArray();

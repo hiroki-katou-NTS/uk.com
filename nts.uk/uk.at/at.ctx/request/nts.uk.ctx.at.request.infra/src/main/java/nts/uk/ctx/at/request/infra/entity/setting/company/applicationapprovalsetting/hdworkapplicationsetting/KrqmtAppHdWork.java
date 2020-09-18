@@ -97,8 +97,8 @@ public class KrqmtAppHdWork extends ContractUkJpaEntity implements Serializable 
     @Column(name = "POST_BP_TIME_REFLECT_ATR")
     private int postBpTimeReflectAtr;
 
-    @Column(name = "POST_ANYV_TIME_REFLECT_ATR")
-    private int postAnyvTimeReflectAtr;
+//    @Column(name = "POST_ANYV_TIME_REFLECT_ATR")
+//    private int postAnyvTimeReflectAtr;
 
     @Column(name = "POST_DVGC_REFLECT_ATR")
     private int postDvgcReflectAtr;
@@ -141,7 +141,7 @@ public class KrqmtAppHdWork extends ContractUkJpaEntity implements Serializable 
                 AfterHdWorkAppReflect.create(
                         postWorkTimeReflectAtr,
                         postBpTimeReflectAtr,
-                        postAnyvTimeReflectAtr,
+//                        postAnyvTimeReflectAtr,
                         postDvgcReflectAtr,
                         postBreakTimeReflectAtr
                 )
@@ -169,7 +169,7 @@ public class KrqmtAppHdWork extends ContractUkJpaEntity implements Serializable 
                 holidayWorkAppReflect.getBefore().getReflectActualHolidayWorkAtr().value,
                 holidayWorkAppReflect.getAfter().getWorkReflect().value,
                 holidayWorkAppReflect.getAfter().getOthersReflect().getReflectPaytimeAtr().value,
-                holidayWorkAppReflect.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
+//                holidayWorkAppReflect.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
                 holidayWorkAppReflect.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value,
                 holidayWorkAppReflect.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value
         );
@@ -197,7 +197,7 @@ public class KrqmtAppHdWork extends ContractUkJpaEntity implements Serializable 
         preInputTimeReflectAtr = domain.getBefore().getReflectActualHolidayWorkAtr().value;
         postWorkTimeReflectAtr = domain.getAfter().getWorkReflect().value;
         postBpTimeReflectAtr = domain.getAfter().getOthersReflect().getReflectPaytimeAtr().value;
-        postAnyvTimeReflectAtr = domain.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value;
+//        postAnyvTimeReflectAtr = domain.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value;
         postDvgcReflectAtr = domain.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value;
         postBreakTimeReflectAtr = domain.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value;
     }

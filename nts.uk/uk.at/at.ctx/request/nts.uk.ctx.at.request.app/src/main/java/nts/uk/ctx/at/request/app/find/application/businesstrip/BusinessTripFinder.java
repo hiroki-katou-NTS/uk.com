@@ -145,8 +145,8 @@ public class BusinessTripFinder {
         BusinessTripInfoOutput output = new BusinessTripInfoOutput(
                 tripRequestSet.isPresent() ? tripRequestSet.get() : null,
                 appDispInfoStartupOutput,
-                Optional.of(workDays),
                 Optional.of(holidayWorkType),
+                Optional.of(workDays),
                 opActualContentDisplayLst,
                 Optional.of(businessTripWorkTypes),
                 Optional.empty()
@@ -174,8 +174,8 @@ public class BusinessTripFinder {
                 Optional.empty(),
                 Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
                 Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
-                Optional.of(new AppReason(applicationDto.getOpAppReason())),
-                Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
+                applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
+                applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
                 ));
 
         BusinessTripInfoOutput output = param.getBusinessTripInfoOutput().toDomain();
@@ -226,20 +226,9 @@ public class BusinessTripFinder {
         DetailStartScreenInfoDto result = new DetailStartScreenInfoDto();
         BusinessTripInfoOutput tripRequestInfoOutput = businessTripInfoOutputDto.toDomain();
         AppDispInfoStartupOutput appDispInfoStartupOutput = tripRequestInfoOutput.getAppDispInfoStartup();
-        Application application = Application.createFromNew(
-                EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
-                applicationDto.getEmployeeID() == null ? loginSid : applicationDto.getEmployeeID(),
-                EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
-                new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
-                loginSid,
-                Optional.empty(),
-                Optional.empty(),
-                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
-                Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
-                Optional.of(new AppReason(applicationDto.getOpAppReason())),
-                Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
-                ));
-        DatePeriod dates = new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate());
+        GeneralDate appStartDate = GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd");
+        GeneralDate appEndDate = GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd");
+        DatePeriod dates = new DatePeriod(appStartDate, appEndDate);
         List<GeneralDate> inputDates = dates.datesBetween();
 
         // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する

@@ -454,6 +454,12 @@ public class AppListInitialImpl implements AppListInitialRepository{
 	 */
 	@Override
 	public AppListInfo getAppListByApproval(AppListExtractCondition param, int device, AppListInfo appListInfo) {
+		String employeeID = AppContexts.user().employeeId();
+		if(param.getOpListEmployeeID().isPresent()) {
+			if(!CollectionUtil.isEmpty(param.getOpListEmployeeID().get())) {
+				employeeID = param.getOpListEmployeeID().get().get(0);
+			}
+		}
 		// 承認区分から承認ルートを取得
 		Map<String, List<ApprovalPhaseStateImport_New>> mapApprInfo = this.mergeAppAndPhase_New(
 			new DatePeriod(param.getPeriodStartDate(), param.getPeriodEndDate()), 
@@ -463,7 +469,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			param.getOpAgentApprovalStatus().orElse(false), 
 			param.getOpRemandStatus().orElse(false),
 			param.getOpCancelStatus().orElse(false),
-			AppContexts.user().employeeId(),
+			employeeID,
 			Collections.emptyList());
 		// 取得したドメインモデル「承認ルートインスタンス」をチェック
 		if(mapApprInfo.isEmpty()) {
@@ -1215,7 +1221,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// result.setOpTimeCalcUseAtr();
 		result.setVersion(application.getVersion());
 		result.setApplication(application);
-		return new AppInfoMasterOutput(result, mapEmpInfo);
+		return new AppInfoMasterOutput(result, mapEmpInfo, mapWkpInfo);
 		
 //		if (lstApp.isEmpty()) {
 //			return new DataMasterOutput(Collections.emptyList(), Collections.emptyList(), new HashMap<>());
@@ -1441,14 +1447,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		// request 244
 		String companyID = AppContexts.user().companyId();
 		GeneralDate sysDate = GeneralDate.today();
-		List<AgentDataRequestPubImport> lstAgent = agentAdapter.lstAgentData(companyID, approverID, sysDate, sysDate);
-		List<String> lstEmp = new ArrayList<>();
-		for (AgentDataRequestPubImport agent : lstAgent) {
-			lstEmp.add(agent.getEmployeeId());
-		}
+		List<String> lstAgent = agentAdapter.lstAgentData(companyID, approverID, sysDate, sysDate).stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 		// ドメインモデル「承認ルートインスタンス」を取得
 		mapApprInfo = approvalRootStateAdapter
-				.getApprovalRootContentCMM045(companyID, lstEmp, period, unapprovalStatus, approvalStatus,
+				.getApprovalRootContentCMM045(companyID, approverID, lstAgent, period, unapprovalStatus, approvalStatus,
 						denialStatus, agentApprovalStatus, remandStatus, cancelStatus);
 		if(!CollectionUtil.isEmpty(appIDLst)) {
 			Map<String, List<ApprovalPhaseStateImport_New>> mapApprInfoByAppLst = new HashMap<>();
@@ -2056,8 +2058,9 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			}
 			case WORK_CHANGE_APPLICATION: {//勤務変更申請
 				AppWorkChangeFull wkChange = this.find007(lstAppWkChange, appID);
-				content = contentDtail.getContentWorkChange(wkChange, companyID, appID, appReasonDisAtr, appReason,
-						ScreenAtr.CMM045.value, lstWkType, lstWkTime);
+//				content = contentDtail.getContentWorkChange(wkChange, companyID, appID, appReasonDisAtr, appReason,
+//						ScreenAtr.CMM045.value, lstWkType, lstWkTime);
+				content = "";
 				break;
 			}
 			case GO_RETURN_DIRECTLY_APPLICATION: {//直行直帰申請

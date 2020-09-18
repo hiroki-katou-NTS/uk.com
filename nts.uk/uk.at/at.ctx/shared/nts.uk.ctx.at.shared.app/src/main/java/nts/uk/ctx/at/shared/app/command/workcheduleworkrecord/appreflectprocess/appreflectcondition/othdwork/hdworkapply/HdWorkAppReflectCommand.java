@@ -12,7 +12,7 @@ public class HdWorkAppReflectCommand {
     private int reflectActualHolidayWorkAtr;
     private int workReflect;
     private int reflectPaytime;
-    private int reflectOptional;
+//    private int reflectOptional;
     private int reflectDivergence;
     private int reflectBreakOuting;
 
@@ -21,7 +21,7 @@ public class HdWorkAppReflectCommand {
                 reflectActualHolidayWorkAtr,
                 workReflect,
                 reflectPaytime,
-                reflectOptional,
+//                reflectOptional,
                 reflectDivergence,
                 reflectBreakOuting
         );

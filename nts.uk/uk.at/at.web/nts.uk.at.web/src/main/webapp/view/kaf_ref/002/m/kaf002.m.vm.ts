@@ -30,7 +30,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         tabMs: Array<TabM>;
         
         isPreAtr: KnockoutObservable<boolean>;
-        
+        tabsTemp: any;
+        selectedTemp: any;
         created(params) {
             
             const self = this;
@@ -63,9 +64,27 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             } );
             self.nameGrids = ko.observableArray(nameGridsArray);
             self.tabs = ko.observableArray(paramTabs);
+            // must assign param.tabs at mounted since tabs is not render
+            self.tabsTemp = params.tabs;
             // select first tab
             self.selectedTab = ko.observable( paramTabs[0].id );
-            
+            self.selectedTemp = params.selectedTab;
+            self.selectedTab.subscribe(value => {
+                if (value) {
+                    if (value == 'tab-1') {
+                        self.selectedTemp(0);
+                    } else if (value == 'tab-2') {
+                        self.selectedTemp(1);
+                    } else if (value == 'tab-3') {
+                        self.selectedTemp(5);
+                    } else if (value == 'tab-4') {
+                        self.selectedTemp(2);
+                    } else if (value == 'tab-5') {
+                        self.selectedTemp(4);
+                    }
+                    
+                }
+            })
             self.isPreAtr.subscribe((value) => {
                if(!_.isNull(value)) {
                    self.loadAll();
@@ -114,6 +133,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         mounted() {
             const self = this;
             self.loadAll();
+            // change tabs by root component
+            self.tabsTemp(self.tabs());
             
         }
         loadAll() {
@@ -164,7 +185,11 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         
         loadGrid(id: string,items: any, type: number) {
             const self = this;
-            if (!items) {
+            if (!id) {
+                
+                return;
+            }
+                if (!items) {
                 
                 return;
             }
@@ -209,7 +234,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
             let optionGrid = { 
-                    width: '100%',
+                    width: '450px',
                     height: '360px',
                     dataSource: dataSource,
                     primaryKey: 'id',
@@ -264,7 +289,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                new ItemModel('2', '有償'),
                                new ItemModel('3', '組合')];
             let option2 = { 
-              width: '100%',
+              width: '450px',
               height: '360px',
               dataSource: dataSource,
               primaryKey: 'id',
@@ -316,17 +341,26 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             }
             
             
-            if (type == 2) {
-                $('#' + id).ntsGrid(option2);
-            }else {                
-                $('#' + id).ntsGrid(optionGrid);
+            if (type == STAMPTYPE.GOOUT_RETURNING) {
+                if ($('#' + id)) {
+                    $('#' + id).ntsGrid(option2);                    
+                }
+            }else {
+                if ($('#' + id)) {
+                    $('#' + id).ntsGrid(optionGrid);
+                }
             }
             // if isCondition2 => error state of text1
             let nameAtr = 'td[aria-describedby ="'+ id +'_text1"]';
-            $(nameAtr).addClass('titleColor');
+            if ($(nameAtr)) {
+                $(nameAtr).addClass('titleColor');                
+            }
             // add row to display expand row
             if (items.length >= 10 && self.isLinkList[items[0].index]) {
-                $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                if ($('#' + id)) {
+//                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a data-bind="ntsLinkButton: { action: doSomething.bind($data, dataSource['+ items[0].index +']) }, text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');                    
+                    $('#' + id).append('<tr id="trLink2"><td></td><td class="titleCorlor" style="height: 50px; background-color: #CFF1A5"><div></div></td><td colspan="4"><div id="moreRow'+ String(items[0].index) + '" style="display: block" align="center"><a style="color: blue; text-decoration: underline" data-bind="click: doSomething.bind($data, dataSource['+ items[0].index +']) , text: \'' + self.$i18n('KAF002_73') + '\'"></a></div></td></tr>');
+                }
  
             } else {
                 self.isLinkList[items[0].index] = false;
@@ -445,7 +479,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             let param = 'dataSource[' + String(self.index) +']';
             let idGetList = self.id - 1;
-            
+            self.flagObservable(false);
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
@@ -547,13 +581,20 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
     }
     
     export enum STAMPTYPE {
+//        出勤／退勤
         ATTENDENCE = 0,
-        EXTRAORDINARY = 1,
-        GOOUT_RETURNING = 2,
+//        育児
+        PARENT = 2,
+//        外出／戻り
+        GOOUT_RETURNING = 1,
+//        応援
         CHEERING = 3,
-        PARENT = 4,
-        NURSE = 5,
-        BREAK = 6
+//        臨時
+        EXTRAORDINARY = 4,
+//        休憩
+        BREAK = 5,
+//        介護
+        NURSE = 6,
 
     }
     export class TabM {

@@ -530,12 +530,9 @@ html {
 	border: 0px solid #ccc !important;
 }
 
-.background-attendance {background-color: #0000ff !important;}
-.background-holiday {background-color: #ff0000 !important;}
-.background-half-day-work {background-color: #FF7F27 !important; }
-.background-schedule-performance {background-color:#008000 !important;}
 .background-white {background-color: white !important;}
 .color-default {color : #000000 !important;}
+.bg-schedule-uncorrectable-ksu001 {background-color:#ddddd2;}
 
 table th, table td {
 	padding: 2px 5px;

@@ -29,4 +29,17 @@ public class ShiftMasterHelper {
 		return data;
 		
 	}
+	
+    public static ShiftMaster createShiftMasterWithCode (String shiftMasterCode) {
+        ShiftMasterDisInfor displayInfor =  new ShiftMasterDisInfor(
+                new ShiftMasterName( shiftMasterCode + "-name"),
+                new ColorCodeChar6(shiftMasterCode + "-color"),
+                null);
+        
+        return new ShiftMaster("companyId",
+                new ShiftMasterCode(shiftMasterCode), 
+                displayInfor, 
+                "1","1");
+
+    }
 }

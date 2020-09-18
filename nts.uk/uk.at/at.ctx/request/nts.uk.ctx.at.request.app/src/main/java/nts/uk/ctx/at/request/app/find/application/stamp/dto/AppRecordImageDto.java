@@ -32,7 +32,7 @@ public class AppRecordImageDto extends ApplicationDto{
 	public AppRecordImage toDomain() {
 		return new AppRecordImage(
 				EnumAdaptor.valueOf(appStampCombinationAtr, EngraveAtr.class),
-				EnumAdaptor.valueOf(attendanceTime, AttendanceTime.class),
+				new AttendanceTime(attendanceTime),
 				appStampGoOutAtr != null ? Optional.of(EnumAdaptor.valueOf(appStampGoOutAtr, GoOutReasonAtr.class)) : Optional.empty());
 	}
 }

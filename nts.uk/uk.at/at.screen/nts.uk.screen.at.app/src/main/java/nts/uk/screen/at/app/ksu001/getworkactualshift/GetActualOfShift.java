@@ -310,8 +310,8 @@ public class GetActualOfShift {
 		}
 
 		@Override
-		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(List<String> sids, DatePeriod datePeriod) {
-			Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(sids.get(0), datePeriod.start());
+		public Optional<EmpEnrollPeriodImport> getAffCompanyHistByEmployee(String sid, GeneralDate startDate) {
+			Optional<EmpEnrollPeriodImport> data = affCompanyHistByEmployeeCache.get(sid, startDate);
 			return data;
 		}
 
@@ -322,20 +322,20 @@ public class GetActualOfShift {
 		}
 
 		@Override
-		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			Optional<EmployeeLeaveJobPeriodImport> data =  empLeaveJobPeriodCache.get(lstEmpID.get(0), datePeriod.start());
+		public Optional<EmployeeLeaveJobPeriodImport> getByDatePeriod(String sid, GeneralDate startDate) {
+			Optional<EmployeeLeaveJobPeriodImport> data =  empLeaveJobPeriodCache.get(sid, startDate);
 			return data;
 		}
 
 		@Override
-		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(List<String> lstEmpID, DatePeriod datePeriod) {
-			Optional<EmpLeaveWorkPeriodImport> data = empLeaveWorkPeriodCache.get(lstEmpID.get(0), datePeriod.start());
+		public Optional<EmpLeaveWorkPeriodImport> specAndGetHolidayPeriod(String sid, GeneralDate startDate) {
+			Optional<EmpLeaveWorkPeriodImport> data = empLeaveWorkPeriodCache.get(sid, startDate);
 			return data;
 		}
 
 		@Override
-		public Optional<EmploymentPeriodImported> getEmploymentHistory(List<String> lstEmpID, DatePeriod datePeriod) {
-			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(lstEmpID.get(0), datePeriod.start());
+		public Optional<EmploymentPeriodImported> getEmploymentHistory(String sid, GeneralDate startDate) {
+			Optional<EmploymentPeriodImported> data = employmentPeriodCache.get(sid, startDate);
 			return data;
 		}
 	}

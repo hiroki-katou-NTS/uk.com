@@ -148,7 +148,7 @@ public interface ApprovalRootStateAdapter {
 	 * @param companyID
 	 * @return
 	 */
-	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID, 
+	public Map<String,List<ApprovalPhaseStateImport_New>> getApprovalRootContentCMM045(String companyID, String approverID,
 			List<String> lstAgent, DatePeriod period, boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, 
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus);
     

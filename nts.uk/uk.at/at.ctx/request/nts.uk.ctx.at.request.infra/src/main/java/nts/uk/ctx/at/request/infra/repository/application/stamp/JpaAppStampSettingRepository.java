@@ -72,13 +72,13 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appCommentSetAttendenceRetirement1.setColorCode(new ColorCode(res.getString("WK_CMT_FONT_COLOR1")));
 		appCommentSetAttendenceRetirement1.setComment(new Comment(res.getString("WK_CMT_CONTENT1")));
 		appCommentSetAttendenceRetirement1.setBold(BooleanUtils.toBoolean(res.getInt("WK_CMT_FONT_WEIGHT1")));
-		attendenceRetirement.setBottomComment(appCommentSetAttendenceRetirement1);
+		attendenceRetirement.setTopComment(appCommentSetAttendenceRetirement1);
 		
 		AppCommentSet appCommentSetAttendenceRetirement2 = new AppCommentSet(); 
 		appCommentSetAttendenceRetirement2.setColorCode(new ColorCode(res.getString("WK_CMT_FONT_COLOR2")));
 		appCommentSetAttendenceRetirement2.setComment(new Comment(res.getString("WK_CMT_CONTENT2")));
 		appCommentSetAttendenceRetirement2.setBold(BooleanUtils.toBoolean(res.getInt("WK_CMT_FONT_WEIGHT2")));
-		attendenceRetirement.setTopComment(appCommentSetAttendenceRetirement2);
+		attendenceRetirement.setBottomComment(appCommentSetAttendenceRetirement2);
 		
 		settingForEachTypeLst.add(attendenceRetirement);
 		
@@ -92,13 +92,13 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appCommentSetGoOut1.setColorCode(new ColorCode(res.getString("GOOUT_CMT_FONT_COLOR1")));
 		appCommentSetGoOut1.setComment(new Comment(res.getString("GOOUT_CMT_CONTENT1")));
 		appCommentSetGoOut1.setBold(BooleanUtils.toBoolean(res.getInt("GOOUT_CMT_FONT_WEIGHT1")));
-		goOut.setBottomComment(appCommentSetGoOut1);
+		goOut.setTopComment(appCommentSetGoOut1);
 		
 		AppCommentSet appCommentSetGoOut2 = new AppCommentSet(); 
 		appCommentSetGoOut2.setColorCode(new ColorCode(res.getString("GOOUT_CMT_FONT_COLOR2")));
 		appCommentSetGoOut2.setComment(new Comment(res.getString("GOOUT_CMT_CONTENT2")));
 		appCommentSetGoOut2.setBold(BooleanUtils.toBoolean(res.getInt("GOOUT_CMT_FONT_WEIGHT2")));
-		goOut.setTopComment(appCommentSetGoOut2);
+		goOut.setBottomComment(appCommentSetGoOut2);
 		
 		settingForEachTypeLst.add(goOut);
 		
@@ -111,13 +111,13 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appCommentSetchildCare1.setColorCode(new ColorCode(res.getString("CHILD_CARE_CMT_FONT_COLOR1")));
 		appCommentSetchildCare1.setComment(new Comment(res.getString("CHILD_CARE_CMT_CONTENT1")));
 		appCommentSetchildCare1.setBold(BooleanUtils.toBoolean(res.getInt("CHILD_CARE_CMT_FONT_WEIGHT1")));
-		childCare.setBottomComment(appCommentSetchildCare1);
+		childCare.setTopComment(appCommentSetchildCare1);
 		
 		AppCommentSet appCommentSetchildCare2 = new AppCommentSet(); 
 		appCommentSetchildCare2.setColorCode(new ColorCode(res.getString("CHILD_CARE_CMT_FONT_COLOR2")));
 		appCommentSetchildCare2.setComment(new Comment(res.getString("CHILD_CARE_CMT_CONTENT2")));
 		appCommentSetchildCare2.setBold(BooleanUtils.toBoolean(res.getInt("CHILD_CARE_CMT_FONT_WEIGHT2")));
-		childCare.setTopComment(appCommentSetchildCare2);
+		childCare.setBottomComment(appCommentSetchildCare2);
 		
 		settingForEachTypeLst.add(childCare);
 		
@@ -130,13 +130,13 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appCommentSetSupport1.setColorCode(new ColorCode(res.getString("SUP_CMT_FONT_COLOR1")));
 		appCommentSetSupport1.setComment(new Comment(res.getString("SUP_CMT_CONTENT1")));
 		appCommentSetSupport1.setBold(BooleanUtils.toBoolean(res.getInt("SUP_CMT_FONT_WEIGHT1")));
-		support.setBottomComment(appCommentSetSupport1);
+		support.setTopComment(appCommentSetSupport1);
 		
 		AppCommentSet appCommentSetSupport2 = new AppCommentSet(); 
 		appCommentSetSupport2.setColorCode(new ColorCode(res.getString("SUP_CMT_FONT_COLOR2")));
 		appCommentSetSupport2.setComment(new Comment(res.getString("SUP_CMT_CONTENT2")));
 		appCommentSetSupport2.setBold(BooleanUtils.toBoolean(res.getInt("SUP_CMT_FONT_WEIGHT2")));
-		support.setTopComment(appCommentSetSupport2);
+		support.setBottomComment(appCommentSetSupport2);
 		
 		settingForEachTypeLst.add(support);
 		
@@ -150,13 +150,13 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appCommentSetOutCare1.setColorCode(new ColorCode(res.getString("CARE_CMT_FONT_COLOR1")));
 		appCommentSetOutCare1.setComment(new Comment(res.getString("CARE_CMT_CONTENT1")));
 		appCommentSetOutCare1.setBold(BooleanUtils.toBoolean(res.getInt("CARE_CMT_FONT_WEIGHT1")));
-		outCare.setBottomComment(appCommentSetOutCare1);
+		outCare.setTopComment(appCommentSetOutCare1);
 		
 		AppCommentSet appCommentSetOutCare2 = new AppCommentSet(); 
 		appCommentSetOutCare2.setColorCode(new ColorCode(res.getString("CARE_CMT_FONT_COLOR2")));
 		appCommentSetOutCare2.setComment(new Comment(res.getString("CARE_CMT_CONTENT2")));
 		appCommentSetOutCare2.setBold(BooleanUtils.toBoolean(res.getInt("CARE_CMT_FONT_WEIGHT2")));
-		outCare.setTopComment(appCommentSetOutCare2);
+		outCare.setBottomComment(appCommentSetOutCare2);
 		
 		settingForEachTypeLst.add(outCare);
 		
@@ -169,13 +169,13 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appCommentSetBreak1.setColorCode(new ColorCode(res.getString("BREAK_CMT_FONT_COLOR1")));
 		appCommentSetBreak1.setComment(new Comment(res.getString("BREAK_CMT_CONTENT1")));
 		appCommentSetBreak1.setBold(BooleanUtils.toBoolean(res.getInt("BREAK_CMT_FONT_WEIGHT1")));
-		breaks.setBottomComment(appCommentSetBreak1);
+		breaks.setTopComment(appCommentSetBreak1);
 		
 		AppCommentSet appCommentSetBreak2 = new AppCommentSet(); 
 		appCommentSetBreak2.setColorCode(new ColorCode(res.getString("BREAK_CMT_FONT_COLOR2")));
 		appCommentSetBreak2.setComment(new Comment(res.getString("BREAK_CMT_CONTENT2")));
 		appCommentSetBreak2.setBold(BooleanUtils.toBoolean(res.getInt("BREAK_CMT_FONT_WEIGHT2")));
-		breaks.setTopComment(appCommentSetBreak2);
+		breaks.setBottomComment(appCommentSetBreak2);
 		
 		settingForEachTypeLst.add(breaks);
 		
@@ -189,13 +189,13 @@ public class JpaAppStampSettingRepository extends JpaRepository implements AppSt
 		appCommentSetRecoder1.setColorCode(new ColorCode(res.getString("NR_CMT_FONT_COLOR1")));
 		appCommentSetRecoder1.setComment(new Comment(res.getString("NR_CMT_CONTENT1")));
 		appCommentSetRecoder1.setBold(BooleanUtils.toBoolean(res.getInt("NR_CMT_FONT_WEIGHT1")));
-		recoder.setBottomComment(appCommentSetRecoder1);
+		recoder.setTopComment(appCommentSetRecoder1);
 		
 		AppCommentSet appCommentSetRecoder2 = new AppCommentSet(); 
 		appCommentSetRecoder2.setColorCode(new ColorCode(res.getString("NR_CMT_FONT_COLOR2")));
 		appCommentSetRecoder2.setComment(new Comment(res.getString("NR_CMT_CONTENT2")));
 		appCommentSetRecoder2.setBold(BooleanUtils.toBoolean(res.getInt("NR_CMT_FONT_WEIGHT2")));
-		recoder.setTopComment(appCommentSetRecoder2);
+		recoder.setBottomComment(appCommentSetRecoder2);
 		
 		settingForEachTypeLst.add(recoder);
 		

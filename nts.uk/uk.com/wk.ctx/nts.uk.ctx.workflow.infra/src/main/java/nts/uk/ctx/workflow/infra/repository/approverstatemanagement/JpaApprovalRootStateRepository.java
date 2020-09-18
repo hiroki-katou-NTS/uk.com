@@ -26,6 +26,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalBehaviorAtr;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalFrame;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalRootState;
@@ -616,22 +617,25 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 	}
 
 	@Override
-	public List<ApprovalRootState> findEmploymentAppCMM045(List<String> lstApproverID, DatePeriod period,
+	public List<ApprovalRootState> findEmploymentAppCMM045(String approverID, List<String> agentLst, DatePeriod period,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
 			boolean remandStatus, boolean cancelStatus) {
 		String companyID = AppContexts.user().companyId();
 		List<ApprovalRootState> result = new ArrayList<>();
-		CollectionUtil.split(lstApproverID, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
-			internalQuery045(companyID, result, subList, period, unapprovalStatus, approvalStatus, denialStatus,
-					agentApprovalStatus, remandStatus, cancelStatus);
-		});
+		//CollectionUtil.split(agentLst, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, subList -> {
+		internalQuery045(companyID, result, approverID, agentLst, period, unapprovalStatus, approvalStatus, denialStatus,
+				agentApprovalStatus, remandStatus, cancelStatus);
+		//});
 		return result;
 	}
 
 	@SneakyThrows
-	private void internalQuery045(String companyID, List<ApprovalRootState> result, List<String> lstApproverID,
+	private void internalQuery045(String companyID, List<ApprovalRootState> result, String approverID, List<String> agentLst,
 			DatePeriod period, boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus,
 			boolean agentApprovalStatus, boolean remandStatus, boolean cancelStatus) {
+		List<String> lstApproverID = new ArrayList<>();
+		lstApproverID.add(approverID);
+		lstApproverID.addAll(agentLst);
 		// Phase
 		List<Integer> lstPhaseStt = new ArrayList<>();
 
@@ -708,8 +712,41 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 			listFullData.addAll(WwfdtFullJoinState.fromResultSet(pstatement.executeQuery()));
 		}
 
-		List<ApprovalRootState> entityRoot = WwfdtFullJoinState.toDomain(listFullData);
-		result.addAll(entityRoot);
+		// List<ApprovalRootState> entityRoot = WwfdtFullJoinState.toDomain(listFullData);
+		
+		if(unapprovalStatus) {
+			List<WwfdtFullJoinState> unapprovalStatusLst = listFullData.stream().filter(x -> {
+						return x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED.value && x.getAppPhaseAtr()==ApprovalBehaviorAtr.UNAPPROVED.value;
+					}).collect(Collectors.toList());
+			result.addAll(WwfdtFullJoinState.toDomain(unapprovalStatusLst));
+		}
+		if(approvalStatus) {
+			List<WwfdtFullJoinState> approvalStatusLst = listFullData.stream().filter(x -> {
+						return x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value ||
+								(x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED.value && x.getAppPhaseAtr()==ApprovalBehaviorAtr.APPROVED.value);
+					}).collect(Collectors.toList());
+			result.addAll(WwfdtFullJoinState.toDomain(approvalStatusLst));
+		}
+		if(agentApprovalStatus) {
+			List<WwfdtFullJoinState> agentApprovalStatusLst = listFullData.stream().filter(x -> {
+						return x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value;
+					}).collect(Collectors.toList());
+			result.addAll(WwfdtFullJoinState.toDomain(agentApprovalStatusLst));
+		}
+		if(remandStatus) {
+			List<WwfdtFullJoinState> remandStatusLst = listFullData.stream().filter(x -> {
+						return x.getAppPhaseAtr()==ApprovalBehaviorAtr.REMAND.value;
+					}).collect(Collectors.toList());
+			result.addAll(WwfdtFullJoinState.toDomain(remandStatusLst));
+		}
+		if(denialStatus) {
+			List<WwfdtFullJoinState> denialStatusLst = listFullData.stream().filter(x -> {
+						return x.getAppPhaseAtr()==ApprovalBehaviorAtr.DENIAL.value;
+					}).collect(Collectors.toList());
+			result.addAll(WwfdtFullJoinState.toDomain(denialStatusLst));
+		}
+		
+		// result.addAll(entityRoot);
 	}
 
 	@Override

@@ -15,7 +15,7 @@ public class OtWorkAppReflectDto {
     private int reflectBeforeBreak;
     private int workReflect;
     private int reflectPaytime;
-    private int reflectOptional;
+//    private int reflectOptional;
     private int reflectDivergence;
     private int reflectBreakOuting;
 
@@ -27,7 +27,7 @@ public class OtWorkAppReflectDto {
                 domain.getBefore().getBreakLeaveApplication().getBreakReflectAtr().value,
                 domain.getAfter().getWorkReflect().value,
                 domain.getAfter().getOthersReflect().getReflectPaytimeAtr().value,
-                domain.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
+//                domain.getAfter().getOthersReflect().getReflectOptionalItemsAtr().value,
                 domain.getAfter().getOthersReflect().getReflectDivergentReasonAtr().value,
                 domain.getAfter().getBreakLeaveApplication().getBreakReflectAtr().value
         );

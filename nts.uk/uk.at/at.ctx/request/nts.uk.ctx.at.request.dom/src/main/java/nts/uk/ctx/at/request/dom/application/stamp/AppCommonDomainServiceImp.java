@@ -273,7 +273,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			AppStampOutput appStampOutput) {
 		List<ConfirmMsgOutput> listConfirmMs = new ArrayList<ConfirmMsgOutput>();
 		// check 
-		this.checkRegisterAndUpdate((AppStamp)application);
+		this.checkRegisterAndUpdate(appStampOutput.getAppStampOptional().orElse(null));
 		
 		
 //		4-1.詳細画面登録前の処理
@@ -311,24 +311,53 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 						
 						throw new BusinessException("Msg_307");
 					}
-				}else {
-					if (item.getStartTime() != null && temp.getEndTime() != null) {
-						if (item.getStartTime() < temp.getEndTime() ) {
-							// throw msg
-							
+					if (temp.getEndTime() != null) {
+						if (temp.getEndTime() > item.getStartTime()) {
 							throw new BusinessException("Msg_307");
+						} 
+					} else if (temp.getStartTime() != null) {
+						if (temp.getStartTime() > item.getStartTime()) {
+							throw new BusinessException("Msg_307");
+						} 
+					}
+					
+				}else {
+					if (item.getStartTime() != null) {
+						
+						if (temp.getEndTime() != null) {
+							if (item.getStartTime() < temp.getEndTime() ) {
+								// throw msg	
+								throw new BusinessException("Msg_307");
+							}							
+						} else if (temp.getStartTime() != null) {
+							if (item.getStartTime() < temp.getStartTime() ) {
+								// throw msg	
+								throw new BusinessException("Msg_307");
+							}
 						}
-					} 
+					} else if (item.getEndTime() != null) {
+						if (temp.getEndTime() != null) {
+							if (item.getEndTime() < temp.getEndTime() ) {
+								// throw msg	
+								throw new BusinessException("Msg_307");
+							}							
+						} else if (temp.getStartTime() != null) {
+							if (item.getEndTime() < temp.getStartTime() ) {
+								// throw msg	
+								throw new BusinessException("Msg_307");
+							}
+						}
+					}
 					
 				}
 				
-				
-				
 				if (item.getStartTime() != null) {
-					temp.setStartTime(item.getStartTime());
+					temp.setStartTime(temp.getEndTime());
+					temp.setEndTime(item.getStartTime());
 					
 				}
 				if (item.getEndTime() != null) {
+					temp.setStartTime(temp.getEndTime());
 					temp.setEndTime(item.getEndTime());
 					
 				}
@@ -355,6 +384,15 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 	}
 	public void checkRegisterAndUpdate(AppStamp appStamp) {
 		if (appStamp == null) return;
+//		事前モード：「時間帯：Empty　AND　AND　時刻：Empty」の場合：Msg_308を表示する
+		if (appStamp.getPrePostAtr() == PrePostAtr.PREDICT) {
+			if (CollectionUtil.isEmpty(appStamp.getListTimeStampApp())  
+					&& CollectionUtil.isEmpty(appStamp.getListTimeStampAppOther()))
+					{
+				throw new BusinessException("Msg_308");
+	
+			}
+		}
 //		事後モード：「時間帯：Empty　AND　時間帯の取消：Empty　AND　時刻：Empty　AND　時刻の取消：Empty、」の場合：Msg_308を表示する
 		if (appStamp.getPrePostAtr() == PrePostAtr.POSTERIOR) {
 			if (CollectionUtil.isEmpty(appStamp.getListTimeStampApp())  
@@ -417,6 +455,9 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 			AppDispInfoStartupOutput appDispInfoStartupOutput, Boolean recoderFlag) {
 		
 		AppStampOutput appStampOutput = new AppStampOutput();
+//		ドメイン「打刻申請の反映」を取得する
+		Optional<AppStampReflect> appStampReflect = appStampReflectRepo.findByAppID(companyId);
+		appStampOutput.setAppStampReflectOptional(appStampReflect);
 		
 		if (recoderFlag) {			
 //			ドメインモデル「レコーダイメージ申請」を取得する
@@ -467,7 +508,7 @@ public class AppCommonDomainServiceImp implements AppCommonDomainService{
 		if (appStampSettingOptional.isPresent()) {
 			appStampOutput.setAppStampSetting(appStampSettingOptional.get());
 		}
-		
+		appStampOutput.setAppDispInfoStartupOutput(appDispInfoStartupOutput);
 		return appStampOutput;
 	}
 	

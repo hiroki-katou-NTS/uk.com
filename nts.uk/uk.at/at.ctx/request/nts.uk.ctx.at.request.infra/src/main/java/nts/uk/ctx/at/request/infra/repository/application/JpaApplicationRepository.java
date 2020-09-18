@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -36,6 +37,7 @@ import nts.uk.ctx.at.request.dom.application.Application_New;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflect;
 import nts.uk.ctx.at.request.dom.application.ReasonNotReflectDaily;
+import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
@@ -93,18 +95,16 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private static final String SELECT_APP_BY_CONDS = "SELECT a FROM KrqdtApplication_New a WHERE a.employeeID = :employeeID AND a.appDate >= :startDate AND a.appDate <= :endDate"
 			+ " AND a.prePostAtr = 1 AND (a.stateReflectionReal = 0 OR a.stateReflectionReal = 1) ORDER BY a.appDate ASC, a.inputDate DESC";
 
-	private static final String SELECT_LATE_LEAVE = SELECT_BY_DATE + " " + "AND a.employeeID = :employeeID "
-			+ "AND a.stateReflectionReal = 0 " + "AND a.appType = 9 ORDER BY a.appDate ASC";
-
 	private static final String SELECT_BY_SID_PERIOD_APPTYPE = "SELECT c FROM KrqdtApplication_New c "
 			+ " WHERE c.employeeID = :employeeID" + " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate"
 			+ " AND c.stateReflectionReal IN :stateReflectionReals" + " AND c.appType IN :appTypes";
 	// hoatt
 	private static final String FIND_BY_REF_PERIOD_TYPE = "SELECT app FROM KrqdtApplication app"
-			+ " WHERE c.pk.companyID = :companyID" + " AND c.employeeID = :employeeID"
-			+ " AND c.appDate >= :startDate" + " AND c.appDate <= :endDate" + " AND c.prePostAtr = :prePostAtr"
-			+ " AND c.appType = :appType" + " AND c.krqdtAppReflectStateLst.actualReflectStatus IN :lstRef"
-			+ " ORDER BY c.appType ASC, c.inputDate DESC";
+			+ " JOIN KrqdtAppReflectState ref ON app.pk.companyID = ref.pk.companyID  AND app.pk.appID = ref.pk.appID"
+			+ " WHERE app.pk.companyID = :companyID" + " AND app.employeeID = :employeeID"
+			+ " AND app.appDate >= :startDate" + " AND app.appDate <= :endDate" + " AND app.prePostAtr = :prePostAtr"
+			+ " AND app.appType = :appType" + " AND  ref.actualReflectStatus IN :lstRef"
+			+ " ORDER BY app.appType ASC, app.inputDate DESC";
 	
 	/*
 	@Override
@@ -251,20 +251,19 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		List<Integer> lstState = new ArrayList<>();
 		if (unapprovalStatus || approvalStatus || agentApprovalStatus || remandStatus) {
-			lstState.add(0);
+			lstState.add(ReflectedState.NOTREFLECTED.value);
 		}
 		if (approvalStatus || agentApprovalStatus) {
-			lstState.add(1);
+			lstState.add(ReflectedState.WAITREFLECTION.value);
 		}
 		if (approvalStatus || agentApprovalStatus) {
-			lstState.add(2);
+			lstState.add(ReflectedState.REFLECTED.value);
 		}
 		if (agentApprovalStatus || cancelStatus) {
-			lstState.add(3);
-			lstState.add(4);
+			lstState.add(ReflectedState.CANCELED.value);
 		}
 		if (denialStatus || agentApprovalStatus) {
-			lstState.add(6);
+			lstState.add(ReflectedState.DENIAL.value);
 		}
 
 		List<Application> lstResult = new ArrayList<>();
@@ -420,11 +419,23 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
-	public List<Application_New> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
+	public List<Application> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		return this.queryProxy().query(SELECT_LATE_LEAVE, KrqdtApplication_New.class)
-				.setParameter("companyID", companyID).setParameter("employeeID", employeeID)
-				.setParameter("startDate", startDate).setParameter("endDate", endDate).getList(x -> x.toDomain());
+		String sql = "SELECT * FROM KRQDT_APPLICATION app" 
+				+ " join KRQDT_APP_REFLECT_STATE ref"
+				+ "  on app.APP_ID = ref.APP_ID and  app.CID = ref.CID"
+				+ " WHERE  app.CID =  @companyID "
+				+ " AND app.APPLICANTS_SID =  @employeeID "
+				+ " AND app.APP_START_DATE <= @strData " + " AND app.APP_END_DATE >= @endData " + " AND app.APP_TYPE = 9 " 
+				+ " AND ref.REFLECT_PER_STATE = 0" + " ORDER BY app.APP_DATE ASC";
+		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				.paramString("companyID", companyID)
+				.paramString("employeeID", employeeID)
+				.paramDate("strData", startDate)
+				.paramDate("endData", endDate)
+				.getList(rec -> toObject(rec));
+		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
+		return krqdtApplicationLst.stream().map(c -> c.toDomain()).collect(Collectors.toList());
 	}
 
 	@Override
@@ -850,7 +861,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
 				"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
 				"where a.APPLICANTS_SID = @sid and a.APP_START_DATE <= @endDate and a.APP_END_DATE >= @startDate " +
-				"and b.REFLECT_PER_STATE IN (0,1) and a.APP_TYPE IN (2,3,4,6,8,10) "+
+				"and b.REFLECT_PER_STATE IN (0,1) and a.APP_TYPE IN (2,3,4,6,1,10) "+
 				"order by a.INPUT_DATE DESC";
 		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("sid", sID)

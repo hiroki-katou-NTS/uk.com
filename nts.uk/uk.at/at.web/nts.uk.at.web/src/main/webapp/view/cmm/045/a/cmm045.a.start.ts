@@ -3,6 +3,7 @@ module cmm045.a  {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function() {
             __viewContext.bind(screenModel);
+			$('#daterangepicker .ntsEndDatePicker').focus();
         });
     });
 
@@ -89,10 +90,11 @@ module cmm045.a  {
             $handle.css("opacity", 0.5);
             $("body, table").addClass("resizing-now");
 
+            var appContWidth = $headerCol[0].classList.contains('appContent') ? 75 : handleBasics.minWidth;
             $(window).bind("mousemove.resize", e => {
                 let deltaX = e.screenX - startMouseX;
 
-                if (startColumnWidth + deltaX < handleBasics.minWidth) {
+                if (startColumnWidth + deltaX < appContWidth) {
                     return;
                 }
 
@@ -106,7 +108,7 @@ module cmm045.a  {
                 $handle.css("opacity", 0.0);
 
                 let deltaX = e.screenX - startMouseX;
-                let newWidth = Math.max(startColumnWidth + deltaX, handleBasics.minWidth);
+                let newWidth = Math.max(startColumnWidth + deltaX, appContWidth);
 
                 applyer(newWidth, $headerCol, $bodyCol);
             });

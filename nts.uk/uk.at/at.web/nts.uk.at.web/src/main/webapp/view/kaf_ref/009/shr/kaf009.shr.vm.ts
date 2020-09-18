@@ -43,13 +43,15 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 
                 if (!_.isEmpty(goBackApp.dataWork)) {
                     let codeWorkType = goBackApp.dataWork.workType;
-                    let nameWorkType = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType).name;
+                    let wtype = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType);
+                    let nameWorkType = !_.isNull(wtype) ? wtype.name : 'Empty';
                     vm.model.workTypeCode(codeWorkType);
                     vm.model.workTypeName(nameWorkType);
                     if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
                         let codeWorkTime = goBackApp.dataWork.workTime;
                         vm.model.workTimeCode(codeWorkTime);
-                        let nameWorkTime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime).workTimeDisplayName.workTimeName;
+                        let wtime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime)
+                        let nameWorkTime = !_.isNull(wtime) ? wtime.workTimeDisplayName.workTimeName : 'empty';
                         vm.model.workTimeName(nameWorkTime);
                         
                     }

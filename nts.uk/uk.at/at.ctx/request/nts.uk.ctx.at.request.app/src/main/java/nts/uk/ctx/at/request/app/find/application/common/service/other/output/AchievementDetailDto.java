@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.find.application.common.service.other.output;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
