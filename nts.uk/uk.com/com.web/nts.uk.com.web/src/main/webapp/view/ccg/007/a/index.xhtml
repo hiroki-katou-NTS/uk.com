@@ -14,17 +14,20 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="contents-area">
+				<!-- A1_2 -->
 				<div class="p10" style="position: relative;" data-bind="text: '#{i18n.getText('CCG007_10')}'"></div>
 				<div>
 					<table>
 						<tr>
 							<td class="w100 p10">
 								<div data-bind="ntsLabel">
+									<!-- A1_3 -->
 									<label data-bind="text: '#{i18n.getText('CCG007_1')}'"><br /></label>
 								</div>
 							</td>
 							<td class="w230 p10">
 								<div>
+									<!-- A1_4 -->
 									<input tabindex="1" id="contract-code-inp" data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_1')}',
 											value: contractCode,
@@ -39,11 +42,13 @@
 						<tr>
 							<td class="w100 p10">
 								<div data-bind="ntsLabel">
+									<!-- A1_5 -->
 									<label data-bind="text: '#{i18n.getText('CCG007_61')}'"><br /></label>
 								</div>
 							</td>
 							<td class="w230 p10">
 								<div>
+									<!-- A1_6 -->
 									<input tabindex="2" id="password-input" data-bind="ntsTextEditor: {
 											name: '#{i18n.getText('CCG007_2')}',
 											value: password,
@@ -59,11 +64,13 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
+				<!-- A1_7 -->
 				<div id="functions-area-bottom-label">
 					<div data-bind="text: bottomText1"></div>
 					<br />
 					<div data-bind="text: bottomText2"></div>
 				</div>
+				<!-- A1_8 -->
 				<button tabindex="3" id="login-btn" data-bind=" click: AuthContract"
 					class="btn-default proceed large">#{i18n.getText('CCG007_12')}</button>
 			</div>

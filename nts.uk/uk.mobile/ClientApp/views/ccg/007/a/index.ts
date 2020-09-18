@@ -45,12 +45,12 @@ export class Ccg007AComponent extends Vue {
             return;
         }
         vm.$http.post(servicePath.submitcontract, vm.model).then((response) => {
-            vm.$mask('hide');
             storage.local.setItem('contract', { code: vm.model.contractCode, password: vm.model.password });
             vm.$router.go(-1);
         }).catch((error) => {
-            vm.$mask('hide');
             vm.$modal.error({ messageId: error.messageId });
+        }).then(() => {
+            vm.$mask('hide');
         });
     }
 
