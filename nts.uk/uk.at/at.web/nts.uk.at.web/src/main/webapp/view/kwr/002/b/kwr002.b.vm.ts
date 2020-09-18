@@ -259,7 +259,7 @@ module nts.uk.com.view.kwr002.b {
                 nameUseAtr: currentData.nameUseAtr(),
                 exportFontSize: currentData.exportFontSize(),
                 itemSelType : self.selectionType,
-                layoutId: currentData.layoutId()
+                layoutId: currentData.layoutId
             };
 
             let itemCmd = {
@@ -438,6 +438,7 @@ module nts.uk.com.view.kwr002.b {
             setShared('attendanceRecExpSetName', self.name(), true);
             setShared('useSeal', self.sealUseAtr(), true);
             setShared('exportFontSize', self.exportFontSize());
+            setShared('selectionType', self.itemSelType);
 
             modal('../c/index.xhtml', {});
         }

@@ -161,7 +161,10 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 }
                 let attendanceItem: model.AttendanceItemShare = new model.AttendanceItemShare();
                 // アルゴリズム「出力項目画面設定」を実行する (Thực thi thuật toán Setting màn hình hạng mục output)
-                self.settingOutputScreen(attendanceItemName, columnIndex, position, exportAtr, positionText);
+                self.settingOutputScreen(attendanceItemName, columnIndex, position, exportAtr, positionText)
+                    .then(() => {
+
+                    });
                 
 
                 var link: string;
@@ -458,9 +461,10 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             let sealStamp: any = getShared('sealStamp');
             let useSeal: any = getShared('useSeal');
             const fontSzie = getShared('exportFontSize');
+            const selectionType = getShared('selectionType');
 
             // Update Ver25
-            $.when(service.getApprovalProcessingUseSetting(), service.getAttendanceRecordExportSetting(attendanceRecExpSetCode))
+            $.when(service.getApprovalProcessingUseSetting(), service.getAttendanceRecordExportSetting(attendanceRecExpSetCode, selectionType))
                 .then((aPUS: any, aRES: any) => {
                     if (aPUS !== null) {
                         self.useMonthApproverConfirm(aPUS.useMonthApproverConfirm);

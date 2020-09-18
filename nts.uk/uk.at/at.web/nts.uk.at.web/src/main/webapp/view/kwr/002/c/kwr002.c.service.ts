@@ -65,8 +65,8 @@ module nts.uk.com.view.kwr002.c{
         }
 
         // Ver25 出勤簿の出力項目設定
-        export function getAttendanceRecordExportSetting(code : number): JQueryPromise<any>{
-            return nts.uk.request.ajax("at",path.getAttendanceRecordExportSetting + code);
+        export function getAttendanceRecordExportSetting(code : number, selectionType: number): JQueryPromise<any>{
+            return nts.uk.request.ajax("at",path.getAttendanceRecordExportSetting + code + '/' + selectionType);
         }
 
     }

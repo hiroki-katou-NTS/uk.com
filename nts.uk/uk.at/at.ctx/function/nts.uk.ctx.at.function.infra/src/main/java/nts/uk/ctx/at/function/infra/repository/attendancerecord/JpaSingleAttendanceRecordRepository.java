@@ -8,11 +8,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordGetMemento;
@@ -103,7 +98,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		}
 		// check and update attendanceRecordItem
 		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
-		KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd = (listKfnstAttndRecItem.size() != 0) ? listKfnstAttndRecItem.get(0) : null;
+		KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd = (listKfnstAttndRecItem.size() > 0) ? listKfnstAttndRecItem.get(0) : new KfnmtRptWkAtdOutatd();
 		if (kfnmtRptWkAtdOutatd != null) {
 			this.commandProxy().remove(kfnmtRptWkAtdOutatd);
 			this.getEntityManager().flush();
@@ -111,7 +106,6 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 					singleAttendanceRecord));
 		} else {
 			UID uid = new UID();
-			
 			kfnmtRptWkAtdOutatd.setRecordItemId(uid.toString());
 			kfnmtRptWkAtdOutatd.setExclusVer(1);
 			kfnmtRptWkAtdOutatd.setContractCd(AppContexts.user().contractCode());
@@ -266,29 +260,13 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 	 */
 	@Override
 	public List<Integer> getIdSingleAttendanceRecordByPosition(String layoutId, long position) {
-		EntityManager em = this.getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<KfnmtRptWkAtdOutatd> criteriaQuery = criteriaBuilder.createQuery(KfnmtRptWkAtdOutatd.class);
-		Root<KfnmtRptWkAtdOutatd> root = criteriaQuery.from(KfnmtRptWkAtdOutatd.class);
-
-		// Build query
-		criteriaQuery.select(root);
-
-		// create condition
-		List<Predicate> predicates = new ArrayList<>();
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.layoutId), layoutId));
-//		predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get(KfnmtRptWkAtdOutatd_.columnIndex), (long) 6));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.position), position));
-//		predicates.add(criteriaBuilder.equal(root.get(KfnmtRptWkAtdOutatd_.outputAtr), 1));
-
-		criteriaQuery.where(predicates.toArray(new Predicate[] {}));
-
 		// query data
-		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
+		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItems = this
+				.findAttendanceRecordItems(new KfnmtRptWkAtdOutframePK(layoutId, (long) 6, 1, position));
 
 		List<KfnmtRptWkAtdOutatd> kfnstAttndRecItemsTotal = new ArrayList<>();
 		for (int i = 1; i <= 6; i++) {
-			if (this.findIndexInList(i, kfnstAttndRecItems)==null) {
+			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
 				KfnmtRptWkAtdOutatd item = new KfnmtRptWkAtdOutatd();
 				item.setTimeItemId(0);
 				kfnstAttndRecItemsTotal.add(item);

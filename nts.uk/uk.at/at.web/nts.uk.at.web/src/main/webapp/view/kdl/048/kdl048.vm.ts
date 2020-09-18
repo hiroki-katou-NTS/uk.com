@@ -40,6 +40,7 @@ module nts.uk.at.view.kdl048.screenModel {
     currentCodeList2: KnockoutObservableArray<any> = ko.observableArray([]);
 
     created() {
+      debugger
       const vm = this;
       //get params
       vm.initParam = getShared("attendanceItem");
@@ -104,6 +105,7 @@ module nts.uk.at.view.kdl048.screenModel {
 
     // event when change item combo box
     private onChangeItemCombo(codeChange: number) {
+      debugger
       const vm = this;
       if (codeChange === 0) {
         return;
