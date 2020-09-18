@@ -112,7 +112,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }).done((res: any) => {
             console.log(res);
             self.data = res;
-            self.dataSourceOb()[0].pop();
             self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
             self.bindTabM(self.data);
             self.bindComment(self.data);
@@ -137,16 +136,17 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }
     bindTabM(data: any) {
         const self = this;
+        let reflect = data.appStampReflectOptional;
+        if (reflect.temporaryAttendence == 0) {
+            self.dataSourceOb()[0].pop();
+            self.dataSourceOb()[0].pop();
+            self.dataSourceOb()[0].pop();
+        }
         self.isM(true);
         self.tabs.subscribe(value => {
            if (value) {
              if (data.appStampReflectOptional && self.tabs()) {
                  let reflect = data.appStampReflectOptional;
-                 if (reflect.temporaryAttendence == 0) {
-                     self.dataSourceOb()[0].pop();
-                     self.dataSourceOb()[0].pop();
-                     self.dataSourceOb()[0].pop();
-                 }
                  self.tabs()[0].visible((reflect.attendence) == 1);
                  self.tabs()[1].visible(reflect.outingHourse == 1);
                  self.tabs()[2].visible(reflect.breakTime == 1);
