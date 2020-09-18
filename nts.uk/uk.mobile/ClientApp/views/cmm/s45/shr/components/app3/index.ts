@@ -71,7 +71,6 @@ export class CmmS45ComponentsApp3Component extends Vue {
             .then((res: any) => {
                 vm.time = res.data.businessTripDto;
                 vm.table = res.data.businessTripDto.tripInfos;
-                debugger ;
                 //vm.dataFetch = res.data.
                 //vm.bindStart();
                 //vm.params.appDetail = vm.dataFetch;

@@ -7,11 +7,13 @@
     <!-- B5_2 -->
     <div class="px-3 py-2">
       <span>{{'KAFS08_94' | i18n}}</span>
-      <span class="pl-5">{{(time.departureTime | 0) | timewd}}</span>
+      <span class="pl-5" v-if="time.departureTime == null">{{''}}</span>
+      <span class="pl-5" v-else>{{time.departureTime | timewd}}</span>
     </div>
     <div class="px-3 py-2">
       <span>{{'KAFS08_95' | i18n}}</span>
-      <span class="pl-5">{{(time.returnTime | 0) | timewd}}</span>
+      <span class="pl-5" v-if="time.departureTime == null">{{''}}</span>
+      <span class="pl-5" v-else>{{time.returnTime | timewd}}</span>
     </div>
     <!-- B10 -->
       <table class="table uk-table-striped table-bordered">
