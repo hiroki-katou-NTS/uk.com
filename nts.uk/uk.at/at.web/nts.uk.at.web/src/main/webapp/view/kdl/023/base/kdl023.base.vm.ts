@@ -1154,6 +1154,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Is on Ref Mode
             else {
                 self.isExecMode(false);
+				$('#reflect-setting').addClass("pad-top");
                 self.setPatternRange(self.shared.patternStartDate).done(() => dfd.resolve());
                 self.loadHolidayList().done(() => dfd.resolve());
             }
