@@ -27,7 +27,7 @@ module nts.uk.com.view.cmf002.w {
     selectedStartDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W4
     isStartDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
-    isStartDateDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
+    isStartDateMonthAdjustment: KnockoutObservable<boolean> = ko.observable(null);
     startDateAdjustment: KnockoutObservable<any> = ko.observable(null);
     startDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W5
@@ -41,7 +41,7 @@ module nts.uk.com.view.cmf002.w {
     selectedEndDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W6
     isEndDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
-    isEndDateDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
+    isEndDateMonthAdjustment: KnockoutObservable<boolean> = ko.observable(null);
     endDateAdjustment: KnockoutObservable<any> = ko.observable(null);
     endDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W7
@@ -68,14 +68,14 @@ module nts.uk.com.view.cmf002.w {
         vm.startDateAdjustment(null);
         vm.startDateSpecified(null);
         vm.isStartDateAdjustment(value === StartDateClassificationCode.DATE_SPECIFICATION);
-        vm.isStartDateDateAdjustment(value === StartDateClassificationCode.DEADLINE_PROCESSING);
+        vm.isStartDateMonthAdjustment(value === StartDateClassificationCode.DEADLINE_PROCESSING);
       });
       // ※W5_2「開始日区分ドロップダウンリスト」が「05 日付指定」の場合、開始日調整を開始日指定する項目に変更。
       vm.selectedEndDateSegment.subscribe((value) => {
         vm.endDateAdjustment(null);
         vm.endDateSpecified(null);
         vm.isEndDateAdjustment(value === EndDateClassificationCode.DATE_SPECIFICATION);
-        vm.isEndDateDateAdjustment(value === EndDateClassificationCode.DEADLINE_PROCESSING);
+        vm.isEndDateMonthAdjustment(value === EndDateClassificationCode.DEADLINE_PROCESSING);
       });
       // W7_2で06を選択している場合
       vm.selectedBaseDateSegment.subscribe((value) => {
