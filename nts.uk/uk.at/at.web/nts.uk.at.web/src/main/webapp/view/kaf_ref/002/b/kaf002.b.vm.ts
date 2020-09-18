@@ -18,7 +18,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         bindComment(data: any) {
             const self = this;
             _.forEach(self.data.appStampSetting.settingForEachTypeLst, i => {
-               if (i.stampAtr == ko.toJS(self.selectedCode)) {
+               if (i.stampAtr == 6) {
                    let commentBot = i.bottomComment;
                    self.comment2(new Comment(commentBot.comment, commentBot.bold, commentBot.colorCode));
                    let commentTop = i.topComment;
@@ -41,12 +41,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             self.dataSource = ko.observableArray(itemModelList);
             self.dataSourceReason = ko.observableArray(itemModelReasonList);
             
-            self.selectedCode = ko.observable('1');
-            self.selectedCode.subscribe(value => {
-               if (value) {
-                   self.bindComment(self.data);
-               } 
-            });
+            self.selectedCode = ko.observable('0');
             self.selectedCodeReason = ko.observable('0');
             
             // initial time 
