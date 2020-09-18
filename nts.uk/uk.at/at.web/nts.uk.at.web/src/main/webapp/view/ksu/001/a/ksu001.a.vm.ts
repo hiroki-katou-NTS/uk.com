@@ -614,6 +614,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
+            let setWorkTypeTime = false;
             let param = {
                 viewMode: 'shortName',
                 startDate: self.dateTimePrev(),
@@ -624,8 +625,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             if (userInfor.disPlayFormat == 'shift') {
                 let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
-                __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
-                    userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+                if (listWorkType.length > 0) {
+                    __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
+                        userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+                }else{
+                    setWorkTypeTime = true;    
+                }
             }
             
             self.visibleShiftPalette(false);
@@ -633,6 +638,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.saveModeGridToLocalStorege('shortName');
             
             service.getDataOfShortNameMode(param).done((data: IDataStartScreen) => {
+                if (setWorkTypeTime) {
+                    self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
+                }
                 
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
@@ -660,6 +668,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             let self = this, dfd = $.Deferred();
             let item = uk.localStorage.getItem(self.KEY);
             let userInfor: IUserInfor = JSON.parse(item.get());
+            let setWorkTypeTime = false;
             let param = {
                 viewMode: 'time',
                 startDate: self.dateTimePrev(),
@@ -670,8 +679,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             if (userInfor.disPlayFormat == 'shift') {
                 let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
-                __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
-                    userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+                if (listWorkType.length > 0) {
+                    __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
+                        userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+                }else{
+                    setWorkTypeTime = true;    
+                }
             }
 
             self.visibleShiftPalette(false);
@@ -679,7 +692,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             self.saveModeGridToLocalStorege('time');
             service.getDataOfTimeMode(param).done((data: IDataStartScreen) => {
-
+                if (setWorkTypeTime) {
+                    self.setWorkTypeTime(data.listWorkTypeInfo, userInfor);
+                }
+                
                 self.saveDataGrid(data);
                 // set hiển thị ban đầu theo data đã lưu trong localStorege
                 self.getSettingDisplayWhenStart('time');
@@ -701,6 +717,18 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             });
             return dfd.promise();
         }
+
+        setWorkTypeTime(listWorkTypeInfo, userInfor) {
+            let self = this;
+            let workTypeCodeSave = uk.localStorage.getItem('workTypeCodeSelected');
+            self.setDataWorkType(listWorkTypeInfo);
+            let listWorkType = __viewContext.viewModel.viewAB.listWorkType();
+            __viewContext.viewModel.viewAB = new ksu001.ab.viewmodel.ScreenModel(
+                userInfor.unit == 0 ? userInfor.workplaceId : userInfor.workplaceGroupId, listWorkType);
+            __viewContext.viewModel.viewAB.selectedWorkTypeCode(workTypeCodeSave);
+
+        }
+    
         
         destroyAndCreateGrid(dataBindGrid,viewMode){
             let self = this;
