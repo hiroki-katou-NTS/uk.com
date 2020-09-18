@@ -16,7 +16,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The Class KfnctIndexReorgTable.
  */
 @Entity
-@Table(name="KFNCT_INDEX_REORG_CAT")
+@Table(name="KFNCT_INDEX_REORG_TABLE")
 @NoArgsConstructor
 @AllArgsConstructor
 public class KfnctIndexReorgTable extends UkJpaEntity implements Serializable {

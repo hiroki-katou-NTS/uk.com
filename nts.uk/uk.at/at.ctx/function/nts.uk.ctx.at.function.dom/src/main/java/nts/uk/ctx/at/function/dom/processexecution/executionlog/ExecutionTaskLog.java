@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDateTime;
 @Getter
 @Setter
 public class ExecutionTaskLog {
+	
 	/* 更新処理 */
 	private ProcessExecutionTask procExecTask;
 	
@@ -45,7 +46,7 @@ public class ExecutionTaskLog {
 
 	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status, String execId,
 			GeneralDateTime lastExecDateTime, GeneralDateTime lastEndExecDateTime, Boolean errorSystem,
-			Boolean errorBusiness) {
+			Boolean errorBusiness, String systemErrorDetails) {
 		super();
 		this.procExecTask = procExecTask;
 		this.status = status;
@@ -54,6 +55,7 @@ public class ExecutionTaskLog {
 		this.lastEndExecDateTime = lastEndExecDateTime;
 		this.errorSystem = errorSystem;
 		this.errorBusiness = errorBusiness;
+		this.systemErrorDetails = systemErrorDetails;
 	}
 
 //	public ExecutionTaskLog(ProcessExecutionTask procExecTask, Optional<EndStatus> status, String execId) {

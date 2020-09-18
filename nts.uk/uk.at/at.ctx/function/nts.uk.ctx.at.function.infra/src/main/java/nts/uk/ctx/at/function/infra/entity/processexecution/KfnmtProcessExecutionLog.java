@@ -15,11 +15,13 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 //import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.calendar.period.DatePeriod;
 //import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.CurrentExecutionStatus;
@@ -28,7 +30,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPerio
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -41,6 +43,19 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 	@EmbeddedId
 	public KfnmtProcessExecutionLogPK kfnmtProcExecLogPK;
 
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private Long exclusVer;
+
+	/** The Contract Code. */
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
+	
+	/* 実行ID */
+	@Column(name = "EXEC_ID")
+	public String execId;
+	
 	/* スケジュール作成の期間 */
 	@Column(name = "SCH_CREATE_START")
 	public GeneralDate schCreateStart;
@@ -98,7 +113,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
 				this.kfnmtProcExecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
 						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
-				taskLogList, this.kfnmtProcExecLogPK.execId);
+				taskLogList, this.execId);
 	}
 	
 	
@@ -140,7 +155,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
 				this.kfnmtProcExecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
 						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
-				taskLogList, this.kfnmtProcExecLogPK.execId);
+				taskLogList, this.execId);
 	}
 	public ProcessExecutionLog toDomainMaxDate(List<KfnmtExecutionTaskLog> stTaskList) {
 		List<ExecutionTaskLog> taskLogList = new ArrayList<>();
@@ -178,7 +193,7 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 		return new ProcessExecutionLog(new ExecutionCode(this.kfnmtProcExecLogPK.execItemCd),
 				this.kfnmtProcExecLogPK.companyId, Optional.ofNullable(new EachProcessPeriod(scheduleCreationPeriod,
 						dailyCreationPeriod, dailyCalcPeriod, reflectApprovalResult)),
-				taskLogList, this.kfnmtProcExecLogPK.execId);
+				taskLogList, this.execId);
 	}
 	
 	
@@ -223,7 +238,10 @@ public class KfnmtProcessExecutionLog extends UkJpaEntity implements Serializabl
 			reflectApprovalResultEnd = domain.getEachProcPeriod().get().getReflectApprovalResult().get().end();
 		}
 		return new KfnmtProcessExecutionLog(
-				new KfnmtProcessExecutionLogPK(domain.getCompanyId(), domain.getExecItemCd().v(), domain.getExecId()),
+				new KfnmtProcessExecutionLogPK(domain.getCompanyId(), domain.getExecItemCd().v()),
+				domain.getVersion(),
+				AppContexts.user().contractCode(),
+				domain.getExecId(),
 				schCreateStart, schCreateEnd, dailyCreateStart, dailyCreateEnd, dailyCalcStart, dailyCalcEnd,
 				reflectApprovalResultStart, reflectApprovalResultEnd, taskLogList);
 	}

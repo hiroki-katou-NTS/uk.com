@@ -13,6 +13,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -40,6 +41,7 @@ import nts.uk.ctx.at.function.dom.processexecution.tasksetting.enums.RepeatConte
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.EndTime;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.OneDayRepeatIntervalDetail;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.primitivevalue.StartTime;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KFNMT_EXEC_TASK_SETTING")
@@ -50,6 +52,15 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	/* 主キー */
 	@EmbeddedId
     public KfnmtExecutionTaskSettingPK kfnmtExecTaskSettingPK;
+
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private Long exclusVer;
+
+	/** The Contract Code. */
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
 	
 	/* 開始日 */
 	@Column(name = "START_DATE")
@@ -74,10 +85,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	/* 繰り返し間隔 */
 	@Column(name = "ONE_DAY_REP_INR")
 	public Integer oneDayRepInterval;
-	
-	/* 繰り返しする */
-	@Column(name = "REP_CLS")
-	public Integer repeatCls;
 	
 	/* 繰り返し内容 */
 	@Column(name = "REP_CONTENT")
@@ -253,7 +260,6 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 										this.nextExecDateTime,
 										endDate,
 										endTime,
-//										this.repeatCls == 1 ? true : false,
 										EnumAdaptor.valueOf(this.repeatContent, RepeatContentItem.class),
 										detailSetting,
 										startDate,
@@ -268,14 +274,14 @@ public class KfnmtExecutionTaskSetting extends UkJpaEntity implements Serializab
 	public static KfnmtExecutionTaskSetting toEntity(ExecutionTaskSetting domain) {
 		return new KfnmtExecutionTaskSetting(
 							new KfnmtExecutionTaskSettingPK(domain.getCompanyId(), domain.getExecItemCd().v()),
+							domain.getVersion(),
+							AppContexts.user().contractCode(),
 							domain.getStartDate(),
 							domain.getStartTime().v(),
 							domain.getEndTime() == null ? 0 : domain.getEndTime().getEndTimeCls().value,
 							domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
 							domain.getOneDayRepInr() == null ? 0 : domain.getOneDayRepInr().getOneDayRepCls().value,
 							(domain.getOneDayRepInr().getDetail() == null || !domain.getOneDayRepInr().getDetail().isPresent()) ? null : domain.getOneDayRepInr().getDetail().get().value,
-//							domain.isRepeat() ? 1 : 0,
-									0,
 							domain.getContent() == null ? 0 : domain.getContent().value,
 							domain.getEndDate() == null ? 0 : domain.getEndDate().getEndDateCls().value,
 							domain.getEndDate() == null ? null : domain.getEndDate().getEndDate(),

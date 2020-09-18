@@ -36,8 +36,8 @@ public class ExecutionTaskSettingDto {
 	/* 繰り返し間隔 */
 	private Integer oneDayRepInterval;
 	
-	/* 繰り返しする */
-	private boolean repeatCls;
+//	/* 繰り返しする */
+//	private boolean repeatCls;
 	
 	/* 繰り返し内容 */
 	private Integer repeatContent;
@@ -122,7 +122,7 @@ public class ExecutionTaskSettingDto {
 											domain.getEndTime().getEndTime() == null ? null : domain.getEndTime().getEndTime().v(),
 											domain.getOneDayRepInr().getOneDayRepCls().value,
 											domain.getOneDayRepInr().getDetail() == null||!domain.getOneDayRepInr().getDetail().isPresent() ? null : domain.getOneDayRepInr().getDetail().get().value,
-											domain.isRepeat(),
+//											domain.isRepeat(),
 											domain.getContent().value,
 											domain.getEndDate().getEndDateCls().value,
 											domain.getEndDate().getEndDate(),

@@ -189,13 +189,14 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 						pk.setExecItemCd(rec.getString("EXEC_ITEM_CD"));
 						pk.setExecId(rec.getString("EXEC_ID"));
 						pk.setTaskId(rec.getInt("TASK_ID"));
-						KfnmtExecutionTaskLog entity = new KfnmtExecutionTaskLog();
-						entity.setKfnmtExecTaskLogPK(pk);
-						entity.setStatus(rec.getInt("STATUS"));
-						entity.setLastExecDateTime(rec.getGeneralDateTime("LAST_EXEC_DATETIME"));
-						entity.setLastEndExecDateTime(rec.getGeneralDateTime("LAST_END_EXEC_DATETIME"));
-						entity.setErrorBusiness(rec.getInt("ERROR_BUSINESS"));
-						entity.setErrorSystem(rec.getInt("ERROR_SYSTEM"));
+						KfnmtExecutionTaskLog entity = KfnmtExecutionTaskLog.builder()
+								.kfnmtExecTaskLogPK(pk)
+								.status(rec.getInt("STATUS"))
+								.lastExecDateTime(rec.getGeneralDateTime("LAST_EXEC_DATETIME"))
+								.lastEndExecDateTime(rec.getGeneralDateTime("LAST_END_EXEC_DATETIME"))
+								.errorSystem(rec.getInt("ERROR_SYSTEM"))
+								.errorBusiness(rec.getInt("ERROR_BUSINESS"))
+								.build();
 						entity.setUpdDate(rec.getGeneralDateTime("UPD_DATE"));
 						return entity;
 					}));
@@ -245,7 +246,9 @@ public class JpaProcessExecutionLogRepository extends JpaRepository
 			data =  new NtsResultSet(statement.executeQuery()).getList(rec -> {
 				KfnmtProcessExecutionLog entity = new KfnmtProcessExecutionLog();
 				entity.kfnmtProcExecLogPK = new KfnmtProcessExecutionLogPK(rec.getString("CID"), 
-						rec.getString("EXEC_ITEM_CD"), rec.getString("EXEC_ID"));
+						rec.getString("EXEC_ITEM_CD"));
+//				entity.kfnmtProcExecLogPK = new KfnmtProcessExecutionLogPK(rec.getString("CID"), 
+//						rec.getString("EXEC_ITEM_CD"), rec.getString("EXEC_ID"));
 				entity.schCreateStart = rec.getGeneralDate("SCH_CREATE_START");
 				entity.schCreateEnd = rec.getGeneralDate("SCH_CREATE_END");
 				entity.dailyCreateStart = rec.getGeneralDate("DAILY_CREATE_START");

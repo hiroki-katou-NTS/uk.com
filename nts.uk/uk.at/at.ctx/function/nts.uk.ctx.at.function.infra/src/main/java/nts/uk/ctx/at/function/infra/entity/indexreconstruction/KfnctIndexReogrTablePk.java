@@ -19,12 +19,17 @@ public class KfnctIndexReogrTablePk implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
-	/** The category no. */
+
+	/**
+	 * The category no. 
+	 * 	カテゴリNO
+	 */
 	@Column(name = "CATEGORY_NO")
 	public BigDecimal categoryNo;
-	
-	/** The table phys name. */
+
+	/** The table phys name. 
+	 *	 テーブル物理名									
+	 */
 	@Column(name = "TABLE_PHYS_NAME")
 	public String tablePhysName;
 }

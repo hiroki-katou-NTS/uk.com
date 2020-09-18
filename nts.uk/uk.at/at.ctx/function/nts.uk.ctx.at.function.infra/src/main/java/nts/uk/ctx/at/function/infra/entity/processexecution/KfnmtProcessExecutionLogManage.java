@@ -5,12 +5,12 @@ package nts.uk.ctx.at.function.infra.entity.processexecution;
 import java.util.Optional;
 //import java.util.stream.Collectors;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -23,6 +23,7 @@ import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 //import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogManage;
+import nts.uk.shr.com.context.AppContexts;
 //import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -35,15 +36,27 @@ public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
 	@EmbeddedId
 	public KfnmtProcessExecutionLogManagePK kfnmtProcExecLogPK;
 
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private Long exclusVer;
+
+	/** The Contract Code. */
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
+
 	/* 現在の実行状態 */
+	@Basic(optional = true)
 	@Column(name = "CURRENT_STATUS")
 	public Integer currentStatus;
 
 	/* 全体の終了状態 */
+	@Basic(optional = true)
 	@Column(name = "OVERALL_STATUS")
 	public Integer overallStatus;
 
 	/* 全体のエラー詳細 */
+	@Basic(optional = true)
 	@Column(name = "ERROR_DETAIL")
 	public Integer errorDetail;
 
@@ -58,9 +71,11 @@ public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
 	@Column(name = "LAST_END_EXEC_DATETIME")
 	public GeneralDateTime lastEndExecDateTime;
 
+	@Basic(optional = true)
 	@Column(name = "ERROR_SYSTEM")
 	public Integer errorSystem;
 
+	@Basic(optional = true)
 	@Column(name = "ERROR_BUSINESS")
 	public Integer errorBusiness;
 
@@ -70,21 +85,21 @@ public class KfnmtProcessExecutionLogManage extends UkJpaEntity {
 	}
 
 	public static KfnmtProcessExecutionLogManage toEntity(ProcessExecutionLogManage domain) {
-		try { 
+		try {
 			return new KfnmtProcessExecutionLogManage(
 					new KfnmtProcessExecutionLogManagePK(domain.getCompanyId(), domain.getExecItemCd().v()),
+					domain.getVersion(), AppContexts.user().contractCode(),
 					domain.getCurrentStatus() == null ? null : domain.getCurrentStatus().value,
 					(domain.getOverallStatus() == null || !domain.getOverallStatus().isPresent()) ? null
 							: domain.getOverallStatus().get().value,
-					domain.getOverallError() == null ? null : domain.getOverallError().value, domain.getLastExecDateTime(),
-					domain.getLastExecDateTimeEx(), domain.getLastEndExecDateTime(), 
-					domain.getErrorSystem() ==null?null:(domain.getErrorSystem() ? 1 : 0),
-					domain.getErrorBusiness() ==null?null:(domain.getErrorBusiness() ? 1 : 0));
-		}catch (Exception e) {
+					domain.getOverallError() == null ? null : domain.getOverallError().value,
+					domain.getLastExecDateTime(), domain.getLastExecDateTimeEx(), domain.getLastEndExecDateTime(),
+					domain.getErrorSystem() == null ? null : (domain.getErrorSystem() ? 1 : 0),
+					domain.getErrorBusiness() == null ? null : (domain.getErrorBusiness() ? 1 : 0));
+		} catch (Exception e) {
 			return null;
 		}
-		
-		
+
 	}
 
 	public ProcessExecutionLogManage toDomain() {

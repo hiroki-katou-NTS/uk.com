@@ -12,19 +12,21 @@ import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EachProcessPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.OverallErrorDetail;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ProcessExecutionLogHistory;
-import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name="KFNMT_PROC_EXEC_LOG_HIST")
@@ -35,6 +37,15 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 	/* 主キー */
 	@EmbeddedId
     public KfnmtProcessExecutionLogHistoryPK kfnmtProcExecLogHstPK;
+
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private Long exclusVer;
+
+	/** The Contract Code. */
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
 	
 	/* 全体の終了状態 */
 	@Column(name = "OVERALL_STATUS")
@@ -154,6 +165,8 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 		
 		return new KfnmtProcessExecutionLogHistory(
 				new KfnmtProcessExecutionLogHistoryPK(domain.getCompanyId(), domain.getExecItemCd().v(), domain.getExecId()),
+				domain.getVersion(),
+				AppContexts.user().contractCode(),
 				(domain.getOverallStatus() != null && domain.getOverallStatus().isPresent() ) ? domain.getOverallStatus().get().value : null,
 				(domain.getOverallError() != null && domain.getOverallError().isPresent() ) ? domain.getOverallError().get().value : null,
 				domain.getLastExecDateTime(),
@@ -208,6 +221,8 @@ public class KfnmtProcessExecutionLogHistory extends UkJpaEntity implements Seri
 		
 		return new KfnmtProcessExecutionLogHistory(
 				new KfnmtProcessExecutionLogHistoryPK(domain.getCompanyId(), domain.getExecItemCd().v(), domain.getExecId()),
+				domain.getVersion(),
+				AppContexts.user().contractCode(),
 				(domain.getOverallStatus() != null && domain.getOverallStatus().isPresent() ) ? domain.getOverallStatus().get().value : null,
 				(domain.getOverallError() != null && domain.getOverallError().isPresent() ) ? domain.getOverallError().get().value : null,
 				domain.getLastExecDateTime(),

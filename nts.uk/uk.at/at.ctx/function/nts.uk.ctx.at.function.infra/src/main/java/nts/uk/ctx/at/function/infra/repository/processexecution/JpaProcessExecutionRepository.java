@@ -72,18 +72,15 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.targetMonth = update.targetMonth;
 		old.targetDate = update.targetDate;
 		old.creationPeriod = update.creationPeriod;
-		old.creationTarget = update.creationTarget;
-		old.recreateWorkType = update.recreateWorkType;
-		old.manualCorrection = update.manualCorrection;
+		old.designatedYear = update.designatedYear;
+		old.startMonthDay = update.startMonthDay;
+		old.endMonthDay = update.endMonthDay;
 		old.createEmployee = update.createEmployee;
-		old.recreateTransfer = update.recreateTransfer;
 		old.dailyPerfCls = update.dailyPerfCls;
 		old.dailyPerfItem = update.dailyPerfItem;
 		old.midJoinEmployee = update.midJoinEmployee;
 		old.reflectResultCls = update.reflectResultCls;
 		old.monthlyAggCls = update.monthlyAggCls;
-		old.recreateTypeChangePerson = update.recreateTypeChangePerson; 
-		old.recreateTransfers = update.recreateTransfers;
 		old.appRouteUpdateAtr = update.appRouteUpdateAtr;
 		old.createNewEmp = update.createNewEmp;
 		old.appRouteUpdateAtrMon = update.appRouteUpdateAtrMon;
@@ -91,9 +88,23 @@ public class JpaProcessExecutionRepository extends JpaRepository
 		old.alarmCode = update.alarmCode;
 		old.mailPrincipal = update.mailPrincipal;
 		old.mailAdministrator = update.mailAdministrator;
-		old.designatedYear = update.designatedYear;
-		old.startMonthDay = update.startMonthDay;
-		old.endMonthDay = update.endMonthDay;
+		old.displayTpPrincipal = update.displayTpPrincipal;
+		old.displayTpAdmin = update.displayTpAdmin;
+		old.extOutputArt = update.extOutputArt;
+		old.extAcceptanceArt = update.extAcceptanceArt;
+		old.dataStorageArt = update.dataStorageArt;
+		old.dataStorageCode = update.dataStorageCode;
+		old.dataDeletionArt = update.dataDeletionArt;
+		old.dataDeletionCode = update.dataDeletionCode;
+		old.aggAnyPeriodArt = update.aggAnyPeriodArt;
+		old.aggAnyPeriodCode = update.aggAnyPeriodCode;
+		old.recreateWorkType = update.recreateWorkType;
+		old.recreateTransfer = update.recreateTransfer;
+		old.recreLeaveSya = update.recreLeaveSya;
+		old.indexReorgArt = update.indexReorgArt;
+		old.updStatisticsArt = update.updStatisticsArt;
+		old.cloudCreFlag = update.cloudCreFlag;
+		
 		return old;
 	}
 }

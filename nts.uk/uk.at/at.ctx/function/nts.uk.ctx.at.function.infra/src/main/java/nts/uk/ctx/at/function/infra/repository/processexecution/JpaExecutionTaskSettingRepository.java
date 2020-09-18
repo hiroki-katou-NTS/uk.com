@@ -54,7 +54,7 @@ public class JpaExecutionTaskSettingRepository extends JpaRepository
 		oldData.endTime = updateData.endTime;
 		oldData.oneDayRepCls = updateData.oneDayRepCls;
 		oldData.oneDayRepInterval = updateData.oneDayRepInterval;
-		oldData.repeatCls = updateData.repeatCls;
+//		oldData.repeatCls = updateData.repeatCls;
 		oldData.repeatContent = updateData.repeatContent;
 		oldData.endDateCls = updateData.endDateCls;
 		oldData.endDate = updateData.endDate;

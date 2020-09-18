@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.function.infra.entity.indexreconstruction;
+package nts.uk.ctx.at.function.infra.entity.processexecution;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -11,7 +11,6 @@ import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.function.infra.entity.processexecution.KfndtProcExecIndexPk;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -46,11 +45,15 @@ public class KfndtProcExecIndex extends UkJpaEntity implements Serializable {
 	@Column(name = "CID")
 	public String companyId;
 	
-	/** The frs bef. */
+	/** The frs bef. 
+	 * 	処理前の断片化率									
+	 */
 	@Column(name = "FRS_BEF")
 	public BigDecimal frsBef;
 	
-	/** The frs aft. */
+	/** The frs aft. 
+	 * 	処理後の断片化率									
+	*/
 	@Column(name = "FRS_AFT")
 	public BigDecimal frsAft;
 

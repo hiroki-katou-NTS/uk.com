@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.function.dom.processexecution.personalschedule;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -9,6 +10,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Getter
 @AllArgsConstructor
+@Builder
 public class PersonalScheduleCreationTarget extends DomainObject {
 	/* 作成対象 */
 	private TargetClassification creationTarget;

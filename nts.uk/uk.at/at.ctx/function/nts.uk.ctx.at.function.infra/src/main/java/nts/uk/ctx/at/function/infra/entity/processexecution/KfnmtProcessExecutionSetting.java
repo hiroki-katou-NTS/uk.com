@@ -9,155 +9,255 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+/**
+ * The Class KfnmtProcessExecutionSetting.
+ */
 @Entity
-@Table(name="KFNMT_PROC_EXEC_SETTING")
+@Table(name = "KFNMT_PROC_EXEC_SETTING")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Serializable{
+public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Serializable {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+
+	/** The kfnmt proc exec set PK. */
 	/* 主キー */
 	@EmbeddedId
-    public KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
-	
-	/* 個人スケジュール作成 */
+	public KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK;
+
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	private Long exclusVer;
+
+	/** The Contract Code. */
+	@Column(name = "CONTRACT_CD")
+	public String contractCode;
+
+	/**
+	 * The per schedule cls. 個人スケジュール作成
+	 */
 	@Column(name = "PER_SCHEDULE_CLS")
 	public int perScheduleCls;
-	
-	/* 対象月 */
+
+	/**
+	 * The target month. 対象月
+	 */
 	@Column(name = "TARGET_MONTH")
 	public int targetMonth;
-	
-	/* 対象日 */
+
+	/**
+	 * The target date. 対象日
+	 */
 	@Column(name = "TARGET_DATE")
 	public Integer targetDate;
-	
-	/* 作成期間 */
+
+	/**
+	 * The creation period. 作成期間
+	 */
 	@Column(name = "CREATION_PERIOD")
 	public Integer creationPeriod;
-	
-	/* 作成対象 */
-	@Column(name = "CREATION_TARGET")
-	public int creationTarget;
-	
-	/* 勤務種別変更者を再作成 */
-	@Column(name = "RECREATE_WK_TYPE")
-	public int recreateWorkType;
-	
-	/* 手修正を保護する */
-	@Column(name = "MANUAL_CORRECTION")
-	public int manualCorrection;
-	
-	/* 新入社員を作成する */
-	@Column(name = "CREATE_EMPLOYEE")
+
+	/**
+	 * The designated year. 指定年
+	 */
+	@Column(name = "DESIGNATED_YEAR")
+	public Integer designatedYear;
+
+	/**
+	 * The start month day. 指定開始月日
+	 */
+	@Column(name = "START_MONTHDAY")
+	public Integer startMonthDay;
+
+	/**
+	 * The end month day. 指定終了月日
+	 */
+	@Column(name = "END_MONTHDAY")
+	public Integer endMonthDay;
+
+	/**
+	 * The create employee. 新入社員を作成する
+	 */
+	@Column(name = "CRE_NEW_SYA_SCHED")
 	public int createEmployee;
-	
-	/* 異動者を再作成する */
-	@Column(name = "RECREATE_TRANSFER")
-	public int recreateTransfer;
-	
-	/* 日別実績の作成・計算 */
+
+	/**
+	 * The daily perf cls. 日別実績の作成・計算
+	 */
 	@Column(name = "DAILY_PERF_CLS")
 	public int dailyPerfCls;
-	
-	/* 作成・計算項目 */
+
+	/**
+	 * The daily perf item. 作成・計算項目
+	 */
 	@Column(name = "DAILY_PERF_ITEM")
 	public int dailyPerfItem;
 
-	/* 途中入社は入社日からにする _> 新入社員を再作成する */
-	@Column(name = "MID_JOIN_EMP")
+	/**
+	 * The mid join employee. 途中入社は入社日からにする _> 新入社員を再作成する
+	 */
+	@Column(name = "CRE_NEW_SYA_DAI")
 	public int midJoinEmployee;
-	
-	/* 承認結果反映 */
+
+	/**
+	 * The reflect result cls. 承認結果反映
+	 */
 	@Column(name = "REFLECT_RS_CLS")
 	public int reflectResultCls;
-	
-	/* 月別集計 */
+
+	/**
+	 * The monthly agg cls. 月別集計
+	 */
 	@Column(name = "MONTHLY_AGG_CLS")
 	public int monthlyAggCls;
-	
-	/* 更新処理の日別処理対象者区分.勤務種別変更者を再作成 */
-	@Column(name = "RE_TYPE_CHANGE_PER")
-	public int recreateTypeChangePerson;
-	
-	/* 更新処理の日別処理対象者区分.異動者を再作成する */
-	@Column(name = "RE_TRANSFER")
-	public int recreateTransfers;
-	
-	/* 承認ルート更新（日次）.承認ルート更新区分 */
+
+	/**
+	 * The app route update atr. 承認ルート更新（日次）.承認ルート更新区分
+	 */
 	@Column(name = "APP_ROUTE_UPDATE_ATR_DAI")
 	public int appRouteUpdateAtr;
-	
-	/* 承認ルート更新（日次）.新入社員を作成する*/
-	@Column(name = "CREATE_NEW_EMP")
+
+	/**
+	 * The create new emp. 承認ルート更新（日次）.新入社員を作成する
+	 */
+	@Column(name = "CRE_NEW_SYA_APP")
 	public Integer createNewEmp;
-	
-	/* 承認ルート更新（月次） */
+
+	/**
+	 * The app route update atr mon. 承認ルート更新（月次）
+	 */
 	@Column(name = "APP_ROUTE_UPDATE_ATR_MON")
 	public int appRouteUpdateAtrMon;
-	
-	/* 承認ルート更新（月次） */
+
+	/**
+	 * The alarm atr. 承認ルート更新（月次）
+	 */
 	@Column(name = "ALARM_ATR")
 	public int alarmAtr;
-	
-	/* 承認ルート更新（月次） */
+
+	/**
+	 * The alarm code. 承認ルート更新（月次）
+	 */
 	@Column(name = "ALARM_CODE")
 	public String alarmCode;
-	
-	/* メールを送信する(本人)*/
+
+	/**
+	 * The mail principal. メールを送信する(本人)
+	 */
 	@Column(name = "MAIL_PRINCIPAL")
 	public Integer mailPrincipal;
-	
-	/* メールを送信する(管理者) */
+
+	/**
+	 * The mail administrator. メールを送信する(管理者)
+	 */
 	@Column(name = "MAIL_ADMINISTRATOR")
 	public Integer mailAdministrator;
-	
-	/* 指定年*/
-	@Column(name = "DESIGNATED_YEAR")
-	public Integer designatedYear;
-	
-	/* 指定開始月日 */
-	@Column(name = "START_MONTHDAY")
-	public Integer startMonthDay;
-	
-	/* 指定終了月日*/
-	@Column(name = "END_MONTHDAY")
-	public Integer endMonthDay;
-	
-	
-	
-	
+
+	/** The display tp principal. */
+	@Column(name = "DISPLAY_TP_PRINCIPAL")
+	public Integer displayTpPrincipal;
+
+	/** The display tp admin. */
+	@Column(name = "DISPLAY_TP_ADMIN")
+	public Integer displayTpAdmin;
+
+	/** The ext output art. */
+	@Column(name = "EXT_OUTPUT_ART")
+	public int extOutputArt;
+
+	/** The ext acceptance art. */
+	@Column(name = "EXT_ACCEPTANCE_ART")
+	public int extAcceptanceArt;
+
+	/** The data storage art. */
+	@Column(name = "DATA_STORAGE_ART")
+	public int dataStorageArt;
+
+	/** The data storage code. */
+	@Column(name = "DATA_STORAGE_CODE")
+	public String dataStorageCode;
+
+	/** The data deletion art. */
+	@Column(name = "DATA_DELETION_ART")
+	public int dataDeletionArt;
+
+	/** The data deletion code. */
+	@Column(name = "DATA_DELETION_CODE")
+	public String dataDeletionCode;
+
+	/** The agg any period art. */
+	@Column(name = "AGG_ANY_PERIOD_ART")
+	public int aggAnyPeriodArt;
+
+	/** The agg any period code. */
+	@Column(name = "AGG_ANY_PERIOD_CODE")
+	public String aggAnyPeriodCode;
+
+	/**
+	 * The recre change bus. 勤務種別変更者を再作成
+	 */
+	@Column(name = "RECRE_CHANGE_BUS")
+	public int recreateWorkType;
+
+	/**
+	 * The recreate transfer. 異動者を再作成する
+	 */
+	@Column(name = "RECRE_CHANGE_WKP")
+	public int recreateTransfer;
+
+	/** The recre leave sya. */
+	@Column(name = "RECRE_LEAVE_SYA")
+	public int recreLeaveSya;
+
+	/** The index reorg art. */
+	@Column(name = "INDEX_REORG_ART")
+	public int indexReorgArt;
+
+	/** The upd statistics art. */
+	@Column(name = "UPD_STATISTICS_ART")
+	public int updStatisticsArt;
+
+	/** The cloud cre flag. */
+	@Column(name = "CLOUD_CRE_FLAG")
+	public int cloudCreFlag;
+
+	/** The proc exec. */
 	@OneToOne
-	@JoinColumns({
-		@JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
-		@JoinColumn(name="EXEC_ITEM_CD", referencedColumnName="EXEC_ITEM_CD", insertable = false, updatable = false)
-	})
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "EXEC_ITEM_CD", referencedColumnName = "EXEC_ITEM_CD", insertable = false, updatable = false) })
 	public KfnmtProcessExecution procExec;
-	
+
+	/**
+	 * Gets the key.
+	 *
+	 * @return the key
+	 */
 	@Override
 	protected Object getKey() {
 		return this.kfnmtProcExecSetPK;
 	}
 
 	public KfnmtProcessExecutionSetting(KfnmtProcessExecutionSettingPK kfnmtProcExecSetPK, int perScheduleCls,
-			int targetMonth, Integer targetDate, Integer creationPeriod, int creationTarget, int recreateWorkType,
-			int manualCorrection, int createEmployee, int recreateTransfer, int dailyPerfCls, int dailyPerfItem,
-			int midJoinEmployee, int reflectResultCls, int monthlyAggCls, int recreateTypeChangePerson,
-			int recreateTransfers, int appRouteUpdateAtr, Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr,
-			String alarmCode, Integer mailPrincipal, Integer mailAdministrator, Integer designatedYear, Integer startMonthDay, 
-			Integer endMonthDay) {
+			int targetMonth, Integer targetDate, Integer creationPeriod, int recreateWorkType, int createEmployee,
+			int recreateTransfer, int dailyPerfCls, int dailyPerfItem, int midJoinEmployee, int reflectResultCls,
+			int monthlyAggCls, int appRouteUpdateAtr, Integer createNewEmp, int appRouteUpdateAtrMon, int alarmAtr,
+			String alarmCode, Integer mailPrincipal, Integer mailAdministrator, Integer designatedYear,
+			Integer startMonthDay, Integer endMonthDay) {
 		super();
 		this.kfnmtProcExecSetPK = kfnmtProcExecSetPK;
 		this.perScheduleCls = perScheduleCls;
 		this.targetMonth = targetMonth;
 		this.targetDate = targetDate;
 		this.creationPeriod = creationPeriod;
-		this.creationTarget = creationTarget;
 		this.recreateWorkType = recreateWorkType;
-		this.manualCorrection = manualCorrection;
 		this.createEmployee = createEmployee;
 		this.recreateTransfer = recreateTransfer;
 		this.dailyPerfCls = dailyPerfCls;
@@ -165,8 +265,6 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.midJoinEmployee = midJoinEmployee;
 		this.reflectResultCls = reflectResultCls;
 		this.monthlyAggCls = monthlyAggCls;
-		this.recreateTypeChangePerson = recreateTypeChangePerson;
-		this.recreateTransfers = recreateTransfers;
 		this.appRouteUpdateAtr = appRouteUpdateAtr;
 		this.createNewEmp = createNewEmp;
 		this.appRouteUpdateAtrMon = appRouteUpdateAtrMon;
@@ -179,7 +277,4 @@ public class KfnmtProcessExecutionSetting extends UkJpaEntity implements Seriali
 		this.endMonthDay = endMonthDay;
 	}
 
-	
-
-	
 }

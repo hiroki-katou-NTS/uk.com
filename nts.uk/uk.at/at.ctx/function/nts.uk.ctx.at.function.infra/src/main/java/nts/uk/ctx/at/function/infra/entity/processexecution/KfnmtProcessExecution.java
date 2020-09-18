@@ -34,7 +34,6 @@ import nts.uk.ctx.at.function.dom.processexecution.personalschedule.CreationPeri
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreation;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationPeriod;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.PersonalScheduleCreationTarget;
-import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetClassification;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetDate;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetMonth;
 import nts.uk.ctx.at.function.dom.processexecution.personalschedule.TargetSetting;
@@ -103,31 +102,53 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				this.execSetting.endMonthDay == null?null:new MonthDay(this.execSetting.endMonthDay/100,this.execSetting.endMonthDay%100)
 				);
 
-		PersonalScheduleCreationTarget target = new PersonalScheduleCreationTarget(
-				EnumAdaptor.valueOf(this.execSetting.creationTarget, TargetClassification.class),
-				new TargetSetting(this.execSetting.recreateWorkType == 1 ? true : false,
-						this.execSetting.manualCorrection == 1 ? true : false,
-						this.execSetting.createEmployee == 1 ? true : false,
-						this.execSetting.recreateTransfer == 1 ? true : false)); 
+//		PersonalScheduleCreationTarget target = new PersonalScheduleCreationTarget(
+//				EnumAdaptor.valueOf(this.execSetting.creationTarget, TargetClassification.class),
+//				new TargetSetting(this.execSetting.recreateWorkType == 1 ? true : false,
+//						this.execSetting.manualCorrection == 1 ? true : false,
+//						this.execSetting.createEmployee == 1 ? true : false,
+//						this.execSetting.recreateTransfer == 1 ? true : false)); 
+		PersonalScheduleCreationTarget target = PersonalScheduleCreationTarget.builder()
+				.targetSetting(TargetSetting.builder()
+						.recreateWorkType(this.execSetting.recreateWorkType == 1 ? true : false)
+						.createEmployee(this.execSetting.createEmployee == 1 ? true : false)
+						.recreateTransfer(this.execSetting.recreateTransfer == 1 ? true : false)
+						.build())
+				.build();
 		PersonalScheduleCreation perSchCreation = new PersonalScheduleCreation(period,
 				this.execSetting.perScheduleCls == 1 ? true : false, target);
 		DailyPerformanceCreation dailyPerfCreation = new DailyPerformanceCreation(
 				this.execSetting.dailyPerfCls == 1 ? true : false,
-				EnumAdaptor.valueOf(this.execSetting.dailyPerfItem, DailyPerformanceItem.class), new TargetGroupClassification(this.execSetting.recreateTypeChangePerson == 1 ? true : false,
-						this.execSetting.midJoinEmployee == 1 ? true : false, this.execSetting.recreateTransfers == 1 ? true : false));
+				EnumAdaptor.valueOf(this.execSetting.dailyPerfItem, DailyPerformanceItem.class), 
+				new TargetGroupClassification(
+//						this.execSetting.recreateTypeChangePerson == 1 ? true : false, TODO
+						false,
+						this.execSetting.midJoinEmployee == 1 ? true : false, 
+						this.execSetting.recreateTransfer == 1 ? true : false
+						));
 
-		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(alarmExtraction, perSchCreation,
-				dailyPerfCreation, this.execSetting.reflectResultCls == 1 ? true : false,
+		ProcessExecutionSetting execSetting = new ProcessExecutionSetting(
+				alarmExtraction, 
+				perSchCreation,
+				dailyPerfCreation, 
+				this.execSetting.reflectResultCls == 1 ? true : false,
 				this.execSetting.monthlyAggCls == 1 ? true : false,
 				new AppRouteUpdateDaily(
-						EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtr, NotUseAtr.class) ,
+						EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtr, NotUseAtr.class),
 						this.execSetting.createNewEmp==null?null:EnumAdaptor.valueOf(this.execSetting.createNewEmp, NotUseAtr.class)),
-				EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class)
+				EnumAdaptor.valueOf(this.execSetting.appRouteUpdateAtrMon, NotUseAtr.class),
+				null, //TODO
+				null,
+				null,
+				null,
+				null,
+				null
 				);
 
 		return new ProcessExecution(this.kfnmtProcExecPK.companyId, new ExecutionCode(this.kfnmtProcExecPK.execItemCd),
 				new ExecutionName(this.execItemName), execScope, execSetting,
-				EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class)
+				EnumAdaptor.valueOf(this.processExecType, ProcessExecType.class),
+				false //TODO
 				);
 	}
 
@@ -152,16 +173,17 @@ public class KfnmtProcessExecution extends UkJpaEntity implements Serializable {
 				 * domain.getExecSetting().getPerSchedule().getPeriod().
 				 * getCreationPeriod() == null ? null :
 				 */domain.getExecSetting().getPerSchedule().getPeriod().getCreationPeriod().v(),
-				domain.getExecSetting().getPerSchedule().getTarget().getCreationTarget().value,
+//				domain.getExecSetting().getPerSchedule().getTarget().getCreationTarget().value,
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateWorkType() ? 1 : 0,
-				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isManualCorrection() ? 1 : 0,
+//				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isManualCorrection() ? 1 : 0,
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isCreateEmployee() ? 1 : 0,
 				domain.getExecSetting().getPerSchedule().getTarget().getTargetSetting().isRecreateTransfer() ? 1 : 0,
 				domain.getExecSetting().getDailyPerf().isDailyPerfCls() ? 1 : 0,
 				domain.getExecSetting().getDailyPerf().getDailyPerfItem().value,
 				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isMidJoinEmployee() ? 1 : 0,
 				domain.getExecSetting().isReflectResultCls() ? 1 : 0, domain.getExecSetting().isMonthlyAggCls() ? 1 : 0,
-				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()?1:0,domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()?1:0,
+//				domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTypeChangePerson()?1:0,
+//						domain.getExecSetting().getDailyPerf().getTargetGroupClassification().isRecreateTransfer()?1:0,
 				domain.getExecSetting().getAppRouteUpdateDaily().getAppRouteUpdateAtr().value,
 				domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get()==null?null:domain.getExecSetting().getAppRouteUpdateDaily().getCreateNewEmp().get().value,
 				domain.getExecSetting().getAppRouteUpdateMonthly().value,

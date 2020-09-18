@@ -41,7 +41,8 @@ public class JpaExecutionTaskLogRepository extends JpaRepository
 						rs.getGeneralDateTime("LAST_EXEC_DATETIME"),
 						rs.getGeneralDateTime("LAST_END_EXEC_DATETIME"),
 						rs.getString("ERROR_SYSTEM") == null?null:(rs.getInt("ERROR_SYSTEM")==1?true:false),
-						rs.getString("ERROR_BUSINESS") == null?null:(rs.getInt("ERROR_BUSINESS")==1?true:false)
+						rs.getString("ERROR_BUSINESS") == null?null:(rs.getInt("ERROR_BUSINESS")==1?true:false),
+						rs.getString("ERROR_SYSTEM_CONT")
 						);
 			});
 
