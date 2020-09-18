@@ -2,6 +2,7 @@
 
 module nts.uk.com.view.cmf002.w {
   const getTextResource = nts.uk.resource.getText;
+
   @bean()
   export class CMF002WViewModel extends ko.ViewModel {
     isNew: boolean = true;
@@ -26,6 +27,7 @@ module nts.uk.com.view.cmf002.w {
     selectedStartDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W4
     isStartDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
+    isStartDateDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
     startDateAdjustment: KnockoutObservable<any> = ko.observable(null);
     startDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W5
@@ -39,6 +41,7 @@ module nts.uk.com.view.cmf002.w {
     selectedEndDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W6
     isEndDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
+    isEndDateDateAdjustment: KnockoutObservable<boolean> = ko.observable(null);
     endDateAdjustment: KnockoutObservable<any> = ko.observable(null);
     endDateSpecified: KnockoutObservable<any> = ko.observable(null);
     // W7
@@ -53,6 +56,7 @@ module nts.uk.com.view.cmf002.w {
     selectedBaseDateSegment: KnockoutObservable<any> = ko.observable(null);
     // W8
     baseDateSpecified: KnockoutObservable<any> = ko.observable(null);
+    isBaseDateSpecifiedEnable: KnockoutObservable<boolean> = ko.observable(false);
 
     mounted() {
       const vm = this;
@@ -60,12 +64,18 @@ module nts.uk.com.view.cmf002.w {
       vm.conditionSetCode = params.conditionSetCode;
       vm.selectedPeriodSetting(1);
       // ※W3_2「開始日区分ドロップダウンリスト」が「05 日付指定」の場合、開始日調整を開始日指定する項目に変更。
-      vm.selectedStartDateSegment.subscribe(function(value) {
+      vm.selectedStartDateSegment.subscribe((value) => {
         vm.isStartDateAdjustment(value === StartDateClassificationCode.DATE_SPECIFICATION);
+        vm.isStartDateDateAdjustment(value === StartDateClassificationCode.DEADLINE_PROCESSING);
       });
       // ※W5_2「開始日区分ドロップダウンリスト」が「05 日付指定」の場合、開始日調整を開始日指定する項目に変更。
-      vm.selectedEndDateSegment.subscribe(function(value) {
+      vm.selectedEndDateSegment.subscribe((value) => {
         vm.isEndDateAdjustment(value === EndDateClassificationCode.DATE_SPECIFICATION);
+        vm.isEndDateDateAdjustment(value === EndDateClassificationCode.DEADLINE_PROCESSING);
+      });
+      // W7_2で06を選択している場合
+      vm.selectedBaseDateSegment.subscribe((value) => {
+        vm.isBaseDateSpecifiedEnable(value === BaseDateClassificationCode.DATE_SPECIFICATION);
       });
 
       vm.$blockui('grayout');

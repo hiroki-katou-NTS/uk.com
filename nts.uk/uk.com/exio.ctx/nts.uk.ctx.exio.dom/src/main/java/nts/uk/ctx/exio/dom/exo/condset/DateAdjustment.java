@@ -6,7 +6,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 /*
  * 日付調整
  */
-@IntegerRange(min = -31, max = 31)
+@IntegerRange(min = -99, max = 99)
 public class DateAdjustment extends IntegerPrimitiveValue<DateAdjustment> {
 
 	private static final long serialVersionUID = 1L;

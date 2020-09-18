@@ -13,6 +13,11 @@
           width: 500,
           height: 620
         };
+        __viewContext.primitiveValueConstraints.MonthAdjustment = {
+          valueType: 'Integer',
+          min: -12,
+          max: 12,
+        };
       </script>
 
       <com:stylefile path="cmf002.w.style.css" />
@@ -93,11 +98,20 @@
               <!-- W4-1 -->
               <div id="W4_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_535')}</div>
               <!-- W4_2 -->
-              <input id="W4_2" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
-              name: '#[CMF002_535]',
-              value: startDateAdjustment,
-              constraint: ['DateAdjustment']
-            }" />
+              <com:ko tag="if" bind="isStartDateDateAdjustment">
+                <input id="W4_2" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
+                  name: '#[CMF002_535]',
+                  value: startDateAdjustment,
+                  constraint: ['DateAdjustment']
+                }" />
+              </com:ko>
+              <com:ko tag="ifnot" bind="isStartDateDateAdjustment">
+                <input id="W4_2" tabindex="3" class="cmf002-w-input" data-bind="ntsNumberEditor: {
+                  name: '#[CMF002_535]',
+                  value: startDateAdjustment,
+                  constraint: ['MonthAdjustment']
+                }" />
+              </com:ko>
             </div>
           </com:ko>
           <com:ko tag="if" bind="isStartDateAdjustment">
@@ -106,9 +120,9 @@
               <div id="W4_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_536')}</div>
               <!-- W4_4 -->
               <div id="W4_4" tabindex="4" data-bind="ntsDatePicker: {
-              name: '#[CMF002_536]',
-              value: startDateSpecified,
-            }"></div>
+                name: '#[CMF002_536]',
+                value: startDateSpecified,
+              }"></div>
             </div>
           </com:ko>
 
@@ -137,24 +151,24 @@
           <com:ko tag="ifnot" bind="isEndDateAdjustment">
             <div class="div-line">
               <!-- W6-1 -->
-              <div id="W6_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_539')}</div>
+              <div id="W6_1" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_538')}</div>
               <!-- W6_2 -->
               <input id="W6_2" tabindex="6" class="cmf002-w-input" data-bind="ntsNumberEditor: {
-              name: '#[CMF002_538]',
-              value: endDateAdjustment,
-              constraint: ['DateAdjustment']
-            }" />
+                name: '#[CMF002_538]',
+                value: endDateAdjustment,
+                constraint: ['DateAdjustment']
+              }" />
             </div>
           </com:ko>
           <com:ko tag="if" bind="isEndDateAdjustment">
             <div class="div-line">
               <!-- W6-3 -->
-              <div id="W6_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_536')}</div>
+              <div id="W6_3" class="column-label" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_539')}</div>
               <!-- W6_4 -->
               <div id="W6_4" tabindex="7" data-bind="ntsDatePicker: {
-              name: '#[CMF002_539]',
-              value: endDateSpecified,
-            }"></div>
+                name: '#[CMF002_539]',
+                value: endDateSpecified,
+              }"></div>
             </div>
           </com:ko>
 
@@ -187,6 +201,7 @@
             <div id="W8_2" tabindex="9" data-bind="ntsDatePicker: {
               name: '#[CMF002_541]',
               value: baseDateSpecified,
+              enable: isBaseDateSpecifiedEnable,
             }"></div>
           </div>
         </div>
@@ -194,7 +209,8 @@
 
       <div id="functions-area-bottom">
         <!-- btn close dialog -->
-        <button tabindex="10" class="proceed x-large cmf002-w-main-btn" data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
+        <button tabindex="10" class="proceed x-large cmf002-w-main-btn"
+          data-bind="click: save, enable: $root.errors.isEmpty">#{i18n.getText('CMF002_161')}</button>
         <button tabindex="11" data-bind="click: closeDialog">#{i18n.getText('CMF002_162')}</button>
       </div>
     </ui:define>

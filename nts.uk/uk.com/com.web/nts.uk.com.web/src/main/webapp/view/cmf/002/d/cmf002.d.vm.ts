@@ -70,7 +70,15 @@ module nts.uk.com.view.cmf002.d.viewmodel {
                         self.registerMode = shareModel.SCREEN_MODE.UPDATE;
                         self.cndDetai(OutCndDetailDto.fromApp(res.cndDetai));
                     }
-                    self.ctgItemDataList(res.ctgItemDataList);
+                    const ctgItemDataList = _.map(res.ctgItemDataList, (item: any) => {
+                        // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
+                        const itemName: string = item.displayClassfication === 1
+                            ? self.reverseWord(item.itemName)
+                            : item.itemName;
+                        item.itemName = itemName;
+                        return item;
+                    });
+                    self.ctgItemDataList(ctgItemDataList);
                     self.loadDetaiItemGrid();
                     self.setCssClass();
                     block.clear();
@@ -89,11 +97,7 @@ module nts.uk.com.view.cmf002.d.viewmodel {
             self.tableItemList.removeAll();
             let tableUniq = _.uniqBy(self.ctgItemDataList(), 'tableName');
             _.each(tableUniq, item => {
-                // [ver62] ドメインモデル「外部出力カテゴリ項目データ.予約語区分」の値から予約語に変換するかどうか判断する
-                const itemName: string = item.displayClassfication === 1
-                    ? self.reverseWord(item.displayTableName)
-                    : item.displayTableName;
-                self.tableItemList.push(new TableItem(item.tableName, itemName));
+                self.tableItemList.push(new TableItem(item.tableName, item.displayTableName));
             })
             self.focusFirstRowD5_2();
         }
