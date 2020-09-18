@@ -9,9 +9,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.EmploymentManageDistinctDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
@@ -61,6 +64,9 @@ public class ExtraHolidayManagementService {
 
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
+	
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;	
 	
 	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId) {
 		String cid = AppContexts.user().companyId();
@@ -127,5 +133,12 @@ public class ExtraHolidayManagementService {
 	public void CheckManageSubstituteHolidayManagementData(String empId) {
 		EmploymentManageDistinctDto empManage = new EmploymentManageDistinctDto();
 		empManage.setIsManage(ManageDistinct.NO);
+		List<EmploymentHistShareImport> empHistShrImp = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(empId);
+		if (empHistShrImp.isEmpty()) {
+			// Step エラーメッセージ(Msg_1306)を表示する
+			throw new BusinessException("Msg_1306");
+		} else {
+			
+		}
 	}
 }
