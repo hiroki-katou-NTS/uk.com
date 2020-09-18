@@ -15,9 +15,9 @@
 			<com:scriptfile path="cmf002.c.vm.js" />
 			<com:stylefile path="cmf002.c.style.css" />
 			<com:ValidatorScript>
-				nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode
-				nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName
-		  </com:ValidatorScript>
+						nts.uk.ctx.exio.dom.exo.outputitem.OutputItemCode
+						nts.uk.ctx.exio.dom.exo.outputitem.OutputItemName
+		    </com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -85,7 +85,7 @@
 								<tr>
 									<td>
 										<!--C4 項目コード/名称(ラベル)-->
-										<div data-bind="ntsFormLabel: {constraint: ['ExternalOutputConditionCode', 'ExternalOutputConditionName'], required: true }">#{i18n.getText('CMF002_80')}</div>
+										<div data-bind="ntsFormLabel: {constraint: ['OutputItemCode', 'OutputItemName'], required: true }">#{i18n.getText('CMF002_80')}</div>
 									</td>
 									<td>
 										<!--C4_1 項目コード-->
@@ -93,14 +93,14 @@
 			                name: '#[CMF002_81]',
 											value: outItemCd,
 											enable: $parent.isNewMode(),
-											constraint: 'ExternalOutputConditionCode',
+											constraint: 'OutputItemCode',
 											required: true,
 											option: {width: '50px'}}" />
 										<!--C4_2 項目名称-->
 										<input id="C4_2" tabindex="9" data-bind="ntsTextEditor: {
 											name: '#[CMF002_82]',
 											value: outItemName,
-											constraint: 'ExternalOutputConditionName',
+											constraint: 'OutputItemName',
 											required: true,
 											option: {width: '180px'}}" />
 									</td>
