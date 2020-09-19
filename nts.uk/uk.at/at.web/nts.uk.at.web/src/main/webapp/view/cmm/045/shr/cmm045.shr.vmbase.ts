@@ -369,9 +369,9 @@ module cmm045.shr {
             }
         }
         export class ChoseApplicationList{
-            appType: number;
+            appType: string;
             appName: string;
-            constructor(appType: number, appName: string){
+            constructor(appType: string, appName: string){
                 this.appType = appType;
                 this.appName = appName;
             }

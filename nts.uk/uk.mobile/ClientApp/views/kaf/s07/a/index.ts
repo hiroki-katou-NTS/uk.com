@@ -677,7 +677,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
         }).catch((res: any) => {
             self.handleErrorMessage(res);
         });

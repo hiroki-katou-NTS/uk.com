@@ -29,12 +29,12 @@ public enum ApplicationTypeDisplay {
 	/**
 	 * 打刻申請
 	 */
-	STAMP_ADDITIONAL(0,"打刻申請"),
+	STAMP_ADDITIONAL(3,"打刻申請"),
 	
 	/**
 	 * 打刻申請TR
 	 */
-	STAMP_ONLINE_RECORD(1,"レコーダイメージ申請");
+	STAMP_ONLINE_RECORD(4,"レコーダイメージ申請");
 	
 	public int value;
 	

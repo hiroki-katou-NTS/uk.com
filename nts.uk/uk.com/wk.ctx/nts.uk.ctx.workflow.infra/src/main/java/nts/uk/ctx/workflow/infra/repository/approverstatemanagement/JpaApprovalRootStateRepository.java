@@ -16,6 +16,8 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import org.apache.logging.log4j.util.Strings;
+
 import lombok.SneakyThrows;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
@@ -715,34 +717,55 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		// List<ApprovalRootState> entityRoot = WwfdtFullJoinState.toDomain(listFullData);
 		
 		if(unapprovalStatus) {
-			List<WwfdtFullJoinState> unapprovalStatusLst = listFullData.stream().filter(x -> {
-						return x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED.value && x.getAppPhaseAtr()==ApprovalBehaviorAtr.UNAPPROVED.value;
-					}).collect(Collectors.toList());
+			List<String> unapprovalStatusStrLst = listFullData.stream().filter(x -> {
+						return x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED.value && 
+								x.getAppPhaseAtr()==ApprovalBehaviorAtr.UNAPPROVED.value &&
+								lstApproverID.contains(x.getApproverID());
+					}).map(x -> x.getRootStateID()).collect(Collectors.toList());
+			List<WwfdtFullJoinState> unapprovalStatusLst = listFullData.stream().filter(x -> unapprovalStatusStrLst.contains(x.getRootStateID()))
+					.collect(Collectors.toList());
 			result.addAll(WwfdtFullJoinState.toDomain(unapprovalStatusLst));
 		}
 		if(approvalStatus) {
-			List<WwfdtFullJoinState> approvalStatusLst = listFullData.stream().filter(x -> {
-						return x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value ||
-								(x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED.value && x.getAppPhaseAtr()==ApprovalBehaviorAtr.APPROVED.value);
-					}).collect(Collectors.toList());
+			List<String> approvalStatusStrLst = listFullData.stream().filter(x -> {
+						return (x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value ||
+								(x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED.value && x.getAppPhaseAtr()==ApprovalBehaviorAtr.APPROVED.value)) &&
+								approverID.equals(x.getApproverID()) && Strings.isBlank(x.getAgentID());
+					}).map(x -> x.getRootStateID()).collect(Collectors.toList());
+			List<WwfdtFullJoinState> approvalStatusLst = listFullData.stream().filter(x -> approvalStatusStrLst.contains(x.getRootStateID()))
+					.collect(Collectors.toList());
 			result.addAll(WwfdtFullJoinState.toDomain(approvalStatusLst));
 		}
 		if(agentApprovalStatus) {
-			List<WwfdtFullJoinState> agentApprovalStatusLst = listFullData.stream().filter(x -> {
-						return x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value;
-					}).collect(Collectors.toList());
+			List<String> agentApprovalStatusStrLst = listFullData.stream().filter(x -> {
+						return x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value &&
+								Strings.isNotBlank(x.getAgentID()) && 
+								approverID.equals(x.getAgentID());
+					}).map(x -> x.getRootStateID()).collect(Collectors.toList());
+			List<WwfdtFullJoinState> agentApprovalStatusLst = listFullData.stream().filter(x -> agentApprovalStatusStrLst.contains(x.getRootStateID()))
+					.collect(Collectors.toList());
 			result.addAll(WwfdtFullJoinState.toDomain(agentApprovalStatusLst));
 		}
 		if(remandStatus) {
-			List<WwfdtFullJoinState> remandStatusLst = listFullData.stream().filter(x -> {
-						return x.getAppPhaseAtr()==ApprovalBehaviorAtr.REMAND.value;
-					}).collect(Collectors.toList());
+			List<String> remandStatusStrLst = listFullData.stream().filter(x -> {
+						return x.getAppPhaseAtr()==ApprovalBehaviorAtr.REMAND.value &&
+								lstApproverID.contains(x.getApproverID());
+					}).map(x -> x.getRootStateID()).collect(Collectors.toList());
+			List<WwfdtFullJoinState> remandStatusLst = listFullData.stream().filter(x -> remandStatusStrLst.contains(x.getRootStateID()))
+					.collect(Collectors.toList());
 			result.addAll(WwfdtFullJoinState.toDomain(remandStatusLst));
 		}
 		if(denialStatus) {
-			List<WwfdtFullJoinState> denialStatusLst = listFullData.stream().filter(x -> {
-						return x.getAppPhaseAtr()==ApprovalBehaviorAtr.DENIAL.value;
-					}).collect(Collectors.toList());
+			List<String> denialStatusStrLst = listFullData.stream().filter(x -> {
+						boolean condition1 = x.getAppPhaseAtr()==ApprovalBehaviorAtr.DENIAL.value;
+						boolean condition2 = approverID.equals(x.getApproverID());
+						if(Strings.isNotBlank(x.getAgentID())) {
+							condition2 = approverID.equals(x.getAgentID());
+						}
+						return condition1 && condition2;
+					}).map(x -> x.getRootStateID()).collect(Collectors.toList());
+			List<WwfdtFullJoinState> denialStatusLst = listFullData.stream().filter(x -> denialStatusStrLst.contains(x.getRootStateID()))
+					.collect(Collectors.toList());
 			result.addAll(WwfdtFullJoinState.toDomain(denialStatusLst));
 		}
 		

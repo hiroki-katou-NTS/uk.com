@@ -143,7 +143,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             
             _.each(self.dataSource, (item, index) => {
                 if (!_.isEmpty(item)) {
-                    _.forEach(item, i => {
+                    _.forEach(item, (i, indexI) => {
+                        // set again id if remove tab1 with 2 first element
+                        i.id = indexI +1;
                         i.index = index;  
                         // change text element to know value biding from array
                         i.changeElement();

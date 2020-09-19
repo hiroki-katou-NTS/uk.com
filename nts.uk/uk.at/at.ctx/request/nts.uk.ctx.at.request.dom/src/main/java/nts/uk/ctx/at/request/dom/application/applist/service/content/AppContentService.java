@@ -131,7 +131,7 @@ public interface AppContentService {
 	 */
 	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime, List<WorkType> lstWkType, 
 			List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting, ListOfApplication listOfApp, 
-			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition);
+			Map<String,List<ApprovalPhaseStateImport_New>> mapApproval, int device, AppListExtractCondition appListExtractCondition, List<String> agentLst);
 	
 	/**
 	 * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.各申請データを作成.承認状況照会内容.承認状況照会内容

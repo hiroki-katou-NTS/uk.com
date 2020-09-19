@@ -245,41 +245,36 @@ public class AppContentServiceImpl implements AppContentService {
 			result = workTypeName;
 			// 申請内容　+＝’　’　＋　Input．就業時間帯名称  ( Nội dung +＝　 Input.Working hour name)
 			result += " " + workTimeName;
-		}
-		// Input．．勤務直行1をチェック ( Check Input．．đi làm thẳng 1
-		if(goWorkAtr1 == NotUseAtr.NOT_USE) {
-			// 申請内容　+＝　Input．勤務時間開始1
-			result += workTimeStart1.getInDayTimeWithFormat();
-		} else {
-			if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
+			// Input．．勤務直行1をチェック ( Check Input．．đi làm thẳng 1
+			if(goWorkAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝’　’＋#CMM045_252
 				result += " " + I18NText.getText("CMM045_252");
-				// 申請内容　+＝　Input．勤務時間開始1
-				result += workTimeStart1.getInDayTimeWithFormat();
-			} else if(appType == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
+			}
+			// 申請内容　+＝　Input．勤務時間開始1
+			result += workTimeStart1 == null ? "" : workTimeStart1.getInDayTimeWithFormat();
+			// Input．勤務直帰1をチェック
+			if(goBackAtr1 == NotUseAtr.NOT_USE) {
+				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
+				result += I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252");
+			}
+			// 申請内容　+＝　Input．勤務時間終了1
+			result += workTimeEnd1 == null ? "" : workTimeEnd1.getInDayTimeWithFormat();
+		} else {
+			// Input．．勤務直行1をチェック ( Check Input．．đi làm thẳng 1
+			if(goWorkAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝#CMM045_259＋’　’ ( Nội dung đơn xin　+＝#CMM045_259)
 				result += I18NText.getText("CMM045_259") + " ";
 			}
-		}
-		// Input．勤務直帰1をチェック
-		if(goBackAtr1 == NotUseAtr.NOT_USE) {
-			// 申請内容　+＝　#CMM045_100 
-			result += I18NText.getText("CMM045_100");
-			// 申請内容　+＝　Input．勤務時間終了1
-			result += workTimeEnd1.getInDayTimeWithFormat();
-		} else {
-			if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
-				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
-				result += I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252");
-				// 申請内容　+＝　Input．勤務時間終了1
-				result += workTimeEnd1.getInDayTimeWithFormat();
-			} else if(appType == ApplicationType.GO_RETURN_DIRECTLY_APPLICATION) {
+			// Input．勤務直帰1をチェック
+			if(goBackAtr1 == NotUseAtr.USE) {
 				// 申請内容　+＝　#CMM045_260
 				result += I18NText.getText("CMM045_260");
 			}
 		}
 		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
-			// 
+			if(!(breakTimeStart1==null || breakTimeStart1.v()==0 || breakTimeEnd1 == null || breakTimeEnd1.v()==0)) {
+				result += " " + I18NText.getText("CMM045_251") + breakTimeStart1.getInDayTimeWithFormat() + breakTimeEnd1.getInDayTimeWithFormat();
+			}
 		}
 		// 申請理由内容　＝　申請内容の申請理由
 		String appReasonContent = this.getAppReasonContent(
@@ -299,7 +294,7 @@ public class AppContentServiceImpl implements AppContentService {
 	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime,
 			List<WorkType> lstWkType, List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting,
 			ListOfApplication listOfApp, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
-			AppListExtractCondition appListExtractCondition) {
+			AppListExtractCondition appListExtractCondition, List<String> agentLst) {
 		if(device == PC) {
 			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
 			switch (application.getAppType()) {
@@ -371,7 +366,7 @@ public class AppContentServiceImpl implements AppContentService {
 				if(device==PC) {
 					reflectedStateString = I18NText.getText("CMM045_62");
 				} else {
-					reflectedStateString = I18NText.getText("CMM045_7");
+					reflectedStateString = I18NText.getText("CMMS45_7");
 				}
 				break;
 			case WAITREFLECTION:
@@ -428,14 +423,25 @@ public class AppContentServiceImpl implements AppContentService {
 						break;
 					}
 					for(ApproverStateImport_New approver : frame.getListApprover()) {
-						boolean isMapWithApprover = Strings.isNotBlank(approver.getApproverID()) && approver.getApproverID().equals(loginID);
-						boolean isMapWithAgent = (Strings.isNotBlank(approver.getAgentID()) && approver.getAgentID().equals(loginID));
+						boolean isMapWithApprover = false;
+						boolean isMapWithAgent = false;
+						if(phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.REMAND ||
+							(phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.UNAPPROVED && approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
+							isMapWithApprover = approver.getApproverID().equals(loginID);
+							isMapWithAgent = agentLst.contains(approver.getApproverID());
+						} else {
+							isMapWithApprover = approver.getApproverID().equals(loginID);
+							isMapWithAgent = (Strings.isNotBlank(approver.getAgentID()) && approver.getAgentID().equals(loginID));
+						}
 						if (!isMapWithApprover && !isMapWithAgent) {
 							continue;
 						}
-						Optional<ApprovalPhaseStateImport_New> opPhaseBeforeNotApproved = listPhase.stream()
-								.filter(x -> x.getPhaseOrder() > phase.getPhaseOrder())
-								.filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+						Optional<ApprovalPhaseStateImport_New> opPhaseBeforeNotApproved = Optional.empty();
+						if(listPhase.size()!=1) {
+							opPhaseBeforeNotApproved = listPhase.stream()
+									.filter(x -> x.getPhaseOrder() > phase.getPhaseOrder())
+									.filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+						}
 						if(opPhaseBeforeNotApproved.isPresent()) {
 							continue;
 						}

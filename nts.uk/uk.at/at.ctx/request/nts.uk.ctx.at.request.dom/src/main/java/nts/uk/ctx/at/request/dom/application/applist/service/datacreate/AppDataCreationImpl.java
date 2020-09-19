@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.task.parallel.ManagedParallelWithContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.applist.extractcondition.AppListExtractCondition;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.request.dom.application.applist.service.content.AppContentS
 import nts.uk.ctx.at.request.dom.application.applist.service.param.AppListInfo;
 import nts.uk.ctx.at.request.dom.application.applist.service.param.ListOfApplication;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseStateImport_New;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDispSetRepository;
@@ -34,6 +36,7 @@ import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * refactor 4
@@ -63,6 +66,9 @@ public class AppDataCreationImpl implements AppDataCreation {
 	
 	@Inject
 	private ManagedParallelWithContext parallel;
+	
+	@Inject
+	private AgentAdapter agentAdapter;
 
 	@Override
 	public AppListInfo createAppLstData(String companyID, List<Application> appLst, DatePeriod period,
@@ -85,6 +91,8 @@ public class AppDataCreationImpl implements AppDataCreation {
 		
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
+		GeneralDate sysDate = GeneralDate.today();
+		List<String> agentLst = agentAdapter.lstAgentData(companyID, AppContexts.user().employeeId(), sysDate, sysDate).stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 		List<ListOfApplication> appOutputLst = new ArrayList<>();
 //		final List<WorkTimeSetting> workTimeSettingLstFinal = workTimeSettingLst;
 //		final List<WorkType> workTypeLstFinal = workTypeLst;
@@ -112,7 +120,8 @@ public class AppDataCreationImpl implements AppDataCreation {
 					appInfoMasterOutput.getListOfApplication(), 
 					mapApproval, 
 					device, 
-					appListExtractCondition);
+					appListExtractCondition,
+					agentLst);
 			// 申請内容＝-1(Nội dung đơn xin＝-1 )
 			if(listOfApp.getAppContent()=="-1") {
 				// パラメータ：申請一覧情報.申請一覧から削除する(xóa từ list đơn xin)
