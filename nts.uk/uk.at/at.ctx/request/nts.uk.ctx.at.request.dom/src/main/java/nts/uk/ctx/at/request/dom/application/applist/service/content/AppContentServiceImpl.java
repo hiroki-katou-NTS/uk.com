@@ -251,14 +251,14 @@ public class AppContentServiceImpl implements AppContentService {
 				result += " " + I18NText.getText("CMM045_252");
 			}
 			// 申請内容　+＝　Input．勤務時間開始1
-			result += workTimeStart1.getInDayTimeWithFormat();
+			result += workTimeStart1 == null ? "" : workTimeStart1.getInDayTimeWithFormat();
 			// Input．勤務直帰1をチェック
 			if(goBackAtr1 == NotUseAtr.NOT_USE) {
 				// 申請内容　+＝　#CMM045_100　+　#CMM045_252
 				result += I18NText.getText("CMM045_100") + I18NText.getText("CMM045_252");
 			}
 			// 申請内容　+＝　Input．勤務時間終了1
-			result += workTimeEnd1.getInDayTimeWithFormat();
+			result += workTimeEnd1 == null ? "" : workTimeEnd1.getInDayTimeWithFormat();
 		} else {
 			// Input．．勤務直行1をチェック ( Check Input．．đi làm thẳng 1
 			if(goWorkAtr1 == NotUseAtr.USE) {
@@ -272,7 +272,7 @@ public class AppContentServiceImpl implements AppContentService {
 			}
 		}
 		if(appType == ApplicationType.WORK_CHANGE_APPLICATION) {
-			if(!(breakTimeStart1.v()==0 || breakTimeEnd1.v()==0)) {
+			if(!(breakTimeStart1==null || breakTimeStart1.v()==0 || breakTimeEnd1 == null || breakTimeEnd1.v()==0)) {
 				result += " " + I18NText.getText("CMM045_251") + breakTimeStart1.getInDayTimeWithFormat() + breakTimeEnd1.getInDayTimeWithFormat();
 			}
 		}
