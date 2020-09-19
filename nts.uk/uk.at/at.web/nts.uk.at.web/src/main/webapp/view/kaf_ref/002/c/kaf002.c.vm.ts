@@ -484,6 +484,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     appStampOutputDto
             }
             let data = _.clone(self.data);
+            data.appStampOptional = appStampDto;
             let companyId = self.$user.companyId
             let agentAtr = false;
             let commandCheck = {
@@ -510,7 +511,27 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                    let listConfirm = _.clone(res);
                                    return self.handleConfirmMessage(listConfirm, command);
                               }
-                         })
+                         }).done(res => {
+                             this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                                 location.reload();
+                             } );
+                         }).fail(res => {
+                             if (!res) return;
+                             let param;
+                             if (res.message && res.messageId) {
+                                 param = {messageId: res.messageId, messageParams: res.parameterIds};
+                             } else {
+                 
+                                 if (res.message) {
+                                     param = {message: res.message, messageParams: res.parameterIds};
+                                 } else {
+                                     param = {messageId: res.messageId, messageParams: res.parameterIds};
+                                 }
+                             }
+                             self.$dialog.error(param);
+                         }).always(() => {
+                             self.$blockui('hide');
+                         });
             })
 //            .then(res => {
 //                if(!res) return;
@@ -521,26 +542,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 //                    return self.handleConfirmMessage(listConfirm, command);
 //                }
 //            })
-            .done(res => {
-                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                        location.reload();
-                    } );
-                })
-            .fail(res => {
-                if (!res) return;
-                let param;
-                if (res.message && res.messageId) {
-                    param = {messageId: res.messageId, messageParams: res.parameterIds};
-                } else {
-    
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds};
-                    }
-                }
-                self.$dialog.error(param);
-            }).always(() => {
+            
+            .always(() => {
                 self.$blockui('hide');
             });
             
