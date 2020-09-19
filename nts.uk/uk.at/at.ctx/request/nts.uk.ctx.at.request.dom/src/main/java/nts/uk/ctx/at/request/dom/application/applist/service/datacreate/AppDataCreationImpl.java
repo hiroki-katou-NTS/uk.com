@@ -91,6 +91,8 @@ public class AppDataCreationImpl implements AppDataCreation {
 		
 		Map<String, SyEmployeeImport> mapEmpInfo = new HashMap<>();
 		Map<Pair<String, DatePeriod>, WkpInfo> mapWkpInfo = new HashMap<>();
+		GeneralDate sysDate = GeneralDate.today();
+		List<String> agentLst = agentAdapter.lstAgentData(companyID, AppContexts.user().employeeId(), sysDate, sysDate).stream().map(x -> x.getEmployeeId()).collect(Collectors.toList());
 		List<ListOfApplication> appOutputLst = new ArrayList<>();
 //		final List<WorkTimeSetting> workTimeSettingLstFinal = workTimeSettingLst;
 //		final List<WorkType> workTypeLstFinal = workTypeLst;
