@@ -371,7 +371,7 @@ public class AppContentServiceImpl implements AppContentService {
 				if(device==PC) {
 					reflectedStateString = I18NText.getText("CMM045_62");
 				} else {
-					reflectedStateString = I18NText.getText("CMM045_7");
+					reflectedStateString = I18NText.getText("CMMS45_7");
 				}
 				break;
 			case WAITREFLECTION:
