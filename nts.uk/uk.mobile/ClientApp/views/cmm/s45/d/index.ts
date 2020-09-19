@@ -328,7 +328,7 @@ export class CmmS45DComponent extends Vue {
                     }).then((resApprove: any) => {
                         self.$mask('hide');
                         if (resApprove.data.processDone) {
-                            self.reflectApp(resApprove.data.reflectAppId);
+                            // self.reflectApp(resApprove.data.reflectAppId);
                             self.$modal('cmms45f', { 'action': 1, 'listAppMeta': self.listAppMeta, 'currentApp': self.currentApp })
                             .then((resAfterApprove: any) => {
                                 self.controlDialog(resAfterApprove);        
