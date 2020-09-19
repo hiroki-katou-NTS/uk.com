@@ -152,8 +152,8 @@ public class AppStampStandard {
 		
 		
 		if (!CollectionUtil.isEmpty(listTimeStampAppOther)) {
-			AppStampStandard appStampStandard = new AppStampStandard();
 			listTimeStampAppOther.stream().forEach(item -> {
+				AppStampStandard appStampStandard = new AppStampStandard();
 				appStampStandard.startTime = item.getTimeZone().getStartTime().getDayTime();
 				appStampStandard.endTime = item.getTimeZone().getEndTime().getDayTime();
 				appStampStandard.framNo = item.getDestinationTimeZoneApp().getEngraveFrameNo();
