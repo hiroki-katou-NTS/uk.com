@@ -431,10 +431,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         // case change date
         if (self.data.appStampReflectOptional) {
             if (self.data.appStampReflectOptional.attendence) {
-                item1_temp.push(items1);
+                item1_temp = item1_temp.concat(items1);
             }
             if (self.data.appStampReflectOptional.temporaryAttendence) {
-                dataSource.push(items2);   
+                item1_temp = item1_temp.concat(items2);   
             } 
         }
         
