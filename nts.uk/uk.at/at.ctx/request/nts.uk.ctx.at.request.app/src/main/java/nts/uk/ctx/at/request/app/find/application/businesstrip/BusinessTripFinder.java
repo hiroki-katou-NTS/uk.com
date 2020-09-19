@@ -336,9 +336,13 @@ public class BusinessTripFinder {
         WorkTypeNameDto result = new WorkTypeNameDto();
         String typeCode = changeWorkCodeParam.getTypeCode();
         String timeCode = changeWorkCodeParam.getTimeCode();
+        Integer startWorkTime = changeWorkCodeParam.getStartWorkTime();
+        Integer endWorkTime = changeWorkCodeParam.getEndWorkTime();
+
+
         BusinessTripInfoOutput businessTripInfoOutput = changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain();
         GeneralDate inputDate = GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd");
-        businessTripService.checkInputWorkCode(typeCode, timeCode, inputDate);
+        businessTripService.checkInputWorkCode(typeCode, timeCode, inputDate, startWorkTime, endWorkTime);
         // アルゴリズム「出張申請就業時間帯チェック」を実行する
         if (Strings.isBlank(timeCode)) {
             return result;

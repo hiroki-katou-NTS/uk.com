@@ -100,6 +100,8 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                 businessTripInfoOutputDto, applicationDto
             };
 
+            vm.$errors("clear");
+
             vm.$validate([
                 '#kaf000-a-component4 .nts-input'
             ]).then((valid: boolean) => {
@@ -162,7 +164,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                         }
                     }).fail(err => {
                         let param;
-                        if (err.messageId == "Msg_23" || err.messageId == "Msg_24") {
+                        if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
                             err.message = err.parameterIds[0] + err.message;
                             param = err;
                             vm.$dialog.error(param);
