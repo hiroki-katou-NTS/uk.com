@@ -76,8 +76,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 .done(res => {
                     console.log(res);
                     self.data = res;
+                    self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
-                    self.bindActualData();
+                    self.bindActualData();                        
                     self.bindTabM(self.data);
                     self.bindComment(self.data);
                     self.printContentOfEachAppDto().opAppStampOutput = res;
@@ -114,18 +115,76 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
               if (value) {
                 if (data.appStampReflectOptional && self.tabs()) {
                     let reflect = data.appStampReflectOptional;
-                    self.tabs()[0].visible((reflect.attendence) == 1);
-                    self.tabs()[1].visible(reflect.outingHourse == 1);
-                    self.tabs()[2].visible(reflect.breakTime == 1);
-                    self.tabs()[3].visible(reflect.parentHours == 1);
-                    self.tabs()[4].visible(reflect.nurseTime == 1);
+                    self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && reflect.attendence && data.useTemporary == 1) || self.isAttendence || self.isTemporaryAttendence );
+                    self.tabs()[1].visible(reflect.outingHourse == 1 || self.isOutingHourse);
+                    self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
+                    self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
+                    self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
                     // not use
                     self.tabs()[5].visible(false);
                 
                 } 
               } 
            });
-       }  
+       } 
+       
+       isAttendence = false;
+       isTemporaryAttendence = false;
+       isOutingHourse = false;
+       isBreakTime = false;
+       isParentHours = false;
+       isNurseTime = false;
+       setExistCondition1(stamp: number) {
+           const self = this;
+           if (stamp == 0) {
+               self.isAttendence = true;
+           } else if (stamp == 2) {
+               self.isOutingHourse = true;
+           } else if (stamp == 3) {
+               
+           } else if (stamp == 1) {
+               self.isTemporaryAttendence = true;
+           }
+       }
+       setExistCondition2(stamp: number) {
+           const self = this;
+           if (stamp == 0) {
+               self.isParentHours = true;
+           } else if (stamp == 1) {
+               self.isNurseTime = true;
+           } else if (stamp == 2) {
+               self.isBreakTime = true;
+           } 
+       }
+    checkExistData() {
+        const self = this;
+        let appStampDto = self.data.appStampOptional as AppStampDto,
+        timeStampAppDto = appStampDto.listTimeStampApp as Array<TimeStampAppDto>,
+        destinationTimeAppDto = appStampDto.listDestinationTimeApp as Array<DestinationTimeAppDto>,
+        timeStampAppOtherDto = appStampDto.listTimeStampAppOther as Array<TimeStampAppOtherDto>,
+        destinationTimeZoneAppDto = appStampDto.listDestinationTimeZoneApp as Array<DestinationTimeZoneAppDto>;
+        if (timeStampAppDto) {
+            _.forEach(timeStampAppDto, (i: TimeStampAppDto) => {
+                self.setExistCondition1(i.destinationTimeApp.timeStampAppEnum);
+            });
+        }
+        if (destinationTimeAppDto) {
+            _.forEach(destinationTimeAppDto, i => {
+                self.setExistCondition1(i.timeStampAppEnum);
+            })
+        }
+        
+        if (timeStampAppOtherDto) {
+            _.forEach(timeStampAppOtherDto, (i: TimeStampAppOtherDto) => {
+                self.setExistCondition2(i.destinationTimeZoneApp.timeZoneStampClassification);
+            });
+        }
+        if (destinationTimeZoneAppDto) {
+            _.forEach(destinationTimeZoneAppDto, i => {
+                self.setExistCondition2(i.timeZoneStampClassification);
+            })
+        }
+    }   
     bindDataRequest(element: GridItem, type: number) {
        const self = this;
        let appStampDto = self.data.appStampOptional as AppStampDto,
@@ -196,26 +255,29 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     bindActualData() {
         const self = this;
         let opActualContentDisplayLst = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.opActualContentDisplayLst;
-        let opAchievementDetail = opActualContentDisplayLst[0].opAchievementDetail;
-        if (_.isNull(opAchievementDetail)) {
-            
-            return;
+        let opAchievementDetail;
+        if (opActualContentDisplayLst) {
+            opAchievementDetail = opActualContentDisplayLst[0].opAchievementDetail;
         }
-        let stampRecord = opAchievementDetail.stampRecordOutput;
+        
+        let stampRecord = opAchievementDetail ? opAchievementDetail.stampRecordOutput : null;
         
         let items1 = (function() {
             let list = [];
-            let timePlaceList = stampRecord.workingTime;
+            let timePlaceList = stampRecord ? stampRecord.workingTime : null;
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
-                _.forEach(timePlaceList, item => {
-                    if (item.frameNo == i) {
-                        dataObject.opStartTime = item.opStartTime;
-                        dataObject.opEndTime = item.opEndTime;
-                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
-                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
-                    }
-                });
+                if (!self.isPreAtr()) {
+                    _.forEach(timePlaceList, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
                 let gridItem = new GridItem(dataObject, STAMPTYPE.ATTENDENCE) as GridItem;
                 self.bindDataRequest(gridItem, 1);
                 list.push(gridItem); 
@@ -224,17 +286,20 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         })();
         let items2 = (function() {
             let list = [];
-            let extraordinaryTime = stampRecord.extraordinaryTime;
+            let extraordinaryTime = stampRecord ? stampRecord.extraordinaryTime : null;
             for (let i = 3; i < 6; i++) {
                 let dataObject = new TimePlaceOutput(i);
-                _.forEach(extraordinaryTime, item => {
-                    if (item.frameNo == i) {
-                        dataObject.opStartTime = item.opStartTime;
-                        dataObject.opEndTime = item.opEndTime;
-                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
-                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
-                    }
-                });
+                if (!self.isPreAtr()) {
+                    _.forEach(extraordinaryTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
                 let gridItem = new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY);
                 self.bindDataRequest(gridItem, 1);
                 list.push(gridItem);
@@ -246,17 +311,20 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
         let items3 = ( function() {
             let list = [];
-            let outingTime = stampRecord.outingTime;
+            let outingTime = stampRecord ? stampRecord.outingTime : null;
             for ( let i = 1; i < 11; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
-                _.forEach(outingTime, item => {
-                    if (item.frameNo == i) {
-                        dataObject.opStartTime = item.opStartTime;
-                        dataObject.opEndTime = item.opEndTime;
-                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
-                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
-                    }
-                });
+                if (!self.isPreAtr()) {
+                    _.forEach(outingTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
                 let gridItem = new GridItem( dataObject, STAMPTYPE.GOOUT_RETURNING );
                 self.bindDataRequest(gridItem, 1);
                 list.push(gridItem);
@@ -267,17 +335,20 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 
         let items4 = ( function() {
             let list = [];
-            let breakTime = stampRecord.breakTime;
+            let breakTime = stampRecord ? stampRecord.breakTime : null;
             for ( let i = 1; i < 11; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
-                _.forEach(breakTime, item => {
-                    if (item.frameNo == i) {
-                        dataObject.opStartTime = item.opStartTime;
-                        dataObject.opEndTime = item.opEndTime;
-                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
-                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
-                    }
-                });
+                if (!self.isPreAtr()) {
+                    _.forEach(breakTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
                 let gridItem = new GridItem(dataObject, STAMPTYPE.BREAK);
                 self.bindDataRequest(gridItem, 2);
                 list.push(gridItem);
@@ -288,17 +359,20 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
 
         let items5 = ( function() {
             let list = [];
-            let parentingTime = stampRecord.parentingTime;
+            let parentingTime = stampRecord ? stampRecord.parentingTime : null;
             for ( let i = 1; i < 3; i++ ) {
                 let dataObject = new TimePlaceOutput( i );
-                _.forEach(parentingTime, item => {
-                    if (item.frameNo == i) {
-                        dataObject.opStartTime = item.opStartTime;
-                        dataObject.opEndTime = item.opEndTime;
-                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
-                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
-                    }
-                });
+                if (!self.isPreAtr()) {
+                    _.forEach(parentingTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
                 let gridItem = new GridItem(dataObject, STAMPTYPE.PARENT);
                 self.bindDataRequest(gridItem, 2);
                 list.push(gridItem);
@@ -309,17 +383,20 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
         let items6 = (function() {
             let list = [];
-            let nursingTime = stampRecord.nursingTime;
+            let nursingTime = stampRecord ? stampRecord.nursingTime : null;
             for (let i = 1; i < 3; i++) {
                 let dataObject = new TimePlaceOutput(i);
-                _.forEach(nursingTime, item => {
-                    if (item.frameNo == i) {
-                        dataObject.opStartTime = item.opStartTime;
-                        dataObject.opEndTime = item.opEndTime;
-                        dataObject.opWorkLocationCD = item.opWorkLocationCD;
-                        dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
-                    }
-                });
+                if (!self.isPreAtr()) {
+                    _.forEach(nursingTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
                 let gridItem = new GridItem(dataObject, STAMPTYPE.NURSE);
                 self.bindDataRequest(gridItem, 2);
                 list.push(gridItem);
@@ -331,19 +408,19 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
         let dataSource = [];
      // case change date
-        if (self.data.appStampReflectOptional) {
-            if (self.data.appStampReflectOptional.temporaryAttendence == 0) {
-                dataSource.push(items1);
-                
-            } else {
-                dataSource.push(items1.concat(items2));
-            }
-        }
+//        if (self.data.appStampReflectOptional) {
+//            if (self.data.appStampReflectOptional.temporaryAttendence == 0) {
+//                dataSource.push(items1);
+//                
+//            } else {
+//                dataSource.push(items1.concat(items2));
+//            }
+//        }
+        dataSource.push(items1.concat(items2));
         dataSource.push( items3 );
         dataSource.push( items4 );
         dataSource.push( items5 );
         dataSource.push( items6 );
-        dataSource.push([]);
         self.dataSourceOb( dataSource );
     }
     
