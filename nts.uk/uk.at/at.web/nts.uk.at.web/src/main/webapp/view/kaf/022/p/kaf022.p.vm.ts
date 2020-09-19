@@ -199,7 +199,7 @@ module nts.uk.at.view.kaf022.p.viewmodel {
         constructor(param?: IOptionalItemAppSet) {
             this.code = ko.observable(param ? param.code : "");
             this.name = ko.observable(param ? param.name : "");
-            this.useAtr = ko.observable(param ? param.useAtr : 0);
+            this.useAtr = ko.observable(param ? param.useAtr : 1);
             this.note = ko.observable(param ? param.note : "");
             this.settingItems = ko.observableArray(param ? param.settingItems : []);
         }

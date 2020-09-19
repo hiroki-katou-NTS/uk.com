@@ -48,7 +48,7 @@ module cmm045.a.viewmodel {
         //ver60
         //Grid list item
         // apptypeGridColumns: KnockoutObservable<NtsGridListColumn>;
-        selectedAppId: KnockoutObservableArray<number> = ko.observableArray([]);
+        selectedAppId: KnockoutObservableArray<string> = ko.observableArray([]);
 		orderCD: KnockoutObservable<number> = ko.observable(0);
         appListExtractConditionDto: vmbase.AppListExtractConditionDto = new vmbase.AppListExtractConditionDto(null,null,true,true,0,0,false,[],true,false,false,false,false,true,[],[]);
         columnWidth: vmbase.columnWidth = new vmbase.columnWidth(true, 340);
@@ -203,9 +203,12 @@ module cmm045.a.viewmodel {
 			});
 
 			self.selectedAppId.subscribe(value => {
-				let appTypeNumber = _.map(value, (o: any) => parseInt(o));
 				_.each(self.appListExtractConditionDto.opListOfAppTypes, x => {
-					if(_.includes(appTypeNumber, x.appType)) {
+					let appType = x.appType.toString();
+					if(!_.isNull(x.opApplicationTypeDisplay)) {
+						appType += x.opApplicationTypeDisplay.toString();
+					};
+					if(_.includes(value, appType)) {
 						x.choice = true;
 					} else {
 						x.choice = false;
@@ -429,7 +432,11 @@ module cmm045.a.viewmodel {
 				// self.selectedAppId(_.chain(self.appListExtractConditionDto.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
                 _.forEach(data, item => {
                     if(item.appName != "") {
-                        self.itemApplication().push(new vmbase.ChoseApplicationList(item.appType, item.appName));
+						let appType = item.appType.toString();
+						if(!_.isNull(item.opApplicationTypeDisplay)) {
+							appType += item.opApplicationTypeDisplay.toString();
+						};
+                        self.itemApplication().push(new vmbase.ChoseApplicationList(appType, item.appName));
                     }
                 });
                 _.uniqBy(self.itemApplication(), ['appType', 'appName']);
@@ -699,7 +706,13 @@ module cmm045.a.viewmodel {
 			self.orderCD(obj.appDisplayOrder);
 			self.selectedIds(arraySelectedIds);
 			self.lstSidFilter(obj.opListEmployeeID);
-			self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map(x => x.appType).value());
+			self.selectedAppId(_.chain(obj.opListOfAppTypes).filter(o => o.choice).map(x => {
+				let appType = x.appType.toString();
+				if(!_.isNull(x.opApplicationTypeDisplay)) {
+					appType += x.opApplicationTypeDisplay.toString();
+				};
+				return appType;
+			}).value());
 			self.appListAtr = obj.appListAtr;
 		}
 
@@ -947,7 +960,17 @@ module cmm045.a.viewmodel {
 			}
 
 			if(key=='appType') {
-				let appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key]);
+				let appInfo = { appName: ''};
+				if(_.isNull(item.application.opStampRequestMode)) {
+					appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key]);	
+				} else {
+					if(item.application.opStampRequestMode==0) {
+						appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==3);	
+					} else {
+						appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==4);	
+					}
+				}
+				
 				if(_.isUndefined(appInfo)) {
 					return '';
 				} else {
@@ -2145,7 +2168,10 @@ module cmm045.a.viewmodel {
 					if(data) {
 						return self.reload(data.appListExtractCondition, data.appListInfo);
 					}
-				}).always(() => { $('#daterangepicker .ntsEndDatePicker').focus(); block.clear(); });
+				}).always(() => {
+                    block.clear();
+                    $('#daterangepicker .ntsEndDatePicker').focus();
+                });
 			});
 		}
     }

@@ -38,6 +38,7 @@ export class KafS08AComponent extends Vue {
     public businessTripInfoOutput: Object = {};
     public application: Object = {};
     public kafs00BParams: Object = {} ;
+    public appID: string = ' ';
     public listDate: any[] = [] ;
     //thực hiện emit từ component con A1
     public ProcessNextToStepTwo(listDate,
@@ -63,11 +64,14 @@ export class KafS08AComponent extends Vue {
         vm.application = application;
         //nhan listDate tu man hinh start
         vm.listDate = listDate;
+        //nhan ve appID tu man hinh a2
+
     }
 
     //thực hiện emit từ component con A2 đến C
-    public ProcessNextToStepThree(paramsA2) {
+    public ProcessNextToStepThree(appID) {
         const vm = this;
+        vm.appID = appID ;
         vm.step = 'KAFS08_12';
     }
 

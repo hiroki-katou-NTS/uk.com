@@ -158,6 +158,14 @@ export class CmmS45BComponent extends Vue {
             self.$mask('show');
             self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
             self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
+            let filterByCondition = self.data.appListExtractConditionDto;
+            filterByCondition.opApprovalStatus = self.checkApprovalStatus();
+            filterByCondition.opCancelStatus = self.checkCancelStatus();
+            filterByCondition.opDenialStatus = self.checkDenialStatus();
+            filterByCondition.opRemandStatus = self.checkRemandStatus();
+            filterByCondition.opUnapprovalStatus = self.checkUnapprovalStatus();
+            filterByCondition.opAgentApprovalStatus = self.checkAgentApprovalStatus();
+
             let paramCmd = {
                 appAllNumber: self.data.appAllNumber,
                 appPerNumber: self.data.appPerNumber,
@@ -244,7 +252,7 @@ export class CmmS45BComponent extends Vue {
                         listAppType: res.data,
                         appListExtractCondition: self.appListExtractCondition
                     };
-
+                    
                     return self.$http.post('at', servicePath.getApplicationList, paramNew);
                 }
 
@@ -373,22 +381,23 @@ export class CmmS45BComponent extends Vue {
         return lst;
     }
     public convertReflectToInt(value: string) {
-        if (value == '未承認') {
+        const self = this;
+        if (value == self.$i18n('CMMS45_7')) {
 
             return 5;
-        } else if (value == '承認済') {
+        } else if (value == self.$i18n('CMMS45_8')) {
 
             return 4;
-        } else if (value == '反映済み') {
-
-            return 0;
-        } else if (value == '取消') {
+        } else if (value == self.$i18n('CMMS45_10')) {
 
             return 3;
-        } else if (value == '差し戻し') {
+        } else if (value == self.$i18n('CMMS45_36')) {
 
             return 2;
-        } else if (value == '否認') {
+        } else if (value == self.$i18n('CMMS45_11')) {
+
+            return 1;
+        } else if (value == self.$i18n('CMMS45_9')) {
 
             return 1;
         } else {

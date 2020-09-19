@@ -83,7 +83,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         loadData(): JQueryPromise<any> {
             const dfd = $.Deferred();
             let self = this,
-                position: number = $('.tab-content-1').scrollTop();
+                position: number = $('.tab-content-01').scrollTop();
             nts.uk.ui.block.grayout();
             service.findAllData().done((data: any) => {
                 self.viewmodelA.initData(data);
@@ -109,7 +109,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                 nts.uk.ui.block.clear();
                 $("#a4_6").focus();
                 setTimeout(function() {
-                    $('.tab-content-1').scrollTop(position);
+                    $('.tab-content-01').scrollTop(position);
                 }, 1500);
             });
             return dfd.promise();
@@ -118,7 +118,7 @@ module nts.uk.at.view.kaf022.company.viewmodel {
         saveDataAt(): void {
             $('input').trigger("validate");
             if (nts.uk.ui.errors.hasError()) { return; }
-            const self = this, postion: number = $('.tab-content-1').scrollTop();;
+            const self = this, postion: number = $('.tab-content-01').scrollTop();;
             const dataA = self.viewmodelA.collectData();
             const dataV = self.viewmodelV.collectData();
             const dataB = self.viewmodelB.collectData();

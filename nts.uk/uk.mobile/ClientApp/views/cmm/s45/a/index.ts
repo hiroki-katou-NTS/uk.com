@@ -360,22 +360,23 @@ export class CmmS45AComponent extends Vue {
         // });
     }
     public convertReflectToInt(value: string) {
-        if (value == '未反映') {
+        const self = this;
+        if (value == self.$i18n('CMMS45_7')) {
 
             return 0;
-        } else if (value == '反映待ち') {
+        } else if (value == self.$i18n('CMMS45_8')) {
 
             return 1;
-        } else if (value == '反映済') {
+        } else if (value == self.$i18n('CMMS45_9')) {
 
             return 2;
-        } else if (value == '取消済') {
+        } else if (value == self.$i18n('CMMS45_10')) {
 
             return -1;
-        } else if (value == '差し戻し') {
+        } else if (value == self.$i18n('CMMS45_36')) {
 
             return 5;
-        } else if (value == '否認') {
+        } else if (value == self.$i18n('CMMS45_11')) {
 
             return 6;
         }
