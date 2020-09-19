@@ -5,27 +5,13 @@ import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 
 interface Parameter {
-    date: string;
-    opAchievementDetail: {
-        opLeaveTime: number;
-        opWorkTime: number;
-        opWorkTimeName: string;
-        opWorkTypeName: string;
-        workTimeCD: string;
-        workTypeCD: string;
-    };
+    lstWorkDay: [];
+    rowDate: {};
 }
 
 const defaultParam = (): Parameter => ({
-    date: '',
-    opAchievementDetail: {
-        opLeaveTime: 0,
-        opWorkTime: 0,
-        opWorkTimeName: '',
-        opWorkTypeName: '',
-        workTimeCD: '',
-        workTypeCD: ''
-    }
+    lstWorkDay: [],
+    rowDate: {}
 });
 
 @component({
@@ -42,7 +28,7 @@ export class KafS08DComponent extends Vue {
     public timetowork: number = null;
     public leavetime: number = null;
 
-    
+
     public openKDLS02() {
         const vm = this;
         vm.$modal(KDL002Component, {}).then(console.log);

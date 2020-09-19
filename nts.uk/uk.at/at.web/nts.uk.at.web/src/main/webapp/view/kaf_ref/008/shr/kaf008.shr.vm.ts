@@ -4,8 +4,124 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
     @component({
         name: 'kaf008-share',
-        template: '/nts.uk.at.web/view/kaf_ref/008/shr/index.html'
+        template: `<div id="kaf008-share">
+                        <div class="flex valign-center A5">
+                            <div id="A5_1" data-bind="ntsFormLabel: {text: $i18n('KAF008_20')}"></div>
+                            <div id="A5_2">
+                                <span  data-bind="text: $i18n('KAF008_21')"></span>
+                            </div>
+                            <input tab-index="4" id="A5_3" data-bind="ntsTimeWithDayEditor: {name: '#[KAF008_21]',
+                                            value: departureTime, enable: enableInput, required: false, option: {timeWithDay: true}}"/>
+                            <div id="A5_4">
+                                <span  data-bind="text: $i18n('KAF008_22')"></span>
+                            </div>
+                            <input tab-index="5" id="A5_5" data-bind="ntsTimeWithDayEditor: {name: '#[KAF008_22]',
+                                            value: returnTime, enable: enableInput, required: false, option: {timeWithDay: true}}"/>
+                        </div>
+                        <div id="A6_1">
+                            <div class="label" data-bind="if: comment()">
+                                <span data-bind="text: comment().comment, style: { color: comment().colorCode, 'font-weight': comment().bold ? 'bold' : 'normal' }"></span>
+                            </div>
+                        </div>
+                        <div id="A10" tab-index="6">
+                            <table id="fixed-table">
+                                <colgroup>
+                                    <col width="120px"/>
+                                    <col width="60px"/>
+                                    <col width="130px"/>
+                                    <col width="60px"/>
+                                    <col width="130px"/>
+                                    <col width="100px"/>
+                                    <col width="100px"/>
+                                </colgroup>
+                                <THEAD>
+                                <tr>
+                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_24')"></th>
+                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_25')"></th>
+                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_26')"></th>
+                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_27')"></th>
+                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_28')"></th>
+                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_29')"></th>
+                                    <th class="ui-widget-header" data-bind="text: $i18n('KAF008_30')"></th>
+                                </tr>
+                                </THEAD>
+                    
+                                <TBODY data-bind="foreach: items">
+                                    <tr>
+                                        <td>
+                                            <div class="div_line" >
+                                                <span data-bind="text: dateDisp, style: {color: dateColor}"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="div_line code" id="A10_D2" tab-index="7">
+                                                <input data-bind="ntsTextEditor: {
+                                                name: $i18n('KAF008_31'),
+                                                value: wkTypeCd,
+                                                enable: $parent.enableInput(),
+                                                required: true,
+                                                constraint: 'WorkTypeCode'
+                                            }"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="div_line A10_D3" data-bind="if: $parent.enableInput()">
+                                                <a tab-index="8" class="hyperlink" data-bind="text: wkTypeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                                            </div>
+                                            <div class="div_line A10_D3" data-bind="if: !$parent.enableInput()">
+                                                <span tab-index="8" data-bind="text: wkTypeName"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="div_line code" id="A10_D4">
+                                                <input tab-index="9" data-bind="ntsTextEditor: {
+                                                name: $i18n('KAF008_33'),
+                                                value: wkTimeCd,
+                                                enable: $parent.enableInput(),
+                                                constraint: 'WorkTimeCode'
+                                            }"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="div_line A10_D5" data-bind="if: $parent.enableInput()">
+                                                <a tab-index="10" class="hyperlink" data-bind="text: wkTimeName, click: $parent.openDialogKdl003.bind($parent, $data)"></a>
+                                            </div>
+                                            <div class="div_line A10_D5" data-bind="if: !$parent.enableInput()">
+                                                <span tab-index="10" data-bind="text: wkTimeName"></span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div id="A10_D6" class="div_line time" >
+                                                <input data-bind="ntsTimeWithDayEditor: {
+                                                            name: $i18n('KAF008_35'),
+                                                            constraint:'TimeWithDayAttr',
+                                                            value: start,
+                                                            enable: $parent.enableInput(),
+                                                            readonly: false,
+                                                            required: false
+                                                            },
+                                                            attr: {id: id}"/>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="div_line time" id="A10_D7">
+                                                <input data-bind="ntsTimeWithDayEditor: {
+                                                            name: $i18n('KAF008_36'),
+                                                            constraint:'TimeWithDayAttr',
+                                                            value: end,
+                                                            enable: $parent.enableInput(),
+                                                            readonly: false,
+                                                            required: false
+                                                            }"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </TBODY>
+                            </table>
+                        </div>
+                    </div>`
     })
+
     class Kaf008ShareViewModel extends ko.ViewModel {
 
         departureTime: KnockoutObservable<number> = ko.observable(null);
@@ -18,7 +134,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         businessTripOutput: KnockoutObservable<BusinessTripInfoOutput> = ko.observable(null);
         dataFetch: KnockoutObservable<any> = ko.observable(null);
         mode: number = Mode.New;
-        enableInput: boolean = true;
+        enableInput: KnockoutObservable<boolean> = ko.observable(true);
 
         created(params: any) {
             const vm = this;
@@ -28,17 +144,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.departureTime = vm.dataFetch().businessTripContent.departureTime;
             vm.returnTime = vm.dataFetch().businessTripContent.returnTime;
 
-            switch (params.mode) {
-                case Mode.New:
-                    vm.startNewMode();
-                    break;
-                case Mode.Edit:
-                    vm.startEditMode();
-                    break;
-                case Mode.View:
-                    vm.startEditMode();
-                    vm.enableInput = false;
-                    break;
+            if (params.mode == Mode.New) {
+                vm.startNewMode();
+            } else {
+                vm.startEditMode();
             }
         }
 
@@ -49,7 +158,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                     const tripOutput = value.businessTripOutput;
                     const tripContent = value.businessTripContent;
-                    const { setting } = tripOutput ;
+                    const {setting} = tripOutput;
 
                     vm.businessTripOutput(tripOutput);
                     vm.workTypeCds(tripOutput.workdays);
@@ -74,12 +183,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                             content.opAchievementDetail.opLeaveTime
                         );
                         eachContent.wkTypeCd.subscribe(code => {
-                            vm.$errors("clear").then(() =>{
+                            vm.$errors("clear").then(() => {
                                 vm.changeWorkTypeCode(tripOutput, content.date, code, index);
                             });
                         });
                         eachContent.wkTimeCd.subscribe(code => {
-                            vm.$errors("clear").then(() =>{
+                            vm.$errors("clear").then(() => {
                                 vm.changeWorkTimeCode(tripOutput, content.date, content.opAchievementDetail.workTypeCD, code, index);
                             });
                         });
@@ -92,7 +201,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         return eachContent;
                     });
                     vm.items(lstContent);
-                    }
+                }
                 ;
             });
         }
@@ -100,10 +209,13 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
         startEditMode() {
             const vm = this;
             vm.dataFetch.subscribe(value => {
-                if(value) {
+                if (value) {
+
                     const tripOutput = value.businessTripOutput;
                     const tripContent = value.businessTripContent;
                     const setting = tripOutput.setting;
+
+                    value.businessTripOutput.appDispInfoStartup.appDetailScreenInfo.outputMode == 1 ? vm.enableInput(true) : vm.enableInput(false);
 
                     vm.businessTripOutput(tripOutput);
                     vm.workTypeCds(tripOutput.workdays);
@@ -132,12 +244,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         );
 
                         contentTrip.wkTypeCd.subscribe(code => {
-                            vm.$errors("clear").then(() =>{
+                            vm.$errors("clear").then(() => {
                                 vm.changeTypeCodeScreenB(tripOutput, data, code, index);
                             });
                         });
                         contentTrip.wkTimeCd.subscribe(code => {
-                            vm.$errors("clear").then(() =>{
+                            vm.$errors("clear").then(() => {
                                 vm.changeWorkTimeCodeScreenB(tripOutput, data, code, index);
                             });
                         });
@@ -190,6 +302,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     currentRow.opWorkTypeName = workNameChanged;
 
                     vm.dataFetch.valueHasMutated();
+
                 }
             }).fail(err => {
                 currentRow.workTypeCD = "";
@@ -228,21 +341,22 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     return vm.$ajax(API.changWorkTimeCode, command);
                 }
             }).done(res => {
-                if (res) {
+                if (res && res.name) {
                     currentRow.workTimeCD = timeCode;
-
-                    if (res.name) {
-                        currentRow.opWorkTimeName = res.name;
-                    } else {
-                        currentRow.opWorkTimeName = "なし";
-                    }
-
-                    vm.dataFetch.valueHasMutated();
+                    currentRow.opWorkTimeName = res.name;
+                } else {
+                    currentRow.workTimeCD = "";
+                    currentRow.opWorkTimeName = "なし";
+                    currentRow.opWorkTime = null;
+                    currentRow.opLeaveTime = null;
                 }
+
+                vm.dataFetch.valueHasMutated();
             }).fail(err => {
                 currentRow.workTimeCD = "";
                 currentRow.opWorkTimeName = "なし";
-
+                currentRow.opWorkTime = null;
+                currentRow.opLeaveTime = null;
                 vm.dataFetch.valueHasMutated();
 
                 let param;
@@ -288,6 +402,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                     currentRow.wkTypeCd = workCodeChanged;
                     currentRow.wkTypeName = workNameChanged;
+
                     vm.dataFetch.valueHasMutated();
                 }
             }).fail(err => {
@@ -295,6 +410,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                 currentRow.wkTypeCd = "";
                 currentRow.wkTypeName = "なし";
+
                 vm.dataFetch.valueHasMutated();
 
                 if (err.message && err.messageId) {
@@ -316,10 +432,10 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             let businessTripInfoOutputDto = ko.toJS(output);
             let contentChanged = vm.dataFetch().businessTripContent.tripInfos[index];
             let command = {
-                    date: data.date,
-                    businessTripInfoOutputDto: businessTripInfoOutputDto,
-                    wkCode: data.wkTypeCd,
-                    timeCode: codeChanged
+                date: data.date,
+                businessTripInfoOutputDto: businessTripInfoOutputDto,
+                wkCode: data.wkTypeCd,
+                timeCode: codeChanged
             };
 
             vm.$blockui("show");
@@ -330,21 +446,28 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     return vm.$ajax(API.changWorkTimeCode, command);
                 }
             }).done(res => {
-                if (res) {
-                    if(res.name) {
-                        contentChanged.wkTimeCd = codeChanged;
-                        contentChanged.wkTimeName = res.name;
-                    } else {
-                        contentChanged.wkTimeCd = "";
-                        contentChanged.wkTimeName = "なし";
-                    }
-                    vm.dataFetch.valueHasMutated();
+
+                if (res && res.name) {
+                    contentChanged.wkTimeCd = codeChanged;
+                    contentChanged.wkTimeName = res.name;
+                } else {
+                    contentChanged.wkTimeCd = "";
+                    contentChanged.wkTimeName = "なし";
+                    contentChanged.startWorkTime = null;
+                    contentChanged.endWorkTime = null;
                 }
+
+                vm.dataFetch.valueHasMutated();
             }).fail(err => {
                 let param;
+
                 contentChanged.wkTimeCd = "";
                 contentChanged.wkTimeName = "なし";
+                contentChanged.startWorkTime = null;
+                contentChanged.endWorkTime = null;
+
                 vm.dataFetch.valueHasMutated();
+
                 if (err.message && err.messageId) {
                     param = {messageId: err.messageId};
                 } else {
@@ -354,7 +477,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         param = {messageId: err.messageId};
                     }
                 }
+
                 vm.$dialog.error(param);
+
             }).always(() => vm.$blockui("hide"));
         }
 
@@ -382,7 +507,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             vm.$ajax(API.startKDL003, command).done(res => {
                 console.log(res);
                 dispFlag = res;
-            }).then(() =>{
+            }).then(() => {
                 if (dispFlag) {
                     listWorkCode = _.map(vm.workTypeCds(), function (obj) {
                         return obj.workTypeCode
@@ -401,7 +526,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                     showNone: !dispFlag
                 });
 
-                nts.uk.ui.windows.setShared( 'parentCodes', {
+                nts.uk.ui.windows.setShared('parentCodes', {
                     workTypeCodes: listWorkCode,
                     selectedWorkTypeCode: selectedWorkTypeCode,
                     workTimeCodes: listWkTimeCd,
@@ -411,9 +536,9 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                 vm.$errors("clear");
 
-                nts.uk.ui.windows.sub.modal( '/view/kdl/003/a/index.xhtml' ).onClosed( function(): any {
+                nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function (): any {
                     //view all code of selected item
-                    let rs = nts.uk.ui.windows.getShared( 'childData' );
+                    let rs = nts.uk.ui.windows.getShared('childData');
                     if (rs) {
                         let currentRow;
                         if (vm.mode == Mode.New) {
