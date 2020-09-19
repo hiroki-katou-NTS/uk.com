@@ -2145,7 +2145,10 @@ module cmm045.a.viewmodel {
 					if(data) {
 						return self.reload(data.appListExtractCondition, data.appListInfo);
 					}
-				}).always(() => { $('#daterangepicker .ntsEndDatePicker').focus(); block.clear(); });
+				}).always(() => {
+                    block.clear();
+                    $('#daterangepicker .ntsEndDatePicker').focus();
+                });
 			});
 		}
     }
