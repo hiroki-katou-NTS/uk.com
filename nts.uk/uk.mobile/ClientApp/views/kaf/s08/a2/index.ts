@@ -67,6 +67,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public hidden: boolean = false;
     public businessTripActualContent: [] = [];
     public appID: string = ' ' ;
+    public lstWorkDay: any[] = [ ]; 
 
     public created() {
         const vm = this;
@@ -93,6 +94,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 }).then((res: any) => {
                     vm.data = res.data;
                     vm.businessTripActualContent = vm.data.businessTripInfoOutput.businessTripActualContent;
+                    vm.lstWorkDay = vm.data.businessTripInfoOutput.workdays;
                     //console.log(vm.businessTripActualContent.length);
                 });
             }
@@ -111,7 +113,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //hàm xử lý gọi dialog
     public selectRowDate(data) {
         const vm = this;
-        vm.$modal(KafS08DComponent, data);
+        vm.$modal(KafS08DComponent, {rowDate : data,lstWorkDay:vm.lstWorkDay});
     }
 
     //nhảy đến step three với các điều kiện

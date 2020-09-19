@@ -15,7 +15,7 @@
       <span class="mx-1">{{'KAFS08_70' | i18n}}</span>
       <!-- D1_2 -->
       <div>
-        <span class="mx-3 date">{{params.date | date('YYYY/MM/DD(ddd)')}}</span>
+        <span class="mx-3 date">{{params.rowDate.date | date('YYYY/MM/DD(ddd)')}}</span>
       </div>
     </div>
     <!-- D2_0 -->
@@ -55,14 +55,14 @@
     </div>
     <!-- D4_2 -->
     <nts-time-editor
-      v-model="params.opAchievementDetail.opWorkTime"
+      v-model="params.rowDate.opAchievementDetail.opWorkTime"
       :name="'KAFS08_75'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
     />
     <!-- D4_4 -->
     <nts-time-editor
-      v-model="params.opAchievementDetail.opLeaveTime"
+      v-model="params.rowDate.opAchievementDetail.opLeaveTime"
       :name="'KAFS08_76'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
