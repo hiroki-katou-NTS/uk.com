@@ -41,6 +41,7 @@ import nts.uk.ctx.at.request.dom.application.ReflectedState;
 import nts.uk.ctx.at.request.dom.application.ReflectedState_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionInformation_New;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatusOfDay;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.entity.application.KrqdpAppReflectState;
 import nts.uk.ctx.at.request.infra.entity.application.KrqdpApplication;
 import nts.uk.ctx.at.request.infra.entity.application.KrqdtAppReflectState;
@@ -245,7 +246,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
-			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, List<String> employeeIDLst) {
+			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, 
+			List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst) {
 		if (lstAppId.isEmpty()) {
 			return new ArrayList<>();
 		}
@@ -271,6 +273,20 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			String subListAppId = NtsStatement.In.createParamsString(subListId);
 			String lstTypeString = NtsStatement.In.createParamsString(lstType);
 			String lstStateString = NtsStatement.In.createParamsString(lstState);
+			
+			String whereCondition = "";
+			String connectString = "";
+			if(!CollectionUtil.isEmpty(lstType) && !CollectionUtil.isEmpty(stampRequestModeLst)) {
+				connectString = " union ";
+			}
+			if(!CollectionUtil.isEmpty(lstType)) {
+				whereCondition += "select APP_ID from KRQDT_APPLICATION where APP_ID IN @subListId AND APP_TYPE IN @lstType " +
+						"AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";	
+			}
+			if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
+				whereCondition += connectString + "select APP_ID from KRQDT_APPLICATION where APP_ID IN @subListId AND STAMP_OPTION_ATR IN @stampRequestModeLst " +
+						"AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
+			}
 
 			String sql = 
 					"select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
@@ -284,19 +300,23 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 					"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME " +
 					"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
 					"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
-					"WHERE a.APP_ID IN @subListId AND a.APP_TYPE IN @lstType AND b.REFLECT_PER_STATE IN @lstState " +
-					"AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
+					"WHERE a.APP_ID IN (" + whereCondition + ")";
 			if(!CollectionUtil.isEmpty(employeeIDLst)) {
 				sql += " AND a.APPLICANTS_SID IN @employeeIDLst";
 			}	
 			NtsStatement ntsStatement = new NtsStatement(sql, this.jdbcProxy())
 					.paramString("subListId", subListId)
-					.paramInt("lstType", lstType)
 					.paramInt("lstState", lstState)
 					.paramString("companyID", companyID)
 					.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()));
 			if(!CollectionUtil.isEmpty(employeeIDLst)) {
 				ntsStatement = ntsStatement.paramString("employeeIDLst", employeeIDLst);
+			}
+			if(!CollectionUtil.isEmpty(lstType)) {
+				ntsStatement = ntsStatement.paramInt("lstType", lstType);
+			}
+			if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
+				ntsStatement = ntsStatement.paramInt("stampRequestModeLst", stampRequestModeLst.stream().map(x -> x.value).collect(Collectors.toList()));
 			}
 			List<Map<String, Object>> mapLst = ntsStatement.getList(rec -> toObject(rec));
 			List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
@@ -825,7 +845,23 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	@Override
 	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, 
-			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst) {
+			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst) {
+		String whereCondition = "";
+		String connectString = "";
+		if(!CollectionUtil.isEmpty(appTypeLst) && !CollectionUtil.isEmpty(stampRequestModeLst)) {
+			connectString = " union ";
+		}
+		if(!CollectionUtil.isEmpty(appTypeLst)) {
+			whereCondition += "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " + 
+					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " + 
+					"and APP_TYPE in @appTypeLst and PRE_POST_ATR in @prePostAtrLst";	
+		}
+		if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
+			whereCondition += connectString + "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " + 
+					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " + 
+					"and STAMP_OPTION_ATR in @stampRequestModeLst and PRE_POST_ATR in @prePostAtrLst";
+		}
+		
 		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
 				"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +
@@ -837,16 +873,19 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				"b.CANCEL_PER_SCHE_REASON as bCANCEL_PER_SCHE_REASON, b.CANCEL_PER_TIME as bCANCEL_PER_TIME " +
 				"from KRQDT_APPLICATION a left join KRQDT_APP_REFLECT_STATE b " +
 				"on a.CID = b.CID and a.APP_ID = b.APP_ID " +
-				"where a.APPLICANTS_SID in @employeeLst " +
-				"and a.APP_START_DATE >= @startDate and a.APP_END_DATE <= @endDate " +
-				"and a.APP_TYPE in @appTypeLst and a.PRE_POST_ATR in @prePostAtrLst";
-		List<Map<String, Object>> mapLst = new NtsStatement(sql, this.jdbcProxy())
+				"where a.APP_ID in (" + whereCondition + ")";
+		NtsStatement ntsStatement = new NtsStatement(sql, this.jdbcProxy())
 				.paramString("employeeLst", employeeLst)
 				.paramDate("startDate", startDate)
 				.paramDate("endDate", endDate)
-				.paramInt("appTypeLst", appTypeLst.stream().map(x -> x.value).collect(Collectors.toList()))
-				.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()))
-				.getList(rec -> toObject(rec));
+				.paramInt("prePostAtrLst", prePostAtrLst.stream().map(x -> x.value).collect(Collectors.toList()));
+		if(!CollectionUtil.isEmpty(appTypeLst)) {
+			ntsStatement = ntsStatement.paramInt("appTypeLst", appTypeLst.stream().map(x -> x.value).collect(Collectors.toList()));
+		}
+		if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
+			ntsStatement = ntsStatement.paramInt("stampRequestModeLst", stampRequestModeLst.stream().map(x -> x.value).collect(Collectors.toList()));
+		}
+		List<Map<String, Object>> mapLst = ntsStatement.getList(rec -> toObject(rec));
 		List<KrqdtApplication> krqdtApplicationLst = convertToEntity(mapLst);
 		if(CollectionUtil.isEmpty(krqdtApplicationLst)) {
 			return Collections.emptyList();

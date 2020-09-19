@@ -53,17 +53,63 @@ public class ApplicationScreenFinder {
 					Optional.of("A")));
 		}
 		// アルゴリズム「メニューの表示名を取得する」を実行する
-		List<StandardMenuNameQuery> param = result.stream().map(x -> new StandardMenuNameQuery(
-					x.getOpProgramID().orElse(""), 
-					x.getOpString().orElse(""), 
-					x.getOpApplicationTypeDisplay().map(y -> y.name)))
-				.collect(Collectors.toList());
+		List<StandardMenuNameQuery> param = result.stream().map(x -> {
+			String programId = x.getOpProgramID().orElse("");
+			String screenId = x.getOpString().orElse("");
+			Optional<String> queryString = Optional.empty();
+			if(x.getOpApplicationTypeDisplay().isPresent()) {
+				switch (x.getOpApplicationTypeDisplay().get()) {
+				case EARLY_OVERTIME:
+					queryString = Optional.of("overworkatr=0");
+					break;
+				case NORMAL_OVERTIME:
+					queryString = Optional.of("overworkatr=1");
+					break;
+				case EARLY_NORMAL_OVERTIME:
+					queryString = Optional.of("overworkatr=2");
+					break;
+				case STAMP_ADDITIONAL:
+					screenId = "A";
+					break;
+				case STAMP_ONLINE_RECORD:
+					screenId = "B";
+					break;
+				default:
+					break;
+				}
+			}
+			return new StandardMenuNameQuery(programId, screenId, queryString);
+			}).collect(Collectors.toList());
 		List<StandardMenuNameExport> standardMenuNameExportLst = standardMenuPub.getMenuDisplayName(companyID, param);
 		for(ListOfAppTypes item : result) {
 			Optional<StandardMenuNameExport> opStandardMenuNameExport = standardMenuNameExportLst.stream().filter(x -> {
-				boolean condition = x.getProgramId().equals(item.getOpProgramID().get()) && x.getScreenId().equals(item.getOpString().get());
+				String programId = item.getOpProgramID().orElse("");
+				String screenId = item.getOpString().orElse("");
+				Optional<String> queryString = Optional.empty();
 				if(item.getOpApplicationTypeDisplay().isPresent()) {
-					condition = condition && item.getOpApplicationTypeDisplay().get().name.equals(x.getQueryString());
+					switch (item.getOpApplicationTypeDisplay().get()) {
+					case EARLY_OVERTIME:
+						queryString = Optional.of("overworkatr=0");
+						break;
+					case NORMAL_OVERTIME:
+						queryString = Optional.of("overworkatr=1");
+						break;
+					case EARLY_NORMAL_OVERTIME:
+						queryString = Optional.of("overworkatr=2");
+						break;
+					case STAMP_ADDITIONAL:
+						screenId = "A";
+						break;
+					case STAMP_ONLINE_RECORD:
+						screenId = "B";
+						break;
+					default:
+						break;
+					}
+				}
+				boolean condition = x.getProgramId().equals(programId) && x.getScreenId().equals(screenId);
+				if(queryString.isPresent()) {
+					condition = condition && queryString.get().equals(x.getQueryString());
 				}
 				return condition;
 			}).findAny();
