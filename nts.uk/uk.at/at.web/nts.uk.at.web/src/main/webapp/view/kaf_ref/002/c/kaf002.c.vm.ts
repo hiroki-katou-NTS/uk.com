@@ -500,22 +500,33 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     return true;
                 }
             }).then(result => {
-                if (result) {
-                    return self.$ajax(API.checkUpdate, commandCheck);
-                }
-            }).then(res => {
-                if(!res) return;
-                if (_.isEmpty(res)) {
-                    return self.$ajax(API.update, command);
-                } else {
-                    let listConfirm = _.clone(res);
-                    return self.handleConfirmMessage(listConfirm, command);
-                }
-            }).then(res => {
-                this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                    location.reload();
-                } );
-            }).fail(res => {
+                if(!result) return;
+                
+                     self.$ajax(API.checkUpdate, commandCheck)
+                         .then(res => {
+                             if (_.isEmpty(res)) {
+                               return self.$ajax(API.update, command);
+                              } else {
+                                   let listConfirm = _.clone(res);
+                                   return self.handleConfirmMessage(listConfirm, command);
+                              }
+                         })
+            })
+//            .then(res => {
+//                if(!res) return;
+//                if (_.isEmpty(res)) {
+//                    return self.$ajax(API.update, command);
+//                } else {
+//                    let listConfirm = _.clone(res);
+//                    return self.handleConfirmMessage(listConfirm, command);
+//                }
+//            })
+            .done(res => {
+                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                        location.reload();
+                    } );
+                })
+            .fail(res => {
                 if (!res) return;
                 let param;
                 if (res.message && res.messageId) {
