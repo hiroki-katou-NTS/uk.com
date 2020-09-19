@@ -299,7 +299,7 @@ public class AppContentServiceImpl implements AppContentService {
 	public ListOfApplication createEachAppData(Application application, String companyID, List<WorkTimeSetting> lstWkTime,
 			List<WorkType> lstWkType, List<AttendanceItem> attendanceItemLst, ApplicationListAtr mode, ApprovalListDisplaySetting approvalListDisplaySetting,
 			ListOfApplication listOfApp, Map<String, List<ApprovalPhaseStateImport_New>> mapApproval, int device,
-			AppListExtractCondition appListExtractCondition) {
+			AppListExtractCondition appListExtractCondition, List<String> agentLst) {
 		if(device == PC) {
 			// ドメインモデル「申請」．申請種類をチェック (Check Domain「Application.ApplicationType
 			switch (application.getAppType()) {
@@ -428,14 +428,25 @@ public class AppContentServiceImpl implements AppContentService {
 						break;
 					}
 					for(ApproverStateImport_New approver : frame.getListApprover()) {
-						boolean isMapWithApprover = Strings.isNotBlank(approver.getApproverID()) && approver.getApproverID().equals(loginID);
-						boolean isMapWithAgent = (Strings.isNotBlank(approver.getAgentID()) && approver.getAgentID().equals(loginID));
+						boolean isMapWithApprover = false;
+						boolean isMapWithAgent = false;
+						if(phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.REMAND ||
+							(phase.getApprovalAtr()==ApprovalBehaviorAtrImport_New.UNAPPROVED && approver.getApprovalAtr()==ApprovalBehaviorAtrImport_New.UNAPPROVED)) {
+							isMapWithApprover = approver.getApproverID().equals(loginID);
+							isMapWithAgent = agentLst.contains(approver.getApproverID());
+						} else {
+							isMapWithApprover = approver.getApproverID().equals(loginID);
+							isMapWithAgent = (Strings.isNotBlank(approver.getAgentID()) && approver.getAgentID().equals(loginID));
+						}
 						if (!isMapWithApprover && !isMapWithAgent) {
 							continue;
 						}
-						Optional<ApprovalPhaseStateImport_New> opPhaseBeforeNotApproved = listPhase.stream()
-								.filter(x -> x.getPhaseOrder() > phase.getPhaseOrder())
-								.filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+						Optional<ApprovalPhaseStateImport_New> opPhaseBeforeNotApproved = Optional.empty();
+						if(listPhase.size()!=1) {
+							opPhaseBeforeNotApproved = listPhase.stream()
+									.filter(x -> x.getPhaseOrder() > phase.getPhaseOrder())
+									.filter(x -> x.getApprovalAtr()!=ApprovalBehaviorAtrImport_New.APPROVED).findAny();
+						}
 						if(opPhaseBeforeNotApproved.isPresent()) {
 							continue;
 						}
