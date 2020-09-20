@@ -120,10 +120,20 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
         }
         // loop 年月日　in　期間
         businessTrip.getInfos().stream().forEach(i -> {
+
+            String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
+            String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
+            Integer workTimeStart = null;
+            Integer workTimeEnd = null;
+
+            if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
+                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
+                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+            }
+
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            businessTripService.checkInputWorkCode(i.getWorkInformation().getWorkTypeCode().v(),
-                    i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v()
-                    , i.getDate());
+            businessTripService.checkInputWorkCode(wkTypeCd,
+                    wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
             // 申請の矛盾チェック

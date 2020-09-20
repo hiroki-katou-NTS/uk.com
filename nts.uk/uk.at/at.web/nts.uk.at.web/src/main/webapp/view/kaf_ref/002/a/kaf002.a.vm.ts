@@ -142,12 +142,18 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             self.dataSourceOb()[0].pop();
             self.dataSourceOb()[0].pop();
         }
+        if (reflect.attendence == 0) {
+            self.dataSourceOb()[0].shift();
+            self.dataSourceOb()[0].shift();
+        }
         self.isM(true);
         self.tabs.subscribe(value => {
            if (value) {
              if (data.appStampReflectOptional && self.tabs()) {
                  let reflect = data.appStampReflectOptional;
-                 self.tabs()[0].visible((reflect.attendence) == 1);
+//                 打刻申請起動時の表示情報.打刻申請の反映.出退勤を反映する　＝　する || 「打刻申請起動時の表示情報.打刻申請の反映.臨時出退勤を反映する　＝　true　AND　打刻申請起動時の表示情報.臨時勤務利用　＝　true」
+                
+                 self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && reflect.attendence && data.useTemporary == 1) );
                  self.tabs()[1].visible(reflect.outingHourse == 1);
                  self.tabs()[2].visible(reflect.breakTime == 1);
                  self.tabs()[3].visible(reflect.parentHours == 1);
@@ -419,21 +425,26 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         
         
         let dataSource = [];
+        
+        // array 1 
+        let item1_temp = [];
         // case change date
         if (self.data.appStampReflectOptional) {
-            if (self.data.appStampReflectOptional.temporaryAttendence == 0) {
-                dataSource.push(items1);
-                
-            } else {
-                dataSource.push(items1.concat(items2));
+            if (self.data.appStampReflectOptional.attendence) {
+                item1_temp = item1_temp.concat(items1);
             }
+            if (self.data.appStampReflectOptional.temporaryAttendence) {
+                item1_temp = item1_temp.concat(items2);   
+            } 
         }
-        dataSource.push( items3 );
-        dataSource.push( items4 );
-        dataSource.push( items5 );
-        dataSource.push( items6 );
+        
+        dataSource.push(item1_temp);
+        dataSource.push(items3);
+        dataSource.push(items4);
+        dataSource.push(items5);
+        dataSource.push(items6);
         dataSource.push([]);
-        self.dataSourceOb( dataSource );
+        self.dataSourceOb(dataSource);
     }
     initData() {
             const self = this;
@@ -511,12 +522,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 
                 return list;
             })();
-            
-            self.dataSourceOb.subscribe(a => {
-               if (ko.toJS(a)) {
-                   console.log(ko.toJS(a));
-               } 
-            });
             let dataSource = [];
             dataSource.push( items1.concat(items2) );
             dataSource.push( items3 );

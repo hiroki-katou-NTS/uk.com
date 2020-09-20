@@ -68,6 +68,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlg
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository_Old;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp_Old;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode_Old;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationcommonsetting.AppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.appovertime.AppOvertimeSetting;
@@ -238,19 +239,36 @@ public class AppListInitialImpl implements AppListInitialRepository{
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> allAppTypeLst = new ArrayList<>();
 			for(ApplicationType appType : ApplicationType.values()) {
+				if(appType==ApplicationType.STAMP_APPLICATION) {
+					continue;
+				}
 				allAppTypeLst.add(appType);
 			} 
-			
+			List<StampRequestMode> stampRequestModeLst = new ArrayList<>();
+			for(StampRequestMode stampRequestMode : StampRequestMode.values()) {
+				stampRequestModeLst.add(stampRequestMode);
+			}
 			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), 
-					allAppTypeLst, prePostAtrLst);
+					allAppTypeLst, prePostAtrLst, stampRequestModeLst);
 		} else {
 			// ドメインモデル「申請」を取得する
 			List<ApplicationType> appTypeLst = param.getOpListOfAppTypes().map(x -> {
-				return x.stream().filter(y -> y.isChoice())
+				return x.stream().filter(y -> y.isChoice() && y.getAppType()!=ApplicationType.STAMP_APPLICATION)
 						.map(y -> y.getAppType()).collect(Collectors.toList());
 			}).orElse(Collections.emptyList());
+			List<StampRequestMode> stampRequestModeLst = param.getOpListOfAppTypes().map(x -> {
+				return x.stream().filter(y -> y.isChoice() && y.getAppType()==ApplicationType.STAMP_APPLICATION)
+						.map(y -> {
+							if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ADDITIONAL) {
+								return StampRequestMode.STAMP_ADDITIONAL;
+							} else {
+								return StampRequestMode.STAMP_ONLINE_RECORD;
+							}
+						}).collect(Collectors.toList());
+			}).orElse(Collections.emptyList());
+			
 			appLst = repoApp.getByAppTypeList(checkMySelf.getLstSID(), param.getPeriodStartDate(), param.getPeriodEndDate(), 
-					appTypeLst, prePostAtrLst);
+					appTypeLst, prePostAtrLst, stampRequestModeLst);
 		}
 		// 承認ルートの内容取得
 		Map<String,List<ApprovalPhaseStateImport_New>> mapResult = approvalRootStateAdapter
@@ -478,6 +496,20 @@ public class AppListInitialImpl implements AppListInitialRepository{
 		if(param.isPostOutput()) {
 			prePostAtrLst.add(PrePostAtr.POSTERIOR);
 		}
+		List<Integer> appTypeLst = param.getOpListOfAppTypes().map(x -> {
+			return x.stream().filter(y -> y.isChoice() && y.getAppType()!=ApplicationType.STAMP_APPLICATION)
+					.map(y -> y.getAppType().value).collect(Collectors.toList());
+		}).orElse(Collections.emptyList());
+		List<StampRequestMode> stampRequestModeLst = param.getOpListOfAppTypes().map(x -> {
+			return x.stream().filter(y -> y.isChoice() && y.getAppType()==ApplicationType.STAMP_APPLICATION)
+					.map(y -> {
+						if(y.getOpApplicationTypeDisplay().get()==ApplicationTypeDisplay.STAMP_ADDITIONAL) {
+							return StampRequestMode.STAMP_ADDITIONAL;
+						} else {
+							return StampRequestMode.STAMP_ONLINE_RECORD;
+						}
+					}).collect(Collectors.toList());
+		}).orElse(Collections.emptyList());
 		List<Application> lstApp = repoApp.getListAppModeApprCMM045(
 				companyID, 
 				new DatePeriod(param.getPeriodStartDate(), param.getPeriodEndDate()),
@@ -488,11 +520,10 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				param.getOpAgentApprovalStatus().orElse(false), 
 				param.getOpRemandStatus().orElse(false),
 				param.getOpCancelStatus().orElse(false), 
-				param.getOpListOfAppTypes().map(x -> {
-					return x.stream().filter(y -> y.isChoice()).map(y -> y.getAppType().value).collect(Collectors.toList());
-				}).orElse(Collections.emptyList()),
+				appTypeLst,
 				prePostAtrLst,
-				param.getOpListEmployeeID().isPresent() ? param.getOpListEmployeeID().get() : Collections.emptyList());
+				param.getOpListEmployeeID().isPresent() ? param.getOpListEmployeeID().get() : Collections.emptyList(),
+				stampRequestModeLst);
 		// 申請一覧リストのデータを作成
 		appListInfo = appDataCreation.createAppLstData(
 				companyID, 

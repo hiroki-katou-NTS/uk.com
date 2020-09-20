@@ -103,7 +103,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			designer.processDesigner();
 
 			if (appType == ApplicationType.STAMP_APPLICATION) {
-				designer.saveAsExcel(this.createNewFile(generatorContext,
+				designer.saveAsPdf(this.createNewFile(generatorContext,
 						this.getReportName(this.getFileNameStamp(printContentOfApp.getOpAppStampOutput().get()
 								.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication()
 								.getOpStampRequestMode().get()))));

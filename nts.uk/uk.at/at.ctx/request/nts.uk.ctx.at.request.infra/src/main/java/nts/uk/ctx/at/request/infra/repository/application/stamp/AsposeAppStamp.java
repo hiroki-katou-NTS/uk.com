@@ -379,7 +379,7 @@ public class AsposeAppStamp {
 				cellB24.setValue(I18NText.getText("KAF002_69", "2"));
 				cellD24.setValue(nursingTime2);
 			} else {
-				cells.deleteRow(24);
+				cells.deleteRow(23);
 				deleteCnt++;
 			}
 
@@ -387,7 +387,7 @@ public class AsposeAppStamp {
 				cellB23.setValue(I18NText.getText("KAF002_69", "1"));
 				cellD23.setValue(nursingTime);
 			} else {
-				cells.deleteRow(23);
+				cells.deleteRow(22);
 				deleteCnt++;
 			}
 
@@ -395,7 +395,7 @@ public class AsposeAppStamp {
 				cellB22.setValue(I18NText.getText("KAF002_68", "2"));
 				cellD22.setValue(childCareTime2);
 			} else {
-				cells.deleteRow(22);
+				cells.deleteRow(21);
 				deleteCnt++;
 			}
 
@@ -403,7 +403,7 @@ public class AsposeAppStamp {
 				cellB21.setValue(I18NText.getText("KAF002_68", "1"));
 				cellD21.setValue(childCareTime);
 			} else {
-				cells.deleteRow(21);
+				cells.deleteRow(20);
 				deleteCnt++;
 			}
 
@@ -411,7 +411,7 @@ public class AsposeAppStamp {
 				cellB20.setValue(I18NText.getText("KAF002_75", "10"));
 				cellD20.setValue(breakTime10);
 			} else {
-				cells.deleteRow(20);
+				cells.deleteRow(19);
 				deleteCnt++;
 			}
 
@@ -419,7 +419,7 @@ public class AsposeAppStamp {
 				cellB19.setValue(I18NText.getText("KAF002_75", "3"));
 				cellD19.setValue(breakTime3);
 			} else {
-				cells.deleteRow(19);
+				cells.deleteRow(18);
 				deleteCnt++;
 			}
 
@@ -427,7 +427,7 @@ public class AsposeAppStamp {
 				cellB18.setValue(I18NText.getText("KAF002_75", "2"));
 				cellD18.setValue(breakTime2);
 			} else {
-				cells.deleteRow(18);
+				cells.deleteRow(17);
 				deleteCnt++;
 			}
 
@@ -435,7 +435,7 @@ public class AsposeAppStamp {
 				cellB17.setValue(I18NText.getText("KAF002_75", "1"));
 				cellD17.setValue(breakTime);
 			} else {
-				cells.deleteRow(17);
+				cells.deleteRow(16);
 				deleteCnt++;
 			}
 
@@ -443,7 +443,7 @@ public class AsposeAppStamp {
 				cellB16.setValue(I18NText.getText("KAF002_67", "10"));
 				cellD16.setValue(outTime10);
 			} else {
-				cells.deleteRow(16);
+				cells.deleteRow(15);
 				deleteCnt++;
 			}
 
@@ -451,7 +451,7 @@ public class AsposeAppStamp {
 				cellB15.setValue(I18NText.getText("KAF002_67", "3"));
 				cellD15.setValue(outTime3);
 			} else {
-				cells.deleteRow(15);
+				cells.deleteRow(14);
 				deleteCnt++;
 			}
 
@@ -459,7 +459,7 @@ public class AsposeAppStamp {
 				cellB14.setValue(I18NText.getText("KAF002_67", "2"));
 				cellD14.setValue(outTime2);
 			} else {
-				cells.deleteRow(14);
+				cells.deleteRow(13);
 				deleteCnt++;
 			}
 
@@ -467,7 +467,7 @@ public class AsposeAppStamp {
 				cellB13.setValue(I18NText.getText("KAF002_67", "1"));
 				cellD13.setValue(outTime);
 			} else {
-				cells.deleteRow(13);
+				cells.deleteRow(12);
 				deleteCnt++;
 			}
 
@@ -475,7 +475,7 @@ public class AsposeAppStamp {
 				cellB12.setValue(I18NText.getText("KAF002_66", "3"));
 				cellD12.setValue(temporaryTime3);
 			} else {
-				cells.deleteRow(12);
+				cells.deleteRow(11);
 				deleteCnt++;
 			}
 
@@ -483,7 +483,7 @@ public class AsposeAppStamp {
 				cellB11.setValue(I18NText.getText("KAF002_66", "2"));
 				cellD11.setValue(temporaryTime2);
 			} else {
-				cells.deleteRow(11);
+				cells.deleteRow(10);
 				deleteCnt++;
 			}
 
@@ -491,7 +491,7 @@ public class AsposeAppStamp {
 				cellB10.setValue(I18NText.getText("KAF002_66", "1"));
 				cellD10.setValue(temporaryTime);
 			} else {
-				cells.deleteRow(10);
+				cells.deleteRow(9);
 				deleteCnt++;
 			}
 
@@ -499,7 +499,7 @@ public class AsposeAppStamp {
 				cellB9.setValue(I18NText.getText("KAF002_65", "2"));
 				cellD9.setValue(workHour2);
 			} else {
-				cells.deleteRow(9);
+				cells.deleteRow(8);
 				deleteCnt++;
 			}
 
@@ -507,7 +507,7 @@ public class AsposeAppStamp {
 				cellB8.setValue(I18NText.getText("KAF002_65", "1"));
 				cellD8.setValue(workHour);
 			} else {
-				cells.deleteRow(8);
+				cells.deleteRow(7);
 				deleteCnt++;
 			}
 
@@ -544,7 +544,9 @@ public class AsposeAppStamp {
 			Style kReasonStyle = kReason.getStyle();
 
 			bReasonStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.NONE);
+			bReasonStyle.getBorders().getByBorderType(BorderType.LEFT_BORDER).setLineStyle(CellBorderType.THIN);
 			cReasonStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.NONE);
+			cReasonStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.THIN);
 			dReasonStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.NONE);
 			dReasonStyle.getBorders().getByBorderType(BorderType.RIGHT_BORDER).setLineStyle(CellBorderType.NONE);
 			eReasonStyle.getBorders().getByBorderType(BorderType.BOTTOM_BORDER).setLineStyle(CellBorderType.NONE);

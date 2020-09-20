@@ -303,17 +303,36 @@ public class BusinessTripServiceImlp implements BusinessTripService {
      * @param wkTypeCd
      * @param wkTimeCd
      * @param inputDate
+     * @param startWorkTime
+     * @param endWorkTime
      */
     @Override
-    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate) {
+    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate, Integer startWorkTime, Integer endWorkTime) {
         SetupType checkNeededOfWorkTime = basicScheduleService.checkNeededOfWorkTimeSetting(wkTypeCd);
         switch (checkNeededOfWorkTime) {
             case REQUIRED:
                 if (StringUtil.isNullOrEmpty(wkTimeCd, true)) {
                     throw new BusinessException("Msg_24", inputDate.toString());
+                } else {
+                    if (startWorkTime == null && endWorkTime == null) {
+                        throw new BusinessException("Msg_1912", inputDate.toString());
+                    } else {
+                        if (startWorkTime > endWorkTime) {
+                            throw new BusinessException("Msg_1913", inputDate.toString());
+                        }
+                    }
                 }
                 break;
             case OPTIONAL:
+                if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
+                    if (startWorkTime == null && endWorkTime == null) {
+                        throw new BusinessException("Msg_1912", inputDate.toString());
+                    } else {
+                        if (startWorkTime > endWorkTime) {
+                            throw new BusinessException("Msg_1913", inputDate.toString());
+                        }
+                    }
+                }
                 break;
             case NOT_REQUIRED:
                 if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
@@ -380,8 +399,16 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         infos.stream().forEach(i -> {
             String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
             String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
+            Integer workTimeStart = null;
+            Integer workTimeEnd = null;
+
+            if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
+                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
+                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+            }
+
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
+            this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
             // アルゴリズム「申請の矛盾チェック」を実行する
