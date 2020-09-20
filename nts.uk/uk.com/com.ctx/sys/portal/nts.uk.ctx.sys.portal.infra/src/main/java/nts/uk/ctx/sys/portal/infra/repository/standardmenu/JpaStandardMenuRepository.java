@@ -92,9 +92,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			 domain.getProgramId(), 
 			 domain.getScreenId(), 
 			 domain.getQueryString(),
-			 domain.getLogLoginDisplay(),
-			 domain.getLogStartDisplay(),
-			 domain.getLogUpdateDisplay()
+			 domain.getLogSettingDisplay().getLogLoginDisplay().value,
+			 domain.getLogSettingDisplay().getLogStartDisplay().value,
+			 domain.getLogSettingDisplay().getLogUpdateDisplay().value
 			 );
 	}
 	
@@ -112,9 +112,9 @@ public class JpaStandardMenuRepository extends JpaRepository implements Standard
 			 domain.getProgramId(), 
 			 domain.getScreenId(), 
 			 domain.getQueryString(),
-			 domain.getLogLoginDisplay(),
-			 domain.getLogStartDisplay(),
-			 domain.getLogUpdateDisplay()
+			 domain.getLogSettingDisplay().getLogLoginDisplay().value,
+			 domain.getLogSettingDisplay().getLogStartDisplay().value,
+			 domain.getLogSettingDisplay().getLogUpdateDisplay().value
 			 );
 	 }
 

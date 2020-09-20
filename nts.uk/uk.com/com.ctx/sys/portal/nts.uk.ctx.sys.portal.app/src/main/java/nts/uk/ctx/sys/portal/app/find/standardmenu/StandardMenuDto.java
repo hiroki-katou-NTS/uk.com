@@ -57,6 +57,11 @@ public class StandardMenuDto {
 	private int logUpdateDisplay;
 	
 	/**
+	 * ログ設定表示
+	 */
+	private LogSettingDisplayDto logSettingDisplay;
+	
+	/**
 	 * From domain.
 	 *
 	 * @param companyId the company Id
@@ -85,9 +90,7 @@ public class StandardMenuDto {
 		standardMenuDto.classification = standardMenu.getClassification().value;
 		standardMenuDto.webMenuSetting = standardMenu.getWebMenuSetting().value;
 		standardMenuDto.afterLoginDisplay = standardMenu.getAfterLoginDisplay();
-		standardMenuDto.logLoginDisplay = standardMenu.getLogLoginDisplay();
-		standardMenuDto.logStartDisplay = standardMenu.getLogStartDisplay();
-		standardMenuDto.logUpdateDisplay = standardMenu.getLogUpdateDisplay();
+		standardMenuDto.logSettingDisplay = LogSettingDisplayDto.fromDomain(standardMenu.getLogSettingDisplay());
 		return standardMenuDto;
 	}
 }
