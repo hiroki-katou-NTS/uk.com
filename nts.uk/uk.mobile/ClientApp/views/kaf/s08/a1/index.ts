@@ -12,12 +12,7 @@ import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
     route: '/kaf/s08/a1',
     template: require('./index.vue'),
     validations: {
-        derpartureTime: {
-            required: true
-        },
-        returnTime: {
-            required: true
-        }
+
     },
     style: require('./style.scss'),
     components: {
@@ -44,9 +39,11 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     @Prop({ default: null })
     public params?: any;
 
-    @Prop({ default: () => 0 }) public readonly derpartureTime !: number;
+    @Prop({default : null}) public readonly derpartureTime!: number; 
 
-    @Prop({ default: () => 0 }) public readonly returnTime !: number;
+    @Prop({default : null}) public readonly returnTime!: number ;
+
+    @Prop({ default: '' }) public readonly appReason!: string;
 
     public user: any;
     public title: String = 'KafS08A1';
@@ -84,7 +81,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
-        //this.kaf000_C_Params.input.displayAppReason == 0;
         if (vm.params) {
             console.log(vm.params);
             //vm.mode = false;
@@ -97,14 +93,14 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         const vm = this;
         vm.checkNextButton();
         if (vm.kaf000_C_Params.input.displayAppReason == 0) {
-            if (vm.kaf000_B_Params.output.startDate == null ) {
-                    vm.hidden = true;
-                    vm.scrollToTop();
+            if (vm.kaf000_B_Params.output.startDate == null) {
+                vm.hidden = true;
+                vm.scrollToTop();
 
-                    return;
-                }
+                return;
+            }
         } else {
-            if (vm.kaf000_B_Params.output.startDate == null || vm.kaf000_C_Params.opAppReason == '' ) {
+            if (vm.kaf000_B_Params.output.startDate == null || vm.kaf000_C_Params.opAppReason == '') {
                 vm.hidden = true;
                 vm.scrollToTop();
 
@@ -131,7 +127,8 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         let businessTripInfoOutput = vm.data;
         //gửi comment sang màn hình A2
         let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-        this.$emit('nextToStepTwo', vm.listDate, this.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet);
+        let appReason = vm.kaf000_C_Params.output.opAppReason;
+        this.$emit('nextToStepTwo', vm.listDate, this.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
     }
 
     //scroll to Top
@@ -142,23 +139,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     //check button next
     public checkNextButton() {
         const vm = this;
-        // let validAll: boolean = true;
-        // vm.isValidateAll = validAll;
-        // console.log(validAll);
-        // console.log(vm.application);
-
-        // // check validation 
-        // this.$validate();
-        // if (!this.$valid || !validAll) {
-        //     window.scrollTo(500, 0);
-
-        //     return;
-        // }
-        // if (this.$valid && validAll) {
-        //     this.$mask('show');
-        // }
         vm.bindBusinessTripRegister();
-        //console.log(this.appWorkChangeDto);
     }
 
     //handle message error

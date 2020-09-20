@@ -10,13 +10,15 @@
     v-if="step == 'KAFS08_10'" 
     v-bind:derpartureTime="derpartureTime"
     v-bind:returnTime="returnTime"
-    v-bind:appDetail="appDetail"/>
+    v-bind:appReason="appReason"
+    v-bind:params="params"/>
     <kafs08a2 
     @prevStepOne="ProcessPrevStepOne" 
     @nextToStepThree="ProcessNextToStepThree" 
     v-bind:departureTime="derpartureTime" 
     v-bind:returnTime="returnTime"  
-    v-bind:comment="comment" 
+    v-bind:comment="comment"
+    v-bind:appReason="appReason"
     v-bind:table="achievementDetails"
     v-bind:businessTripInfoOutput="businessTripInfoOutput"
     v-bind:application="application"

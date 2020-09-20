@@ -57,6 +57,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //A2 nhan ve props listDate
     @Prop({ default: [] }) public readonly listDate!: [];
 
+    //A2 nhan props app reason
+    @Prop({default : ''}) public readonly appReason!: string ;
+
     //public readonly params!: any;
     public name: string = 'hello my dialog';
     //public date: Date = new Date(2020,2,14);
@@ -139,7 +142,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //quay trở lại step one
     public prevStepOne() {
         const vm = this;
-        vm.$emit('prevStepOne',vm.departureTime,vm.returnTime);
+        vm.$emit('prevStepOne',vm.departureTime,vm.returnTime,vm.appReason);
     }
 
     //hàm check trước khi register

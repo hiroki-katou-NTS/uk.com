@@ -67,7 +67,6 @@ export class KafS08DComponent extends Vue {
                     //selectedWorkTimeCD: this.model.workTime.code,
                     isSelectWorkTime: 1,
                 }).then(console.log);
-                debugger ;
             } else {
 
             }

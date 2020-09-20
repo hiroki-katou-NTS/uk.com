@@ -41,6 +41,7 @@ export class KafS08AComponent extends Vue {
     public kafs00BParams: Object = {};
     public appID: string = ' ';
     public listDate: any[] = [];
+    public appReason: string = '';
     //thực hiện emit từ component con A1
     public ProcessNextToStepTwo(listDate,
                                 application,
@@ -48,6 +49,7 @@ export class KafS08AComponent extends Vue {
                                 departureTime, returnTime,
                                 achievementDetails,
                                 comment,
+                                appReason,
     ) {
         const vm = this;
         //Object date có được ở màn hình A1
@@ -65,7 +67,8 @@ export class KafS08AComponent extends Vue {
         vm.application = application;
         //nhan listDate tu man hinh start
         vm.listDate = listDate;
-        //nhan ve appID tu man hinh a
+        //nhan ve appReason tu A1
+        vm.appReason = appReason;
     }
 
     //thực hiện emit từ component con A2 đến C
@@ -76,10 +79,11 @@ export class KafS08AComponent extends Vue {
     }
 
     //thực hiện emit từ component con A2 quay trở lại A1
-    public ProcessPrevStepOne(departureTime, returnTime) {
+    public ProcessPrevStepOne(departureTime, returnTime,appReason) {
         const vm = this;
         vm.derpartureTime = departureTime;
         vm.returnTime = returnTime;
+        vm.appReason = appReason ;
         vm.step = 'KAFS08_10';
     }
 }
