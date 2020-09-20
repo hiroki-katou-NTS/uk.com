@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +37,7 @@ public class KfnmtRptWkAtdOutatd extends UkJpaEntity implements Serializable {
 	private String recordItemId;
 
 	/** The exclus ver. */
+	@Version
 	@Column(name = "EXCLUS_VER")
 	private long exclusVer;
 
@@ -79,4 +81,17 @@ public class KfnmtRptWkAtdOutatd extends UkJpaEntity implements Serializable {
 		return this.recordItemId;
 	}
 
+	public KfnmtRptWkAtdOutatd(String recordItemId, String contractCd, String cid, String layoutId, long columnIndex,
+			long position, long outputAtr, long timeItemId, BigDecimal formulaType) {
+		super();
+		this.recordItemId = recordItemId;
+		this.contractCd = contractCd;
+		this.cid = cid;
+		this.layoutId = layoutId;
+		this.columnIndex = columnIndex;
+		this.position = position;
+		this.outputAtr = outputAtr;
+		this.timeItemId = timeItemId;
+		this.formulaType = formulaType;
+	}
 }

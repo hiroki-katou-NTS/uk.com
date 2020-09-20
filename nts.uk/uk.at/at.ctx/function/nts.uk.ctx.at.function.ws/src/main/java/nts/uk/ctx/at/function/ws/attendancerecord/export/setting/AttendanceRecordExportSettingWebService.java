@@ -115,9 +115,9 @@ public class AttendanceRecordExportSettingWebService {
 	 * @return the seal stamp
 	 */
 	@POST
-	@Path("getSealStamp/{code}")
-	public List<String> getSealStamp(@PathParam("code") long code) {
-		return attendanceEcExpSetFinder.getSealStamp(code);
+	@Path("getSealStamp/{layoutId}")
+	public List<String> getSealStamp(@PathParam("layoutId") String layoutId) {
+		return attendanceEcExpSetFinder.getSealStamp(layoutId);
 	}
 	
 	/**

@@ -1,12 +1,16 @@
 package nts.uk.ctx.at.function.infra.repository.attendancerecord.export.setting;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
@@ -14,7 +18,10 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceReco
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
+import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.export.setting.KfnmtRptWkAtdOut;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaAttendanceRecordExportSettingRepo.
@@ -38,6 +45,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			+ " WHERE out.cid = :companyId"
 			+ " AND out.itemSelType = :selectionType";
 	private static final String GET_FREE_SETTING = GET_STANDARD_SETTING + " AND out.sid = :employeeId";
+	private static final String GET_SEAL = "SELECT seal FROM KfnmtRptWkAtdOutseal seal WHERE seal.cid = :cid AND seal.layoutId = :layoutId";
 
 	@Override
 	public Optional<AttendanceRecordExportSetting> findByCode(ItemSelectionType selectionType
@@ -76,8 +84,16 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 
 	@Override
 	public void add(AttendanceRecordStandardSetting domain) {
-		// TODO Auto-generated method stub
-		
+		for (AttendanceRecordExportSetting subDomain : domain.getAttendanceRecordExportSettings()) {
+			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
+			entity.setContractCd(AppContexts.user().contractCode());
+			entity.setCid(domain.getCid().v());
+			entity.setItemSelType(domain.getItemSelectionType().value);
+			subDomain.saveToMemento(entity);
+			this.deleteSealStamp(domain.getCid().v(), subDomain.getLayoutId());
+			// insert
+			this.commandProxy().insert(entity);
+		}
 	}
 
 	@Override
@@ -106,13 +122,20 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 
 	@Override
 	public void add(AttendanceRecordFreeSetting domain) {
-		// TODO Auto-generated method stub
-		
+		for (AttendanceRecordExportSetting subDomain : domain.getAttendanceRecordExportSettings()) {
+			KfnmtRptWkAtdOut entity = new KfnmtRptWkAtdOut();
+			subDomain.saveToMemento(entity);
+			entity.setCid(domain.getCid().v());
+			entity.setItemSelType(domain.getItemSelectionType().value);
+			entity.setSid(domain.getEmployeeId().v());
+			this.deleteSealStamp(domain.getCid().v(), subDomain.getLayoutId());
+			// insert
+			this.commandProxy().insert(entity);
+		}
 	}
 
 	@Override
 	public void update(AttendanceRecordFreeSetting domain) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -143,14 +166,79 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 	 * long)
 	 */
 	@Override
-	public List<String> getSealStamp(String companyId, long code) {
+	public List<String> getSealStamp(String companyId, String layoutId) {
+		if (!StringUtil.isNullOrEmpty(companyId, true)) {
+			return this.findAllSealColumn(companyId, layoutId).stream()
+					.map(t -> t.getSealStampName())
+					.collect(Collectors.toList());
+		}
 		return new ArrayList<>();
 	}
 
 	@Override
 	public void deleteAttendanceRecExpSet(AttendanceRecordExportSetting domain) {
-		// TODO Auto-generated method stub
-		
+		this.commandProxy().remove(KfnmtRptWkAtdOut.class, domain.getLayoutId());
 	}
 
+	
+	private void addKfnstSealcolumns(AttendanceRecordExportSetting attendanceRecordExpSet, String companyId) {
+		String layoutId = attendanceRecordExpSet.getLayoutId();
+		// remove Seal stamps
+		deleteSealStamp(companyId, layoutId);
+
+		// Insert Seal Stamp List
+		int order = 1;
+		for (SealColumnName seal : attendanceRecordExpSet.getSealStamp()) {
+			this.commandProxy().insert(toSealStampEntity(companyId, layoutId, seal, order++));
+		}
+		this.getEntityManager().flush();
+	}
+	
+	/**
+	 * To seal stamp entity.
+	 *
+	 * @param cId the c id
+	 * @param layoutId the layout id
+	 * @param sealName the seal name
+	 * @param order the order
+	 * @return the kfnmt rpt wk atd outseal
+	 */
+	private KfnmtRptWkAtdOutseal toSealStampEntity(String cId, String layoutId, SealColumnName sealName, int order) {
+		UUID columnId = UUID.randomUUID();
+
+		return new KfnmtRptWkAtdOutseal(columnId.toString()
+				, AppContexts.user().contractCode()
+				, cId
+				, layoutId
+				, sealName.toString()
+				, new BigDecimal(order));
+	}
+	
+	/**
+	 * Delete seal stamp.
+	 *
+	 * @param companyId the company id
+	 * @param layoutId the layout id
+	 */
+	private void deleteSealStamp(String companyId, String layoutId) {
+		// Delete seal Stamp list
+		List<KfnmtRptWkAtdOutseal> sealStampList = this.findAllSealColumn(companyId, layoutId);
+		this.commandProxy().removeAll(sealStampList);
+		this.getEntityManager().flush();
+	}
+	
+	/**
+	 * Find all seal column.
+	 *
+	 * @param companyId the company id
+	 * @param layoutId the layout id
+	 * @return the list
+	 */
+	private List<KfnmtRptWkAtdOutseal> findAllSealColumn(String companyId, String layoutId) {
+		// query data and return
+		return this.queryProxy().query(GET_SEAL, KfnmtRptWkAtdOutseal.class)
+				.setParameter("cid", companyId)
+				.setParameter("layoutId", layoutId)
+				.getList();
+	}
 }

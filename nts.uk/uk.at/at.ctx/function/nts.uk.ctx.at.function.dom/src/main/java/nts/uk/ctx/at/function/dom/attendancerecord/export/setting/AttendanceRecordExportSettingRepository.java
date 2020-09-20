@@ -33,7 +33,7 @@ public interface AttendanceRecordExportSettingRepository {
 	 * @param code the code
 	 * @return the seal stamp
 	 */
-	List<String> getSealStamp (String companyId, long code);
+	List<String> getSealStamp(String companyId, String layoutId);
 	
 	/**
 	 * Delete attendance rec exp set.

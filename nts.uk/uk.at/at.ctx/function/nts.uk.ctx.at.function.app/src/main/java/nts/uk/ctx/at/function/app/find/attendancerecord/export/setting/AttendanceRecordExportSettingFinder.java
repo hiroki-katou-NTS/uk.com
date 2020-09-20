@@ -135,6 +135,7 @@ public class AttendanceRecordExportSettingFinder {
 			dto.setNameUseAtr(domain.getNameUseAtr().value);
 			dto.setExportFontSize(domain.getExportFontSize().value);
 			dto.setMonthlyConfirmedDisplay(domain.getMonthlyConfirmedDisplay().value);
+			dto.setItemSelType(selectionType);
 			return dto;
 		}
 		return new AttendanceRecordExportSettingDto();
@@ -147,9 +148,9 @@ public class AttendanceRecordExportSettingFinder {
 	 * @param code the code
 	 * @return the seal stamp
 	 */
-	public List<String> getSealStamp(long code) {
+	public List<String> getSealStamp(String layoutId) {
 		String companyId = AppContexts.user().companyId();
-		return attendanceRecExpSetRepo.getSealStamp(companyId, code);
+		return attendanceRecExpSetRepo.getSealStamp(companyId, layoutId);
 	}
 
 	/**

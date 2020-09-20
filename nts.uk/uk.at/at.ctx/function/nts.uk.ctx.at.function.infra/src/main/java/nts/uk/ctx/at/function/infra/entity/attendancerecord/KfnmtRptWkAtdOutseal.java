@@ -8,9 +8,11 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -20,6 +22,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Data
 @Entity
 @Table(name = "KFNMT_RPT_WK_ATD_OUTSEAL")
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class KfnmtRptWkAtdOutseal extends UkJpaEntity implements Serializable {
 
@@ -32,6 +35,7 @@ public class KfnmtRptWkAtdOutseal extends UkJpaEntity implements Serializable {
 	private String columnId;
 	
 	/** The exclus ver. */
+	@Version
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
 	public int exclusVer;
@@ -64,6 +68,21 @@ public class KfnmtRptWkAtdOutseal extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return this.columnId;
+	}
+
+	public KfnmtRptWkAtdOutseal(String columnId
+			, String contractCd
+			, String cid
+			, String layoutId
+			, String sealStampName
+			, BigDecimal sealOrder) {
+		super();
+		this.columnId = columnId;
+		this.contractCd = contractCd;
+		this.cid = cid;
+		this.layoutId = layoutId;
+		this.sealStampName = sealStampName;
+		this.sealOrder = sealOrder;
 	}
 
 }

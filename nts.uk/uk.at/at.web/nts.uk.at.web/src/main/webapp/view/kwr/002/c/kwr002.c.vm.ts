@@ -462,6 +462,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             let useSeal: any = getShared('useSeal');
             const fontSzie = getShared('exportFontSize');
             const selectionType = getShared('selectionType');
+            const layoutId = getShared('layoutId');
 
             // Update Ver25
             $.when(service.getApprovalProcessingUseSetting(), service.getAttendanceRecordExportSetting(attendanceRecExpSetCode, selectionType))
@@ -485,8 +486,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             if (!attendanceRecExpSetCode) {
                 self.attendanceCode('1');
                 self.attendanceName('デフォルト名');
-            }
-            else {
+            } else {
                 self.attendanceCode(attendanceRecExpSetCode);
                 self.attendanceName(attendanceRecExpSetName);
             }
@@ -495,7 +495,11 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 self.useSealValue(useSeal);
                 attendanceRecExpDaily.forEach((item: any) => {
                     var columnIndex: number = item.columnIndex;
-                    self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
+                    self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr
+                        , item.columnIndex
+                        , item.userAtr
+                        , item.upperPosition + ""
+                        , item.lowwerPosition + "");
                 });
                 
                 for (var i: number = 1; i <= 13; i++) {
@@ -506,7 +510,11 @@ module nts.uk.com.view.kwr002.c.viewmodel {
 
                 attendanceRecExpMonthly.forEach((item: any) => {
                     var columnIndex: number = item.columnIndex;
-                    self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
+                    self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr
+                        , item.columnIndex
+                        , item.userAtr
+                        , item.upperPosition + ""
+                        , item.lowwerPosition + "");
 
                 });
                 
@@ -525,80 +533,60 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 self.sealName6(sealStamp[5]);
 
                 dfd.resolve();
-            }
-            else {
+            } else {
                 self.useSealValue(useSeal)
-                var code: number = Number(self.attendanceCode());
-                   $.when(service.findAllAttendanceRecExportDaily(code), service.findAllAttendanceRecExportMonthly(code),service.getSealStamp(code)).done((listattendanceRecExpDailyList: Array<model.AttendanceRecExp>, listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>,sealStampList: Array<String>) => {
-                       if (listattendanceRecExpDailyList.length > 0) {
-                           listattendanceRecExpDailyList.forEach(item => {
-                               var columnIndex: number = item.columnIndex;
-                               self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
-                           })
-                       }
-                       for (var i: number = 1; i <= 13; i++) {
-                           if (!self.attendanceRecExpDaily()[i]) {
-                               self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
-                           }
-                       }
+                $.when(service.findAllAttendanceRecExportDaily(layoutId)
+                     , service.findAllAttendanceRecExportMonthly(layoutId)
+                     , service.getSealStamp(layoutId))
+                    .done((listattendanceRecExpDailyList: Array<model.AttendanceRecExp>
+                        , listattendanceRecExpMonthlyList: Array<model.AttendanceRecExp>
+                        ,sealStampList: Array<string>) => {
+                    if (listattendanceRecExpDailyList.length > 0) {
+                        listattendanceRecExpDailyList.forEach(item => {
+                            var columnIndex: number = item.columnIndex;
+                            self.attendanceRecExpDaily()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr
+                                , item.columnIndex
+                                , item.userAtr
+                                , item.upperPosition + ""
+                                , item.lowwerPosition + "");
+                        })
+                    }
+                    for (var i: number = 1; i <= 13; i++) {
+                        if (!self.attendanceRecExpDaily()[i]) {
+                            self.attendanceRecExpDaily()[i] = new viewmodel.model.AttendanceRecExp(1, i, false, "", "");
+                        }
+                    }
 
-                       if (listattendanceRecExpMonthlyList.length > 0) {
-                           listattendanceRecExpMonthlyList.forEach(item => {
-                               var columnIndex: number = item.columnIndex;
-                               self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr, item.columnIndex, item.userAtr, item.upperPosition + "", item.lowwerPosition + "");
-                           })
-                       }
-                       for (var i: number = 1; i <= 16; i++) {
-                           if (!self.attendanceRecExpMonthly()[i]) {
-                               self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
-                           }
-                       }
+                    if (listattendanceRecExpMonthlyList.length > 0) {
+                        listattendanceRecExpMonthlyList.forEach(item => {
+                            var columnIndex: number = item.columnIndex;
+                            self.attendanceRecExpMonthly()[columnIndex] = new viewmodel.model.AttendanceRecExp(item.exportAtr
+                                , item.columnIndex
+                                , item.userAtr
+                                , item.upperPosition + ""
+                                , item.lowwerPosition + "");
+                        })
+                    }
+                    for (var i: number = 1; i <= 16; i++) {
+                        if (!self.attendanceRecExpMonthly()[i]) {
+                            self.attendanceRecExpMonthly()[i] = new viewmodel.model.AttendanceRecExp(2, i, false, "", "");
+                        }
+                    }
 
-                       if (sealStampList.length > 0) {
-                           self.sealName1(sealStampList[0]);
-                           self.sealName2(sealStampList[1]);
-                           self.sealName3(sealStampList[2]);
-                           self.sealName4(sealStampList[3]);
-                           self.sealName5(sealStampList[4]);
-                           self.sealName6(sealStampList[5]);
+                    if (sealStampList.length > 0) {
+                        self.sealName1(sealStampList[0]);
+                        self.sealName2(sealStampList[1]);
+                        self.sealName3(sealStampList[2]);
+                        self.sealName4(sealStampList[3]);
+                        self.sealName5(sealStampList[4]);
+                        self.sealName6(sealStampList[5]);
 
-                       }
-                       
-                       dfd.resolve();
+                    }
+                    dfd.resolve();
                 })
-
             }
             blockUI.clear();
             return dfd.promise();
-            //***
-            //            service.getAttendanceSingleList().done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-            //                if (listAttendanceItem.length != 0) {
-            //                    self.attendanceItemListDaily(listAttendanceItem);
-            //                    self.currentCode(1);
-            //                }
-            //
-            //            });
-            //
-            //            service.getAttendanceCalculateList(2).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-            //                if (listAttendanceItem.length > 0) {
-            //                    self.attendanceItemListMonthly( _.orderBy(listAttendanceItem, [e => Number(e.attendanceItemId)], ['asc']));
-            //                }
-            //            });
-            //
-            //            service.getAttendanceCalculateList(1).done(function(listAttendanceItem: Array<model.AttendanceItem>) {
-            //                if (listAttendanceItem.length > 0) {
-            //
-            //                    listAttendanceItem.forEach(item => {
-            //                        self.attendanceItemListDaily.push(item);
-            //                    })
-            //
-            //                    self.attendanceItemListDaily(_.orderBy(self.attendanceItemListDaily(), [e => Number(e.attendanceItemId)], ['asc']));
-            //                    self.attendanceItemList(self.attendanceItemListDaily());
-            //                }
-            //
-            //                
-            //            })
-
         }
     }
 

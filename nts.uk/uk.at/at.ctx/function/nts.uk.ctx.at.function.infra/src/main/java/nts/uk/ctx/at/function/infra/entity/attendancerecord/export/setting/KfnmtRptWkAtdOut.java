@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
@@ -29,6 +30,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Data
@@ -92,10 +94,6 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID")
-	private List<KfnmtRptWkAtdOutframe> lstKfnmtRptWkAtdOutframe;
-
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID")
 	private List<KfnmtRptWkAtdOutatd> lstKfnmtRptWkAtdOutatd;
 
 	@OneToMany(cascade = CascadeType.ALL)
@@ -150,13 +148,20 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 	}
 
 	@Override
-	public void setSealStamp(List<SealColumnName> seal) {
-		this.lstKfnmtRptWkAtdOutseal = seal.stream().map(t -> {
-			KfnmtRptWkAtdOutseal kfnmtRptWkAtdOutseal = new KfnmtRptWkAtdOutseal();
-			kfnmtRptWkAtdOutseal.setCid(this.cid);
-			kfnmtRptWkAtdOutseal.setSealStampName(t.v());
-			return kfnmtRptWkAtdOutseal;
-		}).collect(Collectors.toList());
+	public void setSealStamp(List<SealColumnName> seals) {
+		this.lstKfnmtRptWkAtdOutseal = new ArrayList<>();
+		if (seals != null) {
+			int order = 1;
+			for (SealColumnName seal : seals) {
+				UUID columnId = UUID.randomUUID();
+				this.lstKfnmtRptWkAtdOutseal.add(new KfnmtRptWkAtdOutseal(columnId.toString(),
+						AppContexts.user().contractCode(),
+						this.cid,
+						this.layoutId,
+						seal.v(),
+						new BigDecimal(order++)));
+			}
+		}
 	}
 
 	@Override

@@ -19,12 +19,12 @@ module nts.uk.com.view.kwr002.c{
             getCalculateAttendanceRecordDto: "com/function/attendancerecord/export/getCalculateAttendanceRecordDto"
         };
 
-        export function findAllAttendanceRecExportDaily(exportCode : number): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>>{
-            return nts.uk.request.ajax("at", path.findAllAttendanceRecExportDaily + exportCode);   
+        export function findAllAttendanceRecExportDaily(layoutId : string): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>>{
+            return nts.uk.request.ajax("at", path.findAllAttendanceRecExportDaily + layoutId);   
         }
         
-        export function findAllAttendanceRecExportMonthly(exportCode : number): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>>{
-            return nts.uk.request.ajax("at", path.findAllAttendanceRecExportMonthly + exportCode);   
+        export function findAllAttendanceRecExportMonthly(layoutId : string): JQueryPromise<Array<viewmodel.model.AttendanceRecExp>>{
+            return nts.uk.request.ajax("at", path.findAllAttendanceRecExportMonthly + layoutId);   
         }
 
         export function getAttendanceSingleList():JQueryPromise<any>{
@@ -35,8 +35,8 @@ module nts.uk.com.view.kwr002.c{
             return nts.uk.request.ajax("at", path.getAttendanceCalculateList + attendanceType);
         }
         
-        export function getSealStamp(exportCode : number): JQueryPromise<Array<String>>{
-            return nts.uk.request.ajax("at", path.getSealStamp + exportCode); 
+        export function getSealStamp(layoutId: string): JQueryPromise<Array<string>>{
+            return nts.uk.request.ajax("at", path.getSealStamp + layoutId); 
         }
 
         // Ver25

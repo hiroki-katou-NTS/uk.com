@@ -439,6 +439,7 @@ module nts.uk.com.view.kwr002.b {
             setShared('useSeal', self.sealUseAtr(), true);
             setShared('exportFontSize', self.exportFontSize());
             setShared('selectionType', self.itemSelType);
+            setShared('layoutId', self.layoutId);
 
             modal('../c/index.xhtml', {});
         }

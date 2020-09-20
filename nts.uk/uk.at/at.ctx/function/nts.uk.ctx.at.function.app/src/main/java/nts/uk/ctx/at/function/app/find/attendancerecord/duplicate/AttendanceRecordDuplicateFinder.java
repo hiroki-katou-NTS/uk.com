@@ -5,12 +5,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataReturnDto;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 import nts.uk.shr.com.context.AppContexts;
@@ -52,33 +50,17 @@ public class AttendanceRecordDuplicateFinder {
 
 	public DataReturnDto executeCopy(AttendanceRecordDuplicateDto dto) {
 		String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
+		Optional<String> employeeId = dto.getSelectedType() == ItemSelectionType.FREE_SETTING.value
+						? Optional.of(AppContexts.user().employeeId())
+						: Optional.empty();
+
 		// INPUT．項目選択種類をチェック Check INPUT.Item selection type
-		if (dto.getSelectedType() == ItemSelectionType.STANDARD_SETTING.value) {
-			//	ドメインモデル「出勤簿の出力項目定型設定」を取得する Nhận domain model 「出勤簿の出力項目定型設定」	
-			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo.findByCompanyIdAndCode(companyId, dto.getCode());
-			if (standardSetting.isPresent()) {
-				throw new BusinessException("Msg_3");
-			}
-		} else {
-			// 	ドメインモデル「出勤簿の出力項目自由設定」を取得する  Nhận domain model 「...」
-			Optional<AttendanceRecordFreeSetting> freeSetting = this.outputItemRepo.findByCompanyEmployeeAndCode(companyId, employeeId, dto.getCode());
-			if (freeSetting.isPresent()) {
-				throw new BusinessException("Msg_3");
-			}
-		}
+		Optional<AttendanceRecordExportSetting> setting = this.attendanceRecExpSetRepo.findByCode(ItemSelectionType.valueOf(dto.getSelectedType())
+				, companyId
+				, employeeId
+				, dto.getCode());
 		
-		if (dto.getSelectedType() == ItemSelectionType.STANDARD_SETTING.value) {
-			Optional<AttendanceRecordStandardSetting> standardSetting = this.standardRepo.findByCompanyCodeLayoutId(companyId, dto.getCode(), dto.getLayoutId());
-//			standardSetting.map(i -> {
-//				AttendanceRecordStandardSetting domainCopy = new AttendanceRecordStandardSetting();
-//				JpaAttendanceRecordFreeSettingSetMemsento
-//			})
-			
-		} else {
-			Optional<AttendanceRecordFreeSetting> freeSetting = this.outputItemRepo.findByCompanyEmployeeCodeAndLayoutId(companyId, employeeId, dto.getCode(), dto.getLayoutId());
-			
-		}
+		
 		return null;
 	}
 	

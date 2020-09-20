@@ -90,6 +90,7 @@ public class AttendanceRecordExportSetting extends AggregateRoot {
 	 *            the memento
 	 */
 	public void saveToMemento(AttendanceRecordExportSettingSetMemento memento) {
+		memento.setLayoutId(this.layoutId);
 		memento.setCode(this.code);
 		memento.setDailyExportItem(this.dailyExportItem);
 		memento.setMonthlyExportItem(this.monthlyExportItem);

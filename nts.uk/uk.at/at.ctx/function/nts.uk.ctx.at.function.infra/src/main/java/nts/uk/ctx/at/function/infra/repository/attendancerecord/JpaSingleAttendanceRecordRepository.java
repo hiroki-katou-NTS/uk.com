@@ -98,7 +98,7 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 		}
 		// check and update attendanceRecordItem
 		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItem = this.findAttendanceRecordItems(kfnstAttndRecPK);
-		KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd = (listKfnstAttndRecItem.size() > 0) ? listKfnstAttndRecItem.get(0) : new KfnmtRptWkAtdOutatd();
+		KfnmtRptWkAtdOutatd kfnmtRptWkAtdOutatd = (listKfnstAttndRecItem.size() > 0) ? listKfnstAttndRecItem.get(0) : null;
 		if (kfnmtRptWkAtdOutatd != null) {
 			this.commandProxy().remove(kfnmtRptWkAtdOutatd);
 			this.getEntityManager().flush();
@@ -106,16 +106,15 @@ public class JpaSingleAttendanceRecordRepository extends JpaAttendanceRecordRepo
 					singleAttendanceRecord));
 		} else {
 			UID uid = new UID();
-			kfnmtRptWkAtdOutatd.setRecordItemId(uid.toString());
-			kfnmtRptWkAtdOutatd.setExclusVer(1);
-			kfnmtRptWkAtdOutatd.setContractCd(AppContexts.user().contractCode());
-			kfnmtRptWkAtdOutatd.setCid(AppContexts.user().companyId());
-			kfnmtRptWkAtdOutatd.setLayoutId(layoutId);
-			kfnmtRptWkAtdOutatd.setColumnIndex(columnIndex);
-			kfnmtRptWkAtdOutatd.setPosition(position);
-			kfnmtRptWkAtdOutatd.setOutputAtr(exportArt);
-			kfnmtRptWkAtdOutatd.setTimeItemId(singleAttendanceRecord.getTimeItemId());
-			kfnmtRptWkAtdOutatd.setFormulaType(new BigDecimal(SINGLE_FORMULA_TYPE));
+			kfnmtRptWkAtdOutatd = new KfnmtRptWkAtdOutatd(uid.toString()
+					, AppContexts.user().contractCode()
+					, AppContexts.user().companyId()
+					, layoutId
+					, columnIndex
+					, position
+					, exportArt
+					, singleAttendanceRecord.getTimeItemId()
+					, new BigDecimal(SINGLE_FORMULA_TYPE));
 			
 			this.commandProxy().insert(kfnmtRptWkAtdOutatd);
 		}

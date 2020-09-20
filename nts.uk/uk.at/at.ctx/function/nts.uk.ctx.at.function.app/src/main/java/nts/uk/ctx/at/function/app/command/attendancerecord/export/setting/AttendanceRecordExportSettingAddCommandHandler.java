@@ -1,14 +1,18 @@
 package nts.uk.ctx.at.function.app.command.attendancerecord.export.setting;
 
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.Arrays;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.*;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,6 +25,14 @@ public class AttendanceRecordExportSettingAddCommandHandler
 	/** The Attendance rec exp set repo. */
 	@Inject
 	AttendanceRecordExportSettingRepository attendanceRecExpSetRepo;
+	
+	/** The free setting repo. */
+	@Inject
+	AttendanceRecordFreeSettingRepository freeSettingRepo;
+	
+	/** The standard setting repo. */
+	@Inject
+	AttendanceRecordStandardSettingRepository standardSettingRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -31,26 +43,24 @@ public class AttendanceRecordExportSettingAddCommandHandler
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AttendanceRecordExportSettingAddCommand> context) {
-
+		String companyId = AppContexts.user().companyId();
 		AttendanceRecordExportSettingAddCommand command = context.getCommand();
 
-		UUID genLayoutId = UUID.randomUUID(); 
-		// convert to domain
-		AttendanceRecordExportSetting domain = new AttendanceRecordExportSetting();
-		
-		String layoutId = command.getLayoutId() != null ? command.getLayoutId() : genLayoutId.toString();
-		domain.setLayoutId(layoutId);
-		domain.setCode(new ExportSettingCode(String.valueOf(command.getCode())));
-		domain.setName(new ExportSettingName(command.getName()));
-		domain.setNameUseAtr(NameUseAtr.valueOf(command.getNameUseAtr()));
-		domain.setExportFontSize(ExportFontSize.valueOf(command.getExportFontSize()));
-//		domain.setMonthlyConfirmedDisplay(MonthlyConfirmedDisplay.valueOf(command.getMonthlyDisplay()));
-		if (command.getSealStamp() != null) {
-			domain.setSealStamp(command.getSealStamp().stream().map(SealColumnName::new).collect(Collectors.toList()));
-			domain.setSealUseAtr(command.getSealUseAtr());
+		if (command.itemSelType == ItemSelectionType.FREE_SETTING.value) {
+			String employeeId = AppContexts.user().employeeId();
+			AttendanceRecordFreeSettingAddCommand addCommamd = new AttendanceRecordFreeSettingAddCommand(companyId
+					, employeeId
+					, ItemSelectionType.FREE_SETTING.value
+					, Arrays.asList(command));
+			this.freeSettingRepo.add(AttendanceRecordFreeSetting.createFromMemento(addCommamd));
 		}
-		// Add
-//		attendanceRecExpSetRepo.addAttendanceRecExpSet(domain);
+		
+		if (command.itemSelType == ItemSelectionType.STANDARD_SETTING.value) {
+			AttendanceRecordStandardSettingAddCommand addCommamd = new AttendanceRecordStandardSettingAddCommand(companyId
+					, ItemSelectionType.STANDARD_SETTING.value
+					, Arrays.asList(command));
+			this.standardSettingRepo.add(AttendanceRecordStandardSetting.createFromMemento(addCommamd));
+		}
 	}
 
 }

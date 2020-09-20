@@ -533,78 +533,50 @@ module nts.uk.com.view.kwr002.a {
                 var dfd = $.Deferred();
                 blockUI.invisible();
 
-                vm.dataTranferScreenB = new DataScreenB(vm.selectedCodeA8_5(),vm.companyId,vm.employeeId,'',vm.selectedCode());
+                vm.dataTranferScreenB = new DataScreenB(vm.selectedCodeA8_5()
+                                    , vm.companyId
+                                    , vm.employeeId
+                                    , ''
+                                    , vm.selectedCodeA8_5() === ItemSelectionType.STANDARD_SETTING ? vm.selectedCode() : vm.selectedCodeA8_8());
                 setShared("currentARESSelectCode",vm.selectedCode());
                 setShared("dataTranferScreenB", vm.dataTranferScreenB);
                 nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
-
-                    service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
-                        if (listAttendance === undefined || listAttendance.length == 0) {
-                            vm.attendanceRecordList(null);
-                            vm.selectedCode(null);
-                            vm.selectedCodeA8_8(null);
-                            vm.enableSave(false)
-                            // $('#print').attr("disabled", "disabled")
-                            // $('#exportExcel').attr("disabled", "disabled")
-                        } else {
-                            let ARESCode = getShared("currentARESCode");
-                            var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
-                            _.map(sortArray, (item) => {
-                                item.code = _.padStart(item.code, 2, '0');
-                            });
-                            vm.attendanceRecordList(sortArray);
-                            if (ARESCode === undefined) {
-                                vm.selectedCode(sortArray[0].code);
+                    service.getAllAttendanceRecExpSet().then((result: AttendanceRecordExportSettingWrapperDto) => {
+                        let ARESCode = getShared("currentARESCode");
+                        if (vm.selectedCodeA8_5() === ItemSelectionType.STANDARD_SETTING) {
+                            // for standard setting
+                            if (result.standardSettingLst && result.standardSettingLst.length > 0) {
+                                let sortArray = _.orderBy(result.standardSettingLst, [e => Number(e.code)], ['asc']);
+                                _.map(sortArray, (item) => {
+                                    item.code = _.padStart(item.code, 2, '0');
+                                });
+                                vm.attendanceRecordList(sortArray);
+                                if (ARESCode === undefined) {
+                                    vm.selectedCode(sortArray[0].code);
+                                }
+                                else {
+                                    vm.selectedCode(ARESCode);
+                                }
+                                vm.enableSave(true)
+                            } else {
+                                vm.attendanceRecordList(null);
+                                vm.selectedCode(null);
+                                vm.selectedCodeA8_8(null);
+                                vm.enableSave(false);
                             }
-                            else {
-                                vm.selectedCode(ARESCode);
-                            }
-                            vm.enableSave(true)
                         }
 
-                        dfd.resolve();
-
-                    });
-                });
-                nts.uk.ui.block.clear();
-
-                return dfd.promise();
-            }
-
-            //  【パラメータ】　受渡
-            // 　項目選択種類　　　：　INPUT．設定区分（定型選択）
-            // 　会社ID　　　　　　　：　INPUT．会社ID
-            // 　社員ID　　　　　　　：　INPUT．社員ID
-            // 　コード（Ｂ：出勤簿レイアウト管理画面で選択されていたコード）
-            public openBDialogFreeSetting(): JQueryPromise<any> {
-                const vm = this;
-                var dfd = $.Deferred();
-                blockUI.invisible();
-
-                vm.dataTranferScreenB = new DataScreenB(vm.selectedCodeA8_5(),vm.companyId,vm.employeeId,'',vm.selectedCode());
-                setShared("currentARESSelectCode",vm.selectedCode());
-
-                // 自由設定の「設定」ボタン - if choose btn free setting
-                if (vm.selectedCodeA8_5() === 1) {
-                    setShared("dataTranferScreenB", vm.dataTranferScreenB);
-                }
-
-                nts.uk.ui.windows.sub.modal("/view/kwr/002/b/index.xhtml").onClosed(function() {
-
-                    service.getAllAttendanceRecExpSet().done(function(listAttendance: Array<AttendanceRecordExportSettingDto>) {
-                        if (listAttendance === undefined || listAttendance.length == 0) {
-                            vm.attendanceRecordList(null);
+                        // for free setting
+                        if (!result.freeSettingLst || result.freeSettingLst.length === 0) {
+                            vm.freeSettingLst(null);
                             vm.selectedCodeA8_8(null);
-                            vm.enableSave(false)
-                            // $('#print').attr("disabled", "disabled")
-                            // $('#exportExcel').attr("disabled", "disabled")
+                            vm.enableSave(false);
                         } else {
-                            let ARESCode = getShared("currentARESCode");
-                            var sortArray = _.orderBy(listAttendance, [e => Number(e.code)], ['asc']);
+                            let sortArray = _.orderBy(result.freeSettingLst, [e => Number(e.code)], ['asc']);
                             _.map(sortArray, (item) => {
                                 item.code = _.padStart(item.code, 2, '0');
                             });
-                            vm.attendanceRecordList(sortArray);
+                            vm.freeSettingLst(sortArray);
                             if (ARESCode === undefined) {
                                 vm.selectedCodeA8_8(sortArray[0].code);
                             }
@@ -613,9 +585,7 @@ module nts.uk.com.view.kwr002.a {
                             }
                             vm.enableSave(true)
                         }
-
                         dfd.resolve();
-
                     });
                 });
                 nts.uk.ui.block.clear();
