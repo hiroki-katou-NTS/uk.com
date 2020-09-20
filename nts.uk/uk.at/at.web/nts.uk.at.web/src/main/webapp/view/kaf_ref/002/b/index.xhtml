@@ -16,6 +16,9 @@
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.sample.SampleTimeDuration
    				</com:ValidatorScript>
+   				<com:ValidatorScript>
+					nts.uk.shr.com.time.TimeWithDayAttr
+				</com:ValidatorScript>
    				
    				
    				<com:stylefile
@@ -119,7 +122,7 @@
 				
 				<div class="blockSecond">
 					<input class="inputBlockSecond" id="inputTimeKAF002"
-						data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
+						data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: {	value: time, required: true, inputFormat: 'time', constraint: 'TimeWithDayAttr', mode: 'time'
 													}"/>
 					
 					<div class="dropListBlockSecond" data-bind="visible: selectedCode() == 3, ntsComboBox: {

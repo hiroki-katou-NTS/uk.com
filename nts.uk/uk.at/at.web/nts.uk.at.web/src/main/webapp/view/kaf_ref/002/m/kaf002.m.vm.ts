@@ -73,14 +73,39 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if (value) {
                     if (value == 'tab-1') {
                         self.selectedTemp(0);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '370px');           
+                        } else {
+                            $('#tab-panel').css('width', '470px'); 
+                        }
                     } else if (value == 'tab-2') {
                         self.selectedTemp(1);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '510px');           
+                        } else {
+                            $('#tab-panel').css('width', '610px'); 
+                        }
                     } else if (value == 'tab-3') {
                         self.selectedTemp(5);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '370px');           
+                        } else {
+                            $('#tab-panel').css('width', '470px'); 
+                        }
                     } else if (value == 'tab-4') {
                         self.selectedTemp(2);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '370px');           
+                        } else {
+                            $('#tab-panel').css('width', '470px'); 
+                        }
                     } else if (value == 'tab-5') {
                         self.selectedTemp(4);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '370px');           
+                        } else {
+                            $('#tab-panel').css('width', '470px'); 
+                        }
                     }
                     
                 }
@@ -139,6 +164,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
         loadAll() {
             const self = this;
+            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                if (self.selectedTab() == 'tab-2') {
+                    $('#tab-panel').css('width', '510px');                 
+                } else {
+                    $('#tab-panel').css('width', '370px');                    
+                }
+            } else {
+                if (self.selectedTab() == 'tab-2') {
+                    $('#tab-panel').css('width', '610px');                     
+                } else {
+                    $('#tab-panel').css('width', '470px');                     
+                }
+            }
             if (_.isEmpty(self.dataSource)) return;
             
             _.each(self.dataSource, (item, index) => {
@@ -236,8 +274,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
             let optionGrid = { 
-                    width: '450px',
-                    height: '360px',
+                    width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '337px' : '437px',
+                    height: '300px',
                     dataSource: dataSource,
                     primaryKey: 'id',
                     virtualization: true,
@@ -291,8 +329,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                new ItemModel('2', '有償'),
                                new ItemModel('3', '組合')];
             let option2 = { 
-              width: '450px',
-              height: '360px',
+              width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '475px' : '575px',
+              height: '300px',
               dataSource: dataSource,
               primaryKey: 'id',
               virtualization: true,

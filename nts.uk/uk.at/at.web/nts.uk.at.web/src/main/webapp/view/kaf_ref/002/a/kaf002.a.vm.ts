@@ -7,6 +7,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
+    import alertError = nts.uk.ui.dialog.alertError;
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
@@ -116,18 +117,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             self.bindTabM(self.data);
             self.bindComment(self.data);
         }).fail(res => {
-            let param;
-                if (res.message && res.messageId) {
-                    param = {messageId: res.messageId, messageParams: res.parameterIds};
-                } else {
-
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds};
-                    }
-                }
-                self.$dialog.error(param);
+            alertError(res);
         }).always(() => {
             self.$blockui('hide');
         });
@@ -176,7 +166,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let vm = this;
         if (!_.isEmpty(listMes)) {
             let item = listMes.shift();
-            vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+            vm.$dialog.confirm({ messageId: item.msgID, messageParams: [] }).then((value) => {
                 if (value == 'yes') {
                     if (_.isEmpty(listMes)) {
                          return vm.registerData(res);
@@ -246,13 +236,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                     } );
                 })
                 .fail(res => {
-                    let param;
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds}
-                    }
-                    self.$dialog.error(param);
+                    alertError(res);
                 })
                 .always(err => {
                     self.$blockui("hide");
@@ -262,6 +246,16 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             self.$blockui("hide");
          })
         
+    }
+    showError(res: any) {
+        const self = this;
+        if (res) {
+            let  param = {
+                     messageId: res.messageId,
+                     messageParams: res.parameterIds
+             }
+            self.$dialog.error(param);
+         }
     }
     public register() {
         const self = this;
@@ -288,13 +282,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 console.log(res);
                 self.data = res;
             }).fail(res => {
-                let param;
-                if (res.message) {
-                    param = {message: res.message, messageParams: res.parameterIds};
-                } else {
-                    param = {messageId: res.messageId, messageParams: res.parameterIds}
-                }
-                self.$dialog.error(param);
+                self.showError(res);
             }).always(() => {
                 self.$blockui('hide');
             });

@@ -66,18 +66,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                 self.bindDataStart(self.data);
                 
             }).fail(res => {
-                let param;
-                if (res.message && res.messageId) {
-                    param = {messageId: res.messageId, messageParams: res.parameterIds};
-                } else {
-
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds};
-                    }
-                }
-                self.$dialog.error(param);
+                self.showError(res);
             }).always(() => {
                 self.$blockui('hide');
             });
@@ -115,18 +104,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     console.log(res);
                     self.data = res;
                 }).fail(res => {
-                    let param;
-                    if (res.message && res.messageId) {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds};
-                    } else {
-
-                        if (res.message) {
-                            param = {message: res.message, messageParams: res.parameterIds};
-                        } else {
-                            param = {messageId: res.messageId, messageParams: res.parameterIds};
-                        }
-                    }
-                    self.$dialog.error(param);
+                    self.showError(res);
                 }).always(() => {
                     self.$blockui('hide');
                 });
@@ -156,6 +134,16 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                         location.reload();
                     } );
                 })
+        }
+        showError(res: any) {
+            const self = this;
+            if (res) {
+                let  param = {
+                         messageId: res.messageId,
+                         messageParams: res.parameterIds
+                 }
+                self.$dialog.error(param);
+             }
         }
         public register() {
             console.log('register');
@@ -209,22 +197,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     } );
                 }
             }).fail(res => {
-                if (!res) {
-                    
-                    return;
-                }
-                let param;
-                if (res.message && res.messageId) {
-                    param = {messageId: res.messageId, messageParams: res.parameterIds};
-                } else {
-
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds};
-                    }
-                }
-                self.$dialog.error(param);
+                self.showError(res);
             }).always(() => {
                 self.$blockui('hide');
             });

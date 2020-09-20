@@ -83,18 +83,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.bindComment(self.data);
                     self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
-                    let param;
-                    if (res.message && res.messageId) {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds};
-                    } else {
-
-                        if (res.message) {
-                            param = {message: res.message, messageParams: res.parameterIds};
-                        } else {
-                            param = {messageId: res.messageId, messageParams: res.parameterIds};
-                        }
-                    }
-                    self.$dialog.error(param);
+                    self.showError(res);
                 }).always(() => {
                     self.$blockui('hide');
                 });
@@ -460,7 +449,16 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             params.eventUpdate(self.update.bind(self));
             
         }
-        
+        showError(res: any) {
+            const self = this;
+            if (res) {
+                let  param = {
+                         messageId: res.messageId,
+                         messageParams: res.parameterIds
+                 }
+                self.$dialog.error(param);
+             }
+        }
         update() {
             console.log('update');
             const self = this;
@@ -516,19 +514,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                  location.reload();
                              } );
                          }).fail(res => {
-                             if (!res) return;
-                             let param;
-                             if (res.message && res.messageId) {
-                                 param = {messageId: res.messageId, messageParams: res.parameterIds};
-                             } else {
-                 
-                                 if (res.message) {
-                                     param = {message: res.message, messageParams: res.parameterIds};
-                                 } else {
-                                     param = {messageId: res.messageId, messageParams: res.parameterIds};
-                                 }
-                             }
-                             self.$dialog.error(param);
+                             self.showError(res);
                          }).always(() => {
                              self.$blockui('hide');
                          });
