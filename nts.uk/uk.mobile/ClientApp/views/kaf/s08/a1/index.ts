@@ -84,6 +84,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
+        //this.kaf000_C_Params.input.displayAppReason == 0;
         if (vm.params) {
             console.log(vm.params);
             //vm.mode = false;
@@ -91,16 +92,24 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         }
         vm.fetchStart();
     }
-
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
         vm.checkNextButton();
-        if (vm.application.opAppReason == '' || vm.kaf000_B_Params.output.startDate == null) {
-            vm.hidden = true;
-            vm.scrollToTop();
+        if (vm.kaf000_C_Params.input.displayAppReason == 0) {
+            if (vm.kaf000_B_Params.output.startDate == null ) {
+                    vm.hidden = true;
+                    vm.scrollToTop();
 
-            return;
+                    return;
+                }
+        } else {
+            if (vm.kaf000_B_Params.output.startDate == null || vm.kaf000_C_Params.opAppReason == '' ) {
+                vm.hidden = true;
+                vm.scrollToTop();
+
+                return;
+            }
         }
         //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
         let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
@@ -108,6 +117,13 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         //check day > 31 days between 2 Dates
         if (Difference_In_Days > 31) {
             vm.$modal.error({ messageId: 'Msg_277' });
+
+            return;
+        }
+        //check PrePostArt enable/disable
+        if (this.kaf000_B_Params.input.newModeContent.appTypeSetting[0].canClassificationChange == false) {
+            vm.hidden = true;
+            vm.scrollToTop();
 
             return;
         }
