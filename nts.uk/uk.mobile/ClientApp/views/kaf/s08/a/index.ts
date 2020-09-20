@@ -1,8 +1,8 @@
 import { Vue } from '@app/provider';
 import { component, Prop } from '@app/core/component';
-import {KAFS08A1Component} from '../../s08/a1';
-import {KafS08A2Component} from '../../s08/a2';
-import {KafS08CComponent} from '../../s08/c';
+import { KAFS08A1Component } from '../../s08/a1';
+import { KafS08A2Component } from '../../s08/a2';
+import { KafS08CComponent } from '../../s08/c';
 import { StepwizardComponent } from '@app/components';
 
 @component({
@@ -12,42 +12,43 @@ import { StepwizardComponent } from '@app/components';
     template: require('./index.vue'),
     resource: require('./resources.json'),
     validations: {
-        derpartureTime : {
-            required :true,
+        derpartureTime: {
+            required: true,
         },
-        returnTime : {
-            required : true
+        returnTime: {
+            required: true
         }
     },
-    components : {
-        'kafs08a1' : KAFS08A1Component,
-        'kafs08a2' : KafS08A2Component,
-        'kafs08c' : KafS08CComponent,
+    components: {
+        'kafs08a1': KAFS08A1Component,
+        'kafs08a2': KafS08A2Component,
+        'kafs08c': KafS08CComponent,
         'step-wizard': StepwizardComponent,
     },
     constraints: []
 })
+
 export class KafS08AComponent extends Vue {
     public step: string = 'KAFS08_10';
 
     //public paramsFromA1: any | null = null;
-    public achievementDetails: [] = [] ;
+    public achievementDetails: [] = [];
     public comment: Object = {};
     public derpartureTime: number = null;
     public returnTime: number = null;
     public businessTripInfoOutput: Object = {};
     public application: Object = {};
-    public kafs00BParams: Object = {} ;
+    public kafs00BParams: Object = {};
     public appID: string = ' ';
-    public listDate: any[] = [] ;
+    public listDate: any[] = [];
     //thực hiện emit từ component con A1
     public ProcessNextToStepTwo(listDate,
                                 application,
                                 businessTripInfoOutput,
-                                departureTime,returnTime,
+                                departureTime, returnTime,
                                 achievementDetails,
                                 comment,
-                                ) {
+    ) {
         const vm = this;
         //Object date có được ở màn hình A1
         vm.derpartureTime = departureTime;
@@ -64,20 +65,51 @@ export class KafS08AComponent extends Vue {
         vm.application = application;
         //nhan listDate tu man hinh start
         vm.listDate = listDate;
-        //nhan ve appID tu man hinh a2
-
+        //nhan ve appID tu man hinh a
     }
 
     //thực hiện emit từ component con A2 đến C
     public ProcessNextToStepThree(appID) {
         const vm = this;
-        vm.appID = appID ;
+        vm.appID = appID;
         vm.step = 'KAFS08_12';
     }
 
     //thực hiện emit từ component con A2 quay trở lại A1
-    public ProcessPrevStepOne() {
+    public ProcessPrevStepOne(departureTime, returnTime) {
         const vm = this;
+        vm.derpartureTime = departureTime;
+        vm.returnTime = returnTime;
         vm.step = 'KAFS08_10';
     }
+}
+
+interface IParams {
+    appDetailScreenInfo: {
+        alternateExpiration: boolean,
+        application: {
+            appDate: string,
+            appID: string
+            appType: number,
+            employeeID: string
+            enteredPerson: string
+            inputDate: string
+            opAppEndDate: string
+            opAppReason: string
+            opAppStandardReasonCD: number,
+            opAppStartDate: string
+            opReversionReason: null
+            opStampRequestMode: null
+            prePostAtr: number,
+            reflectionStatus: {},
+            version: number
+        }
+        approvalATR: number
+        approvalLst: [],
+        authorComment: null
+        authorizableFlags: boolean,
+        outputMode: number,
+        reflectPlanState: number,
+        user: number,
+    };
 }

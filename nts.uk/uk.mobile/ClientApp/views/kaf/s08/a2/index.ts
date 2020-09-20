@@ -113,7 +113,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //hàm xử lý gọi dialog
     public selectRowDate(data) {
         const vm = this;
-        vm.$modal(KafS08DComponent, {rowDate : data,lstWorkDay:vm.lstWorkDay});
+        vm.$modal(KafS08DComponent, {rowDate : data,lstWorkDay:vm.lstWorkDay,businessTripInfoOutput : vm.data.businessTripInfoOutput});
     }
 
     //nhảy đến step three với các điều kiện
@@ -139,7 +139,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //quay trở lại step one
     public prevStepOne() {
         const vm = this;
-        vm.$emit('prevStepOne', {});
+        vm.$emit('prevStepOne',vm.departureTime,vm.returnTime);
     }
 
     //hàm check trước khi register

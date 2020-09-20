@@ -6,12 +6,30 @@ import { Kdl001Component } from '../../../kdl/001';
 
 interface Parameter {
     lstWorkDay: [];
-    rowDate: {};
+    rowDate: {
+        date: string
+    };
+    businessTripInfoOutput: {
+        appDispInfoStartup: {
+            appDispInfoWithDateOutput: {
+                opWorkTimeLst: []
+            }
+        }
+    };
 }
 
 const defaultParam = (): Parameter => ({
     lstWorkDay: [],
-    rowDate: {}
+    rowDate: {
+        date: ''
+    },
+    businessTripInfoOutput: {
+        appDispInfoStartup : {
+            appDispInfoWithDateOutput : {
+                opWorkTimeLst : []
+            }
+        }
+    }
 });
 
 @component({
@@ -25,13 +43,36 @@ export class KafS08DComponent extends Vue {
 
     public title: string = 'KafS08D';
     public test: Date = new Date(2020, 2, 12);
-    public timetowork: number = null;
-    public leavetime: number = null;
+    public seledtedWkTypeCDs = '001,002,003,004,005,006,007';
+    public seledtedWkTimeCDs = '001,002,003,004,005,006,007,008';
+    public isSelectWorkTime = 1;
+    public selectedWorkType: any = {};
+    public selectedWorkTime: any = {};
+    public isAddNone = 1;
 
 
     public openKDLS02() {
         const vm = this;
-        vm.$modal(KDL002Component, {}).then(console.log);
+        vm.$http.post('at', API.callKDLS02, {
+            businessTripInfoOutputDto: vm.params.businessTripInfoOutput,
+            selectedDate: vm.params.rowDate.date,
+        }).then((res: any) => {
+            let response = res.data;
+            
+            if (response) {
+                vm.$modal(KDL002Component, {
+                    seledtedWkTypeCDs: _.map(_.uniqBy(vm.params.lstWorkDay, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
+                    //selectedWorkTypeCD: this.model.workType.code,
+                    seledtedWkTimeCDs: _.map(vm.params.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
+                    //selectedWorkTimeCD: this.model.workTime.code,
+                    isSelectWorkTime: 1,
+                }).then(console.log);
+                debugger ;
+            } else {
+
+            }
+            //vm.registerData();
+        });
     }
 
     public openKDLS01() {
@@ -50,4 +91,8 @@ export class KafS08DComponent extends Vue {
         vm.$close();
     }
 }
+
+const API = {
+    callKDLS02: 'at/request/application/businesstrip/mobile/startKDLS02'
+};
 

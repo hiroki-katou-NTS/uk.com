@@ -5,7 +5,12 @@
       v-bind:items="['KAFS08_10', 'KAFS08_11', 'KAFS08_12']" 
       v-bind:selected="step" />
     </div>
-    <kafs08a1 @nextToStepTwo="ProcessNextToStepTwo" v-if="step == 'KAFS08_10'" />
+    <kafs08a1 
+    @nextToStepTwo="ProcessNextToStepTwo" 
+    v-if="step == 'KAFS08_10'" 
+    v-bind:derpartureTime="derpartureTime"
+    v-bind:returnTime="returnTime"
+    v-bind:appDetail="appDetail"/>
     <kafs08a2 
     @prevStepOne="ProcessPrevStepOne" 
     @nextToStepThree="ProcessNextToStepThree" 

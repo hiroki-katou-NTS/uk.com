@@ -11,12 +11,12 @@ import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
     name: 'kafs08a1',
     route: '/kaf/s08/a1',
     template: require('./index.vue'),
-    validations : {
-        derpartureTime : {
-            required : true
+    validations: {
+        derpartureTime: {
+            required: true
         },
-        returnTime : {
-            required : true
+        returnTime: {
+            required: true
         }
     },
     style: require('./style.scss'),
@@ -36,16 +36,18 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public step: string = 'KAFS08_10';
     public mode: Boolean = true;
     public isVisible: boolean = false;
-    public derpartureTime: number = null;
-    public returnTime: number = null;
     public isValidateAll: Boolean = true;
     public date: Date = null;
-    public listDate: any[] = [] ;
+    public listDate: any[] = [];
     public hidden: boolean = false;
 
+    @Prop({ default: null })
+    public params?: any;
 
-    @Prop({ default: (): IParamsB => ({output : {startDate : null,prePostAtr : 0, endDate : null}}) })
-    public readonly params?: IParamsB;
+    @Prop({ default: () => 0 }) public readonly derpartureTime !: number;
+
+    @Prop({ default: () => 0 }) public readonly returnTime !: number;
+
     public user: any;
     public title: String = 'KafS08A1';
     public data: any = 'data';
@@ -98,18 +100,27 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             vm.hidden = true;
             vm.scrollToTop();
 
-            return ;
+            return;
+        }
+        //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
+        let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
+        let Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+        //check day > 31 days between 2 Dates
+        if (Difference_In_Days > 31) {
+            vm.$modal.error({ messageId: 'Msg_277' });
+
+            return;
         }
         let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
         let businessTripInfoOutput = vm.data;
         //gửi comment sang màn hình A2
         let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-        this.$emit('nextToStepTwo',vm.listDate,this.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet);
+        this.$emit('nextToStepTwo', vm.listDate, this.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet);
     }
 
     //scroll to Top
     public scrollToTop() {
-        window.scrollTo(500,0);
+        window.scrollTo(500, 0);
     }
 
     //check button next
@@ -141,9 +152,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
-            
+
             if (_.isArray(res.errors)) {
-                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
             } else {
                 return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
             }
@@ -176,7 +187,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                     companyId: vm.user.companyId,
                     employeeId: vm.user.employeeId,
                     listDates: [],
-                    businessTripInfoOutput: vm.mode ? null : vm.data,
+                    businessTripInfoOutput: null
                     //businessTrip: vm.mode ? null : vm.data.appWorkChange
                 }).then((res: any) => {
                     if (!res) {
@@ -246,15 +257,22 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                     initSelectMultiDay: false
                 },
                 detailModeContent: null
-
-
             },
             output: {
                 prePostAtr: 0,
-                startDate: null,
-                endDate: null
+                startDate: new Date(),
+                endDate: new Date(),
             }
         };
+        // if mode edit
+        if (!vm.mode) {
+            paramb.input.detailModeContent = {
+                prePostAtr: vm.data.appDispInfoStartupOutput.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+                startDate: vm.data.appDispInfoStartupOutput.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
+                endDate: vm.data.appDispInfoStartupOutput.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
+                employeeName: _.isEmpty(vm.data.appDispInfoStartupOutput.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : vm.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+            };
+        }
         vm.kaf000_B_Params = paramb;
         if (vm.mode) {
             vm.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
@@ -356,12 +374,4 @@ const API = {
     startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
     checkBeforeRegister: 'at/request/application/businesstrip/mobile/checkBeforeRegister'
 };
-
-interface IParamsB {
-    output: {
-        startDate: Date | null,
-        prePostAtr: number,
-        endDate: Date | null,
-    };
-}
 
