@@ -12,8 +12,6 @@ module nts.uk.com.view.cli002.a {
 
   @bean()
   export class ScreenModel extends ko.ViewModel {
-    public logSettings: LogSettingModel[] = [];
-
     public systemList: KnockoutObservableArray<SystemTypeModel> = ko.observableArray([
       new SystemTypeModel({
         index: 0,
@@ -67,17 +65,20 @@ module nts.uk.com.view.cli002.a {
      */
     public register() {
       const vm = this;
-      vm.logSettings = _.map(vm.dataSourceItem(), item => new LogSettingModel({
+      const logSettings: LogSettingSaveDto[] = _.map(vm.dataSourceItem(), item => new LogSettingSaveDto({
         system: vm.selectedSystemCode(),
         programId: item.programId,
         menuClassification: item.menuClassification,
         loginHistoryRecord: item.logLoginDisplay ? 1 : 0,
-        editHistoryRecord: item.logUpdateDisplay ? 1 : 0,
-        bootHistoryRecord: item.logStartDisplay ? 1 : 0,
+        startHistoryRecord: item.logStartDisplay ? 1 : 0,
+        updateHistoryRecord: item.logUpdateDisplay ? 1 : 0,
       }));
+      const command = new LogSettingSaveCommand({
+        logSettings: logSettings
+      });
       // ログ設定更新
       vm.$blockui('grayout');
-      vm.$ajax(API.updateLogSetting, vm.logSettings)
+      vm.$ajax(API.updateLogSetting, command)
         .then(() => {
           vm.$blockui('clear');
           // 情報メッセージ（Msg_15）を表示する
@@ -98,9 +99,9 @@ module nts.uk.com.view.cli002.a {
           const listPG: PGInfomationModel[] = _.map(response, (item, index) => new PGInfomationModel({
             rowNumber: index + 1,
             functionName: item.functionName,
-            logLoginDisplay: false,
-            logStartDisplay: false,
-            logUpdateDisplay: false,
+            logLoginDisplay: item.loginHistoryRecord.usageCategory === 1,
+            logStartDisplay: item.bootHistoryRecord.usageCategory === 1,
+            logUpdateDisplay: item.editHistoryRecord.usageCategory === 1,
             programId: item.programId,
             menuClassification: item.menuClassification
           }));
@@ -263,15 +264,23 @@ module nts.uk.com.view.cli002.a {
     }
   }
 
-  export class LogSettingModel {
+  export class LogSettingSaveDto {
     system: number;
     programId: string;
     menuClassification: number;
     loginHistoryRecord: number;
-    editHistoryRecord: number;
-    bootHistoryRecord: number;
+    startHistoryRecord: number;
+    updateHistoryRecord: number;
 
-    constructor(init?: Partial<LogSettingModel>) {
+    constructor(init?: Partial<LogSettingSaveDto>) {
+      $.extend(this, init);
+    }
+  }
+
+  export class LogSettingSaveCommand {
+    logSettings: LogSettingSaveDto[];
+
+    constructor(init?: Partial<LogSettingSaveCommand>) {
       $.extend(this, init);
     }
   }

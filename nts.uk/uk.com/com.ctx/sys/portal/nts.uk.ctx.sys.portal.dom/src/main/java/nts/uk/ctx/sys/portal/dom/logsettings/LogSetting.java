@@ -109,7 +109,7 @@ public class LogSetting extends AggregateRoot {
 	 *
 	 */
 	public static interface MementoSetter {
-		void setSystem(int system);
+		void setSystem(Integer system);
 
 		void setProgramId(String programId);
 

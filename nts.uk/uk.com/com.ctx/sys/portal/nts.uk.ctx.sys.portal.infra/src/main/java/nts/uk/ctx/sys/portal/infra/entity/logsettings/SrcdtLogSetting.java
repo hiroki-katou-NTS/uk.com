@@ -62,7 +62,7 @@ public class SrcdtLogSetting extends UkJpaEntity implements Serializable, LogSet
 	}
 	
 	@Override
-	public void setSystem(int system) {
+	public void setSystem(Integer system) {
 		if (this.srcdtLogSettingPK == null) {
 			this.srcdtLogSettingPK = new SrcdtLogSettingPK();
 		}

@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.app.query.pginfomation;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,14 +10,13 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSettingRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -73,43 +73,51 @@ public class PGInfomationQueryFinder {
 	 * @return
 	 */
 	private List<PGInfomationDto> findPGList(List<StandardMenu> standardMenus, List<LogSetting> logSettings) {
-		boolean programIdInCharge = logSettings.stream()
-				.anyMatch(l -> StringUtils.isNotEmpty(l.getProgramId()));
 		return standardMenus.stream()
 				.map((item) -> {
+					Optional<LogSetting> oLogSetting = logSettings.stream()
+							.filter(logSetting -> logSetting.getProgramId().equals(item.getProgramId()))
+							.findFirst();
+					
 					// Step ・機能名　＝　標準メニュー．表示名称
 					String functionName = item.getDisplayName().v();
 					
 					// Step ・ログイン履歴の記録．活性区分　＝　標準メニュー．ログイン履歴表示区分．表示区分
-					Integer logLoginDisplay = item.getLogLoginDisplay();
+					NotUseAtr logLoginDisplay = item.getLogSettingDisplay().getLogLoginDisplay();
 					// Step ・ログイン履歴の記録．使用区分
 					// if (ログイン履歴表示区分．表示区分　＝　False　OR　List＜ログ設定＞の担当プログラムID　がない)　－＞　＝　False　（＃111212を対応　メニューコードじゃなくてプログラムID）
 					// else ー＞　＝　ログ設定．ログイン履歴の記録．使用区分
-					Integer recordLoginDisplay = (logLoginDisplay == 0 || !programIdInCharge) ? 0 : logLoginDisplay;
+					Integer recordLoginDisplay = (logLoginDisplay.equals(NotUseAtr.NOT_USE) || !oLogSetting.isPresent())
+							? 0
+							: oLogSetting.get().getLoginHistoryRecord().value;
 					TargetSettingDto loginHistoryRecord = TargetSettingDto.builder()
-							.activeCategory(logLoginDisplay)
+							.activeCategory(logLoginDisplay.value)
 							.usageCategory(recordLoginDisplay)
 							.build();
 
 					// Step ・起動履歴の記録．活性区分　＝　標準メニュー．起動履歴表示区分．表示区分
-					Integer logStartDisplay = item.getLogStartDisplay();
+					NotUseAtr logStartDisplay = item.getLogSettingDisplay().getLogStartDisplay();
 					// Step ・起動履歴の記録．使用区分　
 					// if (起動履歴の記録．活性区分　＝　False　OR　List＜ログ設定＞の担当プログラムID　がない)　－＞　＝　False　（＃111212を対応　メニューコードじゃなくてプログラムID）
 					// else ー＞　＝　ログ設定．起動履歴の記録．使用区分
-					Integer recordStartDisplay = (logStartDisplay == 0 || !programIdInCharge) ? 0 : logStartDisplay;
+					Integer recordStartDisplay = (logStartDisplay.equals(NotUseAtr.NOT_USE) || !oLogSetting.isPresent())
+							? 0
+							: oLogSetting.get().getStartHistoryRecord().value;
 					TargetSettingDto startHistoryRecord = TargetSettingDto.builder()
-							.activeCategory(logStartDisplay)
+							.activeCategory(logStartDisplay.value)
 							.usageCategory(recordStartDisplay)
 							.build();
 
 					// Step ・修正履歴の記録．活性区分　＝　標準メニュー．修正履歴表示区分．表示区分
-					Integer logUpdateDisplay = item.getLogUpdateDisplay();
+					NotUseAtr logUpdateDisplay = item.getLogSettingDisplay().getLogUpdateDisplay();
 					// Step 修正履歴の記録．使用区分
 					// if (修正履歴の記録．活性区分　＝　False　OR　List＜ログ設定＞の担当プログラムID　がない)　－＞　＝　False　（＃111212を対応　メニューコードじゃなくてプログラムID）
 					// else ー＞　＝　ログ設定．修正履歴の記録．使用区分
-					Integer recordUpdateDisplay = (logUpdateDisplay == 0 || !programIdInCharge) ? 0 : logUpdateDisplay;
+					Integer recordUpdateDisplay = (logUpdateDisplay.equals(NotUseAtr.NOT_USE) || !oLogSetting.isPresent())
+							? 0
+							: oLogSetting.get().getUpdateHistoryRecord().value;
 					TargetSettingDto updateHistoryRecord = TargetSettingDto.builder()
-							.activeCategory(logUpdateDisplay)
+							.activeCategory(logUpdateDisplay.value)
 							.usageCategory(recordUpdateDisplay)
 							.build();
 
