@@ -1,7 +1,27 @@
 module nts.uk.at.view.kaf002_ref.m.viewmodel {
+    const template = `
+        
+<div id="tab-panel" style="width: 485px !important;"
+    data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}, if: tabs">
+
+
+    <!-- ko foreach: nameGrids, -->
+    <div style="padding-bottom: 20px"
+        data-bind="attr: {'role': 'tabpanel','class': 'tab-content-'+ String($index() +1) + ' ui-tabs-panel ui-corner-bottom ui-widget-content ' + ($index() +1 == 1 ? '' : 'disappear'), 'id': 'tab-'+ String($index() +1), 'aria-labelledby': 'ui-id-' + String($index() +1) , 'aria-hidden': $index() +1 == 1 ? 'false' : 'true'}">
+        <table data-bind="attr: {'id': $data}"></table>
+
+    </div>
+    <!-- /ko -->
+    
+
+</div>
+
+        
+    `
+    
     @component( {
         name: 'kaf002-m',
-        template: '/nts.uk.at.web/view/kaf_ref/002/m/index.html'
+        template: template
     } )
     class Kaf002MViewModel extends ko.ViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
