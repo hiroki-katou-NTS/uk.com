@@ -267,7 +267,7 @@ module nts.uk.com.view.kwr002.a {
                         dfd.resolve();
                     });
                 });
-                
+
                 service.getClosureMonth().done((dto) => {
                     const startMonth = dto.currentMonth;
                     const endMonth = dto.currentMonth;
@@ -609,7 +609,7 @@ module nts.uk.com.view.kwr002.a {
                             , 0
                             , ''
                             , '');
-                        service.saveCharacteristic(companyId, userId, attendanceRecordOutputConditionsDto);    
+                        service.saveCharacteristic(companyId, userId, attendanceRecordOutputConditionsDto);
                     }
                     dfd.resolve(data);
                 });
@@ -730,9 +730,8 @@ module nts.uk.com.view.kwr002.a {
             mode: number;
             closureId: number;
             selectionType: number;
-            layoutId: string;
 
-            constructor(employeeList: Array<Employee>, startDate: Date, endDate: Date, layout: string, mode: number, closureId: number, selectionType: number, layoutId: string) {
+            constructor(employeeList: Array<Employee>, startDate: Date, endDate: Date, layout: string, mode: number, closureId: number, selectionType: number) {
                 this.employeeList = employeeList;
                 this.startDate = startDate;
                 this.endDate = endDate;
@@ -740,7 +739,6 @@ module nts.uk.com.view.kwr002.a {
                 this.mode = mode;
                 this.closureId = closureId;
                 this.selectionType = selectionType;
-                this.layoutId = layoutId;
             }
         }
 
