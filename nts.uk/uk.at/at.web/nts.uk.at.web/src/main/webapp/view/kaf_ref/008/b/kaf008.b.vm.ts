@@ -127,6 +127,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
         }
 
+        // 起動する
         createParamKAF008() {
             let vm = this;
             vm.$blockui('show');
@@ -184,6 +185,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             }).always(() => vm.$blockui('hide'));
         }
 
+        // 出張申請を更新登録で更新する
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;

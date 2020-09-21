@@ -273,6 +273,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
         }
 
+        // 勤務種類コードを入力する
         changeWorkTypeCode(data: BusinessTripOutput, currentContent: any, wkCode: string, index: number) {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(data);
@@ -316,6 +317,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
+        // 就業時間帯コードを入力する
         changeWorkTimeCode(data: BusinessTripOutput, currentContent: any, timeCode: string, index: number) {
             const vm = this;
 
@@ -365,6 +367,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
+        // 勤務種類コードを入力する
         changeTypeCodeScreenB(data: BusinessTripOutput, content: any, codeChanged: string, index: number) {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(data);
@@ -408,6 +411,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
+        // 就業時間帯コードを入力する
         changeWorkTimeCodeScreenB(output: BusinessTripOutput, data: any, codeChanged: string, index: number) {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(output);
@@ -454,6 +458,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
+        // 勤務就業の選択を実行する
         openDialogKdl003(data: TripContentDisp) {
             const vm = this;
             let dispFlag: boolean = true;
