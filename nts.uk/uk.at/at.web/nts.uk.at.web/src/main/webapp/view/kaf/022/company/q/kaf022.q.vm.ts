@@ -28,11 +28,11 @@ module nts.uk.at.view.kaf022.q.viewmodel {
 
         constructor() {
             const self = this;
-            self.appReasonDispAtr = ko.observable(0);
-            self.preExcessAtr = ko.observable(0);
-            self.atdExcessAtr = ko.observable(0);
-            self.warningDays = ko.observable(0);
-            self.dispWorkplaceNameAtr = ko.observable(0);
+            self.appReasonDispAtr = ko.observable(1);
+            self.preExcessAtr = ko.observable(1);
+            self.atdExcessAtr = ko.observable(1);
+            self.warningDays = ko.observable(1);
+            self.dispWorkplaceNameAtr = ko.observable(1);
 
             $("#fixed-table-q1").ntsFixedTable({});
             $("#fixed-table-q2").ntsFixedTable({});
@@ -42,11 +42,11 @@ module nts.uk.at.view.kaf022.q.viewmodel {
             const self = this;
             let data = allData.approvalListDisplaySetting;
             if (data) {
-                self.appReasonDispAtr(data.appReasonDispAtr || 0);
-                self.preExcessAtr(data.preExcessAtr || 0);
-                self.atdExcessAtr(data.atdExcessAtr || 0);
-                self.warningDays(data.warningDays || 0);
-                self.dispWorkplaceNameAtr(data.dispWorkplaceNameAtr || 0);
+                self.appReasonDispAtr(data.appReasonDispAtr);
+                self.preExcessAtr(data.preExcessAtr);
+                self.atdExcessAtr(data.atdExcessAtr);
+                self.warningDays(data.warningDays);
+                self.dispWorkplaceNameAtr(data.dispWorkplaceNameAtr);
             }
         }
 

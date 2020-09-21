@@ -1,7 +1,27 @@
 module nts.uk.at.view.kaf002_ref.m.viewmodel {
+    const template = `
+        
+<div id="tab-panel" style="width: 485px !important;"
+    data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}, if: tabs">
+
+
+    <!-- ko foreach: nameGrids, -->
+    <div style="padding-bottom: 20px"
+        data-bind="attr: {'role': 'tabpanel','class': 'tab-content-'+ String($index() +1) + ' ui-tabs-panel ui-corner-bottom ui-widget-content ' + ($index() +1 == 1 ? '' : 'disappear'), 'id': 'tab-'+ String($index() +1), 'aria-labelledby': 'ui-id-' + String($index() +1) , 'aria-hidden': $index() +1 == 1 ? 'false' : 'true'}">
+        <table data-bind="attr: {'id': $data}"></table>
+
+    </div>
+    <!-- /ko -->
+    
+
+</div>
+
+        
+    `
+    
     @component( {
         name: 'kaf002-m',
-        template: '/nts.uk.at.web/view/kaf_ref/002/m/index.html'
+        template: template
     } )
     class Kaf002MViewModel extends ko.ViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -73,14 +93,39 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 if (value) {
                     if (value == 'tab-1') {
                         self.selectedTemp(0);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '370px');           
+                        } else {
+                            $('#tab-panel').css('width', '470px'); 
+                        }
                     } else if (value == 'tab-2') {
                         self.selectedTemp(1);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '510px');           
+                        } else {
+                            $('#tab-panel').css('width', '610px'); 
+                        }
                     } else if (value == 'tab-3') {
                         self.selectedTemp(5);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '370px');           
+                        } else {
+                            $('#tab-panel').css('width', '470px'); 
+                        }
                     } else if (value == 'tab-4') {
                         self.selectedTemp(2);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '370px');           
+                        } else {
+                            $('#tab-panel').css('width', '470px'); 
+                        }
                     } else if (value == 'tab-5') {
                         self.selectedTemp(4);
+                        if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                            $('#tab-panel').css('width', '370px');           
+                        } else {
+                            $('#tab-panel').css('width', '470px'); 
+                        }
                     }
                     
                 }
@@ -139,6 +184,19 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
         loadAll() {
             const self = this;
+            if (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) {
+                if (self.selectedTab() == 'tab-2') {
+                    $('#tab-panel').css('width', '510px');                 
+                } else {
+                    $('#tab-panel').css('width', '370px');                    
+                }
+            } else {
+                if (self.selectedTab() == 'tab-2') {
+                    $('#tab-panel').css('width', '610px');                     
+                } else {
+                    $('#tab-panel').css('width', '470px');                     
+                }
+            }
             if (_.isEmpty(self.dataSource)) return;
             
             _.each(self.dataSource, (item, index) => {
@@ -236,8 +294,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
             let optionGrid = { 
-                    width: '450px',
-                    height: '360px',
+                    width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '337px' : '437px',
+                    height: '300px',
                     dataSource: dataSource,
                     primaryKey: 'id',
                     virtualization: true,
@@ -291,8 +349,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                new ItemModel('2', '有償'),
                                new ItemModel('3', '組合')];
             let option2 = { 
-              width: '450px',
-              height: '360px',
+              width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '475px' : '575px',
+              height: '300px',
               dataSource: dataSource,
               primaryKey: 'id',
               virtualization: true,

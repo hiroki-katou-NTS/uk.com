@@ -12,13 +12,93 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import TimeStampAppOtherDto = nts.uk.at.view.kaf002_ref.a.viewmodel.TimeStampAppOtherDto;
     import TimeZone = nts.uk.at.view.kaf002_ref.a.viewmodel.TimeZone;
     import DestinationTimeZoneAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.DestinationTimeZoneAppDto;
+    import NtsTabPanelModel = nts.uk.ui.NtsTabPanelModel;
+    const template = `
+        
+<div >
+    <div data-bind="component: { name: 'kaf000-b-component1', 
+                                params: {
+                                    appType: appType,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput  
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component2', 
+                                params: {
+                                    appType: appType,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component3', 
+                                params: {
+                                    appType: appType,
+                                    approvalReason: approvalReason,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div class="table">
+        <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
+                            params: {
+                                appType: appType,
+                                application: application,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                            } }"></div>
+        <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
+                            params: {
+                                appType: appType,
+                                application: application,
+                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+                            } }"></div>
+    </div>
+    <div data-bind="component: { name: 'kaf000-b-component5', 
+                                params: {
+                                    appType: appType,
+                                    application: application,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component6', 
+                                params: {
+                                    appType: appType,
+                                    application: application,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+
+    
+
+    <!-- C5 -->
+
+    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="width: auto !important"></div>
+    <div style="display: block">
+        <!-- C6_1 -->
+        <div style="float: left; padding-top: 10px;" data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
+        <!-- C6_2 -->
+        <div data-bind="if: isM">
+            <div 
+                data-bind="component: {name: 'kaf002-m', params: {selectedTab: selectedTab, tabs: tabs, dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr}}"
+                style="margin-left: 121px; width: 450px !important"></div>      
+        </div>
+    </div>
+    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="width: auto !important"></div>
+        <div data-bind="component: { name: 'kaf000-b-component7', 
+                                params: {
+                                    appType: appType,
+                                    application: application,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component8', 
+                                params: {
+                                    appType: appType,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+
+</div>
+
+    
+    `
+    
     @component({
         name: 'kaf002-c',
-        template: '/nts.uk.at.web/view/kaf_ref/002/c/index.html'
+        template: template
     })
     class Kaf002CViewModel extends ko.ViewModel {
        printContentOfEachAppDto: KnockoutObservable<PrintContentOfEachAppDto>;
-       tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
+       tabs: KnockoutObservableArray<NtsTabPanelModel> = ko.observableArray(null);
        appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
        appDispInfoStartupOutput: any;
        approvalReason: KnockoutObservable<string>;
@@ -43,6 +123,13 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       isPreAtr: KnockoutObservable<boolean> = ko.observable(true);
       comment1: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
+      // tab visible condition
+      isAttendence = false;
+      isTemporaryAttendence = false;
+      isOutingHourse = false;
+      isBreakTime = false;
+      isParentHours = false;
+      isNurseTime = false;
       data: any;
     
     
@@ -83,18 +170,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.bindComment(self.data);
                     self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
-                    let param;
-                    if (res.message && res.messageId) {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds};
-                    } else {
-
-                        if (res.message) {
-                            param = {message: res.message, messageParams: res.parameterIds};
-                        } else {
-                            param = {messageId: res.messageId, messageParams: res.parameterIds};
-                        }
-                    }
-                    self.$dialog.error(param);
+                    self.showError(res);
                 }).always(() => {
                     self.$blockui('hide');
                 });
@@ -128,12 +204,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            });
        } 
        
-       isAttendence = false;
-       isTemporaryAttendence = false;
-       isOutingHourse = false;
-       isBreakTime = false;
-       isParentHours = false;
-       isNurseTime = false;
+       
        setExistCondition1(stamp: number) {
            const self = this;
            if (stamp == 0) {
@@ -460,7 +531,16 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             params.eventUpdate(self.update.bind(self));
             
         }
-        
+        showError(res: any) {
+            const self = this;
+            if (res) {
+                let  param = {
+                         messageId: res.messageId,
+                         messageParams: res.parameterIds
+                 }
+                self.$dialog.error(param);
+             }
+        }
         update() {
             console.log('update');
             const self = this;
@@ -495,79 +575,49 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             }
             self.$blockui("show");
             
-            self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
+            return self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
             .then(isValid => {
                 if ( isValid ) {
                     return true;
                 }
             }).then(result => {
-                if(!result) return;
-                
-                     self.$ajax(API.checkUpdate, commandCheck)
-                         .then(res => {
-                             if (_.isEmpty(res)) {
-                               return self.$ajax(API.update, command);
-                              } else {
-                                   let listConfirm = _.clone(res);
-                                   return self.handleConfirmMessage(listConfirm, command);
-                              }
-                         }).done(res => {
-                             this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                                 location.reload();
-                             } );
-                         }).fail(res => {
-                             if (!res) return;
-                             let param;
-                             if (res.message && res.messageId) {
-                                 param = {messageId: res.messageId, messageParams: res.parameterIds};
-                             } else {
-                 
-                                 if (res.message) {
-                                     param = {message: res.message, messageParams: res.parameterIds};
-                                 } else {
-                                     param = {messageId: res.messageId, messageParams: res.parameterIds};
-                                 }
-                             }
-                             self.$dialog.error(param);
-                         }).always(() => {
-                             self.$blockui('hide');
-                         });
+                if(!result) return; 
+                return self.$ajax(API.checkUpdate, commandCheck);
+            }).then(res => {
+                if (res == undefined) return;
+                if (_.isEmpty(res)) {
+                  return self.$ajax(API.update, command);
+                 } else {
+                      let listConfirm = _.clone(res);
+                      return self.handleConfirmMessage(listConfirm, command);
+                 }
+            }).done(result => {
+                if (result != undefined) {
+                    self.$dialog.info({messageId: "Msg_15"}).then(() => {
+                        location.reload();
+                    });                
+                }
             })
-//            .then(res => {
-//                if(!res) return;
-//                if (_.isEmpty(res)) {
-//                    return self.$ajax(API.update, command);
-//                } else {
-//                    let listConfirm = _.clone(res);
-//                    return self.handleConfirmMessage(listConfirm, command);
-//                }
-//            })
-            
-            .always(() => {
-                self.$blockui('hide');
-            });
+            .fail(res => {
+                self.showError(res);
+            })
+            .always(err => {
+                self.$blockui("hide");
+             });
             
             
-//            self.$ajax(API.update, command)
-//                .done(res => {
-//                    console.log(res);
-//                }).fail(res => {
-//                    console.log(res);
-//                }).always(() => {
-//                    self.$blockui('hide');
-//                })
         }
         
         public handleConfirmMessage(listMes: any, res: any) {
-            let vm = this;
+            let self = this;
             if (!_.isEmpty(listMes)) {
                 let item = listMes.shift();
-                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                return self.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst }).then((value) => {
                     if (value == 'yes') {
                         if (_.isEmpty(listMes)) {
-                             return vm.registerData(res);
+                             return self.registerData(res);
                         } else {
-                             vm.handleConfirmMessage(listMes, res);
+                             return self.handleConfirmMessage(listMes, res);
                         }
 
                     }
@@ -575,14 +625,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             }
         }
         registerData(command) {
-            let vm = this; 
-            return vm.$ajax( API.register, command )
-                .done( resRegister => {
-                    console.log( resRegister );
-                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                        location.reload();
-                    } );
-                })
+            let self = this; 
+            return self.$ajax(API.update, command);              
         }
         
         public createAppStamp() {
@@ -691,9 +735,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         
     }
     const API = {
-            start: "at/request/application/stamp/startStampApp",
-            checkRegister: "at/request/application/stamp/checkBeforeRegister",
-            register: "at/request/application/stamp/register",
             getDetail: "at/request/application/stamp/detailAppStamp",
             update: "at/request/application/stamp/updateNew",
             checkUpdate: "at/request/application/stamp/checkBeforeUpdate"

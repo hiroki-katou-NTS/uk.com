@@ -3,10 +3,67 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
 	import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
 	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
-    
+    const template = `
+        <div>
+    <div data-bind="component: { name: 'kaf000-b-component1', 
+                                params: {
+                                    appType: appType,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput  
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component2', 
+                                params: {
+                                    appType: appType,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component3', 
+                                params: {
+                                    appType: appType,
+                                    approvalReason: approvalReason,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div class="table">
+        <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
+                            params: {
+                                appType: appType,
+                                application: application,
+                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                            } }"></div>
+        <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
+                            params: {
+                                appType: appType,
+                                application: application,
+                                appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+                            } }"></div>
+    </div>
+    <div data-bind="component: { name: 'kaf000-b-component5', 
+                                params: {
+                                    appType: appType,
+                                    application: application,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component6', 
+                                params: {
+                                    appType: appType,
+                                    application: application,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf009-share', params: {dataFetch: dataFetch, model:model, mode: mode } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component7', 
+                                params: {
+                                    appType: appType,
+                                    application: application,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+    <div data-bind="component: { name: 'kaf000-b-component8', 
+                                params: {
+                                    appType: appType,
+                                    appDispInfoStartupOutput: appDispInfoStartupOutput
+                                } }"></div>
+</div>
+    `
     @component({
         name: 'kaf009-b',
-        template: '/nts.uk.at.web/view/kaf_ref/009/b/index.html'
+        template: template
     })
     class Kaf009BViewModel extends ko.ViewModel {
         

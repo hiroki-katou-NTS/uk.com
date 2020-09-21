@@ -7,12 +7,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
+    import alertError = nts.uk.ui.dialog.alertError;
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
         isSendMail: KnockoutObservable<Boolean> = ko.observable(false);
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);
-        dataSourceOb: KnockoutObservableArray<any>;
+        dataSourceOb: KnockoutObservableArray<any> = null;
         application: KnockoutObservable<Application>;
         selectedTab: KnockoutObservable<string> = ko.observable('');
         isM: KnockoutObservable<boolean> = ko.observable(false);
@@ -116,18 +117,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             self.bindTabM(self.data);
             self.bindComment(self.data);
         }).fail(res => {
-            let param;
-                if (res.message && res.messageId) {
-                    param = {messageId: res.messageId, messageParams: res.parameterIds};
-                } else {
-
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds};
-                    }
-                }
-                self.$dialog.error(param);
+            self.showError(res);
         }).always(() => {
             self.$blockui('hide');
         });
@@ -176,12 +166,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let vm = this;
         if (!_.isEmpty(listMes)) {
             let item = listMes.shift();
-            vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+            return vm.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst }).then((value) => {
                 if (value == 'yes') {
                     if (_.isEmpty(listMes)) {
                          return vm.registerData(res);
                     } else {
-                         vm.handleConfirmMessage(listMes, res);
+                         return vm.handleConfirmMessage(listMes, res);
                     }
 
                 }
@@ -189,14 +179,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }
     }
     registerData(command) {
-        let vm = this; 
-        return vm.$ajax( API.register, command )
-            .done( resRegister => {
-                console.log( resRegister );
-                this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                    location.reload();
-                } );
-            })
+        let self = this; 
+        return self.$ajax(API.register, command);       
     }
     
     public createCommandCheckRegister() {
@@ -222,46 +206,48 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return true;
             }
         }).then(result => {
-                if(!result) return;
-                self.$ajax(API.checkRegister, command)
-                .then(res => {
-                        let command = {
-                                applicationDto: ko.toJS(self.application),
-                                appStampDto: data.appStampOptional,
-                                appStampOutputDto: self.data,
-                                recoderFlag: RECORD_FLAG_STAMP
-                        };
-//                        return self.$ajax(API.register, command);
-                        if (_.isEmpty(res)) {
-                            return self.$ajax(API.register, command);
-                        } else {
-                            let listConfirm = _.clone(res);
-                            return self.handleConfirmMessage(listConfirm, command);
-                        }
+            if(!result) return;
+            return self.$ajax(API.checkRegister, command);
+             
+        }).then(res => {
+            if (res == undefined) return;
+            let command = {
+                    applicationDto: ko.toJS(self.application),
+                    appStampDto: data.appStampOptional,
+                    appStampOutputDto: self.data,
+                    recoderFlag: RECORD_FLAG_STAMP
+            };
+            if (_.isEmpty(res)) {
+                return self.$ajax(API.register, command);
+            } else {
+                let listConfirm = _.clone(res);
+                return self.handleConfirmMessage(listConfirm, command);
+            }
 
-                })
-                .done(res => {
-                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                        location.reload();
-                    } );
-                })
-                .fail(res => {
-                    let param;
-                    if (res.message) {
-                        param = {message: res.message, messageParams: res.parameterIds};
-                    } else {
-                        param = {messageId: res.messageId, messageParams: res.parameterIds}
-                    }
-                    self.$dialog.error(param);
-                })
-                .always(err => {
-                    self.$blockui("hide");
-                })
+        }).done(result => {
+            if (result != undefined) {
+                self.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                    location.reload();
+                });                
+            }
+        })
+        .fail(res => {
+            self.showError(res);
         })
         .always(err => {
             self.$blockui("hide");
          })
         
+    }
+    showError(res: any) {
+        const self = this;
+        if (res) {
+            let  param = {
+                     messageId: res.messageId,
+                     messageParams: res.parameterIds
+             }
+            self.$dialog.error(param);
+         }
     }
     public register() {
         const self = this;
@@ -287,14 +273,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             .done((res: any) => {
                 console.log(res);
                 self.data = res;
+                self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                self.bindTabM(self.data);
+                self.bindComment(self.data);
             }).fail(res => {
-                let param;
-                if (res.message) {
-                    param = {message: res.message, messageParams: res.parameterIds};
-                } else {
-                    param = {messageId: res.messageId, messageParams: res.parameterIds}
-                }
-                self.$dialog.error(param);
+                self.showError(res);
             }).always(() => {
                 self.$blockui('hide');
             });
@@ -304,7 +287,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         let opActualContentDisplayLst = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.opActualContentDisplayLst;
         let opAchievementDetail = opActualContentDisplayLst[0].opAchievementDetail;
         if (_.isNull(opAchievementDetail)) {
-            
+            // should reload component
+            self.initData();
             return;
         }
         let stampRecord = opAchievementDetail.stampRecordOutput;
@@ -448,7 +432,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     }
     initData() {
             const self = this;
-            self.dataSourceOb = ko.observableArray( [] );
+            // reload component at changeData without not actual data
+            if (_.isNull(self.dataSourceOb)) {
+                self.dataSourceOb = ko.observableArray( [] );
+                
+            } 
     
             let items1 = (function() {
                 let list = []; 

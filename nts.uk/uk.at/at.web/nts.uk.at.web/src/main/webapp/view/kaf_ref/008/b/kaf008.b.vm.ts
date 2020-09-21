@@ -9,7 +9,68 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 
     @component({
         name: 'kaf008-b',
-        template: '/nts.uk.at.web/view/kaf_ref/008/b/index.html'
+        template: `
+            <div>
+                <div data-bind="component: { name: 'kaf000-b-component1',
+                                            params: {
+                                                appType: appType,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+                <div data-bind="component: { name: 'kaf000-b-component2',
+                                            params: {
+                                                appType: appType,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+                <div data-bind="component: { name: 'kaf000-b-component3',
+                                            params: {
+                                                appType: appType,
+                                                approvalReason: approvalReason,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+                <div class="table">
+                    <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
+                                        params: {
+                                            appType: appType,
+                                            application: application,
+                                            appDispInfoStartupOutput: appDispInfoStartupOutput
+                                        } }"></div>
+                    <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
+                                        params: {
+                                            appType: appType,
+                                            application: application,
+                                            appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+                                        } }"></div>
+                </div>
+                <div data-bind="component: { name: 'kaf000-b-component5',
+                                            params: {
+                                                appType: appType,
+                                                application: application,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+                <div data-bind="component: { name: 'kaf000-b-component6',
+                                            params: {
+                                                appType: appType,
+                                                application: application,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+                <div data-bind="component: { name: 'kaf008-share', params: {
+                                                mode: mode,
+                                                appType: appType,
+                                                dataFetch: dataFetch
+                                           } }"></div>
+                <div data-bind="component: { name: 'kaf000-b-component7',
+                                            params: {
+                                                appType: appType,
+                                                application: application,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+                <div data-bind="component: { name: 'kaf000-b-component8',
+                                            params: {
+                                                appType: appType,
+                                                appDispInfoStartupOutput: appDispInfoStartupOutput
+                                            } }"></div>
+            </div>
+        `
     })
     class Kaf008BViewModel extends ko.ViewModel {
 
@@ -27,6 +88,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             businessTripOutput: null
         });
         printContent: any;
+        isSendMail: KnockoutObservable<Boolean>;
 
         created(params: {
             application: any,
@@ -38,11 +100,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
-            if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
-                vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? Mode.Edit : Mode.View;
-            }
             vm.createParamKAF008();
             vm.printContent = params.printContentOfEachAppDto;
+            vm.approvalReason = params.approvalReason;
+            vm.isSendMail = ko.observable(true);
 
             // gui event con ra viewmodel cha
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
@@ -110,8 +171,6 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                         };
                     });
 
-                    let cloneData = _.clone(vm.dataFetch());
-
                     vm.dataFetch().businessTripContent.departureTime(businessTripContent.departureTime);
                     vm.dataFetch().businessTripContent.returnTime(businessTripContent.returnTime);
                     vm.dataFetch().businessTripContent.tripInfos = eachDetail;
@@ -153,29 +212,39 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                     }
                 }).fail(err => {
                     let param;
-                    switch (err.messageId) {
-                        case "Msg_24" :
-                            param = err.parameterIds[0] + err.message;
-                            break;
-                        case "Msg_23" :
-                            param = err.parameterIds[0] + err.message;
-                            break;
-                        default: {
-                            if (err.message) {
-                                param = {message: err.message, messageParams: err.parameterIds};
-                            } else {
-                                param = {messageId: err.messageId, messageParams: err.parameterIds}
-                            }
-                            break;
-                        }
+                    if (err.messageId == "Msg_23" || err.messageId == "Msg_24") {
+                        err.message = err.parameterIds[0] + err.message;
+                        param = err;
+                        vm.$dialog.error(param);
+                    } else {
+                        vm.handleError(err);
                     }
-                    vm.$dialog.error(param);
                 }).always(() => vm.$blockui("hide"));
         }
 
         dispose() {
             const vm = this;
 
+        }
+
+        handleError(err: any) {
+            const vm = this;
+            let param;
+            if (err.message && err.messageId) {
+                param = {messageId: err.messageId, messageParams: err.parameterIds};
+            } else {
+
+                if (err.message) {
+                    param = {message: err.message, messageParams: err.parameterIds};
+                } else {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                }
+            }
+            vm.$dialog.error(param).then(() => {
+                if (err.messageId == 'Msg_197') {
+                    location.reload();
+                }
+            });
         }
 
     }

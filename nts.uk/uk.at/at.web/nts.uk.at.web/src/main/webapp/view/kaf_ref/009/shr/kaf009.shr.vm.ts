@@ -1,8 +1,68 @@
 module nts.uk.at.view.kaf009_ref.shr.viewmodel {
     import ModelDto = nts.uk.at.view.kaf009_ref.a.viewmodel.ModelDto;
+    
+    const template = `
+    <div data-bind="if: dataFetch()">
+    <!--A7-->
+
+    <div class="centerCheckBox">
+        <div class="title"
+                    data-bind="ntsFormLabel: {required:true , text: $i18n('KAF009_45')}"></div>
+        <div class="firstCheckBox" data-bind="ntsCheckBox: { checked: model.checkbox1, text: $i18n('KAF009_16'), enable: mode == 'edit'}"></div>
+        <div class="secondCheckBox"
+                        data-bind="ntsCheckBox: { checked: model.checkbox2, text: $i18n('KAF009_18'), enable: mode == 'edit'}"></div>
+    </div>
+    
+    <!--Work Change-->
+    <div data-bind="if: dataFetch().goBackReflect()"
+        class="valign-center control-group">
+        <div
+            data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
+            || dataFetch().goBackReflect().reflectApplication == 2">
+            <div data-bind="if : model.checkbox3 != null">
+                <div data-bind="ntsCheckBox: { checked: model.checkbox3 , text: $i18n('KAF009_21'), enable: mode == 'edit'}">
+                </div>
+            </div>
+        </div>
+        <div
+            data-bind="if: dataFetch().goBackReflect().reflectApplication == 1
+            || dataFetch().goBackReflect().reflectApplication == 0">
+            <br />
+        </div>
+        <div
+            data-bind="if: dataFetch().goBackReflect().reflectApplication != 0">
+            <HR class="hrStyle" />
+        </div>
+
+        <div class="table clsWorkType"
+            data-bind="if: dataFetch().goBackReflect().reflectApplication == 3 
+            || dataFetch().goBackReflect().reflectApplication == 2 
+            || dataFetch().goBackReflect().reflectApplication == 1">
+            <div class="cell valign-center ">
+                <div class="valign-center control-group"
+                    data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_22') }"></div>
+                <BR />
+                <div class="valign-center control-group"
+                    data-bind="ntsFormLabel:{ required: true, text: $i18n('KAF009_23')}"></div>
+            </div>
+            <div class="cell valign-center">
+                <button id="workSelect"
+                    data-bind=" click: openDialogKdl003, text: $i18n('KAF009_24'), enable: (mode == 'edit' && model.checkbox3() || dataFetch().goBackReflect().reflectApplication == 1) "></button>
+            </div>
+            <div class="cell valign-center">
+                <label class="lblWorkTypeCd required" data-bind="text: model.workTypeCode"></label>
+                <label data-bind="text: model.workTypeName"></label> <br /> <label
+                    class="lblSiftCd" data-bind="text: model.workTimeCode, required: true"></label> <label
+                    data-bind="text: model.workTimeName "></label>
+            </div>
+        </div>
+    </div>
+
+</div>
+    `
     @component({
         name: 'kaf009-share',
-        template: '/nts.uk.at.web/view/kaf_ref/009/shr/index.html'
+        template: template
     })
     class Kaf009ShareViewModel extends ko.ViewModel {
         mode: string = 'edit';
