@@ -16,13 +16,16 @@
 			<com:stylefile path="./ksu.002a.style.css" />
 			<com:scriptfile path="../component/calendar.js" />
 			<com:scriptfile path="../component/title-date.js" />
+			<com:scriptfile path="../component/action-bar.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 			</div>
 			<div id="contents-area">
+				<div data-bind="ntsFormLabel: { required: false, text: currentUser }"></div>
 				<div data-bind="title-date: baseDate"></div>
-                <div data-bind="scheduler: undefined"></div>
+				<div data-bind="action-bar"></div>
+                <div data-bind="scheduler: schedules, baseDate: baseDate"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -3,51 +3,62 @@
 module nts.uk.ui.at.ksu002.a {
 
 	const template = `
-		<div class="backgroud">
-			<div class="content">
-				<div data-bind="ntsDatePicker: { 
-					value: yearMonth,
-					dateFormat: 'yearmonth' ,
-				 	valueFormat: 'YYYYMM',
-			  		fiscalMonthsMode: true,
-	 				defaultClass: 'round-orange',
-					showJumpButtons: true  }">
-				</div>
-				
-				<span class="label-1" class="label" data-bind="i18n: 'KSU002_23'"></span>
-				<span class="label-2" class="label" data-bind="i18n: 'KSU002_7'"></span>
-				
-				<div data-bind="ntsDatePicker: { value: yearMonth, dateFormat: 'yearmonth' , valueFormat: 'YYYYMM',  fiscalMonthsMode: true, defaultClass: 'round-orange' }">
-				</div>
-				<span class="label-1" class="label" data-bind="i18n: 'KSU002_6'"></span>
-				<span class="label-2" class="label" data-bind="i18n: 'KSU002_7'"></span>
-				
-				<div class="cf" data-bind="ntsSwitchButton: {
-					$i18n: 'KSU002_6',
-					options: roundingRules,
-					optionsValue: 'code',
-					optionsText: 'name',
-					value: selectedRuleCode }"></div>
-			</div>
-		</div> 
+		<div data-bind="ntsDatePicker: { 
+			value: yearMonth,
+			dateFormat: 'yearmonth' ,
+		 	valueFormat: 'YYYYMM',
+	  		fiscalMonthsMode: true,
+			defaultClass: 'round-orange',
+			showJumpButtons: true  }">
+		</div>
+		
+		<div class="title-label">
+			<span data-bind="i18n: 'KSU002_23'"></span>
+			<span data-bind="i18n: 'KSU002_7'"></span>
+		</div>
+		
+        <div data-bind="ntsComboBox: {
+            width: '200px',
+            name: $component.$i18n('KSU002_22'),
+            value: ko.observable(''),
+            options: ko.observableArray([]),
+            optionsValue: 'id',
+            optionsText: 'title',
+            editable: false,
+            selectFirstIfNull: true,
+            columns: [
+                { prop: 'title', length: 10 },
+            ]}"></div>
+
+		<div class="title-label">
+			<span data-bind="i18n: 'KSU002_6'"></span>
+			<span data-bind="i18n: 'KSU002_7'"></span>
+		</div>
+
+		<div class="cf" data-bind="ntsSwitchButton: {
+			$i18n: 'KSU002_6',
+			options: roundingRules,
+			optionsValue: 'code',
+			optionsText: 'name',
+			value: selectedRuleCode }"></div>
+					
 		<style type="text/css" rel="stylesheet">
-            .title-date .backgroud {
+            .title-date {
+				margin: 5px 0;
 				border: 1px solid #cccccc;
-				background: #edfac2;
+				background-color: #edfac2;
+				border-radius: 5px;
 				padding: 6px;
-				margin: 10px;
 				width: 615px;
 			}
-			
-			.title-date .backgroud .content .label-1 {
-				margin-left: 10px;
+			.title-date>div {
+				float: left;
+				display: block;
 			}
-			
-			.title-date .backgroud .content .label-2 {
-				margin-left: -6px;
-				margin-right: 12px;
+			.title-date>div.title-label {
+				padding: 0 10px;
+				line-height: 32px;
 			}
-			
         </style>
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;

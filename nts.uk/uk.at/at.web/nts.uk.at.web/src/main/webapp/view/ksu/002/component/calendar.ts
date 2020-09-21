@@ -462,12 +462,6 @@ module nts.uk.ui.at.ksu002.a {
                 .subscribe(() => {
                     data.baseDate.valueHasMutated();
                 });
-
-            vm.$nextTick(() => {
-                if (data.schedules.length === 0) {
-                    data.baseDate.valueHasMutated();
-                }
-            });
         }
 
         mounted() {
