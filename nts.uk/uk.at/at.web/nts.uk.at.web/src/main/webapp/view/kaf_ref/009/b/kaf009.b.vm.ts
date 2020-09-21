@@ -171,56 +171,63 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
                 }
                 goBackApp.dataWork = dw;
                 
-            }
-            console.log( goBackApp );
-            
-            
+            } 
             vm.$blockui("show");
             
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then(isValid => {
                     if (isValid) {
-                        let param = {
-                                companyId: this.$user.companyId,
-                                agentAtr: true,
-                                applicationDto: vm.applicationTest,
-                                goBackDirectlyDto: goBackApp,
-                                inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
-                                mode: false
-                            };
+                        return true;
                         
-                        
-                        return vm.$ajax(API.checkRegister, param);
                     }
-                })
-                .then(res => {
-                    console.log( res );
-
+                }).then(result => {
+                    if(!result) return;
+                    let param = {
+                            companyId: this.$user.companyId,
+                            agentAtr: true,
+                            applicationDto: vm.applicationTest,
+                            goBackDirectlyDto: goBackApp,
+                            inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
+                            mode: false
+                        };
+                    
+                    
+                    return vm.$ajax(API.checkRegister, param);
+                }).then(res => {
+                    if (res == undefined) return;
                     if ( _.isEmpty( res ) ) {
                         return vm.registerData( goBackApp );
                     } else {
                         let listTemp = _.clone( res );
-                        vm.handleConfirmMessage( listTemp, goBackApp );
+                        return vm.handleConfirmMessage( listTemp, goBackApp );
 
                     }
                     
-                })
-                .fail(err => {
+                }).done(result => {
+                    if (result != undefined) {
+                        vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                            location.reload();
+                        });                
+                    }
+                }).fail(err => {
                     vm.handleError(err);
-                })
-                .always(() => vm.$blockui("hide"))
+                    
+                }).always(() => vm.$blockui("hide"));
+                
+                
+                
              
         }
         public handleConfirmMessage(listMes: any, res: any) {
             let vm = this;
             if (!_.isEmpty(listMes)) {
                 let item = listMes.shift();
-                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                return vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
                     if (value == 'yes') {
                         if (_.isEmpty(listMes)) {
-                            vm.registerData(res);
+                            return vm.registerData(res);
                         } else {
-                            vm.handleConfirmMessage(listMes, res);
+                            return vm.handleConfirmMessage(listMes, res);
                         }
 
                     }
@@ -231,25 +238,13 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
         registerData(goBackApp) {
             let vm = this;
             let paramsUpdate = {
-                   
-                    applicationDto: vm.applicationTest,
-                    goBackDirectlyDto: goBackApp,
-                    inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch),
-                   
+                applicationDto: vm.applicationTest,
+                goBackDirectlyDto: goBackApp,
+                inforGoBackCommonDirectDto: ko.toJS(vm.dataFetch)        
             }
             
-             vm.$ajax( API.updateApplication, paramsUpdate )
-                .done( resRegister => {
-                    console.log( resRegister );
-                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                        // bussiness logic after error show
-                        location.reload();
-                    } );
-                })
-            .fail(err => {
-                vm.handleError(err);
+             return vm.$ajax(API.updateApplication, paramsUpdate);
                 
-            });
         }
         public handleError(err: any) {
             const vm = this;

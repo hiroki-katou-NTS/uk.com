@@ -105,12 +105,12 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             let vm = this;
             if (!_.isEmpty(listMes)) {
                 let item = listMes.shift();
-                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                return vm.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst }).then((value) => {
                     if (value == 'yes') {
                         if (_.isEmpty(listMes)) {
-                            vm.registerData(res);
+                            return vm.registerData(res);
                         } else {
-                            vm.handleConfirmMessage(listMes, res);
+                            return vm.handleConfirmMessage(listMes, res);
                         }
 
                     }
@@ -128,14 +128,8 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     mode : vm.mode == 'edit'
             }
 
-            return vm.$ajax( API.register, paramsRegister )
-                .done( resRegister => {
-                    console.log( resRegister );
-                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                        // bussiness logic after error show
-                        location.reload();
-                    } );
-                })
+            return vm.$ajax(API.register, paramsRegister);
+                
         }
 
         register() {
@@ -156,6 +150,29 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     return;
                 } 
             }
+            let model = ko.toJS( vm.model );
+            let goBackApp = new GoBackApplication(
+                model.checkbox1 ? 1 : 0,
+                model.checkbox2 ? 1 : 0,
+            );
+            // is change can be null
+            if (!_.isNull(model.checkbox3)) {
+                goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
+                let dw = new DataWork( model.workTypeCode );
+                if ( model.workTimeCode ) {
+                    dw.workTime = model.workTimeCode
+                }
+                goBackApp.dataWork = dw;
+            }
+
+            let param = {
+                companyId: this.$user.companyId,
+                agentAtr: true,
+                applicationDto: vm.applicationTest,
+                goBackDirectlyDto: goBackApp,
+                inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
+                mode: true
+            };
             vm.$blockui( "show" );
             vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
                 .then( isValid => {
@@ -164,60 +181,38 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     }
                 } )
                 .then( result => {
-                    if ( result ) {
-                        let model = ko.toJS( vm.model );
-                        let goBackApp = new GoBackApplication(
-                            model.checkbox1 ? 1 : 0,
-                            model.checkbox2 ? 1 : 0,
-                        );
-                        // is change can be null
-                        if (!_.isNull(model.checkbox3)) {
-                            goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-                            let dw = new DataWork( model.workTypeCode );
-                            if ( model.workTimeCode ) {
-                                dw.workTime = model.workTimeCode
-                            }
-                            goBackApp.dataWork = dw;
-                        }
-                        console.log( goBackApp );
-
-                        let param = {
-                            companyId: this.$user.companyId,
-                            agentAtr: true,
-                            applicationDto: vm.applicationTest,
-                            goBackDirectlyDto: goBackApp,
-                            inforGoBackCommonDirectDto: ko.toJS( vm.dataFetch ),
-                            mode: true
-                        };
-                        vm.$ajax( API.checkRegister, param )
-                            .done( res => {
-                                console.log( res );
-
-                                if ( _.isEmpty( res ) ) {
-                                    return vm.registerData( goBackApp );
-                                } else {
-                                    let listTemp = _.clone( res );
-                                    vm.handleConfirmMessage( listTemp, goBackApp );
-
-                                }
-                            } )
-                            .fail( err => {
-                                let param;
-                                if (err.message && err.messageId) {
-                                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                                } else {
-
-                                    if (err.message) {
-                                        param = {message: err.message, messageParams: err.parameterIds};
-                                    } else {
-                                        param = {messageId: err.messageId, messageParams: err.parameterIds};
-                                    }
-                                }
-                                vm.$dialog.error(param);
-                            } )
-                            .always(() => vm.$blockui( "hide" ) );
+                    if (!result) return;
+                    return vm.$ajax(API.checkRegister, param); 
+                }).then( res => {
+                    if (res == undefined) return;
+                    if (_.isEmpty( res )) {
+                        return vm.registerData(goBackApp);
+                    }else {
+                        let listTemp = _.clone(res);
+                        vm.handleConfirmMessage(listTemp, goBackApp);
                     }
-                } ).always(() => vm.$blockui( "hide" ) );
+                }).done(result => {
+                    if (result != undefined) {
+                        vm.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                            location.reload();
+                        });                
+                    }
+                })
+                .fail( err => {
+                    let param;
+                    if (err.message && err.messageId) {
+                        param = {messageId: err.messageId, messageParams: err.parameterIds};
+                    } else {
+
+                        if (err.message) {
+                            param = {message: err.message, messageParams: err.parameterIds};
+                        } else {
+                            param = {messageId: err.messageId, messageParams: err.parameterIds};
+                        }
+                    }
+                    vm.$dialog.error(param);
+                })
+                .always(() => vm.$blockui("hide"));
 
 
 
