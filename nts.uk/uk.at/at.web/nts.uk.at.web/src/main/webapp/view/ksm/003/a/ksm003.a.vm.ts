@@ -345,6 +345,8 @@ module nts.uk.at.view.ksm003.a {
             vm.lessThan99Items(true);
             if (dailyPatternValModel.length <= 0) vm.selectedCheckAll(false);
             vm.enableRemoveItem(false);
+
+	        nts.uk.ui.errors.clearAll();
         }
 
         /*
