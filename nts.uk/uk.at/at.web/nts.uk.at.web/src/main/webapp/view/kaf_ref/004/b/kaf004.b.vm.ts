@@ -269,12 +269,26 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             let arrivedLateLeaveEarlyInfo = ko.toJS(vm.arrivedLateLeaveEarlyInfo);
             arrivedLateLeaveEarlyInfo.arrivedLateLeaveEarly.lateOrLeaveEarlies = [];
             arrivedLateLeaveEarlyInfo.arrivedLateLeaveEarly.lateCancelation = [];
+            arrivedLateLeaveEarlyInfo.earlyInfos = [];
 
             if (vm.cancalAppDispSet) {
                 arrivedLateLeaveEarlyInfo.arrivedLateLeaveEarly.lateCancelation.push(ko.toJS(vm.lateOrEarlyInfo1));
                 arrivedLateLeaveEarlyInfo.arrivedLateLeaveEarly.lateCancelation.push(ko.toJS(vm.lateOrEarlyInfo2));
                 arrivedLateLeaveEarlyInfo.arrivedLateLeaveEarly.lateCancelation.push(ko.toJS(vm.lateOrEarlyInfo3));
                 arrivedLateLeaveEarlyInfo.arrivedLateLeaveEarly.lateCancelation.push(ko.toJS(vm.lateOrEarlyInfo4));
+            }
+
+            if(vm.lateOrEarlyInfo1().isIndicated() && vm.lateOrEarlyInfo1().isActive() && vm.lateOrEarlyInfo1().isCheck()) {
+                arrivedLateLeaveEarlyInfo.earlyInfos.push(ko.toJS(vm.lateOrEarlyInfo1));
+            }
+            if(vm.lateOrEarlyInfo2().isIndicated() && vm.lateOrEarlyInfo2().isActive() && vm.lateOrEarlyInfo2().isCheck()) {
+                arrivedLateLeaveEarlyInfo.earlyInfos.push(ko.toJS(vm.lateOrEarlyInfo2));
+            }
+            if(vm.lateOrEarlyInfo3().isIndicated() && vm.lateOrEarlyInfo3().isActive() && vm.lateOrEarlyInfo3().isCheck()) {
+                arrivedLateLeaveEarlyInfo.earlyInfos.push(ko.toJS(vm.lateOrEarlyInfo3));
+            }
+            if(vm.lateOrEarlyInfo4().isIndicated() && vm.lateOrEarlyInfo4().isActive() && vm.lateOrEarlyInfo4().isCheck()) {
+                arrivedLateLeaveEarlyInfo.earlyInfos.push(ko.toJS(vm.lateOrEarlyInfo4));
             }
 
             if (vm.workManagement.workTime() !== null && vm.workManagement.workTime() !== "") {
