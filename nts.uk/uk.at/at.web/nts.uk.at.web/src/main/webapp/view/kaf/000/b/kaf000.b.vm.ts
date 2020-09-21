@@ -71,6 +71,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         errorEmpty: KnockoutObservable<boolean> = ko.observable(true);
 
         childUpdateEvent!: () => any;
+		childReloadEvent: () => any;
 
         created(listAppMeta: Array<string>, currentApp: string) {
             const vm = this;
@@ -90,7 +91,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 				printContentOfEachAppDto: vm.opPrintContentOfEachApp,
                 approvalReason: vm.approvalReason,
                 appDispInfoStartupOutput: vm.appDispInfoStartupOutput,
-                eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) }
+                eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) },
+				eventReload: function(a) { vm.getChildReloadEvent.apply(vm, [a]) },
             }
             vm.loadData();
         }
@@ -118,6 +120,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     successData.appDetailScreenInfo.authorizableFlags,
                     successData.appDetailScreenInfo.alternateExpiration,
                     loginFlg);
+				if(_.isFunction(vm.childReloadEvent)) {
+	                vm.childReloadEvent();
+	            }
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
@@ -270,6 +275,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             const vm = this;
             // gán event update của component vào childUpdateEvent
             vm.childUpdateEvent = evt;
+        }
+
+		getChildReloadEvent(evt: () => void) {
+            const vm = this;
+            // gán event update của component vào childUpdateEvent
+            vm.childReloadEvent = evt;
         }
 
         btnReferences() {
