@@ -6,7 +6,6 @@ import { KafS00BComponent } from '../../../kaf/s00/b';
 import { KafS00CComponent } from '../../../kaf/s00/c';
 import { KafS08A2Component } from '../../../kaf/s08/a2';
 import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
-import * as moment from 'moment';
 
 @component({
     name: 'kafs08a1',
@@ -80,152 +79,64 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         },
     };
 
-
     public created() {
         const vm = this;
         if (vm.params) {
             console.log(vm.params);
-            vm.mode = false;
+            //vm.mode = false;
             this.data = vm.params;
         }
         vm.fetchStart();
     }
-
-    public fetchStart() {
-        const vm = this;
-
-        vm.$mask('show');
-
-        vm.$auth.user.then((usr: any) => {
-            vm.user = usr;
-        }).then(() => {
-            return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
-        }).then((loadData: any) => {
-            if (loadData) {
-                let params = vm.mode ? {
-                    mode: vm.mode,
-                    companyId: vm.user.companyId,
-                    employeeId: vm.user.employeeId,
-                    listDates: [],
-                    businessTripInfoOutput: null,
-                    businessTrip: null
-                } :
-                    {
-                        mode: vm.mode,
-                        companyId: vm.user.companyId,
-                        employeeId: vm.user.employeeId,
-                        listDates: [],
-                        businessTrip: vm.params.businessTripDto,
-                        businessTripInfoOutput: vm.params.businessTripInfoOutputDto
-                    };
-
-                return vm.$http.post('at', API.startKAFS08, params);
-            }
-        }).then((res: any) => {
-            if (!res) {
-                return;
-            }
-            vm.data = res.data;
-            vm.createParamsB();
-            vm.createParamsC();
-            vm.createParamsA();
-            vm.$mask('hide');
-        }).catch((err: any) => {
-            //do something
-        });
-    }
-
-    public getDateArray = function (startDate,endDate) {
-        let dates = [];
-        startDate = moment(startDate, 'YYYY/MM/DD');
-        dates.push(startDate.format('YYYY/MM/DD'));          
-        while (!startDate.isSame(endDate)) {
-            startDate = startDate.add(1, 'days');
-            dates.push(startDate.format('YYYY/MM/DD'));
-        }
-
-        return dates ;
-    };
-
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
-        if (vm.mode) {
-            //check date when press next
-            vm.$http.post('at', API.changeAppDate, {
-                isNewMode: vm.mode,
-                isError: 1,
-                application: vm.application,
-                businessTrip: null,
-                businessTripInfoOutput: vm.data.businessTripInfoOutput
-                //businessTrip: vm.mode ? null : vm.data.appWorkChange
-            }).then((res: any) => {
-                let response = res.data;
-            });
-
-            vm.checkNextButton();
-            if (vm.kaf000_C_Params.input.displayAppReason == 0) {
-                if (vm.kaf000_B_Params.output.startDate == null) {
-                    vm.hidden = true;
-                    vm.scrollToTop();
-
-                    return;
-                }
-            } else {
-                if (vm.kaf000_B_Params.output.startDate == null || vm.kaf000_C_Params.opAppReason == '') {
-                    vm.hidden = true;
-                    vm.scrollToTop();
-
-                    return;
-                }
-            }
-
-            //check Pre Post Art
-            if (vm.kaf000_B_Params.output.prePostAtr == null) {
+        vm.checkNextButton();
+        if (vm.kaf000_C_Params.input.displayAppReason == 0) {
+            if (vm.kaf000_B_Params.output.startDate == null) {
                 vm.hidden = true;
                 vm.scrollToTop();
 
                 return;
             }
-            //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
-            let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
-            let Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-            //check day > 31 days between 2 Dates
-            if (Difference_In_Days > 31) {
-                vm.$modal.error({ messageId: 'Msg_277' });
-
-                return;
-            }
-            //check PrePostArt enable/disable
-            if (this.kaf000_B_Params.input.newModeContent.appTypeSetting[0].canClassificationChange == false) {
+        } else {
+            if (vm.kaf000_B_Params.output.startDate == null || vm.kaf000_C_Params.opAppReason == '') {
                 vm.hidden = true;
                 vm.scrollToTop();
 
                 return;
             }
-            //mode new
-            let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
-            let businessTripInfoOutput = vm.data;
-            //gửi comment sang màn hình A2
-            let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-            let appReason = vm.kaf000_C_Params.output.opAppReason;
-            this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
         }
-        //mode edit
-        if (!vm.mode) {
-            let achievementDetails = vm.data.businessTrip.tripInfos;
-            let businessTripInfoOutput = vm.data;
-            //gửi comment sang màn hình A2
-            let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-            let application = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application;
-            let appReason = vm.kaf000_C_Params.output.opAppReason;
-            let startDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate;
-            //let startDateFormat = new Date(startDate);
-            let endDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate;
-            //let endDateFormat = new Date(endDate);
-            let listDateEditMode = vm.getDateArray(startDate,endDate);
-            this.$emit('nextToStepTwo',listDateEditMode,application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+
+        //check Pre Post Art
+        if (vm.kaf000_B_Params.output.prePostAtr == null) {
+            vm.hidden = true;
+            vm.scrollToTop();
+
+            return ;
         }
+        //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
+        let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
+        let Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+        //check day > 31 days between 2 Dates
+        if (Difference_In_Days > 31) {
+            vm.$modal.error({ messageId: 'Msg_277' });
+
+            return;
+        }
+        //check PrePostArt enable/disable
+        if (this.kaf000_B_Params.input.newModeContent.appTypeSetting[0].canClassificationChange == false) {
+            vm.hidden = true;
+            vm.scrollToTop();
+
+            return;
+        }
+        let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
+        let businessTripInfoOutput = vm.data;
+        //gửi comment sang màn hình A2
+        let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
+        let appReason = vm.kaf000_C_Params.output.opAppReason;
+        this.$emit('nextToStepTwo', vm.listDate, this.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
     }
 
     //scroll to Top
@@ -263,6 +174,40 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         } else {
             x.style.display = 'none';
         }
+    }
+
+    public fetchStart() {
+        const vm = this;
+
+        vm.$mask('show');
+
+        vm.$auth.user.then((usr: any) => {
+            vm.user = usr;
+        }).then(() => {
+            return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
+        }).then((loadData: any) => {
+            if (loadData) {
+                return vm.$http.post('at', API.startKAFS08, {
+                    mode: vm.mode,
+                    companyId: vm.user.companyId,
+                    employeeId: vm.user.employeeId,
+                    listDates: [],
+                    businessTripInfoOutput: null
+                    //businessTrip: vm.mode ? null : vm.data.appWorkChange
+                }).then((res: any) => {
+                    if (!res) {
+                        return;
+                    }
+                    vm.data = res.data;
+                    vm.createParamsB();
+                    vm.createParamsC();
+                    vm.createParamsA();
+                    vm.$mask('hide');
+                });
+            }
+        }).catch((err: any) => {
+            vm.$mask('hide');
+        });
     }
 
     public bindBusinessTripRegister() {
@@ -327,10 +272,10 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         // if mode edit
         if (!vm.mode) {
             paramb.input.detailModeContent = {
-                prePostAtr: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr,
-                startDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate,
-                endDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate,
-                employeeName: _.isEmpty(vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+                prePostAtr: vm.data.appDispInfoStartupOutput.appDispInfoStartupOutput.appDetailScreenInfo.application.prePostAtr,
+                startDate: vm.data.appDispInfoStartupOutput.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStartDate,
+                endDate: vm.data.appDispInfoStartupOutput.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppEndDate,
+                employeeName: _.isEmpty(vm.data.appDispInfoStartupOutput.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : vm.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
             };
         }
         vm.kaf000_B_Params = paramb;
@@ -418,9 +363,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStandardReasonCD,
+                opAppStandardReasonCD: vm.mode ? '' : null,
                 // 申請理由
-                opAppReason: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppReason
+                opAppReason: vm.mode ? '' : null
             }
         };
     }
@@ -432,7 +377,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
 const API = {
     startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
-    checkBeforeRegister: 'at/request/application/businesstrip/mobile/checkBeforeRegister',
-    changeAppDate: 'at/request/application/businesstrip/mobile/changeAppDate'
+    checkBeforeRegister: 'at/request/application/businesstrip/mobile/checkBeforeRegister'
 };
 
