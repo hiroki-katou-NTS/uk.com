@@ -21,7 +21,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 EXCEL-->
-				<button id="A1_1" class="proceed" tabindex="2"
+				<button id="A1_1" class="proceed" tabindex="1"
 					data-bind="click: exportButton, enable: (!nts.uk.ui.errors.hasError())">#{i18n.getText('KDR002_1')}</button>
 				<!-- A1_3 PDF-->
 				<button id="A1_1" class="proceed" tabindex="2"
@@ -134,22 +134,60 @@
 					</div>
 					<!-- A5_1 -->
 					<div class="div_line">
-						<!-- A5_1  -->
-						<div class="labelRangeDate" data-bind="ntsFormLabel: {}">
-							#{i18n.getText('KDR002_46')}
-						</div>
-						<!-- A5_7 -->
-						<div class="ml-20" data-bind="ntsCheckBox: {
-							checked: isExtraction,
-							enable: true },
-							visible: true">
+						<div style="display: flex;">
+							<!-- A5_1  -->
+							<div class="labelRangeDate" data-bind="ntsFormLabel: {}">
+								#{i18n.getText('KDR002_46')}
 							</div>
-						<!-- A5_2 -->
-						<input class="w-20" tabindex="5" data-bind="ntsNumberEditor: {
-							value: inputExtraction,
-							required: false,
-							enable: isExtraction() === true,
-							}" />
+							<!-- A5_7 -->
+							<div class="ml-20 align-seft-center" data-bind="ntsCheckBox: {
+								checked: isExtraction,
+								enable: true },
+								visible: true">
+								</div>
+							<!-- A5_2 -->
+							<div class="align-seft-center">
+								<input  tabindex="3"
+									data-bind="ntsNumberEditor:{
+									name: '#[KDR002_58]',
+									value: inputExtraction,
+									required: true,
+									enable: (isExtraction() === true),
+									option: {
+									width : '65px',
+										unitID: 'DAYS'
+									}}" />
+							</div>
+							<!-- A5_3 -->
+							<div id="page_break_cbb" class="div_line_col_2 align-seft-center ml-10"
+								tabindex="7"
+								data-bind="ntsComboBox: {
+									name:'#[KDR002_9]',
+									required: true,
+									options: pageBreakTypes ,
+									optionsValue: 'code',
+									visibleItemsCount: 3,
+									value: pageBreakSelected ,
+									optionsText: 'name',
+									editable: false,
+									enable: true,
+
+									columns: [
+										{ prop: 'name', length: 10 }
+									]}">
+							</div>
+							<!-- A5_5 -->
+							<div class="align-seft-center ml-10">
+								#{i18n.getText('KDR002_49')}
+							</div>
+						</div>
+						<div class="mt-10">
+							<!-- A5_6 -->
+							<div style="text-align: center;"  >
+								#{i18n.getText('KDR002_50')}
+							</div>
+						</div>
+
 					</div>
 					<!-- A7_1 -->
 					<div class="div_line">
@@ -158,20 +196,20 @@
 							#{i18n.getText('KDR002_54')}
 						</div>
 						<!-- A7_2 -->
-						<div class="ml-104" data-bind="ntsCheckBox: {
+						<div class="ml-100" data-bind="ntsCheckBox: {
 							checked: doubleTrack,
 							enable: true },
 							visible: true">
 							#{i18n.getText('KDR002_55')}</div>
 					</div>
 					<!-- A6_1 -->
-					<div class="div_line">
+					<div class="div_line mt-22" style="display: flex;">
 						<!-- A6_1  -->
-						<div class="labelRangeDate div_line_col_1" data-bind="ntsFormLabel: {}">
+						<div class="labelRangeDate div_line_col_1 align-seft-center" data-bind="ntsFormLabel: {}">
 							#{i18n.getText('KDR002_51')}
 						</div>
 						<!-- A6_2 -->
-						<div class="ml-120 pageBreak" data-bind="ntsSwitchButton: {
+						<div class="ml-120 pageBreak align-seft-center" data-bind="ntsSwitchButton: {
 							name: '#[KDR002_51]',
 							options: printAnnualLeaveDate,
 							optionsValue: 'code',
@@ -181,15 +219,15 @@
 					</div>
 
 					<!-- A4_1  -->
-					<div class="div_line">
+					<div class="div_line mt-22" style="display: flex;">
 
 						<!-- A4_1  -->
-						<div class="labelRangeDate div_line_col_1" data-bind="ntsFormLabel: {}">
+						<div class="labelRangeDate div_line_col_1 align-seft-center" data-bind="ntsFormLabel: {}">
 							#{i18n.getText('KDR002_9')}
 						</div>
 
 						<!-- A4_2  -->
-						<div class="ml-120 pageBreak" data-bind="ntsSwitchButton: {
+						<div class="ml-120 pageBreak align-seft-center" data-bind="ntsSwitchButton: {
 							name: '#[KDR002_9]',
 							options: pageBreakTypes,
 							optionsValue: 'code',

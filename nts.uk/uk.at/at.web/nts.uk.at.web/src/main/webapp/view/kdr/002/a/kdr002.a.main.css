@@ -108,8 +108,8 @@
 	margin-left: 120px;
 }
 
-.ml-104 {
-	margin-left: 104px;
+.ml-100 {
+	margin-left: 100px;
 }
 
 .pageBreak > .nts-switch-button {
@@ -118,4 +118,8 @@
 
 .w-75 {
 	width: 75px;
+}
+
+.align-seft-center {
+	align-self: center;
 }

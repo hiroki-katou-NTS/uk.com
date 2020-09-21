@@ -94,9 +94,12 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
         selectedValueA3_2: KnockoutObservable<number> = ko.observable(0);
 
-        referenceTypeA3_5: KnockoutObservableArray<any>;
+        referenceTypeA3_5: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0, name: nts.uk.resource.getText("KDR002_6") },
+            { code: 1, name: nts.uk.resource.getText("KDR002_7") }
+        ]);;
 
-        valueReferenceTypeA3_5: KnockoutObservable<number>;
+        valueReferenceTypeA3_5: KnockoutObservable<number> = ko.observable(0);;
 
         dateValue: KnockoutObservable<any> = ko.observable('');
 
@@ -106,29 +109,12 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         inputExtraction: KnockoutObservable<String> = ko.observable('');
         numbereditor: any;
         // A5_3
-
+        optionExtraction: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0 , name: getText('KDR002_47') }, //なし
+            { code: 1 , name: getText('KDR002_48')  } //職場
+        ]);
         constructor() {
             let self = this;
-
-            self.numbereditor = {
-                value: ko.observable(12),
-                constraint: '',
-                option: new nts.uk.ui.option.NumberEditorOption({
-                    decimallength: 2,
-                    placeholder: "Placeholder for number editor",
-                    width: "",
-                    textalign: "left"
-                }),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-
-            self.referenceTypeA3_5 = ko.observableArray([
-                { code: 0, name: nts.uk.resource.getText("KDR002_6") },
-                { code: 1, name: nts.uk.resource.getText("KDR002_7") }
-            ]);
-
-            self.valueReferenceTypeA3_5 = ko.observable(0);
 
             //_____CCG001________
             self.ccgcomponent = {
