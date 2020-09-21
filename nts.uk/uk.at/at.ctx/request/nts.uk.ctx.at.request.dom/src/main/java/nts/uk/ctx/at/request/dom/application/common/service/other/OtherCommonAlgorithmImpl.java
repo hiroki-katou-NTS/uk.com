@@ -36,7 +36,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.schedule.schedule.ba
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.dto.MailDestinationImport;
 import nts.uk.ctx.at.request.dom.application.common.service.application.IApplicationContentService;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -139,6 +140,9 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
 	private AppEmailSetRepository appEmailSetRepository;
+	
+	@Inject
+	private CollectAchievement collectAchievement;
 	
 	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date){
 		/*
@@ -484,17 +488,32 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 		return new MailResult(successList, failList, failServerList);
 	}
 	@Override
-	public List<GeneralDate> lstDateIsHoliday(String cid, String sid, DatePeriod dates) {
+	public List<GeneralDate> lstDateIsHoliday(String sid, DatePeriod dates, List<ActualContentDisplay> actualContentDisplayLst) {
+		// 日付一覧をクリアする（初期化）
 		List<GeneralDate> lstOutput = new ArrayList<>();
+		// INPUT．期間．開始日から期間．終了日までループする
 		for(int i = 0; dates.start().daysTo(dates.end()) - i >= 0; i++){
 			GeneralDate loopDate = dates.start().addDays(i);
-			//実績の取得
-			/*AchievementOutput achInfor = collectAch.getAchievement(cid, sid, loopDate);*/
-			AchievementOutput achInfor = null;
-			if(achInfor != null 
-					&& achInfor.getWorkType() != null
-					&& WorkTypeIsClosedService.checkHoliday(createM1(), achInfor.getWorkType().getWorkTypeCode()) //1日休日の判定
+			// INPUT．「表示する実績内容<List>」に処理中の年月日のデータがあるか確認する
+			Optional<AchievementDetail> opAchievementDetail = Optional.empty();
+			Optional<ActualContentDisplay> opActualContentDisplay = actualContentDisplayLst.stream().filter(x -> x.getDate().equals(loopDate)).findAny();
+			if(opActualContentDisplay.isPresent()) {
+				opAchievementDetail = opActualContentDisplay.get().getOpAchievementDetail();
+			}
+			if(!opAchievementDetail.isPresent()) {
+				//実績の取得
+				String companyID = AppContexts.user().companyId();
+				ActualContentDisplay achInfor = collectAchievement.getAchievement(companyID, sid, loopDate);
+				if(!achInfor.getOpAchievementDetail().isPresent()) {
+					continue;
+				}
+				opAchievementDetail = achInfor.getOpAchievementDetail();
+			}
+			// 1日休日の判定
+			if(opAchievementDetail.get().getWorkTypeCD() != null
+					&& WorkTypeIsClosedService.checkHoliday(createM1(), opAchievementDetail.get().getWorkTypeCD()) //1日休日の判定
 					) {
+				// 日付一覧.Add(ループする日)
 				lstOutput.add(loopDate);
 			}
 		}
