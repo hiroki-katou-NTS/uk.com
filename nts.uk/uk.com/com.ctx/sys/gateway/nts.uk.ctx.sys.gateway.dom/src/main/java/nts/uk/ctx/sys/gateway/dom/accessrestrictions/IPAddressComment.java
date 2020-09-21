@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @name IPアドレスの備考
  */
 
-@StringMaxLength(20)
+@StringMaxLength(40)
 public class IPAddressComment extends StringPrimitiveValue<IPAddressComment> {
 	
 	/** The Constant serialVersionUID. */
