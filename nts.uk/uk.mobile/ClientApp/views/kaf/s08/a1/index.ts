@@ -39,9 +39,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     @Prop({ default: null })
     public params?: any;
 
-    @Prop({default : null}) public readonly derpartureTime!: number; 
+    @Prop({ default: null }) public readonly derpartureTime!: number;
 
-    @Prop({default : null}) public readonly returnTime!: number ;
+    @Prop({ default: null }) public readonly returnTime!: number;
 
     @Prop({ default: '' }) public readonly appReason!: string;
 
@@ -106,6 +106,14 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
                 return;
             }
+        }
+
+        //check Pre Post Art
+        if (vm.kaf000_B_Params.output.prePostAtr == null) {
+            vm.hidden = true;
+            vm.scrollToTop();
+
+            return ;
         }
         //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
         let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
