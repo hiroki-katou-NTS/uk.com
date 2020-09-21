@@ -223,7 +223,7 @@ module nts.uk.ui.at.ksu002.a {
 			} else {
 				const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 				
-				p.setAttribute('style', 'fill: #808080');
+				p.setAttribute('style', 'fill: #333');
 				p.setAttributeNS(null, 'd', DAISY_FLOWER);
 				
 				element.appendChild(p);
