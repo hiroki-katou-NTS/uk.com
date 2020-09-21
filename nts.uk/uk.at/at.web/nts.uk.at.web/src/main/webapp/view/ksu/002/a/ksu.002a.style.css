@@ -1,0 +1,12 @@
+.ksu-002a .title-date {
+	display: block;
+	float: left;
+}
+
+.ksu-002a .title-date+.btn-guide {
+	float: left;
+    margin-left: 5px;
+    margin-top: 13px;
+    width: 40px;
+    height: 28px;
+}

@@ -71,6 +71,20 @@ module nts.uk.ui.at.ksu002.a {
             .scheduler .calendar-container .title .nts-datepicker-wrapper {
                 margin: 0 calc(50% - 76px);
             }
+			.scheduler .calendar-container .title .nts-datepicker-wrapper>input,
+			.scheduler .calendar-container .title .nts-datepicker-wrapper>button {
+				vertical-align: top;
+			}
+			.scheduler .calendar-container .title .nts-datepicker-wrapper>input {
+				height: 20px;
+			}
+			.scheduler .calendar-container .title .nts-datepicker-wrapper>button {
+				height: 29px;
+			}
+			.scheduler .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:before,
+			.scheduler .calendar-container .title .nts-datepicker-wrapper.arrow-bottom:after {
+				left: 45px;
+			}
             .scheduler .calendar-container .calendar.title {
                 padding: 0;
             }
@@ -144,7 +158,7 @@ module nts.uk.ui.at.ksu002.a {
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
 
-	const DAISY_FLOWER = `<path style="fill:__color__;" d="M62.554,27.198c-0.365-4.156-3.362-7.441-7.416-8.286c-2.35-0.49-4.705-0.172-6.996,0.558
+	const DAISY_FLOWER = `M62.554,27.198c-0.365-4.156-3.362-7.441-7.416-8.286c-2.35-0.49-4.705-0.172-6.996,0.558
 		c1.847-2.143,3.115-4.718,3.35-7.787C51.96,5.559,47.31,0.54,41.25,0.047c-8.246-0.671-13.233,5.999-13,12.672
 		c-1.551-2.083-3.583-3.782-6.097-4.799c-4.517-1.829-10.644-1.262-13.788,2.847c-2.79,3.647-1.927,8.734,0.641,12.231
 		c0.702,0.956,1.884,2.224,3.276,3.38C5.801,26.25-0.824,29.148,0.343,36.63c0.775,4.968,3.562,9.088,8.722,9.993
@@ -192,13 +206,13 @@ module nts.uk.ui.at.ksu002.a {
 		c1.605-0.102,3.189-0.233,4.773-0.53c0.378-0.071,0.294-0.696-0.091-0.673c-1.634,0.095-3.225,0.359-4.831,0.653
 		c-0.149-0.483-0.319-0.957-0.531-1.41c1.761,0.104,3.476-0.728,4.312-2.377c0.195-0.385-0.314-0.659-0.565-0.33
 		c-0.983,1.289-2.594,2.04-4.2,1.845c-0.254-0.435-0.531-0.855-0.843-1.246c6.152-2.513,16.981-9.619,20.48-0.082
-		C61.81,30.208,58.353,34.383,53.726,35.333z"/>`;
+		C61.81,30.208,58.353,34.383,53.726,35.333z`;
 
 	@handler({
 		bindingName: 'scheduler-daisy'
 	})
 	export class DaisyBindingHandler implements KnockoutBindingHandler {
-		update(element: HTMLElement, valueAccessor: () => DayData): void {
+		init(element: HTMLElement, valueAccessor: () => DayData): void {
 			const day = ko.unwrap(valueAccessor());
 
 			element.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -207,7 +221,12 @@ module nts.uk.ui.at.ksu002.a {
 			if (!day.inRange) {
 				element.innerHTML = '';
 			} else {
-				element.innerHTML = DAISY_FLOWER.replace(/__color__/g, '#808080');
+				const p = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+				
+				p.setAttribute('style', 'fill: #808080');
+				p.setAttributeNS(null, 'd', DAISY_FLOWER);
+				
+				element.appendChild(p);
 			}
 		}
 	}

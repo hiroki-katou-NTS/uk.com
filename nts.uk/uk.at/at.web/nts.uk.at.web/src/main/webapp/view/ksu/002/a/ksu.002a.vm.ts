@@ -10,7 +10,7 @@ module nts.uk.ui.at.ksu002.a {
 	export class ViewModel extends ko.ViewModel {
 		schedules: KnockoutObservableArray<any> = ko.observableArray([]);
 
-		baseDate = ko.observable(new Date());
+		baseDate = ko.observable({ begin: new Date(2020, 10, 1), finish: new Date(2020, 11, 5) });
 
 		currentUser!: KnockoutObservable<string>;
 
