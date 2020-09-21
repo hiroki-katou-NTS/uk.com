@@ -48,13 +48,7 @@ public class LogSettingDto implements LogSetting.MementoGetter, LogSetting.Memen
 	
 	public static LogSettingDto fromDomain(LogSetting logSetting) {
 		LogSettingDto logSettingDto = new LogSettingDto();
-		logSettingDto.system = logSetting.getSystem().value;
-		logSettingDto.programId = logSetting.getProgramId();
-		logSettingDto.menuClassification = logSetting.getMenuClassification().value;
-		logSettingDto.loginHistoryRecord = logSetting.getLoginHistoryRecord().value;
-		logSettingDto.startHistoryRecord = logSetting.getStartHistoryRecord().value;
-		logSettingDto.updateHistoryRecord = logSetting.getUpdateHistoryRecord().value;
-		logSettingDto.companyId = logSetting.getCompanyId();
+		logSetting.setMemento(logSettingDto);
 		return logSettingDto;
 	}
 	
