@@ -184,6 +184,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
        }
        
        created( params: { 
+		   appType: any,
            application: any,
            printContentOfEachAppDto: PrintContentOfEachAppDto,
            approvalReason: any,
@@ -196,6 +197,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            // bind common
            self.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
            self.application = params.application;
+		   self.appType = params.appType;
            self.approvalReason = params.approvalReason;
            
            

@@ -30,6 +30,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
         created(
             params: {
+				appType: any,
                 application: any,
                 printContentOfEachAppDto: PrintContentOfEachAppDto,
                 approvalReason: any,
@@ -42,6 +43,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
+			vm.appType = params.appType;
 
             vm.workManagement = new WorkManagement('--:--', '--:--', '--:--', '--:--', null, null, null, null);
 

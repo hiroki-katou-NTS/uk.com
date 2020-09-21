@@ -85,6 +85,7 @@ module nts.uk.at.view.kaf000_ref.b.viewmodel {
             vm.currentApp(__viewContext.transferred.value.currentApp);
             vm.appType = ko.observable(99);
             vm.childParam = {
+				appType: vm.appType,
             	application: vm.application,
 				printContentOfEachAppDto: vm.opPrintContentOfEachApp,
                 approvalReason: vm.approvalReason,

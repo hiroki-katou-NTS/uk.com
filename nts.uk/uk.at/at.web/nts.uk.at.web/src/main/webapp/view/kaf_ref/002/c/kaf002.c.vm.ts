@@ -501,6 +501,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     
         created(
                 params: { 
+					appType: any,
                     application: any,
                     printContentOfEachAppDto: PrintContentOfEachAppDto,
                     approvalReason: any,
@@ -522,6 +523,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             });
             self.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             self.application = params.application;
+			self.appType = params.appType;
             self.approvalReason = params.approvalReason;
             
             self.isPreAtr(self.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr == 0);

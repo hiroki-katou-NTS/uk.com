@@ -91,6 +91,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
         isSendMail: KnockoutObservable<Boolean>;
 
         created(params: {
+			appType: any,
             application: any,
             printContentOfEachAppDto: PrintContentOfEachAppDto,
             approvalReason: any,
@@ -100,6 +101,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
+			vm.appType = params.appType;
             vm.createParamKAF008();
             vm.printContent = params.printContentOfEachAppDto;
             vm.approvalReason = params.approvalReason;

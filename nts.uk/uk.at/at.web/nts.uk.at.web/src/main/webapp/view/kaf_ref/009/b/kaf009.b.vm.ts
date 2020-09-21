@@ -92,6 +92,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
     
         created(
             params: { 
+				appType: any,
 				application: any,
 				printContentOfEachAppDto: PrintContentOfEachAppDto,
             	approvalReason: any,
@@ -102,6 +103,7 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.application = params.application;
+			vm.appType = params.appType;
             vm.model = new Model(true, true, true, '', '', '', '');
             if (ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo) {
                 vm.mode = ko.toJS(vm.appDispInfoStartupOutput).appDetailScreenInfo.outputMode == 1 ? 'edit' : 'view';    
