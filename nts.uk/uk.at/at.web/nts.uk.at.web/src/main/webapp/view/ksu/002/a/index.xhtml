@@ -20,10 +20,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 			</div>
-			<div data-bind="component: { name: 'title-date', params: {} }">
-			</div>
 			<div id="contents-area">
-                <div data-bind="scheduler: undefined, baseDate: ko.observable({ begin: new Date(2020, 8, 14), finish: new Date(2020, 9, 4) })"></div>
+				<div data-bind="title-date: baseDate"></div>
+                <div data-bind="scheduler: undefined"></div>
 			</div>
 		</ui:define>
 	</ui:composition>
