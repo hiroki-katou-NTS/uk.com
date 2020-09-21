@@ -276,8 +276,8 @@ module nts.uk.com.view.cli003.b {
             { code: EMPLOYEE_SPECIFIC.SPECIFY, name: this.$i18n("CLI003_17") },
             { code: EMPLOYEE_SPECIFIC.ALL, name: this.$i18n("CLI003_18") },
         ]);
-        targetEmployeeCount: KnockoutObservable<string> = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
-        selectedEmployeeCodeTarget: KnockoutObservableArray<any> = ko.observableArray([]);
+        operatorEmployeeCount: KnockoutObservable<string> = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
+        selectedEmployeeCodeOperator: KnockoutObservableArray<any> = ko.observableArray([]);
        
         //B5
         startDateString: KnockoutObservable<string> = ko.observable("");
@@ -287,8 +287,8 @@ module nts.uk.com.view.cli003.b {
 
         //B6
         b6_2SelectedRuleCode: KnockoutObservable<number> = ko.observable(2);
-        operatorEmployeeCount: KnockoutObservable<string> = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
-        selectedEmployeeCodeOperator: KnockoutObservableArray<any> = ko.observableArray([]);
+        targetEmployeeCount: KnockoutObservable<string> = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
+        selectedEmployeeCodeTarget: KnockoutObservableArray<any> = ko.observableArray([]);
 
         constructor() {
             super();
@@ -314,15 +314,15 @@ module nts.uk.com.view.cli003.b {
                     if (data !== undefined) {
                         vm.currentCode(data.currentCode);
                         vm.checkFormatDate(data.checkFormatDate);
-                        vm.selectedEmployeeCodeTarget(data.targetEmployeeIdList);
+                        vm.selectedEmployeeCodeOperator(data.operatorEmployeeIdList);
                         vm.b5_2dateValue(data.dateValue);
                         vm.startDateOperator(data.startDateOperator);
                         vm.endDateOperator(data.endDateOperator);
-                        vm.b4_2SelectedRuleCode(data.selectedRuleCode);
-                        vm.b6_2SelectedRuleCode(data.selectedRuleCodeOperator);
-                        vm.selectedEmployeeCodeOperator(data.listEmployeeIdOperator);
-                        vm.operatorEmployeeCount(data.operatorEmployeeCount);
+                        vm.b4_2SelectedRuleCode(data.selectedRuleCodeOperator);
+                        vm.b6_2SelectedRuleCode(data.selectedRuleCodeTarget);
+                        vm.selectedEmployeeCodeTarget(data.targetEmployeeIdList);
                         vm.targetEmployeeCount(data.targetEmployeeCount);
+                        vm.operatorEmployeeCount(data.operatorEmployeeCount);
                     }
                 })
                 .then(() => vm.$window.storage('VIEW_B_DATA', undefined))
@@ -492,24 +492,6 @@ module nts.uk.com.view.cli003.b {
                 .storage("CLI003_C_FormLabel", vm.$i18n("CLI003_23"))
                 .then(() => {
                     vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
-                        vm.$window.storage("targetEmployeeCount").then((data) => {
-                            if (data !== undefined)
-                                vm.targetEmployeeCount(data);
-                        })
-                        vm.$window.storage("selectedEmployeeCodeTarget").then((data) => {
-                            if (data !== undefined)
-                                vm.selectedEmployeeCodeTarget(data);
-                        })
-                    })
-                })
-        }
-
-        openDialogForB6_3() {
-            const vm = this;
-            vm.$window
-                .storage("CLI003_C_FormLabel", vm.$i18n("CLI003_16"))
-                .then(() => {
-                    vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
                         vm.$window.storage("operatorEmployeeCount").then((data) => {
                             if (data !== undefined)
                                 vm.operatorEmployeeCount(data);
@@ -522,11 +504,29 @@ module nts.uk.com.view.cli003.b {
                 })
         }
 
+        openDialogForB6_3() {
+            const vm = this;
+            vm.$window
+                .storage("CLI003_C_FormLabel", vm.$i18n("CLI003_16"))
+                .then(() => {
+                    vm.$window.modal("/view/cli/003/c/index.xhtml").then(() => {
+                        vm.$window.storage("targetEmployeeCount").then((data) => {
+                            if (data !== undefined)
+                                vm.targetEmployeeCount(data);
+                        })
+                        vm.$window.storage("selectedEmployeeCodeTarget").then((data) => {
+                            if (data !== undefined)
+                                vm.selectedEmployeeCodeTarget(data);
+                        })
+                    })
+                })
+        }
+
         validateBeforeJumpToF(): boolean {
             const vm = this;
             const noOne = nts.uk.text.format(vm.$i18n("CLI003_57"), 0);
-            if(vm.b4_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne &&
-                vm.b6_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne){
+            if(vm.b4_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne &&
+                vm.b6_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne){
                 const bundledErrors = [{
                     message: resource.getMessage('Msg_1718'),
                     messageId: "Msg_1718",
@@ -538,11 +538,11 @@ module nts.uk.com.view.cli003.b {
                 }];
                 nts.uk.ui.dialog.bundledErrors({ errors: bundledErrors });
                 return false;
-            } else if (vm.b4_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
+            } else if (vm.b4_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne) {
                 vm.$dialog.error({ messageId: "Msg_1718" });
                 return false;
             }
-            else if (vm.b6_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne) {
+            else if (vm.b6_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
                 vm.$dialog.error({ messageId: "Msg_1719" });
                 return false;
             } else {
@@ -556,19 +556,19 @@ module nts.uk.com.view.cli003.b {
                 const data = {
                     currentCode: vm.currentCode(),
                     logSetOutputs: vm.logSetOutputs(),
-                    operatorEmployeeCount: vm.operatorEmployeeCount(),
                     targetEmployeeCount: vm.targetEmployeeCount(),
+                    operatorEmployeeCount: vm.operatorEmployeeCount(),
                     logTypeSelectedCode: vm.recordType(),
                     dataTypeSelectedCode: vm.dataType(),
                     systemTypeSelectedCode: vm.systemType(),
                     checkFormatDate: vm.checkFormatDate(),
-                    targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
+                    operatorEmployeeIdList: vm.selectedEmployeeCodeOperator(),
                     dateValue: vm.b5_2dateValue(),
                     startDateOperator: vm.startDateOperator(),
                     endDateOperator: vm.endDateOperator(),
-                    selectedRuleCode: vm.b4_2SelectedRuleCode(),
-                    selectedRuleCodeOperator: vm.b6_2SelectedRuleCode(),
-                    listEmployeeIdOperator: vm.selectedEmployeeCodeOperator(),
+                    selectedRuleCodeOperator: vm.b4_2SelectedRuleCode(),
+                    selectedRuleCodeTarget: vm.b6_2SelectedRuleCode(),
+                    targetEmployeeIdList: vm.selectedEmployeeCodeTarget(),
                 }
                 vm.$window
                     .storage('VIEW_B_DATA', data)

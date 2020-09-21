@@ -149,7 +149,8 @@ module nts.uk.com.view.cli003.f {
         menuClassification: number
         programId: string
         system: number
-    }
+    } 
+
     class IgGridColumnSwitchModel {
         headerText: string;
         key: string;
@@ -473,7 +474,7 @@ module nts.uk.com.view.cli003.f {
         systemTypeSelectedCode: KnockoutObservable<string> = ko.observable('');
         checkFormatDate: KnockoutObservable<string> = ko.observable('');
         //C
-        targetEmployeeIdList: KnockoutObservableArray<any> = ko.observableArray([]);
+        operatorEmployeeIdList: KnockoutObservableArray<any> = ko.observableArray([]);
         dateValue: KnockoutObservable<any> = ko.observable();
         //D
         startDateOperator: KnockoutObservable<string> = ko.observable('');
@@ -481,7 +482,7 @@ module nts.uk.com.view.cli003.f {
 
         ////just add 2
 
-        listEmployeeIdOperator: KnockoutObservableArray<any> = ko.observableArray([]);
+        targetEmployeeIdList: KnockoutObservableArray<any> = ko.observableArray([]);
         logSetOutputs: KnockoutObservableArray<logSetOutputs> = ko.observableArray([]);
         initComponentScreenF(data: any) {
             const vm = this
@@ -495,34 +496,52 @@ module nts.uk.com.view.cli003.f {
                 vm.dateValue(data.dateValue);
                 vm.startDateOperator(data.startDateOperator);
                 vm.endDateOperator(data.endDateOperator);
-                data.selectedRuleCode == 2 ?  vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
-                data.selectedRuleCodeOperator == 2 ? vm.listEmployeeIdOperator([]) : vm.listEmployeeIdOperator(data.listEmployeeIdOperator);
+                data.selectedRuleCode == 2 ?  vm.operatorEmployeeIdList([]) : vm.operatorEmployeeIdList(data.operatorEmployeeIdList);
+                data.selectedRuleCodeOperator == 2 ? vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
             }
 
             // set param log
-            const format = 'YYYY/MM/DD HH:mm:ss';
-            let paramLog = {
-                listTagetEmployeeId: vm.targetEmployeeIdList(),
-                listOperatorEmployeeId: vm.listEmployeeIdOperator(),
-                startDateTaget: moment(vm.dateValue().startDate, "YYYY/MM/DD").toISOString(),
-                endDateTaget: moment(vm.dateValue().endDate, "YYYY/MM/DD").toISOString(),
-                startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
-                endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
-                recordType: vm.logTypeSelectedCode(),
-                targetDataType: vm.dataTypeSelectedCode()
-            };
-            if (vm.checkFormatDate() === '2') {
-                paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").endOf('month').toISOString();
-            } else {
-                paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").toISOString();
-            }
-
+            let format = 'YYYY/MM/DD HH:mm:ss';
+        
             //取得したドメインモデル「ログ照会設定」．記録種類をチェック
             let recordType = Number(vm.logTypeSelectedCode());
-            if (recordType === 9 || recordType === 10 || recordType === 11) {
-                //TODO F：データ保存・復旧・削除の操作ログを取得
+            //TODO F：データ保存・復旧・削除の操作ログを取得
+            const logDataParams = {
+                systemType: Number(vm.logTypeSelectedCode()),
+                recordType: Number(vm.logTypeSelectedCode()),
+                startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
+                endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
+                listOperatorEmployeeId : vm.operatorEmployeeIdList()
+            }
+            if (recordType === 9) {
+                service.getLogDataSave(logDataParams).done((data : any) => {
+                    console.log(data);
+                })
+            } else if(recordType === 10){
+                service.getLogDataRecover(logDataParams).done((data : any) => {
+                    console.log(data);
+                })
+            }else if(recordType === 11){
+                service.getLogDataDelete(logDataParams).done((data : any) => {
+                    console.log(data);
+                })
             } else {
-                //I：出力ボタン押下時処理
+             //I：出力ボタン押下時処理 
+                let paramLog = {
+                    listOperatorEmployeeId: vm.operatorEmployeeIdList(),
+                    listTagetEmployeeId: vm.targetEmployeeIdList(),
+                    startDateTaget: moment(vm.dateValue().startDate, "YYYY/MM/DD").toISOString(),
+                    endDateTaget: moment(vm.dateValue().endDate, "YYYY/MM/DD").toISOString(),
+                    startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
+                    endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
+                    recordType: vm.logTypeSelectedCode(),
+                    targetDataType: vm.dataTypeSelectedCode()
+                };
+                if (vm.checkFormatDate() === '2') {
+                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").endOf('month').toISOString();
+                } else {
+                    paramLog.endDateTaget = moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").toISOString();
+                }
                 vm.getLogFromAnother(paramLog);
 
             }
@@ -1336,8 +1355,8 @@ module nts.uk.com.view.cli003.f {
                 checkProcess = false,
                 paramLog = {
                     // recordType=0,1 k co taget
-                    listTagetEmployeeId: vm.targetEmployeeIdList(),
-                    listOperatorEmployeeId: vm.listEmployeeIdOperator(),
+                    listTagetEmployeeId: vm.operatorEmployeeIdList(),
+                    listOperatorEmployeeId: vm.targetEmployeeIdList(),
                     startDateTaget: moment.utc(vm.dateValue().startDate, "YYYY/MM/DD").toISOString(),
                     endDateTaget: moment.utc(vm.dateValue().endDate, "YYYY/MM/DD").toISOString(),
                     startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),

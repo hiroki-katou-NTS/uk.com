@@ -182,27 +182,27 @@ module nts.uk.com.view.cli003.c {
       const vm = this;
       if(vm.formLabelTitle() === vm.$i18n("CLI003_23")){
         vm.$window
-        .storage("targetEmployeeCount", undefined)
-        .then(() => vm.$window.storage("selectedEmployeeCodeTarget", undefined))
-        .then( () => vm.$window.close());
-      }
-      if(vm.formLabelTitle() === vm.$i18n("CLI003_16")){
-        vm.$window
         .storage("operatorEmployeeCount", undefined)
         .then(() => vm.$window.storage("selectedEmployeeCodeOperator", undefined))
         .then( () => vm.$window.close());
       }
+      if(vm.formLabelTitle() === vm.$i18n("CLI003_16")){
+        vm.$window
+        .storage("targetEmployeeCount", undefined)
+        .then(() => vm.$window.storage("selectedEmployeeCodeTarget", undefined))
+        .then( () => vm.$window.close());
+      }
     }
 
-    setTargetEmployee() {
+    setEmployee() {
       const vm = this;
       vm.targetNumber(nts.uk.text.format(vm.$i18n("CLI003_57"), vm.selectedEmployeeCodeTarget().length));
-      if(vm.formLabelTitle() === vm.$i18n("CLI003_23")){
+      if(vm.formLabelTitle() === vm.$i18n("CLI003_16")){
         vm.$window.storage("targetEmployeeCount", vm.targetNumber())
         .then(() => vm.$window.storage("selectedEmployeeCodeTarget", vm.selectedEmployeeCodeTarget()))
         .then(() => vm.$window.close());
       }
-      if(vm.formLabelTitle() === vm.$i18n("CLI003_16")){
+      if(vm.formLabelTitle() === vm.$i18n("CLI003_23")){
         vm.$window.storage("operatorEmployeeCount", vm.targetNumber())
         .then(() => vm.$window.storage("selectedEmployeeCodeOperator", vm.selectedEmployeeCodeTarget()))
         .then(() => vm.$window.close());
