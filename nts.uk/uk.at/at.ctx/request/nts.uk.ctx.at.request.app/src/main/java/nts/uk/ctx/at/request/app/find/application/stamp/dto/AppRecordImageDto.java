@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.EngraveAtr;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,6 +34,6 @@ public class AppRecordImageDto extends ApplicationDto{
 		return new AppRecordImage(
 				EnumAdaptor.valueOf(appStampCombinationAtr, EngraveAtr.class),
 				new AttendanceTime(attendanceTime),
-				appStampGoOutAtr != null ? Optional.of(EnumAdaptor.valueOf(appStampGoOutAtr, GoOutReasonAtr.class)) : Optional.empty());
+				appStampGoOutAtr != null ? Optional.of(EnumAdaptor.valueOf(appStampGoOutAtr, GoingOutReason.class)) : Optional.empty());
 	}
 }
