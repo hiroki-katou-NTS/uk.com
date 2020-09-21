@@ -21,6 +21,7 @@ import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommand;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.SaveOptionalAggrPeriodCommandHandler;
 import nts.uk.ctx.at.record.app.command.resultsperiod.optionalaggregationperiod.UpdateOptionalAggrPeriodCommandHandler;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodExcutionDto;
@@ -71,9 +72,7 @@ public class OptionalAggrPeriodWs {
 	
 	@Inject
 	private UpdateOptionalAggrPeriodCommandHandler updateOptionalAggrPeriodCommandHandler;
-	
 
-	
 	/**
 	 * Find all.
 	 *
@@ -205,6 +204,16 @@ public class OptionalAggrPeriodWs {
 	@Path("stopExecute/{dataFromD}")
 	public void stopExecute(@PathParam("dataFromD") String excuteId) {
 		updateOptionalAggrPeriodCommandHandler.handle(excuteId);
+	}
+	
+	@POST
+	@Path("aggrPeriod/{id}")
+	public AggrPeriodDto getAggrPeriod(@PathParam("id") String excuteId) {
+		List<AggrPeriodErrorInfoDto> errorInfos = this.errorFinder.findAll(excuteId);
+		AggrPeriodExcutionDto aggrPeriodExcutionDto = this.logFinder.findAggr(excuteId);
+		OptionalAggrPeriodDto optionalAggrPeriodDto = this.finder.find(excuteId);
+		List<AggrPeriodTargetDto> periodTargetDto = this.targetFinder.findAll(aggrPeriodExcutionDto.getAggrFrameCode());
+		return new AggrPeriodDto(aggrPeriodExcutionDto, optionalAggrPeriodDto, periodTargetDto, errorInfos);
 	}
 	
 }
