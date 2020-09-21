@@ -115,6 +115,9 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                         vm.model.workTimeName(nameWorkTime);
                         
                     }
+                } else {
+                    vm.model.workTypeName(vm.$i18n.text('KAF009_63'));
+                    vm.model.workTimeName(vm.$i18n.text('KAF009_63'));
                 }
                 
                 
