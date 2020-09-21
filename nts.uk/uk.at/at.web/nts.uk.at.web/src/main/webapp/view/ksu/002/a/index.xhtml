@@ -25,7 +25,7 @@
 				<div data-bind="ntsFormLabel: { required: false, text: currentUser }"></div>
 				<div data-bind="title-date: baseDate"></div>
 				<div data-bind="action-bar"></div>
-                <div data-bind="scheduler: schedules, baseDate: baseDate"></div>
+                <div data-bind="scheduler: schedules, baseDate: baseDate, click-cell: clickDayCell"></div>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -1,7 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.a {
-	const template = ``;
+	const template = ` `;
 	
 	const COMPONENT_NAME = 'action-bar';
 	

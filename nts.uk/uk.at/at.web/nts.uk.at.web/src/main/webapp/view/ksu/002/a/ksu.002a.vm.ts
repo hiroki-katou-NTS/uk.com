@@ -10,10 +10,7 @@ module nts.uk.ui.at.ksu002.a {
 	export class ViewModel extends ko.ViewModel {
 		schedules: KnockoutObservableArray<any> = ko.observableArray([]);
 
-		baseDate = ko.observable({
-			begin: new Date(2020, 8, 14),
-			finish: new Date(2020, 9, 4)
-		});
+		baseDate = ko.observable(new Date());
 
 		currentUser!: KnockoutObservable<string>;
 
@@ -38,6 +35,12 @@ module nts.uk.ui.at.ksu002.a {
 
 		mounted() {
 
+		}
+		
+		clickDayCell(type: string, date: any) {
+			const vm = this;
+			
+			console.log(vm, type, date);
 		}
 	}
 }
