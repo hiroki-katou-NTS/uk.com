@@ -24,3 +24,11 @@
 .p10 {
 	padding: 10px;
 }
+
+.m-l-10 {
+	margin-left: 10px;
+}
+
+.pre-wrap {
+	white-space: pre-wrap;
+}

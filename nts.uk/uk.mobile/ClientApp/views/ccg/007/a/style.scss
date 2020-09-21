@@ -7,7 +7,16 @@
   text-overflow: ellipsis;
   border-left: unset;
 }
+
 #bottom-label {
-  line-height: 1em; 
-  height: 2em;
+  white-space: pre-wrap;
+  line-height: initial;
+}
+
+.m-t-10 {
+  margin-top: 10px;
+}
+
+.mt-2i {
+  margin-top: 2rem !important;
 }

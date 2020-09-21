@@ -4,7 +4,7 @@
       class="text-center page-title uk-bg-olive"
       style="margin: -1rem; font-size: 1.5rem; line-height: 2.5;"
     >{{'CCGS07_50' | i18n}}</div>
-    <div class="text-left page-info mt-3 uk-text-dark-gray" style="margin-top: 2rem !important;">
+    <div class="text-left page-info uk-text-dark-gray mt-2i">
       <!-- A2_1 -->
       <div>{{ 'CCGS07_51' | i18n }}</div>
     </div>
@@ -31,9 +31,9 @@
       />
       <div id="bottom-label" class="text-left page-info mt-3 uk-text-dark-gray">
         <!-- A5_1 -->
-        <div>{{ 'CCGS07_54' | i18n }}</div>
+        <div id="bottom-label">{{ 'CCGS07_54' | i18n }}</div>
       </div>
-      <div class="mt-3">
+      <div class="m-t-10">
         <!-- A10_1 -->
         <button
           v-bind:tabindex="3"
