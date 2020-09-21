@@ -11,10 +11,12 @@ import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTri
 import nts.uk.ctx.at.request.app.find.application.businesstrip.AppBusinessParam;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripFinder;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.ApproveTripRequestParam;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.CheckPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.DetailScreenInfo;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.StartScreenBDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.BusinessTripOutputDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailScreenDto;
+import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.DetailStartScreenInfoDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.ParamStartKDL003;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 
@@ -36,6 +38,17 @@ public class BusinessTripWebServiceSmartphone extends WebService {
 	@POST
 	public BusinessTripOutputDto startMobile(AppBusinessParam appWorkChangeParam) {
 		return businessTripFinder.startKAFS08(appWorkChangeParam);
+	}
+
+	/**
+	 * 次へをクリックして勤務内容を表示する
+	 * @param param
+	 * @return
+	 */
+	@Path("changeAppDate")
+	@POST
+	public DetailStartScreenInfoDto mobilePeriodCheck(CheckPeriodDto param) {
+		return this.businessTripFinder.mobilePeriodCheck(param);
 	}
 
 	// B:出張の申請確認（スマホ）.起動する
