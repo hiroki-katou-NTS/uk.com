@@ -492,7 +492,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<div align="center">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].startTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
-                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'AttendanceClock\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div style="display: block; margin: 0px 5px 5px 5px">'
@@ -500,7 +500,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<div align="center">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].endTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
-                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'AttendanceClock\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                 + '</div>'
                 + '</div>';
 
@@ -521,7 +521,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<div align="center">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].startTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
-                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'AttendanceClock\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div class="endTime" style="display: block; margin: 0px 5px 5px 5px">'
@@ -529,7 +529,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 + '<div align="center">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
                 + 'style:{\'background-color\': ' + param + '[' + idGetList + '].flagEnable() ? (' + param + '[' + idGetList + '].endTimeActual ? (' + param + '[' + idGetList + '].flagObservable() ? \'#b1b1b1\' : \'\') : \'#ffc0cb\') : \'\'},'
-                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest, enable: !' + param + '[' + idGetList + '].flagObservable() , constraint: \'AttendanceClock\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                 + '</div>'
                 + '</div>';
 
@@ -543,13 +543,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.startTime = '<div class="startTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].startTimeRequest , constraint: \'AttendanceClock\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                 + '</div>'
                 + '</div>';
             this.endTime = '<div class="endTime" style="display: block; margin: 0px 5px 5px 5px">'
                 + '<div align="center" style="padding-top: 10px; padding-bottom: 5px">'
                 + '<input style="width: 50px; text-align: center" data-name="Time Editor" data-bind="'
-                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest , constraint: \'SampleTimeDuration\', inputFormat: \'time\', mode: \'time\', required: false}" />'
+                + 'ntsTimeEditor: {value: ' + param + '[' + idGetList + '].endTimeRequest , constraint: \'AttendanceClock\', inputFormat: \'time\', mode: \'time\', required: false}" />'
                 + '</div>'
                 + '</div>';
         }

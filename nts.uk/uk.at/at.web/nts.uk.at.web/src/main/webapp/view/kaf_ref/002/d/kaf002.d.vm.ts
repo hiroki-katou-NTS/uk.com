@@ -71,7 +71,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
 
     <div class="blockSecond">
         <input class="inputBlockSecond" id="inputTimeKAF002"
-            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { value: time, required: true, inputFormat: 'time', constraint: 'SampleTimeDuration', mode: 'time'
+            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
                                                     }" />
 
         <div class="dropListBlockSecond"
