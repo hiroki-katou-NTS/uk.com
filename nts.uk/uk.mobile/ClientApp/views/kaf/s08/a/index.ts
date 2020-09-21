@@ -31,9 +31,7 @@ import { StepwizardComponent } from '@app/components';
 export class KafS08AComponent extends Vue {
     public step: string = 'KAFS08_10';
 
-    // to edit
-    @Prop({ default: () => null })
-    public params!: any;
+    @Prop({default : () => {}}) public readonly params!: any;
 
     //public paramsFromA1: any | null = null;
     public achievementDetails: [] = [];
@@ -46,11 +44,12 @@ export class KafS08AComponent extends Vue {
     public appID: string = ' ';
     public listDate: any[] = [];
     public appReason: string = '';
+    public startDate;
 
 
     public created() {
         const vm = this;
-
+        console.log(vm.params);
     }
 
     //thực hiện emit từ component con A1
@@ -70,8 +69,6 @@ export class KafS08AComponent extends Vue {
         vm.achievementDetails = achievementDetails;
         //lấy giá trị comment set ở A1
         vm.comment = comment;
-        //nhảy sang step A2 
-        vm.step = 'KAFS08_11';
         //nhan businessTripInfoOutput tu man hinh start
         vm.businessTripInfoOutput = businessTripInfoOutput;
         //nhan application tu man hinh start
@@ -80,6 +77,8 @@ export class KafS08AComponent extends Vue {
         vm.listDate = listDate;
         //nhan ve appReason tu A1
         vm.appReason = appReason;
+         //nhảy sang step A2 
+        vm.step = 'KAFS08_11';
     }
 
     //thực hiện emit từ component con A2 đến C
