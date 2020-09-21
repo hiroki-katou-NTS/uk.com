@@ -27,7 +27,20 @@ module nts.uk.at.view.kdr002.a {
         export function findAllClosure(): JQueryPromise<any> {
             return ajax("at", path.findAllClosure);
         }
-    
- 
-}
+
+        export module model {
+
+            // Data class
+            export class Closure {
+                companyId: any;
+                closureId: number;
+                useClassification: string;
+                closureMonth: number;
+                closureHistories: any;
+            }
+        }
+
+    }
+
+
 }

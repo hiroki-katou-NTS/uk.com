@@ -14,11 +14,9 @@ module nts.uk.at.view.kdr002.a.viewmodel {
     import formatDate = nts.uk.time.formatDate;
     import parseYearMonthDate = nts.uk.time.parseYearMonthDate;
     import char = nts.uk.characteristics;
+    import Closure = service.model.Closure;
 
     export class ScreenModel {
-
-
-
         selectedImplementAtrCode: KnockoutObservable<number>;
         resetWorkingHours: KnockoutObservable<boolean>;
         resetDirectLineBounce: KnockoutObservable<boolean>;
@@ -31,8 +29,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         copyStartDate: KnockoutObservable<Date>;
         /** Return data */
         lstSearchEmployee: KnockoutObservableArray<EmployeeSearchDto> = ko.observableArray([]);
-        startDateString: KnockoutObservable<string> = ko.observable(moment());
-        endDateString: KnockoutObservable<string> = ko.observable(moment());
+        startDateString: KnockoutObservable<any> = ko.observable(moment());
+        endDateString: KnockoutObservable<any> = ko.observable(moment());
         closureId: KnockoutObservable<number> = ko.observable(0);
 
         lstLabelInfomation: KnockoutObservableArray<string>;
@@ -40,51 +38,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         lengthEmployeeSelected: KnockoutObservable<string>;
 
         closureData: KnockoutObservableArray<any> = ko.observableArray([]);
-
-        ccgcomponent: GroupOption = {
-            /** Common properties */
-            systemType: 2, // システム区分
-            showEmployeeSelection: false, // 検索タイプ
-            showQuickSearchTab: true, // クイック検索
-            showAdvancedSearchTab: true, // 詳細検索
-            showBaseDate: false, // 基準日利用
-            showClosure: true, // 就業締め日利用
-            showAllClosure: true, // 全締め表示
-            showPeriod: true, // 対象期間利用
-            periodFormatYM: true, // 対象期間精度
-
-            /** Required parameter */
-            baseDate: moment().format("YYYY-MM-DD"), // 基準日
-            periodStartDate: moment(), // 対象期間開始日
-            periodEndDate: moment(), // 対象期間終了日
-            inService: true, // 在職区分
-            leaveOfAbsence: true, // 休職区分
-            closed: true, // 休業区分
-            retirement: true, // 退職区分
-
-            /** Quick search tab options */
-            showAllReferableEmployee: true, // 参照可能な社員すべて
-            showOnlyMe: true, // 自分だけ
-            showSameWorkplace: true, // 同じ職場の社員
-            showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
-
-            /** Advanced search properties */
-            showEmployment: true, // 雇用条件
-            showWorkplace: true, // 職場条件
-            showClassification: true, // 分類条件
-            showJobTitle: true, // 職位条件
-            showWorktype: true, // 勤種条件
-            isMutipleCheck: true, // 選択モード
-
-            /** Return data */
-            returnDataFromCcg001: function(data: Ccg001ReturnedData) {
-                self.lstSearchEmployee(data.listEmployee);
-                self.applyKCP005ContentSearch(data.listEmployee);
-                self.startDateString(data.periodStart);
-                self.endDateString(data.periodEnd);
-                self.closureId(data.closureId);
-            }
-        };
+        //_____CCG001________
+        ccgcomponent : GroupOption;
 
         // Employee tab
         lstPersonComponentOption: any;
@@ -95,20 +50,20 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         ccgcomponentPerson: GroupOption;
 
         //date type group
-        dateTypes: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([
+        dateTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([
             //A3_3
-            { name: getText('KDR002_3'), code: 0 }, // 現在の情報
+            { code: 0, name: getText('KDR002_3'),  }, // 現在の情報
             //A3_4
-            { name: getText('KDR002_4'), code: 1 } // 過去の情報
+            { code: 1, name: getText('KDR002_4'), } // 過去の情報
         ]);
         selectedDateType: KnockoutObservable<number> = ko.observable(0);
 
         // reference type
-        referenceTypes: KnockoutObservableArray<HolidayRemainingModel> = ko.observableArray([
+        referenceTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([
             //A3_6
-            { name: getText('KDR002_6'), code: 0 }, // 実績のみ
+            { code: 0, name: getText('KDR002_6') }, // 実績のみ
             //A3_7
-            { name: getText('KDR002_7'), code: 1 } // スケジュール・申請含む
+            { code: 1, name: getText('KDR002_7')  } // スケジュール・申請含む
         ]);
         selectedReferenceType: KnockoutObservable<number> = ko.observable(0);
 
@@ -121,12 +76,58 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             { name: getText('Enum_BreakPageType_NONE'), code: 0 }, //なし
             { name: getText('Enum_BreakPageType_WORKPLACE'), code: 1 } //職場
         ]);
-        pageBreakSelected: KnockoutObservable<string> = ko.observable(0);
+        pageBreakSelected: KnockoutObservable<number> = ko.observable(0);
 
         closureDate: KnockoutObservable<Closure> = ko.observable();
 
         constructor() {
             let self = this;
+
+            //_____CCG001________
+            self.ccgcomponent = {
+                /** Common properties */
+                systemType: 2, // システム区分
+                showEmployeeSelection: false, // 検索タイプ
+                showQuickSearchTab: true, // クイック検索
+                showAdvancedSearchTab: true, // 詳細検索
+                showBaseDate: false, // 基準日利用
+                showClosure: true, // 就業締め日利用
+                showAllClosure: true, // 全締め表示
+                showPeriod: true, // 対象期間利用
+                periodFormatYM: true, // 対象期間精度
+
+                /** Required parameter */
+                baseDate: moment().format("YYYY-MM-DD"), // 基準日
+                periodStartDate: moment(), // 対象期間開始日
+                periodEndDate: moment(), // 対象期間終了日
+                inService: true, // 在職区分
+                leaveOfAbsence: true, // 休職区分
+                closed: true, // 休業区分
+                retirement: true, // 退職区分
+
+                /** Quick search tab options */
+                showAllReferableEmployee: true, // 参照可能な社員すべて
+                showOnlyMe: true, // 自分だけ
+                showSameWorkplace: true, // 同じ職場の社員
+                showSameWorkplaceAndChild: true, // 同じ職場とその配下の社員
+
+                /** Advanced search properties */
+                showEmployment: true, // 雇用条件
+                showWorkplace: true, // 職場条件
+                showClassification: true, // 分類条件
+                showJobTitle: true, // 職位条件
+                showWorktype: true, // 勤種条件
+                isMutipleCheck: true, // 選択モード
+
+                /** Return data */
+                returnDataFromCcg001: function(data: Ccg001ReturnedData) {
+                    self.lstSearchEmployee(data.listEmployee);
+                    self.applyKCP005ContentSearch(data.listEmployee);
+                    self.startDateString(data.periodStart);
+                    self.endDateString(data.periodEnd);
+                    self.closureId(data.closureId);
+                }
+            };
         }
 
         /**
@@ -254,7 +255,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 } else {
                     self.doPrint(printQuery);
                 }
-                
+
             }).fail(() => {
                 block.clear();
             });
@@ -402,6 +403,16 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             self.endDate = '';
             self.startDate = '';
             self.worktimeCode = '';
+        }
+    }
+
+    export class ItemModel {
+        code: number;
+        name: string;
+
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
         }
     }
 
