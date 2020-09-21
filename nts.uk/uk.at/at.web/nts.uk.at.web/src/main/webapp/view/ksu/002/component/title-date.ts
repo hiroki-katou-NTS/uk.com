@@ -17,17 +17,17 @@ module nts.uk.ui.at.ksu002.a {
 				<span class="label-1" class="label" data-bind="i18n: 'KSU002_23'"></span>
 				<span class="label-2" class="label" data-bind="i18n: 'KSU002_7'"></span>
 				
-								<div data-bind="ntsDatePicker: { value: yearMonth, dateFormat: 'yearmonth' , valueFormat: 'YYYYMM',  fiscalMonthsMode: true, defaultClass: 'round-orange' }">
-								</div>
-								<span class="label-1" class="label" data-bind="i18n: 'KSU002_6'"></span>
-								<span class="label-2" class="label" data-bind="i18n: 'KSU002_7'"></span>
-								
-								<div class="cf" data-bind="ntsSwitchButton: {
-									$i18n: 'KSU002_6',
-									options: roundingRules,
-									optionsValue: 'code',
-									optionsText: 'name',
-									value: selectedRuleCode }"></div>
+				<div data-bind="ntsDatePicker: { value: yearMonth, dateFormat: 'yearmonth' , valueFormat: 'YYYYMM',  fiscalMonthsMode: true, defaultClass: 'round-orange' }">
+				</div>
+				<span class="label-1" class="label" data-bind="i18n: 'KSU002_6'"></span>
+				<span class="label-2" class="label" data-bind="i18n: 'KSU002_7'"></span>
+				
+				<div class="cf" data-bind="ntsSwitchButton: {
+					$i18n: 'KSU002_6',
+					options: roundingRules,
+					optionsValue: 'code',
+					optionsText: 'name',
+					value: selectedRuleCode }"></div>
 			</div>
 		</div> 
 		<style type="text/css" rel="stylesheet">
