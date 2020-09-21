@@ -11,7 +11,6 @@
 				nts.uk.shr.com.primitive.PersonId
 			</com:ValidatorScript>
 			<com:stylefile path="ktg027.a.style.css" />
-			<com:scriptfile path="ktg027.a.service.js" />
       <com:scriptfile path="ktg027.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -46,6 +45,7 @@
 				</tbody>
         </table>
         <div style="height: 270px;">
+          <!-- A3 -->
           <table class="block pl-10 scroll">
             <thead>
               <tr>
@@ -63,13 +63,19 @@
             </thead>
             <tbody>
               <com:ko-foreach bind="listOvertimeByEmp">
-                <tr class="mw-200">
-                  <td class="border-bot"><a href="#" data-bind="text: empName"></a></td>
-                  <td class="border-bot text-center"><a href="#" data-bind="text: $parent.genTime(confirmed.limitAlarmTime)"></a></td>
+                <tr class="mw-200" >
+                  <!-- A3_1 -->
+                  <td class="border-bot"><a href="#" data-bind="text: empName, click: function() { $vm.openKTG026($data) }"></a></td>
+                  <!-- A3_2 -->
+                  <td class="border-bot text-center"><a href="#" data-bind="text: $parent.genTime(confirmed.limitAlarmTime), click:function() { $vm.openKDW003($data) } "></a></td>
                   <td class="pl-20 inline-flex position-relative">
+                    <!-- A3_3 -->
                     <div class="label non-statutory-bg-color" data-bind="style: { width: $parent.genWidthByTime(confirmed.limitAlarmTime)}"></div>
+                    <!-- A3_4 -->
                     <div class="label time-outside-bg-color" data-bind="style: { width: $parent.genWidthByTime(confirmed.limitAlarmTime)}"></div> 
+                    <!-- A2_5 -->
                     <div class="dashed45"></div>
+                    <!-- A2_6 -->
                     <div class="dashed80"></div>
                   </td>
                 </tr>
