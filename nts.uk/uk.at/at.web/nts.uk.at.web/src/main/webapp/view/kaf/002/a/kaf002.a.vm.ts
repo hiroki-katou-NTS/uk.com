@@ -73,6 +73,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     created(param: any) {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
+		self.application().opStampRequestMode(0);
         self.selectedTab.subscribe(value => {
            if (!_.isNull(value)) {
                self.selectedCode(Number(value));
