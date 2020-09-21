@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.gateway.app.command.accessrestrictions;
 import java.util.Optional;
 
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AllowedIPAddress;
 
 /**
@@ -10,6 +11,7 @@ import nts.uk.ctx.sys.gateway.dom.accessrestrictions.AllowedIPAddress;
  * @name: 許可IPアドレス
  */
 @NoArgsConstructor
+@Setter
 public class AllowedIPAddressCommand{
 
 	/** 開始アドレス */
@@ -29,7 +31,7 @@ public class AllowedIPAddressCommand{
 				this.startAddress.toDomain(),
 				this.ipInputType,
 				this.ipInputType == 0 ? Optional.empty()
-						: Optional.of(this.startAddress.toDomain()),
+						: Optional.of(this.endAddress.toDomain()),
 				this.comment);
 	}
 

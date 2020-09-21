@@ -1,22 +1,28 @@
 module cmm002.a {
 	import block = nts.uk.ui.block;
 	import getText = nts.uk.resource.getText;
-	import getMessage = nts.uk.resource.getMessage;
     import dialog = nts.uk.ui.dialog;
+	import errors = nts.uk.ui.errors;
 
     export class ViewModel {
         accessLimitUseAtr =  ko.observable(0);
-		accessLimitUseAtrList = [
-            { value: 0, name: getText("KDP010_163") },
-            { value: 1, name: getText("KDP010_164") }
-        ];
-        allowedIPaddressList = ko.observableArray([]);
-        allowedIPAddressNew =  ko.observable(new AllowedIPAddress());
-        allowedIPAddressCurrent = null;
-		newMode = true;
-		
+		accessLimitUseAtrList = _.orderBy(__viewContext.enums.NotUseAtr,['value'], ['desc'])
+		ipInputTypeList = _.orderBy(__viewContext.enums.IPAddressRegistrationFormat,['value'], ['asc']);
+		allowedIPaddressList = ko.observableArray([]);
+        allowedIPAddress =  new AllowedIPAddress();
+        selectedAllowedIPAddress = ko.observable('');
+		columns = ko.observableArray([
+                { headerText: getText('CMM002_5'), key: 'id', width: 150 }
+		]);
         constructor() {
-            
+            let self = this;
+			self.selectedAllowedIPAddress.subscribe(value =>{
+				if(value == ""){
+					self.allowedIPAddress.update(ko.toJS(new AllowedIPAddress()));
+				}else{
+					self.allowedIPAddress.update(_.find(self.allowedIPaddressList(), ['id', value]));
+				}
+			});
         }
 
         /** start page */
@@ -24,7 +30,7 @@ module cmm002.a {
 			let self = this;            
             let dfd = $.Deferred<any>();
 			block.invisible();
-            service.start().done((data) => {
+            service.start().done((data: any) => {
                 self.accessLimitUseAtr(data.accessLimitUseAtr);
 				let tg = [];
 				_.forEach(data.allowedIPaddress, (item) => {
@@ -32,7 +38,7 @@ module cmm002.a {
 				});
 				self.allowedIPaddressList(tg);
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function(error: any) {
                 dfd.reject();
                 dialog.alertError({ messageId: error.messageId });
             }).always(() => {
@@ -41,6 +47,63 @@ module cmm002.a {
             return dfd.promise();
         }
 
+		public newIp():void{
+			let self = this;
+			self.selectedAllowedIPAddress('');
+			errors.clearAll();
+		}
+		
+		public save():void{
+			let self = this;
+			$('input').ntsError('check');
+			if(!errors.hasError()) {
+				if(self.selectedAllowedIPAddress() == ''){
+					block.invisible();
+		            service.add(ko.toJS(self.allowedIPAddress)).done(() => {
+		            	self.start().done(()=>{
+							self.selectedAllowedIPAddress(new AllowedIPAddressDto(ko.toJS(self.allowedIPAddress)).id);
+						});
+						dialog.info({ messageId: "Msg_15" });
+					}).fail(function(error: any) {
+		                dialog.alertError({ messageId: error.messageId });
+						block.clear();
+		            });
+				} else {
+					block.invisible();
+					let param = {
+						allowedIPAddressNew: ko.toJS(self.allowedIPAddress),
+						allowedIPAddressOld: _.find(self.allowedIPaddressList(), ['id', self.selectedAllowedIPAddress()]) 
+					};
+		            service.update(param).done(() => {
+		            	self.start().done(()=>{
+							self.selectedAllowedIPAddress(new AllowedIPAddressDto(ko.toJS(self.allowedIPAddress)).id);
+						});
+						dialog.info({ messageId: "Msg_15" });
+					}).fail(function(error: any) {
+		                dialog.alertError({ messageId: error.messageId });
+						block.clear();
+		            });
+				}
+			}
+		}
+		
+		public del():void{
+			let self = this;
+			if(self.selectedAllowedIPAddress() != ''){
+				dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    block.invisible();
+		            service.del(_.find(self.allowedIPaddressList(), ['id', self.selectedAllowedIPAddress()])).done(() => {
+		            	self.start().done(()=>{
+							self.selectedAllowedIPAddress('');
+						});
+						dialog.info({ messageId: "Msg_16" });
+					}).fail(function(error: any) {
+		                dialog.alertError({ messageId: error.messageId });
+						block.clear();
+		            });
+                });
+			}
+		}
     }
 
 	class AllowedIPAddressDto {
@@ -70,17 +133,18 @@ module cmm002.a {
     }
 
     class AllowedIPAddress {
-        startAddress = ko.observable(new IPAddressSetting());
-		ipInputType = ko.observable(0);
-		endAddress = ko.observable(new IPAddressSetting());
+		ipInputType = ko.observable(0);        
+		startAddress = new IPAddressSetting();	
+		endAddress = new IPAddressSetting();
 		comment = ko.observable('');
-        constructor(param? : any) {
+        constructor() {}
+		update(data? : any) :void {
 			let self = this;
-			if(param){
-				self.startAddress(new IPAddressSetting(param.startAddress));
-				self.ipInputType(param.ipInputType);
-				self.endAddress(new IPAddressSetting(param.endAddress));
-				self.comment(param.comment);
+			if(data){
+				self.ipInputType(data.ipInputType);
+				self.startAddress.update(data.startAddress);
+				self.endAddress.update(data.endAddress);
+				self.comment(data.comment);
 			}
         }
     }
@@ -90,14 +154,13 @@ module cmm002.a {
         ip2 = ko.observable('');
 		ip3 = ko.observable('');
 		ip4 = ko.observable('');
-        constructor(obj? : any) {
+    	constructor() {}
+		update(data? : any) :void {
 			let self = this;
-			if(obj){
-				self.ip1 = ko.observable(obj.ip1);
-	            self.ip2 = ko.observable(obj.ip2);
-				self.ip3 = ko.observable(obj.ip3);
-				self.ip4 = ko.observable(obj.ip4);	
-			}
+			self.ip1(data?data.ip1:'');
+            self.ip2(data?data.ip2:'');
+			self.ip3(data?data.ip3:'');
+			self.ip4(data?data.ip4:'');	
         }
     }
 

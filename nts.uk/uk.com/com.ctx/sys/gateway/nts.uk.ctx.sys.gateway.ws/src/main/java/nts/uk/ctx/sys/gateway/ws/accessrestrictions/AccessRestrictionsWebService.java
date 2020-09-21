@@ -6,6 +6,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.sys.gateway.app.command.accessrestrictions.AccessRestrictionsCommandHandler;
+import nts.uk.ctx.sys.gateway.app.command.accessrestrictions.AllowedIPAddressCommand;
 import nts.uk.ctx.sys.gateway.app.command.accessrestrictions.AllowedIPAddressUpdateCommand;
 
 @Path("com/ctx/sys/gateway/accessrestrictions")
@@ -17,7 +18,7 @@ public class AccessRestrictionsWebService {
 	
 	@POST
 	@Path("add")
-	public void add(AllowedIPAddressUpdateCommand command) {
+	public void add(AllowedIPAddressCommand command) {
 		commandHandler.addAllowdIpAddress(command);
 	}
 	
@@ -29,7 +30,7 @@ public class AccessRestrictionsWebService {
 	
 	@POST
 	@Path("del")
-	public void delete(AllowedIPAddressUpdateCommand command) {
+	public void delete(AllowedIPAddressCommand command) {
 		commandHandler.deleteAllowdIpAddress(command);
 	}
 }

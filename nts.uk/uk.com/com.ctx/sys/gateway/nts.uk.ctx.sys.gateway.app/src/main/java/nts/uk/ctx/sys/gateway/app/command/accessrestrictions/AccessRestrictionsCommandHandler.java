@@ -26,11 +26,11 @@ public class AccessRestrictionsCommandHandler {
 		}
 	}
 	
-	public void addAllowdIpAddress(AllowedIPAddressUpdateCommand command) {
+	public void addAllowdIpAddress(AllowedIPAddressCommand command) {
 		String contractCode = AppContexts.user().contractCode();
 		Optional<AccessRestrictions> domain = repo.get(new ContractCode(contractCode));
 		if (domain.isPresent()) {
-			domain.get().addIPAddress(command.allowedIPAddressNew.toDomain());
+			domain.get().addIPAddress(command.toDomain());
 			repo.update(domain.get());
 		}
 	}
@@ -44,11 +44,11 @@ public class AccessRestrictionsCommandHandler {
 		}
 	}
 	
-	public void deleteAllowdIpAddress(AllowedIPAddressUpdateCommand command) {
+	public void deleteAllowdIpAddress(AllowedIPAddressCommand command) {
 		String contractCode = AppContexts.user().contractCode();
 		Optional<AccessRestrictions> domain = repo.get(new ContractCode(contractCode));
 		if (domain.isPresent()) {
-			domain.get().deleteIPAddress(command.allowedIPAddressOld.toDomain().getStartAddress());
+			domain.get().deleteIPAddress(command.toDomain().getStartAddress());
 			repo.update(domain.get());
 		}
 	}

@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.gateway.app.command.accessrestrictions;
 
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressSetting;
 
 /**
@@ -8,6 +9,7 @@ import nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressSetting;
  * @name IPアドレス設定
  */
 @NoArgsConstructor
+@Setter
 public class IPAddressSettingCommand {
 
 	/** IPアドレス1 */

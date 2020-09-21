@@ -7,11 +7,15 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
 				nts.uk.shr.com.security.audittrail.basic.IPAddress
 				nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressComment
 			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
+			<com:EnumScript>
+				nts.uk.shr.com.enumcommon.NotUseAtr
+				nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressRegistrationFormat
+			</com:EnumScript>
 			<com:stylefile path="cmm002.a.style.css" />
 			<com:scriptfile path="cmm002.a.start.js" />
 			<com:scriptfile path="cmm002.a.vm.js" />
@@ -21,21 +25,106 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<!-- A1_1 -->
-				<button id="reset" tabindex="1" class="group-button-1"
-					data-bind="click: innit">#{i18n.getText('CMM001_1')}</button>
+				<button id="" tabindex="1" class="" data-bind="click: newIp">#{i18n.getText('CMM002_1')}</button>
 				<!-- A1_2 -->
-				<button id="register" tabindex="2" class="proceed group-button-1"
-					data-bind="click: register, enable:  $root.errors.isEmpty">#{i18n.getText('CMM001_2')}</button>
+				<button id="" tabindex="2" class="proceed" data-bind="click: save, enable:  $root.errors.isEmpty">#{i18n.getText('CMM002_2')}</button>
 				<!-- A1_3 -->
-				<button id="setting" tabindex="3" class="group-button-1"
-					data-bind="click: openEDialog, enable: !checkInsert()">#{i18n.getText('CMM001_3')}</button>
-				<!-- A1_4 -->
-				<button id="masterLog" tabindex="4" class="group-button-1"
-				    data-bind="visible: false">#{i18n.getText('CMM001_4')}</button>
-				<button tabindex="5" id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>  
+				<button id="" tabindex="3" class="danger" data-bind="click: del, enable: selectedAllowedIPAddress() != ''">#{i18n.getText('CMM002_3')}</button>
 			</div>
-			<div id="contents-area" class="fixed-flex-layout" style="display: none" data-bind="visible: true">
-				
+			<div id="contents-area" >
+				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM002_4')}</div>
+				<div class="cf" tabindex="4" data-bind="ntsSwitchButton: {
+					name: '#[CMM002_4]',
+					options: accessLimitUseAtrList,
+					optionsValue: 'value',
+					optionsText: 'name',
+					value: accessLimitUseAtr,
+					required: true,
+					enable: true }"></div>
+					
+				<table id="single-list" data-bind="ntsGridList: {								
+					height: 150,
+					width: 250,
+					row: 10,
+					dataSource: allowedIPaddressList,
+					primaryKey: 'id',
+					columns: columns,
+					features: [{}],
+					multiple: false,
+					value: selectedAllowedIPAddress
+				}"></table>
+				<div class="label" style="margin-bottom: 15px;">#{i18n.getText('CMM002_6')}</div>
+				<div class="cf" tabindex="5" data-bind="ntsSwitchButton: {
+					name: '#[CMM002_7]',
+					options: ipInputTypeList,
+					optionsValue: 'value',
+					optionsText: 'name',
+					value: allowedIPAddress.ipInputType,
+					required: true,
+					enable: true }"></div>
+				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM002_8')}</div>
+				<input class="ip" tabindex="6" data-bind="ntsNumberEditor: {
+					name: '#[CMM002_8]',
+					value: allowedIPAddress.startAddress.ip1,
+					constraint: 'IPAddress',
+					required: true
+					}" />
+				.
+				<input class="ip" tabindex="7" data-bind="ntsNumberEditor: {
+					name: '#[CMM002_8]',
+					value: allowedIPAddress.startAddress.ip2,
+					constraint: 'IPAddress',
+					required: true
+					}" />
+				<input class="ip" tabindex="8" data-bind="ntsNumberEditor: {
+					name: '#[CMM002_8]',
+					value: allowedIPAddress.startAddress.ip3,
+					constraint: 'IPAddress',
+					required: true
+					}" />
+				.
+				<input class="ip" tabindex="9" data-bind="ntsNumberEditor: {
+					name: '#[CMM002_8]',
+					value: allowedIPAddress.startAddress.ip4,
+					constraint: 'IPAddress',
+					required: true
+					}" />
+				<div data-bind="if: allowedIPAddress.ipInputType() == 1">
+				～
+				<input class="ip" tabindex="10" data-bind="ntsNumberEditor: {
+					name: '#[CMM002_8]',
+					value: allowedIPAddress.endAddress.ip1,
+					constraint: 'IPAddress',
+					required: true
+					}" />
+				.
+				<input class="ip" tabindex="11" data-bind="ntsNumberEditor: {
+					name: '#[CMM002_8]',
+					value: allowedIPAddress.endAddress.ip2,
+					constraint: 'IPAddress',
+					required: true
+					}" />
+				.
+				<input class="ip" tabindex="12" data-bind="ntsNumberEditor: {
+					name: '#[CMM002_8]',
+					value: allowedIPAddress.endAddress.ip3,
+					constraint: 'IPAddress',
+					required: true
+					}" />
+				.
+				<input class="ip" tabindex="13" data-bind="ntsNumberEditor: {
+					name: '#[CMM002_8]',
+					value: allowedIPAddress.endAddress.ip4,
+					constraint: 'IPAddress',
+					required: true
+					}" />
+				</div>
+				<div data-bind="ntsFormLabel: { constraint: 'IPAddressComment', }">#{i18n.getText('CMM002_10')}</div>
+				<input class="ip" tabindex="14" data-bind="ntsTextEditor: {
+					name: '#[CMM002_10]',
+					value: allowedIPAddress.comment,
+					constraint: 'IPAddressComment'
+					}" />
 			</div>
 		</ui:define>
 	</ui:composition>
