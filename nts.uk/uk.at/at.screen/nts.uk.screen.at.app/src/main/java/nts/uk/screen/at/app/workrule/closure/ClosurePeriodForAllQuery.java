@@ -44,6 +44,6 @@ public class ClosurePeriodForAllQuery {
             }
         }
 
-        return listDate.stream().sorted(Comparator.comparing(CurrentClosurePeriod::getClosureStartDate).reversed()).collect(Collectors.toList());
+        return listDate.stream().sorted(Comparator.comparing(CurrentClosurePeriod::getClosureId)).collect(Collectors.toList());
     }
 }

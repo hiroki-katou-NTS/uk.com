@@ -1886,6 +1886,16 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     public static final Program KMK013Q = new Program(WebAppId.AT, ProgramIdConsts.KMK013Q, "KMK013_421",
             "/view/kmk/013/q/index.xhtml");
 
+    /** KAF021 */
+    public static final Program KAF021A = new Program(WebAppId.AT, ProgramIdConsts.KAF021A, null,
+            "/view/kaf/021/a/index.xhtml");
+    public static final Program KAF021B = new Program(WebAppId.AT, ProgramIdConsts.KAF021B, null,
+            "/view/kaf/021/b/index.xhtml");
+    public static final Program KAF021C = new Program(WebAppId.AT, ProgramIdConsts.KAF021C, null,
+            "/view/kaf/021/c/index.xhtml");
+    public static final Program KAF021D = new Program(WebAppId.AT, ProgramIdConsts.KAF021D, null,
+            "/view/kaf/021/d/index.xhtml");
+
     /** KAF022 */
     public static final Program KAF022A = new Program(WebAppId.AT, ProgramIdConsts.KAF022A, null,
             "/view/kaf/022/a/index.xhtml");

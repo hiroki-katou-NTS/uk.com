@@ -58,8 +58,8 @@ module nts.uk.at.kaf021.a {
                 /** Quick search tab options */
                 showAllReferableEmployee: true,
                 showOnlyMe: true,
-                showSameWorkplace: true,
-                showSameWorkplaceAndChild: true,
+                showSameWorkplace: false,
+                showSameWorkplaceAndChild: false,
 
                 /** Advanced search properties */
                 showEmployment: true,
@@ -78,12 +78,15 @@ module nts.uk.at.kaf021.a {
                  */
                 returnDataFromCcg001: function (data: Ccg001ReturnedData) {
                     vm.empSearchItems = data.listEmployee;
-                    // vm.fetchData();
+                    vm.fetchData().done(() => {
+                        $("#grid").mGrid("destroy");
+                        vm.loadMGrid();
+                    });
                 }
             }
 
-            vm.appTypes.push(new AppType(AppTypeEnum.CURRENT_MONTH, textFormat("{0}月度", 1)));
-            vm.appTypes.push(new AppType(AppTypeEnum.NEXT_MONTH, textFormat("{0}月度", 2)));
+            vm.appTypes.push(new AppType(AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), 1)));
+            vm.appTypes.push(new AppType(AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), 2)));
             vm.appTypes.push(new AppType(AppTypeEnum.YEARLY, this.$i18n("KAF021_4")));
         }
 
@@ -94,7 +97,10 @@ module nts.uk.at.kaf021.a {
             vm.initData();
 
             vm.appTypeSelected.subscribe((value: AppTypeEnum) => {
-                // vm.fetchData();
+                vm.fetchData().done(() => {
+                    $("#grid").mGrid("destroy");
+                    vm.loadMGrid();
+                });
             })
             _.extend(window, { vm });
         }
@@ -123,19 +129,23 @@ module nts.uk.at.kaf021.a {
             const vm = this,
                 dfd = $.Deferred();
             vm.$blockui("invisible");
+            vm.datas = [];
             switch (vm.appTypeSelected()) {
                 case AppTypeEnum.CURRENT_MONTH:
                     vm.$ajax(API.CURRENT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
+                        vm.datas = EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
                     break;
                 case AppTypeEnum.NEXT_MONTH:
                     vm.$ajax(API.NEXT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
+                        vm.datas = EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
                     break;
                 case AppTypeEnum.YEARLY:
                     vm.$ajax(API.YEAR, { employees: vm.empSearchItems }).done((data: any) => {
+                        vm.datas = EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
                     break;
@@ -148,7 +158,7 @@ module nts.uk.at.kaf021.a {
 
         loadMGrid() {
             const vm = this;
-            let height = $(window).height() - 90 - 290;
+            let height = $(window).height() - 90 - 364;
             let width = $(window).width() + 20 - 1170;
 
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
@@ -223,13 +233,13 @@ module nts.uk.at.kaf021.a {
             var columns = [];
             columns.push({ headerText: "key", key: 'employeeId', dataType: 'string', hidden: true });
             // A3_1
-            columns.push({ headerText: vm.$i18n("KAF021_6"), key: 'checked', dataType: 'boolean', width: '60px', checkbox: false, ntsControl: "CheckBox" });
+            columns.push({ headerText: vm.$i18n("KAF021_6"), key: 'checked', dataType: 'boolean', width: '40px', checkbox: false, ntsControl: "CheckBox" });
             // A3_2
-            columns.push({ headerText: vm.$i18n("KAF021_7"), key: 'status', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_7"), key: 'status', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_3
-            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_8"), key: 'wkpName', dataType: 'string', width: '120px', ntsControl: "Label" });
             // A3_4
-            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '130px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_9"), key: 'employeeName', dataType: 'string', width: '140px', ntsControl: "Label" });
             // A3_5 ~ A3_16
             let date: Date = vm.$date.today();
             date.setMonth(vm.startingMonth);
@@ -237,24 +247,24 @@ module nts.uk.at.kaf021.a {
                 date.setMonth(vm.startingMonth + i);
                 let month = date.getMonth() + 1;
                 columns.push({
-                    headerText: vm.getMonthHeader(month), key: vm.getMonthKey(month), dataType: 'string', width: '80px', ntsControl: "Label"
+                    headerText: vm.getMonthHeader(month), key: vm.getMonthKey(month), dataType: 'string', width: '60px', ntsControl: "Label"
                 });
             }
 
             // A3_17
-            columns.push({ headerText: vm.$i18n("KAF021_26"), key: 'year', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_26"), key: 'year', dataType: 'string', width: '70px', ntsControl: "Label" });
             // A3_18
-            columns.push({ headerText: vm.$i18n("KAF021_10"), key: 'monthAverage2', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_10"), key: 'monthAverage2', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_19
-            columns.push({ headerText: vm.$i18n("KAF021_11"), key: 'monthAverage3', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_11"), key: 'monthAverage3', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_20
-            columns.push({ headerText: vm.$i18n("KAF021_12"), key: 'monthAverage4', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_12"), key: 'monthAverage4', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_21
-            columns.push({ headerText: vm.$i18n("KAF021_13"), key: 'monthAverage5', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_13"), key: 'monthAverage5', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_22
-            columns.push({ headerText: vm.$i18n("KAF021_14"), key: 'monthAverage6', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_14"), key: 'monthAverage6', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_23
-            columns.push({ headerText: vm.$i18n("KAF021_15"), key: 'exceededNumber', dataType: 'string', width: '80px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_15"), key: 'exceededNumber', dataType: 'string', width: '60px', ntsControl: "Label" });
             return columns;
         }
 
@@ -335,26 +345,26 @@ module nts.uk.at.kaf021.a {
                     month1: {
                         yearMonth: 202001,
                         time: {
-                            time: 1 * i,
-                            maxTime: 1 * i + 10,
+                            time: 100 * i,
+                            maxTime: 100 * i + 10,
                             status: AgreementTimeStatusOfMonthly.NORMAL
                         },
                         maxTime: {
-                            time: 2 * i,
-                            maxTime: 2 * i + 10,
+                            time: 200 * i,
+                            maxTime: 200 * i + 10,
                             status: AgreementTimeStatusOfMonthly.NORMAL
                         },
                     },
                     month2: {
                         yearMonth: 202002,
                         time: {
-                            time: 2 * i,
-                            maxTime: 2 * i + 10,
+                            time: 200 * i,
+                            maxTime: 200 * i + 10,
                             status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
                         },
                         maxTime: {
-                            time: 3 * i,
-                            maxTime: 3 * i + 10,
+                            time: 300 * i,
+                            maxTime: 300 * i + 10,
                             status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
                         },
                     },
@@ -478,44 +488,44 @@ module nts.uk.at.kaf021.a {
                     month12: {
                         yearMonth: 202012,
                         time: {
-                            time: 13 * i,
-                            maxTime: 13 * i + 10,
+                            time: 1300 * i,
+                            maxTime: 1300 * i + 10,
                             status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                         maxTime: {
-                            time: 14 * i,
-                            maxTime: 14 * i + 10,
+                            time: 1400 * i,
+                            maxTime: 1400 * i + 10,
                             status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                     },
                     year: {
-                        limitTime: 10 + i,
-                        time: 8 + i,
+                        limitTime: 1000 * i,
+                        time: 10000 * i,
                         status: AgreTimeYearStatusOfMonthly.EXCESS_LIMIT
                     },
                     monthAverage2: {
-                        totalTime: 12 + i,
-                        time: 14 + i,
+                        totalTime: 120 * i,
+                        time: 140 * i,
                         status: AgreMaxTimeStatusOfMonthly.NORMAL
                     },
                     monthAverage3: {
-                        totalTime: 13 + i,
-                        time: 15 + i,
+                        totalTime: 1300 * i,
+                        time: 1500 * i,
                         status: AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME
                     },
                     monthAverage4: {
-                        totalTime: 14 + i,
-                        time: 16 + i,
+                        totalTime: 1400 * i,
+                        time: 1600 * i,
                         status: AgreMaxTimeStatusOfMonthly.NORMAL
                     },
                     monthAverage5: {
-                        totalTime: 15 + i,
-                        time: 17 + i,
+                        totalTime: 150 * i,
+                        time: 170 * i,
                         status: AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME
                     },
                     monthAverage6: {
-                        totalTime: 16 + i,
-                        time: 18 + i,
+                        totalTime: 16 * i,
+                        time: 18 * i,
                         status: AgreMaxTimeStatusOfMonthly.NORMAL
                     },
                     exceededNumber: i + 1
@@ -661,44 +671,44 @@ module nts.uk.at.kaf021.a {
             this.employeeId = data.employeeId;
             this.checked = false;
             this.status = "status";
-            this.wkpName = "wkpName";
+            this.wkpName = data.affiliationName;
             this.employeeName = data.employeeCode + "　" + data.employeeName;
-            this.month1 = parseTime(data.month1.time.time, true).format();
-            this.month1Status = data.month1.time.status;
-            this.month2 = parseTime(data.month2.time.time, true).format();
-            this.month2Status = data.month2.time.status;
-            this.month3 = parseTime(data.month3.time.time, true).format();
-            this.month3Status = data.month3.time.status;
-            this.month4 = parseTime(data.month4.time.time, true).format();
-            this.month4Status = data.month4.time.status;
-            this.month5 = parseTime(data.month5.time.time, true).format();
-            this.month5Status = data.month5.time.status;
-            this.month6 = parseTime(data.month6.time.time, true).format();
-            this.month6Status = data.month6.time.status;
-            this.month7 = parseTime(data.month7.time.time, true).format();
-            this.month7Status = data.month7.time.status;
-            this.month8 = parseTime(data.month8.time.time, true).format();
-            this.month8Status = data.month8.time.status;
-            this.month9 = parseTime(data.month9.time.time, true).format();
-            this.month9Status = data.month9.time.status;
-            this.month10 = parseTime(data.month10.time.time, true).format();
-            this.month10Status = data.month10.time.status;
-            this.month11 = parseTime(data.month11.time.time, true).format();
-            this.month11Status = data.month11.time.status;
-            this.month12 = parseTime(data.month12.time.time, true).format();
-            this.month12Status = data.month12.time.status;
-            this.year = parseTime(data.year.time, true).format();
-            this.yearStatus = data.year.status;
-            this.monthAverage2 = parseTime(data.monthAverage2.time, true).format();
-            this.monthAverage2Status = data.monthAverage2.status;
-            this.monthAverage3 = parseTime(data.monthAverage3.time, true).format();
-            this.monthAverage3Status = data.monthAverage3.status;
-            this.monthAverage4 = parseTime(data.monthAverage4.time, true).format();
-            this.monthAverage4Status = data.monthAverage4.status;
-            this.monthAverage5 = parseTime(data.monthAverage5.time, true).format();
-            this.monthAverage5Status = data.monthAverage5.status;
-            this.monthAverage6 = parseTime(data.monthAverage6.time, true).format();
-            this.monthAverage6Status = data.monthAverage6.status;
+            this.month1 = parseTime(data.month1.time?.time, true).format();
+            this.month1Status = data.month1.time?.status;
+            this.month2 = parseTime(data.month2.time?.time, true).format();
+            this.month2Status = data.month2.time?.status;
+            this.month3 = parseTime(data.month3.time?.time, true).format();
+            this.month3Status = data.month3.time?.status;
+            this.month4 = parseTime(data.month4.time?.time, true).format();
+            this.month4Status = data.month4.time?.status;
+            this.month5 = parseTime(data.month5.time?.time, true).format();
+            this.month5Status = data.month5.time?.status;
+            this.month6 = parseTime(data.month6.time?.time, true).format();
+            this.month6Status = data.month6.time?.status;
+            this.month7 = parseTime(data.month7.time?.time, true).format();
+            this.month7Status = data.month7.time?.status;
+            this.month8 = parseTime(data.month8.time?.time, true).format();
+            this.month8Status = data.month8.time?.status;
+            this.month9 = parseTime(data.month9.time?.time, true).format();
+            this.month9Status = data.month9.time?.status;
+            this.month10 = parseTime(data.month10.time?.time, true).format();
+            this.month10Status = data.month10.time?.status;
+            this.month11 = parseTime(data.month11.time?.time, true).format();
+            this.month11Status = data.month11.time?.status;
+            this.month12 = parseTime(data.month12.time?.time, true).format();
+            this.month12Status = data.month12.time?.status;
+            this.year = parseTime(data.year?.time, true).format();
+            this.yearStatus = data.year?.status;
+            this.monthAverage2 = parseTime(data.monthAverage2?.time, true).format();
+            this.monthAverage2Status = data.monthAverage2?.status;
+            this.monthAverage3 = parseTime(data.monthAverage3?.time, true).format();
+            this.monthAverage3Status = data.monthAverage3?.status;
+            this.monthAverage4 = parseTime(data.monthAverage4?.time, true).format();
+            this.monthAverage4Status = data.monthAverage4?.status;
+            this.monthAverage5 = parseTime(data.monthAverage5?.time, true).format();
+            this.monthAverage5Status = data.monthAverage5?.status;
+            this.monthAverage6 = parseTime(data.monthAverage6?.time, true).format();
+            this.monthAverage6Status = data.monthAverage6?.status;
             this.exceededNumber = data.exceededNumber;
         }
 
@@ -819,12 +829,12 @@ module nts.uk.at.kaf021.a {
         /**
          * 管理期間の36協定時間
          */
-        time: IAgreementTime;
+        time?: IAgreementTime;
 
         /**
          * 36協定時間一覧.月別実績の36協定上限時間
          */
-        maxTime: IAgreementTime;
+        maxTime?: IAgreementTime;
     }
 
     interface IAgreementTime {

@@ -17,12 +17,12 @@ import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.export.GetAgreementTimeOfMngPeriod;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
-import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.*;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.ctx.at.shared.dom.workrule.closure.service.ClosureService;
 import nts.uk.screen.at.app.workrule.closure.ClosurePeriodForAllQuery;
 import nts.uk.screen.at.app.workrule.closure.CurrentClosurePeriod;
 import nts.uk.shr.com.context.AppContexts;
@@ -48,8 +48,6 @@ public class Kaf021Finder {
     private ClosureRepository closureRepo;
     @Inject
     private GetExcessTimesYearAdapter getExcessTimesYearAdapter;
-    @Inject
-    private ClosureEmploymentService closureEmploymentService;
 
     /**
      * 初期起動を行う
@@ -92,6 +90,7 @@ public class Kaf021Finder {
 
     private List<EmployeeAgreementTimeDto> getAgreementTime(List<EmployeeBasicInfoDto> employees, int monthAdd) {
         String cid = AppContexts.user().companyId();
+        String sid = AppContexts.user().employeeId();
         GeneralDate baseDate = GeneralDate.today();
         val require = requireService.createRequire();
         val cacheCarrier = new CacheCarrier();
@@ -101,14 +100,11 @@ public class Kaf021Finder {
         // get(会社ID):36協定運用設定
         AgreementOperationSetting setting = getSetting(cid);
 
-        // <call>(会社ID):List＜締めID, 現在の締め期間＞
-        CurrentClosurePeriod closurePeriod = getClosure(cid);
-
         // 社員に対応する処理締めを取得する
-        // Map<String, Closure> closureAll = closureEmploymentService.findClosureByEmployee(employeeIds, baseDate);
+        Closure closureInfo = ClosureService.getClosureDataByEmployee(require, cacheCarrier, sid, baseDate);
 
         // 年月を指定して、36協定期間の年月を取得する
-        YearMonth startYm = setting.getYearMonthOfAgreementPeriod(closurePeriod.getProcessingYm().addMonths(monthAdd));
+        YearMonth startYm = setting.getYearMonthOfAgreementPeriod(closureInfo.getClosureMonth().getProcessingYm().addMonths(monthAdd));
         YearMonth endYm = startYm.addMonths(11);
 
         // [NO.612]年月期間を指定して管理期間の36協定時間を取得する
@@ -123,8 +119,7 @@ public class Kaf021Finder {
         for (YearMonth ymIndex : yearMonthPeriod.yearMonthsBetween()) {
             // 【NO.333】36協定時間の取得
             Map<String, AgreementTimeDetail> agreementTimeDetailByEmp = GetAgreementTime.get(
-                    require, cacheCarrier, cid, employeeIds, ymIndex,
-                    EnumAdaptor.valueOf(closurePeriod.getClosureId(), ClosureId.class))
+                    require, cacheCarrier, cid, employeeIds, ymIndex, closureInfo.getClosureId())
                     .stream().collect(Collectors.toMap(AgreementTimeDetail::getEmployeeId, Function.identity()));
             for (Map.Entry<String, AgreementTimeDetail> entry : agreementTimeDetailByEmp.entrySet()) {
                 if (!agreementTimeDetailAll.containsKey(entry.getKey())) continue;

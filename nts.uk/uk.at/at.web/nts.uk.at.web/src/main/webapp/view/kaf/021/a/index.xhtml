@@ -19,13 +19,10 @@
 
     </ui:define>
     <ui:define name="content">
-        <div id="functions-area">
-
-        </div>
         <div id="content-area">
             <div class="">
                 <!--A1_1-->
-                <div id="com-ccg001"/>
+                <div tabindex="1" id="com-ccg001"/>
             </div>
             <div class="kaf021-content">
                 <!--A1_2-->
@@ -41,7 +38,7 @@
                     </div>
                     <div class="cell valign-center">
                         <!--A1_5-->
-                        <div class="cf" data-bind="ntsSwitchButton: {
+                        <div tabindex="2" class="cf" data-bind="ntsSwitchButton: {
                             name: '#{i18n.getText('KAF021_3')}',
                             options: appTypes,
                             optionsValue: 'value',
@@ -54,7 +51,7 @@
                     </div>
                     <div class="cell valign-center">
                         <!--A2_1-->
-                        <button data-bind="click: nextScreen()">#{i18n.getText('KAF021_5')}</button>
+                        <button tabindex="4" data-bind="click: nextScreen()">#{i18n.getText('KAF021_5')}</button>
                         <span class="caret-right caret-inline"/>
                     </div>
                 </div>
