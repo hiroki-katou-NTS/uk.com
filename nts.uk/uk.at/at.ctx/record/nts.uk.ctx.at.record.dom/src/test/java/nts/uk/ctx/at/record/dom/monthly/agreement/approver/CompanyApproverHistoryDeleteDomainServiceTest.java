@@ -5,12 +5,14 @@ import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
-import nts.arc.time.GeneralDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Optional;
 
+/**
+ * @author khai.dh
+ */
 @RunWith(JMockit.class)
 public class CompanyApproverHistoryDeleteDomainServiceTest {
 

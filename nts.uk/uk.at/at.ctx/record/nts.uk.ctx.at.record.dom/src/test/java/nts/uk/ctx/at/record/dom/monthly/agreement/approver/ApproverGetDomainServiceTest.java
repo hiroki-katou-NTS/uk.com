@@ -22,14 +22,14 @@ public class ApproverGetDomainServiceTest {
 	private ApproverGetDomainService.Require require;
 
 	@Injectable
-	private ByWorkplaceApproverGetDomainService wkpApprService;
+	private ByWorkplaceApproverGetDomainService byWkpApprGetDS;
 
 	@Test
 	public void test01() {
 		val empId = "empId";
 		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
 		new Expectations() {{
-			require.getWorkplaceApprover(empId);
+			byWkpApprGetDS.getApprover(require, empId);
 			result = Optional.of(approverItem);
 		}};
 
@@ -43,7 +43,7 @@ public class ApproverGetDomainServiceTest {
 		val baseDate = GeneralDate.today();
 		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
 		new Expectations() {{
-			require.getWorkplaceApprover(empId);
+			byWkpApprGetDS.getApprover(require, empId);
 			result = Optional.empty();
 
 			require.getApproverHistoryItem(baseDate);
@@ -59,7 +59,7 @@ public class ApproverGetDomainServiceTest {
 		val empId = "empId";
 		val baseDate = GeneralDate.today();
 		new Expectations() {{
-			require.getWorkplaceApprover(empId);
+			byWkpApprGetDS.getApprover(require, empId);
 			result = Optional.empty();
 
 			require.getApproverHistoryItem(baseDate);

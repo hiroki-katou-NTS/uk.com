@@ -13,6 +13,9 @@ import org.junit.runner.RunWith;
 
 import java.util.Optional;
 
+/**
+ * @author khai.dh
+ */
 @RunWith(JMockit.class)
 public class CompanyApproverHistoryChangeDomainServiceTest {
 
