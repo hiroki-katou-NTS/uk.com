@@ -637,7 +637,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //		} else {
 //			period = new DatePeriod(application.getAppDate(), application.getAppDate());
 //		}
-		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(companyID, application.getEmployeeID(), period);
+		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(application.getEmployeeID(), period, Collections.emptyList());
 		// 勤務種類・就業時間帯のマスタチェックする
 		detailBeforeUpdate.displayWorkingHourCheck(companyID, 
 				appAbsence.getWorkTypeCode() == null ? null : appAbsence.getWorkTypeCode().v(), 
@@ -1107,7 +1107,7 @@ public class AbsenceServiceProcessImpl implements AbsenceServiceProcess{
 //		} else {
 //			period = new DatePeriod(application.getAppDate(), application.getAppDate());
 //		}
-		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(companyID, application.getEmployeeID(), period);
+		List<GeneralDate> holidayDateLst = otherCommonAlgorithm.lstDateIsHoliday(application.getEmployeeID(), period, Collections.emptyList());
 		// 4-1.詳細画面登録前の処理
 		// error EA refactor 4
 		/*detailBeforeUpdate.processBeforeDetailScreenRegistration(

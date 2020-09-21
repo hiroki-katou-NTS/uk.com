@@ -363,11 +363,10 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 
 	@Override
 	public List<GeneralDate> checkHoliday(String employeeID, DatePeriod period) {
-		String companyID = AppContexts.user().companyId();
 		// Output．日付一覧<List>　＝　Empty
 		List<GeneralDate> result = new ArrayList<>();
 		// 申請期間から休日の申請日を取得する
-		result = otherCommonAlgorithm.lstDateIsHoliday(companyID, employeeID, period);
+		result = otherCommonAlgorithm.lstDateIsHoliday(employeeID, period, Collections.emptyList());
 
 		if (result.size() == period.datesBetween().size()) {
 			// 日付一覧(output)の件数 > 0
