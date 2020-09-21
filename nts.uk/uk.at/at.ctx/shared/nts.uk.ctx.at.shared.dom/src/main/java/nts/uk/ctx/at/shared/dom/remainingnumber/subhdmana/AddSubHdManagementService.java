@@ -99,7 +99,7 @@ public class AddSubHdManagementService {
 			}
 
 			if (subHdManagementData.getCheckedHoliday() && subHdManagementData.getCheckedSubHoliday()) {
-				// ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
+				// 	ドメインモデル「振休休出振付け管理」に紐付きチェックされているもの全てを追加する
 				int targetSelectionAtr = 2; // 固定値：手動
 				int usedHours = 0;
 				if (subHdManagementData.getCheckedSplit()) {
@@ -111,7 +111,23 @@ public class AddSubHdManagementService {
 						comDayOffID, subHdManagementData.getSelectedCodeSubHoliday(), usedHours, targetSelectionAtr);
 				repoLeaveComDayOffMana.add(domainLeaveComDayOffManagement);
 			}
+			
 		}
+		
+		if(!subHdManagementData.getLstLeaveId().isEmpty()) {
+			List<LeaveManagementData> lstLeaveManagement = new ArrayList<>();
+			for(String item: subHdManagementData.getLstLeaveId()) {
+				List<LeaveManagementData> lstLeaveManagementData = repoLeaveManaData.getBySidDate(AppContexts.user().companyId(), subHdManagementData.getEmployeeId(),GeneralDate.fromString(item, "yyyy-MM-dd"));
+			for(LeaveManagementData data: lstLeaveManagementData) {
+				lstLeaveManagement.add(data);
+				}
+			}
+			
+			int usedDay = 0;
+			int usedHour = 0;
+			for()
+		}
+		
 		return Collections.emptyList();
 	}
 

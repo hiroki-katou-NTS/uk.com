@@ -201,7 +201,6 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                 if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
                 }
-                console.log(data);
                 service.add(data).done(result => {
                     if (result && result.length > 0) {
                         for (let errorId of result) {

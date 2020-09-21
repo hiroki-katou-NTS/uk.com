@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
@@ -66,6 +68,8 @@ public class SubHdManagementData {
 	private Double dayRemaining;
 
 	private int closureId;
+	
+	private List<String> lstLeaveId;
 
 	/**
 	 * @param employeeId
@@ -84,7 +88,7 @@ public class SubHdManagementData {
 	public SubHdManagementData(String employeeId, Boolean checkedHoliday, GeneralDate dateHoliday,
 			Double selectedCodeHoliday, GeneralDate duedateHoliday, Boolean checkedSubHoliday,
 			GeneralDate dateSubHoliday, Double selectedCodeSubHoliday, Boolean checkedSplit,
-			GeneralDate dateOptionSubHoliday, Double selectedCodeOptionSubHoliday, Double dayRemaining, int closureId) {
+			GeneralDate dateOptionSubHoliday, Double selectedCodeOptionSubHoliday, Double dayRemaining, int closureId, List<String> lstLeaveId) {
 		super();
 		this.employeeId = employeeId;
 		this.checkedHoliday = checkedHoliday;
@@ -99,5 +103,6 @@ public class SubHdManagementData {
 		this.selectedCodeOptionSubHoliday = selectedCodeOptionSubHoliday;
 		this.dayRemaining = dayRemaining;
 		this.closureId = closureId;
+		this.lstLeaveId = lstLeaveId;
 	}
 }
