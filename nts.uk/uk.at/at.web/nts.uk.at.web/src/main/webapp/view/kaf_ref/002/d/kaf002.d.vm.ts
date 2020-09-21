@@ -229,12 +229,12 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            let self = this;
            if (!_.isEmpty(listMes)) {
                let item = listMes.shift();
-               self.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+               return self.$dialog.confirm({ messageId: item.msgID, messageParams: item.paramLst }).then((value) => {
                    if (value == 'yes') {
                        if (_.isEmpty(listMes)) {
                             return self.registerData(res);
                        } else {
-                            self.handleConfirmMessage(listMes, res);
+                            return self.handleConfirmMessage(listMes, res);
                        }
 
                    }
@@ -242,13 +242,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            }
        }
        registerData(command) {
-           let vm = this; 
-           return vm.$ajax( API.update, command )
-               .done( update => {
-                   this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                       location.reload();
-                   } );
-               })
+           let self = this; 
+           return self.$ajax(API.update, command);
+           
        }
        update() {
            console.log('update');
@@ -256,17 +252,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            if (!self.appDispInfoStartupOutput().appDetailScreenInfo) {
                return;
            }
-//           let application = ko.toJS(self.application);
-//           let applicationDto = self.appDispInfoStartupOutput().appDetailScreenInfo.application as any;
-//           applicationDto.prePostAtr = application.prePostAtr;
-//           applicationDto.opAppReason = application.opAppReason;
-//           applicationDto.opAppStandardReasonCD = application.opAppStandardReasonCD;    
-//           applicationDto.opReversionReason = application.opReversionReason;
-//           applicationDto.enteredPerson = application.enteredPerson;
-//           applicationDto.employeeID = application.employeeID;
-           self.application().enteredPerson = __viewContext.user.employeeId;
-           self.application().employeeID = __viewContext.user.employeeId;
            let applicationDto = ko.toJS(self.application);
+           applicationDto.enteredPerson = self.$user.employeeId;
+           applicationDto.employeeID = self.$user.employeeId;
            applicationDto.inputDate = moment(new Date()).format('YYYY/MM/DD HH:mm:ss');
            applicationDto.reflectionStatus= self.appDispInfoStartupOutput().appDetailScreenInfo.application.reflectionStatus;
            applicationDto.version = self.appDispInfoStartupOutput().appDetailScreenInfo.application.version
@@ -293,46 +281,44 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    applicationDto: applicationDto
            }
            self.$blockui("show");
-           self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
+           return self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
            .then(isValid => {
                if ( isValid ) {
                    return true;
                }
            }).then(result => {
-               if (result) {
-                   return self.$ajax(API.checkUpdate, commandCheck);
-               }
+               if (!result) return;
+               return self.$ajax(API.checkUpdate, commandCheck);
+              
            }).then(res => {
-               if (!res) {
-                   return;
-               }
+               if (res == undefined) return;
                if (_.isEmpty(res)) {
                    return self.$ajax(API.update, command);
                } else {
                    let listConfirm = _.clone(res);
                    return self.handleConfirmMessage(listConfirm, command);
                }
-           }).then(res => {
-                   this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+           }).done(res => {
+               if (res != undefined) {
+                   self.$dialog.info({messageId: "Msg_15" }).then(() => {
                        location.reload();
-                   } );
-           }).fail(res => {
-               if (!res) return;
-               let param;
-               if (res.message && res.messageId) {
-                   param = {messageId: res.messageId, messageParams: res.parameterIds};
-               } else {
-
-                   if (res.message) {
-                       param = {message: res.message, messageParams: res.parameterIds};
-                   } else {
-                       param = {messageId: res.messageId, messageParams: res.parameterIds};
-                   }
+                   });                   
                }
-               self.$dialog.error(param);
+           }).fail(res => {
+               self.showError(res);
            }).always(() => {
                self.$blockui('hide');
            });
+       }
+       showError(res: any) {
+           const self = this;
+           if (res) {
+               let  param = {
+                        messageId: res.messageId,
+                        messageParams: res.parameterIds
+                }
+               self.$dialog.error(param);
+            }
        }
         
     }

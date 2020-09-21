@@ -104,8 +104,8 @@ public class ApplicationStampWebService extends WebService {
 	
 	@POST
 	@Path("checkBeforeUpdate")
-	public void checkBeforeUpdate(BeforeRegisterOrUpdateParam beforeRegisterParam) {
-		appStampFinder.checkBeforeUpdate(beforeRegisterParam);
+	public List<ConfirmMsgOutput> checkBeforeUpdate(BeforeRegisterOrUpdateParam beforeRegisterParam) {
+		return appStampFinder.checkBeforeUpdate(beforeRegisterParam);
 	}
 	
 	@POST

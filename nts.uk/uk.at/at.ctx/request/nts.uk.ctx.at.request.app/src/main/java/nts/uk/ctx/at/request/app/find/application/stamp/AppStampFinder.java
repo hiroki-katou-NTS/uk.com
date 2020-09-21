@@ -193,8 +193,7 @@ public class AppStampFinder {
 				as);
 	}
 	
-	public void checkBeforeUpdate(BeforeRegisterOrUpdateParam beforeRegisterParam) {
-		String pattern2 = "yyyy/MM/dd";
+	public List<ConfirmMsgOutput> checkBeforeUpdate(BeforeRegisterOrUpdateParam beforeRegisterParam) {
 		ApplicationDto applicationDto = beforeRegisterParam.getApplicationDto();
 		Application application =applicationDto.toDomain();
 		AppStampOutput as = beforeRegisterParam.getAppStampOutputDto().toDomain();
@@ -202,7 +201,7 @@ public class AppStampFinder {
 			x.setPrePostAtr(application.getPrePostAtr());
 		});
 		
-		appCommonStampDomainService.checkBeforeUpdate(
+		 return appCommonStampDomainService.checkBeforeUpdate(
 				beforeRegisterParam.getCompanyId(),
 				beforeRegisterParam.getAgentAtr(),
 				application,

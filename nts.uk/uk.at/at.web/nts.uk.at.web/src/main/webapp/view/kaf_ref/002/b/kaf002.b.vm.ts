@@ -50,31 +50,41 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             self.application = ko.observable(new Application(self.appType()));
 
             self.loadData([], [], self.appType())
-            .then((loadDataFlag: any) => {
-                if(loadDataFlag) {
-                    let companyId = self.$user.companyId;
-                    let command = { 
-                            appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
-                            recoderFlag: RECORD_FLAG_IMAGE,
-                            companyId
-                    };
-                
-                    return self.$ajax(API.start, command);
-                }
-            }).done((res: any) => {
-                self.data = res;
-                self.bindDataStart(self.data);
-                
-            }).fail(res => {
-                self.showError(res);
-            }).always(() => {
-                self.$blockui('hide');
-            });
+                .then((loadDataFlag: any) => {
+                    if(loadDataFlag) {
+                        let command = self.createCommandStart();
+                        
+                        self.$blockui( "show" );
+                        return self.$ajax(API.start, command);
+                    }
+                }).done((res: any) => {
+                    self.data = res;
+                    self.bindDataStart(self.data);
+                    
+                }).fail(res => {
+                    self.showError(res);
+                }).always(() => {
+                    self.$blockui('hide');
+                });
             
         }
         
-        mounted() {
+        createCommandStart() {
+            const self = this;
+            let companyId = self.$user.companyId;
+            let command = { 
+                    appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
+                    recoderFlag: RECORD_FLAG_IMAGE,
+                    companyId
+            };
             
+            return command;
+        }
+        
+        mounted() {
+            const self = this;
+            // focus date selection
+            $('#kaf000-a-component4-singleDate').focus();
         }
         public bindDataStart(data: any) {
             const self = this;
@@ -92,33 +102,36 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             if (_.isNull(dataClone)) {
                 return;
             }
+            
+            let command = self.createCommandStart();
+            self.startApi(command);
+        }
+        startApi(command: any) {
+            const self = this;
+            
             self.$blockui( "show" );
-            let companyId = self.$user.companyId;
-            let command = { 
-                    appDispInfoStartupDto: ko.toJS(self.appDispInfoStartupOutput),
-                    recoderFlag: RECORD_FLAG_IMAGE,
-                    companyId
-            };
+            
             self.$ajax(API.start, command)
                 .done((res: any) => {
-                    console.log(res);
                     self.data = res;
+                    self.bindDataStart(self.data);
                 }).fail(res => {
                     self.showError(res);
                 }).always(() => {
                     self.$blockui('hide');
                 });
         }
+        
         public handleConfirmMessage(listMes: any, res: any) {
-            let vm = this;
+            let self = this;
             if (!_.isEmpty(listMes)) {
                 let item = listMes.shift();
-                vm.$dialog.confirm({ messageId: item.msgID }).then((value) => {
+                return self.$dialog.confirm({messageId: item.msgID, messageParams: item.paramLst}).then((value) => {
                     if (value == 'yes') {
                         if (_.isEmpty(listMes)) {
-                             return vm.registerData(res);
+                             return self.registerData(res);
                         } else {
-                             vm.handleConfirmMessage(listMes, res);
+                             return self.handleConfirmMessage(listMes, res);
                         }
 
                     }
@@ -126,14 +139,9 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             }
         }
         registerData(command) {
-            let vm = this; 
-            return vm.$ajax( API.register, command )
-                .done( resRegister => {
-                    console.log( resRegister );
-                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
-                        location.reload();
-                    } );
-                })
+            let self = this; 
+            return self.$ajax(API.register, command)
+             
         }
         showError(res: any) {
             const self = this;
@@ -145,8 +153,10 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                 self.$dialog.error(param);
              }
         }
+        createCommandRegister() {
+            
+        }
         public register() {
-            console.log('register');
             const self = this;
             let data = _.clone(self.data);
             let appRecordImage = new AppRecordImage(Number(ko.toJS(self.selectedCode)), Number(ko.toJS(self.time)));
@@ -156,12 +166,12 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             data.appRecordImage = null;
             let companyId = self.$user.companyId;
             let agentAtr = false;
-            self.application().enteredPerson = __viewContext.user.employeeId;
-            self.application().employeeID = __viewContext.user.employeeId;
-//            self.application().prePostAtr(0);
+            let applicationCmd = ko.toJS(self.application);
+            applicationCmd.enteredPerson = self.$user.employeeId;
+            applicationCmd.employeeID = self.$user.employeeId;
             let command = {
                     appStampOutputDto: data,
-                    applicationDto: ko.toJS(self.application),
+                    applicationDto: applicationCmd,
                     recoderFlag: RECORD_FLAG_IMAGE,
                     appRecordImageDto: appRecordImage
                     
@@ -170,7 +180,7 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     companyId,
                     agentAtr,
                     appStampOutputDto: data,
-                    applicationDto: ko.toJS(self.application)
+                    applicationDto: applicationCmd
             }
             self.$blockui("show");
             self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
@@ -179,11 +189,10 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     return true;
                 }
             }).then(result => {
-                if (result) {
-                    return self.$ajax(API.checkRegister, commandCheck);
-                } 
+                if (!result) return;
+                return self.$ajax(API.checkRegister, commandCheck);
             }).then(res => {
-                if (!res) return;
+                if (res == undefined) return;
                 if (_.isEmpty(res)) {
                     return self.$ajax(API.register, command);
                 } else {
@@ -191,8 +200,8 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                     return self.handleConfirmMessage(listConfirm, command);
                 }
             }).done(res => {
-                if (res) {
-                    this.$dialog.info( { messageId: "Msg_15" } ).then(() => {
+                if (res != undefined) {
+                    self.$dialog.info({ messageId: "Msg_15" }).then(() => {
                         location.reload();
                     } );
                 }
