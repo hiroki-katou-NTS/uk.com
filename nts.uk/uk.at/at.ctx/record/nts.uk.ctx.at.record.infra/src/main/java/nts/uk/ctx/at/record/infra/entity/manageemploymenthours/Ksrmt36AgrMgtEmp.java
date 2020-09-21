@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
 import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
 import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmpPk;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
@@ -216,12 +217,12 @@ public class Ksrmt36AgrMgtEmp extends UkJpaEntity implements Serializable {
 
         val  errorTimeInYear = ErrorTimeInYear.create(new AgreementOneMonthTime((int)entity.getBasicMArlTime())
                 ,new AgreementOneMonthTime((int)entity.getBasisYAlTime()));
-        val upperLimitYear = new AgreementOneMonthTime((int)entity.getBasisYLimitTime());
+        val upperLimitYear = new AgreementOneYearTime((int)entity.getBasisYLimitTime());
         val basicSettingYear = new OneYearTime(errorTimeInYear,upperLimitYear);
 
         val errorTimeInYearUpper =  ErrorTimeInYear.create(new AgreementOneMonthTime((int)entity.getSpYErlTime())
                 ,new AgreementOneMonthTime((int)entity.getSpYAlTime()));
-        val upperLimitTimeYearUpper = new AgreementOneMonthTime((int)entity.getSpYLimitTime());
+        val upperLimitTimeYearUpper = new AgreementOneYearTime((int)entity.getSpYLimitTime());
         val upperLimitDueToSpecialProvisionsYear = new OneYearTime(errorTimeInYearUpper,upperLimitTimeYearUpper);
 
 

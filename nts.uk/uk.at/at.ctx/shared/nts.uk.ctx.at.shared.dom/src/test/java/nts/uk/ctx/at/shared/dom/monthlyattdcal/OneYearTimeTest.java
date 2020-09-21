@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.monthlyattdcal;
 
 import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime;
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,7 +16,7 @@ public class OneYearTimeTest {
 		OneYearTime oneMonthTime = new OneYearTime(
 				new ErrorTimeInYear(new AgreementOneMonthTime(0),
 						new AgreementOneMonthTime(1)),
-				new AgreementOneMonthTime(2));
+				new AgreementOneYearTime(2));
 		NtsAssert.invokeGetters(oneMonthTime);
 	}
 
@@ -23,14 +24,14 @@ public class OneYearTimeTest {
 	public void createTest_1() {
 		NtsAssert.businessException("Msg_59", ()->{
 			OneYearTime.create(new ErrorTimeInYear(new AgreementOneMonthTime(0),
-					new AgreementOneMonthTime(1)),new AgreementOneMonthTime(2));
+					new AgreementOneMonthTime(1)),new AgreementOneYearTime(2));
 		});
 	}
 
 	@Test
 	public void createTest_2() {
 		ErrorTimeInYear errorTimeInYear = ErrorTimeInYear.create(new AgreementOneMonthTime(2),new AgreementOneMonthTime(3));
-		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneMonthTime(1));
+		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneYearTime(1));
 
 		Assert.assertEquals(target.getErrorTimeInYear(), errorTimeInYear);
 		Assert.assertEquals(target.getUpperLimitTime(), new AgreementOneMonthTime(1));
@@ -39,7 +40,7 @@ public class OneYearTimeTest {
 	@Test
 	public void checkErrorTimeExceededTest_1() {
 		ErrorTimeInYear errorTimeInYear = ErrorTimeInYear.create(new AgreementOneMonthTime(2),new AgreementOneMonthTime(3));
-		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneMonthTime(1));
+		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneYearTime(1));
 		Pair<Boolean, AgreementOneMonthTime> result =  target.checkErrorTimeExceeded(new AgreementOneMonthTime(4));
 
 		Assert.assertEquals(result.getLeft(), true);
@@ -49,7 +50,7 @@ public class OneYearTimeTest {
 	@Test
 	public void checkErrorTimeExceededTest_2() {
 		ErrorTimeInYear errorTimeInYear = ErrorTimeInYear.create(new AgreementOneMonthTime(2),new AgreementOneMonthTime(3));
-		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneMonthTime(1));
+		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneYearTime(1));
 		Pair<Boolean, AgreementOneMonthTime> result =  target.checkErrorTimeExceeded(new AgreementOneMonthTime(1));
 
 		Assert.assertEquals(result.getLeft(), false);
@@ -59,7 +60,7 @@ public class OneYearTimeTest {
 	@Test
 	public void calculateAlarmTimeTest_1() {
 		ErrorTimeInYear errorTimeInYear = ErrorTimeInYear.create(new AgreementOneMonthTime(2),new AgreementOneMonthTime(3));
-		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneMonthTime(1));
+		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneYearTime(1));
 		AgreementOneMonthTime result =  target.calculateAlarmTime(new AgreementOneMonthTime(4));
 
 		Assert.assertEquals(result,new AgreementOneMonthTime(5));
@@ -68,7 +69,7 @@ public class OneYearTimeTest {
 	@Test
 	public void calculateAlarmTimeTest_2() {
 		ErrorTimeInYear errorTimeInYear = ErrorTimeInYear.create(new AgreementOneMonthTime(2),new AgreementOneMonthTime(3));
-		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneMonthTime(1));
+		OneYearTime target = OneYearTime.create(errorTimeInYear,new AgreementOneYearTime(1));
 		AgreementOneMonthTime result =  target.calculateAlarmTime(new AgreementOneMonthTime(-4));
 
 		Assert.assertEquals(result,new AgreementOneMonthTime(0));

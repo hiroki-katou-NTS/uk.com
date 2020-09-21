@@ -21,8 +21,8 @@ public class ApproverGetDomainServiceTest {
 	@Injectable
 	private ByWorkplaceApproverGetDomainService wkpApprService;
 
-	@Injectable
-	private ApproverGetDomainService.WkpApprRequire wkpApprRequire;
+//	@Injectable
+//	private ApproverGetDomainService.WkpApprRequire wkpApprRequire;
 
 	@Test
 	public void test01() {

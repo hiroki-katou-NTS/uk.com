@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.ksm003;
+package nts.uk.screen.at.ws.ksm003.a;
 
 import nts.uk.screen.at.app.ksm003.find.GetWorkCycle;
 import nts.uk.screen.at.app.ksm003.find.WorkCycleDto;

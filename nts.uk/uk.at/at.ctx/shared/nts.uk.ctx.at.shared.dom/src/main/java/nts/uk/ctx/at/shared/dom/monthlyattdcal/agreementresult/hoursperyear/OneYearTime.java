@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
@@ -23,12 +24,12 @@ public class OneYearTime extends ValueObject {
     /**
      * 上限時間
      */
-    private AgreementOneMonthTime upperLimitTime; //todo thiếu primitiveValue
+    private AgreementOneYearTime upperLimitTime;
 
     /**
      * [C-1] １ヶ月時間
      */
-    public static OneYearTime create(ErrorTimeInYear errorTimeInYear, AgreementOneMonthTime upperLimitTime) {
+    public static OneYearTime create(ErrorTimeInYear errorTimeInYear, AgreementOneYearTime upperLimitTime) {
         if (upperLimitTime.v() >= errorTimeInYear.getErrorTime().v()) {
             throw new BusinessException("Msg_59", "KMK008_66", "KMK008_129");
         }
