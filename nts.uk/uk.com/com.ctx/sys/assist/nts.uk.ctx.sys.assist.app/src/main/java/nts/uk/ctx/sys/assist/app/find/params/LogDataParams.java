@@ -10,8 +10,6 @@ import nts.arc.time.GeneralDateTime;
 @Builder
 public class LogDataParams {
 	
-	private String cid;
-	
 	private int systemType;
 	
 	private int recordType;
