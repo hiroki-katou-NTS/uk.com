@@ -43,7 +43,7 @@ module nts.uk.at.view.kaf000.a.component3.viewmodel {
 			vm.application = params.application;
 			
             vm.appDispInfoStartupOutput.subscribe(value => {
-				if(vm.application.opStampRequestMode==1) {
+				if(vm.application().opStampRequestMode()==1) {
 					vm.application().prePostAtr(1);
 					vm.prePostAtrDisp(false);
 				} else {
