@@ -19,16 +19,27 @@ module nts.uk.at.view.kaf000_ref.b.component3.viewmodel {
             vm.approvalReason = params.approvalReason;
             vm.dispApprovalReason = ko.observable(false);
             vm.enableApprovalReason = ko.observable(false);
-            vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput();
+            vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             
-            let userTypeValue = vm.appDispInfoStartupOutput.appDetailScreenInfo.user;
-            let state = vm.appDispInfoStartupOutput.appDetailScreenInfo.reflectPlanState;
-            let canApprove = vm.appDispInfoStartupOutput.appDetailScreenInfo.authorizableFlags;
-            let expired = vm.appDispInfoStartupOutput.appDetailScreenInfo.alternateExpiration;
+            let userTypeValue = vm.appDispInfoStartupOutput().appDetailScreenInfo.user;
+            let state = vm.appDispInfoStartupOutput().appDetailScreenInfo.reflectPlanState;
+            let canApprove = vm.appDispInfoStartupOutput().appDetailScreenInfo.authorizableFlags;
+            let expired = vm.appDispInfoStartupOutput().appDetailScreenInfo.alternateExpiration;
             vm.dispApprovalReason((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
             vm.enableApprovalReason((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
                 && canApprove
                 && !expired);
+
+			vm.appDispInfoStartupOutput.subscribe(value => {
+            	let userTypeValue = value.appDetailScreenInfo.user;
+	            let state = value.appDetailScreenInfo.reflectPlanState;
+	            let canApprove = value.appDetailScreenInfo.authorizableFlags;
+	            let expired = value.appDetailScreenInfo.alternateExpiration;
+	            vm.dispApprovalReason((userTypeValue == UserType.APPLICANT_APPROVER || userTypeValue == UserType.APPROVER));
+	            vm.enableApprovalReason((state == Status.DENIAL || state == Status.WAITREFLECTION || state == Status.NOTREFLECTED || state == Status.REMAND)
+	                && canApprove
+	                && !expired);
+            });
         }
     
         mounted() {

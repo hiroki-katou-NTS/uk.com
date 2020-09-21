@@ -16,6 +16,11 @@ module nts.uk.at.view.kaf000_ref.b.component4.viewmodel {
             
             vm.employeeName(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);   
             params.application().employeeIDLst(_.map(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.employeeInfoLst, (o: any) => o.sid)); 
+
+			vm.appDispInfoStartupOutput.subscribe(value => {
+         		vm.employeeName(value.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName);   
+            	params.application().employeeIDLst(_.map(value.appDispInfoNoDateOutput.employeeInfoLst, (o: any) => o.sid));
+            });
         }
     
         mounted() {
