@@ -1,19 +1,30 @@
 module nts.uk.at.view.kaf000_ref.a.component1.viewmodel {
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
-    
+
     @component({
         name: 'kaf000-a-component1',
-        template: '/nts.uk.at.web/view/kaf_ref/000/a/component1/index.html'
+        template: `
+            <div id="kaf000-a-component1" data-bind="if: displayArea">
+                <div class="table" data-bind="if: displayMsg">
+                    <div class="cell message-td-1" data-bind="text: $i18n('KAF000_1')"></div>
+                    <div class="cell message-td" data-bind="text: message"></div>
+                </div>
+                <div class="table" data-bind="if: displayDeadline">
+                    <div class="cell message-td-1" data-bind="text: $i18n('KAF000_2')"></div>
+                    <div class="cell message-td" data-bind="text: deadline"></div>
+                </div>
+            </div>
+        `
     })
     class Kaf000AComponent1ViewModel extends ko.ViewModel {
 		appType: KnockoutObservable<number> = null;
         appDispInfoStartupOutput: any;
-        message: KnockoutObservable<string>; 
+        message: KnockoutObservable<string>;
         deadline: KnockoutObservable<string>;
-        displayArea: KnockoutObservable<boolean>; 
+        displayArea: KnockoutObservable<boolean>;
         displayMsg: KnockoutObservable<boolean>;
         displayDeadline: KnockoutObservable<boolean>;
-        
+
         created(params: any) {
             const vm = this;
 			vm.appType = params.appType;
@@ -25,12 +36,12 @@ module nts.uk.at.view.kaf000_ref.a.component1.viewmodel {
             });
             vm.displayMsg = ko.observable(false);
             vm.displayDeadline = ko.observable(false);
-            
+
             vm.appDispInfoStartupOutput.subscribe(value => {
                 CommonProcess.initDeadlineMsg(value, vm);
             });
         }
-    
+
         mounted() {
             const vm = this;
         }

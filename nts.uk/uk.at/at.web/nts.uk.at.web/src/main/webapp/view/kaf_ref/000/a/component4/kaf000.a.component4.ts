@@ -4,10 +4,42 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
     import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
     import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
     import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    
+
     @component({
         name: 'kaf000-a-component4',
-        template: '/nts.uk.at.web/view/kaf_ref/000/a/component4/index.html'
+        template: `
+            <div id="kaf000-a-component4">
+                <div class="table">
+                    <div class="cell col-1">
+                        <div class="cell valign-center" data-bind="ntsFormLabel:{ required:true }, text: $i18n('KAF000_49')"></div>
+                    </div>
+                    <div class="cell valign-top">
+                        <div class="table">
+                            <div class="cell valign-top" data-bind="if: dispCheckBox">
+                                <div data-bind="i18n: 'KAF000_50', ntsCheckBox: { checked: checkBoxValue }"></div>
+                            </div>
+                            <div class="cell valign-top" data-bind="if: dispSingleDate">
+                                <div id="kaf000-a-component4-singleDate"
+                                    data-bind="ntsDatePicker: {name: $i18n('KAF000_49'),
+                                                            required:true,
+                                                            value: appDate }">
+                                </div>
+                            </div>
+                            <div class="cell valign-top" data-bind="if: !dispSingleDate()">
+                                <div id="kaf000-a-component4-rangeDate"
+                                    data-bind="ntsDateRangePicker: {
+                                                            name: $i18n('KAF000_49'),
+                                                            startName: $i18n('KAF000_49'),
+                                                            endName: $i18n('KAF000_49'),
+                                                            required: true,
+                                                            value: dateValue }">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `
     })
     class Kaf000AComponent4ViewModel extends ko.ViewModel {
         appType: number = null;
@@ -23,7 +55,7 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
             const vm = this;
             vm.appDate = ko.observable("");
             vm.dateValue = ko.observable({});
-            
+
             vm.application = params.application;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
 
@@ -52,7 +84,7 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
 
             vm.appDate.subscribe(value => {
             	if(vm.checkBoxValue()) {
-            		return;	
+            		return;
             	}
                 vm.$blockui("show");
                 let element = '#kaf000-a-component4-singleDate',
@@ -62,21 +94,21 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                     if(valid) {
                         let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { appDate, appDispInfoStartupOutput };
-                        return vm.$ajax(API.changeAppDate, command);         
-                    }  
+                        return vm.$ajax(API.changeAppDate, command);
+                    }
                 }).then((successData: any) => {
                     if(successData) {
 						let applicationJS = ko.toJS(vm.application);
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = successData;
                         vm.appDispInfoStartupOutput.valueHasMutated();
 						if(applicationJS.opStampRequestMode==1) {
-							vm.application().prePostAtr(1);	
+							vm.application().prePostAtr(1);
 						} else {
 							if(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1) {
-								vm.application().prePostAtr(applicationJS.prePostAtr);	
+								vm.application().prePostAtr(applicationJS.prePostAtr);
 							} else {
-								vm.application().prePostAtr(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr);	
-							}	
+								vm.application().prePostAtr(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr);
+							}
 						}
 						vm.application().opAppStandardReasonCD(applicationJS.opAppStandardReasonCD);
                         vm.dateValue().startDate = appDate;
@@ -91,15 +123,15 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                 }).fail((res: any) => {
                  	if (res.messageId == "Msg_426") {
 	                    vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
-	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
-	                    });    
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+	                    });
 	                } else {
 	                    vm.$dialog.error(res.message).then(() => {
-	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
-	                    }); 
-	                }   
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+	                    });
+	                }
                 }).always(() => vm.$blockui("hide"));
-                                  
+
             });
 
             vm.dateValue.subscribe(value => {
@@ -112,13 +144,13 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                     endDate = moment(value.endDate).format('YYYY/MM/DD');
 	       		vm.$validate(element).then((valid: boolean) => {
                     if(valid) {
-                    	return vm.$validate('#kaf000-a-component4-rangeDate');	
+                    	return vm.$validate('#kaf000-a-component4-rangeDate');
                     }
                 }).then((valid: any) => {
                 	if(valid) {
                 		let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput),
                             command = { startDate, endDate, appDispInfoStartupOutput };
-                        return vm.$ajax(API.changeAppDate, command);	
+                        return vm.$ajax(API.changeAppDate, command);
                 	}
                 }).then((successData: any) => {
                     if(successData) {
@@ -126,13 +158,13 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                         vm.appDispInfoStartupOutput().appDispInfoWithDateOutput = successData;
                         vm.appDispInfoStartupOutput.valueHasMutated();
 						if(applicationJS.opStampRequestMode==1) {
-							vm.application().prePostAtr(1);	
+							vm.application().prePostAtr(1);
 						} else {
 							if(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1) {
-								vm.application().prePostAtr(applicationJS.prePostAtr);	
+								vm.application().prePostAtr(applicationJS.prePostAtr);
 							} else {
-								vm.application().prePostAtr(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr);	
-							}	
+								vm.application().prePostAtr(vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.prePostAtr);
+							}
 						}
 						vm.application().opAppStandardReasonCD(applicationJS.opAppStandardReasonCD);
                         vm.appDate(startDate);
@@ -145,18 +177,18 @@ module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
                 }).fail((res: any) => {
                 	if (res.messageId == "Msg_426") {
 	                    vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
-	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
-	                    });    
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+	                    });
 	                } else {
 	                    vm.$dialog.error(res.message).then(() => {
-	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml"); 
-	                    }); 
-	                }       
+	                        vm.$jump("com", "/view/ccg/008/a/index.xhtml");
+	                    });
+	                }
                 }).always(() => vm.$blockui("hide"));
             });
         }
     }
-    
+
     const API = {
         changeAppDate: "at/request/application/changeAppDate"
     }

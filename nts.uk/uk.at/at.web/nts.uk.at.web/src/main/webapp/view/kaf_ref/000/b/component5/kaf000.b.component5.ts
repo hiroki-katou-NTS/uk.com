@@ -2,7 +2,16 @@ module nts.uk.at.view.kaf000_ref.b.component5.viewmodel {
 
     @component({
         name: 'kaf000-b-component5',
-        template: '/nts.uk.at.web/view/kaf_ref/000/b/component5/index.html'
+        template: `
+            <div id="kaf000-b-component5">
+                <div class="table" data-bind="if: prePostAtrDisp">
+                    <div class="cell col-1">
+                        <div class="cell valign-center" data-bind="ntsFormLabel:{required: true}, text: $i18n('KAF000_46')"></div>
+                    </div>
+                    <div class="cell valign-center" data-bind="text: prePostAtrName"></div>
+                </div>
+            </div>
+        `
     })
     class Kaf000BComponent5ViewModel extends ko.ViewModel {
 		appType: KnockoutObservable<number> = null;
@@ -15,10 +24,10 @@ module nts.uk.at.view.kaf000_ref.b.component5.viewmodel {
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.prePostAtrName = ko.observable("prePostAtrName");
             vm.prePostAtrDisp = ko.observable(false);
-            
+
             vm.prePostAtrName(vm.getPrePostAtrName(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr));
             vm.prePostAtrDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
-            params.application().prePostAtr(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr); 
+            params.application().prePostAtr(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr);
 
 			vm.appDispInfoStartupOutput.subscribe(value => {
          		vm.prePostAtrName(vm.getPrePostAtrName(value.appDetailScreenInfo.application.prePostAtr));
@@ -26,17 +35,17 @@ module nts.uk.at.view.kaf000_ref.b.component5.viewmodel {
             	params.application().prePostAtr(value.appDetailScreenInfo.application.prePostAtr);
             });
         }
-    
+
         mounted() {
             const vm = this;
         }
-        
+
         getPrePostAtrName(prePostAtr: number) {
-            const vm = this;    
+            const vm = this;
             if(prePostAtr==0) {
-                return vm.$i18n('KAF000_47');    
+                return vm.$i18n('KAF000_47');
             } else {
-                return vm.$i18n('KAF000_48');    
+                return vm.$i18n('KAF000_48');
             }
         }
     }
