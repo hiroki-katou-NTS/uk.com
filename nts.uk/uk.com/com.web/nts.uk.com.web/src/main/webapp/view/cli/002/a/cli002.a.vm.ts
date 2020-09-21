@@ -42,7 +42,7 @@ module nts.uk.com.view.cli002.a {
         hidden: true,
       },
       {
-        headerText: this.$i18n("CLI002_2"),
+        headerText: this.$i18n("CLI002_3"),
         prop: "localizedName",
         width: 160,
       }
