@@ -40,7 +40,7 @@ export class CmmS45AComponent extends Vue {
     public displayA512: number = 0;
     public appAllNumber: number = 0;
     public appListExtractCondition: AppListExtractCondition;
-    public data: ApplicationListDtoMobile;
+    public data: ApplicationListDtoMobile = new ApplicationListDtoMobile();
 
     public mounted() {
         this.pgName = 'cmm045a';
@@ -121,6 +121,8 @@ export class CmmS45AComponent extends Vue {
     //データを取る
     private getData(getCache: boolean, filter: boolean) {
         let self = this;
+        console.log(storage.local.hasItem('CMMS45_AppListExtractConditionNew'));
+        console.log(storage.local.getItem('CMMS45_AppListExtractConditionNew'));
         // check: キャッシュを取るか？
         if (filter) {
             // self.prFilter.startDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
@@ -154,7 +156,7 @@ export class CmmS45AComponent extends Vue {
 
 
 
-        } else if (getCache && storage.local.hasItem('CMMS45_AppListExtractConditionNew')) {
+        } else if (getCache && storage.local.hasItem('CMMS45_DataStorage')) {
             // 申請を絞り込む
             // self.prFilter = storage.local.getItem('CMMS45_AppListExtractCondition') as AppListExtractConditionDto;
             // self.appListExtractCondition = storage.local.getItem('CMMS45_AppListExtractConditionNew') as AppListExtractCondition;
@@ -162,8 +164,15 @@ export class CmmS45AComponent extends Vue {
             // self.createLstAppType();
             // return service
             self.$mask('show');
-            self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
-            self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
+            let dataStorage = storage.local.getItem('CMMS45_DataStorage') as any;
+            self.data = dataStorage;
+            self.appListExtractCondition = dataStorage.appListExtractConditionDto as AppListExtractCondition;
+            if (!_.isNull(self.dateRange.start)) {
+                self.appListExtractCondition.periodStartDate = self.$dt.date(self.dateRange.start, 'YYYY/MM/DD');
+            }
+            if (!_.isNull(self.dateRange.end)) {
+                self.appListExtractCondition.periodEndDate = self.$dt.date(self.dateRange.end, 'YYYY/MM/DD');
+            }
             let paramCmd = {
                 appAllNumber: self.data.appAllNumber,
                 appPerNumber: self.data.appPerNumber,
@@ -176,8 +185,15 @@ export class CmmS45AComponent extends Vue {
                     // let data = res.data as ApplicationListDtoMobile;
                     self.appListExtractCondition = res.data.appListExtractConditionDto;
                     self.data = res.data;
-
-                    storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
+                    let appAllNumber = self.data.appAllNumber;
+                    let appPerNumber = self.data.appPerNumber;
+                    let appListExtractConditionDto = self.data.appListExtractConditionDto;
+                    let dataStorage = {
+                        appAllNumber,
+                        appPerNumber,
+                        appListExtractConditionDto
+                    };
+                    storage.local.setItem('CMMS45_DataStorage', dataStorage);
                     self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
 
                     self.convertAppInfo(self.data.appListInfoDto);
@@ -260,8 +276,18 @@ export class CmmS45AComponent extends Vue {
                 // let data = res.data as ApplicationListDtoMobile;
                 self.appListExtractCondition = res.data.appListExtractConditionDto;
                 self.data = res.data;
-
-                storage.local.setItem('CMMS45_AppListExtractConditionNew', self.appListExtractCondition);
+                let appAllNumber = self.data.appAllNumber;
+                let appPerNumber = self.data.appPerNumber;
+                let appListExtractConditionDto = self.data.appListExtractConditionDto;
+                let dataStorage = {
+                    appAllNumber,
+                    appPerNumber,
+                    appListExtractConditionDto
+                };
+                storage.local.setItem('CMMS45_DataStorage', dataStorage);
+                // storage.local.setItem('allNumber', self.data.appAllNumber);
+                // storage.local.setItem('appPerNumber', self)
+                // storage.local.setItem
                 self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
                 // self.isDisPreP = 
                 self.convertAppInfo(self.data.appListInfoDto);
@@ -396,11 +422,12 @@ export class CmmS45AComponent extends Vue {
         };
         self.$modal('cmms45c', param).then((res: any) => {
             console.log(res);
-            if (res.action != 0) {
-                self.getData(true, false);
-            } else {
-                self.getData(true, true);
-            }
+            // if (res.action != 0) {
+            //     self.getData(true, false);
+            // } else {
+            //     self.getData(true, true);
+            // }
+            self.getData(true, false);
         });
     }
 
