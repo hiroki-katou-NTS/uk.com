@@ -9,7 +9,62 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
 
     @component({
         name: 'kaf004-b',
-        template: '/nts.uk.at.web/view/kaf/004/b/index.html'
+        template: `
+        <div>
+        <div class="fixed-flex-layout-left">
+            <div data-bind="component: { name: 'kaf000-b-component1',
+                                    params: {
+                                        appType: appType,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+            <div data-bind="component: { name: 'kaf000-b-component3',
+                                    params: {
+                                        appType: appType,
+                                        approvalReason: approvalReason,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+            <div class="table">
+                <div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+                 <div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+                                    } }"></div>
+            </div>
+            <div data-bind="component: { name: 'kaf000-b-component5',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+            <div data-bind="component: { name: 'kaf000-b-component6',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+            <div class="fixed-flex-layout" style="margin-left: -10px;" data-bind="component: {name: 'kaf004_share'}"></div>
+            <div data-bind="component: { name: 'kaf000-b-component7',
+                                    params: {
+                                        appType: appType,
+                                        application: application,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+            <div data-bind="component: { name: 'kaf000-b-component8',
+                                    params: {
+                                        appType: appType,
+                                        appDispInfoStartupOutput: appDispInfoStartupOutput
+                                    } }"></div>
+        </div>
+
+    </div>
+        `
     })
     class KAF004AViewModel extends ko.ViewModel {
         appType: KnockoutObservable<number> = ko.observable(AppType.EARLY_LEAVE_CANCEL_APPLICATION);
@@ -112,6 +167,10 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.arrivedLateLeaveEarlyInfo = ko.observable(params);
             vm.appDispInfoStartupOutput(params.appDispInfoStartupOutput);
             vm.appDispInfoStartupOutput.valueHasMutated();
+            vm.workManagement.scheAttendanceTime("--:--")
+            vm.workManagement.scheWorkTime("--:--")
+            vm.workManagement.scheAttendanceTime2("--:--")
+            vm.workManagement.scheWorkTime2("--:--")
 
             vm.cancalAppDispSet = params.lateEarlyCancelAppSet.cancelAtr !== 0;
             var achiveEarly = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail;
