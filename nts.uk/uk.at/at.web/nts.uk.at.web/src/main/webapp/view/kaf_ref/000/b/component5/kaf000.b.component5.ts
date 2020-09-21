@@ -19,6 +19,12 @@ module nts.uk.at.view.kaf000_ref.b.component5.viewmodel {
             vm.prePostAtrName(vm.getPrePostAtrName(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr));
             vm.prePostAtrDisp(vm.appDispInfoStartupOutput().appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
             params.application().prePostAtr(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr); 
+
+			vm.appDispInfoStartupOutput.subscribe(value => {
+         		vm.prePostAtrName(vm.getPrePostAtrName(value.appDetailScreenInfo.application.prePostAtr));
+            	vm.prePostAtrDisp(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
+            	params.application().prePostAtr(value.appDetailScreenInfo.application.prePostAtr);
+            });
         }
     
         mounted() {

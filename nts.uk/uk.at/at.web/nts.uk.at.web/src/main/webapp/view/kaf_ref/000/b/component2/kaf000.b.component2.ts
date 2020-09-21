@@ -14,14 +14,23 @@ module nts.uk.at.view.kaf000_ref.b.component2.viewmodel {
 			vm.appType = params.appType;
             vm.opReversionReason = ko.observable("opReversionReason");
             vm.opReversionReasonDisp = ko.observable(false);
-            vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput();
+            vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             
-            vm.opReversionReason(vm.appDispInfoStartupOutput.appDetailScreenInfo.application.opReversionReason);
-            vm.opReversionReasonDisp(!_.isEmpty(vm.appDispInfoStartupOutput.appDetailScreenInfo.application.opReversionReason));
+            vm.opReversionReason(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opReversionReason);
+            vm.opReversionReasonDisp(!_.isEmpty(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opReversionReason));
             if (vm.opReversionReasonDisp()) {
-                let opReversionReason = vm.appDispInfoStartupOutput.appDetailScreenInfo.application.opReversionReason;
+                let opReversionReason = vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opReversionReason;
                 vm.opReversionReason(opReversionReason.replace(/\n/g, "\<br/>"));
             }
+
+			vm.appDispInfoStartupOutput.subscribe(value => {
+            	vm.opReversionReason(value.appDetailScreenInfo.application.opReversionReason);
+	            vm.opReversionReasonDisp(!_.isEmpty(value.appDetailScreenInfo.application.opReversionReason));
+	            if (vm.opReversionReasonDisp()) {
+	                let opReversionReason = value.appDetailScreenInfo.application.opReversionReason;
+	                vm.opReversionReason(opReversionReason.replace(/\n/g, "\<br/>"));
+	            }
+            });
         }
     
         mounted() {

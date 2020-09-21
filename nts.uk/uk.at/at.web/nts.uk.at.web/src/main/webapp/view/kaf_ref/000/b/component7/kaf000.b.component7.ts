@@ -44,6 +44,27 @@ module nts.uk.at.view.kaf000_ref.b.component7.viewmodel {
 				vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);
 			}
             vm.opAppReason(vm.appDispInfoStartupOutput().appDetailScreenInfo.application.opAppReason);   
+
+			vm.appDispInfoStartupOutput.subscribe(value => {
+         		vm.appReasonCDRequired(value.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.standardReasonRequired);
+	            vm.appReasonRequired(value.appDispInfoNoDateOutput.applicationSetting.appLimitSetting.requiredAppReason);    
+	            vm.appReasonCDDisp(value.appDispInfoNoDateOutput.displayStandardReason == 1);
+	            vm.appReasonDisp(value.appDispInfoNoDateOutput.displayAppReason == 1);
+	            vm.reasonTypeItemLst(value.appDispInfoNoDateOutput.reasonTypeItemLst);
+	            vm.opAppStandardReasonCD(value.appDetailScreenInfo.application.opAppStandardReasonCD);
+				let initReasonTypeItem = _.find(vm.reasonTypeItemLst(), (o) => o.appStandardReasonCD == vm.opAppStandardReasonCD());
+				if(_.isUndefined(initReasonTypeItem)) {
+					let dataLst = [{
+			            appStandardReasonCD: '',
+			            displayOrder: 0,
+			            defaultValue: false,
+			            reasonForFixedForm: vm.$i18n('KAFS00_23'),   
+			        }];
+					vm.reasonTypeItemLst(_.concat(dataLst, vm.reasonTypeItemLst()));
+					vm.opAppStandardReasonCD(_.head(vm.reasonTypeItemLst()).appStandardReasonCD);
+				}
+	            vm.opAppReason(value.appDetailScreenInfo.application.opAppReason);
+            });
         }
     
         mounted() {

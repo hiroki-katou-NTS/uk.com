@@ -59,7 +59,7 @@ public class PrepareTimeFrame {
 
 		// 最大使用回数を確認する
 		if (listTimeFrame.size() > maxNumberOfUses) {
-			for (int i = maxNumberOfUses; i < listTimeFrame.size(); i--) {
+			for (int i = listTimeFrame.size(); i > maxNumberOfUses; i--) {
 				listTimeFrame.remove(i);
 			}
 		} else if (listTimeFrame.size() < maxNumberOfUses) {

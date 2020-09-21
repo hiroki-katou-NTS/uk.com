@@ -14,6 +14,9 @@ module nts.uk.at.view.kaf000_ref.a.component9.viewmodel {
 			vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             
+			vm.actualContentDisplayDtoLst(params.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst);
+			vm.actualContentDisplayDtoLst.valueHasMutated();
+			
             vm.appDispInfoStartupOutput.subscribe(value => {
 				vm.actualContentDisplayDtoLst(value.appDispInfoWithDateOutput.opActualContentDisplayLst);
 				vm.actualContentDisplayDtoLst.valueHasMutated();

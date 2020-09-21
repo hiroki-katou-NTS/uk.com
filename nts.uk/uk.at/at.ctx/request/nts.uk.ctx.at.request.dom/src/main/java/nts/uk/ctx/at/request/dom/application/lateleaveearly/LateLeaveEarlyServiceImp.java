@@ -551,8 +551,10 @@ public class LateLeaveEarlyServiceImp implements LateLeaveEarlyService {
 				throw new BusinessException("Msg_1681");
 			}
 		} else {
-			if (attendTime == null && attendTime2 == null && leaveTime == null && leaveTime2 == null
-					&& cancelAttend == null
+			if (attendTime == null && attendTime2 == null && leaveTime == null && leaveTime2 == null) {
+				throw new BusinessException("Msg_1681");
+			}
+			if (cancelAttend == null
 					&& cancelAttend2 == null && cancelLeave == null && cancelLeave2 == null) {
 				throw new BusinessException("Msg_1681");
 			}
