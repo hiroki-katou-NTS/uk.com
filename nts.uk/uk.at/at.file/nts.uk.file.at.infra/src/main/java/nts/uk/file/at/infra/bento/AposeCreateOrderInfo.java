@@ -463,12 +463,21 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             printHeadData(cells, orderInfoExportData);
 
             List<DetailOrderInfoDto> dataPrint = honeDetailData(orderInfoDto.getDetailOrderInfoDtoList());
+            int page = 0;
             for (DetailOrderInfoDto detailInfo : dataPrint){
+				if (page > 0) {
+					breakPage("M", startIndex, worksheet);
+					copyRowFromTemplateSheet(cells, worksheet, 0, startIndex - 1);
+					startIndex += 3;
+				}
+
                 GeneralDate start = detailInfo.getReservationDate();
                 String timezone = detailInfo.getClosingTimeName();
                 startIndex = setRowReservationDate(cells, tempSheet, startIndex, 1, start.toString() + " " + timezone);
                 for (BentoReservedInfoDto item : detailInfo.getBentoReservedInfoDtos())
                     startIndex = handleBodyDetailFormat(worksheet, item, startIndex, cells, orderInfoExportData.isBreakPage(), tempSheet, orderInfoExportData.getOutputExt());
+
+				page++;
             }
             printArea.append("M"+(startIndex-1));
             worksheet.getVerticalPageBreaks().add(12);
@@ -495,7 +504,9 @@ public class AposeCreateOrderInfo extends AsposeCellsReportGenerator implements 
             temp.setBentoReservedInfoDtos(bentoReservedInfoDtos);
             result.add(temp);
         }
-        return result.stream().sorted(Comparator.comparing(DetailOrderInfoDto::getReservationDate)).collect(Collectors.toList());
+        return result.stream().sorted(
+                Comparator.comparing(DetailOrderInfoDto::getReservationDate))
+                .collect(Collectors.toList());
     }
 
     private List<BentoReservedInfoDto> honeDetailReservationData(List<BentoReservedInfoDto> raw){

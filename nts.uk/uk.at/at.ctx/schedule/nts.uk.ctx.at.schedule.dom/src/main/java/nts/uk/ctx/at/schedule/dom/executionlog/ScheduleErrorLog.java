@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class ScheduleErrorLog.
  */
-// スケジュール作成エラーログ
+// Domain: スケジュール作成エラーログ
 @Getter
 public class ScheduleErrorLog extends AggregateRoot {
 
