@@ -58,7 +58,7 @@ public class AsposeAppStamp {
 			Cell cellD8 = cells.get("D8");
 			cellD8.setValue(appRecordImage.getAppStampCombinationAtr().equals(EngraveAtr.GO_OUT)
 					? (appRecordImage.getAppStampCombinationAtr().name + "（"
-							+ appRecordImage.getAppStampGoOutAtr().get().name + "）")
+							+ appRecordImage.getAppStampGoOutAtr().get().nameId + "）")
 					: (appRecordImage.getAppStampCombinationAtr().name));
 			Cell cellD9 = cells.get("D9");
 			cellD9.setValue(appRecordImage.getAttendanceTime().toString());

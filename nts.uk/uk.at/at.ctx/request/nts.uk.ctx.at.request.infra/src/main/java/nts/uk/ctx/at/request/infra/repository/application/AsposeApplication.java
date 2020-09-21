@@ -128,9 +128,9 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 	// AnhNM
 	private String getFileNameStamp(StampRequestMode stampRequestMode) {
 		if (stampRequestMode.value == 0) {
-			return "打刻申請.xlsx";
+			return "打刻申請.pdf";
 		} else {
-			return "レコーダーイメージ申請.xlsx";
+			return "レコーダーイメージ申請.pdf";
 		}
 	}
 

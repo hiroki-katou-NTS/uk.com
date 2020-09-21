@@ -51,11 +51,11 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 			GeneralDate endDate = application.getOpAppEndDate().isPresent() 
 					? application.getOpAppEndDate().get().getApplicationDate() : application.getAppDate().getApplicationDate();
 			// 社員の申請を反映(phản ánh employee application)
-			appReflectManager.reflectAppOfAppDate("",
-					application.getEmployeeID(),
-					ExecutionTypeExImport.RERUN,
-					reflectSetting,
-					new DatePeriod(startDate, endDate));
+//			appReflectManager.reflectAppOfAppDate("",
+//					application.getEmployeeID(),
+//					ExecutionTypeExImport.RERUN,
+//					reflectSetting,
+//					new DatePeriod(startDate, endDate));
 		}
 	}
 }

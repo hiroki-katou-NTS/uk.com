@@ -862,7 +862,7 @@ public class DailyModifyResCommandFacade {
 		for (String emp : employeeIds) {
 			// employeeIds.stream().forEach(emp -> {
 			List<IntegrationOfDaily> domainDailyEditAll = dailyDtoEditAll.stream()
-					.filter(x -> x.getEmployeeId().equals(emp)).map(x -> x.toDomain(x.getAffiliationInfo().employeeId(), x.getAffiliationInfo().getBaseDate()))
+					.filter(x -> x.getEmployeeId().equals(emp)).map(x -> x.toDomain(x.employeeId(), x.getDate()))
 					.collect(Collectors.toList());
 			domainDailyEditAll = unionDomain(domainDailyEditAll, domainDailyNew);
 			// Acquire closing date corresponding to employee
