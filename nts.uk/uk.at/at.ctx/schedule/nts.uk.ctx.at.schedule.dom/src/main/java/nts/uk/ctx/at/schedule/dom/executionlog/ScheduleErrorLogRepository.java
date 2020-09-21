@@ -86,4 +86,11 @@ public interface ScheduleErrorLogRepository {
 	 * @return
 	 */
 	public Boolean checkExistErrorByKey(String executionId, String employeeId);
+
+	/**
+	 * Update the.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(ScheduleErrorLog domain);
 }
