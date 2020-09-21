@@ -8,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.Time
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 
@@ -69,7 +70,8 @@ public class ReturnDirectTimeCorrection {
 	private static OutingTimeSheet setOutTimeSheet(OutingTimeSheet oldValue, TimeLeavingWork leavWork) {
 		OutingTimeSheet result = new OutingTimeSheet(oldValue.getOutingFrameNo(), oldValue.getGoOut(),
 				oldValue.getOutingTimeCalculation(), oldValue.getOutingTime(), oldValue.getReasonForGoOut(),
-				leavWork.getLeaveStamp());
+				Optional.of(new TimeActualStamp(null,
+						leavWork.getLeaveStamp().map(x -> x.getStamp().orElse(null)).orElse(null), 1)));
 		result.getComeBack().ifPresent(x -> x.setNumberOfReflectionStamp(1));
 		return result;
 	}
