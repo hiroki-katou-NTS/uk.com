@@ -1037,7 +1037,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
                 ];
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 345 : 325;
+                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 345 : 305;
                 // let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
                 this.setupGrid({
                     withCcg001: true,
@@ -1318,7 +1318,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
                 ]
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 357 : 292;
+                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 357 : 272;
                 // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
                     withCcg001: true,
