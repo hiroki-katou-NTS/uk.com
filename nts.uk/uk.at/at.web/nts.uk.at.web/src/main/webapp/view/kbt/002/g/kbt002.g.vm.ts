@@ -178,6 +178,7 @@ module nts.uk.at.view.kbt002.g {
             break;
           default:
             break;
+        }
       }
     }
   }
