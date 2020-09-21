@@ -42,10 +42,6 @@ hr {
 	padding: 10px;
 }
 
-.div_line>* {
-	float: left;
-}
-
 .text_line {
 	line-height: 37px;
 }

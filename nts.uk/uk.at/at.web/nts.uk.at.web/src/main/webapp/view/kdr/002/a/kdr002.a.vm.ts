@@ -1,5 +1,4 @@
 module nts.uk.at.view.kdr002.a.viewmodel {
-    import ScheduleBatchCorrectSettingSave = service.model.ScheduleBatchCorrectSettingSave;
     import Ccg001ReturnedData = nts.uk.com.view.ccg.share.ccg.service.model.Ccg001ReturnedData;
     import EmployeeSearchDto = nts.uk.com.view.ccg.share.ccg.service.model.EmployeeSearchDto;
     import GroupOption = nts.uk.com.view.ccg.share.ccg.service.model.GroupOption;
@@ -50,11 +49,14 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         ccgcomponentPerson: GroupOption;
 
         //date type group
+        // A3_2 過去の情報
         dateTypes: KnockoutObservableArray<ItemModel> = ko.observableArray([
             //A3_3
-            { code: 0, name: getText('KDR002_3'),  }, // 現在の情報
+            { code: 0, name: getText('KDR002_3'),  }, // 現在（年休期間の途中）の年休情報をチェックする
+            //A3_10
+            { code: 1, name: getText('KDR002_41'),  }, // １年経過時点の年休情報をチェックする
             //A3_4
-            { code: 1, name: getText('KDR002_4'), } // 過去の情報
+            { code: 2, name: getText('KDR002_4'), } // １年以上前の年休情報をチェックする
         ]);
         selectedDateType: KnockoutObservable<number> = ko.observable(0);
 
@@ -73,15 +75,60 @@ module nts.uk.at.view.kdr002.a.viewmodel {
         // Page Break Type
         // A4_3
         pageBreakTypes: KnockoutObservableArray<any> = ko.observableArray([
-            { name: getText('Enum_BreakPageType_NONE'), code: 0 }, //なし
-            { name: getText('Enum_BreakPageType_WORKPLACE'), code: 1 } //職場
+            { code: 0 , name: getText('Enum_BreakPageType_NONE') }, //なし
+            { code: 1 , name: getText('Enum_BreakPageType_WORKPLACE')  } //職場
         ]);
         pageBreakSelected: KnockoutObservable<number> = ko.observable(0);
+        // A6_3
+        printAnnualLeaveDate: KnockoutObservableArray<any> = ko.observableArray([
+            { code: 0 , name: getText('KDR002_52') }, //年月日
+            { code: 1 , name: getText('KDR002_53')  } //月日
+        ]);
+        printAnnualLeaveDateSelect: KnockoutObservable<number> = ko.observable(0);
+
+        // A7_2
+        doubleTrack: KnockoutObservable<boolean> = ko.observable(true);
+
 
         closureDate: KnockoutObservable<Closure> = ko.observable();
 
+        selectedValueA3_2: KnockoutObservable<number> = ko.observable(0);
+
+        referenceTypeA3_5: KnockoutObservableArray<any>;
+
+        valueReferenceTypeA3_5: KnockoutObservable<number>;
+
+        dateValue: KnockoutObservable<any> = ko.observable('');
+
+        // A5_7
+        isExtraction: KnockoutObservable<boolean> = ko.observable(true);
+        // A5_2
+        inputExtraction: KnockoutObservable<String> = ko.observable('');
+        numbereditor: any;
+        // A5_3
+
         constructor() {
             let self = this;
+
+            self.numbereditor = {
+                value: ko.observable(12),
+                constraint: '',
+                option: new nts.uk.ui.option.NumberEditorOption({
+                    decimallength: 2,
+                    placeholder: "Placeholder for number editor",
+                    width: "",
+                    textalign: "left"
+                }),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+
+            self.referenceTypeA3_5 = ko.observableArray([
+                { code: 0, name: nts.uk.resource.getText("KDR002_6") },
+                { code: 1, name: nts.uk.resource.getText("KDR002_7") }
+            ]);
+
+            self.valueReferenceTypeA3_5 = ko.observable(0);
 
             //_____CCG001________
             self.ccgcomponent = {
@@ -226,8 +273,9 @@ module nts.uk.at.view.kdr002.a.viewmodel {
 
         /**
          * function export excel button
+         * mode 0 : excel , mode 1 : pdf
          */
-        public exportButton() {
+        public exportButton(mode: number) {
             let self = this;
 
             $('.nts-input').trigger("validate");

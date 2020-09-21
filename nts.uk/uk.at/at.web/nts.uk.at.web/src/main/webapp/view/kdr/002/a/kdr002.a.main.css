@@ -56,3 +56,66 @@
 	margin-top: 15px;
 	margin-left: 65px;
 }
+
+.mt-10 {
+	margin-top: 10px;
+}
+
+.ml-10 {
+	margin-left: 10px;
+}
+
+.ml-20 {
+	margin-left: 20px;
+}
+
+.mr-15 {
+	margin-right: 15px;
+}
+
+.ml-40 {
+	margin-left: 40px;
+}
+
+.mt-30 {
+	margin-top: 30px;
+}
+
+.mt-22 {
+	margin-top: 22px;
+}
+
+
+.display-inline {
+	display: inline;
+}
+
+.date-range-a3_15 {
+	display: inline-flex;
+    margin-left: 57px;
+}
+
+.a3_15 {
+	margin-top: -6px;
+    margin-left: 28px;
+}
+
+.ml-42 {
+	margin-left: 42px;
+}
+
+.ml-120 {
+	margin-left: 120px;
+}
+
+.ml-104 {
+	margin-left: 104px;
+}
+
+.pageBreak > .nts-switch-button {
+	width: 75px;
+}
+
+.w-75 {
+	width: 75px;
+}
