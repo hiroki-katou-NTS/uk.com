@@ -43,7 +43,7 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 	public ProcessResult registerAppStamp(Application application, Optional<AppStamp> appStamp, Optional<AppRecordImage> appRecordImage,
 			AppStampOutput appStampOutput, Boolean recoderFlag) {
 //		2-2.新規画面登録時承認反映情報の整理
-//		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
+		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
 		
 		if (recoderFlag) {

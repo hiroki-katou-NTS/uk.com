@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNR;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppSampNRPk;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakout.GoOutReasonAtr;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.GoingOutReason;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -73,11 +74,10 @@ public class JpaAppRecordImageRepository extends JpaRepository implements AppRec
 	}
 	
 	public AppRecordImage toDomain(NtsResultRecord res) {
-		Optional<GoOutReasonAtr> appStampGoOutAtr = Optional.empty();
+		Optional<GoingOutReason> appStampGoOutAtr = Optional.empty();
 		Integer gouOutAtr = res.getInt("GO_OUT_ATR");
 		if (gouOutAtr != null) {
-			
-			Optional.of(EnumAdaptor.valueOf(gouOutAtr, AppStampGoOutAtr.class));
+			appStampGoOutAtr = Optional.of(EnumAdaptor.valueOf(gouOutAtr, GoingOutReason.class));
 		}
 		
 		return new AppRecordImage(
