@@ -15,6 +15,7 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectWor
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.CopyWorkTypeWorkTime;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.EmbossingExecutionFlag;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.workschedulereflected.WorkScheduleReflected;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
@@ -90,7 +91,7 @@ public class CreateDailyResults {
 	 * @param empCalAndSumExecLogID
 	 * @return
 	 */
-	public List<ErrorMessageInfo> createDailyResult(String companyId, String employeeId, GeneralDate ymd,
+	public OutputCreateDailyOneDay createDailyResult(String companyId, String employeeId, GeneralDate ymd,
 			boolean reCreateWorkType, boolean reCreateWorkPlace, boolean reCreateRestTime,
 			ExecutionTypeDaily executionType, EmbossingExecutionFlag flag,
 			EmployeeGeneralInfoImport employeeGeneralInfoImport, PeriodInMasterList periodInMasterList,IntegrationOfDaily integrationOfDaily) {
@@ -118,7 +119,7 @@ public class CreateDailyResults {
 		// エラーあるかを確認する
 		if (!affiliationInforState.getErrorNotExecLogID().isEmpty()) {
 			listErrorMessageInfo.addAll(affiliationInforState.getErrorNotExecLogID());
-			return listErrorMessageInfo;
+			return new OutputCreateDailyOneDay(listErrorMessageInfo, integrationOfDaily, new ArrayList<>()) ;
 		}
 		if(affiliationInforState.getAffiliationInforOfDailyPerfor().isPresent()) {
 			integrationOfDaily.setAffiliationInfor(affiliationInforState.getAffiliationInforOfDailyPerfor().get());
@@ -129,7 +130,7 @@ public class CreateDailyResults {
 		if (!optWorkingConditionItem.isPresent()) {
 			listErrorMessageInfo.add(new ErrorMessageInfo(companyId, employeeId, ymd, ExecutionContent.DAILY_CREATION,
 					new ErrMessageResource("005"), new ErrMessageContent(TextResource.localize("Msg_430"))));
-			return listErrorMessageInfo;
+			return new OutputCreateDailyOneDay(listErrorMessageInfo, integrationOfDaily, new ArrayList<>()) ;
 		}
 		if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.USE) {
 			//勤務予定反映
@@ -141,7 +142,7 @@ public class CreateDailyResults {
 					integrationOfDaily.getWorkInformation()));
 		}
 		if (!listErrorMessageInfo.isEmpty()) {
-			return listErrorMessageInfo;
+			return new OutputCreateDailyOneDay(listErrorMessageInfo, integrationOfDaily, new ArrayList<>()) ;
 		}
 		// 特定日を日別実績に反映する
 		integrationOfDaily.setSpecDateAttr(Optional.of(reflectWorkInforDomainService.reflectSpecificDate(companyId, employeeId, ymd,
@@ -159,7 +160,7 @@ public class CreateDailyResults {
 			//手修正項目取り戻す
 			integrationOfDaily = restoreData(converter, integrationOfDaily, listItemValue);
 		}
-		return listErrorMessageInfo;
+		return new OutputCreateDailyOneDay(listErrorMessageInfo, integrationOfDaily, new ArrayList<>()) ;
 	}
 	/**
 	 * 手修正項目のデータを元に戻す
