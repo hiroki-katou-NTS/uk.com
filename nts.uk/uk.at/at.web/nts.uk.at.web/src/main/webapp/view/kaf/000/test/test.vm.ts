@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf000_ref.test.viewmodel {
+module nts.uk.at.view.kaf000.test.viewmodel {
     
     @bean()
     class Kaf000TestViewModel extends ko.ViewModel {

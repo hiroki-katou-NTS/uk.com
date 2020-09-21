@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf002_ref.d.viewmodel {
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     
     const template = `
             <div>

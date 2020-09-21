@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf000_ref.a.component7.viewmodel {
+module nts.uk.at.view.kaf000.a.component7.viewmodel {
 
     @component({
         name: 'kaf000-a-component7',

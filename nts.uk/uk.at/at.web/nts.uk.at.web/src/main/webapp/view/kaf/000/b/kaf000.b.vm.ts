@@ -1,12 +1,12 @@
  /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kaf000_ref.b.viewmodel {
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
-    import UserType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.UserType;
-    import Status = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.Status;
-    import ApprovalAtr = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.ApprovalAtr;
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
+module nts.uk.at.view.kaf000.b.viewmodel {
+    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
+    import UserType = nts.uk.at.view.kaf000.shr.viewmodel.model.UserType;
+    import Status = nts.uk.at.view.kaf000.shr.viewmodel.model.Status;
+    import ApprovalAtr = nts.uk.at.view.kaf000.shr.viewmodel.model.ApprovalAtr;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
 
     @bean()
     class Kaf000BViewModel extends ko.ViewModel {

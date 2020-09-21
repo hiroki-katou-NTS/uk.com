@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf002_ref.b.viewmodel {
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-    import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     @bean()
     class Kaf002BViewModel extends Kaf000AViewModel {
 		appType: KnockoutObservable<number> = ko.observable(AppType.STAMP_APPLICATION);

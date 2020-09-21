@@ -1,5 +1,5 @@
-module nts.uk.at.view.kaf000_ref.b.component1.viewmodel {
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
+module nts.uk.at.view.kaf000.b.component1.viewmodel {
+    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
     @component({
         name: 'kaf000-b-component1',

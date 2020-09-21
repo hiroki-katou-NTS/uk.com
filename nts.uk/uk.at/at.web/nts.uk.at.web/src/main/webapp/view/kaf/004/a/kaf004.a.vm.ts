@@ -1,14 +1,14 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf004_ref.a.viewmodel {
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
-    import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
+    import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     import WorkManagement = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.WorkManagement;
     import ApplicationDto = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ApplicationDto;
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 
     @bean()
     class KAF004AViewModel extends Kaf000AViewModel {

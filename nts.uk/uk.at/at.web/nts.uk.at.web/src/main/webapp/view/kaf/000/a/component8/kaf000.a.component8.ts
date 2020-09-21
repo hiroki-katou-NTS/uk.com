@@ -1,5 +1,5 @@
-module nts.uk.at.view.kaf000_ref.a.component8.viewmodel {
-	import ActualContentDisplayDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.ActualContentDisplayDto;
+module nts.uk.at.view.kaf000.a.component8.viewmodel {
+	import ActualContentDisplayDto = nts.uk.at.view.kaf000.shr.viewmodel.ActualContentDisplayDto;
 
     @component({
         name: 'kaf000-a-component8',

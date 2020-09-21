@@ -1,11 +1,11 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.at.view.kaf007_ref.a.viewmodel {
-	import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
+	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 	import AppWorkChange = nts.uk.at.view.kaf007_ref.shr.viewmodel.AppWorkChange;
-	import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-	import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
+    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
 
 	@bean()
 	export class Kaf007AViewModel extends Kaf000AViewModel {

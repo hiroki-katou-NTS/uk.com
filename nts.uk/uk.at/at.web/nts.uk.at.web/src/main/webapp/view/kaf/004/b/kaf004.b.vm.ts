@@ -1,11 +1,11 @@
 module nts.uk.at.view.kaf004_ref.b.viewmodel {
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     import WorkManagement = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.WorkManagement;
     import LateOrEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.LateOrEarlyInfo;
     import ArrivedLateLeaveEarlyInfo = nts.uk.at.view.kaf004_ref.shr.common.viewmodel.ArrivedLateLeaveEarlyInfo;
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
 
     @component({
         name: 'kaf004-b',

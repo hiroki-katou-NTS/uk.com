@@ -1,8 +1,8 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kaf000_ref.a.viewmodel {
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
-	import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
+module nts.uk.at.view.kaf000.a.viewmodel {
+    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
 
     export class Kaf000AViewModel extends ko.ViewModel {
     	appDispInfoStartupOutput: KnockoutObservable<any> = ko.observable(CommonProcess.initCommonSetting());

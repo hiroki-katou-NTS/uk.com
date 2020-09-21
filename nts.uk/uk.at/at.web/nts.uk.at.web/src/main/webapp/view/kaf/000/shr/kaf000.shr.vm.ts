@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf000_ref.shr.viewmodel {
+module nts.uk.at.view.kaf000.shr.viewmodel {
     export class Application {
         appID: KnockoutObservable<string>;
         prePostAtr: KnockoutObservable<number>;

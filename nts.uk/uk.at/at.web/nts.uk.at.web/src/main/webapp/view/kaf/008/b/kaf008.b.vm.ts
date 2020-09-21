@@ -1,8 +1,8 @@
 module nts.uk.at.view.kaf008_ref.b.viewmodel {
-    //import Kaf000BViewModel = nts.uk.at.view.kaf000_ref.b.viewmodel.Kaf000BViewModel;
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
+    //import Kaf000BViewModel = nts.uk.at.view.kaf000.b.viewmodel.Kaf000BViewModel;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import BusinessTripOutput = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripOutput;
     import BusinessTripContent = nts.uk.at.view.kaf008_ref.shr.viewmodel.BusinessTripContent;
     import Mode = nts.uk.at.view.kaf008_ref.shr.viewmodel.Mode;

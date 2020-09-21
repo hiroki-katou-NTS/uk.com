@@ -1,11 +1,11 @@
 module nts.uk.at.view.kaf002_ref.c.viewmodel {
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import GridItem = nts.uk.at.view.kaf002_ref.m.viewmodel.GridItem;
     import TimePlaceOutput = nts.uk.at.view.kaf002_ref.m.viewmodel.TimePlaceOutput;
     import STAMPTYPE = nts.uk.at.view.kaf002_ref.m.viewmodel.STAMPTYPE;
     import TabM = nts.uk.at.view.kaf002_ref.m.viewmodel.TabM;
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     import AppStampDto = nts.uk.at.view.kaf002_ref.a.viewmodel.AppStampDto;
     import TimeStampAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.TimeStampAppDto;
     import DestinationTimeAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.DestinationTimeAppDto;

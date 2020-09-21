@@ -4,9 +4,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import TimePlaceOutput = nts.uk.at.view.kaf002_ref.m.viewmodel.TimePlaceOutput;
     import STAMPTYPE = nts.uk.at.view.kaf002_ref.m.viewmodel.STAMPTYPE;
     import TabM = nts.uk.at.view.kaf002_ref.m.viewmodel.TabM;
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-    import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     import alertError = nts.uk.ui.dialog.alertError;
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {

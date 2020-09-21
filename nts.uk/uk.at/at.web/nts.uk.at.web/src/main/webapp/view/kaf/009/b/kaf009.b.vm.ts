@@ -1,8 +1,8 @@
 module nts.uk.at.view.kaf009_ref.b.viewmodel {
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
-	import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000_ref.shr.viewmodel.PrintContentOfEachAppDto;
+	import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+	import PrintContentOfEachAppDto = nts.uk.at.view.kaf000.shr.viewmodel.PrintContentOfEachAppDto;
     const template = `
         <div>
     <div data-bind="component: { name: 'kaf000-b-component1', 

@@ -1,9 +1,9 @@
 /// <reference path="../../../../../lib/nittsu/viewcontext.d.ts" />
 
-module nts.uk.at.view.kaf000_ref.a.component4.viewmodel {
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
+module nts.uk.at.view.kaf000.a.component4.viewmodel {
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
 
     @component({
         name: 'kaf000-a-component4',

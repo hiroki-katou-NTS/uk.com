@@ -1,7 +1,7 @@
-module nts.uk.at.view.kaf000_ref.b.component3.viewmodel {
+module nts.uk.at.view.kaf000.b.component3.viewmodel {
 
-    import UserType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.UserType;
-    import Status = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.Status;
+    import UserType = nts.uk.at.view.kaf000.shr.viewmodel.model.UserType;
+    import Status = nts.uk.at.view.kaf000.shr.viewmodel.model.Status;
 
     @component({
         name: 'kaf000-b-component3',

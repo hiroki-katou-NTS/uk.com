@@ -1,9 +1,9 @@
 module nts.uk.at.view.kaf009_ref.a.viewmodel {
-    import Application = nts.uk.at.view.kaf000_ref.shr.viewmodel.Application;
-    import CommonProcess = nts.uk.at.view.kaf000_ref.shr.viewmodel.CommonProcess;
+    import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+    import CommonProcess = nts.uk.at.view.kaf000.shr.viewmodel.CommonProcess;
     import Model = nts.uk.at.view.kaf009_ref.shr.viewmodel.Model;
-    import AppType = nts.uk.at.view.kaf000_ref.shr.viewmodel.model.AppType;
-    import Kaf000AViewModel = nts.uk.at.view.kaf000_ref.a.viewmodel.Kaf000AViewModel;
+    import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
+    import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
 
     @bean()
     class Kaf009AViewModel extends Kaf000AViewModel {
