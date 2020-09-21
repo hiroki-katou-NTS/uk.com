@@ -4659,7 +4659,11 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         openKDL020Dialog() {
             let self = this;
             setShared('KDL020A_PARAM', { baseDate: new Date(), employeeIds: [self.selectedEmployee()] });
-            modal('/view/kdl/020/a/index.xhtml');
+            if(self.selectedEmployee().length > 1 ) {
+              modal("/view/kdl/020/a/multi.xhtml");
+            } else {
+              modal("/view/kdl/020/a/single.xhtml");
+            }
         }
 
         openKDL009Dialog() {
