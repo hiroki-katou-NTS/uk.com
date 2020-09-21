@@ -17,9 +17,9 @@
 				nts.uk.ctx.sys.gateway.dom.accessrestrictions.IPAddressRegistrationFormat
 			</com:EnumScript>
 			<com:stylefile path="cmm002.a.style.css" />
-			<com:scriptfile path="cmm002.a.start.js" />
-			<com:scriptfile path="cmm002.a.vm.js" />
 			<com:scriptfile path="cmm002.a.service.js" />
+			<com:scriptfile path="cmm002.a.vm.js" />
+			<com:scriptfile path="cmm002.a.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -31,7 +31,7 @@
 				<!-- A1_3 -->
 				<button id="" tabindex="3" class="danger" data-bind="click: del, enable: selectedAllowedIPAddress() != ''">#{i18n.getText('CMM002_3')}</button>
 			</div>
-			<div id="contents-area" >
+			<div id="contents-area" style="display: none;">
 				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM002_4')}</div>
 				<div class="cf" tabindex="4" data-bind="ntsSwitchButton: {
 					name: '#[CMM002_4]',
@@ -46,7 +46,7 @@
 					height: 150,
 					width: 250,
 					row: 10,
-					dataSource: allowedIPaddressList,
+					dataSource: allowedIPAddressList,
 					primaryKey: 'id',
 					columns: columns,
 					features: [{}],

@@ -1,4 +1,4 @@
-module cmm002.a.service {
+module nts.uk.com.view.cmm002.a.service {
     var paths = {
         start: "com/screen/cmm002/get",
         add: "com/ctx/sys/gateway/accessrestrictions/add",

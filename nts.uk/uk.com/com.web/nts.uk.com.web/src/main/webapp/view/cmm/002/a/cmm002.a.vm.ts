@@ -1,4 +1,4 @@
-module cmm002.a {
+module nts.uk.com.view.cmm002.a {
 	import block = nts.uk.ui.block;
 	import getText = nts.uk.resource.getText;
     import dialog = nts.uk.ui.dialog;
@@ -8,7 +8,7 @@ module cmm002.a {
         accessLimitUseAtr =  ko.observable(0);
 		accessLimitUseAtrList = _.orderBy(__viewContext.enums.NotUseAtr,['value'], ['desc'])
 		ipInputTypeList = _.orderBy(__viewContext.enums.IPAddressRegistrationFormat,['value'], ['asc']);
-		allowedIPaddressList = ko.observableArray([]);
+		allowedIPAddressList = ko.observableArray([]);
         allowedIPAddress =  new AllowedIPAddress();
         selectedAllowedIPAddress = ko.observable('');
 		columns = ko.observableArray([
@@ -20,13 +20,14 @@ module cmm002.a {
 				if(value == ""){
 					self.allowedIPAddress.update(ko.toJS(new AllowedIPAddress()));
 				}else{
-					self.allowedIPAddress.update(_.find(self.allowedIPaddressList(), ['id', value]));
+					self.allowedIPAddress.update(_.find(self.allowedIPAddressList(), ['id', value]));
 				}
+				$('input').ntsError('check');
 			});
         }
 
         /** start page */
-        start() {
+        public start(): JQueryPromise<void> {
 			let self = this;            
             let dfd = $.Deferred<any>();
 			block.invisible();
@@ -36,7 +37,7 @@ module cmm002.a {
 				_.forEach(data.allowedIPaddress, (item) => {
 					tg.push(new AllowedIPAddressDto(item));
 				});
-				self.allowedIPaddressList(tg);
+				self.allowedIPAddressList(_.orderBy(tg, ['id'], ['asc']));
                 dfd.resolve();
             }).fail(function(error: any) {
                 dfd.reject();
@@ -72,7 +73,7 @@ module cmm002.a {
 					block.invisible();
 					let param = {
 						allowedIPAddressNew: ko.toJS(self.allowedIPAddress),
-						allowedIPAddressOld: _.find(self.allowedIPaddressList(), ['id', self.selectedAllowedIPAddress()]) 
+						allowedIPAddressOld: _.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()]) 
 					};
 		            service.update(param).done(() => {
 		            	self.start().done(()=>{
@@ -92,15 +93,15 @@ module cmm002.a {
 			if(self.selectedAllowedIPAddress() != ''){
 				dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     block.invisible();
-		            service.del(_.find(self.allowedIPaddressList(), ['id', self.selectedAllowedIPAddress()])).done(() => {
-		            	self.start().done(()=>{
-							self.selectedAllowedIPAddress('');
-						});
+		            service.del(_.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()])).done(() => {
+						self.start();
+						self.selectedAllowedIPAddress('');
 						dialog.info({ messageId: "Msg_16" });
 					}).fail(function(error: any) {
 		                dialog.alertError({ messageId: error.messageId });
+		            }).always(() => {
 						block.clear();
-		            });
+					});
                 });
 			}
 		}
