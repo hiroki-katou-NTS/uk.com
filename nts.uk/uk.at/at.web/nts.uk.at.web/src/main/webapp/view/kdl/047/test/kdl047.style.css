@@ -1,0 +1,56 @@
+#combo-box {
+	width: 180px;
+}
+
+.contents-area {
+	padding: 15px 25px 15px 20px;
+}
+
+.div-line {
+	display: inline;
+}
+
+.contents-header-under {
+	display: inline-flex;
+	padding-top: 10px;
+}
+
+.ml-25 {
+	margin-left: 25px;
+}
+
+.ml-5 {
+	margin-left: 5px;
+}
+
+.w-100 {
+	width: 100px;
+}
+
+.w-85 {
+	width: 85px;
+}
+
+.margin-panel {
+	margin: 30px 15px 30px 15px;
+}
+
+.flex {
+	display: flex;
+}
+
+.mb-10 {
+	margin-bottom: 10px;
+}
+
+.w-75 {
+	width: 75px;
+}
+
+.ml-10 {
+	margin-left: 10px;
+}
+
+.mt-5 {
+	margin-top: 5px;
+}

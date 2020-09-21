@@ -22,6 +22,9 @@ public class StampButtonCommand {
 
 	/** ボタン位置NO */
 	private Integer buttonPositionNo;
+	
+	/** 打刻手段*/
+	private Integer stampMeans;
 
 	public StampButton toDomainValue() {
 

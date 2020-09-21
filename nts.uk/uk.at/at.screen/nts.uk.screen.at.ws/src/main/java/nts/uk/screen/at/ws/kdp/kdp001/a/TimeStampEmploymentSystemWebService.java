@@ -93,7 +93,8 @@ public class TimeStampEmploymentSystemWebService extends WebService {
 	@Path("get_omission_contents")
 	public DailyAttdErrorInfoDto getOmissionContents(GetOmissionContentQuery query) {
 
-		return this.omissionContentsFinder.getOmissionContents(query.getPageNo(), query.getButtonDisNo());
+		return this.omissionContentsFinder.getOmissionContents(query.getPageNo(), query.getButtonDisNo(),
+				query.getStampMeans());
 	}
 
 	/**

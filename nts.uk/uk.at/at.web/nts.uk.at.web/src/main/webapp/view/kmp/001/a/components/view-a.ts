@@ -74,12 +74,14 @@ module nts.uk.at.view.kmp001.a {
 									data.retiredDate = null;
 								}
 
-								if (data.stampCardDto.length > 0) {
+								vm.mode("new");
+
+								/*if (data.stampCardDto.length > 0) {
 									data.stampCardDto[0].checked = true;
 									vm.mode("update");
 								} else {
 									vm.mode("new");
-								}
+								}*/
 
 								vm.$errors('clear').then(() => {
 									vm.model.update(ko.toJS(data));
@@ -91,6 +93,26 @@ module nts.uk.at.view.kmp001.a {
 						$('.ip-stamp-card').focus();
 					});
 				});
+
+			vm.model.stampCardDto
+				.subscribe(() => {
+					const stampCards: [] = ko.toJS(vm.model.stampCardDto);
+					let checkModeDelete: boolean = false;
+
+					for (var i = 0; i < stampCards.length; i++) {
+						const c: StampCard = stampCards[i];
+						if (c.checked) {
+							checkModeDelete = true;
+							break;
+						}
+					}
+					
+					if (checkModeDelete) {
+						vm.mode('update');
+					} else {
+						vm.mode('new');
+					}
+				})
 
 			vm.employees
 				.subscribe(() => {
@@ -254,16 +276,16 @@ module nts.uk.at.view.kmp001.a {
 				model: IModel = ko.toJS(vm.model),
 				index = _.map(ko.unwrap(vm.employees), m => m.code).indexOf(model.code);;
 
-			var stampInput = "";
+			var stampInput = ko.toJS(vm.textInput);
 
 			if (ko.unwrap(vm.model.code) != '') {
 
-				if (ko.toJS(vm.model.stampCardDto).length > 0) {
+				/*if (ko.toJS(vm.model.stampCardDto).length > 0) {
 					const stamp: share.IStampCard = ko.toJS(model.stampCardDto[0]);
 					stampInput = stamp.stampNumber;
 				} else {
 					stampInput = ko.toJS(vm.textInput);
-				}
+				}*/
 
 				if (stampInput == '') {
 					vm.$dialog.info({ messageId: "Msg_1679" });
@@ -299,7 +321,7 @@ module nts.uk.at.view.kmp001.a {
 								}
 
 								const commandNew = { employeeId: ko.toJS(model.employeeId), cardNumber: stampInput };
-								
+
 								vm.$ajax(KMP001A_API.ADD, commandNew)
 									.then(() => vm.$dialog.info({ messageId: 'Msg_15' }))
 									.then(() => vm.$blockui("invisible"))
