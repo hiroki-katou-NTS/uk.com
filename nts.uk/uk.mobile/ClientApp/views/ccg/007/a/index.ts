@@ -42,6 +42,7 @@ export class Ccg007AComponent extends Vue {
         vm.$validate();
         if (!vm.$valid) {
             vm.$mask('hide');
+
             return;
         }
         vm.$http.post(servicePath.submitcontract, vm.model).then((response) => {
