@@ -124,24 +124,18 @@ public class KTG026QueryProcessor {
 		if (targetYear != null) { // INPUT．対象年 != NULL
 			// 従業員用の時間外時間表示．表示する年＝INPUT．対象年
 			result.setDisplayYear(targetYear);
-		} else { // INPUT．対象年 = NULL
 			
-			// INPUT．対象年月をチェックする
-			if (targetDate != null) { // INPUT．対象年月 != NULL
-				
-				// アルゴリズム「年月を指定して、36協定期間の年度を取得する」を実行する
-				// 従業員用の時間外時間表示．表示する年＝取得した年度
-				result.setDisplayYear(this.getYearAgreementPeriod(YearMonth.of(targetDate)).v());
-
-			} else {
-				if (currentOrNextMonth == 2) {
-					Year yearIncludeNextMonth = this.getYearAgreementPeriod(YearMonth.of(result.getClosingPeriod().getProcessingYm()).addMonths(1));
-					result.setYearIncludeNextMonth(yearIncludeNextMonth.v());
-					result.setDisplayYear(yearIncludeNextMonth.v());
-				}
-			}
-
+		} else if (targetDate != null) { // INPUT．対象年 = NULL && INPUT．対象年月 != NULL
+			// アルゴリズム「年月を指定して、36協定期間の年度を取得する」を実行する
+			// 従業員用の時間外時間表示．表示する年＝取得した年度
+			result.setDisplayYear(this.getYearAgreementPeriod(YearMonth.of(targetDate)).v());
+			
+		} else if (currentOrNextMonth == 2) { // INPUT．表示年月＝翌月表示
+			Year yearIncludeNextMonth = this.getYearAgreementPeriod(YearMonth.of(result.getClosingPeriod().getProcessingYm()).addMonths(1));
+			result.setYearIncludeNextMonth(yearIncludeNextMonth.v());
+			result.setDisplayYear(yearIncludeNextMonth.v());
 		}
+		
 		// 指定する年と指定する社員の時間外時間と超過回数の取得
 		YearAndEmpOtHoursDto otHours = this.getYearAndEmployeeOTHours(employeeId, closure.getClosureId().value,new Year(result.getDisplayYear()),
 																		YearMonth.of(result.getClosingPeriod().getProcessingYm()));

@@ -30,7 +30,7 @@ public class KTG026WebService extends WebService{
 	@Path("extractOvertime")
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public EmployeesOvertimeDisplayDto extractOvertime(Ktg026Parmas ktg026Params) {
-		return processor.extractOvertime(ktg026Params.employeeId, ktg026Params.closingId, ktg026Params.targetYear, ktg026Params.currentOrNextMonth);
+		return processor.extractOvertime(ktg026Params.employeeId, ktg026Params.closingId, ktg026Params.targetYear, ktg026Params.processingYm);
 	}
 
 }
@@ -47,5 +47,7 @@ class Ktg026Parmas {
 	Integer targetYear;
     // 表示年月
     int currentOrNextMonth;
+    // 処理年月
+    int processingYm;
 }
 
