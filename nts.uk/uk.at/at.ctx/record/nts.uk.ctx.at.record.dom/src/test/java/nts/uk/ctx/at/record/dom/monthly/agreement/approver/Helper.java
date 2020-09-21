@@ -8,6 +8,9 @@ import nts.arc.time.calendar.period.DatePeriod;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author khai.dh
+ */
 public class Helper {
 
 	public static final String DATE_FORMAT_YYYYMMDD = "yyyy/MM/dd";
@@ -25,7 +28,6 @@ public class Helper {
 	}
 
 	public static Approver36AgrByCompany createApprover36AgrByCompanyWithPeriod(String start, String end) {
-		//GeneralDate fromString(String date, String dateFormat)
 		val periodFromParam = new DatePeriod(
 				GeneralDate.fromString(start, DATE_FORMAT_YYYYMMDD),
 				GeneralDate.fromString(end, DATE_FORMAT_YYYYMMDD)

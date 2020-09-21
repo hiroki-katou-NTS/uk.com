@@ -61,7 +61,7 @@ public interface Approver36AgrByCompanyRepo {
 	 * 		会社別の承認者（36協定） m
 	 * Where
 	 * 		m.会社ID = 会社ID
-	 * 		m.期間.終了日 = 終了日 TODO https://pro.insight.3si.vn/issues/30261
+	 * 		m.期間.終了日 = 終了日
 	 */
 	public Optional<Approver36AgrByCompany> getByCompanyIdAndEndDate(String companyId, GeneralDate endDate);
 

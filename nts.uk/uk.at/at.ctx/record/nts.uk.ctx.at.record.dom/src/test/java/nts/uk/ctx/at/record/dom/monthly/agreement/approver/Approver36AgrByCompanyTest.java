@@ -7,6 +7,8 @@ import org.junit.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
+ * @author khai.dh
+ *
  *					test01		test02		test03		test04		test05
  *	companyId		"cid"		"cid"		"cid"		"cid"		null
  *	period			01-30/9		01-30/9		01-30/9		01-30/9		null

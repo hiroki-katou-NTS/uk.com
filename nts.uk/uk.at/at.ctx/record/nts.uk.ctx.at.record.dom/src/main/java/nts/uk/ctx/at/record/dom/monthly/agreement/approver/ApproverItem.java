@@ -8,7 +8,6 @@ import java.util.List;
 
 /**
  * 承認者項目
- *   履歴項目
  *
  * @author khai.dh
  *

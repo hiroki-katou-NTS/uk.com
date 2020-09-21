@@ -8,10 +8,13 @@ import nts.arc.time.GeneralDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.inject.Inject;
 import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
+/**
+ * @author khai.dh
+ */
 @RunWith(JMockit.class)
 public class ApproverGetDomainServiceTest {
 
@@ -20,9 +23,6 @@ public class ApproverGetDomainServiceTest {
 
 	@Injectable
 	private ByWorkplaceApproverGetDomainService wkpApprService;
-
-//	@Injectable
-//	private ApproverGetDomainService.WkpApprRequire wkpApprRequire;
 
 	@Test
 	public void test01() {
