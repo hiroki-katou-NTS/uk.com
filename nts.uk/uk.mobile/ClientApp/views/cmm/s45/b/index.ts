@@ -414,7 +414,7 @@ export class CmmS45BComponent extends Vue {
     private appTypeName(appType: number) {
         const self = this;
 
-        return (_.find(self.data.appListInfoDto.appLst, (item) => item.appType === appType) || { appName: '' }).appName;
+        return (_.find(self.data.appListExtractConditionDto.opListOfAppTypes, (item) => item.appType === appType) || { appName: '' }).appName;
     }
 
     private createLstAppType(opAppTypeLst: Array<ListOfAppTypes>) {

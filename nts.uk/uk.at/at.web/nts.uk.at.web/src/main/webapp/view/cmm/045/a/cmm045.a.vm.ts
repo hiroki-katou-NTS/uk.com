@@ -962,15 +962,15 @@ module cmm045.a.viewmodel {
 			if(key=='appType') {
 				let appInfo = { appName: ''};
 				if(_.isNull(item.application.opStampRequestMode)) {
-					appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key]);	
+					appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key]);
 				} else {
 					if(item.application.opStampRequestMode==0) {
-						appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==3);	
+						appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==3);
 					} else {
-						appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==4);	
+						appInfo = _.find(self.appListExtractConditionDto.opListOfAppTypes, o => o.appType == item[key] && o.opApplicationTypeDisplay==4);
 					}
 				}
-				
+
 				if(_.isUndefined(appInfo)) {
 					return '';
 				} else {
@@ -1024,7 +1024,7 @@ module cmm045.a.viewmodel {
                             let lstAppId = self.items().map(app => app.appID);
                             // window.localStorage.setItem('UKProgramParam', 'a=0');
                             character.save('AppListExtractCondition', self.appListExtractConditionDto);
-                            nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                         }
                     } },
                     { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px',  },
@@ -1306,7 +1306,7 @@ module cmm045.a.viewmodel {
                             let lstAppId = self.items().map(app => app.appID);
                             // nts.uk.localStorage.setItem('UKProgramParam', 'a=1');
                             character.save('AppListExtractCondition', self.appListExtractConditionDto);
-                            nts.uk.request.jump("/view/kaf_ref/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
+                            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", { 'listAppMeta': lstAppId, 'currentApp': targetAppId });
                         }
                     } },
                     { headerText: getText('CMM045_51'), key: 'applicantName', width: '120px' },
@@ -2154,9 +2154,9 @@ module cmm045.a.viewmodel {
 							});
 						}
 						if(isInfoDialog) {
-							nts.uk.ui.dialog.info(displayMsg);
+							nts.uk.ui.dialog.info(displayMsg).then(() => {$('#daterangepicker .ntsEndDatePicker').focus()});
 						} else {
-						 	nts.uk.ui.dialog.alertError(displayMsg);
+						 	nts.uk.ui.dialog.alertError(displayMsg).then(() => {$('#daterangepicker .ntsEndDatePicker').focus()});
 						}
 						return data;
 					}

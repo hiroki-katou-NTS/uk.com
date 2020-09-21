@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,6 +26,8 @@ import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.StampDakokuRepository;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.shr.com.context.AppContexts;
@@ -91,12 +94,19 @@ public class RegisterDailyWork {
 		if (integrationOfDaily.getAttendanceLeave().isPresent()
 				&& integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks() != null
 				&& !integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks().isEmpty()) {
+			List<TimeLeavingWork> timeLeavingWorks = integrationOfDaily.getAttendanceLeave().get().getTimeLeavingWorks();
+			timeLeavingWorks = checkExist(timeLeavingWorks);
+			integrationOfDaily.getAttendanceLeave().get().setTimeLeavingWorks(timeLeavingWorks);
 			dailyRecordAdUpService.adUpTimeLeaving(Optional.of(
 					new TimeLeavingOfDailyPerformance(employeeId, ymd, integrationOfDaily.getAttendanceLeave().get())));
 		}
 		
 		//日別実績の臨時出退勤を登録する
 		if (integrationOfDaily.getTempTime().isPresent()) {
+			
+			List<TimeLeavingWork> timeLeavingWorks = integrationOfDaily.getTempTime().get().getTimeLeavingWorks();
+			timeLeavingWorks = checkExist(timeLeavingWorks);
+			integrationOfDaily.getTempTime().get().setTimeLeavingWorks(timeLeavingWorks);
 			dailyRecordAdUpService.adUpTemporaryTime(Optional
 					.of(new TemporaryTimeOfDailyPerformance(employeeId, ymd, integrationOfDaily.getTempTime().get())));
 		}
@@ -145,6 +155,35 @@ public class RegisterDailyWork {
 					errors.stream().map(x -> Pair.of(x.getEmployeeID(), x.getDate())).collect(Collectors.toList()),
 					true);
 		}
+	}
+	private List<TimeLeavingWork> checkExist(List<TimeLeavingWork> listTimeLeavingWork){
+		List<TimeLeavingWork> datas = new ArrayList<>();
+		for(TimeLeavingWork item :listTimeLeavingWork) {
+			boolean check = false;
+			if(item.getAttendanceStamp().isPresent() && 
+					(checkWorkStamp(item.getAttendanceStamp().get().getActualStamp())
+					|| checkWorkStamp(item.getAttendanceStamp().get().getStamp()))){
+				check = true;
+			}
+			
+			if(item.getLeaveStamp().isPresent() &&
+					(checkWorkStamp(item.getLeaveStamp().get().getStamp()) 
+					|| checkWorkStamp(item.getLeaveStamp().get().getStamp()))) {
+				check = true;
+			}
+			if(check) {
+				datas.add(item);
+			}
+		}
+		
+		return datas;
+	}
+	
+	private boolean checkWorkStamp (Optional<WorkStamp> ws) {
+		if(ws.isPresent() && ws.get().getTimeDay().getTimeWithDay().isPresent() && ws.get().getTimeDay().getTimeWithDay().get().v() !=0) {
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.workchange;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -48,8 +49,8 @@ public class WorkChangeUpdateServiceImpl implements IWorkChangeUpdateService {
 				: application.getAppDate().getApplicationDate();
 		List<GeneralDate> listDate = new ArrayList<>();
 		// 申請期間から休日の申請日を取得する
-		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(companyId, application.getEmployeeID(),
-				new DatePeriod(startDateParam, endDateParam));
+		List<GeneralDate> lstHoliday = otherCommonAlg.lstDateIsHoliday(application.getEmployeeID(),
+				new DatePeriod(startDateParam, endDateParam), Collections.emptyList());
 		// 年月日Listを作成する
 		for (GeneralDate loopDate = startDateParam; loopDate
 				.beforeOrEquals(endDateParam); loopDate = loopDate.addDays(1)) {

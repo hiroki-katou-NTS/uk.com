@@ -679,6 +679,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             // KAFS00_D_申請登録後画面に移動する
             this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
         }).catch((res: any) => {
+            this.$mask('hide');
             self.handleErrorMessage(res);
         });
     }
@@ -687,6 +688,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
         if (!_.isEmpty(listMes)) {
             let item = listMes.shift();
             this.$modal.confirm({ messageId: item.messageId }).then((value) => {
+                this.$mask('hide');
                 if (value == 'yes') {
                     if (_.isEmpty(listMes)) {
                         this.registerData(res);

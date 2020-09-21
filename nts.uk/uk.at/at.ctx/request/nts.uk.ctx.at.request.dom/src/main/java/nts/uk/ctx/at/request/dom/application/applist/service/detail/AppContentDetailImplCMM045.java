@@ -844,7 +844,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 			// レコーダイメージ申請.外出理由がemptyでない場合
 			if(appRecordImage.getAppStampGoOutAtr().isPresent()) {
 				// 申請内容＋＝#CMM045_230：{0}＝外出理由（Enum）
-				result += I18NText.getText("CMM045_230", appRecordImage.getAppStampGoOutAtr().get().name);
+				result += I18NText.getText("CMM045_230", appRecordImage.getAppStampGoOutAtr().get().nameId);
 			}
 			// 申請内容＋＝’　’＋レコーダイメージ申請.申請時刻
 			result += " " + appRecordImage.getAttendanceTime().v();
