@@ -16,10 +16,7 @@ import java.util.Optional;
 public class ApproverGetDomainService {
 
 	@Inject
-	private ByWorkplaceApproverGetDomainService wkpApprService;
-
-//	@Inject
-//	private WkpApprRequire wkpApprRequire; // TODO
+	private ByWorkplaceApproverGetDomainService byWkpApprGetDS;
 
 	/**
 	 * [1] 取得する
@@ -27,8 +24,7 @@ public class ApproverGetDomainService {
 	 */
 	public Optional<ApproverItem> getApprover(Require require, String empId){
 
-		Optional<ApproverItem> optWorkplaceApproverItem = require.getWorkplaceApprover(empId);
-		//Optional<ApproverItem> optWorkplaceApproverItem = wkpApprService.getApprover(wkpApprRequire, empId); // TODO ?
+		Optional<ApproverItem> optWorkplaceApproverItem = byWkpApprGetDS.getApprover(require, empId);
 
 		if (optWorkplaceApproverItem.isPresent()) {
 			return optWorkplaceApproverItem;
@@ -43,35 +39,11 @@ public class ApproverGetDomainService {
 		return Optional.empty();
 	}
 
-	public static interface Require {
-		/**
-		 * R-0
-		 */
-		Optional<ApproverItem> getWorkplaceApprover(String empId);
-
+	public static interface Require extends ByWorkplaceApproverGetDomainService.Require {
 
 		/**
 		 * [R-1] 承認者の履歴項目を取得する Get the approver's history item
 		 */
 		Optional<ApproverItem> getApproverHistoryItem(GeneralDate baseDate);
 	}
-
-//	// TODO
-//	public static class WkpApprRequire implements ByWorkplaceApproverGetDomainService.Require {
-//
-//		@Override
-//		public Optional<SWkpHistRcImported> getWkpHist(String empId, GeneralDate baseDate) {
-//			return Optional.empty();
-//		}
-//
-//		@Override
-//		public Optional<ApproverItem> getApproverHist(String workplaceId, GeneralDate baseDate) {
-//			return Optional.empty();
-//		}
-//
-//		@Override
-//		public Optional<ApproverItem> getTopWorkplace(String cid, String workplaceId, GeneralDate baseDate) {
-//			return Optional.empty();
-//		}
-//	}
 }

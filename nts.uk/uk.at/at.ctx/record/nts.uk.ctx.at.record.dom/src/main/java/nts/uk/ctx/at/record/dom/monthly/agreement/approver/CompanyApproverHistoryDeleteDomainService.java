@@ -6,7 +6,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.Optional;
 
 /**
