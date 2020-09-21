@@ -31,6 +31,10 @@ import { StepwizardComponent } from '@app/components';
 export class KafS08AComponent extends Vue {
     public step: string = 'KAFS08_10';
 
+    // to edit
+    @Prop({ default: () => null })
+    public params!: any;
+
     //public paramsFromA1: any | null = null;
     public achievementDetails: [] = [];
     public comment: Object = {};
@@ -42,6 +46,13 @@ export class KafS08AComponent extends Vue {
     public appID: string = ' ';
     public listDate: any[] = [];
     public appReason: string = '';
+
+
+    public created() {
+        const vm = this;
+
+    }
+
     //thực hiện emit từ component con A1
     public ProcessNextToStepTwo(listDate,
                                 application,
@@ -79,41 +90,11 @@ export class KafS08AComponent extends Vue {
     }
 
     //thực hiện emit từ component con A2 quay trở lại A1
-    public ProcessPrevStepOne(departureTime, returnTime,appReason) {
+    public ProcessPrevStepOne(departureTime, returnTime, appReason) {
         const vm = this;
         vm.derpartureTime = departureTime;
         vm.returnTime = returnTime;
-        vm.appReason = appReason ;
+        vm.appReason = appReason;
         vm.step = 'KAFS08_10';
     }
-}
-
-interface IParams {
-    appDetailScreenInfo: {
-        alternateExpiration: boolean,
-        application: {
-            appDate: string,
-            appID: string
-            appType: number,
-            employeeID: string
-            enteredPerson: string
-            inputDate: string
-            opAppEndDate: string
-            opAppReason: string
-            opAppStandardReasonCD: number,
-            opAppStartDate: string
-            opReversionReason: null
-            opStampRequestMode: null
-            prePostAtr: number,
-            reflectionStatus: {},
-            version: number
-        }
-        approvalATR: number
-        approvalLst: [],
-        authorComment: null
-        authorizableFlags: boolean,
-        outputMode: number,
-        reflectPlanState: number,
-        user: number,
-    };
 }
