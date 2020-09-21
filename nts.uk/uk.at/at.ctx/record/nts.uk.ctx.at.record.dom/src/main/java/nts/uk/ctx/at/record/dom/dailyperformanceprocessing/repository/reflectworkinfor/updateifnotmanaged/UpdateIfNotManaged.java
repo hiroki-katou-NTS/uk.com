@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.businesscalendar.daycalendar.BasicWorkSettingImport;
 import nts.uk.ctx.at.record.dom.adapter.businesscalendar.daycalendar.RecCalendarCompanyAdapter;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
@@ -51,11 +52,15 @@ public class UpdateIfNotManaged {
 					integrationOfDaily.getAffiliationInfor().getWplID(),
 					integrationOfDaily.getAffiliationInfor().getClsCode().v(), ymd);
 			if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.NOTUSE) {
-				// 個人情報勤務情報を取得
+				
 				if (workingDayCategory != null
 						&& integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() != null) {
+					// 基本勤務を取得する
+					BasicWorkSettingImport settingImport = recCalendarCompanyAdapter.getBasicWorkSetting(cid, integrationOfDaily.getAffiliationInfor().getWplID(), integrationOfDaily.getAffiliationInfor().getClsCode().v(), workingDayCategory.value);
+					
+					// 個人情報勤務情報を取得
 					Optional<WorkInformation> optData =  workingConditionItemService.getHolidayWorkScheduleNew(cid, employeeId, ymd,
-							integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v(),
+							settingImport.getWorktypeCode(),
 							workingDayCategory);
 					//勤務情報を反映
 					if(optData.isPresent()) {
