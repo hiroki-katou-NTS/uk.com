@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -169,6 +168,13 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         }
     }
 
+    /**
+     * アルゴリズム「出張申請画面初期（更新）」を実行する
+     * @param companyId
+     * @param appId
+     * @param appDispInfoStartupOutput
+     * @return
+     */
     @Override
     public DetailScreenB getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput) {
         DetailScreenB result = new DetailScreenB();
@@ -235,6 +241,13 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         return result;
     }
 
+    /**
+     * 出張申請勤務種類を取得する
+     *
+     * @param appEmploymentSet       ドメインモデル「雇用別申請承認設定」
+     * @param workStyle              出勤休日区分
+     * @param workTypeClassification 勤務分類(LIST)
+     */
     @Override
     public List<WorkType> getBusinessAppWorkType(Optional<AppEmploymentSet> appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification) {
         String cid = AppContexts.user().companyId();
@@ -390,6 +403,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         return result;
     }
 
+    /**
+     * アルゴリズム「出張申請個別エラーチェック」を実行する
+     * @param infos
+     * @param actualContent
+     */
     @Override
     public void businessTripIndividualCheck(List<BusinessTripInfo> infos, List<ActualContentDisplay> actualContent) {
         String sid = AppContexts.user().employeeId();

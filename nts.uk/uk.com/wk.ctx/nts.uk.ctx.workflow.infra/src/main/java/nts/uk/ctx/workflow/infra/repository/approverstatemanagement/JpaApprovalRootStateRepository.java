@@ -728,8 +728,7 @@ public class JpaApprovalRootStateRepository extends JpaRepository implements App
 		}
 		if(approvalStatus) {
 			List<String> approvalStatusStrLst = listFullData.stream().filter(x -> {
-						return (x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value ||
-								(x.getApprovalAtr()==ApprovalBehaviorAtr.UNAPPROVED.value && x.getAppPhaseAtr()==ApprovalBehaviorAtr.APPROVED.value)) &&
+						return x.getApprovalAtr()==ApprovalBehaviorAtr.APPROVED.value &&
 								approverID.equals(x.getApproverID()) && Strings.isBlank(x.getAgentID());
 					}).map(x -> x.getRootStateID()).collect(Collectors.toList());
 			List<WwfdtFullJoinState> approvalStatusLst = listFullData.stream().filter(x -> approvalStatusStrLst.contains(x.getRootStateID()))

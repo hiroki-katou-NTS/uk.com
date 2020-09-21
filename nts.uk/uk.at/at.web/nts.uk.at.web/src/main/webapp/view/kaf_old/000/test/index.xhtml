@@ -1,0 +1,61 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="main.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+			<label>Start date</label>
+			<div data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
+			<label>End date</label>
+			<div data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
+			<button data-bind="click: openDetailScreen">Detail Screen</button>
+			<div>
+				<input id="appID-input" type="text" placeholder="write appID" style="width: 400px"/>
+				<button data-bind="click: openSingle">Open Single By AppID</button>	
+			</div>
+			<br/>
+				<div>TEST - SPR - CMM045</div>
+				<table>
+					<colgroup>
+						<col width="100px" />
+						<col width="*" />
+					</colgroup>
+					<tr>
+						<td><div>抽出対象</div></td>
+						<td>
+							<div data-bind="ntsRadioBoxGroup: {
+								options: itemList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedIds,
+								enable: true}"></div>
+							</td>
+					</tr>
+					<tr>
+						<td><div>期間</div></td>
+						<td><div id="daterangepicker" 
+								data-bind="ntsDateRangePicker:
+								{required: true,
+								enable: true,
+								showNextPrevious: false,
+								value: dateValue}"></div>
+						</td>
+					</tr>
+				</table>
+				<button data-bind = "click: openCMM045">SPR_CMM045</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

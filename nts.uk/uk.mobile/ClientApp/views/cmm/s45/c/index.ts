@@ -242,7 +242,7 @@ export class CmmS45CComponent extends Vue {
         if (self.$router.currentRoute.name == 'cmms45a') {
             self.$close(self.params);
         } else {
-            self.$goto('cmms45a', { 'CMMS45_FromMenu': false });
+            self.$goto('cmms45a', { 'CMMS45_FromMenu': true });
         }
     }
 

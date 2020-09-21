@@ -46,13 +46,7 @@ public class BusinessTripFinder {
     private CommonAlgorithm commonAlgorithm;
 
     @Inject
-    private CommonAlgorithmMobile algorithmMobile;
-
-    @Inject
     private NewBeforeRegister processBeforeRegister;
-
-    @Inject
-    private WorkTypeRepository workTypeRepository;
 
     @Inject
     private WorkTypeRepository wkTypeRepo;
@@ -64,11 +58,13 @@ public class BusinessTripFinder {
     private AppTripRequestSetRepository appTripRequestSetRepository;
 
     @Inject
-    private AtEmployeeAdapter atEmployeeAdapter;
-
-    @Inject
     private DetailAppCommonSetService appCommonSetService;
 
+    /**
+     * 起動する
+     * @param paramStart
+     * @return
+     */
     public DetailStartScreenInfoDto initKAF008(ParamStart paramStart) {
         String cid = AppContexts.user().companyId();
         DetailStartScreenInfoDto result = new DetailStartScreenInfoDto();
@@ -328,7 +324,7 @@ public class BusinessTripFinder {
     }
 
     /**
-     *
+     * 勤務種類コードを入力する
      * @param changeWorkCodeParam
      * @return
      */
