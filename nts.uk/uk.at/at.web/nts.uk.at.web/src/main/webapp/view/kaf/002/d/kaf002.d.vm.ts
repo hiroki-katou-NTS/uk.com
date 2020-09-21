@@ -189,7 +189,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            printContentOfEachAppDto: PrintContentOfEachAppDto,
            approvalReason: any,
            appDispInfoStartupOutput: any, 
-           eventUpdate: (evt: () => void ) => void
+           eventUpdate: (evt: () => void ) => void,
+		   eventReload: (evt: () => void) => void
        }) {
            
            const self = this;
@@ -222,10 +223,15 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
            self.time = ko.observable(null);
            
            params.eventUpdate(self.update.bind(self));
+		   params.eventReload(self.reload.bind(self));
            
            self.fetchData();
            
        }
+
+	   reload() {
+		
+	   }
        
        public handleConfirmMessage(listMes: any, res: any) {
            let self = this;

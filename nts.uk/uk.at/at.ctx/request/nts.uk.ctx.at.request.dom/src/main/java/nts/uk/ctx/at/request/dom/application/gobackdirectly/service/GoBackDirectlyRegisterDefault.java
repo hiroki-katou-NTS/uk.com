@@ -12,10 +12,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationApprovalService;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
@@ -32,6 +34,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.New
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ConfirmMsgOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.CollectAchievement;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AchievementDetail;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ProcessResult;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -48,6 +51,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDire
 import nts.uk.ctx.at.shared.dom.workcheduleworkrecord.appreflectprocess.appreflectcondition.directgoback.GoBackReflect;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.CheckAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.WorkChangeFlg;
+import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingService;
@@ -567,41 +571,33 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	}
 	@Override
 	public ProcessResult register(GoBackDirectly goBackDirectly, Application application, InforGoBackCommonDirectOutput inforGoBackCommonDirectOutput) {
-		GoBackReflect goBackReflect = inforGoBackCommonDirectOutput.getGoBackReflect();
-//		String workType = "";
-//		String workTime = "";
-		// 申請時に決める（初期選択：勤務を変更する）
-		if (goBackReflect.getReflectApplication() == ApplicationStatus.DO_REFLECT) {
-			// // 画面上選択している勤務種類コード、就業時間帯コードを取得する
-			// workType = goBackDirectly.getDataWork().get().getWorkType().getWorkType();
-			// workTime =
-			// goBackDirectly.getDataWork().get().getWorkTime().get().getWorkTime();
-			// } else {
+		String workType = "";
+		String workTime = "";
+		if (goBackDirectly.getDataWork().isPresent()) {
+			WorkInformation dataWork = goBackDirectly.getDataWork().get();
+			workType = dataWork.getWorkTypeCode().v();
+			if (dataWork.getWorkTimeCodeNotNull().isPresent()) {
+				workTime = dataWork.getWorkTimeCode().v();
+			}
+		}
+		if (StringUtils.isBlank(workType) && StringUtils.isBlank(workTime)) {
 			Optional<List<ActualContentDisplay>> opActualContentDisplayLst = inforGoBackCommonDirectOutput.getAppDispInfoStartup()
 					.getAppDispInfoWithDateOutput().getOpActualContentDisplayLst();
-			
-//			AchievementOutput is old
-			
-//			セット：
-//			・直行直帰申請.勤務情報.勤務種類コード　＝　実績データ.1勤務種類コード　
-//			・直行直帰申請.勤務情報.就業時間帯コード　＝　実績データ.3就業時間帯コード
-
+			if (opActualContentDisplayLst.isPresent()) {
+				if (CollectionUtil.isEmpty(opActualContentDisplayLst.get())) {
+					Optional<AchievementDetail> achievementOp = opActualContentDisplayLst.get().get(0).getOpAchievementDetail();
+					if (achievementOp.isPresent()) {
+						AchievementDetail archiment = achievementOp.get();
+						String workTypeCD = archiment.getWorkTypeCD();
+						String workTimeCD = archiment.getWorkTypeCD();
+						WorkInformation dataWork = new WorkInformation(workTypeCD, workTimeCD);
+						goBackDirectly.setDataWork(Optional.of(dataWork));
+					}
+				}
+				
+			}
 		}
-		// // 取得した「勤務種類コード」「就業時間帯コード」をチェックする
-		// Optional<TimezoneUse> opTimezoneUse = Optional.empty();
-		// if (Strings.isNotBlank(workType) && Strings.isNotBlank(workTime)) {
-		// // 所定時間帯を取得する
-		// PredetermineTimeSetForCalc predetermineTimeSetForCalc =
-		// workTimeSettingService
-		// .getPredeterminedTimezone(AppContexts.user().companyId(), workType, workTime,
-		// null);
-		// opTimezoneUse = predetermineTimeSetForCalc.getTimezones().stream().filter(x
-		// -> x.getWorkNo() == 1)
-		// .findAny();
-		// }
-		// insert application 
-		// EA is exist
-		
+
 		appRepository.insertApp(
 				application,
 				inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().isPresent() ? inforGoBackCommonDirectOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpListApprovalPhaseState().get() : null);

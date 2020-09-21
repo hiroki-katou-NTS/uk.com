@@ -9,6 +9,7 @@ import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ActualContentDisplay;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.MailResult;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -123,14 +124,15 @@ public interface OtherCommonAlgorithm {
 	 * @return
 	 */
 	public MailResult sendMailApplicant(Application application, String text);
+
 	/**
-	 * 申請期間から休日の申請日を取得する
-	 * @param cid
-	 * @param sid
-	 * @param dates
+	 * UKDesign.UniversalK.就業.KAF_申請.共通アルゴリズム.申請期間から休日の申請日を取得する.申請期間から休日の申請日を取得する
+	 * @param sid 社員ID
+	 * @param dates 期間
+	 * @param actualContentDisplayLst 表示する実績内容<List>
 	 * @return
 	 */
-	public List<GeneralDate> lstDateIsHoliday(String cid, String sid, DatePeriod dates);
+	public List<GeneralDate> lstDateIsHoliday(String sid, DatePeriod dates, List<ActualContentDisplay> actualContentDisplayLst);
 	
 	/**
 	 * 11.指定日の勤務実績（予定）の勤務種類を取得

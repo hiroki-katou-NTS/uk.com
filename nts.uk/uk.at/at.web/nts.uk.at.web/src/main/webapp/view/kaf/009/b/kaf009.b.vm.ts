@@ -97,7 +97,8 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
 				printContentOfEachAppDto: PrintContentOfEachAppDto,
             	approvalReason: any,
                 appDispInfoStartupOutput: any, 
-                eventUpdate: (evt: () => void ) => void
+                eventUpdate: (evt: () => void ) => void,
+				eventReload: (evt: () => void) => void
             }
         ) {
             const vm = this;
@@ -116,7 +117,13 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
             params.eventUpdate(vm.update.bind(vm));
+			params.eventReload(vm.reload.bind(vm));
         }
+
+		reload() {
+			
+		}
+
         createParamKAF009() {
             let vm = this;
             vm.$blockui('show');

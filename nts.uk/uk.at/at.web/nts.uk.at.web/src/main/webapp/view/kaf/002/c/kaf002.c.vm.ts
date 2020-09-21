@@ -506,7 +506,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     printContentOfEachAppDto: PrintContentOfEachAppDto,
                     approvalReason: any,
                     appDispInfoStartupOutput: any, 
-                    eventUpdate: (evt: () => void ) => void
+                    eventUpdate: (evt: () => void ) => void,
+					eventReload: (evt: () => void) => void
                 }
                 ) {
             const self = this;
@@ -531,8 +532,14 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             self.fetchData();
 
             params.eventUpdate(self.update.bind(self));
+			params.eventReload(self.reload.bind(self));
             
         }
+
+		reload() {
+			
+		}
+
         showError(res: any) {
             const self = this;
             if (res) {

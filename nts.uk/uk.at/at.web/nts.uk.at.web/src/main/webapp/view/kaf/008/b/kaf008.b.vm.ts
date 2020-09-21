@@ -96,7 +96,8 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             printContentOfEachAppDto: PrintContentOfEachAppDto,
             approvalReason: any,
             appDispInfoStartupOutput: any,
-            eventUpdate: (evt: () => void) => void
+            eventUpdate: (evt: () => void) => void,
+			eventReload: (evt: () => void) => void
         }) {
             const vm = this;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
@@ -111,6 +112,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
             params.eventUpdate(vm.update.bind(vm));
+			params.eventReload(vm.reload.bind(vm));
         }
 
         mounted() {
@@ -121,13 +123,20 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                 }
             });
 
-            vm.application().appID.subscribe(appID => {
-                if(vm.application().appType === AppType.BUSINESS_TRIP_APPLICATION) {
-                    vm.createParamKAF008();
-                }
-            });
+//            vm.application().appID.subscribe(appID => {
+//                if(vm.application().appType === AppType.BUSINESS_TRIP_APPLICATION) {
+//                    vm.createParamKAF008();
+//                }
+//            });
 
         }
+		
+		reload() {
+			const vm = this;
+			if(vm.appType() === AppType.BUSINESS_TRIP_APPLICATION) {
+				vm.createParamKAF008();	
+			}
+		}
 
         // 起動する
         createParamKAF008() {
