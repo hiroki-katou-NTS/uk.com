@@ -104,17 +104,20 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                 if (!_.isEmpty(goBackApp.dataWork)) {
                     let codeWorkType = goBackApp.dataWork.workType;
                     let wtype = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType);
-                    let nameWorkType = !_.isNull(wtype) ? wtype.name : 'Empty';
+                    let nameWorkType = !_.isUndefined(wtype) ? wtype.name : vm.$i18n.text('KAF009_63');
                     vm.model.workTypeCode(codeWorkType);
                     vm.model.workTypeName(nameWorkType);
                     if (!_.isEmpty(ko.toJS(vm.dataFetch().workTime))) {
                         let codeWorkTime = goBackApp.dataWork.workTime;
                         vm.model.workTimeCode(codeWorkTime);
                         let wtime = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime)
-                        let nameWorkTime = !_.isNull(wtime) ? wtime.workTimeDisplayName.workTimeName : 'empty';
+                        let nameWorkTime = !_.isUndefined(wtime) ? wtime.workTimeDisplayName.workTimeName : vm.$i18n.text('KAF009_63');
                         vm.model.workTimeName(nameWorkTime);
                         
                     }
+                } else {
+                    vm.model.workTypeName(vm.$i18n.text('KAF009_63'));
+                    vm.model.workTimeName(vm.$i18n.text('KAF009_63'));
                 }
                 
                 
@@ -139,7 +142,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                     let codeWorkType = vm.dataFetch().workType();
                     vm.model.workTypeCode(codeWorkType);
                     let wt = _.find(ko.toJS(vm.dataFetch().lstWorkType), item => item.workTypeCode == codeWorkType);
-                    if (!_.isNull(wt)) {
+                    if (!_.isUndefined(wt)) {
                         let nameWorkType = wt.name;
                         vm.model.workTypeName(nameWorkType);       
                     }
@@ -149,7 +152,7 @@ module nts.uk.at.view.kaf009_ref.shr.viewmodel {
                     let codeWorkTime = vm.dataFetch().workTime(); 
                     vm.model.workTimeCode(codeWorkTime);
                     let wt = _.find(ko.toJS(vm.dataFetch().appDispInfoStartup).appDispInfoWithDateOutput.opWorkTimeLst, item => item.worktimeCode == codeWorkTime);
-                    if (!_.isNull(wt)) {
+                    if (!_.isUndefined(wt)) {
                         let nameWorkTime = wt.workTimeDisplayName.workTimeName;
                         vm.model.workTimeName(nameWorkTime);
                         

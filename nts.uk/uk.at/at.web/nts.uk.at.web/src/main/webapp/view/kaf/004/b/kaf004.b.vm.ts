@@ -35,7 +35,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 printContentOfEachAppDto: PrintContentOfEachAppDto,
                 approvalReason: any,
                 appDispInfoStartupOutput: any,
-                eventUpdate: (evt: () => void) => void
+                eventUpdate: (evt: () => void) => void,
+				eventReload: (evt: () => void) => void
             }) {
             const vm = this;
             vm.isSendMail = ko.observable(true);
@@ -61,11 +62,11 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                 }
             });
 
-            vm.application().appID.subscribe(() => {
-                if (vm.application().appType === AppType.EARLY_LEAVE_CANCEL_APPLICATION) {
-                    vm.createParamKAF004();
-                }
-            });
+//            vm.application().appID.subscribe(() => {
+//                if (vm.application().appType === AppType.EARLY_LEAVE_CANCEL_APPLICATION) {
+//                    vm.createParamKAF004();
+//                }
+//            });
 
             vm.createParamKAF004();
             // params.printContentOfEachAppDto.opArrivedLateLeaveEarlyInfo = ko.toJS(vm.arrivedLateLeaveEarlyInfo);
@@ -74,7 +75,15 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             // nhớ dùng bind(vm) để ngữ cảnh lúc thực thi
             // luôn là component
             params.eventUpdate(vm.update.bind(vm));
+			params.eventReload(vm.reload.bind(vm));
         }
+
+		reload() {
+			const vm = this;
+			if(vm.appType() === AppType.EARLY_LEAVE_CANCEL_APPLICATION) {
+				vm.createParamKAF004();	
+			}	
+		}
 
         createParamKAF004() {
             const vm = this;

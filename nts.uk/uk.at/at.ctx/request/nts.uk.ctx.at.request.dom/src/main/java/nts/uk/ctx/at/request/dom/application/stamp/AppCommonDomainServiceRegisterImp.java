@@ -42,8 +42,6 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 	@Override
 	public ProcessResult registerAppStamp(Application application, Optional<AppStamp> appStamp, Optional<AppRecordImage> appRecordImage,
 			AppStampOutput appStampOutput, Boolean recoderFlag) {
-//		2-2.新規画面登録時承認反映情報の整理
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 
 		
 		if (recoderFlag) {
@@ -67,6 +65,8 @@ public class AppCommonDomainServiceRegisterImp implements AppCommonDomainService
 			}
 			
 		}
+//		2-2.新規画面登録時承認反映情報の整理
+		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(application.getEmployeeID(), application);
 //		2-3.新規画面登録後の処理
 		// TODO: 申請設定 domain has changed!
 		AppTypeSetting appTypeSetting = appStampOutput.getAppDispInfoStartupOutput().getAppDispInfoNoDateOutput().getApplicationSetting().getAppTypeSettings()
