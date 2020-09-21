@@ -25,6 +25,7 @@ import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.Agg
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodErrorInfoFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodExcutionDto;
+import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodTargetDto;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.AggrPeriodTargetFinder;
 import nts.uk.ctx.at.record.app.find.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodDto;
@@ -72,7 +73,10 @@ public class OptionalAggrPeriodWs {
 	
 	@Inject
 	private UpdateOptionalAggrPeriodCommandHandler updateOptionalAggrPeriodCommandHandler;
-
+	
+	@Inject
+	private AggrPeriodFinder aggrPeriodFinder;
+	
 	/**
 	 * Find all.
 	 *
@@ -206,14 +210,16 @@ public class OptionalAggrPeriodWs {
 		updateOptionalAggrPeriodCommandHandler.handle(excuteId);
 	}
 	
+	/**
+	 * Gets the aggr period.
+	 *	UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務実績.実行状況管理.任意期間処理.任意期間処理
+	 * @param excuteId the excute id
+	 * @return the aggr period
+	 */
 	@POST
 	@Path("aggrPeriod/{id}")
 	public AggrPeriodDto getAggrPeriod(@PathParam("id") String excuteId) {
-		List<AggrPeriodErrorInfoDto> errorInfos = this.errorFinder.findAll(excuteId);
-		AggrPeriodExcutionDto aggrPeriodExcutionDto = this.logFinder.findAggr(excuteId);
-		OptionalAggrPeriodDto optionalAggrPeriodDto = this.finder.find(excuteId);
-		List<AggrPeriodTargetDto> periodTargetDto = this.targetFinder.findAll(aggrPeriodExcutionDto.getAggrFrameCode());
-		return new AggrPeriodDto(aggrPeriodExcutionDto, optionalAggrPeriodDto, periodTargetDto, errorInfos);
+		return this.aggrPeriodFinder.getAggrPeriod(excuteId);
 	}
 	
 }
