@@ -67,9 +67,11 @@ public class CreateDailyOneDay {
         //日別実績が既に存在しない場合OR「作成する」の場合	
         if(integrationOfDaily.getWorkInformation() == null || executionType == ExecutionTypeDaily.CREATE) {
         	//日別実績を作成する 
-        	listErrorMessageInfo.addAll(createDailyResults.createDailyResult(companyId, employeeId, ymd,
+        	OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
 					reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType, flag,
-					employeeGeneralInfoImport, periodInMasterList,integrationOfDaily));
+					employeeGeneralInfoImport, periodInMasterList,integrationOfDaily);
+        	listErrorMessageInfo.addAll(outputCreate.getListErrorMessageInfo());
+        	integrationOfDaily = outputCreate.getIntegrationOfDaily();
         	if(!listErrorMessageInfo.isEmpty()) {
         		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}

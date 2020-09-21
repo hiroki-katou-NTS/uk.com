@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.objecttype.DomainObject;
 
 /**
@@ -13,6 +14,7 @@ import nts.arc.layer.dom.objecttype.DomainObject;
  *
  */
 @Getter
+@Setter
 public class TemporaryTimeOfDailyAttd implements DomainObject {
 	
 	//勤務回数
