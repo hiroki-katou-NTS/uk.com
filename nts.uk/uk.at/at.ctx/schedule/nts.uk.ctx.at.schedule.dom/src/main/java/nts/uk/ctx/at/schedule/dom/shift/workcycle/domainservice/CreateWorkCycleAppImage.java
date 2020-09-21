@@ -12,11 +12,12 @@ import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-
+import javax.ejb.Stateless;
 
 /**
  *  勤務サイクルの適用イメージを作成する
  */
+@Stateless
 public class CreateWorkCycleAppImage {
 
     /**
@@ -53,19 +54,23 @@ public class CreateWorkCycleAppImage {
      */
     private static void createImageWeekly(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
         val weeklyWorkSet = require.getWeeklyWorkSetting();
-        createPeriod.stream().forEach(i -> {
-            val workdayDivision = weeklyWorkSet.get().getWorkingDayCtgOfTagertDay(i);
-            if (workdayDivision == null) return;
-            switch (workdayDivision){
-                case WORKINGDAYS:
-                    return;
-                case NON_WORKINGDAY_INLAW:
-                    reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getLegalHolidayCd().map(m -> m.v()).orElse(null), ""));
-                    break;
-                case NON_WORKINGDAY_EXTRALEGAL:
-                    reflectionImage.addByWeeklyWorking(i, new WorkInformation(config.getNonStatutoryHolidayCd().map(m -> m.v()).orElse(null), ""));
-                    break;
-            }
+        weeklyWorkSet.ifPresent(value -> {
+            createPeriod.stream().forEach(i -> {
+                String legalHolidayCode = config.getLegalHolidayCd().isPresent() ? config.getLegalHolidayCd().get().v() : null;
+                String nonStatutoryHolidayCd = config.getNonStatutoryHolidayCd().isPresent() ? config.getNonStatutoryHolidayCd().get().v() : null;
+                val workdayDivision = value.getWorkingDayCtgOfTagertDay(i);
+                if (workdayDivision == null) return;
+                switch (workdayDivision) {
+                    case WORKINGDAYS:
+                        return;
+                    case NON_WORKINGDAY_INLAW:
+                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(legalHolidayCode, ""));
+                        break;
+                    case NON_WORKINGDAY_EXTRALEGAL:
+                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(nonStatutoryHolidayCd, ""));
+                        break;
+                }
+            });
         });
     }
 
@@ -78,8 +83,9 @@ public class CreateWorkCycleAppImage {
      */
     private static void createImageHoliday(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
         val holidayList = require.getpHolidayWhileDate(createPeriod.start(), createPeriod.end());
+        String workTypeCD = config.getHolidayCd().isPresent() ? config.getHolidayCd().get().v() : null;
         for (PublicHoliday pubHoliday : holidayList) {
-            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation(config.getHolidayCd().map(m -> m.v()).orElse(null), ""));
+            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation(workTypeCD, ""));
         }
     }
 
@@ -92,13 +98,16 @@ public class CreateWorkCycleAppImage {
      */
     private static void createImageInWorkCycle(Require require, ReflectionImage reflectionImage, DatePeriod createPeriod, WorkCycleRefSetting config) {
         Optional<WorkCycle> workCycle = require.getWorkCycle(config.getWorkCycleCode().v());
-        AtomicInteger position = new AtomicInteger(1);
-        createPeriod.stream().forEach( i -> {
-            WorkCycleInfo workCycleInfo = workCycle.get().getWorkInfo(position.intValue(), config.getNumOfSlideDays());
-            if (reflectionImage.addInWorkCycle(i, workCycleInfo.getWorkInformation())) {
-                position.addAndGet(1);
-            }
+        workCycle.ifPresent(value -> {
+            AtomicInteger position = new AtomicInteger(1);
+            createPeriod.stream().forEach( i -> {
+                WorkCycleInfo workCycleInfo = value.getWorkInfo(position.intValue(), config.getNumOfSlideDays());
+                if (reflectionImage.addInWorkCycle(i, workCycleInfo.getWorkInformation())) {
+                    position.addAndGet(1);
+                }
+            });
         });
+
     }
 
     public interface Require {
