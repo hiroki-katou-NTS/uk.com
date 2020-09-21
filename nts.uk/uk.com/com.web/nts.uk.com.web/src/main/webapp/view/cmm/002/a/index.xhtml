@@ -95,7 +95,7 @@
 							constraint: 'IPAddress',
 							required: true
 							}" />
-						<span data-bind="if: allowedIPAddress.ipInputType() == 1">
+						<span class="endIP" data-bind="if: allowedIPAddress.ipInputType() == 1">
 						～
 						<input class="ip" tabindex="10" data-bind="ntsNumberEditor: {
 							name: '#[CMM002_8]',

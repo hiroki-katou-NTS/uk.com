@@ -138,7 +138,14 @@ module nts.uk.com.view.cmm002.a {
 		startAddress = new IPAddressSetting();	
 		endAddress = new IPAddressSetting();
 		comment = ko.observable('');
-        constructor() {}
+        constructor() {
+			let self = this;
+			self.ipInputType.subscribe(item =>{
+				if(item == 0){
+                    $('.endIP input').ntsError('clear');                   
+				}
+			});
+		}
 		update(data? : any) :void {
 			let self = this;
 			if(data){
