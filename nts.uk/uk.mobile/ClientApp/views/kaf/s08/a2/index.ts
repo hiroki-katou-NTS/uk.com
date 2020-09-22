@@ -80,6 +80,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
         if (vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo !=  null) {
             vm.mode = false ;
         }
+        console.log(vm.application);
         console.log(vm.businessTripInfoOutput);
         vm.fetchStart();
     }
@@ -117,11 +118,13 @@ export class KafS08A2Component extends KafS00ShrComponent {
         let params = {
             businessTrip : vm.businessTripInfoOutput.businessTrip,
             businessTripInfoOutput: vm.businessTripInfoOutput.businessTripInfoOutput,
-            application : vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application,
+            application : vm.application,
         };
 
         return vm.$http.post('at', API.updateBusinessTrip, params).then((res: any) => {
             vm.$emit('nextToStepThree',res.data.appID);
+        }).catch(() => {
+            vm.$modal.error({ messageId: 'Msg_1912' });
         });
     }
 
@@ -236,12 +239,12 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 //vm.appID = res.data.appID;
                 vm.$emit('nextToStepThree',res.data.appID);
                 vm.$mask('hide');
-                // KAFS00_D_申請登録後画面に移動する
-                //this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+            }).catch(() => {
+                vm.$modal.error({ messageId: 'Msg_1912' });
             });
         } else {
             vm.$modal.error({ messageId: 'Msg_1703' });
-
+            
             return ;
         }
     }

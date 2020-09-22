@@ -24,7 +24,7 @@
     v-bind:application="application"
     v-bind:listDate="listDate"
     v-if="step == 'KAFS08_11'" />
-    <kafs08c v-if="step =='KAFS08_12'" 
+    <kafs08c v-if="step =='KAFS08_12'"
     v-bind:appID="appID"
     />
 </div>

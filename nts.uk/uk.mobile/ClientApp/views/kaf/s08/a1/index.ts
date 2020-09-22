@@ -197,7 +197,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             let businessTripInfoOutput = vm.data;
             //gửi comment sang màn hình A2
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-            let application = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application;
+            //let application = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application;
             let appReason = vm.kaf000_C_Params.output.opAppReason;
             let startDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate;
             //let startDateFormat = new Date(startDate);
@@ -206,7 +206,8 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             let listDateEditMode = vm.getDateArray(startDate, endDate);
             businessTripInfoOutput.businessTrip.departureTime = vm.derpartureTime;
             businessTripInfoOutput.businessTrip.returnTime = vm.returnTime;
-            this.$emit('nextToStepTwo', listDateEditMode, application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+        
+            this.$emit('nextToStepTwo', listDateEditMode, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
         }
     }
 
