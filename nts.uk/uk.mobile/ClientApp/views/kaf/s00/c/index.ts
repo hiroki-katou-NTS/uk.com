@@ -84,17 +84,23 @@ export class KafS00CComponent extends Vue {
 
         if (self.displayFixedReason) {
             if (self.$input.appLimitSetting.standardReasonRequired) {
-                self.$updateValidator('params.output.opAppStandardReasonCD', { 
-                    required: true
-                });    
+                self.$updateValidator('params.output.opAppStandardReasonCD', { required: true });    
+            } else {
+                self.$updateValidator('params.output.opAppStandardReasonCD', { required: false });
             }
+            self.$updateValidator('params.output.opAppStandardReasonCD', { validate: true });
+        } else {
+            self.$updateValidator('params.output.opAppStandardReasonCD', { validate: false });
         }
         if (self.displayAppReason) {
             if (self.$input.appLimitSetting.requiredAppReason) {
-                self.$updateValidator('params.output.opAppReason', { 
-                    required: true
-                });
+                self.$updateValidator('params.output.opAppReason', { required: true });
+            } else {
+                self.$updateValidator('params.output.opAppReason', { required: false });
             }
+            self.$updateValidator('params.output.opAppReason', { validate: true });
+        } else {
+            self.$updateValidator('params.output.opAppReason', { validate: false });
         }
     }
 
