@@ -2,6 +2,8 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import nts.arc.time.GeneralDate;
 
+import java.util.Optional;
+
 /**
  * The Interface ExecutionContentSetMemento.
  */
@@ -45,6 +47,14 @@ public interface ScheduleCreateContentSetMemento {
 	 * @param recreateCondition
 	 *            the new re recreate Condition
 	 */
-	public void setRecreateCondition(RecreateCondition recreateCondition);
+	public void setRecreateCondition(Optional<RecreateCondition> recreateCondition);
+
+	/**
+	 * Sets CopyStartDate
+	 *
+	 * @param copyStartDate
+	 *            the new specify Creation
+	 */
+	public void setCopyStartDate(GeneralDate copyStartDate);
 
 }

@@ -47,7 +47,7 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 */
 	public WorkMonthlySetting(WorkMonthlySettingGetMemento memento){
 		this.companyId = memento.getCompanyId();
-		this.workInformation = new WorkInformation(memento.getWorkingCode().v(), memento.getWorkTypeCode().v()) ;
+		this.workInformation = new WorkInformation(memento.getWorkTypeCode().v(), memento.getWorkingCode().v()) ;
 		this.ymdk = memento.getYmdK();
 		this.monthlyPatternCode = memento.getMonthlyPatternCode();
 	}
