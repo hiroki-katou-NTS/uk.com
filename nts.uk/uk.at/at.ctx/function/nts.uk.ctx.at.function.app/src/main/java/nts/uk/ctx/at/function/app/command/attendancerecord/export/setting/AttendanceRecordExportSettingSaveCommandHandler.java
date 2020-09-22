@@ -13,7 +13,6 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AttendanceRecordExportSettingSaveCommandHandler.

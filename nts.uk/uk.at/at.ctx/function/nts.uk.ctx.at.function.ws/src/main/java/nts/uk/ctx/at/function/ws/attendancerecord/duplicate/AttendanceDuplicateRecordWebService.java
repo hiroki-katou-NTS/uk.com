@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.function.ws.attendancerecord.duplicate;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -22,9 +20,9 @@ public class AttendanceDuplicateRecordWebService {
 	@Inject
 	AttendanceRecordDuplicateFinder attendanceRecordDuplicateFinder;
 	
-	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
+	@Path("executeCopy")
 	@POST
-	public DataReturnDto executeCopy(AttendanceRecordDuplicateDto dto){
+	public DataReturnDto executeCopy(AttendanceRecordDuplicateDto dto) {
 		return this.attendanceRecordDuplicateFinder.executeCopy(dto);
 	}
 	

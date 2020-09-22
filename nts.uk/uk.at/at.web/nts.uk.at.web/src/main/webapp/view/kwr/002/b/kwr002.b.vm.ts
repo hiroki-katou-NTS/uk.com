@@ -297,10 +297,11 @@ module nts.uk.com.view.kwr002.b {
         };
 
         public openDialogF() {
-            let self = this;
-            let data = new OpenDialogFParam(self.selectionType,self.currentARES().code(),self.currentARES().name(),'');
-            let code = self.currentARES().code();
-            let name = self.currentARES().name();
+            let vm = this;
+            let data = new OpenDialogFParam(vm.selectionType
+                , vm.currentARES().code()
+                , vm.currentARES().name()
+                , vm.layoutId);
             setShared("dataFromScreenB", data, true);
             modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
 
@@ -495,17 +496,19 @@ module nts.uk.com.view.kwr002.b {
         }
     }
 
-    class OpenDialogFParam{
+    class OpenDialogFParam {
         itemSelectedType: number;
         code: string;
         name: string;
-        layoutCode: string;
+        layoutId: string;
+        employeeId?: string;
 
-        constructor(itemSelectedType: number, code: string, name: string, layoutCode: string) {
+        constructor(itemSelectedType: number, code: string, name: string, layoutId: string, employeeId?: string) {
             this.itemSelectedType = itemSelectedType;
             this.code = code;
             this.name = name;
-            this.layoutCode = layoutCode;
+            this.layoutId = layoutId;
+            this.employeeId = employeeId;
       }
     }
 
