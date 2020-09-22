@@ -1990,6 +1990,9 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     public static final Program KAF007A = new Program(WebAppId.AT, ProgramIdConsts.KAF007A, null,
             "/view/kaf/007/a/index.xhtml");
     /**     * KAF007A     */
+    /**     * KAF008A     */
+    public static final Program KAF008A = new Program(WebAppId.AT, ProgramIdConsts.KAF008A, "KAF008_1",
+            "/view/kaf/008/a/index.xhtml");
     public static final Program KAF009A = new Program(WebAppId.AT, ProgramIdConsts.KAF009A, null,
             "/view/kaf/009/a/index.xhtml");
     /**     * KAF010A     */
