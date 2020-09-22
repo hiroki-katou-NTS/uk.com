@@ -18,7 +18,10 @@ import { component, Prop, Watch } from '@app/core/component';
 
                                 return false;
                             }
-                            document.getElementById('prePostSelect').classList.remove('invalid');
+                            let prePostSelectElement = document.getElementById('prePostSelect');
+                            if (!_.isNull(prePostSelectElement)) {
+                                prePostSelectElement.classList.remove('invalid');
+                            }
 
                             return true;
                         },
