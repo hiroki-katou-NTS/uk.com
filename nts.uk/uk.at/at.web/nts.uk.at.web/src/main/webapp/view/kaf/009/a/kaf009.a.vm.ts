@@ -229,6 +229,18 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 vm.dataFetch().isChangeDate = true;
             }
             let dataClone = _.clone(vm.dataFetch());
+            let appDisp = ko.toJS(vm.appDispInfoStartupOutput);
+            let listActual = appDisp.appDispInfoWithDateOutput.opActualContentDisplayLst;
+            if (listActual[0]) {
+                if(!_.isEmpty(listActual)) {
+                    if (listActual[0].opAchievementDetail) {
+                        let workType = listActual[0].opAchievementDetail.workTypeCD;
+                        let workTime = listActual[0].opAchievementDetail.workTimeCD;
+                        dataClone.workTime(workTime);
+                        dataClone.workType(workType);
+                    }
+                }
+            }
             
             if (!_.isNull(dataClone)) {
                 vm.dataFetch(dataClone);
