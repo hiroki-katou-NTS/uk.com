@@ -132,8 +132,8 @@ tr td .label {
 .inline-flex {
   display:inline-flex;
 }
-.text-center {
-  text-align: center;
+.text-right {
+  text-align: right;
 }
 .border-bot {
   border-bottom: 1px groove;
