@@ -22,7 +22,7 @@ public class ByWorkplaceApproverGetDomainService {
 	 * システム日付時点の所属職場の職場別の承認者（36協定）を取得する。
 	 * ない場合、上位職場の職場別の承認者（36協定）を取得する。
 	 */
-	public Optional<ApproverItem> getApprover(Require require, String empId) {
+	public static Optional<ApproverItem> getApprover(Require require, String empId) {
 
 		val baseDate = GeneralDate.today();
 		Optional<SWkpHistRcImported> wkpHist = require.getWkpHist(empId, baseDate);

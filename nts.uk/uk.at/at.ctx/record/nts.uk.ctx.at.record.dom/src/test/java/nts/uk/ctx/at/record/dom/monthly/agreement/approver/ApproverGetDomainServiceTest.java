@@ -3,13 +3,10 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 import lombok.val;
 import mockit.Expectations;
 import mockit.Injectable;
-import mockit.Mocked;
-import mockit.Tested;
+import mockit.Mock;
+import mockit.MockUp;
 import mockit.integration.junit4.JMockit;
-import mockit.internal.startup.Startup;
 import nts.arc.time.GeneralDate;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,63 +23,61 @@ public class ApproverGetDomainServiceTest {
 	@Injectable
 	private ApproverGetDomainService.Require require;
 
-	@Tested
-	private ByWorkplaceApproverGetDomainService byWkpApprGetDS;
-
-//	@Before
-//	public void before() {
-//		byWkpApprGetDS = new ByWorkplaceApproverGetDomainService();
-//	}
-
-//	@BeforeClass
-//	public static void jMockit(){
-//		Startup.verifyInitialization();
-//	}
-
 	@Test
-	public void test01(@Injectable("empId") String empId) {
-		val service = new ApproverGetDomainService();
-//		before();
+	public void test01() {
+		String empId = "dummyEmp";
 		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
 
-		new Expectations() {{
-			byWkpApprGetDS.getApprover(require, empId);
+		new MockUp<ByWorkplaceApproverGetDomainService>() {
+			@Mock
+			Optional<ApproverItem> getApprover(ByWorkplaceApproverGetDomainService.Require require, String empId) {
+				return Optional.of(approverItem);
+			}
+		};
+
+		val result = ApproverGetDomainService.getApprover(require, empId);
+		assertThat(result.get()).isEqualTo(approverItem);
+	}
+
+	@Test
+	public void test02() {
+		String empId = "dummyEmp";
+		val approverItem = new ApproverItem(Helper.createApproverList(1), Helper.createConfirmerList(1));
+
+		new MockUp<ByWorkplaceApproverGetDomainService>() {
+			@Mock
+			Optional<ApproverItem> getApprover(ByWorkplaceApproverGetDomainService.Require require, String empId) {
+				return Optional.empty();
+			}
+		};
+
+		val baseDate = GeneralDate.today();
+		new Expectations(){{
+			require.getApproverHistoryItem(baseDate);
 			result = Optional.of(approverItem);
 		}};
 
-		assertThat(service.getApprover(require, empId).get()).isEqualTo(approverItem);
+		val result = ApproverGetDomainService.getApprover(require, empId);
+		assertThat(result.get()).isEqualTo(approverItem);
 	}
 
-//	@Test
-//	public void test02() {
-//		val empId = "empId";
-//		val baseDate = GeneralDate.today();
-//		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
-//		new Expectations() {{
-//			byWkpApprGetDS.getApprover(require, empId);
-//			result = Optional.empty();
-//
-//			require.getApproverHistoryItem(baseDate);
-//			result = Optional.of(approverItem);
-//		}};
-//
-//		val service = new ApproverGetDomainService();
-//		assertThat(service.getApprover(require, empId).get()).isEqualTo(approverItem);
-//	}
-//
-//	@Test
-//	public void test03() {
-//		val empId = "empId";
-//		val baseDate = GeneralDate.today();
-//		new Expectations() {{
-//			byWkpApprGetDS.getApprover(require, empId);
-//			result = Optional.empty();
-//
-//			require.getApproverHistoryItem(baseDate);
-//			result = Optional.empty();
-//		}};
-//
-//		val service = new ApproverGetDomainService();
-//		assertThat(service.getApprover(require, empId)).isEqualTo(Optional.empty());
-//	}
+	@Test
+	public void test03() {
+		String empId = "dummyEmp";
+		new MockUp<ByWorkplaceApproverGetDomainService>() {
+			@Mock
+			Optional<ApproverItem> getApprover(ByWorkplaceApproverGetDomainService.Require require, String empId) {
+				return Optional.empty();
+			}
+		};
+
+		val baseDate = GeneralDate.today();
+		new Expectations(){{
+			require.getApproverHistoryItem(baseDate);
+			result = Optional.empty();
+		}};
+
+		val result = ApproverGetDomainService.getApprover(require, empId);
+		assertThat(result).isNotPresent();
+	}
 }

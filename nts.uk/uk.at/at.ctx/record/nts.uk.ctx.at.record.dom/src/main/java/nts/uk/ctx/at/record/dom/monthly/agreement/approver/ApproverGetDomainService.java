@@ -4,7 +4,6 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.Optional;
 
 /**
@@ -14,15 +13,12 @@ import java.util.Optional;
 @Stateless
 public class ApproverGetDomainService {
 
-	@Inject
-	private ByWorkplaceApproverGetDomainService byWkpApprGetDS;
-
 	/**
 	 * [1] 取得する
 	 * 36協定特別条項の適用申請の申請対象者から承認者を取得する
 	 */
-	public Optional<ApproverItem> getApprover(Require require, String empId){
-		Optional<ApproverItem> optWorkplaceApproverItem = byWkpApprGetDS.getApprover(require, empId);
+	public static Optional<ApproverItem> getApprover(Require require, String empId){
+		Optional<ApproverItem> optWorkplaceApproverItem = ByWorkplaceApproverGetDomainService.getApprover(require, empId);
 
 		if (optWorkplaceApproverItem.isPresent()) {
 			return optWorkplaceApproverItem;
