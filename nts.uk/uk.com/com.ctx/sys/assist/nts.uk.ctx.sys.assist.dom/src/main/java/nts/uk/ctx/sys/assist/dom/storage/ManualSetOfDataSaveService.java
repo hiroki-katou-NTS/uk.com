@@ -121,10 +121,10 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			int targetNumberPeople = 0;
 			int saveStatus = 0;
 			String fileId = null;
-
+			LoginInfo loginInfo = new LoginInfo();
 			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
 					saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles,
-					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId);
+					compressedPassword, practitioner, targetNumberPeople, saveStatus, saveForInvest, fileId,loginInfo);
 			repoResultSaving.add(data);
 
 			// 対象社員のカウント件数を取り保持する

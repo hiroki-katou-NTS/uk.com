@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
+import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -86,6 +87,27 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	@Basic(optional = false)
 	@Column(name = "SAVE_NAME")
 	public String saveName;
+	
+	/**
+	 * ログイン情報.IPアドレス
+	 */
+	@Basic(optional = false)
+	@Column(name = "PC_IP")
+	public String pcId;
+	
+	/**
+	 * ログイン情報.PC名
+	 */
+	@Basic(optional = false)
+	@Column(name = "PC_NAME")
+	public String pcName;
+	
+	/**
+	 * ログイン情報.アカウント
+	 */
+	@Basic(optional = false)
+	@Column(name = "PC_ACOUNT")
+	public String pcAccount;
 
 	@Override
 	protected Object getKey() {
@@ -94,7 +116,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 
 	public DataRecoveryResult toDomain() {
 		return new DataRecoveryResult(this.dataRecoveryProcessId, this.cid, this.saveSetCd, this.practitioner,
-				this.executionResult, this.startDateTime, this.endDateTime, this.saveForm, this.saveName);
+				this.executionResult, this.startDateTime, this.endDateTime, this.saveForm, this.saveName, new LoginInfo(pcId,pcName,pcAccount));
 	}
 
 	public static SspmtDataRecoverResult toEntity(DataRecoveryResult domain) {
@@ -103,6 +125,9 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 				domain.getExecutionResult().orElse(null), domain.getStartDateTime(),
 				domain.getEndDateTime().orElse(null), 
 				domain.getSaveForm(),
-				domain.getSaveName());
+				domain.getSaveName(),
+				domain.getLoginInfo().getIpAddress(),
+				domain.getLoginInfo().getPcName(),
+				domain.getLoginInfo().getAccount());
 	}
 }
