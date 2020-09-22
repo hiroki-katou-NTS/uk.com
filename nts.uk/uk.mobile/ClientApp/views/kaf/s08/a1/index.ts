@@ -174,7 +174,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                     return;
                 }
             } else {
-                if (vm.kaf000_B_Params.output.startDate == null || vm.kaf000_C_Params.opAppReason == '') {
+                if (vm.kaf000_B_Params.output.startDate == null || (vm.kaf000_C_Params.input.appLimitSetting.requiredAppReason && vm.kaf000_C_Params.output.opAppReason == '')) {
                     vm.hidden = true;
                     vm.scrollToTop();
 
