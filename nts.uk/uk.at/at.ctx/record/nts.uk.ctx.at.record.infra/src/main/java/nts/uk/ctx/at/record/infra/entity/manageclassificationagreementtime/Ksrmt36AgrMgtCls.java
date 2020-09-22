@@ -212,13 +212,13 @@ public class Ksrmt36AgrMgtCls extends UkJpaEntity implements Serializable {
         val upperLimitTimeMonthUpper = new AgreementOneMonthTime((int)entity.getSpYLimitTime());
         val upperLimitDueToSpecialProvisionsMonth = new OneMonthTime(errorTimeInMonthUpper,upperLimitTimeMonthUpper);
 
-        val  errorTimeInYear = ErrorTimeInYear.create(new AgreementOneMonthTime((int)entity.getBasicMArlTime())
-                ,new AgreementOneMonthTime((int)entity.getBasisYAlTime()));
+        val  errorTimeInYear = ErrorTimeInYear.create(new AgreementOneYearTime((int)entity.getBasicMArlTime())
+                ,new AgreementOneYearTime((int)entity.getBasisYAlTime()));
         val upperLimitYear = new AgreementOneYearTime((int)entity.getBasisYLimitTime());
         val basicSettingYear = new OneYearTime(errorTimeInYear,upperLimitYear);
 
-        val errorTimeInYearUpper =  ErrorTimeInYear.create(new AgreementOneMonthTime((int)entity.getSpYErlTime())
-                ,new AgreementOneMonthTime((int)entity.getSpYAlTime()));
+        val errorTimeInYearUpper =  ErrorTimeInYear.create(new AgreementOneYearTime((int)entity.getSpYErlTime())
+                ,new AgreementOneYearTime((int)entity.getSpYAlTime()));
         val upperLimitTimeYearUpper = new AgreementOneYearTime((int)entity.getSpYLimitTime());
         val upperLimitDueToSpecialProvisionsYear = new OneYearTime(errorTimeInYearUpper,upperLimitTimeYearUpper);
 

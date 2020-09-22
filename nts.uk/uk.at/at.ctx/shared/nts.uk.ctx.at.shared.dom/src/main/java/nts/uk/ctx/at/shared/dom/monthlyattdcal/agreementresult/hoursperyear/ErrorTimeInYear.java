@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.persistence.internal.xr.ValueObject;
@@ -20,17 +21,17 @@ public class ErrorTimeInYear extends ValueObject {
     /**
      * エラー時間
      */
-    private AgreementOneMonthTime errorTime;
+    private AgreementOneYearTime errorTime;
 
     /**
      * アラーム時間
      */
-    private AgreementOneMonthTime alarmTime;
+    private AgreementOneYearTime alarmTime;
 
     /**
      * [C-1] 1ヶ月のエラーアラーム時間
      */
-    public static ErrorTimeInYear create(AgreementOneMonthTime errorTime, AgreementOneMonthTime alarmTime) {
+    public static ErrorTimeInYear create(AgreementOneYearTime errorTime, AgreementOneYearTime alarmTime) {
         if (errorTime.v() >= alarmTime.v()) {
             throw new BusinessException("Msg_59", "KMK008_67", "KMK008_66");
         }
@@ -40,17 +41,17 @@ public class ErrorTimeInYear extends ValueObject {
     /**
      * [1] エラー時間を超えているか
      */
-    public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-        Pair<Boolean, AgreementOneMonthTime> reusult = new ImmutablePair<>(errorTime.v() < applicationTime.v(), errorTime);
+    public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime) {
+        Pair<Boolean, AgreementOneYearTime> reusult = new ImmutablePair<>(errorTime.v() < applicationTime.v(), errorTime);
         return reusult;
     }
 
     /**
      * [2] アラーム時間を計算する
      */
-    public AgreementOneMonthTime calculateAlarmTime(AgreementOneMonthTime applicationTime) {
+    public AgreementOneYearTime calculateAlarmTime(AgreementOneYearTime applicationTime) {
         val calculateAlarmTime =  applicationTime.v() - (errorTime.v() - alarmTime.v());
 
-        return calculateAlarmTime > 0 ? new AgreementOneMonthTime(calculateAlarmTime)  : new AgreementOneMonthTime(0);
+        return calculateAlarmTime > 0 ? new AgreementOneYearTime(calculateAlarmTime)  : new AgreementOneYearTime(0);
     }
 }

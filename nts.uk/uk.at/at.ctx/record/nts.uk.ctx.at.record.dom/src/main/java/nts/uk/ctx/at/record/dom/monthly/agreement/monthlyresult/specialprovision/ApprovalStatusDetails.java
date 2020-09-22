@@ -16,7 +16,7 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ApprovalStatusDetails {
 
-    /** 確認状態 */
+    /** 承認状態 */
     private ApprovalStatus approvalStatus;
 
     /** 承認コメント */

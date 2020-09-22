@@ -1,10 +1,9 @@
 package nts.uk.ctx.at.record.dom.agreementbasicsettings;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime;
 import org.apache.commons.lang3.tuple.Pair;
 import org.eclipse.persistence.internal.xr.ValueObject;
@@ -32,12 +31,12 @@ public class AgreementsOneYear extends ValueObject {
             return null;
     }
     // 	[2] 特例条項による上限のエラー時間を超えているか
-    public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime){
+    public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime){
 
         return basicSetting.checkErrorTimeExceeded(applicationTime);
     }
     // 	[3] アラーム時間を計算する
-    public AgreementOneMonthTime calculateAlarmTime(AgreementOneMonthTime applicationTime) {
+    public AgreementOneYearTime calculateAlarmTime(AgreementOneYearTime applicationTime) {
         return basicSetting.calculateAlarmTime(applicationTime);
     }
 }

@@ -4,7 +4,7 @@ import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 /**
- * 
+ * 36協定1年間時間
  * @author quang.nh1
  *
  */

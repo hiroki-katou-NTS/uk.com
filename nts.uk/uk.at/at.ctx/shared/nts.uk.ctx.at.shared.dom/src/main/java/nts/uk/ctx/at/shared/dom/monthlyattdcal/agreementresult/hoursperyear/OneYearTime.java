@@ -41,15 +41,15 @@ public class OneYearTime extends ValueObject {
     /**
      *[2] エラー時間を超えているか
      */
-    public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-        Pair<Boolean, AgreementOneMonthTime> reusult = errorTimeInYear.checkErrorTimeExceeded(applicationTime);
+    public Pair<Boolean, AgreementOneYearTime> checkErrorTimeExceeded(AgreementOneYearTime applicationTime) {
+        Pair<Boolean, AgreementOneYearTime> reusult = errorTimeInYear.checkErrorTimeExceeded(applicationTime);
         return reusult;
     }
 
     /**
      *[3] アラーム時間を計算する
      */
-    public AgreementOneMonthTime calculateAlarmTime(AgreementOneMonthTime applicationTime) {
+    public AgreementOneYearTime calculateAlarmTime(AgreementOneYearTime applicationTime) {
         return errorTimeInYear.calculateAlarmTime(applicationTime);
     }
 }
