@@ -212,7 +212,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		lstDomain.forEach(domainsetting -> {
 
 			if (StringUtils.isEmpty(domainsetting.getWorkInformation().getWorkTimeCode() == null ? null : domainsetting.getWorkInformation().getWorkTimeCode().v())){
-				domainsetting.setWorkInformation(new WorkInformation(null,domainsetting.getWorkInformation().getWorkTypeCode().v()));
+				domainsetting.setWorkInformation(new WorkInformation(domainsetting.getWorkInformation().getWorkTypeCode().v(),null));
 			}
 
 			// check exist of domain update
