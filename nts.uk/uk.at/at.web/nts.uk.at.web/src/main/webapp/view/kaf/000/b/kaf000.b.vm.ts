@@ -118,7 +118,23 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 vm.appDispInfoStartupOutput(successData);
                 let viewContext: any = __viewContext,
                     loginID = viewContext.user.employeeId,
-                    loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID;
+                    loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID,
+					appNameInfo = _.find(vm.appNameList, (o: any) => {
+						let condition = o.appType==vm.appType();
+						if(vm.appType() == 7) {
+							if(vm.application().opStampRequestMode()==0) {
+								condition = condition && o.opApplicationTypeDisplay==3;
+							} else {
+								condition = condition && o.opApplicationTypeDisplay==4;	
+							}
+						}
+						return condition;
+					});
+				if(appNameInfo) {
+					document.getElementById("pg-name").innerHTML = appNameInfo.appName;	
+				} else {
+					document.getElementById("pg-name").innerHTML = "";	
+				}	
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
                     successData.appDetailScreenInfo.approvalATR,
