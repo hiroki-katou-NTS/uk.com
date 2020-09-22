@@ -758,22 +758,22 @@ public class AppListInitialImpl implements AppListInitialRepository{
 				add = 2;
 			}
 			//承認状況＝否
-			if(appFull.getReflectionStatus().equals("CMM045_65")) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_65"))) {
 				//否認件数に＋１する
 				appStatus.setDenialNumber(appStatus.getDenialNumber() + add);
 			}
 			//承認状況＝差戻
-			if(appFull.getReflectionStatus().equals("CMM045_66")) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_66"))) {
 				//差戻件数に＋１する
 				appStatus.setRemandNumner(appStatus.getRemandNumner() + add);
 			}
 			//承認状況＝取消
-			if(appFull.getReflectionStatus().equals("CMM045_67")) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_67"))) {
 				//取消件数に＋１する
 				appStatus.setCancelNumber(appStatus.getCancelNumber() + add);
 			}
 			//承認状況＝承認済み/反映済み
-			if(appFull.getReflectionStatus().equals("CMM045_63") || appFull.getReflectionStatus().equals("CMM045_64")) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_63")) || appFull.getReflectionStatus().equals(I18NText.getText("CMM045_64"))) {
 				List<ApprovalPhaseStateImport_New> listPhase = appFull.getOpApprovalPhaseLst()
 						.map(x -> x.stream().sorted(Comparator.comparing(ApprovalPhaseStateImport_New::getPhaseOrder).reversed()).collect(Collectors.toList()))
 						.orElse(Collections.emptyList());
@@ -806,7 +806,7 @@ public class AppListInitialImpl implements AppListInitialRepository{
 //				}
 			}
 			//承認状況＝未
-			if(appFull.getReflectionStatus().equals("CMM045_62")) {
+			if(appFull.getReflectionStatus().equals(I18NText.getText("CMM045_62"))) {
 				//未承認件数に＋１する
 				appStatus.setUnApprovalNumber(appStatus.getUnApprovalNumber() + add);
 			}

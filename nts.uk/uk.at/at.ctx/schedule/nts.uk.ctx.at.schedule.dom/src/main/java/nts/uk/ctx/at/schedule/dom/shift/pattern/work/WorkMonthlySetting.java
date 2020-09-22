@@ -4,40 +4,44 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.pattern.work;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
-import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.workrule.ErrorStatusWorkInfo;
-import nts.uk.shr.com.context.AppContexts;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * The Class WorkMonthlySetting.
  */
-// 月間パターンの勤務情報
+// 月間勤務就業設定
 @Getter
 @Setter
 public class WorkMonthlySetting extends AggregateRoot {
 
 	/** The company id. */
 	// 会社ID
-	private final CompanyId companyId;
+	private CompanyId companyId;
 
-	//	勤務情報
-	private WorkInformation workInformation;
+	/** The work type code. */
+	// 勤務種類コード
+	private WorkTypeCode workTypeCode;
+
+	/** The working code. */
+	// 就業時間帯コード
+	private WorkingCode workingCode;
 	
 	/** The ymdk. */
 	// 年月日
-	private final GeneralDate ymdk;
+	private GeneralDate ymdk;
 	
 	/** The monthly pattern code. */
 	// 月間パターンコード
-	private final MonthlyPatternCode monthlyPatternCode;
+	private MonthlyPatternCode monthlyPatternCode;
 	
 
 	/**
@@ -47,7 +51,8 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 */
 	public WorkMonthlySetting(WorkMonthlySettingGetMemento memento){
 		this.companyId = memento.getCompanyId();
-		this.workInformation = new WorkInformation(memento.getWorkingCode().v(), memento.getWorkTypeCode().v()) ;
+		this.workTypeCode = memento.getWorkTypeCode();
+		this.workingCode = memento.getWorkingCode();
 		this.ymdk = memento.getYmdK();
 		this.monthlyPatternCode = memento.getMonthlyPatternCode();
 	}
@@ -59,26 +64,10 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 * @param monthlyPatternCode the monthly pattern code
 	 */
 	public WorkMonthlySetting(GeneralDate ymdk, String monthlyPatternCode) {
-		this.companyId = new CompanyId(AppContexts.user().companyId());
-		this.workInformation = new WorkInformation("", "");
+		this.workTypeCode = new WorkTypeCode("");
+		this.workingCode = new WorkingCode("");
 		this.ymdk = ymdk;
 		this.monthlyPatternCode = new MonthlyPatternCode(monthlyPatternCode);
-	}
-
-	/**
-	 * Instantiates a new work monthly setting.
-	 *	[C-0] 月間パターンの勤務情報(会社ID, 月間パターンコード, 年月日, 勤務情報)
-	 *
-	 * @param companyId the companyId
-	 * @param workMonthlyId the workMonthlyId
-	 * @param date the date
-	 * @param workInformation the workInformation
-	 */
-	public WorkMonthlySetting(String companyId, String workMonthlyId, GeneralDate date, WorkInformation workInformation ) {
-		this.companyId = new CompanyId(companyId);
-		this.workInformation = workInformation;
-		this.monthlyPatternCode = new MonthlyPatternCode(workMonthlyId);
-		this.ymdk = date;
 	}
 	
 	/**
@@ -88,8 +77,8 @@ public class WorkMonthlySetting extends AggregateRoot {
 	 */
 	public void saveToMemento(WorkMonthlySettingSetMemento memento){
 		memento.setCompanyId(this.companyId);
-		memento.setWorkTypeCode(this.workInformation.getWorkTypeCode());
-		memento.setWorkingCode(this.workInformation.getWorkTimeCode() == null || StringUtils.isEmpty(this.workInformation.getWorkTimeCode().v()) ? null : this.workInformation.getWorkTimeCode());
+		memento.setWorkTypeCode(this.workTypeCode);
+		memento.setWorkingCode(this.workingCode == null || StringUtils.isEmpty(this.workingCode.v()) ? null : this.workingCode);
 		memento.setYmdK(this.ymdk);
 		memento.setMonthlyPatternCode(this.monthlyPatternCode);
 	}
@@ -136,26 +125,6 @@ public class WorkMonthlySetting extends AggregateRoot {
 		} else if (!ymdk.equals(other.ymdk))
 			return false;
 		return true;
-	}
-
-	/**
-	 * [1] エラーチェックする
-	 *
-	 * @param require
-	 * @return
-	 */
-	public void checkForErrors(WorkInformation.Require require) {
-		ErrorStatusWorkInfo errorStatusWorkInfo = this.workInformation.checkErrorCondition(require);
-		switch (errorStatusWorkInfo){
-			case WORKTYPE_WAS_DELETE:
-				throw new BusinessException("Msg_1608");
-			case WORKTIME_WAS_DELETE:
-				throw new BusinessException("Msg_1609");
-			case WORKTIME_ARE_REQUIRE_NOT_SET:
-				throw new BusinessException("Msg_435");
-			case WORKTIME_ARE_SET_WHEN_UNNECESSARY:
-				throw new BusinessException("Msg_434");
-		}
 	}
 	
 }

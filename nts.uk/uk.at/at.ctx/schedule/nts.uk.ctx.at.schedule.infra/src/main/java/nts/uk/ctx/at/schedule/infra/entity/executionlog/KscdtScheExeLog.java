@@ -26,12 +26,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KscdtScheExeLog.
  */
-// Entity: スケジュール作成実行ログ
-
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCDT_BATCH_EXECUTE_LOG")
+@Table(name = "KSCDT_SCHE_EXE_LOG")
 public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
@@ -46,24 +44,18 @@ public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "EXE_SID")
     private String exeSid;
-    /**
-     * 契約コード
-     */
-    @NotNull
-    @Column(name = "CONTRACT_CD")
-    private String contractCD;
+    
     /** The exe str D. */
-    // 開始日時
     @Basic(optional = false)
     @NotNull
-    @Column(name = "EXE_START")
+    @Column(name = "EXE_STR_D")
     @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeStrD;
     
     /** The exe end D. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "EXE_END")
+    @Column(name = "EXE_END_D")
     @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeEndD;
     
@@ -74,14 +66,14 @@ public class KscdtScheExeLog extends UkJpaEntity implements Serializable {
     /** The start ymd. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "TARGET_START_DATE")
+    @Column(name = "START_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate startYmd;
     
     /** The end ymd. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "TARGET_END_DATE")
+    @Column(name = "END_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endYmd;
     

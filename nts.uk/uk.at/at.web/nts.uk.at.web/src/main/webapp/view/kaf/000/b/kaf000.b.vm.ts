@@ -72,8 +72,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         childUpdateEvent!: () => any;
 		childReloadEvent: () => any;
-		
-		appNameList: any = null;
 
         created(listAppMeta: Array<string>, currentApp: string) {
             const vm = this;
@@ -96,11 +94,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 eventUpdate: function(a) { vm.getChildUpdateEvent.apply(vm, [a]) },
 				eventReload: function(a) { vm.getChildReloadEvent.apply(vm, [a]) },
             }
-			vm.$blockui("show");
-			vm.$ajax(API.getAppNameInAppList).then((data) => {
-				vm.appNameList = data;
-				vm.loadData();	
-			});
+            vm.loadData();
         }
 
         loadData() {
@@ -361,8 +355,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             vm.$blockui("show");
             let appDispInfoStartupOutput = ko.toJS(vm.appDispInfoStartupOutput()),
 				opPrintContentOfEachApp = vm.opPrintContentOfEachApp,
-				appNameList = vm.appNameList,
-                command = { appDispInfoStartupOutput, opPrintContentOfEachApp, appNameList };
+                command = { appDispInfoStartupOutput, opPrintContentOfEachApp };
             nts.uk.request.exportFile("at", API.print, command)
             .done((successData: any) => {
 
@@ -390,7 +383,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
     	deny: "at/request/application/denyapp",
         release: "at/request/application/releaseapp",
         cancel: "at/request/application/cancelapp",
-        print: "at/request/application/print",
-		getAppNameInAppList: "at/request/application/screen/applist/getAppNameInAppList",
+        print: "at/request/application/print"
     }
 }

@@ -190,12 +190,8 @@ public class WkpDepFinder {
 			// pop 1 item
 			InformationDto wkpHierarchy = iteratorWkpHierarchy.next();
 			// convert
-			WkpDepTreeDto dto = new WkpDepTreeDto(wkpHierarchy.getId(), wkpHierarchy.getCode(), 
-													wkpHierarchy.getName(),
-													wkpHierarchy.getHierarchyCode(),
-													wkpHierarchy.getGenericName(),
-													wkpHierarchy.getDispName(),
-													new ArrayList<>());
+			WkpDepTreeDto dto = new WkpDepTreeDto(wkpHierarchy.getId(), wkpHierarchy.getCode(), wkpHierarchy.getName(),
+					wkpHierarchy.getHierarchyCode(), new ArrayList<>());
 			// build List
 			this.pushToList(lstReturn, dto, wkpHierarchy.getHierarchyCode(), Strings.EMPTY, highestHierarchy);
 		}

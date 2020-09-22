@@ -10,7 +10,6 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternSetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class MonthlyPatternDto.
@@ -60,10 +59,6 @@ public class MonthlyPatternDto implements MonthlyPatternSetMemento{
 	@Override
 	public void setMonthlyPatternName(MonthlyPatternName monthlyPatternName) {
 		this.name = monthlyPatternName.v();
-	}
-
-	@Override
-	public void setContractCd() {
 	}
 
 }

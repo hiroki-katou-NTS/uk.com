@@ -45,7 +45,7 @@ public class GetPersonInfoHR {
 		personInfoHROutput.setCid(domain.getCid().map(m -> m).orElse(null));
 		personInfoHROutput.setCompanyCode(domain.getCompanyCode().map(m ->m).orElse(null));
 		personInfoHROutput.setPId(domain.getPId());
-		personInfoHROutput.setSid(domain.getSid().map(m -> m).orElse(null));
+		personInfoHROutput.setSid(domain.getScd().map(m -> m).orElse(null));
 		personInfoHROutput.setScd(domain.getScd().map(m -> m).orElse(null));
 		personInfoHROutput.setPersonName(domain.getPersonName().map(m -> m).orElse(null));
 		personInfoHROutput.setWorkId(domain.getWorkId());
@@ -283,91 +283,91 @@ public class GetPersonInfoHR {
 			personInfoHROutput.setInt01(domain.getInt01());
 		}
 		if (domain.getInt02() != null) {
-			personInfoHROutput.setInt02(domain.getInt02());
+			personInfoHROutput.setInt01(domain.getInt02());
 		}
 		if (domain.getInt03() != null) {
-			personInfoHROutput.setInt03(domain.getInt03());
+			personInfoHROutput.setInt01(domain.getInt03());
 		}
 		if (domain.getInt04() != null) {
-			personInfoHROutput.setInt04(domain.getInt04());
+			personInfoHROutput.setInt01(domain.getInt04());
 		}
 		if (domain.getInt05() != null) {
-			personInfoHROutput.setInt05(domain.getInt05());
+			personInfoHROutput.setInt01(domain.getInt05());
 		}
 		if (domain.getInt06() != null) {
-			personInfoHROutput.setInt06(domain.getInt06());
+			personInfoHROutput.setInt01(domain.getInt06());
 		}
 		if (domain.getInt07() != null) {
-			personInfoHROutput.setInt07(domain.getInt07());
+			personInfoHROutput.setInt01(domain.getInt07());
 		}
 		if (domain.getInt08() != null) {
-			personInfoHROutput.setInt08(domain.getInt08());
+			personInfoHROutput.setInt01(domain.getInt08());
 		}
 		if (domain.getInt09() != null) {
-			personInfoHROutput.setInt09(domain.getInt09());
+			personInfoHROutput.setInt01(domain.getInt09());
 		}
 		if (domain.getInt10() != null) {
-			personInfoHROutput.setInt10(domain.getInt10());
+			personInfoHROutput.setInt01(domain.getInt10());
 		}
 		if (domain.getInt11() != null) {
-			personInfoHROutput.setInt11(domain.getInt11());
+			personInfoHROutput.setInt01(domain.getInt11());
 		}
 		if (domain.getInt12() != null) {
-			personInfoHROutput.setInt12(domain.getInt12());
+			personInfoHROutput.setInt01(domain.getInt12());
 		}
 		if (domain.getInt13() != null) {
-			personInfoHROutput.setInt13(domain.getInt13());
+			personInfoHROutput.setInt01(domain.getInt13());
 		}
 		if (domain.getInt14() != null) {
-			personInfoHROutput.setInt14(domain.getInt14());
+			personInfoHROutput.setInt01(domain.getInt14());
 		}
 		if (domain.getInt15() != null) {
-			personInfoHROutput.setInt15(domain.getInt15());
+			personInfoHROutput.setInt01(domain.getInt15());
 		}
 		if (domain.getInt16() != null) {
-			personInfoHROutput.setInt16(domain.getInt16());
+			personInfoHROutput.setInt01(domain.getInt16());
 		}
 		if (domain.getInt17() != null) {
-			personInfoHROutput.setInt17(domain.getInt17());
+			personInfoHROutput.setInt01(domain.getInt17());
 		}
 		if (domain.getInt18() != null) {
-			personInfoHROutput.setInt18(domain.getInt18());
+			personInfoHROutput.setInt01(domain.getInt18());
 		}
 		if (domain.getInt19() != null) {
-			personInfoHROutput.setInt19(domain.getInt19());
+			personInfoHROutput.setInt01(domain.getInt19());
 		}
 		if (domain.getInt20() != null) {
-			personInfoHROutput.setInt20(domain.getInt20());
+			personInfoHROutput.setInt01(domain.getInt20());
 		}
 		if (domain.getInt21() != null) {
-			personInfoHROutput.setInt21(domain.getInt21());
+			personInfoHROutput.setInt01(domain.getInt21());
 		}
 		if (domain.getInt22() != null) {
-			personInfoHROutput.setInt22(domain.getInt22());
+			personInfoHROutput.setInt01(domain.getInt22());
 		}
 		if (domain.getInt23() != null) {
-			personInfoHROutput.setInt23(domain.getInt23());
+			personInfoHROutput.setInt01(domain.getInt23());
 		}
 		if (domain.getInt24() != null) {
-			personInfoHROutput.setInt24(domain.getInt24());
+			personInfoHROutput.setInt01(domain.getInt24());
 		}
 		if (domain.getInt25() != null) {
-			personInfoHROutput.setInt25(domain.getInt25());
+			personInfoHROutput.setInt01(domain.getInt25());
 		}
 		if (domain.getInt26() != null) {
-			personInfoHROutput.setInt26(domain.getInt26());
+			personInfoHROutput.setInt01(domain.getInt26());
 		}
 		if (domain.getInt27() != null) {
-			personInfoHROutput.setInt27(domain.getInt27());
+			personInfoHROutput.setInt01(domain.getInt27());
 		}
 		if (domain.getInt28() != null) {
-			personInfoHROutput.setInt28(domain.getInt28());
+			personInfoHROutput.setInt01(domain.getInt28());
 		}
 		if (domain.getInt29() != null) {
-			personInfoHROutput.setInt29(domain.getInt29());
+			personInfoHROutput.setInt01(domain.getInt29());
 		}
 		if (domain.getInt30() != null) {
-			personInfoHROutput.setInt30(domain.getInt30());
+			personInfoHROutput.setInt01(domain.getInt30());
 		}
 
 		

@@ -117,7 +117,6 @@ module kcp.share.tree {
          */
         isFullView?: boolean;
         width?: number;
-        listDataDisplay: Array<any>;
     }
 
     /**
@@ -320,7 +319,6 @@ module kcp.share.tree {
                     }
 
                     // Init component.
-                    data.listDataDisplay = res1;
                     self.itemList(res1);
                     self.initNoSelectRow();
                     self.backupItemList(self.itemList());

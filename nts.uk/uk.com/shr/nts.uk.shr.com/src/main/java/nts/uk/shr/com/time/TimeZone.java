@@ -21,12 +21,8 @@ public class TimeZone {
 	 */
 	private TimeWithDayAttr endTime;
 	
-	public TimeZone(Integer startTime, Integer endTime) {
-		if (startTime != null) {
-			this.startTime = new TimeWithDayAttr(startTime);			
-		}
-		if (endTime != null) {
-			this.endTime = new TimeWithDayAttr(endTime);			
-		}
+	public TimeZone(int startTime, int endTime) {
+		this.startTime = new TimeWithDayAttr(startTime);
+		this.endTime = new TimeWithDayAttr(endTime);
 	}
 }

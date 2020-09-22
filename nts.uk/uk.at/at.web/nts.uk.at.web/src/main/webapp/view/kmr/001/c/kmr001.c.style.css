@@ -49,37 +49,3 @@
 .kmr001-c .reservation-time {
     width: 300px;
 }
-
-.kmr001-c .kmr001-c-right-content1 tr td:first-child div.form-label > label {
-    display: block;
-    line-height: normal;
-    width: 100%;
-}
-.kmr001-c .kmr001-c-right-content1 tr td:first-child div.form-label i {
-    margin-left: 0;
-}
-.kmr001-c .kmr001-c-right-content1 tr td:first-child div.form-label {
-    line-height: normal !important;
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.kmr001-c .kmr001-c-right-content1 tr td .checkbox-wrapper {
-    width: 100px;
-}
-.kmr001-c .kmr001-c-right-content1 tr td .time-start,
-.kmr001-c .kmr001-c-right-content1 tr td .time-end {
-    width: 40px;
-    text-align: right
-}
-.kmr001-c .kmr001-c-right-content1 tr td .time-space {
-    padding-left: 10px;
-    padding-right: 10px;
-}
-.kmr001-c .kmr001-c-right-content1 tr td.reservation-time {
-    padding-top: 0;
-}
-
-.kmr001-c .kmr001-c-right-content1 tr td .ntsCheckBox {
-    padding: 0;
-}

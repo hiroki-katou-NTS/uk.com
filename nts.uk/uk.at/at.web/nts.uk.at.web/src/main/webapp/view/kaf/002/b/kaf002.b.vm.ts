@@ -48,7 +48,6 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             self.time = ko.observable(null);
             
             self.application = ko.observable(new Application(self.appType()));
-			self.application().opStampRequestMode(1);
 
             self.loadData([], [], self.appType())
                 .then((loadDataFlag: any) => {
