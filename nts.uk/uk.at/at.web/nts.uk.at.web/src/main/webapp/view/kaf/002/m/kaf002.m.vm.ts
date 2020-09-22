@@ -140,7 +140,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
 
         doSomething(s: Array<GridItem>) {
-            console.log(s);
             const self = this;
             if (!s) {
                 return;
@@ -457,7 +456,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             self.typeStamp = typeStamp;
             self.id = dataObject.frameNo;
-            self.typeReason = dataObject.opGoOutReasonAtr ? String(dataObject.opGoOutReasonAtr) : '0';
+            self.typeReason = dataObject.opGoOutReasonAtr ? String(dataObject.opGoOutReasonAtr) : (STAMPTYPE.GOOUT_RETURNING == typeStamp ? '0' : null);
             self.startTimeActual = dataObject.opStartTime;
             self.endTimeActual = dataObject.opEndTime;
             if ( _.isNull( dataObject.opStartTime ) && _.isNull( dataObject.opEndTime ) ) {

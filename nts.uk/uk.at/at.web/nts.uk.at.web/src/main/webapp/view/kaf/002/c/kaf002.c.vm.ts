@@ -125,6 +125,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       // tab visible condition
       isAttendence = false;
+      isAttendence2 = false;
       isTemporaryAttendence = false;
       isOutingHourse = false;
       isBreakTime = false;
@@ -161,7 +162,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             }
             self.$ajax(API.getDetail, command)
                 .done(res => {
-                    console.log(res);
                     self.data = res;
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
@@ -181,6 +181,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        bindTabM(data: any) {
            const self = this;
            let reflect = data.appStampReflectOptional;
+           let attendenceCommon = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
+
            if (reflect.temporaryAttendence == 0 && !self.isTemporaryAttendence) {
                self.dataSourceOb()[0].pop();
                self.dataSourceOb()[0].pop();
@@ -189,6 +191,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (reflect.attendence == 0 && !self.isAttendence) {
                self.dataSourceOb()[0].shift();
                self.dataSourceOb()[0].shift();
+           } else {
+               if (!attendenceCommon && !self.isAttendence2) {
+                   _.remove(self.dataSourceOb()[0], (e: GridItem) => {
+                       return e.typeStamp == STAMPTYPE.ATTENDENCE && e.id == 2;
+                   });       
+               }
            }
            self.isM(true);
            self.tabs.subscribe(value => {
@@ -209,9 +217,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        } 
        
        
-       setExistCondition1(stamp: number) {
+       setExistCondition1(stamp: number, frame?: number) {
            const self = this;
            if (stamp == 0) {
+               if (frame == 2) {
+                   self.isAttendence2 = true;
+               }
                self.isAttendence = true;
            } else if (stamp == 2) {
                self.isOutingHourse = true;
@@ -240,7 +251,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         destinationTimeZoneAppDto = appStampDto.listDestinationTimeZoneApp as Array<DestinationTimeZoneAppDto>;
         if (timeStampAppDto) {
             _.forEach(timeStampAppDto, (i: TimeStampAppDto) => {
-                self.setExistCondition1(i.destinationTimeApp.timeStampAppEnum);
+                self.setExistCondition1(i.destinationTimeApp.timeStampAppEnum, i.destinationTimeApp.engraveFrameNo);
             });
         }
         if (destinationTimeAppDto) {
@@ -555,7 +566,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
              }
         }
         update() {
-            console.log('update');
             const self = this;
             if (!self.appDispInfoStartupOutput().appDetailScreenInfo) {
                 return;
@@ -586,7 +596,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     appStampOutputDto: data,
                     applicationDto: applicationDto
             }
-            self.$blockui("show");
             
             return self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
             .then(isValid => {
@@ -595,6 +604,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 }
             }).then(result => {
                 if(!result) return; 
+                self.$blockui("show");
                 return self.$ajax(API.checkUpdate, commandCheck);
             }).then(res => {
                 if (res == undefined) return;
