@@ -184,8 +184,8 @@ export class CmmS45BComponent extends Vue {
                     // self.isDisPreP = 
                     self.convertAppInfo(self.data);
                     // self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
-
-
+                    // self.disableB24 = data.appStatusCount.unApprovalNumber == 0 ? true : false;
+                    self.disableB24 = !self.isEmptyApprovalList();
                 }).catch(() => {
                     self.$mask('hide');
                 });
@@ -264,7 +264,7 @@ export class CmmS45BComponent extends Vue {
                 self.dateRange = { start: self.$dt.fromUTCString(self.appListExtractCondition.periodStartDate, 'YYYY/MM/DD'), end: self.$dt.fromUTCString(self.appListExtractCondition.periodEndDate, 'YYYY/MM/DD') };
                 self.convertAppInfo(self.data);
                 self.createLstAppType(self.data.appListExtractConditionDto.opListOfAppTypes);
-                self.disableB24 = self.appStatus.unApprovalNumber == 0 ? true : false;
+                self.disableB24 = !self.isEmptyApprovalList();
 
             }).catch(() => {
                 self.$mask('hide');
@@ -301,6 +301,17 @@ export class CmmS45BComponent extends Vue {
 
 
     }
+    public isEmptyApprovalList() {
+        const self = this;
+        _.forEach(self.lstAppByEmp, (x: AppByEmp) => {
+            if (_.isEmpty(x.lstApp)) {
+
+                return false;
+            }
+        });
+
+        return true;
+    }
 
     public getHtmlPer() {
         return `<div>` + this.$i18n('CMMS45_91', this.appPerNumber.toString()).replace(/\n/g, '<br />') + `</div>`;
@@ -316,6 +327,7 @@ export class CmmS45BComponent extends Vue {
     private convertAppInfo(data: ApplicationListDtoMobile) {
         let self = this;
         self.lstAppByEmp = [];
+        data.appListInfoDto.appLst = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.appType == 0 || i.appType == 2 || i.appType == 3);
         if (data.appListInfoDto.appLst.length == 0) {
             self.displayB513 = 1;
         } else if (data.appListInfoDto.appLst.length > data.appAllNumber) {
@@ -329,14 +341,23 @@ export class CmmS45BComponent extends Vue {
         lstSCD.forEach((o) => {
 
             let appInfor = _.filter(data.appListInfoDto.appLst, (i: ListOfApplication) => i.applicantCD == o.applicantCD && (self.selectedValue == '-1' || String(i.appType) == self.selectedValue));
-            self.lstAppByEmp.push(new AppByEmp({
-                empCD: o.applicantCD,
-                empName: o.applicantName,
-                lstApp: self.convertLstApp(appInfor),
-                displayB52: appInfor.length > data.appPerNumber,
-                appPerNumber: data.appPerNumber
-            }));
+            if (!_.isEmpty(self.convertLstApp(appInfor))) {
+                self.lstAppByEmp.push(new AppByEmp({
+                    empCD: o.applicantCD,
+                    empName: o.applicantName,
+                    lstApp: self.convertLstApp(appInfor),
+                    displayB52: appInfor.length > data.appPerNumber,
+                    appPerNumber: data.appPerNumber
+                }));
+            }
         });
+        if (self.lstAppByEmp.length == 0) {
+            self.displayB513 = 1;
+        } else if (data.appListInfoDto.appLst.length > data.appAllNumber) {
+            self.displayB513 = 2;
+        } else {
+            self.displayB513 = 0;
+        }
     }
 
     // private getLstApp(appLst: ListOfApplication, sCD: string) {
