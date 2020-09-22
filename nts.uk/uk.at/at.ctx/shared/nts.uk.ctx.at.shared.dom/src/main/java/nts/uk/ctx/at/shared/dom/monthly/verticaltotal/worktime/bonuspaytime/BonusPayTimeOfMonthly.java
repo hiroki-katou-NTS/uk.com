@@ -7,7 +7,7 @@ import java.util.Map;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**

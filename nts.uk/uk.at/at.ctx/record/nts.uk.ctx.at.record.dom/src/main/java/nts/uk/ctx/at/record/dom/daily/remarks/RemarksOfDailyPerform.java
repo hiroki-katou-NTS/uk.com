@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.daily.remarks;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RecordRemarks;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RecordRemarks;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.remarks.RemarksOfDailyAttd;
 
 /** 日別実績の備考 */
 @Getter
