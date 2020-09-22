@@ -7,7 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDate;
-import nts.uk.screen.at.app.query.ksu.ksu002.a.TheInitialDisplayDateDto;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.TheInitialDisplayDateDto;
 
 @Path("screen/ksu/ksu002/")
 @Produces("application/json")

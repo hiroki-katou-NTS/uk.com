@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.ksu.ksu002.a;
+package nts.uk.screen.at.app.query.ksu.ksu002.a.input;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,8 +14,10 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TheInitialDisplayDateDto {
+public class EmployeeInformationInput {
 
-	private GeneralDate baseDate;
+	public String employeeId;
+	
+	public GeneralDate baseDate;
 	
 }
