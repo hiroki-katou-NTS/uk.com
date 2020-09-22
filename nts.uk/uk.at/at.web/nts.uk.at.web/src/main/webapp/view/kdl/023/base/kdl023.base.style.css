@@ -1,17 +1,26 @@
 
 .kdl023-content-area {
-	font-size: 0.85rem;
 	height: calc(-110px + 100vh) !important;
 }
+
+.kdl023-content-area .pull-left * {
+    font-size: 0.9rem;
+}
+
 #calendar-reflect-pattern {
 	width: 990px;
 }
-.reflect-setting {
+
+#reflect-setting {
 	padding: 5px 5px 10px 5px;
 	width:360px;
 	height: auto;
 	margin-right: 20px;
 	float: left;
+}
+
+.pad-top {
+	margin-top: 37px;
 }
 
 .margin-left-30 {
@@ -48,6 +57,7 @@
 .label.warning.kdl023-warning {
 	padding: 5px 10px;
 	margin: 5px;
+	width: calc(100% - 10px);
 }
 
 .pull-right.kdl023 {

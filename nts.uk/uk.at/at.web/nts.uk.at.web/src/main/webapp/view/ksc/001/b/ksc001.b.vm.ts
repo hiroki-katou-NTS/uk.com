@@ -471,7 +471,7 @@ module nts.uk.at.view.ksc001.b {
 					newListEmployees: Array<string> = [];
 
 				let dfd = $.Deferred<void>();
-				//nts.uk.ui.block.grayout(); // block ui
+
 				self.$blockui("grayout");
 
 				self.employeeList( [] );
@@ -498,17 +498,19 @@ module nts.uk.at.view.ksc001.b {
 				let startDate = moment.utc( self.periodStartDate(), "YYYY/MM/DD" );
 				let endDate = moment.utc( self.periodEndDate(), "YYYY/MM/DD" );
 
+				self.isKCP005EmployeeSelectedAll(false);
+
 				if(self.selectedImplementAtrCode() === ImplementAtr.GENERALLY_CREATED
 					|| (self.selectedImplementAtrCode() === ImplementAtr.RECREATE &&
 					self.selectRebuildAtrCode() === ReBuildAtr.REBUILD_ALL) ) {
 
 					self.employeeList( employeeSearchs );
 					self.selectedEmployeeCode( listSelectedEmpCode );
-					self.isKCP005EmployeeSelectedAll(false);
+					//self.isKCP005EmployeeSelectedAll(false);
 					self.$blockui("hide");
 					dfd.resolve();
 				} else {
-					self.isKCP005EmployeeSelectedAll(true);
+					//self.isKCP005EmployeeSelectedAll(true);
 
 					let listEmployeeFilter: ListEmployeeIds = new ListEmployeeIds(
 						employeeIds,
@@ -602,7 +604,7 @@ module nts.uk.at.view.ksc001.b {
 				}
 				// check selection employee
 				if( self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0 ) {
-					var user: any = self.$user;//__viewContext.user;
+					var user: any = self.$user;
 					self.findPersonalScheduleByEmployeeId( user.employeeId ).done( function( data ) {
 						self.updatePersonalScheduleData( data );
 						// focus by done
@@ -615,7 +617,7 @@ module nts.uk.at.view.ksc001.b {
 				}
 				else {
 					// show message by not choose employee of kcp005
-					nts.uk.ui.dialog.alertError( { messageId : 'Msg_206' } );
+					self.$dialog.error( { messageId : 'Msg_206' } ).then(()=>{});
 				}
 			}
 
@@ -805,10 +807,11 @@ module nts.uk.at.view.ksc001.b {
 			private nextPageC(): void {
 				var self = this;
 
+				self.isKCP005EmployeeSelectedAll(false);
+
 				if( self.isInValidCopyPasteSchedule() ) {
 					return;
 				} else {
-					self.isKCP005EmployeeSelectedAll(false);
 					self.buildString();
 					self.next().done( function() {
 						$('#employeeSearch .nts-gridlist').attr('tabindex', '-1');
@@ -863,18 +866,24 @@ module nts.uk.at.view.ksc001.b {
 					selectedEmployeeCode = self.selectedEmployeeCode(),
 					kcp005EmployeeList = self.kcp005EmployeeList();
 
-				if( !self.isKCP005EmployeeSelectedAll() ) {
-					self.$dialog.error( { messageId : "Msg_758" } ).then(() => {
-						self.isKCP005EmployeeSelectedAll(true);
+				if ( selectedEmployeeCode.length <= 0 ) {
+					self.$dialog.error ( { messageId : "Msg_206" } ).then ( () => {
 						return;
 					} );
 				} else {
-					if ( selectedEmployeeCode.length <= 0 ) {
-						self.$dialog.error ( { messageId : "Msg_206" } ).then ( () => {
+
+					let chk = $('#employeeSearch span[name="hchk"]').attr('data-chk');
+					if( chk === 'off' && !self.isKCP005EmployeeSelectedAll())
+						self.isKCP005EmployeeSelectedAll(false);
+					else if( chk === 'on')
+						self.isKCP005EmployeeSelectedAll(true);
+
+					if( !self.isKCP005EmployeeSelectedAll() ) {
+						self.$dialog.error( { messageId : "Msg_758" } ).then(() => {
 							return;
 						} );
 					} else {
-						let totalEmployees = selectedEmployeeCode.length,
+						let totalEmployees = 0,
 							newEmployeesIds: Array<string> = [];
 
 						_.forEach ( selectedEmployeeCode, ( item ) => {
@@ -885,6 +894,7 @@ module nts.uk.at.view.ksc001.b {
 						} );
 
 						self.employeeIds ( newEmployeesIds );
+						totalEmployees = newEmployeesIds.length;
 						self.lengthEmployeeSelected ( self.$i18n ( "KSC001_47", [ totalEmployees.toString () ] ) );
 						self.openDialogPageE ();
 					}

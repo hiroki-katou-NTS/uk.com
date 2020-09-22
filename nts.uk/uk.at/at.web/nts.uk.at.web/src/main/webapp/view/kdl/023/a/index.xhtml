@@ -21,7 +21,7 @@
 			</div>
 		</ui:define>
 		<ui:define name="extended-function">
-            <com:ko-if bind="!isExecMode">
+            <com:ko-if bind="!isExecMode()">
                 <!--A4_1-->
                 <button id="btnClose" class="large ref-mode" data-bind="click: closeDialog" tabindex="13">#{i18n.getText('KDL023_16')}</button>
             </com:ko-if>
