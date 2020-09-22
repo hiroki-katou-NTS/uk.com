@@ -9,7 +9,7 @@ import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
-import nts.uk.ctx.at.record.dom.workplaceapproverhistory.ChangeWorkplaceApproverHistoryDomainService;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.ChangeWorkplaceApproverHistoryDomainService;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
