@@ -10,6 +10,9 @@
 .ipAddress{
 	margin: 23px 0;
 }
+.ipAddress>.form-label{
+    margin-right: 18px;
+}
 .ipAddress input{
     width: 25px;
 }
