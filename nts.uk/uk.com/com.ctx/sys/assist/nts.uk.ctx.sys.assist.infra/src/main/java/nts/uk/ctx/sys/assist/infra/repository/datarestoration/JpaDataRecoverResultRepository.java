@@ -24,14 +24,14 @@ public class JpaDataRecoverResultRepository extends JpaRepository implements Dat
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspmtDataRecoverResult f "
 			+ " WHERE f.cid =:cid "
-				+ " AND f.saveStartDatetime >=:startDateOperator "
-				+ " AND f.saveEndDatetime <=:endDateOperator ";
+				+ " AND f.startDateTime >=:startDateOperator "
+				+ " AND f.endDateTime <=:endDateOperator ";
 
 private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspmtDataRecoverResult f "
 			+ " WHERE f.cid =:cid "
-				+ " AND f.saveStartDatetime =:startDateOperator "
-				+ " AND f.saveEndDatetime =:endDateOperator "
+				+ " AND f.startDateTime =:startDateOperator "
+				+ " AND f.endDateTime =:endDateOperator "
 				+ " AND f.practitioner =:practitioner ";
 
 	@Override

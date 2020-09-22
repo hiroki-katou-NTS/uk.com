@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.dom.datarestoration;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.Getter;
@@ -47,6 +48,10 @@ public class DataRecoveryResult extends AggregateRoot {
 	 */
 	private String executionResult;
 
+	
+	//field 実行結果
+	private List<DataRecoveryLog> listDataRecoveryLogs;
+	
 	/**
 	 * 開始日時
 	 */
@@ -72,14 +77,15 @@ public class DataRecoveryResult extends AggregateRoot {
 
     
 	public DataRecoveryResult(String dataRecoveryProcessId, String cid, String patternCode,
-			String practitioner, String executionResult, GeneralDateTime startDateTime,
-			GeneralDateTime endDateTime, Integer saveForm, String saveName, String ipAddress,
-			String pcName, String account) {
+			String practitioner, String executionResult,List<DataRecoveryLog> listDataRecoveryLogs,
+			GeneralDateTime startDateTime, GeneralDateTime endDateTime, Integer saveForm, 
+			String saveName, String ipAddress, String pcName, String account) {
 		this.dataRecoveryProcessId = dataRecoveryProcessId;
 		this.cid                   = cid;
 		this.patternCode           = patternCode;
 		this.practitioner          = practitioner;
 		this.executionResult       = executionResult;
+		this.listDataRecoveryLogs  = listDataRecoveryLogs;
 		this.startDateTime         = startDateTime;
 		this.endDateTime           = Optional.ofNullable(endDateTime);
 		this.saveForm              = EnumAdaptor.valueOf(saveForm, StorageForm.class);

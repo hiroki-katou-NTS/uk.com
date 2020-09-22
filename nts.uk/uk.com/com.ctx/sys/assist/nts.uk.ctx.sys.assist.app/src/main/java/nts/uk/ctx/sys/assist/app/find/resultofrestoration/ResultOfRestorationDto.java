@@ -2,10 +2,12 @@ package nts.uk.ctx.sys.assist.app.find.resultofrestoration;
 
 
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
-
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 
@@ -46,6 +48,9 @@ public class ResultOfRestorationDto {
 	 */
 	private String executionResult;
 
+	//field 実行結果
+	private List<DataRecoveryLog> listDataRecoveryLogs;
+		
 	/**
 	 * 開始日時
 	 */
@@ -54,17 +59,17 @@ public class ResultOfRestorationDto {
 	/**
 	 * 終了日時
 	 */
-	private GeneralDateTime endDateTime; //op
+	private GeneralDateTime endDateTime;
 
 	/**
 	 * 保存形態
 	 */
-	private int saveForm; //v()
+	private int saveForm;
 
 	/**
 	 * 保存名称
 	 */
-	private String saveName; //v()
+	private String saveName;
 
 	 //field ログイン情報
     private LoginInfo loginInfo;
@@ -77,6 +82,7 @@ public class ResultOfRestorationDto {
 			domain.getPatternCode(),
 			domain.getPractitioner(),
 			domain.getExecutionResult(),
+			domain.getListDataRecoveryLogs(),
 			domain.getStartDateTime(),
 			domain.getEndDateTime().orElse(null),
 			domain.getSaveForm().value,

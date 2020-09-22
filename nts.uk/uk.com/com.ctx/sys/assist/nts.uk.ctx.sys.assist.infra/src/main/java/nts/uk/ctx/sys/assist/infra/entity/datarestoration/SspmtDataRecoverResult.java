@@ -1,11 +1,15 @@
 package nts.uk.ctx.sys.assist.infra.entity.datarestoration;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -58,7 +62,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	@Basic(optional = false)
 	@Column(name = "PRACTITIONER")
 	public String practitioner;
-
+	
 	/**
 	 * 実行結果
 	 */
@@ -114,6 +118,9 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	@Basic(optional = false)
 	@Column(name = "PC_ACOUNT")
 	public String pcAccount;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "dataRecoverResult", orphanRemoval = true)
+	private List<SspmtDataRecoverLog> listResultLogRecovers;
 
 	@Override
 	protected Object getKey() {
@@ -127,6 +134,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 				this.saveSetCd, 
 				this.practitioner,
 				this.executionResult, 
+				this.listResultLogRecovers.stream().map(item -> item.toDomain()).collect(Collectors.toList()),
 				this.startDateTime, 
 				this.endDateTime, 
 				this.saveForm, 
@@ -137,7 +145,9 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 	}
 
 	public static SspmtDataRecoverResult toEntity(DataRecoveryResult domain) {
-		return new SspmtDataRecoverResult(domain.getDataRecoveryProcessId(), domain.getCid(),
+		return new SspmtDataRecoverResult
+			(
+				domain.getDataRecoveryProcessId(), domain.getCid(),
 				domain.getPatternCode(), domain.getPractitioner(),
 				domain.getExecutionResult(), domain.getStartDateTime(),
 				domain.getEndDateTime().orElse(null), 
@@ -145,6 +155,8 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 				domain.getSaveName().v(),
 				domain.getLoginInfo().getIpAddress(),
 				domain.getLoginInfo().getPcName(),
-				domain.getLoginInfo().getAccount());
+				domain.getLoginInfo().getAccount(),
+				domain.getListDataRecoveryLogs().stream().map(item -> SspmtDataRecoverLog.toEntity(item)).collect(Collectors.toList())
+			);
 	}
 }
