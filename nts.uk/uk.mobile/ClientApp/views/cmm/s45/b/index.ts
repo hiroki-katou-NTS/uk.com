@@ -431,7 +431,7 @@ export class CmmS45BComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2) {
+            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3) {
                 self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
             }
         });
