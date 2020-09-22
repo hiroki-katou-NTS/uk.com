@@ -1484,7 +1484,7 @@ public class ExecuteProcessExecutionCommandHandler extends AsyncCommandHandler<E
 		s.setConfirm(false);
 		//作成種類←"新規作成"
 
-		s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+		s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
 		//作成方法の指定 {
         //・作成方法←"個人情報"
         //・コピー開始日←optional.empty
