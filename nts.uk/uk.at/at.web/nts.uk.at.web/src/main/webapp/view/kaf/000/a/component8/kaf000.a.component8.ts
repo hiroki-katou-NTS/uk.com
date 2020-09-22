@@ -31,11 +31,21 @@ module nts.uk.at.view.kaf000.a.component8.viewmodel {
                             </div>
                             <div class="table" style="margin-top: 1px;">
                                 <div class="cell" data-bind="i18n: 'KAF000_58'"></div>
-                                <div class="cell" data-bind="if: opAchievementDetail && opAchievementDetail.opWorkTime && opAchievementDetail.opLeaveTime">
-                                    <span data-bind="text: $parent.formatTime(opAchievementDetail.opWorkTime)"></span>
-                                    <span> ~ </span>
-                                    <span data-bind="text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
-                                </div>
+                                <div class="cell" data-bind="if: opAchievementDetail">
+									<span data-bind="if: opAchievementDetail.opWorkTime">
+										<span data-bind="text: $parent.formatTime(opAchievementDetail.opWorkTime)"></span>
+									</span>
+									<span data-bind="if: !opAchievementDetail.opWorkTime">
+										<span style="visibility: hidden;">null</span>
+									</span>
+									<span> ~ </span>
+									<span data-bind="if: opAchievementDetail.opLeaveTime">
+										<span data-bind="text: $parent.formatTime(opAchievementDetail.opLeaveTime)"></span>
+									</span>
+									<span data-bind="if: !opAchievementDetail.opLeaveTime">
+										<span style="visibility: hidden;">null</span>
+									</span>
+								</div>
                             </div>
                         </div>
                     </div>
