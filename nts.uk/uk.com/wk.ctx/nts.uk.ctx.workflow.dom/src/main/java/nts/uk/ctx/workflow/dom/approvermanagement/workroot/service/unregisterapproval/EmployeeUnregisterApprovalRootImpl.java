@@ -152,9 +152,6 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 				List<String> appTypes = new ArrayList<>();
 				//APPLICATION
 				for (ApplicationType appType : ApplicationType.values()) {
-					if(appType == ApplicationType.APPLICATION_36) {
-						continue;
-					}
 					// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
 					boolean isEmpRoot =false;
 					isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId, lstComs, lstWps, lstPss, empImport,
