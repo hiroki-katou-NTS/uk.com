@@ -9,6 +9,7 @@ package nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternSettingBatchDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
@@ -66,6 +67,10 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	 * @return the work monthly setting
 	 */
 	public WorkMonthlySetting toDomainWorkDays(String companyId, GeneralDate ymdk) {
+		if (settingWorkDays == null
+				|| StringUtil.isNullOrEmpty(settingWorkDays.getWorkTypeCode(),false)){
+			return null;
+		}
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingWorkDays,
 				companyId, ymdk, monthlyPatternCode));
 	}
@@ -80,6 +85,10 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	 * @return the work monthly setting
 	 */
 	public WorkMonthlySetting toDomainStatutoryHolidays(String companyId, GeneralDate ymdk) {
+		if (settingStatutoryHolidays == null
+				|| StringUtil.isNullOrEmpty(settingStatutoryHolidays.getWorkTypeCode(),false)){
+			return null;
+		}
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(settingStatutoryHolidays,
 				companyId, ymdk, monthlyPatternCode));
 	}
@@ -94,6 +103,10 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	 * @return the work monthly setting
 	 */
 	public WorkMonthlySetting toDomainNoneStatutoryHolidays(String companyId, GeneralDate ymdk) {
+		if (settingNoneStatutoryHolidays == null
+				|| StringUtil.isNullOrEmpty(settingNoneStatutoryHolidays.getWorkTypeCode(),false)){
+			return null;
+		}
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(
 				settingNoneStatutoryHolidays, companyId, ymdk, monthlyPatternCode));
 	}
@@ -108,6 +121,10 @@ public class MonthlyPatternSettingBatchSaveCommand {
 	 * @return the work monthly setting
 	 */
 	public WorkMonthlySetting toDomainPublicHolidays(String companyId, GeneralDate ymdk) {
+		if (settingPublicHolidays == null
+				|| StringUtil.isNullOrEmpty(settingPublicHolidays.getWorkTypeCode(),false)){
+			return null;
+		}
 		return new WorkMonthlySetting(new WorkMonthlySettingGetMementoImpl(this.settingPublicHolidays,
 				companyId, ymdk, this.monthlyPatternCode));
 	}
