@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -26,8 +27,11 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHoliday;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.holiday.PublicHolidayRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WeeklyWorkSettingRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
+import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -60,6 +64,9 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
+	@Inject
+	private WeeklyWorkSettingRepository weeklyWorkSettingRepository;
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -75,7 +82,10 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// get command
 		MonthlyPatternSettingBatchSaveCommand command = context.getCommand();
-		
+
+		if (command.getSettingWorkDays() == null){
+			throw new BusinessException("Msg_151");
+		}
 
 		// check pair work days
 		basicScheduleService.checkPairWorkTypeWorkTime(command.getSettingWorkDays().getWorkTypeCode(),
@@ -117,8 +127,9 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 		
 		// data insert setting batch
 		List<WorkMonthlySetting> addWorkMonthlySettings = new ArrayList<>();
-		
-		
+
+		WeeklyWorkDayPattern dto = this.weeklyWorkSettingRepository.getWeeklyWorkDayPatternByCompanyId(companyId);
+
 		// check by next day of begin end
 		while (toStartDate.yearMonth().v() <= command.getEndYearMonth()) {
 			
@@ -142,11 +153,8 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					updateWorkMonthlySettings.add(dataPublic);
 				}
 			} else {
-				WeeklyWorkSettingDto dto = this.weeklyWorkSettingFinder
-						.checkWeeklyWorkSetting(toStartDate);
-				
 				// is work day
-				switch (EnumAdaptor.valueOf(dto.getWorkdayDivision(), WorkdayDivision.class)) {
+				switch (EnumAdaptor.valueOf(dto.getWorkingDayCtgOfTagertDay(toStartDate).value, WorkdayDivision.class)) {
 				case WORKINGDAYS:
 					// data working day setting
 					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, toStartDate);
@@ -280,10 +288,6 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 	
 	/**
 	 * To date.
-	 *
-	 * @param year the year
-	 * @param month the month
-	 * @param day the day
 	 * @return the date
 	 */
 	public Date toDate(int yearMonthDate) {

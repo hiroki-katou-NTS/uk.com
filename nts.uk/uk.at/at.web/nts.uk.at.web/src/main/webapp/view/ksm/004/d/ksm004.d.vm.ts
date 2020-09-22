@@ -64,14 +64,6 @@ module ksm004.d.viewmodel {
                 { code: 1, name: nts.uk.resource.getText('KSM004_47') },
                 { code: 2, name: nts.uk.resource.getText('KSM004_48') }
             ]);
-            // day
-            // self.selectedMon = ko.observable(0);
-            // self.selectedTue = ko.observable(0);
-            // self.selectedWed = ko.observable(0);
-            // self.selectedThu = ko.observable(0);
-            // self.selectedFri = ko.observable(0);
-            // self.selectedSat = ko.observable(2);
-            // self.selectedSun = ko.observable(1);
 
             //list
             self.list = ko.observableArray(null);
@@ -79,7 +71,7 @@ module ksm004.d.viewmodel {
             //list holiday
             self.listHoliday = ko.observableArray(null);
             self.itemHoliday = ko.observable(null);
-
+            $("#table-bottom").ntsFixedTable({ });
         }//end constructor
 
         /**
@@ -87,35 +79,38 @@ module ksm004.d.viewmodel {
         */
         startPage(): JQueryPromise<any> {
             const self = this;
-            var dfd = $.Deferred();
+            nts.uk.ui.block.invisible();
+            let dfd = $.Deferred();
             service.getWeeklyWorkDay().done(function(data){
-                data.workdayPatternItemDtoList.forEach(item => {
-                    switch (item.dayOfWeek) {
-                        case 1:
-                            self.selectedMon(Number(item.workdayDivision));
-                            break;
-                        case 2:
-                            self.selectedTue(item.workdayDivision);
-                            break;
-                        case 3:
-                            self.selectedWed (item.workdayDivision);
-                            break;
-                        case 4:
-                            self.selectedThu (item.workdayDivision);
-                            break;
-                        case 5:
-                            self.selectedFri(item.workdayDivision);
-                            break;
-                        case 6:
-                            self.selectedSat(item.workdayDivision);
-                            break;
-                        case 7:
-                            self.selectedSun(item.workdayDivision);
-                            break;
-                    }
-                });
+                if(data && data.workdayPatternItemDtoList.length > 0) {
+                    data.workdayPatternItemDtoList.forEach(item => {
+                        switch (item.dayOfWeek) {
+                            case 1:
+                                self.selectedMon(Number(item.workdayDivision));
+                                break;
+                            case 2:
+                                self.selectedTue(item.workdayDivision);
+                                break;
+                            case 3:
+                                self.selectedWed (item.workdayDivision);
+                                break;
+                            case 4:
+                                self.selectedThu (item.workdayDivision);
+                                break;
+                            case 5:
+                                self.selectedFri(item.workdayDivision);
+                                break;
+                            case 6:
+                                self.selectedSat(item.workdayDivision);
+                                break;
+                            case 7:
+                                self.selectedSun(item.workdayDivision);
+                                break;
+                        }
+                    });
+                }
                 dfd.resolve();
-
+                nts.uk.ui.block.clear();
             });
             return dfd.promise();
         }//end startPage
@@ -124,7 +119,7 @@ module ksm004.d.viewmodel {
          * function btn decition
          */
         decition() {
-            var self = this;
+            const self = this;
             nts.uk.ui.block.invisible();
             self.startMonth(self.dateValue().startDate);
             self.endMonth(self.dateValue().endDate);
@@ -140,8 +135,6 @@ module ksm004.d.viewmodel {
                     // startYM < endYM
                         while (startYM.format("YYYYMMDD") < endYM.format("YYYYMMDD")) //value : 0-11
                         {
-                            //date of month
-                            let dateOfMonth = startYM.date(); //value : 1-31
                             //date or week
                             let dateOfWeek = startYM.day();   //value : 0-6
                             let date = (startYM.format("YYYYMMDD"));
@@ -212,31 +205,17 @@ module ksm004.d.viewmodel {
                             }
                         }
                     
-                    }//end : !$('.nts-editor').ntsError("hasError")
+                    }
                     
                 });
             });
-        }//end decition
-
-        // /**
-        //  * get weekly work day : return weekly work day
-        //  */
-        // getWeeklyWorkDay() {
-        //     var self = this;
-        //     var dfd = $.Deferred<any>();
-        //     service.getWeeklyWorkDay().done(function(data) {
-        //         console.log(data);
-        //         dfd.resolve(data);
-        //     });
-        //     return dfd.promise();
-        // }
-
+        }
         /**
          * get all holiday : return listHoliday
          */
         getAllHoliday() {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            const self = this;
+            let dfd = $.Deferred<any>();
             service.getAllHoliday().done(function(data) {
                 self.listHoliday(data);
                 dfd.resolve(data);
@@ -247,12 +226,11 @@ module ksm004.d.viewmodel {
          * add calendar company
          */
         addCalendarCompany(list) {
-            var self = this;
             service.addCalendarCompany(list).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                 nts.uk.ui.windows.close();     
                 });
-                
+
             }).fail(function(res) {
                 nts.uk.ui.block.clear();
                 nts.uk.ui.dialog.alert(res.mesage);
@@ -263,7 +241,6 @@ module ksm004.d.viewmodel {
          * update calendar company
      */
         updateCalendarCompany(list) {
-            var self = this;
             service.updateCalendarCompany(list).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                     nts.uk.ui.windows.close();  
@@ -278,7 +255,6 @@ module ksm004.d.viewmodel {
          * add calendar class
          */
         addCalendarClass(list) {
-            var self = this;
             service.addCalendarClass(list).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                     nts.uk.ui.windows.close();  
@@ -293,7 +269,6 @@ module ksm004.d.viewmodel {
          * update calendar class
          */
         updateCalendarClass(list) {
-            var self = this;
             service.updateCalendarClass(list).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                     nts.uk.ui.windows.close();  
@@ -308,7 +283,6 @@ module ksm004.d.viewmodel {
          * add calendar workplace
          */
         addCalendarWorkplace(list) {
-            var self = this;
             service.addCalendarWorkplace(list).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                     nts.uk.ui.windows.close();  
@@ -323,7 +297,6 @@ module ksm004.d.viewmodel {
          * update calendar workplace
          */
         updateCalendarWorkplace(list) {
-            var self = this;
             service.updateCalendarWorkplace(list).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
                     nts.uk.ui.windows.close();  

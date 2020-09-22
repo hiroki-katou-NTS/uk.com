@@ -121,7 +121,7 @@ export class KafS07AComponent extends KafS00ShrComponent {
             self.mode = false;
             this.data = self.params;
         }
-        self.fetchStart();
+        
 
     }
 
@@ -136,8 +136,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
     }
 
     public mounted() {
-        let self = this;
-
+        const self = this;
+        self.fetchStart();
     }
 
     public fetchStart() {
@@ -677,7 +677,14 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
+            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID })
+                .then((res: any) => {
+                    console.log(res);
+                    self.data = res;
+                    self.mode = false;
+                    self.fetchStart();
+                    self.$forceUpdate();
+                });
         }).catch((res: any) => {
             this.$mask('hide');
             self.handleErrorMessage(res);

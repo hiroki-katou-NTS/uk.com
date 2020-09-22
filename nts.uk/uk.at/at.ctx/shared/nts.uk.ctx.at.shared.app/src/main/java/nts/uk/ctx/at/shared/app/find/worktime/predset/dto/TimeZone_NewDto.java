@@ -9,12 +9,12 @@ public class TimeZone_NewDto {
 	/**
 	 * 開始時刻
 	 */
-	private int startTime;
+	private Integer startTime;
 	
 	/**
 	 * 終了時刻
 	 */
-	private int endTime;
+	private Integer endTime;
 	
 	public static TimeZone_NewDto fromDomain(TimeZone timeZone) {
 		return new TimeZone_NewDto(timeZone.getStartTime().v(), timeZone.getEndTime().v());
