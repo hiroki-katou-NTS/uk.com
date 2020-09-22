@@ -549,6 +549,113 @@ module nts.uk.com.view.cli003.f {
             //取得した記録データ、ログ出力項目を返す
             vm.getLogAndGenerateTable();
         }
+
+        getLogData(paramLog: any) {
+            const vm = this;
+            let dfd = $.Deferred<any>();
+            let recordType = Number(vm.logTypeSelectedCode());
+            let dataType = Number(vm.dataTypeSelectedCode());
+            let systemType = Number(vm.systemTypeSelectedCode());
+            vm.$blockui('grayout');
+            //記録を取得する
+            service.getLogSettingsBySystem(systemType).done((logSettings: Array<LogSettingParam>) => {
+                // Get Log basic info
+                console.log(paramLog);
+                service.getLogBasicInfoByModifyDate(paramLog).done((data: Array<LogBasicInfoModel>) => {
+                    if (data.length > 0) {
+                        // order by list
+                        if (recordType == RECORD_TYPE.LOGIN || recordType == RECORD_TYPE.START_UP) {
+                            data = _.orderBy(data, ['modifyDateTime', 'employeeCodeLogin'], ['desc', 'asc']);
+                        }
+                        if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO || recordType == RECORD_TYPE.DATA_CORRECT) {
+                            data = _.orderBy(data, ['modifyDateTime', 'employeeCodeTaget'], ['desc', 'asc']);
+                        }
+                        if (data.length > vm.maxlength()) {
+                            vm.isDisplayText(true);
+                        }
+                        //log setting list start boot history not in use
+                        let logSettingEdit :LogSettingParam[] = logSettings.filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE);
+                        let logSettingBoot :LogSettingParam[] = logSettings.filter(x => x.bootHistoryRecord === USE_STAGE.NOT_USE);
+                        const logSettingEditProgramId = {};
+                        logSettingEdit.forEach(item => logSettingEditProgramId[item.programId] = item);
+                        const logSettingBootProgramId = {};
+                        logSettingBoot.forEach(item => logSettingBootProgramId[item.programId] = item);
+                        data.map((logBasicInfoModel, index) => {
+                            //記録の絞り込み
+                            if (index + 1 <= vm.maxlength()) {
+                                // Log LOGIN 
+                                if (recordType === RECORD_TYPE.LOGIN) {
+                                    if(vm.filterLogLogin(logBasicInfoModel)){
+                                        vm.listLogBasicInforModel.push(logBasicInfoModel);
+                                    }
+                                } else if (recordType === RECORD_TYPE.START_UP) {
+                                    // Log START UP
+                                    if(vm.filterLogStartUp(logBasicInfoModel)){
+                                        if (!logSettingBootProgramId[logBasicInfoModel.programId]) {
+                                            vm.listLogBasicInforModel.push(logBasicInfoModel);
+                                        }
+                                    }
+                                } else if (recordType === RECORD_TYPE.UPDATE_PERSION_INFO) {
+                                    // Log PERSON INFORMATION UPDATE
+                                    if(vm.filterLogPersonInfoUpdate(logBasicInfoModel)){
+                                            if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
+                                                if (logBasicInfoModel.processAttr !== '新規') {
+                                                    // process sub header
+                                                    const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
+                                                    vm.listLogBasicInforModel.push(logtemp);
+                                                };
+                                            } else {
+                                                const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
+                                                vm.listLogBasicInforModel.push(logtemp);
+                                            }
+                                    }
+                                } else if (recordType === RECORD_TYPE.DATA_CORRECT) {
+                                    // Log DATA CORRECTION
+                                    if(vm.filterLogDataCorrection(logBasicInfoModel)){
+                                            if (vm.validateForDataCorrection(dataType, logSettingEditProgramId)) {
+                                                // process sub header
+                                                const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
+                                                vm.listLogBasicInforModel.push(logtemp);
+                                            }
+                                    }
+                                }
+                            }
+                        });
+                        //Check listLogBasicInforModel after filter
+                        if (vm.listLogBasicInforModel.length <= 0) {
+                            vm.$dialog.alert({ messageId: "Msg_1220" });
+                            vm.$blockui('clear');
+                        }
+                    } else {
+                        vm.$dialog.alert({ messageId: "Msg_1220" });
+                        vm.$blockui('clear');
+                    }
+                    // Generate table
+                    if (recordType == RECORD_TYPE.DATA_CORRECT) {
+                        vm.generateDataCorrectLogGrid();
+                    } else if (recordType == RECORD_TYPE.UPDATE_PERSION_INFO) {
+                        vm.generatePersionInforGrid();
+                    } else {
+                        vm.generateIgGrid();
+                    }
+                    dfd.resolve();
+                }).always(() => {
+                    vm.$blockui('clear');
+                    vm.$errors('clear');
+                }).fail((error: any) => {
+                    vm.$dialog.alert(error);
+                    vm.$blockui('clear');
+                    vm.$errors('clear');
+                    dfd.resolve();
+                });
+            }).fail((error: any) => {
+                vm.$blockui('clear');
+                vm.$errors('clear');
+                vm.$dialog.alert(error);
+                dfd.resolve();
+            });
+        }
+
         getLogFromAnother(paramLog: any) {
             const vm = this;
             let dfd = $.Deferred<any>();

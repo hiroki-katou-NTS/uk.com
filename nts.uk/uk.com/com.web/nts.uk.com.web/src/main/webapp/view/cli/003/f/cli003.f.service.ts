@@ -10,7 +10,7 @@ module nts.uk.com.view.cli003.f {
             getLogSettingsBySystem: "sys/portal/logsettings/findBySystem",
             getLogDataSave: "ctx/sys/assist/app/findResultOfSaving",
             getLogDataRecover: "ctx/sys/assist/app/findResultOfRestoration",
-            getLogDataDelete: "ctx/sys/assist/app/findResultOfRestoration",
+            getLogDataDelete: "ctx/sys/assist/app/findResultOfDeletetion",
         }
 
         export function getLogOutputItemsByRecordTypeItemNos(paramOutputItem): JQueryPromise<any> {
