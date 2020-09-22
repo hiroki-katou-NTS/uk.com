@@ -137,6 +137,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             self.dataSourceOb()[0].shift();
             self.dataSourceOb()[0].shift();
         }
+        if (_.isEmpty(self.dataSourceOb()[0])) {
+            self.dataSourceOb()[0] = [];
+        }
         self.isM(true);
         self.tabs.subscribe(value => {
            if (value) {

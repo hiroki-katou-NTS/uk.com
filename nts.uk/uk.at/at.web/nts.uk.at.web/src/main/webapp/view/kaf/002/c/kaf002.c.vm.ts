@@ -181,12 +181,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        bindTabM(data: any) {
            const self = this;
            let reflect = data.appStampReflectOptional;
-           if (reflect.temporaryAttendence == 0) {
+           if (reflect.temporaryAttendence == 0 && !self.isTemporaryAttendence) {
                self.dataSourceOb()[0].pop();
                self.dataSourceOb()[0].pop();
                self.dataSourceOb()[0].pop();
            }
-           if (reflect.attendence == 0) {
+           if (reflect.attendence == 0 && !self.isAttendence) {
                self.dataSourceOb()[0].shift();
                self.dataSourceOb()[0].shift();
            }
