@@ -1,5 +1,9 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
@@ -8,11 +12,7 @@ import nts.uk.ctx.at.schedule.dom.shift.weeklywrkday.WeeklyWorkDayPattern;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleInfo;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-
 import javax.ejb.Stateless;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *  勤務サイクルの適用イメージを作成する
@@ -64,10 +64,10 @@ public class CreateWorkCycleAppImage {
                     case WORKINGDAYS:
                         return;
                     case NON_WORKINGDAY_INLAW:
-                        reflectionImage.addByWeeklyWorking(i, new WorkInformation("", legalHolidayCode));
+                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(legalHolidayCode, ""));
                         break;
                     case NON_WORKINGDAY_EXTRALEGAL:
-                        reflectionImage.addByWeeklyWorking(i, new WorkInformation("", nonStatutoryHolidayCd));
+                        reflectionImage.addByWeeklyWorking(i, new WorkInformation(nonStatutoryHolidayCd, ""));
                         break;
                 }
             });
@@ -85,7 +85,7 @@ public class CreateWorkCycleAppImage {
         val holidayList = require.getpHolidayWhileDate(createPeriod.start(), createPeriod.end());
         String workTypeCD = config.getHolidayCd().isPresent() ? config.getHolidayCd().get().v() : null;
         for (PublicHoliday pubHoliday : holidayList) {
-            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation("",workTypeCD));
+            reflectionImage.addHolidays(pubHoliday.getDate(), new WorkInformation(workTypeCD, ""));
         }
     }
 

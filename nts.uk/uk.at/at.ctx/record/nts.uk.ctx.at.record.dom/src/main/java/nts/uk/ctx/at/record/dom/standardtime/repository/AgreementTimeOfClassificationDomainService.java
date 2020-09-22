@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.standardtime.repository;
 
 import java.util.List;
 
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
 
 public interface AgreementTimeOfClassificationDomainService {
 	

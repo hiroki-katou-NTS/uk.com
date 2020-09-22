@@ -14,10 +14,10 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSetPK;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
 
 @Stateless
 public class JpaAgreementMonthSettingRepository extends JpaRepository implements AgreementMonthSettingRepository {

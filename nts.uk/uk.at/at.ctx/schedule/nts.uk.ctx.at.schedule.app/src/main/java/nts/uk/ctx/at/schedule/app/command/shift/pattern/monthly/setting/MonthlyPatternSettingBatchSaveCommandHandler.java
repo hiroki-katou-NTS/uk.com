@@ -20,6 +20,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.WeeklyWorkSettingFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
@@ -145,12 +146,13 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 
 				// data public holiday setting
 				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, toStartDate);
-				
-				// check exist data
-				if (!workMonthlySetting.isPresent()) {
-					addWorkMonthlySettings.add(dataPublic);
-				} else if (command.isOverwrite()) {
-					updateWorkMonthlySettings.add(dataPublic);
+				if (dataPublic != null) {
+					// check exist data
+					if (!workMonthlySetting.isPresent()) {
+						addWorkMonthlySettings.add(dataPublic);
+					} else if (command.isOverwrite()) {
+						updateWorkMonthlySettings.add(dataPublic);
+					}
 				}
 			} else {
 				// is work day
@@ -158,14 +160,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				case WORKINGDAYS:
 					// data working day setting
 					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataWorking);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataWorking);
+					if (dataWorking != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataWorking);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataWorking);
+						}
 					}
-					
 					break;
 					
 					// is none statutory holiday
@@ -174,14 +176,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					// data none statutory holiday setting
 					WorkMonthlySetting dataNoneStatutory = command
 							.toDomainNoneStatutoryHolidays(companyId, toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataNoneStatutory);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataNoneStatutory);
+					if (dataNoneStatutory != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataNoneStatutory);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataNoneStatutory);
+						}
 					}
-					
 					break;
 					
 					// is statutory holiday
@@ -190,14 +192,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					// data none statutory holiday setting
 					WorkMonthlySetting dataStatutory = command.toDomainStatutoryHolidays(companyId,
 							toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataStatutory);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataStatutory);
+					if (dataStatutory != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataStatutory);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataStatutory);
+						}
 					}
-					
 					break;
 				}
 			}

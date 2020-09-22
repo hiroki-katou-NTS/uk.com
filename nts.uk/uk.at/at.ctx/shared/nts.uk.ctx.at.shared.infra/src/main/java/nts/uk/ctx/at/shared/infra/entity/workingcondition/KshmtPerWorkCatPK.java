@@ -72,4 +72,10 @@ public class KshmtPerWorkCatPK implements Serializable {
 		return true;
 	}
 
+	public KshmtPerWorkCatPK(String historyId, int perWorkCatAtr) {
+		super();
+		this.historyId = historyId;
+		this.perWorkCatAtr = perWorkCatAtr;
+	}
+
 }

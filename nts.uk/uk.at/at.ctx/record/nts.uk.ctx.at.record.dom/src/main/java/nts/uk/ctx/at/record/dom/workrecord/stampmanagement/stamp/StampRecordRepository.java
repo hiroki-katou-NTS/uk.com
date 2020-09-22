@@ -46,7 +46,13 @@ public interface StampRecordRepository {
 	public List<StampRecord> getStempRcNotResgistNumber(String contractCode, DatePeriod period);
 	
 	/**
-	 * [6] 取得する
+	 * @param stampNumber
+	 * @param stampDateTime
+	 * @return
+	 */
+	public Optional<StampRecord> findByKey(StampNumber stampNumber, GeneralDateTime stampDateTime);
+
+	/*** [6] 取得する
 	 * 
 	 * @param contractCd
 	 *            契約コード

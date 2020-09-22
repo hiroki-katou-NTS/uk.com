@@ -9,10 +9,10 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.BasicAgreementSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtBasicAgreementSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtBasicAgreementSettingPK;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
 
 @Stateless
 public class JpaBasicAgreementSettingRepository extends JpaRepository implements BasicAgreementSettingRepository {

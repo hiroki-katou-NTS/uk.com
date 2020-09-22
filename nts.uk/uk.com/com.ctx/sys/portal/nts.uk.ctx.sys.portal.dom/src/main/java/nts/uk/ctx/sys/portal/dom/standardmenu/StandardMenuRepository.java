@@ -3,6 +3,8 @@ package nts.uk.ctx.sys.portal.dom.standardmenu;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.sys.portal.dom.enums.MenuClassification;
+
 /**
  * The Interface StandardMenuRepository.
  */
@@ -161,4 +163,6 @@ public interface StandardMenuRepository {
 	Optional<StandardMenu> getMenuDisplayNameHasQuery(String companyId, String programId, String queryString, String screenId);
 
 	Optional<StandardMenu> getMenuDisplayNameNoQuery(String companyId, String programId, String screenId);
+
+	List<StandardMenu> findByProgram(String companyId, int system, List<MenuClassification> classifications, List<String> programIds, String screenId);
 }

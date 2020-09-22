@@ -5,6 +5,8 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.*;
 
+import java.util.Optional;
+
 /**
  * The Class ExecutionContentDto.
  */
@@ -99,7 +101,7 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 	}
 
 	@Override
-	public void setRecreateCondition(RecreateCondition recreateCondition) {
+	public void setRecreateCondition(Optional<RecreateCondition> recreateCondition) {
 
 	}
 

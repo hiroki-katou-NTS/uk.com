@@ -21,7 +21,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_EXTERNAL_OUT_LOG")
+@Table(name = "OIODT_EX_OUT_LOG")
 public class OiomtExternalOutLog extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -70,21 +70,21 @@ public class OiomtExternalOutLog extends UkJpaEntity implements Serializable {
 	 * ログ登録日時
 	 */
 	@Basic(optional = false)
-	@Column(name = "LOG_REGISTER_DATE")
+	@Column(name = "LOG_REG_DATETIME")
 	public GeneralDateTime logRegisterDate;
 
 	/**
 	 * 処理カウント
 	 */
 	@Basic(optional = false)
-	@Column(name = "PROCESS_COUNT")
+	@Column(name = "PRO_CNT")
 	public int processCount;
 
 	/**
 	 * 処理内容
 	 */
 	@Basic(optional = false)
-	@Column(name = "PROCESS_CONTENT")
+	@Column(name = "PRO_CONTENT")
 	public int processContent;
 
 	@Override
@@ -99,10 +99,16 @@ public class OiomtExternalOutLog extends UkJpaEntity implements Serializable {
 	}
 
 	public static OiomtExternalOutLog toEntity(ExternalOutLog domain) {
-		return new OiomtExternalOutLog(new OiomtExternalOutLogPk(domain.getCompanyId(), domain.getOutputProcessId(), domain.getLogSequenceNumber()),
-				domain.getErrorContent().orElse(null), domain.getErrorTargetValue().orElse(null),
-				domain.getErrorDate().orElse(null), domain.getErrorEmployee().orElse(null),
-				domain.getErrorItem().orElse(null), domain.getLogRegisterDateTime(), domain.getProcessCount(), domain.getProcessContent().value);
+		return new OiomtExternalOutLog(
+				new OiomtExternalOutLogPk(domain.getCompanyId(), domain.getOutputProcessId(), domain.getLogSequenceNumber()),
+				domain.getErrorContent().orElse(null), 
+				domain.getErrorTargetValue().orElse(null),
+				domain.getErrorDate().orElse(null), 
+				domain.getErrorEmployee().orElse(null),
+				domain.getErrorItem().orElse(null), 
+				domain.getLogRegisterDateTime(), 
+				domain.getProcessCount(), 
+				domain.getProcessContent().value);
 	}
 
 }

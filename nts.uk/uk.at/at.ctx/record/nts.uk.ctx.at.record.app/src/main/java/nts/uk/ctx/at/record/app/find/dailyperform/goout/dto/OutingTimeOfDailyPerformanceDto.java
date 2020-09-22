@@ -11,15 +11,16 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
-import nts.uk.ctx.at.record.dom.breakorgoout.primitivevalue.OutingFrameNo;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingFrameNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -43,6 +44,23 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTime().getOutingTimeSheets(),
+					(c) -> new OutingTimeZoneDto(
+							c.getOutingFrameNo().v(),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getGoOut() != null ? c.getGoOut().orElse(null) : null),
+							WithActualTimeStampDto.toWithActualTimeStamp(c.getComeBack() != null ? c.getComeBack().orElse(null) : null),
+							c.getReasonForGoOut() == null ? 0 : c.getReasonForGoOut().value, 
+							c.getOutingTimeCalculation() == null ? 0 : c.getOutingTimeCalculation().valueAsMinutes(),
+							c.getOutingTime() == null ? 0 : c.getOutingTime().valueAsMinutes())));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	public static OutingTimeOfDailyPerformanceDto getDto(String employeeID,GeneralDate ymd,OutingTimeOfDailyAttd domain) {
+		OutingTimeOfDailyPerformanceDto dto = new OutingTimeOfDailyPerformanceDto();
+		if (domain != null) {
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.setTimeZone(ConvertHelper.mapTo(domain.getOutingTimeSheets(),
 					(c) -> new OutingTimeZoneDto(
 							c.getOutingFrameNo().v(),
@@ -80,7 +98,7 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	
 
 	@Override
-	public OutingTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public OutingTimeOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -90,10 +108,11 @@ public class OutingTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new OutingTimeOfDailyPerformance(emp, date, ConvertHelper.mapTo(timeZone, (c) -> 
+		OutingTimeOfDailyPerformance domain =  new OutingTimeOfDailyPerformance(emp, date, ConvertHelper.mapTo(timeZone, (c) -> 
 											new OutingTimeSheet(new OutingFrameNo(c.getNo()), createTimeActual(c.getOuting()),
 													new AttendanceTime(c.getOutTimeCalc()), new AttendanceTime(c.getOutTIme()),
 													c.reason(), createTimeActual(c.getComeBack()))));
+		return domain.getOutingTime();
 	}
 
 	private Optional<TimeActualStamp> createTimeActual(WithActualTimeStampDto c) {

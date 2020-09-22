@@ -3,13 +3,13 @@ package nts.uk.ctx.at.record.app.find.dailyperform.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.worklocation.WorkLocationCD;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
-import nts.uk.ctx.at.record.dom.worktime.enums.StampSourceInfo;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkLocationCD;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @Data
@@ -36,10 +36,11 @@ public class TimeStampDto implements ItemConst {
 	private int stampSourceInfo;
 	
 	public static TimeStampDto createTimeStamp(WorkStamp c) {
-		return c == null || c.getTimeWithDay() == null ? null : new TimeStampDto(c.getTimeWithDay().valueAsMinutes(),
-												c.getAfterRoundingTime().valueAsMinutes(),
+		return  c == null || c.getTimeDay().getTimeWithDay()  == null || c.getTimeDay().getReasonTimeChange() ==null || c.getTimeDay().getReasonTimeChange().getTimeChangeMeans() ==null  || !c.getTimeDay().getTimeWithDay().isPresent()? null : new TimeStampDto(
+					c.getTimeDay().getTimeWithDay().isPresent() && c.getTimeDay().getTimeWithDay() !=null ? c.getTimeDay().getTimeWithDay().get().valueAsMinutes():null,
+												c.getAfterRoundingTime() == null ? null : c.getAfterRoundingTime().valueAsMinutes(),
 												!c.getLocationCode().isPresent() ? null : c.getLocationCode().get().v(),
-												c.getStampSourceInfo().value);
+												c.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value);
 	}
 	
 	@Override
@@ -55,47 +56,25 @@ public class TimeStampDto implements ItemConst {
 				c.stampInfo());
 	}
 	
-	public StampSourceInfo stampInfo(){
+	public TimeChangeMeans stampInfo(){
 		switch (stampSourceInfo) {
 		case 0:
-			return StampSourceInfo.TIME_RECORDER;
+			return TimeChangeMeans.REAL_STAMP;
 		case 1:
-			return StampSourceInfo.STAMP_APPLICATION;
+			return TimeChangeMeans.APPLICATION;
 		case 2:
-			return StampSourceInfo.STAMP_APPLICATION_NR;
+			return TimeChangeMeans.DIRECT_BOUNCE;
 		case 3:
-			return StampSourceInfo.GO_STRAIGHT;
+			return TimeChangeMeans.DIRECT_BOUNCE_APPLICATION;
 		case 4:
-			return StampSourceInfo.GO_STRAIGHT_APPLICATION;
+			return TimeChangeMeans.HAND_CORRECTION_PERSON;
 		case 5:
-			return StampSourceInfo.GO_STRAIGHT_APPLICATION_BUTTON;
+			return TimeChangeMeans.HAND_CORRECTION_OTHERS;
 		case 6:
-			return StampSourceInfo.HAND_CORRECTION_BY_MYSELF;
+			return TimeChangeMeans.AUTOMATIC_SET;
 		case 7:
-			return StampSourceInfo.HAND_CORRECTION_BY_ANOTHER;
-		case 8:
-			return StampSourceInfo.STAMP_AUTO_SET_PERSONAL_INFO;
-		case 9:
-			return StampSourceInfo.CORRECTION_RECORD_SET;
-		case 10:
-			return StampSourceInfo.TIME_RECORDER_ID_INPUT;
-		case 11:
-			return StampSourceInfo.WEB_STAMP_INPUT;
-		case 12:
-			return StampSourceInfo.TIME_RECORDER_MAGNET_CARD;
-		case 13:
-			return StampSourceInfo.TIME_RECORDER_Ic_CARD;
-		case 14:
-			return StampSourceInfo.TIME_RECORDER_FINGER_STAMP;
-		case 15:
-			return StampSourceInfo.MOBILE_STAMP;
-		case 16:
-			return StampSourceInfo.MOBILE_STAMP_OUTSIDE;
-		case 17:
-			return StampSourceInfo.STAMP_LEAKAGE_CORRECTION;
-		case 18:
 		default:
-			return StampSourceInfo.SPR;
+			return TimeChangeMeans.SPR_COOPERATION;
 		}
 	}
 }

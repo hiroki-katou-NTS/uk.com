@@ -161,7 +161,13 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 	 */
 	@Override
 	public void add(ScheduleErrorLog domain) {
-		this.commandProxy().insert(this.toEntity(domain));
+			this.commandProxy().insert(this.toEntity(domain));
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@Override
+	public void addByTransaction(ScheduleErrorLog domain) {
+			this.commandProxy().insert(this.toEntity(domain));
 	}
 
 	@Override
