@@ -27,9 +27,8 @@ public class AddWorkplaceApproverHistoryDomainServiceTest {
             requeire.getLatestHistory(CreateDomain.workplaceId, GeneralDate.max());
             result = Optional.of(itemToBeAdd);
         }};
-        val service = new AddWorkplaceApproverHistoryDomainService();
         NtsAssert.atomTask(
-                () -> service.addNewWorkplaceApproverHistory(requeire, itemToBeAdd),
+                () -> AddWorkplaceApproverHistoryDomainService.addNewWorkplaceApproverHistory(requeire, itemToBeAdd),
                 any -> requeire.addHistory(any.get()),
                 any -> requeire.changeLatestHistory(any.get())
         );
@@ -43,9 +42,9 @@ public class AddWorkplaceApproverHistoryDomainServiceTest {
             requeire.getLatestHistory(CreateDomain.workplaceId, GeneralDate.max());
             result = Optional.empty();
         }};
-        val service = new AddWorkplaceApproverHistoryDomainService();
+
         NtsAssert.atomTask(
-                () -> service.addNewWorkplaceApproverHistory(requeire, itemToBeAdd),
+                () -> AddWorkplaceApproverHistoryDomainService.addNewWorkplaceApproverHistory(requeire, itemToBeAdd),
                 any -> requeire.addHistory(any.get())
         );
 

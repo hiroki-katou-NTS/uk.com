@@ -31,8 +31,8 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
             result = Optional.empty();
 
         }};
-        val service = new GetWorkplaceApproveHistoryDomainService();
-        assertThat(service.getWorkplaceApproveHistory(require, employId)).isEqualTo(Optional.empty());
+
+        assertThat(GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId)).isEqualTo(Optional.empty());
 
     }
 
@@ -52,8 +52,7 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
             result = Optional.of(approve);
         }};
 
-        val service = new GetWorkplaceApproveHistoryDomainService();
-        val actual = service.getWorkplaceApproveHistory(require, employId);
+        val actual = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId);
         val expected = Optional.of(approve);
         assertThat(actual).isEqualTo(expected);
 
@@ -76,8 +75,7 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
             result = myList;
         }};
 
-        val service = new GetWorkplaceApproveHistoryDomainService();
-        val actual = service.getWorkplaceApproveHistory(require, employId);
+        val actual = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId);
         val expected = Optional.empty();
         assertThat(actual).isEqualTo(expected);
     }
@@ -124,8 +122,7 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
 
         }};
 
-        val service = new GetWorkplaceApproveHistoryDomainService();
-        val actual = service.getWorkplaceApproveHistory(require, employId);
+        val actual = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId);
 
         assertThat(actual.get().getConfirmerList()).isEqualTo(expected.get().getConfirmerList());
         assertThat(actual.get().getApproverList()).isEqualTo(expected.get().getApproverList());
@@ -156,8 +153,8 @@ public class GetWorkplaceApproveHistoryDomainServiceTest {
             result = Optional.empty();
         }};
 
-        val service = new GetWorkplaceApproveHistoryDomainService();
-        val actual = service.getWorkplaceApproveHistory(require, employId);
+
+        val actual = GetWorkplaceApproveHistoryDomainService.getWorkplaceApproveHistory(require, employId);
 
         assertThat(actual.get().getConfirmerList()).isEqualTo(approveList);
         assertThat(actual.get().getApproverList()).isEqualTo(confirmedList);

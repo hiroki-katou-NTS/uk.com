@@ -15,7 +15,7 @@ import java.util.Optional;
 @Stateless
 public class DeleteWorkplaceApproverHistoryDomainService {
     // 	[1] 変更する
-    public AtomTask changeHistory(Require require, Approver36AgrByWorkplace deleteHist){
+    public static AtomTask changeHistory(Require require, Approver36AgrByWorkplace deleteHist){
             return AtomTask.of(()->{
                 require.deleteHistory(deleteHist);
                 val optprevHist = require.getLastHistory(deleteHist.getWorkplaceId(),deleteHist.getPeriod().end().addDays(-1));

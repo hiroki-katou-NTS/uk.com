@@ -16,7 +16,7 @@ import java.util.Optional;
 @Stateless
 public class AddWorkplaceApproverHistoryDomainService {
     //		[1] 追加する : 	職場別の承認者（36協定）の履歴を追加して、直前の履歴の終了日を変更する
-    public AtomTask addNewWorkplaceApproverHistory(Requeire requeire,Approver36AgrByWorkplace histTobeAdd){
+    public static AtomTask addNewWorkplaceApproverHistory(Requeire requeire,Approver36AgrByWorkplace histTobeAdd){
         val itemToBeAdd = new Approver36AgrByWorkplace(
                 histTobeAdd.getCid(),
                 histTobeAdd.getWorkplaceId(),

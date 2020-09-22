@@ -44,15 +44,15 @@ public class ChangeWorkplaceApproverHistoryDomainServiceTest {
             requeire.getPrevHistory(CreateDomain.workplaceId, referenceDate.addDays(-1) );
             result = Optional.of(preVHistoryItem);
         }};
-        val service = new ChangeWorkplaceApproverHistoryDomainService();
-        AtomTask persist = service.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem );
+
+        AtomTask persist = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem );
         new Verifications() {{
             requeire.changeHistory((Approver36AgrByWorkplace)any);
             times = 0;
         }};
 
         persist.run();
-        AtomTask persistLast = service.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem );
+        AtomTask persistLast = ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem );
         new Verifications() {{
             requeire.changeHistory((Approver36AgrByWorkplace)any);
             times = 2;
@@ -77,9 +77,9 @@ public class ChangeWorkplaceApproverHistoryDomainServiceTest {
                 result = Optional.empty();
             }
         };
-        val service = new ChangeWorkplaceApproverHistoryDomainService();
+
         NtsAssert.atomTask(()->
-                        service.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem),
+                        ChangeWorkplaceApproverHistoryDomainService.changeWorkplaceApproverHistory(requeire,referenceDate,historyItem),
                         any->requeire.changeHistory(historyItem)
 
         );

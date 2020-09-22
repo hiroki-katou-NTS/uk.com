@@ -42,9 +42,9 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
             require.getLastHistory(deleteItem.getWorkplaceId(),deleteItem.getPeriod().end().addDays(-1));
             result = Optional.of(preVHistoryItem);
         }};
-        val service = new DeleteWorkplaceApproverHistoryDomainService();
+
         NtsAssert.atomTask(
-                () -> service.changeHistory(require, deleteItem),
+                () -> DeleteWorkplaceApproverHistoryDomainService.changeHistory(require, deleteItem),
                 any -> require.deleteHistory(any.get()),
                 any -> require.changeLatestHistory(any.get())
         );
@@ -63,9 +63,8 @@ public class DeleteWorkplaceApproverHistoryDomainServiceTest {
             require.getLastHistory(deleteItem.getWorkplaceId(),deleteItem.getPeriod().end().addDays(-1));
             result = Optional.empty();
         }};
-        val service = new DeleteWorkplaceApproverHistoryDomainService();
         NtsAssert.atomTask(
-                () -> service.changeHistory(require, deleteItem),
+                () -> DeleteWorkplaceApproverHistoryDomainService.changeHistory(require, deleteItem),
                 any -> require.deleteHistory(any.get())
         );
     }

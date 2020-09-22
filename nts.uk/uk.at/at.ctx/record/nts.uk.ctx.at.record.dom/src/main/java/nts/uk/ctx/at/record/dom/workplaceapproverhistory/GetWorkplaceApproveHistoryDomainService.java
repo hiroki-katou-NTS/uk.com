@@ -26,7 +26,7 @@ public class GetWorkplaceApproveHistoryDomainService {
     // 	[1] 取得する システム日付時点の所属職場の承認者の履歴項目（36協定）を取得する。
     // ない場合、上位職場の承認者の履歴項目（36協定）を取得する。
 
-    public Optional<ApproverItem> getWorkplaceApproveHistory(Require require, String employeeId) {
+    public static Optional<ApproverItem> getWorkplaceApproveHistory(Require require, String employeeId) {
         val baseDate = GeneralDate.today();
         // RQ -30`
         val wkpHistoryEmployees = require.getYourWorkplace(employeeId, baseDate);

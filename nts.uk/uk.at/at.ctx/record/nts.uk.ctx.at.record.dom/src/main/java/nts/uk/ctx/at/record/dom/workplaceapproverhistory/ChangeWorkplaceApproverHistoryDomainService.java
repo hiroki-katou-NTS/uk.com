@@ -20,7 +20,7 @@ public class ChangeWorkplaceApproverHistoryDomainService {
      * [1] 変更する
      * 職場別の承認者（36協定）の履歴を変更して、直前の履歴の終了日を変更する
      */
-    public AtomTask changeWorkplaceApproverHistory(
+    public static AtomTask changeWorkplaceApproverHistory(
             Require require,
             GeneralDate startDateBeforeChange,
             Approver36AgrByWorkplace changeHistory
