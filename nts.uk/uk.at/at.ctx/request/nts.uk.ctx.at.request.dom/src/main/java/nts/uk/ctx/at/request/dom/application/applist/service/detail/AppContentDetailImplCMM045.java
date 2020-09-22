@@ -360,7 +360,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 	@Override
 	public String getContentStamp(String companyId, String appId, Integer appReasonDisAtr, String appReason, int screenAtr) {
 		String content = "";
-		AppStamp_Old appStamp = appStampRepo.findByAppID(companyId, appId);
+		AppStamp_Old appStamp = null;
 		if (!Objects.isNull(appStamp)) {
 			switch (appStamp.getStampRequestMode()) {
 			case STAMP_GO_OUT_PERMIT: {
