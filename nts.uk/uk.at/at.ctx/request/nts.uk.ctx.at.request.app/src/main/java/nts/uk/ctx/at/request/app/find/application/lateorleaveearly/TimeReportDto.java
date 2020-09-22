@@ -19,7 +19,7 @@ public class TimeReportDto {
 	private int lateOrEarlyClassification;
 	// 時刻
 	// wait handle
-	private int timeWithDayAttr;
+	private Integer timeWithDayAttr;
 
 	public static TimeReportDto fromDomain(TimeReport value) {
 		return new TimeReportDto(value.getWorkNo(), value.getLateOrEarlyClassification().value, value.getTimeWithDayAttr().v());
@@ -27,6 +27,6 @@ public class TimeReportDto {
 
 	public TimeReport toDomain() {
 		return new TimeReport(workNo, EnumAdaptor.valueOf(lateOrEarlyClassification, LateOrEarlyAtr.class),
-				new TimeWithDayAttr(timeWithDayAttr));
+				timeWithDayAttr == null ? null : new TimeWithDayAttr(timeWithDayAttr));
 	}
 }
