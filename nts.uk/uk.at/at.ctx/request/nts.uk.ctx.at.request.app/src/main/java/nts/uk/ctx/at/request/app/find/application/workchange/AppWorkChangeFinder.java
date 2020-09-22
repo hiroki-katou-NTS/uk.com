@@ -280,10 +280,7 @@ public class AppWorkChangeFinder {
 			dates = appWorkChangeParam.getListDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 					.collect(Collectors.toList());
 		}
-		AppDispInfoStartupDto appDispInfoStartupOutput = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo().getAppDispInfoStartupOutput();
-		appWorkChangeParam.setAppWorkChangeOutputDto(null);
 		AppWorkChangeDispInfo appWorkChangeDispInfo = null;
-		
 		if (appWorkChangeParam.getMode()) {
 			if (appWorkChangeParam.getAppWorkChangeOutputDto() != null) {
 				appWorkChangeDispInfo = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo().toDomain();									
@@ -300,12 +297,11 @@ public class AppWorkChangeFinder {
 				appWorkChange = appWorkChangeParam.getAppWorkChangeDto().toDomain(appWorkChangeDispInfo.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication());
 			}
 		}
-		AppWorkChangeOutputDto result = AppWorkChangeOutputDto.fromDomain(
+
+		return AppWorkChangeOutputDto.fromDomain(
 				appWorkChangeService.getAppWorkChangeOutput(mode, companyId, Optional.ofNullable(employeeId),
 						Optional.ofNullable(dates), Optional.ofNullable(appWorkChangeDispInfo),
 						Optional.ofNullable(appWorkChange)));
-		result.getAppWorkChangeDispInfo().getAppDispInfoStartupOutput().setAppDispInfoNoDateOutput(appDispInfoStartupOutput.getAppDispInfoNoDateOutput());;
-		return result;
 	}
 	
 	public AppWorkChangeDispInfoDto getUpdateKAFS07(UpdateWorkChangeParam updateWorkChangeParam) {
