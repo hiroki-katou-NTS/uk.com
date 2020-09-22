@@ -64,10 +64,9 @@ export class CmmS45CComponent extends Vue {
                     case 0: return 'CMMS45_7'; // 反映状態 = 未反映
                     case 1: return 'CMMS45_8'; // 反映状態 = 反映待ち
                     case 2: return 'CMMS45_9'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_10'; // 反映状態 = 取消待ち
-                    case 4: return 'CMMS45_10'; // 反映状態 = 取消済
-                    case 5: return 'CMMS45_36'; // 反映状態 = 差し戻し
-                    case 6: return 'CMMS45_11'; // 反映状態 = 否認
+                    case 3: return 'CMMS45_10'; // 反映状態 = 取消済
+                    case 4: return 'CMMS45_36'; // 反映状態 = 差し戻し
+                    case 5: return 'CMMS45_11'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -79,10 +78,9 @@ export class CmmS45CComponent extends Vue {
                     case 0: return 'apply-unapproved'; // 反映状態 = 未反映
                     case 1: return 'apply-approved'; // 反映状態 = 反映待ち
                     case 2: return 'apply-reflected'; // 反映状態 = 反映済
-                    case 3: return 'apply-cancel'; // 反映状態 = 取消待ち
-                    case 4: return 'apply-cancel'; // 反映状態 = 取消済
-                    case 5: return 'apply-return'; // 反映状態 = 差し戻し
-                    case 6: return 'apply-denial'; // 反映状態 = 否認
+                    case 3: return 'apply-cancel'; // 反映状態 = 取消済
+                    case 4: return 'apply-return'; // 反映状態 = 差し戻し
+                    case 5: return 'apply-denial'; // 反映状態 = 否認
                     default: break;
                 }
             }
@@ -94,10 +92,9 @@ export class CmmS45CComponent extends Vue {
                     case 0: return 'CMMS45_39'; // 反映状態 = 未反映
                     case 1: return 'CMMS45_37'; // 反映状態 = 反映待ち
                     case 2: return 'CMMS45_38'; // 反映状態 = 反映済
-                    case 3: return 'CMMS45_42'; // 反映状態 = 取消待ち
-                    case 4: return 'CMMS45_42'; // 反映状態 = 取消済
-                    case 5: return 'CMMS45_40'; // 反映状態 = 差し戻し
-                    case 6: return 'CMMS45_41'; // 反映状態 = 否認
+                    case 3: return 'CMMS45_42'; // 反映状態 = 取消済
+                    case 4: return 'CMMS45_40'; // 反映状態 = 差し戻し
+                    case 5: return 'CMMS45_41'; // 反映状態 = 否認
                     default: break;
                 }
             }
