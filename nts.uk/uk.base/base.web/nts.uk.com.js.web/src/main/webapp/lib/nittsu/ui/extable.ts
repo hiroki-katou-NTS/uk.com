@@ -3092,7 +3092,7 @@ module nts.uk.ui.exTable {
         /**
          * Stick grid cell ow.
          */
-        export function stickGridCellOw($grid: HTMLElement, rowIdx: any, columnKey: any, innerIdx: any, value: any, styleMaker?: any) {
+        export function stickGridCellOw($grid: HTMLElement, rowIdx: any, columnKey: any, innerIdx: any, value: any, styleMaker?: any, stickFields?: any) {
             let $exTable = helper.closest($grid, "." + NAMESPACE);
             let exTable = $.data($exTable, NAMESPACE);
             let gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
@@ -3102,13 +3102,17 @@ module nts.uk.ui.exTable {
             let cData = gen.dataSource[rowIdx][columnKey];
             let opt = gen.options, fieldArr = opt.view(opt.viewMode),
                 sticker = $.data($grid, internal.STICKER);
+            if (!stickFields && sticker && sticker.fields) {
+                stickFields = sticker.fields;
+            }
+            
             if (!exTable.stickOverWrite 
                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData))) return;
             if (fieldArr && _.isObject(value)) {
                 _.forEach(fieldArr, (f, i) => {
                     if ((!exTable.stickOverWrite && !helper.isEmpty(cData[f]))
                         || helper.isXInnerCell($grid, pkVal, columnKey, i, style.HIDDEN_CLS, style.SEAL_CLS)
-                        || (sticker && sticker.fields && !_.includes(sticker.fields, f))) {
+                        || !_.includes(stickFields, f)) {
                         value[f] = cData[f];
                         if (f.slice(-4) === "Name") {
                             let codeFieldName = f.substr(0, f.length - 4) + "Code";
@@ -3129,6 +3133,10 @@ module nts.uk.ui.exTable {
             }
             let cellObj = new selection.Cell(rowIdx, columnKey, changedData, innerIdx);
             cellObj.setTarget(touched.updateTarget);
+            if (stickFields) {
+                cellObj.stickFields = stickFields;
+            }
+            
             pushStickHistory($grid, [ cellObj ]);
             events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
         }
@@ -3136,12 +3144,16 @@ module nts.uk.ui.exTable {
         /**
          * Stick grid row ow.
          */
-        export function stickGridRowOw($grid: HTMLElement, rowIdx: any, data: any, styleMaker: any) {
+        export function stickGridRowOw($grid: HTMLElement, rowIdx: any, data: any, styleMaker: any, stickFields?: any) {
             let $exTable = helper.closest($grid, "." + NAMESPACE);
             let exTable = $.data($exTable, NAMESPACE);
             let gen = $.data($grid, internal.TANGI) || $.data($grid, internal.CANON);
             let pk = helper.getPrimaryKey($grid);
             let sticker = $.data($grid, internal.STICKER);
+            if (!stickFields && sticker && sticker.fields) {
+                stickFields = sticker.fields;
+            }
+            
             if (!gen) return;
             // Create history
             let changedCells = [];
@@ -3164,7 +3176,7 @@ module nts.uk.ui.exTable {
                         _.forEach(fieldArr, (f, i) => {
                             if ((!exTable.stickOverWrite && !helper.isEmpty(objVal[f]))
                                 || helper.isXInnerCell($grid, pkVal, key, i, style.HIDDEN_CLS, style.SEAL_CLS)
-                                || (sticker && sticker.fields && !_.includes(sticker.fields, f))) {
+                                || !_.includes(stickFields, f)) {
                                 srcValCloned[f] = objVal[f];
                                 origData[key][f] = objVal[f];
                                 if (f.slice(-4) === "Name") {
@@ -3186,7 +3198,7 @@ module nts.uk.ui.exTable {
                         
                         if (cellPartialUpdate) return srcValCloned;
                     } else {
-                        if (sticker && sticker.fields && sticker.fields[0] === fieldArr[0]) {
+                        if (stickFields[0] === fieldArr[0]) {
                             let objValCloned = _.cloneDeep(objVal), tField = fieldArr[0];
                             objValCloned[tField] = srcVal[tField];
                             if (!helper.isEqual(src[key], obj[key], fieldArr)) {
@@ -3219,7 +3231,13 @@ module nts.uk.ui.exTable {
 //            });
             let touched = render.gridRow($grid, rowIdx, origData, styleMaker);
             if (changedCells.length > 0) {
-                changedCells.forEach(c => c.setTarget(touched.updateTarget));
+                changedCells.forEach(c => {
+                    c.setTarget(touched.updateTarget);
+                    if (stickFields) {
+                        c.stickFields = stickFields;
+                    }   
+                });
+                
                 pushStickHistory($grid, changedCells);
                 events.trigger($exTable, events.ROW_UPDATED, events.createRowUi(rowIdx, origData, _.cloneDeep(changedCells)));
             }
@@ -7413,7 +7431,7 @@ module nts.uk.ui.exTable {
                         itemsByKey[i.columnKey] = value;
                     }
                     
-                    currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value });    
+                    currentItems.push({ rowIndex: i.rowIndex, columnKey: i.columnKey, innerIdx: innerIdx, value: value, stickFields: i.stickFields });    
                 }
                 
                 update.gridCell($grid[0], i.rowIndex, i.columnKey, innerIdx, i.value, true);
@@ -7442,14 +7460,14 @@ module nts.uk.ui.exTable {
             if (!items || items.length === 0) return;
             if (items.length == 1) {
                 let item = items[0];
-                update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker);
+                update.stickGridCellOw($grid[0], item.rowIndex, item.columnKey, item.innerIdx, item.value, sticker.styleMaker, item.stickFields);
             } else {
                 let data = {};
                 _.forEach(items, item => {
                     data[item.columnKey] = item.value;
                 });
                  
-                update.stickGridRowOw($grid[0], items[0].rowIndex, data, sticker.styleMaker);
+                update.stickGridRowOw($grid[0], items[0].rowIndex, data, sticker.styleMaker, items[0].stickFields);
             }
         }
         
