@@ -1276,14 +1276,19 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     }
 
     export class ReflectionSetting {
-        calendarStartDate: KnockoutObservable<string> = ko.observable('');
-        calendarEndDate: KnockoutObservable<string> = ko.observable('');
-        selectedPatternCd: KnockoutObservable<string> = ko.observable('');
+        calendarStartDate: KnockoutObservable<string> = ko.observable(''); // 開始日
+        calendarEndDate: KnockoutObservable<string> = ko.observable(''); // 終了日
+        selectedPatternCd: KnockoutObservable<string> = ko.observable(''); // 月間パターンコード
         patternStartDate: KnockoutObservable<string> = ko.observable('');
+        // 上書き
         reflectionMethod: KnockoutObservable<ReflectionMethod> = ko.observable(ReflectionMethod.Overwrite);
+        // 法定休日勤務種類
         statutorySetting: DayOffSetting = new DayOffSetting();
+        // 法定外休日勤務種類
         nonStatutorySetting: DayOffSetting = new DayOffSetting();
+        // 祝日勤務種類
         holidaySetting: DayOffSetting = new DayOffSetting();
+        // 月間パターンコード
         monthlyPatternCode: KnockoutObservable<string> = ko.observable('');
 
         constructor(data?: service.model.ReflectionSetting) {
@@ -1359,11 +1364,18 @@ module nts.uk.at.view.kdl023.base.viewmodel {
     }
 
     export class GetStartupInfoParam{
+        // Screen mode
         bootMode: KnockoutObservable<number>;
+        // 開始日
         creationPeriodStartDate: KnockoutObservable<string>;
+        // 終了日
         creationPeriodEndDate: KnockoutObservable<string>;
+        //  勤務サイクルコード
         workCycleCode: KnockoutObservable<string>;
+        // 勤務サイクル反映順序(OrderedList)
         refOrder: KnockoutObservableArray<number>;
+
+        // スライド日数
         numOfSlideDays: KnockoutObservable<number>;
 
         constructor(data: GetStartupInfoParamDto){
@@ -1377,13 +1389,20 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         }
     }
     export class GetWorkCycleAppImageParam{
+        //  開始日
         creationPeriodStartDate: KnockoutObservable<string>;
+        //  終了日
         creationPeriodEndDate: KnockoutObservable<string>;
         workCycleCode: KnockoutObservable<string>;
+        // 勤務サイクル反映順序(OrderedList)
         refOrder: KnockoutObservableArray<number>;
+        // スライド日数
         numOfSlideDays: KnockoutObservable<number>;
+        // 法定休日勤務種類コード
         legalHolidayCd: KnockoutObservable<string>;
+        // 法定外休日勤務種類コード
         nonStatutoryHolidayCd: KnockoutObservable<string>;
+        // 祝日勤務種類コード
         holidayCd: KnockoutObservable<string>;
         constructor(data: GetWorkCycleAppImageParamDto){
             const model = this;
