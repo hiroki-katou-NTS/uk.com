@@ -280,7 +280,13 @@ public class AppWorkChangeFinder {
 			dates = appWorkChangeParam.getListDates().stream().map(x -> GeneralDate.fromString(x, "yyyy/MM/dd"))
 					.collect(Collectors.toList());
 		}
-		AppDispInfoStartupDto appDispInfoStartupOutput = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo().getAppDispInfoStartupOutput();
+		AppDispInfoStartupDto appDispInfoStartupOutput = null;
+		if (appWorkChangeParam.getAppWorkChangeOutputDto() != null) {
+			if (appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo() != null) {
+				appDispInfoStartupOutput = appWorkChangeParam.getAppWorkChangeOutputDto().getAppWorkChangeDispInfo().getAppDispInfoStartupOutput();
+				
+			}
+		}
 		appWorkChangeParam.setAppWorkChangeOutputDto(null);
 		AppWorkChangeDispInfo appWorkChangeDispInfo = null;
 		
@@ -304,7 +310,10 @@ public class AppWorkChangeFinder {
 				appWorkChangeService.getAppWorkChangeOutput(mode, companyId, Optional.ofNullable(employeeId),
 						Optional.ofNullable(dates), Optional.ofNullable(appWorkChangeDispInfo),
 						Optional.ofNullable(appWorkChange)));
-		result.getAppWorkChangeDispInfo().getAppDispInfoStartupOutput().setAppDispInfoNoDateOutput(appDispInfoStartupOutput.getAppDispInfoNoDateOutput());;
+		if (appDispInfoStartupOutput != null) {
+			if (appDispInfoStartupOutput.getAppDispInfoNoDateOutput() != null);
+			result.getAppWorkChangeDispInfo().getAppDispInfoStartupOutput().setAppDispInfoNoDateOutput(appDispInfoStartupOutput.getAppDispInfoNoDateOutput());;
+		}
 		return result;
 	}
 	
