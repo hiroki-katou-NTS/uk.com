@@ -995,6 +995,9 @@ module cmm045.a.viewmodel {
                 if(_.includes(time, ''))
                 return self.inputDateColor(time, cl);
             }
+			if(key=='reflectionStatus') {
+				return getText(item[key]);
+			}
 			return item[key];
 		}
 
@@ -1037,7 +1040,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' }
                 ];
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 345 : 325;
+                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 345 : 305;
                 // let heightAuto = window.innerHeight - 342 >= 325 ? window.innerHeight - 342 : 325;
                 this.setupGrid({
                     withCcg001: true,
@@ -1162,27 +1165,27 @@ module cmm045.a.viewmodel {
                 //     result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
                 // }
 
-                if(item.reflectionStatus === getText('CMM045_63')) {
+                if(item.reflectionStatus === 'CMM045_63') {
                     item.appStatusName = 'approvalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['approvalCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_64')) {
+                if(item.reflectionStatus === 'CMM045_64') {
                     item.appStatusName = 'reflectCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['reflectCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_65')) {
+                if(item.reflectionStatus === 'CMM045_65') {
                     item.appStatusName = 'denialCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['denialCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_62')) {
+                if(item.reflectionStatus === 'CMM045_62') {
                     item.appStatusName = 'unapprovalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['unapprovalCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_66')) {
+                if(item.reflectionStatus === 'CMM045_66') {
                     item.appStatusName = 'remandCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['remandCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_67')) {
+                if(item.reflectionStatus === 'CMM045_67') {
                     item.appStatusName = 'cancelCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['cancelCell']));
                 }
@@ -1223,27 +1226,27 @@ module cmm045.a.viewmodel {
                 //     result.push(new vmbase.CellState(rowId,'appContent',['workingResultExcess']));
                 // }
 
-                if(item.reflectionStatus === getText('CMM045_63')) {
+                if(item.reflectionStatus === 'CMM045_63') {
                     item.appStatusName = 'approvalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['approvalCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_64')) {
+                if(item.reflectionStatus === 'CMM045_64') {
                     item.appStatusName = 'reflectCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['reflectCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_65')) {
+                if(item.reflectionStatus === 'CMM045_65') {
                     item.appStatusName = 'denialCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['denialCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_62')) {
+                if(item.reflectionStatus === 'CMM045_62') {
                     item.appStatusName = 'unapprovalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['unapprovalCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_66')) {
+                if(item.reflectionStatus === 'CMM045_66') {
                     item.appStatusName = 'remandCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['remandCell']));
                 }
-                if(item.reflectionStatus === getText('CMM045_67')) {
+                if(item.reflectionStatus === 'CMM045_67') {
                     item.appStatusName = 'cancelCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['cancelCell']));
                 }
@@ -1318,7 +1321,7 @@ module cmm045.a.viewmodel {
                     { headerText: getText('CMM045_57'), key: 'reflectionStatus', width: '75px', extraClassProperty: "appStatusName"},
                     { headerText: getText('CMM045_58'), key: 'opApprovalStatusInquiry', width: '95px' },
                 ]
-                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 357 : 292;
+                let heightAuto = window.innerHeight >= 768 ? window.innerHeight - 357 : 272;
                 // let heightAuto = window.innerHeight - 375 > 292 ? window.innerHeight - 375 : 292;
                 this.setupGrid({
                     withCcg001: true,
