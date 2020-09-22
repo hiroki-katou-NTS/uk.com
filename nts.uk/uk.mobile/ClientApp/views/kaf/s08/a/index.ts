@@ -36,8 +36,8 @@ export class KafS08AComponent extends Vue {
     //public paramsFromA1: any | null = null;
     public achievementDetails: [] = [];
     public comment: Object = {};
-    public derpartureTime: number = null;
-    public returnTime: number = null;
+    public derpartureTime: number;
+    public returnTime: number;
     public businessTripInfoOutput: Object = {};
     public application: Object = {};
     public kafs00BParams: Object = {};

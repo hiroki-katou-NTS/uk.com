@@ -40,9 +40,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     @Prop({ default: null })
     public params?: any;
 
-    @Prop({ default: null }) public readonly derpartureTime!: number;
+   public derpartureTime: number = null;
 
-    @Prop({ default: null }) public readonly returnTime!: number;
+   public returnTime: number = null ;
 
     @Prop({ default: '' }) public readonly appReason!: string;
 
@@ -87,6 +87,8 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             console.log(vm.params);
             vm.mode = false;
             this.data = vm.params;
+            vm.derpartureTime = vm.params.businessTripDto.departureTime;
+            vm.returnTime = vm.params.businessTripDto.returnTime;
         }
         vm.fetchStart();
     }
