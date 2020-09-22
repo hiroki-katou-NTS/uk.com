@@ -118,7 +118,26 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 vm.appDispInfoStartupOutput(successData);
                 let viewContext: any = __viewContext,
                     loginID = viewContext.user.employeeId,
-                    loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID;
+                    loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID,
+					opString = "B",
+					appNameInfo = _.find(vm.appNameList, (o: any) => {
+						let condition = o.appType==vm.appType();
+						if(vm.appType() == 7) {
+							if(vm.application().opStampRequestMode()==0) {
+								condition = condition && o.opApplicationTypeDisplay==3;
+								opString = "C";
+							} else {
+								condition = condition && o.opApplicationTypeDisplay==4;	
+								opString = "D";
+							}
+						}
+						return condition;
+					});
+				if(appNameInfo) {
+					document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + opString + " " + appNameInfo.appName;	
+				} else {
+					document.getElementById("pg-name").innerHTML = "";	
+				}	
                 vm.setControlButton(
                     successData.appDetailScreenInfo.user,
                     successData.appDetailScreenInfo.approvalATR,
@@ -250,11 +269,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     return vm.$ajax(API.release, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
-                if(successData.processDone) {
-                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
-                        vm.loadData();
-                    });
-                }
+				if(successData) {
+					if(successData.processDone) {
+	                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
+	                        vm.loadData();
+	                    });
+	                }	
+				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
@@ -305,9 +326,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
-                vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
-                });
+				if(successData) {
+					vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+	                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
+	                });	
+				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
@@ -322,9 +345,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
-                vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
-                    vm.loadData();
-                });
+				if(successData) {
+					vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
+	                    vm.loadData();
+	                });	
+				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));

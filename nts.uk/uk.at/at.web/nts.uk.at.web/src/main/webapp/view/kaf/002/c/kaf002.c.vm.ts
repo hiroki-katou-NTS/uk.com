@@ -186,12 +186,16 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                self.dataSourceOb()[0].pop();
                self.dataSourceOb()[0].pop();
            }
+           if (reflect.attendence == 0) {
+               self.dataSourceOb()[0].shift();
+               self.dataSourceOb()[0].shift();
+           }
            self.isM(true);
            self.tabs.subscribe(value => {
               if (value) {
                 if (data.appStampReflectOptional && self.tabs()) {
                     let reflect = data.appStampReflectOptional;
-                    self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && reflect.attendence && data.useTemporary == 1) || self.isAttendence || self.isTemporaryAttendence );
+                    self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary) || self.isAttendence || self.isTemporaryAttendence );
                     self.tabs()[1].visible(reflect.outingHourse == 1 || self.isOutingHourse);
                     self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
                     self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
