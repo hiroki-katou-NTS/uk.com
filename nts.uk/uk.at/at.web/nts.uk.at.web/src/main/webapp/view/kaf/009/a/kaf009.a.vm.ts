@@ -156,7 +156,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 model.checkbox2 ? 1 : 0,
             );
             // is change can be null
-            if (!_.isNull(model.checkbox3)) {
+//            if (!_.isNull(model.checkbox3)) {
                 goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
                 if (!_.isEmpty(vm.model.workTypeCode())) {
                     let dw = new DataWork( model.workTypeCode );
@@ -166,7 +166,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     goBackApp.dataWork = dw;
                     
                 }
-            }
+//            }
 
             let param = {
                 companyId: this.$user.companyId,
@@ -236,8 +236,10 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                     if (listActual[0].opAchievementDetail) {
                         let workType = listActual[0].opAchievementDetail.workTypeCD;
                         let workTime = listActual[0].opAchievementDetail.workTimeCD;
-                        dataClone.workTime(workTime);
-                        dataClone.workType(workType);
+                        if (!_.isNull(model.checkbox3)) {
+                            dataClone.workTime(workTime);
+                            dataClone.workType(workType);                            
+                        }
                     }
                 }
             }
