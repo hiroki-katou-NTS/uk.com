@@ -77,6 +77,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
+        if (vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo !=  null) {
+            vm.mode = false ;
+        }
         console.log(vm.businessTripInfoOutput);
         vm.fetchStart();
     }
@@ -93,13 +96,12 @@ export class KafS08A2Component extends KafS00ShrComponent {
         }).then((loadData: any) => {
             if (loadData) {
                 return vm.$http.post('at', API.startKAFS08, {
-                    mode: vm.mode,
+                    mode: true,
                     companyId: vm.user.companyId,
                     employeeId: vm.user.employeeId,
                     listDates: vm.listDate,
                     businessTripInfoOutput: vm.mode ? null : vm.data,
                 }).then((res: any) => {
-                    vm.mode = false;
                     vm.data = res.data;
                     vm.businessTripActualContent = vm.data.businessTripInfoOutput.businessTripActualContent;
                     vm.lstWorkDay = vm.data.businessTripInfoOutput.workdays;
@@ -119,7 +121,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
         };
 
         return vm.$http.post('at', API.updateBusinessTrip, params).then((res: any) => {
-            
+            vm.$emit('nextToStepThree',res.data.appID);
         });
     }
 
@@ -132,7 +134,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //nhảy đến step three với các điều kiện
     public nextToStepThree() {
         const vm = this;
-        vm.registerData();
+        vm.mode ? vm.registerData() : vm.updateBusinessTrip();
         //vm.checkBeforeRegister();
         //vm.toggleErrorAlert();
         //this.$emit('nextToStepThree');
@@ -209,9 +211,6 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //hàm register when click A50_2 button
     public registerData() {
         const vm = this;
-        if (!vm.mode) {
-            vm.updateBusinessTrip();
-        }
         vm.$mask('show');
         let tripInfos: Array<BusinessTripInfo> = _.map(vm.businessTripActualContent, function (item: any) {
             return {
