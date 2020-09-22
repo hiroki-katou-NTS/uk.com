@@ -414,7 +414,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         // array 1 
         let item1_temp = [];
         // case change date
-        if (self.data.appStampReflectOptional) {
+        if (self.data) {
             if (self.data.appStampReflectOptional.attendence) {
                 item1_temp = item1_temp.concat(items1);
             }
