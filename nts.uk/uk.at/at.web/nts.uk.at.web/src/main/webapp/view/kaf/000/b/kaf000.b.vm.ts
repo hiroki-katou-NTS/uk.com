@@ -119,19 +119,22 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 let viewContext: any = __viewContext,
                     loginID = viewContext.user.employeeId,
                     loginFlg = successData.appDetailScreenInfo.application.enteredPerson == loginID || successData.appDetailScreenInfo.application.employeeID == loginID,
+					opString = "B",
 					appNameInfo = _.find(vm.appNameList, (o: any) => {
 						let condition = o.appType==vm.appType();
 						if(vm.appType() == 7) {
 							if(vm.application().opStampRequestMode()==0) {
 								condition = condition && o.opApplicationTypeDisplay==3;
+								opString = "C";
 							} else {
 								condition = condition && o.opApplicationTypeDisplay==4;	
+								opString = "D";
 							}
 						}
 						return condition;
 					});
 				if(appNameInfo) {
-					document.getElementById("pg-name").innerHTML = appNameInfo.appName;	
+					document.getElementById("pg-name").innerHTML = appNameInfo.opProgramID + opString + " " + appNameInfo.appName;	
 				} else {
 					document.getElementById("pg-name").innerHTML = "";	
 				}	
