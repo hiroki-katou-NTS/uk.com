@@ -3,7 +3,6 @@
 .ccg001searchkcp005 {
 	min-width: 710px;
 	display: inline-block;
-	float: left;
 }
 
 .holidayAction {
@@ -122,4 +121,19 @@
 
 .align-seft-center {
 	align-self: center;
+}
+
+
+.drag-panel {
+	display:inline-block;
+	vertical-align: top;
+	border: 2px solid #ccc;
+	border-radius: 10px;
+	width: 570px;
+	padding: 25px;
+	box-sizing: border-box;
+}
+
+.min-width-layout-1 {
+	min-width: 570px;
 }

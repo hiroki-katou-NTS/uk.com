@@ -113,6 +113,8 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             { code: 0 , name: getText('KDR002_47') }, //なし
             { code: 1 , name: getText('KDR002_48')  } //職場
         ]);
+
+
         constructor() {
             let self = this;
 
