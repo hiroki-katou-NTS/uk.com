@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.applist.service.content;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -218,7 +219,7 @@ public class AppContentServiceImpl implements AppContentService {
 				// 打刻申請出力用Tmp.取消
 				if(!item.isCancel()) {
 					// 申請内容＋＝$.項目名＋'　'＋$.開始時刻＋#CMM045_100(～)＋$.終了時刻
-					result += item.getOpItemName().get() + item.getOpStartTime().get().getFullText() + I18NText.getText("CMM045_100") + item.getOpEndTime().get().getFullText();
+					result += MessageFormat.format(item.getOpItemName().get(), item.getOpStartTime().get().getFullText() + I18NText.getText("CMM045_100") + item.getOpEndTime().get().getFullText());
 				} else {
 					// 申請内容＋＝$.項目名＋'　'＋#CMM045_292(取消)
 					result += item.getOpItemName().get() + I18NText.getText("CMM045_292");
@@ -364,44 +365,44 @@ public class AppContentServiceImpl implements AppContentService {
 			switch (reflectedState) {
 			case NOTREFLECTED:
 				if(device==PC) {
-					reflectedStateString = I18NText.getText("CMM045_62");
+					reflectedStateString = "CMM045_62";
 				} else {
-					reflectedStateString = I18NText.getText("CMMS45_7");
+					reflectedStateString = "CMMS45_7";
 				}
 				break;
 			case WAITREFLECTION:
 				if(device==PC) {
-					reflectedStateString = I18NText.getText("CMM045_63");
+					reflectedStateString = "CMM045_63";
 				} else {
-					reflectedStateString = I18NText.getText("CMMS45_8");
+					reflectedStateString = "CMMS45_8";
 				}
 				break;
 			case REFLECTED:
 				if(device==PC) {
-					reflectedStateString = I18NText.getText("CMM045_64");
+					reflectedStateString = "CMM045_64";
 				} else {
-					reflectedStateString = I18NText.getText("CMMS45_9");
+					reflectedStateString = "CMMS45_9";
 				}
 				break;
 			case DENIAL:
 				if(device==PC) {
-					reflectedStateString = I18NText.getText("CMM045_65");
+					reflectedStateString = "CMM045_65";
 				} else {
-					reflectedStateString = I18NText.getText("CMMS45_11");
+					reflectedStateString = "CMMS45_11";
 				}
 				break;
 			case REMAND:
 				if(device==PC) {
-					reflectedStateString = I18NText.getText("CMM045_66");
+					reflectedStateString = "CMM045_66";
 				} else {
-					reflectedStateString = I18NText.getText("CMMS45_36");
+					reflectedStateString = "CMMS45_36";
 				}
 				break;
 			case CANCELED:
 				if(device==PC) {
-					reflectedStateString = I18NText.getText("CMM045_67");
+					reflectedStateString = "CMM045_67";
 				} else {
-					reflectedStateString = I18NText.getText("CMMS45_10");
+					reflectedStateString = "CMMS45_10";
 				}
 				break;
 			default:
@@ -490,16 +491,16 @@ public class AppContentServiceImpl implements AppContentService {
 		String result = Strings.EMPTY;
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_62スマホ：#CMMS45_7
 		if(device==PC) {
-			result = I18NText.getText("CMM045_62");
+			result = "CMM045_62";
 		} else {
-			result = I18NText.getText("CMMS45_7");
+			result = "CMMS45_7";
 		}
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_64スマホ：#CMMS45_9
 		if(reflectedState==ReflectedState.REFLECTED) {
 			if(device==PC) {
-				result = I18NText.getText("CMM045_64");
+				result = "CMM045_64";
 			} else {
-				result = I18NText.getText("CMMS45_9");
+				result = "CMMS45_9";
 			}
 		}
 		// 反映状態(trạng thái phản ánh)　＝　PC：#CMM045_63スマホ：#CMMS45_8
@@ -512,33 +513,33 @@ public class AppContentServiceImpl implements AppContentService {
 						phaseAtr==ApprovalBehaviorAtrImport_New.APPROVED && frameAtr==ApprovalBehaviorAtrImport_New.APPROVED);
 		if(condition1) {
 			if(device==PC) {
-				result = I18NText.getText("CMM045_63");
+				result = "CMM045_63";
 			} else {
-				result = I18NText.getText("CMMS45_8");
+				result = "CMMS45_8";
 			}
 		}
 		// 反映状態　＝　PC：#CMM045_65スマホ：#CMMS45_11
 		if(reflectedState==ReflectedState.DENIAL) {
 			if(device==PC) {
-				result = I18NText.getText("CMM045_65");
+				result = "CMM045_65";
 			} else {
-				result = I18NText.getText("CMMS45_11");
+				result = "CMMS45_11";
 			}
 		}
 		// 反映状態　＝　PC：#CMM045_66スマホ：#CMMS45_36
 		if(reflectedState==ReflectedState.NOTREFLECTED && phaseAtr==ApprovalBehaviorAtrImport_New.REMAND) {
 			if(device==PC) {
-				result = I18NText.getText("CMM045_66");
+				result = "CMM045_66";
 			} else {
-				result = I18NText.getText("CMMS45_36");
+				result = "CMMS45_36";
 			}
 		}
 		// 反映状態　＝　PC：#CMM045_67スマホ：#CMMS45_10
 		if(reflectedState==ReflectedState.CANCELED) {
 			if(device==PC) {
-				result = I18NText.getText("CMM045_67");
+				result = "CMM045_67";
 			} else {
-				result = I18NText.getText("CMMS45_10");
+				result = "CMMS45_10";
 			}
 		}
 		return result;
