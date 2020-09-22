@@ -7,6 +7,7 @@ import { KafS00CComponent } from '../../../kaf/s00/c';
 import { KafS08A2Component } from '../../../kaf/s08/a2';
 import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
 import * as moment from 'moment';
+import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'kafs08a1',
@@ -40,9 +41,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     @Prop({ default: null })
     public params?: any;
 
-   public derpartureTime: number = null;
+    public derpartureTime: number = null;
 
-   public returnTime: number = null ;
+    public returnTime: number = null;
 
     @Prop({ default: '' }) public readonly appReason!: string;
 
@@ -137,58 +138,37 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         });
     }
 
-    public getDateArray = function (startDate,endDate) {
+    public getDateArray = function (startDate, endDate) {
         let dates = [];
         startDate = moment(startDate, 'YYYY/MM/DD');
-        dates.push(startDate.format('YYYY/MM/DD'));          
+        dates.push(startDate.format('YYYY/MM/DD'));
         while (!startDate.isSame(endDate)) {
             startDate = startDate.add(1, 'days');
             dates.push(startDate.format('YYYY/MM/DD'));
         }
 
-        return dates ;
+        return dates;
     };
 
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                this.hidden = true;
+                validAll = false;
+            }
+        }
+        vm.isValidateAll = validAll;
+        if (!validAll) {
+            window.scrollTo(500, 0);
+
+            return;
+        }
+        //check date when press next
         if (vm.mode) {
-            //check date when press next
-            vm.$http.post('at', API.changeAppDate, {
-                isNewMode: vm.mode,
-                isError: 1,
-                application: vm.application,
-                businessTrip: null,
-                businessTripInfoOutput: vm.data.businessTripInfoOutput
-                //businessTrip: vm.mode ? null : vm.data.appWorkChange
-            }).then((res: any) => {
-                let response = res.data;
-            });
-
-            vm.checkNextButton();
-            if (vm.kaf000_C_Params.input.displayAppReason == 0) {
-                if (vm.kaf000_B_Params.output.startDate == null) {
-                    vm.hidden = true;
-                    vm.scrollToTop();
-
-                    return;
-                }
-            } else {
-                if (vm.kaf000_B_Params.output.startDate == null || (vm.kaf000_C_Params.input.appLimitSetting.requiredAppReason && vm.kaf000_C_Params.output.opAppReason == '')) {
-                    vm.hidden = true;
-                    vm.scrollToTop();
-
-                    return;
-                }
-            }
-
-            //check Pre Post Art
-            if (vm.kaf000_B_Params.output.prePostAtr == null) {
-                vm.hidden = true;
-                vm.scrollToTop();
-
-                return;
-            }
             //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
             let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
             let Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
@@ -198,13 +178,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
                 return;
             }
-            //check PrePostArt enable/disable
-            if (this.kaf000_B_Params.input.newModeContent.appTypeSetting[0].canClassificationChange == false) {
-                vm.hidden = true;
-                vm.scrollToTop();
 
-                return;
-            }
             //mode new
             let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
             let businessTripInfoOutput = vm.data;
@@ -212,7 +186,11 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
             let appReason = vm.kaf000_C_Params.output.opAppReason;
             this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+
         }
+
+        vm.checkNextButton();
+
         //mode edit
         if (!vm.mode) {
             let achievementDetails = vm.data.businessTrip.tripInfos;
@@ -225,8 +203,10 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             //let startDateFormat = new Date(startDate);
             let endDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate;
             //let endDateFormat = new Date(endDate);
-            let listDateEditMode = vm.getDateArray(startDate,endDate);
-            this.$emit('nextToStepTwo',listDateEditMode,application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+            let listDateEditMode = vm.getDateArray(startDate, endDate);
+            businessTripInfoOutput.businessTrip.departureTime = vm.derpartureTime;
+            businessTripInfoOutput.businessTrip.returnTime = vm.returnTime;
+            this.$emit('nextToStepTwo', listDateEditMode, application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
         }
     }
 
@@ -287,6 +267,18 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
         }
         this.application.enteredPerson = this.user.employeeId;
+        // if (!this.mode) {
+        //     this.$http.post('at', API.changeAppDate, {
+        //         isNewMode: true,
+        //         isError: 0,
+        //         application: this.application,
+        //         businessTrip: null,
+        //         businessTripInfoOutput: this.data.businessTripInfoOutput
+        //         //businessTrip: vm.mode ? null : vm.data.appWorkChange
+        //     }).then((res: any) => {
+        //         let response = res.data;
+        //     });
+        // }
     }
 
     public createParamsA() {

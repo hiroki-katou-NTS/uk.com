@@ -5,31 +5,13 @@ import { KDL002Component } from '../../../kdl/002';
 import { Kdl001Component } from '../../../kdl/001';
 
 interface Parameter {
-    lstWorkDay: [];
-    rowDate: {
-        date: string
-    };
-    businessTripInfoOutput: {
-        appDispInfoStartup: {
-            appDispInfoWithDateOutput: {
-                opWorkTimeLst: []
-            }
-        }
-    };
+    rowDate: any;
+    businessTripInfoOutput: any;
 }
 
 const defaultParam = (): Parameter => ({
-    lstWorkDay: [],
-    rowDate: {
-        date: ''
-    },
-    businessTripInfoOutput: {
-        appDispInfoStartup : {
-            appDispInfoWithDateOutput : {
-                opWorkTimeLst : []
-            }
-        }
-    }
+    rowDate: {},
+    businessTripInfoOutput: {}
 });
 
 @component({
@@ -42,45 +24,117 @@ export class KafS08DComponent extends Vue {
     public readonly params!: Parameter;
 
     public title: string = 'KafS08D';
-    public test: Date = new Date(2020, 2, 12);
-    public seledtedWkTypeCDs = '001,002,003,004,005,006,007';
-    public seledtedWkTimeCDs = '001,002,003,004,005,006,007,008';
-    public isSelectWorkTime = 1;
-    public selectedWorkType: any = {};
-    public selectedWorkTime: any = {};
-    public isAddNone = 1;
+    public seledtedWkTypeCD = null;
+    public seledtedWkTimeCD = null;
+    public listWorkDays = [];
+    public listHolidays = [];
+    public listWorkTimes = [];
+    public workDayFlag = true;
+    public isAddNone = true;
 
 
     public openKDLS02() {
         const vm = this;
-        vm.$http.post('at', API.callKDLS02, {
-            businessTripInfoOutputDto: vm.params.businessTripInfoOutput,
-            selectedDate: vm.params.rowDate.date,
-        }).then((res: any) => {
-            let response = res.data;
-            
-            if (response) {
-                vm.$modal(KDL002Component, {
-                    seledtedWkTypeCDs: _.map(_.uniqBy(vm.params.lstWorkDay, (e: any) => e.workTypeCode), (item: any) => item.workTypeCode),
-                    //selectedWorkTypeCD: this.model.workType.code,
-                    seledtedWkTimeCDs: _.map(vm.params.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode),
-                    //selectedWorkTimeCD: this.model.workTime.code,
-                    isSelectWorkTime: 1,
-                }).then(console.log);
+        
+        let currentRow = vm.params.rowDate;
+        let listWorkTimeCodes = vm.params.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
+        let listInputCode = [];
+        
+        if (vm.workDayFlag) {
+            listInputCode = _.map(vm.listWorkDays, function (obj) {
+                return obj.workTypeCode;
+            });
+        } else {
+            listInputCode = _.map(vm.listHolidays, function (obj) {
+                return obj.workTypeCode;
+            });
+        }
+
+        vm.$modal(
+            KDL002Component,
+            {
+                seledtedWkTypeCDs: listInputCode,
+                selectedWorkTypeCD: currentRow.opAchievementDetail.workTypeCD,
+                seledtedWkTimeCDs: _.map(listWorkTimeCodes, (item: any) => item.worktimeCode),
+                selectedWorkTimeCD: currentRow.opAchievementDetail.workTimeCD,
+                isSelectWorkTime: 1,
+            }
+        ).then((f: any) => {
+            if (f) {
+                currentRow.opAchievementDetail.workTypeCD = f.selectedWorkType.workTypeCode;
+                currentRow.opAchievementDetail.opWorkTypeName = f.selectedWorkType.name;
+                currentRow.opAchievementDetail.workTimeCD = f.selectedWorkTime.code;
+                currentRow.opAchievementDetail.opWorkTimeName = f.selectedWorkTime.name;
+                currentRow.opAchievementDetail.opWorkTime = f.selectedWorkTime.workTime1;
+            }
+        }).catch((res: any) => {
+            if (res.messageId) {
+                this.$modal.error({ messageId: res.messageId });
             } else {
 
+                if (_.isArray(res.errors)) {
+                    this.$modal.error({ messageId: res.errors[0].messageId });
+                } else {
+                    this.$modal.error({ messageId: res.errors.messageId });
+                }
             }
-            //vm.registerData();
         });
     }
 
     public openKDLS01() {
         const vm = this;
-        vm.$modal(Kdl001Component, {}).then(console.log);
+
+        let currentRow = vm.params.rowDate;
+
+        vm.$modal(
+            Kdl001Component,
+            {
+                isAddNone: vm.isAddNone ? 1 : 0,
+                seledtedWkTimeCDs: _.map(vm.listWorkTimes, (item: any) => item.worktimeCode),
+                selectedWorkTimeCD: currentRow.opAchievementDetail.workTimeCD,
+                isSelectWorkTime: 1
+            }
+        ).then((f: any) => {
+            if (f) {
+                currentRow.opAchievementDetail.workTimeCD = f.selectedWorkTime.code;
+                currentRow.opAchievementDetail.opWorkTimeName = f.selectedWorkTime.name;
+                currentRow.opAchievementDetail.opWorkTime = f.selectedWorkTime.workTime1;
+            }
+        }).catch((res: any) => {
+            if (res.messageId) {
+                this.$modal.error({ messageId: res.messageId });
+            } else {
+
+                if (_.isArray(res.errors)) {
+                    this.$modal.error({ messageId: res.errors[0].messageId });
+                } else {
+                    this.$modal.error({ messageId: res.errors.messageId });
+                }
+            }
+        });
     }
 
     public created() {
         const vm = this;
+
+        let currentRow = vm.params.rowDate;
+
+        vm.listWorkDays = vm.params.businessTripInfoOutput.workdays;
+        vm.listHolidays = vm.params.businessTripInfoOutput.holidays;
+        vm.listWorkTimes = vm.params.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
+
+        vm.$http.post('at', API.callKDLS02, {
+            businessTripInfoOutputDto: vm.params.businessTripInfoOutput,
+            selectedDate: currentRow.date,
+        }).then((res: any) => {
+            let response = res.data;
+            if (response) {
+                vm.workDayFlag = true;
+            } else {
+                vm.workDayFlag = false;
+            }
+            vm.isAddNone = !response;
+        });
     }
 
 
@@ -94,4 +148,20 @@ export class KafS08DComponent extends Vue {
 const API = {
     callKDLS02: 'at/request/application/businesstrip/mobile/startKDLS02'
 };
+
+export class Model {
+
+    public workTypeCD: string;
+
+    public workTimeCD: string;
+
+    public workTypeName: string;
+
+    public workTimeName: string;
+
+    public startWorkTime: number;
+
+    public endWorkTime: number;
+
+}
 
