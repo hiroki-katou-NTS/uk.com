@@ -142,17 +142,17 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					.findById(companyId, command.getMonthlyPatternCode(), toStartDate);
 			
 			// check day is public holiday
-			if (publicHoliday.isPresent() && command.getSettingPublicHolidays() != null
-					&& !StringUtil.isNullOrEmpty(command.getSettingPublicHolidays().getWorkTypeCode(),false)) {
+			if (publicHoliday.isPresent()) {
 
 				// data public holiday setting
 				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, toStartDate);
-				
-				// check exist data
-				if (!workMonthlySetting.isPresent()) {
-					addWorkMonthlySettings.add(dataPublic);
-				} else if (command.isOverwrite()) {
-					updateWorkMonthlySettings.add(dataPublic);
+				if (dataPublic != null) {
+					// check exist data
+					if (!workMonthlySetting.isPresent()) {
+						addWorkMonthlySettings.add(dataPublic);
+					} else if (command.isOverwrite()) {
+						updateWorkMonthlySettings.add(dataPublic);
+					}
 				}
 			} else {
 				// is work day
@@ -160,14 +160,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 				case WORKINGDAYS:
 					// data working day setting
 					WorkMonthlySetting dataWorking = command.toDomainWorkDays(companyId, toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataWorking);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataWorking);
+					if (dataWorking != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataWorking);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataWorking);
+						}
 					}
-					
 					break;
 					
 					// is none statutory holiday
@@ -176,14 +176,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					// data none statutory holiday setting
 					WorkMonthlySetting dataNoneStatutory = command
 							.toDomainNoneStatutoryHolidays(companyId, toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataNoneStatutory);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataNoneStatutory);
+					if (dataNoneStatutory != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataNoneStatutory);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataNoneStatutory);
+						}
 					}
-					
 					break;
 					
 					// is statutory holiday
@@ -192,14 +192,14 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					// data none statutory holiday setting
 					WorkMonthlySetting dataStatutory = command.toDomainStatutoryHolidays(companyId,
 							toStartDate);
-					
-					// check exist data
-					if (!workMonthlySetting.isPresent()) {
-						addWorkMonthlySettings.add(dataStatutory);
-					} else if (command.isOverwrite()) {
-						updateWorkMonthlySettings.add(dataStatutory);
+					if (dataStatutory != null) {
+						// check exist data
+						if (!workMonthlySetting.isPresent()) {
+							addWorkMonthlySettings.add(dataStatutory);
+						} else if (command.isOverwrite()) {
+							updateWorkMonthlySettings.add(dataStatutory);
+						}
 					}
-					
 					break;
 				}
 			}
