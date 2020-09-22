@@ -90,7 +90,7 @@ public class ApplicationListWebservice extends WebService{
 	@POST
 	@Path("getapplistMobile")
 	public ApplicationListDtoMobile getAppListMobile(StartMobileParam param) {
-		return this.appListFinder.getList(param.getListAppType(), param.getAppListExtractCondition());
+		return this.appListFinder.getList(param.getListAppType(), param.getListOfAppTypes(), param.getAppListExtractCondition());
 	}
 
 	@POST

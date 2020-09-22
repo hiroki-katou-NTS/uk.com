@@ -513,7 +513,7 @@ public class ApplicationListFinder {
 
 //	UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.起動時処理
 //  アルゴリズム「起動時処理」を実行する
-    public ApplicationListDtoMobile getList(List<ListOfAppTypesCmd> listAppType, AppListExtractConditionCmd appListExtractConditionDto){
+    public ApplicationListDtoMobile getList(List<Integer> listAppType, List<ListOfAppTypesCmd> listOfAppTypes, AppListExtractConditionCmd appListExtractConditionDto){
     	ApplicationListDtoMobile applicationListDto = new ApplicationListDtoMobile();
 //    	裏パラメータ取得
     	int device = MOBILE;
@@ -537,7 +537,8 @@ public class ApplicationListFinder {
 		AppListParamFilter param = new AppListParamFilter();
 		param.setDevice(MOBILE);
     	param.setMode(appListExtractConditionDto.getAppListAtr());
-    	param.setListOfAppTypes(listAppType);
+    	param.setListOfAppTypes(listOfAppTypes);
+    	param.setLstAppType(listAppType);
     	if (appListExtractConditionDto.getPeriodStartDate() != null && appListExtractConditionDto.getPeriodEndDate() != null) {
 	    	param.setStartDate(appListExtractConditionDto.getPeriodStartDate());
 	    	param.setEndDate(appListExtractConditionDto.getPeriodEndDate());
