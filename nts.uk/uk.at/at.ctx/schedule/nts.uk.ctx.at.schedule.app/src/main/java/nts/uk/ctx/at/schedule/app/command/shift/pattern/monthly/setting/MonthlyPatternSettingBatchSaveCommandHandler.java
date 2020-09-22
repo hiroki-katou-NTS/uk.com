@@ -20,6 +20,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.WeeklyWorkSettingFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WeeklyWorkSettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
@@ -141,7 +142,8 @@ public class MonthlyPatternSettingBatchSaveCommandHandler
 					.findById(companyId, command.getMonthlyPatternCode(), toStartDate);
 			
 			// check day is public holiday
-			if (publicHoliday.isPresent()) {
+			if (publicHoliday.isPresent() && command.getSettingPublicHolidays() != null
+					&& !StringUtil.isNullOrEmpty(command.getSettingPublicHolidays().getWorkTypeCode(),false)) {
 
 				// data public holiday setting
 				WorkMonthlySetting dataPublic = command.toDomainPublicHolidays(companyId, toStartDate);
