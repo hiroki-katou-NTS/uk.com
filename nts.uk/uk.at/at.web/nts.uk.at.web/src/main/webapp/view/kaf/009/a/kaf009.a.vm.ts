@@ -158,11 +158,14 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
             // is change can be null
             if (!_.isNull(model.checkbox3)) {
                 goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-                let dw = new DataWork( model.workTypeCode );
-                if ( model.workTimeCode ) {
-                    dw.workTime = model.workTimeCode
+                if (!_.isEmpty(vm.model.workTypeCode())) {
+                    let dw = new DataWork( model.workTypeCode );
+                    if ( model.workTimeCode ) {
+                        dw.workTime = model.workTimeCode
+                    }
+                    goBackApp.dataWork = dw;
+                    
                 }
-                goBackApp.dataWork = dw;
             }
 
             let param = {
@@ -226,6 +229,7 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 vm.dataFetch().isChangeDate = true;
             }
             let dataClone = _.clone(vm.dataFetch());
+            
             if (!_.isNull(dataClone)) {
                 vm.dataFetch(dataClone);
                 vm.dataFetch().appDispInfoStartup = vm.appDispInfoStartupOutput;
