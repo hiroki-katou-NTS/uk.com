@@ -26,10 +26,10 @@ public class IPAddressSetting extends DomainObject {
 	private IPAddress ip4;
 	
 	public boolean equals(IPAddressSetting ipAddressSetting) {
-		if (this.ip1.v() == ipAddressSetting.ip1.v()
-				&& this.ip2.v() == ipAddressSetting.ip2.v()
-				&& this.ip3.v() == ipAddressSetting.ip3.v()
-				&& this.ip4.v() == ipAddressSetting.ip4.v()) {
+		if (this.ip1.equals(ipAddressSetting.ip1)
+				&& this.ip2.equals(ipAddressSetting.ip2)
+				&& this.ip3.equals(ipAddressSetting.ip3)
+				&& this.ip4.equals(ipAddressSetting.ip4)) {
 			return true;
 		} else {
 			return false;

@@ -17,12 +17,9 @@ module nts.uk.com.view.cmm002.a {
         constructor() {
             let self = this;
 			self.selectedAllowedIPAddress.subscribe(value =>{
-				if(value == ""){
-					self.allowedIPAddress.update(ko.toJS(new AllowedIPAddress()));
-				}else{
+				if(value != ""){
 					self.allowedIPAddress.update(_.find(self.allowedIPAddressList(), ['id', value]));
 				}
-				$('input').ntsError('check');
 			});
         }
 
@@ -51,6 +48,7 @@ module nts.uk.com.view.cmm002.a {
 		public newIp():void{
 			let self = this;
 			self.selectedAllowedIPAddress('');
+			self.allowedIPAddress.update(ko.toJS(new AllowedIPAddress()));
 			errors.clearAll();
 		}
 		
@@ -95,7 +93,7 @@ module nts.uk.com.view.cmm002.a {
                     block.invisible();
 		            service.del(_.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()])).done(() => {
 						self.start();
-						self.selectedAllowedIPAddress('');
+						self.newIp();
 						dialog.info({ messageId: "Msg_16" });
 					}).fail(function(error: any) {
 		                dialog.alertError({ messageId: error.messageId });

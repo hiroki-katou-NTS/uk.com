@@ -39,7 +39,7 @@ public class AccessRestrictions extends AggregateRoot{
 	/** [2] 許可IPアドレスを更新する */
 	public void updateIPAddress(AllowedIPAddress oldItem, AllowedIPAddress newItem) {
 		this.allowedIPaddress.removeIf(c->c.getStartAddress().equals(oldItem.getStartAddress()));
-		this.allowedIPaddress.add(newItem);
+		this.addIPAddress(newItem);
 		this.allowedIPaddress.sort((AllowedIPAddress x, AllowedIPAddress y) -> x.getStartAddress().toString().compareTo(y.getStartAddress().toString()));
 	}
 	
