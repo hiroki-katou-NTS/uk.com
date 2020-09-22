@@ -308,9 +308,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                }
            }).done(res => {
                if (res != undefined) {
-                   self.$dialog.info({messageId: "Msg_15" }).then(() => {
-                       location.reload();
-                   });                   
+                   return self.$dialog.info({messageId: "Msg_15" })
                }
            }).fail(res => {
                self.showError(res);

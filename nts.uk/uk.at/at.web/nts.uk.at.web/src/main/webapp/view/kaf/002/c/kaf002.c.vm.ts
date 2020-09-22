@@ -541,34 +541,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         }
 
 		reload() {
-//		    const self = this;
-//            self.$blockui('show');
-//            let appplication = ko.toJS(self.application) as Application;
-//            let appId = appplication.appID;
-//            let companyId = self.$user.companyId;
-//            let appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
-//            let recoderFlag = false;
-//            let command = {
-//                    appId,
-//                    companyId,
-//                    appDispInfoStartupDto,
-//                    recoderFlag
-//            }
-//            self.$ajax(API.getDetail, command)
-//                .done(res => {
-//                    console.log(res);
-//                    self.data = res;
-//                    self.checkExistData();
-////                    self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
-////                    self.bindActualData();                        
-////                    self.bindTabM(self.data);
-////                    self.bindComment(self.data);
-////                    self.printContentOfEachAppDto().opAppStampOutput = res;
-//                }).fail(res => {
-//                    self.showError(res);
-//                }).always(() => {
-//                    self.$blockui('hide');
-//                });
+//		  
 		}
 
         showError(res: any) {
@@ -633,9 +606,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                  }
             }).done(result => {
                 if (result != undefined) {
-                    self.$dialog.info({messageId: "Msg_15"}).then(() => {
-//                        self.reload();
-                    });                
+                    return self.$dialog.info({messageId: "Msg_15"});    
                 }
             })
             .fail(res => {
