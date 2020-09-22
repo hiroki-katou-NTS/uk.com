@@ -144,7 +144,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                  let reflect = data.appStampReflectOptional;
 //                 打刻申請起動時の表示情報.打刻申請の反映.出退勤を反映する　＝　する || 「打刻申請起動時の表示情報.打刻申請の反映.臨時出退勤を反映する　＝　true　AND　打刻申請起動時の表示情報.臨時勤務利用　＝　true」
                 
-                 self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && reflect.attendence && data.useTemporary == 1) );
+                 self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary) );
                  self.tabs()[1].visible(reflect.outingHourse == 1);
                  self.tabs()[2].visible(reflect.breakTime == 1);
                  self.tabs()[3].visible(reflect.parentHours == 1);
