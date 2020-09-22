@@ -512,7 +512,20 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return list;
             })();
             let dataSource = [];
-            dataSource.push( items1.concat(items2) );
+         // array 1 
+            let item1_temp = [];
+            // case change date
+            if (self.data) {
+                if (self.data.appStampReflectOptional.attendence) {
+                    item1_temp = item1_temp.concat(items1);
+                }
+                if (self.data.appStampReflectOptional.temporaryAttendence) {
+                    item1_temp = item1_temp.concat(items2);   
+                } 
+                dataSource.push(item1_temp);
+            } else {
+                dataSource.push( items1.concat(items2) );       
+            }
             dataSource.push( items3 );
             dataSource.push( items4 );
             dataSource.push( items5 );
