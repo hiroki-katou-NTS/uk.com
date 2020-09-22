@@ -134,12 +134,9 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 	 */
 	@Override
 	public void updateLateLeaveEarly(String cID, Application application, ArrivedLateLeaveEarly infoOutput) {
-		// entity primary key
-		KrqdtAppLateOrLeavePK_New pk = new KrqdtAppLateOrLeavePK_New(cID, application.getAppID());
-
 		// initial value for entity value
-		int lateCanAtr1 = 0, earlyCanAtr1 = 0, lateCanAtr2 = 0, earlyCanAtr2 = 0;
-		int lateTime1 = 0, earlyTime1 = 0, lateTime2 = 0, earlyTime2 = 0;
+		Integer lateCanAtr1 = null, earlyCanAtr1 = null, lateCanAtr2 = null, earlyCanAtr2 = null;
+		Integer lateTime1 = null, earlyTime1 = null, lateTime2 = null, earlyTime2 = null;
 
 		// get list cancel and list report time
 		List<LateCancelation> listCancel = infoOutput.getLateCancelation();
@@ -166,15 +163,15 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 		for (TimeReport report : listTime) {
 			if (report.getWorkNo() == 1) {
 				if (report.getLateOrEarlyClassification().value == 0) {
-					lateTime1 = report.getTimeWithDayAttr().v();
+					lateTime1 = report.getTimeWithDayAttr() == null ? null : report.getTimeWithDayAttr().v();
 				} else {
-					earlyTime1 = report.getTimeWithDayAttr().v();
+					earlyTime1 = report.getTimeWithDayAttr() == null ? null : report.getTimeWithDayAttr().v();
 				}
 			} else {
 				if (report.getLateOrEarlyClassification().value == 0) {
-					lateTime2 = report.getTimeWithDayAttr().v();
+					lateTime2 = report.getTimeWithDayAttr() == null ? null : report.getTimeWithDayAttr().v();
 				} else {
-					earlyTime2 = report.getTimeWithDayAttr().v();
+					earlyTime2 = report.getTimeWithDayAttr() == null ? null : report.getTimeWithDayAttr().v();
 				}
 			}
 		}
@@ -186,28 +183,20 @@ public class ArrivedLateLeaveEarlyRepositoryImp extends JpaRepository implements
 		// entity.setKrqdtAppLateOrLeavePK(pk);
 
 		// if(lateTime empty => lateCancelAtr1 = null)
-		if (lateTime1 != 0) {
 			entity.setLateTime1(lateTime1);
 			entity.setLateCancelAtr1(lateCanAtr1);
-		}
 
 		// if(lateTime empty => lateCancelAtr1 = null)
-		if (earlyTime1 != 0) {
 			entity.setEarlyTime1(earlyTime1);
 			entity.setEarlyCancelAtr1(earlyCanAtr1);
-		}
 
 		// if(lateTime empty => lateCancelAtr1 = null)
-		if (lateTime2 != 0) {
 			entity.setLateTime2(lateTime2);
 			entity.setLateCancelAtr2(lateCanAtr2);
-		}
 
 		// if(lateTime empty => lateCancelAtr1 = null)
-		if (earlyTime2 != 0) {
 			entity.setEarlyTime2(earlyTime2);
 			entity.setEarlyCancelAtr2(earlyCanAtr2);
-		}
 
 		this.commandProxy().update(entity);
 	}
