@@ -102,10 +102,11 @@ module nts.uk.at.view.ksu001.ac.viewmodel {
                         let obj = value.data.data[i];
                         let shiftMasterName = obj.value.toString();
                         let shiftMasterCode = obj.shiftMasterCode;
-                        if (shiftMasterName == mami) {
+                        let workInfo = _.filter(listShiftMasterSaveLocal, function(o) { return o.shiftMasterCode === shiftMasterCode; });
+                        if (shiftMasterName == mami || workInfo.length == 0) {
                             isMasterNotReg = true;
                         } else {
-                            arrDataToStick.push(new ExCell('', '', '', '', '', '', shiftMasterName, '',obj.shiftMasterCode)); 
+                            arrDataToStick.push(new ExCell(workInfo[0].workTypeCode, '', workInfo[0].workTimeCode, '', '', '', shiftMasterName, '',obj.shiftMasterCode)); 
                         }
                     }
                     if (isMasterNotReg == true) {
