@@ -5,6 +5,7 @@ import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompanyRepo;
+import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -31,39 +32,53 @@ public class PerformInitialDisplaysByCompanyScreenQuery {
     @Inject
     private PersonInfoAdapter personInfoAdapter;
 
+    @Inject
+    private CompanyAdapter company;
+
     //【input】 ・ログイン会社ID：会社ID
     //【output】・会社別の承認者（36協定）
     //         ・List<個人基本情報>
 
     public PerformInitialDisplaysByCompanyScreenDto getApprove36AerByCompany(){
 
-
         // Get companyId;
         val cid = AppContexts.user().companyId();
+        // [RQ622]会社IDから会社情報を取得する
+        val companyName = company.getCurrentCompany().orElseGet(() -> {
+            throw new RuntimeException("System Error: Company Info");
+        }).getCompanyName();
 
         // Get 会社別の承認者（36協定）by company id;
         val byCompanyList = repo.getByCompanyId(cid);
 
         //Get ApproveList 承認者リスト
-        List<String> approveList = new ArrayList<>();
-        //Get ConfirmedList  確認者リスト
-        List<String> confirmedList = new ArrayList<>();
+        List<String> listEmployeeId = new ArrayList<>();
         byCompanyList.forEach(e->{
-            approveList.addAll(e.getApproverList());
-            confirmedList.addAll(e.getConfirmerList());
+            listEmployeeId.addAll(e.getApproverList());
+            listEmployeeId.addAll(e.getConfirmerList());
         });
+        val listIdDistinct = listEmployeeId.stream().distinct().collect(Collectors.toList());
         //社員IDから個人基本情報を取得
         // ドメインモデル「社員データ管理情報」を取得する
-        val rsApproveList = getPersonInfo(approveList);
+        val personInfo = getPersonInfo(listIdDistinct);
 
-        val rsConfirmedList = getPersonInfo(confirmedList);
+        val listDetail = new ArrayList<PerformInitialDetail>();
+        byCompanyList.forEach(e-> {
+            val item = new PerformInitialDetail();
+            item.setEndDate(e.getPeriod().end());
+            item.setStartDate(e.getPeriod().start());
+            item.setPersonalInfoApprove(e.getApproverList().stream().map(i->checkPersonInfor(personInfo,i))
+                    .collect(Collectors.toList()));
+            item.setPersonalInfoConfirm(e.getApproverList().stream().map(i->checkPersonInfor(personInfo,i))
+                    .collect(Collectors.toList()));
+            listDetail.add(item);
+        });
 
-
-        return new PerformInitialDisplaysByCompanyScreenDto(byCompanyList,rsApproveList,rsConfirmedList);
+        return new PerformInitialDisplaysByCompanyScreenDto(cid,companyName,listDetail);
     }
 
 
-    private List<PersonEmpBasicInfoDto> getPersonInfo(List<String> listEmployIds){
+    private List<PersonInfor> getPersonInfo(List<String> listEmployIds){
         if(listEmployIds.isEmpty()){
             return Collections.emptyList();
         }
@@ -79,10 +94,12 @@ public class PerformInitialDisplaysByCompanyScreenQuery {
             return   Collections.emptyList();
         }
 
-        return personInfo.stream().map(e->new PersonEmpBasicInfoDto()).collect(Collectors.toList());
-
+        return personInfo.stream().map(e->new PersonInfor(e.getPId(),e.getEmployeeCode(),e.getNamePerson())).collect(Collectors.toList());
     }
 
-
+    private PersonInfor checkPersonInfor(List<PersonInfor> listPersonInfor,String personId){
+        val rs = listPersonInfor.stream().filter(e->e.getPersonId().equals(personId)).findFirst();
+        return rs.orElseGet(PersonInfor::new);
+    }
 
 }

@@ -1,14 +1,21 @@
 package nts.uk.screen.at.app.query.cmm024.approver36agrbyworkplace;
 
 import lombok.val;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
+import nts.uk.screen.at.app.query.cmm024.approver36agrbycompany.PerformInitialDetail;
+import nts.uk.screen.at.app.query.cmm024.approver36agrbycompany.PersonInfor;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,40 +34,69 @@ public class PerformInitialDisplaysByWorkPlaceScreenQuery {
 
     @Inject
     private PersonInfoAdapter personInfoAdapter;
-    public PerformInitialDisplaysByWorkPlaceScreenDto getApprover36AgrByWorkplace(String workplaceiD ){
-        val listAgrByWorkplaces = repo.getByWorkplaceId(workplaceiD);
-
-        List<String> approveIdList = new ArrayList<>();
-        List<String> confirmIdList = new ArrayList<>();
+    @Inject
+    private WorkplaceAdapter workplaceAdapter;
+    @Inject
+    private CompanyAdapter company;
+    public PerformInitialDisplaysByWorkPlaceScreenDto getApprove36AerByWorkplace(String workplaceId ){
+        val listAgrByWorkplaces = repo.getByWorkplaceId(workplaceId);
+        val cid = AppContexts.user().companyId();
+        // [RQ622]会社IDから会社情報を取得する
+        val companyName = company.getCurrentCompany().orElseGet(() -> {
+            throw new RuntimeException("System Error: Company Info");
+        }).getCompanyName();
+        val baseDate = GeneralDate.today();
+        val listWpl = workplaceAdapter.getWorkplaceInforByWkpIds(cid, Arrays.asList(workplaceId),baseDate);
+        String workplaceName = "";
+        if(!listWpl.isEmpty()){
+            workplaceName = listWpl.get(0).getWorkplaceName();
+        }
+        List<String> listEmployeeId = new ArrayList<>();
         listAgrByWorkplaces.forEach(e->{
-            approveIdList.addAll(e.getApproverIds());
-            confirmIdList.addAll(e.getConfirmerIds());
+            listEmployeeId.addAll(e.getApproverIds());
+            listEmployeeId.addAll(e.getConfirmerIds());
         });
         //社員IDから個人基本情報を取得
         // ドメインモデル「社員データ管理情報」を取得する
-        val rsApproveList = getPersonInfo(approveIdList);
+        val listIdDistinct = listEmployeeId.stream().distinct().collect(Collectors.toList());
+        //社員IDから個人基本情報を取得
+        // ドメインモデル「社員データ管理情報」を取得する
+        val personInfo = getPersonInfo(listIdDistinct);
+        val listDetail = new ArrayList<PerformInitialDetail>();
+        listAgrByWorkplaces.forEach(e-> {
+            val item = new PerformInitialDetail();
+            item.setEndDate(e.getPeriod().end());
+            item.setStartDate(e.getPeriod().start());
+            item.setPersonalInfoApprove(e.getApproverIds().stream().map(i->checkPersonInfor(personInfo,i))
+                    .collect(Collectors.toList()));
+            item.setPersonalInfoConfirm(e.getConfirmerIds().stream().map(i->checkPersonInfor(personInfo,i))
+                    .collect(Collectors.toList()));
+            listDetail.add(item);
+        });
 
-        val rsConfirmedList = getPersonInfo(confirmIdList);
-
-        return new PerformInitialDisplaysByWorkPlaceScreenDto(listAgrByWorkplaces,rsApproveList,rsConfirmedList);
+        return new PerformInitialDisplaysByWorkPlaceScreenDto(cid,companyName,workplaceId,workplaceName,listDetail);
 
     }
-    private List<PersonEmpBasicInfoDto> getPersonInfo(List<String> listEmployIds){
+    private List<PersonInfor> getPersonInfo(List<String> listEmployIds){
         if(listEmployIds.isEmpty()){
             return Collections.emptyList();
         }
         // Get list Person by list employId;
         val listPerson = infoAdapter.getPerEmpBasicInfo(listEmployIds);
         if(!listPerson.isEmpty()){
-            List<String> listPersonId = listPerson.stream().map(e->e.getPersonId()).collect(Collectors.toList());
+            List<String> listPersonId = listPerson.stream().map(PersonEmpBasicInfoDto::getPersonId).collect(Collectors.toList());
             val personInfo = personInfoAdapter.getListPersonInfo(listPersonId);
             if(personInfo.isEmpty()){
                 return   Collections.emptyList();
             }
-            return personInfo.stream().map(e->new PersonEmpBasicInfoDto()).collect(Collectors.toList());
+            return personInfo.stream().map(e->new PersonInfor(e.getPId(),e.getEmployeeCode(),e.getNamePerson())).collect(Collectors.toList());
         }
         return Collections.emptyList();
 
+    }
+    private PersonInfor checkPersonInfor(List<PersonInfor> listPersonInfor,String personId){
+        val rs = listPersonInfor.stream().filter(e->e.getPersonId().equals(personId)).findFirst();
+        return rs.orElseGet(PersonInfor::new);
     }
 
 }
