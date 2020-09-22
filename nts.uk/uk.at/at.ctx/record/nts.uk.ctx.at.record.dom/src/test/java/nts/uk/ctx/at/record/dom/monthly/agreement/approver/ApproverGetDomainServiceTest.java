@@ -42,6 +42,7 @@ public class ApproverGetDomainServiceTest {
 	@Test
 	public void test01(@Injectable("empId") String empId) {
 		val service = new ApproverGetDomainService();
+//		before();
 		val approverItem = new ApproverItem(Helper.createApproverList(5), Helper.createConfirmerList(5));
 
 		new Expectations() {{

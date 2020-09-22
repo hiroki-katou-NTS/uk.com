@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.val;
-import mockit.Injectable;
 import nts.arc.time.GeneralDate;
 
 import javax.ejb.Stateless;
@@ -23,8 +22,6 @@ public class ApproverGetDomainService {
 	 * 36協定特別条項の適用申請の申請対象者から承認者を取得する
 	 */
 	public Optional<ApproverItem> getApprover(Require require, String empId){
-		byWkpApprGetDS = new ByWorkplaceApproverGetDomainService();
-
 		Optional<ApproverItem> optWorkplaceApproverItem = byWkpApprGetDS.getApprover(require, empId);
 
 		if (optWorkplaceApproverItem.isPresent()) {
