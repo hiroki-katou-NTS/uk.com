@@ -31,17 +31,27 @@ import { StepwizardComponent } from '@app/components';
 export class KafS08AComponent extends Vue {
     public step: string = 'KAFS08_10';
 
+    @Prop({default : () => {}}) public readonly params!: any;
+
     //public paramsFromA1: any | null = null;
     public achievementDetails: [] = [];
     public comment: Object = {};
-    public derpartureTime: number = null;
-    public returnTime: number = null;
+    public derpartureTime: number;
+    public returnTime: number;
     public businessTripInfoOutput: Object = {};
     public application: Object = {};
     public kafs00BParams: Object = {};
     public appID: string = ' ';
     public listDate: any[] = [];
     public appReason: string = '';
+    public startDate;
+
+
+    public created() {
+        const vm = this;
+        console.log(vm.params);
+    }
+
     //thực hiện emit từ component con A1
     public ProcessNextToStepTwo(listDate,
                                 application,
@@ -59,8 +69,6 @@ export class KafS08AComponent extends Vue {
         vm.achievementDetails = achievementDetails;
         //lấy giá trị comment set ở A1
         vm.comment = comment;
-        //nhảy sang step A2 
-        vm.step = 'KAFS08_11';
         //nhan businessTripInfoOutput tu man hinh start
         vm.businessTripInfoOutput = businessTripInfoOutput;
         //nhan application tu man hinh start
@@ -69,6 +77,8 @@ export class KafS08AComponent extends Vue {
         vm.listDate = listDate;
         //nhan ve appReason tu A1
         vm.appReason = appReason;
+         //nhảy sang step A2 
+        vm.step = 'KAFS08_11';
     }
 
     //thực hiện emit từ component con A2 đến C
@@ -79,41 +89,11 @@ export class KafS08AComponent extends Vue {
     }
 
     //thực hiện emit từ component con A2 quay trở lại A1
-    public ProcessPrevStepOne(departureTime, returnTime,appReason) {
+    public ProcessPrevStepOne(departureTime, returnTime, appReason) {
         const vm = this;
         vm.derpartureTime = departureTime;
         vm.returnTime = returnTime;
-        vm.appReason = appReason ;
+        vm.appReason = appReason;
         vm.step = 'KAFS08_10';
     }
-}
-
-interface IParams {
-    appDetailScreenInfo: {
-        alternateExpiration: boolean,
-        application: {
-            appDate: string,
-            appID: string
-            appType: number,
-            employeeID: string
-            enteredPerson: string
-            inputDate: string
-            opAppEndDate: string
-            opAppReason: string
-            opAppStandardReasonCD: number,
-            opAppStartDate: string
-            opReversionReason: null
-            opStampRequestMode: null
-            prePostAtr: number,
-            reflectionStatus: {},
-            version: number
-        }
-        approvalATR: number
-        approvalLst: [],
-        authorComment: null
-        authorizableFlags: boolean,
-        outputMode: number,
-        reflectPlanState: number,
-        user: number,
-    };
 }
