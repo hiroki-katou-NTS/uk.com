@@ -14,6 +14,8 @@ module nts.uk.com.view.kwr002.f {
         isEditable: KnockoutObservable<boolean>;
         duplicateCode: KnockoutObservable<string>;
         duplicateName: KnockoutObservable<string>;
+        layoutId: string;
+        selectionType: string;
 
         /**
          * Constructor.
@@ -22,14 +24,11 @@ module nts.uk.com.view.kwr002.f {
             super();
             var vm = this;
             vm.itemList = ko.observableArray([]);
-
             vm.selectedCode = ko.observable('');
             vm.isEnable = ko.observable(true);
             vm.isEditable = ko.observable(true);
             vm.duplicateCode = ko.observable('');
             vm.duplicateName = ko.observable('');
-
-
         }
 
         created() {
@@ -37,41 +36,35 @@ module nts.uk.com.view.kwr002.f {
             let dataFromScreenB = nts.uk.ui.windows.getShared("dataFromScreenB");
             vm.selectedCode = ko.observable(dataFromScreenB.code);
             vm.selectedName = ko.observable(dataFromScreenB.name);
-            // vm.duplicateCode = ko.observable(codeName.code());
-        }
-
-        mounted() {
-
+            vm.selectionType = dataFromScreenB.itemSelectedType;
+            vm.layoutId = dataFromScreenB.layoutId;
         }
 
         executeCopy() {
             let vm = this;
-            let dataCopy = new AttendanceDuplicateDto(vm.selectedCode(),vm.selectedName(),'',vm.duplicateCode(), vm.duplicateName());
-            if(_.isEqual(vm.selectedCode,vm.duplicateCode())) {
+            let dataCopy = new AttendanceDuplicateDto(vm.selectedCode()
+                                                    , vm.selectedName()
+                                                    , ''
+                                                    , vm.duplicateCode()
+                                                    , vm.duplicateName());
+            if (_.isEqual(vm.selectedCode, vm.duplicateCode())) {
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_355" });
                 return;
             }
 
-
-            blockUI.grayout();
+            vm.$blockui('show');
 
             service.executeCopy(dataCopy).done((data: any) => {
-                console.log(data);
 
             }).fail(function(err) {
-                if (err.messageId == "Msg_3") {
-                   console.log("123");
-                } else {
-                    nts.uk.ui.windows.close();
-                }
+                vm.$dialog.alert(err.messageId);
             }).always(function() {
-                blockUI.clear();
-            })
+                vm.$blockui('clear');
+            });
         }
 
         closeDialog() {
             let vm = this;
-            // setShared('currentARESCode', vm.currentARESCode(), true);
             windows.close();
         }
 
@@ -90,14 +83,20 @@ module nts.uk.com.view.kwr002.f {
     class AttendanceDuplicateDto {
         code: string;
         name: string;
-        outputLayoutId: string;
         duplicateCode: string;
         duplicateName: string;
+        selectedType: number;
+        layoutId: string;
 
-        constructor(code: string, name: string,outputLayoutId: string,duplicateCode: string,duplicateName: string) {
+
+        constructor(code: string
+            , name: string
+            , layoutId: string
+            , duplicateCode: string
+            , duplicateName: string) {
             this.code = code;
             this.name = name;
-            this.outputLayoutId = outputLayoutId;
+            this.layoutId = layoutId;
             this.duplicateCode = duplicateCode;
             this.duplicateName = duplicateName;
         }

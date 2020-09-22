@@ -180,7 +180,6 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		this.commandProxy().remove(KfnmtRptWkAtdOut.class, domain.getLayoutId());
 	}
 
-	
 	private void addKfnstSealcolumns(AttendanceRecordExportSetting attendanceRecordExpSet, String companyId) {
 		String layoutId = attendanceRecordExpSet.getLayoutId();
 		// remove Seal stamps

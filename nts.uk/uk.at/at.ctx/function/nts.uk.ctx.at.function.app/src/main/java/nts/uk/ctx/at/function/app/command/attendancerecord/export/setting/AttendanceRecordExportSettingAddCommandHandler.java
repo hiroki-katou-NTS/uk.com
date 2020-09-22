@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSetting;
@@ -21,10 +20,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class AttendanceRecordExportSettingAddCommandHandler
 		extends CommandHandler<AttendanceRecordExportSettingAddCommand> {
-
-	/** The Attendance rec exp set repo. */
-	@Inject
-	AttendanceRecordExportSettingRepository attendanceRecExpSetRepo;
 	
 	/** The free setting repo. */
 	@Inject

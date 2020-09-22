@@ -1,16 +1,20 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.duplicate;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataReturnDto;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordStandardSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
+import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
+import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -22,13 +26,19 @@ public class AttendanceRecordDuplicateFinder {
 
 	
 	@Inject
-	private AttendanceRecordFreeSettingRepository outputItemRepo;
+	private AttendanceRecordFreeSettingRepository freeSettingRepo;
 	
 	@Inject
 	private AttendanceRecordStandardSettingRepository standardRepo;
 	
 	@Inject
 	AttendanceRecordExportSettingRepository attendanceRecExpSetRepo;
+	
+	@Inject
+	SingleAttendanceRecordRepository singleAttendanceRecordRepository;
+	
+	@Inject
+	CalculateAttendanceRecordRepositoty calculateAttendanceRecordRepositoty;
 	
 	//	アルゴリズム「複製登録処理」を実行する
 	public void copyRegistionProcess() {
@@ -55,11 +65,17 @@ public class AttendanceRecordDuplicateFinder {
 						: Optional.empty();
 
 		// INPUT．項目選択種類をチェック Check INPUT.Item selection type
+		// ドメインモデル「出勤簿の出力項目定型設定」を取得する Nhận domain model 「出勤簿の出力項目定型設定」
+		// ドメインモデル「出勤簿の出力項目自由設定」を取得する  Nhận domain model 「...」
 		Optional<AttendanceRecordExportSetting> setting = this.attendanceRecExpSetRepo.findByCode(ItemSelectionType.valueOf(dto.getSelectedType())
 				, companyId
 				, employeeId
-				, dto.getCode());
+				, dto.getDuplicateCode());
 		
+		// 複製先のドメインモデルが存在しているかチェックする Check xem có tồn tại domain model duplicate destination không
+		if (setting.isPresent()) {
+			throw new BusinessException("Msg_3");
+		}
 		
 		return null;
 	}
