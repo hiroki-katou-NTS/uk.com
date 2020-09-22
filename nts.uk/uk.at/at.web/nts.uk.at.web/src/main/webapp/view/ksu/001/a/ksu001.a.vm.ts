@@ -2331,7 +2331,13 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     self.enableBtnUndo(true);
                 } else {
                     self.enableBtnUndo(false);
-                }               
+                }   
+
+                if (arrCellUpdated.length == 0) {
+                    let x = self.undoNumberClick;
+                    self.redoNumberClick = (-1) * x;
+                    self.undoNumberClick = 0;
+                }
                 
                 if (self.undoNumberClick == self.redoNumberClick) {
                     self.enableBtnRedo(false)
