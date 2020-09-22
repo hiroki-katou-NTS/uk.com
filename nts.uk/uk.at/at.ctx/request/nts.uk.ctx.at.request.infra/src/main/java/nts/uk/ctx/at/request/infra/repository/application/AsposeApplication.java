@@ -102,7 +102,7 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 
-			designer.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(printContentOfApp.getApplicationName() + ".pdf")));
+			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(printContentOfApp.getApplicationName() + ".xlsx")));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
