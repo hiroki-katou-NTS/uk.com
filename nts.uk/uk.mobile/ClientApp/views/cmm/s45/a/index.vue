@@ -33,7 +33,7 @@
       <li  class="list-group-item" v-for="(item, index) in filterByAppType" v-bind:key="index" :value="item.id" v-on:click="goToDetail(item.id)">
           <div class="row">
               <div class="col-3 pl-2 pr-0">
-                  <span v-bind:class = "item.reflectCss" class="p-2 d-block">{{item.reflectStatus}}</span>
+                  <span v-bind:class = "item.reflectCss" class="p-2 d-block">{{item.reflectStatus | i18n}}</span>
               </div>
               <div class="col-9 p-0">
                   <div v-bind:class = "item.appDateCss" class="pl-2 pt-2 pb-2 d-inline-block pr-2">{{ item.appDate | date('MM/DD (ddd)')}}</div>

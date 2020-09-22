@@ -44,7 +44,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
 
                                 <!-- A6_7 -->
                                 <span data-bind="ntsCheckBox: {
-                                checked: $parent.lateOrEarlyInfo1().isCheck(),
+                                checked: $parent.lateOrEarlyInfo1().isCheck,
                                 text: $i18n('KAF004_57'),
                                 enable: ko.toJS($parent.condition10Activation(1))
                                 }, visible: ko.toJS($parent.condition10Display(1)) && ko.toJS($parent.condition9())"></span>
@@ -80,7 +80,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
 
                                 <!-- A6_13 -->
                                 <span data-bind="ntsCheckBox: {
-                                checked: $parent.lateOrEarlyInfo2().isCheck(),
+                                checked: $parent.lateOrEarlyInfo2().isCheck,
                                 text: $i18n('KAF004_58'),
                                 enable: ko.toJS($parent.condition10Activation(2))
                                 }, visible: ko.toJS($parent.condition10Display(2)) && ko.toJS($parent.condition9())"></span>
@@ -117,7 +117,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
 
                                 <!-- A6_19 -->
                                 <span data-bind="ntsCheckBox: {
-                                checked: $parent.lateOrEarlyInfo3().isCheck(),
+                                checked: $parent.lateOrEarlyInfo3().isCheck,
                                 text: $i18n('KAF004_60'),
                                 enable: ko.toJS($parent.condition10Activation(3))
                                 }, visible: ko.toJS($parent.condition2_9_10(3))"></span>
@@ -153,7 +153,7 @@ module nts.uk.at.view.kaf004_ref.shr.b.viewmodel {
 
                                 <!-- A6_25 -->
                                 <span data-bind="ntsCheckBox: {
-                                checked: $parent.lateOrEarlyInfo4().isCheck(),
+                                checked: $parent.lateOrEarlyInfo4().isCheck,
                                 text: $i18n('KAF004_61'),
                                 enable: ko.toJS($parent.condition10Activation(4))
                                 }, visible: ko.toJS($parent.condition2_9_10(4))"></span>
