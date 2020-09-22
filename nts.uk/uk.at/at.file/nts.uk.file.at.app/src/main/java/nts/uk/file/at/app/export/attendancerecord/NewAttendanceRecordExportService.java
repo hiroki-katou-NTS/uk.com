@@ -35,6 +35,7 @@ import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
+import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.AttendanceItemValueResult;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService.MonthlyAttendanceItemValueResult;
 import nts.uk.ctx.at.record.dom.workrecord.manageactualsituation.approval.monthly.MonthlyApprovalProcess;
 import nts.uk.ctx.at.record.dom.workrecord.managectualsituation.ApprovalStatus;
@@ -44,10 +45,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceA
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.pub.company.StatusOfEmployee;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportEmployeeData;
 import nts.uk.file.at.app.export.schedule.FileService;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
@@ -190,6 +193,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		// Start date ≤ year / month (YM) ≤ parameter. Period (year / month). End date ,
 		YearMonthPeriod periodMonthly = new YearMonthPeriod(request.getStartDate().yearMonth(),
 				request.getEndDate().yearMonth());
+		
+		
 
 		List<String> empIDs = request.getEmployeeList().stream().map(e -> e.getEmployeeId())
 				.collect(Collectors.toList());
@@ -212,34 +217,37 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 				monthlyApproval.setYmd(i.getYearMonth());
 			}
 		});
-		// 社員IDでループ - Loop by employee ID
+		
+		DatePeriod dailyperiod = new DatePeriod(request.getEndDate(), request.getEndDate());
+		//	社員IDでループ - Loop by employee ID
 		for (String empId : empIDs) {
 
-			// 取得した月別実績の着目社員分をループ - Loop the acquired monthly results for the employees of
+			//	取得した月別実績の着目社員分をループ - Loop the acquired monthly results for the employees of
 			// interest
 			for (MonthlyAttendanceItemValueResult monthlyValue : monthlyValues) {
 
-				// 月別実績の月初と月末の雇用コードをチェックする
+				//	月別実績の月初と月末の雇用コードをチェックする
 				// TODO
 				MonthlyResultCheck monthResultCheck = this.checkEmployeeCodeInMonth(employeeId, request.getStartDate(),
 						request.getEndDate(), "", "");
-				// 雇用取得結果：true
+				//	雇用取得結果：true
 				if (!monthResultCheck.isEmployeeResult()) {
-					// エラーリストに「社員コード」「社員名」を書き出す
+					//	エラーリストに「社員コード」「社員名」を書き出す
 				}
 				if (!monthResultCheck.isCheckResult()) {
 					// 雇用コードが一致しなかったのでこの月別実績は処理しない
 					// →次の月別実績データの処理に移行(continue)
 
 				}
-				// 月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
-				// 社員の指定期間中の所属期間を取得する RequestList 588
+				//	月別実績１ヶ月分の期間(YMD)と所属会社履歴の重複期間(YMD)を取得する
+				//	社員の指定期間中の所属期間を取得する RequestList 588
 				List<StatusOfEmployee> statusEmps = this.symCompany.GetListAffComHistByListSidAndPeriod(empIDs,
 						new DatePeriod(request.getStartDate(), request.getEndDate()));
 				if (!statusEmps.isEmpty()) {
-					// 「日別実績」を取得する
-
-					// 重複期間．開始年月日～重複期間．終了年月日のループ
+					//	「日別実績」を取得する
+					List<AttendanceItemValueResult> dailyValues = attendanceService.getValueOf(empIDs,
+							dailyperiod, singleId);
+					//	重複期間．開始年月日～重複期間．終了年月日のループ
 					for (StatusOfEmployee stEmp : statusEmps) {
 
 					}
@@ -247,6 +255,25 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 
 			}
 		}
+		
+		AttendanceRecordReportData recordReportData = new AttendanceRecordReportData();
+		Optional<Company> optionalCompany = companyRepo.find(companyId);
+
+		recordReportData.setCompanyName(optionalCompany.get().getCompanyName().toString());
+//		recordReportData.setDailyHeader(dailyHeader);
+//		recordReportData.setExportDateTime(exportDate);
+//		recordReportData.setMonthlyHeader(monthlyHeader);
+		recordReportData.setReportData(reportData);
+		recordReportData.setReportName(optionalAttendanceRecExpSet.get().getName().v());
+//		recordReportData.setSealColName(
+//				optionalAttendanceRecExpSet.get().getSealUseAtr() ? sealStamp : new ArrayList<String>());
+		recordReportData.setFontSize(optionalAttendanceRecExpSet.get().getExportFontSize().value);
+		
+		AttendanceRecordReportDatasource recordReportDataSource = new AttendanceRecordReportDatasource(recordReportData,
+				request.getMode());
+		
+		// Generate file
+		reportGenerator.generate(context.getGeneratorContext(), recordReportDataSource);
 
 	}
 

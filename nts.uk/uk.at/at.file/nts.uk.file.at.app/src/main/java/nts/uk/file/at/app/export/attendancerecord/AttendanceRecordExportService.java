@@ -298,7 +298,6 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		if (!baseDate.isPresent()) {
 			throw new BusinessException("Uchida bảo là lỗi hệ thống _ ThànhPV");
 		}
-		//	対応する「月別実績」をすべて取得する  - Param ( List <employee ID> ,  Period (year / month). Start date ≤ year / month (YM) ≤ parameter. Period (year / month). End date ,
 		Map<String, DatePeriod> employeePeriod = service.getAffiliationDatePeriod(empIDs, periodMonthly, baseDate.get());
 
 		List<AttendanceItemValueResult> dailyValues;
@@ -947,7 +946,7 @@ public class AttendanceRecordExportService extends ExportService<AttendanceRecor
 		}
 
 		// get seal stamp
-		List<String> sealStamp = attendanceRecExpSetRepo.getSealStamp(companyId, request.getLayout());
+		List<String> sealStamp = attendanceRecExpSetRepo.getSealStamp(companyId, layoutId);
 
 		// Get daily header info
 		List<AttendanceRecordExport> dailyRecord = attendanceRecExpRepo.getAllAttendanceRecordExportDaily(layoutId);
