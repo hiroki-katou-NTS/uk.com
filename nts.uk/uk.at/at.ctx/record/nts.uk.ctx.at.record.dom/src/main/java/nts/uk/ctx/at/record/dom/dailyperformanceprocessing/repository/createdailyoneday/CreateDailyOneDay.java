@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -14,10 +16,10 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectSta
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.createdailyresults.CreateDailyResults;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyOneDay;
 import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.EmployeeGeneralInfoImport;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ICorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.dailyperformanceprocessing.output.PeriodInMasterList;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 /**
@@ -26,6 +28,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class CreateDailyOneDay {
 	
 	@Inject
@@ -67,9 +70,11 @@ public class CreateDailyOneDay {
         //日別実績が既に存在しない場合OR「作成する」の場合	
         if(integrationOfDaily.getWorkInformation() == null || executionType == ExecutionTypeDaily.CREATE) {
         	//日別実績を作成する 
-        	listErrorMessageInfo.addAll(createDailyResults.createDailyResult(companyId, employeeId, ymd,
+        	OutputCreateDailyOneDay outputCreate = createDailyResults.createDailyResult(companyId, employeeId, ymd,
 					reCreateWorkType, reCreateWorkPlace, reCreateRestTime, executionType, flag,
-					employeeGeneralInfoImport, periodInMasterList,integrationOfDaily));
+					employeeGeneralInfoImport, periodInMasterList,integrationOfDaily);
+        	listErrorMessageInfo.addAll(outputCreate.getListErrorMessageInfo());
+        	integrationOfDaily = outputCreate.getIntegrationOfDaily();
         	if(!listErrorMessageInfo.isEmpty()) {
         		return new OutputCreateDailyOneDay( listErrorMessageInfo,null,new ArrayList<>());
         	}

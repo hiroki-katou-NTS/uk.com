@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.aftercorrectat
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 
 /**
  * @author ThanhNX

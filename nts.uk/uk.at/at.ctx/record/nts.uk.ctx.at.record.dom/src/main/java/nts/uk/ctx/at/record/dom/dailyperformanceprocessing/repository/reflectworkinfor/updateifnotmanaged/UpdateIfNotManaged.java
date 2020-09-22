@@ -3,13 +3,16 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectwo
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.businesscalendar.daycalendar.BasicWorkSettingImport;
 import nts.uk.ctx.at.record.dom.adapter.businesscalendar.daycalendar.RecCalendarCompanyAdapter;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.schedule.WorkingDayCategory;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workingcondition.ManageAtr;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemRepository;
@@ -23,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemService;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class UpdateIfNotManaged {
 
 	@Inject
@@ -51,11 +55,15 @@ public class UpdateIfNotManaged {
 					integrationOfDaily.getAffiliationInfor().getWplID(),
 					integrationOfDaily.getAffiliationInfor().getClsCode().v(), ymd);
 			if (optWorkingConditionItem.get().getScheduleManagementAtr() == ManageAtr.NOTUSE) {
-				// 個人情報勤務情報を取得
+				
 				if (workingDayCategory != null
 						&& integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode() != null) {
+					// 基本勤務を取得する
+					BasicWorkSettingImport settingImport = recCalendarCompanyAdapter.getBasicWorkSetting(cid, integrationOfDaily.getAffiliationInfor().getWplID(), integrationOfDaily.getAffiliationInfor().getClsCode().v(), workingDayCategory.value);
+					
+					// 個人情報勤務情報を取得
 					Optional<WorkInformation> optData =  workingConditionItemService.getHolidayWorkScheduleNew(cid, employeeId, ymd,
-							integrationOfDaily.getWorkInformation().getRecordInfo().getWorkTypeCode().v(),
+							settingImport.getWorktypeCode(),
 							workingDayCategory);
 					//勤務情報を反映
 					if(optData.isPresent()) {

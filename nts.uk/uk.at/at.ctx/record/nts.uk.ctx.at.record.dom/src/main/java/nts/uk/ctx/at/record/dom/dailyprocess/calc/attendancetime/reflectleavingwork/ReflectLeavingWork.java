@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ActualStampAtr;
@@ -9,8 +11,8 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectatt
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.ReflectStampOuput;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.OutputCheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.StampReflectRangeOutput;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.algorithmdailyper.StampReflectRangeOutput;
 
 /**
  * 退勤を反映する
@@ -18,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.workinfo.timereflectfromworkinfo.St
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectLeavingWork {
 	@Inject
 	private CheckRangeReflectLeavingWork checkRangeReflectLeavingWork;
