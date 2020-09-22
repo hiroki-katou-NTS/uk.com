@@ -4,6 +4,7 @@ import { KAFS08A1Component } from '../../s08/a1';
 import { KafS08A2Component } from '../../s08/a2';
 import { KafS08CComponent } from '../../s08/c';
 import { StepwizardComponent } from '@app/components';
+import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'kafs08a',
