@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.holidaymanagement.publicholiday.configuration.DayOfWeek;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.NotUseAttribute;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 public class WorkInfoOfDailyAttendanceHelper {
 	public static WorkInfoOfDailyAttendance getWorkInfoOfDailyAttendanceDefault() {
