@@ -50,19 +50,19 @@ module nts.uk.at.view.kdl023.base.service {
 
     export module model {
         export interface ReflectionSetting {
-            calendarStartDate?: string;
-            calendarEndDate?: string;
-            monthlyPatternCode?: string;
+            calendarStartDate?: string; // 開始日
+            calendarEndDate?: string; // 終了日
+            monthlyPatternCode?: string; // 月間パターンコード
             selectedPatternCd: string;
             patternStartDate: string; // 'YYYY-MM-DD'
-            reflectionMethod: ReflectionMethod;
-            statutorySetting: DayOffSetting;
-            nonStatutorySetting: DayOffSetting;
-            holidaySetting: DayOffSetting;
+            reflectionMethod: ReflectionMethod; // 上書き
+            statutorySetting: DayOffSetting; // 法定休日勤務種類
+            nonStatutorySetting: DayOffSetting; // 法定外休日勤務種類
+            holidaySetting: DayOffSetting; // 祝日勤務種類
         }
 
         export interface DailyPatternSetting {
-            patternCode: string;
+            patternCode: string; // 月間パターンコード
             patternName: string;
             dailyPatternVals: Array<DailyPatternValue>;
         }
@@ -135,11 +135,11 @@ module nts.uk.at.view.kdl023.base.service {
         }
 
         export interface WorkCycleReflectionDto {
-            pubHoliday: Array<WorkType>;
-            satHoliday: Array<WorkType>;
-            nonSatHoliday: Array<WorkType>;
-            reflectionImage: Array<RefImageEachDayDto>;
-            workCycleList: Array<WorkCycle>;
+            pubHoliday: Array<WorkType>; // 祝日勤務種類
+            satHoliday: Array<WorkType>; // 法定休日勤務種類
+            nonSatHoliday: Array<WorkType>; // 法定外休日勤務種類
+            reflectionImage: Array<RefImageEachDayDto>; // 反映イメージ
+            workCycleList: Array<WorkCycle>; //  勤務サイクルのカレンダー
         }
 
         export interface RefImageEachDayDto {
@@ -162,22 +162,22 @@ module nts.uk.at.view.kdl023.base.service {
 
         export interface GetStartupInfoParam {
             bootMode: number;
-            creationPeriodStartDate: string;
-            creationPeriodEndDate: string;
-            workCycleCode: string;
-            refOrder: Array<number>;
-            numOfSlideDays: number;
+            creationPeriodStartDate: string; // 作成期間
+            creationPeriodEndDate: string; // 作成期間
+            workCycleCode: string; // 勤務サイクルコード
+            refOrder: Array<number>; // 反映順序
+            numOfSlideDays: number; //スライド日数
         }
 
         export interface GetWorkCycleAppImageParam {
-            creationPeriodStartDate: string;
-            creationPeriodEndDate: string;
-            workCycleCode: string;
-            refOrder: Array<number>;
-            numOfSlideDays: number;
-            legalHolidayCd: string;
-            nonStatutoryHolidayCd: string;
-            holidayCd: string;
+            creationPeriodStartDate: string; //作成期間
+            creationPeriodEndDate: string; //作成期間
+            workCycleCode: string; // 勤務サイクルコード
+            refOrder: Array<number>; //反映順序
+            numOfSlideDays: number; //スライド日数
+            legalHolidayCd: string; //祝日の勤務種類
+            nonStatutoryHolidayCd: string; //法定外休日の勤務種類
+            holidayCd: string; //法定休日の勤務種類
         }
 
         export interface MonthlyPatternRegisterCommand {
