@@ -61,21 +61,19 @@
 					<tbody data-bind="foreach: dataTable">
 						<tr class="mw-200">
 							<!-- A3_1 js-yearMonth -->
-							<td id="A3_1" class="border-bot data-text limited-label" data-bind="text: $parent.yearMonth"></td>
+							<td id="A3_1" class="border-bot data-text" data-bind="text: yearMonth"></td>
 							<!-- A3_2 js-agreementTime -->
-							<td id="A3_2" class="border-bot text-center limited-label" data-bind="text: $parent.agreementTimeDisplay"></td>
+							<td id="A3_2" class="border-bot text-right" data-bind="text: agreementTimeDisplay"></td>
 							<td class="pl-20 inline-flex">
 								<span class="dashed45"></span>
 								<span class="dashed80"></span>
 								<!-- A3_3 js-nonStatutoryTime -->
 								<com:ko-if bind="agreementTime > 0">
-									<span id="A3_3" class="label non-statutory-bg-color" data-bind="style: {width: $parent.nonStatutoryTime}"></span>
-									<span class="" data-bind="style: {width: $parent.agreementTimeDisplay}"></span>
+									<span id="A3_3" class="label non-statutory-bg-color" data-bind="style: {width: nonStatutoryTime}"></span>
 								</com:ko-if>
 								<!-- A3_4 js-legalTime -->
 								<com:ko-if bind="subAgreement > 0">
-									<span id="A3_4" class="label time-outside-bg-color" data-bind="style: {width: $parent.legalTime}"></span>
-									<span class="" data-bind="style: {width: $parent.agreementMaxTimeDisplay}"></span>
+									<span id="A3_4" class="label time-outside-bg-color" data-bind="style: {width: legalTime}"></span>
 								</com:ko-if>
 							</td>
 						</tr>

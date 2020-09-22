@@ -5,7 +5,7 @@ module nts.uk.at.view.ktg026.a.viewmodel {
 
   const API = {
     startScreen: 'screen/at/ktg26/startScreen',
-    extractOvertime: 'screen/at/ktg26/startScreen/extractOvertime'
+    extractOvertime: 'screen/at/ktg26/extractOvertime'
   };
 
   @bean()
@@ -34,14 +34,15 @@ module nts.uk.at.view.ktg026.a.viewmodel {
       const cache = windows.getShared('cache');
       const dataStored = vm.$window.storage('KTG026_PARAM') as any;
 
-      vm.employeeId = !!dataStored ? dataStored.employeeId : (__viewContext as any).user.employeeId;
-      const targetDate = !!dataStored ? dataStored.targetDate : null;
+      vm.employeeId = !!dataStored.employeeId ? dataStored.employeeId : (__viewContext as any).user.employeeId;
+      const targetDate = !!dataStored.targetDate ? dataStored.targetDate : null;
+      const currentOrNextMonth = !!dataStored.currentOrNextMonth ? 2 : 1; // 1: 従業員参照モード 2: 上長参照モード
 
       const requestBody: Ktg026BodyParmas = new Ktg026BodyParmas({
         employeeId: vm.employeeId,
         targetDate: targetDate,
         targetYear: null,
-        currentOrNextMonth: cache.currentOrNextMonth
+        currentOrNextMonth: currentOrNextMonth
       });
 
       vm.$ajax('at', API.startScreen, requestBody)
