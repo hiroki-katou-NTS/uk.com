@@ -10,13 +10,11 @@ import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
-// import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.OneMonthTime;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.*;
 
 /**
@@ -27,9 +25,6 @@ import java.util.*;
  */
 @Stateless
 public class OneMonthAppCreate {
-	@Inject
-	private ApproverGetDomainService apprService;
-
 	/**
 	 * [1] 作成する
 	 * 1ヶ月の36協定特別条項の適用申請を作成する
@@ -46,7 +41,7 @@ public class OneMonthAppCreate {
 									MonthlyAppContent appContent,
 									ScreenDisplayInfo displayInfo) {
 
-		Optional<ApproverItem> approverItem = apprService.getApprover(require, appContent.getApplicant());
+		Optional<ApproverItem> approverItem = GettingApproverDomainService.getApprover(require, appContent.getApplicant());
 		if (!approverItem.isPresent()) {
 			return new AppCreationResult(
 					appContent.getApplicant(),
@@ -142,7 +137,7 @@ public class OneMonthAppCreate {
 		return null; // TODO
 	}
 
-	public static interface Require extends ApproverGetDomainService.Require, AgreementDomainService.RequireM3 {
+	public static interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
 		public void addApp(SpecialProvisionsOfAgreement app);
 	}
 }

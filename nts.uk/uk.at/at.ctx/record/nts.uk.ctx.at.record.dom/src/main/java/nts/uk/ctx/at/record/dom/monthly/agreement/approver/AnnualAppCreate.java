@@ -15,8 +15,6 @@ import java.util.List;
  */
 @Stateless
 public class AnnualAppCreate {
-	@Inject
-	private ApproverGetDomainService apprService;
 
 	/**
 	 * [1] 作成する

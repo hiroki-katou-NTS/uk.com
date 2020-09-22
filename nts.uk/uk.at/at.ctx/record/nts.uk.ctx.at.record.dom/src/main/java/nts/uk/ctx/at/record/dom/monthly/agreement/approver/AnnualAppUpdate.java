@@ -16,8 +16,6 @@ import javax.inject.Inject;
  */
 @Stateless
 public class AnnualAppUpdate {
-	@Inject
-	private ApproverGetDomainService apprService;
 
 	/**
 	 * [1] 変更する

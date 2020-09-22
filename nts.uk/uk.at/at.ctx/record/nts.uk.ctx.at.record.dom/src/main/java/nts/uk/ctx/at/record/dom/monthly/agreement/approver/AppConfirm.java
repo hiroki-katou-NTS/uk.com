@@ -16,9 +16,6 @@ import java.util.Optional;
 @Stateless
 public class AppConfirm {
 
-	@Inject
-	private ApproverGetDomainService apprService;
-
 	/**
 	 * [1] 変更する
 	 * 対象申請を確認または否認をする

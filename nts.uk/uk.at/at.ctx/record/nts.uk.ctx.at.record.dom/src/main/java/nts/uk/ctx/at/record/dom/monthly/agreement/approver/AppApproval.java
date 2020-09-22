@@ -17,9 +17,6 @@ import java.util.Optional;
 @Stateless
 public class AppApproval {
 
-	@Inject
-	private ApproverGetDomainService apprService;
-
 	/**
 	 * [1] 変更する
 	 * 対象申請を承認また否認に変更する。

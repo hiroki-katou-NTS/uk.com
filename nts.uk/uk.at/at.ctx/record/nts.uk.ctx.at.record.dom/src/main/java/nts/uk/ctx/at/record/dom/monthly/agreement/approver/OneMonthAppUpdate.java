@@ -5,7 +5,6 @@ import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 
 // import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
 
@@ -17,8 +16,6 @@ import javax.inject.Inject;
  */
 @Stateless
 public class OneMonthAppUpdate {
-	@Inject
-	private ApproverGetDomainService apprService;
 
 	/**
 	 * [1] 変更する
@@ -69,7 +66,7 @@ public class OneMonthAppUpdate {
 		return null;
 	}
 
-	public static interface Require extends ApproverGetDomainService.Require, AgreementDomainService.RequireM3 {
+	public static interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
 //		[R-1] 申請を取得する
 //	36協定特別条項の適用申請Repository.get(申請ID)
 //
