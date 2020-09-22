@@ -20,8 +20,8 @@ module nts.uk.ui.at.ksu002.a {
         <div data-bind="ntsComboBox: {
             width: '200px',
             name: $component.$i18n('KSU002_22'),
-            value: ko.observable(''),
-            options: ko.observableArray([]),
+            value: ko.observable(1),
+            options: $component.dateRanges,
             optionsValue: 'id',
             optionsText: 'title',
             editable: false,
@@ -84,31 +84,29 @@ module nts.uk.ui.at.ksu002.a {
         <style type="text/css" rel="stylesheet" data-bind="html: $component.style"></style>
     `;
 
-	interface Params {
-		
-	}
-	
 	const COMPONENT_NAME = 'title-date';
-	
-    @handler({
-        bindingName: COMPONENT_NAME,
-        validatable: true,
-        virtual: false
-    })
-    export class TitleDateComponentBindingHandler implements KnockoutBindingHandler {
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
-            const name = COMPONENT_NAME;
-            const baseDate = valueAccessor();
-            const mode = allBindingsAccessor.get('mode');
 
-            element.classList.add('cf');
-            element.classList.add('title-date');
+	@handler({
+		bindingName: COMPONENT_NAME,
+		validatable: true,
+		virtual: false
+	})
+	export class TitleDateComponentBindingHandler implements KnockoutBindingHandler {
+		init(element: any, valueAccessor: () => any, allBindingsAccessor: KnockoutAllBindingsAccessor, viewModel: any, bindingContext: KnockoutBindingContext): void | { controlsDescendantBindings: boolean; } {
+			const name = COMPONENT_NAME;
+			const dateRange = valueAccessor();
+			const mode = allBindingsAccessor.get('mode');
+			const params = { mode, dateRange };
+			const component = { name, params };
 
-            ko.applyBindingsToNode(element, { component: { name: name, params: { mode: mode, baseDate: baseDate } } }, bindingContext);
+			element.classList.add('cf');
+			element.classList.add('title-date');
 
-            return { controlsDescendantBindings: true };
-        }
-    }
+			ko.applyBindingsToNode(element, { component }, bindingContext);
+
+			return { controlsDescendantBindings: true };
+		}
+	}
 
 	@component({
 		name: COMPONENT_NAME,
@@ -116,12 +114,90 @@ module nts.uk.ui.at.ksu002.a {
 	})
 	export class TitleDateComponent extends ko.ViewModel {
 		public yearMonth: KnockoutObservable<string> = ko.observable(moment().format('YYYYMM'));
-		
+
+		public dateRanges: KnockoutObservableArray<DateOption> = ko.observableArray([]);
+
 		constructor(private params: Params) {
 			super();
+
+			const vm = this;
+			const baseD = moment();
+			const begin = baseD.clone().startOf('month').toDate();
+			const finish = baseD.clone().endOf('month').toDate();
+
+			if (!params) {
+				vm.params = {
+					dateRange: ko.observable({ begin, finish }),
+					mode: ko.observable(1)
+				};
+			}
+
+			const { mode, dateRange } = params;
+
+			if (!ko.unwrap(mode)) {
+				if (ko.isObservable(mode)) {
+					vm.params.mode(ACHIEVEMENT.HIDE);
+				} else {
+					vm.params.mode = ko.observable(ACHIEVEMENT.HIDE);
+				}
+			}
+
+			if (!ko.unwrap(dateRange)) {
+				if (ko.isObservable(dateRange)) {
+					vm.params.dateRange({ begin, finish });
+				} else {
+					vm.params.dateRange = ko.observable({ begin, finish });
+				}
+			}
+		}
+
+		created() {
+			const vm = this;
+			const { params } = vm;
+
+			vm.yearMonth
+				.subscribe((ym: string) => {
+					const baseD = moment(ym, 'YYYYMM');
+					const begin = baseD.clone().startOf('month').toDate();
+					const finish = baseD.clone().endOf('month').toDate();
+
+					params.dateRange({ begin, finish });
+
+					// call to server get date range
+
+					vm.dateRanges([{
+						id: 1,
+						title: `${vm.$i18n('KSU002_7')}${moment(begin).format('MM/DD')}~${moment(finish).format('MM/DD')}`,
+						begin,
+						finish
+					}]);
+				});
 		}
 
 		mounted() {
+			const vm = this;
+			
+			vm.yearMonth.valueHasMutated();
 		}
+	}
+
+	interface Params {
+		dateRange: KnockoutObservable<DateRange>;
+		mode: KnockoutObservable<ACHIEVEMENT>;
+	}
+
+	interface DateRange {
+		begin: Date;
+		finish: Date;
+	}
+
+	interface DateOption extends DateRange {
+		id: number;
+		title: string;
+	}
+
+	enum ACHIEVEMENT {
+		SHOW = 1,
+		HIDE = 0
 	}
 }

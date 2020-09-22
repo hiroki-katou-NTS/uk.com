@@ -1,18 +1,29 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.a {
+	import m = nts.uk.ui.at.ksu002.memento;
+	import c = nts.uk.ui.at.ksu002.calendar;
 
 	const API = {
 		UNAME: '/sys/portal/webmenu/username'
 	};
 
+	const memento: m.Options = {
+		size: 20,
+		/*replace: function (data: c.DayData[], replacer: c.DayData[]) {
+			_.each(data, (d: c.DayData) => {
+
+				d.
+			});
+		}*/
+	};
+
 	@bean()
 	export class ViewModel extends ko.ViewModel {
-		schedules: KnockoutObservableArray<any> = ko.observableArray([]);
+		currentUser!: KnockoutComputed<string>;
 
-		baseDate = ko.observable({ begin: new Date(2020, 10, 1), finish: new Date(2020, 11, 5) });
-
-		currentUser!: KnockoutObservable<string>;
+		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
+		schedules: MementoObservableArray<c.DayData> = ko.observableArray([]).extend({ memento }) as any;
 
 		created() {
 			const vm = this;
@@ -28,18 +39,35 @@ module nts.uk.ui.at.ksu002.a {
 			});
 
 			vm.$ajax('com', API.UNAME)
-				.then((name: string) => bussinesName(name))
+				.then((name: string) => bussinesName(name));
 
-			vm.schedules.subscribe((c) => console.log(c));
+			vm.baseDate
+				.subscribe((data) => {
+
+				});
 		}
 
 		mounted() {
+			const vm = this;
 
+			vm.$nextTick(() => vm.schedules.reset());
+
+			$(vm.$el).find('[data-bind]').removeAttr('data-bind');
 		}
-		
+
+		undoOrRedo(action: 'undo' | 'redo') {
+			const vm = this;
+
+			if (action === 'undo') {
+				vm.schedules.undo();
+			} else if (action === 'redo') {
+				vm.schedules.redo();
+			}
+		}
+
 		clickDayCell(type: string, date: any) {
 			const vm = this;
-			
+
 			console.log(vm, type, date);
 		}
 	}

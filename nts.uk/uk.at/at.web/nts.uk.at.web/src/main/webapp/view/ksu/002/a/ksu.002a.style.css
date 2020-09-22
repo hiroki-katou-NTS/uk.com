@@ -1,3 +1,15 @@
+.ksu-002a {
+    width: 800px;
+}
+
+#functions-area .ksu-002a {
+    padding-left: 5px;
+}
+
+.ksu-002a .btn-right {
+    float: right;
+}
+
 .ksu-002a .title-date {
 	display: block;
 	float: left;

@@ -7,9 +7,6 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-				nts.uk.shr.com.time.TimeWithDayAttr
-			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			
 			<com:scriptfile path="./ksu.002a.vm.js" />
@@ -20,20 +17,27 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="i18n: 'KSU002_1'"></button>
-				<button class="" data-bind="i18n: 'KSU002_2'"></button>
-				<button class="" data-bind="i18n: 'KSU002_2'"></button>
-				<button class="" data-bind="i18n: 'KSU002_4'"></button>
-			</div>
-			<div id="contents-area" class="ksu-002a">
-				<div data-bind="ntsFormLabel: { required: false, text: currentUser }"></div>
-				<div class="cf">
-					<div data-bind="title-date: baseDate"></div>
-					<button class="small btn-guide" data-bind="icon: 999"></button>
+				<div class="ksu-002a cf">
+					<button class="proceed" data-bind="i18n: 'KSU002_1'"></button>
+					<button class="" data-bind="i18n: 'KSU002_2'"></button>
+					<button class="" data-bind="i18n: 'KSU002_2'"></button>
+					<button class="btn-right" data-bind="i18n: 'KSU002_4'"></button>
 				</div>
-				<div data-bind="action-bar"></div>
-				<br />
-                <div data-bind="scheduler: schedules, baseDate: baseDate, width: '600px', click-cell: clickDayCell"></div>
+			</div>
+			<div id="contents-area">
+				<div class="ksu-002a cf">
+					<div data-bind="ntsFormLabel: { required: false, text: currentUser }"></div>
+					<div class="cf">
+						<div data-bind="title-date: baseDate"></div>
+						<button class="small btn-guide" data-bind="icon: 999"></button>
+					</div>
+					<div class="cf">
+						<div data-bind="action-bar, click-btn: undoOrRedo, clickable: { undo: schedules.undoAble, redo: schedules.redoAble }"></div>
+					</div>
+					<div class="cf">
+						<div data-bind="scheduler: schedules, baseDate: baseDate, width: 100, click-cell: clickDayCell"></div>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
