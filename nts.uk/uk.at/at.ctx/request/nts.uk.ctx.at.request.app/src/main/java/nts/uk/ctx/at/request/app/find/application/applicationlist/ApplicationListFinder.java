@@ -92,6 +92,17 @@ public class ApplicationListFinder {
 					Strings.isNotBlank(param.getAppListExtractCondition().getPeriodEndDate())) {
 				// ドメインモデル「申請一覧抽出条件」を取得する
 				AppListExtractCondition appListExtractCondition = param.getAppListExtractCondition().toDomain();
+				// có selectAppTypeLst là KAF000, nếu không có là các màn hình khác, mặc định select all
+				List<ListOfAppTypes> selectAppTypeLst = appListExtractCondition.getOpListOfAppTypes().map(x -> x.stream().filter(y -> y.isChoice()).collect(Collectors.toList()))
+						.orElse(Collections.emptyList());
+				if(CollectionUtil.isEmpty(selectAppTypeLst)) {
+					appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
+						x.stream().map(y -> {
+							y.setChoice(true);
+							return y;
+						}).collect(Collectors.toList());
+					});
+				}
 				// アルゴリズム「申請一覧リスト取得」を実行する
 				AppListInitOutput appListInitOutput = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
 				return AppListInitDto.fromDomain(appListInitOutput);
