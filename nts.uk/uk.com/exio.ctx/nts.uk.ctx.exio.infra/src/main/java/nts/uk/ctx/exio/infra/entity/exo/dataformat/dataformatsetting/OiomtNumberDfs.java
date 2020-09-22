@@ -15,12 +15,12 @@ import nts.uk.ctx.exio.dom.exo.dataformat.dataformatsetting.NumberDataFmSetting;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 数値型データ形式設定
+ * 外部出力時刻型データ形式設定（項目単位）
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_NUMBER_DFS")
+@Table(name = "OIOMT_EX_OUT_FM_NUM")
 public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,59 +31,24 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	public OiomtNumberDfsPk numberDfsPk;
 
 	/**
-	 * NULL値置換
+	 * 形式選択
 	 */
 	@Basic(optional = false)
-	@Column(name = "NULL_VALUE_REPLACE")
-	public int nullValueReplace;
+	@Column(name = "FORMAT_SELECTION")
+	public int formatSelection;
 
 	/**
-	 * マイナス値を0で出力
+	 * 小数桁
 	 */
-	@Basic(optional = false)
-	@Column(name = "OUTPUT_MINUS_AS_ZERO")
-	public int outputMinusAsZero;
-
-	/**
-	 * 固定値
-	 */
-	@Basic(optional = false)
-	@Column(name = "FIXED_VALUE")
-	public int fixedValue;
-
-	/**
-	 * 固定値演算
-	 */
-	@Basic(optional = false)
-	@Column(name = "FIXED_VALUE_OPERATION")
-	public int fixedValueOperation;
-
-	/**
-	 * 固定値演算符号
-	 */
-	@Basic(optional = false)
-	@Column(name = "FIXED_VALUE_OPERATION_SYMBOL")
-	public int fixedValueOperationSymbol;
-
-	/**
-	 * 固定長出力
-	 */
-	@Basic(optional = false)
-	@Column(name = "FIXED_LENGTH_OUTPUT")
-	public int fixedLengthOutput;
-
-	/**
-	 * 固定長編集方法
-	 */
-	@Basic(optional = false)
-	@Column(name = "FIXED_LENGTH_EDITING_METHOD")
-	public int fixedLengthEditingMethod;
+	@Basic(optional = true)
+	@Column(name = "DECIMAL_DIGIT")
+	public Integer decimalDigit;
 
 	/**
 	 * 小数点区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "DECIMAL_POINT_CLS")
+	@Column(name = "DECIMAL_POINT_ATR")
 	public int decimalPointCls;
 
 	/**
@@ -94,32 +59,39 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	public int decimalFraction;
 
 	/**
-	 * 形式選択
+	 * マイナス値を0で出力
 	 */
 	@Basic(optional = false)
-	@Column(name = "FORMAT_SELECTION")
-	public int formatSelection;
+	@Column(name = "OUTPUT_MINUS_AS_ZERO")
+	public int outputMinusAsZero;
 
 	/**
-	 * NULL値置換の値
+	 * 固定値演算
 	 */
-	@Basic(optional = true)
-	@Column(name = "VALUE_OF_NULL_VALUE_REPLACE")
-	public String valueOfNullValueReplace;
+	@Basic(optional = false)
+	@Column(name = "CALC_ATR")
+	public int fixedValueOperation;
 
 	/**
-	 * 固定値の値
+	 * 固定値演算符号
 	 */
-	@Basic(optional = true)
-	@Column(name = "VALUE_OF_FIXED_VALUE")
-	public String valueOfFixedValue;
+	@Basic(optional = false)
+	@Column(name = "FIXED_VALUE_CALC_SYMBOL")
+	public int fixedValueOperationSymbol;
 
 	/**
 	 * 固定値演算値
 	 */
 	@Basic(optional = true)
-	@Column(name = "FIXED_CALCULATION_VALUE")
+	@Column(name = "FIXED_CALC_VAL")
 	public BigDecimal fixedCalculationValue;
+
+	/**
+	 * 固定長出力
+	 */
+	@Basic(optional = false)
+	@Column(name = "FIXED_LENGTH_OUTPUT")
+	public int fixedLengthOutput;
 
 	/**
 	 * 固定長整数桁
@@ -129,11 +101,39 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 	public Integer fixedLengthIntegerDigit;
 
 	/**
-	 * 小数桁
+	 * 固定長編集方法
+	 */
+	@Basic(optional = false)
+	@Column(name = "FIXED_LENGTH_EDIT_METHOD")
+	public int fixedLengthEditingMethod;
+
+	/**
+	 * NULL値置換
+	 */
+	@Basic(optional = false)
+	@Column(name = "NULL_REPLACE_VAL_ATR")
+	public int nullValueReplace;
+
+	/**
+	 * NULL値置換の値
 	 */
 	@Basic(optional = true)
-	@Column(name = "DECIMAL_DIGIT")
-	public Integer decimalDigit;
+	@Column(name = "NULL_REPLACE_VAL")
+	public String valueOfNullValueReplace;
+
+	/**
+	 * 固定値
+	 */
+	@Basic(optional = false)
+	@Column(name = "FIXED_VAL_ATR")
+	public int fixedValue;
+
+	/**
+	 * 固定値の値
+	 */
+	@Basic(optional = true)
+	@Column(name = "FIXED_VAL")
+	public String valueOfFixedValue;
 
 	@Override
 	protected Object getKey() {
@@ -151,17 +151,24 @@ public class OiomtNumberDfs extends UkJpaEntity implements Serializable {
 
 	public static OiomtNumberDfs toEntity(NumberDataFmSetting domain) {
 		return new OiomtNumberDfs(
-				new OiomtNumberDfsPk(domain.getCid(), domain.getConditionSettingCode().v(),
+				new OiomtNumberDfsPk(
+						domain.getCid(), 
+						domain.getConditionSettingCode().v(),
 						domain.getOutputItemCode().v()),
-				domain.getNullValueReplace().value, domain.getOutputMinusAsZero().value, domain.getFixedValue().value,
-				domain.getFixedValueOperation().value, domain.getFixedValueOperationSymbol().value,
-				domain.getFixedLengthOutput().value, domain.getFixedLengthEditingMethod().value,
-				domain.getDecimalPointClassification().value, domain.getDecimalFraction().value,
 				domain.getFormatSelection().value,
-				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
-				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null,
+				domain.getDecimalDigit().isPresent() ? domain.getDecimalDigit().get().v() : null,
+				domain.getDecimalPointClassification().value, 
+				domain.getDecimalFraction().value,
+				domain.getOutputMinusAsZero().value, 
+				domain.getFixedValueOperation().value, 
+				domain.getFixedValueOperationSymbol().value,
 				domain.getFixedCalculationValue().isPresent() ? domain.getFixedCalculationValue().get().v() : null,
+				domain.getFixedLengthOutput().value, 
 				domain.getFixedLengthIntegerDigit().isPresent() ? domain.getFixedLengthIntegerDigit().get().v() : null,
-				domain.getDecimalDigit().isPresent() ? domain.getDecimalDigit().get().v() : null);
+				domain.getFixedLengthEditingMethod().value,
+				domain.getNullValueReplace().value, 
+				domain.getValueOfNullValueReplace().isPresent() ? domain.getValueOfNullValueReplace().get().v() : null,
+				domain.getFixedValue().value,
+				domain.getValueOfFixedValue().isPresent() ? domain.getValueOfFixedValue().get().v() : null);
 	}
 }

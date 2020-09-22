@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.rank.RankPriority;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.BelongScheduleTeam;
 
 /**
- * 社員を並び替える
+ * DS_社員を並び替える
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.社員情報.社員並び替え
  * 
  * @author HieuLt

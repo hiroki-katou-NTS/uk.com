@@ -55,7 +55,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
         mode :KnockoutObservable<number> = ko.observable(MODE.NEW);
 
         isLoadScreenQ: boolean = false;
-        
+
         roleAuthority: any;
 
         constructor() {
@@ -75,9 +75,9 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             self.alreadySettingPersonal = ko.observableArray([]);
             self.baseDate = ko.observable(new Date());
             self.selectedEmployee = ko.observableArray([]);
-            
-            self.roleAuthority = getShared("CMF002O_PARAMS"); 
-            
+
+            self.roleAuthority = getShared("CMF002O_PARAMS");
+
             //set up kcp005
             let self = this;
             self.baseDate = ko.observable(new Date());
@@ -147,7 +147,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
                 {
                     let dataCndSetCd: Array<StdOutputCondSetDto> = res;
                     self.loadListCondition(dataCndSetCd);
-                    $('#ex_output_wizard').ntsWizard("next");        
+                    $('#ex_output_wizard').ntsWizard("next");
                     $("#grd_Condition_container").focus();
 
                     block.clear();
@@ -289,7 +289,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             }
             return "";
         }
-        
+
         createExOutText() {
             block.invisible();
 
@@ -342,7 +342,7 @@ module nts.uk.com.view.cmf002.o.viewmodel {
             let self = this;
 //          fix bug 102743
 //            if(self.isLoadScreenQ){
-//                return;    
+//                return;
 //            }
 //            self.isLoadScreenQ = true;
 
@@ -424,11 +424,16 @@ module nts.uk.com.view.cmf002.o.viewmodel {
     class OutputCondition {
         seriNum: number;
         itemName: string;
-        condition: string;
-        constructor(seriNum: number, itemName: string, condition: string) {
+        conditions: string;
+        dataType: number;
+        displayClassfication: number;
+
+        constructor(seriNum: number, itemName: string, condition: string, dataType: number, displayClassfication: number) {
             this.seriNum = seriNum;
             this.itemName = itemName;
-            this.condition = condition;
+            this.conditions = condition;
+            this.dataType = dataType;
+            this.displayClassfication = displayClassfication;
         }
     }
     class ParamToScreenP {

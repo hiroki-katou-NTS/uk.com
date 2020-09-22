@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -143,6 +144,27 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "FILE_ID")
 	public String fileId;
+	
+	/**
+	 * ログイン情報.IPアドレス
+	 */
+	@Basic(optional = false)
+	@Column(name = "PC_IP")
+	public String pcId;
+	
+	/**
+	 * ログイン情報.PC名
+	 */
+	@Basic(optional = false)
+	@Column(name = "PC_NAME")
+	public String pcName;
+	
+	/**
+	 * ログイン情報.アカウント
+	 */
+	@Basic(optional = false)
+	@Column(name = "PC_ACOUNT")
+	public String pcAccount;
 
 	@Override
 	protected Object getKey() {
@@ -153,7 +175,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 		return new ResultOfSaving(this.storeProcessingId, this.cid, this.systemType, this.fileSize, this.saveSetCode,
 				this.saveFileName, this.saveName, this.saveForm, this.saveEndDatetime, this.saveStartDatetime,
 				this.deletedFiles, this.compressedPassword, this.practitioner, this.targetNumberPeople, this.saveStatus,
-				this.saveForInvest, this.fileId);
+				this.saveForInvest, this.fileId, new LoginInfo(pcId,pcName,pcAccount));
 	}
 
 	public static SspmtResultOfSaving toEntity(ResultOfSaving domain) {
@@ -164,6 +186,7 @@ public class SspmtResultOfSaving extends UkJpaEntity implements Serializable {
 				domain.getSaveForm().value, domain.getSaveEndDatetime().orElse(null), domain.getSaveStartDatetime().orElse(null),
 				domain.getDeletedFiles().value, domain.getCompressedPassword().map(i -> i.v()).orElse(null),
 				domain.getPractitioner(), domain.getTargetNumberPeople().orElse(null),
-				domain.getSaveStatus().map(i->i.value).orElse(null), domain.getSaveForInvest().value, domain.getFileId().orElse(null));
+				domain.getSaveStatus().map(i->i.value).orElse(null), domain.getSaveForInvest().value, domain.getFileId().orElse(null),
+				domain.getLoginInfo().getIpAddress(),domain.getLoginInfo().getPcName(),domain.getLoginInfo().getAccount());
 	}
 }
