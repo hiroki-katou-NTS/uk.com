@@ -49143,8 +49143,7 @@ BaseViewModel.prototype.$errors = function $errors() {
         // if action is clear, call validate clear action
         if (args[0] === 'clear') {
             return $.Deferred().resolve()
-                .then(function () { return $('.nts-input').ntsError('clear'); })
-                .then(function () { return !$('.nts-input').ntsError('hasError'); });
+                .then(function () { return $('.nts-input').ntsError('clear'); });
         }
         else {
             var errors_3 = args[0];

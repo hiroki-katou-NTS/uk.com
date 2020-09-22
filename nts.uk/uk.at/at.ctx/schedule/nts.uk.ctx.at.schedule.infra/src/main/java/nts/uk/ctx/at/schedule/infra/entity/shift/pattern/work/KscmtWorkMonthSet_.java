@@ -21,8 +21,5 @@ public class KscmtWorkMonthSet_ {
 	
 	/** The working cd. */
 	public static volatile SingularAttribute<KscmtWorkMonthSet, String> workingCd;
-
-	/** The contract cd. */
-	public static volatile SingularAttribute<KscmtWorkMonthSet, String> contractCd;
 	
 }

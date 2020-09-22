@@ -859,100 +859,9 @@ public class ScheduleCreatorExecutionTransaction {
 			} else {
 				WorkInformation information = prepareWorkOutput.getInformation().clone();
 
-				// note 勤務情報が正常な状態かをチェックする
-				
-				WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository, workTimeSettingService, basicScheduleService);
-				ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
-
-				// note 正常の場合
-				if (checkErrorCondition.value == ErrorStatusWorkInfo.NORMAL.value) {
-					// note 取得した情報をもとに「勤務予定」を入れる (TKT-TQP)
-					Optional<WorkTypeSet> workTypeSet = prepareWorkOutput.getWorkType().isPresent() ? prepareWorkOutput.getWorkType().get().getWorkTypeSetList().stream()
-							.filter(x -> x.getCompanyId().equals(command.getCompanyId())
-									&& x.getWorkTypeCd().equals(prepareWorkOutput.getInformation().getWorkTypeCode()))
-							.findFirst() : Optional.empty();
-					// note 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
-					integrationOfDaily.getWorkInformation().setRecordInfo(prepareWorkOutput.getInformation().clone());
-					integrationOfDaily.getWorkInformation().setScheduleInfo(prepareWorkOutput.getInformation().clone());
-					// note 出勤打刻自動セット ~ 出勤時刻を直行とする (勤務情報。直行区分＝勤務種類。出勤打刻自動セット)
-					integrationOfDaily.getWorkInformation().setGoStraightAtr(
-							EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getAttendanceTime().value : 0, NotUseAttribute.class));
-					// note 退勤打刻自動セット ~ 退勤打刻自動セット (勤務情報。直帰区分＝勤務種類。退勤打刻自動セット)
-					integrationOfDaily.getWorkInformation().setBackStraightAtr(
-							EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getTimeLeaveWork().value : 0, NotUseAttribute.class));
-					// note 勤務情報。勤務予定時間帯。勤務No = 取得した所定時間帯. 勤務NO
-					// note 勤務情報。勤務予定時間帯。出勤 = 取得した所定時間帯. 開始
-					// note 勤務情報。勤務予定時間帯。退勤 = 取得した所定時間帯. 終了
-					integrationOfDaily.getWorkInformation().setScheduleTimeSheets(prepareWorkOutput.getScheduleTimeZone().stream().map(
-							mapper -> new ScheduleTimeSheet(mapper.getWorkNo(), mapper.getStart().v(), mapper.getEnd().v()))
-							.collect(Collectors.toList()));
-					// note 短時間勤務。時間帯。育児介護区分 = 取得した短時間勤務. 育児介護区分
-					integrationOfDaily.setShortTime(Optional.ofNullable(null));
-					if(!prepareWorkOutput.getLstWorkTimeDto().isEmpty()) {
-						List<ShortWorkingTimeSheet> lstSheets = new ArrayList<>();
-					for (ShortWorkTimeDto shortWork : prepareWorkOutput.getLstWorkTimeDto()) {
-						for (ShortChildCareFrameDto shortChild : shortWork.getLstTimeSlot()) {
-							ShortWorkingTimeSheet timeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
-									EnumAdaptor.valueOf(shortWork.getChildCareAtr().value, ChildCareAttribute.class),
-									shortChild.getStartTime(), shortChild.getEndTime());
-							lstSheets.add(timeSheet);
-							
-						}
-					}
-					ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(lstSheets);
-					integrationOfDaily.setShortTime(Optional.ofNullable(shortTime));
-					}
-
-					// note 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
-					// note 編集状態あり
-					if (!attendanceItemIdList.isEmpty()) {
-						// note 手修正項目のデータを元に戻す - TQP
-						// note 取得できた日別勤怠（Work）から勤務予定に変換する - TQP
-						integrationOfDaily = this.restoreData(itemConverter, integrationOfDaily, listItemValue);
-					}
-					// note Đang để tạm 1 phần tử trong DailyRecordToAttendanceItemConverter nên Tín bảo
-					// note để tạm là UNSETTLED
-					WorkSchedule workSchedule = new WorkSchedule(integrationOfDaily.getEmployeeId(),
-							integrationOfDaily.getYmd(), ConfirmedATR.UNSETTLED, integrationOfDaily.getWorkInformation(),
-							integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
-							integrationOfDaily.getEditState(), integrationOfDaily.getAttendanceLeave(),
-							integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime());
-
-					// note 「処理状態」、「勤務予定」、「エラー」を返す - TQP
-					// note // note 編集状態なし
-					createScheduleOneDate =  new OutputCreateScheduleOneDate(workSchedule, null, ProcessingStatus.NORMAL_PROCESS);
-
-				} else {
-					// note 正常以外
-					ScheduleErrorLog errorLog = null;
-					switch (checkErrorCondition.value) {
-					// note 勤務情報のエラー状態.勤務種類が削除された
-					case 4: {
-						String errorContent = this.internationalization.localize("Msg_590", "#Msg_590").get();
-						errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
-						break;
-					}
-					// note 就業時間帯が不要なのに設定されている
-					case 3: {
-						String errorContent = this.internationalization.localize("Msg_434", "#Msg_434").get();
-						errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
-						break;
-					}
-					// note 就業時間帯が必須なのに設定されていない
-					case 2: {
-						String errorContent = this.internationalization.localize("Msg_435", "#Msg_435").get();
-						errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
-						break;
-					}
-					// note 就業時間帯が削除された
-					case 5: {
-						String errorContent = this.internationalization.localize("Msg_591", "#Msg_591").get();
-						errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
-						break;
-					}
-					}
-					createScheduleOneDate =  new OutputCreateScheduleOneDate(null, errorLog, ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
-				}
+				// note 勤務情報が正常な状態かをチェックする - xử lý tiếp theo call đến method ở dưới
+				createScheduleOneDate = this.putDataWorkschedule(information, prepareWorkOutput, integrationOfDaily, command, dateInPeriod,
+						prepareWorkOutput.getScheduleTimeZone(), attendanceItemIdList, itemConverter, listItemValue);
 			}
 		}
 		return createScheduleOneDate;
@@ -1017,6 +926,109 @@ public class ScheduleCreatorExecutionTransaction {
 									output == null ?  Optional.empty() : output.getWorkType() != null && output.getWorkType().isPresent() ? output.getWorkType() : Optional.empty());
 						}
 						return prepareWorkOutput;
+	}
+
+	
+	public OutputCreateScheduleOneDate putDataWorkschedule(WorkInformation information,
+			PrepareWorkOutput prepareWorkOutput, IntegrationOfDaily integrationOfDaily,
+			ScheduleCreatorExecutionCommand command, GeneralDate dateInPeriod, List<TimezoneUse> lstTimeZone,
+			List<Integer> attendanceItemIdList, DailyRecordToAttendanceItemConverter itemConverter,
+			List<ItemValue> listItemValue) {
+		// note 勤務情報が正常な状態かをチェックする
+		
+		WorkInformation.Require require = new WorkInformationImpl(workTypeRepo, workTimeSettingRepository, workTimeSettingService, basicScheduleService);
+		ErrorStatusWorkInfo checkErrorCondition = information.checkErrorCondition(require);
+
+		// note 正常の場合
+		if (checkErrorCondition.value == ErrorStatusWorkInfo.NORMAL.value) {
+			// note 取得した情報をもとに「勤務予定」を入れる (TKT-TQP)
+			Optional<WorkTypeSet> workTypeSet = prepareWorkOutput.getWorkType().isPresent() ? prepareWorkOutput.getWorkType().get().getWorkTypeSetList().stream()
+					.filter(x -> x.getCompanyId().equals(command.getCompanyId())
+							&& x.getWorkTypeCd().equals(prepareWorkOutput.getInformation().getWorkTypeCode()))
+					.findFirst() : Optional.empty();
+			// note 勤務情報。勤務実績の勤務情報。勤務種類 = 処理中の勤務種類コード & 勤務情報。勤務実績の勤務情報。就業時間帯 =処理中の 就業時間帯コード
+			integrationOfDaily.getWorkInformation().setRecordInfo(prepareWorkOutput.getInformation().clone());
+			integrationOfDaily.getWorkInformation().setScheduleInfo(prepareWorkOutput.getInformation().clone());
+			// note 出勤打刻自動セット ~ 出勤時刻を直行とする (勤務情報。直行区分＝勤務種類。出勤打刻自動セット)
+			integrationOfDaily.getWorkInformation().setGoStraightAtr(
+					EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getAttendanceTime().value : 0, NotUseAttribute.class));
+			// note 退勤打刻自動セット ~ 退勤打刻自動セット (勤務情報。直帰区分＝勤務種類。退勤打刻自動セット)
+			integrationOfDaily.getWorkInformation().setBackStraightAtr(
+					EnumAdaptor.valueOf(workTypeSet.isPresent() ? workTypeSet.get().getTimeLeaveWork().value : 0, NotUseAttribute.class));
+			// note 勤務情報。勤務予定時間帯。勤務No = 取得した所定時間帯. 勤務NO
+			// note 勤務情報。勤務予定時間帯。出勤 = 取得した所定時間帯. 開始
+			// note 勤務情報。勤務予定時間帯。退勤 = 取得した所定時間帯. 終了
+			integrationOfDaily.getWorkInformation().setScheduleTimeSheets(lstTimeZone.stream().map(
+					mapper -> new ScheduleTimeSheet(mapper.getWorkNo(), mapper.getStart().v(), mapper.getEnd().v()))
+					.collect(Collectors.toList()));
+			// note 短時間勤務。時間帯。育児介護区分 = 取得した短時間勤務. 育児介護区分
+			integrationOfDaily.setShortTime(Optional.ofNullable(null));
+			if(!prepareWorkOutput.getLstWorkTimeDto().isEmpty()) {
+				List<ShortWorkingTimeSheet> lstSheets = new ArrayList<>();
+			for (ShortWorkTimeDto shortWork : prepareWorkOutput.getLstWorkTimeDto()) {
+				for (ShortChildCareFrameDto shortChild : shortWork.getLstTimeSlot()) {
+					ShortWorkingTimeSheet timeSheet = new ShortWorkingTimeSheet(new ShortWorkTimFrameNo(shortChild.getTimeSlot()),
+							EnumAdaptor.valueOf(shortWork.getChildCareAtr().value, ChildCareAttribute.class),
+							shortChild.getStartTime(), shortChild.getEndTime());
+					lstSheets.add(timeSheet);
+					
+				}
+			}
+			ShortTimeOfDailyAttd shortTime = new ShortTimeOfDailyAttd(lstSheets);
+			integrationOfDaily.setShortTime(Optional.ofNullable(shortTime));
+			}
+
+			// note 勤務予定から日別勤怠（Work）に変換する - TQP - đã thực hiện convert từ phía trên
+			// note 編集状態あり
+			if (!attendanceItemIdList.isEmpty()) {
+				// note 手修正項目のデータを元に戻す - TQP
+				// note 取得できた日別勤怠（Work）から勤務予定に変換する - TQP
+				integrationOfDaily = this.restoreData(itemConverter, integrationOfDaily, listItemValue);
+			}
+			// note Đang để tạm 1 phần tử trong DailyRecordToAttendanceItemConverter nên Tín bảo
+			// note để tạm là UNSETTLED
+			WorkSchedule workSchedule = new WorkSchedule(integrationOfDaily.getEmployeeId(),
+					integrationOfDaily.getYmd(), ConfirmedATR.UNSETTLED, integrationOfDaily.getWorkInformation(),
+					integrationOfDaily.getAffiliationInfor(), integrationOfDaily.getBreakTime(),
+					integrationOfDaily.getEditState(), integrationOfDaily.getAttendanceLeave(),
+					integrationOfDaily.getAttendanceTimeOfDailyPerformance(), integrationOfDaily.getShortTime());
+
+			// note 「処理状態」、「勤務予定」、「エラー」を返す - TQP
+			// note // note 編集状態なし
+			return new OutputCreateScheduleOneDate(workSchedule, null, ProcessingStatus.NORMAL_PROCESS);
+
+		} else {
+			// note 正常以外
+			ScheduleErrorLog errorLog = null;
+			switch (checkErrorCondition.value) {
+			// note 勤務情報のエラー状態.勤務種類が削除された
+			case 4: {
+				String errorContent = this.internationalization.localize("Msg_590", "#Msg_590").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
+				break;
+			}
+			// note 就業時間帯が不要なのに設定されている
+			case 3: {
+				String errorContent = this.internationalization.localize("Msg_434", "#Msg_434").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
+				break;
+			}
+			// note 就業時間帯が必須なのに設定されていない
+			case 2: {
+				String errorContent = this.internationalization.localize("Msg_435", "#Msg_435").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
+				break;
+			}
+			// note 就業時間帯が削除された
+			case 5: {
+				String errorContent = this.internationalization.localize("Msg_591", "#Msg_591").get();
+				errorLog = new ScheduleErrorLog(errorContent, null, dateInPeriod, command.getEmployeeId());
+				break;
+			}
+			}
+			return new OutputCreateScheduleOneDate(null, errorLog, ProcessingStatus.valueOf(ProcessingStatus.NEXT_DAY_WITH_ERROR.value));
+		}
+
 	}
 	
 	/**

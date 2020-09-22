@@ -49,7 +49,7 @@ module nts.uk.at.view.kdp005.h {
                         self.notify(getText('KDP005_5'));
                         self.inforAuthent('');
                         self.diplayBtnConnect(false);
-                        self.value(_.replace(cardNo, new RegExp("-","g"), ''));
+                        self.value(_.replace(cardNo, '-', ''));
                         self.decision();
                     }
                 });    

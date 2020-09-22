@@ -13,8 +13,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.MonthlyPatternRegisterCommand;
-import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.MonthlyPatternRegisterCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting.MonthlyPatternSettingBatchSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.monthly.setting.MonthlyPatternSettingBatchSaveCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.shift.pattern.work.WorkMonthlySettingBatchSaveCommand;
@@ -41,9 +39,6 @@ public class WorkMonthlySettingWs {
 	/** The save month. */
 	@Inject
 	private WorkMonthlySettingBatchSaveCommandHandler saveMonth;
-
-	@Inject
-	private MonthlyPatternRegisterCommandHandler register;
 
 	/**
 	 * Find by month.
@@ -90,16 +85,6 @@ public class WorkMonthlySettingWs {
 	@Path("saveMonth")
 	public void saveMonth(WorkMonthlySettingBatchSaveCommand command){
 		this.saveMonth.handle(command);
-	}
-
-	/**
-	 * register (add or update)
-	 * @param command
-	 */
-	@POST
-	@Path("register")
-	public void register(MonthlyPatternRegisterCommand command){
-		this.register.handle(command);
 	}
 	
 }

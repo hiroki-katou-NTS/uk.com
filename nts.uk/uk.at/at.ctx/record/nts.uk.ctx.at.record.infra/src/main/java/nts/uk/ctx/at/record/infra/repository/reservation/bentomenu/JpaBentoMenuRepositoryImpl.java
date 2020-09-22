@@ -166,7 +166,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 					Integer reservationStartTime2 = first.getReservationStartTime2();
 					Integer reservationEndTime2 = first.getReservationEndTime2();
 					Optional<ReservationClosingTime> closingTime2 = Optional.empty();
-					if(reservationEndTime2 != null) {
+					if(reservationStartTime2!=null) {
 						closingTime2 = Optional.of(new ReservationClosingTime(
 								new BentoReservationTimeName(reservationFrameName2), 
 								new BentoReservationTime(reservationEndTime2), 

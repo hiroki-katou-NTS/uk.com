@@ -50,9 +50,9 @@
 
             <div class="fixed-flex-layout-right">
                 <div class="valign-center control-group" style="width: 323px; padding-top: 20px">
-                    <span class="label" data-bind="visible: screenMode() == 0">#{i18n.getText('KMR001_88')}</span>
-                    <span class="label" data-bind="visible: screenMode() == 1 || screenMode() == 2">#{i18n.getText('KMR001_89')}</span>
-                    <span class="label" data-bind="visible: screenMode() == 3">#{i18n.getText('KMR001_90')}</span>
+                    <span class="label" data-bind="visible: screenMode() == 0">#{i18n.getText('CMM011_121')}</span>
+                    <span class="label" data-bind="visible: screenMode() == 1 || screenMode() == 2">#{i18n.getText('CMM011_122')}</span>
+                    <span class="label" data-bind="visible: screenMode() == 3">#{i18n.getText('CMM011_123')}</span>
                 </div>
                 <div class="valign-center control-group">
                     <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMR001_56')}</div>
@@ -69,9 +69,9 @@
             </div>
         </div>
         <div id="functions-area-bottom">
-            <button class="large proceed" tabindex="5" data-bind="click: registerConfig, enable: !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId()) &amp;&amp; $root.errors.isEmpty">#{i18n.getText('KMR001_59')}</button>
+            <button class="large proceed" tabindex="5" data-bind="click: registerConfig,">#{i18n.getText('KMR001_59')}</button>
             <button class="medium" tabindex="6" data-bind="click: cancel">#{i18n.getText('KMR001_60')}</button>
-        </div>
+        </div> enable: $root.errors.isEmpty &amp;&amp; !(lstWpkHistory().length > 0 &amp;&amp; !selectedHistoryId())
     </ui:define>
 </ui:composition>
 </body>

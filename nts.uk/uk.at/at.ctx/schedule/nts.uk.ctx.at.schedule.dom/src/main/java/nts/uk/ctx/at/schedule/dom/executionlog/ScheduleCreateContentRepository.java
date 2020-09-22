@@ -33,10 +33,4 @@ public interface ScheduleCreateContentRepository {
 	 * @param domain the domain
 	 */
 	public void update(ScheduleCreateContent domain);
-
-	/**
-	 * Update KSC001-26/8/2020
-	 * @param domain
-	 */
-	public void addNew(ScheduleCreateContent domain);
 }

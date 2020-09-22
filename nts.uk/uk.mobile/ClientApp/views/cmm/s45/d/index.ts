@@ -664,7 +664,7 @@ export class CmmS45DComponent extends Vue {
             return o.appStandardReasonCD == vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD;
         });
         if (opComboReason) {
-            return opComboReason.reasonForFixedForm;
+            return opComboReason.opReasonForFixedForm;
         }
 
         return '';

@@ -73,7 +73,6 @@ public class CommonAppPrintImpl implements CommonAppPrint {
 		});
 		printContentOfApp.setCompanyName(companyInfo.getCompanyName());
 		// メニューの表示名を取得する
-		// xử lý ở đoạn sau
 		String applicationName = Strings.EMPTY;
 		printContentOfApp.setApplicationName(applicationName);
 		//INPUT．申請表示情報．申請詳細画面情報．申請から事前事後区分、申請日、申請開始日、申請終了日、申請理由を取得する
