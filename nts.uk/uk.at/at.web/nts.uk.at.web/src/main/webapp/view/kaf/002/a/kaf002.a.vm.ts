@@ -552,7 +552,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -566,7 +566,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -578,14 +578,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp =el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                             if (el.endTimeActual) {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp = el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                         }   
