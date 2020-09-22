@@ -457,7 +457,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             const self = this;
             self.typeStamp = typeStamp;
             self.id = dataObject.frameNo;
-            self.typeReason = String(dataObject.opGoOutReasonAtr);
+            self.typeReason = dataObject.opGoOutReasonAtr ? String(dataObject.opGoOutReasonAtr) : '0';
             self.startTimeActual = dataObject.opStartTime;
             self.endTimeActual = dataObject.opEndTime;
             if ( _.isNull( dataObject.opStartTime ) && _.isNull( dataObject.opEndTime ) ) {

@@ -296,7 +296,11 @@ export class CmmS45CComponent extends Vue {
         const self = this;
         switch (self.appType) {
             case 2:
-                self.$goto('kafs07a', self.appTransferData.appDetail);
+                if (self.$router.currentRoute.name == 'kafs07a') {
+                    self.$close(self.appTransferData.appDetail);
+                } else {
+                    self.$goto('kafs07a', self.appTransferData.appDetail);
+                }
                 break;
             case 3:
                 self.$goto('kafs08a', self.appTransferData.appDetail);
@@ -465,7 +469,7 @@ export class CmmS45CComponent extends Vue {
                 return o.appStandardReasonCD == vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD;
             });
         if (opComboReason) {
-            return opComboReason.opReasonForFixedForm;
+            return opComboReason.reasonForFixedForm;
         }
 
         return '';

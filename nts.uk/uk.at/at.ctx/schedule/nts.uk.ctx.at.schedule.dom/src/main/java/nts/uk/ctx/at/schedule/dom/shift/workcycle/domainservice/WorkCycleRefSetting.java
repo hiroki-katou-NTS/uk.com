@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleCode;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 

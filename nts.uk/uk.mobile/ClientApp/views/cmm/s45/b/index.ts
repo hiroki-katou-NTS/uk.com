@@ -191,7 +191,6 @@ export class CmmS45BComponent extends Vue {
                 });
 
         } else {
-            self.$mask('show');
             // self.prFilter = {
             //     startDate: self.dateRange.start == null ? '' : self.$dt.date(self.dateRange.start, 'YYYY/MM/DD'),
             //     endDate: self.dateRange.end == null ? '' : self.$dt.date(self.dateRange.end, 'YYYY/MM/DD'),
@@ -245,8 +244,8 @@ export class CmmS45BComponent extends Vue {
 
             } as AppListExtractCondition;
 
+            self.$mask('show');
             self.$http.post('at', servicePath.getAppNameInAppList).then((res: any) => {
-                self.$mask('hide');
                 if (res) {
                     let paramNew = {
                         listAppType: res.data,
@@ -363,7 +362,7 @@ export class CmmS45BComponent extends Vue {
         const self = this;
         let lst = [];
         lstApp.forEach((app: ListOfApplication) => {
-            if (app.appType == 0 || app.appType == 2) {
+            if (app.appType == 0 || app.appType == 2 || app.appType == 3) {
                 lst.push(new AppInfo({
                     id: app.appID,
                     appDate: self.$dt.fromUTCString(app.appDate, 'YYYY/MM/DD'),
@@ -432,7 +431,7 @@ export class CmmS45BComponent extends Vue {
         self.lstAppType = [];
         this.lstAppType.push({ code: String(-1), appType: -1, appName: 'すべて' });
         opAppTypeLst.forEach((appType) => {
-            if (appType.appType == 0 || appType.appType == 2) {
+            if (appType.appType == 0 || appType.appType == 2 || appType.appType == 3) {
                 self.lstAppType.push({ code: String(appType.appType), appType: appType.appType, appName: appType.appName });
             }
         });
@@ -522,12 +521,12 @@ export class CmmS45BComponent extends Vue {
             if (value == 'yes') {
                 self.$http.post('at', servicePath.approvalBatchApp, paramCmd).then((result) => {
                     self.$mask('hide');
-                    // self.$modal.info({ messageId: 'Msg_220' }).then(() => {
-                    //     self.$mask('hide');
-                    //     self.lstAppr = [];
-                    //     self.modeAppr = false;
-                    //     self.getData(false, true);
-                    // });
+                    self.$modal.info({ messageId: 'Msg_220' }).then(() => {
+                        self.$mask('hide');
+                        self.lstAppr = [];
+                        self.modeAppr = false;
+                        self.getData(true, false);
+                    });
                 }).catch(() => {
                     self.$mask('hide');
                 });
@@ -656,6 +655,7 @@ interface IAppByEmp {
     displayB52: boolean;
     appPerNumber: number;
 }
+
 
 class AppByEmp {
     public empCD: string;
