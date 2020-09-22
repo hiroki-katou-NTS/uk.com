@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.workplaceapproverhistory;
+package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.val;
 import nts.arc.task.tran.AtomTask;
