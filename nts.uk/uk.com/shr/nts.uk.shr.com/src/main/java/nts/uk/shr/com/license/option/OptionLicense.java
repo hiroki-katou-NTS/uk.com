@@ -1,8 +1,8 @@
 package nts.uk.shr.com.license.option;
 
-public interface OptionLicense {
+public class OptionLicense {
 
-	public default CustomizeOptions customize() {
+	public static CustomizeOptions customize() {
 		return new CustomizeOptions() {
 			@Override
 			public boolean ootsuka() {
@@ -11,7 +11,7 @@ public interface OptionLicense {
 		};
 	}
 	
-	public default SubsystemOptions subsystem() {
+	public static SubsystemOptions subsystem() {
 		return new SubsystemOptions() {
 			@Override
 			public boolean payroll() {
@@ -36,7 +36,7 @@ public interface OptionLicense {
 		};
 	}
 	
-	public default ExtendedOperationOptions extendedOperation() {
+	public static ExtendedOperationOptions extendedOperation() {
 		return new ExtendedOperationOptions() {
 			@Override
 			public boolean smile() {
@@ -53,7 +53,7 @@ public interface OptionLicense {
 		};
 	}
 	
-	public default AttendanceOptions attendance() {
+	public static AttendanceOptions attendance() {
 		return new AttendanceOptions() {
 			@Override
 			public boolean workload() {
@@ -112,14 +112,6 @@ public interface OptionLicense {
 						return true;
 					}
 				};
-			}
-			@Override
-			public boolean presentAndMessage() {
-				return true;
-			}
-			@Override
-			public boolean enterAndExit() {
-				return true;
 			}
 		};
 	}

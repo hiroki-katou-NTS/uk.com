@@ -6,7 +6,6 @@ import lombok.val;
 import nts.arc.scoped.request.RequestContextProvider;
 import nts.arc.scoped.session.SessionContextProvider;
 import nts.uk.shr.com.context.loginuser.NullLoginUserContext;
-import nts.uk.shr.com.license.option.OptionLicense;
 import nts.uk.shr.infra.application.auth.WindowsAccount;
 import nts.uk.shr.com.system.config.SystemConfiguration;
 
@@ -48,10 +47,5 @@ public final class AppContexts {
 	
 	public static DeviceInfo deviceInfo() {
 		return RequestContextProvider.get().get(AppContextsConfig.DEVICE_INFO);
-	}
-	
-	public static OptionLicense optionLicense() {
-		return new OptionLicense() {
-		};
 	}
 }

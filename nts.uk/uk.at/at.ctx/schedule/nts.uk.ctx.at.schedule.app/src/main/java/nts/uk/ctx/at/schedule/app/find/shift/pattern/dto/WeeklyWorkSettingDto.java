@@ -49,10 +49,6 @@ public class WeeklyWorkSettingDto implements WeeklyWorkSettingSetMemento{
 		this.dayOfWeek = dayOfWeek.value;
 	}
 
-	public void setDayOfWeek(int dayOfWeek) {
-		this.dayOfWeek = dayOfWeek;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 

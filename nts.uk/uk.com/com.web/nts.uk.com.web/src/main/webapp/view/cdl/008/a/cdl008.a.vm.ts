@@ -6,7 +6,6 @@ module nts.uk.com.view.cdl008.a {
     import TreeComponentOption = kcp.share.tree.TreeComponentOption;
     import StartMode = kcp.share.tree.StartMode;
     import getText = nts.uk.resource.getText;
-    import setShare = nts.uk.ui.windows.setShared;
 
     export module viewmodel {
         /**
@@ -22,8 +21,6 @@ module nts.uk.com.view.cdl008.a {
             selectedSystemType: KnockoutObservable<number>;
             restrictionOfReferenceRange: boolean;
             isDisplayUnselect: KnockoutObservable<boolean>;
-            listDataDisplay: Array<any>;
-            listResult: Array<any>;
 
             // 部門対応 #106784
             startMode: StartMode;
@@ -37,23 +34,21 @@ module nts.uk.com.view.cdl008.a {
                 self.isMultipleUse = false;
                 self.selectedSystemType = ko.observable(5);
                 self.restrictionOfReferenceRange = true;
-                self.listResult = [];
-                self.listDataDisplay = [];
 
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if (inputCDL008) {
                     self.baseDate(inputCDL008.baseDate);
                     self.isMultipleSelect = inputCDL008.isMultiple;
-
-                    ko.tasks.schedule(() => {
+                    
+                    ko.tasks.schedule(() => { 
                         let currentDialog = nts.uk.ui.windows.getSelf();
-                        if (self.isMultipleSelect) {
+                        if(self.isMultipleSelect) {
                             currentDialog.setHeight(570);
                         } else {
                             currentDialog.setWidth(500);
                         }
                     });
-
+                    
                     if (_.isNil(inputCDL008.isShowBaseDate)) {
                         self.isMultipleUse = false;
                     } else {
@@ -90,8 +85,7 @@ module nts.uk.com.view.cdl008.a {
                     tabindex: 1,
                     systemType: self.selectedSystemType,
                     restrictionOfReferenceRange: self.restrictionOfReferenceRange,
-                    isShowNoSelectRow: self.isDisplayUnselect(),
-                    listDataDisplay: [],
+                    isShowNoSelectRow: self.isDisplayUnselect()
                 };
                 if (self.isMultipleSelect) {
                     self.workplaces.selectedId = self.selectedMulWorkplace;
@@ -110,10 +104,9 @@ module nts.uk.com.view.cdl008.a {
              */
             private selectedWorkplace(): void {
                 var self = this;
-                var workplaceInfor : Array <any> = [];
                 if (self.isMultipleSelect) {
                     if (!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0) {
-                        if (self.startMode == StartMode.WORKPLACE) {
+                        if(self.startMode == StartMode.WORKPLACE) {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         } else {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
@@ -122,7 +115,7 @@ module nts.uk.com.view.cdl008.a {
                     }
                 } else {
                     if (!self.isDisplayUnselect() && (!self.selectedSelWorkplace || !self.selectedSelWorkplace())) {
-                        if (self.startMode == StartMode.WORKPLACE) {
+                        if(self.startMode == StartMode.WORKPLACE) {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         } else {
                             nts.uk.ui.dialog.alertError({ messageId: "Msg_1532" });
@@ -131,81 +124,20 @@ module nts.uk.com.view.cdl008.a {
                     }
                 }
 
-                let listWpinfor = self.getListWpinfo(self.listDataDisplay, self);
-                
-                // multiple
                 var selectedCode: any = self.selectedMulWorkplace();
-                
-                for(let i: number = 0; i < self.selectedMulWorkplace().length; i++){
-                    let value = _.find(listWpinfor, x => {
-                        return x.id == self.selectedMulWorkplace()[i];
-                    });
-                    workplaceInfor.push(new OutPut(self.selectedMulWorkplace()[i], value.code, value.name, 
-                                                    value.hierarchyCode,
-                                                    value.genericName,
-                                                    value.displayName));
-                }
-                
-                // only one
                 if (!self.isMultipleSelect) {
                     selectedCode = self.selectedSelWorkplace();
-                    let value = _.find(listWpinfor, x => {
-                        return x.id == selectedCode
-                    });
-                    workplaceInfor.push(new OutPut(selectedCode, value.code, value.name, 
-                                                    value.hierarchyCode, value.genericName, 
-                                                    value.displayName));
                 }
-                
-                setShare('outputCDL008', selectedCode);
-                setShare('baseDateCDL008', self.baseDate());
-                setShare('workplaceInfor', workplaceInfor);
+                nts.uk.ui.windows.setShared('outputCDL008', selectedCode);
+                nts.uk.ui.windows.setShared('baseDateCDL008', self.baseDate());
                 nts.uk.ui.windows.close();
             }
-
-            //convert the data from a tree to a regular list
-            getListWpinfo(listWp: any, parent: any): any {
-                var self = this;
-                for (let i = 0; i < listWp.length; i++) {
-
-                    self.listResult.push(new OutPut(listWp[i].id, listWp[i].code, listWp[i].name, 
-                                                    listWp[i].hierarchyCode, listWp[i].workplaceGeneric, 
-                                                    listWp[i].workplaceDisplayName));
-
-                    if (listWp[i].children.length > 0) {
-                        parent.getListWpinfo(listWp[i].children, parent);
-                    }
-                }
-                return self.listResult;
-            }
-
             /**
              * close windows
              */
             private closeWindows(): void {
                 nts.uk.ui.windows.setShared('CDL008Cancel', true);
                 nts.uk.ui.windows.close();
-            }
-        }
-        
-        export class OutPut{
-            id: string;
-            code: string;
-            // 職場名称
-            name: string;
-            // 階層コード
-            hierarchyCode: string;
-            // 職場総称
-            genericName: string;
-            // 職場表示名
-            displayName: string;
-            constructor(id: string, code: string, name: string, hierarchyCode: string, genericName: string, displayName: string) {
-                this.id = id;
-                this.code = code;
-                this.name = name;
-                this.hierarchyCode = hierarchyCode;
-                this.genericName = genericName;
-                this.displayName = displayName;
             }
         }
     }

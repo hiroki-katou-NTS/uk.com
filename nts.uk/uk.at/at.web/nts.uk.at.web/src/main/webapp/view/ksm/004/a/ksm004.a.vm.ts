@@ -889,15 +889,12 @@ module nts.uk.at.view.ksm004.a {
                 $('.panel-frame-btn').css("background-color","white");
                 const self = this;
                 if(value!=null) {
-                    if (value - 1 == self.currentWorkingDayAtr){
-                        self.currentWorkingDayAtr = null;
-                    } else if (value == 1) {
-                        $('.button-sqr1').css("background-color","#DCE6F2");
-                        self.currentWorkingDayAtr = value-1;
+                    if (value == 1) {
+                        $('.button-sqr1').css("background-color","rgb(155,194,230)");
                     } else {
-                        $('.button-sqr'+value).css("background-color","#FDEADA");
-                        self.currentWorkingDayAtr = value-1;
+                        $('.button-sqr'+value).css("background","lightgoldenrodyellow");
                     }
+                    self.currentWorkingDayAtr = value-1;
                 } else {
                     self.currentWorkingDayAtr = value;   
                 }
@@ -1150,15 +1147,15 @@ module nts.uk.at.view.ksm004.a {
                 this.backgroundColor = 'white';
                 switch(listText) {
                     case 1:
-                        this.textColor = '#FF0000'; //RBG(255,0,0)
+                        this.textColor = '#FF3B3B';
                         this.listText = [WorkingDayAtr.WorkingDayAtr_WorkPlace.toString()];
                         break;
                     case 2:
-                        this.textColor = '#FF0000'; //RBG(255,0,0)
+                        this.textColor = '#FF3B3B';
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Class.toString()];
                         break;
                     default:
-                        this.textColor = '#558ED5'; //RBG(85,142,213)
+                        this.textColor = '#31859C';
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
                 }
@@ -1167,15 +1164,15 @@ module nts.uk.at.view.ksm004.a {
             changeListText(value: number){
                 switch(value) {
                     case 1:
-                        this.textColor = '#FF0000'; //RBG(255,0,0)
+                        this.textColor = '#FF3B3B';
                         this.listText = [WorkingDayAtr.WorkingDayAtr_WorkPlace.toString()];
                         break;
                     case 2:
-                        this.textColor = '#FF0000'; //RBG(255,0,0)
+                        this.textColor = '#FF3B3B';
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Class.toString()];
                         break;
                     default:
-                        this.textColor = '#558ED5'; //RBG(85,142,213)
+                        this.textColor = '#31859C';
                         this.listText = [WorkingDayAtr.WorkingDayAtr_Company.toString()];
                         break;
                 }

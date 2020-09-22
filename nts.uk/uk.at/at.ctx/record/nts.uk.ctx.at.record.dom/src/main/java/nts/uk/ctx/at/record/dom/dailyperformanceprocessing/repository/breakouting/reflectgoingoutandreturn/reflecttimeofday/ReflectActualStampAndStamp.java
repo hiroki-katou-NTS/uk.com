@@ -12,7 +12,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectatt
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectattdclock.AttendanceAtr;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.timestampsetting.prefortimestaminput.ChangeClockArt;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
@@ -64,15 +63,14 @@ public class ReflectActualStampAndStamp {
 			TimeWithDayAttr timeWithDayAttr = TimeWithDayAttr.convertToTimeWithDayAttr(ymd,
 					stamp.getStampDateTime().toDate(), stamp.getStampDateTime().clockHourMinute().v());
 			//時刻を丸める
-			TimeWithDayAttr afterRouding = timeWithDayAttr;
-			if(workTimeCode !=null ) {
-				afterRouding = this.roundStamp(workTimeCode.v(), timeWithDayAttr,stamp.getType().getChangeClockArt());
+			if(timeActualStamp.getActualStamp().isPresent() && workTimeCode !=null ) {
+				this.roundStamp(workTimeCode.v(), timeWithDayAttr, AttendanceAtr.TEMPORARY);
 			}
 			//実打刻コピーする
 			TimeActualStamp timeStampCopy = new TimeActualStamp(timeActualStamp.getActualStamp(), timeActualStamp.getStamp(), timeActualStamp.getNumberOfReflectionStamp(), timeActualStamp.getOvertimeDeclaration(), timeActualStamp.getTimeVacation());
 			//打刻方法を打刻元情報に変換する
 			WorkTimeInformation timeDay = new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.REAL_STAMP, EngravingMethod.TIME_RECORD_ID_INPUT), timeWithDayAttr);
-			WorkStamp workStamp = new WorkStamp(afterRouding, timeDay, stamp.getRefActualResults().getWorkLocationCD());
+			WorkStamp workStamp = new WorkStamp(timeWithDayAttr, timeDay, stamp.getRefActualResults().getWorkLocationCD());
 			timeStampCopy.setActualStamp(Optional.of(workStamp));
 			//時間帯枠（Temporary）。理由←外出理由
 			timeFrame.setGoOutReason(stamp.getType().getGoOutArt());
@@ -99,12 +97,12 @@ public class ReflectActualStampAndStamp {
 	 * @param attendanceAtr
 	 * @param actualStampAtr
 	 */
-	public TimeWithDayAttr roundStamp(String workTimeCode, TimeWithDayAttr timeWithDayAttr, ChangeClockArt changeClockArt) {
+	public void roundStamp(String workTimeCode, TimeWithDayAttr timeWithDayAttr, AttendanceAtr attendanceAtr) {
 		String companyId = AppContexts.user().companyId();
 		// ドメインモデル「丸め設定」を取得する (Lấy 「丸め設定」)
 		RoundingSet roudingTime = workTimeCode != null
 				? this.getRoudingTime(companyId, workTimeCode,
-						changeClockArt == ChangeClockArt.GO_OUT ? Superiority.GO_OUT : Superiority.TURN_BACK)
+						attendanceAtr == AttendanceAtr.LEAVING_WORK ? Superiority.OFFICE_WORK : Superiority.ATTENDANCE)
 				: null;
 
 		InstantRounding instantRounding = null;
@@ -130,9 +128,8 @@ public class ReflectActualStampAndStamp {
 				timeChange = (modTimeOfDay == 0) ? numberMinuteTimeOfDay
 						: numberMinuteTimeOfDay - modTimeOfDay + blockTime;
 			}
-			return new TimeWithDayAttr(timeChange);
+			timeWithDayAttr = new TimeWithDayAttr(timeChange);
 		} // end : nếu time khác giá trị default
-		return timeWithDayAttr;
 	}
 	
 	private RoundingSet getRoudingTime(String companyId, String workTimeCode, Superiority superiority) {
