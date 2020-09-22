@@ -1166,27 +1166,27 @@ module cmm045.a.viewmodel {
                 // }
 
                 if(item.reflectionStatus === 'CMM045_63') {
-                    // item.appStatusName = 'approvalCell';
+                    item.appStatusName = 'approvalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['approvalCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_64') {
-                    // item.appStatusName = 'reflectCell';
+                    item.appStatusName = 'reflectCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['reflectCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_65') {
-                    // item.appStatusName = 'denialCell';
+                    item.appStatusName = 'denialCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['denialCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_62') {
-                    // item.appStatusName = 'unapprovalCell';
+                    item.appStatusName = 'unapprovalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['unapprovalCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_66') {
-                    // item.appStatusName = 'remandCell';
+                    item.appStatusName = 'remandCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['remandCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_67') {
-                    // item.appStatusName = 'cancelCell';
+                    item.appStatusName = 'cancelCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['cancelCell']));
                 }
             });
@@ -1227,27 +1227,27 @@ module cmm045.a.viewmodel {
                 // }
 
                 if(item.reflectionStatus === 'CMM045_63') {
-                    // item.appStatusName = 'approvalCell';
+                    item.appStatusName = 'approvalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['approvalCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_64') {
-                    // item.appStatusName = 'reflectCell';
+                    item.appStatusName = 'reflectCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['reflectCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_65') {
-                    // item.appStatusName = 'denialCell';
+                    item.appStatusName = 'denialCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['denialCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_62') {
-                    // item.appStatusName = 'unapprovalCell';
+                    item.appStatusName = 'unapprovalCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['unapprovalCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_66') {
-                    // item.appStatusName = 'remandCell';
+                    item.appStatusName = 'remandCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['remandCell']));
                 }
                 if(item.reflectionStatus === 'CMM045_67') {
-                    // item.appStatusName = 'cancelCell';
+                    item.appStatusName = 'cancelCell';
                     result.push(new vmbase.CellState(rowId,'reflectionStatus',['cancelCell']));
                 }
             });
