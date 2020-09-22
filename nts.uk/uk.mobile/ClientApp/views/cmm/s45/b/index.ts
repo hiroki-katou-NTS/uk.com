@@ -402,22 +402,22 @@ export class CmmS45BComponent extends Vue {
     }
     public convertReflectToInt(value: string) {
         const self = this;
-        if (value == self.$i18n('CMMS45_7')) {
+        if (value == 'CMMS45_7') {
 
             return 5;
-        } else if (value == self.$i18n('CMMS45_8')) {
+        } else if (value == 'CMMS45_8') {
 
             return 4;
-        } else if (value == self.$i18n('CMMS45_10')) {
+        } else if (value == 'CMMS45_10') {
 
             return 3;
-        } else if (value == self.$i18n('CMMS45_36')) {
+        } else if (value == 'CMMS45_36') {
 
             return 2;
-        } else if (value == self.$i18n('CMMS45_11')) {
+        } else if (value == 'CMMS45_11') {
 
             return 1;
-        } else if (value == self.$i18n('CMMS45_9')) {
+        } else if (value == 'CMMS45_9') {
 
             return 1;
         } else {

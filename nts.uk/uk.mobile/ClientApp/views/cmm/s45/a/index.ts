@@ -384,22 +384,22 @@ export class CmmS45AComponent extends Vue {
     }
     public convertReflectToInt(value: string) {
         const self = this;
-        if (value == '未承認') {
+        if (value == 'CMMS45_7') {
 
             return 0;
-        } else if (value == '承認済') {
+        } else if (value == 'CMMS45_8') {
 
             return 1;
-        } else if (value == '反映済') {
+        } else if (value == 'CMMS45_9') {
 
             return 2;
-        } else if (value == '取消') {
+        } else if (value == 'CMMS45_10') {
 
             return -1;
-        } else if (value == '差戻') {
+        } else if (value == 'CMMS45_36') {
 
             return 5;
-        } else if (value == '否認') {
+        } else if (value == 'CMMS45_11') {
 
             return 6;
         }

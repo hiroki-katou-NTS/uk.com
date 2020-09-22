@@ -75,7 +75,7 @@
                   </div>
                   <!-- Reflect status -->
                   <div class="col-3 pl-2 pr-0">
-                    <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus}}</span>
+                    <span v-bind:class="item.reflectCssAppr" class="p-2 d-block">{{item.reflectStatus | i18n}}</span>
                   </div>
                   <!-- App content -->
                   <div class="p-0" v-bind:class="{ 'col-9': !modeAppr, 'col-8': modeAppr }">
