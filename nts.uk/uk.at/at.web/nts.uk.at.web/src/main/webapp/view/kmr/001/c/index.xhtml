@@ -145,10 +145,10 @@
 								}"/>
 
                             <!--C11_3-->
-                            <span class="label" data-bind="text: vm.reservationStartTime1 "></span>
+                            <span class="label time-start" data-bind="text: vm.reservationStartTime1 "></span>
                             <!--C11_6-->
-                            <span class="label" style="padding: 0 10px">~</span>
-                            <span class="label" data-bind="text: vm.reservationEndTime1 "></span>
+                            <span class="label time-space">~</span>
+                            <span class="label time-end" data-bind="text: vm.reservationEndTime1 "></span>
 
                         </td>
                     </tr>
@@ -164,9 +164,9 @@
                             />
 
                             <!--C11_5-->
-                            <span class="label" data-bind="text: vm.reservationStartTime2 "></span>
-                            <span class="label" style="padding: 0 10px">~</span>
-                            <span class="label" data-bind="text: vm.reservationEndTime2 "></span>
+                            <span class="label time-start" data-bind="text: vm.reservationStartTime2 "></span>
+                            <span class="label time-space">~</span>
+                            <span class="label time-end" data-bind="text: vm.reservationEndTime2 "></span>
 
 
                         </td>
@@ -209,7 +209,7 @@
 								value: price1,
 								required: true,
 								option: {
-									decimallength: 2,
+									decimallength: 0,
 									currencyformat: 'JPY'
 								 		},
 								 enable: vm.isLasted()
@@ -231,7 +231,7 @@
 									constraint: 'BentoAmount',
 									value: price2,
 									option: {
-											decimallength: 2,
+											decimallength: 0,
 											currencyformat: 'JPY'
 										},
 									name: $i18n('KMR001_45'),

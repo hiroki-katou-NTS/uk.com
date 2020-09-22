@@ -22,7 +22,7 @@ public class ReflectCalCategory {
 	@Inject
 	private ReflectStampCalCategory reflectStampCalCategory;
 	
-	public void reflect(ChangeCalArt changeCalArt,CalAttrOfDailyAttd calAttr,List<EditStateOfDailyAttd> editState) {
+	public List<EditStateOfDailyAttd> reflect(ChangeCalArt changeCalArt,CalAttrOfDailyAttd calAttr,List<EditStateOfDailyAttd> editState) {
 		//打刻.計算区分変更対象を確認する
 		switch (changeCalArt) {
 		case EARLY_APPEARANCE:// 早出
@@ -44,6 +44,7 @@ public class ReflectCalCategory {
 			break;
 		
 		}
+		return editState;
 	}
 
 }

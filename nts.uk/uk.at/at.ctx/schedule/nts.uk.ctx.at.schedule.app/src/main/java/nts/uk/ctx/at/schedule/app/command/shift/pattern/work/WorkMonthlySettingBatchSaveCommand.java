@@ -20,6 +20,7 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkMonthlySettingBatchSaveCommand.
@@ -156,6 +157,9 @@ public class WorkMonthlySettingBatchSaveCommand {
 		
 		/** The company id. */
 		private String companyId;
+
+		/** The contract code. */
+		private String contractCd = AppContexts.user().contractCode();
 		
 		public MonthlyPatternGetMementoImpl(WorkMonthlySettingBatchSaveCommand command, String companyId) {
 			this.command = command;
@@ -192,6 +196,11 @@ public class WorkMonthlySettingBatchSaveCommand {
 		@Override
 		public MonthlyPatternName getMonthlyPatternName() {
 			return new MonthlyPatternName(this.command.monthlyPattern.getName());
+		}
+
+		@Override
+		public String getContractCd() {
+			return this.contractCd;
 		}
 		
 	}
