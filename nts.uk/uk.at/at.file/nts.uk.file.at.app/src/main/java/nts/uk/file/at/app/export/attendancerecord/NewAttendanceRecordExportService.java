@@ -1,5 +1,6 @@
 package nts.uk.file.at.app.export.attendancerecord;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,11 +33,14 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
+import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.NameUseAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
+import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
+import nts.uk.ctx.at.function.dom.attendancetype.ScreenUseAtr;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportAdapter;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.scrA.SEmpHistExportImported;
 import nts.uk.ctx.at.record.app.service.attendanceitem.value.AttendanceItemValueService;
@@ -49,7 +53,9 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepos
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
@@ -157,6 +163,12 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		
 		Set<Integer> singleId = new HashSet<>();
 		Set<Integer> monthlyId = new HashSet<>();
+		// Get workType info
+		List<WorkType> workTypeList = workTypeRepo.findByCompanyId(companyId);
+
+		// Get workTime info
+		List<WorkTimeSetting> workTimeList = workTimeRepo.findByCompanyId(companyId);
+				
 		List<Integer> singleIdUpper = this.singleAttendanceRepo.getIdSingleAttendanceRecordByPosition(layoutId,
 				UPPER_POSITION);
 		// get lower-daily-singleItem list
@@ -172,6 +184,11 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, UPPER_POSITION);
 		List<CalculateAttendanceRecord> calculateLowerMonthly = this.calculateAttendanceRepo
 				.getIdCalculateAttendanceRecordMonthlyByPosition(layoutId, LOWER_POSITION);
+		
+		List<ScreenUseAtr> screenUseAtrList = Arrays.asList(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE,
+				ScreenUseAtr.EMPLOYEE_BOOKING_HOURS);
+		
+		List<AttendanceType> attendanceTypeList = new ArrayList<>();
 		
 		List<String> empIDs = request.getEmployeeList().stream().map(e -> e.getEmployeeId())
 				.collect(Collectors.toList());
@@ -268,6 +285,10 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 			YearMonth endYearMonth = datePeriod.end().yearMonth();
 			YearMonth yearMonth = datePeriod.start().yearMonth();
 			
+			if (attendanceTypeList.isEmpty()) {
+				attendanceTypeList.addAll(attendanceRepo.getItemByAtrandType(AppContexts.user().companyId(),
+						screenUseAtrList, 1));
+			}
 			for (MonthlyAttendanceItemValueResult monthlyValue : monthlyValues) {
 
 				//	月別実績の月初と月末の雇用コードをチェックする
@@ -292,7 +313,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 					//	重複期間．開始年月日～重複期間．終了年月日のループ
 					while(startDateYearMonth.lessThan(endDateYearMonth)) {
 						
-						
+						List<AttendanceRecordResponse> upperDailyRespond = new ArrayList<>();
+						List<AttendanceRecordResponse> lowerDailyRespond = new ArrayList<>();
 						GeneralDate startDateByClosure;
 						GeneralDate endDateByClosure;
 						if (closureDate.getLastDayOfMonth()) {
@@ -348,6 +370,170 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 								valueSingleUpper.getAttendanceItems().add(new ItemValue());
 
 							}
+						}
+						
+						// convert data to show
+						if (valueSingleUpper != null) {
+
+							valueSingleUpper.getAttendanceItems().forEach(item -> {
+								if (item != null)
+									upperDailyRespond.add(new AttendanceRecordResponse(emp.getEmployeeId(),
+											emp.getEmployeeName(), startDateByClosure, "",
+											this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
+													optionalAttendanceRecExpSet.get().getNameUseAtr())));
+
+							});
+						}
+						// return result upper-daily-calculateItems
+						for (CalculateAttendanceRecord item : calculateUpperDaily) {
+
+							AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
+									.builder().employeeId(emp.getEmployeeId()).workingDate(startDateByClosure)
+									.attendanceItems(new ArrayList<ItemValue>()).build();
+							// Fill in upper calculate daily ADD item
+							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
+								for (Integer id : item.getAddedItem()) {
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (e.getItemId() == id) {
+//											if (e.getValue() != null && !ZERO.equals(e.getValue())
+//													&& !e.getValue().isEmpty()) {
+//												realData++;
+//											}
+											addValueCalUpper.getAttendanceItems().add(e);
+											break;
+										}
+
+									}
+
+								}
+
+							AttendanceItemValueService.AttendanceItemValueResult subValueCalUpper = AttendanceItemValueResult
+									.builder().employeeId(emp.getEmployeeId()).workingDate(startDateByClosure)
+									.attendanceItems(new ArrayList<ItemValue>()).build();
+							// Fill in upper calculate daily SUBTRACT item
+							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
+								for (Integer id : item.getSubtractedItem()) {
+
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (e.getItemId() == id) {
+//											if (e.getValue() != null && !ZERO.equals(e.getValue())
+//													&& !e.getValue().isEmpty()) {
+//												realData++;
+//											}
+											subValueCalUpper.getAttendanceItems().add(e);
+											break;
+										}
+
+									}
+
+								}
+
+							// get result upper calculate
+							String result = "";
+							if (!addValueCalUpper.getAttendanceItems().isEmpty()
+									|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
+								result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
+										subValueCalUpper.getAttendanceItems());
+							}
+							upperDailyRespond.add(new AttendanceRecordResponse(emp.getEmployeeId(),
+									emp.getEmployeeName(), startDateByClosure, "", result));
+
+						}
+
+						// return result lower-daily-singleItems
+						AttendanceItemValueService.AttendanceItemValueResult valueSingleLower = AttendanceItemValueResult
+								.builder().employeeId(emp.getEmployeeId()).workingDate(startDateByClosure)
+								.attendanceItems(new ArrayList<ItemValue>()).build();
+						// Fill in lower single item
+						if (!singleIdLower.isEmpty()) {
+
+							valueSingleLower = AttendanceItemValueResult.builder()
+									.employeeId(emp.getEmployeeId()).workingDate(startDateByClosure)
+									.attendanceItems(new ArrayList<ItemValue>()).build();
+							for (Integer id : singleIdLower) {
+								ItemValue value = new ItemValue();
+								for (ItemValue item : itemValueResult.getAttendanceItems()) {
+									if (item.getItemId() == id) {
+//										if (item.getValue() != null && !ZERO.equals(item.getValue())
+//												&& !item.getValue().isEmpty()) {
+//											realData++;
+//										}
+										value = item;
+										break;
+									}
+
+								}
+								valueSingleLower.getAttendanceItems().add(value);
+							}
+
+						} else {
+							valueSingleLower = AttendanceItemValueResult.builder()
+									.employeeId(emp.getEmployeeId()).workingDate(startDateByClosure)
+									.attendanceItems(new ArrayList<ItemValue>()).build();
+							for (int i = 1; i <= 6; i++) {
+								valueSingleLower.getAttendanceItems().add(new ItemValue());
+
+							}
+						}
+						// convert data to show
+						if (valueSingleLower != null)
+							valueSingleLower.getAttendanceItems().forEach(item -> {
+								if (item != null)
+									lowerDailyRespond.add(new AttendanceRecordResponse(emp.getEmployeeId(),
+											emp.getEmployeeName(), startDateByClosure, "",
+											this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
+													optionalAttendanceRecExpSet.get().getNameUseAtr())));
+
+							});
+
+						for (CalculateAttendanceRecord item : calculateLowerDaily) {
+
+							AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
+									.builder().attendanceItems(new ArrayList<>()).build();
+							// Fill in lower calculate daily ADD item
+							if (item.getAddedItem() != null && !item.getAddedItem().isEmpty())
+								for (Integer id : item.getAddedItem()) {
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (e.getItemId() == id) {
+//											if (e.getValue() != null && !ZERO.equals(e.getValue())
+//													&& !e.getValue().isEmpty()) {
+//												realData++;
+//											}
+											addValueCalUpper.getAttendanceItems().add(e);
+											break;
+										}
+
+									}
+								}
+
+							AttendanceItemValueService.AttendanceItemValueResult subValueCalUpper = AttendanceItemValueResult
+									.builder().attendanceItems(new ArrayList<>()).build();
+							// Fill in lower calculate daily SUBTRACT item
+							if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty())
+								for (Integer id : item.getSubtractedItem()) {
+									for (ItemValue e : itemValueResult.getAttendanceItems()) {
+										if (e.getItemId() == id) {
+//											if (e.getValue() != null && !ZERO.equals(e.getValue())
+//													&& !e.getValue().isEmpty()) {
+//												realData++;
+//											}
+											subValueCalUpper.getAttendanceItems().add(e);
+											break;
+										}
+
+									}
+
+								}
+
+							// get result lower calculate daily
+							String result = "";
+							if (!addValueCalUpper.getAttendanceItems().isEmpty()
+									|| !subValueCalUpper.getAttendanceItems().isEmpty()) {
+								result = this.getSumCalculateAttendanceItem(addValueCalUpper.getAttendanceItems(),
+										subValueCalUpper.getAttendanceItems());
+							}
+							lowerDailyRespond.add(new AttendanceRecordResponse(emp.getEmployeeId(),
+									emp.getEmployeeName(), startDateByClosure, "", result));
 						}
 					}
 				}
@@ -427,5 +613,138 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 
 		}
 		return attendanceRecord;
+	}
+	
+	String getSumCalculateAttendanceItem(List<ItemValue> addValueCalUpper, List<ItemValue> subValueCalUpper) {
+
+		Double sum = new Double(0);
+		if (!addValueCalUpper.isEmpty()
+				&& (addValueCalUpper.get(0).getValueType().isInteger()
+						|| addValueCalUpper.get(0).getValueType().isDouble())
+				|| !subValueCalUpper.isEmpty() && (subValueCalUpper.get(0).getValueType().isInteger()
+						|| subValueCalUpper.get(0).getValueType().isDouble())) {
+
+			// calculate add
+			if (!addValueCalUpper.isEmpty()) {
+				for (ItemValue i : addValueCalUpper) {
+					if (i.getValue() != null && !i.getValue().isEmpty())
+						sum = Double.parseDouble(sum.toString()) + Double.parseDouble(i.value().toString());
+				}
+			}
+			// calculate sub
+			if (!subValueCalUpper.isEmpty()) {
+				for (ItemValue i : subValueCalUpper) {
+					if (i.getValue() != null && !i.getValue().isEmpty())
+						sum = Double.parseDouble(sum.toString()) - Double.parseDouble(i.value().toString());
+				}
+			}
+			if (sum.equals(0.0))
+				return "";
+
+			Integer sumInt;
+			List<ItemValue> list = new ArrayList<>();
+			if (!addValueCalUpper.isEmpty()) {
+				list.addAll(addValueCalUpper);
+			} else {
+				list.addAll(subValueCalUpper);
+			}
+			switch (list.get(0).getValueType().value) {
+
+			case 1:
+			case 2:
+
+				sumInt = sum.intValue();
+				return this.convertMinutesToHours(sumInt.toString());
+			case 7:
+			case 8:
+				sumInt = sum.intValue();
+				return sumInt.toString() + " 回";
+			case 13:
+				sumInt = sum.intValue();
+				DecimalFormat format = new DecimalFormat("###,###,###");
+				return format.format(sum.intValue());
+			default:
+				break;
+
+			}
+
+		}
+		return sum.toString();
+	}
+	
+	private String convertMinutesToHours(String minutes) {
+		if (minutes.equals("0") || minutes.equals("")) {
+			return "0:00";
+		}
+		String FORMAT = "%d:%02d";
+		Integer minuteInt = Integer.parseInt(minutes);
+		if (minuteInt < 0) {
+			minuteInt *= -1;
+			Integer hourInt = minuteInt / 60;
+			minuteInt = minuteInt % 60;
+			return "-" + String.format(FORMAT, hourInt, minuteInt);
+		} else {
+			Integer hourInt = minuteInt / 60;
+			minuteInt = minuteInt % 60;
+
+			return String.format(FORMAT, hourInt, minuteInt);
+		}
+	}
+	
+	private String convertString(ItemValue item, List<WorkType> workTypeList, List<WorkTimeSetting> workTimeSettingList,
+			List<AttendanceType> attendanceTypeList, NameUseAtr nameUseAtr) {
+		final String value = item.getValue();
+		if (item.getValueType() == null || item.getValue() == null)
+			return "";
+		switch (item.getValueType()) {
+
+		case TIME:
+		case CLOCK:
+		case TIME_WITH_DAY:
+
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
+				return "";
+			return this.convertMinutesToHours(value.toString());
+		case COUNT:
+		case COUNT_WITH_DECIMAL:
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
+				return "";
+			return value.toString() + " 回";
+		case AMOUNT:
+			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
+				return "";
+			DecimalFormat format = new DecimalFormat("###,###,###");
+			return format.format(Integer.parseInt(value));
+
+		case CODE:
+
+			if (!attendanceTypeList.isEmpty()) {
+				AttendanceType attendance = attendanceTypeList.stream()
+						.filter(e -> e.getAttendanceItemId() == item.getItemId()).collect(Collectors.toList()).get(0);
+				if (attendance.getScreenUseAtr().equals(ScreenUseAtr.ATTENDANCE_TYPE_OF_DERVICETYPE)) {
+					List<WorkType> worktype = workTypeList.stream()
+							.filter(ite -> ite.getWorkTypeCode().v().equals(value)).collect(Collectors.toList());
+					if (!worktype.isEmpty())
+
+						return nameUseAtr.equals(NameUseAtr.FORMAL_NAME) ? worktype.get(0).getName().v()
+								: worktype.get(0).getAbbreviationName().v();
+					return value + MASTER_UNREGISTERED ;
+				} else {
+
+					List<WorkTimeSetting> workTime = workTimeSettingList.stream()
+							.filter(e -> e.getWorktimeCode().v().equals(value)).collect(Collectors.toList());
+					if (!workTime.isEmpty())
+						return nameUseAtr.equals(NameUseAtr.FORMAL_NAME)
+								? workTime.get(0).getWorkTimeDisplayName().getWorkTimeName().v()
+								: workTime.get(0).getWorkTimeDisplayName().getWorkTimeAbName().v();
+					return value + MASTER_UNREGISTERED;
+				}
+			}
+			return value + MASTER_UNREGISTERED;
+
+		default:
+			return value;
+
+		}
 	}
 }
