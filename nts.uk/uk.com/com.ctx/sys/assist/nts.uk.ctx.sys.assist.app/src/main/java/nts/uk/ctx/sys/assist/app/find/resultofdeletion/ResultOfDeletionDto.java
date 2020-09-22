@@ -1,10 +1,13 @@
 package nts.uk.ctx.sys.assist.app.find.resultofdeletion;
 
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletion;
+import nts.uk.ctx.sys.assist.dom.deletedata.ResultLogDeletion;
 import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 
 /**
@@ -37,6 +40,9 @@ public class ResultOfDeletionDto {
 
 	//field システム種類
 	private int systemType;
+	
+	//field 実行結果
+	private List<ResultLogDeletion> listResultLogDeletions;
 
 	//field 実行者
 	private String sId;
@@ -77,6 +83,7 @@ public class ResultOfDeletionDto {
 			domain.getDelCode().v(),
 			domain.getNumberEmployees(),
 			domain.getSystemType().value,
+			domain.getListResultLogDeletions(),
 			domain.getSId(),
 			domain.getStatus().value,
 			domain.getStartDateTimeDel(), 

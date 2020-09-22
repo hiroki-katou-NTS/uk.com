@@ -2,15 +2,11 @@ package nts.uk.ctx.sys.assist.dom.deletedata;
 
 import java.util.List;
 import java.util.Optional;
-
-import javax.ejb.Stateless;
-
 import nts.arc.time.GeneralDateTime;
 
 /**
 * データ削除の保存結果
 */
-@Stateless
 public interface ResultDeletionRepository
 {
 

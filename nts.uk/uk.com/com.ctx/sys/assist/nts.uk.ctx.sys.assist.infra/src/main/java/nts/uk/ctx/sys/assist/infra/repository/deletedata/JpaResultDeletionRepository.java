@@ -29,16 +29,16 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 			+ " WHERE  f.sspdtResultDeletionPK.delId = :delId ";
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspdtResultDeletion f "
-			+ " WHERE f.cid =:cid "
-				+ " AND f.saveStartDatetime >=:startDateOperator "
-				+ " AND f.saveEndDatetime <=:endDateOperator ";
+			+ " WHERE f.companyID =:cid "
+				+ " AND f.startDateTimeDel >=:startDateOperator "
+				+ " AND f.endDateTimeDel <=:endDateOperator ";
 
 private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspdtResultDeletion f "
-			+ " WHERE f.cid =:cid "
-				+ " AND f.saveStartDatetime =:startDateOperator "
-				+ " AND f.saveEndDatetime =:endDateOperator "
-				+ " AND f.practitioner =:practitioner ";
+			+ " WHERE f.companyID =:cid "
+				+ " AND f.startDateTimeDel =:startDateOperator "
+				+ " AND f.endDateTimeDel =:endDateOperator "
+				+ " AND f.sId =:practitioner ";
 
 	@Override
 	public List<ResultDeletion> getAllResultDeletion() {

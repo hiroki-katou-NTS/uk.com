@@ -20,8 +20,8 @@ public class ResultOfDeletionWebService {
 	private ResultOfDeletionFinder resultOfDeletionFinder;
 
 	@POST
-	@Path("findResultOfRestoration")
-	public List<ResultOfDeletionDto> findResultOfRestoration(LogDataParams logDataParams) {
+	@Path("findResultOfDeletetion")
+	public List<ResultOfDeletionDto> findResultOfDeletetion(LogDataParams logDataParams) {
 		return resultOfDeletionFinder.getResultOfDeletion(logDataParams);
 	}
 

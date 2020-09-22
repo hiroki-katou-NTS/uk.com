@@ -6,9 +6,10 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
@@ -18,7 +19,6 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "SSPDT_RESULT_LOG_DELETION")
 @NoArgsConstructor
-@AllArgsConstructor
 public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -61,6 +61,10 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 	@Basic(optional = true)
 	@Column(name = "ERROR_DATE")
 	public GeneralDate errorDate;
+	
+	@ManyToOne
+	@JoinColumn(name="DEL_ID", referencedColumnName="DEL_ID", insertable = false, updatable = false)		
+	public SspdtResultDeletion resultDeletion;
 
 	@Override
 	protected Object getKey() {
@@ -76,5 +80,24 @@ public class SspdtResultLogDeletion extends UkJpaEntity implements Serializable 
 		return new SspdtResultLogDeletion(new SspdtResultLogDeletionPK(resultLog.getDelId(), resultLog.getSeqId()), 
 				resultLog.getCompanyId(), resultLog.getLogTime(), resultLog.getProcessingContent().v(), resultLog.getErrorContent().v(),
 				resultLog.getErrorEmployeeId(), resultLog.getErrorDate());
+	}
+
+	public SspdtResultLogDeletion
+		(
+		SspdtResultLogDeletionPK sspdtResultLogDeletionPK, 
+		String companyId,
+		GeneralDateTime logTime, 
+		String processingContent, 
+		String errorContent, 
+		String errorEmployeeId,
+		GeneralDate errorDate
+		) {
+			super();
+			this.sspdtResultLogDeletionPK = sspdtResultLogDeletionPK;
+			this.companyID = companyId;
+			this.processingContent = processingContent;
+			this.errorContent = errorContent;
+			this.errorEmployeeId = errorEmployeeId;
+			this.errorDate = errorDate;
 	}
 }

@@ -210,9 +210,10 @@ public class ManualSetDeletionService extends ExportService<Object>{
 		String pcName = AppContexts.requestedWebApi().getRequestPcName();
 		String account = AppContexts.windowsAccount().getUserName();
 		LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
+		List<ResultLogDeletion> listResultLogDeletions = new ArrayList<ResultLogDeletion>();
 		ResultDeletion resultDomain = ResultDeletion.createFromJavatype(domain.getDelId(), domain.getCompanyId(),
 				domain.getDelName().v(), delType, domain.isSaveBeforeDeleteFlg(), null, numberEmployees,
-				domain.getSystemType(), domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
+				domain.getSystemType(),listResultLogDeletions, domain.getSId(), SaveStatus.SUCCESS.value, startDateTimeDel, null, null, null,
 				fileSize, null, loginInfo);
 		repoResultDel.add(resultDomain);
 	}

@@ -3,13 +3,14 @@ package nts.uk.ctx.sys.assist.app.find.resultofdeletion;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.sys.assist.app.find.params.LogDataParams;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-
+@Stateless
 public class ResultOfDeletionFinder {
 	@Inject
 	private ResultDeletionRepository finder;
