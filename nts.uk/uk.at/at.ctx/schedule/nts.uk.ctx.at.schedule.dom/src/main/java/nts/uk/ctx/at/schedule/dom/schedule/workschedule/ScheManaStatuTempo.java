@@ -16,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.em
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.employeeinfor.employmenthistory.imported.EmploymentPeriodImported;
 
 /**
- * 社員の予定管理状態
+ * 社員の予定管理状態 TP
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定
  *
  * @author HieuLt

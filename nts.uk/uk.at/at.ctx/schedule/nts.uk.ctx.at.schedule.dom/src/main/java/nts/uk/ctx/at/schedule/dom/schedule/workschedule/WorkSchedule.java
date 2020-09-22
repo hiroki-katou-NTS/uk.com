@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomat
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
- * 勤務予定
+ * 勤務予定 root
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.勤務予定.勤務予定
  * @author HieuLT
  *
