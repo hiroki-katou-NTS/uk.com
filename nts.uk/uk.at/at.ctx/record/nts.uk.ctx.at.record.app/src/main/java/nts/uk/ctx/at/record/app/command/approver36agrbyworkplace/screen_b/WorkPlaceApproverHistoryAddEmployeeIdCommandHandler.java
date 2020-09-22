@@ -8,9 +8,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.approver.AddWorkplaceApproverHistoryDomainService;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplace;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
-import nts.uk.ctx.at.record.dom.workplaceapproverhistory.AddWorkplaceApproverHistoryDomainService;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;
@@ -43,7 +43,7 @@ public class WorkPlaceApproverHistoryAddEmployeeIdCommandHandler extends Command
     }
 
     @AllArgsConstructor
-    public class RequireImpl implements AddWorkplaceApproverHistoryDomainService.Require {
+    public class RequireImpl implements AddWorkplaceApproverHistoryDomainService.Requeire {
 
         private Approver36AgrByWorkplaceRepo workplaceRepo;
         @Override
