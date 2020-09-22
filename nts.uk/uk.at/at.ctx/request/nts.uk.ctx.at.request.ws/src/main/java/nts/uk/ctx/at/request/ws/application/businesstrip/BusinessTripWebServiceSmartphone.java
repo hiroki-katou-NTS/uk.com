@@ -8,6 +8,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommand;
 import nts.uk.ctx.at.request.app.command.application.businesstrip.AddBusinessTripCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.businesstrip.UpdateBusinessTripCommand;
+import nts.uk.ctx.at.request.app.command.application.businesstrip.UpdateBusinessTripCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.AppBusinessParam;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripFinder;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.ApproveTripRequestParam;
@@ -32,6 +34,9 @@ public class BusinessTripWebServiceSmartphone extends WebService {
 	
 	 @Inject
 	    private AddBusinessTripCommandHandler addBusinessTripCommandHandler;
+	 
+	 @Inject
+	    private UpdateBusinessTripCommandHandler updateBusinessTripCommandHandler;
 
 	
 	@Path("startMobile")
@@ -83,5 +88,16 @@ public class BusinessTripWebServiceSmartphone extends WebService {
     @Path("startKDLS02")
     public boolean startKDL003(ParamStartKDL003 param) {
         return this.businessTripFinder.getFlagStartKDL003(param);
+    }
+	
+	/**
+	 * Update application
+	 * @param param
+	 * @return
+	 */
+	@POST
+    @Path("updateBusinessTrip")
+    public ProcessResult updateBusinesstrip(UpdateBusinessTripCommand param) {
+        return this.updateBusinessTripCommandHandler.handle(param);
     }
 }

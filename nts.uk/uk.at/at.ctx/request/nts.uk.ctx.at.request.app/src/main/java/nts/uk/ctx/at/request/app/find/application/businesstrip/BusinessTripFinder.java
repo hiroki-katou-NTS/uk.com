@@ -489,7 +489,7 @@ public class BusinessTripFinder {
         List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
         DetailStartScreenInfoDto result = null;
 
-        if(param.isNewMode()) {
+        if(param.getIsNewMode()) {
 
             ApplicationDto applicationDto = param.getApplication();
             Application application = Application.createFromNew(

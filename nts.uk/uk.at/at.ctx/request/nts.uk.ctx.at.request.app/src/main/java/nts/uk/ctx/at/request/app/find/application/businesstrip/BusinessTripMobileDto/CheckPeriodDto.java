@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.B
 public class CheckPeriodDto {
 
     // 起動時のモード
-    private boolean isNewMode;
+    private Boolean isNewMode;
 
     //	承認ルートエラー情報
     private int isError;
