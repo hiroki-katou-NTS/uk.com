@@ -372,14 +372,14 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                             timeWithDayAttr: ko.toJS(vm.workManagement.leaveTime())
                         })
                     }
-                    if (ko.toJS(vm.workManagement.workTime2)) {
+                    if (vm.managementMultipleWorkCycles() && ko.toJS(vm.workManagement.workTime2)) {
                         lateOrLeaveEarlies.push({
                             workNo: 2,
                             lateOrEarlyClassification: 0,
                             timeWithDayAttr: ko.toJS(vm.workManagement.workTime2())
                         })
                     }
-                    if (ko.toJS(vm.workManagement.leaveTime2)) {
+                    if (vm.managementMultipleWorkCycles() && ko.toJS(vm.workManagement.leaveTime2)) {
                         lateOrLeaveEarlies.push({
                             workNo: 2,
                             lateOrEarlyClassification: 1,
@@ -405,7 +405,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                 return (x.workNo === 1 && x.lateOrEarlyClassification === 1);
                             });
                         }
-                        if (ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
+                        if (vm.managementMultipleWorkCycles() && ko.toJS(vm.lateOrEarlyInfo3().isCheck)) {
                             lateCancelation.push({
                                 workNo: 2,
                                 lateOrEarlyClassification: 0
@@ -414,7 +414,7 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                                 return (x.workNo === 2 && x.lateOrEarlyClassification === 0);
                             });
                         }
-                        if (ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
+                        if (vm.managementMultipleWorkCycles() && ko.toJS(vm.lateOrEarlyInfo4().isCheck)) {
                             lateCancelation.push({
                                 workNo: 2,
                                 lateOrEarlyClassification: 1

@@ -4096,25 +4096,38 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             })
 
             let dataShareCmm = {
-                appListAtr: 0,
-                appType: -1,
-                unapprovalStatus: true,
-                approvalStatus: false,//false
-                denialStatus: false,//false
-                agentApprovalStatus: false,//false
-                /**承認状況＿差戻*/
-                remandStatus: false,//false 
-                /**承認状況＿取消*/
-                cancelStatus: false,//false
-                /**申請表示対象*/
-                appDisplayAtr: 0,//0
-                /**社員IDリスト*/
-                listEmployeeId: [rowItemSelect.employeeId],//[]
-                /**社員絞込条件*/
-                empRefineCondition: "",//'' ,
-                startDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
-                endDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().endDate).format("YYYY/MM/DD")
-
+				/** 期間開始日 */
+				periodStartDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
+				/** 期間終了日 */
+				periodEndDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().endDate).format("YYYY/MM/DD"),
+				/** 事後出力 */
+				postOutput: true,
+				/** 事前出力 */
+				preOutput: true,
+				/** 申請一覧区分 */
+				appListAtr: 0,
+				/** 申請表示順 */
+				appDisplayOrder: 0,
+				/** 表の幅登録 */
+				tableWidthRegis: false,
+				/** 社員IDリスト */
+				opListEmployeeID: [rowItemSelect.employeeId],
+				/** 承認状況＿差戻 */
+				opRemandStatus: false,
+				/** 承認状況＿取消 */
+				opCancelStatus: false,
+				/** 承認状況＿承認済 */
+				opApprovalStatus: false,
+				/** 承認状況＿代行承認済 */
+				opAgentApprovalStatus: false,
+				/** 承認状況＿否認 */
+				opDenialStatus: false,
+				/** 承認状況＿未承認 */
+				opUnapprovalStatus: true,
+				/** 申請種類 */
+				opAppTypeLst: [],
+				/** 申請種類リスト */
+				opListOfAppTypes: []
             }
             nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
                 parent.nts.uk.characteristics.save('AppListExtractCondition', dataShareCmm).done(function() {

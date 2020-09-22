@@ -20,6 +20,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SyEmployeeImp
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WkpInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.AppCompltLeaveSyncOutput;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.approvallistsetting.ApprovalListDisplaySetting;
+import nts.uk.ctx.at.request.dom.setting.workplace.appuseset.ApplicationUseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -167,5 +168,5 @@ public interface AppListInitialRepository {
 	 * @param date
 	 * @return
 	 */
-	// public List<ApprovalFunctionSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date);
+	public List<ApplicationUseSetting> detailSetKAF022(String companyId, String wkpId, GeneralDate date);
 }
