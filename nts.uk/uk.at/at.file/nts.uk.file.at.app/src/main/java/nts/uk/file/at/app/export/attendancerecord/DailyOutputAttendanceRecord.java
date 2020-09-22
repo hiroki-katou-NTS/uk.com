@@ -6,7 +6,7 @@ import lombok.Data;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 
 @Data
-public class DailyOuputAttendanceRecord {
+public class DailyOutputAttendanceRecord {
 	//	列番号
 	private String columnIndex;
 	
