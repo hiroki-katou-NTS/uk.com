@@ -250,11 +250,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     return vm.$ajax(API.release, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
-                if(successData.processDone) {
-                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
-                        vm.loadData();
-                    });
-                }
+				if(successData) {
+					if(successData.processDone) {
+	                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
+	                        vm.loadData();
+	                    });
+	                }	
+				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
@@ -305,9 +307,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
-                vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
-                });
+				if(successData) {
+					vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
+	                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
+	                });	
+				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
@@ -322,9 +326,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     return vm.$ajax(API.deleteapp, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
-                vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
-                    vm.loadData();
-                });
+				if(successData) {
+					vm.$dialog.info({ messageId: "Msg_224" }).then(() => {
+	                    vm.loadData();
+	                });	
+				}
             }).fail((res: any) => {
                 vm.handlerExecuteErrorMsg(res);
             }).always(() => vm.$blockui("hide"));
