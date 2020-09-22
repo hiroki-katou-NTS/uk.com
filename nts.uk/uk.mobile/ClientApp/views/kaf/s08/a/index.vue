@@ -7,7 +7,7 @@
     </div>
     <kafs08a1 
     @nextToStepTwo="ProcessNextToStepTwo" 
-    v-if="step == 'KAFS08_10'" 
+    v-show="step == 'KAFS08_10'"
     v-bind:derpartureTime="derpartureTime"
     v-bind:returnTime="returnTime"
     v-bind:appReason="appReason"
@@ -23,8 +23,8 @@
     v-bind:businessTripInfoOutput="businessTripInfoOutput"
     v-bind:application="application"
     v-bind:listDate="listDate"
-    v-if="step == 'KAFS08_11'" />
-    <kafs08c v-if="step =='KAFS08_12'"
+    v-show="step == 'KAFS08_11'" />
+    <kafs08c v-show="step =='KAFS08_12'"
     v-bind:appID="appID"
     />
 </div>
