@@ -2416,7 +2416,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.listSid().length == 1) {
                 nts.uk.ui.windows.sub.modal('/view/kdl/020/a/single.xhtml').onClosed(function(): any { });
             } else if (self.listSid().length > 1) {
-                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/mutil.xhtml').onClosed(function(): any { });
+                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/multi.xhtml').onClosed(function(): any { });
             }
         }
         
