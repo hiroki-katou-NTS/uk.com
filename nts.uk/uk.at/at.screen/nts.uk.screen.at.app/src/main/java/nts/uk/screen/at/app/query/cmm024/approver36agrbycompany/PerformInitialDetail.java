@@ -2,25 +2,27 @@ package nts.uk.screen.at.app.query.cmm024.approver36agrbycompany;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
-import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByCompany;
 
 import java.util.List;
+
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-public class PerformInitialDisplaysByCompanyScreenDto {
+public class PerformInitialDetail {
     /**
-     * 会社ID
+     * 期間
      */
-    private String companyId;
+    private GeneralDate startDate;
 
-    private String companyName;
+    private GeneralDate endDate;
 
-    private List<PerformInitialDetail> scheduleHistory;
+    // List<個人基本情報>
+    public List<PersonInfor> personalInfoApprove;
 
-
+    public List<PersonInfor> personalInfoConfirm;
 }

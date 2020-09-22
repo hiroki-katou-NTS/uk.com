@@ -20,7 +20,7 @@ public class WorkPlaceWebService extends WebService {
     @Path("{worlkplaceid}")
     @POST
     public PerformInitialDisplaysByWorkPlaceScreenDto getInitial(@PathParam("worlkplaceid") String worlkplaceid) {
-        return workPlaceScreenQuery.getApprover36AgrByWorkplace(worlkplaceid);
+        return workPlaceScreenQuery.getApprove36AerByWorkplace(worlkplaceid);
     }
 
 
