@@ -4096,27 +4096,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             })
 
             let dataShareCmm = {
-<<<<<<< HEAD
-                appListAtr: 0,
-                appType: -1,
-                unapprovalStatus: true,
-                approvalStatus: false,//false
-                denialStatus: false,//false
-                agentApprovalStatus: false,//false
-                /**承認状況＿差戻*/
-                remandStatus: false,//false
-                /**承認状況＿取消*/
-                cancelStatus: false,//false
-                /**申請表示対象*/
-                appDisplayAtr: 0,//0
-                /**社員IDリスト*/
-                listEmployeeId: [rowItemSelect.employeeId],//[]
-                /**社員絞込条件*/
-                empRefineCondition: "",//'' ,
-                startDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
-                endDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().endDate).format("YYYY/MM/DD")
-
-=======
 				/** 期間開始日 */
 				periodStartDate: __viewContext.vm.displayFormat() === 1 ? moment(__viewContext.vm.selectedDate()).format("YYYY/MM/DD") : moment(__viewContext.vm.dateRanger().startDate).format("YYYY/MM/DD"),
 				/** 期間終了日 */
@@ -4149,7 +4128,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 				opAppTypeLst: [],
 				/** 申請種類リスト */
 				opListOfAppTypes: []
->>>>>>> TeamD/Refactor4/Release_0923
             }
             nts.uk.characteristics.remove("AppListExtractCondition").done(function() {
                 parent.nts.uk.characteristics.save('AppListExtractCondition', dataShareCmm).done(function() {
