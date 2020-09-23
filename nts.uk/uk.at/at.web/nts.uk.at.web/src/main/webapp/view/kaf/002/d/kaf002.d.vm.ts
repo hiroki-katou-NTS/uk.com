@@ -230,7 +230,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
        }
 
 	   reload() {
-		
+	       const self = this;
+	       self.fetchData();
 	   }
        
        public handleConfirmMessage(listMes: any, res: any) {
@@ -323,7 +324,11 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         messageId: res.messageId,
                         messageParams: res.parameterIds
                 }
-               self.$dialog.error(param);
+               self.$dialog.error(param).then(() => {
+                   if (res.messageId == 'Msg_197') {
+                       self.$jump("com", "/view/ccg/008/a/index.xhtml")
+                   }
+               });
             }
        }
         
