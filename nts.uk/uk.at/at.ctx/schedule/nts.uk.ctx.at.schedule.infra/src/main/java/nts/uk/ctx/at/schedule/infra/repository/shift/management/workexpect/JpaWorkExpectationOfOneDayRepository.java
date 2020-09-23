@@ -1,8 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.management.workexpect;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,17 +43,20 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 	private static final String QUERY_EXPECTATION_PERIOD =
 			"SELECT * FROM KSCDT_AVAILABILITY" + 
 			" WHERE SID = @employeeID" + 
-			" AND YMD between @startDate and @endDate";
+			" AND YMD between @startDate and @endDate" + 
+			" ORDER BY YMD ASC";
 	
 	private static final String QUERY_SHIFT_EXPECTATION_PERIOD =
 			"SELECT * FROM KSCDT_AVAILABILITY_SHIFT" + 
 			" WHERE SID = @employeeID" + 
-			" AND YMD between @startDate and @endDate";
+			" AND YMD between @startDate and @endDate" +
+			" ORDER BY YMD ASC";
 	
 	private static final String QUERY_TS_EXPECTATION_PERIOD =
 			"SELECT * FROM KSCDT_AVAILABILITY_TS" + 
 			" WHERE SID = @employeeID" + 
-			" AND YMD between @startDate and @endDate";
+			" AND YMD between @startDate and @endDate" + 
+			" ORDER BY YMD ASC";
 	
 	@Override
 	public Optional<WorkExpectationOfOneDay> get(String employeeID, GeneralDate expectingDate) {
@@ -99,59 +100,37 @@ public class JpaWorkExpectationOfOneDayRepository extends JpaRepository implemen
 												.paramDate("endDate", period.end())
 												.getList( KscdtAvailability.createKscdtAvailability );
 		
-		Map<GeneralDate, List<KscdtAvailabilityShift>> availabilityShiftMap = 
-													new NtsStatement(QUERY_SHIFT_EXPECTATION_PERIOD, this.jdbcProxy())
+		List<KscdtAvailabilityShift> availabilityShiftList = new NtsStatement(QUERY_SHIFT_EXPECTATION_PERIOD, this.jdbcProxy())
 													.paramString("employeeID", employeeID)
 													.paramDate("startDate", period.start())
 													.paramDate("endDate", period.end())
-													.getList( KscdtAvailabilityShift.createKscdtAvailabilityShift )
-													.stream()
-													.collect(Collectors.groupingBy(p -> p.pk.expectingDate));
+													.getList( KscdtAvailabilityShift.createKscdtAvailabilityShift );
 		
-		Map<GeneralDate, List<KscdtAvailabilityTs>> availabilityTsMap = 
-													new NtsStatement(QUERY_TS_EXPECTATION_PERIOD, this.jdbcProxy())
+		List<KscdtAvailabilityTs> availabilityTsList = new NtsStatement(QUERY_TS_EXPECTATION_PERIOD, this.jdbcProxy())
 													.paramString("employeeID", employeeID)
 													.paramDate("startDate", period.start())
 													.paramDate("endDate", period.end())
-													.getList( KscdtAvailabilityTs.createKscdtAvailabilityShift )
-													.stream()
-													.collect(Collectors.groupingBy(p -> p.pk.expectingDate));
+													.getList( KscdtAvailabilityTs.createKscdtAvailabilityShift );
 													
 		return availabilityList.stream().map( a -> {
 			
-			AssignmentMethod assignmentMethod = EnumAdaptor.valueOf(a.method, AssignmentMethod.class);
+			List<ShiftMasterCode> shiftMasterCodeList = availabilityShiftList.stream()
+														.filter( s -> s.pk.expectingDate == a.pk.expectingDate)
+														.map( s -> new ShiftMasterCode(s.pk.shiftMasterCode))
+														.collect(Collectors.toList());
 			
-			List<ShiftMasterCode> shiftMasterCodeList = new ArrayList<>();
-			List<TimeSpanForCalc> timeZoneList = new ArrayList<>();
-			
-			switch (assignmentMethod) {
-				case SHIFT:
-					shiftMasterCodeList = availabilityShiftMap
-												.get(a.pk.expectingDate)
-												.stream()
-												.map( s -> new ShiftMasterCode(s.pk.shiftMasterCode))
-												.collect(Collectors.toList());
-					break;
-		
-				case TIME_ZONE:
-					timeZoneList = availabilityTsMap
-												.get(a.pk.expectingDate)
-												.stream()
-												.map( t -> new TimeSpanForCalc(
-														new TimeWithDayAttr(t.pk.startClock), 
-														new TimeWithDayAttr(t.pk.endClock)))
-												.collect(Collectors.toList());
-					break;
-				case HOLIDAY:
-				default:
-					break;
-			}
+			List<TimeSpanForCalc> timeZoneList = availabilityTsList.stream() 
+													.filter(t -> t.pk.expectingDate == a.pk.expectingDate)
+													.map( t -> new TimeSpanForCalc(
+															new TimeWithDayAttr(t.pk.startClock), 
+															new TimeWithDayAttr(t.pk.endClock)))
+													.collect(Collectors.toList());
 			
 			return WorkExpectationOfOneDay.create(
 					employeeID, 
 					a.pk.expectingDate, 
 					new WorkExpectationMemo(a.memo), 
-					assignmentMethod, 
+					EnumAdaptor.valueOf(a.method, AssignmentMethod.class), 
 					shiftMasterCodeList, 
 					timeZoneList);
 			
