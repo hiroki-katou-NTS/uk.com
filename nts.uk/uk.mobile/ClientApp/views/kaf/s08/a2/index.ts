@@ -4,7 +4,6 @@ import { StepwizardComponent } from '@app/components';
 import { FixTableComponent } from '@app/components/fix-table';
 import { KafS08DComponent } from '../../../kaf/s08/d';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
-import { vmOf } from 'vue/types/umd';
 import * as _ from 'lodash';
 
 
@@ -41,21 +40,26 @@ export class KafS08A2Component extends KafS00ShrComponent {
     @Prop({ default: () => [] }) public readonly table!: [];
 
     //A2 nhận về props params là một Object ITimes
-    @Prop({ default: ' ' }) public readonly departureTime!: string;
+    @Prop({ default: () => 0 }) public readonly derpartureTime!: number;
 
-    @Prop({ default: ' ' }) public readonly returnTime!: string;
+    @Prop({ default: () => 0 }) public readonly returnTime!: number;
 
     //A2 nhận về props comment là một Object comment
     @Prop({ default: {} }) public readonly comment!: Object;
 
     //A2 nhan ve props businessTripInfoOutput
-    @Prop({ default: {} }) public readonly businessTripInfoOutput !: Object;
+    @Prop({ default: {} }) public readonly businessTripInfoOutput !: any;
 
     //A2 nhan ve props application
     @Prop({ default: {} }) public readonly application!: Object;
 
     //A2 nhan ve props listDate
     @Prop({ default: [] }) public readonly listDate!: [];
+
+    //A2 nhan props app reason
+    @Prop({ default: '' }) public readonly appReason!: string;
+
+    @Prop({ default: () => { } }) public readonly params!: any;
 
     //public readonly params!: any;
     public name: string = 'hello my dialog';
@@ -65,12 +69,19 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public user: any;
     public data: any;
     public hidden: boolean = false;
+    // vaii loan, laij khong dinh kieu????
     public businessTripActualContent: [] = [];
-    public appID: string = ' ' ;
-    public lstWorkDay: any[] = [ ]; 
+    public appID: string = ' ';
+    public lstWorkDay: any[] = [];
+
 
     public created() {
         const vm = this;
+        if (vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo != null) {
+            vm.mode = false;
+        }
+        console.log(vm.application);
+        console.log(vm.businessTripInfoOutput);
         vm.fetchStart();
     }
 
@@ -86,7 +97,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
         }).then((loadData: any) => {
             if (loadData) {
                 return vm.$http.post('at', API.startKAFS08, {
-                    mode: vm.mode,
+                    mode: true,
                     companyId: vm.user.companyId,
                     employeeId: vm.user.employeeId,
                     listDates: vm.listDate,
@@ -98,28 +109,73 @@ export class KafS08A2Component extends KafS00ShrComponent {
                     //console.log(vm.businessTripActualContent.length);
                 });
             }
+
+            setTimeout(function () {
+                let focusElem = document.getElementById('table-a10');
+                (focusElem as HTMLElement).focus();
+            }, 200);
         });
     }
 
-    // public showDialog() {
-    //     const vm = this;
-    //     vm.params.returnTime
-    //     this.$modal(KafS08DComponent,{name},{title: '戻る'})
-    //     .then((data) => {
-    //         console.log(data);
-    //     });
-    // }
+    //update business trip
+    public updateBusinessTrip() {
+        const vm = this;
+        let params = {
+            businessTrip: vm.businessTripInfoOutput.businessTrip,
+            businessTripInfoOutput: vm.businessTripInfoOutput.businessTripInfoOutput,
+            application: vm.application,
+        };
+
+        return vm.$http.post('at', API.updateBusinessTrip, params).then((res: any) => {
+            vm.$emit('nextToStepThree', res.data.appID);
+        }).catch(() => {
+            vm.$modal.error({ messageId: 'Msg_1912' });
+        });
+    }
 
     //hàm xử lý gọi dialog
-    public selectRowDate(data) {
+    public selectRowDate(rowDate) {
         const vm = this;
-        vm.$modal(KafS08DComponent, {rowDate : data,lstWorkDay:vm.lstWorkDay});
+        const { lstWorkDay, returnTime, derpartureTime } = vm;
+        const { businessTripInfoOutput } = vm.data;
+
+        vm.$modal(KafS08DComponent, {
+            rowDate,
+            lstWorkDay,
+            businessTripInfoOutput,
+            derpartureTime,
+            returnTime
+        }).then((model: {
+            derpartureTime: number;
+            returnTime: number;
+            date: string,
+            opWorkTypeName: '',
+            opWorkTimeName: '',
+            opWorkTime: number,
+            opLeaveTime: number
+        }) => {
+            //rowDate.opAchievementDetail.opWorkTime = model.opWorkTime;
+            //rowDate.opAchievementDetail.opLeaveTime = model.opLeaveTime;
+            console.log(model);
+            if (rowDate.date == model.date) {
+                rowDate.opAchievementDetail.opWorkTypeName = model.opWorkTypeName;
+                rowDate.opAchievementDetail.opWorkTimeName = model.opWorkTimeName;
+                rowDate.opAchievementDetail.opWorkTime = model.opWorkTime;
+                rowDate.opAchievementDetail.opLeaveTime = model.opLeaveTime;
+            }
+            vm.$emit('changeTime', model.derpartureTime, model.returnTime);
+
+
+            //opAchievementDetail.opWorkTime = model.opWorkTime;
+            //opAchievementDetail.opWorkTime = model.opLeaveTime;
+
+        });
     }
 
     //nhảy đến step three với các điều kiện
     public nextToStepThree() {
         const vm = this;
-        vm.registerData();
+        vm.mode ? vm.registerData() : vm.updateBusinessTrip();
         //vm.checkBeforeRegister();
         //vm.toggleErrorAlert();
         //this.$emit('nextToStepThree');
@@ -139,7 +195,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //quay trở lại step one
     public prevStepOne() {
         const vm = this;
-        vm.$emit('prevStepOne', {});
+        vm.$emit('prevStepOne', vm.derpartureTime, vm.returnTime, vm.appReason);
     }
 
     //hàm check trước khi register
@@ -155,7 +211,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             };
         });
         let paramsBusinessTrip = {
-            departureTime: vm.departureTime,
+            departureTime: vm.derpartureTime,
             returnTime: vm.returnTime,
             tripInfos
         };
@@ -207,7 +263,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             };
         });
         let paramsBusinessTrip = {
-            departureTime: vm.departureTime,
+            departureTime: vm.derpartureTime,
             returnTime: vm.returnTime,
             tripInfos,
         };
@@ -219,15 +275,15 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 application: vm.application
             }).then((res: any) => {
                 //vm.appID = res.data.appID;
-                vm.$emit('nextToStepThree',res.data.appID);
+                vm.$emit('nextToStepThree', res.data.appID);
                 vm.$mask('hide');
-                // KAFS00_D_申請登録後画面に移動する
-                //this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.appID });
+            }).catch(() => {
+                vm.$modal.error({ messageId: 'Msg_1912' });
             });
         } else {
             vm.$modal.error({ messageId: 'Msg_1703' });
 
-            return ;
+            return;
         }
     }
 }
@@ -250,6 +306,7 @@ export interface BusinessTripInfo {
 const API = {
     startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
     checkBeforeApply: 'at/request/application/businesstrip/mobile/checkBeforeRegister',
-    register: 'at/request/application/businesstrip/mobile/register'
+    register: 'at/request/application/businesstrip/mobile/register',
+    updateBusinessTrip: 'at/request/application/businesstrip/mobile/updateBusinessTrip',
 };
 

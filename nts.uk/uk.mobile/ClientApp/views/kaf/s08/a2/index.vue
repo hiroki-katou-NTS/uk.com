@@ -26,8 +26,8 @@
       <div class="uk-text-dark-gray">
         <label class="a7_5">{{'KAFS08_28' | i18n}}</label>
         <!-- A7_6 -->
-        <label v-if="departureTime == null">{{''}}</label>
-        <label v-else>{{departureTime | timewd}}</label>
+        <label v-if="derpartureTime == null">{{''}}</label>
+        <label v-else>{{derpartureTime | timewd}}</label>
       </div>
       <!-- A7_7 -->
       <div class="uk-text-dark-gray">
