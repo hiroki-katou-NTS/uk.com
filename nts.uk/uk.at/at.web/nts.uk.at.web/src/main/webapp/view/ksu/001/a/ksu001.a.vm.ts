@@ -1511,6 +1511,29 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 },
                 fields: ["workTypeCode", "workTypeName", "workTimeCode", "workTimeName", "shiftName", "startTime", "endTime", "shiftCode"],
             };
+            
+            function customValidate(idx, key, innerIdx, value, obj) {
+                let startTime, endTime;
+                if (innerIdx === 2) {
+                    startTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+                    endTime = nts.uk.time.minutesBased.duration.parseString(obj.endTime).toValue();
+                } else if (innerIdx === 3) {
+                    startTime = nts.uk.time.minutesBased.duration.parseString(obj.startTime).toValue();
+                    endTime = nts.uk.time.minutesBased.duration.parseString(value).toValue();
+                }
+
+                if (startTime > endTime) {
+                    return { isValid: false, message: "start > end" };
+                }
+
+                if (innerIdx === 2) {
+                    return { isValid: true, innerErrorClear: [3] };
+                } else if (innerIdx === 3) {
+                    return { isValid: true, innerErrorClear: [2] };
+                }
+
+                return { isValid: true };
+            };
 
             let start = performance.now();
             
@@ -1534,6 +1557,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     viewMode: viewMode,
                     showTooltipIfOverflow: true,
                     errorMessagePopup: true,
+                    customValidate: customValidate,
                     determination: {
                         rows: [0],
                         columns: ["codeNameOfEmp"]
@@ -1569,6 +1593,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     viewMode: viewMode,
                     showTooltipIfOverflow: true,
                     errorMessagePopup: true,
+                    customValidate: customValidate,
                     determination: {
                         rows: [0],
                         columns: ["codeNameOfEmp"]
@@ -2271,9 +2296,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                     service.validWhenPaste(param).done((data) => {
                         if (data == true) {
                             dfd.resolve(true);
-                        } else {
-                            dfd.resolve(false);
-                        }
+                        } 
                         self.stopRequest(true);
                     }).fail(function() {
                         self.stopRequest(true);
