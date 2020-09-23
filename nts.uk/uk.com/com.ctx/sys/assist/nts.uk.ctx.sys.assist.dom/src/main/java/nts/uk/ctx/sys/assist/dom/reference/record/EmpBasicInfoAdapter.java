@@ -2,12 +2,12 @@ package nts.uk.ctx.sys.assist.dom.reference.record;
 
 import java.util.List;
 
-public interface PersonEmpBasicInfoAdapter {
+public interface EmpBasicInfoAdapter {
 	
 	/**
 	 * Get employee code by employee ID
 	 * @return String
 	 */
-	List<PersonEmpBasicInfoImport> getEmployeeCodeByEmpId(String empId);
+	List<EmpBasicInfoImport> getEmployeeCodeByEmpId(String empId);
 
 }

@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonEmpBasicInfoImport {
+public class EmpBasicInfoImport {
 
 	//個人ID
 	private String personId;

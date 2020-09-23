@@ -7,24 +7,25 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
-import nts.uk.ctx.sys.assist.dom.reference.record.PersonEmpBasicInfoAdapter;
-import nts.uk.ctx.sys.assist.dom.reference.record.PersonEmpBasicInfoImport;
+import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoAdapter;
+import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoImport;
+
 
 
 @Stateless
-public class PersonEmpBasicInfoAdapterImpl  implements PersonEmpBasicInfoAdapter{
+public class EmpBasicInfoAdapterImpl  implements EmpBasicInfoAdapter{
 	
 	@Inject
 	private PersonEmpBasicInfoPub personEmpBasicInfoPub;
 	
 	@Override
-	public List<PersonEmpBasicInfoImport> getEmployeeCodeByEmpId(String empId) {
+	public List<EmpBasicInfoImport> getEmployeeCodeByEmpId(String empId) {
 		List<String> employeeIds = Arrays.asList(empId);
-		List<PersonEmpBasicInfoImport> lstPerson = 
+		List<EmpBasicInfoImport> lstPerson = 
 				personEmpBasicInfoPub.getPerEmpBasicInfo(employeeIds)
 					.stream()
 					.map(item -> {
-						return new PersonEmpBasicInfoImport(
+						return new EmpBasicInfoImport(
 								item.getPersonId(),
 								item.getEmployeeId(),
 								item.getBusinessName(),

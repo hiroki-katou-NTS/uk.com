@@ -17,8 +17,8 @@ import nts.uk.ctx.sys.assist.app.find.resultofrestoration.ResultOfRestorationDto
 import nts.uk.ctx.sys.assist.app.find.resultofrestoration.ResultOfRestorationFinder;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingDto;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingFinder;
-import nts.uk.ctx.sys.assist.dom.reference.record.PersonEmpBasicInfoAdapter;
-import nts.uk.ctx.sys.assist.dom.reference.record.PersonEmpBasicInfoImport;
+import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoAdapter;
+import nts.uk.ctx.sys.assist.dom.reference.record.EmpBasicInfoImport;
 import nts.uk.ctx.sys.assist.dom.storage.ResultLogSaving;
 
 @Stateless
@@ -34,7 +34,7 @@ public class LogDataResultFinder {
 	private ResultOfDeletionFinder resultOfDeletionFinder;
 	
 	@Inject
-	private PersonEmpBasicInfoAdapter personEmpBasicInfoAdapter;
+	private EmpBasicInfoAdapter personEmpBasicInfoAdapter;
 	
 	
 	public List<LogDataResultDto> getLogDataResult(LogDataParams logDataParams){
@@ -49,9 +49,9 @@ public class LogDataResultFinder {
 					//step 社員ID(List)から個人社員基本情報を取得
 					String employeeCode = "";
 					String employeeName = "";
-					List<PersonEmpBasicInfoImport>  personEmpBasicInfos = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultOfSaving.getPractitioner());
+					List<EmpBasicInfoImport>  personEmpBasicInfos = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultOfSaving.getPractitioner());
 					if (!CollectionUtil.isEmpty(personEmpBasicInfos)) {
-						PersonEmpBasicInfoImport personEmpBasicInfo = personEmpBasicInfos.get(0);
+						EmpBasicInfoImport personEmpBasicInfo = personEmpBasicInfos.get(0);
 						employeeCode = personEmpBasicInfo.getEmployeeCode();
 						employeeName= personEmpBasicInfo.getBusinessName();
 					}
@@ -74,9 +74,9 @@ public class LogDataResultFinder {
 						 
 						//step 社員ID(List)から個人社員基本情報を取得
 						 String errorEmployeeId = "";
-							List<PersonEmpBasicInfoImport>  listpersonEmpBasicInfo = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultLogSaving.getErrorEmployeeId());
+							List<EmpBasicInfoImport>  listpersonEmpBasicInfo = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultLogSaving.getErrorEmployeeId());
 							if (!CollectionUtil.isEmpty(listpersonEmpBasicInfo)) {
-								PersonEmpBasicInfoImport personEmpBasicInfo = listpersonEmpBasicInfo.get(0);
+								EmpBasicInfoImport personEmpBasicInfo = listpersonEmpBasicInfo.get(0);
 								errorEmployeeId = personEmpBasicInfo.getEmployeeCode();
 							}
 						 int logNumber = resultLogSaving.getLogNumber();

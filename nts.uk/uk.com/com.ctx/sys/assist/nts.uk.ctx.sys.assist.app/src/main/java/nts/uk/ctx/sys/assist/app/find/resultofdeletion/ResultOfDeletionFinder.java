@@ -6,12 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.sys.assist.app.find.params.LogDataParams;
 import nts.uk.ctx.sys.assist.dom.deletedata.ResultDeletionRepository;
-import nts.uk.ctx.sys.assist.dom.reference.record.PersonEmpBasicInfoAdapter;
-import nts.uk.ctx.sys.assist.dom.reference.record.PersonEmpBasicInfoImport;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
