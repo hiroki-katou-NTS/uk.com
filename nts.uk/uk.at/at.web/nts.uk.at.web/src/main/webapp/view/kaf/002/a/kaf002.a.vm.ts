@@ -122,7 +122,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 self.bindReasonList(self.data);
                 self.bindTabM(self.data);
                 self.bindComment(self.data);
-                
+                let el = document.getElementById('kaf000-a-component4-singleDate');
+                if (el) {
+                    el.focus();                                                    
+                }
             }
         }).fail(res => {
             self.showError(res);
@@ -306,12 +309,18 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         };
         self.$ajax(API.start, command)
             .done((res: any) => {
-                self.data = res;
-                self.initData();
-                self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
-                self.bindReasonList(self.data);
-                self.bindTabM(self.data);
-                self.bindComment(self.data);
+                if (res) {
+                    self.data = res;
+                    self.initData();
+                    self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                    self.bindReasonList(self.data);
+                    self.bindTabM(self.data);
+                    self.bindComment(self.data);
+                    let el = document.getElementById('kaf000-a-component4-singleDate');
+                    if (el) {
+                        el.focus();                                                    
+                    }
+                }
             }).fail(res => {
                 self.showError(res);
             }).always(() => {
