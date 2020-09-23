@@ -5,12 +5,12 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly_Old;
 
 @Getter
 @Setter
 public class GoBackDirectAppSet {
-	GoBackDirectly goBackDirectly;
+	GoBackDirectly_Old goBackDirectly;
 	int prePostAtr;
 	String workLocationName1;
 	String workLocationName2;

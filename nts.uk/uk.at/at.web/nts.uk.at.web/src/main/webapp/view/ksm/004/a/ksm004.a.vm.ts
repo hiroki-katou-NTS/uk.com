@@ -889,15 +889,12 @@ module nts.uk.at.view.ksm004.a {
                 $('.panel-frame-btn').css("background-color","white");
                 const self = this;
                 if(value!=null) {
-                    if (value - 1 == self.currentWorkingDayAtr){
-                        self.currentWorkingDayAtr = null;
-                    } else if (value == 1) {
+                    if (value == 1) {
                         $('.button-sqr1').css("background-color","#DCE6F2");
-                        self.currentWorkingDayAtr = value-1;
                     } else {
                         $('.button-sqr'+value).css("background-color","#FDEADA");
-                        self.currentWorkingDayAtr = value-1;
                     }
+                    self.currentWorkingDayAtr = value-1;
                 } else {
                     self.currentWorkingDayAtr = value;   
                 }
