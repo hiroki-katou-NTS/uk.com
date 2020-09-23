@@ -133,6 +133,16 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             vm.createParamsC();
             vm.createParamsA();
             vm.$mask('hide');
+
+            setTimeout(function () {
+                let focusElem;
+                if (vm.mode) {
+                    focusElem = document.querySelector('[placeholder=\'yyyy-mm-dd\']');
+                } else {
+                    focusElem = document.querySelector('[placeholder=\'-- --:--\']');
+                }
+                (focusElem as HTMLElement).focus();
+            }, 200);
         }).catch((err: any) => {
             //do something
         });
@@ -185,7 +195,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             //gửi comment sang màn hình A2
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
             let appReason = vm.kaf000_C_Params.output.opAppReason;
-            this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+            this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
 
         }
 
@@ -207,7 +217,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             businessTripInfoOutput.businessTrip.departureTime = vm.derpartureTime;
             businessTripInfoOutput.businessTrip.returnTime = vm.returnTime;
         
-            this.$emit('nextToStepTwo', listDateEditMode, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+            this.$emit('nextToStepTwo', listDateEditMode, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
         }
     }
 
