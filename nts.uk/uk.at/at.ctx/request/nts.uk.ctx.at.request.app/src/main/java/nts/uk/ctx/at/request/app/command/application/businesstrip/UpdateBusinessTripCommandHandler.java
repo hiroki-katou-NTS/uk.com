@@ -3,15 +3,12 @@ package nts.uk.ctx.at.request.app.command.application.businesstrip;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.CheckErrorDto;
 import nts.uk.ctx.at.request.dom.application.AppReason;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.EmploymentRootAtr;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
-import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfo;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripInfoOutput;
 import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTripRepository;
 import nts.uk.ctx.at.request.dom.application.businesstrip.service.BusinessTripService;
@@ -33,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Stateless
 public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<UpdateBusinessTripCommand, ProcessResult> {
@@ -118,12 +114,27 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
         if (businessTrip.getInfos().isEmpty()) {
             throw new BusinessException("Msg_1703");
         }
+
+        transaction.parallel(businessTrip.getInfos(), item -> {
+            return null;
+        });
+
         // loop 年月日　in　期間
         businessTrip.getInfos().stream().forEach(i -> {
+
+            String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
+            String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
+            Integer workTimeStart = null;
+            Integer workTimeEnd = null;
+
+            if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
+                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
+                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+            }
+
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            businessTripService.checkInputWorkCode(i.getWorkInformation().getWorkTypeCode().v(),
-                    i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v()
-                    , i.getDate());
+            businessTripService.checkInputWorkCode(wkTypeCd,
+                    wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(inputSid));
             // 申請の矛盾チェック
