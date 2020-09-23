@@ -102,7 +102,7 @@ public class LateLeaveEarlyGetService {
 								: Optional.of(new ApplicationDate(
 								GeneralDate.fromString(dto.getApplication().getOpAppEndDate(), "yyyy/MM/dd"))),
 						Optional.of(new AppReason(dto.getApplication().getOpAppReason())),
-						Optional.of(new AppStandardReasonCode(dto.getApplication().getOpAppStandardReasonCD()))));
+						dto.getApplication().getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(dto.getApplication().getOpAppStandardReasonCD()))));
 	}
 
 	/**

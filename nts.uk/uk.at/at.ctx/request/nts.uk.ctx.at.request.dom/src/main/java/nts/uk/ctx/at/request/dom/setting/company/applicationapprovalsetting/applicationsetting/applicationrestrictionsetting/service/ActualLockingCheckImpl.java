@@ -38,7 +38,7 @@ public class ActualLockingCheckImpl implements ActualLockingCheck {
 	@Override
 	public boolean check(boolean canAppAchievementLock, String companyID, String employeeID, GeneralDate appDate) {
 		// INPUT．実績修正がロック状態なら申請できないをチェックする
-		if (canAppAchievementLock) {
+		if (!canAppAchievementLock) {
 			// アルゴリズム「社員の当月の期間を算出する」を実行する(thực hiện xử lý 「社員の当月の期間を算出する」)
 			PeriodCurrentMonth periodCurrentMonth = this.otherCommonAlgorithmService
 					.employeePeriodCurrentMonthCalculate(companyID, employeeID, appDate);

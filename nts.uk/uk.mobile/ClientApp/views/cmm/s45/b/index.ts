@@ -308,13 +308,17 @@ export class CmmS45BComponent extends Vue {
     }
     public isEmptyApprovalList() {
         const self = this;
+        let unApprovedLst = [];
         _.forEach(self.lstAppByEmp, (x: AppByEmp) => {
-            if (_.isEmpty(x.lstApp)) {
-
-                return false;
-            }
+            let unApprovedSubLst = _.filter(x.lstApp, (o) => o.appStatusNo == 5);
+            _.forEach(unApprovedSubLst, (item) => {
+                unApprovedLst.push(item);
+            });
         });
-
+        if (_.isEmpty(unApprovedLst)) {
+            return false;
+        }
+        
         return true;
     }
 

@@ -37,7 +37,7 @@ public class WorkConfirmDoneCheckImpl implements WorkConfirmDoneCheck {
 	@Override
 	public boolean check(boolean canAppFinishWork, String companyID, String employeeID, GeneralDate appDate) {
 		// INPUT．就業確定済の場合申請できないをチェックする
-		if (canAppFinishWork) {
+		if (!canAppFinishWork) {
 			GeneralDate systemDate = GeneralDate.today();
 			WkpHistImport wkpHistImport = workplaceAdapter.findWkpBySid(employeeID, systemDate);
 			if(wkpHistImport == null){
