@@ -186,6 +186,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                }
 
             });
+            
+            
+            
+            self.disableControl();
 
         }
         createdReasonItem(reasonList: Array<GoOutTypeDispControl>) {
@@ -292,7 +296,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         if (_.isNaN(Number(endRequest)) || Number(endRequest) > 4319 || Number(endRequest) < (-720)) {
                             i.endTimeRequest(null);
                         }
-                        if (self.mode ==0) {
+                        if (self.mode == 0) {
                             if (i.typeStamp == STAMPTYPE.GOOUT_RETURNING) {
                                 i.typeReason = String (self.createdReasonItem(self.reasonList)[0].code);                            
                             }
@@ -321,9 +325,22 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.binding();
         }
 
-
+        disableControl() {
+            const self = this;
+            if (self.mode == 2) {
+                var loop = window.setInterval(function () {
+                    if ($('.startTime input') && $('.endTime input') && $('.enableFlag input')) {
+                        _.forEach($('.startTime input'), i => { $(i).prop('disabled', true)});
+                        _.forEach($('.endTime input'), i => { $(i).prop('disabled', true)});
+                        _.forEach($('.enableFlag input'), i => { $(i).prop('disabled', true)});
+                        window.clearInterval(loop);
+                    }
+                }, 100);
+            }
+        }
         constructor() {
             super();
+            
         }
 
         initDataSource() {
@@ -706,17 +723,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.frameNo = index;
             this.opStartTime = null;
             this.opEndTime = null;
-//            if ( index == 1 ) {
-//                this.opStartTime = 650;
-//                this.opEndTime = null;
-//            } else if ( index == 3 ) {
-//                this.opStartTime = 500;
-//                this.opEndTime = 1500;
-//
-//            } else {
-//                this.opStartTime = index % 2 == 0 ? 1000 : null;
-//                this.opEndTime = index % 2 == 0 ? 1500 : null;
-//            }
         }
 
     }

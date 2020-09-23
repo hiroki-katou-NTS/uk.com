@@ -63,7 +63,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     
 
     <!-- C5 -->
-
     <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="width: auto !important"></div>
     <div style="display: block">
         <!-- C6_1 -->
@@ -71,7 +70,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         <!-- C6_2 -->
         <div data-bind="if: isM">
             <div 
-                data-bind="component: {name: 'kaf002-m', params: {selectedTab: selectedTab, tabs: tabs, dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr}}"
+                data-bind="component: {name: 'kaf002-m', params: {mode: mode, selectedTab: selectedTab, tabs: tabs, dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr}}"
                 style="margin-left: 121px; width: 450px !important"></div>      
         </div>
     </div>
@@ -106,6 +105,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        application: KnockoutObservable<Application>;
        dataSourceOb: KnockoutObservableArray<any>;
        selectedTab: KnockoutObservable<string> = ko.observable('');
+       name: KnockoutObservable<string> = ko.observable('hhdhd');
        // display condition
        isM: KnockoutObservable<boolean> = ko.observable(false);
        // select tab M
@@ -133,8 +133,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       isParentHours = false;
       isNurseTime = false;
       data: any;
-      mode: number = 0; // 0 ->a, 1->b, 2->b(view)
-      reasonList: Array<GoOutTypeDispControl>;
+      mode: number = 1; // 0 ->a, 1->b, 2->b(view)
+      reasonList: Array<GoOutTypeDispControl> = [];
     
     
         bindComment(data: any) {
@@ -164,7 +164,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             }
             self.$ajax(API.getDetail, command)
                 .done(res => {
+                    if (!res) return;
                     self.data = res;
+                    self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0 ? self.mode = 2 : self.mode = 1;
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                     self.bindActualData();                        

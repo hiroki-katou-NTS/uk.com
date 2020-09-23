@@ -65,13 +65,14 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         optionsValue: 'code',
                         value: selectedCode,
                         optionsText: 'name',
-                        required: true
+                        required: true,
+                        enable: mode
                     }"></div>
     </div>
 
     <div class="blockSecond">
         <input class="inputBlockSecond" id="inputTimeKAF002"
-            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
+            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { enable: mode, value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
                                                     }" />
 
         <div class="dropListBlockSecond"
@@ -80,7 +81,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         optionsValue: 'code',
                         value: selectedCodeReason,
                         optionsText: 'name',
-                        required: true
+                        required: true,
+                        enable: mode
                     }"></div>
     </div>
 
@@ -114,7 +116,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
         approvalReason: KnockoutObservable<string>;
         application: KnockoutObservable<Application>;
         
-        
+        mode: KnockoutObservable<boolean> = ko.observable(true);
         dataSource: KnockoutObservableArray<ItemModel>;
         dataSourceReason: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
@@ -157,6 +159,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                        return;
                    }
                    self.data = res;
+                   if (self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0) {
+                       self.mode(false);                       
+                   }
                    self.selectedCode(String(self.data.appRecordImage.appStampCombinationAtr));
                    self.time(Number(self.data.appRecordImage.attendanceTime));
                    if (self.data.appRecordImage.appStampGoOutAtr) {
