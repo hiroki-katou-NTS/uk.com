@@ -99,7 +99,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             { code: 1, name: nts.uk.resource.getText("KDR002_7") }
         ]);;
 
-        valueReferenceTypeA3_5: KnockoutObservable<number> = ko.observable(0);;
+        valueReferenceTypeA3_5: KnockoutObservable<number> = ko.observable(0);
 
         dateValue: KnockoutObservable<any> = ko.observable('');
 
@@ -113,6 +113,7 @@ module nts.uk.at.view.kdr002.a.viewmodel {
             { code: 0 , name: getText('KDR002_47') }, //なし
             { code: 1 , name: getText('KDR002_48')  } //職場
         ]);
+        optionExtractionValue: KnockoutObservable<number> = ko.observable(0);
 
 
         constructor() {
