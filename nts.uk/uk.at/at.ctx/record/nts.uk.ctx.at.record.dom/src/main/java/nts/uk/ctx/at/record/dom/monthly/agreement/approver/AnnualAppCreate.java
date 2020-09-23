@@ -129,6 +129,7 @@ public class AnnualAppCreate {
 				Optional.of(oneYearTime)
 		);
 
+		// return 36協定申請作成結果
 		return SpecialProvisionsOfAgreement.create(
 				applicantId,
 				annualAppContent.getApplicant(),

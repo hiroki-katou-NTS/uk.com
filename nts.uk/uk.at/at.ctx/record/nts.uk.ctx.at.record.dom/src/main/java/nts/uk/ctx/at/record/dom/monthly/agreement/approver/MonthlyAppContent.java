@@ -2,7 +2,9 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
 import org.eclipse.persistence.internal.xr.ValueObject;
@@ -24,9 +26,9 @@ public class MonthlyAppContent extends ValueObject {
 	private AgreementOneMonthTime errTime;
 
 	// アラーム時間
+	@Setter
 	private AgreementOneMonthTime alarmTime;
 
-	// 申請理由 : 36協定申請理由 TODO ???
-	// private AppReason36Agr reason;
-	private SpecialProvisionsOfAgreement reason;
+	// 申請理由 : 36協定申請理由
+	private ReasonsForAgreement reason;
 }
