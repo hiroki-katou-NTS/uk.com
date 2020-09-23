@@ -406,10 +406,11 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                 appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
                 // 選択中の定型理由
                 // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+                opAppStandardReasonCD: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStandardReasonCD,
+
                 // 入力中の申請理由
                 // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                opAppReason: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppReason
             },
             output: {
                 // 定型理由
