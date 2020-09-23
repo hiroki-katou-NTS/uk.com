@@ -46,6 +46,9 @@ public class AccessRestrictions extends AggregateRoot{
 	/** [3] 許可IPアドレスを削除する */
 	public void deleteIPAddress(IPAddressSetting e) {
 		this.allowedIPaddress.removeIf(c->c.getStartAddress().equals(e));
+		if(this.allowedIPaddress.isEmpty()) {
+			this.accessLimitUseAtr = NotUseAtr.NOT_USE;
+		}
 	}
 
 	public AccessRestrictions(int accessLimitUseAtr, String contractCode,
