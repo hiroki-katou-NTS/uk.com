@@ -649,11 +649,15 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                  }
             }).done(result => {
                 if (result != undefined) {
-                    self.$dialog.info({messageId: "Msg_15"}).then(() => {
-						return;
-					});    
+                    return self.$dialog.info({messageId: "Msg_15"});    
                 }
-            });
+            })
+            .fail(res => {
+                self.showError(res);
+            })
+            .always(err => {
+                self.$blockui("hide");
+             });
             
             
         }
