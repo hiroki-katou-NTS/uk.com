@@ -27,6 +27,7 @@
     v-if="step == 'KAFS08_11'" />
     <kafs08c v-if="step =='KAFS08_12'"
     v-bind:appID="appID"
+    v-bind:mode="mode"
     />
 </div>
 </template>
