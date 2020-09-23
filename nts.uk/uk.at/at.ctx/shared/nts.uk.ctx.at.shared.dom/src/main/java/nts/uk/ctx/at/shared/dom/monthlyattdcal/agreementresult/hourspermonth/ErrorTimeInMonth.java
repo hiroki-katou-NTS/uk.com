@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -14,7 +13,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  * 1ヶ月のエラーアラーム時間
  */
 @Getter
-@AllArgsConstructor
 public class ErrorTimeInMonth extends ValueObject {
 
     /**
@@ -30,19 +28,19 @@ public class ErrorTimeInMonth extends ValueObject {
     /**
      * [C-1] 1ヶ月のエラーアラーム時間
      */
-    public static ErrorTimeInMonth create(AgreementOneMonthTime errorTime, AgreementOneMonthTime alarmTime) {
-        if (errorTime.v() >= alarmTime.v()) {
+    public ErrorTimeInMonth(AgreementOneMonthTime errorTime, AgreementOneMonthTime alarmTime) {
+        if (errorTime.v() <= alarmTime.v()) {
             throw new BusinessException("Msg_59", "KMK008_67", "KMK008_66");
         }
-        return new ErrorTimeInMonth(errorTime, alarmTime);
+        this.errorTime = errorTime;
+        this.alarmTime = alarmTime;
     }
 
     /**
      * [1] エラー時間を超えているか
      */
     public Pair<Boolean, AgreementOneMonthTime> checkErrorTimeExceeded(AgreementOneMonthTime applicationTime) {
-        Pair<Boolean, AgreementOneMonthTime> reusult = new ImmutablePair<>(errorTime.v() < applicationTime.v(), errorTime);
-        return reusult;
+        return new ImmutablePair<>(errorTime.v() < applicationTime.v(), errorTime);
     }
 
     /**

@@ -1,10 +1,8 @@
 package nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -15,7 +13,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  * 1年間のエラーアラーム時間
  */
 @Getter
-@AllArgsConstructor
 public class ErrorTimeInYear extends ValueObject {
 
     /**
@@ -31,11 +28,12 @@ public class ErrorTimeInYear extends ValueObject {
     /**
      * [C-1] 1ヶ月のエラーアラーム時間
      */
-    public static ErrorTimeInYear create(AgreementOneYearTime errorTime, AgreementOneYearTime alarmTime) {
-        if (errorTime.v() >= alarmTime.v()) {
+    public ErrorTimeInYear(AgreementOneYearTime errorTime, AgreementOneYearTime alarmTime) {
+        if (errorTime.v() <= alarmTime.v()) {
             throw new BusinessException("Msg_59", "KMK008_67", "KMK008_66");
         }
-        return new ErrorTimeInYear(errorTime, alarmTime);
+        this.errorTime = errorTime;
+        this.alarmTime = alarmTime;
     }
 
     /**
