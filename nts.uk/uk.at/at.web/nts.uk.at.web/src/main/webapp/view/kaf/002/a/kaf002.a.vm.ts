@@ -739,6 +739,10 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             this.isBold = isBold;
             this.color = color;
         }
+        toHtml() {
+            const self = this;
+            return '<div style= {}>' + self.content + '</div>'
+        }
         
     }
     export class TimeStampAppOtherDto {

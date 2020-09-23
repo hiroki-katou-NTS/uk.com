@@ -52,7 +52,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                     application: application,
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
-    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="margin: 10px">
+    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="white-space: break-spaces">
     </div>
 
     <div class="inlineBlockFirst">
@@ -86,7 +86,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                     }"></div>
     </div>
 
-    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="margin: 10px"></div>
+    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="white-space: break-spaces"></div>
     <div
         data-bind="component: { name: 'kaf000-b-component7', 
                                 params: {

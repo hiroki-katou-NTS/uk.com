@@ -63,7 +63,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     
 
     <!-- C5 -->
-    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="width: auto !important"></div>
+    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="white-space: break-spaces; width: auto !important"></div>
     <div style="display: block">
         <!-- C6_1 -->
         <div style="float: left; padding-top: 10px;" data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
@@ -74,7 +74,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 style="margin-left: 121px; width: 450px !important"></div>      
         </div>
     </div>
-    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="width: auto !important"></div>
+    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="white-space: break-spaces; width: auto !important"></div>
         <div data-bind="component: { name: 'kaf000-b-component7', 
                                 params: {
                                     appType: appType,
