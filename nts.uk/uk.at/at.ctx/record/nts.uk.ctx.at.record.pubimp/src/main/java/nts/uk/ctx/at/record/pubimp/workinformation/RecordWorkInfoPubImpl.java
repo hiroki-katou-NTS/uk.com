@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.actualworkinghours.repository.AttendanceTimeRepository;
@@ -38,6 +39,7 @@ import nts.uk.ctx.at.record.pub.workinformation.export.WrTimeActualStampExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrTimeLeavingWorkExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrWorkStampExport;
 import nts.uk.ctx.at.record.pub.workinformation.export.WrWorkTimeInformationExport;
+<<<<<<< HEAD
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
@@ -47,6 +49,32 @@ import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidaywork
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
 import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.GoOutReason;
+=======
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ChildCareAttribute;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.shortworktime.ShortTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.ScheduleTimeSheet;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.TotalWorkingTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.GoOutReason;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LateTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ShortWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.breaktimegoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayMidnightWork;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkMidNightTime;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.OverTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.holidaywork.StaturoryAtrOfHolidayWork;
+>>>>>>> TeamD/Refactor4/Release_0923
 
 @Stateless
 public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
@@ -329,12 +357,253 @@ public class RecordWorkInfoPubImpl implements RecordWorkInfoPub {
 	private WorkInfoOfDailyPerExport convertToWorkInfoOfDailyPerformance(WorkInfoOfDailyPerformance domain) {
 		return new WorkInfoOfDailyPerExport(domain.getEmployeeId(), domain.getYmd());
 	}
+	
+	public RecordWorkInfoPubExport_New createInDomain(String employeeId, GeneralDate ymd) {
+		RecordWorkInfoPubExport_New record = new RecordWorkInfoPubExport_New();
+//		get 日別実績の勤務情報
+		Optional<WorkInfoOfDailyPerformance> workInfoOp = this.workInformationRepository.find(employeeId, ymd);
+		if (workInfoOp.isPresent()) {
+			WorkInfoOfDailyPerformance workInfo = workInfoOp.get();
+//			日別実績の勤務情報.社員ID
+			record.setEmployeeId(workInfo.getEmployeeId());
+//			日別実績の勤務情報.年月日
+			record.setDate(workInfo.getYmd());
+//			日別実績の勤務情報．勤務情報．勤務実績の勤務情報.勤務種類コード
+			record.setWorkTypeCode(workInfo.getWorkInformation().getRecordInfo().getWorkTypeCode());
+//			日別実績の勤務情報．勤務情報．勤務実績の勤務情報.就業時間帯コード
+			record.setWorkTimeCode(workInfo.getWorkInformation().getRecordInfo().getWorkTimeCode());
+			
+//			日別実績の勤務情報．勤務情報．勤務予定時間帯
+			List<ScheduleTimeSheet> scheduleTimeSheets = workInfo.getWorkInformation().getScheduleTimeSheets();
+			Optional<ScheduleTimeSheet> workNo1 =  scheduleTimeSheets.stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
+			if (workNo1.isPresent()) {
+				ScheduleTimeSheet value = workNo1.get();
+				record.setScheduledAttendence1(value.getAttendance());
+				record.setScheduledDeparture1(value.getLeaveWork());
+			}
+			Optional<ScheduleTimeSheet> workNo2 =  scheduleTimeSheets.stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
+			if (workNo2.isPresent()) {
+				ScheduleTimeSheet value = workNo2.get();
+				record.setScheduledAttendence2(Optional.of(value.getAttendance()));
+				record.setScheduledDeparture2(Optional.of(value.getLeaveWork()));
+			}
+		}
+		
+//		get 日別実績の出退勤
+		Optional<TimeLeavingOfDailyPerformance> timeLeavingOp = this.timeLeavingOfDailyPerformanceRepository
+				.findByKey(employeeId, ymd);
+		if (timeLeavingOp.isPresent()) {
+			TimeLeavingOfDailyPerformance timeLeaving = timeLeavingOp.get();
+//			日別実績の出退勤．出退勤．出退勤
+			List<TimeLeavingWork> timeLeavingWorks = timeLeaving.getAttendance().getTimeLeavingWorks();
+			Optional<TimeLeavingWork> workNo1 = timeLeavingWorks.stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
+			Optional<TimeLeavingWork> workNo2 = timeLeavingWorks.stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
+			if (workNo1.isPresent()) {
+				TimeLeavingWork value = workNo1.get();
+//				出勤
+				Optional<TimeActualStamp> attendanceStamp = value.getAttendanceStamp();
+				if(attendanceStamp.isPresent()) {
+					Optional<WorkStamp> stamp = attendanceStamp.get().getStamp();
+					if (stamp.isPresent()) {
+						record.setStartTime1(Optional.of(stamp.get().getTimeDay()));
+					}
+				}
+//				退勤
+				Optional<TimeActualStamp> leaveStamp = value.getLeaveStamp();
+				if(leaveStamp.isPresent()) {
+					Optional<WorkStamp> stamp = leaveStamp.get().getStamp();
+					if (stamp.isPresent()) {
+						record.setEndTime1(Optional.of(stamp.get().getTimeDay()));
+					}
+				}
+				
+				
+			}
+			
+			if (workNo2.isPresent()) {
+				TimeLeavingWork value = workNo2.get();
+//				出勤
+				Optional<TimeActualStamp> attendanceStamp = value.getAttendanceStamp();
+				if(attendanceStamp.isPresent()) {
+					Optional<WorkStamp> stamp = attendanceStamp.get().getStamp();
+					if (stamp.isPresent()) {
+						record.setStartTime2(Optional.of(stamp.get().getTimeDay()));
+					}
+				}
+//				退勤
+				Optional<TimeActualStamp> leaveStamp = value.getLeaveStamp();
+				if(leaveStamp.isPresent()) {
+					Optional<WorkStamp> stamp = leaveStamp.get().getStamp();
+					if (stamp.isPresent()) {
+						record.setEndTime2(Optional.of(stamp.get().getTimeDay()));
+					}
+				}
+				
+				
+			}
+		}
+		
+//		get 日別実績の勤怠時間
+		Optional<AttendanceTimeOfDailyPerformance> attenTime = this.attendanceTimeRepo.find(employeeId, ymd);
+	    if (attenTime.isPresent()) {
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間
+	    	TotalWorkingTime totalWorkingTime = attenTime.get().getTime().getActualWorkingTimeOfDaily().getTotalWorkingTime();	
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間.遅刻時間
+	    	List<LateTimeOfDaily> lateTimeOfDaily = totalWorkingTime.getLateTimeOfDaily();
+	    	{
+	    		Optional<LateTimeOfDaily> workNo1 = lateTimeOfDaily.stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
+	    		Optional<LateTimeOfDaily> workNo2 = lateTimeOfDaily.stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
+	    		if (workNo1.isPresent()) {
+	    			record.setLateTime1(Optional.of(workNo1.get().getLateTime().getTime()));
+	    		}
+	    		if (workNo2.isPresent()) {
+	    			record.setLateTime2(Optional.of(workNo2.get().getLateTime().getTime()));
+	    		}
+	    		
+	    	}
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．早退時間
+	    	List<LeaveEarlyTimeOfDaily> leaveEarlyTimeOfDaily = totalWorkingTime.getLeaveEarlyTimeOfDaily();
+	    	{
+	    		Optional<LeaveEarlyTimeOfDaily> workNo1 = leaveEarlyTimeOfDaily.stream().filter(x -> x.getWorkNo().v() == 1).findFirst();
+	    		if (workNo1.isPresent()) {
+	    			record.setEarlyLeaveTime1(Optional.of(workNo1.get().getLeaveEarlyTime().getTime()));
+	    		}
+	    		Optional<LeaveEarlyTimeOfDaily> workNo2 = leaveEarlyTimeOfDaily.stream().filter(x -> x.getWorkNo().v() == 2).findFirst();
+	    		if (workNo2.isPresent()) {
+	    			record.setEarlyLeaveTime2(Optional.of(workNo2.get().getLeaveEarlyTime().getTime()));
+	    		}
+	    	}
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．外出時間
+	    	List<OutingTimeOfDaily> outingTimeOfDailyPerformance = totalWorkingTime.getOutingTimeOfDailyPerformance() ;
+	    	{
+	    		Optional<OutingTimeOfDaily> support = outingTimeOfDailyPerformance.stream().filter(x -> x.getReason() == GoOutReason.SUPPORT).findFirst();
+	    		Optional<OutingTimeOfDaily> offical = outingTimeOfDailyPerformance.stream().filter(x -> x.getReason() == GoOutReason.OFFICAL).findFirst();
+	    		if (support.isPresent()) {
+	    			record.setOutTime1(Optional.of(support.get().getRecordTotalTime().getTotalTime().getTime()));
+	    		}
+	    		if (offical.isPresent()) {
+	    			record.setOutTime2(Optional.of(offical.get().getRecordTotalTime().getTotalTime().getTime()));
+	    		}
+
+	    	}
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．短時間勤務時間
+	    	ShortWorkTimeOfDaily shotrTimeOfDaily = totalWorkingTime.getShotrTimeOfDaily();
+	    	record.setTotalTime(shotrTimeOfDaily.getTotalDeductionTime());
+	    	
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．残業時間
+	    	Optional<OverTimeOfDaily> overTimeWork = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getOverTimeWork();
+	    	if (overTimeWork.isPresent()) {
+	    		record.setCalculateFlex(overTimeWork.get().getFlexTime().getFlexTime().getTime());
+//	    		日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．残業時間．残業枠時間
+	    		List<OverTimeFrameTime> overTimeWorkFrameTime = overTimeWork.get().getOverTimeWorkFrameTime();
+	    		List<AttendanceTime> overTimeLstSet = overTimeWorkFrameTime.stream().map(x -> x.getOverTimeWork().getCalcTime()).collect(Collectors.toList());
+	    		record.setOverTimeLst(overTimeLstSet);
+	    		List<AttendanceTime> calculateTransferOverTimeLstSet = 
+	    				overTimeWorkFrameTime.stream().map(x -> x.getTransferTime().getCalcTime()).collect(Collectors.toList());
+	    		record.setCalculateTransferOverTimeLst(calculateTransferOverTimeLstSet);
+//	    		日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．休出時間
+	    		Optional<HolidayWorkTimeOfDaily> workHolidayTime = totalWorkingTime.getExcessOfStatutoryTimeOfDaily().getWorkHolidayTime();
+	    		if (workHolidayTime.isPresent()) {
+	    			List<HolidayWorkFrameTime> holidayWorkFrameTime = workHolidayTime.get().getHolidayWorkFrameTime();
+	    			List<AttendanceTime> calculateHolidayLst = 
+	    					holidayWorkFrameTime.stream().map(x -> x.getHolidayWorkTime().get().getCalcTime()).collect(Collectors.toList());
+	    			record.setCalculateHolidayLst(calculateHolidayLst);
+	    			
+	    			List<AttendanceTime> calculateTransferLstSet = 
+	    					holidayWorkFrameTime.stream().map(x -> x.getTransferTime().get().getCalcTime()).collect(Collectors.toList());
+	    			record.setCalculateTransferLst(calculateTransferLstSet);
+	    			
+	    		}
+	    		
+	    	}
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間
+	    	ExcessOfStatutoryTimeOfDaily excessOfStatutoryTimeOfDaily = totalWorkingTime.getExcessOfStatutoryTimeOfDaily();
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．残業時間
+	    	Optional<OverTimeOfDaily> overTimeWork2 = excessOfStatutoryTimeOfDaily.getOverTimeWork();
+	    	if (overTimeWork2.isPresent()) {
+	    		if (overTimeWork2.get().getExcessOverTimeWorkMidNightTime().isPresent()) {
+	    			record.setOverTimeMidnight(Optional.of(overTimeWork2.get().getExcessOverTimeWorkMidNightTime().get().getTime()));	    			
+	    		}
+	    	}
+//	    	日別実績の勤怠時間．時間．勤務時間．総労働時間．所定外時間．休出時間
+	    	Optional<HolidayWorkTimeOfDaily> workHolidayTime = excessOfStatutoryTimeOfDaily.getWorkHolidayTime();
+	    	if (workHolidayTime.isPresent()) {
+	    		Finally<HolidayMidnightWork> holidayMidNightWork = workHolidayTime.get().getHolidayMidNightWork();
+	    		if (holidayMidNightWork.isPresent()) {
+	    			List<HolidayWorkMidNightTime> holidayWorkMidNightTime = holidayMidNightWork.get().getHolidayWorkMidNightTime();
+//	    			法定区分="法定内休出"
+	    			Optional<HolidayWorkMidNightTime> WithinPrescribedHolidayWork =
+	    					holidayWorkMidNightTime.stream().filter(x -> x.getStatutoryAtr() == StaturoryAtrOfHolidayWork.WithinPrescribedHolidayWork).findFirst();
+	    			if (WithinPrescribedHolidayWork.isPresent()) {
+	    				record.setMidnightOnHoliday(Optional.of(WithinPrescribedHolidayWork.get().getTime()));
+	    			}
+//	    			法定区分="法定外休出"
+	    			Optional<HolidayWorkMidNightTime> ExcessOfStatutoryHolidayWork =
+	    					holidayWorkMidNightTime.stream().filter(x -> x.getStatutoryAtr() == StaturoryAtrOfHolidayWork.ExcessOfStatutoryHolidayWork).findFirst();
+	    			if (ExcessOfStatutoryHolidayWork.isPresent()) {
+	    				record.setOutOfMidnight(Optional.of(ExcessOfStatutoryHolidayWork.get().getTime()));
+	    			}
+//	    			法定区分="祝日休出"
+	    			Optional<HolidayWorkMidNightTime> PublicHolidayWork =
+	    					holidayWorkMidNightTime.stream().filter(x -> x.getStatutoryAtr() == StaturoryAtrOfHolidayWork.PublicHolidayWork).findFirst();
+	    			if (PublicHolidayWork.isPresent()) {
+	    				record.setMidnightPublicHoliday(Optional.of(PublicHolidayWork.get().getTime()));
+	    			}
+	    		}
+	    	}
+	    }
+		
+	    
+//	    get 日別実績の臨時出退勤
+	    Optional<TemporaryTimeOfDailyPerformance> temporaryTimeOfDailyPerformance = temporaryTimeOfDailyPerformanceRepo
+				.findByKey(employeeId, ymd);
+//	    日別実績の臨時出退勤．出退勤.出退勤
+	    if (temporaryTimeOfDailyPerformance.isPresent()) {
+	    	List<TimeLeavingWork> timeLeavingWorks = temporaryTimeOfDailyPerformance.get().getAttendance().getTimeLeavingWorks();
+	    	record.setTimeLeavingWorks(timeLeavingWorks);
+	    }
+	    
+//		get 日別実績の外出時間帯
+		Optional<OutingTimeOfDailyPerformance> outingTimeOfDailyPer =outingTimeOfDailyPerformanceRepo.findByEmployeeIdAndDate(employeeId, ymd);
+		if (outingTimeOfDailyPer.isPresent()) {
+			List<OutingTimeSheet> outingTimeSheets = outingTimeOfDailyPer.get().getOutingTime().getOutingTimeSheets();
+			record.setOutHoursLst(outingTimeSheets);
+		}
+//		get 日別勤怠の短時間勤務時間帯
+		Optional<ShortTimeOfDailyPerformance> shortTimeOfDailyPerformance = shortTimeOfDailyPerformanceRepo.find(employeeId, ymd);
+		Optional<ShortTimeOfDailyAttd> shOptional = Optional.empty();
+		if (shortTimeOfDailyPerformance.isPresent()) {
+			shOptional = Optional.ofNullable(shortTimeOfDailyPerformance.get().getTimeZone());
+		}
+		if (shOptional.isPresent()) {
+			record.setShortWorkingTimeSheets(shOptional.get().getShortWorkingTimeSheets());
+		}
+//		breakTimeSheets do not repo
+		List<BreakTimeOfDailyPerformance> breakTimeOfDailyPerformanceLst =  breakTimeOfDailyPerformanceRepo.findByKey(employeeId, ymd);
+		if (!CollectionUtil.isEmpty(breakTimeOfDailyPerformanceLst)) {
+			List<BreakTimeSheet> breakTimeSheetsSet = 
+					breakTimeOfDailyPerformanceLst.get(0).getTimeZone().getBreakTimeSheets();
+			record.setBreakTimeSheets(breakTimeSheetsSet);
+		}
+		
+		// get 日別実績の短時間勤務時間帯
+		Optional<ShortTimeOfDailyPerformance> opShortTimeOfDailyPerformance = shortTimeOfDailyPerformanceRepo.find(employeeId, ymd);
+		if(opShortTimeOfDailyPerformance.isPresent()) {
+			record.setChildCareShortWorkingTimeList(opShortTimeOfDailyPerformance.get().getTimeZone().getShortWorkingTimeSheets().stream()
+					.filter(x -> x.getChildCareAttr()==ChildCareAttribute.CHILD_CARE).collect(Collectors.toList()));
+			record.setCareShortWorkingTimeList(opShortTimeOfDailyPerformance.get().getTimeZone().getShortWorkingTimeSheets().stream()
+					.filter(x -> x.getChildCareAttr()==ChildCareAttribute.CARE).collect(Collectors.toList()));
+		}
+		
+		return record;
+	}
 
 	// create rql5
 	@Override
 	public RecordWorkInfoPubExport_New getRecordWorkInfo_New(String employeeId, GeneralDate ymd) {
-		// TODO Auto-generated method stub
-		return null;
+		return createInDomain(employeeId, ymd);
+
 	}
+	
 
 }
