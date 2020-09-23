@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -52,7 +51,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 
+ *
  * @author Doan Duy Hung
  *
  */
@@ -106,7 +105,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			+ " AND app.appDate >= :startDate" + " AND app.appDate <= :endDate" + " AND app.prePostAtr = :prePostAtr"
 			+ " AND app.appType = :appType" + " AND  ref.actualReflectStatus IN :lstRef"
 			+ " ORDER BY app.appType ASC, app.inputDate DESC";
-	
+
 	/*
 	@Override
 	public Optional<Application_New> findByID(String companyID, String appID) {
@@ -246,7 +245,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<Application> getListAppModeApprCMM045(String companyID, DatePeriod period, List<String> lstAppId,
 			boolean unapprovalStatus, boolean approvalStatus, boolean denialStatus, boolean agentApprovalStatus,
-			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst, 
+			boolean remandStatus, boolean cancelStatus, List<Integer> lstType, List<PrePostAtr> prePostAtrLst,
 			List<String> employeeIDLst, List<StampRequestMode> stampRequestModeLst) {
 		if (lstAppId.isEmpty()) {
 			return new ArrayList<>();
@@ -273,7 +272,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			String subListAppId = NtsStatement.In.createParamsString(subListId);
 			String lstTypeString = NtsStatement.In.createParamsString(lstType);
 			String lstStateString = NtsStatement.In.createParamsString(lstState);
-			
+
 			String whereCondition = "";
 			String connectString = "";
 			if(!CollectionUtil.isEmpty(lstType) && !CollectionUtil.isEmpty(stampRequestModeLst)) {
@@ -281,14 +280,14 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			}
 			if(!CollectionUtil.isEmpty(lstType)) {
 				whereCondition += "select APP_ID from KRQDT_APPLICATION where APP_ID IN @subListId AND APP_TYPE IN @lstType " +
-						"AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";	
+						"AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
 			}
 			if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
 				whereCondition += connectString + "select APP_ID from KRQDT_APPLICATION where APP_ID IN @subListId AND STAMP_OPTION_ATR IN @stampRequestModeLst " +
 						"AND b.REFLECT_PER_STATE IN @lstState AND a.CID = @companyID AND a.PRE_POST_ATR IN @prePostAtrLst";
 			}
 
-			String sql = 
+			String sql =
 					"select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 					"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
 					"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +
@@ -303,7 +302,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 					"WHERE a.APP_ID IN (" + whereCondition + ")";
 			if(!CollectionUtil.isEmpty(employeeIDLst)) {
 				sql += " AND a.APPLICANTS_SID IN @employeeIDLst";
-			}	
+			}
 			NtsStatement ntsStatement = new NtsStatement(sql, this.jdbcProxy())
 					.paramString("subListId", subListId)
 					.paramInt("lstState", lstState)
@@ -324,8 +323,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				List<Application> sublstResult = krqdtApplicationLst.stream().map(i -> i.toDomain()).collect(Collectors.toList());
 				lstResult.addAll(sublstResult);
 			}
-			
-			
+
+
 //			try (PreparedStatement stmt = this.connection().prepareStatement(sql)) {
 //				int sizeListId = subListId.size();
 //				int sizeLstType = lstType.size();
@@ -450,14 +449,14 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 	public List<Application> getListLateOrLeaveEarly(String companyID, String employeeID, GeneralDate startDate,
 			GeneralDate endDate) {
-		String sql = "SELECT app FROM KrqdtApplication app" 
+		String sql = "SELECT app FROM KrqdtApplication app"
 				+ " join KrqdtAppReflectState ref"
 				+ "  on app.pk.appID = ref.pk.appID and  app.pk.companyID = ref.pk.companyID"
 				+ " WHERE  app.employeeID =  :sid "
 				+ " and  app.pk.companyID = :companyID"
-				+ " AND app.opAppStartDate <= :strData " + " AND app.opAppEndDate >= :endData " + " AND app.appType  = 9 " 
-				+ " AND ref.actualReflectStatus  = 0" + " ORDER BY app.appDate ASC";		
-		
+				+ " AND app.opAppStartDate <= :strData " + " AND app.opAppEndDate >= :endData " + " AND app.appType  = 9 "
+				+ " AND ref.actualReflectStatus  = 0" + " ORDER BY app.appDate ASC";
+
 		return this.queryProxy().query(sql, KrqdtApplication.class)
 				.setParameter("sid", employeeID)
 				.setParameter("endData", startDate)
@@ -472,15 +471,16 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<Application> getByPeriodReflectType(String sid, DatePeriod dateData, List<Integer> reflect,
 			List<Integer> appType) {
-		
-		String sql = "SELECT app FROM KrqdtApplication app" 
+
+		String sql = "SELECT app FROM KrqdtApplication app"
 				+ " join KrqdtAppReflectState ref"
 				+ "  on app.pk.appID = ref.pk.appID and  app.pk.companyID = ref.pk.companyID"
 				+ " WHERE  app.employeeID =  :sid "
-				+ " and  app.pk.companyID = :companyID"
-				+ " AND app.opAppStartDate <= :strData " + " AND app.opAppEndDate >= :endData " + " AND app.appType IN :appType " 
-				+ " AND ref.actualReflectStatus  IN :recordStatus" + " ORDER BY app.inputDate ASC";		
-		
+				// HoaTT: refactor 4: Sửa code bị ảnh hưởng do thay đổi domain 申請　（反映・RQなど）P4-2
+//				+ " and  app.pk.companyID = :companyID"
+				+ " AND app.opAppStartDate <= :strData " + " AND app.opAppEndDate >= :endData " + " AND app.appType IN :appType "
+				+ " AND ref.actualReflectStatus  IN :recordStatus" + " ORDER BY app.inputDate ASC";
+
 		return this.queryProxy().query(sql, KrqdtApplication.class)
 				.setParameter("sid", sid)
 				.setParameter("endData", dateData.start())
@@ -488,7 +488,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.setParameter("recordStatus", reflect)
 				.setParameter("appType", appType)
 				.getList(c -> c.toDomain());
-		
+
 	}
 
 	/**
@@ -555,8 +555,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		});
 		resultList.sort((o1, o2) -> {
 			int tmp = o1.getAppType().value - o2.getAppType().value;
-			if (tmp != 0)
+			if (tmp != 0) {
 				return tmp;
+			}
 			return o2.getInputDate().compareTo(o1.getInputDate()); // DESC
 		});
 		return resultList;
@@ -569,15 +570,15 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@SneakyThrows
 	public List<Application> getAppForReflect(String sid, DatePeriod dateData, List<Integer> recordStatus,
 			List<Integer> scheStatus, List<Integer> appType) {
-		
-		String sql = "SELECT * FROM KrqdtApplication app" 
+
+		String sql = "SELECT * FROM KrqdtApplication app"
 				+ " join KrqdtAppReflectState ref"
 				+ "  on app.pk.appID = ref.pk.appID and  app.pk.companyID = ref.pk.companyID"
 				+ " WHERE  app.employeeID =  :sid "
-				+ " AND app.opAppStartDate <= :strData " + " AND app.opAppEndDate >= :endData " + " AND app.appType IN :appType " 
-				+ " AND (ref.scheReflectStatus IN :scheStatus " 
-				+ " OR ref.actualReflectStatus IN :recordStatus)" + " ORDER BY app.inputDate ASC";		
-		
+				+ " AND app.opAppStartDate <= :strData " + " AND app.opAppEndDate >= :endData " + " AND app.appType IN :appType "
+				+ " AND (ref.scheReflectStatus IN :scheStatus "
+				+ " OR ref.actualReflectStatus IN :recordStatus)" + " ORDER BY app.inputDate ASC";
+
 		return this.queryProxy().query(sql, KrqdtApplication.class)
 				.setParameter("sid", sid)
 				.setParameter("endData", dateData.end())
@@ -586,7 +587,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.setParameter("recordStatus", recordStatus)
 				.setParameter("appType", appType)
 				.getList(c -> c.toDomain());
-		
+
 	}
 
 	/**
@@ -596,21 +597,21 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@SneakyThrows
 	public List<Application> getByListDateReflectType(String sid, List<GeneralDate> dateData, List<Integer> reflect,
 			List<Integer> appType) {
-		
-		String sql = "SELECT * FROM KrqdtApplication app" 
+
+		String sql = "SELECT * FROM KrqdtApplication app"
 				+ " join KrqdtAppReflectState ref"
 				+ "  on app.pk.appID = ref.pk.appID and  app.pk.companyID = ref.pk.companyID"
 				+ " WHERE  app.employeeID =  :sid "
-				+ " AND app.appDate IN :dateData " + " AND app.appType IN :appType " 
-				+ " AND  ref.actualReflectStatus IN :recordStatus " + " ORDER BY app.inputDate ASC";		
-		
+				+ " AND app.appDate IN :dateData " + " AND app.appType IN :appType "
+				+ " AND  ref.actualReflectStatus IN :recordStatus " + " ORDER BY app.inputDate ASC";
+
 		return this.queryProxy().query(sql, KrqdtApplication.class)
 				.setParameter("sid", sid)
 				.setParameter("dateData", dateData)
 				.setParameter("recordStatus", reflect)
 				.setParameter("appType", appType)
 				.getList(c -> c.toDomain());
-		
+
 	}
 
 	private List<Application_New> entityToDomain(java.sql.PreparedStatement stmt) throws SQLException {
@@ -663,9 +664,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		}
 		return mapResult;
 	}
-	
+
 	// refactor 4
-	
+
 	@Override
 	public Optional<Application> findByID(String companyID, String appID) {
 		return this.findByID(appID);
@@ -675,7 +676,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	public void insert(Application application) {
 		this.commandProxy().insert(KrqdtApplication.fromDomain(application));
 		this.getEntityManager().flush();
-		
+
 	}
 
 	@Override
@@ -724,7 +725,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	public Optional<Application> findByID(String appID) {
 		return this.findEntityByID(appID).map(x -> x.toDomain());
 	}
-	
+
 	private Map<String, Object> toObject(NtsResultRecord rec) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		// KRQDT_APPLICATION
@@ -761,7 +762,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		map.put("bCANCEL_PER_TIME", rec.getGeneralDateTime("bCANCEL_PER_TIME"));
 		return map;
 	}
-	
+
 	private List<KrqdtApplication> convertToEntity(List<Map<String, Object>> mapLst) {
 		List<KrqdtApplication> result = mapLst.stream().collect(Collectors.groupingBy(x -> x.get("aAPP_ID"))).entrySet()
 			.stream().map(x -> {
@@ -779,47 +780,47 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 						Integer opReasonScheCantReflectCancel = (Integer) y.getValue().get(0).get("bCANCEL_PLAN_SCHE_REASON");
 						KrqdtAppReflectState krqdtAppReflectState = new KrqdtAppReflectState(
 								new KrqdpAppReflectState(
-										(String) y.getValue().get(0).get("bCID"), 
-										(String) y.getValue().get(0).get("bAPP_ID"), 
-										(GeneralDate) y.getValue().get(0).get("bAPP_DATE")), 
-								scheReflectStatus, 
-								actualReflectStatus, 
-								opReasonScheCantReflect, 
-								opScheReflectDateTime, 
-								opReasonActualCantReflect, 
-								opActualReflectDateTime, 
-								opReasonScheCantReflectCancel, 
-								opScheReflectDateTimeCancel, 
-								opReasonActualCantReflectCancel, 
-								opActualReflectDateTimeCancel, 
+										(String) y.getValue().get(0).get("bCID"),
+										(String) y.getValue().get(0).get("bAPP_ID"),
+										(GeneralDate) y.getValue().get(0).get("bAPP_DATE")),
+								scheReflectStatus,
+								actualReflectStatus,
+								opReasonScheCantReflect,
+								opScheReflectDateTime,
+								opReasonActualCantReflect,
+								opActualReflectDateTime,
+								opReasonScheCantReflectCancel,
+								opScheReflectDateTimeCancel,
+								opReasonActualCantReflectCancel,
+								opActualReflectDateTimeCancel,
 								null);
 						krqdtAppReflectState.contractCd = (String) y.getValue().get(0).get("bCONTRACT_CD");
 						return krqdtAppReflectState;
 					}).collect(Collectors.toList());
 				KrqdtApplication krqdtApplication = new KrqdtApplication(
 						new KrqdpApplication(
-								(String) x.getValue().get(0).get("aCID"), 
-								(String) x.getValue().get(0).get("aAPP_ID")), 
-						(int) x.getValue().get(0).get("aEXCLUS_VER"), 
-						(int) x.getValue().get(0).get("aPRE_POST_ATR"), 
-						(GeneralDateTime) x.getValue().get(0).get("aINPUT_DATE"), 
-						(String) x.getValue().get(0).get("aENTERED_PERSON_SID"), 
-						(String) x.getValue().get(0).get("aREASON_REVERSION"), 
-						(GeneralDate) x.getValue().get(0).get("aAPP_DATE"), 
-						(Integer) x.getValue().get(0).get("aFIXED_REASON"), 
-						(String) x.getValue().get(0).get("aAPP_REASON"), 
-						(int) x.getValue().get(0).get("aAPP_TYPE"), 
-						(String) x.getValue().get(0).get("aAPPLICANTS_SID"), 
-						(GeneralDate) x.getValue().get(0).get("aAPP_START_DATE"), 
-						(GeneralDate) x.getValue().get(0).get("aAPP_END_DATE"), 
-						(Integer) x.getValue().get(0).get("aSTAMP_OPTION_ATR"), 
+								(String) x.getValue().get(0).get("aCID"),
+								(String) x.getValue().get(0).get("aAPP_ID")),
+						(int) x.getValue().get(0).get("aEXCLUS_VER"),
+						(int) x.getValue().get(0).get("aPRE_POST_ATR"),
+						(GeneralDateTime) x.getValue().get(0).get("aINPUT_DATE"),
+						(String) x.getValue().get(0).get("aENTERED_PERSON_SID"),
+						(String) x.getValue().get(0).get("aREASON_REVERSION"),
+						(GeneralDate) x.getValue().get(0).get("aAPP_DATE"),
+						(Integer) x.getValue().get(0).get("aFIXED_REASON"),
+						(String) x.getValue().get(0).get("aAPP_REASON"),
+						(int) x.getValue().get(0).get("aAPP_TYPE"),
+						(String) x.getValue().get(0).get("aAPPLICANTS_SID"),
+						(GeneralDate) x.getValue().get(0).get("aAPP_START_DATE"),
+						(GeneralDate) x.getValue().get(0).get("aAPP_END_DATE"),
+						(Integer) x.getValue().get(0).get("aSTAMP_OPTION_ATR"),
 						krqdtAppReflectStateLst);
 				krqdtApplication.contractCd = (String) x.getValue().get(0).get("aCONTRACT_CD");
 				return krqdtApplication;
 			}).collect(Collectors.toList());
 		return result;
 	}
-	
+
 	private Optional<KrqdtApplication> findEntityByID(String appID) {
 		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
@@ -844,7 +845,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	@Override
-	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate, 
+	public List<Application> getByAppTypeList(List<String> employeeLst, GeneralDate startDate, GeneralDate endDate,
 			List<ApplicationType> appTypeLst, List<PrePostAtr> prePostAtrLst, List<StampRequestMode> stampRequestModeLst) {
 		String whereCondition = "";
 		String connectString = "";
@@ -852,16 +853,16 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 			connectString = " union ";
 		}
 		if(!CollectionUtil.isEmpty(appTypeLst)) {
-			whereCondition += "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " + 
-					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " + 
-					"and APP_TYPE in @appTypeLst and PRE_POST_ATR in @prePostAtrLst";	
+			whereCondition += "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " +
+					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " +
+					"and APP_TYPE in @appTypeLst and PRE_POST_ATR in @prePostAtrLst";
 		}
 		if(!CollectionUtil.isEmpty(stampRequestModeLst)) {
-			whereCondition += connectString + "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " + 
-					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " + 
+			whereCondition += connectString + "select APP_ID from KRQDT_APPLICATION where APPLICANTS_SID in @employeeLst " +
+					"and APP_START_DATE >= @startDate and APP_END_DATE <= @endDate " +
 					"and STAMP_OPTION_ATR in @stampRequestModeLst and PRE_POST_ATR in @prePostAtrLst";
 		}
-		
+
 		String sql = "select a.EXCLUS_VER as aEXCLUS_VER, a.CONTRACT_CD as aCONTRACT_CD, a.CID as aCID, a.APP_ID as aAPP_ID, a.PRE_POST_ATR as aPRE_POST_ATR, " +
 				"a.INPUT_DATE as aINPUT_DATE, a.ENTERED_PERSON_SID as aENTERED_PERSON_SID, " +
 				"a.REASON_REVERSION as aREASON_REVERSION, a.APP_DATE as aAPP_DATE, a.FIXED_REASON as aFIXED_REASON, a.APP_REASON as aAPP_REASON, a.APP_TYPE as aAPP_TYPE, " +
