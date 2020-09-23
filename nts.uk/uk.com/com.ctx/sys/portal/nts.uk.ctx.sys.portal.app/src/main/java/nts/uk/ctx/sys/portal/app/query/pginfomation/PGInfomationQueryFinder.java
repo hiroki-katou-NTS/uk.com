@@ -123,6 +123,9 @@ public class PGInfomationQueryFinder {
 
 					// Step ・メニュー分類　＝　標準メニュー．メニュー分類　（111322）
 					Integer menuClassification = item.getClassification().value;
+					
+					// Step ・プログラムコード　＝　標準メニュー．コード　
+					String programCd = item.getCode().v();
 						
 					return PGInfomationDto.builder()
 							.functionName(functionName)
@@ -131,6 +134,7 @@ public class PGInfomationQueryFinder {
 							.editHistoryRecord(updateHistoryRecord)
 							.menuClassification(menuClassification)
 							.programId(item.getProgramId()) // programId
+							.programCd(programCd) // programCd
 							.build();
 				})
 				.collect(Collectors.toList());

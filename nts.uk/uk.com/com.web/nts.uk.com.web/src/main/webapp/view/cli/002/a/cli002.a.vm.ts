@@ -72,6 +72,7 @@ module nts.uk.com.view.cli002.a {
         loginHistoryRecord: item.logLoginDisplay ? 1 : 0,
         startHistoryRecord: item.logStartDisplay ? 1 : 0,
         updateHistoryRecord: item.logUpdateDisplay ? 1 : 0,
+        programCd: item.programCd
       }));
       const command = new LogSettingSaveCommand({
         logSettings: logSettings
@@ -103,7 +104,8 @@ module nts.uk.com.view.cli002.a {
             logStartDisplay: item.bootHistoryRecord.usageCategory === 1,
             logUpdateDisplay: item.editHistoryRecord.usageCategory === 1,
             programId: item.programId,
-            menuClassification: item.menuClassification
+            menuClassification: item.menuClassification,
+            programCd: item.programCd
           }));
           vm.dataSourceItem(listPG);
           vm.initGrid(response);
@@ -248,6 +250,7 @@ module nts.uk.com.view.cli002.a {
     editHistoryRecord: TargetSettingDto,
     programId: string,
     menuClassification: number,
+    programCd: string
   }
 
   export class PGInfomationModel {
@@ -258,6 +261,7 @@ module nts.uk.com.view.cli002.a {
     logUpdateDisplay: boolean;
     programId: string;
     menuClassification: number;
+    programCd: string;
 
     constructor(init?: Partial<PGInfomationModel>) {
       $.extend(this, init);
@@ -271,6 +275,7 @@ module nts.uk.com.view.cli002.a {
     loginHistoryRecord: number;
     startHistoryRecord: number;
     updateHistoryRecord: number;
+    programCd: string;
 
     constructor(init?: Partial<LogSettingSaveDto>) {
       $.extend(this, init);

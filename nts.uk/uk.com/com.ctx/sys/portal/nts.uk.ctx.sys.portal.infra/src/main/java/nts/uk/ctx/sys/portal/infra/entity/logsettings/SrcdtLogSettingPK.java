@@ -27,7 +27,10 @@ public class SrcdtLogSettingPK {
 	public Integer system;
 	
 	@NonNull
-	@Column(name = "PROGRAM_ID")
-	public String programId;
+	@Column(name = "PROGRAM_CODE")
+	public String programCd;
 	
+	@NonNull
+	@Column(name = "MENU_ATR")
+	public Integer menuClassification;
 }

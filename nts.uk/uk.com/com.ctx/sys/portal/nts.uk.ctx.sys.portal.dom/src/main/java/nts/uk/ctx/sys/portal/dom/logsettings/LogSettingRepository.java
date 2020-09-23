@@ -26,5 +26,5 @@ public interface LogSettingRepository {
 	 * @param systemType
 	 * @param programId
 	 */
-	void delete(String companyId, Integer systemType, String programId);
+	void delete(String companyId, Integer systemType);
 }
