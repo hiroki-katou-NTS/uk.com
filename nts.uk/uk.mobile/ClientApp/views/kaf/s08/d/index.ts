@@ -33,6 +33,34 @@ export class KafS08DComponent extends Vue {
     public isAddNone = true;
 
 
+    public created() {
+        const vm = this;
+
+        let currentRow = vm.params.rowDate;
+
+        vm.listWorkDays = vm.params.businessTripInfoOutput.workdays;
+        vm.listHolidays = vm.params.businessTripInfoOutput.holidays;
+        vm.listWorkTimes = vm.params.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
+
+        vm.$http.post('at', API.callKDLS02, {
+            businessTripInfoOutputDto: vm.params.businessTripInfoOutput,
+            selectedDate: currentRow.date,
+        }).then((res: any) => {
+            let response = res.data;
+            if (response) {
+                vm.workDayFlag = true;
+            } else {
+                vm.workDayFlag = false;
+            }
+            vm.isAddNone = !response;
+        });
+    }
+
+    public openA2Screen() {
+
+    }
+
+
     public openKDLS02() {
         const vm = this;
         
@@ -114,34 +142,19 @@ export class KafS08DComponent extends Vue {
         });
     }
 
-    public created() {
-        const vm = this;
-
-        let currentRow = vm.params.rowDate;
-
-        vm.listWorkDays = vm.params.businessTripInfoOutput.workdays;
-        vm.listHolidays = vm.params.businessTripInfoOutput.holidays;
-        vm.listWorkTimes = vm.params.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst;
-
-        vm.$http.post('at', API.callKDLS02, {
-            businessTripInfoOutputDto: vm.params.businessTripInfoOutput,
-            selectedDate: currentRow.date,
-        }).then((res: any) => {
-            let response = res.data;
-            if (response) {
-                vm.workDayFlag = true;
-            } else {
-                vm.workDayFlag = false;
-            }
-            vm.isAddNone = !response;
-        });
-    }
-
-
     //Đóng dialog
     public close() {
         const vm = this;
         vm.$close();
+    }
+
+    public accepEvent() {
+        const vm = this ;
+        let model = {
+            opWorkTime : vm.params.rowDate.opAchievementDetail.opWorkTime,
+            opLeaveTime : vm.params.rowDate.opAchievementDetail.opLeaveTime
+        };
+        vm.$close(model);
     }
 }
 
