@@ -199,11 +199,17 @@ public class ProgramIdConsts {
 
 	public static final String KSU001JC = "KSU001JC";
 
+	public static final String KSU001JD = "KSU001JD";
+
 	public static final String KSU001L = "KSU001L";
+	
+	public static final String KSU001LA = "KSU001LA";
 
 	public static final String KSU001LX = "KSU001LX";
 
 	public static final String KSU001N = "KSU001N";
+	
+	public static final String KSU001U = "KSU001U";
 
 	public static final String KSU001R = "KSU001R";
 
@@ -255,9 +261,9 @@ public class ProgramIdConsts {
 
 	public static final String KDL017B = "KDL017B";
 	
-	public static final String KDL005B = "KDL005A";
+	public static final String KDL005B = "KDL005B";
 	
-	public static final String KDL009B = "KDL009A";
+	public static final String KDL009B = "KDL009B";
 
 	public static final String KDL003A = "KDL003A";
 
@@ -791,6 +797,7 @@ public class ProgramIdConsts {
 	public static final String KSM015A = "KSM015A";
 	public static final String KSM015B = "KSM015B";
 	public static final String KSM015C = "KSM015C";
+	public static final String KSM015D = "KSM015D";
 
 	public static final String KSC001A = "KSC001A";
 	public static final String KSC001B = "KSC001B";
@@ -915,6 +922,7 @@ public class ProgramIdConsts {
 	public static final String CMF002X = "CMF002X";
 	public static final String CMF002Y = "CMF002Y";
 	public static final String CMF002V2 = "CMF002V2";
+	public static final String CMF002W = "CMF002W";
  
 	public static final String CMF004A = "CMF004A";
 	public static final String CMF004B = "CMF004B";
@@ -1062,6 +1070,8 @@ public class ProgramIdConsts {
 	/** CLI001 */
 	public static final String CLI001A = "CLI001A";
 	public static final String CLI001B = "CLI001B";
+	/** CLI002 */
+	public static final String CLI002A = "CLI002A";
 	/** CLI003 */
 	public static final String CLI003I = "CLI003I";
 	public static final String CLI003G = "CLI003G";
@@ -1352,5 +1362,9 @@ public class ProgramIdConsts {
 	
 	/** KSM007A */
 	public static final String KSM007A = "KSM007A";
+	/** KSM007A */
+	public static final String KDL048 = "KDL048";
+	/** KDL047 */
+	public static final String KDL047 = "KDL047";
 	
 }

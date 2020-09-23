@@ -3,8 +3,8 @@ package nts.uk.ctx.at.record.dom.standardtime.export;
 import java.util.List;
 import java.util.Map;
 
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
 
 /**

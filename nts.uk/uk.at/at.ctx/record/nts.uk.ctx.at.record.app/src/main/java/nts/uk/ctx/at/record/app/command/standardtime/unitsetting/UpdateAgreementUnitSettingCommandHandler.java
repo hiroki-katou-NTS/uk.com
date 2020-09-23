@@ -6,9 +6,9 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementUnitSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.UseClassificationAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementUnitSettingRepository;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementUnitSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.UseClassificationAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

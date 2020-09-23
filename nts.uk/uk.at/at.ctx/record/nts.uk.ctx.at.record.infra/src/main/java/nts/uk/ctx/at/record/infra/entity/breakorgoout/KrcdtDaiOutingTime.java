@@ -10,9 +10,9 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.breakorgoout.OutingTimeSheet;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
-import nts.uk.ctx.at.record.dom.worktime.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -107,30 +107,30 @@ public class KrcdtDaiOutingTime extends UkJpaEntity implements Serializable {
 		WorkStamp outActual = gooutactualStamp == null ? null : gooutactualStamp.getActualStamp().orElse(null);
 		WorkStamp backActual = backactualStamp == null ? null : backactualStamp.getActualStamp().orElse(null);
 		return new KrcdtDaiOutingTime(new KrcdtDaiOutingTimePK(employeeId, date, outingTime.getOutingFrameNo().v()),
-				outStamp == null ? null : outStamp.getTimeWithDay() == null ? null : outStamp.getTimeWithDay().valueAsMinutes(),
+				outStamp == null ? null : !outStamp.getTimeDay().getTimeWithDay().isPresent() ? null : outStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes(),
 				outStamp == null ? null : outStamp.getAfterRoundingTime() == null ? null
 								: outStamp.getAfterRoundingTime().valueAsMinutes(),
 				outStamp == null || !outStamp.getLocationCode().isPresent() ? null : outStamp.getLocationCode().get().v(),
-				outStamp == null ? null : outStamp.getStampSourceInfo().value,
-				outActual == null || outActual.getTimeWithDay() == null ? null
-						: outActual.getTimeWithDay().valueAsMinutes(),
+				outStamp == null ? null : outStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
+				outActual == null || !outActual.getTimeDay().getTimeWithDay().isPresent()? null
+						: outActual.getTimeDay().getTimeWithDay().get().valueAsMinutes(),
 				outActual == null || outActual.getAfterRoundingTime() == null ? null
 						: outActual.getAfterRoundingTime().valueAsMinutes(),
 				outActual == null || !outActual.getLocationCode().isPresent() ? null :  outActual.getLocationCode().get().v(),
-				outActual == null ? null : outActual.getStampSourceInfo().value,
+				outActual == null ? null : outActual.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
 					gooutactualStamp == null ? null : gooutactualStamp.getNumberOfReflectionStamp(),
-				backStamp == null ? null : backStamp.getTimeWithDay() == null ? null
-						: backStamp.getTimeWithDay().valueAsMinutes(),
+				backStamp == null ? null : !backStamp.getTimeDay().getTimeWithDay().isPresent()? null
+						: backStamp.getTimeDay().getTimeWithDay().get().valueAsMinutes(),
 				backStamp == null ? null : backStamp.getAfterRoundingTime() == null ? null
 						: backStamp.getAfterRoundingTime().valueAsMinutes(),
 				backStamp == null || !backStamp.getLocationCode().isPresent() ? null : backStamp.getLocationCode().get().v(),
-				backStamp == null ? null : backStamp.getStampSourceInfo().value,
-				backActual == null || backActual.getTimeWithDay() == null ? null
-						: backActual.getTimeWithDay().valueAsMinutes(),
+				backStamp == null ? null : backStamp.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
+				backActual == null || !backActual.getTimeDay().getTimeWithDay().isPresent()? null
+						: backActual.getTimeDay().getTimeWithDay().get().valueAsMinutes(),
 				backActual == null || backActual.getAfterRoundingTime() == null ? null
 						: backActual.getAfterRoundingTime().valueAsMinutes(),
 				backActual == null || !backActual.getLocationCode().isPresent() ? null :  backActual.getLocationCode().get().v(),
-				backActual == null ? null : backActual.getStampSourceInfo().value,
+				backActual == null ? null : backActual.getTimeDay().getReasonTimeChange().getTimeChangeMeans().value,
 				backactualStamp == null ? null : backactualStamp.getNumberOfReflectionStamp(),
 				outingTime.getOutingTimeCalculation().valueAsMinutes(), outingTime.getOutingTime().valueAsMinutes(),
 				outingTime.getReasonForGoOut().value);

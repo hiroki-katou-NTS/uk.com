@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.export;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 
 /**
  * Output：36協定月間上限時間

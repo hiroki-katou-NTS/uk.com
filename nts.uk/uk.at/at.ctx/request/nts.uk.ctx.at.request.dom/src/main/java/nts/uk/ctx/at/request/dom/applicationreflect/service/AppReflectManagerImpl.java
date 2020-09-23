@@ -104,10 +104,9 @@ public class AppReflectManagerImpl implements AppReflectManager {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlg;
 	@Inject
-    private ExecutionLogRequestImport executionLogRequestImport;
-	@Inject	
 	private RemainNumberTempRequireService requireSerive;
-	
+	@Inject
+    private ExecutionLogRequestImport executionLogRequestImport;	
 	@PostConstruct
 	public void postContruct() {
 		this.self = scContext.getBusinessObject(AppReflectManager.class);

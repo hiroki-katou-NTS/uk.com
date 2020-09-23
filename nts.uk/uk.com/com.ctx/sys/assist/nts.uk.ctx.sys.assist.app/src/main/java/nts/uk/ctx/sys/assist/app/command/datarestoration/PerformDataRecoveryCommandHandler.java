@@ -18,6 +18,7 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RecoveryMethod;
+import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -57,8 +58,9 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 		GeneralDateTime endDateTime   = null;
 		Integer saveForm              = performDataCommand.getSaveForm();
 		String saveName               = performDataCommand.getSaveName();
+		LoginInfo loginInfo 		  = new LoginInfo();
 		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, cid, saveSetCode,
-				practitioner, executionResult, startDateTime, endDateTime, saveForm, saveName);
+				practitioner, executionResult, startDateTime, endDateTime, saveForm, saveName, loginInfo);
 		repoDataRecoveryResult.add(dataRecoveryResult);
 
 		// 復旧条件の調整

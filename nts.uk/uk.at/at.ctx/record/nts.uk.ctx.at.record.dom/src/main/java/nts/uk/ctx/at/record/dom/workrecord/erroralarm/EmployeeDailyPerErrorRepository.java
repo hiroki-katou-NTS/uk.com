@@ -5,6 +5,7 @@ import java.util.Map;
 
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 
 public interface EmployeeDailyPerErrorRepository {
 	

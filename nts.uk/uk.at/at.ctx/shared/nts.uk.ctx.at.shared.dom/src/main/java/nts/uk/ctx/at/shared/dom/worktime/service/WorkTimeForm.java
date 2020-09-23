@@ -61,4 +61,20 @@ public enum WorkTimeForm {
 
 	}
 
+	
+	public boolean isFixed() {
+		return FIXED.equals(this);
+	}
+	
+	public boolean isFlex() {
+		return FLEX.equals(this);
+	}
+	
+	public boolean isFlow() {
+		return FLOW.equals(this);
+	}
+	
+	public boolean isTimedifference() {
+		return TIMEDIFFERENCE.equals(this);
+	}
 }

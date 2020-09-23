@@ -794,11 +794,11 @@ public class LogBasicInformationAllFinder {
 						
 						logSetItemDetails.stream().forEach(datatemDetail -> {
 							
-							if (datatemDetail.getIsUseCondFlg() == 1) {
+				
 								
 								listLogSetItemDetailDto.add(datatemDetail);
 								
-							}
+							
 							
 						});
 

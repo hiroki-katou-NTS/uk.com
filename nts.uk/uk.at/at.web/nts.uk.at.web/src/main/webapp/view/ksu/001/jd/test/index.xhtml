@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="test.main.css" />
+			<com:scriptfile path="test.vm.js" />
+			<com:scriptfile path="test.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+				<div id="functions-area">
+					<button id="saveData" tabindex="1" 
+						data-bind="click: openDialog">OPEN JD</button>
+				</div>
+			<!-- <div id="contents-area">
+				<div>
+					<div class = "label"><span >#{i18n.getText('KSU001_114')}</span> </div>
+					<div id="pairPatternName" class="mw-90"
+						data-bind="ntsFormLabel: {required: true, constraint: 'ShiftCombinationName'}">#{i18n.getText('KSU001_908')}</div>
+					<input id="textName"
+						data-bind="ntsTextEditor: {value: textName, required: true, constraint: 'ShiftCombinationName', name: '#[KSU001_908]'}" />
+				</div>
+
+				<div id="set-work-type">
+					<div class="mw-90" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_116')}</div>
+					<div id="combo-box1"
+						data-bind="ntsComboBox: {
+								options: listWorkType,
+								optionsValue: 'shiftMasterCode',
+								visibleItemsCount: 15,
+								value: selectedShiftMasterCode,
+								editable:  false,
+								enable: true,
+								width: 430,
+								columns: [
+									{ prop: 'shiftMasterCode', length: 3 },
+									{ prop: 'shiftMasterName', length: 5 },
+									{ prop: 'workTime1', length: 12 },
+									{ prop: 'remark', length: 10 }]}">
+					</div>
+				</div>
+				<div style='clear: both'></div>				
+				<div data-bind="ntsFormLabel: {required: true}"><span >#{i18n.getText('KSU001_117')}</span> </div>
+				<div>
+						<button id="clear" data-bind="click: clearData">#{i18n.getText('KSU001_918')}</button>
+					</div>
+			</div> -->
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -8,15 +8,15 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTime;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeStatusOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
@@ -43,20 +43,20 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 		if (limitAlarmTime != null) paramlimitAlarmTime = limitAlarmTime.v();
 		int paramlimitErrorTime = 0;
 		if (limitErrorTime != null) paramlimitErrorTime = limitErrorTime.v();
-		nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth paramExceptionLimitAlarmTime = null;
+		LimitOneMonth paramExceptionLimitAlarmTime = null;
 		if (exceptionLimitAlarmTime.isPresent()){
-			paramExceptionLimitAlarmTime = new nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth(
+			paramExceptionLimitAlarmTime = new LimitOneMonth(
 					exceptionLimitAlarmTime.get().v());
 		}
-		nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth paramExceptionLimitErrorTime = null;
+		LimitOneMonth paramExceptionLimitErrorTime = null;
 		if (exceptionLimitErrorTime.isPresent()){
-			paramExceptionLimitErrorTime = new nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth(
+			paramExceptionLimitErrorTime = new LimitOneMonth(
 					exceptionLimitErrorTime.get().v());
 		}
 		AgreementTimeOfMonthly agreementTimeOfMonthly = AgreementTimeOfMonthly.of(
 				(agreementTime == null ? new AttendanceTimeMonth(0) : agreementTime),
-				new nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth(paramlimitErrorTime),
-				new nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth(paramlimitAlarmTime),
+				new LimitOneMonth(paramlimitErrorTime),
+				new LimitOneMonth(paramlimitAlarmTime),
 				Optional.ofNullable(paramExceptionLimitErrorTime),
 				Optional.ofNullable(paramExceptionLimitAlarmTime),
 				AgreementTimeStatusOfMonthly.NORMAL);
@@ -83,7 +83,7 @@ public class CheckAgreementTimeStatusImpl implements CheckAgreementTimeStatus {
 		// 月別実績の36協定上限時間をパラメータから作成
 		AgreMaxTimeOfMonthly agreMaxTimeOfMonthly = AgreMaxTimeOfMonthly.of(
 				checkAgreementTime,
-				new nts.uk.ctx.at.record.dom.standardtime.primitivevalue.LimitOneMonth(maxTime.v()),
+				new LimitOneMonth(maxTime.v()),
 				AgreMaxTimeStatusOfMonthly.NORMAL);
 		
 		// チェック処理
