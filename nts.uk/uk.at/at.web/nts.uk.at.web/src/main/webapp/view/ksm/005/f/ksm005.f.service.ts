@@ -13,13 +13,10 @@ module nts.uk.at.view.ksm005.f {
         
         
         export module model {
-
             export interface MonthlyPatternDto {
                 code: string;
                 name: string;
             }
-                       
         }
-
     }
 }

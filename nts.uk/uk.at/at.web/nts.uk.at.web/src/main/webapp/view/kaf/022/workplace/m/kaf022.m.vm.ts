@@ -8,7 +8,6 @@ module nts.uk.at.view.kaf022.m.viewmodel {
 
     export class ScreenModelM {
         baseDate: KnockoutObservable<Date> = ko.observable(new Date());
-        // 職場ID
         selectedWorkplaceId: KnockoutObservable<String> = ko.observable("");
         alreadySettingList: KnockoutObservableArray<any> = ko.observableArray([]);
 
@@ -35,7 +34,6 @@ module nts.uk.at.view.kaf022.m.viewmodel {
         tableId: string = "fixed-table-wkp";
         alreadySettingData: Array<any>;
         isUpdate: KnockoutObservable<boolean> = ko.observable(false);
-        allowRegister: KnockoutObservable<boolean> = ko.observable(false);
 
         constructor() {
             const self = this;
@@ -62,14 +60,12 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                         s.memo("");
                     });
                     self.isUpdate(false);
-                    self.allowRegister(false);
                 } else {
                     const wkpList: Array<any> = $('#wkp-list').getDataList();
                     const tmpList = [];
                     self.treeToList(tmpList, wkpList);
                     let selectedWkp = _.find(tmpList, {'id': value});
                     if (selectedWkp) {
-                        self.allowRegister(true);
                         self.workplaceName(selectedWkp.name || "");
                         self.workplaceCode(selectedWkp.code || "");
                         const settingData = _.find(self.alreadySettingData, {'workplaceId': value});
@@ -100,7 +96,6 @@ module nts.uk.at.view.kaf022.m.viewmodel {
                             s.memo("");
                         });
                         self.isUpdate(false);
-                        self.allowRegister(false);
                     }
                 }
             });

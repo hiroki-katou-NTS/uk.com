@@ -4,21 +4,14 @@ module nts.uk.at.view.kaf022.o.viewmodel {
 
     export class ScreenModelO {
         flexWorkOptions: KnockoutObservableArray<ItemModel>;
-
-        // フレックス勤務者区分
         selectedFlexWorkAtr: KnockoutObservable<number>;
-
         overtimeAppOptions: KnockoutObservableArray<ItemModel>;
-
-        // 残業申請区分
-        selectedOvertimeAppAtr: KnockoutObservable<number>;
-
         columns = ko.observableArray([
             { headerText: "No", key: 'code', width: 150, hidden: true },
             { headerText: getText("KAF022_691"), key: 'name', width: 150 }
         ]);
+        selectedOvertimeAppAtr: KnockoutObservable<number>;
 
-        // 残業枠
         overtimeWorkFrames: KnockoutObservableArray<OTWorkFrame>;
         overTimeQuotaSettings: KnockoutObservableArray<OTQuota>;
 
@@ -131,7 +124,7 @@ module nts.uk.at.view.kaf022.o.viewmodel {
     class OTWorkFrame {
         checked: KnockoutObservable<boolean>;
         no: number;
-        name: string; // 残業枠名称
+        name: string;
         constructor(checked: boolean, no: number, name: string, handleCheck: any) {
             this.checked = ko.observable(checked);
             this.no = no;
@@ -143,9 +136,9 @@ module nts.uk.at.view.kaf022.o.viewmodel {
     }
 
     class OTQuota {
-        overtimeAtr: number; // 残業申請区分
-        flexAtr: number; // フレックス勤務者区分
-        overTimeFrame: number; // 対象残業枠
+        overtimeAtr: number;
+        flexAtr: number;
+        overTimeFrame: number;
         constructor(overtimeAtr: number, flexAtr: number, overTimeFrame: number) {
             this.overtimeAtr = overtimeAtr;
             this.flexAtr = flexAtr;

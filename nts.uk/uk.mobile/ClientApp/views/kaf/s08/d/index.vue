@@ -29,9 +29,9 @@
     <div class="pt-2">
       <div>{{ 'KAFS08_72' | i18n }}</div>
       <div class="pl-3 pt-1">
-        <button type="button" class="btn btn-selection" v-on:click="openKDLS02()">
-          <span class="badge badge-secondary">{{params.rowDate.opAchievementDetail.workTypeCD}}</span>
-          <span>{{params.rowDate.opAchievementDetail.opWorkTypeName}}</span>
+        <button type="button" class="btn btn-selection" v-on:click="openKDLS02">
+          <span class="badge badge-secondary">0001</span>
+          <span>Test 1</span>
         </button>
       </div>
     </div>
@@ -39,10 +39,10 @@
     <div class="pt-2 py-3">
       <div>{{ 'KAFS08_73' | i18n }}</div>
       <div class="pl-3 pt-1">
-        <button type="button" class="btn btn-selection" v-on:click="openKDLS01()">
-          <span class="badge badge-secondary">{{params.rowDate.opAchievementDetail.workTimeCD}}</span>
-          <span>{{params.rowDate.opAchievementDetail.opWorkTimeName}}</span>
-          <span class="d-block mt-1 pl-3">{{params.rowDate.opAchievementDetail.opWorkTime}}</span>
+        <button type="button" class="btn btn-selection" v-on:click="openKDLS01">
+          <span class="badge badge-secondary">0001</span>
+          <span>Test 1</span>
+          <span class="d-block mt-1 pl-3">(2010~2019</span>
         </button>
       </div>
     </div>
@@ -55,29 +55,25 @@
     </div>
     <!-- D4_2 -->
     <nts-time-editor
-      v-model="params.departureTime"
+      v-model="params.rowDate.opAchievementDetail.opWorkTime"
       :name="'KAFS08_75'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
     />
     <!-- D4_4 -->
     <nts-time-editor
-      v-model="params.returnTime"
+      v-model="params.rowDate.opAchievementDetail.opLeaveTime"
       :name="'KAFS08_76'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
     />
     <!-- D50_F1 -->
-    <button
-      type="button"
-      v-click="accepEvent"
-      class="btn btn-success btn-block btn-lg"
-    >{{'KAFS08_77' | i18n}}</button>
+    <button type="button" class="btn btn-success btn-block btn-lg">{{'KAFS08_77' | i18n}}</button>
     <!-- D50_F2 -->
     <button
       type="button"
       class="btn btn-secondary btn-block btn-lg"
-      v-click="close"
+      v-on:click="close"
     >{{'KAFS08_78' | i18n }}</button>
   </div>
 </template>

@@ -31,7 +31,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
 
             vm.isSendMail = ko.observable(false);
 
-            // 起動する
             vm.loadData([], [], vm.appType())
                 .then((loadDataFlag: boolean) => {
                     if (loadDataFlag) {
@@ -89,7 +88,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             return false;
         }
 
-        // 申請日を変更する
         changeAppDate() {
             const vm = this;
 
@@ -101,8 +99,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             let command = {
                 businessTripInfoOutputDto, applicationDto
             };
-
-            vm.$errors("clear");
 
             vm.$validate([
                 '#kaf000-a-component4 .nts-input'
@@ -124,7 +120,6 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
             }).always(() => vm.$blockui("hide"));
         }
 
-        // 出張申請を新規登録で登録する
         register() {
             const vm = this;
             const dataFetch = ko.toJS(vm.dataFetch);
@@ -167,7 +162,7 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
                         }
                     }).fail(err => {
                         let param;
-                        if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
+                        if (err.messageId == "Msg_23" || err.messageId == "Msg_24") {
                             err.message = err.parameterIds[0] + err.message;
                             param = err;
                             vm.$dialog.error(param);
@@ -252,25 +247,31 @@ module nts.uk.at.view.kaf008_ref.a.viewmodel {
         businessTripOutput: BusinessTripOutput;
     }
 
-    // 出張申請設定
     interface Setting {
         cid: string;
         appComment: any;
+        contractCheck: number;
     }
 
     export interface BusinessTripInfoOutput {
-        setting: Setting; // 出張申請設定
-        appDispInfoStartup: any; // 申請表示情報
-        holidays: any; // 休日勤務種類リスト
-        workdays: any; // 出勤日勤務種類リスト
-        businessTripActualContent: any; // 出張の実績内容
-        infoBeforeChange: any; // 変更前勤務種類
-        infoAfterChange: any; // 変更後勤務種類
+        setting: Setting;
+        appDispInfoStartup: any;
+        holidays: any;
+        workdays: any;
+        businessTripActualContent: any;
+        infoBeforeChange: any;
+        infoAfterChange: any;
     }
 
     interface MessageOutput {
         msgID: string;
         paramLst: Array<string>
+    }
+
+    export interface TripContent {
+        departureTime: KnockoutObservable<number>;
+        returnTime: KnockoutObservable<number>;
+        contentDisp: KnockoutObservableArray<any>;
     }
 
     const API = {

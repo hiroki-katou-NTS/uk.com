@@ -6,10 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
-import nts.uk.ctx.at.request.dom.setting.DisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.UseDivision;
 
 /**
@@ -23,7 +20,7 @@ import nts.uk.ctx.at.request.dom.setting.UseDivision;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppStampSetting extends AggregateRoot {
+public class AppStampSetting implements DomainAggregate {
 	
 	/**
 	 * 会社ID
@@ -49,13 +46,5 @@ public class AppStampSetting extends AggregateRoot {
 	 * 外出種類の表示制御
 	 */
 	private List<GoOutTypeDispControl> goOutTypeDispControl;
-
-	@Override
-	public void validate() {
-		super.validate();
-		if (this.goOutTypeDispControl.stream().allMatch(displayControl -> displayControl.getDisplay() == DisplayAtr.NOT_DISPLAY)) {
-			throw new BusinessException("Msg_1704");
-		}
-	}
 
 }

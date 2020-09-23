@@ -116,7 +116,7 @@ module nts.uk.at.view.kaf022.v.viewmodel {
     class MenuModel {
         id: string;
         checked: KnockoutObservable<boolean>;
-        name: string; //表示名称
+        name: string;
 
         constructor(id: string, checked: boolean, name: string) {
             this.id = id;
@@ -126,16 +126,9 @@ module nts.uk.at.view.kaf022.v.viewmodel {
     }
 
     interface StandardMenuNameExport {
-        // プログラムID
         programId: string;
-
-        // 遷移先の画面ID
         screenId: string;
-
-        // クエリ文字列
         queryString: string;
-
-        //表示名称
         displayName: string;
     }
 

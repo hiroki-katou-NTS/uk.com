@@ -24,10 +24,6 @@ public class UpdateAppEmploymentSetCommandHandler extends CommandHandler<AppEmpl
 	@Inject
 	AppEmploymentSetRepository appEmploymentSetRepo;
 
-	/**
-	 * 登録処理
-	 * @param context
-	 */
 	@Override
 	protected void handle(CommandHandlerContext<AppEmploymentSetCommand> context) {
 		// 会社ID

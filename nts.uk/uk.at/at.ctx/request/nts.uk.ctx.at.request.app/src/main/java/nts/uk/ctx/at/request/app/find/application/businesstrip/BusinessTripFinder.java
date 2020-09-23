@@ -7,7 +7,6 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.app.find.application.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.ApproveTripRequestParam;
-import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.CheckPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.DetailScreenInfo;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.BusinessTripMobileDto.StartScreenBDto;
 import nts.uk.ctx.at.request.app.find.application.businesstrip.businesstripdto.*;
@@ -47,7 +46,13 @@ public class BusinessTripFinder {
     private CommonAlgorithm commonAlgorithm;
 
     @Inject
+    private CommonAlgorithmMobile algorithmMobile;
+
+    @Inject
     private NewBeforeRegister processBeforeRegister;
+
+    @Inject
+    private WorkTypeRepository workTypeRepository;
 
     @Inject
     private WorkTypeRepository wkTypeRepo;
@@ -59,13 +64,11 @@ public class BusinessTripFinder {
     private AppTripRequestSetRepository appTripRequestSetRepository;
 
     @Inject
+    private AtEmployeeAdapter atEmployeeAdapter;
+
+    @Inject
     private DetailAppCommonSetService appCommonSetService;
 
-    /**
-     * 起動する
-     * @param paramStart
-     * @return
-     */
     public DetailStartScreenInfoDto initKAF008(ParamStart paramStart) {
         String cid = AppContexts.user().companyId();
         DetailStartScreenInfoDto result = new DetailStartScreenInfoDto();
@@ -325,7 +328,7 @@ public class BusinessTripFinder {
     }
 
     /**
-     * 勤務種類コードを入力する
+     *
      * @param changeWorkCodeParam
      * @return
      */
@@ -333,13 +336,9 @@ public class BusinessTripFinder {
         WorkTypeNameDto result = new WorkTypeNameDto();
         String typeCode = changeWorkCodeParam.getTypeCode();
         String timeCode = changeWorkCodeParam.getTimeCode();
-        Integer startWorkTime = changeWorkCodeParam.getStartWorkTime();
-        Integer endWorkTime = changeWorkCodeParam.getEndWorkTime();
-
-
         BusinessTripInfoOutput businessTripInfoOutput = changeWorkCodeParam.getBusinessTripInfoOutputDto().toDomain();
         GeneralDate inputDate = GeneralDate.fromString(changeWorkCodeParam.getDate(), "yyyy/MM/dd");
-        businessTripService.checkInputWorkCode(typeCode, timeCode, inputDate, startWorkTime, endWorkTime);
+        businessTripService.checkInputWorkCode(typeCode, timeCode, inputDate);
         // アルゴリズム「出張申請就業時間帯チェック」を実行する
         if (Strings.isBlank(timeCode)) {
             return result;
@@ -477,52 +476,6 @@ public class BusinessTripFinder {
         }
 
         businessTripService.businessTripIndividualCheck(businessTrip.getInfos(), businessTripInfoOutput.getActualContentDisplay().get());
-    }
-
-    /**
-     * 次へをクリックして勤務内容を表示する
-     * @param param
-     */
-    public DetailStartScreenInfoDto mobilePeriodCheck(CheckPeriodDto param) {
-
-        String sid = AppContexts.user().employeeId();
-        List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
-        DetailStartScreenInfoDto result = null;
-
-        if(param.getIsNewMode()) {
-
-            ApplicationDto applicationDto = param.getApplication();
-            Application application = Application.createFromNew(
-                    EnumAdaptor.valueOf(applicationDto.getPrePostAtr(), PrePostAtr.class),
-                    sid,
-                    EnumAdaptor.valueOf(applicationDto.getAppType(), ApplicationType.class),
-                    new ApplicationDate(GeneralDate.fromString(applicationDto.getAppDate(), "yyyy/MM/dd")),
-                    sid,
-                    Optional.empty(),
-                    Optional.empty(),
-                    Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppStartDate(), "yyyy/MM/dd"))),
-                    Optional.ofNullable(new ApplicationDate(GeneralDate.fromString(applicationDto.getOpAppEndDate(), "yyyy/MM/dd"))),
-                    applicationDto.getOpAppReason() == null ? Optional.empty() : Optional.of(new AppReason(applicationDto.getOpAppReason())),
-                    applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
-                    ));
-            BusinessTripInfoOutput businessTripInfoOutput = param.getBusinessTripInfoOutput().toDomain();
-
-            // アルゴリズム「2-1.新規画面登録前の処理」を実行する
-            confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
-                    AppContexts.user().companyId(),
-                    EmploymentRootAtr.APPLICATION,
-                    true,
-                    application,
-                    null,
-                    businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput().getOpErrorFlag().get(),
-                    Collections.emptyList(),
-                    businessTripInfoOutput.getAppDispInfoStartup()
-            );
-            // アルゴリズム「申請日を変更する処理」を実行する
-            result = this.updateAppDate(param.getBusinessTripInfoOutput(), applicationDto);
-
-        }
-        return result;
     }
 
 }
