@@ -205,22 +205,22 @@ public class Ksrmt36AgrMgtEmp extends UkJpaEntity implements Serializable {
         val companyId = entity.getKsrmt36AgrMgtEmpPk().getCompanyID();
 
         val laborSystemAtr =  LaborSystemtAtr.valueOf(entity.getKsrmt36AgrMgtEmpPk().getLaborSystemAtr());
-        val  errorTimeInMonth = ErrorTimeInMonth.create(new AgreementOneMonthTime((int)entity.getBasicMArlTime())
+        val  errorTimeInMonth = new ErrorTimeInMonth(new AgreementOneMonthTime((int)entity.getBasicMArlTime())
                 ,new AgreementOneMonthTime((int)entity.getBasicMAllTime()));
         val upperLimitTime = new AgreementOneMonthTime((int)entity.getBasicMLimitTime());
         val basicSettingMonth = new OneMonthTime(errorTimeInMonth,upperLimitTime);
 
-        val errorTimeInMonthUpper =  ErrorTimeInMonth.create(new AgreementOneMonthTime((int)entity.getSpMErTime())
+        val errorTimeInMonthUpper =  new ErrorTimeInMonth(new AgreementOneMonthTime((int)entity.getSpMErTime())
                 ,new AgreementOneMonthTime((int)entity.getSpMAlTime()));
         val upperLimitTimeMonthUpper = new AgreementOneMonthTime((int)entity.getSpYLimitTime());
         val upperLimitDueToSpecialProvisionsMonth = new OneMonthTime(errorTimeInMonthUpper,upperLimitTimeMonthUpper);
 
-        val  errorTimeInYear = ErrorTimeInYear.create(new AgreementOneYearTime((int)entity.getBasicMArlTime())
+        val  errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime((int)entity.getBasicMArlTime())
                 ,new AgreementOneYearTime((int)entity.getBasisYAlTime()));
         val upperLimitYear = new AgreementOneYearTime((int)entity.getBasisYLimitTime());
         val basicSettingYear = new OneYearTime(errorTimeInYear,upperLimitYear);
 
-        val errorTimeInYearUpper =  ErrorTimeInYear.create(new AgreementOneYearTime((int)entity.getSpYErlTime())
+        val errorTimeInYearUpper =  new ErrorTimeInYear(new AgreementOneYearTime((int)entity.getSpYErlTime())
                 ,new AgreementOneYearTime((int)entity.getSpYAlTime()));
         val upperLimitTimeYearUpper = new AgreementOneYearTime((int)entity.getSpYLimitTime());
         val upperLimitDueToSpecialProvisionsYear = new OneYearTime(errorTimeInYearUpper,upperLimitTimeYearUpper);
