@@ -20,6 +20,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputStandardSettingReposit
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnote;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -127,6 +128,7 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 					entity.setCid(freeSettingOfOutputItemForDailyWorkSchedule.getCompanyId().v());
 					entity.setSid(freeSettingOfOutputItemForDailyWorkSchedule.getEmployeeId().v());
 					entity.setLayoutId(UUID.randomUUID().toString());
+					entity.setContractCd(AppContexts.user().contractCode());
 					t.saveToMemento(entity);
 					return entity;
 				})
@@ -143,6 +145,7 @@ public class JpaOutputItemDailyWorkScheduleRepo extends JpaRepository implements
 					entity.setItemSelType(ItemSelectionType.STANDARD_SELECTION.value);
 					entity.setCid(outputStandard.getCompanyId().v());
 					entity.setLayoutId(UUID.randomUUID().toString());
+					entity.setContractCd(AppContexts.user().contractCode());
 					t.saveToMemento(entity);
 					return entity;
 				})

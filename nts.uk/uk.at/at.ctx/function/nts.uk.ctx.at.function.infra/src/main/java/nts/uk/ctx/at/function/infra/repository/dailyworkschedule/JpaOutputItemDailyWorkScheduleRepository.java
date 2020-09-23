@@ -10,7 +10,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkSchedule;
@@ -18,6 +17,7 @@ import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleR
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutItem;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutatd;
 import nts.uk.ctx.at.function.infra.entity.dailyworkschedule.KfnmtRptWkDaiOutnote;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class JpaOutputItemDailyWorkScheduleRepository.
@@ -68,6 +68,7 @@ public class JpaOutputItemDailyWorkScheduleRepository extends JpaRepository impl
 		entity.setItemSelType(selectionType);
 		entity.setCid(companyId);
 		entity.setSid(employeeId);
+		entity.setContractCd(AppContexts.user().contractCode());
 		domain.saveToMemento(entity);
 		this.commandProxy().update(entity);
 	}

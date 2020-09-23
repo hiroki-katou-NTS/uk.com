@@ -41,6 +41,15 @@ public class KfnmtRptWkDaiOutnote extends UkJpaEntity implements Serializable {
 	@Column(name="USE_CLS")
 	private BigDecimal useCls;
 
+	/** The contract cd. */
+	@Column(name="CONTRACT_CD")
+	private String contractCd;
+	
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer;
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */

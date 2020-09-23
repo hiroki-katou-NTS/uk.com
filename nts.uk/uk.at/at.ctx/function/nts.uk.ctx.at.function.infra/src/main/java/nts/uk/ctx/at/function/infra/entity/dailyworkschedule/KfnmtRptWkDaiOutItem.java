@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -69,6 +70,10 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 	@Column(name="ITEM_NAME")
 	private String itemName;
 
+	/** The contract cd. */
+	@Column(name="CONTRACT_CD")
+	private String contractCd;
+
 	/** The work type name display. */
 	@Column(name="WORKTYPE_NAME_DISPLAY")
 	private BigDecimal workTypeNameDisplay;
@@ -80,6 +85,11 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 	/** font size */
 	@Column(name="CHAR_SIZE_TYPE")
 	private BigDecimal charSizeType;
+	
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer;
 
 	@OneToMany(cascade=CascadeType.ALL)
 	@JoinColumn(name="LAYOUT_ID", referencedColumnName="LAYOUT_ID")
@@ -91,7 +101,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 
 	@Override
 	protected Object getKey() {
-		return null;
+		return this.layoutId;
 	}
 
 	@Override
@@ -114,6 +124,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			entity.setId(key);
 			entity.setAtdDisplay(new BigDecimal(obj.getAttendanceDisplay()));
 			entity.setCid(this.cid);
+			entity.setContractCd(this.contractCd);
 			return entity;
 		}).collect(Collectors.toList());
 	}
@@ -127,6 +138,7 @@ public class KfnmtRptWkDaiOutItem extends UkJpaEntity
 			key.setPrintItem(obj.getPrintItem().value);
 			entity.setId(key);
 			entity.setCid(this.cid);
+			entity.setContractCd(this.contractCd);
 			entity.setUseCls(new BigDecimal(obj.isUsedClassification() ? 1 : 0));
 			return entity;
 		}).collect(Collectors.toList());

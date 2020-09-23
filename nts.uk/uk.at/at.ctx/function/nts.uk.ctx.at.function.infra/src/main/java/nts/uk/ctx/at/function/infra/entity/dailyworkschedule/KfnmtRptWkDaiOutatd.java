@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,15 @@ public class KfnmtRptWkDaiOutatd extends UkJpaEntity implements Serializable {
 	/** The atd display. */
 	@Column(name="ATD_DISPLAY")
 	private BigDecimal atdDisplay;
+
+	/** The contract cd. */
+	@Column(name="CONTRACT_CD")
+	private String contractCd;
+	
+	/** The exclus ver. */
+	@Version
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer;
 
 	@Override
 	protected Object getKey() {
