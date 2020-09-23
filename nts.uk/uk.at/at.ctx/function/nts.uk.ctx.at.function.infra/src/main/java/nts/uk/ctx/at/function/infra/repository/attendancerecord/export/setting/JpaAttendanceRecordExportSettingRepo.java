@@ -52,7 +52,11 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			, String companyId
 			, Optional<String> employeeId
 			, String code) {
+		
+		// パラメータ．項目選択種類をチェックする
 		if (selectionType == ItemSelectionType.STANDARD_SETTING) {
+			
+			// ドメインモデル「出勤簿の出力項目定型設定」を取得する
 			return this.queryProxy()
 					.query(GET_STANDARD_SETTING_BY_CODE, KfnmtRptWkAtdOut.class)
 					.setParameter("companyId", companyId)
@@ -62,6 +66,8 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		}
 		
 		if (selectionType == ItemSelectionType.FREE_SETTING && employeeId.isPresent()) {
+			
+			// ドメインモデル「出勤簿の出力項目自由設定」を取得する 
 			return this.queryProxy()
 					.query(GET_FREE_SETTING_BY_CODE, KfnmtRptWkAtdOut.class)
 					.setParameter("companyId", companyId)
