@@ -40,13 +40,14 @@ public class AppApproval {
 	 * @param approvalComment 承認コメント
 	 * @return AtomTask
 	 */
-	public AtomTask change(Require require,
+	public static AtomTask change(Require require,
 						   String applicantId,
 						   String approverId,
 						   ApprovalStatus approvalStatus,
 						   Optional<AgreementApprovalComments> approvalComment) {
 
-		val optApp = require.getApp(applicantId);
+		// $申請
+		val optApp = require.getApp(applicantId); // [R-1] 申請を取得する
 		if (!optApp.isPresent()) {
 			throw new BusinessException("Msg_1262");
 		}

@@ -56,7 +56,8 @@ public class CheckErrorApplicationMonthServiceTest {
      */
     @Test
     public void check_1() {
-        SpecialProvisionsOfAgreement reason = SpecialProvisionsOfAgreementTest.createNewDomain();
+        // SpecialProvisionsOfAgreement reason = SpecialProvisionsOfAgreementTest.createNewDomain();
+		ReasonsForAgreement reason = new ReasonsForAgreement("ReasonsForAgreement");
         MonthlyAppContent monthlyAppContent = new MonthlyAppContent("applicant", new YearMonth(202009),
                 new AgreementOneMonthTime(1), new AgreementOneMonthTime(2), reason);
 
@@ -80,7 +81,8 @@ public class CheckErrorApplicationMonthServiceTest {
      */
     @Test
     public void check_2() {
-        SpecialProvisionsOfAgreement reason = SpecialProvisionsOfAgreementTest.createNewDomain();
+        // SpecialProvisionsOfAgreement reason = SpecialProvisionsOfAgreementTest.createNewDomain();
+		ReasonsForAgreement reason = new ReasonsForAgreement("ReasonsForAgreement");
         MonthlyAppContent monthlyAppContent = new MonthlyAppContent("applicant", new YearMonth(202009),
                 new AgreementOneMonthTime(1), new AgreementOneMonthTime(2), reason);
 
@@ -110,7 +112,8 @@ public class CheckErrorApplicationMonthServiceTest {
      */
     @Test
     public void check_3() {
-        SpecialProvisionsOfAgreement reason = SpecialProvisionsOfAgreementTest.createNewDomain();
+        // SpecialProvisionsOfAgreement reason = SpecialProvisionsOfAgreementTest.createNewDomain();
+		ReasonsForAgreement reason = new ReasonsForAgreement("ReasonsForAgreement");
         MonthlyAppContent monthlyAppContent = new MonthlyAppContent("applicant", new YearMonth(202009),
                 new AgreementOneMonthTime(1), new AgreementOneMonthTime(2), reason);
 
@@ -138,7 +141,8 @@ public class CheckErrorApplicationMonthServiceTest {
      */
     @Test
     public void check_4() {
-        SpecialProvisionsOfAgreement reason = SpecialProvisionsOfAgreementTest.createNewDomain();
+        // SpecialProvisionsOfAgreement reason = SpecialProvisionsOfAgreementTest.createNewDomain();
+		ReasonsForAgreement reason = new ReasonsForAgreement("ReasonsForAgreement");
         MonthlyAppContent monthlyAppContent = new MonthlyAppContent("applicant", new YearMonth(202009),
                 new AgreementOneMonthTime(1), new AgreementOneMonthTime(2), reason);
 
