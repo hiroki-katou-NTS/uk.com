@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.Con
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.*;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoStartupOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.setting.output.AppDispInfoWithDateOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.smartphone.CommonAlgorithmMobile;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppStandardReasonCode;
 import nts.uk.ctx.at.request.dom.setting.employment.appemploymentsetting.AppEmploymentSet;
@@ -485,9 +486,10 @@ public class BusinessTripFinder {
      */
     public DetailStartScreenInfoDto mobilePeriodCheck(CheckPeriodDto param) {
 
+        String cid = AppContexts.user().companyId();
         String sid = AppContexts.user().employeeId();
         List<ConfirmMsgOutput> confirmMsgOutputs = new ArrayList<>();
-        DetailStartScreenInfoDto result = null;
+        DetailStartScreenInfoDto result = new DetailStartScreenInfoDto();
 
         if(param.getIsNewMode()) {
 
@@ -506,6 +508,7 @@ public class BusinessTripFinder {
                     applicationDto.getOpAppStandardReasonCD() == null ? Optional.empty() : Optional.of(new AppStandardReasonCode(applicationDto.getOpAppStandardReasonCD())
                     ));
             BusinessTripInfoOutput businessTripInfoOutput = param.getBusinessTripInfoOutput().toDomain();
+            List<GeneralDate> dates = new DatePeriod(application.getOpAppStartDate().get().getApplicationDate(), application.getOpAppEndDate().get().getApplicationDate()).datesBetween();
 
             // アルゴリズム「2-1.新規画面登録前の処理」を実行する
             confirmMsgOutputs = processBeforeRegister.processBeforeRegister_New(
@@ -518,8 +521,48 @@ public class BusinessTripFinder {
                     Collections.emptyList(),
                     businessTripInfoOutput.getAppDispInfoStartup()
             );
+
             // アルゴリズム「申請日を変更する処理」を実行する
-            result = this.updateAppDate(param.getBusinessTripInfoOutput(), applicationDto);
+            AppDispInfoWithDateOutput appDispInfoWithDateOutput = commonAlgorithm.changeAppDateProcess(cid, dates,
+                    ApplicationType.BUSINESS_TRIP_APPLICATION, businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoNoDateOutput(),
+                    businessTripInfoOutput.getAppDispInfoStartup().getAppDispInfoWithDateOutput(), Optional.empty());
+
+            Optional<List<ActualContentDisplay>> opActualContentDisplayLst = appDispInfoWithDateOutput.getOpActualContentDisplayLst();
+
+
+            if (opActualContentDisplayLst.isPresent()) {
+                // 申請対象日リスト全ての日付に対し「表示する実績内容」が存在する
+                val dateNotHaveContent = opActualContentDisplayLst.get().stream()
+                        .filter(i -> !i.getOpAchievementDetail().isPresent() || i.getOpAchievementDetail().get() == null)
+                        .findAny();
+                if (dateNotHaveContent.isPresent()) {
+                    // エラーメッセージとして「#Msg_1695」を返す({0}＝年月日)
+                    throw new BusinessException("Msg_1695", dateNotHaveContent.get().getDate().toString());
+                }
+
+                businessTripService.getBusinessTripNotApproved(sid, dates, opActualContentDisplayLst);
+
+                List<BusinessTripWorkTypes> businessTripWorkTypes = new ArrayList<>();
+                if (!opActualContentDisplayLst.get().isEmpty()) {
+                    List<String> cds = opActualContentDisplayLst.get().stream().filter(i -> i.getOpAchievementDetail().isPresent())
+                            .map(i -> i.getOpAchievementDetail().get().getWorkTypeCD())
+                            .distinct()
+                            .collect(Collectors.toList());
+                    // ドメインモデル「勤務種類」を取得する
+                    Map<String, WorkType> mapWorkCds = wkTypeRepo.getPossibleWorkType(cid, cds).stream().collect(Collectors.toMap(i -> i.getWorkTypeCode().v(), i -> i));
+                    businessTripWorkTypes = opActualContentDisplayLst.get().stream().map(i -> new BusinessTripWorkTypes(
+                            i.getDate(),
+                            i.getOpAchievementDetail().isPresent() ? mapWorkCds.get(i.getOpAchievementDetail().get().getWorkTypeCD()) : null
+                    )).collect(Collectors.toList());
+                }
+
+                businessTripInfoOutput.setActualContentDisplay(appDispInfoWithDateOutput.getOpActualContentDisplayLst());
+                businessTripInfoOutput.setWorkTypeBeforeChange(Optional.of(businessTripWorkTypes));
+
+                result.setResult(true);
+                result.setConfirmMsgOutputs(confirmMsgOutputs);
+                result.setBusinessTripInfoOutputDto(BusinessTripInfoOutputDto.convertToDto(businessTripInfoOutput));
+            }
 
         }
         return result;
