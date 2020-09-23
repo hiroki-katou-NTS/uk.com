@@ -43,7 +43,7 @@
       </div>
       <!-- A_10 -->
       <div class="mx-n2">
-        <table class="table uk-table-striped table-bordered">
+        <table id="table-a10" tabindex="1" class="table uk-table-striped table-bordered">
           <thead>
             <tr>
               <th class="px-1" scope="col">{{"KAFS08_34" | i18n}}</th>
@@ -75,9 +75,10 @@
       <!-- A50_F2 -->
       <div class="process-button">
         <!-- A50_2 -->
-        <button @click="nextToStepThree()" class="btn btn-primary btn-lg btn-block">{{'申請する' | i18n}}</button>
+        <button @click="nextToStepThree()" v-if="mode" tabindex="2" class="btn btn-primary btn-lg btn-block">{{'KAFS08_39' | i18n}}</button>
+        <button @click="nextToStepThree()" v-else tabindex="2" class="btn btn-primary btn-lg btn-block">{{'KAFS08_41' | i18n}}</button>
         <!-- A50_3 -->
-        <button @click="prevStepOne()" class="btn btn-secondary btn-lg btn-block">{{'KAFS08_40' | i18n}}</button>
+        <button @click="prevStepOne()" tabindex="3" class="btn btn-secondary btn-lg btn-block">{{'KAFS08_40' | i18n}}</button>
       </div>
     </div>
   </div>

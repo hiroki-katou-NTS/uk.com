@@ -2668,6 +2668,20 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     public static final Program KDPS01T = new Program(WebAppId.MOBI, ProgramIdConsts.KDPS01T, "KDPS01_23",
             "/kdp/s01/t");
 
+    public static final Program KAFS08A = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A, "KAFS08_1",
+            "kaf/s08/a");
+    public static final Program KAFS08A1 = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A1, "KAFS08_2",
+            "kaf/s08/a1");
+    public static final Program KAFS08A2 = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08A2, "KAFS08_3",
+            "kaf/s08/a2");
+    public static final Program KAFS08B = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08B, "KAFS08_7",
+            "kaf/s08/b");
+    public static final Program KAFS08C = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08C, "KAFS08_8",
+            "kaf/s08/c");
+    public static final Program KAFS08D = new Program(WebAppId.MOBI, ProgramIdConsts.KAFS08D, "KAFS08_9",
+            "kaf/s08/d");
+
+
     /**
      * CPS013
      */

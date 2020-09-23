@@ -108,6 +108,11 @@ export class KafS08A2Component extends KafS00ShrComponent {
                     //console.log(vm.businessTripActualContent.length);
                 });
             }
+
+            setTimeout(function () {
+                let focusElem = document.getElementById('table-a10');
+                (focusElem as HTMLElement).focus();
+            }, 200);
         });
     }
 
