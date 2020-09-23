@@ -55,7 +55,17 @@ module nts.uk.com.view.kwr002.f {
             vm.$blockui('show');
 
             service.executeCopy(dataCopy).done((data: any) => {
-
+              if(!data){
+                let shareData = {
+                  duplicateCode: vm.duplicateCode(),
+                  duplicateName: vm.duplicateName()
+                }
+                setShared("dataFromScreenF",shareData);
+                vm.closeDialog();
+              }
+              else {
+                vm.$dialog.alert(data);
+              }
             }).fail(function(err) {
                 vm.$dialog.alert(err.messageId);
             }).always(function() {

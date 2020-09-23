@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.function.app.find.attendancerecord.duplicate;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
-import nts.uk.ctx.at.function.app.find.dailyworkschedule.DataReturnDto;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordFreeSettingRepository;
@@ -58,12 +55,12 @@ public class AttendanceRecordDuplicateFinder {
 //		}
 	}
 
-	public DataReturnDto executeCopy(AttendanceRecordDuplicateDto dto) {
+	public String executeCopy(AttendanceRecordDuplicateDto dto) {
 		String companyId = AppContexts.user().companyId();
 		Optional<String> employeeId = dto.getSelectedType() == ItemSelectionType.FREE_SETTING.value
 						? Optional.of(AppContexts.user().employeeId())
 						: Optional.empty();
-
+		
 		// INPUT．項目選択種類をチェック Check INPUT.Item selection type
 		// ドメインモデル「出勤簿の出力項目定型設定」を取得する Nhận domain model 「出勤簿の出力項目定型設定」
 		// ドメインモデル「出勤簿の出力項目自由設定」を取得する  Nhận domain model 「...」
@@ -74,11 +71,9 @@ public class AttendanceRecordDuplicateFinder {
 		
 		// 複製先のドメインモデルが存在しているかチェックする Check xem có tồn tại domain model duplicate destination không
 		if (setting.isPresent()) {
-			throw new BusinessException("Msg_3");
+			return "Msg_3";
 		}
-		
 		return null;
 	}
-	
 	
 }

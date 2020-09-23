@@ -298,13 +298,36 @@ module nts.uk.com.view.kwr002.b {
 
         public openDialogF() {
             let vm = this;
+            let currentData = vm.currentARES();
+            let rcdExport = {
+              attendanceRecExpDaily: getShared('attendanceRecExpDaily'),//=9
+              attendanceRecExpMonthly: getShared('attendanceRecExpMonthly'),//>=9
+              attendanceRecItemList: getShared('attendanceRecItemList'),
+              sealStamp: getShared('sealStamp'),
+              useSeal: getShared('useSeal'),
+
+              isInvalid: function() {
+                  return ((!_.isArray(this.attendanceRecExpDaily) && !_.isArray(this.attendanceRecExpMonthly))
+                      || (!this.isListValid(this.attendanceRecExpDaily) && !this.isListValid(this.attendanceRecExpMonthly)));
+              },
+
+              isListValid: function(list) {
+                  return _.find(list, (item: any) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
+              }
+          };
             let data = new OpenDialogFParam(vm.selectionType
                 , vm.currentARES().code()
                 , vm.currentARES().name()
                 , vm.layoutId);
             setShared("dataFromScreenB", data, true);
             modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
-
+              let dataFromScreenF = getShared("dataFromScreenF")
+              currentData.code(dataFromScreenF.duplicateCode);
+              currentData.name(dataFromScreenF.duplicateName);
+            let dataCoppy  = vm.createTransferData(currentData, rcdExport);
+              service.addARES(dataCoppy).done((data: any) =>{
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
+              })
             });
         }
 
