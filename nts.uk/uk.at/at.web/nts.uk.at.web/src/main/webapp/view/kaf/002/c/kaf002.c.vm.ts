@@ -149,7 +149,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             });
         }  
        fetchData() {
-            const self = this;
             self.$blockui('show');
             let appplication = ko.toJS(self.application) as Application;
             let appId = appplication.appID;
@@ -593,7 +592,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                  }
                 self.$dialog.error(param).then(() => {
                     if (res.messageId == 'Msg_197') {
-                        self.$jump("com", "/view/ccg/008/a/index.xhtml")
+                        window.location.reload();
                     }
                 });
              }
