@@ -3,6 +3,8 @@
 module nts.uk.at.kaf021.a {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
+    import common = nts.uk.at.kaf021.common;
+
     const API = {
         INIT: 'screen/at/kaf021/init',
         CURRENT_MONTH: 'screen/at/kaf021/get-current-month',
@@ -18,21 +20,33 @@ module nts.uk.at.kaf021.a {
         processingMonth: number = 0;
         startingMonth: number = 0;
 
-        appTypes: Array<AppType> = [];
-        appTypeSelected: KnockoutObservable<AppTypeEnum> = ko.observable(null);
+        appTypes: Array<common.AppType> = [];
+        appTypeSelected: KnockoutObservable<common.AppTypeEnum> = ko.observable(null);
 
-        items: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string> = ko.observable("");
-
-        datas: Array<EmployeeAgreementTime> = [];
-
-        API = {
-            getListWorkCycleDto: 'screen/at/ksm003/a/get',
-        };
-
-        constructor() {
+        datas: Array<common.EmployeeAgreementTime> = [];
+        constructor(isBackFromScreenB: boolean) {
             super();
             const vm = this;
+
+            vm.appTypes.push(new common.AppType(common.AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), 1)));
+            vm.appTypes.push(new common.AppType(common.AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), 2)));
+            vm.appTypes.push(new common.AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
+
+            if (isBackFromScreenB) {
+                let cacheJson: string = localStorage.getItem('kaf021a_cache');
+                let cache: CacheData = JSON.parse(cacheJson);
+                if (cache) {
+                    vm.datas = cache.datas;
+                    vm.appTypeSelected(cache.appType);
+                } else {
+                    vm.getMockData();
+                    vm.appTypeSelected(common.AppTypeEnum.CURRENT_MONTH);
+                }
+            } else {
+                vm.getMockData();
+                vm.appTypeSelected(common.AppTypeEnum.CURRENT_MONTH);
+            }
+
             vm.ccg001ComponentOption = <GroupOption>{
                 /** Common properties */
                 systemType: 1,
@@ -84,19 +98,14 @@ module nts.uk.at.kaf021.a {
                     });
                 }
             }
-
-            vm.appTypes.push(new AppType(AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), 1)));
-            vm.appTypes.push(new AppType(AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), 2)));
-            vm.appTypes.push(new AppType(AppTypeEnum.YEARLY, this.$i18n("KAF021_4")));
         }
 
         created() {
             const vm = this;
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
-            vm.getMockData();
             vm.initData();
 
-            vm.appTypeSelected.subscribe((value: AppTypeEnum) => {
+            vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
                 vm.fetchData().done(() => {
                     $("#grid").mGrid("destroy");
                     vm.loadMGrid();
@@ -131,21 +140,21 @@ module nts.uk.at.kaf021.a {
             vm.$blockui("invisible");
             vm.datas = [];
             switch (vm.appTypeSelected()) {
-                case AppTypeEnum.CURRENT_MONTH:
+                case common.AppTypeEnum.CURRENT_MONTH:
                     vm.$ajax(API.CURRENT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = EmployeeAgreementTime.fromApp(data);
+                        vm.datas = common.EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
                     break;
-                case AppTypeEnum.NEXT_MONTH:
+                case common.AppTypeEnum.NEXT_MONTH:
                     vm.$ajax(API.NEXT_MONTH, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = EmployeeAgreementTime.fromApp(data);
+                        vm.datas = common.EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
                     break;
-                case AppTypeEnum.YEARLY:
+                case common.AppTypeEnum.YEARLY:
                     vm.$ajax(API.YEAR, { employees: vm.empSearchItems }).done((data: any) => {
-                        vm.datas = EmployeeAgreementTime.fromApp(data);
+                        vm.datas = common.EmployeeAgreementTime.fromApp(data);
                         dfd.resolve();
                     }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
                     break;
@@ -158,7 +167,7 @@ module nts.uk.at.kaf021.a {
 
         loadMGrid() {
             const vm = this;
-            let height = $(window).height() - 90 - 364;
+            let height = $(window).height() - 90 - 339;
             let width = $(window).width() + 20 - 1170;
 
             new nts.uk.ui.mgrid.MGrid($("#grid")[0], {
@@ -167,6 +176,7 @@ module nts.uk.at.kaf021.a {
                 subWidth: width + "px",
                 subHeight: height + "px",
                 headerHeight: '60px',
+                rowHeight: '40px',
                 dataSource: vm.datas,
                 primaryKey: 'employeeId',
                 primaryKeyDataType: 'string',
@@ -224,7 +234,6 @@ module nts.uk.at.kaf021.a {
                     }
                 ]
             }).create();
-            //self.setPageStatus();
         }
 
         getColumns(): Array<any> {
@@ -233,7 +242,7 @@ module nts.uk.at.kaf021.a {
             var columns = [];
             columns.push({ headerText: "key", key: 'employeeId', dataType: 'string', hidden: true });
             // A3_1
-            columns.push({ headerText: vm.$i18n("KAF021_6"), key: 'checked', dataType: 'boolean', width: '40px', checkbox: false, ntsControl: "CheckBox" });
+            columns.push({ headerText: vm.$i18n("KAF021_6"), key: 'checked', dataType: 'boolean', width: '35px', checkbox: false, ntsControl: "CheckBox" });
             // A3_2
             columns.push({ headerText: vm.$i18n("KAF021_7"), key: 'status', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_3
@@ -247,22 +256,22 @@ module nts.uk.at.kaf021.a {
                 date.setMonth(vm.startingMonth + i);
                 let month = date.getMonth() + 1;
                 columns.push({
-                    headerText: vm.getMonthHeader(month), key: vm.getMonthKey(month), dataType: 'string', width: '60px', ntsControl: "Label"
+                    headerText: vm.getMonthHeader(month), key: vm.getMonthKey(month), dataType: 'string', width: '75px', ntsControl: "Label"
                 });
             }
 
             // A3_17
-            columns.push({ headerText: vm.$i18n("KAF021_26"), key: 'year', dataType: 'string', width: '70px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_26"), key: 'yearStr', dataType: 'string', width: '85px', ntsControl: "Label" });
             // A3_18
-            columns.push({ headerText: vm.$i18n("KAF021_10"), key: 'monthAverage2', dataType: 'string', width: '60px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_10"), key: 'monthAverage2Str', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_19
-            columns.push({ headerText: vm.$i18n("KAF021_11"), key: 'monthAverage3', dataType: 'string', width: '60px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_11"), key: 'monthAverage3Str', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_20
-            columns.push({ headerText: vm.$i18n("KAF021_12"), key: 'monthAverage4', dataType: 'string', width: '60px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_12"), key: 'monthAverage4Str', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_21
-            columns.push({ headerText: vm.$i18n("KAF021_13"), key: 'monthAverage5', dataType: 'string', width: '60px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_13"), key: 'monthAverage5Str', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_22
-            columns.push({ headerText: vm.$i18n("KAF021_14"), key: 'monthAverage6', dataType: 'string', width: '60px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_14"), key: 'monthAverage6Str', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_23
             columns.push({ headerText: vm.$i18n("KAF021_15"), key: 'exceededNumber', dataType: 'string', width: '60px', ntsControl: "Label" });
             return columns;
@@ -270,29 +279,29 @@ module nts.uk.at.kaf021.a {
 
         getCellStyles(): Array<any> {
             const vm = this;
-            let cellStates: Array<CellState> = [];
-            _.forEach(vm.datas, (data: EmployeeAgreementTime) => {
+            let cellStates: Array<common.CellState> = [];
+            _.forEach(vm.datas, (data: common.EmployeeAgreementTime) => {
 
-                cellStates.push(new CellState(data.employeeId, 'checked', ["center-align"]));
-                cellStates.push(new CellState(data.employeeId, 'month1', ["center-align"].concat(vm.getMonthStatusColor(data.month1Status))));
-                cellStates.push(new CellState(data.employeeId, 'month2', ["center-align"].concat(vm.getMonthStatusColor(data.month2Status))));
-                cellStates.push(new CellState(data.employeeId, 'month3', ["center-align"].concat(vm.getMonthStatusColor(data.month3Status))));
-                cellStates.push(new CellState(data.employeeId, 'month4', ["center-align"].concat(vm.getMonthStatusColor(data.month4Status))));
-                cellStates.push(new CellState(data.employeeId, 'month5', ["center-align"].concat(vm.getMonthStatusColor(data.month5Status))));
-                cellStates.push(new CellState(data.employeeId, 'month6', ["center-align"].concat(vm.getMonthStatusColor(data.month6Status))));
-                cellStates.push(new CellState(data.employeeId, 'month7', ["center-align"].concat(vm.getMonthStatusColor(data.month7Status))));
-                cellStates.push(new CellState(data.employeeId, 'month8', ["center-align"].concat(vm.getMonthStatusColor(data.month8Status))));
-                cellStates.push(new CellState(data.employeeId, 'month9', ["center-align"].concat(vm.getMonthStatusColor(data.month9Status))));
-                cellStates.push(new CellState(data.employeeId, 'month10', ["center-align"].concat(vm.getMonthStatusColor(data.month10Status))));
-                cellStates.push(new CellState(data.employeeId, 'month11', ["center-align"].concat(vm.getMonthStatusColor(data.month11Status))));
-                cellStates.push(new CellState(data.employeeId, 'month12', ["center-align"].concat(vm.getMonthStatusColor(data.month12Status))));
-                cellStates.push(new CellState(data.employeeId, 'year', ["center-align"]));
-                cellStates.push(new CellState(data.employeeId, 'monthAverage2', ["center-align"]));
-                cellStates.push(new CellState(data.employeeId, 'monthAverage3', ["center-align"]));
-                cellStates.push(new CellState(data.employeeId, 'monthAverage4', ["center-align"]));
-                cellStates.push(new CellState(data.employeeId, 'monthAverage5', ["center-align"]));
-                cellStates.push(new CellState(data.employeeId, 'monthAverage6', ["center-align"]));
-                cellStates.push(new CellState(data.employeeId, 'exceededNumber', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'checked', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'month1Str', ["center-align"].concat(vm.getMonthStatusColor(data.month1Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month2Str', ["center-align"].concat(vm.getMonthStatusColor(data.month2Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month3Str', ["center-align"].concat(vm.getMonthStatusColor(data.month3Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month4Str', ["center-align"].concat(vm.getMonthStatusColor(data.month4Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month5Str', ["center-align"].concat(vm.getMonthStatusColor(data.month5Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month6Str', ["center-align"].concat(vm.getMonthStatusColor(data.month6Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month7Str', ["center-align"].concat(vm.getMonthStatusColor(data.month7Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month8Str', ["center-align"].concat(vm.getMonthStatusColor(data.month8Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month9Str', ["center-align"].concat(vm.getMonthStatusColor(data.month9Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month10Str', ["center-align"].concat(vm.getMonthStatusColor(data.month10Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month11Str', ["center-align"].concat(vm.getMonthStatusColor(data.month11Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'month12Str', ["center-align"].concat(vm.getMonthStatusColor(data.month12Status))));
+                cellStates.push(new common.CellState(data.employeeId, 'yearStr', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'monthAverage2Str', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'monthAverage3Str', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'monthAverage4Str', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'monthAverage5Str', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'monthAverage6Str', ["center-align"]));
+                cellStates.push(new common.CellState(data.employeeId, 'exceededNumber', ["center-align"]));
             })
             return cellStates;
         }
@@ -301,7 +310,17 @@ module nts.uk.at.kaf021.a {
             const vm = this;
             let date = vm.$date.today();
             let currentMonth = vm.getMonthKey(date.getMonth() + 1);
-            return [{ key: currentMonth, colors: ['#ffffff'] }]
+            return [
+                { key: "checked", colors: ['padding-5'] },
+                { key: "status", colors: ['padding-12'] },
+                { key: "monthAverage2Str", colors: ['padding-12'] },
+                { key: "monthAverage3Str", colors: ['padding-12'] },
+                { key: "monthAverage4Str", colors: ['padding-12'] },
+                { key: "monthAverage5Str", colors: ['padding-12'] },
+                { key: "monthAverage6Str", colors: ['padding-12'] },
+                { key: "exceededNumber", colors: ['padding-5'] },
+                { key: currentMonth, colors: ['#ffffff'] }
+            ]
         }
 
         getMonthHeader(month: number) {
@@ -309,33 +328,38 @@ module nts.uk.at.kaf021.a {
         }
 
         getMonthKey(month: number) {
-            return 'month' + month;
+            return 'month' + month + 'Str';
         }
 
-        getMonthStatusColor(status: AgreementTimeStatusOfMonthly) {
+        getMonthStatusColor(status: common.AgreementTimeStatusOfMonthly) {
             switch (status) {
-                case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM:
-                case AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM:
                     return ["bg-alarm", "red-text"];
-                case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR:
-                case AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR:
                     return ["bg-error", "black-text"];
-                case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP:
-                case AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP:
+                case common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP:
                     return ["bg-special"];
                 default: return [];
             }
         }
 
         nextScreen() {
-
+            const vm = this;
+            let dataAll: Array<common.EmployeeAgreementTime> = $("#grid").mGrid("dataSource", true);
+            let dataSelected = _.filter(dataAll, (item: common.EmployeeAgreementTime) => { return item.checked });
+            let cache = new CacheData(vm.appTypeSelected(), dataAll);
+            localStorage.setItem('kaf021a_cache', JSON.stringify(cache));
+            vm.$jump('at', '/view/kaf/021/b/index.xhtml', { datas: dataSelected, appType: vm.appTypeSelected() });
         }
 
         getMockData() {
             const vm = this;
-            let datas: Array<IEmployeeAgreementTime> = []
+            let datas: Array<common.IEmployeeAgreementTime> = []
             for (let i = 0; i < 100; i++) {
-                let dto: IEmployeeAgreementTime = {
+                let dto: common.IEmployeeAgreementTime = {
                     employeeId: "employeeId" + i,
                     employeeCode: "employeeCode " + i,
                     employeeName: "employeeName " + i,
@@ -347,12 +371,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 100 * i,
                             maxTime: 100 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.NORMAL
+                            status: common.AgreementTimeStatusOfMonthly.NORMAL
                         },
                         maxTime: {
                             time: 200 * i,
                             maxTime: 200 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.NORMAL
+                            status: common.AgreementTimeStatusOfMonthly.NORMAL
                         },
                     },
                     month2: {
@@ -360,12 +384,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 200 * i,
                             maxTime: 200 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
                         },
                         maxTime: {
                             time: 300 * i,
                             maxTime: 300 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR
                         },
                     },
                     month3: {
@@ -373,12 +397,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 3 * i,
                             maxTime: 3 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM
                         },
                         maxTime: {
                             time: 4 * i,
                             maxTime: 4 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM
                         },
                     },
                     month4: {
@@ -386,12 +410,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 4 * i,
                             maxTime: 4 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR
                         },
                         maxTime: {
                             time: 5 * i,
                             maxTime: 5 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ERROR
                         },
                     },
                     month5: {
@@ -399,12 +423,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 5 * i,
                             maxTime: 5 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                         maxTime: {
                             time: 6 * i,
                             maxTime: 6 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                     },
                     month6: {
@@ -412,12 +436,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 6 * i,
                             maxTime: 6 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
+                            status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
                         },
                         maxTime: {
                             time: 7 * i,
                             maxTime: 7 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
+                            status: common.AgreementTimeStatusOfMonthly.NORMAL_SPECIAL
                         },
                     },
                     month7: {
@@ -425,12 +449,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 7 * i,
                             maxTime: 7 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
                         },
                         maxTime: {
                             time: 8 * i,
                             maxTime: 8 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ERROR_SP
                         },
                     },
                     month8: {
@@ -438,12 +462,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 8 * i,
                             maxTime: 8 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                         maxTime: {
                             time: 9 * i,
                             maxTime: 9 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                     },
                     month9: {
@@ -451,12 +475,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 9 * i,
                             maxTime: 9 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
                         },
                         maxTime: {
                             time: 10 * i,
                             maxTime: 10 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_LIMIT_ALARM_SP
                         },
                     },
                     month10: {
@@ -464,12 +488,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 10 * i,
                             maxTime: 10 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY
                         },
                         maxTime: {
                             time: 11 * i,
                             maxTime: 11 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_BG_GRAY
                         },
                     },
                     month11: {
@@ -477,12 +501,12 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 12 * i,
                             maxTime: 12 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                         maxTime: {
                             time: 12 * i,
                             maxTime: 12 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                     },
                     month12: {
@@ -490,43 +514,43 @@ module nts.uk.at.kaf021.a {
                         time: {
                             time: 1300 * i,
                             maxTime: 1300 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                         maxTime: {
                             time: 1400 * i,
                             maxTime: 1400 * i + 10,
-                            status: AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
+                            status: common.AgreementTimeStatusOfMonthly.EXCESS_EXCEPTION_LIMIT_ALARM
                         },
                     },
                     year: {
                         limitTime: 1000 * i,
                         time: 10000 * i,
-                        status: AgreTimeYearStatusOfMonthly.EXCESS_LIMIT
+                        status: common.AgreTimeYearStatusOfMonthly.EXCESS_LIMIT
                     },
                     monthAverage2: {
                         totalTime: 120 * i,
                         time: 140 * i,
-                        status: AgreMaxTimeStatusOfMonthly.NORMAL
+                        status: common.AgreMaxTimeStatusOfMonthly.NORMAL
                     },
                     monthAverage3: {
                         totalTime: 1300 * i,
                         time: 1500 * i,
-                        status: AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME
+                        status: common.AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME
                     },
                     monthAverage4: {
                         totalTime: 1400 * i,
                         time: 1600 * i,
-                        status: AgreMaxTimeStatusOfMonthly.NORMAL
+                        status: common.AgreMaxTimeStatusOfMonthly.NORMAL
                     },
                     monthAverage5: {
                         totalTime: 150 * i,
                         time: 170 * i,
-                        status: AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME
+                        status: common.AgreMaxTimeStatusOfMonthly.EXCESS_MAXTIME
                     },
                     monthAverage6: {
                         totalTime: 16 * i,
                         time: 18 * i,
-                        status: AgreMaxTimeStatusOfMonthly.NORMAL
+                        status: common.AgreMaxTimeStatusOfMonthly.NORMAL
                     },
                     exceededNumber: i + 1
                 };
@@ -534,7 +558,7 @@ module nts.uk.at.kaf021.a {
                 datas.push(dto);
             }
 
-            vm.datas = EmployeeAgreementTime.fromApp(datas);
+            vm.datas = common.EmployeeAgreementTime.fromApp(datas);
         }
     }
 
@@ -596,332 +620,14 @@ module nts.uk.at.kaf021.a {
         affiliationName: string;
     }
 
-    class CellState {
-        rowId: string;
-        columnKey: string;
-        state: Array<any>
-        constructor(rowId: string, columnKey: string, state: Array<any>) {
-            this.rowId = rowId;
-            this.columnKey = columnKey;
-            this.state = state;
+    
+    class CacheData {
+        appType: common.AppTypeEnum;
+        datas: Array<common.EmployeeAgreementTime>;
+
+        constructor(appType: common.AppTypeEnum, datas: Array<common.EmployeeAgreementTime>) {
+            this.appType = appType;
+            this.datas = datas;
         }
-    }
-
-    class AppType {
-        value: AppTypeEnum;
-        name: string;
-
-        constructor(value: AppTypeEnum, name: string) {
-            this.value = value;
-            this.name = name;
-        }
-    }
-
-    enum AppTypeEnum {
-        CURRENT_MONTH = 1,
-        NEXT_MONTH = 2,
-        YEARLY = 3
-    }
-
-    class EmployeeAgreementTime {
-        employeeId: string;
-        checked: boolean;
-        status: string;
-        wkpName: string;
-        employeeName: string;
-        month1: any;
-        month1Status: AgreementTimeStatusOfMonthly;
-        month2: any;
-        month2Status: AgreementTimeStatusOfMonthly;
-        month3: any;
-        month3Status: AgreementTimeStatusOfMonthly;
-        month4: any;
-        month4Status: AgreementTimeStatusOfMonthly;
-        month5: any;
-        month5Status: AgreementTimeStatusOfMonthly;
-        month6: any;
-        month6Status: AgreementTimeStatusOfMonthly;
-        month7: any;
-        month7Status: AgreementTimeStatusOfMonthly;
-        month8: any;
-        month8Status: AgreementTimeStatusOfMonthly;
-        month9: any;
-        month9Status: AgreementTimeStatusOfMonthly;
-        month10: any;
-        month10Status: AgreementTimeStatusOfMonthly;
-        month11: any;
-        month11Status: AgreementTimeStatusOfMonthly;
-        month12: any;
-        month12Status: AgreementTimeStatusOfMonthly;
-        year: any;
-        yearStatus: AgreTimeYearStatusOfMonthly
-        monthAverage2: any;
-        monthAverage2Status: AgreMaxTimeStatusOfMonthly
-        monthAverage3: any;
-        monthAverage3Status: AgreMaxTimeStatusOfMonthly
-        monthAverage4: any;
-        monthAverage4Status: AgreMaxTimeStatusOfMonthly
-        monthAverage5: any;
-        monthAverage5Status: AgreMaxTimeStatusOfMonthly
-        monthAverage6: any;
-        monthAverage6Status: AgreMaxTimeStatusOfMonthly
-        exceededNumber: number;
-
-        constructor(data: IEmployeeAgreementTime) {
-            this.employeeId = data.employeeId;
-            this.checked = false;
-            this.status = "status";
-            this.wkpName = data.affiliationName;
-            this.employeeName = data.employeeCode + "　" + data.employeeName;
-            this.month1 = parseTime(data.month1.time?.time, true).format();
-            this.month1Status = data.month1.time?.status;
-            this.month2 = parseTime(data.month2.time?.time, true).format();
-            this.month2Status = data.month2.time?.status;
-            this.month3 = parseTime(data.month3.time?.time, true).format();
-            this.month3Status = data.month3.time?.status;
-            this.month4 = parseTime(data.month4.time?.time, true).format();
-            this.month4Status = data.month4.time?.status;
-            this.month5 = parseTime(data.month5.time?.time, true).format();
-            this.month5Status = data.month5.time?.status;
-            this.month6 = parseTime(data.month6.time?.time, true).format();
-            this.month6Status = data.month6.time?.status;
-            this.month7 = parseTime(data.month7.time?.time, true).format();
-            this.month7Status = data.month7.time?.status;
-            this.month8 = parseTime(data.month8.time?.time, true).format();
-            this.month8Status = data.month8.time?.status;
-            this.month9 = parseTime(data.month9.time?.time, true).format();
-            this.month9Status = data.month9.time?.status;
-            this.month10 = parseTime(data.month10.time?.time, true).format();
-            this.month10Status = data.month10.time?.status;
-            this.month11 = parseTime(data.month11.time?.time, true).format();
-            this.month11Status = data.month11.time?.status;
-            this.month12 = parseTime(data.month12.time?.time, true).format();
-            this.month12Status = data.month12.time?.status;
-            this.year = parseTime(data.year?.time, true).format();
-            this.yearStatus = data.year?.status;
-            this.monthAverage2 = parseTime(data.monthAverage2?.time, true).format();
-            this.monthAverage2Status = data.monthAverage2?.status;
-            this.monthAverage3 = parseTime(data.monthAverage3?.time, true).format();
-            this.monthAverage3Status = data.monthAverage3?.status;
-            this.monthAverage4 = parseTime(data.monthAverage4?.time, true).format();
-            this.monthAverage4Status = data.monthAverage4?.status;
-            this.monthAverage5 = parseTime(data.monthAverage5?.time, true).format();
-            this.monthAverage5Status = data.monthAverage5?.status;
-            this.monthAverage6 = parseTime(data.monthAverage6?.time, true).format();
-            this.monthAverage6Status = data.monthAverage6?.status;
-            this.exceededNumber = data.exceededNumber;
-        }
-
-        static fromApp(data: Array<IEmployeeAgreementTime>): Array<EmployeeAgreementTime> {
-            return _.map(data, (item: IEmployeeAgreementTime) => { return new EmployeeAgreementTime(item) })
-        }
-    }
-
-    interface IEmployeeAgreementTime {
-        /**
-         * 社員ID
-         */
-        employeeId: string;
-        /**
-         * 社員コード
-         */
-        employeeCode: string;
-        /**
-         * 社員名
-         */
-        employeeName: string;
-        /**
-         * 所属CD
-         */
-        affiliationCode: string;
-        /**
-         * 所属ID
-         */
-        affiliationId: string;
-        /**
-         * 所属名称
-         */
-        affiliationName: string;
-        /**
-         * 1月度
-         */
-        month1: IAgreementTimeMonth;
-        /**
-         * 2月度
-         */
-        month2: IAgreementTimeMonth;
-        /**
-         * 3月度
-         */
-        month3: IAgreementTimeMonth;
-        /**
-         * 4月度
-         */
-        month4: IAgreementTimeMonth;
-        /**
-         * 5月度
-         */
-        month5: IAgreementTimeMonth;
-        /**
-         * 6月度
-         */
-        month6: IAgreementTimeMonth;
-        /**
-         * 7月度
-         */
-        month7: IAgreementTimeMonth;
-        /**
-         * 8月度
-         */
-        month8: IAgreementTimeMonth;
-        /**
-         * 9月度
-         */
-        month9: IAgreementTimeMonth;
-        /**
-         * 10月度
-         */
-        month10: IAgreementTimeMonth;
-        /**
-         * 11月度
-         */
-        month11: IAgreementTimeMonth;
-        /**
-         * 12月度
-         */
-        month12: IAgreementTimeMonth;
-        /**
-         * 年間
-         */
-        year: IAgreementTimeYear;
-        /**
-         * 直近2ヵ月平均
-         */
-        monthAverage2: IAgreementMaxAverageTime;
-        /**
-         * 直近3ヵ月平均
-         */
-        monthAverage3: IAgreementMaxAverageTime;
-        /**
-         * 直近4ヵ月平均
-         */
-        monthAverage4: IAgreementMaxAverageTime;
-        /**
-         * 直近5ヵ月平均
-         */
-        monthAverage5: IAgreementMaxAverageTime;
-        /**
-         * 直近6ヵ月平均
-         */
-        monthAverage6: IAgreementMaxAverageTime;
-        /**
-         * 36協定超過情報.超過回数
-         */
-        exceededNumber: number;
-    }
-
-    interface IAgreementTimeMonth {
-        /**
-         * 月度
-         */
-        yearMonth: number;
-
-        /**
-         * 管理期間の36協定時間
-         */
-        time?: IAgreementTime;
-
-        /**
-         * 36協定時間一覧.月別実績の36協定上限時間
-         */
-        maxTime?: IAgreementTime;
-    }
-
-    interface IAgreementTime {
-        /**
-         * 36協定時間
-         */
-        time: number;
-
-        /**
-         * 上限時間
-         */
-        maxTime: number;
-
-        /**
-         * 状態
-         */
-        status: AgreementTimeStatusOfMonthly;
-    }
-
-    /**
-     * 月別実績の36協定時間状態
-     */
-    enum AgreementTimeStatusOfMonthly {
-        /** 正常 */
-        NORMAL = 0,
-        /** 限度エラー時間超過 */
-        EXCESS_LIMIT_ERROR = 1,
-        /** 限度アラーム時間超過 */
-        EXCESS_LIMIT_ALARM = 2,
-        /** 特例限度エラー時間超過 */
-        EXCESS_EXCEPTION_LIMIT_ERROR = 3,
-        /** 特例限度アラーム時間超過 */
-        EXCESS_EXCEPTION_LIMIT_ALARM = 4,
-        /** 正常（特例あり） */
-        NORMAL_SPECIAL = 5,
-        /** 限度エラー時間超過（特例あり） */
-        EXCESS_LIMIT_ERROR_SP = 6,
-        /** 限度アラーム時間超過（特例あり） */
-        EXCESS_LIMIT_ALARM_SP = 7,
-        /** tính Tổng hiệp định 36） */
-        EXCESS_BG_GRAY = 8
-    }
-
-    interface IAgreementTimeYear {
-        /**
-         * 限度時間
-         */
-        limitTime: number;
-        /**
-         * 実績時間
-         */
-        time: number;
-        /**
-         * 状態
-         */
-        status: AgreTimeYearStatusOfMonthly;
-    }
-
-    enum AgreTimeYearStatusOfMonthly {
-        /** 正常 */
-        NORMAL = 0,
-        /** 限度超過 */
-        EXCESS_LIMIT = 1
-    }
-
-    interface IAgreementMaxAverageTime {
-        /**
-        * 合計時間
-        */
-        totalTime: number;
-        /**
-         * 平均時間
-         */
-        time: number;
-        /**
-         * 状態
-         */
-        status: AgreMaxTimeStatusOfMonthly;
-    }
-
-    /**
-     * 月別実績の36協定上限時間状態
-     */
-    enum AgreMaxTimeStatusOfMonthly {
-        /** 正常 */
-        NORMAL = 0,
-        /** 上限時間超過 */
-        EXCESS_MAXTIME = 1
     }
 }

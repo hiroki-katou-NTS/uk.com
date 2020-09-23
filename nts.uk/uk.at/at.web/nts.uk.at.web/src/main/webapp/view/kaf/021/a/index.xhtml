@@ -15,6 +15,7 @@
         <com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web"/>
 
         <com:stylefile path="kaf021.a.main.css"/>
+        <com:scriptfile path="../common/kaf021.common.js"/>
         <com:scriptfile path="kaf021.a.vm.js"/>
 
     </ui:define>
@@ -24,7 +25,7 @@
                 <!--A1_1-->
                 <div tabindex="1" id="com-ccg001"/>
             </div>
-            <div class="kaf021-content">
+            <div class="kaf021a-content">
                 <!--A1_2-->
                 <div id="A1_2" class="panel panel-frame">
                     <!--A1_3-->
@@ -51,10 +52,11 @@
                     </div>
                     <div class="cell valign-center">
                         <!--A2_1-->
-                        <button tabindex="4" data-bind="click: nextScreen()">#{i18n.getText('KAF021_5')}</button>
+                        <button tabindex="4" data-bind="click: nextScreen">#{i18n.getText('KAF021_5')}</button>
                         <span class="caret-right caret-inline"/>
                     </div>
                 </div>
+                <!--A4_24-->
                 <div id="grid"></div>
             </div>
         </div>

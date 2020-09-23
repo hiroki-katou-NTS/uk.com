@@ -1,14 +1,18 @@
-.kaf021-content{
+.kaf021a-content{
     margin-left: 80px;
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 #A1_2{
-    width: 500px;
+    width: 300px;
+}
+
+#A1_2 .label{
+    white-space: pre-wrap;
 }
 
 #tbl-control{
-    margin-top: 8px;
+    margin-top: 5px;
     width: 1180px;
 }
 
@@ -27,11 +31,24 @@
 }
 
 #grid{
-    margin-top: 8px;
+    margin-top: 5px;
 }
 
 #grid .mgrid-header td{
     vertical-align: middle !important;
+}
+
+#grid .mgrid-fixed:not(.mgrid-header) .mgrid-fixed-table tr:not(.mgrid-top-space):not(.mgrid-bottom-space), 
+#grid .mgrid-free:not(.mgrid-header) .mgrid-free-table tr:not(.mgrid-top-space):not(.mgrid-bottom-space){
+    height: 39px !important;
+}
+
+#grid .padding-5{
+    padding: 0px 5px;;
+}
+
+#grid .padding-12{
+    padding: 0px 12px;;
 }
 
 .center-align {
