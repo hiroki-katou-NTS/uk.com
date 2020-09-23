@@ -54,6 +54,12 @@ export class KafS08AComponent extends Vue {
         console.log(vm.params);
     }
 
+    public handlerChangeTime(derpartureTime,retureTime) {
+        const vm = this;
+        vm.derpartureTime = derpartureTime;
+        vm.returnTime = retureTime;
+    }
+
     //thực hiện emit từ component con A1
     public ProcessNextToStepTwo(listDate,
                                 application,

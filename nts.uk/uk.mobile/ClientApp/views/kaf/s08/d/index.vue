@@ -55,7 +55,7 @@
     </div>
     <!-- D4_2 -->
     <nts-time-editor
-      v-model="params.departureTime"
+      v-model="params.derpartureTime"
       :name="'KAFS08_75'"
       time-input-type="time-with-day"
       :columns="{ title: 'col-3', input: 'col-5' }"
