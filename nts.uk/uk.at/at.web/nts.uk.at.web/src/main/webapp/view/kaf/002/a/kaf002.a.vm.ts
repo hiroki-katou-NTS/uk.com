@@ -33,6 +33,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         isVisibleComlumn: boolean = true;
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
         mode: number = 0; // 0 ->a, 1->b, 2->b(view)
+        reasonList: Array<GoOutTypeDispControl>;
+
 //    ※M2.1_1
 //    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
     
@@ -127,7 +129,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         // do not have actual data, or date is not selected
         self.initData();
     }
-    reasonList: Array<GoOutTypeDispControl>;
     bindReasonList(data: any) {
         const self = this;
         let reasonList = data.appStampSetting.goOutTypeDispControl;
@@ -273,7 +274,11 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                      messageId: res.messageId,
                      messageParams: res.parameterIds
              }
-            self.$dialog.error(param);
+            self.$dialog.error(param).then(() => {
+                if (res.messageId == 'Msg_1757') {
+                    self.$jump("com", "/view/ccg/008/a/index.xhtml")
+                }
+            });
          }
     }
     public register() {
@@ -300,6 +305,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
             .done((res: any) => {
                 self.data = res;
                 self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                self.bindReasonList(self.data);
                 self.bindTabM(self.data);
                 self.bindComment(self.data);
             }).fail(res => {
