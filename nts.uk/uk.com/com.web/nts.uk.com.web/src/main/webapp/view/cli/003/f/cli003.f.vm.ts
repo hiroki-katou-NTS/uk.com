@@ -545,21 +545,22 @@ module nts.uk.com.view.cli003.f {
             let recordType = Number(vm.logTypeSelectedCode());
             //TODO F：データ保存・復旧・削除の操作ログを取得
             const logDataParams = {
-                systemType: Number(vm.logTypeSelectedCode()),
+                systemType: Number(vm.systemTypeSelectedCode()),
                 recordType: Number(vm.logTypeSelectedCode()),
                 startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
                 endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
                 listOperatorEmployeeId: vm.operatorEmployeeIdList(),
-                listCondition: vm.filterLogSetting()
+                listCondition: vm.filterLogSetting(),
             }
             let dfd = $.Deferred<any>();
             if (recordType === 9 || recordType === 10 || recordType === 11 ) {
                 vm.$blockui('grayout');
-                service.getLogDataSave(logDataParams).done((data: Array<LogDataResultDto>) => {
+                service.getLogDataResults(logDataParams).done((data: Array<LogDataResultDto>) => {
+                    console.log(data);
                     if (data.length > vm.maxlength()) {
                         vm.isDisplayText(true);
                     }
-                    console.log(data);
+                   
                 }).always(() => {
                     vm.$blockui('clear');
                     vm.$errors('clear');

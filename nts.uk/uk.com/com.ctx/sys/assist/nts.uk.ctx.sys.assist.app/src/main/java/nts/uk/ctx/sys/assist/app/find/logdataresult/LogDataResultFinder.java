@@ -71,19 +71,12 @@ public class LogDataResultFinder {
 					 int isDeletedFilesFlg = -1;
 					 List<LogResultDto> logResult = new ArrayList<LogResultDto>();
 					 for(ResultLogSaving resultLogSaving :resultOfSaving.getListResultLogSavings()) {
-						 
-						//step 社員ID(List)から個人社員基本情報を取得
-						 String errorEmployeeId = "";
-							List<EmpBasicInfoImport>  listpersonEmpBasicInfo = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultLogSaving.getErrorEmployeeId());
-							if (!CollectionUtil.isEmpty(listpersonEmpBasicInfo)) {
-								EmpBasicInfoImport personEmpBasicInfo = listpersonEmpBasicInfo.get(0);
-								errorEmployeeId = personEmpBasicInfo.getEmployeeCode();
-							}
 						 int logNumber = resultLogSaving.getLogNumber();
 						 String processingContent = resultLogSaving.getLogContent().v();
 						 String errorContent = resultLogSaving.getErrorContent().v();
 						 String contentSql = null;
 						 GeneralDate errorDate = resultLogSaving.getErrorDate();
+						 String errorEmployeeId = resultLogSaving.getErrorEmployeeId();
 						 logResult.add(new LogResultDto(logNumber,processingContent,errorContent,contentSql,errorDate,errorEmployeeId));
 					 }
 					
@@ -105,8 +98,61 @@ public class LogDataResultFinder {
 			//step 作った「データ保存・復旧・削除の操作ログ」を返す
 			return logDataResults;
 		} else if(recordType == 10) {
-			//step データ復旧の結果を取得
-			List<ResultOfRestorationDto> resultOfRestorations = resultOfRestorationFinder.getResultOfRestoration(logDataParams);
+//			//step データ復旧の結果を取得
+//			List<ResultOfRestorationDto> resultOfRestorations = resultOfRestorationFinder.getResultOfRestoration(logDataParams);
+//			for( ResultOfRestorationDto resultOfRestoration : resultOfRestorations) {
+//				
+//				//step 社員ID(List)から個人社員基本情報を取得
+//				String employeeCode = "";
+//				String employeeName = "";
+//				List<EmpBasicInfoImport>  personEmpBasicInfos = personEmpBasicInfoAdapter.getEmployeeCodeByEmpId(resultOfRestoration.getPractitioner());
+//				if (!CollectionUtil.isEmpty(personEmpBasicInfos)) {
+//					EmpBasicInfoImport personEmpBasicInfo = personEmpBasicInfos.get(0);
+//					employeeCode = personEmpBasicInfo.getEmployeeCode();
+//					employeeName= personEmpBasicInfo.getBusinessName();
+//				}
+//				 String ipAddress = resultOfRestoration.getLoginInfo().getIpAddress();
+//				 String pcName = resultOfRestoration.getLoginInfo().getPcName();
+//				 String account = resultOfRestoration.getLoginInfo().getAccount();
+//				 GeneralDateTime startDateTime = resultOfRestoration.getStartDateTime();
+//				 GeneralDateTime endDateTime = resultOfRestoration.getEndDateTime();
+//				 int form = resultOfRestoration.getSaveForm();
+//				 String name = resultOfRestoration.getSaveName();
+//				 String fileId = "";
+//				 String fileName = "";
+//				 long fileSize = -1;
+//				 Integer status = resultOfRestoration.get();
+//				 Integer targetNumberPeople = resultOfRestoration.getTargetNumberPeople();
+//				 String setCode = resultOfRestoration.getSaveSetCode();
+//				 int isDeletedFilesFlg = -1;
+//				 List<LogResultDto> logResult = new ArrayList<LogResultDto>();
+//				 for(ResultLogSaving resultLogSaving :resultOfSaving.getListResultLogSavings()) {
+//					 int logNumber = resultLogSaving.getLogNumber();
+//					 String processingContent = resultLogSaving.getLogContent().v();
+//					 String errorContent = resultLogSaving.getErrorContent().v();
+//					 String contentSql = null;
+//					 GeneralDate errorDate = resultLogSaving.getErrorDate();
+//					 String errorEmployeeId = resultLogSaving.getErrorEmployeeId();
+//					 logResult.add(new LogResultDto(logNumber,processingContent,errorContent,contentSql,errorDate,errorEmployeeId));
+//				 }
+//				
+//				 LogDataResultDto logDataResult =  
+//						 new LogDataResultDto(
+//								 	ipAddress,pcName, account,
+//									employeeCode,employeeName,
+//									startDateTime, endDateTime,
+//									form, name,fileId,fileName,
+//									fileSize,status,targetNumberPeople,
+//									setCode,isDeletedFilesFlg,logResult
+//								);
+//			//step F：各種記録の絞り込み処理
+//			if(filterLogResultOfSaving(logDataResult,logDataParams.getListCondition())) {
+//				//step 「データ保存・復旧・削除の操作ログ」を作る
+//				 logDataResults.add(logDataResult);
+//			}
+//		}
+//		//step 作った「データ保存・復旧・削除の操作ログ」を返す
+//		return logDataResults;
 		} else if(recordType == 11) {
 			//step データ削除の保存結果を取得
 			List<ResultOfDeletionDto> getResultOfDeletion = resultOfDeletionFinder.getResultOfDeletion(logDataParams);
@@ -117,69 +163,183 @@ public class LogDataResultFinder {
 	
     private boolean filterLogResultOfSaving(LogDataResultDto logDataResult, List<Condition> listCondition) {
 
-        if (this.filterLogByItemNo(logDataResult.getIpAddress(), 1, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getIpAddress(), 1, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(logDataResult.getPcName(), 2, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getPcName(), 2, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(logDataResult.getAccount(), 3, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getAccount(), 3, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(logDataResult.getEmployeeCode(), 4, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getEmployeeCode(), 4, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(logDataResult.getEmployeeName(), 5, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getEmployeeName(), 5, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(String.valueOf(logDataResult.getStartDateTime()), 6, listCondition)) {
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getStartDateTime()), 6, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(String.valueOf(logDataResult.getForm()), 7, listCondition)) {
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getForm()), 7, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(logDataResult.getName(), 8, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getName(), 8, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(logDataResult.getFileId(), 9, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getFileId(), 9, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(String.valueOf(logDataResult.getFileSize()), 10, listCondition)) {
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getFileSize()), 10, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(String.valueOf(logDataResult.getStatus()), 11, listCondition)) {
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getStatus()), 11, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(String.valueOf(logDataResult.getTargetNumberPeople()), 12, listCondition)) {
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getTargetNumberPeople()), 12, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(logDataResult.getSetCode(), 13, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getSetCode(), 13, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(logDataResult.getFileName(), 14, listCondition)) {
+        if (!this.filterLogByItemNo(logDataResult.getFileName(), 14, listCondition)) {
             return false;
         };
-        if (this.filterLogByItemNo(String.valueOf(logDataResult.getEndDateTime()), 15, listCondition)) {
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getEndDateTime()), 15, listCondition)) {
             return false;
         };
         for(LogResultDto logResultDto : logDataResult.getLogResult()) {
         	
-        	if (this.filterLogByItemNo(logResultDto.getProcessingContent(), 16, listCondition)) {
+        	if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 16, listCondition)) {
                 return false;
             };
-            if (this.filterLogByItemNo(logResultDto.getErrorContent(), 17, listCondition)) {
+            if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 17, listCondition)) {
                 return false;
             };
-            if (this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 18, listCondition)) {
+            if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 18, listCondition)) {
                 return false;
             };
-            if (this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 19, listCondition)) {
+            if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 19, listCondition)) {
                 return false;
             };
         }
         return true;
     }
     
+    private boolean filterLogResultOfRestoration(LogDataResultDto logDataResult, List<Condition> listCondition) {
+
+        if (!this.filterLogByItemNo(logDataResult.getIpAddress(), 1, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getPcName(), 2, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getAccount(), 3, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getEmployeeCode(), 4, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getEmployeeName(), 5, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getStartDateTime()), 6, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getForm()), 7, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getName(), 8, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getEndDateTime()), 9, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getSetCode(), 10, listCondition)) {
+            return false;
+        };
+        for(LogResultDto logResultDto : logDataResult.getLogResult()) {
+        	
+        	if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 11, listCondition)) {
+                return false;
+            };
+            if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 12, listCondition)) {
+                return false;
+            };
+            if (!this.filterLogByItemNo(logResultDto.getContentSql(), 13, listCondition)) {
+                return false;
+            };
+            if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 14, listCondition)) {
+                return false;
+            };
+            if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 15, listCondition)) {
+                return false;
+            };
+        }
+        return true;
+    }
+    
+    private boolean filterLogResultOfDeletion(LogDataResultDto logDataResult, List<Condition> listCondition) {
+
+        if (!this.filterLogByItemNo(logDataResult.getIpAddress(), 1, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getPcName(), 2, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getAccount(), 3, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getEmployeeCode(), 4, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getEmployeeName(), 5, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getStartDateTime()), 6, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getForm()), 7, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getStatus()), 8, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getTargetNumberPeople()), 9, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getIsDeletedFilesFlg()), 10, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getFileSize()), 11, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getFileName(), 12, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(String.valueOf(logDataResult.getEndDateTime()), 13, listCondition)) {
+            return false;
+        };
+        if (!this.filterLogByItemNo(logDataResult.getSetCode(), 14, listCondition)) {
+            return false;
+        };
+        for(LogResultDto logResultDto : logDataResult.getLogResult()) {
+        	
+        	if (!this.filterLogByItemNo(logResultDto.getProcessingContent(), 15, listCondition)) {
+                return false;
+            };
+            if (!this.filterLogByItemNo(logResultDto.getErrorContent(), 16, listCondition)) {
+                return false;
+            };
+            if (!this.filterLogByItemNo(String.valueOf(logResultDto.getErrorDate()), 17, listCondition)) {
+                return false;
+            };
+            if (!this.filterLogByItemNo(logResultDto.getErrorEmployeeId(), 18, listCondition)) {
+                return false;
+            };
+        }
+        return true;
+    }
     
     private boolean filterLogByItemNo(String content,int  itemNo, List<Condition> listCondition) {
     	List<Condition> conditionArray = listCondition.stream().filter(condition -> condition.itemNo == itemNo).collect(Collectors.toList());
