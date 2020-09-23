@@ -90,11 +90,6 @@ export class KafS08AComponent extends Vue {
         vm.mode = mode;
          //nhảy sang step A2 
         vm.step = 'KAFS08_11';
-
-        setTimeout(function () {
-            let focusElem = document.getElementById('table-a10');
-            (focusElem as HTMLElement).focus();
-        }, 100);
     }
 
     //thực hiện emit từ component con A2 đến C

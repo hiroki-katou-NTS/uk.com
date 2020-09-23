@@ -133,6 +133,16 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             vm.createParamsC();
             vm.createParamsA();
             vm.$mask('hide');
+
+            setTimeout(function () {
+                let focusElem;
+                if (vm.mode) {
+                    focusElem = document.querySelector('[placeholder=\'yyyy-mm-dd\']');
+                } else {
+                    focusElem = document.querySelector('[placeholder=\'-- --:--\']');
+                }
+                (focusElem as HTMLElement).focus();
+            }, 200);
         }).catch((err: any) => {
             //do something
         });
