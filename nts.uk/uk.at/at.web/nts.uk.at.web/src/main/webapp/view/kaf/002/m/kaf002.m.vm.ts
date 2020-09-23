@@ -52,9 +52,13 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         isPreAtr: KnockoutObservable<boolean>;
         tabsTemp: any;
         selectedTemp: any;
+        reasonList: Array<GoOutTypeDispControl>;
+        mode: number;
         created(params) {
 
             const self = this;
+            self.mode = params.mode;
+            self.reasonList = params.reasonList
             self.tabMs = params.tabMs;
             self.isPreAtr = params.isPreAtr;
             self.isVisibleComlumn = params.isVisibleComlumn;
@@ -138,7 +142,21 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
         }
-
+        createdReasonItem(reasonList: Array<GoOutTypeDispControl>) {
+            let comboItems = [];
+            _.forEach(reasonList, (e: GoOutTypeDispControl) => {
+                if (e.goOutType == 0) {
+                    comboItems.push(new ItemModel('0', '私用'));
+                } else if (e.goOutType == 1) {
+                    comboItems.push(new ItemModel('1', '公用'));
+                } else if (e.goOutType == 2) {
+                    comboItems.push(new ItemModel('2', '有償'));
+                } else if (e.goOutType == 3) {
+                    comboItems.push(new ItemModel('3', '組合'));
+                }
+            });
+            return comboItems;
+        }
         doSomething(s: Array<GridItem>) {
             const self = this;
             if (!s) {
@@ -201,6 +219,12 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             _.each(self.dataSource, (item, index) => {
                 if (!_.isEmpty(item)) {
                     _.forEach(item, (i, indexI) => {
+                        if (self.mode ==0) {
+                            if (i.typeStamp == STAMPTYPE.GOOUT_RETURNING) {
+                                i.typeReason = String (self.createdReasonItem(self.reasonList)[0].code);                            
+                            }
+                            
+                        }
                         // set again id if remove tab1 with 2 first element
                         i.id = indexI +1;
                         i.index = index;
@@ -208,7 +232,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         i.changeElement();
 
                         if (ko.toJS(self.isPreAtr)) {
-//                            self.isVisibleComlumn = false;
+//                            self.isVisibleComlumn = false; 
                             i.changeElementByPreAtr();
                         }
 
@@ -343,7 +367,9 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
 
             let comboColumns = [{ prop: 'code', length: 2 },
                                 { prop: 'name', length: 4 }];
-            let comboItems = [ new ItemModel('0', '私用'),
+            let comboItems = self.mode == 0 ? self.createdReasonItem(self.reasonList)  
+                            : 
+                            [ new ItemModel('0', '私用'),
                                new ItemModel('1', '公用'),
                                new ItemModel('2', '有償'),
                                new ItemModel('3', '組合')];
@@ -583,6 +609,10 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         }
 
     }
+    export class GoOutTypeDispControl {
+        display: number;
+        goOutType: number;
+    }
 
     export class TimePlaceOutput {
 
@@ -638,7 +668,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.state = state;
         }
     }
-
     export enum STAMPTYPE {
 //        出勤／退勤
         ATTENDENCE = 0,

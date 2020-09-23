@@ -13,6 +13,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import TimeZone = nts.uk.at.view.kaf002_ref.a.viewmodel.TimeZone;
     import DestinationTimeZoneAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.DestinationTimeZoneAppDto;
     import NtsTabPanelModel = nts.uk.ui.NtsTabPanelModel;
+    import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
     const template = `
         
 <div >
@@ -132,7 +133,8 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       isParentHours = false;
       isNurseTime = false;
       data: any;
-    
+      mode: number = 0; // 0 ->a, 1->b, 2->b(view)
+      reasonList: Array<GoOutTypeDispControl>;
     
     
         bindComment(data: any) {

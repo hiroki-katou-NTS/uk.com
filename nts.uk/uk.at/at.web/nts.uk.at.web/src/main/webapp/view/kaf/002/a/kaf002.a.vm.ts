@@ -8,6 +8,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     import alertError = nts.uk.ui.dialog.alertError;
+    import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
+
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
@@ -30,6 +32,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 
         isVisibleComlumn: boolean = true;
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
+        mode: number = 0; // 0 ->a, 1->b, 2->b(view)
 //    ※M2.1_1
 //    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
     
@@ -113,6 +116,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         }).done((res: any) => {
             self.data = res;
             self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+            self.bindReasonList(self.data);
             self.bindTabM(self.data);
             self.bindComment(self.data);
         }).fail(res => {
@@ -123,6 +127,20 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         // do not have actual data, or date is not selected
         self.initData();
     }
+    reasonList: Array<GoOutTypeDispControl>;
+    bindReasonList(data: any) {
+        const self = this;
+        let reasonList = data.appStampSetting.goOutTypeDispControl;
+        reasonList = _.filter(reasonList, (e: GoOutTypeDispControl) => {
+            return e.display == 1;
+        })
+        if (_.isEmpty(reasonList)) {
+            reasonList = [{display: 1, goOutType: 0}];
+        }
+        self.reasonList = reasonList;
+        
+    }
+    
     bindTabM(data: any) {
         const self = this;
         let reflect = data.appStampReflectOptional;
