@@ -166,6 +166,7 @@ public class ShortWorkTimeFinder implements PeregFinder<ShortWorkTimeDto> {
 				List<PeregDomainDto> listPeregDomainDto = new ArrayList<>();
 				listHistItem.forEach(h -> {
 					ShortWorkTimeHistoryItem shortWorkTimeHisItem = (ShortWorkTimeHistoryItem) h[0];
+					@SuppressWarnings("unchecked")
 					Map<String, Integer> mapListEnum =  (Map<String, Integer>) h[1];
 					
 					Optional<DateHistoryItem> dateHistoryItem = dateHistItems.stream().filter(i -> i.identifier().equals(shortWorkTimeHisItem

@@ -18,7 +18,6 @@ import nts.uk.ctx.sys.portal.dom.enums.WebMenuSetting;
 @EqualsAndHashCode(callSuper = false)
 public class StandardMenu extends AggregateRoot {
 	
-
 	/** The company id. */
 	private String companyId;
 	
@@ -64,19 +63,9 @@ public class StandardMenu extends AggregateRoot {
 	private String queryString;
 	
 	/**
-	 * ログイン履歴表示区分
+	 * ログ設定表示
 	 */
-	private int logLoginDisplay;
-	
-	/**
-	 * 起動履歴表示区分
-	 */
-	private int logStartDisplay;
-	
-	/**
-	 * 修正履歴表示区分
-	 */
-	private int logUpdateDisplay;
+	private LogSettingDisplay logSettingDisplay;
 
 	/**
 	 * Instantiates a new Standard Menu.
@@ -113,12 +102,8 @@ public class StandardMenu extends AggregateRoot {
 		this.programId = programId;
 		this.screenId = screenId;
 		this.queryString = queryString;
-		this.logLoginDisplay = logLoginDisplay;
-		this.logStartDisplay = logStartDisplay;
-		this.logUpdateDisplay = logUpdateDisplay;
+		this.logSettingDisplay = new LogSettingDisplay(logLoginDisplay, logStartDisplay, logUpdateDisplay);
 	}
-	
-	
 	
 	public StandardMenu(String companyId, MenuClassification classification, MenuCode code, MenuDisplayName displayName,
 			System system) {

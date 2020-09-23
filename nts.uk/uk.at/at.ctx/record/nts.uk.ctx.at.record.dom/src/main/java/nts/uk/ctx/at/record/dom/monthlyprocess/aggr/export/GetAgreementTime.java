@@ -13,26 +13,30 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.arc.time.calendar.period.YearMonthPeriod;
-import nts.uk.ctx.at.record.dom.actualworkinghours.AttendanceTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.record.dom.monthly.agreement.export.GetAgreementPeriod;
-import nts.uk.ctx.at.record.dom.monthly.calc.MonthlyCalculation;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
-import nts.uk.ctx.at.record.dom.workrecord.closurestatus.ClosureStatusManagement;
+import nts.uk.ctx.at.shared.dom.closurestatus.ClosureStatusManagement;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeYear;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxAverageTimeMulti;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreTimeYearStatusOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOutput;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeYear;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.GetAgreementPeriod;
 import nts.uk.ctx.at.shared.dom.monthly.agreement.ScheRecAtr;
+import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyCalculation;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.AgreementTimeDetail;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.GetAgreementTimeProc;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.export.GetAgreementTimeProc.RequireM2;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonthlyCalculatingDailys;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonthlyOldDatas;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSettings;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneMonth;
 import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.LimitOneYear;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosurePeriod;
@@ -154,7 +158,7 @@ public class GetAgreementTime {
 			val workingSystem = workingCondItemOpt.get().getLaborSystem();
 			
 			// 「36協定基本設定」を取得する
-			val basicAgreementSet = AgreementDomainService.getBasicSet(require, companyId, employeeId, criteria, workingSystem)
+			val basicAgreementSet = require.getBasicSet(companyId, employeeId, criteria, workingSystem)
 												.getBasicAgreementSetting();
 			limitMinutes = basicAgreementSet.getErrorOneYear().v();
 		}
@@ -228,8 +232,8 @@ public class GetAgreementTime {
 			val workingSystem = workingCondItemOpt.get().getLaborSystem();
 			
 			// 「36協定上限規制」を取得する
-			val upperAgreementSet = AgreementDomainService.getBasicSet(require, 
-					companyId, employeeId, criteria, workingSystem).getUpperAgreementSetting();
+			val upperAgreementSet = require.getBasicSet(companyId, employeeId, criteria, workingSystem)
+												.getUpperAgreementSetting();
 			maxMinutes = upperAgreementSet.getUpperMonthAverage().v();
 		}
 		
@@ -441,8 +445,7 @@ public class GetAgreementTime {
 		val workingCondItemOpt = employeeSets.getWorkingConditionItem(criteria);
 		if (workingCondItemOpt.isPresent()) {
 			val workingSystem = workingCondItemOpt.get().getLaborSystem();
-			val basicSet = AgreementDomainService.getBasicSet(require, 
-					companyId, employeeId, criteria, workingSystem);
+			val basicSet = require.getBasicSet(companyId, employeeId, criteria, workingSystem);
 			
 			// 「36協定基本設定」を取得する
 			limitMinutes = basicSet.getBasicAgreementSetting().getErrorOneYear().v();
@@ -554,7 +557,7 @@ public class GetAgreementTime {
 				// ※　「社員の労働条件を期間で取得する」は不要。employeeSets の中に、集計する全期間分の事前ロードをしてある。
 				
 				// 日別実績の勤怠時間リスト　※　このリストにデータを追加すると、追加したデータで実績を上書きして計算する
-				List<AttendanceTimeOfDailyPerformance> attendanceTimeOfDailys = new ArrayList<>();
+				Map<GeneralDate, AttendanceTimeOfDailyAttendance> attendanceTimeOfDailys = new HashMap<>();
 				
 				// 日別実績（Work）を取得
 				{
@@ -603,6 +606,9 @@ public class GetAgreementTime {
 	public static interface RequireM3 extends RequireM2, ClosureService.RequireM3 {
 		
 		Optional<AgreementOperationSetting> agreementOperationSetting(String companyId);
+		
+		BasicAgreementSettings getBasicSet(String companyId, String employeeId, GeneralDate criteriaDate,
+				WorkingSystem workingSystem);
 	}
 	
 	public static interface RequireM2 extends RequireM1, MonAggrCompanySettings.RequireM5, MonAggrEmployeeSettings.RequireM2 {

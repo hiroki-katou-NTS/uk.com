@@ -394,35 +394,36 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 	@Override
 	public AsbRemainTotalInfor getAbsRemainTotalInfor(List<RecruitmentHistoryOutPara> lstRecHis,
 			List<AbsenceHistoryOutputPara> lstAbsHis) {
-		AsbRemainTotalInfor outPutData = new AsbRemainTotalInfor(0, 0, 0, 0, 0);
+		AsbRemainTotalInfor outPutData = new AsbRemainTotalInfor(0, 0, 0, 0, 0, 0D, 0D, 0D, 0D, 0D);
 		List<AbsenceHistoryOutputPara> lstAbsHisRecord = lstAbsHis.stream().filter(x -> x.getCreateAtr() == MngHistDataAtr.RECORD)
 				.collect(Collectors.toList());
 		lstAbsHisRecord.stream().forEach(x -> {
-			//実績使用日数を算出する
+			//	実績使用日数を算出する
 			outPutData.setRecordUseDays(outPutData.getRecordUseDays() + x.getRequeiredDays());			
 		});
 		List<RecruitmentHistoryOutPara> lstRechisRecord = lstRecHis.stream().filter(x -> x.getDataAtr() == MngHistDataAtr.RECORD)
 				.collect(Collectors.toList());
 		lstRechisRecord.stream().forEach(x -> {
-			//実績発生日数を算出する
+			//	実績発生日数を算出する
 			outPutData.setRecordOccurrenceDays(outPutData.getRecordOccurrenceDays() + x.getOccurrenceDays());
+
 		});
 		
 		List<AbsenceHistoryOutputPara> lstAbsHisSche = lstAbsHis.stream()
 				.filter(x -> x.getCreateAtr() == MngHistDataAtr.SCHEDULE || x.getCreateAtr() == MngHistDataAtr.NOTREFLECT)
 				.collect(Collectors.toList());
 		lstAbsHisSche.stream().forEach(x -> {
-			//予定使用日数を算出する
+			//	予定使用日数を算出する
 			outPutData.setScheUseDays(outPutData.getScheUseDays() + x.getRequeiredDays());
 		});
 		List<RecruitmentHistoryOutPara> lstRechisSche = lstRecHis.stream()
 				.filter(x -> x.getDataAtr() == MngHistDataAtr.SCHEDULE || x.getDataAtr() == MngHistDataAtr.NOTREFLECT)
 				.collect(Collectors.toList());
 		lstRechisSche.stream().forEach(x -> {
-			//予定発生日数を算出する
+			//	予定発生日数を算出する
 			outPutData.setScheOccurrenceDays(outPutData.getScheOccurrenceDays() + x.getOccurrenceDays());
 		});
-		//振出履歴.状態＝確定済
+		//	振出履歴.状態＝確定済
 		double unUseDay = 0;
 		List<RecruitmentHistoryOutPara> lstRecHisConfirm = lstRecHis.stream().filter(x -> x.getDataAtr() == MngHistDataAtr.CONFIRMED)
 				.collect(Collectors.toList());

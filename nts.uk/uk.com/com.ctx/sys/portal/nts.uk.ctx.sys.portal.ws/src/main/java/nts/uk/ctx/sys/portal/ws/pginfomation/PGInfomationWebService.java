@@ -10,19 +10,19 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.portal.app.query.pginfomation.PGInfomationDto;
-import nts.uk.ctx.sys.portal.app.query.pginfomation.PGInfomationQuery;
+import nts.uk.ctx.sys.portal.app.query.pginfomation.PGInfomationQueryFinder;
 
 @Path("sys/portal/pginfomation")
 @Produces("application/json")
 public class PGInfomationWebService extends WebService {
 
 	@Inject
-	private PGInfomationQuery pgInfomationQuery;
+	private PGInfomationQueryFinder pgInfomationQueryFinder;
 
 	@POST
 	@Path("findBySystem/{systemType}")
 	public List<PGInfomationDto> findBySystem(@PathParam("systemType") int systemType) {
-		return pgInfomationQuery.findBySystem(systemType);
+		return pgInfomationQueryFinder.findBySystem(systemType);
 	}
 
 }

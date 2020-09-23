@@ -2,8 +2,6 @@ package nts.uk.ctx.workflow.dom.service;
 
 import java.util.List;
 
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approverstatemanagement.ApprovalPhaseState;
 import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 
@@ -15,14 +13,14 @@ import nts.uk.ctx.workflow.dom.service.output.ApprovalRepresenterInforOutput;
 public interface ApproveService {
 	
 	/**
-	 * 承認する
-	 * @param companyID 会社ID
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.就業.2.承認する(ApproveService).2.承認する(ApproveService)
 	 * @param rootStateID インスタンスID
 	 * @param employeeID 社員ID
+	 * @param memo 承認コメン
 	 * @return 承認フェーズ枠番
 	 */
-	public Integer doApprove(String companyID, String rootStateID, String employeeID, 
-			Boolean isCreate, ApplicationType appType, GeneralDate appDate, String memo, Integer rootType);
+	public Integer doApprove(String rootStateID, String employeeID, String memo);
 	
 	/**
 	 * 1.指定する承認フェーズの承認が完了したか
@@ -34,13 +32,12 @@ public interface ApproveService {
 	public Boolean isApproveApprovalPhaseStateComplete(String companyID, ApprovalPhaseState approvalPhaseState);
 	
 	/**
-	 * 2.承認全体が完了したか
-	 * @param companyID 会社ID
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.OLD＿承認する(ApproveService).2.承認全体が完了したか(isApproveAllComplete).2.承認全体が完了したか.2.承認全体が完了したか
 	 * @param rootStateID インスタンスID
 	 * @return
 	 */
-	public Boolean isApproveAllComplete(String companyID, String rootStateID, String employeeID, 
-			Boolean isCreate, ApplicationType appType, GeneralDate appDate, Integer rootType);
+	public Boolean isApproveAllComplete(String rootStateID);
 	
 	/**
 	 * 3.指定する承認フェーズに未承認の承認者一覧を取得する
@@ -50,14 +47,13 @@ public interface ApproveService {
 	public List<String> getUnapproveApproverFromPhase(ApprovalPhaseState approvalPhaseState); 
 	
 	/**
-	 * 4.次の承認の番の承認者を取得する(メール通知用)
-	 * @param companyID 会社ID
+	 * refactor 4
+	 * UKDesign.ドメインモデル.NittsuSystem.UniversalK.ワークフロー.Export.OLD＿承認する(ApproveService).4.次の承認の番の承認者を取得する(メール通知用)(getNextApprovalPhaseStateMailList).4.次の承認の番の承認者を取得する(メール通知用)
 	 * @param rootStateID インスタンスID
 	 * @param approvalPhaseStateNumber ドメインモデル「承認フェーズインスタンス」・順序
 	 * @return
 	 */
-	public List<String> getNextApprovalPhaseStateMailList(String companyID, String rootStateID, Integer approvalPhaseStateNumber, 
-			Boolean isCreate, String employeeID, ApplicationType appType, GeneralDate appDate, Integer rootType);
+	public List<String> getNextApprovalPhaseStateMailList(String rootStateID, Integer approvalPhaseStateNumber);
 	
 	/**
 	 * 1.送信先の判断処理

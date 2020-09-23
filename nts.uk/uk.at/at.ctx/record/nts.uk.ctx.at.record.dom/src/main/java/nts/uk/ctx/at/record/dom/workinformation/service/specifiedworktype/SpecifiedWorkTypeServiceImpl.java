@@ -96,7 +96,7 @@ public class SpecifiedWorkTypeServiceImpl implements SpecifiedWorkTypeService {
 						Double count = (double) 0;
 						if (!workInfoList.isEmpty()) {
 							List<WorkInfoOfDailyPerformance> workInfoListNew = workInfoList.stream()
-									.filter(item -> item.getRecordInfo().getWorkTypeCode().equals(workTypeCode.v()))
+									.filter(item -> item.getWorkInformation().getRecordInfo().getWorkTypeCode().equals(workTypeCode.v()))
 									.collect(Collectors.toList());
 
 							count = new Double(workInfoListNew.size());

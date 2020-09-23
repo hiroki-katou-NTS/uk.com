@@ -4,25 +4,30 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.NonNull;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Embeddable
-@Getter
-@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Builder
 public class SrcdtLogSettingPK {
+	
+	@NonNull
 	@Column(name = "CID")
 	public String cid;
 	
+	@NonNull
 	@Column(name = "SYSTEM")
-	public int system;
+	public Integer system;
 	
-	@Column(name = "MENU_ATR")
-	public int menuClassification;
-	
+	@NonNull
 	@Column(name = "PROGRAM_ID")
 	public String programId;
+	
 }

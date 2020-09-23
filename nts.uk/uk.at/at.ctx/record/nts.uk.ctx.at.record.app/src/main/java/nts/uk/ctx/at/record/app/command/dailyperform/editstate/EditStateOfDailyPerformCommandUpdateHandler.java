@@ -23,7 +23,7 @@ public class EditStateOfDailyPerformCommandUpdateHandler extends CommandFacade<E
 		
 		if(!command.getData().isEmpty()) {
 			List<EditStateOfDailyPerformance> data = command.toDomain().stream()
-																		.filter(x -> command.getChangedItem().contains(x.getAttendanceItemId()))
+																		.filter(x -> command.getChangedItem().contains(x.getEditState().getAttendanceItemId()))
 																		.collect(Collectors.toList());
 			
 			adUpRepo.adUpEditState(data);

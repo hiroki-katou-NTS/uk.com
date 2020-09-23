@@ -25,3 +25,6 @@
 #single-list tr td:last-child {
 	text-align: center;
 }
+.time{
+	float: right;
+}

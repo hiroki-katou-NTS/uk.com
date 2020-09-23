@@ -163,7 +163,6 @@ subprojects {
 		// Jackson
 		compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.3'
 		compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
-		compile group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: '2.9.3'
 
 		// servlet
 		compileOnly group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
@@ -1000,22 +999,6 @@ project (':com.ctx:sys:log:nts.uk.ctx.sys.log.pubimp') {
 	}
 }
 
-
-//=================com.nrl↓========================================
-project(':com.nrl:nts.uk.nrl.ws') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-		compile project(':com.nrl:nts.uk.nrl.app')
-	}
-}
-
-project(':com.nrl:nts.uk.nrl.app') {
-	dependencies {
-		compile project(':shr:nts.uk.shr.com')
-	}
-}
-//=================com.nrl↑========================================
-
 //=====================nts.uk.com.web�===========================
 project (':com.web:nts.uk.com.web') {
 	apply plugin: 'war'
@@ -1154,9 +1137,6 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pub')
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp')
 		runtime project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws')
-		
-		runtime project (':com.nrl:nts.uk.nrl.ws')
-		runtime project (':com.nrl:nts.uk.nrl.app')
 		
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.ac')
 		runtime project (':pereg.ctx:nts.uk.ctx.pereg.app')

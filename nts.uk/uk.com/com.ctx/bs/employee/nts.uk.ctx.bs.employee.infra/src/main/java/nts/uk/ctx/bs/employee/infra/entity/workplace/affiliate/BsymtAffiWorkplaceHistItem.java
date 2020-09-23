@@ -50,6 +50,10 @@ public class BsymtAffiWorkplaceHistItem extends UkJpaEntity implements Serializa
 	@Basic(optional = false)
 	@Column(name = "NORMAL_WORKPLACE_ID")
 	private String normalWkpId;
+
+	@Basic(optional = false)
+	@Column(name = "WORK_LOCATION_CD")
+	private String workLocationCode;
 	
 	/**
 	 * Instantiates a new cempt employment.
@@ -68,7 +72,10 @@ public class BsymtAffiWorkplaceHistItem extends UkJpaEntity implements Serializa
 		return this.hisId;
 	}
 
-	
-
-
+	public BsymtAffiWorkplaceHistItem(String hisId, String sid, String workPlaceId, String normalWkpId) {
+		this.hisId = hisId;
+		this.sid = sid;
+		this.workPlaceId = workPlaceId;
+		this.normalWkpId = normalWkpId;
+	}
 }

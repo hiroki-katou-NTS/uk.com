@@ -1,9 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:com="http://xmlns.jcp.org/jsf/component"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component" xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
 	<ui:composition>
@@ -17,8 +15,7 @@
 			<div class="system_define">
 				<p>#{i18n.getText('CMM007_6')}</p>
 
-				<div id="tab-panel" tabindex="2"
-					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+				<div id="tab-panel" tabindex="2" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 					<div class="tab-content-1 set_height">
 						<div class="fixed-flex-layout" id="panel1">
 							<div class="fixed-flex-layout-left">
@@ -26,8 +23,7 @@
 									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 													required: true, constraint: 'ShortName' }">#{i18n.getText('CMM007_97')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_company" tabindex="3"
-											data-bind="ntsTextEditor: {
+										<input id="com_company" tabindex="3" data-bind="ntsTextEditor: {
 													name: '#[CMM007_97]',
 													value: com_company,
 													constraint: 'ShortName',
@@ -39,8 +35,7 @@
 									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 													required: true, constraint: 'ShortName' }">#{i18n.getText('CMM007_10')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_person" tabindex="4"
-											data-bind="ntsTextEditor: {
+										<input id="com_person" tabindex="4" data-bind="ntsTextEditor: {
 													name: '#[CMM007_10]',
 													value: com_person,
 													constraint: 'ShortName',
@@ -49,11 +44,10 @@
 									</div>
 								</div>
 								<div class="fixed-flex-layout">
-									<div class="fixed-flex-layout-left no-wrap"  data-bind="ntsFormLabel: {
+									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 													constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_11')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_employment" tabindex="5"
-											data-bind="ntsTextEditor: {
+										<input id="com_employment" tabindex="5" data-bind="ntsTextEditor: {
 													name: '#[CMM007_11]',
 													value: com_employment,
 													constraint: 'ShortName',
@@ -62,11 +56,10 @@
 									</div>
 								</div>
 								<div class="fixed-flex-layout">
-									<div class="fixed-flex-layout-left no-wrap"  data-bind="ntsFormLabel: {
+									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 													constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_12')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_class" tabindex="6"
-											data-bind="ntsTextEditor: {
+										<input id="com_class" tabindex="6" data-bind="ntsTextEditor: {
 													name: '#[CMM007_12]',
 													value: com_class,
 													constraint: 'ShortName',
@@ -75,11 +68,10 @@
 									</div>
 								</div>
 								<div class="fixed-flex-layout">
-									<div class="fixed-flex-layout-left no-wrap"  data-bind="ntsFormLabel: {
+									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 													constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_13')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_jobtitle" tabindex="7"
-											data-bind="ntsTextEditor: {
+										<input id="com_jobtitle" tabindex="7" data-bind="ntsTextEditor: {
 													name: '#[CMM007_13]',
 													value: com_jobtitle,
 													constraint: 'ShortName',
@@ -88,11 +80,10 @@
 									</div>
 								</div>
 								<div class="fixed-flex-layout">
-									<div class="fixed-flex-layout-left no-wrap"  data-bind="ntsFormLabel: {
+									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 													constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_14')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_department" tabindex="8"
-											data-bind="ntsTextEditor: {
+										<input id="com_department" tabindex="8" data-bind="ntsTextEditor: {
 													name: '#[CMM007_14]',
 													value: com_department,
 													constraint: 'ShortName',
@@ -101,11 +92,10 @@
 									</div>
 								</div>
 								<div class="fixed-flex-layout">
-									<div class="fixed-flex-layout-left no-wrap"  data-bind="ntsFormLabel: {
+									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 													constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_15')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_workplace" tabindex="9"
-											data-bind="ntsTextEditor: {
+										<input id="com_workplace" tabindex="9" data-bind="ntsTextEditor: {
 													name: '#[CMM007_15]',
 													value: com_workplace,
 													constraint: 'ShortName',
@@ -114,11 +104,10 @@
 									</div>
 								</div>
 								<div class="fixed-flex-layout">
-									<div class="fixed-flex-layout-left no-wrap"  data-bind="ntsFormLabel: {
+									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 													constraint: 'ShortName', required: true }">#{i18n.getText('CMM007_16')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_office" tabindex="10"
-											data-bind="ntsTextEditor: {
+										<input id="com_office" tabindex="10" data-bind="ntsTextEditor: {
 													name: '#[CMM007_16]',
 													value: com_office,
 													constraint: 'ShortName',
@@ -163,8 +152,7 @@
 								<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_17')}</div>
 								<div class="fixed-flex-layout-right">
-									<input id="com_project" tabindex="13"
-										data-bind="ntsTextEditor: {
+									<input id="com_project" tabindex="13" data-bind="ntsTextEditor: {
 												name: '#[CMM007_17]',
 												value: com_project,
 												constraint: 'LongName',
@@ -176,8 +164,7 @@
 								<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 											constraint: 'IntermediateDesignation', required: true }">#{i18n.getText('CMM007_18')}</div>
 								<div class="fixed-flex-layout-right">
-									<input id="com_adHocWork" tabindex="14"
-										data-bind="ntsTextEditor: {
+									<input id="com_adHocWork" tabindex="14" data-bind="ntsTextEditor: {
 												name: '#[CMM007_18]',
 												value: com_adHocWork,
 												constraint: 'IntermediateDesignation',
@@ -189,11 +176,24 @@
 								<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 											constraint: 'IntermediateDesignation', required: true }">#{i18n.getText('CMM007_19')}</div>
 								<div class="fixed-flex-layout-right">
-									<input id="com_bindingTime" tabindex="15"
-										data-bind="ntsTextEditor: {
+									<input id="com_bindingTime" tabindex="15" data-bind="ntsTextEditor: {
 												name: '#[CMM007_19]',
 												value: com_bindingTime,
 												constraint: 'IntermediateDesignation',
+												required: true,
+												option: {width: '130px'}}" />
+								</div>
+							</div>
+							<!--B5_13-->
+							<div class="fixed-flex-layout">
+								<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
+											constraint: 'WorkplaceGroup', required: true }">#{i18n.getText('CMM007_113')}</div>
+								<div class="fixed-flex-layout-right">
+							<!--B5_14-->
+									<input id="workplace_Group" tabindex="16" data-bind="ntsTextEditor: {
+												name: '#[CMM007_113]',
+												value: workplace_Group,
+												constraint: 'WorkplaceGroup',
 												required: true,
 												option: {width: '130px'}}" />
 								</div>
@@ -223,13 +223,13 @@
 												required: true,
 												option: {width: '130px'}}" />
 								</div>
-							</div> -->	
+							</div> -->
 						</div>
 					</div>
 					<div class="tab-content-3 set_height" id="panel3">
 						<div class="fixed-flex-layout">
 							<div class="fixed-flex-layout-left">
-								<!-- <div class="fixed-flex-layout">	
+								<!-- <div class="fixed-flex-layout">
 									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_22')}</div>
 									<div class="fixed-flex-layout-right">
@@ -246,9 +246,7 @@
 									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 											constraint: 'LongName', required: true }">#{i18n.getText('CMM007_23')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_fundedPaidHoliday"
-											tabindex="19"
-											data-bind="ntsTextEditor: {
+										<input id="com_fundedPaidHoliday" tabindex="19" data-bind="ntsTextEditor: {
 													name: '#[CMM007_23]',
 													value: com_fundedPaidHoliday,
 													constraint: 'LongName',
@@ -287,9 +285,7 @@
 									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 											constraint: 'IntermediateDesignation', required: true }">#{i18n.getText('CMM007_25')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_substituteHoliday"
-											tabindex="22"
-											data-bind="ntsTextEditor: {
+										<input id="com_substituteHoliday" tabindex="22" data-bind="ntsTextEditor: {
 													name: '#[CMM007_25]',
 													value: com_substituteHoliday,
 													constraint: 'IntermediateDesignation',
@@ -301,9 +297,7 @@
 									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 											constraint: 'IntermediateDesignation', required: true }">#{i18n.getText('CMM007_26')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_compensationHoliday"
-											tabindex="23"
-											data-bind="ntsTextEditor: {
+										<input id="com_compensationHoliday" tabindex="23" data-bind="ntsTextEditor: {
 													name: '#[CMM007_26]',
 													value: com_compensationHoliday,
 													constraint: 'IntermediateDesignation',
@@ -315,8 +309,7 @@
 									<div class="fixed-flex-layout-left no-wrap" data-bind="ntsFormLabel: {
 											constraint: 'IntermediateDesignation', required: true }">#{i18n.getText('CMM007_27')}</div>
 									<div class="fixed-flex-layout-right">
-										<input id="com_exsessHoliday" tabindex="24"
-											data-bind="ntsTextEditor: {
+										<input id="com_exsessHoliday" tabindex="24" data-bind="ntsTextEditor: {
 													name: '#[CMM007_27]',
 													value: com_exsessHoliday,
 													constraint: 'IntermediateDesignation',
@@ -332,4 +325,5 @@
 		</div>
 	</ui:composition>
 </body>
+
 </html>

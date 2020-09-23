@@ -3,6 +3,7 @@ package nts.uk.ctx.sys.portal.dom.logsettings;
 import java.util.List;
 
 public interface LogSettingRepository {
+	
 	/**
 	 * システムからログ設定を取得
 	 * 
@@ -13,11 +14,17 @@ public interface LogSettingRepository {
 	List<LogSetting> findBySystem(String companyId, int systemType);
 
 	/**
-	 * 
+	 * ドメインモデル「ログ設定」を削除
+	 * @param contractCode
+	 * @param domain
+	 */
+	void add(String contractCode, LogSetting domain);
+
+	/**
+	 * ドメインモデル「ログ設定」に追加する
 	 * @param companyId
 	 * @param systemType
+	 * @param programId
 	 */
-	void deleteLogSetting(String companyId, int systemType);
-
-	void addLogSetting(LogSetting logSetting);
+	void delete(String companyId, Integer systemType, String programId);
 }
