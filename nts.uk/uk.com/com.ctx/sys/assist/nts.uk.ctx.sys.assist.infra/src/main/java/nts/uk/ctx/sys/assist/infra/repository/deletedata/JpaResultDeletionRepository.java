@@ -31,13 +31,13 @@ public class JpaResultDeletionRepository extends JpaRepository implements Result
 			" SELECT f FROM SspdtResultDeletion f "
 			+ " WHERE f.companyID =:cid "
 				+ " AND f.startDateTimeDel >=:startDateOperator "
-				+ " AND f.endDateTimeDel <=:endDateOperator ";
+				+ " AND f.startDateTimeDel <=:endDateOperator ";
 
 private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE =
 			" SELECT f FROM SspdtResultDeletion f "
 			+ " WHERE f.companyID =:cid "
 				+ " AND f.startDateTimeDel =:startDateOperator "
-				+ " AND f.endDateTimeDel =:endDateOperator "
+				+ " AND f.startDateTimeDel =:endDateOperator "
 				+ " AND f.sId =:practitioner ";
 
 	@Override

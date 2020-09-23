@@ -4,6 +4,7 @@ import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.sys.assist.app.find.logdataresult.Condition;
 
 
 @Data
@@ -19,4 +20,6 @@ public class LogDataParams {
 	private GeneralDateTime endDateOperator;
 	
 	private List<String>  listOperatorEmployeeId;
+	
+	private List<Condition> listCondition;
 }

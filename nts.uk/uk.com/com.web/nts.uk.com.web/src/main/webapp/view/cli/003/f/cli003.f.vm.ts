@@ -149,7 +149,7 @@ module nts.uk.com.view.cli003.f {
         menuClassification: number
         programId: string
         system: number
-    } 
+    }
 
     class IgGridColumnSwitchModel {
         headerText: string;
@@ -391,10 +391,10 @@ module nts.uk.com.view.cli003.f {
         parentKey: string;
         operationId: string;
         userNameLogin: string;
-        employeeCodeLogin: string; 
+        employeeCodeLogin: string;
         userIdTaget: string;
         userNameTaget: string;
-        employeeCodeTaget: string; 
+        employeeCodeTaget: string;
         ipAdress: string;
         modifyDateTime: string;
         menuName: string;
@@ -452,6 +452,35 @@ module nts.uk.com.view.cli003.f {
             this.correctionAttr = param.correctionAttr;
         }
     }
+    interface LogDataResultDto {
+        ipAddress: string,
+        pcName: string,
+        account: string,
+        employeeCode: string,
+        employeeName: string,
+        startDateTime: string,
+        endDateTime: string,
+        form: number,
+        name: string,
+        fileId: string,
+        fileName: string,
+        fileSize: number,
+        status: number,
+        targetNumberPeople: number,
+        setCode: string,
+        isDeletedFilesFlg: number,
+        logResult: Array<LogResultDto>
+    }
+
+    interface LogResultDto {
+        logNumber: number,
+        processingContent: string,
+        errorContent: string,
+        contentSql: string,
+        errorDate: string,
+        errorEmployeeId: string,
+    }
+
     @bean()
     export class ScreenModel extends ko.ViewModel {
         dataFromB: any;
@@ -484,6 +513,15 @@ module nts.uk.com.view.cli003.f {
 
         targetEmployeeIdList: KnockoutObservableArray<any> = ko.observableArray([]);
         logSetOutputs: KnockoutObservableArray<logSetOutputs> = ko.observableArray([]);
+
+        constructor(data: any) {
+            super();
+            const vm = this;
+            vm.dataFromB = data;
+            vm.initComponentScreenF(vm.dataFromB);
+        }
+
+
         initComponentScreenF(data: any) {
             const vm = this
             //ログ照会設定を取得する
@@ -496,13 +534,13 @@ module nts.uk.com.view.cli003.f {
                 vm.dateValue(data.dateValue);
                 vm.startDateOperator(data.startDateOperator);
                 vm.endDateOperator(data.endDateOperator);
-                data.selectedRuleCode == 2 ?  vm.operatorEmployeeIdList([]) : vm.operatorEmployeeIdList(data.operatorEmployeeIdList);
+                data.selectedRuleCode == 2 ? vm.operatorEmployeeIdList([]) : vm.operatorEmployeeIdList(data.operatorEmployeeIdList);
                 data.selectedRuleCodeOperator == 2 ? vm.targetEmployeeIdList([]) : vm.targetEmployeeIdList(data.targetEmployeeIdList);
             }
 
             // set param log
             let format = 'YYYY/MM/DD HH:mm:ss';
-        
+
             //取得したドメインモデル「ログ照会設定」．記録種類をチェック
             let recordType = Number(vm.logTypeSelectedCode());
             //TODO F：データ保存・復旧・削除の操作ログを取得
@@ -511,22 +549,28 @@ module nts.uk.com.view.cli003.f {
                 recordType: Number(vm.logTypeSelectedCode()),
                 startDateOperator: moment.utc(vm.startDateOperator(), format).toISOString(),
                 endDateOperator: moment.utc(vm.endDateOperator(), format).toISOString(),
-                listOperatorEmployeeId : vm.operatorEmployeeIdList()
+                listOperatorEmployeeId: vm.operatorEmployeeIdList(),
+                listCondition: vm.filterLogSetting()
             }
-            if (recordType === 9) {
-                service.getLogDataSave(logDataParams).done((data : any) => {
+            let dfd = $.Deferred<any>();
+            if (recordType === 9 || recordType === 10 || recordType === 11 ) {
+                vm.$blockui('grayout');
+                service.getLogDataSave(logDataParams).done((data: Array<LogDataResultDto>) => {
+                    if (data.length > vm.maxlength()) {
+                        vm.isDisplayText(true);
+                    }
                     console.log(data);
-                })
-            } else if(recordType === 10){
-                service.getLogDataRecover(logDataParams).done((data : any) => {
-                    console.log(data);
-                })
-            }else if(recordType === 11){
-                service.getLogDataDelete(logDataParams).done((data : any) => {
-                    console.log(data);
-                })
+                }).always(() => {
+                    vm.$blockui('clear');
+                    vm.$errors('clear');
+                }).fail((error: any) => {
+                    vm.$dialog.alert(error);
+                    vm.$blockui('clear');
+                    vm.$errors('clear');
+                    dfd.resolve();
+                });
             } else {
-             //I：出力ボタン押下時処理 
+                //I：出力ボタン押下時処理 
                 let paramLog = {
                     listOperatorEmployeeId: vm.operatorEmployeeIdList(),
                     listTagetEmployeeId: vm.targetEmployeeIdList(),
@@ -574,8 +618,8 @@ module nts.uk.com.view.cli003.f {
                             vm.isDisplayText(true);
                         }
                         //log setting list start boot history not in use
-                        let logSettingEdit :LogSettingParam[] = logSettings.filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE);
-                        let logSettingBoot :LogSettingParam[] = logSettings.filter(x => x.bootHistoryRecord === USE_STAGE.NOT_USE);
+                        let logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE);
+                        let logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.bootHistoryRecord === USE_STAGE.NOT_USE);
                         const logSettingEditProgramId = {};
                         logSettingEdit.forEach(item => logSettingEditProgramId[item.programId] = item);
                         const logSettingBootProgramId = {};
@@ -585,38 +629,38 @@ module nts.uk.com.view.cli003.f {
                             if (index + 1 <= vm.maxlength()) {
                                 // Log LOGIN 
                                 if (recordType === RECORD_TYPE.LOGIN) {
-                                    if(vm.filterLogLogin(logBasicInfoModel)){
+                                    if (vm.filterLogLogin(logBasicInfoModel)) {
                                         vm.listLogBasicInforModel.push(logBasicInfoModel);
                                     }
                                 } else if (recordType === RECORD_TYPE.START_UP) {
                                     // Log START UP
-                                    if(vm.filterLogStartUp(logBasicInfoModel)){
+                                    if (vm.filterLogStartUp(logBasicInfoModel)) {
                                         if (!logSettingBootProgramId[logBasicInfoModel.programId]) {
                                             vm.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
                                     }
                                 } else if (recordType === RECORD_TYPE.UPDATE_PERSION_INFO) {
                                     // Log PERSON INFORMATION UPDATE
-                                    if(vm.filterLogPersonInfoUpdate(logBasicInfoModel)){
-                                            if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
-                                                if (logBasicInfoModel.processAttr !== '新規') {
-                                                    // process sub header
-                                                    const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
-                                                    vm.listLogBasicInforModel.push(logtemp);
-                                                };
-                                            } else {
+                                    if (vm.filterLogPersonInfoUpdate(logBasicInfoModel)) {
+                                        if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
+                                            if (logBasicInfoModel.processAttr !== '新規') {
+                                                // process sub header
                                                 const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
                                                 vm.listLogBasicInforModel.push(logtemp);
-                                            }
+                                            };
+                                        } else {
+                                            const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
+                                            vm.listLogBasicInforModel.push(logtemp);
+                                        }
                                     }
                                 } else if (recordType === RECORD_TYPE.DATA_CORRECT) {
                                     // Log DATA CORRECTION
-                                    if(vm.filterLogDataCorrection(logBasicInfoModel)){
-                                            if (vm.validateForDataCorrection(dataType, logSettingEditProgramId)) {
-                                                // process sub header
-                                                const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
-                                                vm.listLogBasicInforModel.push(logtemp);
-                                            }
+                                    if (vm.filterLogDataCorrection(logBasicInfoModel)) {
+                                        if (vm.validateForDataCorrection(dataType, logSettingEditProgramId)) {
+                                            // process sub header
+                                            const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
+                                            vm.listLogBasicInforModel.push(logtemp);
+                                        }
                                     }
                                 }
                             }
@@ -680,8 +724,8 @@ module nts.uk.com.view.cli003.f {
                             vm.isDisplayText(true);
                         }
                         //log setting list start boot history not in use
-                        let logSettingEdit :LogSettingParam[] = logSettings.filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE);
-                        let logSettingBoot :LogSettingParam[] = logSettings.filter(x => x.bootHistoryRecord === USE_STAGE.NOT_USE);
+                        let logSettingEdit: LogSettingParam[] = logSettings.filter(x => x.editHistoryRecord === USE_STAGE.NOT_USE);
+                        let logSettingBoot: LogSettingParam[] = logSettings.filter(x => x.bootHistoryRecord === USE_STAGE.NOT_USE);
                         const logSettingEditProgramId = {};
                         logSettingEdit.forEach(item => logSettingEditProgramId[item.programId] = item);
                         const logSettingBootProgramId = {};
@@ -691,38 +735,38 @@ module nts.uk.com.view.cli003.f {
                             if (index + 1 <= vm.maxlength()) {
                                 // Log LOGIN 
                                 if (recordType === RECORD_TYPE.LOGIN) {
-                                    if(vm.filterLogLogin(logBasicInfoModel)){
+                                    if (vm.filterLogLogin(logBasicInfoModel)) {
                                         vm.listLogBasicInforModel.push(logBasicInfoModel);
                                     }
                                 } else if (recordType === RECORD_TYPE.START_UP) {
                                     // Log START UP
-                                    if(vm.filterLogStartUp(logBasicInfoModel)){
+                                    if (vm.filterLogStartUp(logBasicInfoModel)) {
                                         if (!logSettingBootProgramId[logBasicInfoModel.programId]) {
                                             vm.listLogBasicInforModel.push(logBasicInfoModel);
                                         }
                                     }
                                 } else if (recordType === RECORD_TYPE.UPDATE_PERSION_INFO) {
                                     // Log PERSON INFORMATION UPDATE
-                                    if(vm.filterLogPersonInfoUpdate(logBasicInfoModel)){
-                                            if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
-                                                if (logBasicInfoModel.processAttr !== '新規') {
-                                                    // process sub header
-                                                    const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
-                                                    vm.listLogBasicInforModel.push(logtemp);
-                                                };
-                                            } else {
+                                    if (vm.filterLogPersonInfoUpdate(logBasicInfoModel)) {
+                                        if (vm.validateForPersonUpdateInfo(logSettingEditProgramId)) {
+                                            if (logBasicInfoModel.processAttr !== '新規') {
+                                                // process sub header
                                                 const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
                                                 vm.listLogBasicInforModel.push(logtemp);
-                                            }
+                                            };
+                                        } else {
+                                            const logtemp = vm.getSubHeaderPersionInfo(logBasicInfoModel);
+                                            vm.listLogBasicInforModel.push(logtemp);
+                                        }
                                     }
                                 } else if (recordType === RECORD_TYPE.DATA_CORRECT) {
                                     // Log DATA CORRECTION
-                                    if(vm.filterLogDataCorrection(logBasicInfoModel)){
-                                            if (vm.validateForDataCorrection(dataType, logSettingEditProgramId)) {
-                                                // process sub header
-                                                const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
-                                                vm.listLogBasicInforModel.push(logtemp);
-                                            }
+                                    if (vm.filterLogDataCorrection(logBasicInfoModel)) {
+                                        if (vm.validateForDataCorrection(dataType, logSettingEditProgramId)) {
+                                            // process sub header
+                                            const logtemp = vm.getSubHeaderDataCorrect(logBasicInfoModel);
+                                            vm.listLogBasicInforModel.push(logtemp);
+                                        }
                                     }
                                 }
                             }
@@ -762,200 +806,200 @@ module nts.uk.com.view.cli003.f {
             });
         }
 
-        filterLogSetting() : Array<conditionByItemNo> {
+        filterLogSetting(): Array<conditionByItemNo> {
             const vm = this;
-            const condition : Array<conditionByItemNo> = [];
+            const condition: Array<conditionByItemNo> = [];
             vm.logSetOutputs()
-            .map((logSetOutput) => {
-                logSetOutput.logSetItemDetails.map((detail) => {
-                    if (detail.condition) {
-                        condition.push(new conditionByItemNo(logSetOutput.itemNo,detail.sybol,detail.condition));
-                    }
-                })
-            });
+                .map((logSetOutput) => {
+                    logSetOutput.logSetItemDetails.map((detail) => {
+                        if (detail.condition) {
+                            condition.push(new conditionByItemNo(logSetOutput.itemNo, detail.sybol, detail.condition));
+                        }
+                    })
+                });
             return condition;
         }
 
-        filterLogLogin(logBasicInfoModel : LogBasicInfoModel) : boolean {
+        filterLogLogin(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.loginStatus, 19)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.loginStatus, 19)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.methodName, 20)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.methodName, 20)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.note, 22)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.note, 22)) {
                 return false;
             };
             return true;
         }
 
-        filterLogStartUp(logBasicInfoModel : LogBasicInfoModel) : boolean {
+        filterLogStartUp(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.note, 18)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.note, 18)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.menuName, 19)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 19)) {
                 return false;
             };
             return true;
         }
 
-        filterLogPersonInfoUpdate(logBasicInfoModel : LogBasicInfoModel) : boolean {
+        filterLogPersonInfoUpdate(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userNameTaget, 20)){
-                return false;
-            }; 
-            if(!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeTaget, 21)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameTaget, 20)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeTaget, 21)) {
+                return false;
+            };
+            if (!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)) {
                 return false;
             };
             logBasicInfoModel.lstLogPerCateCorrectRecordDto.map(item => {
-                if(!vm.filterLogByItemNo(item.categoryName, 23)){
+                if (!vm.filterLogByItemNo(item.categoryName, 23)) {
                     return false;
                 };
-                if(!vm.filterLogByItemNo(item.infoOperateAttr, 24)){
+                if (!vm.filterLogByItemNo(item.infoOperateAttr, 24)) {
                     return false;
                 };
-                if(!vm.filterLogByItemNo(item.itemName, 24)){
+                if (!vm.filterLogByItemNo(item.itemName, 24)) {
                     return false;
                 };
-                if(!vm.filterLogByItemNo(item.valueBefore, 31)){
+                if (!vm.filterLogByItemNo(item.valueBefore, 31)) {
                     return false;
                 };
-                if(!vm.filterLogByItemNo(item.valueAfter, 32)){
+                if (!vm.filterLogByItemNo(item.valueAfter, 32)) {
                     return false;
                 };
             })
-            if(!vm.filterLogByItemNo(logBasicInfoModel.note, 36)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.note, 36)) {
                 return false;
             };
             return true;
         }
 
-        filterLogDataCorrection(logBasicInfoModel : LogBasicInfoModel) : boolean {
+        filterLogDataCorrection(logBasicInfoModel: LogBasicInfoModel): boolean {
             const vm = this;
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userIdTaget, 1)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameLogin, 2)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeLogin, 3)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.ipAdress, 4)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.modifyDateTime, 7)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.menuName, 18)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.userNameTaget, 20)){
-                return false;
-            }; 
-            if(!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeTaget, 21)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.userNameTaget, 20)) {
                 return false;
             };
-            if(!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.employeeCodeTaget, 21)) {
+                return false;
+            };
+            if (!vm.filterLogByItemNo(logBasicInfoModel.processAttr, 22)) {
                 return false;
             };
             logBasicInfoModel.lstLogDataCorrectRecordRefeDto.map(item => {
-               
-                if(!vm.filterLogByItemNo(item.correctionAttr, 26)){
+
+                if (!vm.filterLogByItemNo(item.correctionAttr, 26)) {
                     return false;
                 };
-                if(!vm.filterLogByItemNo(item.itemName, 27)){
+                if (!vm.filterLogByItemNo(item.itemName, 27)) {
                     return false;
                 };
-                if(!vm.filterLogByItemNo(item.valueBefore, 30)){
+                if (!vm.filterLogByItemNo(item.valueBefore, 30)) {
                     return false;
                 };
-                if(!vm.filterLogByItemNo(item.valueAfter, 31)){
+                if (!vm.filterLogByItemNo(item.valueAfter, 31)) {
                     return false;
                 };
             })
-            if(!vm.filterLogByItemNo(logBasicInfoModel.note, 36)){
+            if (!vm.filterLogByItemNo(logBasicInfoModel.note, 36)) {
                 return false;
             };
             return true;
         }
 
-        filterLogByItemNo(content : string, itemNo : number) : boolean{
+        filterLogByItemNo(content: string, itemNo: number): boolean {
             const vm = this;
             const conditionArray = vm.filterLogSetting().filter(condition => condition.itemNo === itemNo);
-            if(conditionArray.length === 0){
+            if (conditionArray.length === 0) {
                 return true;
             }
-            if(!content){
+            if (!content) {
                 return false;
             }
-            for(const condition of conditionArray){
-                
-                if(condition.symbol === condSymbol.EQUAL){
-                    return(content === condition.condition);
-                 } else if(condition.symbol === condSymbol.DIFFERENT){
-                    return(content !== condition.condition);
-                 } else if(condition.symbol === condSymbol.INCLUDE){
-                    return (content.search(condition.condition) !==  -1);
-                 }else {
-                     return false;
-                 }
+            for (const condition of conditionArray) {
+
+                if (condition.symbol === condSymbol.EQUAL) {
+                    return (content === condition.condition);
+                } else if (condition.symbol === condSymbol.DIFFERENT) {
+                    return (content !== condition.condition);
+                } else if (condition.symbol === condSymbol.INCLUDE) {
+                    return (content.search(condition.condition) !== -1);
+                } else {
+                    return false;
+                }
             }
         }
 
@@ -1544,13 +1588,6 @@ module nts.uk.com.view.cli003.f {
         previousScreenB() {
             const vm = this;
             vm.$jump("/view/cli/003/b/index.xhtml");
-        }
-
-        constructor(data: any) {
-            super();
-            const vm = this;
-            vm.dataFromB = data;
-            vm.initComponentScreenF(vm.dataFromB);
         }
     }
 }

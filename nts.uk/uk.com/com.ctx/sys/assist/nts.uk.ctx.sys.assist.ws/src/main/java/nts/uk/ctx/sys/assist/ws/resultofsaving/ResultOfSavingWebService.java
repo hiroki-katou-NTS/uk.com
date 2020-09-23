@@ -36,10 +36,4 @@ public class ResultOfSavingWebService extends WebService{
 		ResultOfSavingCommand command = new ResultOfSavingCommand(storeProcessingId, fileId);
 		resultOfSavingHandler.handle(command);
 	}
-	
-	@POST
-	@Path("findResultOfSaving")
-	public List<ResultOfSavingDto> findResultOfSaving(LogDataParams logDataParams) {
-		return resultOfSavingFinder.getResultOfSaving(logDataParams);
-	}
 }

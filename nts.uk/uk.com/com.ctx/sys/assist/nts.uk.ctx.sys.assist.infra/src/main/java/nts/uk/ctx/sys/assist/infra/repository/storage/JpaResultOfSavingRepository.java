@@ -27,12 +27,12 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
 				+ " WHERE f.cid =:cid "
 					+ " AND f.saveStartDatetime >=:startDateOperator "
-					+ " AND f.saveEndDatetime <=:endDateOperator ";
+					+ " AND f.saveStartDatetime <=:endDateOperator ";
 	
 	private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
 				+ " WHERE f.cid =:cid "
 					+ " AND f.saveStartDatetime =:startDateOperator "
-					+ " AND f.saveEndDatetime =:endDateOperator "
+					+ " AND f.saveStartDatetime =:endDateOperator "
 					+ " AND f.practitioner =:practitioner ";
 	
 	@Override
