@@ -83,14 +83,21 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 				.getList();
 		Map<Integer, List<KrcmtAppReason>> mapEntities = entities.stream().collect(Collectors.groupingBy(KrcmtAppReason::getAppType));
 		mapEntities.forEach((appType, items) -> {
-			result.add(KrcmtAppReason.toDomain(items));
+			if (appType == 1) {
+				Map<Integer, List<KrcmtAppReason>> mapHdAppType = items.stream().collect(Collectors.groupingBy(KrcmtAppReason::getHolidayAppType));
+				mapHdAppType.forEach((hdAppType, hdItems) -> {
+					result.add(KrcmtAppReason.toDomain(hdItems));
+				});
+			} else {
+				result.add(KrcmtAppReason.toDomain(items));
+			}
 		});
 		return result;
 	}
 
 	@Override
-	public void saveReasonTypeItem(String companyId, int appType, ReasonTypeItem reasonItem) {
-		KrcmtAppReasonPk pk = new KrcmtAppReasonPk(companyId, appType, reasonItem.getAppStandardReasonCD().v());
+	public void saveReasonTypeItem(String companyId, int appType, Integer holidayAppType, ReasonTypeItem reasonItem) {
+		KrcmtAppReasonPk pk = new KrcmtAppReasonPk(companyId, appType, reasonItem.getAppStandardReasonCD().v(), appType == 1 ? holidayAppType : 0);
 		Optional<KrcmtAppReason> optEntity = this.queryProxy().find(pk, KrcmtAppReason.class);
 		if (optEntity.isPresent()) {
 			KrcmtAppReason entity = optEntity.get();
@@ -109,8 +116,8 @@ public class JpaAppReasonStandardRepository extends JpaRepository implements App
 	}
 
 	@Override
-	public void deleteReasonTypeItem(String companyId, int appType, int reasonCode) {
-		this.commandProxy().remove(KrcmtAppReason.class, new KrcmtAppReasonPk(companyId, appType, reasonCode));
+	public void deleteReasonTypeItem(String companyId, int appType, Integer holidayAppType, int reasonCode) {
+		this.commandProxy().remove(KrcmtAppReason.class, new KrcmtAppReasonPk(companyId, appType, appType == 1 ? holidayAppType : 0, reasonCode));
 	}
 
 }
