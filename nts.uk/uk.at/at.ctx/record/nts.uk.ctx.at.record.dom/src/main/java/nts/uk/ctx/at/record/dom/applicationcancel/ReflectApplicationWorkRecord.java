@@ -9,7 +9,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import nts.arc.task.tran.AtomTask;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ReflectedStateShare;
@@ -24,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceIt
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.CorrectDailyAttendanceService;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;

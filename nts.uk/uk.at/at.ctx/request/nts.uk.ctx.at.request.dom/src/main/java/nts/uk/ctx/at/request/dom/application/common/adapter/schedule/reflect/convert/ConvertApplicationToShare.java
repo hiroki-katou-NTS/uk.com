@@ -6,11 +6,14 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.application.DailyAttendanceUpdateStatus;
 import nts.uk.ctx.at.request.dom.application.ReflectionStatus;
+import nts.uk.ctx.at.request.dom.application.businesstrip.BusinessTrip;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.stamp.AppRecordImage;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.DestinationTimeApp;
 import nts.uk.ctx.at.request.dom.application.workchange.AppWorkChange;
+import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripInfoShare;
+import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.application.common.AppReasonShare;
 import nts.uk.ctx.at.shared.dom.application.common.AppStandardReasonCodeShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationDateShare;
@@ -106,8 +109,14 @@ public class ConvertApplicationToShare {
 					appWCh.getOpWorkTimeCD(), appWCh.getTimeZoneWithWorkNoLst(), appShare);
 
 		case BUSINESS_TRIP_APPLICATION:
-			// TODO: wait new domain
-			return appShare;
+			BusinessTrip bussinessTrip = (BusinessTrip) application;
+
+			return new BusinessTripShare(
+					bussinessTrip.getInfos().stream().map(
+							x -> new BusinessTripInfoShare(x.getWorkInformation(), x.getDate(), x.getWorkingHours()))
+							.collect(Collectors.toList()),
+					bussinessTrip.getDepartureTime().orElse(null), bussinessTrip.getReturnTime().orElse(null),
+					appShare);
 
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			GoBackDirectly goBack = (GoBackDirectly) application;
@@ -159,7 +168,7 @@ public class ConvertApplicationToShare {
 			return appShare;
 
 		default:
-			//レコーダイメージ申請
+			// レコーダイメージ申請
 			AppRecordImage appImg = (AppRecordImage) application;
 
 			return new AppRecordImageShare(

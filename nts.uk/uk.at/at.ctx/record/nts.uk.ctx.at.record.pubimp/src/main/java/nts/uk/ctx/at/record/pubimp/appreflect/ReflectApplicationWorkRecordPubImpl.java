@@ -17,7 +17,6 @@ import nts.uk.ctx.at.record.dom.adapter.application.reflect.RequestSettingAdapte
 import nts.uk.ctx.at.record.dom.applicationcancel.ReflectApplicationWorkRecord;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculateDailyRecordServiceCenter;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.ManagePerCompanySet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectleavingwork.CheckRangeReflectLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.CheckRangeReflectAttd;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.attendancetime.reflectwork.OutputCheckRangeReflectAttd;
@@ -34,13 +33,16 @@ import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.ReflectArrivedLateLeaveEarly;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordShareFinder;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.ChangeDailyAttendance;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.CorrectionAttendanceRule;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.worktime.empwork.EmployeeWorkDataSetting;
@@ -219,13 +221,7 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 				IntegrationOfDaily integrationOfDaily) {
 			return temporarilyReflectStampDailyAttd.reflectStamp(stamp, stampReflectRangeOutput, integrationOfDaily);
 		}
-
-//		@Override
-//		public Optional<RCAppReflectionSetting> getAppReflectionSetting(String companyId,
-//				ApplicationTypeShare appType) {
-//			return requestSettingAdapter.getAppReflectionSetting(companyId);
-//		}
-
+		
 		@Override
 		public Optional<EmployeeWorkDataSetting> getEmpWorkDataSetting(String employeeId) {
 			// TODO: Auto-generated method stub
@@ -284,6 +280,18 @@ public class ReflectApplicationWorkRecordPubImpl implements ReflectApplicationWo
 
 		@Override
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<ReflectArrivedLateLeaveEarly> findReflectArrivedLateLeaveEarly(String companyId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId) {
 			// TODO Auto-generated method stub
 			return null;
 		}

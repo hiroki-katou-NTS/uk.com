@@ -5,12 +5,18 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
+import nts.uk.ctx.at.shared.dom.application.lateleaveearly.ArrivedLateLeaveEarlyShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.SCCreateDailyAfterApplicationeReflect.DailyAfterAppReflectResult;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.record.RCReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.ReflectArrivedLateLeaveEarly;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.record.RCReflectArrivedLateLeaveEarlyApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.record.RCReflectWorkStampApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
@@ -46,7 +52,9 @@ public class RCCreateDailyAfterApplicationeReflect {
 					(ReflectWorkChangeApplication) domainSetReflect));
 			break;
 		case BUSINESS_TRIP_APPLICATION:
-			// TODO: 3：出張申請の反映（勤務予定）
+			// 3：出張申請の反映（勤務予定）
+			itemIds.addAll(RCReflectBusinessTripApp.reflect(require, (BusinessTripShare) application, dailyApp,
+					(ReflectBusinessTripApp) domainSetReflect, date));
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
 			// 4：直行直帰申請を反映する(勤務予定）
@@ -66,6 +74,8 @@ public class RCCreateDailyAfterApplicationeReflect {
 			break;
 		case EARLY_LEAVE_CANCEL_APPLICATION:
 			// 9: 遅刻早退取消申請
+			itemIds.addAll(RCReflectArrivedLateLeaveEarlyApp.reflect((ArrivedLateLeaveEarlyShare) application, dailyApp,
+					(ReflectArrivedLateLeaveEarly) domainSetReflect));
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:
 			// TODO: [input. 申請.振休振出申請種類]をチェック
@@ -83,7 +93,7 @@ public class RCCreateDailyAfterApplicationeReflect {
 	}
 
 	public static interface Require extends GetDomainReflectModelApp.Require, RCReflectWorkChangeApp.Require,
-			SCRCReflectGoBackDirectlyApp.Require, RCReflectWorkStampApp.Require {
+			SCRCReflectGoBackDirectlyApp.Require, RCReflectWorkStampApp.Require, RCReflectBusinessTripApp.Require {
 
 	}
 }

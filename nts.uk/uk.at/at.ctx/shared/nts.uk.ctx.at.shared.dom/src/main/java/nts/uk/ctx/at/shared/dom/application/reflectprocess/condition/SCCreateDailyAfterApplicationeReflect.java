@@ -8,9 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.shared.dom.application.bussinesstrip.BusinessTripShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.gobackdirectly.GoBackDirectlyShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.DailyRecordOfApplication;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.schedule.SCReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.schedulerecord.SCRCReflectGoBackDirectlyApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
@@ -49,10 +52,12 @@ public class SCCreateDailyAfterApplicationeReflect {
 					(ReflectWorkChangeApplication) domainSetReflect));
 			break;
 		case BUSINESS_TRIP_APPLICATION:
-			// TODO: 3：出張申請の反映（勤務予定）
+			// 3：出張申請の反映（勤務予定）
+			itemIds.addAll(SCReflectBusinessTripApp.reflect(require, (BusinessTripShare) application, dailyApp,
+					(ReflectBusinessTripApp) domainSetReflect, date));
 			break;
 		case GO_RETURN_DIRECTLY_APPLICATION:
-			// 直行直帰申請を反映する(勤務予定）
+			// 4：直行直帰申請を反映する(勤務予定）
 			itemIds.addAll(SCRCReflectGoBackDirectlyApp.reflect(require, companyId, (GoBackDirectlyShare) application,
 					dailyApp, (ReflectGoBackDirectly) domainSetReflect));
 			break;
@@ -86,7 +91,7 @@ public class SCCreateDailyAfterApplicationeReflect {
 	}
 
 	public static interface Require extends GetDomainReflectModelApp.Require, SCReflectWorkChangeApp.Require,
-			SCRCReflectGoBackDirectlyApp.Require, SCReflectWorkStampApp.Require {
+			SCRCReflectGoBackDirectlyApp.Require, SCReflectWorkStampApp.Require, SCReflectBusinessTripApp.Require {
 
 	}
 

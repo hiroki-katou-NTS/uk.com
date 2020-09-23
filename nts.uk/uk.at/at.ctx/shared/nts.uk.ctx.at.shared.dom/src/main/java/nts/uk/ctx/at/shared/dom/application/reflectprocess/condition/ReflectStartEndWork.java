@@ -44,7 +44,7 @@ public class ReflectStartEndWork {
 		// 勤怠項目ID一覧 = 反映した項目のみに該当する勤怠項目ID
 		// セットした勤務NOに対応する[始業１～2]、[終業1～2]
 		// 申請反映状態にする
-		UpdateEditSttCreateBeforeAppReflect.update(dailyApp, itemIds);
+		//UpdateEditSttCreateBeforeAppReflect.update(dailyApp, itemIds); ---> delete process
 		return itemIds;
 	}
 

@@ -26,7 +26,9 @@ import nts.uk.ctx.at.shared.dom.application.common.ApplicationShare;
 import nts.uk.ctx.at.shared.dom.application.common.ApplicationTypeShare;
 import nts.uk.ctx.at.shared.dom.application.reflect.ReflectStatusResultShare;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.cancellation.ApplicationReflectHistory;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.businesstrip.ReflectBusinessTripApp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.gobackdirectly.ReflectGoBackDirectly;
+import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.lateleaveearly.ReflectArrivedLateLeaveEarly;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.stamp.ReflectAppStamp;
 import nts.uk.ctx.at.shared.dom.application.reflectprocess.condition.workchange.ReflectWorkChangeApplication;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
@@ -211,6 +213,18 @@ public class ReflectAppWorkSchedulePubImpl implements ReflectApplicationWorkSche
 
 		@Override
 		public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<ReflectArrivedLateLeaveEarly> findReflectArrivedLateLeaveEarly(String companyId) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public Optional<ReflectBusinessTripApp> findReflectBusinessTripApp(String companyId) {
 			// TODO Auto-generated method stub
 			return null;
 		}
