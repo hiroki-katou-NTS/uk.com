@@ -329,6 +329,9 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 									yearMonth.addMonths(1).month(), closureDate.getClosureDay().v());
 						}
 						
+						
+						//	日別項目（単一項目・上段） - Daily items (single item, upper row)
+						//	勤怠項目の実績値を取得し編集する - Acquire and edit the actual value of attendance items
 						AttendanceItemValueResult itemValueResult = AttendanceItemValueResult.builder()
 								.employeeId(null).workingDate(null).attendanceItems(new ArrayList<ItemValue>())
 								.build();
@@ -342,6 +345,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
                                 }
                             }
 						}
+						
 						// Fill in upper single item
 						if (!singleIdUpper.isEmpty()) {
 							valueSingleUpper = AttendanceItemValueResult.builder()
@@ -385,6 +389,9 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 
 							});
 						}
+						
+						//	日別項目（算出項目・上段） - Daily items (calculation items, upper row)
+						//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
 						// return result upper-daily-calculateItems
 						for (CalculateAttendanceRecord item : calculateUpperDaily) {
 
@@ -441,6 +448,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 
 						}
 
+						//	日別項目（単一項目・下段） - Daily items (single item / lower)
+						//	勤怠項目の実績値を取得し編集する - Acquire and edit the actual value of attendance items
 						// return result lower-daily-singleItems
 						AttendanceItemValueService.AttendanceItemValueResult valueSingleLower = AttendanceItemValueResult
 								.builder().employeeId(emp.getEmployeeId()).workingDate(startDateByClosure)
@@ -487,6 +496,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 
 							});
 
+						//	日別項目（算出項目・下段） - Daily items (calculation items, lower row)
+						//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
 						for (CalculateAttendanceRecord item : calculateLowerDaily) {
 
 							AttendanceItemValueService.AttendanceItemValueResult addValueCalUpper = AttendanceItemValueResult
@@ -536,6 +547,9 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 							lowerDailyRespond.add(new AttendanceRecordResponse(emp.getEmployeeId(),
 									emp.getEmployeeName(), startDateByClosure, "", result));
 						}
+						
+						
+						// end calculate lower row item 
 					}
 				}
 
