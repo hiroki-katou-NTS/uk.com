@@ -918,10 +918,10 @@ public class AsposeAppStamp {
 			// set style for bottom
 
 			cells.setRowHeightPixel(38 - deleteCnt - 2, 5);
-			cells.setRowHeightPixel(38 - deleteCnt - 1, 120);
+			cells.setRowHeightPixel(38 - deleteCnt - 1, 130);
 			cells.setRowHeightPixel(38 - deleteCnt, 5);
 			cells.setRowHeightPixel(38 - deleteCnt + 1, 5);
-			cells.setRowHeightPixel(38 - deleteCnt + 2, 120);
+			cells.setRowHeightPixel(38 - deleteCnt + 2, 130);
 			cells.setRowHeightPixel(38 - deleteCnt + 3, 5);
 
 			// before reason
@@ -1007,8 +1007,12 @@ public class AsposeAppStamp {
 					.setLineStyle(CellBorderType.THIN);
 
 			bReasonLabelStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+			bReasonLabelStyle.setVerticalAlignment(TextAlignmentType.TOP);
 			bReasonLabelStyle.setIndentLevel(1);
 			dReasonLabelStyle.setHorizontalAlignment(TextAlignmentType.LEFT);
+			dReasonLabelStyle.setVerticalAlignment(TextAlignmentType.TOP);
+			dReasonLabelStyle.getFont().setSize(9);
+			dReasonLabelStyle.getFont().setName("源ノ角ゴシック JP Normal");
 			dReasonLabelStyle.setIndentLevel(1);
 
 			dReasonLabelStyle.setTextWrapped(true);
