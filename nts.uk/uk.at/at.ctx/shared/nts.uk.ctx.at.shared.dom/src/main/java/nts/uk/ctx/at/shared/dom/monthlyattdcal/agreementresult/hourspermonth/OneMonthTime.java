@@ -17,7 +17,6 @@ import org.eclipse.persistence.internal.xr.ValueObject;
  */
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class OneMonthTime extends ValueObject {
 
     /**
@@ -46,13 +45,13 @@ public class OneMonthTime extends ValueObject {
     public OverState errorCheck(AttendanceTimeMonth applicationTime) {
         int value;
         if (applicationTime.lessThanOrEqualTo(errorTimeInMonth.getAlarmTime().v())) {
-            value = 0;
+            value = OverState.NORMAL.value;
         } else if (applicationTime.lessThanOrEqualTo(errorTimeInMonth.getErrorTime().v())) {
-            value = 1;
+            value = OverState.ALARM_OVER.value;
         } else if (applicationTime.lessThanOrEqualTo(upperLimitTime.v())) {
-            value = 2;
+            value = OverState.ERROR_OVER.value;
         } else {
-            value = 3;
+            value = OverState.UPPER_LIMIT_OVER.value;
         }
         return EnumAdaptor.valueOf(value, OverState.class);
     }

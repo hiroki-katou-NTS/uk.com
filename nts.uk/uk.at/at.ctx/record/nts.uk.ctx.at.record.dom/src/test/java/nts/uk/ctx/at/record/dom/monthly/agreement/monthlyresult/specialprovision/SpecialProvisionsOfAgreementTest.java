@@ -7,6 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 import org.junit.Assert;
@@ -22,7 +23,7 @@ public class SpecialProvisionsOfAgreementTest {
 
 	public static SpecialProvisionsOfAgreement createNewDomain() {
 		OneMonthTime oneMonthTime = new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)), new YearMonth(0));
-		OneYearTime oneYearTime = new OneYearTime(new ErrorTimeInYear(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)), new Year(2020));
+		OneYearTime oneYearTime = new OneYearTime(new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)), new Year(2020));
 
 		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
 
@@ -102,7 +103,7 @@ public class SpecialProvisionsOfAgreementTest {
 	public void changeApplicationYearTest_1() {
 		SpecialProvisionsOfAgreement target = createNewDomain();
 
-		ErrorTimeInYear errorTimeInYear = new ErrorTimeInYear(new AgreementOneMonthTime(1), new AgreementOneMonthTime(1));
+		ErrorTimeInYear errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime(1), new AgreementOneYearTime(1));
 
 		target.changeApplicationYear(errorTimeInYear,new ReasonsForAgreement("Reason"));
 
@@ -117,7 +118,7 @@ public class SpecialProvisionsOfAgreementTest {
 
 		ApprovalStatusDetails approvalStatusDetails = new ApprovalStatusDetails(ApprovalStatus.APPROVED, Optional.empty(), Optional.empty(), Optional.empty());
 		target.setApprovalStatusDetails(approvalStatusDetails);
-		ErrorTimeInYear errorTimeInYear = new ErrorTimeInYear(new AgreementOneMonthTime(1), new AgreementOneMonthTime(1));
+		ErrorTimeInYear errorTimeInYear = new ErrorTimeInYear(new AgreementOneYearTime(1), new AgreementOneYearTime(1));
 
 		target.changeApplicationYear(errorTimeInYear,new ReasonsForAgreement("Reason"));
 
