@@ -193,13 +193,13 @@ module nts.uk.at.view.kdr002.a.viewmodel {
                 employeeInputList: self.employeeList,
                 selectType: SelectType.SELECT_BY_SELECTED_CODE,
                 selectedCode: self.selectedEmployeeCode,
-                isDialog: false,
+                isDialog: true,
                 isShowNoSelectRow: false,
                 alreadySettingList: self.alreadySettingPersonal,
                 isShowWorkPlaceName: true,
                 isShowSelectAllButton: false,
-                maxWidth: 550,
-                maxRows: 15
+                maxWidth: 475,
+                maxRows: 21
             };
         }
 

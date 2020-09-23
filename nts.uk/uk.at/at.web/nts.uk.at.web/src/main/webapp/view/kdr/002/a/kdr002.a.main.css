@@ -137,3 +137,14 @@
 .min-width-layout-1 {
 	min-width: 570px;
 }
+
+.self-panel {
+	display: inline-block;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    width: 810px;
+    margin-left: 16px;
+    margin-top: 10px;
+    height: 620px;
+}
