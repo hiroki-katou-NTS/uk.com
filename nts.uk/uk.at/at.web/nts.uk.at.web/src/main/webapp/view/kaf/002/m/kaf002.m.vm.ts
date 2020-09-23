@@ -181,7 +181,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 }
             })
             self.isPreAtr.subscribe((value) => {
-               if(!_.isNull(value)) {
+               if(!_.isNull(value) && self.mode == 0) {
                    self.loadAll();
                }
 

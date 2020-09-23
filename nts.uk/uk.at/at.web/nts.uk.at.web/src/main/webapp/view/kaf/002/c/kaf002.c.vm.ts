@@ -571,6 +571,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             }
             self.$ajax(API.getDetail, command)
                 .done(res => {
+                    if (!res) return;
                     self.data = res;
                     self.isPreAtr(self.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr == 0);
                     self.isAttendence = false;
