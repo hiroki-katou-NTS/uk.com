@@ -92,6 +92,17 @@ public class ApplicationListFinder {
 					Strings.isNotBlank(param.getAppListExtractCondition().getPeriodEndDate())) {
 				// ドメインモデル「申請一覧抽出条件」を取得する
 				AppListExtractCondition appListExtractCondition = param.getAppListExtractCondition().toDomain();
+				// có selectAppTypeLst là KAF000, nếu không có là các màn hình khác, mặc định select all
+				List<ListOfAppTypes> selectAppTypeLst = appListExtractCondition.getOpListOfAppTypes().map(x -> x.stream().filter(y -> y.isChoice()).collect(Collectors.toList()))
+						.orElse(Collections.emptyList());
+				if(CollectionUtil.isEmpty(selectAppTypeLst)) {
+					appListExtractCondition.getOpListOfAppTypes().ifPresent(x -> {
+						x.stream().map(y -> {
+							y.setChoice(true);
+							return y;
+						}).collect(Collectors.toList());
+					});
+				}
 				// アルゴリズム「申請一覧リスト取得」を実行する
 				AppListInitOutput appListInitOutput = repoAppListInit.getApplicationList(appListExtractCondition, param.getDevice(), result);
 				return AppListInitDto.fromDomain(appListInitOutput);
@@ -502,7 +513,7 @@ public class ApplicationListFinder {
 
 //	UKDesign.UniversalK.就業.KAF_申請.CMMS45_申請一覧・承認一覧（スマホ）.A：申請一覧.アルゴリズム.起動時処理
 //  アルゴリズム「起動時処理」を実行する
-    public ApplicationListDtoMobile getList(List<ListOfAppTypesCmd> listAppType, AppListExtractConditionCmd appListExtractConditionDto){
+    public ApplicationListDtoMobile getList(List<Integer> listAppType, List<ListOfAppTypesCmd> listOfAppTypes, AppListExtractConditionCmd appListExtractConditionDto){
     	ApplicationListDtoMobile applicationListDto = new ApplicationListDtoMobile();
 //    	裏パラメータ取得
     	int device = MOBILE;
@@ -526,7 +537,8 @@ public class ApplicationListFinder {
 		AppListParamFilter param = new AppListParamFilter();
 		param.setDevice(MOBILE);
     	param.setMode(appListExtractConditionDto.getAppListAtr());
-    	param.setListOfAppTypes(listAppType);
+    	param.setListOfAppTypes(listOfAppTypes);
+    	param.setLstAppType(listAppType);
     	if (appListExtractConditionDto.getPeriodStartDate() != null && appListExtractConditionDto.getPeriodEndDate() != null) {
 	    	param.setStartDate(appListExtractConditionDto.getPeriodStartDate());
 	    	param.setEndDate(appListExtractConditionDto.getPeriodEndDate());

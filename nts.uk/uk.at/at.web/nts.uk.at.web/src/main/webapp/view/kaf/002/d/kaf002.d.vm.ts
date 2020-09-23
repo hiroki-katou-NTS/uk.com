@@ -288,7 +288,6 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    appStampOutputDto: data,
                    applicationDto: applicationDto
            }
-           self.$blockui("show");
            return self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
            .then(isValid => {
                if ( isValid ) {
@@ -296,6 +295,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                }
            }).then(result => {
                if (!result) return;
+               self.$blockui("show");
                return self.$ajax(API.checkUpdate, commandCheck);
               
            }).then(res => {
@@ -308,9 +308,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                }
            }).done(res => {
                if (res != undefined) {
-                   self.$dialog.info({messageId: "Msg_15" }).then(() => {
-                       location.reload();
-                   });                   
+                   return self.$dialog.info({messageId: "Msg_15" })
                }
            }).fail(res => {
                self.showError(res);

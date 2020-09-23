@@ -8,6 +8,8 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     import AppType = nts.uk.at.view.kaf000.shr.viewmodel.model.AppType;
     import Kaf000AViewModel = nts.uk.at.view.kaf000.a.viewmodel.Kaf000AViewModel;
     import alertError = nts.uk.ui.dialog.alertError;
+    import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
+
     @bean()
     class Kaf002AViewModel extends Kaf000AViewModel {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel> = ko.observableArray(null);
@@ -30,6 +32,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
 
         isVisibleComlumn: boolean = true;
         isPreAtr: KnockoutObservable<boolean> = ko.observable(false);
+        mode: number = 0; // 0 ->a, 1->b, 2->b(view)
 //    ※M2.1_1
 //    打刻申請起動時の表示情報.申請設定（基準日関係なし）.複数回勤務の管理　＝　true
     
@@ -73,6 +76,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
     created(param: any) {
         const self = this;
         self.application = ko.observable(new Application(self.appType()));
+		self.application().opStampRequestMode(0);
         self.selectedTab.subscribe(value => {
            if (!_.isNull(value)) {
                self.selectedCode(Number(value));
@@ -86,7 +90,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         self.loadData([], [], self.appType())
         .then((loadDataFlag: any) => {
             self.appDispInfoStartupOutput.subscribe(value => {
-                console.log(value);
                 if (value) { 
                     self.changeDate();
                 }
@@ -111,9 +114,9 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return self.$ajax(API.start, command);
             }
         }).done((res: any) => {
-            console.log(res);
             self.data = res;
             self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+            self.bindReasonList(self.data);
             self.bindTabM(self.data);
             self.bindComment(self.data);
         }).fail(res => {
@@ -124,9 +127,27 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         // do not have actual data, or date is not selected
         self.initData();
     }
+    reasonList: Array<GoOutTypeDispControl>;
+    bindReasonList(data: any) {
+        const self = this;
+        let reasonList = data.appStampSetting.goOutTypeDispControl;
+        reasonList = _.filter(reasonList, (e: GoOutTypeDispControl) => {
+            return e.display == 1;
+        })
+        if (_.isEmpty(reasonList)) {
+            reasonList = [{display: 1, goOutType: 0}];
+        }
+        self.reasonList = reasonList;
+        
+    }
+    
     bindTabM(data: any) {
         const self = this;
         let reflect = data.appStampReflectOptional;
+        // visible 勤務時間 2
+        
+        let attendenceCommon = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
+        
         if (reflect.temporaryAttendence == 0) {
             self.dataSourceOb()[0].pop();
             self.dataSourceOb()[0].pop();
@@ -135,6 +156,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         if (reflect.attendence == 0) {
             self.dataSourceOb()[0].shift();
             self.dataSourceOb()[0].shift();
+        } else {
+            if (!attendenceCommon) {
+                _.remove(self.dataSourceOb()[0], (e: GridItem) => {
+                    return e.typeStamp == STAMPTYPE.ATTENDENCE && e.id == 2;
+                });       
+            }
         }
         self.isM(true);
         self.tabs.subscribe(value => {
@@ -271,7 +298,6 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         };
         self.$ajax(API.start, command)
             .done((res: any) => {
-                console.log(res);
                 self.data = res;
                 self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                 self.bindTabM(self.data);
@@ -416,6 +442,12 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         if (self.data) {
             if (self.data.appStampReflectOptional.attendence) {
                 item1_temp = item1_temp.concat(items1);
+                let attendenceCommon = self.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
+                if (!attendenceCommon) {
+                    _.remove(item1_temp, (e: GridItem) => {
+                        return e.typeStamp == STAMPTYPE.ATTENDENCE && e.id == 2;
+                    });       
+                }
             }
             if (self.data.appStampReflectOptional.temporaryAttendence) {
                 item1_temp = item1_temp.concat(items2);   
@@ -511,7 +543,26 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return list;
             })();
             let dataSource = [];
-            dataSource.push( items1.concat(items2) );
+         // array 1 
+            let item1_temp = [];
+            // case change date
+            if (self.data) {
+                if (self.data.appStampReflectOptional.attendence) {
+                    item1_temp = item1_temp.concat(items1);
+                    let attendenceCommon = self.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
+                    if (!attendenceCommon) {
+                        _.remove(item1_temp, (e: GridItem) => {
+                            return e.typeStamp == STAMPTYPE.ATTENDENCE && e.id == 2;
+                        });       
+                    }
+                }
+                if (self.data.appStampReflectOptional.temporaryAttendence) {
+                    item1_temp = item1_temp.concat(items2);   
+                } 
+                dataSource.push(item1_temp);
+            } else {
+                dataSource.push( items1.concat(items2) );       
+            }
             dataSource.push( items3 );
             dataSource.push( items4 );
             dataSource.push( items5 );
@@ -538,11 +589,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
-                                timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);
+                                if (!_.isNull(el.typeReason)) {
+                                    timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);                                    
+                                }
                                 listTimeStampApp.push(timeStampAppDto);
                                 
                             }
@@ -552,11 +605,13 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
-                                timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);
+                                if (!_.isNull(el.typeReason)) {
+                                    timeStampAppDto.appStampGoOutAtr = Number(el.typeReason);                                    
+                                }
                                 listTimeStampApp.push(timeStampAppDto);
                             }
                         } else {
@@ -564,14 +619,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp =el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                             if (el.endTimeActual) {
                                 let destinationTimeApp = new DestinationTimeAppDto();
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id - 2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.typeStamp = el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                         }   

@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 
 /**
  * 月別実績の遅刻早退

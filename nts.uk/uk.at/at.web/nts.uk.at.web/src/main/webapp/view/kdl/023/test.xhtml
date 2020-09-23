@@ -22,7 +22,7 @@
 			<div id="functions-area">
 				<button tabindex="1" id="asdv" class="large"
 					data-bind="click: gotoA">dialog A</button>
-				<button tabindex="2" class="large" data-bind="click: gotoB, enable: enableB">dialog B</button>
+				<!--<button tabindex="2" class="large" data-bind="click: gotoB, enable: enableB">dialog B</button>-->
 			</div>
 			<div id="contents-area" data-bind="visible: true" style="display: none">
 			<table>
@@ -31,6 +31,20 @@
 						<table>
 							<tbody>
 							<com:ko tag="with" bind="reflectionSetting">
+                             <tr>
+                                 <td>Boot Mode:</td>
+                                 <td><div id="bootModeRadio" style="display: grid" data-bind="ntsRadioBoxGroup: {
+                                    options: [
+                                        {code: 0, name: 'REF_MODE'},
+                                        {code: 1, name: 'EXEC_MODE'}
+                                    ],
+                                    optionsValue: 'code',
+                                    optionsText: 'name',
+                                    value: bootMode,
+                                    enable: true}"></div>
+                                 </td>
+
+                             </tr>
 							<tr>
 								<td>Select pattern:</td>
 								<td><div tabindex="3" id="cbb-daily-pattern-list"

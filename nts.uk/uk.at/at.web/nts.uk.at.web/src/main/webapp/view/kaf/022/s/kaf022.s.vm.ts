@@ -12,7 +12,7 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         selectedReason: KnockoutObservable<AppReasonStandard> = ko.observable(new AppReasonStandard(0));
         columns: KnockoutObservableArray<any>;
         listAppType: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
-        selectedAppType: KnockoutObservable<number> = ko.observable(0);
+        selectedAppType: KnockoutObservable<string> = ko.observable("0");
         selectedReasonCode: KnockoutObservable<number> = ko.observable(null);
 
         // bien theo doi update mode hay new mode
@@ -31,7 +31,16 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             const labels = ["KAF022_3", "KAF022_4", "KAF022_5", "KAF022_6", "KAF022_7", "KAF022_8", "KAF022_11", "KAF022_707", "KAF022_10", "KAF022_12", "KAF022_705"];
             const listApplicationType = __viewContext.enums.ApplicationType;
             listApplicationType.forEach( (obj, index) => {
-                self.listAppType.push(new ItemModel(obj.value, getText(labels[index])))
+                if (obj.value == 1) {
+                    let listHdType = __viewContext.enums.HolidayAppType;
+                    listHdType.forEach(hdType => {
+                        if (hdType.value < 7) {
+                            self.listAppType.push(new ItemModel(obj.value, getText(labels[index]) + " - " + hdType.name, hdType.value))
+                        }
+                    })
+                } else {
+                    self.listAppType.push(new ItemModel(obj.value, getText(labels[index])));
+                }
             });
 
             // subscribe a item in the list
@@ -42,12 +51,13 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                         return o.reasonCode == value
                     });
                     if (!isNullOrEmpty(reason)) {
-                        self.selectedReason(new AppReasonStandard(reason.appType, reason));
+                        self.selectedReason(new AppReasonStandard(reason.appType, reason.hdAppType, reason));
                         self.isUpdate(true);
                         $("#reasonTemp").focus();
                     }
                 } else {
-                    self.selectedReason(new AppReasonStandard(self.selectedAppType()));
+                    const tmp = _.find(self.listAppType(), a => a.key == self.selectedAppType());
+                    self.selectedReason(new AppReasonStandard(tmp.appType, tmp.hdAppType));
                     self.isUpdate(false);
                     nts.uk.ui.errors.clearAll();
                     $("#reasonCode").focus();
@@ -58,7 +68,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
             self.selectedAppType.subscribe((value) => {
                 if (!_.isNil(value)) {
                     nts.uk.ui.errors.clearAll();
-                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == value), ['reasonCode']));
+                    const tmp = _.find(self.listAppType(), a => a.key == value);
+                    self.listReasonByAppType(_.sortBy(self.listReason().filter(r => r.appType == tmp.appType && r.hdAppType == tmp.hdAppType), ['reasonCode']));
                     if (self.listReasonByAppType().length > 0) {
                         if (self.selectedReasonCode() == self.listReasonByAppType()[0].reasonCode)
                             self.selectedReasonCode.valueHasMutated();
@@ -89,7 +100,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                                 dispOrder: i.displayOrder,
                                 reasonTemp: i.reasonForFixedForm,
                                 defaultFlg: i.defaultValue,
-                                appType: d.applicationType
+                                appType: d.applicationType,
+                                hdAppType: d.opHolidayAppType
                             })
                         });
                     });
@@ -98,7 +110,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
                     if (isNullOrEmpty(currentCode)) {
                         self.selectedAppType.valueHasMutated();
                     } else {
-                        self.listReasonByAppType(self.listReason().filter(r => r.appType == self.selectedAppType()));
+                        const tmp = _.find(self.listAppType(), a => a.key == self.selectedAppType());
+                        self.listReasonByAppType(self.listReason().filter(r => r.appType == tmp.appType && r.hdAppType == tmp.hdAppType));
                         if (self.selectedReasonCode() == currentCode)
                             self.selectedReasonCode.valueHasMutated();
                         else
@@ -219,6 +232,8 @@ module nts.uk.at.view.kaf022.s.viewmodel {
         defaultFlg: boolean;
 
         appType: number;
+
+        hdAppType: number;
     }
 
     class AppReasonStandard {
@@ -233,23 +248,33 @@ module nts.uk.at.view.kaf022.s.viewmodel {
 
         appType: number;
 
-        constructor(appType: number, param?: IAppReasonStandard) {
+        holidayAppType: number;
+
+        constructor(appType: number, hdAppType?: number, param?: IAppReasonStandard) {
             let self = this;
             self.appType = appType;
             self.reasonCode = ko.observable(param ? param.reasonCode : null);
             self.dispOrder = ko.observable(param ? param.dispOrder : 0);
             self.reasonTemp = ko.observable(param ? param.reasonTemp : "");
             self.defaultFlg = ko.observable(param ? param.defaultFlg : false);
+            self.holidayAppType = hdAppType;
         }
     }
 
     class ItemModel {
-        code: number;
+        key: string;
+        appType: number;
+        hdAppType: number;
         name: string;
 
-        constructor(code: number, name: string) {
-            this.code = code;
+        constructor(appType: number, name: string, hdAppType?: number) {
+            if (hdAppType)
+                this.key = appType + "-" + hdAppType;
+            else
+                this.key = appType.toString();
+            this.appType = appType;
             this.name = name;
+            this.hdAppType = hdAppType;
         }
     }
 

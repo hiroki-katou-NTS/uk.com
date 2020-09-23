@@ -29,14 +29,10 @@
         <tbody>
           <tr v-for="(data,index) in table" v-bind:key="index">
             <td class="px-1" v-date="data.date">{{data.date}}</td>
-            <td class="px-1" v-if="data.wkTimeCd != null ">{{data.wkTypeCd}}</td>
-            <td class="px-1" v-else>{{''}}</td>
-            <td class="px-1" v-if="data.wkTypeCd != null">{{data.wkTimeCd}}</td> 
-            <td class="px-1" v-else>{{''}}</td>
-            <td class="px-1" v-if="data.startWorkTime">{{data.startWorkTime | timewd}}</td>
-            <td class="px-1" v-else>{{''}}</td>
-            <td class="px-1" v-if="data.endWorkTime != null">{{data.endWorkTime | timewd}}</td>
-            <td class="px-1" v-else>{{''}}</td>
+            <td class="px-1">{{data.wkTimeCd}}</td>
+            <td class="px-1">{{data.wkTypeCd}}</td>
+            <td class="px-1">{{data.startWorkTime | timewd}}</td>
+            <td class="px-1">{{data.endWorkTime | timewd}}</td>
           </tr>
         </tbody>
       </table>

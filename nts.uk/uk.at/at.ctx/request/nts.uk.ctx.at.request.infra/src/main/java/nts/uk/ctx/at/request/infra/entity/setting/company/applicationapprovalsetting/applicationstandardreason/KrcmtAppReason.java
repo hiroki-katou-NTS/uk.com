@@ -4,6 +4,7 @@ import lombok.*;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.DisplayReason;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.AppReasonStandard;
 import nts.uk.ctx.at.request.dom.setting.company.appreasonstandard.ReasonTypeItem;
@@ -48,12 +49,13 @@ public class KrcmtAppReason extends ContractUkJpaEntity {
         if (CollectionUtil.isEmpty(entities)) return null;
         String companyId = entities.get(0).pk.companyId;
         int applicationType = entities.get(0).pk.applicationType;
+        Integer holidayAppType = entities.get(0).pk.holidayAppType;
         List<ReasonTypeItem> reasonTypeItemLst = entities.stream().map(e -> ReasonTypeItem.createNew(e.pk.reasonCode, e.displayOrder, BooleanUtils.toBoolean(e.defaultAtr), e.reasonTemp)).collect(Collectors.toList());
         return new AppReasonStandard(
                 companyId,
                 EnumAdaptor.valueOf(applicationType, ApplicationType.class),
                 reasonTypeItemLst,
-                Optional.empty());
+                applicationType != 1 ? Optional.empty() : Optional.of(EnumAdaptor.valueOf(holidayAppType, HolidayAppType.class)));
     }
 
     @Override
@@ -67,5 +69,9 @@ public class KrcmtAppReason extends ContractUkJpaEntity {
 
     public int getAppType() {
         return this.pk.applicationType;
+    }
+
+    public Integer getHolidayAppType() {
+        return this.pk.holidayAppType;
     }
 }
