@@ -219,6 +219,14 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             _.each(self.dataSource, (item, index) => {
                 if (!_.isEmpty(item)) {
                     _.forEach(item, (i, indexI) => {
+                        let startRequest = i.startTimeRequest();
+                        let endRequest = i.endTimeRequest();
+                        if (_.isNaN(Number(startRequest)) || Number(startRequest) > 4319 || Number(startRequest) < (-720)) {
+                            i.startTimeRequest(null);
+                        }
+                        if (_.isNaN(Number(endRequest)) || Number(endRequest) > 4319 || Number(endRequest) < (-720)) {
+                            i.endTimeRequest(null);
+                        }
                         if (self.mode ==0) {
                             if (i.typeStamp == STAMPTYPE.GOOUT_RETURNING) {
                                 i.typeReason = String (self.createdReasonItem(self.reasonList)[0].code);                            
