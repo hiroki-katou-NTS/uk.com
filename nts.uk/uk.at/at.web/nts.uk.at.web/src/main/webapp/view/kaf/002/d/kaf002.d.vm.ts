@@ -309,10 +309,12 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                }
            }).done(res => {
                if (res != undefined) {
-               		self.$dialog.info({messageId: "Msg_15" }).then(() => {
-						return true;
-					});
+                   return self.$dialog.info({messageId: "Msg_15" })
                }
+           }).fail(res => {
+               self.showError(res);
+           }).always(() => {
+               self.$blockui('hide');
            });
        }
        showError(res: any) {
@@ -324,7 +326,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                 }
                self.$dialog.error(param).then(() => {
                    if (res.messageId == 'Msg_197') {
-                       self.$jump("com", "/view/ccg/008/a/index.xhtml")
+                       window.location.reload();
                    }
                });
             }

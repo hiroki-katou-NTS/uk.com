@@ -391,8 +391,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
             let optionGrid = {
-                    width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '420px' : '517px',
-                    height: isChrome ? '300px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
+                    width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '430px' : '527px',
+                    height: isChrome ? '330px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
                     dataSource: dataSource,
                     primaryKey: 'id',
                     virtualization: true,
@@ -448,8 +448,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                new ItemModel('2', '有償'),
                                new ItemModel('3', '組合')];
             let option2 = {
-              width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '555px' : '655px',
-              height: isChrome ? '300px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
+              width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '565px' : '665px',
+              height: isChrome ? '330px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
               dataSource: dataSource,
               primaryKey: 'id',
               virtualization: true,

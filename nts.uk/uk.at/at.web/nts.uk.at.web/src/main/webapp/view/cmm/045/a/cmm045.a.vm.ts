@@ -860,7 +860,7 @@ module cmm045.a.viewmodel {
             let $tbody = $container.find(".nts-fixed-body-wrapper tbody");
             $tbody.empty();
 
-            this.items().forEach(item => {
+            self.items().forEach((item, i) => {
                 let $tr = $("<tr/>");
                 columns.forEach(column => {
 
@@ -933,11 +933,11 @@ module cmm045.a.viewmodel {
 				let nameStr = '';
 				if(!_.isNull(self.appListInfo) && self.appListInfo.displaySet.workplaceNameDisp==1) {
 					//if(!nts.uk.util.isNullOrEmpty(item.workplaceName)) {
-					nameStr += item.workplaceName + '<br/>';
+					nameStr += item.workplaceName + '\n';
 					//}
 				}
 				nameStr += item[key];
-				return nameStr;
+				return _.escape(nameStr).replace(/\n/g, '<br/>');
 			}
 
 			if(key=='appType') {
@@ -955,18 +955,18 @@ module cmm045.a.viewmodel {
 				if(_.isUndefined(appInfo)) {
 					return '';
 				} else {
-					return appInfo.appName;
+					return _.escape(appInfo.appName);
 				}
 			}
 			if(key=='prePostAtr') {
 				if(item[key]==0) {
-					return nts.uk.resource.getText('KAF000_47');
+					return _.escape(nts.uk.resource.getText('KAF000_47'));
 				} else {
-					return nts.uk.resource.getText('KAF000_48');
+					return _.escape(nts.uk.resource.getText('KAF000_48'));
 				}
 			}
 			if(key=='appContent') {
-				return item[key].replace(/\n/g, '<br/>');
+				return _.escape(item[key]).replace(/\n/g, '<br/>');
             }
             if(key=='inputDate') {
                 var cl = "";
@@ -977,9 +977,9 @@ module cmm045.a.viewmodel {
                 return self.inputDateColor(time, cl);
             }
 			if(key=='reflectionStatus') {
-				return getText(item[key]);
+				return _.escape(getText(item[key]));
 			}
-			return item[key];
+			return _.escape(item[key]);
 		}
 
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {
