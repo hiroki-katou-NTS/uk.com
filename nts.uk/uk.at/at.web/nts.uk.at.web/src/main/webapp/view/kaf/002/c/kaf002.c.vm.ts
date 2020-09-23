@@ -572,10 +572,40 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             self.$ajax(API.getDetail, command)
                 .done(res => {
                     self.data = res;
+                    self.isPreAtr(self.appDispInfoStartupOutput().appDetailScreenInfo.application.prePostAtr == 0);
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
-                    self.bindActualData();                        
-                    //self.bindTabM(self.data); 
+                    self.bindActualData();
+                    let reflect = self.data.appStampReflectOptional;
+                    let attendenceCommon = self.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
+
+                    if (reflect.temporaryAttendence == 0 && !self.isTemporaryAttendence) {
+                        self.dataSourceOb()[0].pop();
+                        self.dataSourceOb()[0].pop();
+                        self.dataSourceOb()[0].pop();
+                    }
+                    if (reflect.attendence == 0 && !self.isAttendence) {
+                        self.dataSourceOb()[0].shift();
+                        self.dataSourceOb()[0].shift();
+                    } else {
+                        if (!attendenceCommon && !self.isAttendence2) {
+                            _.remove(self.dataSourceOb()[0], (e: GridItem) => {
+                                return e.typeStamp == STAMPTYPE.ATTENDENCE && e.id == 2;
+                            });       
+                        }
+                    }
+                    
+                    if (self.data.appStampReflectOptional && self.tabs()) {
+                        let reflect = self.data.appStampReflectOptional;
+                        self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary) || self.isAttendence || self.isTemporaryAttendence );
+                        self.tabs()[1].visible(reflect.outingHourse == 1 || self.isOutingHourse);
+                        self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
+                        self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
+                        self.tabs()[4].visible(reflect.nurseTime == 1 || self.isNurseTime);
+                        // not use
+                        self.tabs()[5].visible(false);
+                    
+                    } 
                     self.bindComment(self.data);
                     self.printContentOfEachAppDto().opAppStampOutput = res;
                 }).fail(res => {
