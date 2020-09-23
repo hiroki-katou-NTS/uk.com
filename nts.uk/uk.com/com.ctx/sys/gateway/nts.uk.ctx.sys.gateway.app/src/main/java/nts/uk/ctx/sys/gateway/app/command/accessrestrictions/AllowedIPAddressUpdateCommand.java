@@ -4,6 +4,8 @@ import lombok.Setter;
 
 @Setter
 public class AllowedIPAddressUpdateCommand {
+	
+	public Integer accessLimitUseAtr;
 
 	public AllowedIPAddressCommand allowedIPAddressNew;
 	

@@ -26,12 +26,12 @@ public class AccessRestrictionsCommandHandler {
 		}
 	}
 	
-	public void addAllowdIpAddress(AllowedIPAddressCommand command) {
+	public void addAllowdIpAddress(AllowedIPAddressUpdateCommand command) {
 		String contractCode = AppContexts.user().contractCode();
 		Optional<AccessRestrictions> domain = repo.get(new ContractCode(contractCode));
 		if (domain.isPresent()) {
-			domain.get().addIPAddress(command.toDomain());
-			repo.update(domain.get());
+			domain.get().addIPAddress(command.allowedIPAddressNew.toDomain());
+			repo.update(new AccessRestrictions(command.accessLimitUseAtr, contractCode, domain.get().getAllowedIPaddress()));
 		}
 	}
 	
@@ -40,7 +40,7 @@ public class AccessRestrictionsCommandHandler {
 		Optional<AccessRestrictions> domain = repo.get(new ContractCode(contractCode));
 		if (domain.isPresent()) {
 			domain.get().updateIPAddress(command.allowedIPAddressOld.toDomain(), command.allowedIPAddressNew.toDomain());
-			repo.update(domain.get());
+			repo.update(new AccessRestrictions(command.accessLimitUseAtr, contractCode, domain.get().getAllowedIPaddress()));
 		}
 	}
 	

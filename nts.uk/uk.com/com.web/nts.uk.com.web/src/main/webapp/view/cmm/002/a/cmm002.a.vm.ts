@@ -19,6 +19,7 @@ module nts.uk.com.view.cmm002.a {
 			self.selectedAllowedIPAddress.subscribe(value =>{
 				if(value != ""){
 					self.allowedIPAddress.update(_.find(self.allowedIPAddressList(), ['id', value]));
+					$('input').ntsError('check');
 				}
 			});
         }
@@ -58,7 +59,11 @@ module nts.uk.com.view.cmm002.a {
 			if(!errors.hasError()) {
 				if(self.selectedAllowedIPAddress() == ''){
 					block.invisible();
-		            service.add(ko.toJS(self.allowedIPAddress)).done(() => {
+					let param = {
+						accessLimitUseAtr: self.accessLimitUseAtr(),
+						allowedIPAddressNew: ko.toJS(self.allowedIPAddress)
+					};
+		            service.add(param).done(() => {
 		            	self.start().done(()=>{
 							self.selectedAllowedIPAddress(new AllowedIPAddressDto(ko.toJS(self.allowedIPAddress)).id);
 						});
@@ -70,6 +75,7 @@ module nts.uk.com.view.cmm002.a {
 				} else {
 					block.invisible();
 					let param = {
+						accessLimitUseAtr: self.accessLimitUseAtr(),
 						allowedIPAddressNew: ko.toJS(self.allowedIPAddress),
 						allowedIPAddressOld: _.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()]) 
 					};

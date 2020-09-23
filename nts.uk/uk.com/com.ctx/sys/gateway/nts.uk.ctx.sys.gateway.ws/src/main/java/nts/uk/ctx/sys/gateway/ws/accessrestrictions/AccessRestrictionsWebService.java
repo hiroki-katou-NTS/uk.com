@@ -18,7 +18,7 @@ public class AccessRestrictionsWebService {
 	
 	@POST
 	@Path("add")
-	public void add(AllowedIPAddressCommand command) {
+	public void add(AllowedIPAddressUpdateCommand command) {
 		commandHandler.addAllowdIpAddress(command);
 	}
 	
