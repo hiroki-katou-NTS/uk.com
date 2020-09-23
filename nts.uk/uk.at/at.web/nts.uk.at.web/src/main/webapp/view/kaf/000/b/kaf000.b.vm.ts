@@ -269,15 +269,23 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     return vm.$ajax(API.release, ko.toJS(vm.appDispInfoStartupOutput()));
                 }
             }).done((successData: any) => {
-				if(successData) {
-					if(successData.processDone) {
-	                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
-	                        vm.loadData();
-	                    });
-	                }	
+				if(vm.appType()==7) { 
+					if(successData) {
+						if(successData.processDone) {
+		                    vm.$dialog.info({ messageId: "Msg_221" }).then(() => {
+		                        vm.loadData();
+		                    });
+		                }	
+					}	
+				} else {
+					vm.loadData();		
 				}
             }).fail((res: any) => {
-                vm.handlerExecuteErrorMsg(res);
+				if(vm.appType()==7) {
+					if(res) {
+						vm.handlerExecuteErrorMsg(res);	
+					}
+				}
             }).always(() => vm.$blockui("hide"));
         }
 
