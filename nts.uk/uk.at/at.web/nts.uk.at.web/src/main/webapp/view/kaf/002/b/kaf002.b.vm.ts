@@ -64,8 +64,14 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
                         return self.$ajax(API.start, command);
                     }
                 }).done((res: any) => {
-                    self.data = res;
-                    self.bindDataStart(self.data);
+                    if (res) {
+                        self.data = res;
+                        self.bindDataStart(self.data);
+                        let el = document.getElementById('kaf000-a-component4-singleDate');
+                        if (el) {
+                            el.focus();                                                    
+                        }
+                    }
                     
                 }).fail(res => {
                     self.showError(res);
@@ -118,8 +124,14 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
             
             self.$ajax(API.start, command)
                 .done((res: any) => {
-                    self.data = res;
-                    self.bindDataStart(self.data);
+                    if (res) {
+                        self.data = res;
+                        self.bindDataStart(self.data);
+                        let el = document.getElementById('kaf000-a-component4-singleDate');
+                        if (el) {
+                            el.focus();                                                    
+                        }
+                    }
                 }).fail(res => {
                     self.showError(res);
                 }).always(() => {

@@ -845,7 +845,7 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 				result += I18NText.getText("CMM045_230", appRecordImage.getAppStampGoOutAtr().get().nameId);
 			}
 			// 申請内容＋＝’　’＋レコーダイメージ申請.申請時刻
-			result += " " + appRecordImage.getAttendanceTime().v();
+			result += " " + new TimeWithDayAttr(appRecordImage.getAttendanceTime().v()).getFullText();
 			// アルゴリズム「申請内容の申請理由」を実行する
 			String appReasonContent = appContentService.getAppReasonContent(
 					appReasonDisAtr,
@@ -854,7 +854,9 @@ public class AppContentDetailImplCMM045 implements AppContentDetailCMM045 {
 					application.getOpAppStandardReasonCD().orElse(null),
 					application.getAppType(),
 					Optional.empty());
-			result += appReasonContent;
+			if(Strings.isNotBlank(appReasonContent)) {
+				result += "\n" + appReasonContent;
+			}
 			return new AppStampDataOutput(
 					result,
 					Optional.of(ApplicationTypeDisplay.STAMP_ONLINE_RECORD));
