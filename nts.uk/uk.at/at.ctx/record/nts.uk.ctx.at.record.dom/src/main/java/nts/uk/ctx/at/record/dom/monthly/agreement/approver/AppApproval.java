@@ -27,6 +27,7 @@ import java.util.Optional;
  */
 @Stateless
 public class AppApproval {
+
 	/**
 	 * [1] 変更する
 	 * 対象申請を承認また否認に変更する。
@@ -53,53 +54,58 @@ public class AppApproval {
 		val app = optApp.get();
 		app.approveApplication(approverId, approvalStatus, approvalComment);
 
-		if (approvalStatus == ApprovalStatus.APPROVED) {
-
-			val appTime = app.getApplicationTime();
-			String applicantID = app.getApplicantsSID();
-			if (appTime.getTypeAgreement() == TypeAgreementApplication.ONE_MONTH) {
-				val oneMonthTime = appTime.getOneMonthTime();
-				val yearMonth = oneMonthTime.isPresent() ? oneMonthTime.get().getYearMonth() : null;
-				val errorTimeInMonth = oneMonthTime.isPresent() ? oneMonthTime.get().getErrorTimeInMonth() : null; // TODO để làm gì?
-
-				ErrorOneMonth errorOneMonth = new ErrorOneMonth(0); // TODO truyền gì?
-				AlarmOneMonth alarmOneMonth = new AlarmOneMonth(0); // TODO truyền gì?
-
- 				val agr36MonthSetting = Optional.of(new AgreementMonthSetting(
-						applicantID,
-						yearMonth,
-						errorOneMonth,
-						alarmOneMonth));
-
-				val existingAgr36MonthSetting = require.getYearMonthSetting(applicantID, yearMonth);
-			}
-
-			if (appTime.getTypeAgreement() == TypeAgreementApplication.ONE_YEAR) {
-				val oneYearTime = appTime.getOneYearTime();
-				val year = oneYearTime.get().getYear();
-				val errorTimeInYear = oneYearTime.get().getErrorTimeInYear(); // TODO không tương thích kiểu
-				val errorOneYear = new ErrorOneYear(0); // TODO DUMMY
-				val alarmOneYear = new AlarmOneYear(0); // TODO DUMMY
-				val agr36YearSetting = Optional.of(new AgreementYearSetting(applicantID, year.v(), errorOneYear, alarmOneYear));
-				val existingAgr36YearSetting = require.getYearSetting(applicantID, year);
-			}
-		}
-
 		return AtomTask.of(() -> {
 			require.updateApp(app);
-			if (agr36MonthSetting.isPresent()) {
-				if (existingAgr36MonthSetting.isPresent()) {
-					require.updateYearMonthSetting(existingAgr36MonthSetting.get());
-				} else {
-					require.addYearMonthSetting(agr36MonthSetting.get());
-				}
-			}
 
-			if (agr36YearSetting.isPresent()) {
-				if (existingAgr36YearSetting.isPresent()) {
-					require.updateYearSetting(existingAgr36YearSetting.get());
-				} else {
-					require.addYearSetting(agr36YearSetting.get());
+			if (approvalStatus == ApprovalStatus.APPROVED) {
+				val appTime = app.getApplicationTime();
+				String applicantID = app.getApplicantsSID();
+				if (appTime.getTypeAgreement() == TypeAgreementApplication.ONE_MONTH) {
+					val oneMonthTime = appTime.getOneMonthTime();
+					val yearMonth = oneMonthTime.isPresent() ? oneMonthTime.get().getYearMonth() : null;
+					val errorTimeInMonth = oneMonthTime.isPresent() ? oneMonthTime.get().getErrorTimeInMonth() : null;
+					val existingAgr36MonthSetting = require.getYearMonthSetting(applicantID, yearMonth);
+					if (existingAgr36MonthSetting.isPresent()) {
+						require.updateYearMonthSetting(existingAgr36MonthSetting.get());
+					} else {
+						ErrorOneMonth errorOneMonth = null;
+						AlarmOneMonth alarmOneMonth = null;
+						if (errorTimeInMonth != null){
+							errorOneMonth = new ErrorOneMonth(errorTimeInMonth.getErrorTime().v());
+							alarmOneMonth = new AlarmOneMonth(errorTimeInMonth.getAlarmTime().v());
+						}
+						val newAgr36MonthSetting = new AgreementMonthSetting(
+								applicantID,
+								yearMonth,
+								errorOneMonth,
+								alarmOneMonth
+						);
+						require.addYearMonthSetting(newAgr36MonthSetting);
+					}
+
+				} else if (appTime.getTypeAgreement() == TypeAgreementApplication.ONE_YEAR) {
+					val oneYearTime = appTime.getOneYearTime();
+					val year = oneYearTime.get().getYear();
+					val errorTimeInYear = oneYearTime.isPresent()? oneYearTime.get().getErrorTimeInYear() : null;
+					val existingAgr36YearSetting = require.getYearSetting(applicantID, year);
+					if (existingAgr36YearSetting.isPresent()) {
+						require.updateYearSetting(existingAgr36YearSetting.get());
+					} else {
+						ErrorOneYear errorOneYear = null;
+						AlarmOneYear alarmOneYear = null;
+						if (errorTimeInYear != null) {
+							errorOneYear = new ErrorOneYear(errorTimeInYear.getErrorTime().v());
+							alarmOneYear = new AlarmOneYear(errorTimeInYear.getAlarmTime().v());
+
+						}
+						val agr36YearSetting = new AgreementYearSetting(
+								applicantID,
+								year.v(),
+								errorOneYear,
+								alarmOneYear);
+
+						require.addYearSetting(agr36YearSetting);
+					}
 				}
 			}
 		});
@@ -141,10 +147,6 @@ public class AppApproval {
 		 * ３６協定年月設定Repository.Update(３６協定年月設定)
 		 */
 		void updateYearMonthSetting(AgreementMonthSetting setting);
-//
-//[R-7] 年設定を追加する
-//	３６協定年度設定Repository.Insert(３６協定年度設定)
-//
 
 		/**
 		 * [R-7] 年設定を追加する

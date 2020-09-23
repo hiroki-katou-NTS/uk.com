@@ -1,12 +1,18 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.OneYearTime;
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ReasonsForAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
-
-// import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.OneMonthTime;
+import java.util.Optional;
 
 /**
  * 年間申請を更新する
@@ -23,47 +29,79 @@ public class AnnualAppUpdate {
 	 * @param require @Require
 	 * @param cid 会社ID
 	 * @param applicantId 申請ID
-	 * @param oneYearTime  36協定1年間時間
+	 * @param agrOneYearTime  36協定1年間時間
 	 * @param reason 36協定申請理由
 	 * @return 申請作成結果
 	 */
 	public AppCreationResult create(Require require,
 									String cid,
 									String applicantId,
-									OneYearTime oneYearTime,
-									SpecialProvisionsOfAgreement reason) {
-//		$36協定申請 = require.申請を取得する(申請ID)
-//
-//		if $36協定申請.isEmpty
-//		BusinessException: Msg_1262
-//
-//				$３６協定設定 = 36協定基本設定を取得する#取得する(会社ID,対象者,年月日#今日())
-//
-//		$エラー結果 = $３６協定設定.1年間.特例条項による上限のエラー時間を超えているか(年間時間)
-//
-//		if $エラー結果.getKey()
-//		return 申請作成結果#申請作成結果(対象者,結果区分.1年間の上限時間を超過している
-//				,Optional.Empty,Optional.Empty,$エラー結果.getValue())
-//
-//		$年間のアラーム = $３６協定設定.1年間.アラーム時間を計算する(年間時間)
-//
-//		$エラーアラーム = 1年間のエラーアラーム時間#1年間のエラーアラーム時間(年間時間,$年間のアラーム)
-//
-//		$36協定申請.年間の申請時間を変更する($エラーアラーム,申請理由)
-//
-//		$Atomtask = require.申請を更新する($36協定申請)
-//
-//		return 36協定申請作成結果#36協定申請作成結果(対象者,結果区分.エラーなし,$Atomtask
-//				,Optional.Empty,Optional.Empty)
+									AgreementOneYearTime agrOneYearTime,
+									ReasonsForAgreement reason) {
+		// $36協定申請
+		Optional<SpecialProvisionsOfAgreement> optApp = require.getApp(applicantId);
 
-		return null;
+		if (!optApp.isPresent()) {
+			throw new BusinessException("Msg_1262");
+		}
+
+		// $３６協定設定
+		val setting = AgreementDomainService.getBasicSet(
+				require,
+				cid,
+				applicantId,
+				GeneralDate.today(),
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+
+		val oneYear = setting.getBasicAgreementSetting().getOneYear();
+
+		// $エラー結果
+		val errResult = oneYear.checkErrorTimeExceeded(agrOneYearTime);
+
+		if (errResult.getKey()) {
+			return new AppCreationResult(
+					applicantId,
+					ResultType.YEARLY_LIMIT_EXCEEDED,
+					Optional.empty(),
+					Optional.empty(),
+					Optional.of(errResult.getValue())
+					);
+		}
+
+		// $年間のアラーム
+		val annualAlarm = oneYear.getBasicSetting().calculateAlarmTime(agrOneYearTime);
+
+		// $エラーアラーム
+		val errAlarm = new ErrorTimeInYear(agrOneYearTime, annualAlarm);
+
+		// $36協定申請
+		val app = optApp.get();
+		app.changeApplicationYear(errAlarm, reason);
+
+		AtomTask at =  AtomTask.of(() -> {
+			require.updateApp(app);
+		});
+
+		return new AppCreationResult(
+				applicantId,
+				ResultType.NO_ERROR,
+				Optional.of(at),
+				Optional.empty(),
+				Optional.empty()
+		);
 	}
 
-	public static interface Require {
-//		[R-1] 申請を取得する
-//		36協定特別条項の適用申請Repository.get(申請ID)
-//
-//		[R-2] 申請を更新する
-//		36協定特別条項の適用申請Repository.Update(36協定特別条項の適用申請)
+	public interface Require extends AgreementDomainService.RequireM3 {
+		/**
+		 * [R-1] 申請を取得する
+		 * 36協定特別条項の適用申請Repository.get(申請ID)
+		 */
+		Optional<SpecialProvisionsOfAgreement> getApp(String applicantId);
+
+		/**
+		 * [R-2] 申請を更新する
+		 * 36協定特別条項の適用申請Repository.Update(36協定特別条項の適用申請)
+		 */
+		void updateApp(SpecialProvisionsOfAgreement app);
 	}
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
-import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.OneYearTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 
 import java.util.Optional;
 
@@ -30,5 +30,5 @@ public class AppCreationResult {
 	private Optional<AgreementOneMonthTime> oneMonth36Agr;
 
 	// 36協定1年間時間
-	private Optional<OneYearTime> oneYear36Agr;
+	private Optional<AgreementOneYearTime> oneYear36Agr;
 }

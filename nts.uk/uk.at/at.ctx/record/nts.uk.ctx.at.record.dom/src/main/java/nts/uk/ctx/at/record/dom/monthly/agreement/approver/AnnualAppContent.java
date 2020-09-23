@@ -2,9 +2,11 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.shared.dom.common.Year;
 import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
@@ -22,10 +24,11 @@ public class AnnualAppContent extends ValueObject {
 	private Year year;
 
 	// エラー時間
-	private AgreementOneMonthTime errTime;
+	private AgreementOneYearTime errTime;
 
 	// アラーム時間
-	private AgreementOneMonthTime alarmTime;
+	@Setter
+	private AgreementOneYearTime alarmTime;
 
 	// 申請理由 : 36協定申請理由
 	private SpecialProvisionsOfAgreement reason;

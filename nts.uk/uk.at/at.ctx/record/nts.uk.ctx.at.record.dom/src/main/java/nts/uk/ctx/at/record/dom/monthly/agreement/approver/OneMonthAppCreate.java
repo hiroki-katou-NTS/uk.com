@@ -137,7 +137,7 @@ public class OneMonthAppCreate {
 		return null; // TODO
 	}
 
-	public static interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
-		public void addApp(SpecialProvisionsOfAgreement app);
+	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
+		void addApp(SpecialProvisionsOfAgreement app);
 	}
 }

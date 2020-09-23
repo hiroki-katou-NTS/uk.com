@@ -3,12 +3,10 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
-import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.AgreementApprovalComments;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ConfirmationStatus;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 
 import javax.ejb.Stateless;
-import javax.inject.Inject;
 import java.util.Optional;
 
 /**

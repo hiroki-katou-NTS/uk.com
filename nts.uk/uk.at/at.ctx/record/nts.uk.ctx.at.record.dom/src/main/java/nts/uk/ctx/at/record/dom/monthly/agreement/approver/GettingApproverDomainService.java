@@ -33,7 +33,7 @@ public class GettingApproverDomainService {
 		return Optional.empty();
 	}
 
-	public static interface Require extends GetWorkplaceApproveHistoryDomainService.Require {
+	public interface Require extends GetWorkplaceApproveHistoryDomainService.Require {
 
 		/**
 		 * [R-1] 承認者の履歴項目を取得する Get the approver's history item
