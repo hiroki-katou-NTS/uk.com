@@ -1523,7 +1523,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 if (startTime > endTime) {
-                    return { isValid: false, message: "start > end" };
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' }).then(function() {
+                        setTimeout(() => { $(".notice-dialog").dialog("close"); }, 20);
+                    });
+                    return { isValid: false, message: "開始時刻と終了時刻の入力が不正です" };
                 }
 
                 if (innerIdx === 2) {
@@ -2238,6 +2241,12 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             
             if (self.selectedModeDisplayInBody() == 'time' || self.selectedModeDisplayInBody() == 'shortName') {
                 $("#extable").exTable("stickMode", "single");
+                if (self.selectedModeDisplayInBody() == 'time'){
+                    $("#extable").exTable("stickFields", ["workTypeName","workTimeName", "startTime", "endTime"]);
+                } else {
+                    $("#extable").exTable("stickFields", ["workTypeName","workTimeName"]);
+                }
+                
                 // set lai data stick
                 let objWorkTime = __viewContext.viewModel.viewAB.objWorkTime;
                 if (objWorkTime != undefined) {
@@ -2247,6 +2256,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 
             } else if (self.selectedModeDisplayInBody() == 'shift') {
                 $("#extable").exTable("stickMode", "multi");
+                $("#extable").exTable("stickFields", ["shiftName"]);
                 // set lai data stick
                 if (__viewContext.viewModel.viewAC.selectedpalletUnit() == 1) {
                     let selectedBtnTblCom = __viewContext.viewModel.viewAC.selectedButtonTableCompany();
