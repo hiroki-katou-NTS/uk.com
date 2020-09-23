@@ -614,9 +614,9 @@ public class ApplicationListFinder {
     	applicationListDtoMobile.setAppListExtractConditionDto(AppListExtractConditionDto.fromDomain(appListInitOutput.getAppListExtractCondition()));
     	return applicationListDtoMobile;
     }
-    
-    
-    
+
+
+
     /**
      * refactor 4
      * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧期間検索.申請一覧期間検索
@@ -631,9 +631,16 @@ public class ApplicationListFinder {
     	// approvalListService.checkBeforeSearch(appListExtractCondition);
     	// アルゴリズム「申請一覧リスト取得申請」を実行する - 2
     	AppListInfo appListInfo = new AppListInfo();
+    	String companyID = AppContexts.user().companyId();
+    	// ドメインモデル「承認一覧表示設定」を取得する
+		Optional<ApprovalListDisplaySetting> opApprovalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID);
+		if(opApprovalListDisplaySetting.isPresent()) {
+			appListInfo.getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
+			appListInfo.getDisplaySet().setAppDateWarningDisp(opApprovalListDisplaySetting.get().getWarningDateDisAtr().v());
+		}
     	return AppListInitDto.fromDomain(repoAppListInit.getApplicationList(param.toDomain(), 0, appListInfo));
 	}
-    
+
     /**
      * refactor 4
      * UKDesign.UniversalK.就業.KAF_申請.CMM045_申請一覧・承認一覧.A:申請一覧画面.アルゴリズム.申請一覧申請条件指定.申請一覧申請条件指定
@@ -648,6 +655,13 @@ public class ApplicationListFinder {
     	// approvalListService.checkBeforeSearch(appListExtractCondition);
     	// アルゴリズム「申請一覧リスト取得申請」を実行する - 2
     	AppListInfo appListInfo = new AppListInfo();
+    	String companyID = AppContexts.user().companyId();
+    	// ドメインモデル「承認一覧表示設定」を取得する
+		Optional<ApprovalListDisplaySetting> opApprovalListDisplaySetting = approvalListDispSetRepository.findByCID(companyID);
+		if(opApprovalListDisplaySetting.isPresent()) {
+			appListInfo.getDisplaySet().setWorkplaceNameDisp(opApprovalListDisplaySetting.get().getDisplayWorkPlaceName().value);
+			appListInfo.getDisplaySet().setAppDateWarningDisp(opApprovalListDisplaySetting.get().getWarningDateDisAtr().v());
+		}
     	return AppListInitDto.fromDomain(repoAppListInit.getApplicationList(param.toDomain(), 0, appListInfo));
 	}
 }

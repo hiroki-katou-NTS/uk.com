@@ -285,7 +285,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                let items = _.filter(timeStampAppDto, (x: TimeStampAppDto) => {
                    let destinationTimeAppDto = x.destinationTimeApp as DestinationTimeAppDto;
                    return destinationTimeAppDto.timeStampAppEnum == element.convertTimeStampAppEnum()
-                           && destinationTimeAppDto.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+                           && destinationTimeAppDto.engraveFrameNo == element.id;
                }) as Array<TimeStampAppDto>;
                _.forEach(items, (x: TimeStampAppDto) => {
                      if (x) {
@@ -307,7 +307,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (destinationTimeAppDto) {
                let itemDes = _.findLast(destinationTimeAppDto, (x: any) => {
                    return x.timeStampAppEnum == element.convertTimeStampAppEnum()
-                   && x.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+                   && x.engraveFrameNo == element.id;
                }) as DestinationTimeAppDto;
                
                if (itemDes) {
@@ -320,7 +320,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                let items = _.filter(timeStampAppOtherDto, (x: TimeStampAppOtherDto) => {
                    let destinationTimeZoneAppDto = x.destinationTimeZoneApp as DestinationTimeZoneAppDto;
                    return destinationTimeZoneAppDto.timeZoneStampClassification == element.convertTimeZoneStampClassification() 
-                           && destinationTimeZoneAppDto.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+                           && destinationTimeZoneAppDto.engraveFrameNo == element.id;
                }) as Array<TimeStampAppOtherDto>;
                if (items.length > 0) {
                    let item = items[0] as TimeStampAppOtherDto;
@@ -331,7 +331,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (destinationTimeZoneAppDto) {
                let itemDes = _.findLast(destinationTimeZoneAppDto, (x: any) => {
                    return x.timeZoneStampClassification == element.convertTimeZoneStampClassification()
-                   && x.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+                   && x.engraveFrameNo == element.id;
                })
                if (itemDes) {
                    element.flagObservable(true);

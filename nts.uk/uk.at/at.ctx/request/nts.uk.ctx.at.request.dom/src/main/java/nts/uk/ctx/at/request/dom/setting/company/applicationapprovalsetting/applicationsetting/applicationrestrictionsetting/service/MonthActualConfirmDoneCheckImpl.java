@@ -24,7 +24,7 @@ public class MonthActualConfirmDoneCheckImpl implements MonthActualConfirmDoneCh
 
 	@Override
 	public boolean check(boolean overtimeCheck, boolean canAppAchievementMonthConfirm, String companyID, String employeeID, GeneralDate appDate) {
-		if (canAppAchievementMonthConfirm) {
+		if (!canAppAchievementMonthConfirm) {
 			if(overtimeCheck) {
 				// 「Imported(申請承認)「実績確定状態」．月別実績が確認済をチェックする
 				List<ApproveRootStatusForEmpImPort> approveRootStatus = Collections.emptyList();
