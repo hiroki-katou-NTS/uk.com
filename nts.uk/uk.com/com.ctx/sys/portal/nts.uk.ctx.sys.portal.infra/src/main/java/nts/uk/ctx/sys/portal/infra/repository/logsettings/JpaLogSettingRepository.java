@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.infra.repository.logsettings;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -27,11 +28,13 @@ public class JpaLogSettingRepository extends JpaRepository implements LogSetting
 	}
 
 	@Override
-	public void add(String contractCode, LogSetting domain) {
+	public void addAll(String contractCode, List<LogSetting> listDomain) {
 		// Convert data to entity
-		SrcdtLogSetting entity = JpaLogSettingRepository.toEntity(contractCode, domain);
+		List<SrcdtLogSetting> listEntity = listDomain.stream()
+				.map(domain -> JpaLogSettingRepository.toEntity(contractCode, domain))
+				.collect(Collectors.toList());
 		// Insert entity
-		this.commandProxy().insert(entity);
+		this.commandProxy().insertAll(listEntity);
 	}
 
 	@Override

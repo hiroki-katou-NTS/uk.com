@@ -1,6 +1,7 @@
 package nts.uk.ctx.sys.portal.app.command.logsettings;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -33,15 +34,12 @@ public class LogSettingSaveCommandHandler extends CommandHandler<LogSettingSaveC
 		
 		List<LogSettingDto> listLogSettingDto = context.getCommand().getLogSettings();
 		if (!listLogSettingDto.isEmpty()) {
-			// ドメインモデル「ログ設定」を削除
+			// Step ドメインモデル「ログ設定」を削除
 			this.logSettingRepository.delete(cId, listLogSettingDto.get(0).getSystem());
-			// ループを開始する　
-			for (LogSettingDto logSettingDto : listLogSettingDto) {
-				logSettingDto.setCompanyId(cId);
-				LogSetting domain = LogSetting.createFromMemento(logSettingDto);
-				// ドメインモデル「ログ設定」に追加する
-				this.logSettingRepository.add(contractCode, domain);
-			}
+			// Step ドメインモデル「ログ設定」に追加する
+			this.logSettingRepository.addAll(contractCode, listLogSettingDto.stream()
+					.map(dto -> LogSetting.createFromMemento(dto))
+					.collect(Collectors.toList()));
 		}
 	}
 
