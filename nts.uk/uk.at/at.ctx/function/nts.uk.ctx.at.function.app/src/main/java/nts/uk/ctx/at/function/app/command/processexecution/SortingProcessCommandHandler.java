@@ -15,6 +15,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.function.dom.adapter.stopbycompany.StopByCompanyAdapter;
+import nts.uk.ctx.at.function.dom.adapter.stopbycompany.UsageStopOutputImport;
 import nts.uk.ctx.at.function.dom.processexecution.ExecutionCode;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.EndStatus;
 import nts.uk.ctx.at.function.dom.processexecution.executionlog.ExecutionTaskLog;
@@ -26,6 +28,10 @@ import nts.uk.ctx.at.function.dom.processexecution.repository.ExecutionTaskSetti
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogHistRepository;
 import nts.uk.ctx.at.function.dom.processexecution.repository.ProcessExecutionLogManageRepository;
 import nts.uk.ctx.at.function.dom.processexecution.tasksetting.ExecutionTaskSetting;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyAdapter;
+import nts.uk.ctx.at.shared.dom.adapter.holidaymanagement.CompanyInfo;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.enumcommon.Abolition;
 //import nts.uk.shr.com.task.schedule.UkJobScheduler;
 @Stateless
 @Slf4j
@@ -38,6 +44,13 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 	private ProcessExecutionLogHistRepository processExecLogHistRepo;
 	@Inject
 	private ExecutionTaskSettingRepository execSettingRepo;
+	
+	@Inject
+	private CompanyAdapter companyAdapter;
+	
+	@Inject
+	private StopByCompanyAdapter stopBycompanyAdapter;
+	
 //	@Inject
 //	private UkJobScheduler ukJobScheduler;
 	
@@ -53,7 +66,11 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		String execItemCd = command.getExecItemCd();
 		GeneralDateTime nextDate = command.getNextDate();
 		// Step 1: RQ580「会社の廃止をチェックする」を実行する
-		//TODO
+		boolean isAbolished = this.isCheckCompanyAbolished(companyId);
+		//	取得した「廃止区分」をチェックする
+		if (isAbolished) {
+			return;
+		}
 		// Step 2: ドメインモデル「実行タスク設定」を取得する
 		Optional<ExecutionTaskSetting> executionTaskSettingOpt = execSettingRepo.getByCidAndExecCd(companyId, command.getExecItemCd());
 		if(!executionTaskSettingOpt.isPresent()) {
@@ -68,8 +85,9 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		//実行IDを新規採番する
 		String execItemId = IdentifierUtil.randomUniqueId();
 		// Step 4: 利用停止をチェックする
-		//TODO
-		if (false) {
+		String contractCode = AppContexts.user().contractCode();
+		UsageStopOutputImport isSuspension = this.stopBycompanyAdapter.checkUsageStop(contractCode, companyId);
+		if (isSuspension.isUsageStop()) {
 			// case 利用停止する
 			// Step 前回の更新処理が実行中の登録処理
 			this.DistributionRegistProcess(companyId, execItemCd, execItemId, nextDate, false);
@@ -103,6 +121,7 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		}
 		
 	}
+	
 	private void executeHandler(String companyId,String execItemCd, String execItemId, GeneralDateTime nextDate ) {
 		ExecuteProcessExecutionCommand executeProcessExecutionCommand = new ExecuteProcessExecutionCommand();
 		executeProcessExecutionCommand.setCompanyId(companyId);
@@ -171,6 +190,19 @@ public class SortingProcessCommandHandler extends CommandHandler<ScheduleExecute
 		}
 		//システム日時 - 前回実行日時 > 5時間
 		return false;
+	}
+	
+	/**
+	 * 	RQ580「会社の廃止をチェックする」を実行する.
+	 *
+	 * @param companyId the company id
+	 * @return true, if successful
+	 */
+	private boolean isCheckCompanyAbolished(String companyId) {
+		// Step 1 ドメインモデル「会社情報」を取得する - Get domain model "company information"
+		CompanyInfo companyInfo = this.companyAdapter.getCompanyInfoById(companyId);
+		// Step 2 廃止区分をチェックする - Check the abolition category
+		return companyInfo.getIsAbolition() == Abolition.ABOLISH.value;
 	}
 
 }

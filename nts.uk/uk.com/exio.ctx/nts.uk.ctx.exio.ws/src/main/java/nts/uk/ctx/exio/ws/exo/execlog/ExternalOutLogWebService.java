@@ -17,10 +17,14 @@ import nts.uk.ctx.exio.app.command.exo.executionlog.RemoveExOutOpMngCommandHandl
 import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExOutOpMngInterruptHandler;
 import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExterOutExecLogCommandHandler;
 import nts.uk.ctx.exio.app.command.exo.executionlog.UpdateExterOutExecLogUseDeleteFileCommandHandler;
+import nts.uk.ctx.exio.app.find.exi.execlog.ExecLogDto;
+import nts.uk.ctx.exio.app.find.exi.execlog.ExecLogFinder;
 import nts.uk.ctx.exio.app.find.exo.execlog.ExternalOutLogDto;
 import nts.uk.ctx.exio.app.find.exo.execlog.ExternalOutLogExportService;
 import nts.uk.ctx.exio.app.find.exo.execlog.ExternalOutLogFinder;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ErrorContentDto;
+import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutLogDto;
+import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutLogFinder;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutOpMngDto;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ExOutOpMngFinder;
 import nts.uk.ctx.exio.app.find.exo.executionlog.ExterOutExecLogDto;
@@ -54,6 +58,14 @@ public class ExternalOutLogWebService extends WebService {
 	
 	@Inject
 	private UpdateExOutOpMngInterruptHandler updateExOutOpMngInterruptHandler;
+	
+	/** The ex out log finder. */
+	@Inject
+	private ExOutLogFinder exOutLogFinder;
+	
+	/** The exec log finder. */
+	@Inject
+	private ExecLogFinder execLogFinder;
 	
 	@Path("getExternalOutLog/{storeProcessingId}")
 	@POST
@@ -105,5 +117,27 @@ public class ExternalOutLogWebService extends WebService {
 	public ExterOutExecLogDto getExterOutExecLogById(@PathParam("exterOutExecLogProcessId") String exterOutExecLogProcessId) {
 		return this.exterOutExecLogFinder.getExterOutExecLogById(exterOutExecLogProcessId);
 	}
+	
+	/**
+	 * 	アルゴリズム「外部出力エラーログ設定」を実行する.
+	 * @param storeProcessingId the store processing id 外部出力処理ID
+	 * @return the ex out error log
+	 */
+	@POST
+	@Path("getExOutErrorLog/{storeProcessingId}")
+	public ExOutLogDto getExOutErrorLog( @PathParam("storeProcessingId") String storeProcessingId) {
+		return this.exOutLogFinder.getExOutLogDto(storeProcessingId);
+	}
 
+	/**
+	 * Gets the exec log.
+	 *	アルゴリズム「エラー一覧表示」を実行する
+	 * @param storeProcessingId the store processing id
+	 * @return the exec log
+	 */
+	@POST
+	@Path("getExecLog/{externalProcessId}")
+	public ExecLogDto getExecLog( @PathParam("externalProcessId") String externalProcessId) {
+		return this.execLogFinder.getErrorList(externalProcessId);
+	}
 }
