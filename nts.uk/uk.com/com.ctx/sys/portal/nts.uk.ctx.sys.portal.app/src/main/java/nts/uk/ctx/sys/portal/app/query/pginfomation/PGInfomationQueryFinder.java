@@ -15,6 +15,7 @@ import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSettingRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
+import nts.uk.shr.com.communicate.PathToWebApi.App;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
@@ -35,6 +36,7 @@ public class PGInfomationQueryFinder {
 	 */
 	public List<PGInfomationDto> findBySystem(int systemType) {
 		String companyId = AppContexts.user().companyId();
+		String screenId = AppContexts.programId().substring(6);
 
 		// Step システムからログ設定を取得
 		List<LogSetting> logSettings = this.logSettingRepository.findBySystem(companyId, systemType);
@@ -51,7 +53,6 @@ public class PGInfomationQueryFinder {
 				.map(s -> s.getMenuClassification())
 				.collect(Collectors.toList());
 		List<String> programIds = logSettings.stream().map(s -> s.getProgramId()).collect(Collectors.toList());
-		String screenId = "A";
 		List<StandardMenu> standardMenus = this.standardMenuRepository.findByProgram(
 				companyId, 
 				systemType,
