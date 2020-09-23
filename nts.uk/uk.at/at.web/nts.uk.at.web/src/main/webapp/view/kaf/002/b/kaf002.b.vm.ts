@@ -52,6 +52,11 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
 
             self.loadData([], [], self.appType())
                 .then((loadDataFlag: any) => {
+                    self.appDispInfoStartupOutput.subscribe(value => {
+                        if (value) { 
+                            self.changeDate();
+                        }
+                    });
                     if(loadDataFlag) {
                         let command = self.createCommandStart();
                         
