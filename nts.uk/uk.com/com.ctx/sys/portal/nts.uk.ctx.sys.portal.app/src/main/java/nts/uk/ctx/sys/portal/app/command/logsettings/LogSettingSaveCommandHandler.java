@@ -38,7 +38,10 @@ public class LogSettingSaveCommandHandler extends CommandHandler<LogSettingSaveC
 			this.logSettingRepository.delete(cId, listLogSettingDto.get(0).getSystem());
 			// Step ドメインモデル「ログ設定」に追加する
 			this.logSettingRepository.addAll(contractCode, listLogSettingDto.stream()
-					.map(dto -> LogSetting.createFromMemento(dto))
+					.map(dto -> {
+						dto.setCompanyId(cId);
+						return LogSetting.createFromMemento(dto);
+					})
 					.collect(Collectors.toList()));
 		}
 	}
