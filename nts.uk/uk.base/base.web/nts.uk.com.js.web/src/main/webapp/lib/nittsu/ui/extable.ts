@@ -1493,15 +1493,21 @@ module nts.uk.ui.exTable {
             if (_.isFunction(styleMaker)) {
                 if ($childCells.length === 0) {
                     let style = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
-                    if (style && style.class) helper.addClass($cell, style.class);
-                    else if (style && style.textColor) $cell.style.color = style.textColor;
-                    makeUp($grid, rowIdx, columnKey, innerIdx, style);
+                    if (style) {
+                        if (style.class) helper.addClass($cell, style.class);
+                        if (style.textColor) $cell.style.color = style.textColor;
+                        helper.setBackgroundColor($cell, style.background);
+                        makeUp($grid, rowIdx, columnKey, innerIdx, style);
+                    }
                 } else {
                     _.forEach($childCells, (c, i) => {
                         let style = styleMaker(rowIdx, columnKey, i, valueObj);
-                        if (style && style.class) helper.addClass(c, style.class); 
-                        else if (style && style.textColor) c.style.color = style.textColor;
-                        makeUp($grid, rowIdx, columnKey, i, style);
+                        if (style) {
+                            if (style.class) helper.addClass(c, style.class); 
+                            if (style.textColor) c.style.color = style.textColor;
+                            helper.setBackgroundColor(c, style.background);
+                            makeUp($grid, rowIdx, columnKey, i, style);
+                        }
                     });
                 }
             }
@@ -1542,15 +1548,27 @@ module nts.uk.ui.exTable {
                         if (backStyle) {
                             if (backStyle.textColor) {
                                 $c.style.color = backStyle.textColor;
-                            } else if (backStyle.class) {
+                            } 
+                            
+                            if (backStyle.class) {
                                 $c.classList.remove(cStyle.class);
                                 $c.classList.add(backStyle.class);
+                            }
+                            
+                            if (backStyle.background) {
+                                helper.setBackgroundColor($c, backStyle.background);
                             }
                         } else if (cStyle) {
                             if (cStyle.textColor) {
                                 $c.style.color = null;
-                            } else if (cStyle.class) {
+                            }
+                            
+                            if (cStyle.class) {
                                 $c.classList.remove(cStyle.class);
+                            }
+                            
+                            if (cStyle.background) {
+                                $c.style.backgroundColor = null;
                             }
                         }
                         
@@ -1610,15 +1628,27 @@ module nts.uk.ui.exTable {
                 if (backStyle) {
                     if (backStyle.textColor) {
                         $cell.style.color = backStyle.textColor;
-                    } else if (backStyle.class) {
+                    }
+                    
+                    if (backStyle.class) {
                         $cell.classList.remove(cStyle.class);
                         $cell.classList.add(backStyle.class);
+                    }
+                    
+                    if (backStyle.background) {
+                        helper.setBackgroundColor($cell, backStyle.background);
                     }
                 } else if (cStyle) {
                     if (cStyle.textColor) {
                         $cell.style.color = null;
-                    } else if (cStyle.class) {
+                    }
+                    
+                    if (cStyle.class) {
                         $cell.classList.remove(cStyle.class);
+                    }
+                    
+                    if (cStyle.background) {
+                        $cell.style.backgroundColor = null;
                     }
                 }
                 
@@ -1669,15 +1699,21 @@ module nts.uk.ui.exTable {
                         if (_.isFunction(styleMaker)) {
                             if (childCells.length === 0) {
                                 let styleMake = styleMaker(rowIdx, key, -1, cData);
-                                if (styleMake && styleMake.class) helper.addClass($target, styleMake.class);
-                                else if (styleMake && styleMake.textColor) $target.style.color = styleMake.textColor;
-                                makeUp($grid, rowIdx, key, -1, styleMake);
+                                if (styleMake) {
+                                    if (styleMake.class) helper.addClass($target, styleMake.class);
+                                    if (styleMake.textColor) $target.style.color = styleMake.textColor;
+                                    helper.setBackgroundColor($target, styleMake.background);
+                                    makeUp($grid, rowIdx, key, -1, styleMake);
+                                }
                             } else {
                                 _.forEach(childCells, (c, i) => {
                                     let style = styleMaker(rowIdx, key, i, cData);
-                                    if (style && style.class) helper.addClass(c, style.class);
-                                    else if (style && style.textColor) c.style.color = style.textColor;
-                                    makeUp($grid, rowIdx, key, i, style);
+                                    if (style) {
+                                        if (style.class) helper.addClass(c, style.class);
+                                        if (style.textColor) c.style.color = style.textColor;
+                                        helper.setBackgroundColor(c, style.background);
+                                        makeUp($grid, rowIdx, key, i, style);
+                                    }
                                 });
                             }
                         }
@@ -3198,7 +3234,7 @@ module nts.uk.ui.exTable {
                         
                         if (cellPartialUpdate) return srcValCloned;
                     } else {
-                        if (stickFields[0] === fieldArr[0]) {
+                        if (stickFields && stickFields[0] === fieldArr[0]) {
                             let objValCloned = _.cloneDeep(objVal), tField = fieldArr[0];
                             objValCloned[tField] = srcVal[tField];
                             if (!helper.isEqual(src[key], obj[key], fieldArr)) {

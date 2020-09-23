@@ -800,8 +800,8 @@ __viewContext.ready(function () {
     
         $("#stick-styler").click(function() {
             $("#extable").exTable("stickStyler", function(rowIdx, key, innerIdx, data) {
-                if (innerIdx === 0) return { class: "red-text" };
-                else if (innerIdx === 1) return { textColor: "#11BBAA" };
+                if (innerIdx === 0) return { class: "red-text", background: "#cba" };
+                else if (innerIdx === 1) return { textColor: "#11BBAA", background: "#abc" };
             });
         });    
     
