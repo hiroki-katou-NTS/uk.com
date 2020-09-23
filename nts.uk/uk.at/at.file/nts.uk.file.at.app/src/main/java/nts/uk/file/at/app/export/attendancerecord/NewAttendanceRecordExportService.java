@@ -315,6 +315,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 						
 						List<AttendanceRecordResponse> upperDailyRespond = new ArrayList<>();
 						List<AttendanceRecordResponse> lowerDailyRespond = new ArrayList<>();
+						Integer realData = 0;
 						GeneralDate startDateByClosure;
 						GeneralDate endDateByClosure;
 						if (closureDate.getLastDayOfMonth()) {
@@ -350,10 +351,10 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 								ItemValue value = new ItemValue();
 								for (ItemValue item : itemValueResult.getAttendanceItems()) {
 									if (item.getItemId() == id) {
-//										if (item.getValue() != null && !ZERO.equals(item.getValue())
-//												&& !item.getValue().isEmpty()) {
-//											realData++;
-//										}
+										if (item.getValue() != null && !ZERO.equals(item.getValue())
+												&& !item.getValue().isEmpty()) {
+											realData++;
+										}
 										value = item;
 										break;
 									}
@@ -395,10 +396,10 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 								for (Integer id : item.getAddedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (e.getItemId() == id) {
-//											if (e.getValue() != null && !ZERO.equals(e.getValue())
-//													&& !e.getValue().isEmpty()) {
-//												realData++;
-//											}
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
+												realData++;
+											}
 											addValueCalUpper.getAttendanceItems().add(e);
 											break;
 										}
@@ -416,10 +417,10 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (e.getItemId() == id) {
-//											if (e.getValue() != null && !ZERO.equals(e.getValue())
-//													&& !e.getValue().isEmpty()) {
-//												realData++;
-//											}
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
+												realData++;
+											}
 											subValueCalUpper.getAttendanceItems().add(e);
 											break;
 										}
@@ -454,10 +455,10 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 								ItemValue value = new ItemValue();
 								for (ItemValue item : itemValueResult.getAttendanceItems()) {
 									if (item.getItemId() == id) {
-//										if (item.getValue() != null && !ZERO.equals(item.getValue())
-//												&& !item.getValue().isEmpty()) {
-//											realData++;
-//										}
+										if (item.getValue() != null && !ZERO.equals(item.getValue())
+												&& !item.getValue().isEmpty()) {
+											realData++;
+										}
 										value = item;
 										break;
 									}
@@ -495,10 +496,10 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 								for (Integer id : item.getAddedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (e.getItemId() == id) {
-//											if (e.getValue() != null && !ZERO.equals(e.getValue())
-//													&& !e.getValue().isEmpty()) {
-//												realData++;
-//											}
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
+												realData++;
+											}
 											addValueCalUpper.getAttendanceItems().add(e);
 											break;
 										}
@@ -513,10 +514,10 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 								for (Integer id : item.getSubtractedItem()) {
 									for (ItemValue e : itemValueResult.getAttendanceItems()) {
 										if (e.getItemId() == id) {
-//											if (e.getValue() != null && !ZERO.equals(e.getValue())
-//													&& !e.getValue().isEmpty()) {
-//												realData++;
-//											}
+											if (e.getValue() != null && !ZERO.equals(e.getValue())
+													&& !e.getValue().isEmpty()) {
+												realData++;
+											}
 											subValueCalUpper.getAttendanceItems().add(e);
 											break;
 										}
@@ -615,7 +616,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		return attendanceRecord;
 	}
 	
-	String getSumCalculateAttendanceItem(List<ItemValue> addValueCalUpper, List<ItemValue> subValueCalUpper) {
+	private String getSumCalculateAttendanceItem(List<ItemValue> addValueCalUpper, List<ItemValue> subValueCalUpper) {
 
 		Double sum = new Double(0);
 		if (!addValueCalUpper.isEmpty()
