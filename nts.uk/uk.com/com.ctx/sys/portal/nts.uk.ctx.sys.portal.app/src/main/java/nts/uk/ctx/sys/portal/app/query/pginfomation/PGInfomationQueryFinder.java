@@ -35,6 +35,7 @@ public class PGInfomationQueryFinder {
 	 */
 	public List<PGInfomationDto> findBySystem(int systemType) {
 		String companyId = AppContexts.user().companyId();
+		String screenId = AppContexts.programId().substring(6);
 
 		// Step システムからログ設定を取得
 		List<LogSetting> logSettings = this.logSettingRepository.findBySystem(companyId, systemType);
@@ -51,7 +52,6 @@ public class PGInfomationQueryFinder {
 				.map(s -> s.getMenuClassification())
 				.collect(Collectors.toList());
 		List<String> programIds = logSettings.stream().map(s -> s.getProgramId()).collect(Collectors.toList());
-		String screenId = "A";
 		List<StandardMenu> standardMenus = this.standardMenuRepository.findByProgram(
 				companyId, 
 				systemType,
@@ -123,6 +123,9 @@ public class PGInfomationQueryFinder {
 
 					// Step ・メニュー分類　＝　標準メニュー．メニュー分類　（111322）
 					Integer menuClassification = item.getClassification().value;
+					
+					// Step ・プログラムコード　＝　標準メニュー．コード　
+					String programCd = item.getCode().v();
 						
 					return PGInfomationDto.builder()
 							.functionName(functionName)
@@ -131,6 +134,7 @@ public class PGInfomationQueryFinder {
 							.editHistoryRecord(updateHistoryRecord)
 							.menuClassification(menuClassification)
 							.programId(item.getProgramId()) // programId
+							.programCd(programCd) // programCd
 							.build();
 				})
 				.collect(Collectors.toList());
