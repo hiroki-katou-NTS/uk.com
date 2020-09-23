@@ -105,10 +105,9 @@ module nts.uk.at.view.kaf002_ref.b.viewmodel {
         public changeDate() {
             const self = this;
             let dataClone = _.clone(self.data);
-            if (_.isNull(dataClone)) {
+            if (dataClone) {
                 return;
             }
-            
             let command = self.createCommandStart();
             self.startApi(command);
         }

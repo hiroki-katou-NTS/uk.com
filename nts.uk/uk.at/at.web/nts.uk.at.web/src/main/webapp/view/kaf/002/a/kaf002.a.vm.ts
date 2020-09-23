@@ -116,11 +116,14 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
                 return self.$ajax(API.start, command);
             }
         }).done((res: any) => {
-            self.data = res;
-            self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
-            self.bindReasonList(self.data);
-            self.bindTabM(self.data);
-            self.bindComment(self.data);
+            if (res) {
+                self.data = res;
+                self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                self.bindReasonList(self.data);
+                self.bindTabM(self.data);
+                self.bindComment(self.data);
+                
+            }
         }).fail(res => {
             self.showError(res);
         }).always(() => {
@@ -291,7 +294,7 @@ module nts.uk.at.view.kaf002_ref.a.viewmodel {
         const self = this;
         self.bindActualData();
         let dataClone = _.clone(self.data);
-        if (!_.isNull(dataClone)) {
+        if (dataClone) {
             return;
         }
         self.$blockui( "show" );
