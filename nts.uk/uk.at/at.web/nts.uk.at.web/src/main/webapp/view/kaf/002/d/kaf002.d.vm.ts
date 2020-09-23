@@ -309,12 +309,10 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                }
            }).done(res => {
                if (res != undefined) {
-                   return self.$dialog.info({messageId: "Msg_15" })
+               		self.$dialog.info({messageId: "Msg_15" }).then(() => {
+						return true;
+					});
                }
-           }).fail(res => {
-               self.showError(res);
-           }).always(() => {
-               self.$blockui('hide');
            });
        }
        showError(res: any) {
