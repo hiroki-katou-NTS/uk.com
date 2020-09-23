@@ -32,10 +32,12 @@ public class SrcdtLogSetting extends UkJpaEntity implements Serializable, LogSet
 	@EmbeddedId
 	public SrcdtLogSettingPK srcdtLogSettingPK;
 	
+	// Column プログラムID
 	@Basic(optional = false)
 	@Column(name = "PROGRAM_ID")
 	public String programId;
 
+	// Column 契約コード
 	@Basic(optional = false)
 	@Column(name = "CONTRACT_CD")
 	public String contractCd;

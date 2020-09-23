@@ -18,18 +18,22 @@ import lombok.NonNull;
 @Builder
 public class SrcdtLogSettingPK {
 	
+	// Column 会社ID
 	@NonNull
 	@Column(name = "CID")
 	public String cid;
 	
+	// Column  システム
 	@NonNull
 	@Column(name = "SYSTEM")
 	public Integer system;
 	
+	// Column  プログラムコード
 	@NonNull
 	@Column(name = "PROGRAM_CODE")
 	public String programCd;
 	
+	// Column  メニュー分類
 	@NonNull
 	@Column(name = "MENU_ATR")
 	public Integer menuClassification;
