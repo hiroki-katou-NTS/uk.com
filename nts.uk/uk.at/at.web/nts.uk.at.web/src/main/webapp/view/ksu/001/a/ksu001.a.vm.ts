@@ -366,7 +366,22 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             self.dataCell = {};
 
             $("#extable").on("extablecellupdated", (dataCell) => {
-                self.checkExitCellUpdated();
+                let itemLocal = uk.localStorage.getItem(self.KEY);
+                let userInfor: IUserInfor = JSON.parse(itemLocal.get());
+                if (userInfor.disPlayFormat == 'time' && userInfor.updateMode == 'edit') {
+                    let strTime = dataCell.originalEvent.detail.value.startTime;
+                    let endTime = dataCell.originalEvent.detail.value.endTime;
+                    let startTimeCal = nts.uk.time.minutesBased.duration.parseString(strTime).toValue();
+                    let endTimeCal = nts.uk.time.minutesBased.duration.parseString(endTime).toValue();
+
+                    if (startTimeCal > endTimeCal) {
+                        nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' });
+                    }
+                    self.checkExitCellUpdated();
+                } else {
+                    self.checkExitCellUpdated();
+                }
+
             });
             
             $("#extable").on("extablerowupdated", (dataCell) => {
@@ -1523,10 +1538,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
                 }
 
                 if (startTime > endTime) {
-                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_54' }).then(function() {
-                        setTimeout(() => { $(".notice-dialog").dialog("close"); }, 20);
-                    });
-                    return { isValid: false, message: "開始時刻と終了時刻の入力が不正です" };
+                    let messInfo = nts.uk.resource.getMessage('Msg_54');
+                    return { isValid: false, message: messInfo };
                 }
 
                 if (innerIdx === 2) {
