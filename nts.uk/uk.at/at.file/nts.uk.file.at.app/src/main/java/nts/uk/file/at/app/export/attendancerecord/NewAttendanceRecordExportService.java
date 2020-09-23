@@ -1,6 +1,7 @@
 package nts.uk.file.at.app.export.attendancerecord;
 
 import java.text.DecimalFormat;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,9 +64,16 @@ import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.master.WorkplaceInformationRepository;
 import nts.uk.ctx.bs.employee.pub.company.StatusOfEmployee;
 import nts.uk.ctx.bs.employee.pub.company.SyCompanyPub;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportColumnData;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportDailyData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportData;
 import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportEmployeeData;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklyData;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportWeeklySumaryData;
 import nts.uk.file.at.app.export.schedule.FileService;
+import nts.uk.query.model.employee.EmployeeInformation;
+import nts.uk.query.model.employee.EmployeeInformationQuery;
+import nts.uk.query.model.employee.EmployeeInformationRepository;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
@@ -88,7 +96,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 
 	/** The Constant MASTER_UNREGISTERED. */
 	private static final String MASTER_UNREGISTERED = " マスタ未登録";
-
+	
 	@Inject
 	private ClosureEmploymentService closureEmploymentService;
 
@@ -148,6 +156,11 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 
 	@Inject
 	private SyCompanyPub symCompany;
+	
+	@Inject
+	private EmployeeInformationRepository empInfoRepo;
+	
+	
 
 	@Override
 	protected void handle(ExportServiceContext<AttendanceRecordRequest> context) {
@@ -329,11 +342,18 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 					continue;
 				}
 					
+				// List DailyData
+				List<AttendanceRecordReportDailyData> dailyDataList = new ArrayList<>();
+				
+				// Weekly Data
+				List<AttendanceRecordReportWeeklyData> weeklyDataList = new ArrayList<>();
+				Integer realData = 0;
+				
 				//	重複期間．開始年月日～重複期間．終了年月日のループ
 				while (startDate.beforeOrEquals(endDate)) {
 					attendanceRecord.setDate(startDate);
 
-					Integer realData = 0;
+					
 
 					GeneralDate startDateByClosure;
 					GeneralDate endDateByClosure;
@@ -568,12 +588,285 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 								emp.getEmployeeName(), startDateByClosure, "", result));
 					}
 					
-					
+					AttendanceRecordReportDailyData dailyData = new AttendanceRecordReportDailyData();
+					// Set data daily
+					dailyData.setDate(String.valueOf(startDateByClosure.day()));
+					dailyData.setDayOfWeek(DayOfWeekJP
+							.getValue(startDateByClosure.localDate().getDayOfWeek().toString()).japanese);
+					AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[9];
+					int index = 0;
+					for (AttendanceRecordResponse item : upperDailyRespond) {
+						columnDatasArray[index] = new AttendanceRecordReportColumnData("", "");
+						if (item.getValue() != null)
+							columnDatasArray[index].setUper(item.getValue());
+						index++;
+					}
+					index = 0;
+					for (AttendanceRecordResponse item : lowerDailyRespond) {
+						if (item.getValue() != null)
+							columnDatasArray[index].setLower(item.getValue());
+						index++;
+
+					}
+					List<AttendanceRecordReportColumnData> columnDatas = new ArrayList<>();
+					for (int i = 0; i < columnDatasArray.length; i++) {
+						if (columnDatasArray[i] == null)
+							columnDatasArray[i] = new AttendanceRecordReportColumnData("", "");
+						columnDatas.add(columnDatasArray[i]);
+					}
 					// end calculate lower row item 
 					
+					
+					//	日別項目（算出項目・上段下段） - Daily items (calculation items, upper and lower)
+					//	週単位の集計をする - Aggregate on a weekly basis
+					//  đoạn này bạn thấy xử lý việc tính toán dai ly giống vs yêu cầu xử lý nên paste sang đây tạm
+					
+					
+					dailyData.setColumnDatas(columnDatas);
+					dailyData.setSecondCol(flag <= 15 ? false : true);
+					dailyDataList.add(dailyData);
+					// Check end of week
+					if (startDateByClosure.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
+						AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
+						// Set weekly data
+						weeklyData.setDailyDatas(dailyDataList);
+						// Set total result in week
+						AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
+						summaryWeeklyData = this.getSumWeeklyValue(dailyDataList);
+
+						weeklyData.setWeeklySumaryData(summaryWeeklyData);
+
+						weeklyDataList.add(weeklyData);
+						// empty daily data list
+						dailyDataList = new ArrayList<>();
+
+					}
+					
+					// Next day
+					// chác chắn đoạn next day này của bạn làm là đúng r nhé Liên
 					startDate = startDate.addDays(1);
+					
+					
+					
 				}
+				
+				
+				//	日別項目（算出項目・上段下段） -  Daily items (calculation items, upper and lower)
+				//	週単位集計値の編集をする - Edit weekly aggregated values 
+				// đoạn này là tổng hợp theo tuần . tính toán để đẩy ra dữ liệu  theo tuần ( weekly data ) 
+				// lấy giá trị từ cái DailyOutputAttendanceRecord đã mapping ở trên
+				//	Edit the zero display classification etc. according to the algorithm 「(UK2)実績を取得する」
+				// TODO
+				// Day of the last week in month
+				if (dailyDataList.size() > 0) {
+					AttendanceRecordReportWeeklyData weeklyData = new AttendanceRecordReportWeeklyData();
+					weeklyData.setDailyDatas(dailyDataList);
+					AttendanceRecordReportWeeklySumaryData summaryWeeklyData = new AttendanceRecordReportWeeklySumaryData();
+					summaryWeeklyData = this.getSumWeeklyValue(dailyDataList);
+
+					weeklyData.setWeeklySumaryData(summaryWeeklyData);
+
+					weeklyDataList.add(weeklyData);
+					// empty daily data list
+					dailyDataList = new ArrayList<>();
+				}
+		
+				
+				//	月別項目（算出項目・上段） - Monthly items (calculation items, upper row)
+				//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
+				List<String> upperResult = new ArrayList<>();
+				List<String> lowerResult = new ArrayList<>();
+				AttendanceItemValueService.MonthlyAttendanceItemValueResult itemValueResult = MonthlyAttendanceItemValueResult
+						.builder().attendanceItems(new ArrayList<>()).build();
+
+				if (!calculateUpperMonthly.isEmpty() || !calculateLowerMonthly.isEmpty()) {
+
+					// Get montnly result
+					if (monthlyValuesAll.containsKey(emp.getEmployeeId())) {
+						List<MonthlyAttendanceItemValueResult> monthlyValuesByEmp = monthlyValuesAll
+								.get(emp.getEmployeeId());
+						for (MonthlyAttendanceItemValueResult item : monthlyValuesByEmp) {
+							if (item.getYearMonth()
+									.equals(closureDate.getLastDayOfMonth() ? yearMonth : yearMonth.addMonths(1))
+									&& item.getClouseDate() == closureDate.getClosureDay().v()) {
+								itemValueResult = item;
+								break;
+							}
+						}
+					}
+				}
+
+				for (CalculateAttendanceRecord item : calculateUpperMonthly) {
+					AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyUpperAddResult = MonthlyAttendanceItemValueResult
+							.builder().attendanceItems(new ArrayList<>()).build();
+					AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyUpperSubResult = MonthlyAttendanceItemValueResult
+							.builder().attendanceItems(new ArrayList<>()).build();
+
+					// Fill in upper calculate monthly ADD item
+					if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
+						for (Integer id : item.getAddedItem()) {
+							for (ItemValue e : itemValueResult.getAttendanceItems()) {
+								if (id == e.getItemId()) {
+									if (e.getValue() != null && !ZERO.equals(e.getValue()) && !e.getValue().isEmpty()) {
+										realData++;
+									}
+									monthlyUpperAddResult.getAttendanceItems().add(e);
+									break;
+								}
+
+							}
+
+						}
+					}
+
+					// Fill in upper calculate monthly SUBTRACT item
+					if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
+						for (Integer id : item.getSubtractedItem()) {
+							for (ItemValue e : itemValueResult.getAttendanceItems()) {
+								if (id == e.getItemId()) {
+									if (e.getValue() != null && !ZERO.equals(e.getValue()) && !e.getValue().isEmpty()) {
+										realData++;
+									}
+									monthlyUpperSubResult.getAttendanceItems().add(e);
+									break;
+								}
+
+							}
+
+						}
+					}
+
+					// Get upper monthly result
+					String result = "";
+					if (!monthlyUpperAddResult.getAttendanceItems().isEmpty()
+							|| !monthlyUpperSubResult.getAttendanceItems().isEmpty()) {
+						result = this.getSumCalculateAttendanceItem(monthlyUpperAddResult.getAttendanceItems(),
+								monthlyUpperSubResult.getAttendanceItems());
+					}
+					upperResult.add(result);
+
+				}
+
+				
+				//	月別項目（算出項目・下段） -  Monthly items (calculation items, lower row)
+				//	勤怠項目の実績値を取得し集計、編集する - Acquire, aggregate, and edit the actual value of attendance items
+				for (CalculateAttendanceRecord item : calculateLowerMonthly) {
+					AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyLowerAddResult = MonthlyAttendanceItemValueResult
+							.builder().attendanceItems(new ArrayList<>()).build();
+
+					AttendanceItemValueService.MonthlyAttendanceItemValueResult monthlyLowerSubResult = MonthlyAttendanceItemValueResult
+							.builder().attendanceItems(new ArrayList<>()).build();
+					// Fill in lower calculate monthly ADD item
+					if (item.getAddedItem() != null && !item.getAddedItem().isEmpty()) {
+						for (Integer id : item.getAddedItem()) {
+							for (ItemValue e : itemValueResult.getAttendanceItems()) {
+								if (id == e.getItemId()) {
+									if (e.getValue() != null && !ZERO.equals(e.getValue()) && !e.getValue().isEmpty()) {
+										realData++;
+									}
+									monthlyLowerAddResult.getAttendanceItems().add(e);
+									break;
+								}
+
+							}
+
+						}
+					}
+
+					// Fill in lower calculate monthly SUBTRACT item
+					if (item.getSubtractedItem() != null && !item.getSubtractedItem().isEmpty()) {
+						for (Integer id : item.getSubtractedItem()) {
+							for (ItemValue e : itemValueResult.getAttendanceItems()) {
+								if (id == e.getItemId()) {
+									if (e.getValue() != null && !ZERO.equals(e.getValue()) && !e.getValue().isEmpty()) {
+										realData++;
+									}
+									monthlyLowerSubResult.getAttendanceItems().add(e);
+									break;
+								}
+
+							}
+
+						}
+					}
+
+					// Get lower monthly result
+					String result = new String("");
+					if (!monthlyLowerAddResult.getAttendanceItems().isEmpty()
+							|| !monthlyLowerSubResult.getAttendanceItems().isEmpty()) {
+						result = this.getSumCalculateAttendanceItem(monthlyLowerAddResult.getAttendanceItems(),
+								monthlyLowerSubResult.getAttendanceItems());
+					}
+					lowerResult.add(result);
+
+				}
+
+				//	月次確認済表示区分をチェックする - Check the monthly confirmed display category
+				
+				//	表示  - if display 
+				
+					//	月の承認済状況を編集する - Edit the approved status of the month
+				//	TODO
+				
+				
+				//	アルゴリズム「社員情報を返す」を実行する  - Execute the algorithm "Return employee information"
+				// Param  出力対象社員ID（List) - Output target employee ID (List),   基準日 - Reference date
+				
+				EmployeeInformationQuery query = EmployeeInformationQuery.builder()
+						.employeeIds(empIDs)
+						.referenceDate(baseDate)
+						.toGetClassification(true)
+						.toGetDepartment(true)
+						.toGetEmployment(true)
+						.toGetEmploymentCls(true)
+						.toGetPosition(false)
+						.toGetWorkplace(true)
+						.build();
+
+					// note: アルゴリズム「<<Public>> 社員の情報を取得する」を実行する
+				List<EmployeeInformation> export = empInfoRepo.find(query);
+				
+				//	ヘッダー部(社員、職場、雇用、職位、勤務区分および年月)を編集する - Edit the header section (employee, workplace, employment, position, work category and year / month)
+					// 	年月　←　月別実績データの年月(YM) - Year / month ← Year / month of monthly actual data (YM)
+				// TODO
+				
+				//	ヘッダー部(締め日)を編集する - Edit the header part (closing date)
+				// TODO
+				
+				// START Convert to AttendanceRecordReportColumnData
+				List<AttendanceRecordReportColumnData> employeeMonthlyData = new ArrayList<>();
+
+				AttendanceRecordReportColumnData[] columnDataMonthlyArray = new AttendanceRecordReportColumnData[12];
+				int index = 0;
+				for (String item : upperResult) {
+					columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", "");
+					if (item != null)
+						columnDataMonthlyArray[index].setUper(item);
+					index++;
+				}
+				index = 0;
+				for (String item : lowerResult) {
+					if (item != null) {
+						if (columnDataMonthlyArray[index] == null) {
+							columnDataMonthlyArray[index] = new AttendanceRecordReportColumnData("", "");
+						}
+						columnDataMonthlyArray[index].setLower(item);
+					}
+					index++;
+
+				}
+
+				for (int i = 0; i < columnDataMonthlyArray.length; i++) {
+					if (columnDataMonthlyArray[i] == null)
+						columnDataMonthlyArray[i] = new AttendanceRecordReportColumnData("", "");
+					employeeMonthlyData.add(columnDataMonthlyArray[i]);
+				}
+				
+				// END Convert to AttendanceRecordReportColumnData
+				
 			}
+			//	着目社員の全期間分の帳票データを生成する - Generate form data for the entire period of the employee of interest
+			
 		}
 		
 		AttendanceRecordReportData recordReportData = new AttendanceRecordReportData();
@@ -812,5 +1105,158 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		default:
 			break;
 		}
+	}
+	
+	/**
+	 * Gets the sum weekly value.
+	 *
+	 * @param list the list
+	 * @return the sum weekly value
+	 */
+	public AttendanceRecordReportWeeklySumaryData getSumWeeklyValue(List<AttendanceRecordReportDailyData> list) {
+		AttendanceRecordReportWeeklySumaryData result = new AttendanceRecordReportWeeklySumaryData();
+
+		String upperValue7th = "";
+		String lowerValue7th = "";
+		String upperValue8th = "";
+		String lowerValue8th = "";
+		String upperValue9th = "";
+		String lowerValue9th = "";
+		String upperValue10th = "";
+		String lowerValue10th = "";
+		String upperValue11th = "";
+		String lowerValue11th = "";
+		String upperValue12th = "";
+		String lowerValue12th = "";
+		String upperValue13th = "";
+		String lowerValue13th = "";
+
+		for (AttendanceRecordReportDailyData item : list) {
+			if (item.getColumnDatas().get(6) != null) {
+				upperValue7th = this.add(upperValue7th, item.getColumnDatas().get(6).getUper());
+				lowerValue7th = this.add(lowerValue7th, item.getColumnDatas().get(6).getLower());
+			}
+			if (item.getColumnDatas().get(7) != null) {
+				upperValue8th = this.add(upperValue8th, item.getColumnDatas().get(7).getUper());
+				lowerValue8th = this.add(lowerValue8th, item.getColumnDatas().get(7).getLower());
+			}
+			if (item.getColumnDatas().get(8) != null) {
+				upperValue9th = this.add(upperValue9th, item.getColumnDatas().get(8).getUper());
+				lowerValue9th = this.add(lowerValue9th, item.getColumnDatas().get(8).getLower());
+			}
+			if (item.getColumnDatas().get(9) != null) {
+				upperValue9th = this.add(upperValue10th, item.getColumnDatas().get(9).getUper());
+				lowerValue9th = this.add(lowerValue10th, item.getColumnDatas().get(9).getLower());
+			}
+			if (item.getColumnDatas().get(10) != null) {
+				upperValue9th = this.add(upperValue11th, item.getColumnDatas().get(10).getUper());
+				lowerValue9th = this.add(lowerValue11th, item.getColumnDatas().get(10).getLower());
+			}
+			if (item.getColumnDatas().get(11) != null) {
+				upperValue9th = this.add(upperValue12th, item.getColumnDatas().get(11).getUper());
+				lowerValue9th = this.add(lowerValue12th, item.getColumnDatas().get(11).getLower());
+			}
+			if (item.getColumnDatas().get(12) != null) {
+				upperValue9th = this.add(upperValue13th, item.getColumnDatas().get(12).getUper());
+				lowerValue9th = this.add(lowerValue13th, item.getColumnDatas().get(12).getLower());
+			}
+
+		}
+		List<AttendanceRecordReportColumnData> columnDatas = new ArrayList<>();
+		AttendanceRecordReportColumnData columnData7 = new AttendanceRecordReportColumnData(upperValue7th,
+				lowerValue7th);
+		columnDatas.add(columnData7);
+		AttendanceRecordReportColumnData columnData8 = new AttendanceRecordReportColumnData(upperValue8th,
+				lowerValue8th);
+		columnDatas.add(columnData8);
+		AttendanceRecordReportColumnData columnData9 = new AttendanceRecordReportColumnData(upperValue9th,
+				lowerValue9th);
+		columnDatas.add(columnData9);
+		AttendanceRecordReportColumnData columnData10 = new AttendanceRecordReportColumnData(upperValue10th,
+				lowerValue10th);
+		columnDatas.add(columnData10);
+		AttendanceRecordReportColumnData columnData11 = new AttendanceRecordReportColumnData(upperValue11th,
+				lowerValue11th);
+		columnDatas.add(columnData11);
+		AttendanceRecordReportColumnData columnData12 = new AttendanceRecordReportColumnData(upperValue12th,
+				lowerValue12th);
+		columnDatas.add(columnData12);
+		AttendanceRecordReportColumnData columnData13 = new AttendanceRecordReportColumnData(upperValue13th,
+				lowerValue13th);
+		columnDatas.add(columnData13);
+
+		result.setDateRange(list.get(0).getDate() + "-" + list.get(list.size() - 1).getDate());
+		result.setColumnDatas(columnDatas);
+		result.setSecondCol(list.get(list.size() - 1).isSecondCol());
+
+		return result;
+
+	}
+
+	/**
+	 * Adds the.
+	 *
+	 * @param a the a
+	 * @param b the b
+	 * @return the string
+	 */
+	public String add(String a, String b) {
+		if (a.equals(""))
+			return b;
+		if (b.equals(""))
+			return a;
+		int indexA = a.indexOf(":");
+		int indexB = b.indexOf(":");
+
+		int subtrA = a.indexOf("-");
+		int subtrB = b.indexOf("-");
+
+		if (indexA >= 0 && indexB >= 0) {
+			Integer hourA;
+			Integer hourB;
+			Integer minuteA;
+			Integer minuteB;
+			hourA = Integer.parseInt(a.substring(0, indexA));
+			if (subtrA == 0) {
+				minuteA = Integer.parseInt(a.substring(indexA + 1)) * (-1);
+			} else {
+				minuteA = Integer.parseInt(a.substring(indexA + 1));
+			}
+			hourB = Integer.parseInt(b.substring(0, indexB));
+			if (subtrB == 0) {
+				minuteB = Integer.parseInt(b.substring(indexB + 1)) * (-1);
+			} else {
+
+				minuteB = Integer.parseInt(b.substring(indexB + 1));
+			}
+
+			Integer totalMinute = (hourA * 60 + minuteA) + (hourB * 60 + minuteB);
+
+			return this.convertMinutesToHours(totalMinute.toString());
+		} else {
+			indexA = a.indexOf("回");
+			indexB = b.indexOf("回");
+
+			if (indexA >= 0 && indexB >= 0) {
+				Integer countA = Integer.parseInt(a.substring(0, indexA - 1));
+				Integer countB = Integer.parseInt(b.substring(0, indexB - 1));
+
+				Integer totalCount = countA + countB;
+
+				return totalCount + " 回";
+			} else {
+				String stringAmountA = a.replaceAll(",", "");
+				String stringAmountB = b.replaceAll(",", "");
+
+				Integer amountA = Integer.parseInt(stringAmountA);
+				Integer amountB = Integer.parseInt(stringAmountB);
+
+				Integer totalAmount = amountA + amountB;
+				DecimalFormat format = new DecimalFormat("###,###,###");
+				return format.format(totalAmount);
+
+			}
+		}
+
 	}
 }
