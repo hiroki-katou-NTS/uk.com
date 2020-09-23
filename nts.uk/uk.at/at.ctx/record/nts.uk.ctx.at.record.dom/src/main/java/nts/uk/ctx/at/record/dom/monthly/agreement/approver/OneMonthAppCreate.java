@@ -108,7 +108,7 @@ public class OneMonthAppCreate {
 			List<String> confirmerList,
 			ScreenDisplayInfo displayInfo) {
 
-		val errorAlarm = ErrorTimeInMonth.create(appContent.getErrTime(), appContent.getAlarmTime());
+		val errorAlarm = new ErrorTimeInMonth(appContent.getErrTime(), appContent.getAlarmTime());
 
 		// $1ヶ月時間 = 1ヶ月時間#1ヶ月時間(申請内容.年月度,$エラーアラーム)
 		val oneMonthTime = new OneMonthTime(errorAlarm, appContent.getYm());
