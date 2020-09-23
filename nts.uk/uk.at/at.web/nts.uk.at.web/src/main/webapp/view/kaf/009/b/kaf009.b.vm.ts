@@ -174,13 +174,16 @@ module nts.uk.at.view.kaf009_ref.b.viewmodel {
             // is change can be null
             if (!_.isNull(model.checkbox3)) {
                 goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
+                
+            } 
+            if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
                 let dw = new DataWork( model.workTypeCode );
                 if ( model.workTimeCode ) {
                     dw.workTime = model.workTimeCode
                 }
                 goBackApp.dataWork = dw;
                 
-            } 
+            }
             vm.$blockui("show");
             
             return vm.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason')
