@@ -149,6 +149,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             });
         }  
        fetchData() {
+            const self = this;
             self.$blockui('show');
             let appplication = ko.toJS(self.application) as Application;
             let appId = appplication.appID;
