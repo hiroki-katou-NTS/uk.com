@@ -176,6 +176,8 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
             vm.workManagement.workTime2(null);
             vm.workManagement.leaveTime2(null);
 
+            vm.managementMultipleWorkCycles(params.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles);
+
             vm.cancalAppDispSet = params.lateEarlyCancelAppSet.cancelAtr !== 0;
             var achiveEarly = vm.appDispInfoStartupOutput().appDispInfoWithDateOutput.opActualContentDisplayLst[0].opAchievementDetail;
 
@@ -372,19 +374,22 @@ module nts.uk.at.view.kaf004_ref.b.viewmodel {
                             timeWithDayAttr: ko.toJS(vm.workManagement.leaveTime())
                         })
                     }
-                    if (vm.managementMultipleWorkCycles() && ko.toJS(vm.workManagement.workTime2)) {
-                        lateOrLeaveEarlies.push({
-                            workNo: 2,
-                            lateOrEarlyClassification: 0,
-                            timeWithDayAttr: ko.toJS(vm.workManagement.workTime2())
-                        })
-                    }
-                    if (vm.managementMultipleWorkCycles() && ko.toJS(vm.workManagement.leaveTime2)) {
-                        lateOrLeaveEarlies.push({
-                            workNo: 2,
-                            lateOrEarlyClassification: 1,
-                            timeWithDayAttr: ko.toJS(vm.workManagement.leaveTime2())
-                        })
+
+                    if(vm.managementMultipleWorkCycles()) {
+                        if (ko.toJS(vm.workManagement.workTime2)) {
+                            lateOrLeaveEarlies.push({
+                                workNo: 2,
+                                lateOrEarlyClassification: 0,
+                                timeWithDayAttr: ko.toJS(vm.workManagement.workTime2())
+                            })
+                        }
+                        if (ko.toJS(vm.workManagement.leaveTime2)) {
+                            lateOrLeaveEarlies.push({
+                                workNo: 2,
+                                lateOrEarlyClassification: 1,
+                                timeWithDayAttr: ko.toJS(vm.workManagement.leaveTime2())
+                            })
+                        }
                     }
                     if (ko.toJS(vm.application().prePostAtr) === 1) {
                         if (ko.toJS(vm.lateOrEarlyInfo1().isCheck)) {
