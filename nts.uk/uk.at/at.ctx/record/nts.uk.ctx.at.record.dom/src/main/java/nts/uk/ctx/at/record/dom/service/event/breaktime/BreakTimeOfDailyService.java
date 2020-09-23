@@ -15,13 +15,9 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.attendanceitem.util.AttendanceItemConvertFactory;
 import nts.uk.ctx.at.record.dom.breakorgoout.BreakTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.breakorgoout.enums.BreakType;
 import nts.uk.ctx.at.record.dom.breakorgoout.repository.BreakTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ReflectBreakTimeOfDailyDomainService;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.IntegrationOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.converter.DailyRecordToAttendanceItemConverter;
 import nts.uk.ctx.at.record.dom.editstate.EditStateOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.editstate.enums.EditStateSetting;
 import nts.uk.ctx.at.record.dom.editstate.repository.EditStateOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.service.event.common.CorrectEventConts;
 import nts.uk.ctx.at.record.dom.service.event.common.EventHandleResult;
@@ -30,6 +26,11 @@ import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.breaking.BreakType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 
@@ -60,25 +61,27 @@ public class BreakTimeOfDailyService {
 	public EventHandleResult<IntegrationOfDaily> correct(String companyId, IntegrationOfDaily working,
 			Optional<WorkType> cachedWorkType, boolean directToDB) {
 
-		WorkInfoOfDailyPerformance wi = working.getWorkInformation();
-		if (wi == null) {
+		WorkInfoOfDailyPerformance wi = new WorkInfoOfDailyPerformance(working.getEmployeeId(), working.getYmd(),working.getWorkInformation());
+		if (wi.getWorkInformation() == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
 
 		WorkType wt = getWithDefaul(cachedWorkType,
-				() -> getDefaultWorkType(wi.getRecordInfo().getWorkTypeCode().v(), companyId));
+				() -> getDefaultWorkType(wi.getWorkInformation().getRecordInfo().getWorkTypeCode().v(), companyId));
 		if (wt == null) {
 			return EventHandleResult.withResult(EventHandleAction.ABORT, working);
 		}
 
-		BreakTimeOfDailyPerformance breakTimeRecord = getWithDefaul(
-							working.getBreakTime().stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst(),
+		BreakTimeOfDailyAttd dailyAttd = working.getBreakTime().stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst().isPresent() ? 
+				working.getBreakTime().stream().filter(b -> b.getBreakType() == BreakType.REFER_WORK_TIME).findFirst().get() : null;
+		BreakTimeOfDailyPerformance dailyPerformance = new BreakTimeOfDailyPerformance(working.getEmployeeId(), working.getYmd(), dailyAttd);
+		BreakTimeOfDailyPerformance breakTimeRecord = getWithDefaul(Optional.ofNullable(dailyPerformance),
 							() -> getBreakTimeDefault(wi.getEmployeeId(), wi.getYmd()));
 
 		DailyRecordToAttendanceItemConverter converter = convertFactory.createDailyConverter()
 				.employeeId(wi.getEmployeeId())
 				.workingDate(wi.getYmd())
-				.withBreakTime(breakTimeRecord);
+				.withBreakTime(working.getEmployeeId(), working.getYmd(),breakTimeRecord.getTimeZone());
 
 		List<ItemValue> beforeCorrectItemValues = converter.convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
@@ -86,7 +89,9 @@ public class BreakTimeOfDailyService {
 			return deleteBreakTime(working, directToDB, CorrectEventConts.BREAK_TIME_ITEMS, breakTimeRecord, converter, beforeCorrectItemValues);
 		}
 
-		BreakTimeOfDailyPerformance breakTime = getUpdateBreakTime(working.getAttendanceLeave(), breakTimeRecord, wi, companyId, working.getEditState());
+		BreakTimeOfDailyPerformance breakTime = getUpdateBreakTime(working.getAttendanceLeave().isPresent()?Optional.of(
+				new TimeLeavingOfDailyPerformance(working.getEmployeeId(), working.getYmd(),working.getAttendanceLeave().get())):Optional.empty(), 
+				breakTimeRecord, wi, companyId, working.getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(working.getEmployeeId(), working.getYmd(), mapper)).collect(Collectors.toList()));
 		if (breakTime != null) {
 			return updateBreakTime(working, directToDB, converter, beforeCorrectItemValues, breakTime);
 		}
@@ -100,9 +105,9 @@ public class BreakTimeOfDailyService {
 			BreakTimeOfDailyPerformance breakTime) {
 		/** 「日別実績の休憩時間帯」を更新する */
 		working.getBreakTime().removeIf(b -> b.getBreakType() == BreakType.REFER_WORK_TIME);
-		working.getBreakTime().add(breakTime);
+		working.getBreakTime().add(breakTime.getTimeZone());
 		
-		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(breakTime).convert(CorrectEventConts.BREAK_TIME_ITEMS);
+		List<ItemValue> afterCorrectItemValues = converter.withBreakTime(working.getEmployeeId(), working.getYmd(),breakTime.getTimeZone()).convert(CorrectEventConts.BREAK_TIME_ITEMS);
 		
 		afterCorrectItemValues.removeAll(beforeCorrectItemValues);
 		List<Integer> correctedItemIds = afterCorrectItemValues.stream().map(iv -> iv.getItemId()).collect(Collectors.toList());
@@ -111,7 +116,7 @@ public class BreakTimeOfDailyService {
 		if (directToDB) {
 			this.breakTimeRepo.update(breakTime);
 			if(!correctedItemIds.isEmpty()){
-				this.editStateRepo.deleteByListItemId(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd(), correctedItemIds);
+				this.editStateRepo.deleteByListItemId(working.getEmployeeId(), working.getYmd(), correctedItemIds);
 			}
 		}
 		return EventHandleResult.withResult(EventHandleAction.UPDATE, working);
@@ -119,11 +124,11 @@ public class BreakTimeOfDailyService {
 
 	private EventHandleResult<IntegrationOfDaily> deleteBreakTime(IntegrationOfDaily working, boolean directToDB, List<Integer> canBeUpdatedItemIds, 
 			BreakTimeOfDailyPerformance breakTimeRecord, DailyRecordToAttendanceItemConverter converter, List<ItemValue> beforeCorrectItemValues) {
-		String empId = working.getWorkInformation().getEmployeeId();
-		GeneralDate workingDate = working.getWorkInformation().getYmd();
+		String empId = working.getEmployeeId();
+		GeneralDate workingDate = working.getYmd();
 		BreakTimeOfDailyPerformance deleted = mergeWithEditStates(empId, workingDate, 
-				working.getEditState(), new BreakTimeOfDailyPerformance(empId, BreakType.REFER_WORK_TIME, new ArrayList<>(), workingDate), breakTimeRecord);
-		if(!deleted.getBreakTimeSheets().isEmpty()){
+				working.getEditState().stream().map(mapper-> new EditStateOfDailyPerformance(working.getEmployeeId(), working.getYmd(), mapper)).collect(Collectors.toList()), new BreakTimeOfDailyPerformance(empId, BreakType.REFER_WORK_TIME, new ArrayList<>(), workingDate), breakTimeRecord);
+		if(!deleted.getTimeZone().getBreakTimeSheets().isEmpty()){
 			return updateBreakTime(working, directToDB, converter, beforeCorrectItemValues, deleted);
 		}
 		
@@ -132,8 +137,8 @@ public class BreakTimeOfDailyService {
 		
 		/** 「日別実績の休憩時間帯」を削除する */
 		if (directToDB) {
-			this.breakTimeRepo.delete(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd());
-			this.editStateRepo.deleteByListItemId(working.getWorkInformation().getEmployeeId(), working.getWorkInformation().getYmd(), canBeUpdatedItemIds);
+			this.breakTimeRepo.delete(working.getEmployeeId(), working.getYmd());
+			this.editStateRepo.deleteByListItemId(working.getEmployeeId(), working.getYmd(), canBeUpdatedItemIds);
 		}
 		return EventHandleResult.withResult(EventHandleAction.DELETE, working);
 	}
@@ -162,7 +167,7 @@ public class BreakTimeOfDailyService {
 		List<EditStateOfDailyPerformance> editStates = getEditStateByItems(empId, targetDate,
 				cachedEditState.isEmpty() ? Optional.empty() : Optional.of(cachedEditState));
 
-		if (editStates.isEmpty() && (breakTime == null || breakTime.getBreakTimeSheets().isEmpty())) {
+		if (editStates.isEmpty() && (breakTime == null || breakTime.getTimeZone().getBreakTimeSheets().isEmpty())) {
 			return breakTime;
 		}
 
@@ -170,11 +175,11 @@ public class BreakTimeOfDailyService {
 
 		if (!itemsToMerge.isEmpty()) {
 			DailyRecordToAttendanceItemConverter converter = attendanceItemConvertFactory.createDailyConverter()
-																	.employeeId(empId).workingDate(targetDate).withBreakTime(breakTimeRecord);
+																	.employeeId(empId).workingDate(targetDate).withBreakTime(empId, targetDate, new ArrayList<>(Arrays.asList(breakTime).stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList())));
 			
 			List<ItemValue> ipByHandValues = converter.convert(itemsToMerge);
 			
-			converter.withBreakTime(new ArrayList<>(Arrays.asList(breakTime)));
+			converter.withBreakTime(empId, targetDate, new ArrayList<>(Arrays.asList(breakTime).stream().map(mapper-> new BreakTimeOfDailyAttd(mapper.getTimeZone().getBreakType(), mapper.getTimeZone().getBreakTimeSheets())).collect(Collectors.toList())));
 			
 //			List<ItemValue> recordVal = converter.convert(itemsToMerge);
 			
@@ -182,15 +187,15 @@ public class BreakTimeOfDailyService {
 			
 			converter.merge(ipByHandValues);
 
-			return converter.breakTime().get(0);
+			return new BreakTimeOfDailyPerformance(empId, targetDate,converter.breakTime().get(0));
 		}
 
 		return breakTime;
 	}
 
 	private List<Integer> getItemsToMerge(List<EditStateOfDailyPerformance> editStates) {
-		List<Integer> handEditItems = editStates.stream().filter(es -> isInputByHands(es.getEditStateSetting()))
-															.map(es -> es.getAttendanceItemId()).collect(Collectors.toList());
+		List<Integer> handEditItems = editStates.stream().filter(es -> isInputByHands(es.getEditState().getEditStateSetting()))
+															.map(es -> es.getEditState().getAttendanceItemId()).collect(Collectors.toList());
 
 		List<Integer> result = new ArrayList<>();
 
@@ -217,7 +222,7 @@ public class BreakTimeOfDailyService {
 			Optional<List<EditStateOfDailyPerformance>> cachedEditState) {
 		val needCheckItems = getBreakTimeClockItems();
 		return getWithDefaul(cachedEditState, () -> getDefaultEditStates(empId, targetDate, needCheckItems)).stream()
-				.filter(e -> needCheckItems.contains(e.getAttendanceItemId())).collect(Collectors.toList());
+				.filter(e -> needCheckItems.contains(e.getEditState().getAttendanceItemId())).collect(Collectors.toList());
 	}
 
 	private List<Integer> getBreakTimeClockItems() {

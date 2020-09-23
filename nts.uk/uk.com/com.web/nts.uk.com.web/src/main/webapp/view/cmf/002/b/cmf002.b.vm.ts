@@ -11,7 +11,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         isNewMode:                      KnockoutObservable<boolean> = ko.observable(true);
         checkFocus:                     KnockoutObservable<boolean> = ko.observable(true);
         standType:                      KnockoutObservable<number> = ko.observable(1);
-        index:                          KnockoutObservable<number> = ko.observable(0);  
+        index:                          KnockoutObservable<number> = ko.observable(0);
         conditionSettingList:           KnockoutObservableArray<IConditionSet> = ko.observableArray([]);
         outputItemList:                 KnockoutObservableArray<IOutputItem>   = ko.observableArray([]);
         selectedConditionSetting:       KnockoutObservable<IConditionSet> = ko.observable();
@@ -35,6 +35,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             itemOutputName: 0
         }));
         checkFocusWhenCopy: boolean = false;
+        isSetPeriodText: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             block.invisible();
@@ -53,7 +54,16 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     self.getOutItem(data);
                     self.settingCurrentCondition();
                     self.setNewMode(false);
-                    block.clear();
+
+                    service.findOutputPeriodSetting(data)
+                        .then((response) => {
+                            if (response) {
+                                self.isSetPeriodText(response.periodSetting === 1 ? getText('CMF002_530') : getText('CMF002_531'));
+                            } else {
+                                self.isSetPeriodText(getText('CMF002_531'));
+                            }
+                        })
+                        .always(() => block.clear());
                 }
             });
 
@@ -82,7 +92,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 self.checkFocus(mode);
             }
         }
-        
+
         setCondSetCode(code: string) {
             let self = this;
             self.selectedConditionSettingCode('');
@@ -100,29 +110,27 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             let conditionSetCodeParam: string = '';
             self.standType(1);
             //アルゴリズム「外部出力取得設定一覧」を実行する
-            service.getCndSet(self.roleAuthority).done((itemList: Array<IConditionSet>) =>{
-                self.conditionSettingList.removeAll();
-                if (itemList && itemList.length > 0) {
-                    self.conditionSettingList(itemList);
-                    if (conditionSetCode) {
-                        self.setCondSetCode(conditionSetCode);
-                        self.index(self.getIndex(conditionSetCode));
-                    }                    
-                    let code = self.conditionSettingList()[self.index()].conditionSetCode;
-                    self.setCondSetCode(code);
-                    setTimeout(function(){ 
-                        $("tr[data-id='" + code + "'] ").focus();
-                        self.setNewMode(false);
-                    }, 100);
-                } else {
-                    self.createNewCondition();
-                }
-            }).always(() => {
-                block.clear();
-            });
-            
+            service.getCndSet(self.roleAuthority)
+                .then((itemList: Array<IConditionSet>) =>{
+                    self.conditionSettingList.removeAll();
+                    if (itemList && itemList.length > 0) {
+                        self.conditionSettingList(itemList);
+                        if (conditionSetCode) {
+                            self.setCondSetCode(conditionSetCode);
+                            self.index(self.getIndex(conditionSetCode));
+                        }
+                        let code = self.conditionSettingList()[self.index()].conditionSetCode;
+                        self.setCondSetCode(code);
+                        setTimeout(function(){
+                            $("tr[data-id='" + code + "'] ").focus();
+                            self.setNewMode(false);
+                        }, 100);
+                    } else {
+                        self.createNewCondition();
+                    }
+                })
+                .always(() => block.clear());
         }
-
 
         /**
          * Setting each item on screen
@@ -139,11 +147,11 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().conditionSetCode(condSet.conditionSetCode);
             self.conditionSetData().conditionSetName(condSet.conditionSetName);
             self.conditionSetData().categoryId(categoryId);
-            
+
             if (self.listCategory() && self.listCategory().length > 0 && categoryName) {
                 self.categoryName(categoryId + "　" + categoryName);
             } else {
-                self.categoryName("");                
+                self.categoryName("");
             }
             self.conditionSetData().conditionOutputName(condSet.conditionOutputName);
             self.conditionSetData().autoExecution(condSet.autoExecution);
@@ -151,7 +159,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().stringFormat(condSet.stringFormat);
             self.conditionSetData().itemOutputName(condSet.itemOutputName);
         }
-        
+
         getOutItem(selectedConditionSettingCode: string){
             let self = this;
             let itemList: Array<IOutputItem> = [];
@@ -167,8 +175,8 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 });
             }
         }
-        
-        
+
+
         getCategoryName(cateId){
             let self = this;
             let category :Category = _.find(self.listCategory(), function (x) { return x.categoryId == cateId; });
@@ -176,15 +184,15 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 return category.categoryName;
             }
         }
-        
+
         getIndex(conditionCode) {
             let self = this;
             let index = _.findIndex(self.conditionSettingList(), { 'conditionSetCode': conditionCode });
             return index;
         }
-        
-        
-        
+
+
+
         deleteCnd() {
             let self = this;
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -204,21 +212,21 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                         } else {
                             self.initScreen(null);
                         }
-                    }); 
+                    });
                 });
              });
         }
-        
+
         openCopyScreen() {
             let self = this;
             setShared('CMF002_T_PARAMS', {
-                    standType:self.standType() , 
-                    conditionSetCd: self.selectedConditionSetting().conditionSetCode , 
+                    standType:self.standType() ,
+                    conditionSetCd: self.selectedConditionSetting().conditionSetCode ,
                     conditionName: self.selectedConditionSetting().conditionSetName});
-            
+
             modal("/view/cmf/002/t/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_T_Output');
-                
+
                 if (params) {
                     let override = params.overWrite;
                     let destinationCode = params.copyDestinationCode;
@@ -245,20 +253,20 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                             }
                             self.checkFocusWhenCopy = true;
                             self.initScreen(destinationCode);
-                        });  
+                        });
                     });
                 }
             });
         }
-        
-        
+
+
         openVScreen(){
             let self = this;
             setShared('CMF002_V_PARAMS', {
                 categoryId :self.conditionSetData().categoryId() || '',
                 roleAuthority: self.roleAuthority
             });
- 
+
             modal("/view/cmf/002/v1/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS');
                 if (params) {
@@ -267,7 +275,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     nts.uk.ui.errors.clearAll();
                 }
             });
-           
+
         }
 
         openDscreen(){
@@ -279,9 +287,9 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     cndSetName: self.conditionSetData().conditionSetName()
                     });
             modal("/view/cmf/002/d/index.xhtml");
-            
+
         }
-        
+
         openCscreen(){
             let self = this;
             setShared('CMF002_C_PARAMS_FROM_B', {
@@ -291,7 +299,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                     categoryName: self.categoryName(),
                     standType: self.standType()
             });
-            
+
             modal("/view/cmf/002/c/index.xhtml").onClosed(function() {
                 let params = getShared('CMF002_B_PARAMS_FROM_C');
                 let data :any = {
@@ -301,10 +309,28 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 if (params.isUpdateExecution) {
                     self.getOutItem(data.conditionSetCd);
                 }
-                
+
             });
         }
-        
+
+        /**
+         * UKDesign.UniversalK.共通.CMF_補助機能.CMF002_外部出力.B:外部出力設定.B:アルゴリズム.外部出力設定期間実行.外部出力設定期間実行
+         */
+        public openWscreen() {
+            const vm = this;
+            setShared('CMF002_W_PARAMS', {
+                conditionSetCode: vm.conditionSetData().conditionSetCode(),
+            });
+            // W画面(出力期間を設定)を表示する
+            modal("/view/cmf/002/w/index.xhtml").onClosed(() => {
+                //「出力期間設定」の期間設定のするしない区分をチェック
+                const params = getShared('CMF002_B_PARAMS_FROM_W');
+                if (params) {
+                    vm.isSetPeriodText(params.periodSetting === 1 ? getText('CMF002_530') : getText('CMF002_531'));
+                }
+            });
+        }
+
         createNewCondition() {
             let self = this;
             let outputItem: Array<IOutputItem> = [];
@@ -323,9 +349,10 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.conditionSetData().stringFormat(0);
             self.conditionSetData().itemOutputName(0);
             self.setNewMode(true);
+            self.isSetPeriodText(getText('CMF002_531'));
         }
-           
-    
+
+
         register(){
             let self = this;
             nts.uk.ui.errors.clearAll();
@@ -362,12 +389,12 @@ module nts.uk.com.view.cmf002.b.viewmodel {
                 if(res)
                     dialog.alertError(res);
             });
-      
+
         }
-        
+
         startPage(): JQueryPromise<any> {
             let self = this;
-            
+
             if (!self.roleAuthority) {
                 self.listCategory(null);
                 return;
@@ -473,7 +500,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         outItemName: string;
         order: number;
     }
-    
+
     export class OutputItem {
         outItemCd: KnockoutObservable<string> = ko.observable('');
         outItemName: KnockoutObservable<string> = ko.observable('');
@@ -490,7 +517,7 @@ module nts.uk.com.view.cmf002.b.viewmodel {
         categoryId: string;
         categoryName: string;
     }
-    
+
     export class Category {
         categoryId:   KnockoutObservable<string> = ko.observable('');
         categoryName: KnockoutObservable<string> = ko.observable('');
@@ -500,5 +527,5 @@ module nts.uk.com.view.cmf002.b.viewmodel {
             self.categoryName(param.categoryName || '');
         }
     }
- }
 
+ }

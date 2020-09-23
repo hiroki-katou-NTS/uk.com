@@ -6,12 +6,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.standardtime.AggregatePeriod;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementPeriodByYMDExport;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementPeriodByYMDImport;
 import nts.uk.ctx.at.record.pub.standardtime.AgreementPeriodByYMDPub;
+import nts.uk.ctx.at.shared.dom.standardtime.AggregatePeriod;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 

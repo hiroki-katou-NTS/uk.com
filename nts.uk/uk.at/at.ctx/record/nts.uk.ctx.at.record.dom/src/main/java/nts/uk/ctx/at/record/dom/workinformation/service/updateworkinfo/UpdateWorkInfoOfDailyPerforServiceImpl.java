@@ -7,7 +7,6 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.daily.DailyRecordAdUpService;
-//import nts.uk.ctx.at.record.dom.workinformation.WorkInfoChangeEvent;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.workinformation.repository.WorkInformationRepository;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -31,16 +30,15 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 	public void updateWorkInfoOfDailyPerforService(String companyId, String employeeID, GeneralDate processingDate,
 			WorkInfoOfDailyPerformance workInfoOfDailyPerformance) {
 		Optional<WorkType> workType = this.workTypeRepository.findByPK(companyId,
-				workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+				workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 
 		if (workType.isPresent()) {
 			WorkTypeClassification oneDay = workType.get().getDailyWork().getOneDay();
 			if (oneDay == WorkTypeClassification.Holiday || oneDay == WorkTypeClassification.Pause
 					|| oneDay == WorkTypeClassification.ContinuousWork
 					|| oneDay == WorkTypeClassification.LeaveOfAbsence || oneDay == WorkTypeClassification.Closure) {
-				WorkInformation recordWorkInformation = new WorkInformation(null,
-						workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
-				workInfoOfDailyPerformance.setRecordInfo(recordWorkInformation);
+				WorkInformation recordWorkInformation = new WorkInformation(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode(), null);
+				workInfoOfDailyPerformance.getWorkInformation().setRecordInfo(recordWorkInformation);
 			}
 			
 			// ドメインモデル「日別実績の勤務情報」を更新する(Update domain 「日別実績の勤務情報」)
@@ -48,7 +46,7 @@ public class UpdateWorkInfoOfDailyPerforServiceImpl implements UpdateWorkInfoOfD
 			dailyRecordAdUpService.adUpWorkInfo(workInfoOfDailyPerformance);
 			
 			// domain event 
-			workInfoOfDailyPerformance.workInfoChanged();
+			//workInfoOfDailyPerformance.workInfoChanged();
 		}
 	}
 

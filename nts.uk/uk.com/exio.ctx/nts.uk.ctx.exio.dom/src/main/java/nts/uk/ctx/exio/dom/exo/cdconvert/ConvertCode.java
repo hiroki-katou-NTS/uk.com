@@ -13,7 +13,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
  *
  */
 @StringCharType(CharType.NUMERIC)
-@StringMaxLength(3)
+@StringMaxLength(5)
 @ZeroPaddedCode
 public class ConvertCode extends StringPrimitiveValue<PrimitiveValue<String>> {
 

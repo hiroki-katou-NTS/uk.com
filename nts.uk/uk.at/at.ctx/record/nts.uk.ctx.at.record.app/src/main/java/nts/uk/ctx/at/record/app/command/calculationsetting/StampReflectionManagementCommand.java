@@ -2,12 +2,7 @@ package nts.uk.ctx.at.record.app.command.calculationsetting;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.record.dom.calculationsetting.StampReflectionManagement;
-/**
- * 
- * @author phongtq
- *
- */
+import nts.uk.ctx.at.shared.dom.calculationsetting.StampReflectionManagement;
 
 /**
  * Instantiates a new stamp reflection management command.

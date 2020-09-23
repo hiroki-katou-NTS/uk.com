@@ -15,10 +15,10 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtMonMngAgreTime;
 import nts.uk.ctx.at.record.infra.entity.monthly.agreement.KrcdtMonMngAgreTimePK;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriodRepository;
 
 /**
  * リポジトリ実装：管理期間の36協定時間

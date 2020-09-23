@@ -70,5 +70,5 @@ public class WorkplaceGroupFinder {
 	
 	public List<WorkplaceInforParam> getWorkplaceInfo(List<String> workplaceIds, GeneralDate baseDate) {
 		return wkpExportService.getWorkplaceInforFromWkpIds(AppContexts.user().companyId(), workplaceIds, baseDate);
-	}
+	}		
 }
