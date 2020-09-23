@@ -29,14 +29,14 @@
           v-model="derpartureTime"
           :name="'KAFS08_28'"
           time-input-type="time-with-day"
-          :columns="{ title: 'col-3', input: 'col-5' }"
+          :columns="{ title: 'col-3', input: 'col-7' }"
         />
         <!-- A5_5 -->
         <nts-time-editor
           v-model="returnTime"
           :name="'KAFS08_29'"
           time-input-type="time-with-day"
-          :columns="{ title: 'col-3', input: 'col-5' }"
+          :columns="{ title: 'col-3', input: 'col-7' }"
         />
         <!-- A_20 -->
         <div>

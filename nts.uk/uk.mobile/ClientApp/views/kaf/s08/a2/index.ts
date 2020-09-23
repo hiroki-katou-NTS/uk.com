@@ -4,7 +4,6 @@ import { StepwizardComponent } from '@app/components';
 import { FixTableComponent } from '@app/components/fix-table';
 import { KafS08DComponent } from '../../../kaf/s08/d';
 import { KafS00ShrComponent, AppType } from 'views/kaf/s00/shr';
-import { vmOf } from 'vue/types/umd';
 import * as _ from 'lodash';
 
 
@@ -131,7 +130,17 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //hàm xử lý gọi dialog
     public selectRowDate(data) {
         const vm = this;
-        vm.$modal(KafS08DComponent, {rowDate : data,lstWorkDay:vm.lstWorkDay,businessTripInfoOutput : vm.data.businessTripInfoOutput});
+        vm.$modal(KafS08DComponent, {
+            rowDate : data,
+            lstWorkDay:vm.lstWorkDay,
+            businessTripInfoOutput : vm.data.businessTripInfoOutput,
+            departureTime : vm.departureTime,
+            returnTime : vm.returnTime,
+        }).then((model: any) => {
+            console.log(model);
+            //opAchievementDetail.opWorkTime = model.opWorkTime;
+            //opAchievementDetail.opWorkTime = model.opLeaveTime;
+        });
     }
 
     //nhảy đến step three với các điều kiện
@@ -244,7 +253,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
             });
         } else {
             vm.$modal.error({ messageId: 'Msg_1703' });
-            
+
             return ;
         }
     }
