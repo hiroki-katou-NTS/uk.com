@@ -612,7 +612,7 @@ module nts.uk.at.view.ksm003.a {
                 if (!vm.isEditting()) vm.isEditting(true);
 
                 vm.getListWorkingCycle();
-                //vm.getPatternValByPatternCd(patternCode);
+                vm.getPatternValByPatternCd(patternCode);
 
                 vm.$blockui("hide");
 
@@ -739,14 +739,13 @@ module nts.uk.at.view.ksm003.a {
                 currentRow: DailyPatternValModel = data;
 
             self.$window.storage("parentCodes", {
-                selectWorkTypeCode: currentRow.typeCode,
-                selectSiftCode: currentRow.timeCode,
+	              selectedWorkTypeCode: currentRow.typeCode(),
+	              selectedWorkTimeCode: currentRow.timeCode()
             });
 
             self.$window
                 .modal("/view/kdl/003/a/index.xhtml", { title: self.$i18n("KDL003_1") })
                 .then(function (result) {
-
                     self.$window.storage("childData").then((resultData) => {
                         if (resultData) {
                             currentRow.typeCode(resultData.selectedWorkTypeCode);
