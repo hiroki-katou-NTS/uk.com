@@ -38,6 +38,27 @@ public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 	public TimeWithDayAttr(int minutesFromZeroOClock) {
 		super(minutesFromZeroOClock);
 	}
+	
+	/**
+	 * 時分から作る
+	 * @param hour
+	 * @param minute
+	 * @return
+	 */
+	public static TimeWithDayAttr hourMinute(int hour, int minute) {
+		return new TimeWithDayAttr(hour * 60 + minute);
+	}
+	
+	/**
+	 * 日区分と時分から作る
+	 * @param day
+	 * @param hour
+	 * @param minute
+	 * @return
+	 */
+	public static TimeWithDayAttr dayHourMinute(DayAttr day, int hour, int minute) {
+		return hourMinute(day.hours + hour, minute);
+	}
 
 	/**
 	 * OBSOLETE: use dayAttr() instead
