@@ -15,7 +15,6 @@ import nts.uk.ctx.sys.portal.dom.logsettings.LogSetting;
 import nts.uk.ctx.sys.portal.dom.logsettings.LogSettingRepository;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenu;
 import nts.uk.ctx.sys.portal.dom.standardmenu.StandardMenuRepository;
-import nts.uk.shr.com.communicate.PathToWebApi.App;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
