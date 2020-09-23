@@ -7,5 +7,5 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.Process
  *
  */
 public interface RegisterMailSendCheck {
-	public ProcessResult sendMail(Application_New application);
+	public ProcessResult sendMail(Application application);
 }

@@ -191,6 +191,14 @@
 									<!--B12_1 出力条件を設定-->
 									<button id="B12_1" tabindex="10" data-bind="click: function(){$vm.openDscreen()}, enable: !$parent.isNewMode()" >#{i18n.getText('CMF002_58')}</button>
 								</div>
+								<div class="div-line">
+									<!--B15 出力期間の設定 -->
+									<div id="B15" class="column-1" data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_529')}</div>
+									<!--B15_1 出力期間の設定（ボタン）-->
+									<button id="B15_1" tabindex="11" data-bind="click: function(){$vm.openWscreen()}, enable: !$parent.isNewMode()" >#{i18n.getText('CMF002_529')}</button>
+									<!--B15_2 出力期間の有無 -->
+									<label id="B15_2" class="margin-left-15" data-bind="text: $vm.isSetPeriodText"></label>
+								</div>
 							</div>
 							<div class="pull-left">
 								<!--B13 条件設定選択(パネル)-->
@@ -205,11 +213,11 @@
 										<div class="cell pull-left">
 											<table id="B13_2"
 												data-bind="ntsGridList: {
-												
+
 													rows: 15,
 													dataSource: $parent.outputItemList,
 													primaryKey: 'outItemCd',
-													columns: [	
+													columns: [
 																{headerText: '#{i18n.getText('CMF002_60')}', key: 'outItemCd', width: 50, formatter: _.escape},
 																{headerText: '#{i18n.getText('CMF002_61')}', key: 'outItemName', width: 160, formatter: _.escape}
 															],

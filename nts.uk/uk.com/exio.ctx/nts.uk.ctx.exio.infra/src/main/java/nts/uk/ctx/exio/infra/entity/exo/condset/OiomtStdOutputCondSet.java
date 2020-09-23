@@ -13,12 +13,12 @@ import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * 出力条件設定（定型）
+ * 外部出力出力条件設定（定型）
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "OIOMT_STD_OUTPUT_COND_SET")
+@Table(name = "OIOMT_EX_OUT_CND")
 public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -29,18 +29,25 @@ public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	public OiomtStdOutputCondSetPk stdOutputCondSetPk;
 
 	/**
+	 * 外部出力条件名称
+	 */
+	@Basic(optional = false)
+	@Column(name = "CND_SET_NAME")
+	public String conditionSetName;
+	
+	/**
 	 * カテゴリID
 	 */
 	@Basic(optional = false)
-	@Column(name = "CATEGORY_ID")
+	@Column(name = "CTG_ID")
 	public int categoryId;
 
 	/**
-	 * 区切り文字
+	 * するしない区分
 	 */
 	@Basic(optional = false)
-	@Column(name = "DELIMITER")
-	public int delimiter;
+	@Column(name = "CND_OUT_NAME")
+	public int conditionOutputName;
 
 	/**
 	 * するしない区分
@@ -50,25 +57,11 @@ public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	public int itemOutputName;
 
 	/**
-	 * するしない区分
+	 * 区切り文字
 	 */
 	@Basic(optional = false)
-	@Column(name = "AUTO_EXECUTION")
-	public int autoExecution;
-
-	/**
-	 * 外部出力条件名称
-	 */
-	@Basic(optional = false)
-	@Column(name = "CONDITION_SET_NAME")
-	public String conditionSetName;
-
-	/**
-	 * するしない区分
-	 */
-	@Basic(optional = false)
-	@Column(name = "CONDITION_OUTPUT_NAME")
-	public int conditionOutputName;
+	@Column(name = "DELIMITER")
+	public int delimiter;
 
 	/**
 	 * 文字列形式
@@ -76,6 +69,13 @@ public class OiomtStdOutputCondSet extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "STRING_FORMAT")
 	public int stringFormat;
+
+	/**
+	 * するしない区分
+	 */
+	@Basic(optional = false)
+	@Column(name = "AUTO_EXECUTION")
+	public int autoExecution;
 
 	@Override
 	protected Object getKey() {

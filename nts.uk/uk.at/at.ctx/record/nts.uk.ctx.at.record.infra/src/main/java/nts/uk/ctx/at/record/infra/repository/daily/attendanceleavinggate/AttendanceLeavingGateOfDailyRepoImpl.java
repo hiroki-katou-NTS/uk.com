@@ -20,10 +20,10 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.query.TypedQueryWrapper;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGate;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.AttendanceLeavingGateOfDaily;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.repo.AttendanceLeavingGateOfDailyRepo;
 import nts.uk.ctx.at.record.infra.entity.daily.attendanceleavinggate.KrcdtDayLeaveGate;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.AttendanceLeavingGate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.jdbc.JDBCUtil;
 
@@ -111,11 +111,11 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		if(entities.isEmpty()) {
 			add(domain);
 		} else {
-			List<Integer> nos = domain.getAttendanceLeavingGates().stream().map(c -> c.getWorkNo().v()).collect(Collectors.toList());
+			List<Integer> nos = domain.getTimeZone().getAttendanceLeavingGates().stream().map(c -> c.getWorkNo().v()).collect(Collectors.toList());
 			List<KrcdtDayLeaveGate> toDelete = entities.stream()
 					.filter(c -> !nos.contains(c.id.alNo)).collect(Collectors.toList());
 			this.commandProxy().removeAll(toDelete);
-			domain.getAttendanceLeavingGates().stream().forEach(c -> {
+			domain.getTimeZone().getAttendanceLeavingGates().stream().forEach(c -> {
 				Optional<KrcdtDayLeaveGate> entityOp = entities.stream().filter(e -> e.id.alNo == c.getWorkNo().v())
 																		.findFirst();
 				if(entityOp.isPresent()) {
@@ -135,19 +135,19 @@ public class AttendanceLeavingGateOfDailyRepoImpl extends JpaRepository implemen
 		try {
 			Connection con = this.getEntityManager().unwrap(Connection.class);
 			Statement statementI = con.createStatement();
-			for(AttendanceLeavingGate leavingGate : domain.getAttendanceLeavingGates()){
+			for(AttendanceLeavingGate leavingGate : domain.getTimeZone().getAttendanceLeavingGates()){
 				
 				// AttendanceLeavingGate - attendance
 				String attPlaceCode = leavingGate.getAttendance().isPresent() && leavingGate.getAttendance().get().getLocationCode().isPresent()
 						? "'" + leavingGate.getAttendance().get().getLocationCode().get().v() + "'" : null;
-				Integer attStampSource = leavingGate.getAttendance().isPresent() ? leavingGate.getAttendance().get().getStampSourceInfo().value : null;
-				Integer attTime = leavingGate.getAttendance().isPresent() ? leavingGate.getAttendance().get().getTimeWithDay().valueAsMinutes() : null;
+				Integer attStampSource = leavingGate.getAttendance().isPresent() ? leavingGate.getAttendance().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
+				Integer attTime = leavingGate.getAttendance().isPresent() ? leavingGate.getAttendance().get().getTimeDay().getTimeWithDay().isPresent() ? leavingGate.getAttendance().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() : null : null;
 				
 				// AttendanceLeavingGate - leave
 				String leavePlaceCode = leavingGate.getLeaving().isPresent() && leavingGate.getLeaving().get().getLocationCode().isPresent()
 						? "'" + leavingGate.getLeaving().get().getLocationCode().get().v() + "'" : null;
-				Integer leaveStampSource = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getStampSourceInfo().value : null;
-				Integer leaveTime = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getTimeWithDay().valueAsMinutes() : null;
+				Integer leaveStampSource = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getTimeDay().getReasonTimeChange().getTimeChangeMeans().value : null;
+				Integer leaveTime = leavingGate.getLeaving().isPresent() ? leavingGate.getLeaving().get().getTimeDay().getTimeWithDay().isPresent() ? leavingGate.getLeaving().get().getTimeDay().getTimeWithDay().get().valueAsMinutes() : null : null;
 				String insertTableSQL = "INSERT INTO KRCDT_DAY_LEAVE_GATE ( SID , YMD , AL_NO, ATTENDANCE_PLACE_CODE , ATTENDANCE_STAMP_SOURCE , ATTENDANCE_TIME , LEAVE_PLACE_CODE , LEAVE_STAMP_SOURCE , LEAVE_TIME ) "
 						+ "VALUES( '" + domain.getEmployeeId() + "' , '"
 						+ domain.getYmd() + "' , "
