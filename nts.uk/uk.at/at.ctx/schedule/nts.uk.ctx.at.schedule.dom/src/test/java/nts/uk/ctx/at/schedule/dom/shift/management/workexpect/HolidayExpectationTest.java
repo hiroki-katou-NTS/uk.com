@@ -36,7 +36,7 @@ public class HolidayExpectationTest {
 	@Test
 	public void testIsMatchingExpectation_getWorkStyle_empty() {
 		
-		WorkInformation workInformation = new WorkInformation(new WorkTimeCode("001"), new WorkTypeCode("001"));
+		WorkInformation workInformation = new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001"));
 		
 		new Expectations(workInformation) {
             {
@@ -53,7 +53,7 @@ public class HolidayExpectationTest {
 	@Test
 	public void testIsMatchingExpectation_getWorkStyle_dif_OneDayRest() {
 		
-		WorkInformation workInformation = new WorkInformation(new WorkTimeCode("001"), new WorkTypeCode("001"));
+		WorkInformation workInformation = new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001"));
 		
 		new Expectations(workInformation) {
             {
@@ -70,7 +70,7 @@ public class HolidayExpectationTest {
 	@Test
 	public void testIsMatchingExpectation_getWorkStyle_OneDayRest() {
 		
-		WorkInformation workInformation = new WorkInformation(new WorkTimeCode("001"), new WorkTypeCode("001"));
+		WorkInformation workInformation = new WorkInformation(new WorkTypeCode("001"), new WorkTimeCode("001"));
 		
 		new Expectations(workInformation) {
             {

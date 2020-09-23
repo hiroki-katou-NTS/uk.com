@@ -47,7 +47,7 @@ public class ShiftExpectationTest {
 		
 		WorkTypeCode workTypeCode = new WorkTypeCode("001");
 		WorkTimeCode workTimeCode = new WorkTimeCode("001");
-		WorkInformation workInformation = new WorkInformation(workTimeCode, workTypeCode);
+		WorkInformation workInformation = new WorkInformation(workTypeCode, workTimeCode);
 		
 		new Expectations() {
             {
@@ -65,7 +65,7 @@ public class ShiftExpectationTest {
 		
 		WorkTypeCode workTypeCode = new WorkTypeCode("001");
 		WorkTimeCode workTimeCode = new WorkTimeCode("001");
-		WorkInformation workInformation = new WorkInformation(workTimeCode, workTypeCode);
+		WorkInformation workInformation = new WorkInformation(workTypeCode, workTimeCode);
 		
 		shiftExp = new ShiftExpectation( Arrays.asList(
 				new ShiftMasterCode("S01"),
@@ -90,7 +90,7 @@ public class ShiftExpectationTest {
 		
 		WorkTypeCode workTypeCode = new WorkTypeCode("001");
 		WorkTimeCode workTimeCode = new WorkTimeCode("001");
-		WorkInformation workInformation = new WorkInformation(workTimeCode, workTypeCode);
+		WorkInformation workInformation = new WorkInformation(workTypeCode, workTimeCode);
 		
 		shiftExp = new ShiftExpectation( Arrays.asList(
 				new ShiftMasterCode("S01"),

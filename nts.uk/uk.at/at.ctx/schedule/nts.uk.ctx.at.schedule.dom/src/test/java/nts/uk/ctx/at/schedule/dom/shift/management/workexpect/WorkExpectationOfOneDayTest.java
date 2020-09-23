@@ -144,8 +144,9 @@ public class WorkExpectationOfOneDayTest {
 						new ArrayList<>());
 		
 		WorkInformation workInformation = new WorkInformation( 
-				new WorkTimeCode("001"), 
-				new WorkTypeCode("001"));
+				
+				new WorkTypeCode("001"), new WorkTimeCode("001") 
+				);
 		
 		new Expectations(expectation.getWorkExpectation()) {
             {
@@ -171,8 +172,9 @@ public class WorkExpectationOfOneDayTest {
 						new ArrayList<>());
 		
 		WorkInformation workInformation = new WorkInformation( 
-				new WorkTimeCode("001"), 
-				new WorkTypeCode("001"));
+				new WorkTypeCode("001"),
+				new WorkTimeCode("001") 
+				);
 		
 		new Expectations(expectation.getWorkExpectation()) {
             {
