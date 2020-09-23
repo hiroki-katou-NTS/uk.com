@@ -18,12 +18,12 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtSubOfHDManaData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless
 public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements SubstitutionOfHDManaDataRepository {
@@ -39,7 +39,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.payoutId =:payoutID))";
 
 	private static final String QUERY_BY_SID_REMAIN_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND (s.remainDays <> 0 OR s.subOfHDID in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.sID = :sid AND p.stateAtr = 0))";
+			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.sID = :sid AND p.stateAtr = 0)) ORDER BY s.unknownDate, s.dayOff";
 
 	private static final String QUERY_BY_SID_PERIOD_AND_IN_PAYOUT = "SELECT s FROM KrcmtSubOfHDManaData s WHERE s.sID = :sid AND ((s.dayOff >= :startDate AND s.dayOff <= :endDate) OR s.subOfHDID in "
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.subOfHDID FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtPayoutManaData p on p.payoutId = ps.krcmtPayoutSubOfHDManaPK.payoutId where p.sID = :sid AND p.dayOff >= :startDate AND p.dayOff <= :endDate))";
@@ -63,7 +63,7 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 			+ " AND (s.dayOff < :dayOff OR s.dayOff is null)"
 			+ " AND s.remainDays > :remainDays";
 	
-	private static final String QUERY_ALL = "SELECT u FROM KrcmtSubOfHDManaData u ";
+	private static final String QUERY_BY_SID = "SELECT c FROM KrcmtSubOfHDManaData c WHERE  c.sID = :sid ORDER BY c.unknownDate, c.dayOff";
 	
 	@Override
 	public List<SubstitutionOfHDManagementData> getBySidDate(String cid, String sid, GeneralDate ymd) {
@@ -342,8 +342,10 @@ public class JpaSubstitutionOfHDManaDataRepo extends JpaRepository implements Su
 
 
 	@Override
-	public List<SubstitutionOfHDManagementData> getAllData() {
-		List<KrcmtSubOfHDManaData> listDataResult = this.queryProxy().query(QUERY_ALL, KrcmtSubOfHDManaData.class).getList();
+	public List<SubstitutionOfHDManagementData> getAllBySid(String sid) {
+		List<KrcmtSubOfHDManaData> listDataResult = this.queryProxy().query(QUERY_BY_SID, KrcmtSubOfHDManaData.class)
+				.setParameter("sid", sid)
+				.getList();
 		return listDataResult.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 

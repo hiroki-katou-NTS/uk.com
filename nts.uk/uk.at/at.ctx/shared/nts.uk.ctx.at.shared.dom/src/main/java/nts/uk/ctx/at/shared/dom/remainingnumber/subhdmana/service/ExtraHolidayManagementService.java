@@ -9,9 +9,13 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
+import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.EmploymentManageDistinctDto;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SEmpHistoryImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SWkpHistImport;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SysEmploymentHisAdapter;
@@ -22,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepo
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
+import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveEmSetRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensatoryLeaveComSetting;
@@ -60,8 +65,10 @@ public class ExtraHolidayManagementService {
 	@Inject
 	private EmpEmployeeAdapter empEmployeeAdapter;
 	
-	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId,
-			GeneralDate startDate, GeneralDate endDate) {
+	@Inject
+	private ShareEmploymentAdapter shareEmploymentAdapter;
+	
+	public ExtraHolidayManagementOutput dataExtractionProcessing(int searchMode, String employeeId) {
 		String cid = AppContexts.user().companyId();
 		List<LeaveManagementData> listLeaveData = null;
 		List<CompensatoryDayOffManaData> listCompensatoryData = null;
@@ -120,5 +127,24 @@ public class ExtraHolidayManagementService {
 		return new ExtraHolidayManagementOutput(listLeaveData, listCompensatoryData, listLeaveComDayOffManagement,
 				empHistoryImport, closureEmploy, compenLeaveEmpSetting, compensatoryLeaveComSetting,
 				sWkpHistImport.orElse(null), personEmpBasicInfoImport);
+	}
+	
+	// Step 代休管理データを管理するかチェック
+	public void CheckManageSubstituteHolidayManagementData(String empId) {
+		EmploymentManageDistinctDto empManage = new EmploymentManageDistinctDto();
+		empManage.setIsManage(ManageDistinct.NO);
+		List<EmploymentHistShareImport> empHistShrImpList = this.shareEmploymentAdapter.findByEmployeeIdOrderByStartDate(empId);
+		if (empHistShrImpList.isEmpty()) {
+			// Step エラーメッセージ(Msg_1306)を表示する
+			throw new BusinessException("Msg_1306");
+		} else {
+			for(EmploymentHistShareImport empHistShrImp : empHistShrImpList) {
+				
+			}
+		}
+	}
+	
+	public CompensatoryLeaveComSetting getSubstLeaveManagementDataSetting (String empCd) {
+		return null;
 	}
 }

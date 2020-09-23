@@ -24,14 +24,11 @@ public class FurikyuMngDataExtractionWebService extends WebService {
 	private DeletePaymentManagementDataCmdHandler deletePaymentManagementDataHandler;
 	
 	@POST
-	@Path("getFurikyuMngDataExtraction/{empId}/{startDate}/{endDate}/{isPeriod}")
+	@Path("getFurikyuMngDataExtraction/{empId}/{isPeriod}")
 	public FurikyuMngDataExtractionDto getFurikyuMngDataExtraction(@PathParam("empId") String empId,
-			@PathParam("startDate") String startDate, @PathParam("endDate") String endDate, @PathParam("isPeriod") boolean isPeriod) {
-		
-		GeneralDate startDateFormat = null;
-		GeneralDate endDateFormat = null;
-		return finder.getFurikyuMngDataExtraction(empId, startDateFormat, endDateFormat, isPeriod);
-	}	
+			@PathParam("isPeriod") boolean isPeriod) {
+		return finder.getFurikyuMngDataExtraction(empId, isPeriod);
+	}
 	
 	@POST
 	@Path("deletePaymentManagementData")

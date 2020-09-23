@@ -18,13 +18,13 @@ import nts.arc.layer.infra.data.jdbc.NtsResultSet;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutManagementDataRepository;
 import nts.uk.ctx.at.shared.infra.entity.remainingnumber.paymana.KrcmtPayoutManaData;
 import nts.uk.shr.com.context.AppContexts;
-import nts.arc.time.calendar.period.DatePeriod;
 
 
 @Stateless
@@ -40,7 +40,7 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " AND (p.stateAtr = :state OR p.payoutId in (SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps WHERE ps.krcmtPayoutSubOfHDManaPK.subOfHDID =:subOfHDID))";
 
 	private static final String  QUERY_BY_SID_STATE_AND_IN_SUB = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID = :sid AND (p.stateAtr = 0 OR p.payoutId in "
-			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.remainDays <> 0))";
+			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.remainDays <> 0)) ORDER BY p.unknownDate, p.dayOff";
 
 	private static final String  QUERY_BY_SID_PERIOD_AND_IN_SUB = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID = :sid AND ((p.dayOff >= :startDate AND p.dayOff <= :endDate) OR p.payoutId in "
 			+ "(SELECT ps.krcmtPayoutSubOfHDManaPK.payoutId FROM KrcmtPayoutSubOfHDMana ps inner join KrcmtSubOfHDManaData s on s.subOfHDID = ps.krcmtPayoutSubOfHDManaPK.subOfHDID where s.sID =:sid AND s.dayOff >= :startDate AND s.dayOff <= :endDate))";
@@ -74,8 +74,11 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 			+ " AND p.unUsedDays > :unUsedDays"
 			+ " AND p.stateAtr = :stateAtr";
 
-	private static final String GET_ALL_DATA = "SELECT c FROM KrcmtPayoutManaData c";
-	@Override
+	private static final String QUERY_BY_SID = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId ORDER BY p.unknownDate, p.dayOff";
+	
+	private static final String QUERY_BY_UNKNOWN_DATE = "SELECT p FROM KrcmtPayoutManaData p WHERE p.sID =:employeeId AND p.unknownDate IN :unknownDates ORDER BY p.unknownDate ASC";
+	
+ 	@Override
 	public List<PayoutManagementData> getSidWithCodDate(String cid, String sid, int state, GeneralDate ymd) {
 		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BYSID_COND_DATE, KrcmtPayoutManaData.class)
 				.setParameter("cid", cid)
@@ -393,10 +396,20 @@ public class JpaPayoutManagementDataRepo extends JpaRepository implements Payout
 		
 	}
 	@Override
-	public List<PayoutManagementData> getAllData(){
-		List<KrcmtPayoutManaData> list = this.queryProxy().query(GET_ALL_DATA, KrcmtPayoutManaData.class).getList();
+	public List<PayoutManagementData> getAllBySid(String sid){
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_SID, KrcmtPayoutManaData.class)
+				.setParameter("employeeId", sid)
+				.getList();
 		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
 	}
 	
+	@Override
+	public List<PayoutManagementData> getAllByUnknownDate(String sid, List<String> unknownDates) {
+		List<KrcmtPayoutManaData> list = this.queryProxy().query(QUERY_BY_UNKNOWN_DATE, KrcmtPayoutManaData.class)
+				.setParameter("employeeId", sid)
+				.setParameter("unknownDates", unknownDates)
+				.getList();
+		return list.stream().map(i -> toDomain(i)).collect(Collectors.toList());
+	}
 
 }

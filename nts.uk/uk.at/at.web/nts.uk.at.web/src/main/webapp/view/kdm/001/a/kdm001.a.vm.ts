@@ -220,26 +220,26 @@ module nts.uk.at.view.kdm001.a.viewmodel {
         }
 
         // A4_2_9 削除
-        public removeData(value) {
+        public removeData(value: CompositePayOutSubMngData) {
             block.invisible();
             dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                console.log('id: '+value.id);
                 let self = this;
                 let data = {
-                    payoutId: value.id,
-                    employeeId: self.selectedEmployeeObject.employeeId,
-                    dayoffDate: moment.utc(value.dayoffDatePyout, 'YYYY/MM/DD').toISOString()
+                    payoutId: value.dataType.toString() === '0' ? value.id : null,
+                    subOfHDID: value.dataType.toString() === '1' ? value.id : null
+                    // employeeId: self.selectedEmployeeObject.employeeId,
+                    // dayoffDate: moment.utc(value.dayoffDatePyout, 'YYYY/MM/DD').toISOString()
                 };
 
                 service.removePayout(data).done(() => {
                     dialog.info({ messageId: "Msg_16" }).then(() => {
                         nts.uk.ui.windows.close();
-                        self.updateDataList(false);
                     });
                 }).fail(function (res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId });
                 }).always(function () {
                     block.clear();
+                    self.updateDataList(false);
                 });
             }).then(() => {
                 block.clear();
@@ -287,15 +287,15 @@ module nts.uk.at.view.kdm001.a.viewmodel {
             let self = this;
             let empId = self.selectedItem();
             let isPeriod = self.selectedPeriodItem() == 0 ? false : true;
-            let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
-            let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
+            // let startDate = isPeriod ? moment.utc(self.dateValue().startDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
+            // let endDate = isPeriod ? moment.utc(self.dateValue().endDate, 'YYYY/MM/DD').format('YYYY-MM-DD') : null;
 
             if (isPeriod) {
                 $("#daterangepickerA .ntsDatepicker").trigger("validate");
             }
 
             if (!nts.uk.ui.errors.hasError()) {
-                service.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod).done(function (res: any) {
+                service.getFurikyuMngDataExtraction(empId, isPeriod).done(function (res: any) {
                     console.log(res);
                     if (res.haveEmploymentCode && (res.closureID != null) && (res.closureID != "")) {
                         let arrayResponse = res.compositePayOutSubMngData;
@@ -355,12 +355,13 @@ module nts.uk.at.view.kdm001.a.viewmodel {
                         };
                     }
                 }).fail(function (res: any) {
+                    dialog.alertError({ messageId: res.messageId });
                     console.log(res);
                 });
 
                 $('#compositePayOutSubMngDataGrid').focus();
             } else {
-                service.getFurikyuMngDataExtraction(empId, startDate, endDate, false).done(function (res: any) {
+                service.getFurikyuMngDataExtraction(empId, false).done(function (res: any) {
                     if (!res.haveEmploymentCode || (res.closureID == null) || (res.closureID == "")) {
                         // update data to view
                         self.dispTotalRemain(0);

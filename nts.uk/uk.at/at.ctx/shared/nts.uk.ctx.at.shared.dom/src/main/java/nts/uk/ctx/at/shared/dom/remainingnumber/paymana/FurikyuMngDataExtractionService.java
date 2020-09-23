@@ -15,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.adapter.employee.EmpEmployeeAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employee.PersonEmpBasicInfoImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.EmploymentHistShareImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.ShareEmploymentAdapter;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacation;
 import nts.uk.ctx.at.shared.dom.vacation.setting.subst.ComSubstVacationRepository;
@@ -53,9 +54,9 @@ public class FurikyuMngDataExtractionService {
 	private ClosureEmploymentRepository closureEmploymentRepository;
 	
 	@Inject
-	private ShareEmploymentAdapter shareEmploymentAdapter;
+	private ShareEmploymentAdapter shareEmploymentAdapter;		
 	
-	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, GeneralDate startDate, GeneralDate endDate, boolean isPeriod) {
+	public FurikyuMngDataExtractionData getFurikyuMngDataExtraction(String sid, boolean isPeriod) {
 		List<PayoutManagementData> payoutManagementData;
 		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
@@ -67,10 +68,10 @@ public class FurikyuMngDataExtractionService {
 		String empCD = null;
 		boolean haveEmploymentCode = false;
 		
-		// select 全ての状況
+		// select 全ての状況empId
 		if(isPeriod) {
-			payoutManagementData = payoutManagementDataRepository.getAllData();
-			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getAllData();
+			payoutManagementData = payoutManagementDataRepository.getAllBySid(sid);
+			substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getAllBySid(sid);
 		// select 現在の残数状況
 		} else {
 			payoutManagementData = payoutManagementDataRepository.getBySidStateAndInSub(sid);
@@ -120,15 +121,75 @@ public class FurikyuMngDataExtractionService {
 		return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, numberOfDayLeft, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
 	}
 	
-	public void displayRemainingNumberDataInformation(String compId, String empId, boolean isPeriod, String messageDisplay) {
+	public FurikyuMngDataExtractionData getFurikyuMngDataExtractionUpdate(String empId, boolean isPeriod) {		
+		String cid = AppContexts.user().companyId();
 		List<PayoutManagementData> payoutManagementData;
-		EmploymentManageDistinctDto emplManage = getEmploymentManageDistinct(compId, empId);
+		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToSub = new ArrayList<PayoutSubofHDManagement>();		
+		double useDays;
+		ComSubstVacation comSubstVacation;
+		Integer closureId;
+		int expirationDate;
+		boolean haveEmploymentCode = false;
+		// Step 振休管理データを管理するかチェック
+		EmploymentManageDistinctDto emplManage = getEmploymentManageDistinct(cid, empId);
+		if (emplManage.getEmploymentCode() != null) {
+			haveEmploymentCode = true;
+		}
+		// Step 取得した管理区分をチェック
 		if (emplManage.getIsManage() == ManageDistinct.NO) {
 			throw new BusinessException("Msg_1731");
 		} else {
+			// Step Input．設定期間区分をチェック
+			// select 全ての状況
 			if (isPeriod) {
-				
+				// Step ドメイン「振出管理データ」を取得する
+				payoutManagementData = payoutManagementDataRepository.getAllBySid(empId);
+				// Step ドメイン「振休管理データ」を取得する
+				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getAllBySid(empId);
+				// select 現在の残数状況
+			} else {
+				// Step ドメイン「振出管理データ」を取得する
+				payoutManagementData = payoutManagementDataRepository.getBySidStateAndInSub(empId);
+				// Step ドメイン「振休管理データ」を取得する
+				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(empId);
 			}
+			// Step 取得したデータをチェック
+			if (!payoutManagementData.isEmpty() && !substitutionOfHDManagementData.isEmpty()) {
+				// Step ドメイン「振出振休紐付け管理」を取得する
+				List<String> listPayoutID = payoutManagementData.stream().map(x -> {
+					return x.getPayoutId();
+				}).collect(Collectors.toList());
+				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListPayoutID(listPayoutID);
+
+				List<String> listSubID = substitutionOfHDManagementData.stream().map(x -> {
+					return x.getSubOfHDID();
+				}).collect(Collectors.toList());
+				payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListSubID(listSubID);
+			}
+			// Step 振休残数データ情報を作成
+			// TODO getRemainNumDtInfor
+			// Step 月初の振休残数を取得
+			useDays = getNumberOfRemainingHolidays(empId);
+			// Step 振休管理設定を取得する
+			comSubstVacation = getClassifiedManagementSetup(cid, emplManage.getEmploymentCode());
+			// Step 締めIDを取得する
+			closureId = getClosureId(empId, emplManage.getEmploymentCode());
+			
+			expirationDate = getExpirationDate(empId, emplManage.getEmploymentCode());
+			SWkpHistImport sWkpHistImport = null;
+			if(syWorkplaceAdapter.findBySid(empId, GeneralDate.today()).isPresent()) {
+				sWkpHistImport = syWorkplaceAdapter.findBySid(empId, GeneralDate.today()).get();
+			}
+			List<String> employeeIds = new ArrayList<>();
+			employeeIds.add(empId);
+			List<PersonEmpBasicInfoImport> employeeBasicInfo = empEmployeeAdapter.getPerEmpBasicInfo(employeeIds);
+			PersonEmpBasicInfoImport personEmpBasicInfoImport = null;
+			if (!employeeBasicInfo.isEmpty()){
+				personEmpBasicInfoImport = employeeBasicInfo.get(0);
+			}	
+			return new FurikyuMngDataExtractionData(payoutManagementData, substitutionOfHDManagementData, payoutSubofHDManagementLinkToPayout, payoutSubofHDManagementLinkToSub, expirationDate, useDays, closureId, haveEmploymentCode, sWkpHistImport, personEmpBasicInfoImport);
 		}
 	}
 	
@@ -178,7 +239,28 @@ public class FurikyuMngDataExtractionService {
 			// Step 取得したドメインモデル「振休管理設定」を返す
 			return optComSubData.get();
 		}
-	}
+	}	
+	
+	// Step 月初の振休残数を取得
+	public double getNumberOfRemainingHolidays(String empId) {
+		// Step ドメインモデル「振出管理データ」を取得
+		List<PayoutManagementData> payoutManagementData = payoutManagementDataRepository.getByStateAtr(empId, DigestionAtr.UNUSED);
+		// Step 取得した「振出管理データ」の未使用日数を合計
+		double totalUnUseDays = 0;
+		for (PayoutManagementData py : payoutManagementData) {
+			totalUnUseDays += py.getUnUsedDays().v();
+		}
+		// Step ドメインモデル「振休管理データ」を取得
+		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData = substitutionOfHDManaDataRepository
+				.getByRemainDays(empId, 0);
+		// Step 取得した「振休管理データ」の未相殺日数を合計
+		double remainDays = 0;
+		for (SubstitutionOfHDManagementData absComfirmDay : substitutionOfHDManagementData) {
+			remainDays += absComfirmDay.getRemainDays().v();
+		}
+		// Step 振休発生数合計－振休使用数合計を返す
+		return totalUnUseDays - remainDays;
+	}	
 	
 	public Double getNumberOfDayLeft(String sID) {
 		String cid = AppContexts.user().companyId();
@@ -224,6 +306,7 @@ public class FurikyuMngDataExtractionService {
 		return expirationDate;
 	}
 	
+	// Step 締めIDを取得する
 	public Integer getClosureId(String sid, String empCD) {
 		String cid = AppContexts.user().companyId();
 		Integer closureId = null;

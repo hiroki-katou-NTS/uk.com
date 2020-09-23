@@ -40,6 +40,9 @@ public class PayoutManagementDataService {
 	@Inject
 	private AddSubHdManagementService addSubHdManagementService;
 	
+	@Inject
+	private PayoutManagementDataRepository confirmRecMngRepo;
+	
 	private static final Double ZERO = 0d;
 	
 	private List<String> checkHolidate(Boolean pickUp, Boolean pause,Boolean checkedSplit, Double requiredDays,Double subDays, Double occurredDays){
@@ -52,7 +55,7 @@ public class PayoutManagementDataService {
 				} else if (!ItemDays.HALF_DAY.value.equals(requiredDays)){
 					errors.add("Msg_1256_RequiredDays");
 					return errors;
-				} 
+				}
 			}
 		}
 		if (pickUp) {
@@ -87,7 +90,7 @@ public class PayoutManagementDataService {
 	}
 	
 	public List<String> addPayoutManagement(Boolean pickUp, Boolean pause,Boolean checkedSplit, PayoutManagementData payMana,SubstitutionOfHDManagementData subMana,
-				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId) {
+				SubstitutionOfHDManagementData splitMana,  Double requiredDays,  int closureId, List<String> linkingDates) {
 		List<String> errors = new ArrayList<String>();
 		YearMonth processYearMonth = GeneralDate.today().yearMonth();
 		Optional<GeneralDate> closureDate = this.getClosureDate(closureId, processYearMonth);
@@ -127,6 +130,8 @@ public class PayoutManagementDataService {
 			if (pause) {
 				substitutionOfHDManaDataRepository.create(subMana);
 			}
+			
+			// DungDV
 			if (checkedSplit) {
 				substitutionOfHDManaDataRepository.create(splitMana);
 			}
@@ -315,5 +320,47 @@ public class PayoutManagementDataService {
 			substitutionOfHDManaDataRepository.update(subofHD.get());
 		}
 
+	}
+
+	//	UKDesign.UniversalK.就業.KDM_残数管理 (Quản lý số dư).KDM001_残数管理データの登録 (Đăng ký dữ liệu quản lý số dư).アルゴリズム（残数管理データ登録共通） Thuật toán (common đăng ký data quản lý số còn lại).振出振休紐付け管理を変更 (thay đổi quản lý liên kết đi làm/nghỉ thay thế).振出振休紐付け管理を変更
+	public void changeTheTieUpManagement(String employeeId, List<SubstitutionOfHDManagementData> subList, List<String> linkingDateList) { // DungDV
+		// Input．List＜紐付け日付＞をチェック Check Input．List＜紐付け日付＞
+		if (!linkingDateList.isEmpty()) { // ないの場合
+			return;
+		}
+		
+		// ドメインモデル「振出管理データ」を取得 Nhận domain model 「振出管理データ」 
+		List<PayoutManagementData> lstRecconfirm  = confirmRecMngRepo.getAllByUnknownDate(employeeId, linkingDateList);
+		
+		// Input．List＜振休管理データ＞をループする
+		for (SubstitutionOfHDManagementData sub : subList) {
+			// 取得したList＜振出管理データ＞をループする
+			lstRecconfirm.forEach(x -> {
+				// 未使用日数を計算 Tính toán số ngày chưa sử dụng
+				double unUseDay = x.getUnUsedDays().v() - sub.getRequiredDays().v();
+				if (unUseDay > 0) {
+					x.setRemainNumber(unUseDay);
+				} else {
+					unUseDay = 0;
+					x.setRemainNumber(unUseDay);
+				}
+				x.setStateAtr(DigestionAtr.USED.value);
+				// ループ中ドメインモデル「振出管理データ」を更新する Update domain model 「振出管理データ」 trong vòng lặp
+				confirmRecMngRepo.update(x);
+				
+				// ドメインモデル「振出振休紐付け管理」を追加 Thêm domain model 「振出振休紐付け管理」
+				
+			});
+		}
+		
+	}
+	
+	public boolean addPayoutSub(PayoutSubofHDManagement domain) {
+		try {
+			payoutSubofHDManaRepository.add(domain);
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 }

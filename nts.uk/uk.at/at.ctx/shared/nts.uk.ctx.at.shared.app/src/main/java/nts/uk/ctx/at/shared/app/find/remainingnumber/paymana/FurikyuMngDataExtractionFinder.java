@@ -19,12 +19,12 @@ public class FurikyuMngDataExtractionFinder {
 
 	@Inject
 	private FurikyuMngDataExtractionService furikyuMngDataExtractionService;
+	
 
-	public FurikyuMngDataExtractionDto getFurikyuMngDataExtraction(String empId, GeneralDate startDate,
-			GeneralDate endDate, boolean isPeriod) {
+	public FurikyuMngDataExtractionDto getFurikyuMngDataExtraction(String empId, boolean isPeriod) {
 
 		FurikyuMngDataExtractionData furikyuMngDataExtractionData = furikyuMngDataExtractionService
-				.getFurikyuMngDataExtraction(empId, startDate, endDate, isPeriod);
+				.getFurikyuMngDataExtractionUpdate(empId, isPeriod);
 		List<PayoutManagementData> payoutManagementData = furikyuMngDataExtractionData.getPayoutManagementData();
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData = furikyuMngDataExtractionData
 				.getSubstitutionOfHDManagementData();
