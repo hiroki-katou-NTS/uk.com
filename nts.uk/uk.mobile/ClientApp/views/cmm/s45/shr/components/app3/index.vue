@@ -31,7 +31,7 @@
             <td class="px-1" v-date="data.date">{{data.date}}</td>
             <td class="px-1" v-if="data.wkTimeCd != null ">{{data.wkTypeCd}}</td>
             <td class="px-1" v-else>{{''}}</td>
-            <td class="px-1" v-if="data.wkTypeCd != null">{{data.wkTimeCd}}</td>
+            <td class="px-1" v-if="data.wkTypeCd != null">{{data.wkTimeCd}}</td> 
             <td class="px-1" v-else>{{''}}</td>
             <td class="px-1" v-if="data.startWorkTime">{{data.startWorkTime | timewd}}</td>
             <td class="px-1" v-else>{{''}}</td>

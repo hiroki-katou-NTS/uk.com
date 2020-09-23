@@ -16,7 +16,7 @@ import { ScreenMode } from 'views/kaf/s00/b';
     constraints: []
 })
 export class KafS08CComponent extends Vue {
-    
+
     public kafS00DParams: any = null;
     public params?: any;
     
