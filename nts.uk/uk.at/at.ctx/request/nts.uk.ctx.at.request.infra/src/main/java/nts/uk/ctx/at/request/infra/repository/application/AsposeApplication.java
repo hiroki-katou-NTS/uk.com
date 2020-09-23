@@ -102,7 +102,14 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 
-			designer.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(printContentOfApp.getApplicationName() + ".pdf")));
+			if (appType == ApplicationType.STAMP_APPLICATION) {
+				designer.saveAsPdf(this.createNewFile(generatorContext,
+						this.getReportName(this.getFileNameStamp(printContentOfApp.getOpAppStampOutput().get()
+								.getAppDispInfoStartupOutput().getAppDetailScreenInfo().get().getApplication()
+								.getOpStampRequestMode().get()))));
+			} else {
+				designer.saveAsPdf(this.createNewFile(generatorContext, this.getReportName(this.getFileName(appType))));
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -115,6 +122,15 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 			return "application/KAF002_打刻申請_template.xlsx";
 		} else {
 			return "application/KAF002_レコーダーイメージ申請_template.xlsx";
+		}
+	}
+
+	// AnhNM
+	private String getFileNameStamp(StampRequestMode stampRequestMode) {
+		if (stampRequestMode.value == 0) {
+			return "打刻申請.pdf";
+		} else {
+			return "レコーダーイメージ申請.pdf";
 		}
 	}
 
@@ -206,11 +222,40 @@ public class AsposeApplication extends AsposeCellsReportGenerator implements App
 		}
 	}
 
+	private String getFileName(ApplicationType appType) {
+		switch (appType) {
+		case OVER_TIME_APPLICATION:
+			return "";
+		case ABSENCE_APPLICATION:
+			return "";
+		case WORK_CHANGE_APPLICATION:
+			return "KAF007_template.pdf";
+		case BUSINESS_TRIP_APPLICATION:
+			return "出張申請.pdf";
+		case GO_RETURN_DIRECTLY_APPLICATION:
+			return "";
+		case HOLIDAY_WORK_APPLICATION:
+			return "";
+		case STAMP_APPLICATION:
+			return "";
+		case ANNUAL_HOLIDAY_APPLICATION:
+			return "";
+		case EARLY_LEAVE_CANCEL_APPLICATION:
+			return "遅刻早退取消申請.pdf";
+		case COMPLEMENT_LEAVE_APPLICATION:
+			return "";
+		case OPTIONAL_ITEM_APPLICATION:
+			return "";
+		default:
+			return "testAppName";
+		}
+	}
+
 	private void printPageHeader(Worksheet worksheet, PrintContentOfApp printContentOfApp) {
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setHeader(0, "&9&\"ＭＳ ゴシック\"" + printContentOfApp.getCompanyName());
-		pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + printContentOfApp.getApplicationName());
+		pageSetup.setHeader(1, "&16&\"ＭＳ ゴシック\"" + "applicationName");
 		pageSetup.setHeader(2, "&9&\"ＭＳ ゴシック\"" + GeneralDateTime.now().toString());
 	}
 

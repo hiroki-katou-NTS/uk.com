@@ -184,12 +184,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                         );
                         eachContent.wkTypeCd.subscribe(code => {
                             vm.$errors("clear").then(() => {
-                                vm.changeWorkTypeCode(tripOutput, content.date, code, index);
+                                vm.changeWorkTypeCode(tripOutput, content, code, index);
                             });
                         });
                         eachContent.wkTimeCd.subscribe(code => {
                             vm.$errors("clear").then(() => {
-                                vm.changeWorkTimeCode(tripOutput, content.date, content.opAchievementDetail.workTypeCD, code, index);
+                                vm.changeWorkTimeCode(tripOutput, content, code, index);
                             });
                         });
                         eachContent.start.subscribe(startValue => {
@@ -273,11 +273,13 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
         }
 
-        changeWorkTypeCode(data: BusinessTripOutput, date: string, wkCode: string, index: number) {
+        // 勤務種類コードを入力する
+        changeWorkTypeCode(data: BusinessTripOutput, currentContent: any, wkCode: string, index: number) {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(data);
+
             let command = {
-                date: date,
+                date: currentContent.date,
                 businessTripInfoOutputDto: businessTripInfoOutputDto,
                 typeCode: wkCode,
                 timeCode: null
@@ -294,7 +296,7 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
             }).done(res => {
                 if (res) {
                     let workTypeAfterChange = res.infoAfterChange;
-                    let InfoChanged = _.findIndex(workTypeAfterChange, {date: date});
+                    let InfoChanged = _.findIndex(workTypeAfterChange, {date: currentContent.date});
                     let workCodeChanged = workTypeAfterChange[InfoChanged].workTypeDto.workTypeCode;
                     let workNameChanged = workTypeAfterChange[InfoChanged].workTypeDto.name;
 
@@ -310,28 +312,29 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                 vm.dataFetch.valueHasMutated();
 
-                let param;
+                vm.handleError(err);
 
-                if (err.message && err.messageId) {
-                    param = {messageId: err.messageId};
-                } else {
-                    if (err.message) {
-                        param = {message: err.message};
-                    } else {
-                        param = {messageId: err.messageId};
-                    }
-                }
-
-                vm.$dialog.error(param);
             }).always(() => vm.$blockui("hide"));
         }
 
-        changeWorkTimeCode(data: BusinessTripOutput, date: string, wkCode: string, timeCode: string, index: number) {
+        // 就業時間帯コードを入力する
+        changeWorkTimeCode(data: BusinessTripOutput, currentContent: any, timeCode: string, index: number) {
             const vm = this;
+
+            let wkCode = currentContent.opAchievementDetail.workTypeCD;
+            let startWorkTime = currentContent.opAchievementDetail.opWorkTime;
+            let endWorkTime = currentContent.opAchievementDetail.opLeaveTime;
+            let date = currentContent.date;
+
             let businessTripInfoOutputDto = ko.toJS(data);
             let currentRow = vm.dataFetch().businessTripOutput.businessTripActualContent[index].opAchievementDetail;
             let command = {
-                date, businessTripInfoOutputDto, wkCode, timeCode
+                date,
+                businessTripInfoOutputDto,
+                wkCode,
+                timeCode,
+                startWorkTime,
+                endWorkTime
             };
             vm.$blockui("show");
             vm.$validate([
@@ -359,22 +362,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
                 currentRow.opLeaveTime = null;
                 vm.dataFetch.valueHasMutated();
 
-                let param;
+                vm.handleError(err);
 
-                if (err.message && err.messageId) {
-                    param = {messageId: err.messageId};
-                } else {
-                    if (err.message) {
-                        param = {message: err.message};
-                    } else {
-                        param = {messageId: err.messageId};
-                    }
-                }
-
-                vm.$dialog.error(param);
             }).always(() => vm.$blockui("hide"));
         }
 
+        // 勤務種類コードを入力する
         changeTypeCodeScreenB(data: BusinessTripOutput, content: any, codeChanged: string, index: number) {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(data);
@@ -413,29 +406,25 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                 vm.dataFetch.valueHasMutated();
 
-                if (err.message && err.messageId) {
-                    param = {messageId: err.messageId};
-                } else {
-                    if (err.message) {
-                        param = {message: err.message};
-                    } else {
-                        param = {messageId: err.messageId};
-                    }
-                }
+                vm.handleError(err);
 
-                vm.$dialog.error(param);
             }).always(() => vm.$blockui("hide"));
         }
 
+        // 就業時間帯コードを入力する
         changeWorkTimeCodeScreenB(output: BusinessTripOutput, data: any, codeChanged: string, index: number) {
             const vm = this;
             let businessTripInfoOutputDto = ko.toJS(output);
             let contentChanged = vm.dataFetch().businessTripContent.tripInfos[index];
+            let startWorkTime = data.startWorkTime;
+            let endWorkTime = data.endWorkTime;
             let command = {
                 date: data.date,
                 businessTripInfoOutputDto: businessTripInfoOutputDto,
                 wkCode: data.wkTypeCd,
-                timeCode: codeChanged
+                timeCode: codeChanged,
+                startWorkTime,
+                endWorkTime
             };
 
             vm.$blockui("show");
@@ -468,21 +457,12 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
                 vm.dataFetch.valueHasMutated();
 
-                if (err.message && err.messageId) {
-                    param = {messageId: err.messageId};
-                } else {
-                    if (err.message) {
-                        param = {message: err.message};
-                    } else {
-                        param = {messageId: err.messageId};
-                    }
-                }
-
-                vm.$dialog.error(param);
+                vm.handleError(err);
 
             }).always(() => vm.$blockui("hide"));
         }
 
+        // 勤務就業の選択を実行する
         openDialogKdl003(data: TripContentDisp) {
             const vm = this;
             let dispFlag: boolean = true;
@@ -568,6 +548,34 @@ module nts.uk.at.view.kaf008_ref.shr.viewmodel {
 
             });
 
+        }
+
+        handleError(err: any) {
+            const vm = this;
+            let param;
+
+            if (err.message && err.messageId) {
+
+                if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
+                    err.message = err.parameterIds[0] + err.message;
+                    param = err;
+                } else {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                }
+
+            } else {
+                if (err.message) {
+                    param = {message: err.message, messageParams: err.parameterIds};
+                } else {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                }
+            }
+
+            vm.$dialog.error(param).then(() => {
+                if (err.messageId == 'Msg_197') {
+                    location.reload();
+                }
+            });
         }
 
     }

@@ -74,7 +74,7 @@ public class JpaWorkMonthlySettingGetMemento implements WorkMonthlySettingGetMem
 	 */
 	@Override
 	public GeneralDate getYmdK() {
-		return this.entity.getKscmtWorkMonthSetPK().getYmdM();
+		return this.entity.getKscmtWorkMonthSetPK().getYmdK();
 	}
 
 	/*

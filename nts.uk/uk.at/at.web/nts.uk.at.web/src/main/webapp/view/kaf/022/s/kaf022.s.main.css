@@ -34,6 +34,7 @@
 
 #grid-test-single > tbody > tr> td:nth-child(1){
 	text-align: right !important;
+	padding-right: 5px;
 }
 
 #grid-test-single > tbody > tr> td:nth-child(3){

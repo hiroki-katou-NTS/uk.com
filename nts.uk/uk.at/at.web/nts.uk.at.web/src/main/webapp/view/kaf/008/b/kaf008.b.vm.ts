@@ -138,6 +138,7 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 			}
 		}
 
+        // 起動する
         createParamKAF008() {
             let vm = this;
             vm.$blockui('show');
@@ -157,8 +158,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                             let wkDayInfo = _.filter(ko.toJS(workInfo), function (item) {
                                 return item.date == detail.date;
                             });
-                            if (wkDayInfo.length != 0) {
+                            if (wkDayInfo.length != 0 && wkDayInfo[0].workTypeDto) {
                                 workName = wkDayInfo[0].workTypeDto.name;
+                            } else {
+                                workName = "マスタ未登録";
                             }
                         }
 
@@ -166,8 +169,10 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                             let wkTimeInfo = _.filter(ko.toJS(timeInfo), function (item) {
                                 return item.worktimeCode == detail.wkTimeCd;
                             });
-                            if (wkTimeInfo.length != 0) {
+                            if (wkTimeInfo.length != 0 && wkTimeInfo[0].workTimeDisplayName) {
                                 timeName = wkTimeInfo[0].workTimeDisplayName.workTimeName;
+                            } else {
+                                timeName = "マスタ未登録";
                             }
                         }
 
@@ -192,9 +197,14 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                 }
             }).fail(err => {
                 vm.$dialog.error({messageId: err.msgId});
-            }).always(() => vm.$blockui('hide'));
+            }).always(() => {
+                vm.$blockui('hide')
+                $('#kaf008-share #A5_3').focus();
+            });
+
         }
 
+        // 出張申請を更新登録で更新する
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
@@ -222,15 +232,11 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                         }
                     }
                 }).fail(err => {
-                    let param;
-                    if (err.messageId == "Msg_23" || err.messageId == "Msg_24") {
-                        err.message = err.parameterIds[0] + err.message;
-                        param = err;
-                        vm.$dialog.error(param);
-                    } else {
-                        vm.handleError(err);
-                    }
-                }).always(() => vm.$blockui("hide"));
+                    vm.handleError(err);
+                }).always(() => {
+                    vm.$errors("clear");
+                    vm.$blockui("hide");
+                });
         }
 
         dispose() {
@@ -241,16 +247,24 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
         handleError(err: any) {
             const vm = this;
             let param;
-            if (err.message && err.messageId) {
-                param = {messageId: err.messageId, messageParams: err.parameterIds};
-            } else {
 
+            if (err.message && err.messageId) {
+
+                if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
+                    err.message = err.parameterIds[0] + err.message;
+                    param = err;
+                } else {
+                    param = {messageId: err.messageId, messageParams: err.parameterIds};
+                }
+
+            } else {
                 if (err.message) {
                     param = {message: err.message, messageParams: err.parameterIds};
                 } else {
                     param = {messageId: err.messageId, messageParams: err.parameterIds};
                 }
             }
+
             vm.$dialog.error(param).then(() => {
                 if (err.messageId == 'Msg_197') {
                     location.reload();

@@ -76,8 +76,8 @@ public class GetPredWorkingDaysImpl implements GetPredWorkingDays {
 		for (WorkMonthlySetting workMonthlySet : workMonthlySetList) {
 			
 			// 「勤務種類」を取得する
-			if (workMonthlySet.getWorkInformation().getWorkTypeCode() == null) continue;
-			String workTypeCode = workMonthlySet.getWorkInformation().getWorkTypeCode().v();
+			if (workMonthlySet.getWorkTypeCode() == null) continue;
+			String workTypeCode = workMonthlySet.getWorkTypeCode().v();
 			if (!_workTypeMap.containsKey(workTypeCode)) {
 				Optional<WorkType> workTypeOpt = require.findByPK(companyId, workTypeCode);
 				if (workTypeOpt.isPresent()) {

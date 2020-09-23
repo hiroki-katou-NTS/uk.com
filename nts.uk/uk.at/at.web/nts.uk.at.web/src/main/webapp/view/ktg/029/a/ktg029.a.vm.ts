@@ -491,11 +491,7 @@ module nts.uk.at.view.ktg029.a.viewmodel {
             var employeeIds = [];
             employeeIds.push(__viewContext.user.employeeId);
             parent.nts.uk.ui.windows.setShared('KDL020A_PARAM', { baseDate: endDate, employeeIds:  employeeIds});
-            if(employeeIds.length > 1 ) {
-              parent.nts.uk.ui.windows.sub.modal("/view/kdl/020/a/multi.xhtml");
-            } else {
-              parent.nts.uk.ui.windows.sub.modal("/view/kdl/020/a/single.xhtml");
-            }
+            parent.nts.uk.ui.windows.sub.modal('at','/view/kdl/020/a/index.xhtml').onClosed(function(): any {});
         }
     }
     export class period{

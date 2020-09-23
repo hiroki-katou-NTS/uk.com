@@ -13,7 +13,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.service.setting.CommonAlgorithm;
-import org.apache.logging.log4j.util.Strings;
 
 import lombok.val;
 import nts.arc.enums.EnumAdaptor;
@@ -169,6 +168,13 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         }
     }
 
+    /**
+     * アルゴリズム「出張申請画面初期（更新）」を実行する
+     * @param companyId
+     * @param appId
+     * @param appDispInfoStartupOutput
+     * @return
+     */
     @Override
     public DetailScreenB getDataDetail(String companyId, String appId, AppDispInfoStartupOutput appDispInfoStartupOutput) {
         DetailScreenB result = new DetailScreenB();
@@ -235,6 +241,13 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         return result;
     }
 
+    /**
+     * 出張申請勤務種類を取得する
+     *
+     * @param appEmploymentSet       ドメインモデル「雇用別申請承認設定」
+     * @param workStyle              出勤休日区分
+     * @param workTypeClassification 勤務分類(LIST)
+     */
     @Override
     public List<WorkType> getBusinessAppWorkType(Optional<AppEmploymentSet> appEmploymentSet, BusinessTripAppWorkType workStyle, List<WorkTypeClassification> workTypeClassification) {
         String cid = AppContexts.user().companyId();
@@ -303,17 +316,36 @@ public class BusinessTripServiceImlp implements BusinessTripService {
      * @param wkTypeCd
      * @param wkTimeCd
      * @param inputDate
+     * @param startWorkTime
+     * @param endWorkTime
      */
     @Override
-    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate) {
+    public void checkInputWorkCode(String wkTypeCd, String wkTimeCd, GeneralDate inputDate, Integer startWorkTime, Integer endWorkTime) {
         SetupType checkNeededOfWorkTime = basicScheduleService.checkNeededOfWorkTimeSetting(wkTypeCd);
         switch (checkNeededOfWorkTime) {
             case REQUIRED:
                 if (StringUtil.isNullOrEmpty(wkTimeCd, true)) {
                     throw new BusinessException("Msg_24", inputDate.toString());
+                } else {
+                    if (startWorkTime == null && endWorkTime == null) {
+                        throw new BusinessException("Msg_1912", inputDate.toString());
+                    } else {
+                        if (startWorkTime > endWorkTime) {
+                            throw new BusinessException("Msg_1913", inputDate.toString());
+                        }
+                    }
                 }
                 break;
             case OPTIONAL:
+                if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
+                    if (startWorkTime == null && endWorkTime == null) {
+                        throw new BusinessException("Msg_1912", inputDate.toString());
+                    } else {
+                        if (startWorkTime > endWorkTime) {
+                            throw new BusinessException("Msg_1913", inputDate.toString());
+                        }
+                    }
+                }
                 break;
             case NOT_REQUIRED:
                 if (!StringUtil.isNullOrEmpty(wkTimeCd, true)) {
@@ -371,6 +403,11 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         return result;
     }
 
+    /**
+     * アルゴリズム「出張申請個別エラーチェック」を実行する
+     * @param infos
+     * @param actualContent
+     */
     @Override
     public void businessTripIndividualCheck(List<BusinessTripInfo> infos, List<ActualContentDisplay> actualContent) {
         String sid = AppContexts.user().employeeId();
@@ -380,8 +417,16 @@ public class BusinessTripServiceImlp implements BusinessTripService {
         infos.stream().forEach(i -> {
             String wkTypeCd = i.getWorkInformation().getWorkTypeCode().v();
             String wkTimeCd = i.getWorkInformation().getWorkTimeCode() == null ? null : i.getWorkInformation().getWorkTimeCode().v();
+            Integer workTimeStart = null;
+            Integer workTimeEnd = null;
+
+            if (i.getWorkingHours().isPresent() && !i.getWorkingHours().get().isEmpty()) {
+                workTimeStart = i.getWorkingHours().get().get(0).getTimeZone().getStartTime().v();
+                workTimeEnd = i.getWorkingHours().get().get(0).getTimeZone().getEndTime().v();
+            }
+
             // アルゴリズム「出張申請就業時間帯チェック」を実行する
-            this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate());
+            this.checkInputWorkCode(wkTypeCd, wkTimeCd, i.getDate(), workTimeStart, workTimeEnd);
 
             List<EmployeeInfoImport> employeeInfoImports = atEmployeeAdapter.getByListSID(Arrays.asList(sid));
             // アルゴリズム「申請の矛盾チェック」を実行する

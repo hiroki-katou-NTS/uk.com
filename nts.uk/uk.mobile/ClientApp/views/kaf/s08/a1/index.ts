@@ -6,18 +6,15 @@ import { KafS00BComponent } from '../../../kaf/s00/b';
 import { KafS00CComponent } from '../../../kaf/s00/c';
 import { KafS08A2Component } from '../../../kaf/s08/a2';
 import { KafS00ShrComponent, AppType } from '../../../kaf/s00/shr';
+import * as moment from 'moment';
+import { vmOf } from 'vue/types/umd';
 
 @component({
     name: 'kafs08a1',
     route: '/kaf/s08/a1',
     template: require('./index.vue'),
-    validations : {
-        derpartureTime : {
-            required : true
-        },
-        returnTime : {
-            required : true
-        }
+    validations: {
+
     },
     style: require('./style.scss'),
     components: {
@@ -36,16 +33,20 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public step: string = 'KAFS08_10';
     public mode: Boolean = true;
     public isVisible: boolean = false;
-    public derpartureTime: number = null;
-    public returnTime: number = null;
     public isValidateAll: Boolean = true;
     public date: Date = null;
-    public listDate: any[] = [] ;
+    public listDate: any[] = [];
     public hidden: boolean = false;
 
+    @Prop({ default: null })
+    public params?: any;
 
-    @Prop({ default: (): IParamsB => ({output : {startDate : null,prePostAtr : 0, endDate : null}}) })
-    public readonly params?: IParamsB;
+    public derpartureTime: number = null;
+
+    public returnTime: number = null;
+
+    @Prop({ default: '' }) public readonly appReason!: string;
+
     public user: any;
     public title: String = 'KafS08A1';
     public data: any = 'data';
@@ -80,58 +81,155 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         },
     };
 
+
     public created() {
         const vm = this;
         if (vm.params) {
             console.log(vm.params);
-            //vm.mode = false;
+            vm.mode = false;
             this.data = vm.params;
+            vm.derpartureTime = vm.params.businessTripDto.departureTime;
+            vm.returnTime = vm.params.businessTripDto.returnTime;
         }
         vm.fetchStart();
     }
 
+    public fetchStart() {
+        const vm = this;
+
+        vm.$mask('show');
+
+        vm.$auth.user.then((usr: any) => {
+            vm.user = usr;
+        }).then(() => {
+            return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
+        }).then((loadData: any) => {
+            if (loadData) {
+                let params = vm.mode ? {
+                    mode: vm.mode,
+                    companyId: vm.user.companyId,
+                    employeeId: vm.user.employeeId,
+                    listDates: [],
+                    businessTripInfoOutput: null,
+                    businessTrip: null
+                } :
+                    {
+                        mode: vm.mode,
+                        companyId: vm.user.companyId,
+                        employeeId: vm.user.employeeId,
+                        listDates: [],
+                        businessTrip: vm.params.businessTripDto,
+                        businessTripInfoOutput: vm.params.businessTripInfoOutputDto
+                    };
+
+                return vm.$http.post('at', API.startKAFS08, params);
+            }
+        }).then((res: any) => {
+            if (!res) {
+                return;
+            }
+            vm.data = res.data;
+            vm.createParamsB();
+            vm.createParamsC();
+            vm.createParamsA();
+            vm.$mask('hide');
+
+            setTimeout(function () {
+                let focusElem;
+                if (vm.mode) {
+                    focusElem = document.querySelector('[placeholder=\'yyyy-mm-dd\']');
+                } else {
+                    focusElem = document.querySelector('[placeholder=\'-- --:--\']');
+                }
+                (focusElem as HTMLElement).focus();
+            }, 200);
+        }).catch((err: any) => {
+            //do something
+        });
+    }
+
+    public getDateArray = function (startDate, endDate) {
+        let dates = [];
+        startDate = moment(startDate, 'YYYY/MM/DD');
+        dates.push(startDate.format('YYYY/MM/DD'));
+        while (!startDate.isSame(endDate)) {
+            startDate = startDate.add(1, 'days');
+            dates.push(startDate.format('YYYY/MM/DD'));
+        }
+
+        return dates;
+    };
+
     //Nhảy đến step tiếp theo
     public nextToStepTwo() {
         const vm = this;
-        vm.checkNextButton();
-        if (vm.application.opAppReason == '' || vm.kaf000_B_Params.output.startDate == null) {
-            vm.hidden = true;
-            vm.scrollToTop();
-
-            return ;
+        let validAll: boolean = true;
+        for (let child of vm.$children) {
+            child.$validate();
+            if (!child.$valid) {
+                this.hidden = true;
+                validAll = false;
+            }
         }
-        let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
-        let businessTripInfoOutput = vm.data;
-        //gửi comment sang màn hình A2
-        let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
-        this.$emit('nextToStepTwo',vm.listDate,this.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet);
+        vm.isValidateAll = validAll;
+        if (!validAll) {
+            window.scrollTo(500, 0);
+
+            return;
+        }
+        //check date when press next
+        if (vm.mode) {
+            //let day = this.kaf000_B_Params.output.endDate.getDate() - this.kaf000_B_Params.output.startDate.getDate();
+            let Difference_In_Time = this.kaf000_B_Params.output.endDate.getTime() - this.kaf000_B_Params.output.startDate.getTime();
+            let Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+            //check day > 31 days between 2 Dates
+            if (Difference_In_Days > 31) {
+                vm.$modal.error({ messageId: 'Msg_277' });
+
+                return;
+            }
+
+            //mode new
+            let achievementDetails = vm.data.businessTripInfoOutput.businessTripActualContent;
+            let businessTripInfoOutput = vm.data;
+            //gửi comment sang màn hình A2
+            let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
+            let appReason = vm.kaf000_C_Params.output.opAppReason;
+            this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
+
+        }
+
+        vm.checkNextButton();
+
+        //mode edit
+        if (!vm.mode) {
+            let achievementDetails = vm.data.businessTrip.tripInfos;
+            let businessTripInfoOutput = vm.data;
+            //gửi comment sang màn hình A2
+            let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
+            //let application = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application;
+            let appReason = vm.kaf000_C_Params.output.opAppReason;
+            let startDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate;
+            //let startDateFormat = new Date(startDate);
+            let endDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate;
+            //let endDateFormat = new Date(endDate);
+            let listDateEditMode = vm.getDateArray(startDate, endDate);
+            businessTripInfoOutput.businessTrip.departureTime = vm.derpartureTime;
+            businessTripInfoOutput.businessTrip.returnTime = vm.returnTime;
+        
+            this.$emit('nextToStepTwo', listDateEditMode, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
+        }
     }
 
     //scroll to Top
     public scrollToTop() {
-        window.scrollTo(500,0);
+        window.scrollTo(500, 0);
     }
 
     //check button next
     public checkNextButton() {
         const vm = this;
-        // let validAll: boolean = true;
-        // vm.isValidateAll = validAll;
-        // console.log(validAll);
-        // console.log(vm.application);
-
-        // // check validation 
-        // this.$validate();
-        // if (!this.$valid || !validAll) {
-        //     window.scrollTo(500, 0);
-
-        //     return;
-        // }
-        // if (this.$valid && validAll) {
-        //     this.$mask('show');
-        // }
         vm.bindBusinessTripRegister();
-        //console.log(this.appWorkChangeDto);
     }
 
     //handle message error
@@ -141,9 +239,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         if (res.messageId) {
             return self.$modal.error({ messageId: res.messageId, messageParams: res.parameterIds });
         } else {
-            
+
             if (_.isArray(res.errors)) {
-                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds});
+                return self.$modal.error({ messageId: res.errors[0].messageId, messageParams: res.parameterIds });
             } else {
                 return self.$modal.error({ messageId: res.errors.messageId, messageParams: res.parameterIds });
             }
@@ -158,40 +256,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         } else {
             x.style.display = 'none';
         }
-    }
-
-    public fetchStart() {
-        const vm = this;
-
-        vm.$mask('show');
-
-        vm.$auth.user.then((usr: any) => {
-            vm.user = usr;
-        }).then(() => {
-            return vm.loadCommonSetting(AppType.BUSINESS_TRIP_APPLICATION);
-        }).then((loadData: any) => {
-            if (loadData) {
-                return vm.$http.post('at', API.startKAFS08, {
-                    mode: vm.mode,
-                    companyId: vm.user.companyId,
-                    employeeId: vm.user.employeeId,
-                    listDates: [],
-                    businessTripInfoOutput: vm.mode ? null : vm.data,
-                    //businessTrip: vm.mode ? null : vm.data.appWorkChange
-                }).then((res: any) => {
-                    if (!res) {
-                        return;
-                    }
-                    vm.data = res.data;
-                    vm.createParamsB();
-                    vm.createParamsC();
-                    vm.createParamsA();
-                    vm.$mask('hide');
-                });
-            }
-        }).catch((err: any) => {
-            vm.$mask('hide');
-        });
     }
 
     public bindBusinessTripRegister() {
@@ -214,6 +278,18 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             this.application.opAppReason = this.kaf000_C_Params.output.opAppReason;
         }
         this.application.enteredPerson = this.user.employeeId;
+        // if (!this.mode) {
+        //     this.$http.post('at', API.changeAppDate, {
+        //         isNewMode: true,
+        //         isError: 0,
+        //         application: this.application,
+        //         businessTrip: null,
+        //         businessTripInfoOutput: this.data.businessTripInfoOutput
+        //         //businessTrip: vm.mode ? null : vm.data.appWorkChange
+        //     }).then((res: any) => {
+        //         let response = res.data;
+        //     });
+        // }
     }
 
     public createParamsA() {
@@ -246,15 +322,22 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                     initSelectMultiDay: false
                 },
                 detailModeContent: null
-
-
             },
             output: {
                 prePostAtr: 0,
-                startDate: null,
-                endDate: null
+                startDate: new Date(),
+                endDate: new Date(),
             }
         };
+        // if mode edit
+        if (!vm.mode) {
+            paramb.input.detailModeContent = {
+                prePostAtr: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr,
+                startDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate,
+                endDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate,
+                employeeName: _.isEmpty(vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.employeeInfoLst) ? 'empty' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoNoDateOutput.employeeInfoLst[0].bussinessName
+            };
+        }
         vm.kaf000_B_Params = paramb;
         if (vm.mode) {
             vm.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
@@ -333,16 +416,17 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                 appLimitSetting: appDispInfoNoDateOutput.applicationSetting.appLimitSetting,
                 // 選択中の定型理由
                 // empty
-                // opAppStandardReasonCD: this.mode ? 1 : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppReason,
+                opAppStandardReasonCD: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStandardReasonCD,
+
                 // 入力中の申請理由
                 // empty
-                // opAppReason: this.mode ? 'Empty' : this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD
+                opAppReason: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppReason
             },
             output: {
                 // 定型理由
-                opAppStandardReasonCD: vm.mode ? '' : null,
+                opAppStandardReasonCD: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStandardReasonCD,
                 // 申請理由
-                opAppReason: vm.mode ? '' : null
+                opAppReason: vm.mode ? '' : vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppReason
             }
         };
     }
@@ -354,14 +438,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
 const API = {
     startKAFS08: 'at/request/application/businesstrip/mobile/startMobile',
-    checkBeforeRegister: 'at/request/application/businesstrip/mobile/checkBeforeRegister'
+    checkBeforeRegister: 'at/request/application/businesstrip/mobile/checkBeforeRegister',
+    changeAppDate: 'at/request/application/businesstrip/mobile/changeAppDate'
 };
-
-interface IParamsB {
-    output: {
-        startDate: Date | null,
-        prePostAtr: number,
-        endDate: Date | null,
-    };
-}
 

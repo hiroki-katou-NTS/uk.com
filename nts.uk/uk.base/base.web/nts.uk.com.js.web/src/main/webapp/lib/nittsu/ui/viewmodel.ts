@@ -465,8 +465,7 @@ BaseViewModel.prototype.$errors = function $errors() {
 		// if action is clear, call validate clear action
 		if (args[0] === 'clear') {
 			return $.Deferred().resolve()
-				.then(() => $('.nts-input').ntsError('clear'))
-				.then(() => !$('.nts-input').ntsError('hasError'));
+				.then(() => $('.nts-input').ntsError('clear'));
 		} else {
 			const errors: {
 				[name: string]: any;
