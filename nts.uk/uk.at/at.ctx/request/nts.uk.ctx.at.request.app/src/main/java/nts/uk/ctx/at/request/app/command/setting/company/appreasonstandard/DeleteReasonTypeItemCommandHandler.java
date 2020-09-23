@@ -17,6 +17,6 @@ public class DeleteReasonTypeItemCommandHandler extends CommandHandler<ReasonTyp
     protected void handle(CommandHandlerContext<ReasonTypeItemCommand> commandHandlerContext) {
         String companyId = AppContexts.user().companyId();
         ReasonTypeItemCommand command = commandHandlerContext.getCommand();
-        appReasonStandardRepo.deleteReasonTypeItem(companyId, command.getAppType(), command.getReasonCode());
+        appReasonStandardRepo.deleteReasonTypeItem(companyId, command.getAppType(), command.getHolidayAppType(), command.getReasonCode());
     }
 }

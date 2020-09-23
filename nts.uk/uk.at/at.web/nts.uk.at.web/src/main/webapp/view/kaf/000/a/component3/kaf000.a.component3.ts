@@ -1,5 +1,6 @@
 module nts.uk.at.view.kaf000.a.component3.viewmodel {
-
+	import Application = nts.uk.at.view.kaf000.shr.viewmodel.Application;
+	
     @component({
         name: 'kaf000-a-component3',
         template: `
@@ -32,16 +33,23 @@ module nts.uk.at.view.kaf000.a.component3.viewmodel {
         prePostAtr: KnockoutObservable<number>;
         prePostAtrDisp: KnockoutObservable<boolean> = ko.observable(false);
         prePostAtrEnable: KnockoutObservable<boolean> = ko.observable(false);
+		application: KnockoutObservable<Application>;
 
         created(params: any) {
             const vm = this;
             vm.appType = params.appType;
             vm.appDispInfoStartupOutput = params.appDispInfoStartupOutput;
             vm.prePostAtr = params.application().prePostAtr;
-
+			vm.application = params.application;
+			
             vm.appDispInfoStartupOutput.subscribe(value => {
-                vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);
-                vm.prePostAtrDisp(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
+				if(vm.application().opStampRequestMode()==1) {
+					vm.application().prePostAtr(1);
+					vm.prePostAtrDisp(false);
+				} else {
+					vm.prePostAtr(value.appDispInfoWithDateOutput.prePostAtr);
+                	vm.prePostAtrDisp(value.appDispInfoNoDateOutput.applicationSetting.appDisplaySetting.prePostDisplayAtr == 1);
+				}
                 let appTypeSetting = _.find(value.appDispInfoNoDateOutput.applicationSetting.appTypeSetting, (o: any) => o.appType == vm.appType());
                 vm.prePostAtrEnable(appTypeSetting.canClassificationChange);
             });

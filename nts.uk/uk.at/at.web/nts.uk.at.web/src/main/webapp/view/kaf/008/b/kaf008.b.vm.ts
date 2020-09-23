@@ -138,7 +138,6 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
 			}
 		}
 
-        // 起動する
         createParamKAF008() {
             let vm = this;
             vm.$blockui('show');
@@ -196,7 +195,6 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
             }).always(() => vm.$blockui('hide'));
         }
 
-        // 出張申請を更新登録で更新する
         // event update cần gọi lại ở button của view cha
         update() {
             const vm = this;
@@ -224,7 +222,14 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
                         }
                     }
                 }).fail(err => {
-                    vm.handleError(err);
+                    let param;
+                    if (err.messageId == "Msg_23" || err.messageId == "Msg_24") {
+                        err.message = err.parameterIds[0] + err.message;
+                        param = err;
+                        vm.$dialog.error(param);
+                    } else {
+                        vm.handleError(err);
+                    }
                 }).always(() => vm.$blockui("hide"));
         }
 
@@ -236,24 +241,16 @@ module nts.uk.at.view.kaf008_ref.b.viewmodel {
         handleError(err: any) {
             const vm = this;
             let param;
-
             if (err.message && err.messageId) {
-
-                if (err.messageId == "Msg_23" || err.messageId == "Msg_24" || err.messageId == "Msg_1912" || err.messageId == "Msg_1913" ) {
-                    err.message = err.parameterIds[0] + err.message;
-                    param = err;
-                } else {
-                    param = {messageId: err.messageId, messageParams: err.parameterIds};
-                }
-
+                param = {messageId: err.messageId, messageParams: err.parameterIds};
             } else {
+
                 if (err.message) {
                     param = {message: err.message, messageParams: err.parameterIds};
                 } else {
                     param = {messageId: err.messageId, messageParams: err.parameterIds};
                 }
             }
-
             vm.$dialog.error(param).then(() => {
                 if (err.messageId == 'Msg_197') {
                     location.reload();

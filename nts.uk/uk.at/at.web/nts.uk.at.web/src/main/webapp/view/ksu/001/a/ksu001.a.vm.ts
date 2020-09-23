@@ -124,6 +124,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
         showRankCol = false;
         showQualificCol = false;
         widthMid : number = 0;
+        undoNumberClick = 0;
+        redoNumberClick = 0;
         
         constructor() {
             let self = this;
@@ -1172,6 +1174,8 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             }
             
             self.listCellNotEdit = listCellNotEdit;
+            self.undoNumberClick = 0;
+            self.redoNumberClick = 0;
 
             // set width cho column cho tung mode
             let widthColumn = 0;
@@ -2187,6 +2191,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlUnSelected A6_not_hover").removeClass("btnControlSelected A6_hover");
             
             $("#extable").exTable("updateMode", "stick");
+            self.undoNumberClick = 0;
+            self.redoNumberClick = 0;
+            self.enableBtnUndo(false);
+            self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor : IUserInfor = JSON.parse(data);
                 userInfor.updateMode = 'stick';
@@ -2249,6 +2257,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#extable").exTable("updateMode", "copyPaste");
             $("#extable").exTable("updateMode", "stick");
             $("#extable").exTable("updateMode", "copyPaste");
+            self.undoNumberClick = 0;
+            self.redoNumberClick = 0;
+            self.enableBtnUndo(false);
+            self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor : IUserInfor = JSON.parse(data);
                 userInfor.updateMode =  'copyPaste';
@@ -2267,7 +2279,10 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             $("#input").addClass("btnControlSelected A6_hover").removeClass("btnControlUnSelected A6_not_hover");
             
             $("#extable").exTable("updateMode", "edit");
-            
+            self.undoNumberClick = 0;
+            self.redoNumberClick = 0;
+            self.enableBtnUndo(false);
+            self.enableBtnRedo(false);
             uk.localStorage.getItem(self.KEY).ifPresent((data) => {
                 let userInfor: IUserInfor = JSON.parse(data);
                 userInfor.updateMode = 'edit';
@@ -2288,7 +2303,9 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (userInfor.updateMode = 'edit') {
                 console.log('grid chua support undo o mode nay');
             }
+            self.undoNumberClick = self.undoNumberClick + 1;
             self.checkExitCellUpdated();
+            self.enableBtnRedo(true);
         }
 
         redoData(): void {
@@ -2302,6 +2319,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             } else if (userInfor.updateMode = 'edit') {
                 console.log('grid chua support redo o mode nay');
             }
+            self.redoNumberClick = self.redoNumberClick + 1;
             self.checkExitCellUpdated();
         }
         
@@ -2310,12 +2328,21 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             setTimeout(() => {
                 let arrCellUpdated = $("#extable").exTable("updatedCells");
                 if (arrCellUpdated.length > 0) {
-                    self.enableBtnRedo(true);
                     self.enableBtnUndo(true);
                 } else {
-                    self.enableBtnRedo(false);
                     self.enableBtnUndo(false);
+                }   
+
+                if (arrCellUpdated.length == 0) {
+                    let x = self.undoNumberClick;
+                    self.redoNumberClick = (-1) * x;
+                    self.undoNumberClick = 0;
                 }
+                
+                if (self.undoNumberClick == self.redoNumberClick) {
+                    self.enableBtnRedo(false)
+                }
+                
             }, 1);
         }
 
@@ -2389,7 +2416,7 @@ module nts.uk.at.view.ksu001.a.viewmodel {
             if (self.listSid().length == 1) {
                 nts.uk.ui.windows.sub.modal('/view/kdl/020/a/single.xhtml').onClosed(function(): any { });
             } else if (self.listSid().length > 1) {
-                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/mutil.xhtml').onClosed(function(): any { });
+                nts.uk.ui.windows.sub.modal('/view/kdl/020/a/multi.xhtml').onClosed(function(): any { });
             }
         }
         

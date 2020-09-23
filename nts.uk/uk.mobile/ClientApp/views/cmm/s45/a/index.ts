@@ -260,9 +260,14 @@ export class CmmS45AComponent extends Vue {
 
             self.$http.post('at', servicePath.getAppNameInAppList).then((res: any) => {
                 if (res) {
+                    if (_.isEmpty(self.appListExtractCondition.opListOfAppTypes)) {
+                        self.appListExtractCondition.opListOfAppTypes = res.data;       
+                    }
+
                     let paramNew = {
-                        listAppType: res.data,
-                        appListExtractCondition: self.appListExtractCondition
+                            listAppType: [2, 3],
+                            listOfAppTypes: res.data,
+                            appListExtractCondition: self.appListExtractCondition
                     };
 
                     return self.$http.post('at', servicePath.getApplicationList, paramNew);

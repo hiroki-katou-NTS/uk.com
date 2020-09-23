@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other;
 
 import lombok.Getter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeWithCalculation;
 
 /**
  * 所定内外出合計時間

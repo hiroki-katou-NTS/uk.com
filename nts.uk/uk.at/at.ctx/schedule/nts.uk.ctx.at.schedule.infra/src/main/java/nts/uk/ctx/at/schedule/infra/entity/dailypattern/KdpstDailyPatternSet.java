@@ -97,7 +97,7 @@ public class KdpstDailyPatternSet extends UkJpaEntity implements Serializable {
         entityValues.stream().forEach(item -> {
             WorkCycleInfo info = WorkCycleInfo.create(
                     item.days,
-                    new WorkInformation(item.workingHoursCd, item.workTypeSetCd)
+                    new WorkInformation(item.workTypeSetCd,item.workingHoursCd)
             );
             infos.add(info);
         });

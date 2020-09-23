@@ -17,8 +17,4 @@ public class ChangeWorkCodeParam {
 
     private String timeCode;
 
-    private Integer startWorkTime;
-
-    private Integer endWorkTime;
-
 }

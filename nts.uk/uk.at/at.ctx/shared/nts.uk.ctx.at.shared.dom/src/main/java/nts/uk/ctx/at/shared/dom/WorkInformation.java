@@ -169,7 +169,7 @@ public class WorkInformation {
 	 * @return WorkStyle 出勤休日区分
 	 */
 	public Optional<WorkStyle> getWorkStyle(Require require) {
-		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode.v());
+		WorkStyle workStyle = require.checkWorkDay(this.workTypeCode == null ? null : this.workTypeCode.v());
 		if (workStyle == null) {
 			return Optional.empty();
 		}

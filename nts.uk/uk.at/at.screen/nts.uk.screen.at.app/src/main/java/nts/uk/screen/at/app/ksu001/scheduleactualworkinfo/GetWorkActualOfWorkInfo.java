@@ -28,14 +28,14 @@ import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeave
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkHistoryAdapter;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmpLeaveWorkPeriodImport;
 import nts.uk.ctx.at.shared.dom.adapter.employment.employwork.leaveinfo.EmployeeLeaveJobPeriodImport;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.GetListWtypeWtimeUseDailyAttendRecordService;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkTypeWorkTimeUseDailyAttendanceRecord;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.SetupType;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.GetListWtypeWtimeUseDailyAttendRecordService;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkTypeWorkTimeUseDailyAttendanceRecord;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItemWithPeriod;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionRepository;
@@ -157,10 +157,10 @@ public class GetWorkActualOfWorkInfo {
 						Optional<TimeLeavingWork> timeLeavingWork = daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
 						if (timeLeavingWork.isPresent()) {
 							if (timeLeavingWork.get().getAttendanceStamp().isPresent()) {
-								if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().isPresent()) {
-									if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay() != null) {
-										if (timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-											startTime = timeLeavingWork.get().getAttendanceStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+								if (timeLeavingWork.get().getAttendanceStamp().get().getActualStamp().isPresent()) {
+									if (timeLeavingWork.get().getAttendanceStamp().get().getActualStamp().get().getTimeDay() != null) {
+										if (timeLeavingWork.get().getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+											startTime = timeLeavingWork.get().getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v();
 										}
 									}
 								}
@@ -173,10 +173,10 @@ public class GetWorkActualOfWorkInfo {
 						Optional<TimeLeavingWork> timeLeavingWork = daily.getAttendanceLeave().get().getTimeLeavingWorks().stream().filter(i -> i.getWorkNo().v() == 1).findFirst();
 						if (timeLeavingWork.isPresent()) {
 							if (timeLeavingWork.get().getLeaveStamp().isPresent()) {
-								if (timeLeavingWork.get().getLeaveStamp().get().getStamp().isPresent()) {
-									if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay() != null) {
-										if (timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
-											endtTime = timeLeavingWork.get().getLeaveStamp().get().getStamp().get().getTimeDay().getTimeWithDay().get().v();
+								if (timeLeavingWork.get().getLeaveStamp().get().getActualStamp().isPresent()) {
+									if (timeLeavingWork.get().getLeaveStamp().get().getActualStamp().get().getTimeDay() != null) {
+										if (timeLeavingWork.get().getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent()) {
+											endtTime = timeLeavingWork.get().getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v();
 										}
 									}
 								}

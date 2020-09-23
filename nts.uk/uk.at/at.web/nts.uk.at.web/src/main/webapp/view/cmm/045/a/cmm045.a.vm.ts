@@ -898,36 +898,17 @@ module cmm045.a.viewmodel {
                             .appendTo($td);
                     }
                     else if(column.key == 'appDate') {
-                        // var date = nts.uk.time.formatDate(new Date(item.opAppStartDate), "M/dD");
                         var date = moment(item.opAppStartDate).format("M/D(ddd)");
                         if(item.opAppStartDate !== item.opAppEndDate) {
-                            date = date + "－" + moment(item.opAppEndDate).format("M/D(ddd)");
+                            date = self.appDateRangeColor(moment(item.opAppStartDate).format("M/D(ddd)"), moment(item.opAppEndDate).format("M/D(ddd)"));
+                            $td.html(date);
+                        } else {
+                            $td.html(self.appDateColor(date, "", ""));
                         }
                         if(item.appType === 10) {
 
                         }
-                        $td.html(self.appDateColor(date, "", ""));
                     }
-                    // else if(column.key == 'reflectionStatus' && self.mode() == 0) {
-                    //     if(item.reflectionStatus === '未反映') {
-                    //         $td.html('未');
-                    //     }
-                    //     if(item.reflectionStatus === '反映待ち') {
-                    //         $td.html('承認済み');
-                    //     }
-                    //     if(item.reflectionStatus === '反映済') {
-                    //         $td.html('反映済み');
-                    //     }
-                    //     if(item.reflectionStatus === '取消済') {
-                    //         $td.html('取消');
-                    //     }
-                    //     if(item.reflectionStatus === '差し戻し') {
-                    //         $td.html('差戻');
-                    //     }
-                    //     if(item.reflectionStatus === '否認') {
-                    //         $td.html('否');
-                    //     }
-                    // }
                     else {
                         $td.html(self.customContent(column.key, item));
                     }

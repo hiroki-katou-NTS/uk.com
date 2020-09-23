@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.divergence.time;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
 
 /**
  * The Interface DivergenceTimeRepository.

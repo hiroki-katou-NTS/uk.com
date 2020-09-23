@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.command.application.applicationlist.ListOfAppTy
 @AllArgsConstructor
 @NoArgsConstructor
 public class StartMobileParam {
-	private List<ListOfAppTypesCmd> listAppType;
+	private List<Integer> listAppType;
+	private List<ListOfAppTypesCmd> listOfAppTypes;
 	private AppListExtractConditionCmd appListExtractCondition;
 }

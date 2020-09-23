@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.dailyprocess.calc;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 /**
  * Interface này để chuyển method này từ record sang shared
