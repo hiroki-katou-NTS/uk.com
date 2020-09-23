@@ -248,9 +248,14 @@ export class CmmS45BComponent extends Vue {
             self.$http.post('at', servicePath.getAppNameInAppList).then((res: any) => {
                 self.$mask('hide');
                 if (res) {
+                    if (_.isEmpty(self.appListExtractCondition.opListOfAppTypes)) {
+                        self.appListExtractCondition.opListOfAppTypes = res.data;       
+                    }
+
                     let paramNew = {
-                        listAppType: res.data,
-                        appListExtractCondition: self.appListExtractCondition
+                            listAppType: [2, 3],
+                            listOfAppTypes: res.data,
+                            appListExtractCondition: self.appListExtractCondition
                     };
                     
                     return self.$http.post('at', servicePath.getApplicationList, paramNew);
@@ -304,13 +309,17 @@ export class CmmS45BComponent extends Vue {
     }
     public isEmptyApprovalList() {
         const self = this;
+        let unApprovedLst = [];
         _.forEach(self.lstAppByEmp, (x: AppByEmp) => {
-            if (_.isEmpty(x.lstApp)) {
-
-                return false;
-            }
+            let unApprovedSubLst = _.filter(x.lstApp, (o) => o.appStatusNo == 5);
+            _.forEach(unApprovedSubLst, (item) => {
+                unApprovedLst.push(item);
+            });
         });
-
+        if (_.isEmpty(unApprovedLst)) {
+            return false;
+        }
+        
         return true;
     }
 

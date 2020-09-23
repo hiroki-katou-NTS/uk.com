@@ -65,13 +65,14 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         optionsValue: 'code',
                         value: selectedCode,
                         optionsText: 'name',
-                        required: true
+                        required: true,
+                        enable: mode
                     }"></div>
     </div>
 
     <div class="blockSecond">
         <input class="inputBlockSecond" id="inputTimeKAF002"
-            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
+            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { enable: mode, value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
                                                     }" />
 
         <div class="dropListBlockSecond"
@@ -80,7 +81,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         optionsValue: 'code',
                         value: selectedCodeReason,
                         optionsText: 'name',
-                        required: true
+                        required: true,
+                        enable: mode
                     }"></div>
     </div>
 
@@ -114,7 +116,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
         approvalReason: KnockoutObservable<string>;
         application: KnockoutObservable<Application>;
         
-        
+        mode: KnockoutObservable<boolean> = ko.observable(true);
         dataSource: KnockoutObservableArray<ItemModel>;
         dataSourceReason: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
@@ -157,6 +159,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                        return;
                    }
                    self.data = res;
+                   if (self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0) {
+                       self.mode(false);                       
+                   }
                    self.selectedCode(String(self.data.appRecordImage.appStampCombinationAtr));
                    self.time(Number(self.data.appRecordImage.attendanceTime));
                    if (self.data.appRecordImage.appStampGoOutAtr) {
@@ -230,7 +235,8 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
        }
 
 	   reload() {
-		
+	       const self = this;
+	       self.fetchData();
 	   }
        
        public handleConfirmMessage(listMes: any, res: any) {
@@ -288,7 +294,6 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                    appStampOutputDto: data,
                    applicationDto: applicationDto
            }
-           self.$blockui("show");
            return self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
            .then(isValid => {
                if ( isValid ) {
@@ -296,6 +301,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                }
            }).then(result => {
                if (!result) return;
+               self.$blockui("show");
                return self.$ajax(API.checkUpdate, commandCheck);
               
            }).then(res => {
@@ -308,9 +314,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                }
            }).done(res => {
                if (res != undefined) {
-                   self.$dialog.info({messageId: "Msg_15" }).then(() => {
-                       location.reload();
-                   });                   
+                   return self.$dialog.info({messageId: "Msg_15" })
                }
            }).fail(res => {
                self.showError(res);
@@ -325,7 +329,11 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         messageId: res.messageId,
                         messageParams: res.parameterIds
                 }
-               self.$dialog.error(param);
+               self.$dialog.error(param).then(() => {
+                   if (res.messageId == 'Msg_197') {
+                       window.location.reload();
+                   }
+               });
             }
        }
         

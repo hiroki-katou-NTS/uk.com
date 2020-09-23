@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
@@ -450,15 +452,28 @@ public class AppWorkChangeServiceImpl implements AppWorkChangeService {
 		AppWorkChangeOutput appWorkChangeOutput = new AppWorkChangeOutput();	
 		// new mode
 		if (mode) {
+			List<String> sids = new ArrayList<String>();
+			String sid = employeeId.orElse(null);
+			if (!StringUtils.isBlank(sid)) {
+				sids.add(sid);
+			}
+			AppDispInfoStartupOutput appDispInfoStartupOutput = commonAlgorithm.getAppDispInfoStart(
+					companyId,
+					ApplicationType.WORK_CHANGE_APPLICATION,
+					sids,
+					dates.orElse(Collections.emptyList()),
+					mode,
+					Optional.empty(),
+					Optional.empty());
 			// 申請共通起動処理
-			AppDispInfoStartupOutput appDispInfoStartupOutput = algorithmMobile.appCommonStartProcess(
-					mode, 
-					companyId, 
-					employeeId.isPresent() ? employeeId.get() : null, 
-					ApplicationType.WORK_CHANGE_APPLICATION, 
-					Optional.ofNullable(null), 
-					dates.isPresent() ? dates.get(): null, 
-					Optional.ofNullable(null));
+//			AppDispInfoStartupOutput appDispInfoStartupOutput = algorithmMobile.appCommonStartProcess(
+//					mode, 
+//					companyId, 
+//					employeeId.isPresent() ? employeeId.get() : null, 
+//					ApplicationType.WORK_CHANGE_APPLICATION, 
+//					Optional.ofNullable(null), 
+//					dates.isPresent() ? dates.get(): null, 
+//					Optional.ofNullable(null));
 			// 勤務変更申請画面初期（新規）
 			AppWorkChangeDispInfo appWorkChangeDisp = this.getAppWorkChangeDisInfo(
 					companyId, 

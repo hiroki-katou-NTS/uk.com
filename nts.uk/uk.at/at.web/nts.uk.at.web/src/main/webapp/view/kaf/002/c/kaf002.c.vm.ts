@@ -13,6 +13,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     import TimeZone = nts.uk.at.view.kaf002_ref.a.viewmodel.TimeZone;
     import DestinationTimeZoneAppDto = nts.uk.at.view.kaf002_ref.a.viewmodel.DestinationTimeZoneAppDto;
     import NtsTabPanelModel = nts.uk.ui.NtsTabPanelModel;
+    import GoOutTypeDispControl = nts.uk.at.view.kaf002_ref.m.viewmodel.GoOutTypeDispControl;
     const template = `
         
 <div >
@@ -62,7 +63,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
     
 
     <!-- C5 -->
-
     <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="width: auto !important"></div>
     <div style="display: block">
         <!-- C6_1 -->
@@ -70,7 +70,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         <!-- C6_2 -->
         <div data-bind="if: isM">
             <div 
-                data-bind="component: {name: 'kaf002-m', params: {selectedTab: selectedTab, tabs: tabs, dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr}}"
+                data-bind="component: {name: 'kaf002-m', params: {mode: mode, selectedTab: selectedTab, tabs: tabs, dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr}}"
                 style="margin-left: 121px; width: 450px !important"></div>      
         </div>
     </div>
@@ -105,6 +105,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        application: KnockoutObservable<Application>;
        dataSourceOb: KnockoutObservableArray<any>;
        selectedTab: KnockoutObservable<string> = ko.observable('');
+       name: KnockoutObservable<string> = ko.observable('hhdhd');
        // display condition
        isM: KnockoutObservable<boolean> = ko.observable(false);
        // select tab M
@@ -125,13 +126,15 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
       comment2: KnockoutObservable<Comment> = ko.observable(new Comment('', true, ''));
       // tab visible condition
       isAttendence = false;
+      isAttendence2 = false;
       isTemporaryAttendence = false;
       isOutingHourse = false;
       isBreakTime = false;
       isParentHours = false;
       isNurseTime = false;
       data: any;
-    
+      mode: number = 1; // 0 ->a, 1->b, 2->b(view)
+      reasonList: Array<GoOutTypeDispControl> = [];
     
     
         bindComment(data: any) {
@@ -161,8 +164,9 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
             }
             self.$ajax(API.getDetail, command)
                 .done(res => {
-                    console.log(res);
+                    if (!res) return;
                     self.data = res;
+                    self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0 ? self.mode = 2 : self.mode = 1;
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
                     self.bindActualData();                        
@@ -181,17 +185,29 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        bindTabM(data: any) {
            const self = this;
            let reflect = data.appStampReflectOptional;
-           if (reflect.temporaryAttendence == 0) {
+           let attendenceCommon = data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
+
+           if (reflect.temporaryAttendence == 0 && !self.isTemporaryAttendence) {
                self.dataSourceOb()[0].pop();
                self.dataSourceOb()[0].pop();
                self.dataSourceOb()[0].pop();
+           }
+           if (reflect.attendence == 0 && !self.isAttendence) {
+               self.dataSourceOb()[0].shift();
+               self.dataSourceOb()[0].shift();
+           } else {
+               if (!attendenceCommon && !self.isAttendence2) {
+                   _.remove(self.dataSourceOb()[0], (e: GridItem) => {
+                       return e.typeStamp == STAMPTYPE.ATTENDENCE && e.id == 2;
+                   });       
+               }
            }
            self.isM(true);
            self.tabs.subscribe(value => {
               if (value) {
                 if (data.appStampReflectOptional && self.tabs()) {
                     let reflect = data.appStampReflectOptional;
-                    self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && reflect.attendence && data.useTemporary == 1) || self.isAttendence || self.isTemporaryAttendence );
+                    self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && data.useTemporary) || self.isAttendence || self.isTemporaryAttendence );
                     self.tabs()[1].visible(reflect.outingHourse == 1 || self.isOutingHourse);
                     self.tabs()[2].visible(reflect.breakTime == 1 || self.isBreakTime);
                     self.tabs()[3].visible(reflect.parentHours == 1 || self.isParentHours);
@@ -205,9 +221,12 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
        } 
        
        
-       setExistCondition1(stamp: number) {
+       setExistCondition1(stamp: number, frame?: number) {
            const self = this;
            if (stamp == 0) {
+               if (frame == 2) {
+                   self.isAttendence2 = true;
+               }
                self.isAttendence = true;
            } else if (stamp == 2) {
                self.isOutingHourse = true;
@@ -236,7 +255,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         destinationTimeZoneAppDto = appStampDto.listDestinationTimeZoneApp as Array<DestinationTimeZoneAppDto>;
         if (timeStampAppDto) {
             _.forEach(timeStampAppDto, (i: TimeStampAppDto) => {
-                self.setExistCondition1(i.destinationTimeApp.timeStampAppEnum);
+                self.setExistCondition1(i.destinationTimeApp.timeStampAppEnum, i.destinationTimeApp.engraveFrameNo);
             });
         }
         if (destinationTimeAppDto) {
@@ -268,7 +287,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                let items = _.filter(timeStampAppDto, (x: TimeStampAppDto) => {
                    let destinationTimeAppDto = x.destinationTimeApp as DestinationTimeAppDto;
                    return destinationTimeAppDto.timeStampAppEnum == element.convertTimeStampAppEnum()
-                           && destinationTimeAppDto.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+                           && destinationTimeAppDto.engraveFrameNo == element.id;
                }) as Array<TimeStampAppDto>;
                _.forEach(items, (x: TimeStampAppDto) => {
                      if (x) {
@@ -290,7 +309,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (destinationTimeAppDto) {
                let itemDes = _.findLast(destinationTimeAppDto, (x: any) => {
                    return x.timeStampAppEnum == element.convertTimeStampAppEnum()
-                   && x.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+                   && x.engraveFrameNo == element.id;
                }) as DestinationTimeAppDto;
                
                if (itemDes) {
@@ -303,7 +322,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                let items = _.filter(timeStampAppOtherDto, (x: TimeStampAppOtherDto) => {
                    let destinationTimeZoneAppDto = x.destinationTimeZoneApp as DestinationTimeZoneAppDto;
                    return destinationTimeZoneAppDto.timeZoneStampClassification == element.convertTimeZoneStampClassification() 
-                           && destinationTimeZoneAppDto.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+                           && destinationTimeZoneAppDto.engraveFrameNo == element.id;
                }) as Array<TimeStampAppOtherDto>;
                if (items.length > 0) {
                    let item = items[0] as TimeStampAppOtherDto;
@@ -314,7 +333,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
            if (destinationTimeZoneAppDto) {
                let itemDes = _.findLast(destinationTimeZoneAppDto, (x: any) => {
                    return x.timeZoneStampClassification == element.convertTimeZoneStampClassification()
-                   && x.engraveFrameNo == (element.typeStamp.valueOf() != STAMPTYPE.EXTRAORDINARY ? element.id : element.id - 2);
+                   && x.engraveFrameNo == element.id;
                })
                if (itemDes) {
                    element.flagObservable(true);
@@ -537,7 +556,34 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         }
 
 		reload() {
-			
+		    const self = this;
+            self.$blockui('show');
+            let appplication = ko.toJS(self.application) as Application;
+            let appId = appplication.appID;
+            let companyId = self.$user.companyId;
+            let appDispInfoStartupDto = ko.toJS(self.appDispInfoStartupOutput);
+            let recoderFlag = false;
+            let command = {
+                    appId,
+                    companyId,
+                    appDispInfoStartupDto,
+                    recoderFlag
+            }
+            self.$ajax(API.getDetail, command)
+                .done(res => {
+                    self.data = res;
+                    self.checkExistData();
+                    self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
+                    self.bindActualData();                        
+                    //self.bindTabM(self.data); 
+                    self.bindComment(self.data);
+                    self.printContentOfEachAppDto().opAppStampOutput = res;
+                }).fail(res => {
+                    self.showError(res);
+                }).always(() => {
+                    self.$blockui('hide');
+                });
+		    
 		}
 
         showError(res: any) {
@@ -547,11 +593,14 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                          messageId: res.messageId,
                          messageParams: res.parameterIds
                  }
-                self.$dialog.error(param);
+                self.$dialog.error(param).then(() => {
+                    if (res.messageId == 'Msg_197') {
+                        window.location.reload();
+                    }
+                });
              }
         }
         update() {
-            console.log('update');
             const self = this;
             if (!self.appDispInfoStartupOutput().appDetailScreenInfo) {
                 return;
@@ -582,7 +631,6 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     appStampOutputDto: data,
                     applicationDto: applicationDto
             }
-            self.$blockui("show");
             
             return self.$validate('.nts-input', '#kaf000-a-component3-prePost', '#kaf000-a-component5-comboReason', '#inputTimeKAF002')
             .then(isValid => {
@@ -591,6 +639,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                 }
             }).then(result => {
                 if(!result) return; 
+                self.$blockui("show");
                 return self.$ajax(API.checkUpdate, commandCheck);
             }).then(res => {
                 if (res == undefined) return;
@@ -602,9 +651,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                  }
             }).done(result => {
                 if (result != undefined) {
-                    self.$dialog.info({messageId: "Msg_15"}).then(() => {
-                        location.reload();
-                    });                
+                    return self.$dialog.info({messageId: "Msg_15"});    
                 }
             })
             .fail(res => {
@@ -655,7 +702,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                 let destinationTimeApp = {} as DestinationTimeAppDto;
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.startTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -669,7 +716,7 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                 let destinationTimeApp = {} as DestinationTimeAppDto;
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 timeStampAppDto.destinationTimeApp = destinationTimeApp;
                                 timeStampAppDto.timeOfDay = ko.toJS(el.endTimeRequest);
                                 timeStampAppDto.workLocationCd = null;
@@ -681,14 +728,14 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                                 let destinationTimeApp = {} as DestinationTimeAppDto;
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = START_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                             if (el.endTimeActual) {
                                 let destinationTimeApp = {} as DestinationTimeAppDto;
                                 destinationTimeApp.timeStampAppEnum = el.convertTimeStampAppEnum();
                                 destinationTimeApp.startEndClassification = END_CLASSIFICATION;
-                                destinationTimeApp.engraveFrameNo = el.typeStamp == STAMPTYPE.EXTRAORDINARY ? el.id -2 : el.id;
+                                destinationTimeApp.engraveFrameNo = el.id;
                                 listDestinationTimeApp.push(destinationTimeApp)
                             }
                         }   

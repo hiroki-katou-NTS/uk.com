@@ -860,7 +860,7 @@ module cmm045.a.viewmodel {
             let $tbody = $container.find(".nts-fixed-body-wrapper tbody");
             $tbody.empty();
 
-            this.items().forEach(item => {
+            self.items().forEach((item, i) => {
                 let $tr = $("<tr/>");
                 columns.forEach(column => {
 
@@ -898,36 +898,17 @@ module cmm045.a.viewmodel {
                             .appendTo($td);
                     }
                     else if(column.key == 'appDate') {
-                        // var date = nts.uk.time.formatDate(new Date(item.opAppStartDate), "M/dD");
                         var date = moment(item.opAppStartDate).format("M/D(ddd)");
                         if(item.opAppStartDate !== item.opAppEndDate) {
-                            date = date + "－" + moment(item.opAppEndDate).format("M/D(ddd)");
+                            date = self.appDateRangeColor(moment(item.opAppStartDate).format("M/D(ddd)"), moment(item.opAppEndDate).format("M/D(ddd)"));
+                            $td.html(date);
+                        } else {
+                            $td.html(self.appDateColor(date, "", ""));
                         }
                         if(item.appType === 10) {
 
                         }
-                        $td.html(self.appDateColor(date, "", ""));
                     }
-                    // else if(column.key == 'reflectionStatus' && self.mode() == 0) {
-                    //     if(item.reflectionStatus === '未反映') {
-                    //         $td.html('未');
-                    //     }
-                    //     if(item.reflectionStatus === '反映待ち') {
-                    //         $td.html('承認済み');
-                    //     }
-                    //     if(item.reflectionStatus === '反映済') {
-                    //         $td.html('反映済み');
-                    //     }
-                    //     if(item.reflectionStatus === '取消済') {
-                    //         $td.html('取消');
-                    //     }
-                    //     if(item.reflectionStatus === '差し戻し') {
-                    //         $td.html('差戻');
-                    //     }
-                    //     if(item.reflectionStatus === '否認') {
-                    //         $td.html('否');
-                    //     }
-                    // }
                     else {
                         $td.html(self.customContent(column.key, item));
                     }
@@ -952,11 +933,11 @@ module cmm045.a.viewmodel {
 				let nameStr = '';
 				if(!_.isNull(self.appListInfo) && self.appListInfo.displaySet.workplaceNameDisp==1) {
 					//if(!nts.uk.util.isNullOrEmpty(item.workplaceName)) {
-					nameStr += item.workplaceName + '<br/>';
+					nameStr += item.workplaceName + '\n';
 					//}
 				}
 				nameStr += item[key];
-				return nameStr;
+				return _.escape(nameStr).replace(/\n/g, '<br/>');
 			}
 
 			if(key=='appType') {
@@ -974,18 +955,18 @@ module cmm045.a.viewmodel {
 				if(_.isUndefined(appInfo)) {
 					return '';
 				} else {
-					return appInfo.appName;
+					return _.escape(appInfo.appName);
 				}
 			}
 			if(key=='prePostAtr') {
 				if(item[key]==0) {
-					return nts.uk.resource.getText('KAF000_47');
+					return _.escape(nts.uk.resource.getText('KAF000_47'));
 				} else {
-					return nts.uk.resource.getText('KAF000_48');
+					return _.escape(nts.uk.resource.getText('KAF000_48'));
 				}
 			}
 			if(key=='appContent') {
-				return item[key].replace(/\n/g, '<br/>');
+				return _.escape(item[key]).replace(/\n/g, '<br/>');
             }
             if(key=='inputDate') {
                 var cl = "";
@@ -996,9 +977,9 @@ module cmm045.a.viewmodel {
                 return self.inputDateColor(time, cl);
             }
 			if(key=='reflectionStatus') {
-				return getText(item[key]);
+				return _.escape(getText(item[key]));
 			}
-			return item[key];
+			return _.escape(item[key]);
 		}
 
         reloadGridApplicaion(colorBackGr: any, isHidden: boolean) {

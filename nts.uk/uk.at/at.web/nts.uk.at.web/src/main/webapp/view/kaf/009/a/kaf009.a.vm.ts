@@ -156,16 +156,22 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 model.checkbox2 ? 1 : 0,
             );
             // is change can be null
-            if (!_.isNull(model.checkbox3)) {
-                goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;
-                if (model.workTypeCode != '') {
-                    let dw = new DataWork( model.workTypeCode );
-                    if ( model.workTimeCode ) {
-                        dw.workTime = model.workTimeCode
-                    }                    
-                    goBackApp.dataWork = dw;
+//            if (!_.isNull(model.checkbox3)) {
+                if (!_.isNull(model.checkbox3)) {
+                    goBackApp.isChangedWork = model.checkbox3 ? 1 : 0;                    
                 }
-            }
+                if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
+                    if (!_.isEmpty(vm.model.workTypeCode())) {
+                        let dw = new DataWork( model.workTypeCode );
+                        if ( model.workTimeCode ) {
+                            dw.workTime = model.workTimeCode
+                        }
+                        goBackApp.dataWork = dw;
+                        
+                    }
+                    
+                }
+//            }
 
             let param = {
                 companyId: this.$user.companyId,
@@ -228,6 +234,23 @@ module nts.uk.at.view.kaf009_ref.a.viewmodel {
                 vm.dataFetch().isChangeDate = true;
             }
             let dataClone = _.clone(vm.dataFetch());
+            let appDisp = ko.toJS(vm.appDispInfoStartupOutput);
+            let listActual = appDisp.appDispInfoWithDateOutput.opActualContentDisplayLst;
+            if (listActual[0]) {
+                if(!_.isEmpty(listActual)) {
+                    if (listActual[0].opAchievementDetail) {
+                        let workType = listActual[0].opAchievementDetail.workTypeCD;
+                        let workTime = listActual[0].opAchievementDetail.workTimeCD;
+                        if (vm.mode && vm.model.checkbox3() || vm.dataFetch().goBackReflect().reflectApplication == 1) {
+                            if (!_.isNull(dataClone)) {
+                                dataClone.workTime(workTime);
+                                dataClone.workType(workType);                                                            
+                            }
+                        }
+                    }
+                }
+            }
+            
             if (!_.isNull(dataClone)) {
                 vm.dataFetch(dataClone);
                 vm.dataFetch().appDispInfoStartup = vm.appDispInfoStartupOutput;

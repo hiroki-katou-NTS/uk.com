@@ -139,11 +139,11 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 					if (optional.isPresent()) {
 						krqdtAppStamp = optional.get();
 						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
-							krqdtAppStamp.startTime = x.getTimeOfDay().getDayTime();
+							krqdtAppStamp.startTime = x.getTimeOfDay().v();
 							krqdtAppStamp.startCancelAtr = START_NOT_CANCEL;
 						} 
 						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END) {
-							krqdtAppStamp.endTime = x.getTimeOfDay().getDayTime();
+							krqdtAppStamp.endTime = x.getTimeOfDay().v();
 							krqdtAppStamp.endCancelAtr = END_NOT_CANCEL;
 						}
 					} else {
@@ -152,10 +152,10 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 										convertEnumTimeStamApp(x.getDestinationTimeApp().getTimeStampAppEnum()),
 										x.getDestinationTimeApp().getEngraveFrameNo()),
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START
-										? x.getTimeOfDay().getDayTime()
+										? x.getTimeOfDay().v()
 										: null,
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END
-										? x.getTimeOfDay().getDayTime()
+										? x.getTimeOfDay().v()
 										: null,
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
 								x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
@@ -168,10 +168,10 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 									convertEnumTimeStamApp(x.getDestinationTimeApp().getTimeStampAppEnum()),
 									x.getDestinationTimeApp().getEngraveFrameNo()),
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START
-									? x.getTimeOfDay().getDayTime()
+									? x.getTimeOfDay().v()
 									: null,
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END
-									? x.getTimeOfDay().getDayTime()
+									? x.getTimeOfDay().v()
 									: null,
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START ? START_NOT_CANCEL : null, 
 							x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END ? END_NOT_CANCEL : null,
@@ -226,8 +226,8 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 			listTimeStampAppOther.stream().forEach(item -> {
 				KrqdtAppStamp krqdtAppStamp = new KrqdtAppStamp(
 						new KrqdtAppStampPK(AppContexts.user().companyId(), appStamp.getAppID(), convertTimeZoneStampClassification(item.getDestinationTimeZoneApp().getTimeZoneStampClassification()), item.getDestinationTimeZoneApp().getEngraveFrameNo()),
-						item.getTimeZone().getStartTime().getDayTime(),
-						item.getTimeZone().getEndTime().getDayTime(),
+						item.getTimeZone().getStartTime().v(),
+						item.getTimeZone().getEndTime().v(),
 						START_NOT_CANCEL,
 						END_NOT_CANCEL,
 						null);

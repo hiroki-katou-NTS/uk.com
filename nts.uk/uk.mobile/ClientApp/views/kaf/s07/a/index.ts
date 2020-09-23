@@ -117,11 +117,10 @@ export class KafS07AComponent extends KafS00ShrComponent {
     public created() {
         const self = this;
         if (self.params) {
-            console.log(self.params);
             self.mode = false;
             this.data = self.params;
         }
-        self.fetchStart();
+        
 
     }
 
@@ -136,8 +135,8 @@ export class KafS07AComponent extends KafS00ShrComponent {
     }
 
     public mounted() {
-        let self = this;
-
+        const self = this;
+        self.fetchStart();
     }
 
     public fetchStart() {
@@ -282,7 +281,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
         self.kaf000_B_Params = paramb;
         if (self.mode) {
             self.$watch('kaf000_B_Params.output.startDate', (newV, oldV) => {
-                console.log('changedate' + oldV + '--' + newV);
                 let startDate = _.clone(self.kaf000_B_Params.output.startDate);
                 let endDate = _.clone(self.kaf000_B_Params.output.endDate);
                 if (_.isNull(startDate)) {
@@ -332,7 +330,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
                 self.changeDate(listDate);
             });
             self.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
-                console.log(newV + ':' + oldV);
             });
 
         }
@@ -542,25 +539,30 @@ export class KafS07AComponent extends KafS00ShrComponent {
             this.appWorkChangeDto.timeZoneWithWorkNoLst = [];
             let a = null;
             let b = null;
-            if (this.isCondition1 && this.valueWorkHours1.start && this.valueWorkHours1.end) {
-                a = {
-                    workNo: 1,
-                    timeZone: {
-                        startTime: this.valueWorkHours1.start,
-                        endTime: this.valueWorkHours1.end
-                    }
-                };
-                this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
+            if (!_.isNull(this.valueWorkHours1)) {
+                if (this.isCondition1 && this.valueWorkHours1.start && this.valueWorkHours1.end) {
+                    a = {
+                        workNo: 1,
+                        timeZone: {
+                            startTime: this.valueWorkHours1.start,
+                            endTime: this.valueWorkHours1.end
+                        }
+                    };
+                    this.appWorkChangeDto.timeZoneWithWorkNoLst.push(a);
+                }
+
             }
-            if (this.isCondition2 && this.valueWorkHours2.start && this.valueWorkHours2.end) {
-                b = {
-                    workNo: 2,
-                    timeZone: {
-                        startTime: this.valueWorkHours2.start,
-                        endTime: this.valueWorkHours2.end
-                    }
-                };
-                this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
+            if (!_.isNull(this.valueWorkHours2)) {
+                if (this.isCondition2 && this.valueWorkHours2.start && this.valueWorkHours2.end) {
+                    b = {
+                        workNo: 2,
+                        timeZone: {
+                            startTime: this.valueWorkHours2.start,
+                            endTime: this.valueWorkHours2.end
+                        }
+                    };
+                    this.appWorkChangeDto.timeZoneWithWorkNoLst.push(b);
+                }
             }
         }
         if (!this.mode) {
@@ -677,7 +679,13 @@ export class KafS07AComponent extends KafS00ShrComponent {
         }).then((res: any) => {
             this.$mask('hide');
             // KAFS00_D_申請登録後画面に移動する
-            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID });
+            this.$modal('kafs00d', { mode: this.mode ? ScreenMode.NEW : ScreenMode.DETAIL, appID: res.data.appID })
+                .then((res: any) => {
+                    self.data = res;
+                    self.mode = false;
+                    self.fetchStart();
+                    self.$forceUpdate();
+                });
         }).catch((res: any) => {
             this.$mask('hide');
             self.handleErrorMessage(res);
@@ -710,9 +718,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
             }
         }
         vm.isValidateAll = validAll;
-        console.log(validAll);
-        console.log(vm.application);
-
         // check validation 
         this.$validate();
         if (!this.$valid || !validAll) {
@@ -724,8 +729,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
             this.$mask('show');
         }
         this.bindAppWorkChangeRegister();
-        console.log(this.appWorkChangeDto);
-
 
         // check before registering application
         this.$http.post('at', API.checkBeforRegister, {
@@ -825,7 +828,6 @@ export class KafS07AComponent extends KafS00ShrComponent {
     }
     public openKDL002(name: string) {
         const self = this;
-        console.log(_.map(this.data.appWorkChangeDispInfo.appDispInfoStartupOutput.appDispInfoWithDateOutput.opWorkTimeLst, (item: any) => item.worktimeCode));
         if (name == 'worktype') {
             this.$modal(
                 'worktype',
