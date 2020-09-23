@@ -1,4 +1,11 @@
+
 #contents-area {
+  padding-top: 5px;
+  padding-left: 5px;
+  width: 440px;
+  border: 1px groove;
+}
+.contents-area {
   padding-top: 5px;
   padding-left: 5px;
   width: 440px;
@@ -129,4 +136,16 @@ table thead tr th {
 }
 .text-right {
   text-align: right;
+}
+.h385 {
+  height: 385px;
+}
+.mh-195 {
+  max-height: 195px;
+}
+.h-350 {
+  height: 350px;
+}
+.mh-200 {
+  max-height: 200px;
 }
