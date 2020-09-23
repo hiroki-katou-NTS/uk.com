@@ -20,7 +20,11 @@ public class DeleteAppEmploymentSetCommandHandler extends CommandHandler<AppEmpl
     // refactor 4
     @Inject
     private AppEmploymentSetRepository appEmploymentSetRepo;
-	
+
+	/**
+	 * 削除処理
+	 * @param context
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<AppEmploymentSetCommand> context) {
 		
