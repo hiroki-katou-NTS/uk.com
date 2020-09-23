@@ -30,7 +30,7 @@ public class DayActualConfirmDoneCheckImpl implements DayActualConfirmDoneCheck 
 	@Override
 	public boolean check(boolean canAppAchievementConfirm, String companyID, String employeeID, GeneralDate appDate) {
 		// INPUT．日別実績が確認済なら申請できないをチェックする
-		if (canAppAchievementConfirm) {
+		if (!canAppAchievementConfirm) {
 			// 承認ルート状況．上司確認をチェックする
 			List<ApproveRootStatusForEmpImPort> approveRootStatus = Collections.emptyList();
 			try {
