@@ -36,9 +36,9 @@ import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttime;
 import nts.uk.ctx.at.record.infra.entity.daily.shortwork.KrcdtDayShorttimePK;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTime;
 import nts.uk.ctx.at.record.infra.entity.daily.time.KrcdtDayTimePK;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LateTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.LeaveEarlyTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.breaktimegoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakgoout.OutingTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.earlyleavetime.LeaveEarlyTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.latetime.LateTimeOfDaily;
 import nts.arc.time.calendar.period.DatePeriod;
 
 @Stateless

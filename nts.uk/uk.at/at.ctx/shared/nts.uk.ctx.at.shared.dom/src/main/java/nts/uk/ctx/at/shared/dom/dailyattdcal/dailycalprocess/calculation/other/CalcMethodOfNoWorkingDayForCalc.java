@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other;
 
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.CalcMethodOfNoWorkingDay;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CalcMethodOfNoWorkingDay;
 
 /**
  * フレックス勤務の非勤務日の場合の計算方法

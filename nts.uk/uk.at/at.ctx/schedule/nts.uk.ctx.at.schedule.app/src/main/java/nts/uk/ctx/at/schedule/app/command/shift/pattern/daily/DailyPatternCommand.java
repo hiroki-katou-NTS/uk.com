@@ -43,7 +43,7 @@ public class DailyPatternCommand {
 	 */
 	public WorkCycle toDomain(String companyId) {
 		val listInfor = dailyPatternVals.stream().map(i->
-				WorkCycleInfo.create(i.getDays(),new WorkInformation(i.getWorkingHoursCd(),i.getWorkTypeSetCd())))
+				WorkCycleInfo.create(i.getDays(),new WorkInformation(i.getWorkTypeSetCd(),i.getWorkingHoursCd())))
 				.collect(Collectors.toList());
 		return WorkCycle.create(companyId,patternCode,patternName,listInfor);
 	}

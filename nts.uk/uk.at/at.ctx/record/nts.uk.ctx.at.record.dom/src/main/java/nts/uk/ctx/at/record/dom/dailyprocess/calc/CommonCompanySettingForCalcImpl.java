@@ -14,8 +14,6 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordReposi
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPUnitUseSettingRepository;
 import nts.uk.ctx.at.shared.dom.calculation.holiday.flex.FlexSetRepository;
 import nts.uk.ctx.at.shared.dom.calculation.setting.DeformLaborOTRepository;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.midnighttime.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.dailyprocess.calc.CalculateOption;
 import nts.uk.ctx.at.shared.dom.optitem.OptionalItemRepository;
 import nts.uk.ctx.at.shared.dom.optitem.applicable.EmpConditionRepository;
@@ -23,6 +21,8 @@ import nts.uk.ctx.at.shared.dom.optitem.calculation.FormulaRepository;
 import nts.uk.ctx.at.shared.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
 import nts.uk.ctx.at.shared.dom.ot.zerotime.ZeroTimeRepository;
 import nts.uk.ctx.at.shared.dom.scherec.addsettingofworktime.HolidayAddtionRepository;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.midnighttimezone.MidNightTimeSheet;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSettingRepository;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.CompensLeaveComSetRepository;
 import nts.uk.ctx.at.shared.dom.workrule.specific.SpecificWorkRuleRepository;

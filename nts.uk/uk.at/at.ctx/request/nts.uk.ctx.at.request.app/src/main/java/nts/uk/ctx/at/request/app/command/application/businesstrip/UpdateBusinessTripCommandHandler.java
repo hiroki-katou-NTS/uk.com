@@ -114,6 +114,11 @@ public class UpdateBusinessTripCommandHandler extends CommandHandlerWithResult<U
         if (businessTrip.getInfos().isEmpty()) {
             throw new BusinessException("Msg_1703");
         }
+
+        transaction.parallel(businessTrip.getInfos(), item -> {
+            return null;
+        });
+
         // loop 年月日　in　期間
         businessTrip.getInfos().stream().forEach(i -> {
 

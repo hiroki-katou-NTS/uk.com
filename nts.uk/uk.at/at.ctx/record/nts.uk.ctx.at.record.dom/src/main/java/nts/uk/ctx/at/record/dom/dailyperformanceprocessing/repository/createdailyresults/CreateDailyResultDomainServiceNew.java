@@ -81,6 +81,7 @@ import nts.uk.shr.com.i18n.TextResource;
  * @author tutk
  *
  */
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 @Stateless
 public class CreateDailyResultDomainServiceNew {
 

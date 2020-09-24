@@ -24,7 +24,7 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.scheduleteam.domainservice.GetSch
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
- * 個人条件の表示制御 
+ * 個人条件の表示制御 Root
  * UKDesign.ドメインモデル."NittsuSystem.UniversalK".就業.contexts.勤務予定.表示設定
  * 
  * @author HieuLT

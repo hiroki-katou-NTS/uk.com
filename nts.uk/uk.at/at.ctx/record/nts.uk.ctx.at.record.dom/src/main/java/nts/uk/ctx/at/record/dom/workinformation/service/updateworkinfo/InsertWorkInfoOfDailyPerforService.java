@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.workinformation.service.updateworkinfo;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 
 /**
  * 日別実績の勤務情報を登録する

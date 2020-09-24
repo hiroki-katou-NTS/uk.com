@@ -32,7 +32,10 @@ export class KafS00DComponent extends Vue {
     private goToDetail() {
         const self = this;
         let lstAppID = [self.params.appID];
-        self.$modal('cmms45c', { 'listAppMeta': lstAppID, 'currentApp': self.params.appID });
+        self.$modal('cmms45c', { 'listAppMeta': lstAppID, 'currentApp': self.params.appID })
+            .then((res: any) => {
+                self.$close(res);
+            });
     }
 
     private goToAppLst() {

@@ -2,8 +2,8 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other;
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethod;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.flex.FlexCalcMethodOfHalfWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workingstyle.flex.FlexCalcMethodOfHalfWork;
 
 /**
  * 控除時間

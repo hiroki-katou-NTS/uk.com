@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.timezo
 
 import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.calcategory.CalAttrOfDailyAttd;
 
 /**
  * 加給自動計算設定

@@ -11,12 +11,12 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonthWithMinus;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.TimeDivergenceWithCalculationMinusExist;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.holidayworktime.HolidayWorkFrameTime;
 import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculationAndMinus;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.timeseries.FlexTimeOfTimeSeries;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculationMinusExist;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.holidayworktime.HolidayWorkFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
 
 /**
  * フレックス時間
@@ -99,7 +99,7 @@ public class FlexTime implements Serializable{
 		val targetFlexTime = this.timeSeriesWorks.get(ymd);
 		val flexTimeSrc = targetFlexTime.getFlexTime();
 		targetFlexTime.setFlexTime(
-				new nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.overtimework.FlexTime(
+				new nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.overtimehours.clearovertime.FlexTime(
 						TimeDivergenceWithCalculationMinusExist.createTimeWithCalculation(
 								flexTimeSrc.getFlexTime().getTime().addMinutes(timeAsMinutes),
 								flexTimeSrc.getFlexTime().getCalcTime().addMinutes(calcTimeAsMinutes)),

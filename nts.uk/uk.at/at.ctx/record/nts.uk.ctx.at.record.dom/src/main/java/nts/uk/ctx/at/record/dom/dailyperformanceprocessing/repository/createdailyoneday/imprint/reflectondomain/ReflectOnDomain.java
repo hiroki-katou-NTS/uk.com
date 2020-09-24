@@ -3,13 +3,15 @@ package nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdai
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.EngravingMethod;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -19,6 +21,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectOnDomain {
 	/**
 	 * 

@@ -90,7 +90,7 @@ public class WorkInformationTest {
 				result = Optional.of(workTimeSetting);
 			}
 		};
-		assertThat(workInformation.checkNormalCondition(require)).isTrue();
+		assertThat(workInformation.checkNormalCondition(require)).isFalse();
 	}
 
 	@Test
