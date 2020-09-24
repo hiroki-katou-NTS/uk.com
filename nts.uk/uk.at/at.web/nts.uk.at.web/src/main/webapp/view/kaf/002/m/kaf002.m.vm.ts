@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         tabsTemp: any;
         selectedTemp: any;
         reasonList: Array<GoOutTypeDispControl>;
-        mode: number;
+        mode: number = 1;
         created(params) {
 
             const self = this;
@@ -181,11 +181,15 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                 }
             })
             self.isPreAtr.subscribe((value) => {
-               if(!_.isNull(value)) {
+               if(!_.isNull(value) && self.mode == 0) {
                    self.loadAll();
                }
 
             });
+            
+            
+            
+            self.disableControl();
 
         }
         createdReasonItem(reasonList: Array<GoOutTypeDispControl>) {
@@ -292,7 +296,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                         if (_.isNaN(Number(endRequest)) || Number(endRequest) > 4319 || Number(endRequest) < (-720)) {
                             i.endTimeRequest(null);
                         }
-                        if (self.mode ==0) {
+                        if (self.mode == 0) {
                             if (i.typeStamp == STAMPTYPE.GOOUT_RETURNING) {
                                 i.typeReason = String (self.createdReasonItem(self.reasonList)[0].code);                            
                             }
@@ -321,9 +325,22 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             self.binding();
         }
 
-
+        disableControl() {
+            const self = this;
+            if (self.mode == 2) {
+                var loop = window.setInterval(function () {
+                    if ($('.startTime input') && $('.endTime input') && $('.enableFlag input')) {
+                        _.forEach($('.startTime input'), i => { $(i).prop('disabled', true)});
+                        _.forEach($('.endTime input'), i => { $(i).prop('disabled', true)});
+                        _.forEach($('.enableFlag input'), i => { $(i).prop('disabled', true)});
+                        window.clearInterval(loop);
+                    }
+                }, 100);
+            }
+        }
         constructor() {
             super();
+            
         }
 
         initDataSource() {
@@ -391,8 +408,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             });
 
             let optionGrid = {
-                    width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '430px' : '527px',
-                    height: isChrome ? '330px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
+                    width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '420px' : '517px',
+                    height: isChrome ? '310px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
                     dataSource: dataSource,
                     primaryKey: 'id',
                     virtualization: true,
@@ -448,8 +465,8 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                                new ItemModel('2', '有償'),
                                new ItemModel('3', '組合')];
             let option2 = {
-              width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '565px' : '665px',
-              height: isChrome ? '330px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
+              width: (((!self.isVisibleComlumn && !ko.toJS(self.isPreAtr)) || ko.toJS(self.isPreAtr))) ? '555px' : '655px',
+              height: isChrome ? '310px' : (ko.toJS(self.isPreAtr) ? '300px' : '320px'),
               dataSource: dataSource,
               primaryKey: 'id',
               virtualization: true,
@@ -491,7 +508,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                   }
                   ],
               ntsControls: [
-                            { name: 'Combobox', width: '50px', height: '100px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, spaceSize: 'small' }
+                            { name: 'Combobox', width: '50px', height: '100px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: self.mode != 2 ? true : false, spaceSize: 'small' }
                               ]
               };
             if (!self.isVisibleComlumn || ko.toJS(self.isPreAtr)) {
@@ -706,17 +723,6 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
             this.frameNo = index;
             this.opStartTime = null;
             this.opEndTime = null;
-//            if ( index == 1 ) {
-//                this.opStartTime = 650;
-//                this.opEndTime = null;
-//            } else if ( index == 3 ) {
-//                this.opStartTime = 500;
-//                this.opEndTime = 1500;
-//
-//            } else {
-//                this.opStartTime = index % 2 == 0 ? 1000 : null;
-//                this.opEndTime = index % 2 == 0 ? 1500 : null;
-//            }
         }
 
     }
