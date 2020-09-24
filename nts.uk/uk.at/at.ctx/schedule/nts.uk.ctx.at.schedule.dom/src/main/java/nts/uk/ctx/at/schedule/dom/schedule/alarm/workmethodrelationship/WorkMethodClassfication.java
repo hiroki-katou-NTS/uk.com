@@ -23,4 +23,8 @@ public enum WorkMethodClassfication {
 		
 		return EnumAdaptor.valueOf(value,  WorkMethodClassfication.class);
 	}
+	
+	public boolean isAttendance() {
+		return this == WorkMethodClassfication.ATTENDANCE;
+	}
 }
