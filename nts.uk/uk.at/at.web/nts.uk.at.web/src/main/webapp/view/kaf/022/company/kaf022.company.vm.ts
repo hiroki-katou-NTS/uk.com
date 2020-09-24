@@ -182,6 +182,12 @@ module nts.uk.at.view.kaf022.company.viewmodel {
                     //Load data setting
                     self.loadData();
                 });
+            }).fail(error => {
+                nts.uk.ui.dialog.alertError(error).then(() => {
+                    if (error.messageId == "Msg_1751") {
+                        self.viewmodelA.openScreenS();
+                    }
+                });
             }).always(() => {
                 nts.uk.ui.block.clear();
             });

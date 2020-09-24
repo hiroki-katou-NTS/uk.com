@@ -17,6 +17,10 @@ public class RequestByCompanyFinder {
     @Inject
     private RequestByCompanyRepository requestByCompanyRepo;
 
+    /**
+     *      * 起動初期の処理
+     * @return
+     */
     public List<ApplicationUseSetDto> findByCompany() {
         String companyId = AppContexts.user().companyId();
         return requestByCompanyRepo.findByCompanyId(companyId)
