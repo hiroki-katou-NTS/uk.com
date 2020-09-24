@@ -20,6 +20,8 @@ module nts.uk.com.view.cmm002.a {
 				if(value != ""){
 					self.allowedIPAddress.update(_.find(self.allowedIPAddressList(), ['id', value]));
 					$('input').ntsError('check');
+				}else{
+					self.allowedIPAddress.update(ko.toJS(new AllowedIPAddress()));
 				}
 			});
         }
@@ -28,8 +30,23 @@ module nts.uk.com.view.cmm002.a {
         public start(): JQueryPromise<void> {
 			let self = this;            
             let dfd = $.Deferred<any>();
+            self.getData().done(() => {
+				if(self.allowedIPAddressList().length != 0){
+					self.selectedAllowedIPAddress(self.allowedIPAddressList()[0].id);					
+				}
+                dfd.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /** Get Data */
+        public getData(): JQueryPromise<void> {
+			let self = this;            
+            let dfd = $.Deferred<any>();
 			block.invisible();
-            service.start().done((data: any) => {
+            service.getData().done((data: any) => {
                 self.accessLimitUseAtr(data.accessLimitUseAtr);
 				let tg = [];
 				_.forEach(data.allowedIPaddress, (item) => {
@@ -49,8 +66,8 @@ module nts.uk.com.view.cmm002.a {
 		public newIp():void{
 			let self = this;
 			self.selectedAllowedIPAddress('');
-			self.allowedIPAddress.update(ko.toJS(new AllowedIPAddress()));
 			errors.clearAll();
+			$('#firstId').focus();
 		}
 		
 		public save():void{
@@ -64,7 +81,7 @@ module nts.uk.com.view.cmm002.a {
 						allowedIPAddressNew: ko.toJS(self.allowedIPAddress)
 					};
 		            service.add(param).done(() => {
-		            	self.start().done(()=>{
+		            	self.getData().done(()=>{
 							self.selectedAllowedIPAddress(new AllowedIPAddressDto(ko.toJS(self.allowedIPAddress)).id);
 						});
 						dialog.info({ messageId: "Msg_15" });
@@ -80,7 +97,7 @@ module nts.uk.com.view.cmm002.a {
 						allowedIPAddressOld: _.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()]) 
 					};
 		            service.update(param).done(() => {
-		            	self.start().done(()=>{
+		            	self.getData().done(()=>{
 							self.selectedAllowedIPAddress(new AllowedIPAddressDto(ko.toJS(self.allowedIPAddress)).id);
 						});
 						dialog.info({ messageId: "Msg_15" });
@@ -97,9 +114,19 @@ module nts.uk.com.view.cmm002.a {
 			if(self.selectedAllowedIPAddress() != ''){
 				dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     block.invisible();
+					let index = _.findIndex(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()]);
 		            service.del(_.find(self.allowedIPAddressList(), ['id', self.selectedAllowedIPAddress()])).done(() => {
-						self.start();
-						self.newIp();
+						self.getData().done(()=>{
+							if(self.allowedIPAddressList().length == 0){
+								self.selectedAllowedIPAddress('');
+							}else{
+								if(index < 1){
+									self.selectedAllowedIPAddress(self.allowedIPAddressList()[0].id);
+								}else{
+									self.selectedAllowedIPAddress(self.allowedIPAddressList()[index - 1].id);
+								}
+							}
+						});
 						dialog.info({ messageId: "Msg_16" });
 					}).fail(function(error: any) {
 		                dialog.alertError({ messageId: error.messageId });

@@ -1,13 +1,13 @@
 module nts.uk.com.view.cmm002.a.service {
     var paths = {
-        start: "com/screen/cmm002/get",
+        getData: "com/screen/cmm002/get",
         add: "com/ctx/sys/gateway/accessrestrictions/add",
         update: "com/ctx/sys/gateway/accessrestrictions/update",
         del: "com/ctx/sys/gateway/accessrestrictions/del"
     }
        
-     export function start(){
-        return nts.uk.request.ajax(paths.start);    
+     export function getData(){
+        return nts.uk.request.ajax(paths.getData);    
     }
       
     export function add(param: any): JQueryPromise<void>{

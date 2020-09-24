@@ -68,7 +68,7 @@
 						enable: true }"></div>
 					<div class="ipAddress">
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM002_8')}</div>
-						<input class="ip" tabindex="6" data-bind="ntsNumberEditor: {
+						<input class="ip" id="firstId" tabindex="6" data-bind="ntsNumberEditor: {
 							name: '#[CMM002_8]',
 							value: allowedIPAddress.startAddress.ip1,
 							constraint: 'IPAddress',
