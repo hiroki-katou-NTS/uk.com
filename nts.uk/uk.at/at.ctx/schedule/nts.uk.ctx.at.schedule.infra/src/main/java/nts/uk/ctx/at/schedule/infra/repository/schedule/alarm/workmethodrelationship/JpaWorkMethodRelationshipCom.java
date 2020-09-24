@@ -16,8 +16,8 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCom;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipComRepo;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCom;
-import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextComDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpDtl;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -54,8 +54,8 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 
 	@Override
 	public void insert(WorkMethodRelationshipCom domain) {
-		KscmtAlchkWorkContextCom workContext = KscmtAlchkWorkContextCom.fromDomain(domain);
-		List<KscmtAlchkWorkContextComDtl> workContextDtlList = KscmtAlchkWorkContextComDtl.fromDomain(domain);
+		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(domain);
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(domain);
 		
 		this.commandProxy().insert(workContext);
 		this.commandProxy().insertAll(workContextDtlList);
@@ -63,8 +63,8 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 
 	@Override
 	public void update(WorkMethodRelationshipCom domain) {
-		KscmtAlchkWorkContextCom workContext = KscmtAlchkWorkContextCom.fromDomain(domain);
-		List<KscmtAlchkWorkContextComDtl> workContextDtlList = KscmtAlchkWorkContextComDtl.fromDomain(domain);
+		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(domain);
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(domain);
 		
 		this.commandProxy().update(workContext);
 		this.commandProxy().updateAll(workContextDtlList);
@@ -84,25 +84,25 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 		
 		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification().isAttendance() ?
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() : 
-					KscmtAlchkWorkContextCom.HOLIDAY_WORK_TIME_CODE;
+					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
 		
-		Optional<KscmtAlchkWorkContextCom> workContext = 
+		Optional<KscmtAlchkWorkContextCmp> workContext = 
 				new NtsStatement(SELECT_ONE_WORK_CONTEXT, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramInt("prevWorkMethod", prevWorkMethod.getWorkMethodClassification().value)
 				.paramString("prevWorkTimeCode", prevWorkTimeCode)
-				.getSingle(KscmtAlchkWorkContextCom.mapper);
+				.getSingle(KscmtAlchkWorkContextCmp.mapper);
 		
 		if (!workContext.isPresent()) {
 			return;
 		}
 		
-		List<KscmtAlchkWorkContextComDtl> workContextDtlList = 
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = 
 				new NtsStatement(SELECT_ONE_WORK_CONTEXT_DTL, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramInt("prevWorkMethod", prevWorkMethod.getWorkMethodClassification().value)
 				.paramString("prevWorkTimeCode", prevWorkTimeCode)
-				.getList( KscmtAlchkWorkContextComDtl.mapper);
+				.getList( KscmtAlchkWorkContextCmpDtl.mapper);
 		
 		this.commandProxy().remove(workContext);
 		this.commandProxy().removeAll(workContextDtlList);
@@ -122,25 +122,25 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 		
 		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification().isAttendance() ?
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() : 
-					KscmtAlchkWorkContextCom.HOLIDAY_WORK_TIME_CODE;
+					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
 		
-		Optional<KscmtAlchkWorkContextCom> workContext = 
+		Optional<KscmtAlchkWorkContextCmp> workContext = 
 				new NtsStatement(SELECT_ONE_WORK_CONTEXT, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramInt("prevWorkMethod", prevWorkMethod.getWorkMethodClassification().value)
 				.paramString("prevWorkTimeCode", prevWorkTimeCode)
-				.getSingle(KscmtAlchkWorkContextCom.mapper);
+				.getSingle(KscmtAlchkWorkContextCmp.mapper);
 		
 		if (!workContext.isPresent()) {
 			return Optional.empty();
 		}
 		
-		List<KscmtAlchkWorkContextComDtl> workContextDtlList = 
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = 
 				new NtsStatement(SELECT_ONE_WORK_CONTEXT_DTL, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramInt("prevWorkMethod", prevWorkMethod.getWorkMethodClassification().value)
 				.paramString("prevWorkTimeCode", prevWorkTimeCode)
-				.getList( KscmtAlchkWorkContextComDtl.mapper);
+				.getList( KscmtAlchkWorkContextCmpDtl.mapper);
 		
 		 WorkMethodRelationshipCom domain = toDomain(Arrays.asList(workContext.get()), workContextDtlList).get(0);
 		return Optional.of(domain);
@@ -153,20 +153,20 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 		List<String> prevWorkTimeCodeList = prevWorkMethodList.stream().map( p -> 
 			p.getWorkMethodClassification().isAttendance() ? 
 					((WorkMethodAttendance) p).getWorkTimeCode().v() : 
-					KscmtAlchkWorkContextCom.HOLIDAY_WORK_TIME_CODE
+					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE
 		).collect(Collectors.toList());
 		
-		List<KscmtAlchkWorkContextCom> workContextList = 
+		List<KscmtAlchkWorkContextCmp> workContextList = 
 				new NtsStatement(SELECT_LIST_WORK_CONTEXT, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramString("prevWorkTimeCodeList", prevWorkTimeCodeList)
-				.getList( KscmtAlchkWorkContextCom.mapper);
+				.getList( KscmtAlchkWorkContextCmp.mapper);
 		
-		List<KscmtAlchkWorkContextComDtl> workContextDtlList = 
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = 
 				new NtsStatement(SELECT_LIST_WORK_CONTEXT_DTL, this.jdbcProxy())
 				.paramString("prevWorkTimeCodeList", prevWorkTimeCodeList)
 				.paramString("companyId", companyId)
-				.getList( KscmtAlchkWorkContextComDtl.mapper);
+				.getList( KscmtAlchkWorkContextCmpDtl.mapper);
 		
 		return toDomain(workContextList, workContextDtlList);
 	}
@@ -176,24 +176,24 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 		
 		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification().isAttendance() ?
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() : 
-					KscmtAlchkWorkContextCom.HOLIDAY_WORK_TIME_CODE;
+					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
 		
-		Optional<KscmtAlchkWorkContextCom> workContext = 
+		Optional<KscmtAlchkWorkContextCmp> workContext = 
 				new NtsStatement(SELECT_ONE_WORK_CONTEXT, this.jdbcProxy())
 				.paramString("companyId", companyId)
 				.paramInt("prevWorkMethod", prevWorkMethod.getWorkMethodClassification().value)
 				.paramString("prevWorkTimeCode", prevWorkTimeCode)
-				.getSingle(KscmtAlchkWorkContextCom.mapper);
+				.getSingle(KscmtAlchkWorkContextCmp.mapper);
 		
 		return workContext.isPresent();
 	}
 	
-	private List<WorkMethodRelationshipCom> toDomain(List<KscmtAlchkWorkContextCom> workContextList, 
-			List<KscmtAlchkWorkContextComDtl> workContextDtlList) {
+	private List<WorkMethodRelationshipCom> toDomain(List<KscmtAlchkWorkContextCmp> workContextList, 
+			List<KscmtAlchkWorkContextCmpDtl> workContextDtlList) {
 		
 		return workContextList.stream().map( wContext -> {
 			
-			List<KscmtAlchkWorkContextComDtl> dtlList = 
+			List<KscmtAlchkWorkContextCmpDtl> dtlList = 
 					workContextDtlList.stream()
 					.filter( dtl -> dtl.pk.prevWorkTimeCode == wContext.pk.prevWorkTimeCode)
 					.collect(Collectors.toList());
@@ -206,15 +206,15 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	
 	private Entities getAllEntities(String companyId) {
 		
-		List<KscmtAlchkWorkContextCom> workContextList = 
+		List<KscmtAlchkWorkContextCmp> workContextList = 
 				new NtsStatement(SELECT_ALL_WORK_CONTEXT, this.jdbcProxy())
 				.paramString("companyId", companyId)
-				.getList( KscmtAlchkWorkContextCom.mapper);
+				.getList( KscmtAlchkWorkContextCmp.mapper);
 		
-		List<KscmtAlchkWorkContextComDtl> workContextDtlList = 
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = 
 				new NtsStatement(SELECT_ALL_WORK_CONTEXT_DTL, this.jdbcProxy())
 				.paramString("companyId", companyId)
-				.getList( KscmtAlchkWorkContextComDtl.mapper);
+				.getList( KscmtAlchkWorkContextCmpDtl.mapper);
 		
 		return new Entities(workContextList, workContextDtlList); 
 	}
@@ -222,9 +222,9 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 	@Value
 	class Entities {
 		
-		List<KscmtAlchkWorkContextCom> workContextList;
+		List<KscmtAlchkWorkContextCmp> workContextList;
 		
-		List<KscmtAlchkWorkContextComDtl> workContextDtlList; 
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList; 
 	} 
 
 

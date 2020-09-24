@@ -26,12 +26,12 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Entity
 @Table(name = "KSCMT_ALCHK_WORK_CONTEXT_CMP")
 @AllArgsConstructor
-public class KscmtAlchkWorkContextCom  extends ContractUkJpaEntity {
+public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 	
 	public static final String HOLIDAY_WORK_TIME_CODE = "000";
 	
 	@EmbeddedId
-	public KscmtAlchkWorkContextComPk pk;
+	public KscmtAlchkWorkContextCmpPk pk;
 
 	@Column(name = "PROHIBIT_ATR")
 	public int specifiedMethod;
@@ -44,27 +44,27 @@ public class KscmtAlchkWorkContextCom  extends ContractUkJpaEntity {
 		return pk;
 	}
 	
-	public static Function<NtsResultRecord, KscmtAlchkWorkContextCom> mapper = s -> 
-		new KscmtAlchkWorkContextCom(
-				new KscmtAlchkWorkContextComPk(
+	public static Function<NtsResultRecord, KscmtAlchkWorkContextCmp> mapper = s -> 
+		new KscmtAlchkWorkContextCmp(
+				new KscmtAlchkWorkContextCmpPk(
 						s.getString("SID"), 
 						s.getInt("PREVIOUS_WORK_ATR"), 
 						s.getString("PREVIOUS_WKTM_CD")), 
 				s.getInt("PROHIBIT_ATR"), 
 				s.getInt("CURRENT_WORK_ATR"));
 	
-	public static KscmtAlchkWorkContextCom fromDomain(WorkMethodRelationshipCom domain) {
+	public static KscmtAlchkWorkContextCmp fromDomain(WorkMethodRelationshipCom domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 			
-		return new KscmtAlchkWorkContextCom(
-					KscmtAlchkWorkContextComPk.fromDomain(domain), 
+		return new KscmtAlchkWorkContextCmp(
+					KscmtAlchkWorkContextCmpPk.fromDomain(domain), 
 					relationship.getSpecifiedMethod().value, 
 					relationship.getCurrentWorkMethodList().get(0).getWorkMethodClassification().value);
 			
 	}
 	
-	public WorkMethodRelationshipCom toDomain(List<KscmtAlchkWorkContextComDtl> dtlList) {
+	public WorkMethodRelationshipCom toDomain(List<KscmtAlchkWorkContextCmpDtl> dtlList) {
 		
 		return new WorkMethodRelationshipCom(this.pk.companyId, 
 				WorkMethodRelationship.create(
@@ -80,7 +80,7 @@ public class KscmtAlchkWorkContextCom  extends ContractUkJpaEntity {
 					new WorkMethodHoliday();
 	}
 	
-	private List<WorkMethod> toCurrentWorkMethod(List<KscmtAlchkWorkContextComDtl> dtlList) {
+	private List<WorkMethod> toCurrentWorkMethod(List<KscmtAlchkWorkContextCmpDtl> dtlList) {
 		
 		switch (WorkMethodClassfication.of(this.currentWorkingMethod)) {
 			case ATTENDANCE:

@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class KscmtAlchkWorkContextComDtlPk {
+public class KscmtAlchkWorkContextCmpDtlPk {
 	
 	@Column(name = "CID")
 	public String companyId;
@@ -38,18 +38,18 @@ public class KscmtAlchkWorkContextComDtlPk {
 	 * @param domain
 	 * @return
 	 */
-	public static List<KscmtAlchkWorkContextComDtlPk> fromDomain(WorkMethodRelationshipCom domain) {
+	public static List<KscmtAlchkWorkContextCmpDtlPk> fromDomain(WorkMethodRelationshipCom domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		
 		WorkMethod prevWorkMethod = relationship.getPrevWorkMethod();
 		String prevWorkTimeCode = !prevWorkMethod.getWorkMethodClassification().isAttendance() ?
-				KscmtAlchkWorkContextCom.HOLIDAY_WORK_TIME_CODE : 
+				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE : 
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v();
 		
 		return relationship.getCurrentWorkMethodList().stream().map( current -> 
 		
-			 new KscmtAlchkWorkContextComDtlPk( 
+			 new KscmtAlchkWorkContextCmpDtlPk( 
 					domain.getCompanyId(), 
 					prevWorkMethod.getWorkMethodClassification().value, 
 					prevWorkTimeCode, 

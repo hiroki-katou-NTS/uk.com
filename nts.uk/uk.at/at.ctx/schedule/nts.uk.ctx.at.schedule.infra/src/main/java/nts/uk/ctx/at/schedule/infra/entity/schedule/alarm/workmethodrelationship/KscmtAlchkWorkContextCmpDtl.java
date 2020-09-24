@@ -23,25 +23,25 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @Table(name = "KSCMT_ALCHK_WORK_CONTEXT_CMP_DTL")
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscmtAlchkWorkContextComDtl extends ContractUkJpaEntity{
+public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 	
 	@EmbeddedId
-	public KscmtAlchkWorkContextComDtlPk pk;
+	public KscmtAlchkWorkContextCmpDtlPk pk;
 
 	@Override
 	protected Object getKey() {
 		return pk;
 	}
 	
-	public static Function<NtsResultRecord, KscmtAlchkWorkContextComDtl> mapper = s -> 
-			new KscmtAlchkWorkContextComDtl(
-					new KscmtAlchkWorkContextComDtlPk(
+	public static Function<NtsResultRecord, KscmtAlchkWorkContextCmpDtl> mapper = s -> 
+			new KscmtAlchkWorkContextCmpDtl(
+					new KscmtAlchkWorkContextCmpDtlPk(
 							s.getString("CID"), 
 							s.getInt("PREVIOUS_WORK_ATR"), 
 							s.getString("PREVIOUS_WKTM_CD"), 
 							s.getString("TGT_WKTM_CD")));
 			
-	public static List<KscmtAlchkWorkContextComDtl> fromDomain(WorkMethodRelationshipCom domain) {
+	public static List<KscmtAlchkWorkContextCmpDtl> fromDomain(WorkMethodRelationshipCom domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		
@@ -50,8 +50,8 @@ public class KscmtAlchkWorkContextComDtl extends ContractUkJpaEntity{
 			return new ArrayList<>();
 		} 
 		
-		return KscmtAlchkWorkContextComDtlPk.fromDomain(domain)
-				.stream().map( pk -> new KscmtAlchkWorkContextComDtl(pk))
+		return KscmtAlchkWorkContextCmpDtlPk.fromDomain(domain)
+				.stream().map( pk -> new KscmtAlchkWorkContextCmpDtl(pk))
 				.collect(Collectors.toList());
 		
 	}

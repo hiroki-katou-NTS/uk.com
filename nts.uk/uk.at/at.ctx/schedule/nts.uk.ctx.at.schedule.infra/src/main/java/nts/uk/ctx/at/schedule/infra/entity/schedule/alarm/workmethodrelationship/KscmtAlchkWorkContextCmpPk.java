@@ -13,7 +13,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 @Embeddable
 @EqualsAndHashCode
 @AllArgsConstructor
-public class KscmtAlchkWorkContextComPk {
+public class KscmtAlchkWorkContextCmpPk {
 	
 	@Column(name = "CID")
 	public String companyId;
@@ -24,22 +24,22 @@ public class KscmtAlchkWorkContextComPk {
 	@Column(name = "PREVIOUS_WKTM_CD")
 	public String prevWorkTimeCode;
 	
-	public static KscmtAlchkWorkContextComPk fromDomain(WorkMethodRelationshipCom domain) {
+	public static KscmtAlchkWorkContextCmpPk fromDomain(WorkMethodRelationshipCom domain) {
 		
 		WorkMethod prevWorkMethod = domain.getWorkMethodRelationship().getPrevWorkMethod();
 		
 		if (prevWorkMethod.getWorkMethodClassification().isAttendance()) {
 			String prevWorkTimeCode =  ((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v();
-			return new KscmtAlchkWorkContextComPk(
+			return new KscmtAlchkWorkContextCmpPk(
 					domain.getCompanyId(), 
 					WorkMethodClassfication.ATTENDANCE.value, 
 					prevWorkTimeCode);
 		}
 		
-		return new KscmtAlchkWorkContextComPk(
+		return new KscmtAlchkWorkContextCmpPk(
 				domain.getCompanyId(), 
 				WorkMethodClassfication.HOLIDAY.value, 
-				KscmtAlchkWorkContextCom.HOLIDAY_WORK_TIME_CODE);
+				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE);
 	}
 
 }
