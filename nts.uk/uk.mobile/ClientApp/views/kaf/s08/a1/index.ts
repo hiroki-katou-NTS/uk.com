@@ -222,6 +222,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                 this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
             }).catch((err) => {
                 this.handleErrorMessage(err);
+                this.listDate = [];
 
                 return;
             });
@@ -364,20 +365,21 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
                     return;
                 }
-                //let listDate = [];
+                
+                vm.listDate = [];
                 if (!vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay) {
                     vm.listDate.push(vm.$dt(newV, 'YYYY/MM/DD'));
-                }
-
-                if (!_.isNull(endDate)) {
-                    let isCheckDate = startDate.getTime() <= endDate.getTime();
-                    if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
-                        while (startDate.getTime() <= endDate.getTime()) {
-                            vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
-                            startDate.setDate(startDate.getDate() + 1);
+                } else {
+                    if (!_.isNull(endDate)) {
+                        let isCheckDate = startDate.getTime() <= endDate.getTime();
+                        if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
+                            while (startDate.getTime() <= endDate.getTime()) {
+                                vm.listDate.push(vm.$dt(startDate, 'YYYY/MM/DD'));
+                                startDate.setDate(startDate.getDate() + 1);
+                            }
                         }
+    
                     }
-
                 }
 
             });

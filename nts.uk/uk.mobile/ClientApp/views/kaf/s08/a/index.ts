@@ -121,5 +121,6 @@ export class KafS08AComponent extends Vue {
     public backToStepOne() {
         const vm = this;
         vm.step = 'KAFS08_10';
+        vm.mode = false;
     }
 }
