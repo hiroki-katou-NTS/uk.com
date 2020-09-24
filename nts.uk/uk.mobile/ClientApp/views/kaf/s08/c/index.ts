@@ -34,6 +34,6 @@ export class KafS08CComponent extends Vue {
 
     public BackToStepOne(res: any) {
         const vm =this;
-        vm.$emit('backToStepOne',res);
+        vm.$emit('backToStepOne', res);
     }
 }

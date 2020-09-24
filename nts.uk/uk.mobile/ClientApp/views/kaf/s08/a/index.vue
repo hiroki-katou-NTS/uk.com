@@ -11,7 +11,8 @@
     v-bind:derpartureTime="derpartureTime"
     v-bind:returnTime="returnTime"
     v-bind:appReason="appReason"
-    v-bind:params="params"/>
+    v-bind:mode="mode"
+    v-bind:params="data"/>
     <kafs08a2 
     @prevStepOne="ProcessPrevStepOne" 
     @nextToStepThree="ProcessNextToStepThree"
@@ -24,6 +25,7 @@
     v-bind:businessTripInfoOutput="businessTripInfoOutput"
     v-bind:application="application"
     v-bind:listDate="listDate"
+    v-bind:mode="mode"
     v-if="step == 'KAFS08_11'" />
     <kafs08c v-if="step =='KAFS08_12'"
     v-bind:appID="appID"

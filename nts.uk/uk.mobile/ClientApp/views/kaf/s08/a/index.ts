@@ -46,12 +46,17 @@ export class KafS08AComponent extends Vue {
     public listDate: any[] = [];
     public appReason: string = '';
     public startDate;
-    public mode: boolean;
+    public mode: boolean = true;
+    public data?: any = null;
 
 
     public created() {
-        const vm = this;
-        console.log(vm.params);
+        const vm= this;
+        if (vm.params) {
+            console.log(vm.params);
+            vm.mode = false;
+            vm.data = vm.params;
+        }
     }
 
     public handlerChangeTime(derpartureTime,retureTime) {
@@ -87,7 +92,7 @@ export class KafS08AComponent extends Vue {
         //nhan ve appReason tu A1
         vm.appReason = appReason;
 
-        vm.mode = mode;
+        // vm.mode = mode;
          //nhảy sang step A2 
         vm.step = 'KAFS08_11';
     }
@@ -118,9 +123,10 @@ export class KafS08AComponent extends Vue {
         }, 100);
     }
 
-    public backToStepOne() {
+    public backToStepOne(res: any) {
         const vm = this;
-        vm.step = 'KAFS08_10';
+        vm.data = res;
         vm.mode = false;
+        vm.step = 'KAFS08_10';
     }
 }

@@ -65,7 +65,10 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public name: string = 'hello my dialog';
     //public date: Date = new Date(2020,2,14);
     public mtable = require('./mock_data.json');
-    public mode: boolean = true;
+
+    @Prop({ default: true })
+    public readonly mode!: boolean;
+
     public user: any;
     public data: any;
     public hidden: boolean = false;
@@ -77,9 +80,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
-        if (vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo != null) {
-            vm.mode = false;
-        }
+        // if (vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo != null) {
+        //     vm.mode = false;
+        // }
         console.log(vm.application);
         console.log(vm.businessTripInfoOutput);
         vm.fetchStart();

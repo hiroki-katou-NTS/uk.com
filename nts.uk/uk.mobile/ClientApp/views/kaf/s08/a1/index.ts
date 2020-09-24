@@ -31,7 +31,10 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public kaf000_C_Params: any = null;
     //private seen: boolean = true;
     public step: string = 'KAFS08_10';
-    public mode: Boolean = true;
+
+    @Prop({ default: true })
+    public readonly mode: boolean;
+
     public isVisible: boolean = false;
     public isValidateAll: Boolean = true;
     public date: Date = null;
@@ -86,12 +89,22 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         const vm = this;
         if (vm.params) {
             console.log(vm.params);
-            vm.mode = false;
+            // vm.mode = false;
             this.data = vm.params;
             vm.derpartureTime = vm.params.businessTripDto.departureTime;
             vm.returnTime = vm.params.businessTripDto.returnTime;
         }
         vm.fetchStart();
+
+        vm.$watch('params', (newV, oldV) => {
+            if (newV) {
+                vm.data.businessTrip = vm.params.businessTripDto;
+                vm.data.businessTripInfoOutput = vm.params.businessTripInfoOutputDto;
+                vm.createParamsB();
+                vm.createParamsC();
+                vm.createParamsA();
+            }
+        });
     }
 
     public fetchStart() {
@@ -218,6 +231,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                     if (response.confirmMsgOutputs.length != 0) {
                         this.handleConfirmMessage(response.confirmMsgOutputs, response);
                     }
+                    vm.data.businessTripInfoOutput = response.businessTripInfoOutputDto;
                 }
                 this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
             }).catch((err) => {
@@ -232,8 +246,10 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
         //mode edit
         if (!vm.mode) {
-            let achievementDetails = vm.data.businessTrip.tripInfos;
-            let businessTripInfoOutput = vm.data;
+            vm.data.businessTrip = vm.params.businessTripDto;
+            vm.data.businessTripInfoOutput = vm.params.businessTripInfoOutputDto;
+            let achievementDetails = vm.data.businessTrip ? vm.data.businessTrip.tripInfos || [] : [];
+            // let businessTripInfoOutput = vm.data;
             //gửi comment sang màn hình A2
             let commentSet = vm.data.businessTripInfoOutput.setting.appCommentSet;
             //let application = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application;
@@ -243,9 +259,9 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             let endDate = vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppEndDate;
             //let endDateFormat = new Date(endDate);
             let listDateEditMode = vm.getDateArray(startDate, endDate);
-            businessTripInfoOutput.businessTrip.departureTime = vm.derpartureTime;
-            businessTripInfoOutput.businessTrip.returnTime = vm.returnTime;
-            this.$emit('nextToStepTwo', listDateEditMode, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
+            vm.data.businessTrip.departureTime = vm.derpartureTime;
+            vm.data.businessTrip.returnTime = vm.returnTime;
+            this.$emit('nextToStepTwo', listDateEditMode, vm.application, vm.data, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
         }
     }
 
@@ -395,7 +411,8 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
                     return;
                 }
-                //let listDate = [];
+                
+                vm.listDate = [];
                 if (!_.isNull(startDate)) {
                     let isCheckDate = startDate.getTime() <= endDate.getTime();
                     if (vm.kaf000_B_Params.input.newModeContent.initSelectMultiDay && isCheckDate) {
