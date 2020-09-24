@@ -148,7 +148,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 		return new SspmtDataRecoverResult
 			(
 				domain.getDataRecoveryProcessId(), domain.getCid(),
-				domain.getPatternCode(), domain.getPractitioner(),
+				domain.getPatternCode().v(), domain.getPractitioner(),
 				domain.getExecutionResult(), domain.getStartDateTime(),
 				domain.getEndDateTime().orElse(null), 
 				domain.getSaveForm().value,

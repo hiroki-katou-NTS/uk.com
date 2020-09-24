@@ -1,7 +1,6 @@
 package nts.uk.ctx.sys.assist.infra.entity.storage;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;

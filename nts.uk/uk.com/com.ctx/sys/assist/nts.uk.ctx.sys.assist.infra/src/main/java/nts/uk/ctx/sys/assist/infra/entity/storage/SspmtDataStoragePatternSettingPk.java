@@ -2,7 +2,6 @@ package nts.uk.ctx.sys.assist.infra.entity.storage;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -27,7 +26,6 @@ public class SspmtDataStoragePatternSettingPk implements Serializable {
 	/**
 	 * パターン区分
 	 */
-	@NonNull
 	@Column(name = "PATTERN_ATR")
 	public int patternClassification;
 	

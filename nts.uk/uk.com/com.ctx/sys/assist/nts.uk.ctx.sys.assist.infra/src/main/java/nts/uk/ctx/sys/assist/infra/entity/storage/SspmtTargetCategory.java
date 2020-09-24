@@ -8,8 +8,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.storage.TargetCategory;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 

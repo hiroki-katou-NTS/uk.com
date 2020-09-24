@@ -9,10 +9,8 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInCharge;
 import nts.uk.ctx.sys.assist.dom.datarestoration.LoginPersonInChargeService;
-import nts.uk.ctx.sys.assist.dom.role.RoleImportAdapter;
 import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableListRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -50,7 +48,7 @@ public class SetScreenItemFinder {
 	}
 	
 	private boolean checkCannotBeOld(TableListDto t) {
-		return t.getCanNotBeOld().isPresent() && t.getCanNotBeOld().get() == IS_CANNOT_BE_OLD;
+		return t.getCanNotBeOld() == IS_CANNOT_BE_OLD;
 	}
 
 	private boolean checkSystemChargeStatus(LoginPersonInCharge pic, int systemType) {

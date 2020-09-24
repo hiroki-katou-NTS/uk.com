@@ -1,10 +1,7 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
 import lombok.AllArgsConstructor;
-import lombok.Setter;
 import lombok.Value;
-import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
-import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
 @AllArgsConstructor

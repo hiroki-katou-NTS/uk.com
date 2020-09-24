@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.assist.dom.storage;
 
-import java.util.Arrays;
-
 /**
  * 対象年
  */

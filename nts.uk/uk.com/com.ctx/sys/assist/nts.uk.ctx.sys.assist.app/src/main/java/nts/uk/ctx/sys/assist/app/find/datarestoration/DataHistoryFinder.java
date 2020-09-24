@@ -15,7 +15,6 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import nts.arc.time.GeneralDateTime;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
@@ -70,10 +69,9 @@ public class DataHistoryFinder {
 			list.forEach(dto -> {
 				for (int i = 0; i < 50; i++) {
 					res.add(new DataHistoryDto(RandomStringUtils.randomAlphabetic(20), RandomStringUtils.randomAlphabetic(20),
-							GeneralDateTime.now().toString("yyyy/MM/dd hh:mm:ss"), RandomStringUtils.randomAlphabetic(5), RandomStringUtils.randomAlphabetic(10), 
+							GeneralDateTime.now(), RandomStringUtils.randomAlphabetic(5), RandomStringUtils.randomAlphabetic(10), 
 							new Random().nextInt(100), RandomStringUtils.randomAlphabetic(10), new Random().nextInt(100), 
-							GeneralDateTime.now().toString("yyyy/MM/dd hh:mm:ss"),
-							DataHistoryDto.randomResult()));
+							GeneralDateTime.now(), ""));
 				}
 			});
 			return res;

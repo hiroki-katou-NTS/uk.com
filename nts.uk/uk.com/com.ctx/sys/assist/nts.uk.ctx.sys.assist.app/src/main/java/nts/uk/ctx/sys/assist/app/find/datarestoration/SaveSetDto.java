@@ -21,6 +21,6 @@ public class SaveSetDto {
 	private String saveName;
 	
 	public static SaveSetDto fromDomain(DataRecoveryResult domain) {
-		return new SaveSetDto(domain.getPatternCode(), domain.getSaveName().v());
+		return new SaveSetDto(domain.getPatternCode().v(), domain.getSaveName().v());
 	}
 }
