@@ -34,7 +34,7 @@ public class SimultaneousAttendanceBan implements DomainAggregate{
 	private MaxOfNumberEmployeeTogether allowableNumberOfEmp;
 
 	/**
-	 * [C-2] 夜勤時間帯を指定して作成する
+	 * 終日を指定して作成する
 	 * @param targetOrg
 	 * @param simultaneousAttBanCode
 	 * @param simultaneousAttendanceBanName
@@ -63,7 +63,7 @@ public class SimultaneousAttendanceBan implements DomainAggregate{
 	
 
 	/**
-	 * [C-2] 夜勤時間帯を指定して作成する
+	 * 夜勤時間帯を指定して作成する
 	 * @param targetOrg
 	 * @param simultaneousAttBanCode
 	 * @param simultaneousAttendanceBanName

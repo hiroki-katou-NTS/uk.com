@@ -7,7 +7,7 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 /**
- * AR: 同時出勤指定
+ * 同時出勤指定
  * @author lan_lt
  *
  */

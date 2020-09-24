@@ -11,7 +11,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @Getter
 @AllArgsConstructor
-public class MaxNumberDaysOfContinuousWorkTimeCompany implements DomainAggregate{
+public class MaxNumberDaysOfContinuousWorkTimeCom implements DomainAggregate{
 
 	//会社ID
 	private final String companyId;
@@ -23,6 +23,6 @@ public class MaxNumberDaysOfContinuousWorkTimeCompany implements DomainAggregate
 	private WorkTimeContinuousName name;
 	
 	//日数
-	private MaxNumberOfContinuousWorktime MaxNumberDaysOfContinuousWorktime;
+	private MaxNumberOfContinuousWorktime maxNumberDaysOfContinuousWorktime;
 	
 }
