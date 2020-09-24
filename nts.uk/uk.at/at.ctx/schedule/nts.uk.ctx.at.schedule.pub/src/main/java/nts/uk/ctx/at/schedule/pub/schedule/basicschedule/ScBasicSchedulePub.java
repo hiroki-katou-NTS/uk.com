@@ -33,6 +33,13 @@ public interface ScBasicSchedulePub {
 	 * @return
 	 */
 	public Optional<ScWorkScheduleExport> findByIdNew(String employeeId, GeneralDate baseDate);
+	/**
+	 * TEAMD reqlist4 9/10/2020
+	 * @param employeeId
+	 * @param baseDate
+	 * @return
+	 */
+	public ScWorkScheduleExport_New findByIdNewV2(String employeeId, GeneralDate baseDate);
 	
 	public List<ScBasicScheduleExport> findById(List<String> employeeID, DatePeriod date);
 

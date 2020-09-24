@@ -109,7 +109,6 @@ public class DisplayControlPersonalCondition implements DomainAggregate {
 			 * $社員免許区分 = $社員免許区分リスト.get($).免許区分 return 個人条件( $, $社員チーム, $社員ランク,
 			 * $社員免許区分)
 			 */
-
 		List<PersonalCondition> conditions = new ArrayList<>();
 		
 		for(String empId : lstEmpId) {

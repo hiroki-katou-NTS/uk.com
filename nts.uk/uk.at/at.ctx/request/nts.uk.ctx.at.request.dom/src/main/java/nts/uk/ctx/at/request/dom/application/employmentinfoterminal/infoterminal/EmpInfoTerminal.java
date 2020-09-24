@@ -115,11 +115,12 @@ public class EmpInfoTerminal implements DomainAggregate {
 					NRHelper.convertAppType(recept.getApplicationCategory()),
 					Optional.of(NRHelper.createGeneralDate(appStampData.getAppYMD())), Optional.empty(),
 					appStampData.getReason());
-			AppStamp appStamp = new AppStamp(StampRequestMode.STAMP_ONLINE_RECORD, appStampNew, Collections.emptyList(),
-					Collections.emptyList(), Collections.emptyList(),
-					Optional.of(new AppStampOnlineRecord(appStampData.convertCombi(),
-							NRHelper.toMinute(appStampData.getAppTime()))));// TODO: thieu 外出区分 ->外出理由
-			return appStamp;
+//			AppStamp appStamp = new AppStamp(StampRequestMode.STAMP_ONLINE_RECORD, appStampNew, Collections.emptyList(),
+//					Collections.emptyList(), Collections.emptyList(),
+//					Optional.of(new AppStampOnlineRecord(appStampData.convertCombi(),
+//							NRHelper.toMinute(appStampData.getAppTime()))));// TODO: thieu 外出区分 ->外出理由
+//			return appStamp;
+			return null;
 
 		// 残業申請
 		case OVERTIME:
@@ -145,12 +146,13 @@ public class EmpInfoTerminal implements DomainAggregate {
 					NRHelper.convertAppType(recept.getApplicationCategory()),
 					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getStartDate())),
 					Optional.of(NRHelper.createGeneralDate(appAbsenceData.getEndDate())), appAbsenceData.getReason());
-			AppAbsence appAbsence = new AppAbsence(companyId, appAbsenceNew.getAppID(),
-					workTypeOpt.isPresent() ? NRHelper.convertHolidayType(workTypeOpt.get().getDailyWork().getOneDay()).value : null,
-					appAbsenceData.getWorkType(), null, true, false, AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE.value, null,
-					null, null, null, null);
-			appAbsence.setApplication(appAbsenceNew);
-			return appAbsence;
+//			AppAbsence appAbsence = new AppAbsence(companyId, appAbsenceNew.getAppID(),
+//					workTypeOpt.isPresent() ? NRHelper.convertHolidayType(workTypeOpt.get().getDailyWork().getOneDay()).value : null,
+//					appAbsenceData.getWorkType(), null, true, false, AllDayHalfDayLeaveAtr.ALL_DAY_LEAVE.value, null,
+//					null, null, null, null);
+//			appAbsence.setApplication(appAbsenceNew);
+//			return appAbsence;
+			return null;
 
 		// 勤務変更申請
 		case WORK_CHANGE:
@@ -190,14 +192,15 @@ public class EmpInfoTerminal implements DomainAggregate {
 					NRHelper.convertAppType(recept.getApplicationCategory()),
 					Optional.of(NRHelper.createGeneralDate(appLateData.getAppYMD())), Optional.empty(),
 					appLateData.getReason());
-			LateOrLeaveEarly late = new LateOrLeaveEarly(appLateNew, 1,
-					appLateData.getReasonLeave().equals(ReasonLeaveEarly.EARLY.value) ? Select.SELECTED
-							: Select.NOTSLECTED,
-					new TimeDay(0),
-					appLateData.getReasonLeave().equals(ReasonLeaveEarly.LATE.value) ? Select.SELECTED
-							: Select.NOTSLECTED,
-					new TimeDay(0), Select.NOTSLECTED, new TimeDay(0), Select.NOTSLECTED, new TimeDay(0));
-			return late;
+//			LateOrLeaveEarly late = new LateOrLeaveEarly(appLateNew, 1,
+//					appLateData.getReasonLeave().equals(ReasonLeaveEarly.EARLY.value) ? Select.SELECTED
+//							: Select.NOTSLECTED,
+//					new TimeDay(0),
+//					appLateData.getReasonLeave().equals(ReasonLeaveEarly.LATE.value) ? Select.SELECTED
+//							: Select.NOTSLECTED,
+//					new TimeDay(0), Select.NOTSLECTED, new TimeDay(0), Select.NOTSLECTED, new TimeDay(0));
+//			return late;
+			return null;
 
 		// 時間年休申請
 		case ANNUAL:
