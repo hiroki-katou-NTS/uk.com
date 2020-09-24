@@ -89,8 +89,9 @@ public class Kaf021Finder {
     }
 
     private List<EmployeeAgreementTimeDto> getAgreementTime(List<EmployeeBasicInfoDto> employees, int monthAdd) {
+        if (CollectionUtil.isEmpty(employees)) return new ArrayList<>();
         String cid = AppContexts.user().companyId();
-        String sid = AppContexts.user().employeeId();
+        String sid = employees.get(0).getEmployeeId();
         GeneralDate baseDate = GeneralDate.today();
         val require = requireService.createRequire();
         val cacheCarrier = new CacheCarrier();

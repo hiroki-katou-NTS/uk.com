@@ -3,6 +3,7 @@
 module nts.uk.at.kaf021.a {
     import textFormat = nts.uk.text.format;
     import parseTime = nts.uk.time.parseTime;
+    import formatYearMonth = nts.uk.time.formatYearMonth;
     import common = nts.uk.at.kaf021.common;
 
     const API = {
@@ -27,10 +28,6 @@ module nts.uk.at.kaf021.a {
         constructor(isBackFromScreenB: boolean) {
             super();
             const vm = this;
-
-            vm.appTypes.push(new common.AppType(common.AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), 1)));
-            vm.appTypes.push(new common.AppType(common.AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), 2)));
-            vm.appTypes.push(new common.AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
 
             if (isBackFromScreenB) {
                 let cacheJson: string = localStorage.getItem('kaf021a_cache');
@@ -103,14 +100,16 @@ module nts.uk.at.kaf021.a {
         created() {
             const vm = this;
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
-            vm.initData();
-
-            vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
-                vm.fetchData().done(() => {
-                    $("#grid").mGrid("destroy");
-                    vm.loadMGrid();
-                });
-            })
+            vm.loadMGrid();
+            vm.initData().done(() => {
+                vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
+                    vm.fetchData().done(() => {
+                        $("#grid").mGrid("destroy");
+                        vm.loadMGrid();
+                    });
+                })
+            });
+           
             _.extend(window, { vm });
         }
 
@@ -127,7 +126,17 @@ module nts.uk.at.kaf021.a {
             vm.$ajax(API.INIT).done((data: any) => {
                 vm.processingMonth = data.processingMonth;
                 vm.startingMonth = data.startingMonth;
-                vm.loadMGrid();
+
+                let date = new Date(formatYearMonth(vm.processingMonth));
+                let currentMonth = date.getMonth() + 1;
+                date.setMonth(currentMonth);
+                let nextMonth = date.getMonth() + 1;
+
+                vm.appTypes.push(new common.AppType(common.AppTypeEnum.CURRENT_MONTH, textFormat(vm.$i18n("KAF021_64"), currentMonth)));
+                vm.appTypes.push(new common.AppType(common.AppTypeEnum.NEXT_MONTH, textFormat(vm.$i18n("KAF021_64"), nextMonth)));
+                vm.appTypes.push(new common.AppType(common.AppTypeEnum.YEARLY, vm.$i18n("KAF021_4")));
+                vm.appTypeSelected.valueHasMutated();
+               
                 dfd.resolve();
             }).fail((error: any) => vm.$errors(error)).always(() => vm.$blockui("clear"));
 
@@ -137,6 +146,11 @@ module nts.uk.at.kaf021.a {
         fetchData(): JQueryPromise<any> {
             const vm = this,
                 dfd = $.Deferred();
+            if (_.isEmpty(vm.empSearchItems)) {
+                vm.datas = [];
+                dfd.resolve();
+                return dfd.promise();
+            }
             vm.$blockui("invisible");
             vm.datas = [];
             switch (vm.appTypeSelected()) {
@@ -620,7 +634,7 @@ module nts.uk.at.kaf021.a {
         affiliationName: string;
     }
 
-    
+
     class CacheData {
         appType: common.AppTypeEnum;
         datas: Array<common.EmployeeAgreementTime>;
