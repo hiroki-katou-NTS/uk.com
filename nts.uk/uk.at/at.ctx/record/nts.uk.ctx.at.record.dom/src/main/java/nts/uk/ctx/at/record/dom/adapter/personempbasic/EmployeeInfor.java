@@ -1,5 +1,4 @@
-package nts.uk.screen.at.app.query.cmm024.approver36agrbycompany;
-
+package nts.uk.ctx.at.record.dom.adapter.personempbasic;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,16 +9,18 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonInfor {
+public class EmployeeInfor {
     //個人ID
     private String personId;
 
     //社員ID
-    private String employeeCode;
-    //社員ID
     private String employeeId;
 
     //ビジネスネーム
-    private String employeeName;
+    private String businessName;
+
+
+    //社員コード
+    private String employeeCode;
 
 }
