@@ -364,6 +364,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         };
         // if mode edit
         if (!vm.mode) {
+            paramb.input.newModeContent = null;
             paramb.input.detailModeContent = {
                 prePostAtr: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr,
                 startDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate,
