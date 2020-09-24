@@ -3,25 +3,18 @@
 }
 
 .view-cli .model-component {
-  margin-left: 30px;
+  margin-left: 37px;
 }
 
 .model-component {
-	float: left;
+  float: right;
+  margin-right: -13px;
 }
 
 .ntsSearchBox {
-  width: 350px;
+  width: 380px;
 }
 
-#item-list .mcell:not(.mgrid-no):not(.mlabel) {
+#item-list tbody tr td div {
   text-align: center;
-}
-
-#item-list .mgrid-free-table tr+tr td {
-  border-top: none !important;
-}
-
-#item-list .mgrid-free-table tr:first-child:not(:last-child) td:not(:nth-child(1)):not(:nth-child(2)) {
-  border-bottom: none !important;
 }
