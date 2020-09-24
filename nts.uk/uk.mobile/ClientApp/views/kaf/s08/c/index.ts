@@ -20,7 +20,7 @@ export class KafS08CComponent extends Vue {
     public kafS00DParams: any = null;
     public params?: any;
     
-    @Prop({default : true}) public readonly mode!: boolean;
+    @Prop({ }) public readonly mode!: boolean;
 
     @Prop({default : ' '}) public readonly appID!: string;
 

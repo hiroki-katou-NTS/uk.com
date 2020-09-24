@@ -219,7 +219,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                         this.handleConfirmMessage(response.confirmMsgOutputs, response);
                     }
                 }
-                this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+                this.$emit('nextToStepTwo', vm.listDate, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
             }).catch((err) => {
                 this.handleErrorMessage(err);
 
@@ -244,7 +244,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
             let listDateEditMode = vm.getDateArray(startDate, endDate);
             businessTripInfoOutput.businessTrip.departureTime = vm.derpartureTime;
             businessTripInfoOutput.businessTrip.returnTime = vm.returnTime;
-            this.$emit('nextToStepTwo', listDateEditMode, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason);
+            this.$emit('nextToStepTwo', listDateEditMode, vm.application, businessTripInfoOutput, vm.derpartureTime, vm.returnTime, achievementDetails, commentSet, appReason, vm.mode);
         }
     }
 
