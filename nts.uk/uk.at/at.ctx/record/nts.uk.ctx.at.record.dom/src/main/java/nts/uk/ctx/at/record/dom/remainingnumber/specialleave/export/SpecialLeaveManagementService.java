@@ -400,7 +400,9 @@ public class SpecialLeaveManagementService {
 				
 				//　社員に対応する締め開始日を取得する
 				closureStartOpt = GetClosureStartForEmployee.algorithm(require, cacheCarrier, employeeId);
-				if (closureStartOpt.isPresent()) closureStart = closureStartOpt.get();
+				if (closureStartOpt.isPresent()){
+					closureStart = closureStartOpt.get();
+				}
 			}
 		}
 		
@@ -456,7 +458,7 @@ public class SpecialLeaveManagementService {
 //
 //		// 取得内容をもとに特休情報を作成
 //		return createInfoFromRemainingData(remainingDatas, annLeaMaxDataOpt, aggrPeriod);
-		return null;
+		return prevSpecialLeaveInfo;
 	}
 	
 	/**
@@ -580,8 +582,6 @@ public class SpecialLeaveManagementService {
 				specialLeaveGrantWork.setSpecialLeaveGrant(c);
 				
 				// 年月日←次回特別休暇付与．付与年月日
-				c.getGrantDate();
-
 				if ( dividedDayMap.containsKey(c.getGrantDate())){ // すでに追加されているとき
 					SpecialLeaveDividedDayEachProcess specialLeaveDividedDayEachProcess
 						= dividedDayMap.get(c.getGrantDate());
