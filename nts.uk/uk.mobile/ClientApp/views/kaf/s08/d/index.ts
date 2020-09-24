@@ -158,7 +158,7 @@ export class KafS08DComponent extends Vue {
         const vm = this;
         const { rowDate, derpartureTime, returnTime } = vm.params;
         // dda why rowDate is any?
-        const { opWorkTypeName, opWorkTimeName, opWorkTime,opLeaveTime} = rowDate.opAchievementDetail;
+        const { opWorkTypeName, opWorkTimeName, opWorkTime, opLeaveTime, workTimeCD, workTypeCD} = rowDate.opAchievementDetail;
 
         const { date } = rowDate ;
 
@@ -170,7 +170,9 @@ export class KafS08DComponent extends Vue {
             opWorkTimeName,
             opWorkTime,
             opLeaveTime,
-            date
+            date,
+            workTypeCD,
+            workTimeCD
         });
     }
 }
