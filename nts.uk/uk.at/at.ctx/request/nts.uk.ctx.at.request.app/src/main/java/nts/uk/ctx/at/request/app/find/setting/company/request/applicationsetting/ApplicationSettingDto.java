@@ -11,8 +11,8 @@ import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.apptypesetting.ReceptionRestrictionSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.deadlinesetting.AppDeadlineSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.company.request.applicationsetting.displaysetting.AppDisplaySettingDto;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.applicationsetting.RecordDate;
 import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.ApplicationSetting;
-import nts.uk.ctx.at.request.dom.setting.company.request.applicationsetting.RecordDate;
 
 @AllArgsConstructor
 @NoArgsConstructor

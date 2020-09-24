@@ -215,7 +215,7 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 	@Override
 	public Boolean checkExistErrorByKey(String executionId, String employeeId, GeneralDate baseDate) {
 		
-		String sqlQuery = "select count(*) from KSCDT_SCHE_ERR_LOG where YMD = " + "'" + baseDate + "' and EXE_ID = " + "'" + executionId + "'"
+		String sqlQuery = "select count(*) from KSCDT_BATCH_ERR_LOG where YMD = " + "'" + baseDate + "' and EXE_ID = " + "'" + executionId + "'"
 				+ "and SID = " + "'" + employeeId + "'";
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);
@@ -235,7 +235,7 @@ public class JpaScheduleErrorLogRepository extends JpaRepository
 
 	@Override
 	public Boolean checkExistErrorByKey(String executionId, String employeeId) {
-		String sqlQuery = "select count(*) from KSCDT_SCHE_ERR_LOG where EXE_ID = " + "'" + executionId + "'"
+		String sqlQuery = "select count(*) from KSCDT_BATCH_ERR_LOG where EXE_ID = " + "'" + executionId + "'"
 				+ "and SID = " + "'" + employeeId + "'";
 		
 		Connection con = this.getEntityManager().unwrap(Connection.class);

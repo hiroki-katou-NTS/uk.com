@@ -9,17 +9,16 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.frame.OvertimeInputCaculation;
 import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoAdapter;
-import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.record.RecordWorkInfoImport_Old;
 import nts.uk.ctx.at.request.dom.application.common.ovetimeholiday.CommonOvertimeHoliday;
 import nts.uk.ctx.at.request.dom.application.overtime.service.CaculationTime;
 import nts.uk.ctx.at.request.dom.application.overtime.service.IOvertimePreProcess;
+import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.CalcStampMiss;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.OverrideSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSet;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.hdworkapplicationsetting.WithdrawalAppSetRepository;
-import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.AppDateContradictionAtr;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetRepository;
 import nts.uk.ctx.at.request.dom.setting.company.applicationapprovalsetting.overtimerestappcommon.OvertimeRestAppCommonSetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -63,7 +62,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 		}
 		String employeeName = employeeAdapter.getEmployeeName(employeeID);
 		//Imported(申請承認)「勤務実績」を取得する
-		RecordWorkInfoImport recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
+		RecordWorkInfoImport_Old recordWorkInfoImport = recordWorkInfoAdapter.getRecordWorkInfo(employeeID,appDate);
 		Optional<PredetemineTimeSetting> workTimeSetOtp = workTimeSetRepository.findByWorkTimeCode(companyID, siftCD);
 		if (workTimeSetOtp.isPresent()) {
 			PredetemineTimeSetting workTimeSet = workTimeSetOtp.get();
@@ -82,7 +81,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	@Override
 	public CaculationTime checkOutSideTimeTheDay(String companyID, String employeeID, String appDate,
 			String siftCD, CaculationTime breakTime,
-			RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName) {
+			RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName) {
 		Optional<WorkType> workType = workTypeRep.findByPK(companyID, recordWorkInfoImport.getWorkTypeCode());
 		if(workType.isPresent()){
 			if(workType.get().getDailyWork().isHolidayWork()){
@@ -102,7 +101,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	@Override
 	public CaculationTime checkOutSideTimeTheDayForHoliday(String companyID, String employeeID, String appDate,
 			String siftCD, CaculationTime breakTime,
-			RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName) {
+			RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName) {
 		if(recordWorkInfoImport != null){
 			//打刻漏れチェック
 			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
@@ -134,7 +133,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	 */
 	@Override
 	public CaculationTime checkOutSideTimeTheDayNoForHoliday(String companyID, String employeeID, String appDate,
-			String siftCD, CaculationTime breakTime, RecordWorkInfoImport recordWorkInfoImport, Integer calTime,String employeeName) {
+			String siftCD, CaculationTime breakTime, RecordWorkInfoImport_Old recordWorkInfoImport, Integer calTime,String employeeName) {
 		if(recordWorkInfoImport != null){
 			//打刻漏れチェック
 			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
@@ -161,7 +160,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	@Override
 	public CaculationTime checkHolidayWorkOnDay(String companyID, String employeeID, String appDate,
 			String siftCD, CaculationTime breakTime,
-			RecordWorkInfoImport recordWorkInfoImport,Integer calTime,String employeeName, boolean actualExceedConfirm) {
+			RecordWorkInfoImport_Old recordWorkInfoImport,Integer calTime,String employeeName, boolean actualExceedConfirm) {
 		Optional<WorkType> workType = workTypeRep.findByPK(companyID, recordWorkInfoImport.getWorkTypeCode());
 		if(workType.isPresent()){
 			if(workType.get().getDailyWork().isHolidayWork()){
@@ -177,13 +176,13 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	// 03-02-3-1_当日_休日出勤の場合
 	@Override
 	public void checkOnDayTheDayForHolidayWork(String companyID, String employeeID, String appDate, String siftCD,
-			CaculationTime breakTime, RecordWorkInfoImport recordWorkInfoImport, Integer calTime,String employeeName, boolean actualExceedConfirm) {
+			CaculationTime breakTime, RecordWorkInfoImport_Old recordWorkInfoImport, Integer calTime,String employeeName, boolean actualExceedConfirm) {
 		// ドメインモデル「休出申請設定」を取得
 		Optional<WithdrawalAppSet> withdrawalApp =	withdrawalAppSetRepository.getWithDraw();
 		
 		// ドメインモデル「残業休出申請共通設定」を取得
 		Optional<OvertimeRestAppCommonSetting> overtimeRestAppCommonSet = this.overtimeRestAppCommonSetRepository
-				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.BREAK_TIME_APPLICATION.value);
+				.getOvertimeRestAppCommonSetting(companyID, ApplicationType.HOLIDAY_WORK_APPLICATION.value);
 		if(recordWorkInfoImport != null){
 			//打刻漏れチェック
 			if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
@@ -234,7 +233,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	// 03-02-3-2_当日_休日の場合
 	@Override
 	public void checkDayIsHoliday(String companyID, String employeeID, String appDate, String siftCD,
-			CaculationTime breakTime, RecordWorkInfoImport recordWorkInfoImport, Integer calTime,String employeeName) {
+			CaculationTime breakTime, RecordWorkInfoImport_Old recordWorkInfoImport, Integer calTime,String employeeName) {
 		// ドメインモデル「休出申請設定」を取得
 		Optional<WithdrawalAppSet> withdrawalApp =	withdrawalAppSetRepository.getWithDraw();
 		if(recordWorkInfoImport.getAttendanceStampTimeFirst() != null && recordWorkInfoImport.getLeaveStampTimeFirst() != null){
@@ -267,8 +266,8 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 	}
 	
 	private void checkTimeThanCalTimeReally(CaculationTime breakTime,
-			RecordWorkInfoImport recordWorkInfoImport,String employeeName,String appDate,String companyID){
-		for(OvertimeInputCaculation holidayCal : recordWorkInfoImport.getOvertimeHolidayCaculation()){
+			RecordWorkInfoImport_Old recordWorkInfoImport,String employeeName,String appDate,String companyID){
+		/*for(OvertimeInputCaculation holidayCal : recordWorkInfoImport.getOvertimeHolidayCaculation()){
 			 if(holidayCal.getFrameNo() == breakTime.getFrameNo()){
 				 //画面上の申請時間＞Imported(申請承認)「実績内容」.休出時間
 				 if(breakTime.getApplicationTime() != null &&  breakTime.getApplicationTime() > holidayCal.getResultCaculation()){
@@ -278,7 +277,7 @@ public class HolidayThreeProcessImpl implements HolidayThreeProcess {
 					 breakTime.setCaculationTime(holidayCal.getResultCaculation() != null ? Integer.toString(holidayCal.getResultCaculation()) : null);
 				 }
 			 }
-		 }
+		 }*/
 	}
 	@Override
 	public CaculationTime checkCaculationActualExcessForApprover(int prePostAtr, int appType, String employeeID,
