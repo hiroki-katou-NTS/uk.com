@@ -74,6 +74,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public hidden: boolean = false;
     // vaii loan, laij khong dinh kieu????
     public businessTripActualContent: [] = [];
+    public businessTripInfos: [] = [];
     public appID: string = ' ';
     public lstWorkDay: any[] = [];
 
@@ -155,17 +156,35 @@ export class KafS08A2Component extends KafS00ShrComponent {
             opWorkTypeName: '',
             opWorkTimeName: '',
             opWorkTime: number,
-            opLeaveTime: number
+            opLeaveTime: number,
+            workTypeCD: string,
+            workTimeCD: string
         }) => {
             //rowDate.opAchievementDetail.opWorkTime = model.opWorkTime;
             //rowDate.opAchievementDetail.opLeaveTime = model.opLeaveTime;
             console.log(model);
-            if (rowDate.date == model.date) {
-                rowDate.opAchievementDetail.opWorkTypeName = model.opWorkTypeName;
-                rowDate.opAchievementDetail.opWorkTimeName = model.opWorkTimeName;
-                rowDate.opAchievementDetail.opWorkTime = model.derpartureTime;
-                rowDate.opAchievementDetail.opLeaveTime = model.returnTime;
+            if (vm.mode) {
+                vm.businessTripInfoOutput.businessTripInfoOutput.businessTripActualContent.forEach((i) => {
+                    if (i.date == model.date) {
+                        i.opAchievementDetail.workTypeCD = model.workTypeCD;
+                        i.opAchievementDetail.workTimeCD = model.workTimeCD;
+                        i.opAchievementDetail.opWorkTypeName = model.opWorkTypeName;
+                        i.opAchievementDetail.opWorkTimeName = model.opWorkTimeName;
+                        i.opAchievementDetail.opWorkTime = model.opWorkTime;
+                        i.opAchievementDetail.opLeaveTime = model.opLeaveTime;
+                    }
+                });
+            } else {
+                vm.businessTripInfoOutput.businessTrip.tripInfos.forEach((i) => {
+                    if (i.date == model.date) {
+                        i.wkTypeCd = model.workTypeCD;
+                        i.wkTimeCd = model.workTimeCD;
+                        i.startWorkTime = model.opWorkTime;
+                        i.endWorkTime = model.opLeaveTime;
+                    }
+                });
             }
+
             vm.$emit('changeTime', model.derpartureTime, model.returnTime);
 
 

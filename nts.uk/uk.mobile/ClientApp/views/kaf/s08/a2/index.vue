@@ -54,7 +54,23 @@
               <th class="border-left-0"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody v-if="mode">
+            <tr v-for="(data,index) in businessTripActualContent" v-bind:key="index">
+              <td class="px-1" v-date="data.date">{{data.date }}</td>
+              <td class="px-1" v-if="data.opAchievementDetail.opWorkTypeName != null">{{data.opAchievementDetail.opWorkTypeName}}</td>
+              <td class="px-1" v-else>{{''}}</td>
+              <td class="px-1" v-if="data.opAchievementDetail.opWorkTimeName != null">{{data.opAchievementDetail.opWorkTimeName}}</td>
+              <td class="px-1" v-else>{{''}}</td>
+              <td class="px-1" v-if="data.opAchievementDetail.opWorkTime != null">{{data.opAchievementDetail.opWorkTime | timewd}}</td>
+              <td class="px-1" v-else>{{''}}</td>
+              <td class="border-right-0 px-1" v-if="data.opAchievementDetail.opLeaveTime != null">{{data.opAchievementDetail.opLeaveTime | timewd}}</td>
+              <td class="px-1" v-else>{{''}}</td>
+              <td class="text-center px-0 border-left-0" @click="selectRowDate(data)">
+                <fa-font class="pr-4" v-bind:size="'1'" icon="angle-right" />
+              </td>
+            </tr>
+          </tbody>
+          <tbody v-if="mode">
             <tr v-for="(data,index) in businessTripActualContent" v-bind:key="index">
               <td class="px-1" v-date="data.date">{{data.date }}</td>
               <td class="px-1" v-if="data.opAchievementDetail.opWorkTypeName != null">{{data.opAchievementDetail.opWorkTypeName}}</td>
