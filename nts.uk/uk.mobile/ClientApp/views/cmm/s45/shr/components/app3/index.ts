@@ -40,7 +40,7 @@ export class CmmS45ComponentsApp3Component extends Vue {
     public businessTrip: any = new BusinessTrip();
     public table: [] = [] ;
     public time: {} = {} ;
-    public lstWorkDays: any[] = [] ;
+
 
     public $app() {
         return this.businessTrip;
@@ -73,7 +73,6 @@ export class CmmS45ComponentsApp3Component extends Vue {
                 vm.time = res.data.businessTripDto;
                 vm.table = res.data.businessTripDto.tripInfos;
                 vm.params.appDetail = res.data;
-                vm.lstWorkDays = res.data.appDetail.businessTripInfoOutputDto.workdays;
                 //vm.dataFetch = res.data.
                 //vm.bindStart();
                 //vm.params.appDetail = vm.dataFetch;

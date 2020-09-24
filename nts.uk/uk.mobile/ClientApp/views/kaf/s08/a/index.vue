@@ -28,6 +28,7 @@
     <kafs08c v-if="step =='KAFS08_12'"
     v-bind:appID="appID"
     v-bind:mode="mode"
+    @backToStepOne="backToStepOne"
     />
 </div>
 </template>

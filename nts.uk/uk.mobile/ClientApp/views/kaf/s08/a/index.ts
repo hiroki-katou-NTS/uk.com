@@ -117,4 +117,9 @@ export class KafS08AComponent extends Vue {
             (focusElem as HTMLElement).focus();
         }, 100);
     }
+
+    public backToStepOne() {
+        const vm = this;
+        vm.step = 'KAFS08_10';
+    }
 }
