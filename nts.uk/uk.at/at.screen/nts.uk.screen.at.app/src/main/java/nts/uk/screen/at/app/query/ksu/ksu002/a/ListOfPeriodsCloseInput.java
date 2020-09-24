@@ -3,7 +3,7 @@ package nts.uk.screen.at.app.query.ksu.ksu002.a;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.YearMonth;
 
 /**
  * 
@@ -17,6 +17,8 @@ import nts.arc.time.GeneralDate;
 
 public class ListOfPeriodsCloseInput {
 
-	private GeneralDate baseDate;
-	
+	public String sid;
+
+	public YearMonth baseDate;
+
 }

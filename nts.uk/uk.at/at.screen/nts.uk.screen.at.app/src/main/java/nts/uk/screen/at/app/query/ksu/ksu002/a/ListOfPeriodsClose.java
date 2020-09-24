@@ -1,6 +1,6 @@
 package nts.uk.screen.at.app.query.ksu.ksu002.a;
 
-import nts.arc.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.screen.at.app.query.ksu.ksu002.a.dto.PeriodsCloseDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -42,17 +43,32 @@ public class ListOfPeriodsClose {
 	@Inject
 	private ClosureEmploymentRepository closureEmploymentRepo;
 	
+	@Inject
+	private ClosureRepository closureRepository;
 	
-	public void get(ListOfPeriodsCloseInput input) {
+	
+	public List<PeriodsCloseDto> get(ListOfPeriodsCloseInput input) {
 		
 		GetClosurePeriodRequireImpl require = new GetClosurePeriodRequireImpl(closureRepo, shareEmploymentAdapter, closureEmploymentRepo);
 		CacheCarrier cacheCarrier = new CacheCarrier();
-		String employeeId = AppContexts.user().employeeId();
-		GeneralDate criteriaDate = GeneralDate.today();
+		String companyId = AppContexts.user().companyId();
 		
-//		YearMonth yearMonth = YearMonth.
-//		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, employeeId, criteriaDate, input.getYearMonth());
+		List<PeriodsCloseDto> dtos = new ArrayList<>();
 		
+		List<ClosurePeriod> periods = GetClosurePeriod.fromYearMonth(require, cacheCarrier, input.getSid(), GeneralDate.today(), input.getBaseDate());
+		
+		for (ClosurePeriod closurePeriod : periods) {
+			PeriodsCloseDto closeDto = new PeriodsCloseDto();
+			
+			closeDto.setDatePeriod(closurePeriod.getAggrPeriods().get(0).getPeriod());
+			
+			Optional<Closure> closure = this.closureRepository.findById(companyId, closurePeriod.getClosureId().value);
+			
+			closeDto.setClosureName(closure.map(m -> m.getClosureHistories().get(0).getClosureName().v()).orElse(""));
+			
+		}
+		
+		return dtos;
 	}
 
 	@AllArgsConstructor
