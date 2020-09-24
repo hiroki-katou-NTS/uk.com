@@ -10746,16 +10746,17 @@ var nts;
                         if (!exTable.stickOverWrite
                             && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData)))
                             return;
-                        if (fieldArr && _.isObject(value)) {
+                        var clonedVal = _.cloneDeep(value);
+                        if (fieldArr && _.isObject(clonedVal)) {
                             _.forEach(fieldArr, function (f, i) {
                                 if ((!exTable.stickOverWrite && !helper.isEmpty(cData[f]))
                                     || helper.isXInnerCell($grid, pkVal, columnKey, i, style.HIDDEN_CLS, style.SEAL_CLS)
                                     || !_.includes(stickFields, f)) {
-                                    value[f] = cData[f];
+                                    clonedVal[f] = cData[f];
                                     if (f.slice(-4) === "Name") {
                                         var codeFieldName = f.substr(0, f.length - 4) + "Code";
-                                        if (_.has(value, codeFieldName)) {
-                                            value[codeFieldName] = cData[codeFieldName];
+                                        if (_.has(clonedVal, codeFieldName)) {
+                                            clonedVal[codeFieldName] = cData[codeFieldName];
                                         }
                                     }
                                 }
@@ -10764,8 +10765,8 @@ var nts;
                         else if (helper.isXCell($grid, pkVal, columnKey, style.HIDDEN_CLS, style.SEAL_CLS))
                             return;
                         var changedData = _.cloneDeep(cData);
-                        gen.dataSource[rowIdx][columnKey] = value;
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, styleMaker);
+                        gen.dataSource[rowIdx][columnKey] = clonedVal;
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, styleMaker);
                         if (!touched || !touched.dirty)
                             return;
                         if (!_.isNil(touched.idx) && touched.idx !== -1) {
@@ -10777,7 +10778,7 @@ var nts;
                             cellObj.stickFields = stickFields;
                         }
                         pushStickHistory($grid, [cellObj]);
-                        events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+                        events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, clonedVal, innerIdx));
                     }
                     update.stickGridCellOw = stickGridCellOw;
                     /**
@@ -10836,15 +10837,15 @@ var nts;
                                 else {
                                     if (stickFields && stickFields[0] === fieldArr[0]) {
                                         var objValCloned = _.cloneDeep(objVal), tField = fieldArr[0];
-                                        objValCloned[tField] = srcVal[tField];
-                                        if (!helper.isEqual(src[key], obj[key], fieldArr)) {
+                                        if (!helper.isEqual(src[key], obj[key], fieldArr)
+                                            && !helper.isXInnerCell($grid, pkVal, key, null, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                            objValCloned[tField] = srcVal[tField];
                                             changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
                                             origData[key] = objValCloned;
+                                            return objValCloned;
                                         }
-                                        else {
-                                            delete origData[key];
-                                        }
-                                        return objValCloned;
+                                        delete origData[key];
+                                        return objVal;
                                     }
                                     else if (!helper.isEqual(src[key], obj[key])) {
                                         changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
@@ -16375,7 +16376,8 @@ var nts;
                         if (!cellsStyle)
                             return;
                         var result = _.find(cellsStyle, function (deco) {
-                            return deco.columnKey === key && deco.rowId === rowId && deco.innerIdx === innerIdx && clazz.some(function (c) { return deco.clazz === c; });
+                            return deco.columnKey === key && deco.rowId === rowId
+                                && (_.isNil(innerIdx) ? true : deco.innerIdx === innerIdx) && clazz.some(function (c) { return deco.clazz === c; });
                         });
                         return result !== undefined;
                     }
