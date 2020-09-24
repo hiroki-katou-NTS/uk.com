@@ -1472,7 +1472,7 @@ module nts.uk.ui.exTable {
         /**
          * Grid cell.
          */
-        export function gridCell($grid: HTMLElement, rowIdx: any, columnKey: any, innerIdx: any, valueObj: any, styleMaker?: any) {
+        export function gridCell($grid: HTMLElement, rowIdx: any, columnKey: any, innerIdx: any, valueObj: any, styleMaker?: any, stickOrigData?: any) {
             let $exTable = helper.closest($grid, "." + NAMESPACE);
             let x = helper.getExTableFromGrid($grid);
             let updateMode = x.updateMode;
@@ -1492,7 +1492,7 @@ module nts.uk.ui.exTable {
             let $childCells = $cell.querySelectorAll("." + CHILD_CELL_CLS);
             if (_.isFunction(styleMaker)) {
                 if ($childCells.length === 0) {
-                    let style = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
+                    let style = styleMaker(rowIdx, columnKey, innerIdx, valueObj, stickOrigData);
                     if (style) {
                         if (style.class) helper.addClass($cell, style.class);
                         if (style.textColor) $cell.style.color = style.textColor;
@@ -1501,7 +1501,7 @@ module nts.uk.ui.exTable {
                     }
                 } else {
                     _.forEach($childCells, (c, i) => {
-                        let style = styleMaker(rowIdx, columnKey, i, valueObj);
+                        let style = styleMaker(rowIdx, columnKey, i, valueObj, stickOrigData);
                         if (style) {
                             if (style.class) helper.addClass(c, style.class); 
                             if (style.textColor) c.style.color = style.textColor;
@@ -1674,7 +1674,7 @@ module nts.uk.ui.exTable {
         /**
          * Grid row.
          */
-        export function gridRow($grid: HTMLElement, rowIdx: any, data: any, styleMaker?: any) {
+        export function gridRow($grid: HTMLElement, rowIdx: any, data: any, styleMaker?: any, stickOrigData?: any) {
             let $exTable = helper.closest($grid, "." + NAMESPACE);
             let x = helper.getExTableFromGrid($grid);
             let updateMode = x.updateMode;
@@ -1698,7 +1698,7 @@ module nts.uk.ui.exTable {
                         let cData = data[key];
                         if (_.isFunction(styleMaker)) {
                             if (childCells.length === 0) {
-                                let styleMake = styleMaker(rowIdx, key, -1, cData);
+                                let styleMake = styleMaker(rowIdx, key, -1, cData, stickOrigData && stickOrigData[key]);
                                 if (styleMake) {
                                     if (styleMake.class) helper.addClass($target, styleMake.class);
                                     if (styleMake.textColor) $target.style.color = styleMake.textColor;
@@ -1707,7 +1707,7 @@ module nts.uk.ui.exTable {
                                 }
                             } else {
                                 _.forEach(childCells, (c, i) => {
-                                    let style = styleMaker(rowIdx, key, i, cData);
+                                    let style = styleMaker(rowIdx, key, i, cData, stickOrigData && stickOrigData[key]);
                                     if (style) {
                                         if (style.class) helper.addClass(c, style.class);
                                         if (style.textColor) c.style.color = style.textColor;
@@ -3163,7 +3163,7 @@ module nts.uk.ui.exTable {
             
             let changedData = _.cloneDeep(cData);
             gen.dataSource[rowIdx][columnKey] = clonedVal;
-            let touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, styleMaker);
+            let touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, styleMaker, _.cloneDeep(value));
             if (!touched || !touched.dirty) return;
             if (!_.isNil(touched.idx) && touched.idx !== -1) {
                 innerIdx = touched.idx;
@@ -3267,7 +3267,7 @@ module nts.uk.ui.exTable {
 //                    delete origData[k];
 //                }
 //            });
-            let touched = render.gridRow($grid, rowIdx, origData, styleMaker);
+            let touched = render.gridRow($grid, rowIdx, origData, styleMaker, _.cloneDeep(data));
             if (changedCells.length > 0) {
                 changedCells.forEach(c => {
                     c.setTarget(touched.updateTarget);
