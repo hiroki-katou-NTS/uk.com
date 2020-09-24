@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.gateway.dom.accessrestrictions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
 
 /**
@@ -49,6 +51,14 @@ public class AccessRestrictions extends AggregateRoot{
 		if(this.allowedIPaddress.isEmpty()) {
 			this.accessLimitUseAtr = NotUseAtr.NOT_USE;
 		}
+	}
+	
+	/** [4] アクセス制限を追加する */
+	public AccessRestrictions() {
+		super();
+		this.accessLimitUseAtr = NotUseAtr.NOT_USE;
+		this.contractCode = new ContractCode(AppContexts.user().contractCode());
+		this.allowedIPaddress = new ArrayList<>();
 	}
 
 	public AccessRestrictions(int accessLimitUseAtr, String contractCode,
