@@ -40,9 +40,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
     @Prop({ default: () => [] }) public readonly table!: [];
 
     //A2 nhận về props params là một Object ITimes
-    @Prop({ default: () => 0 }) public readonly derpartureTime!: number;
+    @Prop({ default: () => 0 }) public derpartureTime!: number;
 
-    @Prop({ default: () => 0 }) public readonly returnTime!: number;
+    @Prop({ default: () => 0 }) public returnTime!: number;
 
     //A2 nhận về props comment là một Object comment
     @Prop({ default: {} }) public readonly comment!: Object;
@@ -160,8 +160,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
             if (rowDate.date == model.date) {
                 rowDate.opAchievementDetail.opWorkTypeName = model.opWorkTypeName;
                 rowDate.opAchievementDetail.opWorkTimeName = model.opWorkTimeName;
-                rowDate.opAchievementDetail.opWorkTime = model.opWorkTime;
-                rowDate.opAchievementDetail.opLeaveTime = model.opLeaveTime;
+                rowDate.opAchievementDetail.opWorkTime = model.derpartureTime;
+                rowDate.opAchievementDetail.opLeaveTime = model.returnTime;
             }
             vm.$emit('changeTime', model.derpartureTime, model.returnTime);
 

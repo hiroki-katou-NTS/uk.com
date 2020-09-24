@@ -31,4 +31,9 @@ export class KafS08CComponent extends Vue {
             appID : vm.appID
         };
     }
+
+    public BackToStepOne(res: any) {
+        const vm =this;
+        vm.$emit('backToStepOne',res);
+    }
 }
