@@ -328,7 +328,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             }).done((successData: any) => {
 				if(successData) {
 					vm.$dialog.info({ messageId: "Msg_16" }).then(() => {
-	                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
+						nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+							let param = 0;
+							if(obj.appListAtr==1) {
+								param = 1;		
+							}
+							vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+			            });
 	                });	
 				}
             }).fail((res: any) => {
@@ -360,7 +366,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             switch(res.messageId) {
             case "Msg_426":
                 vm.$dialog.error({ messageId: "Msg_426" }).then(() => {
-                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
+					nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+						let param = 0;
+						if(obj.appListAtr==1) {
+							param = 1;		
+						}
+						vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+		            });
                 });
                 break;
             case "Msg_197":
@@ -370,7 +382,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 break;
             case "Msg_198":
                 vm.$dialog.error({ messageId: "Msg_198" }).then(() => {
-                    vm.$jump("at", "/view/cmm/045/a/index.xhtml");
+					nts.uk.characteristics.restore("AppListExtractCondition").then((obj) => {
+						let param = 0;
+						if(obj.appListAtr==1) {
+							param = 1;		
+						}
+						vm.$jump("at", "/view/cmm/045/a/index.xhtml?a="+param);
+		            });
                 });
                 break;
             default:

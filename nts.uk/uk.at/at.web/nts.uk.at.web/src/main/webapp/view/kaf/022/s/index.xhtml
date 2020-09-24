@@ -16,6 +16,7 @@
 
 			<com:EnumScript>
 				nts.uk.ctx.at.request.dom.application.ApplicationType
+				nts.uk.ctx.at.request.dom.application.appabsence.HolidayAppType
 			</com:EnumScript>
 
 			<com:ValidatorScript>
@@ -40,16 +41,16 @@
 				<div class="control-group valign-center" style = "margin-left: 10px; margin-top: 10px">
 					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KAF022_440')}</div>
 					<!-- S2_2 -->
-					<div id="app-type"
+					<div id="app-type" style="width: 200px"
 						 data-bind="ntsComboBox: {
 							options: listAppType,
-							optionsValue: 'code',
+							optionsValue: 'key',
 							visibleItemsCount: 6,
 							value: selectedAppType,
 							dropDownAttachedToBody: true,
 							optionsText: 'name',
 							columns: [
-								{ prop: 'name', length: 4 },
+								{ prop: 'name', length: 8 },
 							]}" />
 				</div>
 				<div class="fixed-flex-layout">

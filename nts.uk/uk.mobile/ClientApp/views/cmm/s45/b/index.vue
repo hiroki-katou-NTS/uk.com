@@ -22,7 +22,7 @@
             <div class="row pl-3">
               <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="2">{{'CMMS45_8' | i18n}}</nts-checkbox>
               <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="3">{{'CMMS45_11' | i18n}}</nts-checkbox>
-              <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="6">{{'CMMS45_10' | i18n}}</nts-checkbox>
+              <!-- <nts-checkbox class="col-4" v-model="checkeds" v-bind:value="6">{{'CMMS45_10' | i18n}}</nts-checkbox> -->
             </div>
             <div class="row pl-3">
               <nts-checkbox v-model="checkeds" v-bind:value="4" >{{'CMMS45_53' | i18n}}</nts-checkbox>
@@ -98,7 +98,7 @@
     </div>
     <!-- Button Approve B2_4 -->
     <div class="fixed-bottom px-2 py-1" v-if="modeAppr" v-bind:class="{'bg-white': disableB24}">
-      <button v-bind:disabled = "disableB24" class = 'btn btn-primary btn-block' 
+      <button v-bind:disabled ="disableB24" class = 'btn btn-primary btn-block' 
         v-on:click="processAppr" >{{lstAppr.length == 0 ? 'CMMS45_56' : 'CMMS45_57' | i18n(`${lstAppr.length}`)}}</button>
     </div>
     <div v-if="displayB513 == 1" class="py-3" v-html="getHtmlNone()">

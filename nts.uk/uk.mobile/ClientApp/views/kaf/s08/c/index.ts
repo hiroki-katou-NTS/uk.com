@@ -16,11 +16,11 @@ import { ScreenMode } from 'views/kaf/s00/b';
     constraints: []
 })
 export class KafS08CComponent extends Vue {
-    @Prop({default: () => ({})})
-    public title: string = 'KafS08C';
+
     public kafS00DParams: any = null;
     public params?: any;
-    public mode: boolean = true;
+    
+    @Prop({default : true}) public readonly mode!: boolean;
 
     @Prop({default : ' '}) public readonly appID!: string;
 

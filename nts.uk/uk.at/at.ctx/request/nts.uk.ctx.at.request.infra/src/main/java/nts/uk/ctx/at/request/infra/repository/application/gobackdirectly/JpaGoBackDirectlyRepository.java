@@ -166,4 +166,11 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		return krqdtGoBackDirectly;
 	}
 
+	@Override
+	public void delete(String companyId, String appId) {
+		this.commandProxy().remove(KrqdtGoBackDirectly.class,
+				new KrqdtGoBackDirectlyPK(AppContexts.user().companyId(), appId));
+		
+	}
+
 }

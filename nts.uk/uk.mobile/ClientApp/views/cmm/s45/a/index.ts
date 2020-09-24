@@ -337,14 +337,6 @@ export class CmmS45AComponent extends Vue {
     private convertAppInfo(data: any) {
         let self = this;
         self.lstApp = [];
-        self.appAllNumber = self.data.appAllNumber;
-        if (data.appLst.length == 0) {
-            self.displayA512 = 1;
-        } else if (data.appLst.length > self.data.appAllNumber) {
-            self.displayA512 = 2;
-        } else {
-            self.displayA512 = 0;
-        }
 
         // data.lstApp.forEach((app: any) => {
         //     self.lstApp.push(new AppInfo({
@@ -372,9 +364,18 @@ export class CmmS45AComponent extends Vue {
                 }
             }
         });
+
         self.lstApp = _.uniqBy(self.lstApp, (o: any) => {
             return o.id;
         });
+        self.appAllNumber = self.data.appAllNumber;
+        if (self.lstApp.length == 0) {
+            self.displayA512 = 1;
+        } else if (self.lstApp.length > self.data.appAllNumber) {
+            self.displayA512 = 2;
+        } else {
+            self.displayA512 = 0;
+        }
         // data.appLst.array.forEach((app: ListOfApplication) => {
         //     self.lstApp.push(new AppInfo({
         //         id: app.appID,

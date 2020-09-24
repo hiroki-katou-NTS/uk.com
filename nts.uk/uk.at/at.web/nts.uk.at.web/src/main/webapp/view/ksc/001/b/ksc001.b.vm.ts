@@ -482,14 +482,20 @@ module nts.uk.at.view.ksc001.b {
 				self.kcp005EmployeeList( dataList );
 
 				_.each( dataList,( employeeSearch ) => {
-					employeeIds.push( employeeSearch.employeeId );
-					employeeSearchs.push( {
-						code : employeeSearch.employeeCode,
-						name : employeeSearch.employeeName,
-						affiliationName : employeeSearch.affiliationName
-					} );
-					listSelectedEmpCode.push( employeeSearch.employeeCode.trim() );
-				} );
+
+					let employeeCode = employeeSearch.employeeCode.trim ();
+
+					if ( !listSelectedEmpCode.includes ( employeeCode ) ) {
+						employeeIds.push ( employeeSearch.employeeId );
+						employeeSearchs.push ( {
+							code : employeeSearch.employeeCode,
+							name : employeeSearch.employeeName,
+							affiliationName : employeeSearch.affiliationName
+						} );
+						listSelectedEmpCode.push(employeeCode );
+					}
+
+				});
 
 				// update employee list by ccg001 search
 				self.employeeIds( employeeIds );
@@ -549,20 +555,17 @@ module nts.uk.at.view.ksc001.b {
 									self.selectedEmployeeCode( listSelectedEmpCode );
 									self.employeeIds( employeeIds );
 								} else {
-									//nts.uk.ui.dialog.error({ messageId: "Msg_1779"});
 									self.$dialog.error({ messageId: "Msg_1779" }).then(() => {});
 								}
-								//nts.uk.ui.block.clear();
+
 								self.$blockui("hide");
 								dfd.resolve();
 							})
 							.fail(() => {
-								//nts.uk.ui.block.clear();
 								self.$blockui("hide");
 								dfd.reject();
 							})
 							.always(() => {
-								//nts.uk.ui.block.clear();
 								self.$blockui("hide");
 								dfd.resolve();
 							});
@@ -864,40 +867,32 @@ module nts.uk.at.view.ksc001.b {
 
 				let self = this,
 					selectedEmployeeCode = self.selectedEmployeeCode(),
+					employeeList = self.employeeList(),
 					kcp005EmployeeList = self.kcp005EmployeeList();
 
+				//reset selected code before sent do F
 				if ( selectedEmployeeCode.length <= 0 ) {
 					self.$dialog.error ( { messageId : "Msg_206" } ).then ( () => {
 						return;
 					} );
 				} else {
-
-					let chk = $('#employeeSearch span[name="hchk"]').attr('data-chk');
-					if( chk === 'off' && !self.isKCP005EmployeeSelectedAll())
-						self.isKCP005EmployeeSelectedAll(false);
-					else if( chk === 'on')
-						self.isKCP005EmployeeSelectedAll(true);
-
-					if( !self.isKCP005EmployeeSelectedAll() ) {
-						self.$dialog.error( { messageId : "Msg_758" } ).then(() => {
-							return;
-						} );
-					} else {
 						let totalEmployees = 0,
 							newEmployeesIds: Array<string> = [];
 
 						_.forEach ( selectedEmployeeCode, ( item ) => {
-							let foundEmployee = _.find ( kcp005EmployeeList, ( x ) => {
-								return x.employeeCode === item
-							} );
-							if ( !_.isNil ( foundEmployee ) ) newEmployeesIds.push ( foundEmployee.employeeId );
+							let findInEmployeeList = _.find(employeeList, (x) => { return x.code == item });
+							if( !_.isNil(findInEmployeeList)) {
+								let foundEmployee = _.find ( kcp005EmployeeList, ( x ) => {
+									return x.employeeCode === item
+								} );
+								if ( !_.isNil ( foundEmployee ) ) newEmployeesIds.push ( foundEmployee.employeeId );
+							}
 						} );
 
-						self.employeeIds ( newEmployeesIds );
+						self.employeeIds( newEmployeesIds );
 						totalEmployees = newEmployeesIds.length;
 						self.lengthEmployeeSelected ( self.$i18n ( "KSC001_47", [ totalEmployees.toString () ] ) );
 						self.openDialogPageE ();
-					}
 				}
 			}
 

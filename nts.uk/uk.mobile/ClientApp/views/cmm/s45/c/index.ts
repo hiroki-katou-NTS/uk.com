@@ -469,7 +469,7 @@ export class CmmS45CComponent extends Vue {
             return opComboReason.reasonForFixedForm;
         }
 
-        return '';
+        return vm.appTransferData.appDispInfoStartupOutput.appDetailScreenInfo.application.opAppStandardReasonCD + ' ' + vm.$i18n('CMMS45_87');
     }
 
     get textReason() {

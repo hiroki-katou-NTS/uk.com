@@ -44,17 +44,17 @@ public class AppStampStandard {
 					if (optional.isPresent()) {
 						appStampStandar = optional.get();
 						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
-							appStampStandar.startTime = x.getTimeOfDay().getDayTime();
+							appStampStandar.startTime = x.getTimeOfDay().v();
 						} 
 						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END)  {
-							appStampStandar.endTime = x.getTimeOfDay().getDayTime();
+							appStampStandar.endTime = x.getTimeOfDay().v();
 						}
 					} else {
 						appStampStandar = new AppStampStandard();
 						if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
-							appStampStandar.startTime = x.getTimeOfDay().getDayTime();
+							appStampStandar.startTime = x.getTimeOfDay().v();
 						} else {
-							appStampStandar.endTime = x.getTimeOfDay().getDayTime();
+							appStampStandar.endTime = x.getTimeOfDay().v();
 						}
 						appStampStandar.framNo = x.getDestinationTimeApp().getEngraveFrameNo();
 						// parse enum
@@ -74,10 +74,10 @@ public class AppStampStandard {
 				} else {
 					appStampStandar = new AppStampStandard();
 					if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.START) {
-						appStampStandar.startTime = x.getTimeOfDay().getDayTime();
+						appStampStandar.startTime = x.getTimeOfDay().v();
 					} 
 					if (x.getDestinationTimeApp().getStartEndClassification() == StartEndClassification.END)  {
-						appStampStandar.endTime = x.getTimeOfDay().getDayTime();
+						appStampStandar.endTime = x.getTimeOfDay().v();
 					}
 					appStampStandar.framNo = x.getDestinationTimeApp().getEngraveFrameNo();
 					// parse enum
@@ -154,8 +154,8 @@ public class AppStampStandard {
 		if (!CollectionUtil.isEmpty(listTimeStampAppOther)) {
 			listTimeStampAppOther.stream().forEach(item -> {
 				AppStampStandard appStampStandard = new AppStampStandard();
-				appStampStandard.startTime = item.getTimeZone().getStartTime().getDayTime();
-				appStampStandard.endTime = item.getTimeZone().getEndTime().getDayTime();
+				appStampStandard.startTime = item.getTimeZone().getStartTime().v();
+				appStampStandard.endTime = item.getTimeZone().getEndTime().v();
 				appStampStandard.framNo = item.getDestinationTimeZoneApp().getEngraveFrameNo();
 				// parse enum
 				StampAtrOther stampAtr = null;
