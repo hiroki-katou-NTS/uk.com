@@ -13,7 +13,7 @@ public class EmployeeInfo {
 	public  String scheduleTeamCd;
 	public  String emplRankCode;
 	public  Integer optLicenseClassification;
-	public  String jobtitleID; 
+	public  String jobtitleCode; 
 	public  String classificationCode; 
 	
 
