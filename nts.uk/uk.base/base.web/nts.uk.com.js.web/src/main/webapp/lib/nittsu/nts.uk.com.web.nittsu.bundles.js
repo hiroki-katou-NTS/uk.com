@@ -9064,7 +9064,7 @@ var nts;
                     /**
                      * Grid cell.
                      */
-                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, styleMaker) {
+                    function gridCell($grid, rowIdx, columnKey, innerIdx, valueObj, styleMaker, stickOrigData) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var x = helper.getExTableFromGrid($grid);
                         var updateMode = x.updateMode;
@@ -9084,7 +9084,7 @@ var nts;
                         var $childCells = $cell.querySelectorAll("." + render.CHILD_CELL_CLS);
                         if (_.isFunction(styleMaker)) {
                             if ($childCells.length === 0) {
-                                var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj);
+                                var style_1 = styleMaker(rowIdx, columnKey, innerIdx, valueObj, stickOrigData);
                                 if (style_1) {
                                     if (style_1.class)
                                         helper.addClass($cell, style_1.class);
@@ -9096,7 +9096,7 @@ var nts;
                             }
                             else {
                                 _.forEach($childCells, function (c, i) {
-                                    var style = styleMaker(rowIdx, columnKey, i, valueObj);
+                                    var style = styleMaker(rowIdx, columnKey, i, valueObj, stickOrigData);
                                     if (style) {
                                         if (style.class)
                                             helper.addClass(c, style.class);
@@ -9265,7 +9265,7 @@ var nts;
                     /**
                      * Grid row.
                      */
-                    function gridRow($grid, rowIdx, data, styleMaker) {
+                    function gridRow($grid, rowIdx, data, styleMaker, stickOrigData) {
                         var $exTable = helper.closest($grid, "." + NAMESPACE);
                         var x = helper.getExTableFromGrid($grid);
                         var updateMode = x.updateMode;
@@ -9289,7 +9289,7 @@ var nts;
                                     var cData_1 = data[key];
                                     if (_.isFunction(styleMaker)) {
                                         if (childCells_1.length === 0) {
-                                            var styleMake = styleMaker(rowIdx, key, -1, cData_1);
+                                            var styleMake = styleMaker(rowIdx, key, -1, cData_1, stickOrigData && stickOrigData[key]);
                                             if (styleMake) {
                                                 if (styleMake.class)
                                                     helper.addClass($target, styleMake.class);
@@ -9301,7 +9301,7 @@ var nts;
                                         }
                                         else {
                                             _.forEach(childCells_1, function (c, i) {
-                                                var style = styleMaker(rowIdx, key, i, cData_1);
+                                                var style = styleMaker(rowIdx, key, i, cData_1, stickOrigData && stickOrigData[key]);
                                                 if (style) {
                                                     if (style.class)
                                                         helper.addClass(c, style.class);
@@ -10766,7 +10766,7 @@ var nts;
                             return;
                         var changedData = _.cloneDeep(cData);
                         gen.dataSource[rowIdx][columnKey] = clonedVal;
-                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, styleMaker);
+                        var touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, styleMaker, _.cloneDeep(value));
                         if (!touched || !touched.dirty)
                             return;
                         if (!_.isNil(touched.idx) && touched.idx !== -1) {
@@ -10869,7 +10869,7 @@ var nts;
                         //                    delete origData[k];
                         //                }
                         //            });
-                        var touched = render.gridRow($grid, rowIdx, origData, styleMaker);
+                        var touched = render.gridRow($grid, rowIdx, origData, styleMaker, _.cloneDeep(data));
                         if (changedCells.length > 0) {
                             changedCells.forEach(function (c) {
                                 c.setTarget(touched.updateTarget);
