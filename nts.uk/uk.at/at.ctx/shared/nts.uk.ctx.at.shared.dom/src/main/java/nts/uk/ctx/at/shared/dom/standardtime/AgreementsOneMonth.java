@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.agreementbasicsettings;
+package nts.uk.ctx.at.shared.dom.standardtime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
