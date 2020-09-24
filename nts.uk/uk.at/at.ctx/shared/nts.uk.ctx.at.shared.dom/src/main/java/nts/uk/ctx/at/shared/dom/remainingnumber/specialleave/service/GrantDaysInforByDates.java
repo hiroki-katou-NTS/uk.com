@@ -12,10 +12,12 @@ import nts.arc.time.GeneralDate;
 @Setter
 @Getter
 public class GrantDaysInforByDates {
+	
 	/**
 	 * 期間外次回付与日
 	 */
 	private GeneralDate grantDate;
+	
 	/**
 	 * 付与日数一覧：List＜年月日、付与日数、エラーフラグ＞
 	 */

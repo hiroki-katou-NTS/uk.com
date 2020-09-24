@@ -29,7 +29,10 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.G
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveAppSetting;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.basicinfo.SpecialLeaveBasicInfo;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.ErrorFlg;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.GrantDaysInfor;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.GrantDaysInforByDates;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InPeriodOfSpecialLeave;
+import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice.RequireM1;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.SpecialLeaveManagementService;
 //import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.service.InforSpecialLeaveOfEmployeeSevice.RequireM2;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
@@ -37,7 +40,9 @@ import nts.uk.ctx.at.shared.dom.specialholiday.export.NextSpecialLeaveGrant;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeBaseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.GenderCls;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.MonthDay;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.YearMonth;
@@ -104,7 +109,7 @@ public class CalcNextSpecialLeaveGrantDate {
 	}
 	
 	/**
-	 * 次回特休付与日を計算
+	 * 次回特別休暇付与を計算
 	 * @param companyId 会社ID
 	 * @param employeeId 社員ID
 	 * @param period 期間
@@ -125,7 +130,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			// 開始日、終了日を１日後にずらした期間
 			val paramPeriod = period.get();
 			int addEnd = 0;
-			if (paramPeriod.end().before(GeneralDate.max())) addEnd = 1;
+			if (paramPeriod.end().before(GeneralDate.max())){addEnd = 1;}
 			targetPeriod = new DatePeriod(paramPeriod.start().addDays(1), paramPeriod.end().addDays(addEnd));
 		}
 		
@@ -214,7 +219,10 @@ public class CalcNextSpecialLeaveGrantDate {
 							spLeaveCD, 
 							CALL_FROM.PERIOD, // ooooo 要確認
 							period,
-							grantDate);
+							grantDate,
+							
+							specialHolidays.get()
+							);
 					
 				
 				}
@@ -567,6 +575,10 @@ public class CalcNextSpecialLeaveGrantDate {
 			return nextSpecialLeaveGrantList;
 		}
 		
+		if ( !period.isPresent() ){ // ooooo 期間チェック　必要か？
+			return nextSpecialLeaveGrantList;
+		}
+		
 		// 付与日から期限日内に入社日があるかチェック
 		// 求めた「付与日」をパラメータ「付与基準日」にセットする
 		GeneralDate grantDateNew = getPeriodSpecialLeaveGrantInfo(
@@ -590,8 +602,51 @@ public class CalcNextSpecialLeaveGrantDate {
 					Optional.ofNullable(grantDateOpt.get()));
 			
 		// 期限日を求める
-		// ooooooo
+		nextSpecialLeaveGrantListNew
+			= getSpecialLeaveGrantInfo(
+					require, cacheCarrier, companyId, employeeId, 
+					spLeaveCD, nextSpecialLeaveGrantListNew, null); // oooo　最後、次回期間外特休付与日
+		}
+	}
+	
+	/**
+	 * 期限日を求める（期間の付与日）
+	 * @param companyId 会社ID
+	 * @param employeeId 社員ID
+	 * @param spLeaveCD 特別休暇コード
+	 * @param nextSpecialLeaveGrantList 次回特休付与リスト
+	 * @param nextGrantDateAfterPeriod 次回期間外特休付与日
+	 * @return 次回特休付与リスト
+	 */
+	private static List<NextSpecialLeaveGrant> getSpecialLeaveGrantInfo(
+			SpecialLeaveManagementService.RequireM5 require, 
+			CacheCarrier cacheCarrier,
+			String companyId,
+			String employeeId,
+			int spLeaveCD,
+			List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList,
+			GeneralDate nextGrantDateAfterPeriod) {
+		
+		// 「特別休暇」を取得する
+		Optional<SpecialHoliday> specialHolidays = require.specialHoliday(companyId, spLeaveCD);
+		if ( specialHolidays.isPresent() ){
 			
+			// パラメータ「次回特別休暇付与」を取得
+			// 次回特別休暇付与でループ
+			nextSpecialLeaveGrantList.forEach(c->{
+				
+				// パラメータ「次回特別休暇付与」の期限を求める
+				// ・期限日　←　パラメータ「次回特別休暇付与．付与年月日」の年　+ 期限付与.期間.終了
+				GeneralDate endDate = specialHolidays.get().getGrantRegular().getPeriodGrantDate().getPeriod().end();
+				GeneralDate deadline = GeneralDate.ymd(c.getGrantDate().year(), endDate.month(), endDate.day());
+				
+				// ※付与日から期限日の間で年を跨ぐ場合、期限日に1年加算
+				if ( c.getGrantDate().before(deadline) ){
+					deadline = deadline.addYears(1);
+				}
+				
+				c.setDeadLine(deadline);
+			});
 		}
 	}
 	
@@ -602,7 +657,9 @@ public class CalcNextSpecialLeaveGrantDate {
 	 * @param int spLeaveCD 特別休暇コード
 	 * @param callFrom 呼び出し元（指定日付与または期間付与）
 	 * @param period 期間
-	 * @param grantDate 付与基準日
+	 * @param grantDate 付与日
+	 * @param 
+	 * @param specialHoliday 特別休暇
 	 * @return 次回特休付与リスト
 	 */
 	private static List<NextSpecialLeaveGrant> getTableSpecialLeaveGrantInfo(
@@ -613,16 +670,39 @@ public class CalcNextSpecialLeaveGrantDate {
 			int spLeaveCD,
 			CALL_FROM callFrom,
 			Optional<DatePeriod> period,
-			Optional<GeneralDate> grantDateOpt) {
+			Optional<GeneralDate> grantDateOpt,
+			SpecialLeaveBasicInfo specialLeaveBasicInfo,
+			SpecialHoliday specialHoliday) {
 		
-		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList = new ArrayList<NextSpecialLeaveGrant>();
+		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList
+			= new ArrayList<NextSpecialLeaveGrant>();
 		if ( !grantDateOpt.isPresent() ){
 			return nextSpecialLeaveGrantList;
 		}
 		
 		// テーブルに基づいた付与日数一覧を求める
-		// ooooo
+		GrantDaysInforByDates grantDaysInforByDates
+			= askGrantdaysFromtable(
+					require, 
+					cacheCarrier, 
+					companyId, 
+					employeeId, 
+					period.get(),
+					grantDateOpt.get(),
+					specialLeaveBasicInfo,
+					specialHoliday
+					);
 		
+		
+//		GrantDaysInforByDates askGrantdaysFromtable(
+//				RequireM1 require, 
+//				CacheCarrier cacheCarrier,
+//				String cid, 
+//				String sid, 
+//				DatePeriod period, 
+//				GeneralDate granDate,
+//				SpecialLeaveBasicInfo basicInfor, 
+//				SpecialHoliday speHoliday) 
 		
 		
 		
@@ -725,137 +805,278 @@ public class CalcNextSpecialLeaveGrantDate {
 	
 	/**
 	 * テーブルに基づいた付与日数一覧を求める
-	 * @param companyId 会社ID
-	 * @param employeeId 社員ID
-	 * @param int spLeaveCD 特別休暇コード
-	 * @param callFrom 呼び出し元（指定日付与または期間付与）
-	 * @param period 期間
-	 * @param grantDate 付与基準日
-	 * @return 次回特休付与リスト
+	 * @param cid　会社ID
+	 * @param sid　社員ID
+	 * @param period　期間
+	 * @param granDate　付与基準日
+	 * @param basicInfor　特別休暇基本情報
+	 * @return　付与日数一覧
 	 */
-	private static List<NextSpecialLeaveGrant> getTableSpecialLeaveGrantList(
+	public static GrantDaysInforByDates askGrantdaysFromtable(
 			SpecialLeaveManagementService.RequireM5 require, 
-			CacheCarrier cacheCarrier, 
-			String companyId, 
-			String employeeId, 
-			int spLeaveCD,
-			CALL_FROM callFrom,
-			Optional<DatePeriod> period,
-			Optional<GeneralDate> grantDateOpt) {
+			CacheCarrier cacheCarrier,
+			String cid, 
+			String sid, 
+			DatePeriod period, 
+			GeneralDate granDate,
+			SpecialLeaveBasicInfo basicInfor, 
+			SpecialHoliday speHoliday) {
 		
-		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList = new ArrayList<NextSpecialLeaveGrant>();
-		if ( !grantDateOpt.isPresent() ){
-			return nextSpecialLeaveGrantList;
-		}
+		List<GrantDaysInfor> lstOutput = new ArrayList<>();
+		Optional<GrantDateTbl> optGrantDateTbl = Optional.empty();
+		GeneralDate outputDate = null;
+		List<ElapseYear> elapseYearList = new ArrayList<>();
 		
 		// ドメインモデル「特別休暇付与経過年数テーブル」を取得する
 		
+		//◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
+		//取得している「特別休暇基本情報．付与設定．付与テーブルコード」　
+		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED 
+				&& basicInfor.getGrantSetting().getGrantTable().isPresent()) {
+			elapseYearList = require.elapseYear(cid, speHoliday.getSpecialHolidayCode().v(),
+					basicInfor.getGrantSetting().getGrantTable().get().v());
+		}
+		//◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
+		//規定のテーブルとする＝TRUE
+		else {
+			optGrantDateTbl = require.grantDateTbl(cid, basicInfor.getSpecialLeaveCode().v());
+			
+			if(optGrantDateTbl.isPresent()) {				
+				elapseYearList = require.elapseYear(cid, basicInfor.getSpecialLeaveCode().v(), 
+						optGrantDateTbl.get().getGrantDateCode().v());
+			}
+		}
+
+		// 取得できなかった場合
+		if(elapseYearList.isEmpty()) {
+			return new GrantDaysInforByDates(outputDate, lstOutput);
+		}
+		
+//		// パラメータ「付与基準日」がNULLかどうかチェックする ooooo
+//		if ( granDate.)
+		
+		// 「期間．終了日」＞=「付与日」の間 ループ
+		elapseYearList.forEach(c->{
+			
+			// 付与日を求める
+			
+			c.
+			
+			// 【経過年数が設定されている間】
+			// 付与日←パラメータ「付与基準日」＋特別休暇付与経過年数テーブル．経過年数テーブル．経過年数
+			// ※ループ毎に経過年数を大きいものに変更する
+	
+			// 【経過年数の設定がないかつ付与周期が設定されている場合】
+			// 付与日←付与日＋特別休暇付与経過年数テーブル．テーブル以降の付与周期．付与周期
+	
+			// 【経過年数の設定がないかつ付与周期が設定されていない場合】
+			// 付与日←付与日＋1年
+	
+			//※処理中の「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を次へ更新
+			
+			
+			
+
+			
+			
+			
+		});
 		
 		
 		
-		// ドメインモデル「特別休暇付与日数テーブル」を取得する
 		
-		
-		
-		
-		
-		
-//		// 「特別休暇」を取得する
-//		Optional<SpecialHoliday> specialHolidays = require.specialHoliday(companyId, spLeaveCD);
-//		
-//				
-//		// パラメータ「付与基準日」がNULLかどうかチェックする
-//		if ( !grantDateOpt.isPresent()
-//				|| !period.isPresent() ){ // Nullのとき
-//			
-//			// 「List＜次回特別休暇付与＞」を空で作成
-//			List<NextSpecialLeaveGrant> listNoData = new ArrayList<NextSpecialLeaveGrant>();
-//			return listNoData;
-//		}
-//		
-//		// 「List＜次回特別休暇付与＞」を作成
-//		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList = new ArrayList<NextSpecialLeaveGrant>();
-//		
-//		// パラメータ「付与日」←パラメータ「付与基準日」
-//		GeneralDate grantDate = GeneralDate.localDate(grantDateOpt.get().localDate());
-//		
-//		// ループ
-//		while (true){
-//			
-//			//　パラメータ「付与日」とパラメータ「期間」を比較する
-//			
-//			// 「付与日」＜「期間．開始日」
-//			if ( grantDate.before(period.get().start()) ){ 
-//				// 何もしない
-//			} 
-//			// 「期間．開始日」≦「付与日」≦「期間．終了日」 
-//			else if (period.get().start().beforeOrEquals(grantDate)
-//					&& grantDate.beforeOrEquals(period.get().start())){
-//				
-//				// 利用条件をチェックする
-//				boolean useCondition = checkUseCondition(
-//						require, cacheCarrier, companyId, employeeId, spLeaveCD, grantDate);
-//				
-//				// 状態　＝　「利用可能」
-//				if ( useCondition ){
-//					NextSpecialLeaveGrant nextSpecialLeaveGrant = new NextSpecialLeaveGrant();
-//					
-//					// 特別休暇基本情報を取得
-//					Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfoOpt
-//						= require.specialLeaveBasicInfo(employeeId, spLeaveCD, UseAtr.USE);
-//					
-//					if ( specialLeaveBasicInfoOpt.isPresent() ){
-//						
-//						// 「特別休暇基本情報．適用設定≠所定の条件を適用する」　の場合
-//						if ( !specialLeaveBasicInfoOpt.get().getApplicationSet().equals(
-//								SpecialLeaveAppSetting.PRESCRIBED) ){
-//							// 付与日数　←　特別休暇基本情報．付与設定．付与日数
-//							Optional<GrantNumber> grantNumberOpt
-//								= specialLeaveBasicInfoOpt.get().getGrantSetting().getGrantDays();
-//							if ( grantNumberOpt.isPresent() ){
-//								int grantDays = grantNumberOpt.get().v();
-//								nextSpecialLeaveGrant.setGrantDays(new GrantDays((double)grantDays));
-//							}
-//						} 
-//						// 「特別休暇基本情報．適用設定＝所定の条件を適用する」　の場合
-//						else if ( specialLeaveBasicInfoOpt.get().getApplicationSet().equals(
-//								SpecialLeaveAppSetting.PRESCRIBED)){
-//						
-//							double tmpGrantDays = 0.0;
-//							
-//							if ( specialHolidays.isPresent() ){
-//								
-//								// 引数の付与日数をセット
-//								
-//								// 呼び出し元が「指定日付与」
-//								if ( callFrom.equals(CALL_FROM.FIX) ){ 
-//									// 付与日数　←　ドメインモデル「特別休暇．付与情報．指定日付与．付与日数」
-//									tmpGrantDays = specialHolidays.get().getGrantRegular().getFixGrantDate().getGrantDays().getGrantDays().v();
-//								}
-//								// 呼び出し元が「期間付与」
-//								else if ( callFrom.equals(CALL_FROM.PERIOD) ){
-//									// 付与日数　←　ドメインモデル「特別休暇．付与情報．期間付与．付与日数」
-//									tmpGrantDays = specialHolidays.get().getGrantRegular().getPeriodGrantDate().getGrantDays().getGrantDays().v();
-//								}
-//							}
-//							nextSpecialLeaveGrant.setGrantDays(new GrantDays(tmpGrantDays));
-//							nextSpecialLeaveGrantList.add(nextSpecialLeaveGrant);
-//						}
-//					}
-//				}
-//			}
-//			
-//			// 「期間．終了日」＜「付与日」
-//			else if (period.get().end().before(grantDate)){
-//				
-//				// 「List＜次回特別休暇付与＞」を返す
-//				return nextSpecialLeaveGrantList;
-//			}
-//			
-//			// パラメータ「付与日」←パラメータ「付与日」＋1年
-//			grantDate = grantDate.addYears(1);
-//		}
+		int lastYear = granDate.year();
+		for (ElapseYear yearData : elapseYearList) {
+			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
+			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());
+			granDateTmp = granDateTmp.addMonths(yearData.getMonths().v());
+			outputDate = granDateTmp;
+			//最後の経過年数 = 処理中の「特別休暇付与テーブル．経過年数．年数
+			lastYear = granDateTmp.year();
+			//パラメータ「比較年月日」とパラメータ「期間」を比較する
+			if(period.start().beforeOrEquals(granDateTmp)
+					&& period.end().afterOrEquals(granDateTmp)) {
+				//利用条件をチェックする
+				ErrorFlg errorFlg = checkUse(require, cacheCarrier, cid, sid, granDateTmp, speHoliday);
+				if(errorFlg.isAgeError()
+						|| errorFlg.isClassError()
+						|| errorFlg.isEmploymentError()
+						|| errorFlg.isGenderError()) {
+					GrantDaysInfor output = new GrantDaysInfor(granDateTmp, Optional.of(errorFlg), 0);
+					lstOutput.add(output);
+				} else {
+					GrantDaysInfor output = new GrantDaysInfor(granDateTmp, Optional.empty(), yearData.getGrantedDays().v());
+					lstOutput.add(output);
+				}
+			} else if(period.end().before(granDateTmp)) {
+				break;
+			}
+		}
+		//パラメータ「付与日数一覧」の件数= 0 AND
+		//ドメインモデル「特別休暇付与テーブル」．テーブル以降の固定付与をおこなうが「チェックある」
+		if(lstOutput.isEmpty() 
+				&& (optGrantDateTbl.isPresent() && optGrantDateTbl.get().isSpecified())) {
+			GeneralDate grantDateNext = GeneralDate.ymd(lastYear + 1, granDate.month(), granDate.day());
+			for(GeneralDate loopDate = grantDateNext; loopDate.beforeOrEquals(period.end());) {
+				//「期間．開始日」≦「比較年月日」≦「期間．終了日」
+				if(period.start().beforeOrEquals(loopDate)
+						&& loopDate.beforeOrEquals(period.end())) {
+					//利用条件をチェックする
+					ErrorFlg errorFlg = checkUse(require, cacheCarrier, cid, sid, loopDate, speHoliday);
+					if(errorFlg.isAgeError()
+							|| errorFlg.isClassError()
+							|| errorFlg.isEmploymentError()
+							|| errorFlg.isGenderError()) {
+						GrantDaysInfor output = new GrantDaysInfor(loopDate, Optional.of(errorFlg), 0);
+						lstOutput.add(output);
+					} else {
+						GrantDaysInfor output = new GrantDaysInfor(loopDate, Optional.empty(), optGrantDateTbl.get().getNumberOfDays());
+						lstOutput.add(output);
+					}
+				}
+				loopDate = loopDate.addYears(1);
+				outputDate = loopDate;
+			}
+		}
+
+		return new GrantDaysInforByDates(outputDate, lstOutput);
 	}
+	
+	
+	
+//	/**
+//	 * テーブルに基づいた付与日数一覧を求める
+//	 * @param companyId 会社ID
+//	 * @param employeeId 社員ID
+//	 * @param int spLeaveCD 特別休暇コード
+//	 * @param callFrom 呼び出し元（指定日付与または期間付与）
+//	 * @param period 期間
+//	 * @param grantDate 付与基準日
+//	 * @return 次回特休付与リスト
+//	 */
+//	private static List<NextSpecialLeaveGrant> getTableSpecialLeaveGrantList(
+//			SpecialLeaveManagementService.RequireM5 require, 
+//			CacheCarrier cacheCarrier, 
+//			String companyId, 
+//			String employeeId, 
+//			int spLeaveCD,
+//			CALL_FROM callFrom,
+//			Optional<DatePeriod> period,
+//			Optional<GeneralDate> grantDateOpt) {
+//		
+//		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList = new ArrayList<NextSpecialLeaveGrant>();
+//		if ( !grantDateOpt.isPresent() ){
+//			return nextSpecialLeaveGrantList;
+//		}
+//		
+//		// ドメインモデル「特別休暇付与経過年数テーブル」を取得する
+//		
+//		
+//		
+//		
+//		// ドメインモデル「特別休暇付与日数テーブル」を取得する
+//		
+//		
+//		
+//		
+//		
+//		
+////		// 「特別休暇」を取得する
+////		Optional<SpecialHoliday> specialHolidays = require.specialHoliday(companyId, spLeaveCD);
+////		
+////				
+////		// パラメータ「付与基準日」がNULLかどうかチェックする
+////		if ( !grantDateOpt.isPresent()
+////				|| !period.isPresent() ){ // Nullのとき
+////			
+////			// 「List＜次回特別休暇付与＞」を空で作成
+////			List<NextSpecialLeaveGrant> listNoData = new ArrayList<NextSpecialLeaveGrant>();
+////			return listNoData;
+////		}
+////		
+////		// 「List＜次回特別休暇付与＞」を作成
+////		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList = new ArrayList<NextSpecialLeaveGrant>();
+////		
+////		// パラメータ「付与日」←パラメータ「付与基準日」
+////		GeneralDate grantDate = GeneralDate.localDate(grantDateOpt.get().localDate());
+////		
+////		// ループ
+////		while (true){
+////			
+////			//　パラメータ「付与日」とパラメータ「期間」を比較する
+////			
+////			// 「付与日」＜「期間．開始日」
+////			if ( grantDate.before(period.get().start()) ){ 
+////				// 何もしない
+////			} 
+////			// 「期間．開始日」≦「付与日」≦「期間．終了日」 
+////			else if (period.get().start().beforeOrEquals(grantDate)
+////					&& grantDate.beforeOrEquals(period.get().start())){
+////				
+////				// 利用条件をチェックする
+////				boolean useCondition = checkUseCondition(
+////						require, cacheCarrier, companyId, employeeId, spLeaveCD, grantDate);
+////				
+////				// 状態　＝　「利用可能」
+////				if ( useCondition ){
+////					NextSpecialLeaveGrant nextSpecialLeaveGrant = new NextSpecialLeaveGrant();
+////					
+////					// 特別休暇基本情報を取得
+////					Optional<SpecialLeaveBasicInfo> specialLeaveBasicInfoOpt
+////						= require.specialLeaveBasicInfo(employeeId, spLeaveCD, UseAtr.USE);
+////					
+////					if ( specialLeaveBasicInfoOpt.isPresent() ){
+////						
+////						// 「特別休暇基本情報．適用設定≠所定の条件を適用する」　の場合
+////						if ( !specialLeaveBasicInfoOpt.get().getApplicationSet().equals(
+////								SpecialLeaveAppSetting.PRESCRIBED) ){
+////							// 付与日数　←　特別休暇基本情報．付与設定．付与日数
+////							Optional<GrantNumber> grantNumberOpt
+////								= specialLeaveBasicInfoOpt.get().getGrantSetting().getGrantDays();
+////							if ( grantNumberOpt.isPresent() ){
+////								int grantDays = grantNumberOpt.get().v();
+////								nextSpecialLeaveGrant.setGrantDays(new GrantDays((double)grantDays));
+////							}
+////						} 
+////						// 「特別休暇基本情報．適用設定＝所定の条件を適用する」　の場合
+////						else if ( specialLeaveBasicInfoOpt.get().getApplicationSet().equals(
+////								SpecialLeaveAppSetting.PRESCRIBED)){
+////						
+////							double tmpGrantDays = 0.0;
+////							
+////							if ( specialHolidays.isPresent() ){
+////								
+////								// 引数の付与日数をセット
+////								
+////								// 呼び出し元が「指定日付与」
+////								if ( callFrom.equals(CALL_FROM.FIX) ){ 
+////									// 付与日数　←　ドメインモデル「特別休暇．付与情報．指定日付与．付与日数」
+////									tmpGrantDays = specialHolidays.get().getGrantRegular().getFixGrantDate().getGrantDays().getGrantDays().v();
+////								}
+////								// 呼び出し元が「期間付与」
+////								else if ( callFrom.equals(CALL_FROM.PERIOD) ){
+////									// 付与日数　←　ドメインモデル「特別休暇．付与情報．期間付与．付与日数」
+////									tmpGrantDays = specialHolidays.get().getGrantRegular().getPeriodGrantDate().getGrantDays().getGrantDays().v();
+////								}
+////							}
+////							nextSpecialLeaveGrant.setGrantDays(new GrantDays(tmpGrantDays));
+////							nextSpecialLeaveGrantList.add(nextSpecialLeaveGrant);
+////						}
+////					}
+////				}
+////			}
+////			
+////			// 「期間．終了日」＜「付与日」
+////			else if (period.get().end().before(grantDate)){
+////				
+////				// 「List＜次回特別休暇付与＞」を返す
+////				return nextSpecialLeaveGrantList;
+////			}
+////			
+////			// パラメータ「付与日」←パラメータ「付与日」＋1年
+////			grantDate = grantDate.addYears(1);
+////		}
+//	}
 	
 	/**
 	 * 付与日から期限日内に入社日があるかチェックする

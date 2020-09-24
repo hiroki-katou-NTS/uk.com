@@ -164,7 +164,7 @@ public class SpecialLeaveManagementService {
 						param.getOptBeforeResult(),
 						param.getSpecialLeaveCode());
 
-		// 次回特休付与日を計算
+		// 次回特別休暇付与日を計算
 //		CalcNextSpecialLeaveGrantDate calcNextSpecialLeaveGrantDate
 //			= new CalcNextSpecialLeaveGrantDate();
 		List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList

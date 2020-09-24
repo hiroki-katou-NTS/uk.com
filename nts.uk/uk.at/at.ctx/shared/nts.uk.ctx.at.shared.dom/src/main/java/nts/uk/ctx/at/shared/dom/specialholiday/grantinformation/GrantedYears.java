@@ -5,7 +5,6 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * 周期
- * 　未使用（jinno)
  * 
  * @author tanlv
  *

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.arc.layer.app.cache.CacheCarrier;
 import nts.arc.time.GeneralDate;
@@ -26,8 +27,10 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.AgeBaseYear;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantcondition.SpecialLeaveRestriction;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYear;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.ElapseYearMonthTbl;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDate;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantDateTbl;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantElapseYearMonth;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.GrantTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantinformation.TypeTime;
 import nts.uk.ctx.at.shared.dom.specialholiday.periodinformation.AvailabilityPeriod;
@@ -76,13 +79,13 @@ public class InforSpecialLeaveOfEmployeeSevice {
 		if(grantDayInfors == null || grantDayInfors.getLstGrantDaysInfor().isEmpty()) {
 			//状態：「付与なし」を返す
 			return new InforSpecialLeaveOfEmployee(InforStatus.NOTGRANT, upLimiDays,
-					new ArrayList<>(), specialHoliday.getGrantRegular().isAllowDisappear());
+					new ArrayList<>(), false);
 		} else {
 			//期限を取得する
 			List<SpecialHolidayInfor> getDeadlineInfo = getDeadlineInfo(grantDayInfors, specialHoliday);
 			
 			return new InforSpecialLeaveOfEmployee(InforStatus.GRANTED, upLimiDays,
-					getDeadlineInfo, specialHoliday.getGrantRegular().isAllowDisappear());
+					getDeadlineInfo, false);
 		}
 	}
 
@@ -96,41 +99,45 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			DatePeriod period, SpecialHoliday speHoliday, SpecialLeaveBasicInfo leaveBasicInfo) {
 		GeneralDate grantDate = GeneralDate.today();
 		//取得しているドメインモデル「特別休暇．付与情報．付与基準日」をチェックする
-		if(speHoliday.getGrantRegular().getGrantDate() == GrantDate.EMP_GRANT_DATE) {
-			//社員ID（List）と指定期間から所属会社履歴項目を取得
-			List<String> lstEmp = new ArrayList<>();
-			lstEmp.add(employeeId);
-			List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee = require.employeeAffiliatedCompanyHistories(
-					cacheCarrier, lstEmp, period);
-			
-			for (AffCompanyHistSharedImport affCompanyHistSharedImport : getAffCompanyHistByEmployee) {
-				List<AffComHistItemShareImport> lstAffComHistItem = affCompanyHistSharedImport.getLstAffComHistItem();
-				for (AffComHistItemShareImport affComHistItemShareImport : lstAffComHistItem) {
-					grantDate = affComHistItemShareImport.getDatePeriod().start();
-					break;
+		if(speHoliday.getGrantRegular().getGrantDate().isPresent() ){
+			if( speHoliday.getGrantRegular().getGrantDate().get() == GrantDate.EMP_GRANT_DATE) {
+				//社員ID（List）と指定期間から所属会社履歴項目を取得
+				List<String> lstEmp = new ArrayList<>();
+				lstEmp.add(employeeId);
+				List<AffCompanyHistSharedImport> getAffCompanyHistByEmployee = require.employeeAffiliatedCompanyHistories(
+						cacheCarrier, lstEmp, period);
+				
+				for (AffCompanyHistSharedImport affCompanyHistSharedImport : getAffCompanyHistByEmployee) {
+					List<AffComHistItemShareImport> lstAffComHistItem = affCompanyHistSharedImport.getLstAffComHistItem();
+					for (AffComHistItemShareImport affComHistItemShareImport : lstAffComHistItem) {
+						grantDate = affComHistItemShareImport.getDatePeriod().start();
+						break;
+					}
 				}
+			} else if (speHoliday.getGrantRegular().getGrantDate().get().equals(GrantDate.GRANT_BASE_HOLIDAY)){
+				//ドメインモデル「年休社員基本情報」を取得する
+				Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = require.employeeAnnualLeaveBasicInfo(employeeId);
+				if(!annualLeaveEmpBasicInfo.isPresent()) {
+					return new GrantDaysInforByDates(grantDate, Collections.emptyList());
+				}
+				//所得したドメインモデル「年休社員基本情報．付与ルール．付与基準日」をパラメータ「付与基準日」にセットする
+				grantDate = annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate();
+							
+			} else {
+				//取得している「特別休暇基本情報．付与設定．付与基準日」をパラメータ「付与基準日」にセットする
+				grantDate = leaveBasicInfo.getGrantSetting().getGrantDate();
 			}
-		} else if (speHoliday.getGrantRegular().getGrantDate().get().equals(GrantDate.GRANT_BASE_HOLIDAY)){
-			//ドメインモデル「年休社員基本情報」を取得する
-			Optional<AnnualLeaveEmpBasicInfo> annualLeaveEmpBasicInfo = require.employeeAnnualLeaveBasicInfo(employeeId);
-			if(!annualLeaveEmpBasicInfo.isPresent()) {
-				return new GrantDaysInforByDates(grantDate, Collections.emptyList());
-			}
-			//所得したドメインモデル「年休社員基本情報．付与ルール．付与基準日」をパラメータ「付与基準日」にセットする
-			grantDate = annualLeaveEmpBasicInfo.get().getGrantRule().getGrantStandardDate();
-						
-		} else {
-			//取得している「特別休暇基本情報．付与設定．付与基準日」をパラメータ「付与基準日」にセットする
-			grantDate = leaveBasicInfo.getGrantSetting().getGrantDate();
 		}
+		
 		//取得している「特別休暇．付与情報．付与するタイミングの種類」をチェックする
-		if(speHoliday.getGrantRegular().getTypeTime() == TypeTime.GRANT_START_DATE_SPECIFY) {
+		if(speHoliday.getGrantRegular().getTypeTime() == TypeTime.GRANT_SPECIFY_DATE) {
 			//固定の付与日一覧を求める
 			return askGrantDays(require, cacheCarrier, cid, employeeId, period, grantDate, speHoliday, leaveBasicInfo);
 		} else {
 			//テーブルに基づいた付与日数一覧を求める
 			return askGrantdaysFromtable(require, cacheCarrier,cid, employeeId, period, grantDate, leaveBasicInfo, speHoliday);
 		}
+		
 	}	
 	
 	/**
@@ -146,7 +153,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 		
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
 		//パラメータ「付与基準日」をパラメータ「比較年月日」にセットする
-		GrantTime grantTime = speHoliday.getGrantRegular().getGrantTime();
+		GrantTime grantTime = speHoliday.getGrantRegular().get
 		//取得している「特別休暇．付与情報．固定付与日．周期」
 		int interval = grantTime.getFixGrantDate().getInterval().v();
 		//取得している「特別休暇．付与情報．固定付与日．周期」をチェックする
@@ -296,7 +303,7 @@ public class InforSpecialLeaveOfEmployeeSevice {
 	 * @param cid　会社ID
 	 * @param sid　社員ID
 	 * @param period　期間
-	 * @param granDate　年月日
+	 * @param granDate　付与基準日
 	 * @param basicInfor　特別休暇基本情報
 	 * @return　付与日数一覧
 	 */
@@ -310,93 +317,200 @@ public class InforSpecialLeaveOfEmployeeSevice {
 			SpecialLeaveBasicInfo basicInfor, 
 			SpecialHoliday speHoliday) {
 		
-		// ドメインモデル「特別休暇付与経過年数テーブル」を取得する
-		// ooooo 保留
-		
-		// ドメインモデル「特別休暇付与日数テーブル」を取得する
+		// ドメインモデル「特別休暇付与経過年数テーブル」を取得する ooooo 要require対応
+		List<ElapseYear> elapseYearList = new ArrayList<ElapseYear>();
 		
 		List<GrantDaysInfor> lstOutput = new ArrayList<>();
-		Optional<GrantDateTbl> optGrantDateTbl = Optional.empty();
 		GeneralDate outputDate = null;
-		List<ElapseYear> elapseYear = new ArrayList<>();
 		
-		
-		
-		
-		//◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
-		//取得している「特別休暇基本情報．付与設定．付与テーブルコード」　
-		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED 
-				&& basicInfor.getGrantSetting().getGrantTable().isPresent()) {
-			elapseYear = require.elapseYear(cid, speHoliday.getSpecialHolidayCode().v(),
-					basicInfor.getGrantSetting().getGrantTable().get().v());
-		}
-		//◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
-		//規定のテーブルとする＝TRUE
-		else {
-			optGrantDateTbl = require.grantDateTbl(cid, basicInfor.getSpecialLeaveCode().v());
-			
-			if(optGrantDateTbl.isPresent()) {				
-				elapseYear = require.elapseYear(cid, basicInfor.getSpecialLeaveCode().v(), 
-						optGrantDateTbl.get().getGrantDateCode().v());
-			}
-		}
-		//※処理中の「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を次へ更新
-		if(elapseYear.isEmpty()) {
+		if ( elapseYearList.isEmpty() ){ // 取得できなかった場合
 			return new GrantDaysInforByDates(outputDate, lstOutput);
 		}
-		int lastYear = granDate.year();
-		for (ElapseYear yearData : elapseYear) {
-			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
-			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());
-			granDateTmp = granDateTmp.addMonths(yearData.getMonths().v());
-			outputDate = granDateTmp;
-			//最後の経過年数 = 処理中の「特別休暇付与テーブル．経過年数．年数
-			lastYear = granDateTmp.year();
-			//パラメータ「比較年月日」とパラメータ「期間」を比較する
-			if(period.start().beforeOrEquals(granDateTmp)
-					&& period.end().afterOrEquals(granDateTmp)) {
-				//利用条件をチェックする
-				ErrorFlg errorFlg = checkUse(require, cacheCarrier, cid, sid, granDateTmp, speHoliday);
-				if(errorFlg.isAgeError()
-						|| errorFlg.isClassError()
-						|| errorFlg.isEmploymentError()
-						|| errorFlg.isGenderError()) {
-					GrantDaysInfor output = new GrantDaysInfor(granDateTmp, Optional.of(errorFlg), 0);
-					lstOutput.add(output);
-				} else {
-					GrantDaysInfor output = new GrantDaysInfor(granDateTmp, Optional.empty(), yearData.getGrantedDays().v());
-					lstOutput.add(output);
-				}
-			} else if(period.end().before(granDateTmp)) {
-				break;
-			}
+		ElapseYear elapseYear = elapseYearList.get(0);
+		
+		// ドメインモデル「特別休暇付与日数テーブル」を取得する ooooo 要require対応
+		// 【条件】
+		// ・会社ID：パラメータ「会社ID」
+		// ・特別休暇コード：パラメータ「特別休暇コード」
+		List<GrantDateTbl> grantDateTblList = new ArrayList<GrantDateTbl>();
+		
+		// ◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
+		// 取得している「特別休暇基本情報．付与設定．付与テーブルコード」　
+		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED 
+				&& basicInfor.getGrantSetting().getGrantTable().isPresent()) {
+			
+			grantDateTblList = grantDateTblList.stream()
+				.filter(c->c.getGrantDateCode().v().equals(speHoliday.getSpecialHolidayCode().v()))
+				.collect(Collectors.toList());
 		}
-		//パラメータ「付与日数一覧」の件数= 0 AND
-		//ドメインモデル「特別休暇付与テーブル」．テーブル以降の固定付与をおこなうが「チェックある」
-		if(lstOutput.isEmpty() 
-				&& (optGrantDateTbl.isPresent() && optGrantDateTbl.get().isSpecified())) {
-			GeneralDate grantDateNext = GeneralDate.ymd(lastYear + 1, granDate.month(), granDate.day());
-			for(GeneralDate loopDate = grantDateNext; loopDate.beforeOrEquals(period.end());) {
-				//「期間．開始日」≦「比較年月日」≦「期間．終了日」
-				if(period.start().beforeOrEquals(loopDate)
-						&& loopDate.beforeOrEquals(period.end())) {
-					//利用条件をチェックする
-					ErrorFlg errorFlg = checkUse(require, cacheCarrier, cid, sid, loopDate, speHoliday);
-					if(errorFlg.isAgeError()
-							|| errorFlg.isClassError()
-							|| errorFlg.isEmploymentError()
-							|| errorFlg.isGenderError()) {
-						GrantDaysInfor output = new GrantDaysInfor(loopDate, Optional.of(errorFlg), 0);
-						lstOutput.add(output);
-					} else {
-						GrantDaysInfor output = new GrantDaysInfor(loopDate, Optional.empty(), optGrantDateTbl.get().getNumberOfDays());
-						lstOutput.add(output);
-					}
-				}
-				loopDate = loopDate.addYears(1);
-				outputDate = loopDate;
-			}
+		// ◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
+		// 規定のテーブルとする＝TRUE
+		else {
+			grantDateTblList = grantDateTblList.stream()
+					.filter(c->c.isSpecified())
+					.collect(Collectors.toList());
 		}
+		
+		if ( grantDateTblList.isEmpty() ){ // 取得できなかった場合
+			return new GrantDaysInforByDates(outputDate, lstOutput);
+		}
+		
+		// パラメータ「付与基準日」がNULLかどうかチェックする
+		if ( granDate == null ){ // 要Optional対応
+			return new GrantDaysInforByDates(outputDate, lstOutput);
+		}
+		
+		GrantDateTbl grantDateTbl = grantDateTblList.get(0);
+		
+		// 経過年数に対する付与日数
+		List<GrantElapseYearMonth> grantElapseYearMonthList
+			= grantDateTbl.getElapseYear();
+		
+		// ソート
+		// 付与回数　ASC
+		grantElapseYearMonthList 
+			= grantElapseYearMonthList
+				.stream()
+				.sorted((a,b)->Integer.compare(a.getElapseNo(),b.getElapseNo()))
+				.collect(Collectors.toList());
+		
+		
+		
+		/** 経過年数テーブル */
+		List<ElapseYearMonthTbl> elapseYearMonthTblList = elapseYear.getElapseYearMonthTblList();
+		
+		// 付与日を求める
+		GeneralDate grantDateTmp = GeneralDate.localDate(granDate.localDate());
+		
+		grantElapseYearMonthList.forEach(c->{ // ループ
+
+			// 経過年数（付与回数が同じもの）
+			List<ElapseYearMonthTbl> elapseYearMonthTblListTmp
+				= elapseYearMonthTblList.stream()
+				.filter(d->d.getElapseNo() == c.getElapseNo())
+				.collect(Collectors.toList());
+				
+			// 【経過年数が設定されている間】
+			if ( !elapseYearMonthTblListTmp.isEmpty() ){
+				ElapseYearMonthTbl elapseYearMonthTbl = elapseYearMonthTblListTmp.get(0);
+				
+				// 付与日←パラメータ「付与基準日」＋特別休暇付与経過年数テーブル．経過年数テーブル．経過年数
+				// ※ループ毎に経過年数を大きいものに変更する
+				grantDateTmp = grantDateTmp
+						.addYears(elapseYearMonthTbl.getElapseYearMonth().getYear())
+						.addMonths(elapseYearMonthTbl.getElapseYearMonth().getMonth());
+			}
+			// 【経過年数が設定されていない】
+			else {
+				
+				// 【経過年数の設定がないかつ付与周期が設定されている場合】
+				// 付与日←付与日＋特別休暇付与経過年数テーブル．テーブル以降の付与周期．付与周期
+				if ( elapseYear.getGrantCycleAfterTbl().isPresent() ){
+					grantDateTmp = grantDateTmp
+							.addYears(elapseYear.getGrantCycleAfterTbl().get().getElapseYearMonth().getYear())
+							.addMonths(elapseYear.getGrantCycleAfterTbl().get().getElapseYearMonth().getMonth());
+					
+					
+				}
+				// 【経過年数の設定がないかつ付与周期が設定されていない場合】
+				else{
+					// 付与日←付与日＋1年
+					grantDateTmp = grantDateTmp.addYears(1);
+				}
+				
+				
+			}
+			
+		});
+		
+		
+		
+//		Optional<GrantDateTbl> optGrantDateTbl = Optional.empty();
+//		
+//		List<ElapseYear> elapseYear = new ArrayList<>();
+//		
+//		//◆特別休暇基本情報．適用設定≠所定の条件を適用する　の場合
+//		//取得している「特別休暇基本情報．付与設定．付与テーブルコード」　
+//		if(basicInfor.getApplicationSet() != SpecialLeaveAppSetting.PRESCRIBED 
+//				&& basicInfor.getGrantSetting().getGrantTable().isPresent()) {
+//			
+//			elapseYear = require.elapseYear(cid, speHoliday.getSpecialHolidayCode().v(),
+//					basicInfor.getGrantSetting().getGrantTable().get().v());
+//		}
+//		//◆特別休暇基本情報．適用設定＝所定の条件を適用する　の場合
+//		//規定のテーブルとする＝TRUE
+//		else {
+//			optGrantDateTbl = require.grantDateTbl(cid, basicInfor.getSpecialLeaveCode().v());
+//			
+//			if(optGrantDateTbl.isPresent()) {				
+//				elapseYear = require.elapseYear(cid, basicInfor.getSpecialLeaveCode().v(), 
+//						optGrantDateTbl.get().getGrantDateCode().v());
+//			}
+//		}
+//		
+//		
+//		
+//		
+//		
+//		
+//		
+//		//※処理中の「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を次へ更新
+//		if(elapseYear.isEmpty()) {
+//			return new GrantDaysInforByDates(outputDate, lstOutput);
+//		}
+//		int lastYear = granDate.year();
+//		for (ElapseYear yearData : elapseYear) {
+//			//パラメータ「比較年月日」に取得したドメインモデル「特別休暇付与テーブル．経過年数に対する付与日数．経過年数」を加算する
+//			GeneralDate granDateTmp = granDate.addYears(yearData.getYears().v());
+//			granDateTmp = granDateTmp.addMonths(yearData.getMonths().v());
+//			outputDate = granDateTmp;
+//			//最後の経過年数 = 処理中の「特別休暇付与テーブル．経過年数．年数
+//			lastYear = granDateTmp.year();
+//			//パラメータ「比較年月日」とパラメータ「期間」を比較する
+//			if(period.start().beforeOrEquals(granDateTmp)
+//					&& period.end().afterOrEquals(granDateTmp)) {
+//				//利用条件をチェックする
+//				ErrorFlg errorFlg = checkUse(require, cacheCarrier, cid, sid, granDateTmp, speHoliday);
+//				if(errorFlg.isAgeError()
+//						|| errorFlg.isClassError()
+//						|| errorFlg.isEmploymentError()
+//						|| errorFlg.isGenderError()) {
+//					GrantDaysInfor output = new GrantDaysInfor(granDateTmp, Optional.of(errorFlg), 0);
+//					lstOutput.add(output);
+//				} else {
+//					GrantDaysInfor output = new GrantDaysInfor(granDateTmp, Optional.empty(), yearData.getGrantedDays().v());
+//					lstOutput.add(output);
+//				}
+//			} else if(period.end().before(granDateTmp)) {
+//				break;
+//			}
+//		}
+//		//パラメータ「付与日数一覧」の件数= 0 AND
+//		//ドメインモデル「特別休暇付与テーブル」．テーブル以降の固定付与をおこなうが「チェックある」
+//		if(lstOutput.isEmpty() 
+//				&& (optGrantDateTbl.isPresent() && optGrantDateTbl.get().isSpecified())) {
+//			GeneralDate grantDateNext = GeneralDate.ymd(lastYear + 1, granDate.month(), granDate.day());
+//			for(GeneralDate loopDate = grantDateNext; loopDate.beforeOrEquals(period.end());) {
+//				//「期間．開始日」≦「比較年月日」≦「期間．終了日」
+//				if(period.start().beforeOrEquals(loopDate)
+//						&& loopDate.beforeOrEquals(period.end())) {
+//					//利用条件をチェックする
+//					ErrorFlg errorFlg = checkUse(require, cacheCarrier, cid, sid, loopDate, speHoliday);
+//					if(errorFlg.isAgeError()
+//							|| errorFlg.isClassError()
+//							|| errorFlg.isEmploymentError()
+//							|| errorFlg.isGenderError()) {
+//						GrantDaysInfor output = new GrantDaysInfor(loopDate, Optional.of(errorFlg), 0);
+//						lstOutput.add(output);
+//					} else {
+//						GrantDaysInfor output = new GrantDaysInfor(loopDate, Optional.empty(), optGrantDateTbl.get().getNumberOfDays());
+//						lstOutput.add(output);
+//					}
+//				}
+//				loopDate = loopDate.addYears(1);
+//				outputDate = loopDate;
+//			}
+//		}
 
 		return new GrantDaysInforByDates(outputDate, lstOutput);
 	}
