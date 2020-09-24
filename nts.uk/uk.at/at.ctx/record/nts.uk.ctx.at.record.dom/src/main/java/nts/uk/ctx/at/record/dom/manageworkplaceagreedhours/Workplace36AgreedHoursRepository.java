@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.manageworkplaceagreedhours;
 
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfWorkPlace;
 
 import java.util.List;
 import java.util.Optional;

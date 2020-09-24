@@ -3,11 +3,10 @@ package nts.uk.screen.at.app.ksm003.find;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.UpperAgreementSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
 
 import java.util.Optional;
 
@@ -31,11 +30,13 @@ public class AgreementTimeOfCompanyDto {
         if (data != null){
             return new AgreementTimeOfCompanyDto();
         }
-        return data.map(x -> new AgreementTimeOfCompanyDto(
-                x.getBasicSettingId(),
-                x.getLaborSystemAtr(),
-                x.getUpperAgreementSetting(),
-                x.getBasicAgreementSetting()
-        )).orElseGet(AgreementTimeOfCompanyDto::new);
+//        return data.map(x -> new AgreementTimeOfCompanyDto(
+//                x.getBasicSettingId(),
+//                x.getLaborSystemAtr(),
+//                x.getUpperAgreementSetting(),
+//                x.getBasicAgreementSetting()
+//        )).orElseGet(AgreementTimeOfCompanyDto::new);
+        // TODO wait to change domain from Nittsu
+        return new AgreementTimeOfCompanyDto();
     }
 }

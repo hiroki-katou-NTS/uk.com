@@ -4,12 +4,12 @@ package nts.uk.ctx.at.record.infra.repository.manageemploymenthours;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.manageemploymenthours.Employment36HoursRepository;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
 import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
 import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmp;
 import nts.uk.ctx.at.record.infra.entity.manageemploymenthours.Ksrmt36AgrMgtEmpPk;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfEmployment;
 
 import javax.ejb.Stateless;
 import java.util.List;
@@ -52,10 +52,11 @@ public class JpaEmployment36HoursRepository extends JpaRepository implements Emp
 
     @Override
     public void delete(AgreementTimeOfEmployment domain) {
-        val entity = this.queryProxy().find(new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCD()
+        //TODO wait change domain from Nittsu
+        val entity = this.queryProxy().find(new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCategoryCode()
                 ,domain.getLaborSystemAtr().value),Ksrmt36AgrMgtEmp.class);
         if(entity.isPresent()){
-            this.commandProxy().remove(Ksrmt36AgrMgtEmp.class,new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCD()
+            this.commandProxy().remove(Ksrmt36AgrMgtEmp.class,new Ksrmt36AgrMgtEmpPk(domain.getCompanyId(),domain.getEmploymentCategoryCode()
                     ,domain.getLaborSystemAtr().value));
         }
     }

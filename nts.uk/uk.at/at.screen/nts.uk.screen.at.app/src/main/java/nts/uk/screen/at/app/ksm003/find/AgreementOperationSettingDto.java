@@ -3,9 +3,12 @@ package nts.uk.screen.at.app.ksm003.find;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.*;
-import nts.uk.screen.at.app.reservation.BentoMenuJoinBentoSettingDto;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.StartingMonthType;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateType;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.TargetSettingAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
 
 import java.util.Optional;
 
@@ -34,13 +37,15 @@ public class AgreementOperationSettingDto {
 
     public static AgreementOperationSettingDto setData(Optional<AgreementOperationSetting> data){
 
-        return data.map(agreementOperationSetting -> new AgreementOperationSettingDto(
-                agreementOperationSetting.getStartingMonth(),
-                agreementOperationSetting.getNumberTimesOverLimitType(),
-                agreementOperationSetting.getClosingDateType(),
-                agreementOperationSetting.getClosingDateAtr(),
-                agreementOperationSetting.getYearlyWorkTableAtr(),
-                agreementOperationSetting.getAlarmListAtr()
-        )).orElseGet(AgreementOperationSettingDto::new);
+        // TODO wait to change domain from Nittsu
+//        return data.map(agreementOperationSetting -> new AgreementOperationSettingDto(
+//                agreementOperationSetting.getStartingMonth(),
+//                agreementOperationSetting.getNumberTimesOverLimitType(),
+//                agreementOperationSetting.getClosingDateType(),
+//                agreementOperationSetting.getClosingDateAtr(),
+//                agreementOperationSetting.getYearlyWorkTableAtr(),
+//                agreementOperationSetting.getAlarmListAtr()
+//        )).orElseGet(AgreementOperationSettingDto::new);
+        return new AgreementOperationSettingDto();
     }
 }

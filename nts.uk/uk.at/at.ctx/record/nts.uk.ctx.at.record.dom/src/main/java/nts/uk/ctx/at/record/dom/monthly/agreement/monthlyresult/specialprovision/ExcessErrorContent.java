@@ -2,8 +2,8 @@ package nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovisio
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 
 import java.util.Optional;
 
@@ -28,7 +28,7 @@ public class ExcessErrorContent {
     private Optional<TimeOverLimitType> exceedUpperLimit;
 
     public static ExcessErrorContent create(ErrorClassification errorClassification, Optional<AgreementOneMonthTime> maximumTimeMonth,
-                              Optional<AgreementOneMonthTime> maximumTimeYear, Optional<TimeOverLimitType> exceedUpperLimit) {
+                                            Optional<AgreementOneMonthTime> maximumTimeYear, Optional<TimeOverLimitType> exceedUpperLimit) {
 
         return new ExcessErrorContent(errorClassification,maximumTimeMonth,maximumTimeYear,exceedUpperLimit);
     }

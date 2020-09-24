@@ -3,12 +3,12 @@ package nts.uk.ctx.at.record.infra.repository.manageworkplaceagreedhours;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.manageworkplaceagreedhours.Workplace36AgreedHoursRepository;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
 import nts.uk.ctx.at.record.infra.entity.managecompanyagreedhours.Ksrmt36AgrMgtCmp;
 import nts.uk.ctx.at.record.infra.entity.manageworkplaceagreedhours.Ksrmt36AgrMgtWkp;
 import nts.uk.ctx.at.record.infra.entity.manageworkplaceagreedhours.Ksrmt36AgrMgtWkpPk;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfWorkPlace;
 
 import javax.ejb.Stateless;
 import java.util.List;

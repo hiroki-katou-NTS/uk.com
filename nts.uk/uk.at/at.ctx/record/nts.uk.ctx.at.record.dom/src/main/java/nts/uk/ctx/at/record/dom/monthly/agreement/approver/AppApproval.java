@@ -8,13 +8,13 @@ import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.ApprovalStatus;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.SpecialProvisionsOfAgreement;
 import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.TypeAgreementApplication;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AlarmOneYear;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneMonth;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.ErrorOneYear;
 import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneMonth;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AlarmOneYear;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneMonth;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.ErrorOneYear;
 
 import javax.ejb.Stateless;
 import java.util.Optional;

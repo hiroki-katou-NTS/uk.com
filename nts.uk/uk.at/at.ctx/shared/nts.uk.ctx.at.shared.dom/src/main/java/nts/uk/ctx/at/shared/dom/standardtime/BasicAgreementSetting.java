@@ -77,6 +77,31 @@ public class BasicAgreementSetting extends AggregateRoot {
 
 	private LimitOneYear limitOneYear;
 
+	//     1ヶ月 TODO BỔ SUNG CMM024
+	private AgreementsOneMonth oneMonth;
+	//     1年間 TODO BỔ SUNG CMM024
+	private AgreementsOneYear oneYear;
+	// 複数月平均 TODO BỔ SUNG CMM024
+	private AgreementsMultipleMonthsAverage multipleMonthsAverage;
+	// 超過上限回数 TODO BỔ SUNG CMM024
+	private TimeOverLimitType numberTimesOverLimitType;
+
+	/** TODO BỔ SUNG CMM024
+	 *     [C-0] ３６協定基本設定(1ヶ月,1年間,複数月平均,超過上限回数)
+	 * @param oneMonth
+	 * @param oneYear
+	 * @param multipleMonthsAverage
+	 * @param numberTimesOverLimitType
+	 */
+
+	public BasicAgreementSetting(AgreementsOneMonth oneMonth,AgreementsOneYear oneYear,
+								 AgreementsMultipleMonthsAverage multipleMonthsAverage,TimeOverLimitType numberTimesOverLimitType){
+		this.oneMonth = oneMonth;
+		this.oneYear = oneYear;
+		this.multipleMonthsAverage = multipleMonthsAverage;
+		this.numberTimesOverLimitType = numberTimesOverLimitType;
+	}
+
 	public BasicAgreementSetting(String basicSettingId, AlarmWeek alarmWeek, ErrorWeek errorWeek, LimitWeek limitWeek,
 			AlarmTwoWeeks alarmTwoWeeks, ErrorTwoWeeks errorTwoWeeks, LimitTwoWeeks limitTwoWeeks,
 			AlarmFourWeeks alarmFourWeeks, ErrorFourWeeks errorFourWeeks, LimitFourWeeks limitFourWeeks,

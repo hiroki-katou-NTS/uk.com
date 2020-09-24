@@ -3,14 +3,9 @@ package nts.uk.ctx.at.record.infra.repository.manageclassificationagreementtime;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.manageclassificationagreementtime.Classification36AgreementTimeRepository;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
-import nts.uk.ctx.at.record.infra.entity.log.KrcdtEmpExecutionLog;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtCls;
 import nts.uk.ctx.at.record.infra.entity.manageclassificationagreementtime.Ksrmt36AgrMgtClsPk;
-import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
-import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHist;
-import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuHistPK;
-import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenuPK;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
 
 import java.util.List;
 import java.util.Optional;

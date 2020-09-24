@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.dom.agreementbasicsettings;
 
-import nts.uk.ctx.at.record.dom.standardtime.enums.TimeOverLimitType;
+ import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 /**
