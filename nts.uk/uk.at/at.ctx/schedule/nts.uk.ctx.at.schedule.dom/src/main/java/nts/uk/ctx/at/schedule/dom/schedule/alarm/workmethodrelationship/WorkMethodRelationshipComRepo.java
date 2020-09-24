@@ -18,9 +18,9 @@ public interface WorkMethodRelationshipComRepo {
 	/**
 	 * delete ( 会社ID, 勤務方法 )
 	 * @param companyId
-	 * @param workMethod
+	 * @param prevWorkMethod
 	 */
-	public void deleteWorkMethod(String companyId, WorkMethod workMethod);
+	public void deleteWithWorkMethod(String companyId, WorkMethod prevWorkMethod);
 	
 	/**
 	 * getAll ( 会社ID )
@@ -32,25 +32,25 @@ public interface WorkMethodRelationshipComRepo {
 	/**
 	 * get ( 会社ID, 勤務方法 )
 	 * @param companyId
-	 * @param workMethod
+	 * @param prevWorkMethod
 	 * @return
 	 */
-	public Optional<WorkMethodRelationshipCom> getWithWorkMethod(String companyId, WorkMethod workMethod);
+	public Optional<WorkMethodRelationshipCom> getWithWorkMethod(String companyId, WorkMethod prevWorkMethod);
 	
 	/**
 	 * get ( 会社ID, List<勤務方法> )	
 	 * @param companyId
-	 * @param workMethodList
+	 * @param prevWorkMethodList
 	 * @return
 	 */
-	public List<WorkMethodRelationshipCom> getWithWorkMethodList(String companyId, List<WorkMethod> workMethodList);
+	public List<WorkMethodRelationshipCom> getWithWorkMethodList(String companyId, List<WorkMethod> prevWorkMethodList);
 	
 	/**
 	 * xists ( 会社ID, 勤務方法 )
 	 * @param companyId
-	 * @param workMethod
+	 * @param prevWorkMethod
 	 * @return
 	 */
-	public boolean exists(String companyId, WorkMethod workMethod);
+	public boolean exists(String companyId, WorkMethod prevWorkMethod);
 
 }
