@@ -139,6 +139,13 @@ module nts.uk.at.view.kbt002.f {
                 return dfd.promise();
             }
             
+            openScreenJ(){
+                block.grayout();
+                setShared('inputDialogJ', {aggrFrameCode: "aggrFrameCode"});
+                modal("/view/kbt/002/j/index.xhtml").onClosed(function(){
+                    block.clear();
+                });    
+            }
             openDialogG(execItemCd){
                 let self = this;
                 block.grayout();
@@ -146,7 +153,7 @@ module nts.uk.at.view.kbt002.f {
                 setShared('inputDialogG', {execLog: execLog});
                 modal("/view/kbt/002/g/index.xhtml").onClosed(function(){
                     block.clear();
-                });    
+                }); 
             }
             openDialogH(execItemCd){
                 let self = this;
