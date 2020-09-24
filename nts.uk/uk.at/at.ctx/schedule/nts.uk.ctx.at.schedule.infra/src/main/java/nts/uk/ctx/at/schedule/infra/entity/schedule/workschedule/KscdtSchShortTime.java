@@ -104,7 +104,7 @@ public class KscdtSchShortTime extends ContractUkJpaEntity {
 			}
 		});
 		}
-		ShortWorkTimeOfDaily timeOfDaily = result.stream().findFirst().get();
+		ShortWorkTimeOfDaily timeOfDaily = result.isEmpty() ? null :  result.stream().findFirst().get();
 		return timeOfDaily;
 	}
 

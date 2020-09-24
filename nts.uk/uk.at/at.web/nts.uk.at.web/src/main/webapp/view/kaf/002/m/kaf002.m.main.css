@@ -1,0 +1,53 @@
+
+.titleColor {
+	background-color: #CFF1A5;
+}
+.disableFlag .box {
+	background-color: #888 !important;
+	border: 2px solid #2FCC71 !important;
+}
+
+input {
+	text-align: center !important;
+}
+.customeLink:hover {
+	text-decoration:underline;
+}
+.nts-combo-container {
+	height: 31px !important;
+	margin-top: 3px;
+	margin-left: 10px;
+}
+#ntsCheckbox-002 .ntsCheckBox-label {
+	margin-top: 10px !important;
+}
+.nts-grid-control-typeReason-1 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-2 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-3 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-4 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-5 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-6 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-7 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-8 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-9 {
+	margin-bottom: 10px
+}
+.nts-grid-control-typeReason-10 {
+	margin-bottom: 10px
+}
