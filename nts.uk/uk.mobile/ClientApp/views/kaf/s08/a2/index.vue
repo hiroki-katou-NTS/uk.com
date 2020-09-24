@@ -70,7 +70,7 @@
               </td>
             </tr>
           </tbody>
-          <tbody v-if="mode">
+          <tbody v-if="!mode">
             <tr v-for="(data,index) in businessTripActualContent" v-bind:key="index">
               <td class="px-1" v-date="data.date">{{data.date }}</td>
               <td class="px-1" v-if="data.opAchievementDetail.opWorkTypeName != null">{{data.opAchievementDetail.opWorkTypeName}}</td>

@@ -40,9 +40,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
     @Prop({ default: () => [] }) public readonly table!: [];
 
     //A2 nhận về props params là một Object ITimes
-    @Prop({ default: () => 0 }) public derpartureTime!: number;
+    @Prop({ default: () => null }) public derpartureTime!: number;
 
-    @Prop({ default: () => 0 }) public returnTime!: number;
+    @Prop({ default: () => null }) public returnTime!: number;
 
     //A2 nhận về props comment là một Object comment
     @Prop({ default: {} }) public readonly comment!: Object;
@@ -134,6 +134,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
             vm.$emit('nextToStepThree', res.data.appID);
         }).catch(() => {
             vm.$modal.error({ messageId: 'Msg_1912' });
+
+            return ;
         });
     }
 
@@ -163,26 +165,11 @@ export class KafS08A2Component extends KafS00ShrComponent {
             //rowDate.opAchievementDetail.opWorkTime = model.opWorkTime;
             //rowDate.opAchievementDetail.opLeaveTime = model.opLeaveTime;
             console.log(model);
-            if (vm.mode) {
-                vm.businessTripInfoOutput.businessTripInfoOutput.businessTripActualContent.forEach((i) => {
-                    if (i.date == model.date) {
-                        i.opAchievementDetail.workTypeCD = model.workTypeCD;
-                        i.opAchievementDetail.workTimeCD = model.workTimeCD;
-                        i.opAchievementDetail.opWorkTypeName = model.opWorkTypeName;
-                        i.opAchievementDetail.opWorkTimeName = model.opWorkTimeName;
-                        i.opAchievementDetail.opWorkTime = model.opWorkTime;
-                        i.opAchievementDetail.opLeaveTime = model.opLeaveTime;
-                    }
-                });
-            } else {
-                vm.businessTripInfoOutput.businessTrip.tripInfos.forEach((i) => {
-                    if (i.date == model.date) {
-                        i.wkTypeCd = model.workTypeCD;
-                        i.wkTimeCd = model.workTimeCD;
-                        i.startWorkTime = model.opWorkTime;
-                        i.endWorkTime = model.opLeaveTime;
-                    }
-                });
+            if (rowDate.date == model.date) {
+                    rowDate.opAchievementDetail.opWorkTypeName = model.opWorkTypeName ;
+                    rowDate.opAchievementDetail.opWorkTimeName = model.opWorkTimeName ;
+                    rowDate.opAchievementDetail.opWorkTime = model.derpartureTime;
+                    rowDate.opAchievementDetail.opLeaveTime = model.returnTime ;
             }
 
             vm.$emit('changeTime', model.derpartureTime, model.returnTime);
@@ -202,18 +189,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
         //vm.toggleErrorAlert();
         //this.$emit('nextToStepThree');
     }
-    //hàm xử lý ẩn/hiện alert error
-    public toggleErrorAlert() {
-        let x = document.getElementById('error');
-        if (x.style.display === 'none') {
-            x.style.display = 'block';
-        } else {
-            x.style.display = 'none';
-        }
-
-        return;
-    }
-
+   
     //quay trở lại step one
     public prevStepOne() {
         const vm = this;
@@ -297,10 +273,16 @@ export class KafS08A2Component extends KafS00ShrComponent {
                 application: vm.application
             }).then((res: any) => {
                 //vm.appID = res.data.appID;
-                vm.$emit('nextToStepThree', res.data.appID);
+                if (res) {
+                    vm.$emit('nextToStepThree', res.data.appID);
+                } else {
+                    vm.$modal.error({ messageId: 'Msg_1912' });
+                }
                 vm.$mask('hide');
             }).catch(() => {
                 vm.$modal.error({ messageId: 'Msg_1912' });
+
+                return ;
             });
         } else {
             vm.$modal.error({ messageId: 'Msg_1703' });

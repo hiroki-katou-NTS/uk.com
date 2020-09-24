@@ -60,11 +60,6 @@ export class KafS08DComponent extends Vue {
         });
     }
 
-    public openA2Screen() {
-
-    }
-
-
     public openKDLS02() {
         const vm = this;
 
@@ -162,7 +157,7 @@ export class KafS08DComponent extends Vue {
 
         const { date } = rowDate ;
 
-        // nhay sang viewmodel goi modal nay giup anh
+    
         vm.$close({
             derpartureTime,
             returnTime,
