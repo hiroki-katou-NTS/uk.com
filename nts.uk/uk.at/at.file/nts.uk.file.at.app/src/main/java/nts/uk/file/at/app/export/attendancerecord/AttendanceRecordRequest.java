@@ -36,6 +36,7 @@ public class AttendanceRecordRequest {
 	/** The closure id. */
 	private int closureId;
 	
+	/** The font size. */
 	private int fontSize;
 	
 	/** The condition. */

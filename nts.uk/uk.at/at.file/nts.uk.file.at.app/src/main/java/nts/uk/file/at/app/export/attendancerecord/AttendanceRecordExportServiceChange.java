@@ -701,7 +701,16 @@ public class AttendanceRecordExportServiceChange extends ExportService<Attendanc
 							dailyData.setDate(startDateByClosure);
 							dailyData.setDayOfWeek(DayOfWeekJP
 									.getValue(startDateByClosure.localDate().getDayOfWeek().toString()).japanese);
-							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[9];
+							
+							int columnData;
+							if (request.getFontSize() == ExportFontSize.CHAR_SIZE_LARGE.value) {
+								columnData = 9;
+							} else if (request.getFontSize() == ExportFontSize.CHAR_SIZE_MEDIUM.value) {
+								columnData = 11;
+							} else {
+								columnData = 13;
+							}
+							AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[columnData];
 							int index = 0;
 							for (AttendanceRecordResponse item : upperDailyRespond) {
 								columnDatasArray[index] = new AttendanceRecordReportColumnData("", "");
@@ -1324,33 +1333,33 @@ public class AttendanceRecordExportServiceChange extends ExportService<Attendanc
 		String lowerValue13th = "";
 
 		for (AttendanceRecordReportDailyData item : list) {
-			if (item.getColumnDatas().get(6) != null) {
-				upperValue7th = this.add(upperValue7th, item.getColumnDatas().get(6).getUper());
-				lowerValue7th = this.add(lowerValue7th, item.getColumnDatas().get(6).getLower());
+			if (item.getPosition().get(6) != null) {
+				upperValue7th = this.add(upperValue7th, item.getPosition().get(6).getUper());
+				lowerValue7th = this.add(lowerValue7th, item.getPosition().get(6).getLower());
 			}
-			if (item.getColumnDatas().get(7) != null) {
-				upperValue8th = this.add(upperValue8th, item.getColumnDatas().get(7).getUper());
-				lowerValue8th = this.add(lowerValue8th, item.getColumnDatas().get(7).getLower());
+			if (item.getPosition().get(7) != null) {
+				upperValue8th = this.add(upperValue8th, item.getPosition().get(7).getUper());
+				lowerValue8th = this.add(lowerValue8th, item.getPosition().get(7).getLower());
 			}
-			if (item.getColumnDatas().get(8) != null) {
-				upperValue9th = this.add(upperValue9th, item.getColumnDatas().get(8).getUper());
-				lowerValue9th = this.add(lowerValue9th, item.getColumnDatas().get(8).getLower());
+			if (item.getPosition().get(8) != null) {
+				upperValue9th = this.add(upperValue9th, item.getPosition().get(8).getUper());
+				lowerValue9th = this.add(lowerValue9th, item.getPosition().get(8).getLower());
 			}
-			if (item.getColumnDatas().get(9) != null) {
-				upperValue9th = this.add(upperValue10th, item.getColumnDatas().get(9).getUper());
-				lowerValue9th = this.add(lowerValue10th, item.getColumnDatas().get(9).getLower());
+			if (item.getPosition().get(9) != null) {
+				upperValue9th = this.add(upperValue10th, item.getPosition().get(9).getUper());
+				lowerValue9th = this.add(lowerValue10th, item.getPosition().get(9).getLower());
 			}
-			if (item.getColumnDatas().get(10) != null) {
-				upperValue9th = this.add(upperValue11th, item.getColumnDatas().get(10).getUper());
-				lowerValue9th = this.add(lowerValue11th, item.getColumnDatas().get(10).getLower());
+			if (item.getPosition().get(10) != null) {
+				upperValue9th = this.add(upperValue11th, item.getPosition().get(10).getUper());
+				lowerValue9th = this.add(lowerValue11th, item.getPosition().get(10).getLower());
 			}
-			if (item.getColumnDatas().get(11) != null) {
-				upperValue9th = this.add(upperValue12th, item.getColumnDatas().get(11).getUper());
-				lowerValue9th = this.add(lowerValue12th, item.getColumnDatas().get(11).getLower());
+			if (item.getPosition().get(11) != null) {
+				upperValue9th = this.add(upperValue12th, item.getPosition().get(11).getUper());
+				lowerValue9th = this.add(lowerValue12th, item.getPosition().get(11).getLower());
 			}
-			if (item.getColumnDatas().get(12) != null) {
-				upperValue9th = this.add(upperValue13th, item.getColumnDatas().get(12).getUper());
-				lowerValue9th = this.add(lowerValue13th, item.getColumnDatas().get(12).getLower());
+			if (item.getPosition().get(12) != null) {
+				upperValue9th = this.add(upperValue13th, item.getPosition().get(12).getUper());
+				lowerValue9th = this.add(lowerValue13th, item.getPosition().get(12).getLower());
 			}
 
 		}
