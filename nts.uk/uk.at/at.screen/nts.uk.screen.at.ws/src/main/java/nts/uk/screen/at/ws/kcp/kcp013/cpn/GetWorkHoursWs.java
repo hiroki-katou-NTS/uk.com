@@ -11,6 +11,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.uk.ctx.at.shared.dom.workmanagementmultiple.WorkManagementMultiple;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
@@ -100,7 +101,7 @@ public class GetWorkHoursWs {
 						setting.getPrescribedTimezoneSetting().getLstTimezone().stream()
 								.filter((x) -> x.getWorkNo() == 2).findFirst().get().getEnd().v(),
 						String.valueOf(i.getWorkTimeDivision().getWorkTimeDailyAtr().description) == "フレックス勤務用"
-								? "フレックス勤務用"
+								? I18NText.getText("KCP013_13")
 								: String.valueOf(i.getWorkTimeDivision().getWorkTimeMethodSet().description),
 						i.getNote().v(), 0);
 			} else {
