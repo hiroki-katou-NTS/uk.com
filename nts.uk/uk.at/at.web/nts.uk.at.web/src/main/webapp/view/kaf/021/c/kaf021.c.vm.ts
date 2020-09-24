@@ -5,16 +5,16 @@ module nts.uk.at.kaf021.c {
 
     @bean()
     class ViewModel extends ko.ViewModel {
-        unapproved: KnockoutObservable<boolean> = ko.observable(false);
-        approved: KnockoutObservable<boolean> = ko.observable(false);
-        denial: KnockoutObservable<boolean> = ko.observable(false);
-        datePeriod: KnockoutObservable<any>= ko.observable({});
+        unapproveChecked: KnockoutObservable<boolean> = ko.observable(false);
+        approveChecked: KnockoutObservable<boolean> = ko.observable(false);
+        denialChecked: KnockoutObservable<boolean> = ko.observable(false);
+        datePeriod: KnockoutObservable<any> = ko.observable({});
 
         datas: Array<any> = [];
         constructor() {
             super();
             const vm = this;
-            vm.getMockData();
+            vm.getMockDataApprove();
         }
 
         created(params: any) {
@@ -26,7 +26,7 @@ module nts.uk.at.kaf021.c {
         mounted() {
             const vm = this;
 
-            
+
         }
 
         loadMGrid() {
@@ -80,10 +80,6 @@ module nts.uk.at.kaf021.c {
                             },
                             {
                                 columnKey: "employeeName",
-                                isFixed: true
-                            },
-                            {
-                                columnKey: "appType",
                                 isFixed: true
                             }
                         ]
@@ -164,7 +160,7 @@ module nts.uk.at.kaf021.c {
         getCellStyles(): Array<any> {
             const vm = this;
             let cellStates: Array<common.CellState> = [];
-         
+
             _.forEach(vm.datas, (data: any) => {
                 cellStates.push(new common.CellState(data.employeeId, 'currentTime', ["center-align"]));
                 cellStates.push(new common.CellState(data.employeeId, 'yearStr', ["center-align"]));
@@ -180,15 +176,15 @@ module nts.uk.at.kaf021.c {
             return cellStates;
         }
 
-        register(){
-            
+        register() {
+
         }
 
-        del(){
-            
+        del() {
+
         }
 
-        getMockData(){
+        getMockDataApprove() {
             const vm = this;
             let datas: Array<any> = []
             for (let i = 0; i < 100; i++) {
