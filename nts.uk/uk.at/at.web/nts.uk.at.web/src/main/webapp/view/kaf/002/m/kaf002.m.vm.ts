@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
         tabsTemp: any;
         selectedTemp: any;
         reasonList: Array<GoOutTypeDispControl>;
-        mode: number;
+        mode: number = 1;
         created(params) {
 
             const self = this;
@@ -508,7 +508,7 @@ module nts.uk.at.view.kaf002_ref.m.viewmodel {
                   }
                   ],
               ntsControls: [
-                            { name: 'Combobox', width: '50px', height: '100px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true, spaceSize: 'small' }
+                            { name: 'Combobox', width: '50px', height: '100px', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: self.mode != 2 ? true : false, spaceSize: 'small' }
                               ]
               };
             if (!self.isVisibleComlumn || ko.toJS(self.isPreAtr)) {
