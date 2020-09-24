@@ -23,13 +23,12 @@ public class CheckPasswordCommandHandler extends CommandHandlerWithResult<CheckP
 	@Override
 	protected Boolean handle(CommandHandlerContext<CheckPasswordCommand> context) {
 		Optional<ResultOfSaving> resOptional = resultOfSavingRepository.getResultOfSavingById(context.getCommand().getStoreProcessingId());
-		if (!resOptional.isPresent()) {
-			return false;
-		}
-		
-		String decodedPassword = resOptional.get().getCompressedPassword()
-				.map(i -> CommonKeyCrypt.decrypt(i.v()))
-				.orElse(null); 
-		return decodedPassword.equals(context.getCommand().getPassword());
+		if (resOptional.isPresent()) {
+			String decodedPassword = resOptional.get().getCompressedPassword()
+					.map(i -> CommonKeyCrypt.decrypt(i.v()))
+					.orElse(null); 
+			return decodedPassword != null && decodedPassword.equals(context.getCommand().getPassword());
+		} 
+		return false;
 	}
 }

@@ -12,6 +12,7 @@ import nts.uk.ctx.sys.assist.dom.category.RecoverFormCompanyOther;
 import nts.uk.ctx.sys.assist.dom.category.StorageRangeSaved;
 import nts.uk.ctx.sys.assist.dom.category.TimeStore;
 import nts.uk.ctx.sys.assist.dom.categoryfieldmt.HistoryDiviSion;
+import nts.uk.ctx.sys.assist.dom.storage.StorageForm;
 //import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
 import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.shr.com.enumcommon.NotUseAtr;
@@ -100,7 +101,7 @@ public class TableList extends DomainObject {
 	/**
 	 * 保存形態 
 	 */
-	private String saveForm;
+	private StorageForm saveForm;
 	
 	/**
 	 * システム種類
@@ -609,7 +610,7 @@ public class TableList extends DomainObject {
 	public TableList(String categoryId, String categoryName, String dataRecoveryProcessId,int systemType, 
 			String dataStorageProcessingId, int tableNo, String tableJapaneseName, String tableEnglishName,
 			String fieldAcqCid, String fieldAcqDateTime, String fieldAcqEmployeeId, String fieldAcqEndDate,
-			String fieldAcqStartDate, String patternCode, String saveSetName, String saveForm, String saveDateFrom,
+			String fieldAcqStartDate, String patternCode, String saveSetName, int saveForm, String saveDateFrom,
 			String saveDateTo, int storageRangeSaved, int retentionPeriodCls, String internalFileName,
 			int anotherComCls, String referenceYear, String referenceMonth, String compressedFileName,
 			String fieldChild1, String fieldChild2, String fieldChild3, String fieldChild4, String fieldChild5,
@@ -649,7 +650,7 @@ public class TableList extends DomainObject {
 		this.fieldAcqStartDate = Optional.ofNullable(fieldAcqStartDate);
 		this.patternCode = patternCode;
 		this.saveSetName = saveSetName;
-		this.saveForm = saveForm;
+		this.saveForm = EnumAdaptor.valueOf(saveForm, StorageForm.class);
 		this.saveDateFrom = Optional.ofNullable(saveDateFrom);
 		this.saveDateTo = Optional.ofNullable(saveDateTo);
 		this.storageRangeSaved = EnumAdaptor.valueOf(storageRangeSaved, StorageRangeSaved.class);
@@ -751,7 +752,7 @@ public class TableList extends DomainObject {
 		this.surveyPreservation = EnumAdaptor.valueOf(surveyPreservation, NotUseAtr.class);
 	}
 
-	public TableList(String dataStorageProcessingId, String saveForm, String patternCode, String saveSetName,
+	public TableList(String dataStorageProcessingId, int saveForm, String patternCode, String saveSetName,
 			String supplementaryExplanation, String categoryId, String categoryName, TimeStore retentionPeriodCls,
 			StorageRangeSaved storageRangeSaved, String screenRetentionPeriod, String referenceYear,
 			String referenceMonth, NotUseAtr surveyPreservation, RecoverFormCompanyOther anotherComCls, int tableNo,
@@ -792,7 +793,7 @@ public class TableList extends DomainObject {
 		this.fieldAcqStartDate = Optional.ofNullable(fieldAcqStartDate);
 		this.patternCode = patternCode;
 		this.saveSetName = saveSetName;
-		this.saveForm = saveForm;
+		this.saveForm = EnumAdaptor.valueOf(saveForm, StorageForm.class);
 		this.saveDateFrom = Optional.ofNullable(saveDateFrom);
 		this.saveDateTo = Optional.ofNullable(saveDateTo);
 		this.storageRangeSaved = storageRangeSaved;
@@ -906,7 +907,7 @@ public class TableList extends DomainObject {
 		NotUseAtr hasParentTblFlg = EnumAdaptor.valueOf(Integer.parseInt(tableListSetting.get(18)), NotUseAtr.class);
 		TableList tableListData = new TableList(
 				tableListSetting.get(0), 
-				tableListSetting.get(1),
+				Integer.parseInt(tableListSetting.get(1)),
 				tableListSetting.get(2),
 				tableListSetting.get(3),
 				tableListSetting.get(4),
@@ -955,7 +956,7 @@ public class TableList extends DomainObject {
 
 	public TableList(String categoryId, String categoryName, String patternCode, String saveSetName,
 			String saveDateFrom, String saveDateTo, int storageRangeSaved, int retentionPeriodCls, int anotherComCls,
-			String compressedFileName, int canNotBeOld, String supplementaryExplanation, String saveForm, int systemType) {
+			String compressedFileName, int canNotBeOld, String supplementaryExplanation, int saveForm, int systemType) {
 		super();
 		this.categoryId = categoryId;
 		this.categoryName = categoryName;
@@ -969,7 +970,7 @@ public class TableList extends DomainObject {
 		this.compressedFileName = compressedFileName;
 		this.canNotBeOld = Optional.ofNullable(canNotBeOld);
 		this.supplementaryExplanation = Optional.ofNullable(supplementaryExplanation);
-		this.saveForm = saveForm;
+		this.saveForm = EnumAdaptor.valueOf(saveForm, StorageForm.class);
 		this.systemType = EnumAdaptor.valueOf(systemType, SystemType.class);
 	}
 }

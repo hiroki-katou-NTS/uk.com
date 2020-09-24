@@ -541,7 +541,7 @@ public class JpaTableListRepository extends JpaRepository implements TableListRe
 		entity.fieldAcqStartDate = 		domain.getFieldAcqStartDate().orElse(null);
 		entity.saveSetCode	=	domain.getPatternCode();
 		entity.saveSetName = 		domain.getSaveSetName();
-		entity.saveForm = domain.getSaveForm();
+		entity.saveForm = String.valueOf(domain.getSaveForm().value);
 		entity.saveDateFrom =		domain.getSaveDateFrom().orElse(null);
 		entity.saveDateTo =		domain.getSaveDateTo().orElse(null);
 		entity.storageRangeSaved =		domain.getStorageRangeSaved().value; 

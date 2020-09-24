@@ -129,7 +129,7 @@ public class TableListDto {
 				tableList,
 				domain.getSaveSetName(), 
 				domain.getSaveFileName(), 
-				Integer.valueOf(domain.getSaveForm()), 
+				domain.getSaveForm().value, 
 				domain.getSaveDateFrom().orElse(null),
 				domain.getSaveDateTo().orElse(null), 
 				domain.getStorageRangeSaved().value, 
