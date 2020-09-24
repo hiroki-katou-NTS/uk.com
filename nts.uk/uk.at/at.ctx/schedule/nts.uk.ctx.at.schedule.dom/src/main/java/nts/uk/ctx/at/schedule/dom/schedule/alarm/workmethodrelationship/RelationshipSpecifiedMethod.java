@@ -9,7 +9,7 @@ import nts.arc.enums.EnumAdaptor;
  *
  */
 @RequiredArgsConstructor
-public enum MethodSpecifyRelationship {
+public enum RelationshipSpecifiedMethod {
 	/** 0 - 許可する勤務方法を指定する**/
 	ALLOW_SPECIFY_WORK_DAY(0),
 	/** 1 - 禁止する勤務方法を指定する **/
@@ -17,8 +17,8 @@ public enum MethodSpecifyRelationship {
 	
 	public final int value;
 
-	public static  MethodSpecifyRelationship of(int value) {
+	public static  RelationshipSpecifiedMethod of(int value) {
 		
-		return EnumAdaptor.valueOf(value, MethodSpecifyRelationship.class);
+		return EnumAdaptor.valueOf(value, RelationshipSpecifiedMethod.class);
 	}
 }

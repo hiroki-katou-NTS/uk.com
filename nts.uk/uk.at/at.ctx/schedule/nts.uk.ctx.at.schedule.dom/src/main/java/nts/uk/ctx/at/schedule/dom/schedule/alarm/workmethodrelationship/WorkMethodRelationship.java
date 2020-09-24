@@ -15,24 +15,24 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 @Value
 public class WorkMethodRelationship implements DomainValue{
 	//前日の勤務方法
-	private final WorkingMethod workingMethodOfTheDayBefore;
+	private final WorkingMethod prevWorkingMethod;
 	
 	//当日の勤務方法リスト
-	private final List<WorkingMethod> workingMethodOnTheDayLst;
+	private final List<WorkingMethod> currentWorkingMethodList;
 	
 	//指定方法
-	private MethodSpecifyRelationship methodSpecify;
+	private RelationshipSpecifiedMethod specifiedMethod;
 
 	/**
 	 * [C-1] 作成する
-	 * @param workingMethodOfTheDayBefore
-	 * @param workingMethodOnTheDayLst
-	 * @param methodSpecify
+	 * @param prevWorkingMethod
+	 * @param currentWorkingMethodList
+	 * @param specifiedMethod
 	 * @return
 	 */
 	public static WorkMethodRelationship create(WorkingMethod workingMethodOfTheDayBefore, 
 			List<WorkingMethod> workingMethodOnTheDayLst,
-			MethodSpecifyRelationship methodSpecify) {
+			RelationshipSpecifiedMethod methodSpecify) {
 		
 		if(workingMethodOnTheDayLst.isEmpty()) {
 			throw new BusinessException("Msg_1720");
@@ -53,7 +53,7 @@ public class WorkMethodRelationship implements DomainValue{
 	 * @return
 	 */
 	private boolean isNotAllowed(WorkingMethod.Require require, WorkInformation workInfor) {
-		return !workingMethodOnTheDayLst.stream().anyMatch(c -> c.determineIfApplicable(require, workInfor));
+		return !currentWorkingMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfor));
 	}
  
 	/**
@@ -63,6 +63,6 @@ public class WorkMethodRelationship implements DomainValue{
 	 * @return
 	 */
 	private boolean isBan(WorkingMethod.Require require, WorkInformation workInfor) {
-		return workingMethodOnTheDayLst.stream().anyMatch(c -> c.determineIfApplicable(require, workInfor));
+		return currentWorkingMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfor));
 	}
 }
