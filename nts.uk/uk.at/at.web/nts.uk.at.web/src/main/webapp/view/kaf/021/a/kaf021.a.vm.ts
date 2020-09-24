@@ -287,7 +287,7 @@ module nts.uk.at.kaf021.a {
             // A3_22
             columns.push({ headerText: vm.$i18n("KAF021_14"), key: 'monthAverage6Str', dataType: 'string', width: '60px', ntsControl: "Label" });
             // A3_23
-            columns.push({ headerText: vm.$i18n("KAF021_15"), key: 'exceededNumber', dataType: 'string', width: '60px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_15"), key: 'exceededNumber', dataType: 'string', width: '50px', ntsControl: "Label" });
             return columns;
         }
 
@@ -332,7 +332,6 @@ module nts.uk.at.kaf021.a {
                 { key: "monthAverage4Str", colors: ['padding-12'] },
                 { key: "monthAverage5Str", colors: ['padding-12'] },
                 { key: "monthAverage6Str", colors: ['padding-12'] },
-                { key: "exceededNumber", colors: ['padding-5'] },
                 { key: currentMonth, colors: ['#ffffff'] }
             ]
         }

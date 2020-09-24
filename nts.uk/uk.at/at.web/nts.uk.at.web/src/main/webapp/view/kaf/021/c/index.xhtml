@@ -13,10 +13,96 @@
     </ui:define>
     <ui:define name="content">
         <div id="functions-area">
-
+            <!-- C1_1 -->
+            <button tabindex="1" class="proceed" data-bind="click: register">#{i18n.getText('KAF021_24')}</button>
+            <!-- C1_2 -->
+            <button tabindex="2" class="danger" data-bind="click: del">#{i18n.getText('KAF021_30')}</button>
         </div>
         <div id="content-area">
-            
+            <div class="kaf021c-content">
+                <div id="tbl-control" class="table">
+                    <div class="cell valign-center">
+                        <div class="table tbl-left">
+                            <div class="cell valign-center">
+                                <!-- C1_3 -->
+                                <div class="label">#{i18n.getText('KAF021_31')}</div>
+                            </div>
+                            <div class="cell valign-center right-align">
+                                <!-- C1_4 -->
+                                <div class="label">C1_4</div>
+                            </div>
+                        </div>
+                        <div class="table tbl-left">
+                            <div class="cell valign-center">
+                                <!-- C1_5 -->
+                                <div class="label">#{i18n.getText('KAF021_32')}</div>
+                            </div>
+                            <div class="cell valign-center right-align">
+                                <!-- C1_6 -->
+                                <div class="label">C1_6</div>
+                            </div>
+                        </div>
+                        <div class="table tbl-left">
+                            <div class="cell valign-center">
+                                <!-- C1_7 -->
+                                <div class="label">#{i18n.getText('KAF021_33')}</div>
+                            </div>
+                            <div class="cell valign-center right-align">
+                                <!-- C1_8 -->
+                                <div class="label">C1_8</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cell valign-center">
+                        <!-- C1_9 -->
+                        <div id="C1_9" class="panel panel-frame">
+                            <div class="table tbl-right">
+                                <div class="cell valign-center">
+                                    <!-- C1_10 -->
+                                    <div class="label">#{i18n.getText('KAF021_34')}</div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- C1_11 -->
+                                    <div tabindex="3" data-bind="ntsCheckBox: { checked: unapproved}">#{i18n.getText('KAF021_36')}</div>
+                                    <!-- C1_12 -->
+                                    <div tabindex="4" data-bind="ntsCheckBox: { checked: approved}">#{i18n.getText('KAF021_37')}</div>
+                                    <!-- C1_13 -->
+                                    <div tabindex="5" data-bind="ntsCheckBox: { checked: denial}">#{i18n.getText('KAF021_38')}</div>
+                                </div>
+                            </div>
+                            <div class="table tbl-right">
+                                <div class="cell valign-center">
+                                    <!-- C1_14 -->
+                                    <div class="label">#{i18n.getText('KAF021_39')}</div>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- C1_15 -->
+                                    <!-- C1_16 -->
+                                    <div tabindex="6" data-bind="ntsDateRangePicker: { name: '#{i18n.getText('KAF021_39')}', required: false, enable: true, showNextPrevious: true, value: datePeriod, maxRange: 'oneMonth'}"/>
+                                </div>
+                                <div class="cell valign-center">
+                                    <!-- C1_17 -->
+                                    <button tabindex="8" class="small">#{i18n.getText('KAF021_40')}</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="tbl-label" class="table">
+                    <div class="cell valign-center">
+                    </div>
+                    <div class="cell valign-center">
+                        <!--C1_18-->
+                        <span class="label">#{i18n.getText('KAF021_22')}</span>
+                    </div>
+                    <div class="cell valign-center">
+                        <!--C2_19-->
+                        <span class="label">#{i18n.getText('KAF021_23')}</span>
+                    </div>
+                </div>
+                <!--C3_23-->
+                <div id="grid"></div>
+            </div>
         </div>
     </ui:define>
 </ui:composition>

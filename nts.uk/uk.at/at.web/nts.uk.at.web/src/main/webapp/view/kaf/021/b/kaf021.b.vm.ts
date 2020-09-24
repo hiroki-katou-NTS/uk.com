@@ -7,10 +7,6 @@ module nts.uk.at.kaf021.b {
 
     @bean()
     class ViewModel extends ko.ViewModel {
-
-        items: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedCode: KnockoutObservable<string> = ko.observable("");
-
         datas: Array<EmployeeAgreementTimeNew> = [];
         appType: common.AppTypeEnum = null;
         constructor() {
@@ -123,7 +119,7 @@ module nts.uk.at.kaf021.b {
             // B3_10
             columns.push({ headerText: vm.$i18n("KAF021_14"), key: 'monthAverage6Str', dataType: 'string', width: '60px', ntsControl: "Label" });
             // B3_11
-            columns.push({ headerText: vm.$i18n("KAF021_15"), key: 'exceededNumber', dataType: 'string', width: '60px', ntsControl: "Label" });
+            columns.push({ headerText: vm.$i18n("KAF021_15"), key: 'exceededNumber', dataType: 'string', width: '50px', ntsControl: "Label" });
 
             // B3_12
             columns.push({
@@ -137,7 +133,7 @@ module nts.uk.at.kaf021.b {
             });
 
             // B3_15
-            columns.push({ headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '310px' });
+            columns.push({ headerText: vm.$i18n("KAF021_29"), key: 'reason', dataType: 'string', width: '320px' });
             return columns;
         }
 
@@ -163,7 +159,9 @@ module nts.uk.at.kaf021.b {
         }
 
         register() {
-
+            const vm = this;
+            localStorage.setItem('kaf021b_cache', null);
+            vm.$jump('at', '/view/kaf/021/a/index.xhtml', true);
         }
 
         preScreen() {
