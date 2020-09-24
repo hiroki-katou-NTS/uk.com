@@ -5,12 +5,14 @@ import java.util.List;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
+import nts.uk.file.at.app.export.attendancerecord.data.AttendanceRecordReportColumnData;
 import nts.uk.file.at.app.export.dailyschedule.ActualValue;
 
 @Data
 public class MonthlyOutputAttendanceRecord {
-	
-	private long position;
+
+	//	上段/下段
+	private List<AttendanceRecordReportColumnData> position;
 	
 	//	列番号
 	private String columnIndex;
@@ -27,7 +29,7 @@ public class MonthlyOutputAttendanceRecord {
 	//	社員ID
 	private String employeeId;
 	
-	//	年月日
+	//	終了年月日
 	private GeneralDate date;
 
 	//	編集済み実績値

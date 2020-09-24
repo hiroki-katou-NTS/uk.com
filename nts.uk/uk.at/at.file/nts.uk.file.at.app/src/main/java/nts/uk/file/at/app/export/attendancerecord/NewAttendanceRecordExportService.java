@@ -20,11 +20,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
-import nts.arc.error.BundledBusinessException;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.arc.task.data.TaskDataSetter;
 import nts.arc.task.parallel.ManagedParallelWithContext;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
@@ -33,12 +32,10 @@ import nts.arc.time.calendar.period.YearMonthPeriod;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExportRepository;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSetting;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingRepository;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ItemSelectionType;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.NameUseAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.CalculateAttendanceRecordRepositoty;
-import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecord;
 import nts.uk.ctx.at.function.dom.attendancerecord.item.SingleAttendanceRecordRepository;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
@@ -55,6 +52,7 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ApprovalProcessRepos
 import nts.uk.ctx.at.request.dom.application.common.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.shared.app.service.workrule.closure.ClosureEmploymentService;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.WorkTimeSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -74,8 +72,11 @@ import nts.uk.file.at.app.export.schedule.FileService;
 import nts.uk.query.model.employee.EmployeeInformation;
 import nts.uk.query.model.employee.EmployeeInformationQuery;
 import nts.uk.query.model.employee.EmployeeInformationRepository;
+import nts.uk.query.pub.employee.EmployeeInformationExport;
 import nts.uk.query.pub.employee.EmployeeInformationPub;
+import nts.uk.query.pub.employee.EmployeeInformationQueryDto;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
 
 @Stateless
@@ -313,7 +314,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 						screenUseAtrList, 1));
 			}
 //			for (MonthlyAttendanceItemValueResult monthlyValue : monthlyValues) {
-			while(yearMonth.lessThanOrEqualTo(endYearMonth)) {
+			while (yearMonth.lessThanOrEqualTo(endYearMonth)) {
 				// start date
 //				GeneralDate startDate = GeneralDate.ymd(monthlyValue.getYearMonth().year(), monthlyValue.getYearMonth().month(), 1);
 //				GeneralDate endDate = monthlyValue.getYearMonth().lastGeneralDate();
@@ -363,6 +364,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 				
 				// Weekly Data
 				List<AttendanceRecordReportWeeklyData> weeklyDataList = new ArrayList<>();
+				
+				// monthly data
 				Integer realData = 0;
 				
 				
@@ -432,7 +435,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 									upperDailyRespond.add(new AttendanceRecordResponse(emp.getEmployeeId(),
 											emp.getEmployeeName(), closureDateTemp, "",
 											this.convertString(item, workTypeList, workTimeList, attendanceTypeList,
-													optionalAttendanceRecExpSet.get().getNameUseAtr())));
+													optionalAttendanceRecExpSet.get().getNameUseAtr(), condition.getZeroDisplayType())));
 	
 							});
 						}
@@ -595,9 +598,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 						
 						AttendanceRecordReportDailyData dailyData = new AttendanceRecordReportDailyData();
 						// Set data daily
-						dailyData.setDate(String.valueOf(startDate.day()));
-						dailyData.setDayOfWeek(DayOfWeekJP
-								.getValue(startDate.localDate().getDayOfWeek().toString()).japanese);
+						dailyData.setDate(startDate);
+						dailyData.setEmployeeId(emp.getEmployeeId());
 						AttendanceRecordReportColumnData[] columnDatasArray = new AttendanceRecordReportColumnData[9];
 						int index = 0;
 						for (AttendanceRecordResponse item : upperDailyRespond) {
@@ -627,8 +629,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 						//  đoạn này bạn thấy xử lý việc tính toán dai ly giống vs yêu cầu xử lý nên paste sang đây tạm
 						
 						
-						dailyData.setColumnDatas(columnDatas);
-						dailyData.setSecondCol(flag <= 15 ? false : true);
+						dailyData.setPosition(columnDatas);
+//						dailyData.setSecondCol(flag <= 15 ? false : true);
 						dailyDataList.add(dailyData);
 						// Check end of week
 						if (startDate.localDate().getDayOfWeek().equals(DayOfWeek.SATURDAY)) {
@@ -646,15 +648,9 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 							dailyDataList = new ArrayList<>();
 	
 						}
-						
 						// Next day
-						// chác chắn đoạn next day này của bạn làm là đúng r nhé Liên
 						startDate = startDate.addDays(1);
-						
 					}
-				
-					
-				
 				
 				//	日別項目（算出項目・上段下段） -  Daily items (calculation items, upper and lower)
 				//	週単位集計値の編集をする - Edit weekly aggregated values 
@@ -816,7 +812,6 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 				
 				//	アルゴリズム「社員情報を返す」を実行する  - Execute the algorithm "Return employee information"
 				// Param  出力対象社員ID（List) - Output target employee ID (List),   基準日 - Reference date
-				
 				EmployeeInformationQuery query = EmployeeInformationQuery.builder()
 						.employeeIds(empIDs)
 						.referenceDate(baseDate.get())
@@ -828,12 +823,57 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 						.toGetWorkplace(true)
 						.build();
 
-					// note: アルゴリズム「<<Public>> 社員の情報を取得する」を実行する
+				// note: アルゴリズム「<<Public>> 社員の情報を取得する」を実行する
 				List<EmployeeInformation> lstEmplInfor = empInfoRepo.find(query);
 				
 				//	ヘッダー部(社員、職場、雇用、職位、勤務区分および年月)を編集する - Edit the header section (employee, workplace, employment, position, work category and year / month)
 					// 	年月　←　月別実績データの年月(YM) - Year / month ← Year / month of monthly actual data (YM)
-				// TODO
+					// Get AttendanceRecordReportEmployeeData
+					AttendanceRecordReportEmployeeData attendanceRecRepEmpData = new AttendanceRecordReportEmployeeData();
+
+					attendanceRecRepEmpData.setEmployeeMonthlyData(employeeMonthlyData);
+					attendanceRecRepEmpData.setWeeklyDatas(weeklyDataList);
+					YearMonth yearMonthExport = closureDate.getLastDayOfMonth() ? yearMonth
+							: yearMonth.addMonths(1);
+					attendanceRecRepEmpData.setReportYearMonth(yearMonthExport.toString());
+
+					/**
+					 * Need information
+					 * 
+					 * The invidual. The workplace. The employment The
+					 * title. The work type The year month
+					 **/
+
+					// build param
+
+					// Get Employee information
+					if (employeeInfoList.isEmpty()) {
+						EmployeeInformationQueryDto param = EmployeeInformationQueryDto.builder()
+								.employeeIds(empIDs).referenceDate(endByClosure).toGetWorkplace(true)
+								.toGetDepartment(false).toGetPosition(true).toGetEmployment(true)
+								.toGetClassification(false).toGetEmploymentCls(true).build();
+						employeeInfoList = employeePub.find(param);
+					}
+					EmployeeInformationExport result = employeeInfoList.stream()
+																		.filter(e -> e.getEmployeeId().equals(employee.getEmployeeId()))
+																		.findFirst().get();
+
+					attendanceRecRepEmpData
+							.setEmployment(result.getEmployment().getEmploymentName().toString());
+					attendanceRecRepEmpData
+							.setInvidual(employee.getEmployeeCode() + " " + employee.getEmployeeName());
+					attendanceRecRepEmpData.setTitle(result.getPosition() == null ? ""
+							: result.getPosition().getPositionName().toString());
+					attendanceRecRepEmpData.setWorkplace(result.getWorkplace() == null ? ""
+							: result.getWorkplace().getWorkplaceName().toString());
+					attendanceRecRepEmpData.setWorkType(result.getEmploymentCls() == null ? ""
+							: TextResource.localize(EnumAdaptor.valueOf(result.getEmploymentCls(),
+									WorkingSystem.class).nameId));
+					attendanceRecRepEmpData
+							.setYearMonth(yearMonthExport.year() + "/" + yearMonthExport.month());
+					attendanceRecRepEmpDataList.add(attendanceRecRepEmpData);
+					realDataOfEmployee++;
+				}
 				
 				//	ヘッダー部(締め日)を編集する - Edit the header part (closing date)
 				// TODO
@@ -1035,22 +1075,20 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 				list.addAll(subValueCalUpper);
 			}
 			switch (list.get(0).getValueType().value) {
-
-			case 1:
-			case 2:
-
-				sumInt = sum.intValue();
-				return this.convertMinutesToHours(sumInt.toString());
-			case 7:
-			case 8:
-				sumInt = sum.intValue();
-				return sumInt.toString() + " 回";
-			case 13:
-				sumInt = sum.intValue();
-				DecimalFormat format = new DecimalFormat("###,###,###");
-				return format.format(sum.intValue());
-			default:
-				break;
+				case 1:
+				case 2:
+					sumInt = sum.intValue();
+					return this.convertMinutesToHours(sumInt.toString());
+				case 7:
+				case 8:
+					sumInt = sum.intValue();
+					return sumInt.toString() + " 回";
+				case 13:
+					sumInt = sum.intValue();
+					DecimalFormat format = new DecimalFormat("###,###,###");
+					return format.format(sum.intValue());
+				default:
+					break;
 
 			}
 
@@ -1078,7 +1116,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 	}
 	
 	private String convertString(ItemValue item, List<WorkType> workTypeList, List<WorkTimeSetting> workTimeSettingList,
-			List<AttendanceType> attendanceTypeList, NameUseAtr nameUseAtr) {
+			List<AttendanceType> attendanceTypeList, NameUseAtr nameUseAtr, ZeroDisplayType zeroDisplayType) {
 		final String value = item.getValue();
 		if (item.getValueType() == null || item.getValue() == null)
 			return "";
@@ -1087,9 +1125,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		case TIME:
 		case CLOCK:
 		case TIME_WITH_DAY:
-
 			if (Integer.parseInt(item.getValue()) == 0 || item.getValue().isEmpty())
-				return "";
+				return zeroDisplayType == ZeroDisplayType.DISPLAY ? item.getValue() : "";
 			return this.convertMinutesToHours(value.toString());
 		case COUNT:
 		case COUNT_WITH_DECIMAL:
