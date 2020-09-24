@@ -6,7 +6,7 @@ import nts.arc.enums.EnumAdaptor;
 /**
  * 
  * 営業日カレンダー種類
- * pathEA
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.同日休日禁止
  * @author lan_lt
  *
  */
