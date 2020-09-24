@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodAdapter;
 import nts.uk.ctx.at.function.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodImport;
+import nts.uk.ctx.at.record.dom.resultsperiod.optionalaggregationperiod.OptionalAggrPeriod;
 import nts.uk.ctx.at.record.pub.resultsperiod.optionalaggregationperiod.OptionalAggrPeriodPub;
 
 /**
@@ -76,16 +77,15 @@ public class OptionalAggrPeriodAdapterImpl implements OptionalAggrPeriodAdapter 
 	}
 
 	/**
-	 * Check exit.
+	 * Check exist.
 	 *
 	 * @param companyId the company id
 	 * @param aggrFrameCode the aggr frame code
 	 * @return true, if successful
 	 */
 	@Override
-	public boolean checkExit(String companyId, String aggrFrameCode) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean checkExist(String companyId, String aggrFrameCode) {
+		return this.pub.checkExist(companyId, aggrFrameCode);
 	}
 
 	/**
@@ -95,8 +95,12 @@ public class OptionalAggrPeriodAdapterImpl implements OptionalAggrPeriodAdapter 
 	 */
 	@Override
 	public void addOptionalAggrPeriod(OptionalAggrPeriodImport optionalAggrPeriod) {
-		// TODO Auto-generated method stub
-		
+		this.pub.addOptionalAggrPeriod(OptionalAggrPeriod.createFromJavaType(
+				optionalAggrPeriod.getCompanyId(), 
+				optionalAggrPeriod.getAggrFrameCode(), 
+				optionalAggrPeriod.getOptionalAggrName(), 
+				optionalAggrPeriod.getStartDate(), 
+				optionalAggrPeriod.getEndDate()));
 	}
 
 	/**
@@ -106,7 +110,12 @@ public class OptionalAggrPeriodAdapterImpl implements OptionalAggrPeriodAdapter 
 	 */
 	@Override
 	public void updateOptionalAggrPeriod(OptionalAggrPeriodImport optionalAggrPeriod) {
-		// TODO Auto-generated method stub
+		this.pub.updateOptionalAggrPeriod(OptionalAggrPeriod.createFromJavaType(
+				optionalAggrPeriod.getCompanyId(), 
+				optionalAggrPeriod.getAggrFrameCode(), 
+				optionalAggrPeriod.getOptionalAggrName(), 
+				optionalAggrPeriod.getStartDate(), 
+				optionalAggrPeriod.getEndDate()));
 		
 	}
 
@@ -118,8 +127,7 @@ public class OptionalAggrPeriodAdapterImpl implements OptionalAggrPeriodAdapter 
 	 */
 	@Override
 	public void deleteOptionalAggrPeriod(String companyId, String aggrFrameCode) {
-		// TODO Auto-generated method stub
-		
+		this.pub.deleteOptionalAggrPeriod(companyId, aggrFrameCode);
 	}
 
 }
