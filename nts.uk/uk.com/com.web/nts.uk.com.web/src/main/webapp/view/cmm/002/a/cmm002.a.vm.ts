@@ -66,6 +66,7 @@ module nts.uk.com.view.cmm002.a {
 		public newIp():void{
 			let self = this;
 			self.selectedAllowedIPAddress('');
+			self.selectedAllowedIPAddress.valueHasMutated();
 			errors.clearAll();
 		}
 		
