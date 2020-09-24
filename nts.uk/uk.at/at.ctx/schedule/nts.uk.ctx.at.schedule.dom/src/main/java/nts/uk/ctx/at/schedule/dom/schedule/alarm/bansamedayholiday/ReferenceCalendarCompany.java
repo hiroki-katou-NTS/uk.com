@@ -8,12 +8,12 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 
 /**
  * 営業日カレンダーの参照先(会社)
- * 
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.同日休日禁止
  * @author lan_lt
  *
  */
 @AllArgsConstructor
-public class CalendarCompanyReference implements CalendarReference {
+public class ReferenceCalendarCompany implements ReferenceCalendar {
 
 	@Override
 	public BusinessDaysCalendarType getBusinessDaysCalendarType() {
@@ -21,8 +21,7 @@ public class CalendarCompanyReference implements CalendarReference {
 	}
 	
 	@Override
-	public Optional<WorkdayDivision> getWorkdayDivision(Require require,
-			GeneralDate date) {
+	public Optional<WorkdayDivision> getWorkdayDivision(Require require, GeneralDate date) {
 		return require.getCalendarCompanyByDay(date).map(c -> c.getWorkDayDivision());
 	}
 }
