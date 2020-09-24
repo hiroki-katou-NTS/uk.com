@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.AnnualLeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemaining;
+import nts.uk.ctx.at.shared.dom.remainingnumber.common.empinfo.grantremainingdata.LeaveGrantRemainingData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremainingdata.SpecialLeaveGrantRemainingData;
 
 /**
@@ -11,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.specialleave.empinfo.grantremain
  * @author shuichu_ishida
  */
 @Getter
-public class SpecialLeaveGrantRemaining extends LeaveGrantRemaining {
+public class SpecialLeaveGrantRemaining extends SpecialLeaveGrantRemainingData {
 
 //	/** 特休不足ダミーフラグ */
 //	@Setter

@@ -45,7 +45,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	/** 残数 */
 	private SpecialLeaveRemaining remainingNumber;
 	/** 付与残数データ */
-	private List<SpecialLeaveGrantRemaining> grantRemainingList;
+	private List<SpecialLeaveGrantRemainingData> grantRemainingList;
 	
 	/**
 	 * コンストラクタ
@@ -69,7 +69,7 @@ public class SpecialLeaveInfo implements Cloneable {
 	public static SpecialLeaveInfo of(
 			GeneralDate ymd,
 			SpecialLeaveRemaining remainingNumber,
-			List<SpecialLeaveGrantRemaining> grantRemainingNumberList
+			List<SpecialLeaveGrantRemainingData> grantRemainingNumberList
 			){
 	
 		SpecialLeaveInfo domain = new SpecialLeaveInfo();

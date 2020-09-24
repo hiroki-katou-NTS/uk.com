@@ -398,8 +398,11 @@ public class CalcNextSpecialLeaveGrantDate {
 						period,
 						Optional.ofNullable(grantDate));
 			
+			return nextSpecialLeaveGrantList;
 		}
 		
+		// 空のリストを返す
+		return new ArrayList<NextSpecialLeaveGrant>();		
 	}
 	
 	/**
@@ -682,6 +685,7 @@ public class CalcNextSpecialLeaveGrantDate {
 					cacheCarrier, 
 					companyId, 
 					employeeId, 
+					spLeaveCD,
 					period.get(),
 					grantDateOpt.get(),
 					specialHoliday
@@ -698,7 +702,6 @@ public class CalcNextSpecialLeaveGrantDate {
 					grantDaysInforByDates.getNextSpecialLeaveGrant(),
 					grantDaysInforByDates.getGrantDate().get());
 		
-		
 //		List<NextSpecialLeaveGrant> getExpireDate(
 //				SpecialLeaveManagementService.RequireM5 require, 
 //				CacheCarrier cacheCarrier,
@@ -707,8 +710,6 @@ public class CalcNextSpecialLeaveGrantDate {
 //				int spLeaveCD,
 //				List<NextSpecialLeaveGrant> nextSpecialLeaveGrantList,
 //				GeneralDate grantDateAfterPeriod)
-		
-		
 		
 //		GrantDaysInforByDates askGrantdaysFromtable(
 //				RequireM1 require, 
@@ -834,6 +835,7 @@ public class CalcNextSpecialLeaveGrantDate {
 			CacheCarrier cacheCarrier,
 			String cid, 
 			String sid,
+			int spLeaveCD,
 			DatePeriod period, 
 			GeneralDate granDate,
 			SpecialLeaveBasicInfo basicInfor, 
@@ -955,8 +957,16 @@ public class CalcNextSpecialLeaveGrantDate {
 				}
 			}
 			
+//			SpecialLeaveManagementService.RequireM5 require, 
+//			CacheCarrier cacheCarrier, 
+//			String companyId, 
+//			String employeeId,
+//			int spLeaveCD,
+//			GeneralDate ymd
+			
 			// 利用条件をチェックする
-			ErrorFlg checkUser = checkUse(require, cacheCarrier, cid, sid, grantDateTmp, speHoliday);
+			ErrorFlg checkUser = checkUseCondition(
+					require, cacheCarrier, cid, sid, spLeaveCD, grantDateTmp);
 			if(checkUser.isAgeError() //エラーがあるとき
 					|| checkUser.isClassError()
 					|| checkUser.isEmploymentError()
@@ -1168,7 +1178,6 @@ public class CalcNextSpecialLeaveGrantDate {
 //			grantDate = grantDate.addYears(1);
 //		}
 //	}
-	
 	
 	/**
 	 * 利用条件をチェックする
