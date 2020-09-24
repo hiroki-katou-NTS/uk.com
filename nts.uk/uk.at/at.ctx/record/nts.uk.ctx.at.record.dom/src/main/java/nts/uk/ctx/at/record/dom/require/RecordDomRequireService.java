@@ -416,7 +416,7 @@ public class RecordDomRequireService {
 	private PredetemineTimeSettingRepository predetemineTimeSettingRepo;
 	@Inject
 	private ManagedParallelWithContext parallel;
-	@Inject
+	//@Inject
 	private CheckBeforeCalcFlexChangeService checkBeforeCalcFlexChangeService;
 	@Inject 
 	private CompanyAdapter companyAdapter;

@@ -7,6 +7,8 @@
 		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<jta-data-source>java:jboss/datasources/UK</jta-data-source>
 		<jar-file>lib/nts.uk.shr.com.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.bs.company.infra.jar</jar-file>
+		<jar-file>lib/nts.uk.ctx.at.function.infra.jar</jar-file>
 
 		<class>nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter</class>
 		<class>nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter</class>
