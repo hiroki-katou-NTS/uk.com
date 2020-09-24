@@ -168,7 +168,7 @@ public class OutputItemDailyWorkScheduleFinder {
 				.sorted(Comparator.comparing(OutputItemSettingDto::getCode)).collect(Collectors.toList()));
 		
 		Optional<OutputItemDailyWorkSchedule> outputItem = code.isPresent()
-			? lstDomainModel.stream().filter(t -> t.getItemCode().equals(code.get())).findFirst()
+			? lstDomainModel.stream().filter(t -> t.getItemCode().v().equals(code.get())).findFirst()
 			: Optional.empty();
 
 		// 選択している項目情報を取得する(Get the selected information item)
@@ -270,7 +270,6 @@ public class OutputItemDailyWorkScheduleFinder {
 				throw new BusinessException("Msg_3");
 			}
 		}
-
 		DataReturnDto dataReturnDto = getDomConvertDailyWork(companyId, codeSourceSerivce, fontSize);
 		//List<DataInforReturnDto> lstData = getDomConvertDailyWork(companyId, codeSourceSerivce);
 		if (dataReturnDto.getDataInforReturnDtos().isEmpty()) {
