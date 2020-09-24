@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 勤務方法(連続勤務)
@@ -14,8 +13,8 @@ import nts.uk.shr.com.context.AppContexts;
 public class WorkMethodContinuousWork implements WorkMethod{
 
 	@Override
-	public WorkTypeClassification getWorkTypeClassification() {
-		return WorkTypeClassification.ContinuousWork;
+	public WorkMethodClassfication getWorkMethodClassification() {
+		return WorkMethodClassfication.CONTINUOSWORK;
 	}
 
 	@Override

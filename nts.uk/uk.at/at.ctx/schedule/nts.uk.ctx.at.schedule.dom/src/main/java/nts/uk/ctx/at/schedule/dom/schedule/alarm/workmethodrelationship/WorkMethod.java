@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 
 /**
  * 勤務方法
@@ -12,8 +11,9 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
  *
  */
 public interface WorkMethod {
+	
 	//勤務方法の種類を取得する
-	WorkTypeClassification getWorkTypeClassification();
+	WorkMethodClassfication getWorkMethodClassification();
 	
 	//該当するか判定する	
 	boolean determineIfApplicable(Require require, WorkInformation workInfor );

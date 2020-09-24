@@ -6,7 +6,6 @@ import lombok.Value;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainValue;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 /**
  * 勤務方法の関係性
  * @author lan_lt
@@ -39,7 +38,7 @@ public class WorkMethodRelationship implements DomainValue{
 			throw new BusinessException("Msg_1720");
 		}
 		
-		if(prevWorkMethod.getWorkTypeClassification() == WorkTypeClassification.ContinuousWork) {
+		if(prevWorkMethod.getWorkMethodClassification() == WorkMethodClassfication.CONTINUOSWORK) {
 			throw new BusinessException("Msg_1877");
 		}
 		

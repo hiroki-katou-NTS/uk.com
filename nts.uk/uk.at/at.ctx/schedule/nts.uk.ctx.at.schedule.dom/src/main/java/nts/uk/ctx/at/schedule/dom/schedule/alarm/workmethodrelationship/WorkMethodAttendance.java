@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 /**
  * 勤務方法(出勤)
  * @author lan_lt
@@ -18,8 +17,8 @@ public class WorkMethodAttendance implements WorkMethod {
 	private final WorkTimeCode workTimeCode; 
 	
 	@Override
-	public WorkTypeClassification getWorkTypeClassification() {
-		return WorkTypeClassification.Attendance;
+	public WorkMethodClassfication getWorkMethodClassification() {
+		return WorkMethodClassfication.ATTENDANCE;
 	}
 
 	@Override
