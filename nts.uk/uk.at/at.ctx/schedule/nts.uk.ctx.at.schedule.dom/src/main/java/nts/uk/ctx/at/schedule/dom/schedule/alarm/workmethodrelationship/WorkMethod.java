@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
  * @author lan_lt
  *
  */
-public interface WorkingMethod {
+public interface WorkMethod {
 	//勤務方法の種類を取得する
 	WorkTypeClassification getWorkTypeClassification();
 	

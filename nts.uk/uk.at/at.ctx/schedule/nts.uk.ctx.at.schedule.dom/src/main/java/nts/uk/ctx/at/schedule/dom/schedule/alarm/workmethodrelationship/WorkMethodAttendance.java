@@ -12,7 +12,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
  */
 @AllArgsConstructor
 @Getter
-public class WorkingMethodAttendance implements WorkingMethod {
+public class WorkMethodAttendance implements WorkMethod {
 
 	//就業時間帯コード
 	private final WorkTimeCode workTimeCode; 
@@ -23,8 +23,8 @@ public class WorkingMethodAttendance implements WorkingMethod {
 	}
 
 	@Override
-	public boolean determineIfApplicable(Require require, WorkInformation workInfor) {
-		return this.workTimeCode.equals(workInfor.getWorkTimeCode().v());
+	public boolean determineIfApplicable(Require require, WorkInformation workInfo) {
+		return this.workTimeCode.equals(workInfo.getWorkTimeCode().v());
 	}
 
 }

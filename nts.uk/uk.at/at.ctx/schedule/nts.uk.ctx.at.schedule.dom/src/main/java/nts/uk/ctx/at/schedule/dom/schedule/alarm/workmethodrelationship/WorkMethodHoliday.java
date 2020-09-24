@@ -8,7 +8,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author lan_lt
  *
  */
-public class WorkingMethodHoliday implements WorkingMethod{
+public class WorkMethodHoliday implements WorkMethod{
 
 	@Override
 	public WorkTypeClassification getWorkTypeClassification() {
@@ -16,8 +16,8 @@ public class WorkingMethodHoliday implements WorkingMethod{
 	}
 
 	@Override
-	public boolean determineIfApplicable(Require require, WorkInformation workInfor) {
-		return require.checkHoliday(AppContexts.user().companyId(), workInfor.getWorkTypeCode().v());
+	public boolean determineIfApplicable(Require require, WorkInformation workInfo) {
+		return require.checkHoliday(AppContexts.user().companyId(), workInfo.getWorkTypeCode().v());
 	}
 
 }

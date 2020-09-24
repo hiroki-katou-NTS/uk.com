@@ -14,55 +14,56 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
  */
 @Value
 public class WorkMethodRelationship implements DomainValue{
+	
 	//前日の勤務方法
-	private final WorkingMethod prevWorkingMethod;
+	private final WorkMethod prevWorkMethod;
 	
 	//当日の勤務方法リスト
-	private final List<WorkingMethod> currentWorkingMethodList;
+	private final List<WorkMethod> currentWorkMethodList;
 	
 	//指定方法
 	private RelationshipSpecifiedMethod specifiedMethod;
 
 	/**
 	 * [C-1] 作成する
-	 * @param prevWorkingMethod
-	 * @param currentWorkingMethodList
+	 * @param prevWorkMethod
+	 * @param currentWorkMethodList
 	 * @param specifiedMethod
 	 * @return
 	 */
-	public static WorkMethodRelationship create(WorkingMethod workingMethodOfTheDayBefore, 
-			List<WorkingMethod> workingMethodOnTheDayLst,
-			RelationshipSpecifiedMethod methodSpecify) {
+	public static WorkMethodRelationship create(WorkMethod prevWorkMethod, 
+			List<WorkMethod> currentWorkMethodList,
+			RelationshipSpecifiedMethod specifiedMethod) {
 		
-		if(workingMethodOnTheDayLst.isEmpty()) {
+		if(currentWorkMethodList.isEmpty()) {
 			throw new BusinessException("Msg_1720");
 		}
 		
-		if(workingMethodOfTheDayBefore.getWorkTypeClassification() == WorkTypeClassification.ContinuousWork) {
+		if(prevWorkMethod.getWorkTypeClassification() == WorkTypeClassification.ContinuousWork) {
 			throw new BusinessException("Msg_1877");
 		}
 		
-		return new WorkMethodRelationship(workingMethodOfTheDayBefore, workingMethodOnTheDayLst, 
-				methodSpecify);
+		return new WorkMethodRelationship(prevWorkMethod, currentWorkMethodList, 
+				specifiedMethod);
 	}
 	
 	/**
 	 * [prv-1] 許可されていない勤務方法か判定する
 	 * @param require
-	 * @param workInfor
+	 * @param workInfo
 	 * @return
 	 */
-	private boolean isNotAllowed(WorkingMethod.Require require, WorkInformation workInfor) {
-		return !currentWorkingMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfor));
+	private boolean isNotAllowed(WorkMethod.Require require, WorkInformation workInfo) {
+		return !currentWorkMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfo));
 	}
  
 	/**
 	 * [prv-2] 禁止されている勤務方法か判定する
 	 * @param require
-	 * @param workInfor
+	 * @param workInfo
 	 * @return
 	 */
-	private boolean isBan(WorkingMethod.Require require, WorkInformation workInfor) {
-		return currentWorkingMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfor));
+	private boolean isBan(WorkMethod.Require require, WorkInformation workInfo) {
+		return currentWorkMethodList.stream().anyMatch(c -> c.determineIfApplicable(require, workInfo));
 	}
 }

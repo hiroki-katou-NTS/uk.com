@@ -11,7 +11,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author lan_lt
  *
  */
-public class WorkingMethodContinuousWork implements WorkingMethod{
+public class WorkMethodContinuousWork implements WorkMethod{
 
 	@Override
 	public WorkTypeClassification getWorkTypeClassification() {
@@ -19,9 +19,9 @@ public class WorkingMethodContinuousWork implements WorkingMethod{
 	}
 
 	@Override
-	public boolean determineIfApplicable(Require require, WorkInformation workInfor) {
+	public boolean determineIfApplicable(Require require, WorkInformation workInfo) {
 		Optional<WorkType> workType = require.getWorkType(AppContexts.user().companyId(),
-				workInfor.getWorkTypeCode().v());
+				workInfo.getWorkTypeCode().v());
 		if (workType.isPresent()) {
 			return workType.get().getDailyWork().isOneDay() && workType.get().getDailyWork().isContinueWork();
 		}

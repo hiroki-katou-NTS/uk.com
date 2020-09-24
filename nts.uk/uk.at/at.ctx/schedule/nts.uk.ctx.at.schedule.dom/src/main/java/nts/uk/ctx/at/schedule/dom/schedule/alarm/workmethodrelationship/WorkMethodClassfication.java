@@ -10,7 +10,7 @@ import nts.arc.enums.EnumAdaptor;
  *
  */
 @RequiredArgsConstructor
-public enum WorkingMethodClassfication {
+public enum WorkMethodClassfication {
 	/** 0 - 出勤 **/
 	ATTENDANCE(0),
 	/** 1 - 休日 **/
@@ -19,8 +19,8 @@ public enum WorkingMethodClassfication {
 	CONTINUOSWORK(2);
 	public final int value;
 	
-	public static   WorkingMethodClassfication of(int value) {
+	public static   WorkMethodClassfication of(int value) {
 		
-		return EnumAdaptor.valueOf(value,  WorkingMethodClassfication.class);
+		return EnumAdaptor.valueOf(value,  WorkMethodClassfication.class);
 	}
 }
