@@ -2,6 +2,7 @@ package nts.uk.ctx.sys.portal.infra.entity.standardmenu;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -55,10 +56,6 @@ public class CcgstStandardMenu extends UkJpaEntity implements Serializable {
 	@Column(name = "AFTER_LOGIN_DISPLAY")
 	public int afterLoginDisplay;
 	
-	/** The logSettingDisplay. */
-	@Column(name = "LOG_SETTING_DISPLAY")
-	public int logSettingDisplay;
-	
 	/** Program ID */
 	@Column(name = "PROGRAM_ID")
 	public String programId;
@@ -70,6 +67,27 @@ public class CcgstStandardMenu extends UkJpaEntity implements Serializable {
 	/** Query string */
 	@Column(name = "QUERY_STRING")
 	public String queryString;
+	
+	/**
+	 * ログイン履歴表示区分
+	 */
+	@Basic(optional=false)
+	@Column(name = "LOG_LOGIN_DISPLAY")
+    public int logLoginDisplay;
+	
+	/**
+	 * 起動履歴表示区分
+	 */
+	@Basic(optional=false)
+	@Column(name = "LOG_START_DISPLAY")
+    public int logStartDisplay;
+	
+	/**
+	 * 修正履歴表示区分
+	 */
+	@Basic(optional=false)
+	@Column(name = "LOG_UPDATE_DISPLAY")
+    public int logUpdateDisplay;
 
 	@Override
 	protected CcgstStandardMenuPK getKey() {

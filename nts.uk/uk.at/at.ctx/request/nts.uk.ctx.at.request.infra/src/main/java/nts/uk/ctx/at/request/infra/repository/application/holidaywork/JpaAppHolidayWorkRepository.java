@@ -20,8 +20,6 @@ import nts.uk.ctx.at.request.dom.application.holidayworktime.AppHolidayWorkRepos
 import nts.uk.ctx.at.request.dom.application.holidayworktime.GoBackAtr;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.HolidayWorkClock;
 import nts.uk.ctx.at.request.dom.application.holidayworktime.primitivevalue.HolidayAppPrimitiveTime;
-import nts.uk.ctx.at.request.infra.entity.application.common.KrqdpApplicationPK_New;
-import nts.uk.ctx.at.request.infra.entity.application.common.KrqdtApplication_New;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWork;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtAppHolidayWorkPK;
 import nts.uk.ctx.at.request.infra.entity.application.holidaywork.KrqdtHolidayWorkInput;
@@ -95,16 +93,17 @@ public class JpaAppHolidayWorkRepository extends JpaRepository implements AppHol
 	}
 	@Override
 	public Optional<AppHolidayWork> getFullAppHolidayWork(String companyID, String appID) {
-		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
-		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
-		if(!opKrqdtAppHolidayWork.isPresent()||!opKafdtApplication.isPresent()){
-			return Optional.ofNullable(null);
-		}
-		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
-		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
-		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toDomain();
-		appHolidayWork.setApplication(kafdtApplication.toDomain());
-		return Optional.of(appHolidayWork);
+//		Optional<KrqdtAppHolidayWork> opKrqdtAppHolidayWork = this.queryProxy().find(new KrqdtAppHolidayWorkPK(companyID, appID), KrqdtAppHolidayWork.class);
+//		Optional<KrqdtApplication_New> opKafdtApplication = this.queryProxy().find(new KrqdpApplicationPK_New(companyID, appID), KrqdtApplication_New.class);
+//		if(!opKrqdtAppHolidayWork.isPresent()||!opKafdtApplication.isPresent()){
+//			return Optional.ofNullable(null);
+//		}
+//		KrqdtAppHolidayWork krqdtAppHolidaWork = opKrqdtAppHolidayWork.get();
+//		KrqdtApplication_New kafdtApplication = opKafdtApplication.get();
+//		AppHolidayWork appHolidayWork = krqdtAppHolidaWork.toOvertimeAppSetDomain();
+//		appHolidayWork.setApplication(kafdtApplication.toOvertimeAppSetDomain());
+//		return Optional.of(appHolidayWork);
+		return Optional.empty();
 	}
 	@Override
 	public void update(AppHolidayWork domain) {

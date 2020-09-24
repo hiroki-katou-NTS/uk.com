@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,8 +8,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.RemainingMinutes;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffDetail;
-import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.BreakDayOffRemainMngOfInPeriod;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.RemainUnDigestedDayTimes;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
@@ -64,7 +61,7 @@ public class SubstituteHolidayAggrResult {
 	// 前回集計期間の翌日
 	private Finally<GeneralDate> nextDay;
 
-	//逐次休暇の紐付け情報
+	// 逐次休暇の紐付け情報
 	private List<SeqVacationAssociationInfo> lstSeqVacation;
 
 	public void setCalcNumberOccurUses(RemainUnDigestedDayTimes data) {
@@ -74,12 +71,4 @@ public class SubstituteHolidayAggrResult {
 		this.occurrenceTime = new RemainingMinutes(data.getRemainTimes());
 	}
 
-	public BreakDayOffRemainMngOfInPeriod convert() {
-
-		List<BreakDayOffDetail> lstDetailData = vacationDetails.getLstAcctAbsenDetail().stream().map(x -> x.convertDefault()).collect(Collectors.toList());
-		
-		return new BreakDayOffRemainMngOfInPeriod(lstDetailData, remainDay.v(), remainTime.v(), unusedDay.v(),
-				unusedTime.v(), occurrenceDay.v(), occurrenceTime.v(), dayUse.v(), timeUse.v(), carryoverDay.v(),
-				carryoverTime.v(), dayOffErrors, nextDay);
-	}
 }

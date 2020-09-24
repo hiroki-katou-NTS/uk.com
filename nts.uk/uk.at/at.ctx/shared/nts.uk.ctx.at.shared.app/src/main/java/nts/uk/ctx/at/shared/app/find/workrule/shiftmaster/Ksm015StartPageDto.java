@@ -21,6 +21,6 @@ import nts.uk.ctx.at.shared.dom.workrule.shiftmaster.dto.ShiftMasterDto;
 @Builder
 public class Ksm015StartPageDto {
 	List<ShiftMasterDto> shiftMasters;
-	String forAttendent;
+	Boolean forAttendent;
 	List<String> alreadyConfigWorkplaces;
 }

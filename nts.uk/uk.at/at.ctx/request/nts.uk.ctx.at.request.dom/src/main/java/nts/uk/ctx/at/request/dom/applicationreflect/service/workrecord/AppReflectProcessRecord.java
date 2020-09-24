@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.WorkChangeCommonReflectPara;
 import nts.uk.ctx.at.request.dom.applicationreflect.service.workrecord.dailymonthlyprocessing.ExecutionTypeExImport;
 
@@ -18,7 +18,7 @@ public interface AppReflectProcessRecord {
 	 * @param info
 	 * @return True: 反映する、False:　反映しない
 	 */
-    public ScheAndRecordIsReflect appReflectProcessRecord(Application_New appInfor, ExecutionTypeExImport executionType, GeneralDate appDate,Boolean isCalWhenLock);
+    public ScheAndRecordIsReflect appReflectProcessRecord(Application appInfor, ExecutionTypeExImport executionType, GeneralDate appDate,Boolean isCalWhenLock);
 	/**
 	 * 事前申請の処理(Xử lý xin trước) 　直行直帰
 	 * 事後申請の処理

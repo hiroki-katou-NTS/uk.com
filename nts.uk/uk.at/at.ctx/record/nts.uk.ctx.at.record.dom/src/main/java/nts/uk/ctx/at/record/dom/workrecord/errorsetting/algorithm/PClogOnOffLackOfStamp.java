@@ -7,13 +7,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
 import nts.uk.ctx.at.record.dom.workinformation.WorkInfoOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /**
  * 打刻漏れ(PCログオンオグオフ)
@@ -36,12 +36,12 @@ public class PClogOnOffLackOfStamp {
 		
 		// 1日半日出勤・1日休日系の判定
 		WorkStyle workStyle = basicScheduleService
-				.checkWorkDay(workInfoOfDailyPerformance.getRecordInfo().getWorkTypeCode().v());
+				.checkWorkDay(workInfoOfDailyPerformance.getWorkInformation().getRecordInfo().getWorkTypeCode().v());
 		if (workStyle != WorkStyle.ONE_DAY_REST) {
-			if (pCLogOnInfoOfDaily != null && !pCLogOnInfoOfDaily.getLogOnInfo().isEmpty()) {
+			if (pCLogOnInfoOfDaily != null && !pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo().isEmpty()) {
 				List<Integer> attendanceItemIDList = new ArrayList<>();
 				
-				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getLogOnInfo();
+				List<LogOnInfo> logOnInfos = pCLogOnInfoOfDaily.getTimeZone().getLogOnInfo();
 				// fix bug 106204
 				logOnInfos.forEach(logOnInfo ->  {
 					// ログオフのみ存在している(only has Logoff time)

@@ -57,7 +57,6 @@ module nts.uk.at.view.ksm004.f.viewmodel {
 
         setDataCalendar(date: Date, dataRes: any) {
             const vm = this;
-            const dayOffArr: KnockoutObservableArray<Date> = ko.observableArray([]);
             vm.months.removeAll();
             let holidayDateAll = _.map(_.filter(dataRes, (item: any) => { return item.workingDayAtr != 0; }), (item: any) => { return new Date(item.date) });
             let workingDateAll = _.map(_.filter(dataRes, (item: any) => { return item.workingDayAtr == 0; }), (item: any) => { return new Date(item.date) });

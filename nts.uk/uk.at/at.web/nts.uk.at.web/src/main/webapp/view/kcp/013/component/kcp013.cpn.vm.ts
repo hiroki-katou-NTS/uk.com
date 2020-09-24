@@ -19,7 +19,7 @@ module kcp013.component {
 					optionsText: 'name',
 					editable: false,
 					width: 450,
-					enable: isEnable,
+					enable: true,
 					visibleItemsCount: 10,
 					columns: [
 					{ prop: 'code', length: 1 },
@@ -49,14 +49,14 @@ module kcp013.component {
 		constructor(param, callback) {
 			var self = this;
 			self.listWorkHours = ko.observableArray([]);
-			self.selectedCode = ko.observable('');
+			self.selectedCode = ko.observable(param.initiallySelected);
 			self.fillter = param.fillter;
 			self.workPlaceId = ko.observable(param.workPlaceId);
 			self.selectItem = param.initiallySelected;
 			self.showNone = param.showNone;
 			self.showDeferred = param.showDeferred;
 			self.isEnable = ko.observable(param.disable);
-
+            
 			self.checked = ko.observable(param.fillter);
 			if (self.checked()) {
 				self.loadAllWorkHours(param);
@@ -85,6 +85,8 @@ module kcp013.component {
 		public loadWorkHours(param): JQueryPromise<void> {
 			let self = this;
 			var dfd = $.Deferred();
+            let wkpId = typeof param.workPlaceId == 'function' ?  param.workPlaceId() : param.workPlaceId;
+            param.workPlaceId = wkpId;
 			nts.uk.request.ajax('at', GET_WORK_HOURS_URL, param).done((data) => {
 				self.getListWorkHours(data, param)
 				self.listWorkHours.valueHasMutated();
@@ -97,7 +99,9 @@ module kcp013.component {
 		// get All Working Hours by workplaceId
 		public loadAllWorkHours(param): JQueryPromise<void> {
 			let self = this;
-			var dfd = $.Deferred();
+            var dfd = $.Deferred();
+            let wkpId = typeof param.workPlaceId == 'function' ?  param.workPlaceId() : param.workPlaceId;
+            param.workPlaceId = wkpId;
 			nts.uk.request.ajax('at', GET_ALL_WORK_HOURS_URL).done((data) => {
 				self.getListWorkHours(data, param)
 				self.listWorkHours.valueHasMutated();

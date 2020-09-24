@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
-import nts.uk.ctx.at.record.dom.worktime.TimeActualStamp;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
 
 /**
  * DS : タイムカードを取得する
@@ -44,7 +44,7 @@ public class GetTimeCardService {
 			boolean checkExist = false;
 			for(TimeLeavingOfDailyPerformance timeLeavingOfDailyPerformance : listTimeLeavingOfDailyPer) {
 				if(timeLeavingOfDailyPerformance.getYmd().equals(date)) {
-					datas.add(createAttendanceOneDay(date, timeLeavingOfDailyPerformance.getTimeLeavingWorks()));
+					datas.add(createAttendanceOneDay(date, timeLeavingOfDailyPerformance.getAttendance().getTimeLeavingWorks()));
 					checkExist = true;
 					break;
 				}

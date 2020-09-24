@@ -6,13 +6,13 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import java.util.List;*/
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
 
 
 @AllArgsConstructor
 @Getter
 public class ApplicationForSendOutput {
-	private Application_New application;
+	private Application application;
 	private String mailTemplate;
 	private ApprovalRootOutput approvalRoot;
 	private String applicantMail;

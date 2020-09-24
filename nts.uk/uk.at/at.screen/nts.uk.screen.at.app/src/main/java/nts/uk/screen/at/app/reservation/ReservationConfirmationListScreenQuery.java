@@ -32,20 +32,32 @@ public class ReservationConfirmationListScreenQuery {
     @Inject
     private BentoMenuRepository bentoMenuRepo;
 
+    /**
+     * 社員参照範囲を取得する
+     * @param companyId
+     * @return
+     */
     public ReservationConfirmationListDto getReservationConfirmationListStartupInfo(String companyId) {
         ReservationConfirmationListDto dto = new ReservationConfirmationListDto();
 
+        // 取得する(会社ID)
         Optional<BentoReservationSetting> optBentoReservationSetting = bentoReservationSettingRepository.findByCId(companyId);
+        //    取得したドメインモデル「弁当予約設定」がないの場合
+        //　　エラーメッセージ「Msg_1847」を表示、A画面へ戻る
         if (optBentoReservationSetting.isPresent()) {
             BentoReservationSetting bentoReservationSetting = optBentoReservationSetting.get();
             dto.setOperationDistinction(bentoReservationSetting.getOperationDistinction());
         } else {
-        	throw new BusinessException("Msg_1847");
+            throw new BusinessException("Msg_1847");
         }
 
+        // 取得する(会社ID、年月日) 会社ID＝ログイン会社ID,年月日＝9999/12/31
         BentoMenu bentoMenu = bentoMenuRepo.getBentoMenuByEndDate(companyId, GeneralDate.max());
-		if (bentoMenu == null) {
-        	throw new BusinessException("Msg_1848");
+
+        // 取得したドメインモデル「弁当メニュー」がないの場合
+        //　　エラーメッセージ「Msg_1848」を表示、A画面へ戻る
+        if (bentoMenu == null) {
+            throw new BusinessException("Msg_1848");
         }
 
         List<Bento> menu = bentoMenu.getMenu();
@@ -70,9 +82,19 @@ public class ReservationConfirmationListScreenQuery {
         int reservationStartTime1 = closingTime.getClosingTime1().getStart().get().v();
         int reservationEndTime1 = closingTime.getClosingTime1().getFinish().v();
         Optional<ReservationClosingTime> closingTime2 = closingTime.getClosingTime2();
-        String reservationFrameName2 = closingTime2.isPresent()? closingTime2.get().getReservationTimeName().v(): "";
-		Integer reservationStartTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getStart().get().v()): null;
-		Integer reservationEndTime2 = closingTime2.isPresent()? new Integer(closingTime2.get().getFinish().v()): null;
+
+        String reservationFrameName2 = "";
+        Integer reservationStartTime2 = null;
+        Integer reservationEndTime2 = null;
+        if (closingTime2.isPresent()){
+            ReservationClosingTime ct2 = closingTime2.get();
+            reservationFrameName2 = ct2.getReservationTimeName().v();
+            if (ct2.getStart().isPresent()){
+                reservationStartTime2 = ct2.getStart().get().v();
+            }
+            reservationEndTime2 = ct2.getFinish().v();
+        }
+
 
 		ReservationClosingTimeDto timeFrame = new ReservationClosingTimeDto(
                 reservationFrameName1,

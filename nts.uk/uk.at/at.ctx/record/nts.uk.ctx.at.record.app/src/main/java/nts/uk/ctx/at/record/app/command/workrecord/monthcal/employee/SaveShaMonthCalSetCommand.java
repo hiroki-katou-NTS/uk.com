@@ -34,14 +34,14 @@ public class SaveShaMonthCalSetCommand {
 	private DeforWorkTimeAggrSetDto deforAggrSetting;
 
 	public ShaDeforLaborMonthActCalSet defor(String cid) {
-		return ShaDeforLaborMonthActCalSet.of(cid, employeeId,
+		return ShaDeforLaborMonthActCalSet.of(employeeId, cid,
 				deforAggrSetting.getAggregateTimeSet().domain(), 
 				deforAggrSetting.getExcessOutsideTimeSet().domain(), 
 				new DeforLaborCalSetting(deforAggrSetting.isOtTransCriteria()), 
 				deforAggrSetting.getSettlementPeriod().domain());
 	}
 	public ShaRegulaMonthActCalSet regular(String cid) {
-		return ShaRegulaMonthActCalSet.of(cid, employeeId, 
+		return ShaRegulaMonthActCalSet.of(employeeId, cid, 
 				regAggrSetting.getAggregateTimeSet().domain(), 
 				regAggrSetting.getExcessOutsideTimeSet().domain());
 	}

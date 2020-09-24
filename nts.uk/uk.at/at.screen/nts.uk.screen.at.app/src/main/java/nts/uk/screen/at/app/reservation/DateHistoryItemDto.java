@@ -10,6 +10,7 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DateHistoryItemDto {
+
     public String historyId;
     public String startDate;
     public String endDate;

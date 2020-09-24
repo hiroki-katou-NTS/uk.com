@@ -22,7 +22,7 @@ public class CanceLateOrLeaveEarlyCommandHandler extends CommandHandler<CanceLat
 	@Override
 	protected void handle(CommandHandlerContext<CanceLateOrLeaveEarlyCommand> context) {
 		
-		processCancel.detailScreenCancelProcess(context.getCommand().getCompanyID(), context.getCommand().getAppID(), context.getCommand().getVersion());
+		// processCancel.detailScreenCancelProcess(context.getCommand().getCompanyID(), context.getCommand().getAppID(), context.getCommand().getVersion());
 		
 	}
 

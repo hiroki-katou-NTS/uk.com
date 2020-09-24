@@ -1,12 +1,11 @@
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
-import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.*;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscdtScheExeContent;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 /**
@@ -40,9 +39,11 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	public SpecifyCreation getSpecifyCreation() {
 		return new SpecifyCreation(
 				CreationMethod.valueOf(this.entity.getCreationMethod()),
-				Optional.of(this.entity.getCopyStartYmd()),
-				Optional.of(ReferenceMaster.valueOf(this.entity.getReferenceMaster())),
-				Optional.of(new MonthlyPatternCode(this.entity.getMonthlyPatternId()))
+				Optional.ofNullable(this.entity.getCopyStartYmd()),
+				Optional.ofNullable(this.entity.getReferenceMaster() == null?  null:
+						ReferenceMaster.valueOf(this.entity.getReferenceMaster())),
+				Optional.ofNullable(StringUtil.isNullOrEmpty(this.entity.getMonthlyPatternId(),false)? null:
+						new MonthlyPatternCode(this.entity.getMonthlyPatternId()))
 
 		);
 	}
@@ -54,8 +55,8 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	 * getCreateMethodAtr()
 	 */
 	@Override
-	public RecreateCondition getRecreateCondition() {
-		return new RecreateCondition(
+	public Optional<RecreateCondition> getRecreateCondition() {
+		return Optional.of(new RecreateCondition(
 				this.entity.getReTargetAtr(),
 				this.entity.getReOverwriteConfirmed(),
 				this.entity.getReOverwriteRevised(),
@@ -65,7 +66,7 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 						this.entity.getReTargetShortWork(),
 						this.entity.getReTargetLaborChange()
 				))
-		);
+		));
 	}
 
 	/*

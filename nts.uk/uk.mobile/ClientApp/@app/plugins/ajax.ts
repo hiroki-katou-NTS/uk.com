@@ -34,11 +34,11 @@ const WEB_APP_NAME = {
 
                     return;
                 } else {
-                    let env: { API_URL?: string } = process.env,
+                    let env: { API_URL?: string } = { API_URL: 'http://localhost:8080' },
                         hostName: string = window.location.origin;
 
                     $.extend(opt, {
-                        url: (`${hostName.indexOf(':3000') > -1 ? (env.API_URL || hostName.replace(/:3000/, ':8080')) : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
+                        url: (`${hostName.indexOf(':3000') > -1 ? (env.API_URL || hostName.replace(/:3000/, ':8180')) : ''}/${WEB_APP_NAME[opt.pg || 'com']}/${opt.prefixUrl || 'webapi'}/${opt.url}`).replace(/([^:]\/)\/+/g, '$1')
                     });
                 }
 
@@ -180,8 +180,8 @@ const WEB_APP_NAME = {
                                     {
                                         message: xhr.response
                                     }, {
-                                        title: 'Business exception'
-                                    })
+                                    title: 'Business exception'
+                                })
                                     .then(() => {
                                         reject(xhr);
                                     });
@@ -196,12 +196,7 @@ const WEB_APP_NAME = {
             });
         };
 
-        fetch({ pg: 'at', url: '/server/time/now', method: 'post' })
-            .then((time: string) => {
-                Object.defineProperty(vue, '$sdt', {
-                    value: moment(time, 'YYYY-MM-DDTHH:mm:ss').diff(moment())
-                });
-            });
+        Object.defineProperty(vue, 'fetch', { value: fetch });
 
         vue.mixin({
             beforeCreate() {

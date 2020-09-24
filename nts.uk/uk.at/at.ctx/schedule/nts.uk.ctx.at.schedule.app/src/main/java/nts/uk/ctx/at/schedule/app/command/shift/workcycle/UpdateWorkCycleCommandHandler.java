@@ -6,8 +6,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.task.tran.AtomTask;
 import nts.uk.ctx.at.schedule.app.command.shift.workcycle.command.AddWorkCycleCommand;
+import nts.uk.ctx.at.schedule.dom.shift.workcycle.DailyPatternRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycle;
-import nts.uk.ctx.at.schedule.dom.shift.workcycle.WorkCycleRepository;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.RegisterWorkCycleService;
 import nts.uk.ctx.at.schedule.dom.shift.workcycle.domainservice.WorkCycleCreateResult;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
@@ -33,7 +33,7 @@ import java.util.Optional;
 public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddWorkCycleCommand, WorkCycleCreateResult> {
 
     @Inject
-    WorkCycleRepository workCycleRepository;
+    DailyPatternRepository workCycleRepository;
 
 
     @Inject
@@ -68,7 +68,7 @@ public class UpdateWorkCycleCommandHandler extends CommandHandlerWithResult<AddW
 
         private final String companyId = AppContexts.user().companyId();
 
-        private WorkCycleRepository workCycleRepository;
+        private DailyPatternRepository workCycleRepository;
 
         private BasicScheduleService service;
 

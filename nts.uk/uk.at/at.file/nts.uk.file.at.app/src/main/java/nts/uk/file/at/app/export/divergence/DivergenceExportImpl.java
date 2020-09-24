@@ -34,13 +34,13 @@ import nts.uk.ctx.at.record.app.find.divergence.time.message.DivergenceTimeError
 import nts.uk.ctx.at.record.app.find.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageDto;
 import nts.uk.ctx.at.record.app.find.divergence.time.message.WorkTypeDivergenceTimeErrorAlarmMessageFinder;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergence.time.DivergenceTimeUseSet;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelect;
 import nts.uk.ctx.at.record.dom.divergence.time.reason.DivergenceReasonSelectRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeRoot;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.deviationtime.deviationtimeframe.DivergenceTimeUseSet;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.i18n.TextResource;
 import nts.uk.shr.infra.file.report.masterlist.annotation.DomainID;
@@ -129,13 +129,13 @@ public class DivergenceExportImpl  implements MasterListData{
 		// Get company id
 		String companyId = AppContexts.user().companyId();
 		// Get list divergence time
-		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());
-		listDivTime.sort((DivergenceTime o1,DivergenceTime o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
+		List<DivergenceTimeRoot> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());
+		listDivTime.sort((DivergenceTimeRoot o1,DivergenceTimeRoot o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
 		// Check list empty
 		if (listDivTime.isEmpty()) {
 			return Collections.emptyList();
 		}
-		for(DivergenceTime divergenceTime:listDivTime){
+		for(DivergenceTimeRoot divergenceTime:listDivTime){
 			data=putEntryGetMasterDatas();			
 		    data.put("No", divergenceTime.getDivergenceTimeNo());
 			data.put("名称",  divergenceTime.getDivTimeName().v());
@@ -258,8 +258,8 @@ public class DivergenceExportImpl  implements MasterListData{
 		GeneralDate basedate=query.getBaseDate();
 		// Get list divergence time
 		List<CompanyDivergenceReferenceTimeHistoryDto> listHistory=new ArrayList<>();
-		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());
-		listDivTime.sort((DivergenceTime o1,DivergenceTime o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
+		List<DivergenceTimeRoot> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());
+		listDivTime.sort((DivergenceTimeRoot o1,DivergenceTimeRoot o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
 		
 		List<CompanyDivergenceReferenceTimeHistoryDto> listHis=	this.historyFinder.getAllHistories();
 		if (!CollectionUtil.isEmpty(listHis)) {
@@ -275,7 +275,7 @@ public class DivergenceExportImpl  implements MasterListData{
 				boolean check=true;
 				if(!CollectionUtil.isEmpty(listcompanyDiven)){							
 					for(int j=0;j<listcompanyDiven.size();j++){
-						for(DivergenceTime divergenceTime: listDivTime){
+						for(DivergenceTimeRoot divergenceTime: listDivTime){
 							if(divergenceTime.getDivergenceTimeNo()==listcompanyDiven.get(j).getDivergenceTimeNo()){
 								CompanyDivergenceReferenceTimeDto idata=listcompanyDiven.get(j);					
 							/*	data.put("開始日",listHistory.get(i).getStartDate().toString());
@@ -389,8 +389,8 @@ public class DivergenceExportImpl  implements MasterListData{
 		String companyId = AppContexts.user().companyId();
 		GeneralDate basedate=query.getBaseDate();
 		// Get list divergence time
-		List<DivergenceTime> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());	
-		listDivTime.sort((DivergenceTime o1,DivergenceTime o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
+		List<DivergenceTimeRoot> listDivTime = this.divTimeRepo.getAllDivTime(companyId).stream().filter(x ->x.getDivTimeUseSet()==DivergenceTimeUseSet.USE).collect(Collectors.toList());	
+		listDivTime.sort((DivergenceTimeRoot o1,DivergenceTimeRoot o2) -> o1.getDivergenceTimeNo()-o2.getDivergenceTimeNo());
 			
 		if(!CollectionUtil.isEmpty(listBusinesType)){
 			for(int i=0;i<listBusinesType.size();i++){
@@ -425,7 +425,7 @@ public class DivergenceExportImpl  implements MasterListData{
 								listworkDivergence=listworkDivergence.stream().filter(x ->x.getNotUseAtr()==1).collect(Collectors.toList());
 								if(!CollectionUtil.isEmpty(listworkDivergence)){
 									for(WorkTypeDivergenceReferenceTimeDto workTypeDivergenceReferenceTimeDto:listworkDivergence){									
-										for(DivergenceTime divergenceTime: listDivTime){
+										for(DivergenceTimeRoot divergenceTime: listDivTime){
 											if(workTypeDivergenceReferenceTimeDto.getDivergenceTimeNo()==divergenceTime.getDivergenceTimeNo()
 													){												
 													/*if(checkShowTypecode==false){

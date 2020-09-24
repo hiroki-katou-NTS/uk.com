@@ -14,13 +14,13 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
-import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
-import nts.uk.ctx.at.record.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfWorkPlaceRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlace;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementTimeWorkPlacePK;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.standardtime.UpperAgreementSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.primitivevalue.AgreementOneMonthTime;
 
 @Stateless
 public class JpaAgreementTimeOfWorkPlaceRepository extends JpaRepository implements AgreementTimeOfWorkPlaceRepository {

@@ -9,7 +9,7 @@
       >#{i18n.getText('KSM015_11')}</a
     >
     <!-- C1 -->
-    <button tabindex="1" class="proceed" id="register-btn" data-bind="click: registerOrd">
+    <button tabindex="1" class="proceed" id="register-btn" data-bind="click: registerOrd, enable: $root.errors.isEmpty ,disable: !isEnable()">
       #{i18n.getText('KSM015_8')}
     </button>
     <!-- C2 -->
@@ -47,24 +47,25 @@
           </div>
         </div>
         <div class="valign-center control-group">
-          <button class = "small" data-bind="click: openDialogKDL044">
+          <button id = "add-new-shift" class = "small" data-bind="click: openDialogKDL044, disable: !isEnable()">
             #{i18n.getText('KSM015_18')}
           </button>
           <!-- C6_2 -->
-          <button class="small danger" data-bind="click: clearShiftMaster">
+          <button class="small danger" data-bind="click: clearShiftMaster, disable: shiftItems().length == 0 || selectedShiftMaster().length == 0">
             #{i18n.getText('KSM015_31')}
           </button>
         </div>
         <table
           id="shift-list"
           data-bind="ntsGridList: {
-                height: 335,
-                width: 650,
+                height: 338,
+                width: 660,
                 options: shiftItems,
                 optionsValue: 'shiftMasterCode',
                 columns: shiftColumns,
                 multiple: true,
-                value: selectedShiftMaster
+                value: selectedShiftMaster,
+                rows: 13
             }"
         ></table>
       </div>

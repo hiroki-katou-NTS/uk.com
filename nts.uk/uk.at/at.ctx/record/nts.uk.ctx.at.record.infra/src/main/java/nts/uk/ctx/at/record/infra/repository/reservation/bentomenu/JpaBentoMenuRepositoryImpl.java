@@ -15,6 +15,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.reservation.bento.WorkLocationCode;
 import nts.uk.ctx.at.record.dom.reservation.bentomenu.closingtime.ReservationClosingTimeFrame;
 import nts.uk.ctx.at.record.infra.entity.reservation.bentomenu.KrcmtBentoMenu;
@@ -165,7 +166,7 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 					Integer reservationStartTime2 = first.getReservationStartTime2();
 					Integer reservationEndTime2 = first.getReservationEndTime2();
 					Optional<ReservationClosingTime> closingTime2 = Optional.empty();
-					if(reservationStartTime2!=null) {
+					if(reservationEndTime2 != null) {
 						closingTime2 = Optional.of(new ReservationClosingTime(
 								new BentoReservationTimeName(reservationFrameName2), 
 								new BentoReservationTime(reservationEndTime2), 
@@ -188,10 +189,13 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 	public BentoMenu getBentoMenu(String companyID, GeneralDate date) {
 		String query = FIND_BENTO_MENU_DATE;
 		query = query.replaceFirst("companyID", companyID);
-		query = query.replace("date", date.toString());
+		query = query.replaceAll("date", date.toString());
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			if (CollectionUtil.isEmpty(bentoMenuLst)){
+				return  null;
+			}
 			return bentoMenuLst.get(0);
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
@@ -223,8 +227,9 @@ public class JpaBentoMenuRepositoryImpl extends JpaRepository implements BentoMe
 		try (PreparedStatement stmt = this.connection().prepareStatement(query)) {
 			ResultSet rs = stmt.executeQuery();
 			List<BentoMenu> bentoMenuLst = toDomain(createFullJoinBentoMenu(rs));
+			if (CollectionUtil.isEmpty(bentoMenuLst)) return null;
 			return bentoMenuLst.get(0).getMenu().stream()
-					.filter(x -> x.getFrameNo()==frameNo).findAny().get();
+					.filter(x -> x.getFrameNo()==frameNo).findAny().orElse(null);
 		} catch (SQLException ex) {
 			throw new RuntimeException(ex);
 		}

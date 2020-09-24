@@ -1,24 +1,22 @@
 package nts.uk.ctx.at.record.infra.repository.standardtime;
 
-import lombok.val;
-import nts.arc.layer.infra.data.DbConsts;
-import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementYearSetting;
-import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
-import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSetting;
-import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSettingPK;
-
-import javax.ejb.Stateless;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-//import nts.arc.time.YearMonth;
-//import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
+import javax.ejb.Stateless;
+
+import lombok.val;
+import nts.arc.layer.infra.data.DbConsts;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementYearSettingRepository;
+import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSetting;
+import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementYearSettingPK;
 //import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementYearSetting;
 
 @Stateless
 public class JpaAgreementYearSettingRepository extends JpaRepository implements AgreementYearSettingRepository {
@@ -154,21 +152,6 @@ public class JpaAgreementYearSettingRepository extends JpaRepository implements 
 		return this.queryProxy().query(IS_EXIST_DATA, long.class).setParameter("employeeId", employeeId)
 				.setParameter("yearValue", yearValue).getSingle().get() > 0;
 	}
-
-//	@Override
-//	public List<AgreementYearSetting> getByEmployeeId(String employeeId) {
-//		return this.queryProxy()
-//				.query(FIND_BY_ID, KmkmtAgreementYearSet.class)
-//				.setParameter("employeeId", employeeId).getList(KmkmtAgreementYearSet::toDomain);
-//	}
-//
-//	@Override
-//	public Optional<AgreementYearSetting> getByEmployeeIdAndYm(String employeeId, Year year) {
-//		return this.queryProxy()
-//				.query(FIND_BY_ID_YEAR, KmkmtAgreementYearSet.class)
-//				.setParameter("employeeId", employeeId)
-//				.setParameter("year", year).getSingle(KmkmtAgreementYearSet::toDomain);
-//	}
 
 	private static AgreementYearSetting toDomain(KmkmtAgeementYearSetting kmkmtAgeementYearSetting) {
 		AgreementYearSetting agreementYearSetting = AgreementYearSetting.createFromJavaType(

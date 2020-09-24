@@ -40,7 +40,16 @@ public class KscdtScheErrLog extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "ERR_CONTENT")
     private String errContent;
-
+    /**
+     * 契約コード
+     */
+    @NotNull
+    @Column(name = "CONTRACT_CD")
+    private String contractCd;
+    /** The cid. */
+    @NotNull
+    @Column(name = "CID")
+    private String cid;
     /**
      * Instantiates a new kscmt sch error log.
      */
