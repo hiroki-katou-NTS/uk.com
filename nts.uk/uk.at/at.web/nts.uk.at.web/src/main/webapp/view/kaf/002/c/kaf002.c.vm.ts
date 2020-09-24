@@ -514,7 +514,177 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
         self.dataSourceOb( dataSource );
     }
     
+    bindReload() {
+        const self = this;
+        let opActualContentDisplayLst = ko.toJS(self.appDispInfoStartupOutput).appDispInfoWithDateOutput.opActualContentDisplayLst;
+        let opAchievementDetail;
+        if (opActualContentDisplayLst) {
+            opAchievementDetail = opActualContentDisplayLst[0].opAchievementDetail;
+        }
+        
+        let stampRecord = opAchievementDetail ? opAchievementDetail.stampRecordOutput : null;
+        
+        let items1 = (function() {
+            let list = [];
+            let timePlaceList = stampRecord ? stampRecord.workingTime : null;
+            for (let i = 1; i < 3; i++) {
+                let dataObject = new TimePlaceOutput(i);
+                if (!self.isPreAtr()) {
+                    _.forEach(timePlaceList, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
+                let gridItem = new GridItem(dataObject, STAMPTYPE.ATTENDENCE) as GridItem;
+                self.bindDataRequest(gridItem, 1);
+                list.push(gridItem); 
+            }   
+            return list;
+        })();
+        let items2 = (function() {
+            let list = [];
+            let extraordinaryTime = stampRecord ? stampRecord.extraordinaryTime : null;
+            for (let i = 3; i < 6; i++) {
+                let dataObject = new TimePlaceOutput(i);
+                if (!self.isPreAtr()) {
+                    _.forEach(extraordinaryTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
+                let gridItem = new GridItem(dataObject, STAMPTYPE.EXTRAORDINARY);
+                self.bindDataRequest(gridItem, 1);
+                list.push(gridItem);
     
+            }
+            
+            return list;
+        })();
+        
+        let items3 = ( function() {
+            let list = [];
+            let outingTime = stampRecord ? stampRecord.outingTime : null;
+            for ( let i = 1; i < 11; i++ ) {
+                let dataObject = new TimePlaceOutput( i );
+                if (!self.isPreAtr()) {
+                    _.forEach(outingTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
+                let gridItem = new GridItem( dataObject, STAMPTYPE.GOOUT_RETURNING );
+                self.bindDataRequest(gridItem, 1);
+                list.push(gridItem);
+            }
+
+            return list;
+        } )();
+
+        let items4 = ( function() {
+            let list = [];
+            let breakTime = stampRecord ? stampRecord.breakTime : null;
+            for ( let i = 1; i < 11; i++ ) {
+                let dataObject = new TimePlaceOutput( i );
+                if (!self.isPreAtr()) {
+                    _.forEach(breakTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
+                let gridItem = new GridItem(dataObject, STAMPTYPE.BREAK);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
+            }
+
+            return list;
+        } )();
+
+        let items5 = ( function() {
+            let list = [];
+            let parentingTime = stampRecord ? stampRecord.parentingTime : null;
+            for ( let i = 1; i < 3; i++ ) {
+                let dataObject = new TimePlaceOutput( i );
+                if (!self.isPreAtr()) {
+                    _.forEach(parentingTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
+                let gridItem = new GridItem(dataObject, STAMPTYPE.PARENT);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
+            }
+
+            return list;
+        } )();
+        
+        let items6 = (function() {
+            let list = [];
+            let nursingTime = stampRecord ? stampRecord.nursingTime : null;
+            for (let i = 1; i < 3; i++) {
+                let dataObject = new TimePlaceOutput(i);
+                if (!self.isPreAtr()) {
+                    _.forEach(nursingTime, item => {
+                        if (item.frameNo == i) {
+                            dataObject.opStartTime = item.opStartTime;
+                            dataObject.opEndTime = item.opEndTime;
+                            dataObject.opWorkLocationCD = item.opWorkLocationCD;
+                            dataObject.opGoOutReasonAtr = item.opGoOutReasonAtr;
+                        }
+                    });
+                    
+                }
+                let gridItem = new GridItem(dataObject, STAMPTYPE.NURSE);
+                self.bindDataRequest(gridItem, 2);
+                list.push(gridItem);
+            }
+            
+            return list;
+        })();
+        
+        
+        let dataSource = [];
+     // case change date
+//        if (self.data.appStampReflectOptional) {
+//            if (self.data.appStampReflectOptional.temporaryAttendence == 0) {
+//                dataSource.push(items1);
+//                
+//            } else {
+//                dataSource.push(items1.concat(items2));
+//            }
+//        }
+        dataSource.push(items1.concat(items2));
+        dataSource.push( items3 );
+        dataSource.push( items4 );
+        dataSource.push( items5 );
+        dataSource.push( items6 );
+        return dataSource;
+    }
     
     
     
@@ -583,26 +753,26 @@ module nts.uk.at.view.kaf002_ref.c.viewmodel {
                     self.isNurseTime = false;
                     self.checkExistData();
                     self.isVisibleComlumn = self.data.appStampSetting.useCancelFunction == 1;
-                    self.bindActualData();
+                    let dataSources = self.bindReload()
                     let reflect = self.data.appStampReflectOptional;
                     let attendenceCommon = self.data.appDispInfoStartupOutput.appDispInfoNoDateOutput.managementMultipleWorkCycles as boolean;
 
                     if (reflect.temporaryAttendence == 0 && !self.isTemporaryAttendence) {
-                        self.dataSourceOb()[0].pop();
-                        self.dataSourceOb()[0].pop();
-                        self.dataSourceOb()[0].pop();
+                        dataSources[0].pop();
+                        dataSources[0].pop();
+                        dataSources[0].pop();
                     }
                     if (reflect.attendence == 0 && !self.isAttendence) {
-                        self.dataSourceOb()[0].shift();
-                        self.dataSourceOb()[0].shift();
+                        dataSources[0].shift();
+                        dataSources[0].shift();
                     } else {
                         if (!attendenceCommon && !self.isAttendence2) {
-                            _.remove(self.dataSourceOb()[0], (e: GridItem) => {
+                            _.remove(dataSources[0], (e: GridItem) => {
                                 return e.typeStamp == STAMPTYPE.ATTENDENCE && e.id == 2;
                             });       
                         }
                     }
-                    
+                    self.dataSourceOb(dataSources);
                     if (self.data.appStampReflectOptional && self.tabs()) {
                         let reflect = self.data.appStampReflectOptional;
                         self.tabs()[0].visible(reflect.attendence == 1 || (reflect.temporaryAttendence == 1 && self.data.useTemporary) || self.isAttendence || self.isTemporaryAttendence );
