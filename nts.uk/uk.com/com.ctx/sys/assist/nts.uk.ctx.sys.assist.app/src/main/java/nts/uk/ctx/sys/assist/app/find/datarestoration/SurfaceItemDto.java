@@ -1,7 +1,10 @@
 package nts.uk.ctx.sys.assist.app.find.datarestoration;
 
 import lombok.AllArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
+import nts.uk.ctx.sys.assist.dom.storage.PatternCode;
+import nts.uk.ctx.sys.assist.dom.storage.SystemType;
 import nts.uk.ctx.sys.assist.dom.tablelist.TableList;
 
 @AllArgsConstructor
@@ -13,9 +16,9 @@ public class SurfaceItemDto {
 	 */
 	private String compressedFileName;
 	/**
-	 * 保存セットコード
+	 * パターンコード
 	 */
-	private String saveSetCode;
+	private String patternCode;
 	/**
 	 * 保存セット名称
 	 */
@@ -68,13 +71,19 @@ public class SurfaceItemDto {
 	 * 保存形態
 	 */
 	private String saveForm;
+	
+	/**
+	 * システム種類
+	 */
+	private int systemType;
 
 	public static SurfaceItemDto fromDomain(TableList domain) {
-		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getSaveSetCode().orElse(""),
+		return new SurfaceItemDto(domain.getCompressedFileName(), domain.getPatternCode(),
 				domain.getSaveSetName(), domain.getSupplementaryExplanation().orElse(""),
 				domain.getAnotherComCls().value, domain.getCategoryId(), domain.getTableNo(),
 				domain.getDataStorageProcessingId(), domain.getCategoryName(), domain.getRetentionPeriodCls().value,
 				domain.getSaveDateFrom().orElse(null), domain.getSaveDateTo().orElse(null),
-				domain.getCanNotBeOld().orElse(0), domain.getStorageRangeSaved().value, domain.getSaveForm());
+				domain.getCanNotBeOld().orElse(0), domain.getStorageRangeSaved().value, domain.getSaveForm(),
+				domain.getSystemType().value);
 	}
 }

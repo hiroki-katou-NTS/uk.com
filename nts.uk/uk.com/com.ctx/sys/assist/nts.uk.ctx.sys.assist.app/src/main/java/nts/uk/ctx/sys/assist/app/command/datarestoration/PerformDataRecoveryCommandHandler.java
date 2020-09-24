@@ -1,5 +1,6 @@
 package nts.uk.ctx.sys.assist.app.command.datarestoration;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -11,6 +12,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryLog;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMng;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryMngRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
@@ -18,7 +21,6 @@ import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecovery;
 import nts.uk.ctx.sys.assist.dom.datarestoration.PerformDataRecoveryRepository;
 import nts.uk.ctx.sys.assist.dom.datarestoration.RecoveryMethod;
-import nts.uk.ctx.sys.assist.dom.storage.LoginInfo;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -51,16 +53,20 @@ public class PerformDataRecoveryCommandHandler extends AsyncCommandHandler<Perfo
 
 		// ドメインモデル「データ復旧の結果」を登録する
 		String cid                    = AppContexts.user().companyId();
-		String saveSetCode            = performDataCommand.getSaveSetCode().isEmpty() ? null: performDataCommand.getSaveSetCode();
+		String saveSetCode            = StringUtil.isNullOrEmpty(performDataCommand.getSaveSetCode(), true) ? null: performDataCommand.getSaveSetCode();
 		String practitioner           = AppContexts.user().employeeId();
 		String executionResult        = null;
 		GeneralDateTime startDateTime = GeneralDateTime.now();
 		GeneralDateTime endDateTime   = null;
 		Integer saveForm              = performDataCommand.getSaveForm();
 		String saveName               = performDataCommand.getSaveName();
-		LoginInfo loginInfo 		  = new LoginInfo();
+		String ipAddress              = AppContexts.requestedWebApi().getRequestIpAddress();
+		String pcName                 = AppContexts.requestedWebApi().getRequestPcName();
+		String account                = AppContexts.windowsAccount().getUserName();
+		List<DataRecoveryLog> listDataRecoveryLogs = new ArrayList<DataRecoveryLog>();
+
 		DataRecoveryResult dataRecoveryResult = new DataRecoveryResult(dataRecoveryProcessId, cid, saveSetCode,
-				practitioner, executionResult, startDateTime, endDateTime, saveForm, saveName, loginInfo);
+				practitioner, executionResult, listDataRecoveryLogs, startDateTime, endDateTime, saveForm, saveName, ipAddress,pcName,account);
 		repoDataRecoveryResult.add(dataRecoveryResult);
 
 		// 復旧条件の調整

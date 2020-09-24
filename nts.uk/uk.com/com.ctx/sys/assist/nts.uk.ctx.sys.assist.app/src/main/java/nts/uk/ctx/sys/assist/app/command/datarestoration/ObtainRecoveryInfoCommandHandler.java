@@ -16,6 +16,10 @@ public class ObtainRecoveryInfoCommandHandler extends CommandHandlerWithResult<O
 
 	protected ServerZipfileValidateStatusDto handle(CommandHandlerContext<ObtainRecoveryInfoCommand> context) {
 		ServerPrepareMng serverPrepareMng = serverZipFileTempService.handleServerZipFile(context.getCommand().getDataRecoveryProcessId(), context.getCommand().getStoreProcessingId());
+		if (serverPrepareMng.getPassword().isPresent()) {
+			return new ServerZipfileValidateStatusDto(false, 
+									String.format("%s/%s", serverPrepareMng.getFileId().get(), serverPrepareMng.getUploadFileName().get()));
+		} 
 		return convertToStatus(serverPrepareMng.getOperatingCondition());
 	}
 

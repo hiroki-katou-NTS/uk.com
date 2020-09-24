@@ -1,5 +1,8 @@
 package nts.uk.ctx.sys.assist.infra.repository.storage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +11,8 @@ import javax.ejb.Stateless;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
@@ -20,7 +25,19 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 
 	private static final String SELECT_ALL_QUERY_STRING = "SELECT f FROM SspmtResultOfSaving f";
 	private static final String SELECT_BY_KEY_STRING = SELECT_ALL_QUERY_STRING
-			+ " WHERE  f.storeProcessingId =:storeProcessingId ";
+			+ " WHERE  f.storeProcessingId IN :storeProcessingId ";
+	private static final String SELECT_WITH_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
+				+ " WHERE f.cid =:cid "
+					+ " AND f.saveStartDatetime >=:startDateOperator "
+					+ " AND f.saveStartDatetime <=:endDateOperator ";
+	
+	private static final String SELECT_WITH_NOT_NULL_LIST_EMPLOYEE = SELECT_ALL_QUERY_STRING
+				+ " WHERE f.cid =:cid "
+					+ " AND f.saveStartDatetime =:startDateOperator "
+					+ " AND f.saveStartDatetime =:endDateOperator "
+					+ " AND f.practitioner =:practitioner ";
+	private static final String SELECT_BY_SAVE_SET_CODE = SELECT_ALL_QUERY_STRING
+			+ " WHERE f.saveSetCode IN :saveSetCodes";
 
 	@Override
 	public List<ResultOfSaving> getAllResultOfSaving() {
@@ -31,7 +48,7 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 	@Override
 	public Optional<ResultOfSaving> getResultOfSavingById(String storeProcessingId) {
 		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtResultOfSaving.class)
-				.setParameter("storeProcessingId", storeProcessingId).getSingle(c -> c.toDomain());
+				.setParameter("storeProcessingId", Collections.singletonList(storeProcessingId)).getSingle(c -> c.toDomain());
 	}
 
 	@Override
@@ -79,5 +96,50 @@ public class JpaResultOfSavingRepository extends JpaRepository implements Result
 			this.commandProxy().update(data);
 		});
 		
+	}
+
+	@Override
+	public List<ResultOfSaving> getResultOfSaving(
+			String cid,
+			GeneralDateTime startDateOperator, 
+			GeneralDateTime endDateOperator, 
+			List<String> listOperatorEmployeeId) {
+		
+		List<ResultOfSaving> resultOfSavings = new ArrayList<ResultOfSaving>();
+		
+		if (!CollectionUtil.isEmpty(listOperatorEmployeeId)) {
+			for (String employeeId : listOperatorEmployeeId) {
+				resultOfSavings.addAll(
+					this.queryProxy().query(SELECT_WITH_NOT_NULL_LIST_EMPLOYEE, SspmtResultOfSaving.class)
+					.setParameter("cid", cid)
+					.setParameter("startDateOperator", startDateOperator)
+					.setParameter("endDateOperator", endDateOperator)
+					.setParameter("practitioner", employeeId)
+					.getList(item -> item.toDomain()));
+			}
+		} else {
+			resultOfSavings.addAll(
+					this.queryProxy().query(SELECT_WITH_NULL_LIST_EMPLOYEE, SspmtResultOfSaving.class)
+					.setParameter("cid", cid)
+					.setParameter("startDateOperator", startDateOperator)
+					.setParameter("endDateOperator", endDateOperator)
+					.getList(item -> item.toDomain()));
+		}
+		return resultOfSavings;
+	}
+
+	@Override
+	public List<ResultOfSaving> getResultOfSavingByIds(List<String> storeProcessingIds) {
+		return this.queryProxy().query(SELECT_BY_KEY_STRING, SspmtResultOfSaving.class)
+				.setParameter("storeProcessingId", Arrays.asList(storeProcessingIds))
+				.getList(SspmtResultOfSaving::toDomain); 
+	}
+	
+	@Override
+	public List<ResultOfSaving> getResultOfSavingBySaveSetCode(List<String> saveSetCodes) {
+		return this.queryProxy().query(SELECT_BY_SAVE_SET_CODE, SspmtResultOfSaving.class)
+				.setParameter("saveSetCodes", saveSetCodes)
+				.getList(SspmtResultOfSaving::toDomain);
+				
 	}
 }
