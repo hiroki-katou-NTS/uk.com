@@ -24,17 +24,6 @@ module nts.uk.com.view.cmm002.a {
 					self.allowedIPAddress.update(ko.toJS(new AllowedIPAddress()));
 				}
 			});
-			$('.ip').keypress(function(event){
-			    if (event.key === '.') {
-					if(this.id === 'ip1'){
-						$('#ip2').select();
-					}else if(this.id === 'ip2'){
-						$('#ip3').select();
-					}else if(this.id === 'ip3'){
-						$('#ip4').select();
-					}
-				}
-			});
         }
 
         /** start page */
@@ -78,7 +67,6 @@ module nts.uk.com.view.cmm002.a {
 			let self = this;
 			self.selectedAllowedIPAddress('');
 			errors.clearAll();
-			$('#ip1').focus();
 		}
 		
 		public save():void{
@@ -185,24 +173,6 @@ module nts.uk.com.view.cmm002.a {
 			self.ipInputType.subscribe(item =>{
 				if(item == 0){
                     $('.endIP input').ntsError('clear'); 
-				}else{
-					setTimeout(function(){
-						$('.ip').keypress(function(event){
-						    if (event.key === '.') {
-								if(this.id === 'ip4'){
-									$('#ip5').select();
-								}else if(this.id === 'ip5'){
-									$('#ip6').select();
-								}else if(this.id === 'ip6'){
-									$('#ip7').select();
-								}else if(this.id === 'ip7'){
-									$('#ip8').select();
-								}
-							}
-						});
-					},1);
-					
-					
 				}
 			});
 		}
