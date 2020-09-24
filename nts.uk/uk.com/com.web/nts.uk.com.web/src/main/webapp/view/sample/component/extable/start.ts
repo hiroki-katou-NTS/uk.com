@@ -21,7 +21,7 @@ __viewContext.ready(function () {
             this.workTypeName = workTypeName;
             this.workTimeCode = workTimeCode;
             this.workTimeName = workTimeName;
-            this.symbol = symbol !== null ? (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯") : null;
+            this.symbol = symbol ? symbol : (parseInt(workTypeCode) % 3 === 0 ? "通" : "◯");
             this.startTime = startTime !== undefined ? startTime : "8:30";
             this.endTime = endTime !== undefined ? endTime : "17:30";
         }
@@ -760,10 +760,10 @@ __viewContext.ready(function () {
             return;
         });
         $("#set-sticker-multi2").click(function() {
-            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", null, null), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ", "7:30", "16:30"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
+            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", null, null, "6:30", "15:29", "✖"), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ", "7:30", "16:30", "✖"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
         });
         $("#set-sticker-single").click(function() {
-            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", null, null, "2:15"));
+            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", null, null, "2:15", "15:00", "✖"));
 //            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
 //            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
 //            $("#extable").exTable("stickData", 
