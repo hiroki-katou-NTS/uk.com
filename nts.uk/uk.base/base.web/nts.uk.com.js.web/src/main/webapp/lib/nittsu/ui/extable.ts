@@ -3144,16 +3144,17 @@ module nts.uk.ui.exTable {
             
             if (!exTable.stickOverWrite 
                 && !helper.isEmpty(helper.viewData(opt.view, opt.viewMode, cData))) return;
-            if (fieldArr && _.isObject(value)) {
+            let clonedVal = _.cloneDeep(value);
+            if (fieldArr && _.isObject(clonedVal)) {
                 _.forEach(fieldArr, (f, i) => {
                     if ((!exTable.stickOverWrite && !helper.isEmpty(cData[f]))
                         || helper.isXInnerCell($grid, pkVal, columnKey, i, style.HIDDEN_CLS, style.SEAL_CLS)
                         || !_.includes(stickFields, f)) {
-                        value[f] = cData[f];
+                        clonedVal[f] = cData[f];
                         if (f.slice(-4) === "Name") {
                             let codeFieldName = f.substr(0, f.length - 4) + "Code";
-                            if (_.has(value, codeFieldName)) {
-                                value[codeFieldName] = cData[codeFieldName];
+                            if (_.has(clonedVal, codeFieldName)) {
+                                clonedVal[codeFieldName] = cData[codeFieldName];
                             }
                         }
                     }
@@ -3161,8 +3162,8 @@ module nts.uk.ui.exTable {
             } else if (helper.isXCell($grid, pkVal, columnKey, style.HIDDEN_CLS, style.SEAL_CLS)) return;
             
             let changedData = _.cloneDeep(cData);
-            gen.dataSource[rowIdx][columnKey] = value;
-            let touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, value, styleMaker);
+            gen.dataSource[rowIdx][columnKey] = clonedVal;
+            let touched = render.gridCell($grid, rowIdx, columnKey, innerIdx, clonedVal, styleMaker);
             if (!touched || !touched.dirty) return;
             if (!_.isNil(touched.idx) && touched.idx !== -1) {
                 innerIdx = touched.idx;
@@ -3174,7 +3175,7 @@ module nts.uk.ui.exTable {
             }
             
             pushStickHistory($grid, [ cellObj ]);
-            events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, value, innerIdx));
+            events.trigger($exTable, events.CELL_UPDATED, new selection.Cell(rowIdx, columnKey, clonedVal, innerIdx));
         }
         
         /**
@@ -3236,15 +3237,16 @@ module nts.uk.ui.exTable {
                     } else {
                         if (stickFields && stickFields[0] === fieldArr[0]) {
                             let objValCloned = _.cloneDeep(objVal), tField = fieldArr[0];
-                            objValCloned[tField] = srcVal[tField];
-                            if (!helper.isEqual(src[key], obj[key], fieldArr)) {
+                            if (!helper.isEqual(src[key], obj[key], fieldArr)
+                                && !helper.isXInnerCell($grid, pkVal, key, null, style.HIDDEN_CLS, style.SEAL_CLS)) {
+                                objValCloned[tField] = srcVal[tField];
                                 changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
                                 origData[key] = objValCloned;
-                            } else {
-                                delete origData[key];
+                                return objValCloned;
                             }
                             
-                            return objValCloned;
+                            delete origData[key];
+                            return objVal;
                         } else if (!helper.isEqual(src[key], obj[key])) {
                             changedCells.push(new selection.Cell(rowIdx, key, _.cloneDeep(objVal)));
                         } else {
@@ -8705,7 +8707,8 @@ module nts.uk.ui.exTable {
             let cellsStyle = $.data($grid, internal.CELLS_STYLE);
             if (!cellsStyle) return;
             let result = _.find(cellsStyle, function(deco) {
-                return deco.columnKey === key && deco.rowId === rowId && deco.innerIdx === innerIdx && clazz.some(c => deco.clazz === c); 
+                return deco.columnKey === key && deco.rowId === rowId 
+                    && (_.isNil(innerIdx) ? true : deco.innerIdx === innerIdx) && clazz.some(c => deco.clazz === c); 
             });
             return result !== undefined;
         }
