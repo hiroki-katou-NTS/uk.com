@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * 同日出勤下限人数
- * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.同日休日禁止
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.同日休日禁止.同日出勤下限人数
  * @author lan_lt
  *
  */

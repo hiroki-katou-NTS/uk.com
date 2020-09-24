@@ -17,22 +17,22 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 @Getter
 @AllArgsConstructor
 public class BanHolidayTogether implements DomainAggregate{
-	//対象組織
+	/** 対象組織  */
 	private final TargetOrgIdenInfor targetOrg;
 	
-	//コード
+	/** コード */
 	private final BanHolidayTogetherCode banHolidayTogetherCode;
 	
-	//名称
+	/** 名称 */
 	private BanHolidayTogetherName banHolidayTogetherName;
 	
-	//稼働日の参照先
+	/** 稼働日の参照先 */
 	private Optional<ReferenceCalendar> workDayReference;
 	
 	/** 最低限出勤すべき人数 */
 	private MinNumberEmployeeTogether minOfWorkingEmpTogether;
 	
-	//同日の休日取得を禁止する社員
+	/** 同日の休日取得を禁止する社員 */
 	private List<String> empsCanNotSameHolidays;
 	
 
@@ -40,11 +40,11 @@ public class BanHolidayTogether implements DomainAggregate{
 	/**
 	 * 作成する
 	 * @param targetOrg 対象組織
-	 * @param banHolidayCode
-	 * @param banHolidayName
-	 * @param workDayReference
-	 * @param minNumberOfEmployeeToWork
-	 * @param empsCanNotSameHolidays
+	 * @param banHolidayCode コード
+	 * @param banHolidayName 名称
+	 * @param workDayReference 稼働日の参照先
+	 * @param minNumberOfEmployeeToWork 最低限出勤すべき人数
+	 * @param empsCanNotSameHolidays 同日の休日取得を禁止する社員
 	 * @return
 	 */
 	public static BanHolidayTogether create(TargetOrgIdenInfor targetOrg, 

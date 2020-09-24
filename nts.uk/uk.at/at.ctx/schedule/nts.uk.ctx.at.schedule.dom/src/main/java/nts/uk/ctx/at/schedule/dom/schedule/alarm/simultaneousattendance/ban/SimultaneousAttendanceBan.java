@@ -8,7 +8,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.objecttype.DomainAggregate;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 /**
- * AR: 同時出勤禁止
+ * 同時出勤禁止
  * @author lan_lt
  *
  */

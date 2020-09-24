@@ -2,9 +2,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.alarm.bansamedayholiday;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.Test;
@@ -30,7 +28,7 @@ public class BanHolidayTogetherTest {
 				new BanHolidayTogetherName("禁止グループA"),
 				Optional.empty(),
 				new MinNumberEmployeeTogether(1),
-				creatEmpsCanNotSameHolidays(2)
+				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2)
 				);
 		
 		NtsAssert.invokeGetters(banHdTogether);
@@ -48,7 +46,7 @@ public class BanHolidayTogetherTest {
 					TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 					new BanHolidayTogetherCode("0001"), 
 					new BanHolidayTogetherName("会社の禁止グループ"),
-					creatCalendarReferenceCompany(),
+					BanHolidayTogetherHelper.creatCalendarReferenceCompany(),
 					new MinNumberEmployeeTogether(3),
 					Collections.emptyList()
 					);
@@ -67,9 +65,9 @@ public class BanHolidayTogetherTest {
 					TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 					new BanHolidayTogetherCode("0001"), 
 					new BanHolidayTogetherName("会社の禁止グループ"),
-					creatCalendarReferenceCompany(),
+					BanHolidayTogetherHelper.creatCalendarReferenceCompany(),
 					new MinNumberEmployeeTogether(3),
-					creatEmpsCanNotSameHolidays(1)
+					BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(1)
 					);
 		});
 	}
@@ -81,25 +79,25 @@ public class BanHolidayTogetherTest {
 	@Test
 	public void check_inv2_empsCanNotSameHolidaysBeforeMinNumberOfEmployeeToWork() {
 		
-
+        /** ケース: 同日の休日取得を禁止する社員.size() == 最低限出勤すべき人数  */
 		BanHolidayTogether.create(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("0001"), 
 				new BanHolidayTogetherName("会社の禁止グループ"),
-				creatCalendarReferenceCompany(),
+				BanHolidayTogetherHelper.creatCalendarReferenceCompany(),
 				new MinNumberEmployeeTogether(5),
-				creatEmpsCanNotSameHolidays(5)
+				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(5)
 				);
 		
+		 /** ケース: 同日の休日取得を禁止する社員.size() < 最低限出勤すべき人数  */
 		NtsAssert.businessException("Msg_1886", ()-> {
-			
 			BanHolidayTogether.create(
 					TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 					new BanHolidayTogetherCode("0001"), 
 					new BanHolidayTogetherName("会社の禁止グループ"),
-					creatCalendarReferenceCompany(),
+					BanHolidayTogetherHelper.creatCalendarReferenceCompany(),
 					new MinNumberEmployeeTogether(6),
-					creatEmpsCanNotSameHolidays(5)
+					BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(5)
 					);
 		});
 		
@@ -112,9 +110,8 @@ public class BanHolidayTogetherTest {
 	 */
 	@Test
 	public void create_banSameDayHolidayNotReference_success() {
-		val empsCanNotSameHolidays = creatEmpsCanNotSameHolidays(2);
-
-		val banHolidayCompanyEmpty = BanHolidayTogether.create(
+		val empsCanNotSameHolidays = BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2);
+		val banHdComEmpty = BanHolidayTogether.create(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("001"),
 				new BanHolidayTogetherName("禁止グループ会社A"), 
@@ -122,16 +119,12 @@ public class BanHolidayTogetherTest {
 				new MinNumberEmployeeTogether(1),
 				empsCanNotSameHolidays);
 		
-		assertThat(banHolidayCompanyEmpty.getTargetOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
-		assertThat(banHolidayCompanyEmpty.getBanHolidayTogetherCode().v()).isEqualTo("001");
-		
-		//名称
-
-		//稼働日の参照先
-		assertThat(banHolidayCompanyEmpty.getWorkDayReference()).isEmpty();
-
-		//同日の休日取得を禁止する社員
-		assertThat(banHolidayCompanyEmpty.getEmpsCanNotSameHolidays()).containsExactlyInAnyOrderElementsOf(empsCanNotSameHolidays);
+		assertThat(banHdComEmpty.getTargetOrg().getUnit()).isEqualTo(TargetOrganizationUnit.WORKPLACE);
+		assertThat(banHdComEmpty.getBanHolidayTogetherCode().v()).isEqualTo("001");
+		assertThat(banHdComEmpty.getBanHolidayTogetherName().v()).isEqualTo("禁止グループ会社A");
+		assertThat(banHdComEmpty.getWorkDayReference()).isEmpty();
+		assertThat(banHdComEmpty.getMinOfWorkingEmpTogether().v()).isEqualTo(1);
+		assertThat(banHdComEmpty.getEmpsCanNotSameHolidays()).containsExactlyInAnyOrderElementsOf(empsCanNotSameHolidays);
 	}
 	
 	/**
@@ -145,9 +138,9 @@ public class BanHolidayTogetherTest {
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("0001"),
 				new BanHolidayTogetherName("禁止グループ会社A"),
-				creatCalendarReferenceCompany(), 
+				BanHolidayTogetherHelper.creatCalendarReferenceCompany(), 
 				new MinNumberEmployeeTogether(1),
-				creatEmpsCanNotSameHolidays(2));
+				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 		
 		assertThat(banHdCom.getWorkDayReference()).isNotEmpty();
 		assertThat(banHdCom.getWorkDayReference().get().getBusinessDaysCalendarType()).isEqualTo(BusinessDaysCalendarType.COMPANY);
@@ -166,7 +159,7 @@ public class BanHolidayTogetherTest {
 				new BanHolidayTogetherName("禁止グループ職場カレンダー"),
 				Optional.ofNullable(new ReferenceCalendarWorkplace(IdentifierUtil.randomUniqueId())),
 				new MinNumberEmployeeTogether(1),
-				creatEmpsCanNotSameHolidays(2));
+				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 
 		assertThat(banHdWorkplace.getWorkDayReference()).isNotEmpty();
 		assertThat(banHdWorkplace.getWorkDayReference().get().getBusinessDaysCalendarType()).isEqualTo(BusinessDaysCalendarType.WORKPLACE);
@@ -185,29 +178,13 @@ public class BanHolidayTogetherTest {
 				new BanHolidayTogetherCode("0001"), 
 				new BanHolidayTogetherName("禁止グループ分類カレンダー"),
 				Optional.of(new ReferenceCalendarClass(new ClassificationCode("0009"))),
-				new MinNumberEmployeeTogether(1), creatEmpsCanNotSameHolidays(2));
+				new MinNumberEmployeeTogether(1), 
+				BanHolidayTogetherHelper.creatEmpsCanNotSameHolidays(2));
 		
 		assertThat(banHolidayClass.getWorkDayReference()).isNotEmpty();
-		assertThat(banHolidayClass.getWorkDayReference().get()).isEqualTo(BusinessDaysCalendarType.CLASSSICATION);
+		assertThat(banHolidayClass.getWorkDayReference().get().getBusinessDaysCalendarType()).isEqualTo(BusinessDaysCalendarType.CLASSSICATION);
 
 	}
 	
-	private Optional<ReferenceCalendar> creatCalendarReferenceCompany(){
-		
-		return Optional.ofNullable(new ReferenceCalendarCompany());
-	}
-	/**
-	 * Helperを作る
-	 * creatEmpsCanNotSameHolidays
-	 * @param size
-	 * @return
-	 */
-	private List<String> creatEmpsCanNotSameHolidays(int size){
-		List<String> result = new ArrayList<>();
-		
-		for(int i = 0; i < size; i++){
-			result.add(IdentifierUtil.randomUniqueId());
-		}
-		return result;
-	}
+
 }
