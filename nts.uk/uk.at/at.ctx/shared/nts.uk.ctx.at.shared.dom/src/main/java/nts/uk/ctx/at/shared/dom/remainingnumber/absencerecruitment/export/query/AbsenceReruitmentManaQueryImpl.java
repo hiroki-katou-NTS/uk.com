@@ -31,6 +31,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManaReposit
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.SubstitutionOfHDManagementData;
+import nts.uk.shr.com.context.AppContexts;
 import nts.arc.time.calendar.period.DatePeriod;
 @Stateless
 public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuery{
@@ -340,16 +341,20 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		List<RecAbsHistoryOutputPara> lstConfirm = new ArrayList<>();
 		lstConfirmData.stream().forEach(a -> {
 			RecAbsHistoryOutputPara outPutData = new RecAbsHistoryOutputPara();
-			outPutData.setUseDays(Optional.of(a.getUsedDays().v()));
+			outPutData.setUseDays(Optional.of(a.getAssocialInfo().getDayNumberUsed().v()));
 			//振出履歴を抽出する
-			List<RecruitmentHistoryOutPara> lstRecRuiment = lstRecHis.stream().filter(z -> a.getPayoutId().equals(z.getRecId()))
+			List<RecruitmentHistoryOutPara> lstRecRuiment = lstRecHis.stream()
+					.filter(z -> z.getRecDate().getDayoffDate().isPresent()
+							&& a.getAssocialInfo().getOutbreakDay().equals(z.getRecDate().getDayoffDate().get()))
 					.collect(Collectors.toList());
 			if(!lstRecRuiment.isEmpty()) {
 				RecruitmentHistoryOutPara recRuiment = lstRecRuiment.get(0);
 				outPutData.setRecHisData(Optional.of(recRuiment));
 				outPutData.setYmdData(recRuiment.getRecDate());
 			}
-			List<AbsenceHistoryOutputPara> lstAbsInterim = lstAbsHis.stream().filter(z -> a.getSubOfHDID().equals(z.getAbsId()))
+			List<AbsenceHistoryOutputPara> lstAbsInterim = lstAbsHis.stream()
+					.filter(z -> z.getAbsDate().getDayoffDate().isPresent()
+							&& a.getAssocialInfo().getDateOfUse().equals(z.getAbsDate().getDayoffDate().get()))
 					.collect(Collectors.toList());
 			if(!lstAbsInterim.isEmpty()) {
 				AbsenceHistoryOutputPara absInterim = lstAbsInterim.get(0);
@@ -529,11 +534,14 @@ public class AbsenceReruitmentManaQueryImpl implements AbsenceReruitmentManaQuer
 		
 		for (PayoutManagementData x : lstRecconfirm) {
 			//ドメインモデル「振出振休紐付け管理」を取得する
-			lstAbsRecConfirm = confirmRecAbsRepo.getByPayoutId(x.getPayoutId());
-			
+			lstAbsRecConfirm = x.getPayoutDate().getDayoffDate().isPresent()
+					? confirmRecAbsRepo.getByPayoutId(sid, x.getPayoutDate().getDayoffDate().get())
+					: new ArrayList<>();
+
 			lstAbsRecConfirm.stream().forEach(y -> {
 				//ドメインモデル「振休管理データ」を取得する
-				Optional<SubstitutionOfHDManagementData> absConfirm = comfirmAbsMngRepo.findByID(y.getSubOfHDID());
+				Optional<SubstitutionOfHDManagementData> absConfirm = comfirmAbsMngRepo
+						.find(AppContexts.user().companyId(), sid, y.getAssocialInfo().getDateOfUse());
 				absConfirm.ifPresent(z -> lstAbsConfirm.add(z));
 			});
 		}		

@@ -26,10 +26,6 @@ public class KrcmtLeaveDayOffMana extends UkJpaEntity implements Serializable{
 	@Column(name = "USED_DAYS")
 	public Double usedDays;
 		
-	// 使用時間数
-	@Column(name = "USED_HOURS")
-	public int usedHours;
-		
 	// 対象選択区分
 	@Column(name = "TARGET_SELECTION_ATR")
 	public int targetSelectionAtr;

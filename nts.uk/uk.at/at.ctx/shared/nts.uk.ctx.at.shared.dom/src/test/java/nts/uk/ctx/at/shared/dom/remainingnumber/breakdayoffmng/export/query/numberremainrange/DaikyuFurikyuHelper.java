@@ -20,6 +20,7 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Rema
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.CompensatoryDayoffDate;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.DigestionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.base.ManagementDataRemainUnit;
+import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.DayOffError;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail;
 import nts.uk.ctx.at.shared.dom.remainingnumber.breakdayoffmng.export.query.numberremainrange.param.AccumulationAbsenceDetail.AccuVacationBuilder;
@@ -44,7 +45,9 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffset
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnOffsetTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedDay;
 import nts.uk.ctx.at.shared.dom.remainingnumber.interimremain.primitive.UnUsedTime;
+import nts.uk.ctx.at.shared.dom.remainingnumber.paymana.PayoutSubofHDManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.reserveleave.empinfo.grantremainingdata.daynumber.ReserveLeaveRemainingDayNumber;
+import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 
 public class DaikyuFurikyuHelper {
 
@@ -262,5 +265,15 @@ public class DaikyuFurikyuHelper {
 		return new AbsRecMngInPeriodRefactParamInput(CID, SID, period, dateRefer, mode, replaceChk, new ArrayList<>(),
 				new ArrayList<>(), new ArrayList<>(), optBeforeResult, Optional.empty(), Optional.empty(),
 				new FixedManagementDataMonth(new ArrayList<>(), new ArrayList<>()));
+	}
+
+	public static LeaveComDayOffManagement createLeavComDayOff(GeneralDate occDate, GeneralDate digestDate,
+			double usedDays) {
+		return new LeaveComDayOffManagement(SID, occDate, digestDate, usedDays, TargetSelectionAtr.MANUAL.value);
+	}
+	
+	public static PayoutSubofHDManagement createHD(GeneralDate occDate, GeneralDate digestDate,
+			double usedDays) {
+		return new PayoutSubofHDManagement(SID, occDate, digestDate, usedDays, TargetSelectionAtr.MANUAL.value);
 	}
 }
