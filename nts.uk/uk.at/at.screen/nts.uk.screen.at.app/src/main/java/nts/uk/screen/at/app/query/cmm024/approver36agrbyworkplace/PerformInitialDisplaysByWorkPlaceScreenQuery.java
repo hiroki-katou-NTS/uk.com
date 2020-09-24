@@ -4,6 +4,7 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.function.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.at.record.dom.adapter.person.PersonInfoAdapter;
+import nts.uk.ctx.at.record.dom.adapter.personempbasic.EmployeeInfor;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
 import nts.uk.ctx.at.record.dom.monthly.agreement.approver.Approver36AgrByWorkplaceRepo;
@@ -81,21 +82,15 @@ public class PerformInitialDisplaysByWorkPlaceScreenQuery {
         if(listEmployIds.isEmpty()){
             return Collections.emptyList();
         }
-        // Get list Person by list employId;
-        val listPerson = infoAdapter.getPerEmpBasicInfo(listEmployIds);
-        if(!listPerson.isEmpty()){
-            List<String> listPersonId = listPerson.stream().map(PersonEmpBasicInfoDto::getPersonId).collect(Collectors.toList());
-            val personInfo = personInfoAdapter.getListPersonInfo(listPersonId);
+            val personInfo = personInfoAdapter.getListPersonInfo(listEmployIds);
             if(personInfo.isEmpty()){
                 return   Collections.emptyList();
             }
-            return personInfo.stream().map(e->new PersonInfor(e.getPId(),e.getEmployeeCode(),e.getNamePerson())).collect(Collectors.toList());
+            return personInfo.stream().map(e->new PersonInfor(e.getPId(),e.getEmployeeCode(),e.getEmployeeId(),e.getNamePerson())).collect(Collectors.toList());
         }
-        return Collections.emptyList();
 
-    }
-    private PersonInfor checkPersonInfor(List<PersonInfor> listPersonInfor,String personId){
-        val rs = listPersonInfor.stream().filter(e->e.getPersonId().equals(personId)).findFirst();
+    private PersonInfor checkPersonInfor(List<PersonInfor> listPersonInfor,String employeeId){
+        val rs = listPersonInfor.stream().filter(e->e.getEmployeeId().equals(employeeId)).findFirst();
         return rs.orElseGet(PersonInfor::new);
     }
 
