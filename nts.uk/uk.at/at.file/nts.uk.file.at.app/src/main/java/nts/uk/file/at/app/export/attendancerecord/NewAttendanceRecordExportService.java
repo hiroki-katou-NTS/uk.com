@@ -651,7 +651,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 						
 						
 					}
-				}
+				
 					
 				
 				
@@ -828,7 +828,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 						.build();
 
 					// note: アルゴリズム「<<Public>> 社員の情報を取得する」を実行する
-				List<EmployeeInformation> export = empInfoRepo.find(query);
+				List<EmployeeInformation> lstEmplInfor = empInfoRepo.find(query);
 				
 				//	ヘッダー部(社員、職場、雇用、職位、勤務区分および年月)を編集する - Edit the header section (employee, workplace, employment, position, work category and year / month)
 					// 	年月　←　月別実績データの年月(YM) - Year / month ← Year / month of monthly actual data (YM)
@@ -867,7 +867,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 				}
 				
 				// END Convert to AttendanceRecordReportColumnData
-				
+		
 			}
 			//	着目社員の全期間分の帳票データを生成する - Generate form data for the entire period of the employee of interest
 			
@@ -875,6 +875,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		
 		AttendanceRecordReportData recordReportData = new AttendanceRecordReportData();
 		Optional<Company> optionalCompany = companyRepo.find(companyId);
+		// get seal stamp
+		List<String> sealStamp = attendanceRecExpSetRepo.getSealStamp(companyId, layoutId);
 
 		recordReportData.setCompanyName(optionalCompany.get().getCompanyName().toString());
 //		recordReportData.setDailyHeader(dailyHeader);
@@ -882,8 +884,8 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 //		recordReportData.setMonthlyHeader(monthlyHeader);
 		recordReportData.setReportData(reportData);
 		recordReportData.setReportName(optionalAttendanceRecExpSet.get().getName().v());
-//		recordReportData.setSealColName(
-//				optionalAttendanceRecExpSet.get().getSealUseAtr() ? sealStamp : new ArrayList<String>());
+		recordReportData.setSealColName(
+				optionalAttendanceRecExpSet.get().getSealUseAtr() ? sealStamp : new ArrayList<String>());
 		recordReportData.setFontSize(optionalAttendanceRecExpSet.get().getExportFontSize().value);
 		
 		AttendanceRecordReportDatasource recordReportDataSource = new AttendanceRecordReportDatasource(recordReportData,
@@ -891,7 +893,7 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		
 		// Generate file
 		reportGenerator.generate(context.getGeneratorContext(), recordReportDataSource);
-
+		
 	}
 
 	/**
