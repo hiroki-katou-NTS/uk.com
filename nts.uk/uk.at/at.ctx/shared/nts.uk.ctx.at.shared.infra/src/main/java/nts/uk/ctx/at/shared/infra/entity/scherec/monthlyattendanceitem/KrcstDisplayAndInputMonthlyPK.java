@@ -17,7 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class KrcstDisplayAndInputMonthlyPK  implements Serializable  {
+public class KrcstDisplayAndInputMonthlyPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

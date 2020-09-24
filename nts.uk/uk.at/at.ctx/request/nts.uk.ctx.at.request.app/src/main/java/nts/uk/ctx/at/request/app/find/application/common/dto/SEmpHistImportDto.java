@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.request.app.find.application.common.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.SEmpHistImport;
 
 @AllArgsConstructor
+@Data
+@NoArgsConstructor
 public class SEmpHistImportDto {
 	
 	/** The employee id. */

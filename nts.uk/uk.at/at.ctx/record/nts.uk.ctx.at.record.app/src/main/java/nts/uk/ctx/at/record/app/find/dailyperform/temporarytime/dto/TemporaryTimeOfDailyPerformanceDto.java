@@ -12,8 +12,6 @@ import nts.uk.ctx.at.record.app.find.dailyperform.common.WithActualTimeStampDto;
 import nts.uk.ctx.at.record.app.find.dailyperform.customjson.CustomGeneralDateSerializer;
 import nts.uk.ctx.at.record.app.find.dailyperform.workrecord.dto.WorkLeaveTimeDto;
 import nts.uk.ctx.at.record.dom.worktime.TemporaryTimeOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.TimeLeavingWork;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
 import nts.uk.ctx.at.shared.app.util.attendanceitem.ConvertHelper;
 import nts.uk.ctx.at.shared.dom.attendance.util.ItemConst;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemLayout;
@@ -21,6 +19,9 @@ import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemRoot;
 import nts.uk.ctx.at.shared.dom.attendance.util.anno.AttendanceItemValue;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.AttendanceItemCommon;
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ValueType;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TemporaryTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -48,6 +49,17 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (domain != null) {
 			dto.setEmployeeId(domain.getEmployeeId());
 			dto.setYmd(domain.getYmd());
+			dto.setWorkTimes(domain.getAttendance().getWorkTimes() == null ? null : domain.getAttendance().getWorkTimes().v());
+			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getAttendance().getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
+			dto.exsistData();
+		}
+		return dto;
+	}
+	public static TemporaryTimeOfDailyPerformanceDto getDto(String employeeID,GeneralDate ymd,TemporaryTimeOfDailyAttd domain) {
+		TemporaryTimeOfDailyPerformanceDto dto = new TemporaryTimeOfDailyPerformanceDto();
+		if (domain != null) {
+			dto.setEmployeeId(employeeID);
+			dto.setYmd(ymd);
 			dto.setWorkTimes(domain.getWorkTimes() == null ? null : domain.getWorkTimes().v());
 			dto.setWorkLeaveTime(ConvertHelper.mapTo(domain.getTimeLeavingWorks(), (c) -> newWorkLeaveTime(c)));
 			dto.exsistData();
@@ -84,7 +96,7 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 	}
 
 	@Override
-	public TemporaryTimeOfDailyPerformance toDomain(String emp, GeneralDate date) {
+	public TemporaryTimeOfDailyAttd toDomain(String emp, GeneralDate date) {
 		if(!this.isHaveData()) {
 			return null;
 		}
@@ -94,8 +106,9 @@ public class TemporaryTimeOfDailyPerformanceDto extends AttendanceItemCommon {
 		if (date == null) {
 			date = this.workingDate();
 		}
-		return new TemporaryTimeOfDailyPerformance(emp, new WorkTimes(toWorkTimes()), 
+		TemporaryTimeOfDailyPerformance domain = new TemporaryTimeOfDailyPerformance(emp, new WorkTimes(toWorkTimes()), 
 						ConvertHelper.mapTo(workLeaveTime, (c) -> WorkLeaveTimeDto.toDomain(c)), date);
+		return domain.getAttendance();
 	}
 
 	private int toWorkTimes() {

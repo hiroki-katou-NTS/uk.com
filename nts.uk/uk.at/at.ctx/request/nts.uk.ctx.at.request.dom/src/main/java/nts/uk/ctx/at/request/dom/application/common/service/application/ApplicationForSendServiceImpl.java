@@ -12,8 +12,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.i18n.I18NText;
-import nts.uk.ctx.at.request.dom.application.ApplicationRepository_New;
-import nts.uk.ctx.at.request.dom.application.Application_New;
+import nts.uk.ctx.at.request.dom.application.Application;
+import nts.uk.ctx.at.request.dom.application.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeRequestAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.sys.EnvAdapter;
@@ -33,7 +33,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class ApplicationForSendServiceImpl implements IApplicationForSendService{
 	
 	@Inject
-	private ApplicationRepository_New applicationRepository;
+	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private ApprovalRootStateAdapter approvalRootStateAdapter;
@@ -58,7 +58,7 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 	@Override
 	public ApplicationForSendOutput getApplicationForSend(String appID) {
 		String companyID = AppContexts.user().companyId();
-		Optional<Application_New> application_New = this.applicationRepository.findByID(companyID, appID);
+		Optional<Application> application = this.applicationRepository.findByID(companyID, appID);
 		ApprovalRootContentImport_New approvalRootContentImport = approvalRootStateAdapter.getApprovalRootContent(companyID, null, null, null, appID, false);
 		ApprovalRootOutput approvalRoot = this.fromApprovalRootToApprovalRootOutput(approvalRootContentImport);
 		List<PesionInforImport> listApproverDetail = new ArrayList<PesionInforImport>();
@@ -76,8 +76,8 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 				appTempAsStr = appTemp.get().getContent().v();
 			}
 		}
-		if (application_New.isPresent()){
-			Application_New app = application_New.get();
+		if (application.isPresent()){
+			Application app = application.get();
 			//get empName
 			PesionInforImport applicant = employeeRequestAdapter.getEmployeeInfor(app.getEmployeeID());
 			String empName = Objects.isNull(applicant) ? "" : applicant.getPname();
@@ -93,21 +93,23 @@ public class ApplicationForSendServiceImpl implements IApplicationForSendService
 			List<OutGoingMailImport> outMails = lstMailLogin.get(0).getOutGoingMails();
 			String loginMail = outMails.isEmpty() || outMails.get(0).getEmailAddress() == null ? "" : outMails.get(0).getEmailAddress();
 			//アルゴリズム「申請理由出力_共通」を実行する -> xu ly trong ham get content
-			String appContent = appContentService.getApplicationContent(application_New.get());
+			String appContent = "";
+			//String appContent = appContentService.getApplicationContent(application_New.get());
 			//ver7
-			String date = app.getStartDate().get().equals(app.getEndDate().get()) ? app.getStartDate().get().toString() : 
-				app.getStartDate().get().toString() + "～" + app.getEndDate().get().toString();
+			String date = app.getOpAppStartDate().get().getApplicationDate().equals(app.getOpAppEndDate().get().getApplicationDate()) 
+					? app.getOpAppStartDate().get().getApplicationDate().toString()
+					: app.getOpAppStartDate().get().getApplicationDate().toString() + "～" + app.getOpAppEndDate().get().getApplicationDate().toString();
 			//hoatt 2019.05.02 bug #107518
 			//EA修正履歴No.3381
 			//ドメインモデル「申請表示名」を取得する
 			List<AppDispName> appDispNameLst = appDispNameRepo.getAll();
-			Optional<AppDispName> appNameOp = appDispNameLst.stream().filter(c -> c.getAppType().equals(application_New.get().getAppType())).findAny();
+			Optional<AppDispName> appNameOp = appDispNameLst.stream().filter(c -> c.getAppType().equals(application.get().getAppType())).findAny();
 			String appName = appNameOp.isPresent() && appNameOp.get().getDispName() != null ? appNameOp.get().getDispName().v() : "";
 			//メール本文を編集する
 			String mailContentToSend = I18NText.getText("Msg_703",
 					loginName,//{0}　←　ログイン者の氏名
 					appTempAsStr,//{1}　←　申請承認メールテンプレート．本文
-					app.getStartDate().get().toString(),//{2}　←　申請．申請日付
+					app.getOpAppStartDate().get().getApplicationDate().toString(),//{2}　←　申請．申請日付
 					appName,//{3}　←　申請表示名 ver9
 					empName,//{4}　←　申請．申請者の氏名
 					date,//{5}　←　申請．申請日付

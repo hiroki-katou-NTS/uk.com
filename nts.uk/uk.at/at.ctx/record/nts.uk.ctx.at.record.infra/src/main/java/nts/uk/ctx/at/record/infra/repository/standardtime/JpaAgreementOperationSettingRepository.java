@@ -9,10 +9,10 @@ import javax.ejb.TransactionAttributeType;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSetting;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgeementOperationSettingPK;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
 
 @Stateless
 public class JpaAgreementOperationSettingRepository extends JpaRepository

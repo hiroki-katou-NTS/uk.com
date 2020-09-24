@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.dom.worktime.common;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktime.flowset.FixedChangeAtr;
 import nts.uk.ctx.at.shared.dom.worktime.service.WorkTimeDomainObject;
 import nts.uk.ctx.at.shared.dom.worktime.worktimeset.ScreenMode;
 
@@ -82,6 +83,29 @@ public class WorkTimezoneShortTimeWorkSet extends WorkTimeDomainObject implement
 			this.nursTimezoneWorkUse = false;
 			this.childCareWorkUse = false;
 		}
+	}
+	
+	/**
+	 * Correct data for fixedChangeAtr.
+	 *
+	 * @param fixedChangeAtr
+	 */
+	public void correctDataForFixedChange(FixedChangeAtr fixedChangeAtr) {
+		if (fixedChangeAtr != FixedChangeAtr.NOT_CHANGE) {
+			this.nursTimezoneWorkUse = true;
+			this.childCareWorkUse = true;
+		}
+	}
+	
+	/**
+	 * Restore data.
+	 *
+	 * @param clone
+	 */
+	public void restoreWorkTimezoneShortTimeWorkSet(WorkTimezoneShortTimeWorkSet clone) {
+		this.nursTimezoneWorkUse = clone.childCareWorkUse;
+		this.employmentTimeDeduct = clone.employmentTimeDeduct;
+		this.childCareWorkUse = clone.childCareWorkUse;
 	}
 	
 	@Override

@@ -38,21 +38,21 @@ public class OiomtSearchCodeListPk implements Serializable {
 	 * 外部出力条件コード
 	 */
 	@Basic(optional = false)
-	@Column(name = "CONDITION_SETTING_CD")
+	@Column(name = "CND_SET_CD")
 	public String conditionSetCd;
 
 	/**
 	 * カテゴリID
 	 */
 	@Basic(optional = false)
-	@Column(name = "CATEGORY_ID")
+	@Column(name = "CTG_ID")
 	public int categoryId;
 
 	/**
 	 * カテゴリ項目NO
 	 */
 	@Basic(optional = false)
-	@Column(name = "CATEGORY_ITEM_NO")
+	@Column(name = "CTG_ITEM_NO")
 	public int categoryItemNo;
 
 	/**
