@@ -52,7 +52,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                                     application: application,
                                     appDispInfoStartupOutput: appDispInfoStartupOutput
                                 } }"></div>
-    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="margin: 10px">
+    <div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="white-space: break-spaces">
     </div>
 
     <div class="inlineBlockFirst">
@@ -65,13 +65,14 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         optionsValue: 'code',
                         value: selectedCode,
                         optionsText: 'name',
-                        required: true
+                        required: true,
+                        enable: mode
                     }"></div>
     </div>
 
     <div class="blockSecond">
         <input class="inputBlockSecond" id="inputTimeKAF002"
-            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
+            data-bind=" css: selectedCode() == 3 ? 'adjustWidth' : '', ntsTimeEditor: { enable: mode, value: time, required: true, inputFormat: 'time', constraint: 'AttendanceClock', mode: 'time'
                                                     }" />
 
         <div class="dropListBlockSecond"
@@ -80,11 +81,12 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                         optionsValue: 'code',
                         value: selectedCodeReason,
                         optionsText: 'name',
-                        required: true
+                        required: true,
+                        enable: mode
                     }"></div>
     </div>
 
-    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="margin: 10px"></div>
+    <div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="white-space: break-spaces"></div>
     <div
         data-bind="component: { name: 'kaf000-b-component7', 
                                 params: {
@@ -114,7 +116,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
         approvalReason: KnockoutObservable<string>;
         application: KnockoutObservable<Application>;
         
-        
+        mode: KnockoutObservable<boolean> = ko.observable(true);
         dataSource: KnockoutObservableArray<ItemModel>;
         dataSourceReason: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
@@ -157,6 +159,9 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                        return;
                    }
                    self.data = res;
+                   if (self.appDispInfoStartupOutput().appDetailScreenInfo.outputMode == 0) {
+                       self.mode(false);                       
+                   }
                    self.selectedCode(String(self.data.appRecordImage.appStampCombinationAtr));
                    self.time(Number(self.data.appRecordImage.attendanceTime));
                    if (self.data.appRecordImage.appStampGoOutAtr) {
@@ -326,7 +331,7 @@ module nts.uk.at.view.kaf002_ref.d.viewmodel {
                 }
                self.$dialog.error(param).then(() => {
                    if (res.messageId == 'Msg_197') {
-                       self.$jump("com", "/view/ccg/008/a/index.xhtml")
+                       window.location.reload();
                    }
                });
             }
