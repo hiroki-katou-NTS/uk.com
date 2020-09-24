@@ -52,6 +52,7 @@ public class MonthlyPatternRegisterCommandHandler extends CommandHandler<Monthly
         MonthlyPatternRegisterCommand command = commandHandlerContext.getCommand();
         RequireImpl require = new RequireImpl(basicScheduleService, workTypeRepo, workTimeSettingRepository,
                 workTimeSettingService, basicScheduleService,workMonthlySettingRepository);
+        // 登録する(Require, 月間パターンの勤務情報, boolean)
         command.getWorkMonthlySetting().forEach((item) -> {
             Optional<AtomTask> persist = WorkMonthlySettingService.register(require, command.toDomain(item),
                     command.isOverWrite());

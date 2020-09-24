@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.app.find.setting.workplace;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,5 +14,5 @@ import lombok.NoArgsConstructor;
 public class RequestOfEachCompanyDto {
 	public String companyID;
 	public int selectionFlg;
-	public List<ApprovalFunctionSettingDto> approvalFunctionSettingDtoLst;
+	// public List<ApprovalFunctionSettingDto> approvalFunctionSettingDtoLst;
 }

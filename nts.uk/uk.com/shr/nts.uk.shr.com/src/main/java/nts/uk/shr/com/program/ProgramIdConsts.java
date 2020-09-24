@@ -774,20 +774,12 @@ public class ProgramIdConsts {
 	public static final String KMK013Q = "KMK013Q";
 
 	public static final String KAF022A = "KAF022A";
-	public static final String KAF022B = "KAF022B";
-	public static final String KAF022C = "KAF022C";
-	public static final String KAF022D = "KAF022D";
-	public static final String KAF022E = "KAF022E";
-	public static final String KAF022F = "KAF022F";
-	public static final String KAF022G = "KAF022G";
-	public static final String KAF022H = "KAF022H";
-	public static final String KAF022I = "KAF022I";
-	public static final String KAF022J = "KAF022J";
-	public static final String KAF022K = "KAF022K";
 	public static final String KAF022L = "KAF022L";
-	public static final String KAF022M = "KAF022M";
+	public static final String KAF022Z = "KAF022Z";
+	public static final String KAF022X = "KAF022X";
+	public static final String KAF022O = "KAF022O";
+	public static final String KAF022P = "KAF022P";
 	public static final String KAF022S = "KAF022S";
-	public static final String KAF022U = "KAF022U";
 
 	public static final String KSM011A = "KSM011A";
 	public static final String KSM011B = "KSM011B";
@@ -1151,6 +1143,7 @@ public class ProgramIdConsts {
 
 	//スマホ②
 	public static final String KAFS05A = "KAFS05A";
+	public static final String KAFS07A = "KAFS07A";
 	public static final String KAFS05B = "KAFS05B";
 	public static final String CMMS45B = "CMMS45B";
 	public static final String CMMS45C = "CMMS45C";

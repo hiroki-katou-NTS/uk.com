@@ -16,7 +16,9 @@ import java.util.List;
 
 @Value
 public class MonthlyPatternRegisterCommand {
+    // 上書き
     private boolean isOverWrite;
+    // 勤務サイクルのカレンダー
     private List<WorkMonthlySettingDto> workMonthlySetting;
 
     public WorkMonthlySetting toDomain(WorkMonthlySettingDto workMonthlySetting){
@@ -32,10 +34,13 @@ public class MonthlyPatternRegisterCommand {
     @NoArgsConstructor
     public static class WorkMonthlySettingDto{
 
+        // 勤務情報
         private WorkInformationDto workInformation;
 
+        // 年月日
         private String ymdk;
 
+        // 月間パターンコード
         private String monthlyPatternCode;
     }
 

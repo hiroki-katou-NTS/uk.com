@@ -55,7 +55,7 @@ public class NRHelper {
 
 		// 休日出勤時間申請
 		case WORK_HOLIDAY:
-			return ApplicationType.BREAK_TIME_APPLICATION;
+			return ApplicationType.HOLIDAY_WORK_APPLICATION;
 
 		// 遅刻早退取消申請
 		case LATE:
@@ -94,8 +94,8 @@ public class NRHelper {
 		case TimeDigestVacation:
 			return HolidayAppType.DIGESTION_TIME;
 
-		case Pause:
-			return HolidayAppType.REST_TIME;
+//		case Pause:
+//			return HolidayAppType.REST_TIME;
 
 		default:
 			return null;
