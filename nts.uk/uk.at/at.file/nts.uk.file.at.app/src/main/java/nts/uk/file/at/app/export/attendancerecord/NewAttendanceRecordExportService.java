@@ -870,13 +870,37 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		
 			}
 			//	着目社員の全期間分の帳票データを生成する - Generate form data for the entire period of the employee of interest
+			// TODO
+			
+			
 			
 		}
 		
+		//		エラーリストに社員が入っているか判別する - Determine if an employee is in the error list
+		// TODO
+		
+		//	取得できた実績データがある社員の件数をチェック - Check the number of employees who have acquired performance data
+		
 		AttendanceRecordReportData recordReportData = new AttendanceRecordReportData();
-		Optional<Company> optionalCompany = companyRepo.find(companyId);
+		//	印鑑欄を生成する - Generate a seal column
 		// get seal stamp
 		List<String> sealStamp = attendanceRecExpSetRepo.getSealStamp(companyId, layoutId);
+		
+		
+		//	日別項目ヘッダー部の名称を生成する - Generate the name of the daily item header part
+		
+		//	月別項目ヘッダー部の名称を生成する - Generate the name of the monthly item header part
+		
+		//	会社名を生成する - Generate company name
+		
+		//	帳票タイトルを生成する - Generate form title
+		
+		//	印刷年月日時分を生成する	- Generate print date, time, and minute
+		
+		// 	出力先を判別する - Determine the output destination
+		
+		Optional<Company> optionalCompany = companyRepo.find(companyId);
+		
 
 		recordReportData.setCompanyName(optionalCompany.get().getCompanyName().toString());
 //		recordReportData.setDailyHeader(dailyHeader);
@@ -893,6 +917,10 @@ public class NewAttendanceRecordExportService extends ExportService<AttendanceRe
 		
 		// Generate file
 		reportGenerator.generate(context.getGeneratorContext(), recordReportDataSource);
+		
+		
+		
+		
 		
 	}
 
