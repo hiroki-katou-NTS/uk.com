@@ -2041,6 +2041,9 @@ public static final Program CMM007E = new Program(WebAppId.COM, ProgramIdConsts.
     public static final Program CMM001F = new Program(WebAppId.COM, ProgramIdConsts.CMM001F, "CMM001_69",
             "/view/cmm/001/f/index.xhtml");
 
+    public static final Program CMM002A = new Program(WebAppId.COM, ProgramIdConsts.CMM002A, "CMM002_11",
+            "/view/cmm/002/a/index.xhtml");
+    
     /**
      * CMM020A
      */
