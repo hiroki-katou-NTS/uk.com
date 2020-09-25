@@ -5,9 +5,9 @@ import java.util.Optional;
 
 public interface WorkMethodRelationshipComRepo {
 	
-	public void insert(WorkMethodRelationshipCom domain);
+	public void insert(String companyId, WorkMethodRelationshipCom domain);
 	
-	public void update(WorkMethodRelationshipCom domain);
+	public void update(String companyId, WorkMethodRelationshipCom domain);
 	
 	/**
 	 * delete ( 会社ID )	

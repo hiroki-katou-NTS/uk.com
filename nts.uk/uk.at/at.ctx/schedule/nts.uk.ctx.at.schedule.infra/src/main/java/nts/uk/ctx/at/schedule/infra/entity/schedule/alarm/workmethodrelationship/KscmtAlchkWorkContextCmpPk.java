@@ -26,20 +26,20 @@ public class KscmtAlchkWorkContextCmpPk {
 	@Column(name = "PREVIOUS_WKTM_CD")
 	public String prevWorkTimeCode;
 	
-	public static KscmtAlchkWorkContextCmpPk fromDomain(WorkMethodRelationshipCom domain) {
+	public static KscmtAlchkWorkContextCmpPk fromDomain(String companyId, WorkMethodRelationshipCom domain) {
 		
 		WorkMethod prevWorkMethod = domain.getWorkMethodRelationship().getPrevWorkMethod();
 		
 		if (prevWorkMethod.getWorkMethodClassification().isAttendance()) {
 			String prevWorkTimeCode =  ((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v();
 			return new KscmtAlchkWorkContextCmpPk(
-					domain.getCompanyId(), 
+					companyId, 
 					WorkMethodClassfication.ATTENDANCE.value, 
 					prevWorkTimeCode);
 		}
 		
 		return new KscmtAlchkWorkContextCmpPk(
-				domain.getCompanyId(), 
+				companyId, 
 				WorkMethodClassfication.HOLIDAY.value, 
 				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE);
 	}

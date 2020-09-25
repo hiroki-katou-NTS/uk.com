@@ -54,18 +54,18 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 			+ " order by PREVIOUS_WKTM_CD, TGT_WKTM_CD ASC";
 
 	@Override
-	public void insert(WorkMethodRelationshipCom domain) {
-		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(domain);
-		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(domain);
+	public void insert(String companyId, WorkMethodRelationshipCom domain) {
+		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(companyId, domain);
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(companyId, domain);
 		
 		this.commandProxy().insert(workContext);
 		this.commandProxy().insertAll(workContextDtlList);
 	}
 
 	@Override
-	public void update(WorkMethodRelationshipCom domain) {
-		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(domain);
-		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(domain);
+	public void update(String companyId, WorkMethodRelationshipCom domain) {
+		KscmtAlchkWorkContextCmp workContext = KscmtAlchkWorkContextCmp.fromDomain(companyId, domain);
+		List<KscmtAlchkWorkContextCmpDtl> workContextDtlList = KscmtAlchkWorkContextCmpDtl.fromDomain(companyId, domain);
 		
 		this.commandProxy().update(workContext);
 		this.commandProxy().updateAll(workContextDtlList);

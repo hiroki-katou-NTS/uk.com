@@ -12,8 +12,6 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
 @AllArgsConstructor
 @Getter
 public class WorkMethodRelationshipCom implements DomainAggregate{
-	/** 会社ID */
-	private final String companyId;
 	
 	/**	勤務方法の関係性*/
 	private WorkMethodRelationship workMethodRelationship;

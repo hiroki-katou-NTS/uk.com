@@ -46,12 +46,12 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 		return pk;
 	}
 	
-	public static KscmtAlchkWorkContextCmp fromDomain(WorkMethodRelationshipCom domain) {
+	public static KscmtAlchkWorkContextCmp fromDomain(String companyId, WorkMethodRelationshipCom domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 			
 		return new KscmtAlchkWorkContextCmp(
-					KscmtAlchkWorkContextCmpPk.fromDomain(domain), 
+					KscmtAlchkWorkContextCmpPk.fromDomain(companyId, domain), 
 					relationship.getSpecifiedMethod().value, 
 					relationship.getCurrentWorkMethodList().get(0).getWorkMethodClassification().value);
 			
@@ -59,11 +59,10 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 	
 	public WorkMethodRelationshipCom toDomain(List<KscmtAlchkWorkContextCmpDtl> dtlList) {
 		
-		return new WorkMethodRelationshipCom(this.pk.companyId, 
-				WorkMethodRelationship.create(
-						this.pk.toPrevWorkMethod(), 
-						this.toCurrentWorkMethod(dtlList), 
-						RelationshipSpecifiedMethod.of(this.specifiedMethod)));
+		return new WorkMethodRelationshipCom(
+				WorkMethodRelationship.create( this.pk.toPrevWorkMethod(), 
+												this.toCurrentWorkMethod(dtlList), 
+												RelationshipSpecifiedMethod.of(this.specifiedMethod)));
 	}
 	
 	private List<WorkMethod> toCurrentWorkMethod(List<KscmtAlchkWorkContextCmpDtl> dtlList) {

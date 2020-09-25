@@ -37,7 +37,7 @@ public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 		return pk;
 	}
 	
-	public static List<KscmtAlchkWorkContextCmpDtl> fromDomain(WorkMethodRelationshipCom domain) {
+	public static List<KscmtAlchkWorkContextCmpDtl> fromDomain(String companyId, WorkMethodRelationshipCom domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		
@@ -46,7 +46,7 @@ public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 			return new ArrayList<>();
 		} 
 		
-		return KscmtAlchkWorkContextCmpDtlPk.fromDomain(domain)
+		return KscmtAlchkWorkContextCmpDtlPk.fromDomain(companyId, domain)
 				.stream().map( pk -> new KscmtAlchkWorkContextCmpDtl(pk))
 				.collect(Collectors.toList());
 		

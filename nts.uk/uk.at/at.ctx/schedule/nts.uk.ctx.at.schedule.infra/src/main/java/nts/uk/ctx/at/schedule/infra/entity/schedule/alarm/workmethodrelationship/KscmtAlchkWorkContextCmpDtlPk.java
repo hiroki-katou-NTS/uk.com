@@ -38,7 +38,7 @@ public class KscmtAlchkWorkContextCmpDtlPk {
 	 * @param domain
 	 * @return
 	 */
-	public static List<KscmtAlchkWorkContextCmpDtlPk> fromDomain(WorkMethodRelationshipCom domain) {
+	public static List<KscmtAlchkWorkContextCmpDtlPk> fromDomain(String companyId, WorkMethodRelationshipCom domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
 		
@@ -50,7 +50,7 @@ public class KscmtAlchkWorkContextCmpDtlPk {
 		return relationship.getCurrentWorkMethodList().stream().map( current -> 
 		
 			 new KscmtAlchkWorkContextCmpDtlPk( 
-					domain.getCompanyId(), 
+					companyId, 
 					prevWorkMethod.getWorkMethodClassification().value, 
 					prevWorkTimeCode, 
 					((WorkMethodAttendance) current).getWorkTimeCode().v())
