@@ -22,6 +22,7 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.layer.infra.file.temp.ApplicationTemporaryFilesContainer;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.security.crypt.commonkey.CommonKeyCrypt;
 import nts.uk.ctx.sys.assist.dom.category.Category;
@@ -74,7 +75,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	private static final String FILE_NAME_CSV2 = "対象社員";
 	private static final int NUM_OF_TABLE_EACH_PROCESS = 100;
 	private static final String EMPLOYEE_CD = "5";
-
+	private String practitioner = "";
 	@Inject
 	private ResultOfSavingRepository repoResultSaving;
 	@Inject
@@ -104,6 +105,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		// ドメインモデル「データ保存の保存結果」へ書き出す
 		String storeProcessingId = manualSetting.getStoreProcessingId();
 		try {
+			practitioner = manualSetting.getPractitioner();
 			String cid = manualSetting.getCid();
 			int systemType = manualSetting.getSystemType().value;
 			String practitioner = manualSetting.getPractitioner();
@@ -126,6 +128,13 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			String account = AppContexts.windowsAccount().getUserName();
 			LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
 			List<ResultLogSaving> listResultLogSavings = new ArrayList<ResultLogSaving>();
+			int logNumber = 0;
+			GeneralDateTime logTime = GeneralDateTime.now();
+			String logContent = TextResource.localize("CMF003_625"); 
+			String	errorEmployeeId = "";
+			GeneralDate errorDate = null;
+			String errorContent = "";
+			listResultLogSavings.add(ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent));
 			ResultOfSaving data = new ResultOfSaving(storeProcessingId, cid, systemType, fileSize, saveSetCode,
 					saveFileName, saveName, saveForm, saveEndDatetime, saveStartDatetime, deletedFiles,
 					compressedPassword, practitioner, listResultLogSavings, targetNumberPeople, saveStatus, saveForInvest, fileId,loginInfo);
@@ -173,7 +182,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		} catch (Exception e) {
 			e.printStackTrace();
 			generatorContext.dispose();
-			evaluateAbnormalEnd(storeProcessingId, 0);
+			evaluateAbnormalEndForException(storeProcessingId, 0, e);
 		}
 	}
 
@@ -595,9 +604,63 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 			}
 
 			applicationTemporaryFilesContainer.removeContainer();
+			// step ⓶ドメインモデル「データ保存の結果ログ」を追加
+			Optional<ResultOfSaving> resultOfSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
+			resultOfSaving.ifPresent(result -> {
+				String cid = result.getCid();
+				int sizeOfList = result.getListResultLogSavings().size();
+				int logNumber = 0;
+				if(sizeOfList > 0) {
+					logNumber = result.getListResultLogSavings().get(sizeOfList-1).getLogNumber()+1;
+				}
+				//固定項目
+				GeneralDateTime logTime = GeneralDateTime.now();
+				String logContent = TextResource.localize("CMF003_628"); 
+				String	errorEmployeeId = "";
+				GeneralDate errorDate = null;
+				String errorContent = "";
+				ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
+				List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
+				listResultLogSavings.add(resultLogSaving);
+				result.setListResultLogSavings(listResultLogSavings);
+				//ログイン情報
+				String ipAddress = AppContexts.requestedWebApi().getRequestIpAddress();
+				String pcName = AppContexts.requestedWebApi().getRequestPcName();
+				String account = AppContexts.windowsAccount().getUserName();
+				LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
+				result.setLoginInfo(loginInfo);
+				repoResultSaving.update(result);
+			});
 		} catch (Exception e) {
+			// step ⓷ドメインモデル「データ保存の結果ログ」を追加
+						Optional<ResultOfSaving> resultOfSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
+						resultOfSaving.ifPresent(result -> {
+							String cid = result.getCid();
+							int sizeOfList = result.getListResultLogSavings().size();
+							int logNumber = 0;
+							if(sizeOfList > 0) {
+								logNumber = result.getListResultLogSavings().get(sizeOfList-1).getLogNumber()+1;
+							}
+							//固定項目
+							GeneralDateTime logTime = GeneralDateTime.now();
+							String logContent = TextResource.localize("CMF003_629"); 
+							String	errorEmployeeId = "";
+							GeneralDate errorDate = null;
+							String errorContent = e.getMessage();
+							ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
+							List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
+							listResultLogSavings.add(resultLogSaving);
+							result.setListResultLogSavings(listResultLogSavings);
+							//ログイン情報
+							String ipAddress = AppContexts.requestedWebApi().getRequestIpAddress();
+							String pcName = AppContexts.requestedWebApi().getRequestPcName();
+							String account = AppContexts.windowsAccount().getUserName();
+							LoginInfo loginInfo = new LoginInfo(ipAddress, pcName, account);
+							result.setLoginInfo(loginInfo);
+							repoResultSaving.update(result);
+						});
 			e.printStackTrace();
-			return evaluateAbnormalEnd(storeProcessingId, totalTargetEmployees);
+			return evaluateAbnormalEndForError(storeProcessingId, totalTargetEmployees);
 		}
 
 		// ドメインモデル「データ保存動作管理」を更新する
@@ -610,7 +673,51 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 		return ResultState.NORMAL_END;
 	}
 
+	private ResultState evaluateAbnormalEndForError(String storeProcessingId, int totalTargetEmployees) {
+		// ドメインモデル「データ保存動作管理」を更新する
+		repoDataSto.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
+
+		// ドメインモデル「データ保存の保存結果」を書き出し
+		repoResultSaving.update(storeProcessingId, Optional.ofNullable(totalTargetEmployees),
+				Optional.of(SaveStatus.FAILURE));
+
+		return ResultState.ABNORMAL_END;
+	}
+
+	private ResultState evaluateAbnormalEndForException(String storeProcessingId, int totalTargetEmployees, Exception e) {
+		// step ⓸ドメインモデル「データ保存の結果ログ」を追加
+		Optional<ResultOfSaving> resultOfSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
+		resultOfSaving.ifPresent(result -> {
+			String cid = result.getCid();
+			int sizeOfList = result.getListResultLogSavings().size();
+			int logNumber = 0;
+			if(sizeOfList > 0) {
+				logNumber = result.getListResultLogSavings().get(sizeOfList-1).getLogNumber()+1;
+			}
+			GeneralDateTime logTime = GeneralDateTime.now();
+			String logContent = TextResource.localize("CMF003_626"); 
+			String	errorEmployeeId = practitioner;
+			GeneralDate errorDate = GeneralDate.today();
+			String errorContent = e.getMessage();
+			ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
+			List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
+			listResultLogSavings.add(resultLogSaving);
+			result.setListResultLogSavings(listResultLogSavings);
+			repoResultSaving.update(result);
+		});
+		// ドメインモデル「データ保存動作管理」を更新する
+		repoDataSto.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
+
+		// ドメインモデル「データ保存の保存結果」を書き出し
+		repoResultSaving.update(storeProcessingId, Optional.ofNullable(totalTargetEmployees),
+				Optional.of(SaveStatus.FAILURE));
+
+		return ResultState.ABNORMAL_END;
+	}
+
+	
 	private ResultState evaluateAbnormalEnd(String storeProcessingId, int totalTargetEmployees) {
+
 		// ドメインモデル「データ保存動作管理」を更新する
 		repoDataSto.update(storeProcessingId, OperatingCondition.ABNORMAL_TERMINATION);
 
@@ -622,6 +729,26 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 	}
 
 	private ResultState evaluateInterruption(String storeProcessingId, Integer totalTargetEmployees) {
+		// step ⓹ドメインモデル「データ保存の結果ログ」を追加
+		Optional<ResultOfSaving> resultOfSaving = repoResultSaving.getResultOfSavingById(storeProcessingId);
+		resultOfSaving.ifPresent(result -> {
+			String cid = result.getCid();
+			int sizeOfList = result.getListResultLogSavings().size();
+			int logNumber = 0;
+			if(sizeOfList > 0) {
+				logNumber = result.getListResultLogSavings().get(sizeOfList-1).getLogNumber()+1;
+			}
+			GeneralDateTime logTime = GeneralDateTime.now();
+			String logContent = TextResource.localize("CMF003_626"); 
+			String	errorEmployeeId = "";
+			GeneralDate errorDate = null;
+			String errorContent = "";
+			ResultLogSaving resultLogSaving = ResultLogSaving.createFromJavatype(logNumber,storeProcessingId,cid,logTime,logContent,errorEmployeeId,errorDate,errorContent);
+			List<ResultLogSaving> listResultLogSavings = result.getListResultLogSavings();
+			listResultLogSavings.add(resultLogSaving);
+			result.setListResultLogSavings(listResultLogSavings);
+			repoResultSaving.update(result);
+		});
 		// ドメインモデル「データ保存動作管理」を更新する
 		repoDataSto.update(storeProcessingId, OperatingCondition.INTERRUPTION_END);
 

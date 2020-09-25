@@ -1,7 +1,5 @@
 package nts.uk.ctx.sys.assist.ws.resultofsaving;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -11,7 +9,6 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.assist.app.command.resultofsaving.ResultOfSavingCommand;
 import nts.uk.ctx.sys.assist.app.command.resultofsaving.ResultOfSavingHandler;
-import nts.uk.ctx.sys.assist.app.find.params.LogDataParams;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingDto;
 import nts.uk.ctx.sys.assist.app.find.resultofsaving.ResultOfSavingFinder;
 
