@@ -107,6 +107,10 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         });
     }
 
+    public mounted() {
+
+    }
+
     public fetchStart() {
         const vm = this;
 
@@ -365,7 +369,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         };
         // if mode edit
         if (!vm.mode) {
-            paramb.input.newModeContent = null;
+            //paramb.input.newModeContent = null;
             paramb.input.detailModeContent = {
                 prePostAtr: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.prePostAtr,
                 startDate: vm.data.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo.application.opAppStartDate,
@@ -427,9 +431,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
 
                 return vm.listDate;
             });
-            vm.$watch('kaf000_B_Params.input.newModeContent.initSelectMultiDay', (newV, oldV) => {
-                console.log(newV + ':' + oldV);
-            });
+            
         }
     }
 
@@ -486,9 +488,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
         }
     }
 
-    public mounted() {
-        let vm = this;
-    }
 }
 
 const API = {

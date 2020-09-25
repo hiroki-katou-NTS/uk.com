@@ -80,7 +80,7 @@ export class KafS08A2Component extends KafS00ShrComponent {
         } else {
             vm.businessTripActualContent = vm.data.businessTrip.tripInfos.map((item: any) => {
                 const workTime = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
-                const workType = vm.data.businessTripInfoOutput.infoBeforeChange.find((i: any) => i.date = item.date).workTypeDto;
+                const workType = vm.data.businessTripInfoOutput.infoBeforeChange.find((i: any) => i.date == item.date).workTypeDto;
                 
                 return {
                     date: item.date,
