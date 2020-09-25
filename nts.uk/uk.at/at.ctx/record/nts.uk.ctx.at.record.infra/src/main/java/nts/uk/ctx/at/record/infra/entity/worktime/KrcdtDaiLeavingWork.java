@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
-import nts.uk.ctx.at.record.dom.worktime.primitivevalue.WorkTimes;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.WorkTimes;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -60,8 +60,8 @@ public class KrcdtDaiLeavingWork extends UkJpaEntity implements Serializable {
 
 	public static KrcdtDaiLeavingWork toEntity(TimeLeavingOfDailyPerformance domain) {
 		return new KrcdtDaiLeavingWork(new KrcdtDaiLeavingWorkPK(domain.getEmployeeId(), domain.getYmd()),
-				domain.getWorkTimes().v(),
-				domain.getTimeLeavingWorks().stream()
+				domain.getAttendance().getWorkTimes().v(),
+				domain.getAttendance().getTimeLeavingWorks().stream()
 						.map(c -> KrcdtTimeLeavingWork.toEntity(domain.getEmployeeId(), domain.getYmd(), c, 0))
 						.collect(Collectors.toList()));
 	}

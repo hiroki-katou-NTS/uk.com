@@ -7,7 +7,7 @@
 <body>
 	<ui:composition>
 		<div id="ccgcomponent"></div>
-		<div class="contentD" tabindex="-1"><!-- C ===> D-->
+		<div class="contentD panel-content" tabindex="-1"><!-- C ===> D-->
 			<div class="periodCovered" tabindex="-1">
 				<div tabindex="-1" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
 				<div tabindex="-1" class="info-period-date" data-bind="text: infoPeriodDate"></div>
@@ -17,16 +17,16 @@
 			</div>
 
 			<div class="selectionEmployee" tabindex="-1">
-				<div id="employeeSearch"></div>
+				<div tabindex="2" id="employeeSearch"></div>
 			</div>
 			
 			<div class="buttonPrevNext" tabindex="-1">
 				<div class="buttonBeginPrevious" tabindex="-1">
-					<button class="large" tabindex="16"
+					<button class="large" tabindex="3"
 						data-bind="click: previousPageD">#{i18n.getText('KSC001_102')}</button>
                 </div>
                 <div class="buttonBeginNext">
-				<button tabindex="17" class="proceed x-large"
+				<button tabindex="4" class="proceed x-large"
 						data-bind="click: nextPageD">#{i18n.getText('KSC001_20')}</button></div><!--, enable: isEnableNextPageD-->
 			</div>
 			

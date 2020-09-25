@@ -19,7 +19,7 @@ public class WorkScheduleReflectServiceImpl implements WorkScheduleReflectServic
 		case ABSENCE_APPLICATION:
 			processScheReflect.forleaveReflect(appRecordInfor.getAbsenceInfor());
 			break;
-		case BREAK_TIME_APPLICATION:
+		case HOLIDAY_WORK_APPLICATION:
 			processScheReflect.holidayWorkReflect(appRecordInfor.getHolidayworkInfor());
 			break;
 		case COMPLEMENT_LEAVE_APPLICATION:

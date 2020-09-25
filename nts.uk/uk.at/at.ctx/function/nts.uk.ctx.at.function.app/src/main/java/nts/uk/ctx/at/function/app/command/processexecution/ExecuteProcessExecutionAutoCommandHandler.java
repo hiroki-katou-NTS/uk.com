@@ -86,15 +86,17 @@ import nts.uk.ctx.at.function.dom.statement.EmployeeGeneralInfoAdapter;
 import nts.uk.ctx.at.function.dom.statement.dtoimport.EmployeeGeneralInfoImport;
 import nts.uk.ctx.at.record.dom.adapter.company.AffComHistItemImport;
 import nts.uk.ctx.at.record.dom.adapter.company.SyCompanyRecordAdapter;
-import nts.uk.ctx.at.record.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wkplaceinfochangeperiod.WkplaceInfoChangePeriod;
 import nts.uk.ctx.at.record.dom.affiliationinformation.wktypeinfochangeperiod.WkTypeInfoChangePeriod;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.output.ExecutionAttr;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultDomainServiceImpl.ProcessState;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.CreateDailyResultEmployeeDomainService;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.ExecutionTypeDaily;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.CreateDailyResultDomainServiceNew;
+import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyresults.OutputCreateDailyResult;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DailyCalculationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService;
 import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.MonthlyAggregationEmployeeService.AggregationResult;
-import nts.uk.ctx.at.record.dom.monthlyprocess.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.record.dom.require.RecordDomRequireService;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.CalExeSettingInfor;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.EmpCalAndSumExeLog;
@@ -109,21 +111,23 @@ import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enu
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.DailyRecreateClassification;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ErrorPresent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutedMenu;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
 import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionStatus;
-import nts.uk.ctx.at.record.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
 import nts.uk.ctx.at.schedule.dom.executionlog.*;
 //import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 //import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
+import nts.uk.ctx.at.shared.dom.adapter.generalinfo.dtoimport.ExWorkplaceHistItemImport;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpDto;
 import nts.uk.ctx.at.shared.dom.dailyperformanceformat.businesstype.BusinessTypeOfEmpHisAdaptor;
+import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.getprocessingdate.GetProcessingDate;
 import nts.uk.ctx.at.shared.dom.employmentrules.organizationmanagement.ConditionEmployee;
 import nts.uk.ctx.at.shared.dom.ot.frame.NotUseAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.algorithm.InterimRemainDataMngRegisterDateChange;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionContent;
+import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.enums.ExecutionType;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmployment;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureEmploymentRepository;
@@ -268,6 +272,9 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
     
     @Inject
     private GetProcessingDate getProcessingDate;
+    
+    @Inject
+    private CreateDailyResultDomainServiceNew createDailyResultDomainServiceNew;
     
 	public static int MAX_DELAY_PARALLEL = 0;
 	
@@ -1231,7 +1238,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		//ReCreateContent reCreateContent = new ReCreateContent();
 		//if (recreateTransfer || recreateWorkType) {
 			// 6-実施区分 → 再作成 とする
-		//	s.setImplementAtr(ImplementAtr.RECREATE);
+			s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
 			// 7-再作成区分 → 未確定データのみ とする
 
 		// 	reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
@@ -1240,7 +1247,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		//} else {
 			// #107055
 			// ・実施区分 → 通常作成
-		//	s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+			s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
 			// ・再作成区分 → 全件 とする
 		//	reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
 			// ・処理実行区分 → もう一度作り直す とする
@@ -1355,7 +1362,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		//ReCreateContent reCreateContent = new ReCreateContent();
 		//if (recreateTransfer || recreateWorkType) {
 			// 6-実施区分 → 再作成 とする
-		//	s.setImplementAtr(ImplementAtr.RECREATE);
+			s.setImplementAtr(ImplementAtr.CREATE_WORK_SCHEDULE);
 			// 7-再作成区分 → 未確定データのみ とする
 
 		//	reCreateContent.setReCreateAtr(ReCreateAtr.ONLY_UNCONFIRM);
@@ -1364,7 +1371,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		//} else {
 			// #107055
 			// ・実施区分 → 通常作成
-		//	s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+			s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
 			// ・再作成区分 → 全件 とする
 		//	reCreateContent.setReCreateAtr(ReCreateAtr.ALL_CASE);
 			// ・処理実行区分 → もう一度作り直す とする
@@ -3139,11 +3146,19 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		if ("日別作成".equals(typeExecution)) {
 			try {
 				// ⑤社員の日別実績を作成する
-				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId,
-						period, empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
-						Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
-								.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
-						false, false, null);
+//				processState = this.createDailyService.createDailyResultEmployeeWithNoInfoImport(asyContext, employeeId,
+//						period, empCalAndSumExeLog.getCompanyID(), empCalAndSumExeLog.getEmpCalAndSumExecLogID(),
+//						Optional.ofNullable(dailyCreateLog), processExecution.getExecSetting().getDailyPerf()
+//								.getTargetGroupClassification().isRecreateTypeChangePerson() ? true : false,
+//						false, false, null);
+				ExecutionTypeDaily executionTypeDaily = ExecutionTypeDaily.CREATE;
+				if(dailyCreateLog.getDailyCreationSetInfo().isPresent() && dailyCreateLog.getDailyCreationSetInfo().get().getExecutionType() == ExecutionType.RERUN  ) {
+					executionTypeDaily = ExecutionTypeDaily.DELETE_ACHIEVEMENTS;
+				}
+				OutputCreateDailyResult status = createDailyResultDomainServiceNew.createDataNewWithNoImport(asyContext, employeeId, period,
+						ExecutionAttr.AUTO, companyId,
+						executionTypeDaily,Optional.of(empCalAndSumExeLog), Optional.empty());
+				processState = (status.getProcessState().value == 0?ProcessState.INTERRUPTION:ProcessState.SUCCESS);
 			} catch (Exception e) {
 				throw new CreateDailyException(e);
 			}
@@ -3350,7 +3365,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 		s.setConfirm(false);
 		//作成種類←"新規作成"
 
-		s.setImplementAtr(ImplementAtr.GENERALLY_CREATED);
+		s.setImplementAtr(ImplementAtr.CREATE_NEW_ONLY);
 		//作成方法の指定 {
         //・作成方法←"個人情報"
 		//・コピー開始日←optional.empty
@@ -3377,7 +3392,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				//・確定済みも対象とする←false
                 //・手修正・申請反映も対象とする←false
 				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false, Optional.of(narrowing));
-				s.setRecreateCondition(recreateCondition);
+				s.setRecreateCondition(Optional.of(recreateCondition));
 			} else if (checkReTarget == ProcessExecType.RE_CREATE.value) {
 			val	reTargetAtr = true;
 				//・対象者の条件{
@@ -3390,7 +3405,7 @@ public class ExecuteProcessExecutionAutoCommandHandler extends AsyncCommandHandl
 				//・確定済みも対象とする←false
                 //・手修正・申請反映も対象とする←false
 				RecreateCondition recreateCondition = new RecreateCondition(reTargetAtr, false, false, Optional.of(narrowing));
-				s.setRecreateCondition(recreateCondition);
+				s.setRecreateCondition(Optional.of(recreateCondition));
 			}
 		}
 		return s;

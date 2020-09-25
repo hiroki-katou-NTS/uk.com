@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import mockit.Expectations;
 import mockit.Injectable;
 import mockit.integration.junit4.JMockit;
+import nts.arc.error.BusinessException;
 import nts.arc.task.tran.AtomTask;
 import nts.arc.testing.assertion.NtsAssert;
 import nts.arc.time.GeneralDate;
@@ -43,6 +44,11 @@ public class WorkMonthlySettingServiceTest {
     @Test
     public void test_error() {
         WorkMonthlySetting workMonthlySetting = new WorkMonthlySetting(CID, WMID, GeneralDate.today(), new WorkInformation("123", "1234"));
+        new Expectations(workMonthlySetting){
+            {workMonthlySetting.checkForErrors(require);
+             result = new BusinessException("Msg_1608");
+            }
+        };
         NtsAssert.businessException("Msg_1608", () -> {
                     WorkMonthlySettingService
                             .register(require, workMonthlySetting, true);
@@ -53,14 +59,13 @@ public class WorkMonthlySettingServiceTest {
     @Test
     public void test_non_error_condition_non_update() {
         WorkMonthlySetting workMonthlySetting = new WorkMonthlySetting(CID, WMID, GeneralDate.today(), new WorkInformation("123", "1234"));
-        Optional<AtomTask> expected = Optional.empty();
         new Expectations(WorkMonthlySetting.class) {{
             workMonthlySetting.checkForErrors(require);
             require.checkRegister(workMonthlySetting.getCompanyId().v(), workMonthlySetting.getMonthlyPatternCode().v(), workMonthlySetting.getYmdk());
             result = true;
 
         }};
-        assertThat(expected.equals(WorkMonthlySettingService.register(require, workMonthlySetting, false)));
+        assertThat(WorkMonthlySettingService.register(require, workMonthlySetting, false)).isEqualTo(Optional.empty());
     }
 
     @Test

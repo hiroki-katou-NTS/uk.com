@@ -317,6 +317,7 @@ public class MonthlyAggregateProcessService {
 		CompensatoryLeaveComSetting compensatoryLeaveComSetting = compensLeaveComSetRepository.find(companyID);
 		
 		int deadlCheckMonth = compensatoryLeaveComSetting.getCompensatoryAcquisitionUse().getDeadlCheckMonth().value + 1;
+
 		//社員の締め情報を取得
 		Map<String, Closure> closureMap = ClosureService.getClosureByEmployees(
 				ClosureService.createRequireM7(closureRepo, closureEmploymentRepo, shareEmploymentAdapter),

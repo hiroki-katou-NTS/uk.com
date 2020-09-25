@@ -68,7 +68,7 @@ public class ScheduleExecutionAddCommandHandler extends CommandHandlerWithResult
 
         // save domain update add : cid, cd 28/8/2020
         this.executionLogRepository.addNew(domain);
-        // save domain update not use memento pattern.
+        // save domain update
         val domainContent = command.toDomainContentNew(executionId);
         this.createContentRepository.addNew(domainContent);
         val domainCreator = command.toDomainCreator(executionId);

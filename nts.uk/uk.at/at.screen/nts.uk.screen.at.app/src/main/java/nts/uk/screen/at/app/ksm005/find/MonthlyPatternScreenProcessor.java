@@ -54,7 +54,7 @@ public class MonthlyPatternScreenProcessor {
         String cid = AppContexts.user().companyId();
 
         // 1. get List<WorkMonthlySetting>
-
+        // 1:月間パターンの勤務情報を取得する(会社ID, 月間パターンコード, 期間)
         DatePeriod date = new DatePeriod(requestPrams.getStartDate(),requestPrams.getEndDate());
         List<MonthlyPatternDto> workMonthlySettings = this.workMonthlySettingRepository
                 .findByPeriod(cid, requestPrams.getMonthlyPatternCode(),date).stream()
@@ -67,28 +67,31 @@ public class MonthlyPatternScreenProcessor {
 
         WorkInformation.Require require = new RequireImpl(basicScheduleService);
         workMonthlySettings.forEach(x -> {
+
             // 2. set WorkStyle
-            WorkInformation information = new WorkInformation(x.getWorkingCode(), x.getWorkTypeCode());
-            Integer workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
-            Integer typeColor = -1;
-            //check output for frontend
-            typeColor = getInteger(workStyle, typeColor);
+            // 2:出勤・休日系の判定(Require)
+            WorkInformation information = new WorkInformation( x.getWorkTypeCode(),x.getWorkingCode());
+            int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
+            int typeColor = getInteger(workStyle);
             x.setTypeColor(typeColor);
 
             // 3. set work type name
+            // 3:勤務種類名称を取得する(ログイン会社、List<勤務種類コード>)
             List<WorkTypeInfor> getPossibleWorkType = workTypeFinder.getPossibleWorkTypeKDL002(Arrays.asList(x.getWorkTypeCode()));
             List<String> workTypeName = new ArrayList<>();
             getPossibleWorkType.forEach(c -> workTypeName.add(c.getName()));
             x.setWorkTypeName(workTypeName.size() == 0 ? null : workTypeName.get(0));
 
             // 4. set work time name
+            // 4:就業時間帯名称を取得する(ログイン会社ID、List<就業時間帯コード>)
             Map<String, String> listWorkTimeCodeName = workTimeSettingRepository
                     .getCodeNameByListWorkTimeCd(cid, Arrays.asList(x.getWorkingCode()));
             List<String> workTimeName = new ArrayList<>(listWorkTimeCodeName.values());
             x.setWorkingName(workTimeName.size() == 0 ? null :workTimeName.get(0));
         });
 
-        // 5.get yearMonth
+        // 6.get yearMonth
+        // 6:設定した年月一覧を取得する(ログイン会社ID、月間パターンコード、年)
         List<Integer> listMonthYear = getYearMonthScreenprocessor.GetYearMonth(cid,requestPrams.getMonthlyPatternCode(),requestPrams.getStartDate().year());
         return new MonthlySettingPatternDto(workMonthlySettings, listMonthYear);
     }
@@ -97,25 +100,20 @@ public class MonthlyPatternScreenProcessor {
 
         WorkInformation.Require require = new RequireImpl(basicScheduleService);
 
-        WorkInformation information = new WorkInformation(requestPrams.getWorkingCode(), requestPrams.getWorkTypeCode());
-        Integer workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : null;
-        Integer typeColor = -1;
-        //check output for frontend
-        typeColor = getInteger(workStyle, typeColor);
+        WorkInformation information = new WorkInformation(requestPrams.getWorkTypeCode(),requestPrams.getWorkingCode());
+        int workStyle = information.getWorkStyle(require).isPresent() ? information.getWorkStyle(require).get().value : -1;
+        int typeColor = getInteger(workStyle);
         return new WorkStyleDto(requestPrams.getWorkingCode(), requestPrams.getWorkTypeCode(),typeColor);
     }
 
-    private Integer getInteger(Integer workStyle, Integer typeColor) {
-        if (workStyle != null) {
-            if (workStyle == WorkStyle.ONE_DAY_WORK.value) {
-                typeColor = 0;
-            } else if (workStyle == WorkStyle.ONE_DAY_REST.value) {
-                typeColor = 1;
-            } else {
-                typeColor = 2;
-            }
-        }
-        return typeColor;
+    private int getInteger(int workStyle) {
+        if(workStyle < 0)
+            return -1;
+        if (workStyle == WorkStyle.ONE_DAY_WORK.value)
+            return 0;
+        if (workStyle == WorkStyle.ONE_DAY_REST.value)
+            return 1;
+        return 2;
     }
 
     @AllArgsConstructor

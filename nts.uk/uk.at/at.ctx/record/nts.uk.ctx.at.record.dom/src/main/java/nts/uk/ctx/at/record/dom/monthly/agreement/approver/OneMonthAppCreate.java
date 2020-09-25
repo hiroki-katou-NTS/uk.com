@@ -1,0 +1,143 @@
+package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
+
+import lombok.val;
+import nts.arc.task.tran.AtomTask;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementDomainService;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementsOneMonth;
+import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
+
+import javax.ejb.Stateless;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * 1ヶ月申請を登録する
+ * 1ヶ月の36協定特別条項の適用申請を作成する
+ *
+ * @author khai.dh
+ */
+@Stateless
+public class OneMonthAppCreate {
+	/**
+	 * [1] 作成する
+	 * 1ヶ月の36協定特別条項の適用申請を作成する
+	 *
+	 * @param require 		Require
+	 * @param cid			会社ID
+	 * @param applicantId	申請者
+	 * @param appContent	申請内容: 月間の申請内容
+	 * @param displayInfo	画面表示情報
+	 */
+	public AppCreationResult create(
+			Require require,
+			String cid,
+			String applicantId,
+			MonthlyAppContent appContent,
+			ScreenDisplayInfo displayInfo) {
+
+		// $承認者項目
+		val optApprItem = GettingApproverDomainService.getApprover(require, appContent.getApplicant());
+		if (!optApprItem.isPresent()) {
+			return new AppCreationResult(
+					appContent.getApplicant(),
+					ResultType.APPROVER_NOT_SET,
+					Optional.empty(),
+					Optional.empty(),
+					Optional.empty()
+			);
+		}
+
+		// $３６協定設定
+		val setting = AgreementDomainService.getBasicSet(
+				require,
+				cid,
+				appContent.getApplicant(),
+				GeneralDate.today(),
+				WorkingSystem.REGULAR_WORK); // TODO Tài liệu mô tả thiếu tham số
+
+		AgreementsOneMonth agrOneMonth = setting.getBasicAgreementSetting().getOneMonth();
+
+		// $エラー結果
+		val errResult = agrOneMonth.checkErrorTimeExceeded(appContent.getErrTime());
+
+		if (errResult.getKey()) {
+			return new AppCreationResult(
+					appContent.getApplicant(),
+					ResultType.MONTHLY_LIMIT_EXCEEDED,
+					Optional.empty(),
+					Optional.of(errResult.getValue()),
+					Optional.empty()
+			);
+		}
+
+		// 申請内容
+		appContent.setAlarmTime(agrOneMonth.calculateAlarmTime(appContent.getAlarmTime()));
+		SpecialProvisionsOfAgreement app = this.createOneMonthApp(
+				applicantId,
+				appContent,
+				optApprItem.get().getApproverList(),
+				optApprItem.get().getConfirmerList(),
+				displayInfo);
+
+		// $Atomtask
+		AtomTask at = AtomTask.of(() -> {
+			require.addApp(app);
+		});
+
+		return new AppCreationResult(
+				appContent.getApplicant(),
+				ResultType.NO_ERROR,
+				Optional.of(at),
+				Optional.empty(),
+				Optional.empty()
+		);
+	}
+
+	/**
+	 * 1ヶ月の申請を作成する
+	 *
+	 * @param applicantId     申請者
+	 * @param appContent    申請内容
+	 * @param approverList  承認者リスト
+	 * @param confirmerList 確認者リスト
+	 * @param displayInfo   画面表示情報
+	 * @return 36協定特別条項の適用申請
+	 */
+	private SpecialProvisionsOfAgreement createOneMonthApp(
+			String applicantId,
+			MonthlyAppContent appContent,
+			List<String> approverList,
+			List<String> confirmerList,
+			ScreenDisplayInfo displayInfo) {
+
+		val errorAlarm = new ErrorTimeInMonth(appContent.getErrTime(), appContent.getAlarmTime());
+
+		// $1ヶ月時間
+		val oneMonthTime = new OneMonthTime(errorAlarm, appContent.getYm());
+
+		// $申請時間
+		val appTime = new ApplicationTime(
+				TypeAgreementApplication.ONE_MONTH,
+				Optional.of(oneMonthTime),
+				Optional.empty()
+		);
+
+		//	return 36協定特別条項の適用申請
+		return SpecialProvisionsOfAgreement.create(
+				applicantId,
+				appContent.getApplicant(),
+				appTime,
+				appContent.getReason(),
+				approverList,
+				confirmerList,
+				displayInfo
+		);
+	}
+
+	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
+		void addApp(SpecialProvisionsOfAgreement app);
+	}
+}

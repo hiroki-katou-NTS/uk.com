@@ -15,6 +15,6 @@ public class WorkStyleDto {
 
     /** The type color. */
     // ATTENDANCE = 1 , HOLIDAY = 0
-    private Integer typeColor;
+    private int typeColor;
 
 }

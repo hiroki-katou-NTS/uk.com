@@ -14,10 +14,10 @@ import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementMonthSetting;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementMonthSettingRepository;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSet;
 import nts.uk.ctx.at.record.infra.entity.standardtime.KmkmtAgreementMonthSetPK;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementMonthSetting;
 
 @Stateless
 public class JpaAgreementMonthSettingRepository extends JpaRepository implements AgreementMonthSettingRepository {
@@ -159,6 +159,21 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		return this.queryProxy().query(IS_EXIST_DATA, long.class).setParameter("employeeId", employeeId)
 				.setParameter("yearmonthValue", yearMonthValue).getSingle().get() > 0;
 	}
+
+//	@Override
+//	public List<AgreementMonthSetting> getByEmployeeId(String employeeId) {
+//		return this.queryProxy()
+//				.query(FIND_BY_ID, KmkmtAgreementMonthSet.class)
+//				.setParameter("employeeId", employeeId).getList(KmkmtAgreementMonthSet::toDomain);
+//	}
+//
+//	@Override
+//	public Optional<AgreementMonthSetting> getByEmployeeIdAndYm(String employeeId, YearMonth yearMonth) {
+//		return this.queryProxy()
+//				.query(FIND_BY_ID_YEAR_MONTH, KmkmtAgreementMonthSet.class)
+//				.setParameter("employeeId", employeeId)
+//				.setParameter("yearMonth", yearMonth).getSingle(KmkmtAgreementMonthSet::toDomain);
+//	}
 
 	private static AgreementMonthSetting toDomain(KmkmtAgreementMonthSet kmkmtAgreementMonthSet) {
 		AgreementMonthSetting agreementMonthSetting = AgreementMonthSetting.createFromJavaType(

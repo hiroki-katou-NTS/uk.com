@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 /**
  * 弁当予約設定を登録する
  *
- * @author Nguyen Huy Quang
+ * @author Quang.nh1
  */
 public class RegisterReservationLunchService {
 

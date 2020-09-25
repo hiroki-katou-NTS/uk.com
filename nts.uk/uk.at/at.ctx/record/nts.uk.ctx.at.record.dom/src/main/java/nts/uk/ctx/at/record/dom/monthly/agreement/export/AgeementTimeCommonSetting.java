@@ -6,11 +6,14 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSettingsGetter;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 
+/**
+ * 36協定基本設定を取得する
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 public class AgeementTimeCommonSetting {

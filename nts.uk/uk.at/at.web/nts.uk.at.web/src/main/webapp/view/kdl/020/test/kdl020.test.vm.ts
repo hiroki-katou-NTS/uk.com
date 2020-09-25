@@ -27,9 +27,11 @@ module nts.uk.at.view.kdl020.test.screenModel {
             let self = this,
                 employeeList = _.split(self.selectedCodeList(), ',');
             setShared('KDL020A_PARAM', { baseDate: self.baseDate(), employeeIds: employeeList } );
-            modal('/view/kdl/020/a/index.xhtml').onClosed(function(): any {
-
-            });
+            if(employeeList.length > 1 ) {
+              modal("/view/kdl/020/a/multi.xhtml");
+            } else {
+              modal("/view/kdl/020/a/single.xhtml");
+            }
 
         }
         start(): JQueryPromise<any> {

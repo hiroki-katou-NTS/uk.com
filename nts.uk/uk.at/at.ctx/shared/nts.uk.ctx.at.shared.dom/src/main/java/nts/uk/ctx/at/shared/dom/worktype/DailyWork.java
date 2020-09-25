@@ -432,4 +432,16 @@ public class DailyWork extends DomainObject implements Cloneable, Serializable{ 
 			}
 		}
 	}
+	
+	public WorkTypeClassification getClassification() {
+		if (this.workTypeUnit == WorkTypeUnit.OneDay) {
+			return this.oneDay;
+		}
+
+		if (this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon && this.morning != null) {
+			return this.morning;
+		}
+
+		return this.afternoon;
+	}
 }

@@ -7,9 +7,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfClassification;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
 
 /**
  * 

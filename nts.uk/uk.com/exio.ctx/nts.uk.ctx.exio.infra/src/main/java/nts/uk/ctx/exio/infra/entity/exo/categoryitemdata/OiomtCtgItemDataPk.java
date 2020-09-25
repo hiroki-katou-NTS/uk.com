@@ -29,9 +29,9 @@ public class OiomtCtgItemDataPk implements Serializable
 	public int categoryId;
 	
     /**
-    * 項目NO
-    */
+     * カテゴリ項目NO
+     */
     @Basic(optional = false)
-    @Column(name = "ITEM_NO")
+    @Column(name = "CTG_ITEM_NO")
     public int itemNo;
 }

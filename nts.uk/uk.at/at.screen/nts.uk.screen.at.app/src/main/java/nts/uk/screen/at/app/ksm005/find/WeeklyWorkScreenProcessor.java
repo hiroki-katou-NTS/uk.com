@@ -31,17 +31,21 @@ public class WeeklyWorkScreenProcessor {
         WeeklyWorkDayPattern weeklyWorkDayPattern = this.weeklyWorkSettingRepository.getWeeklyWorkDayPatternByCompanyId(cid);
 
 
-        //get WorkdayPatternDto
+        // 1.get WorkdayPatternDto
+        // 1:ログイン会社ID、月間パターンコード、年(ログイン会社ID)
         List<WorkdayPatternDto> workdayPatternDtos = new ArrayList<>();
-        weeklyWorkDayPattern.getListWorkdayPatternItem().forEach(x -> {
-            workdayPatternDtos.add(new WorkdayPatternDto(
-                    x.getDayOfWeek().description,
-                    x.getWorkdayDivision().description,
-                    x.getWorkdayDivision().value
-            ));
-        });
+        if (weeklyWorkDayPattern != null){
+            weeklyWorkDayPattern.getListWorkdayPatternItem().forEach(x -> {
+                workdayPatternDtos.add(new WorkdayPatternDto(
+                        x.getDayOfWeek().description,
+                        x.getWorkdayDivision().description,
+                        x.getWorkdayDivision().value
+                ));
+            });
+        }
 
-        // get workTypeCodes
+        // 2.get workTypeCodes
+        // 2:勤務種類名称を取得する
         List<WorkType> workTypes = workTypeRepository.getAcquiredHolidayWorkTypes(cid);
         List<String> workTypeCodes = new ArrayList<>();
         workTypes.forEach(x ->workTypeCodes.add(x.getWorkTypeCode().v()));
@@ -55,7 +59,8 @@ public class WeeklyWorkScreenProcessor {
 
         listWorkTypeCodeName.forEach((k,v) -> workTypeDtos.add(new workTypeDto(k, v)));
 
-        // get WorkTimeSettingName
+        // 3.get WorkTimeSettingName
+        // 3:就業時間帯名称を取得する(ログイン会社ID、就業時間帯コード)
         String WorkTimeSettingName = workTimeSettingPub.getWorkTimeSettingName(cid, requestPrams.worktimeCode);
 
         return new WeeklyWorkDto(workdayPatternDtos,workTypeDtos,finalworkTypeCodes,WorkTimeSettingName);

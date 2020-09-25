@@ -116,7 +116,9 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// to list domain
 		List<WorkMonthlySetting> lstDomain = command.toDomainMonth(companyId);
         List<GeneralDate> baseDates = lstDomain.stream().map(domainsetting -> domainsetting.getYmdk()).collect(Collectors.toList());
-		lstDomain = lstDomain.stream().filter(x -> !x.getWorkInformation().getWorkTypeCode().equals("000")).collect(Collectors.toList());
+		lstDomain = lstDomain.stream().filter(x -> x.getWorkInformation().getWorkTypeCode() != null &&
+				!StringUtil.isNullOrEmpty(x.getWorkInformation().getWorkTypeCode().v(),false)
+				&& !x.getWorkInformation().getWorkTypeCode().equals("000")).collect(Collectors.toList());
 
 
 		// check setting work type
@@ -212,7 +214,7 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		lstDomain.forEach(domainsetting -> {
 
 			if (StringUtils.isEmpty(domainsetting.getWorkInformation().getWorkTimeCode() == null ? null : domainsetting.getWorkInformation().getWorkTimeCode().v())){
-				domainsetting.setWorkInformation(new WorkInformation(null,domainsetting.getWorkInformation().getWorkTypeCode().v()));
+				domainsetting.setWorkInformation(new WorkInformation(domainsetting.getWorkInformation().getWorkTypeCode().v(),null));
 			}
 
 			// check exist of domain update
