@@ -154,7 +154,7 @@ module nts.uk.com.view.cli003.b {
 
     @bean()
     export class ScreenModel extends ko.ViewModel {
-       
+
         //Log info
         logSets: KnockoutObservableArray<ItemLogSetModel> = ko.observableArray([]);
         logSetId: KnockoutObservable<string> = ko.observable("");
@@ -170,8 +170,9 @@ module nts.uk.com.view.cli003.b {
         currentLogSetName: KnockoutObservable<string> = ko.observable("");
         currentSystemTypeName: KnockoutObservable<string> = ko.observable("");
         currentCode: KnockoutObservable<string> = ko.observable(null);
-        showOperator: KnockoutObservable<boolean> = ko.observable(true); //show Operator or not
-
+        showOperator: KnockoutObservable<boolean> = ko.observable(false); //show Operator or not
+        showDataType: KnockoutObservable<boolean> = ko.observable(false);
+        showPersonInfo: KnockoutObservable<boolean> = ko.observable(false);
         //Default list
         recordTypeList: KnockoutObservableArray<ItemTypeModel> = ko.observableArray([
             new ItemTypeModel(0, this.$i18n("Enum_RecordType_Login")),
@@ -211,7 +212,7 @@ module nts.uk.com.view.cli003.b {
             new ItemTypeModel(1, this.$i18n("Enum_Symbol_Equal")),
             new ItemTypeModel(2, this.$i18n("Enum_Symbol_Different")),
         ]);
-        
+
         //B1
         b1Columns: KnockoutObservableArray<any> = ko.observableArray([
             {
@@ -225,7 +226,7 @@ module nts.uk.com.view.cli003.b {
                 width: "100px",
             },
         ]);
-           
+
         //B2
         b2_10Datasource: KnockoutObservableArray<LogSetItemDetailModalDisplay> = ko.observableArray([]);
         b2_10Columns: KnockoutObservableArray<any> = ko.observableArray([
@@ -263,7 +264,7 @@ module nts.uk.com.view.cli003.b {
         ]);
         b2_10CurrentCode: KnockoutObservable<any> = ko.observable();
         logSetOutputs: KnockoutObservableArray<any> = ko.observableArray([]);  //5 condition for Log
-       
+
         //B3
         startDateNameOperator: KnockoutObservable<string> = ko.observable(this.$i18n("CLI003_52"));
         endDateNameOperator: KnockoutObservable<string> = ko.observable(this.$i18n("CLI003_53"));
@@ -278,7 +279,7 @@ module nts.uk.com.view.cli003.b {
         ]);
         operatorEmployeeCount: KnockoutObservable<string> = ko.observable(nts.uk.text.format(this.$i18n("CLI003_57"), 0));
         selectedEmployeeCodeOperator: KnockoutObservableArray<any> = ko.observableArray([]);
-       
+
         //B5
         startDateString: KnockoutObservable<string> = ko.observable("");
         endDateString: KnockoutObservable<string> = ko.observable("");
@@ -441,10 +442,17 @@ module nts.uk.com.view.cli003.b {
             vm.currentRecordTypeName(recordTypeName);
             vm.systemType(logSet.systemType);
             vm.currentSystemTypeName(systemTypeName);
+            if (logSet.recordType === 3) {
+                vm.showPersonInfo(false);
+            } else {
+                vm.showPersonInfo(true);
+            }
             if (logSet.recordType === 6) {
                 vm.dataType(logSet.dataType);
                 vm.currentDataTypeName(dataTypeName);
+                vm.showDataType(true);
             } else {
+                vm.showDataType(false);
                 vm.dataType("");
                 vm.currentDataTypeName("");
             }
@@ -525,13 +533,13 @@ module nts.uk.com.view.cli003.b {
         validateBeforeJumpToF(): boolean {
             const vm = this;
             const noOne = nts.uk.text.format(vm.$i18n("CLI003_57"), 0);
-            if(vm.b4_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne &&
-                vm.b6_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne){
+            if (vm.b4_2SelectedRuleCode() === 1 && vm.operatorEmployeeCount() === noOne &&
+                vm.b6_2SelectedRuleCode() === 1 && vm.targetEmployeeCount() === noOne) {
                 const bundledErrors = [{
                     message: resource.getMessage('Msg_1718'),
                     messageId: "Msg_1718",
                     supplements: {}
-                },{
+                }, {
                     message: resource.getMessage('Msg_1719'),
                     messageId: "Msg_1719",
                     supplements: {}
@@ -552,7 +560,7 @@ module nts.uk.com.view.cli003.b {
 
         jumpToScreenF() {
             const vm = this;
-             if(vm.validateBeforeJumpToF()) {
+            if (vm.validateBeforeJumpToF()) {
                 const data = {
                     currentCode: vm.currentCode(),
                     logSetOutputs: vm.logSetOutputs(),
