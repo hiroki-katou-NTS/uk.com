@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
 
 /**
  * 営業日カレンダーの参照先(会社)
@@ -21,7 +22,12 @@ public class ReferenceCalendarCompany implements ReferenceCalendar {
 	}
 	
 	@Override
-	public Optional<WorkdayDivision> getWorkdayDivision(Require require, GeneralDate date) {
+	public Optional<WorkdayDivision> getWorkdayDivision(ReferenceCalendar.Require require, GeneralDate date) {
 		return require.getCalendarCompanyByDay(date).map(c -> c.getWorkDayDivision());
+	}
+	
+	public static interface Require {
+		// [R-1] 指定日の会社営業日カレンダーを取得する
+		Optional<CalendarCompany> getCalendarCompanyByDay(GeneralDate date);
 	}
 }

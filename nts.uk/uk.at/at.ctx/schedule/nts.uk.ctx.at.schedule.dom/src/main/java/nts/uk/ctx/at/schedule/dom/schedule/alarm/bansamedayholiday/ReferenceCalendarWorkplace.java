@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 /**
  * 営業日カレンダーの参照先(職場)
  * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.同日休日禁止.営業日カレンダーの参照先(職場)
@@ -24,8 +25,12 @@ public class ReferenceCalendarWorkplace implements ReferenceCalendar{
 	}
 
 	@Override
-	public Optional<WorkdayDivision> getWorkdayDivision(Require require, GeneralDate day) {
+	public Optional<WorkdayDivision> getWorkdayDivision(ReferenceCalendar.Require require, GeneralDate day) {
 		return require.getCalendarWorkplaceByDay(this.workplaceID, day).map(c -> c.getWorkDayDivision());
 	}
 
+	public static interface Require {
+		// [R-1] 指定日の職場営業日カレンダーを取得する
+		Optional<CalendarWorkplace> getCalendarWorkplaceByDay(String workplaceId, GeneralDate date);
+	}
 }
