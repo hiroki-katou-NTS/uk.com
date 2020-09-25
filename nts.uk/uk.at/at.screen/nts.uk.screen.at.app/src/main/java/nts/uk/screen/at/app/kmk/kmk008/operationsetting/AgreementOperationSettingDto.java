@@ -3,8 +3,12 @@ package nts.uk.screen.at.app.kmk.kmk008.operationsetting;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementOperationSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.*;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.StartingMonthType;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.ClosingDateType;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.TargetSettingAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.TimeOverLimitType;
 
 import java.util.Optional;
 

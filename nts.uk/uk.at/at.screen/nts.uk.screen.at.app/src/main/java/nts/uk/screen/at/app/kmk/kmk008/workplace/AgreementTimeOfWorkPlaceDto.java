@@ -3,10 +3,9 @@ package nts.uk.screen.at.app.kmk.kmk008.workplace;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfWorkPlace;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.UpperAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfWorkPlace;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
 
 import java.util.Optional;
 
@@ -15,12 +14,9 @@ import java.util.Optional;
 @AllArgsConstructor
 public class AgreementTimeOfWorkPlaceDto {
 
-    // 基本設定
-    private String basicSettingId;
     // 労働制 2
     private LaborSystemtAtr laborSystemAtr;
-    // 上限規制
-    private UpperAgreementSetting upperAgreementSetting;
+
     //３６協定基本設定 3
     private BasicAgreementSetting basicAgreementSetting;
 
@@ -29,10 +25,8 @@ public class AgreementTimeOfWorkPlaceDto {
             return new AgreementTimeOfWorkPlaceDto();
         }
         return data.map(x -> new AgreementTimeOfWorkPlaceDto(
-                x.getBasicSettingId(),
                 x.getLaborSystemAtr(),
-                x.getUpperAgreementSetting(),
-                x.getBasicAgreementSetting()
+                x.getSetting()
         )).orElseGet(AgreementTimeOfWorkPlaceDto::new);
     }
 }

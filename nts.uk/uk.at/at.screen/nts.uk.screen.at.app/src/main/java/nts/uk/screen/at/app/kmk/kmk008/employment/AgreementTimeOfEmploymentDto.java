@@ -3,9 +3,9 @@ package nts.uk.screen.at.app.kmk.kmk008.employment;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfEmployment;
-import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
-import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfEmployment;
+import nts.uk.ctx.at.shared.dom.standardtime.BasicAgreementSetting;
+import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
 
 import java.util.Optional;
 
@@ -26,7 +26,7 @@ public class AgreementTimeOfEmploymentDto {
         }
         return data.map(x -> new AgreementTimeOfEmploymentDto(
                 x.getLaborSystemAtr(),
-                x.getBasicAgreementSetting()
+                x.getSetting()
         )).orElseGet(AgreementTimeOfEmploymentDto::new);
     }
 }
