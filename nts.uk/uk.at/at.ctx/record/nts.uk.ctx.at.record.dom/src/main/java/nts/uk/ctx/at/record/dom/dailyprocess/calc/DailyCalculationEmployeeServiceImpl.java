@@ -646,7 +646,8 @@ public class DailyCalculationEmployeeServiceImpl implements DailyCalculationEmpl
 			List<RemarksOfDailyPerform> listRemarksOfDailyPerform = remarksRepository.getRemarks(employeeId, attendanceTime.getYmd());
 			returnList.add(
 				new IntegrationOfDaily(
-					employeeId, attendanceTime.getYmd(),
+					attendanceTime.getEmployeeId(),
+					attendanceTime.getYmd(),
 					workInf.get().getWorkInformation(),
 					calAttr.getCalcategory(),
 					affiInfo.get().getAffiliationInfor(),

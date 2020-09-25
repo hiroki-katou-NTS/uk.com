@@ -171,6 +171,8 @@ public class AggregateMonthlyRecordServiceTest {
 				GeneralDate ymd = v.getYmd();
 				
 				IntegrationOfDaily integOfDay = new IntegrationOfDaily(
+						employeeId,
+						ymd,
 						v.getWorkInformation(),
 						null,
 						affiliationOfDayMap.containsKey(ymd) ? affiliationOfDayMap.get(ymd).getAffiliationInfor() : null,
