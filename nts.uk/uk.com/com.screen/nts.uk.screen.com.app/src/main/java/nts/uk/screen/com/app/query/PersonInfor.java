@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.cmm024.approver36agrbycompany;
+package nts.uk.screen.com.app.query;
 
 
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.query.cmm024.showemployee;
+package nts.uk.screen.com.app.query;
 
 
 import lombok.val;

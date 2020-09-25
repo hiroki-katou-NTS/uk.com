@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.cmm024.screen_b;
+package nts.uk.screen.com.ws.cmm024;
 
 
 import nts.arc.layer.ws.WebService;
