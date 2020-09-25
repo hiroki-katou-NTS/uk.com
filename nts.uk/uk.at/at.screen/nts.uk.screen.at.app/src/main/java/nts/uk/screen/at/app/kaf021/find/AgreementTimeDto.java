@@ -1,10 +1,8 @@
 package nts.uk.screen.at.app.kaf021.find;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreMaxTimeOfMonthly;
-import nts.uk.ctx.at.record.dom.monthly.agreement.AgreementTimeOfManagePeriod;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreMaxTimeOfMonthly;
+import nts.uk.ctx.at.shared.dom.monthly.agreement.AgreementTimeOfManagePeriod;
 
 @Getter
 public class AgreementTimeDto {
