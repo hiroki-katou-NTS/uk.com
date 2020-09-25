@@ -100,8 +100,8 @@ module nts.uk.at.kaf021.a {
         created() {
             const vm = this;
             $('#com-ccg001').ntsGroupComponent(vm.ccg001ComponentOption);
-            vm.loadMGrid();
             vm.initData().done(() => {
+                vm.loadMGrid();
                 vm.appTypeSelected.subscribe((value: common.AppTypeEnum) => {
                     vm.fetchData().done(() => {
                         $("#grid").mGrid("destroy");
