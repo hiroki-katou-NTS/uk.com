@@ -75,8 +75,8 @@ module nts.uk.at.view.ksm005.b {
                         self.visibleHolidaySetting(true);
                     } else {
                         self.visibleHolidaySetting(false);
-                        self.worktypeInfoPublicHolidays(null);
-                        self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = null;
+                        //self.worktypeInfoPublicHolidays(null);
+                        //self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = null;
                     }
                     self.monthlyPatternSettingBatchPublicHolidays().isHolidayPriority = self.settingForHolidays();
                 });
@@ -130,10 +130,8 @@ module nts.uk.at.view.ksm005.b {
                         self.getMonthlyPatternSettingBatch(BusinessDayClassification.PUBLIC_HOLIDAYS).done(function (monthlyBatch) {
                             if (monthlyBatch != undefined && monthlyBatch != null) {
                                 self.settingForHolidays(monthlyBatch.isHolidayPriority)
-                                if (self.settingForHolidays()){
-                                    self.worktypeInfoPublicHolidays(monthlyBatch.workTypeCode ? monthlyBatch.workTypeCode + '   ' + self.findNameByWorktypeCode(monthlyBatch.workTypeCode, dataWorkType) : '');
-                                    self.monthlyPatternSettingBatchPublicHolidays(monthlyBatch);
-                                }
+                                self.worktypeInfoPublicHolidays(monthlyBatch.workTypeCode ? monthlyBatch.workTypeCode + '   ' + self.findNameByWorktypeCode(monthlyBatch.workTypeCode, dataWorkType) : '');
+                                self.monthlyPatternSettingBatchPublicHolidays(monthlyBatch);
                             }
                         });
 
