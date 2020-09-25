@@ -1,7 +1,7 @@
 package nts.uk.screen.at.ws.kmk.kmk008.b;
 
-import nts.uk.screen.at.app.ksm003.find.AgreeTimeOfCompanyScreenProcessor;
-import nts.uk.screen.at.app.ksm003.find.AgreementTimeOfCompanyDto;
+import nts.uk.screen.at.app.kmk.kmk008.company.AgreeTimeOfCompanyScreenProcessor;
+import nts.uk.screen.at.app.kmk.kmk008.company.AgreementTimeOfCompanyDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

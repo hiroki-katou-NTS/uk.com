@@ -1,9 +1,9 @@
-package nts.uk.screen.at.app.ksm003.find;
+package nts.uk.screen.at.app.kmk.kmk008.company;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfCompany;
+import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeCompanyRepository;
-import nts.uk.ctx.at.shared.dom.standardtime.AgreementTimeOfCompany;
-import nts.uk.ctx.at.shared.dom.standardtime.enums.LaborSystemtAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 import javax.ejb.Stateless;

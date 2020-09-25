@@ -1,7 +1,7 @@
 package nts.uk.screen.at.ws.kmk.kmk008.a;
 
-import nts.uk.screen.at.app.ksm003.find.AgreeOpeSetScreenProcessor;
-import nts.uk.screen.at.app.ksm003.find.AgreementOperationSettingDto;
+import nts.uk.screen.at.app.kmk.kmk008.operationsetting.AgreeOpeSetScreenProcessor;
+import nts.uk.screen.at.app.kmk.kmk008.operationsetting.AgreementOperationSettingDto;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

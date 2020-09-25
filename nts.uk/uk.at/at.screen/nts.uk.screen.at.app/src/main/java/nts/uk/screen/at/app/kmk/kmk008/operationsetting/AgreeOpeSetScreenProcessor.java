@@ -1,4 +1,4 @@
-package nts.uk.screen.at.app.ksm003.find;
+package nts.uk.screen.at.app.kmk.kmk008.operationsetting;
 
 import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementOperationSettingRepository;
 import nts.uk.ctx.at.shared.dom.standardtime.AgreementOperationSetting;
@@ -12,11 +12,11 @@ import java.util.Optional;
 public class AgreeOpeSetScreenProcessor {
 
     @Inject
-    private AgreementOperationSettingRepository bentoMenuScreenRepository;
+    private AgreementOperationSettingRepository operationSettingRepository;
 
     public AgreementOperationSettingDto findDataAgreeOpeSet() {
 
-        Optional<AgreementOperationSetting> data = bentoMenuScreenRepository.find(AppContexts.user().companyId());
+        Optional<AgreementOperationSetting> data = operationSettingRepository.find(AppContexts.user().companyId());
 
         return AgreementOperationSettingDto.setData(data);
     }

@@ -1,0 +1,26 @@
+package nts.uk.screen.at.app.kmk.kmk008.classification;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.standardtime.AgreementTimeOfClassification;
+import nts.uk.ctx.at.record.dom.standardtime.enums.LaborSystemtAtr;
+import nts.uk.ctx.at.record.dom.standardtime.repository.AgreementTimeOfClassificationRepository;
+import nts.uk.shr.com.context.AppContexts;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import java.util.Optional;
+
+@Stateless
+public class AgreeTimeOfClassidicationScreenProcessor {
+
+    @Inject
+    private AgreementTimeOfClassificationRepository timeOfEmploymentRepostitory;
+
+    public AgreementTimeClassificationDto findAgreeTimeOfClassidication(RequestClassification request) {
+
+        Optional<AgreementTimeOfClassification> data = timeOfEmploymentRepostitory.find(
+                AppContexts.user().companyId(),EnumAdaptor.valueOf(request.getLaborSystemAtr(), LaborSystemtAtr.class),request.getEmploymentCode());
+
+        return AgreementTimeClassificationDto.setData(data);
+    }
+}
