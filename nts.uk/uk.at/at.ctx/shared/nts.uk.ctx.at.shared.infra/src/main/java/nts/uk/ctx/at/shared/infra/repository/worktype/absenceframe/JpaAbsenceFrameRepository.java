@@ -24,6 +24,10 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 	private static final String GET_ALL = "SELECT a FROM KshmtAbsenceFrame a  WHERE a.kshmtAbsenceFramePK.companyId = :companyId ";
 	private static final String GET_ALL_BY_LIST_FRAME_NO = GET_ALL 
 			+"AND a.kshmtAbsenceFramePK.absenceFrameNo IN :frameNos ";
+
+	private static final String FIND_BY_CID_USE_CLS = GET_ALL 
+			+ " AND a.abolishAtr = :abolishAtr ";
+
 	private static AbsenceFrame toDomain(KshmtAbsenceFrame entity) {
 		AbsenceFrame domain = AbsenceFrame.createSimpleFromJavaType(entity.kshmtAbsenceFramePK.companyId,
 				entity.kshmtAbsenceFramePK.absenceFrameNo,
@@ -97,5 +101,13 @@ public class JpaAbsenceFrameRepository extends JpaRepository implements AbsenceF
 								.getList(a -> toDomain(a)));
 		});
 		return resultList;
+	}
+
+	@Override
+	public List<AbsenceFrame> findByCompanyIdAndDeprecateClassification(String cid, int useCls) {
+		return this.queryProxy().query(FIND_BY_CID_USE_CLS, KshmtAbsenceFrame.class)
+				.setParameter("companyId", cid)
+				.setParameter("abolishAtr", useCls)
+				.getList(a -> toDomain(a));
 	}
 }

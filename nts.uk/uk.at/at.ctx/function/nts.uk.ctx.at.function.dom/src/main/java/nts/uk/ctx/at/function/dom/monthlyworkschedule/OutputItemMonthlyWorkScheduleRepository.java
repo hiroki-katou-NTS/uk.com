@@ -59,7 +59,7 @@ public interface OutputItemMonthlyWorkScheduleRepository {
 	 * @param itemSelectionEnum 定型選択の場合 or 自由設定の場合
 	 * @param companyId 会社ID 
 	 * @param employeeId 社員ID
-	 * @return
+	 * @return the list
 	 */
 	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSid(ItemSelectionEnum itemSelectionEnum
 			, String companyId
@@ -85,4 +85,15 @@ public interface OutputItemMonthlyWorkScheduleRepository {
 	 */
 	public Optional<OutputItemMonthlyWorkSchedule> findBySelectionAndCidAndSidAndCode (ItemSelectionEnum itemSelectionEnum
 			,String companyId, String code, Optional<String> employeeId); 
+
+	/**
+	 *  パラメータ.出力項目一覧の件数をチェックする
+	 * @param itemSelectionEnum 定型選択の場合 or 自由設定の場合
+	 * @param code コード
+	 * * @param name 名称
+	 * @param employeeId 社員ID
+	 * @return the list
+	 */
+	public List<OutputItemMonthlyWorkSchedule> findBySelectionAndSidAndNameAndCode (ItemSelectionEnum itemSelectionEnum
+			,String name, String code, Optional<String> employeeId);
 }

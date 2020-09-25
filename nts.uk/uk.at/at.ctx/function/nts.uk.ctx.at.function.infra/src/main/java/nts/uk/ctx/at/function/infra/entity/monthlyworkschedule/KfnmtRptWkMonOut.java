@@ -1,32 +1,21 @@
 package nts.uk.ctx.at.function.infra.entity.monthlyworkschedule;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.AttendanceItemsDisplay;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.NameWorkTypeOrHourZone;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleGetMemento;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemDailyWorkScheduleSetMemento;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingCode;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.OutputItemSettingName;
-import nts.uk.ctx.at.function.dom.dailyworkschedule.PrintRemarksContent;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
@@ -47,7 +36,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @EqualsAndHashCode(callSuper = true)
 public class KfnmtRptWkMonOut extends UkJpaEntity
 		implements OutputItemMonthlyWorkScheduleGetMemento, OutputItemMonthlyWorkScheduleSetMemento, Serializable {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// column 出力項目ID 
 	@Id
 	@Column(name = "LAYOUT_ID")
@@ -100,7 +92,7 @@ public class KfnmtRptWkMonOut extends UkJpaEntity
 	
 	@Override
 	protected Object getKey() {
-		return null;
+		return this.layoutID;
 	}
 
 	@Override

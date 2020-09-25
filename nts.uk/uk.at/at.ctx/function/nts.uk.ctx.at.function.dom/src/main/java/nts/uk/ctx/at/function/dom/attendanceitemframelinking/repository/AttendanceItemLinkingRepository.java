@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.function.dom.attendanceitemframelinking.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import nts.uk.ctx.at.function.dom.attendanceitemframelinking.AttendanceItemLinking;
@@ -48,4 +49,31 @@ public interface AttendanceItemLinkingRepository {
 	 * @return
 	 */
 	List<AttendanceItemLinking> getFullDataByAttdIdAndType(List<Integer> attendanceItemIds, TypeOfItem type);
+	
+
+	/**
+	 * List<使用不可の残業系勤怠項目ID＞を取得する Nhận dánh sách < Attendance items liên quan đến Overtime ID  không thể sử dụng được>
+	 *
+	 * @param frameNos List<枠NO>
+	 * @param typeOfItem 勤怠項目の種類
+	 * @param frameCategory List<枠カテゴリ>
+	 * @return List<勤怠項目ID>
+	 */
+	List<AttendanceItemLinking> findByFrameNoTypeAndFramCategory(List<BigDecimal> frameNos, int typeOfItem, List<Integer> frameCategory);
+	
+	
+	/**
+	 * Find by frame no type and fram category and frame no.
+	 *
+	 * @param frameNos the frame nos
+	 * @param typeOfItem the type of item
+	 * @param frameCategory the frame category
+	 * @param lstFrameNo the lst frame no
+	 * @return the list
+	 */
+	List<AttendanceItemLinking> findByFrameNoTypeAndFramCategoryAndBreakdownItemNo(List<BigDecimal> frameNos
+			, int typeOfItem
+			, List<Integer> frameCategory
+			, List<Integer> breakdownItemNo);
+
 }

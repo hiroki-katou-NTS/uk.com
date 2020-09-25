@@ -25,36 +25,28 @@ public class OutputItemMonthlyWorkScheduleSaveHandler extends CommandHandler<Out
 	
 	@Override
 	protected void handle(CommandHandlerContext<OutputItemMonthlyWorkScheduleCommand> context) {
-
 		OutputItemMonthlyWorkScheduleCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		OutputItemMonthlyWorkSchedule domain = new OutputItemMonthlyWorkSchedule(command);
-		
 		// Get employee by command
 		Optional<String> employeeId = !StringUtil.isNullOrEmpty(command.getEmployeeID(), false)
 										? Optional.of(command.getEmployeeID())
 										: Optional.empty();
 		if (command.isNewMode()) {
-			Optional<OutputItemMonthlyWorkSchedule> oDomain = repository.findBySelectionAndCidAndSidAndCode(domain.getItemSelectionType()
+			Optional<OutputItemMonthlyWorkSchedule> oDomain = repository.findBySelectionAndCidAndSidAndCode(command.getItemSelectionEnum()
 					, companyId
-					, domain.getItemCode().v()
+					, command.getItemCode().v()
 					, employeeId);
 			if (oDomain.isPresent()) {
 				throw new BusinessException("Msg_3");
 			}
+			//新規モードの場合
 			repository.add(domain);
 		} else {
+			//更新モードの場合
 			repository.update(domain);
 		}
 		
-//		if (command.isNewMode()) {
-//			if (repository.findByCidAndCode(companyId, domain.getItemCode().v()).isPresent()) {
-//				throw new BusinessException("Msg_3");
-//			}
-//			repository.add(domain);
-//		} else {
-//			repository.update(domain);
-//		}
 	}
 
 }

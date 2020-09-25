@@ -1,3 +1,4 @@
+  
 package nts.uk.ctx.at.record.infra.repository.divergence.time;
 
 import java.math.BigDecimal;
@@ -42,6 +43,10 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class JpaDivergenceTimeRepository extends JpaRepository implements DivergenceTimeRepository {
+	
+	private static final String FIND_BY_COMPANYID_AND_USE_ATR = "SELECT a FROM KrcstDvgcTime a "
+			+ "WHERE a.id.cid = :companyId "
+			+ "		AND a.dvgcTimeUseSet = :dvgcTimeUseSet ";
 
 	/*
 	 * (non-Javadoc)
@@ -509,6 +514,15 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 
 					return new DivergenceTime(memento);
 				}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<DivergenceTime> findByCompanyAndUseDistination(String companyId, int useDistination) {
+		return this.queryProxy().query(FIND_BY_COMPANYID_AND_USE_ATR, KrcstDvgcTime.class)
+								.setParameter("companyId", companyId)
+								.setParameter("dvgcTimeUseSet", BigDecimal.valueOf(useDistination))
+								.getList().stream()
+								.map(t -> this.toDomain(t)).collect(Collectors.toList());
 	}
 
 }

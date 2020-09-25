@@ -138,4 +138,76 @@ public class OutputItemMonthlyWorkSchedule extends AggregateRoot {
 	public OutputItemMonthlyWorkSchedule() {
 		super();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyID == null) ? 0 : companyID.hashCode());
+		result = prime * result + ((employeeID == null) ? 0 : employeeID.hashCode());
+		result = prime * result + ((itemCode == null) ? 0 : itemCode.hashCode());
+		result = prime * result + ((itemName == null) ? 0 : itemName.hashCode());
+		result = prime * result + ((itemSelectionType == null) ? 0 : itemSelectionType.hashCode());
+		result = prime * result + ((layoutID == null) ? 0 : layoutID.hashCode());
+		result = prime * result + ((lstDisplayedAttendance == null) ? 0 : lstDisplayedAttendance.hashCode());
+		result = prime * result + ((printSettingRemarksColumn == null) ? 0 : printSettingRemarksColumn.hashCode());
+		result = prime * result + (remarkInput ? 1231 : 1237);
+		result = prime * result + ((remarkInputNo == null) ? 0 : remarkInputNo.hashCode());
+		result = prime * result + ((textSize == null) ? 0 : textSize.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OutputItemMonthlyWorkSchedule other = (OutputItemMonthlyWorkSchedule) obj;
+		if (companyID == null) {
+			if (other.companyID != null)
+				return false;
+		} else if (!companyID.equals(other.companyID))
+			return false;
+		if (employeeID == null) {
+			if (other.employeeID != null)
+				return false;
+		} else if (!employeeID.equals(other.employeeID))
+			return false;
+		if (itemCode == null) {
+			if (other.itemCode != null)
+				return false;
+		} else if (!itemCode.equals(other.itemCode))
+			return false;
+		if (itemName == null) {
+			if (other.itemName != null)
+				return false;
+		} else if (!itemName.equals(other.itemName))
+			return false;
+		if (itemSelectionType != other.itemSelectionType)
+			return false;
+		if (layoutID == null) {
+			if (other.layoutID != null)
+				return false;
+		} else if (!layoutID.equals(other.layoutID))
+			return false;
+		if (lstDisplayedAttendance == null) {
+			if (other.lstDisplayedAttendance != null)
+				return false;
+		} else if (!lstDisplayedAttendance.equals(other.lstDisplayedAttendance))
+			return false;
+		if (printSettingRemarksColumn != other.printSettingRemarksColumn)
+			return false;
+		if (remarkInput != other.remarkInput)
+			return false;
+		if (remarkInputNo != other.remarkInputNo)
+			return false;
+		if (textSize != other.textSize)
+			return false;
+		return true;
+	}
+	
+	
 }

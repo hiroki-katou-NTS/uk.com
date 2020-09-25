@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -18,6 +17,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCommand;
+import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleCopyCommand;
+import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleDeleteCommand;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleDeleteHandler;
 import nts.uk.ctx.at.function.app.command.monthlyworkschedule.OutputItemMonthlyWorkScheduleSaveHandler;
 import nts.uk.ctx.at.function.app.find.annualworkschedule.PeriodDto;
@@ -101,13 +102,13 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 	/**
 	 * Delete.
 	 *
-	 * @param code
-	 *            the code
+	 * @param command
+	 *            the command
 	 */
-	@Path("delete/{code}")
+	@Path("delete")
 	@POST
-	public void delete(@PathParam("code") String code) {
-		this.outputItemMonthlyWorkScheduleDeleteHandler.delete(code);
+	public void delete(OutputItemMonthlyWorkScheduleDeleteCommand command) {
+		this.outputItemMonthlyWorkScheduleDeleteHandler.handle(command);
 	}
 
 	/**
@@ -132,22 +133,16 @@ public class OutputItemMonthlyWorkScheduleWS extends WebService {
 		return this.outputItemMonthlyWorkScheduleFinder.getFormatMonthlyPerformance();
 	}
 
+
 	/**
-	 * Execute copy.
-	 *
-	 * @param codeCopy
-	 *            the code copy
-	 * @param codeSourceSerivce
-	 *            the code source serivce
-	 * @param lstCommandCopy
-	 *            the lst command copy
-	 * @return the list
+	 * @param command
+	 *            the command
+	 * @return
 	 */
-	@Path("executeCopy/{codeCopy}/{codeSourceSerivce}")
+	@Path("executeCopy")
 	@POST
-	public MonthlyReturnItemDto executeCopy(@PathParam("codeCopy") String codeCopy,
-			@PathParam("codeSourceSerivce") String codeSourceSerivce) {
-		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(codeCopy, codeSourceSerivce);
+	public MonthlyReturnItemDto executeCopy(OutputItemMonthlyWorkScheduleCopyCommand copy) {
+		return this.outputItemMonthlyWorkScheduleFinder.executeCopy(copy);
 	}
 	
 	/**

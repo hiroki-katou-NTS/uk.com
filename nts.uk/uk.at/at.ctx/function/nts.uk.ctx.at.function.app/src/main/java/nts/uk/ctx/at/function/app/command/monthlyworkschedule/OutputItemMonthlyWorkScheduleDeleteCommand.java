@@ -2,7 +2,6 @@ package nts.uk.ctx.at.function.app.command.monthlyworkschedule;
 
 import java.util.List;
 
-import lombok.Data;
 import nts.uk.ctx.at.function.dom.dailyworkschedule.RemarkInputContent;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.ItemSelectionEnum;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyAttendanceItemsDisplay;
@@ -11,19 +10,16 @@ import nts.uk.ctx.at.function.dom.monthlyworkschedule.MonthlyOutputItemSettingNa
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.OutputItemMonthlyWorkScheduleGetMemento;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.PrintSettingRemarksColumn;
 import nts.uk.ctx.at.function.dom.monthlyworkschedule.TextSizeCommonEnum;
-@Data
-public class OutputItemMonthlyWorkScheduleCopyCommand implements OutputItemMonthlyWorkScheduleGetMemento{
-	String name;
+
+public class OutputItemMonthlyWorkScheduleDeleteCommand implements OutputItemMonthlyWorkScheduleGetMemento {
+	/** The item code. */
+	private String itemCode;
 	
-	String codeCopy;
+	/** The Employee ID. */
+	private String employeeID;
 	
-	String codeSourceSerivce;
-	
-	int itemSelectionEnum;
-	
-	String employeeId;
-	
-	int fontSize;
+	/** The Item selection type */
+	private int itemType;
 
 	@Override
 	public String getCompanyID() {
@@ -33,8 +29,18 @@ public class OutputItemMonthlyWorkScheduleCopyCommand implements OutputItemMonth
 
 	@Override
 	public MonthlyOutputItemSettingCode getItemCode() {
-		// TODO Auto-generated method stub
-		return null;
+
+		return new MonthlyOutputItemSettingCode(this.itemCode);
+	}
+
+	@Override
+	public String getEmployeeID() {
+		return this.employeeID;
+	}
+	
+	@Override
+	public ItemSelectionEnum getItemSelectionEnum() {
+		return ItemSelectionEnum.valueOf(this.itemType);
 	}
 
 	@Override
@@ -68,17 +74,9 @@ public class OutputItemMonthlyWorkScheduleCopyCommand implements OutputItemMonth
 	}
 
 	@Override
-	public String getEmployeeID() {
-		return this.employeeId;
-	}
-
-	@Override
 	public TextSizeCommonEnum getTextSize() {
-		return TextSizeCommonEnum.valueOf(this.fontSize);
+		// TODO Auto-generated method stub
+		return null;
 	}
-
-	@Override
-	public ItemSelectionEnum getItemSelectionEnum() {
-		return ItemSelectionEnum.valueOf(this.itemSelectionEnum);
-	}
+	
 }
