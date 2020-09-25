@@ -73,7 +73,7 @@ export class CmmS45ComponentsApp3Component extends Vue {
                 vm.time = res.data.businessTripDto;
                 vm.table = res.data.businessTripDto.tripInfos.map((item: any) => {
                     const workTime = res.data.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
-                    const workType = res.data.businessTripInfoOutputDto.infoBeforeChange.find((i: any) => i.date = item.date).workTypeDto;
+                    const workType = res.data.businessTripInfoOutputDto.infoBeforeChange.find((i: any) => i.date == item.date).workTypeDto;
                     
                     return {
                         date: item.date,
