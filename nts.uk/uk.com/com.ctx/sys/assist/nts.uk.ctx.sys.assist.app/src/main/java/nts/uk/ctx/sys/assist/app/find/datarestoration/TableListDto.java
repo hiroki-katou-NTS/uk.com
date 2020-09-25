@@ -52,7 +52,7 @@ public class TableListDto {
 	/**
 	 * 保存形態
 	 */
-	private Integer saveForm;
+	private String saveForm;
 
 	/**
 	 * 保存日付From
@@ -129,7 +129,7 @@ public class TableListDto {
 				tableList,
 				domain.getSaveSetName(), 
 				domain.getSaveFileName(), 
-				domain.getSaveForm().value, 
+				domain.getSaveForm(), 
 				domain.getSaveDateFrom().orElse(null),
 				domain.getSaveDateTo().orElse(null), 
 				domain.getStorageRangeSaved().value, 

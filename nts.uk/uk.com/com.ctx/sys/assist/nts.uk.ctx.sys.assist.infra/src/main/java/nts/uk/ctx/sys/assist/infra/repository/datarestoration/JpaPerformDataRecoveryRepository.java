@@ -411,8 +411,10 @@ public class JpaPerformDataRecoveryRepository extends JpaRepository implements P
 				objectSurfaceItem[9].toString(), 
 				Integer.parseInt(objectSurfaceItem[10].toString()),
 				objectSurfaceItem[11].toString(), 
-				Integer.parseInt(objectSurfaceItem[12].toString()),
-				Integer.parseInt(objectSurfaceItem[13].toString()));
+				objectSurfaceItem[12].toString(),
+//				Integer.parseInt(objectSurfaceItem[13].toString())
+				1
+				);
 	}
 
 	@Override

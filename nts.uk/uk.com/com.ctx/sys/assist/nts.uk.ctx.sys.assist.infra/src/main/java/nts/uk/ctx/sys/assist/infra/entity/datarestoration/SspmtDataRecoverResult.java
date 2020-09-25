@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResult;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -131,7 +132,7 @@ public class SspmtDataRecoverResult extends UkJpaEntity implements Serializable 
 		return new DataRecoveryResult(
 				this.dataRecoveryProcessId,
 				this.cid, 
-				this.saveSetCd, 
+				StringUtil.isNullOrEmpty(this.saveSetCd, false) ? "" : this.saveSetCd, 
 				this.practitioner,
 				this.executionResult, 
 				this.listResultLogRecovers.stream().map(item -> item.toDomain()).collect(Collectors.toList()),

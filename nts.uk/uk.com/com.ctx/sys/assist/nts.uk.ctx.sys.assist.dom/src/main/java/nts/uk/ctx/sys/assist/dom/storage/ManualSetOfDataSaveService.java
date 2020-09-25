@@ -265,7 +265,7 @@ public class ManualSetOfDataSaveService extends ExportService<Object> {
 					categoryFieldMt.getTableEnglishName(), categoryFieldMt.getFieldAcqCid(),
 					categoryFieldMt.getFieldAcqDateTime(), categoryFieldMt.getFieldAcqEmployeeId(),
 					categoryFieldMt.getFieldAcqEndDate(), categoryFieldMt.getFieldAcqStartDate(), null,
-					optManualSetting.getSaveSetName().toString(), StorageForm.MANUAL.value, saveDateFrom, saveDateTo, storageRangeSaved,
+					optManualSetting.getSaveSetName().toString(), "1", saveDateFrom, saveDateTo, storageRangeSaved,
 					retentionPeriodCls != null ? retentionPeriodCls.value : null, internalFileName, anotherComCls, null,
 					null, compressedFileName, categoryFieldMt.getFieldChild1(), categoryFieldMt.getFieldChild2(),
 					categoryFieldMt.getFieldChild3(), categoryFieldMt.getFieldChild4(),
