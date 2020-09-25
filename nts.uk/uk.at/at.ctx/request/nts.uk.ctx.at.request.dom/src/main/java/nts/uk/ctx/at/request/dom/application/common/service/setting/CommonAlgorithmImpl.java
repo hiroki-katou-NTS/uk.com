@@ -451,6 +451,10 @@ public class CommonAlgorithmImpl implements CommonAlgorithm {
 			if(!opWorkTypeFirst.isPresent() || !opWorkTypeActual.isPresent()) {
 				continue;
 			}
+			// 日ごとに申請の矛盾チェック
+			this.inconsistencyCheckApplication(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
+			// 日ごとに休日区分の矛盾チェック
+			this.inconsistencyCheckHoliday(companyID, employeeInfo, loopDate, opWorkTypeFirst.get(), opWorkTypeActual.get());
 		}
 		// INPUT．申請する勤務種類リストをチェックする
 		if(workTypeLst.size() <= 1) {
