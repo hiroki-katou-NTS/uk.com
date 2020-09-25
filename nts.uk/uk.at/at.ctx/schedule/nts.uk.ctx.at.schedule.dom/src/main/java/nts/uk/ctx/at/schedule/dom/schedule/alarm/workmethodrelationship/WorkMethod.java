@@ -12,18 +12,26 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  */
 public interface WorkMethod {
 	
-	//勤務方法の種類を取得する
+	/**
+	 * 勤務方法の種類を取得する
+	 * @return
+	 */
 	WorkMethodClassfication getWorkMethodClassification();
 	
-	//該当するか判定する	
+	/**
+	 * 該当するか判定する	
+	 * @param require
+	 * @param workInfor
+	 * @return
+	 */
 	boolean determineIfApplicable(Require require, WorkInformation workInfor );
 	
 	public static interface Require {
 		//[R-1] 1日休日か
-		boolean checkHoliday(String cid, String workTypeCode);
+		boolean checkHoliday(String workTypeCode);
 		
 		//[R-2] 勤務種類を取得する	
-		Optional<WorkType> getWorkType(String cid, String workTypeCode);
+		Optional<WorkType> getWorkType(String workTypeCode);
 		
 	}
 	

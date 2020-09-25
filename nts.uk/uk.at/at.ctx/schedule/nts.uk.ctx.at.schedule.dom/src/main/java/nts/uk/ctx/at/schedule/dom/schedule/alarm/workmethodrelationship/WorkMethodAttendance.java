@@ -6,6 +6,7 @@ import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 /**
  * 勤務方法(出勤)
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.勤務方法の関係性.勤務方法(出勤)
  * @author lan_lt
  *
  */
@@ -13,7 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 @Getter
 public class WorkMethodAttendance implements WorkMethod {
 
-	//就業時間帯コード
+	/** 就業時間帯コード */
 	private final WorkTimeCode workTimeCode; 
 	
 	@Override

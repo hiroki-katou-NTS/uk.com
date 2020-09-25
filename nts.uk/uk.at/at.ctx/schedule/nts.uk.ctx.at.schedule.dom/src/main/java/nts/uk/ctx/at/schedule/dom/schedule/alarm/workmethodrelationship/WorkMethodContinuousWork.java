@@ -2,14 +2,16 @@ package nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship;
 
 import java.util.Optional;
 
+import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 勤務方法(連続勤務)
+ * UKDesign.ドメインモデル.NittsuSystem.UniversalK.就業.contexts.勤務予定.勤務予定.勤務予定のアラームチェック.勤務方法の関係性.勤務方法(連続勤務)
  * @author lan_lt
  *
  */
+@AllArgsConstructor
 public class WorkMethodContinuousWork implements WorkMethod{
 
 	@Override
@@ -19,8 +21,7 @@ public class WorkMethodContinuousWork implements WorkMethod{
 
 	@Override
 	public boolean determineIfApplicable(Require require, WorkInformation workInfo) {
-		Optional<WorkType> workType = require.getWorkType(AppContexts.user().companyId(),
-				workInfo.getWorkTypeCode().v());
+		Optional<WorkType> workType = require.getWorkType(workInfo.getWorkTypeCode().v());
 		if (workType.isPresent()) {
 			return workType.get().getDailyWork().isOneDay() && workType.get().getDailyWork().isContinueWork();
 		}
