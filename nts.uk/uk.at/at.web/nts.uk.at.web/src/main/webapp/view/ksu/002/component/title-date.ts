@@ -1,6 +1,7 @@
 /// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
 
 module nts.uk.ui.at.ksu002.a {
+	import c = nts.uk.ui.at.ksu002.calendar;
 
 	const template = `
 		<div class="cf" data-bind="ntsDatePicker: { 
@@ -182,16 +183,11 @@ module nts.uk.ui.at.ksu002.a {
 	}
 
 	interface Params {
-		dateRange: KnockoutObservable<DateRange>;
+		dateRange: KnockoutObservable<c.DateRange>;
 		mode: KnockoutObservable<ACHIEVEMENT>;
 	}
 
-	interface DateRange {
-		begin: Date;
-		finish: Date;
-	}
-
-	interface DateOption extends DateRange {
+	interface DateOption extends c.DateRange {
 		id: number;
 		title: string;
 	}

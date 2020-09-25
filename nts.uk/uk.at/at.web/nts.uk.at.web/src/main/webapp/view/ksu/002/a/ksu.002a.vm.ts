@@ -18,11 +18,16 @@ module nts.uk.ui.at.ksu002.a {
 		}*/
 	};
 
+	const defaultBaseDate = (): c.DateRange => ({
+		begin: moment().startOf('month').toDate(),
+		finish: moment().endOf('month').toDate()
+	});
+
 	@bean()
 	export class ViewModel extends ko.ViewModel {
 		currentUser!: KnockoutComputed<string>;
 
-		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(null);
+		baseDate: KnockoutObservable<c.DateRange | null> = ko.observable(defaultBaseDate());
 		schedules: MementoObservableArray<c.DayData> = ko.observableArray([]).extend({ memento }) as any;
 
 		created() {
@@ -43,7 +48,9 @@ module nts.uk.ui.at.ksu002.a {
 
 			vm.baseDate
 				.subscribe((data) => {
-
+					console.log(data.begin);
+					// call to api and get data
+					vm.schedules.reset(ko.unwrap(vm.schedules));
 				});
 		}
 
