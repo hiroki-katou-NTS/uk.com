@@ -320,9 +320,26 @@ module nts.uk.com.view.kwr002.b {
                 vm.currentARES().name(),
                 vm.layoutId);
                 
+              useSeal: getShared('useSeal'),
+
+              isInvalid: function() {
+                  return ((!_.isArray(this.attendanceRecExpDaily) && !_.isArray(this.attendanceRecExpMonthly))
+                      || (!this.isListValid(this.attendanceRecExpDaily) && !this.isListValid(this.attendanceRecExpMonthly)));
+              },
+
+              isListValid: function(list) {
+                  return _.find(list, (item: any) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
+              }
+          };
             setShared("dataFromScreenB", data, true);
             modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
-
+              let dataFromScreenF = getShared("dataFromScreenF")
+              currentData.code(dataFromScreenF.duplicateCode);
+              currentData.name(dataFromScreenF.duplicateName);
+            let dataCoppy  = vm.createTransferData(currentData, rcdExport);
+              service.addARES(dataCoppy).done((data: any) =>{
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
+              })
             });
         }
 

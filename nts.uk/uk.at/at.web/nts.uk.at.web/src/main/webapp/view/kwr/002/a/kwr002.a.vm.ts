@@ -557,7 +557,7 @@ module nts.uk.com.view.kwr002.a {
                                 else {
                                     vm.selectedCode(ARESCode);
                                 }
-                                vm.enableSave(true)
+                                vm.enableSave(true);
                             } else {
                                 vm.attendanceRecordList(null);
                                 vm.selectedCode(null);
@@ -583,7 +583,7 @@ module nts.uk.com.view.kwr002.a {
                             else {
                                 vm.selectedCodeA8_8(ARESCode);
                             }
-                            vm.enableSave(true)
+                            vm.enableSave(true);
                         }
                         dfd.resolve();
                     });
