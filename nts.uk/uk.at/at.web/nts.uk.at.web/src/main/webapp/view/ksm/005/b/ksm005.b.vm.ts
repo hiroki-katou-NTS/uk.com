@@ -198,10 +198,6 @@ module nts.uk.at.view.ksm005.b {
              */
             public checkMonthlyPatternSettingBatch(): boolean {
                 var self = this;
-                if ($('.yearmonthInput').ntsError("hasError") == true) {
-                    return true;
-                }
-
                 if (self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchWorkDays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchStatutoryHolidays())
                     || self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchNoneStatutoryHolidays())
@@ -224,10 +220,8 @@ module nts.uk.at.view.ksm005.b {
                 nts.uk.ui.block.invisible();
                 var self = this;
                 // check error
-                if ( self.settingForHolidays() && self.checkMonthlyPatternSettingBatchVal(self.monthlyPatternSettingBatchPublicHolidays())) {
+                if (self.checkMonthlyPatternSettingBatch()) {
                     nts.uk.ui.block.clear();
-                    nts.uk.ui.dialog.alertError({messageId: "Msg_151"}).then(function () {
-                    });
                     return;
                 }
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.WORK_DAYS, self.monthlyPatternSettingBatchWorkDays());
