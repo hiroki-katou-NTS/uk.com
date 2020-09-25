@@ -56,7 +56,7 @@ public class AppApproval {
 		app.approveApplication(approverId, approvalStatus, approvalComment);
 
 		return AtomTask.of(() -> {
-			require.updateApp(app);
+			require.updateApp(app); // R4
 
 			if (approvalStatus == ApprovalStatus.APPROVED) {
 				val appTime = app.getApplicationTime();
@@ -65,9 +65,9 @@ public class AppApproval {
 					val oneMonthTime = appTime.getOneMonthTime();
 					val yearMonth = oneMonthTime.isPresent() ? oneMonthTime.get().getYearMonth() : null;
 					val errorTimeInMonth = oneMonthTime.isPresent() ? oneMonthTime.get().getErrorTimeInMonth() : null;
-					val existingAgr36MonthSetting = require.getYearMonthSetting(applicantID, yearMonth);
+					val existingAgr36MonthSetting = require.getYearMonthSetting(applicantID, yearMonth); // R2
 					if (existingAgr36MonthSetting.isPresent()) {
-						require.updateYearMonthSetting(existingAgr36MonthSetting.get());
+						require.updateYearMonthSetting(existingAgr36MonthSetting.get()); // R6
 					} else {
 						ErrorOneMonth errorOneMonth = null;
 						AlarmOneMonth alarmOneMonth = null;
@@ -81,14 +81,14 @@ public class AppApproval {
 								errorOneMonth,
 								alarmOneMonth
 						);
-						require.addYearMonthSetting(newAgr36MonthSetting);
+						require.addYearMonthSetting(newAgr36MonthSetting); // R5
 					}
 
 				} else if (appTime.getTypeAgreement() == TypeAgreementApplication.ONE_YEAR) {
 					val oneYearTime = appTime.getOneYearTime();
 					val year = oneYearTime.get().getYear();
-					val errorTimeInYear = oneYearTime.isPresent()? oneYearTime.get().getErrorTimeInYear() : null;
-					val existingAgr36YearSetting = require.getYearSetting(applicantID, year);
+					val errorTimeInYear = oneYearTime.isPresent() ? oneYearTime.get().getErrorTimeInYear() : null;
+					val existingAgr36YearSetting = require.getYearSetting(applicantID, year); // R3
 					if (existingAgr36YearSetting.isPresent()) {
 						require.updateYearSetting(existingAgr36YearSetting.get());
 					} else {

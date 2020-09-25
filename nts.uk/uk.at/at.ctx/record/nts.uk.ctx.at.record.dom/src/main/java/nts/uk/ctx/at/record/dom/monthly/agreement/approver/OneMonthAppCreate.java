@@ -137,6 +137,10 @@ public class OneMonthAppCreate {
 		);
 	}
 
+	/**
+	 * [R-1] 申請を追加する
+	 * 36協定特別条項の適用申請Repository.Insert(36協定特別条項の適用申請)
+	 */
 	public interface Require extends GettingApproverDomainService.Require, AgreementDomainService.RequireM3 {
 		void addApp(SpecialProvisionsOfAgreement app);
 	}

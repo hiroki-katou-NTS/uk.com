@@ -74,15 +74,4 @@ public class Helper {
 		}
 		return stringList;
 	}
-
-	public static SpecialProvisionsOfAgreement createNewDomain() {
-		OneMonthTime oneMonthTime = new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)), new YearMonth(0));
-		OneYearTime oneYearTime = new OneYearTime(new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)), new Year(2020));
-
-		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
-
-		List<String> listConfirmSID = Arrays.asList("confirmerSID");
-		return SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
-				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
-	}
 }
