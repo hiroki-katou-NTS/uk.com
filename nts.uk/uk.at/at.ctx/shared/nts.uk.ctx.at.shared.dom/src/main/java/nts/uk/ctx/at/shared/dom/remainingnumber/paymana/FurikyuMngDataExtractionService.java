@@ -83,7 +83,7 @@ public class FurikyuMngDataExtractionService {
 				return x.getPayoutId();
 			}).collect(Collectors.toList());
 			
-			payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListPayoutID(listPayoutID);
+//			payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListPayoutID(listPayoutID);
 		}
 		
 		if (!substitutionOfHDManagementData.isEmpty()){
@@ -91,7 +91,7 @@ public class FurikyuMngDataExtractionService {
 				return x.getSubOfHDID();
 			}).collect(Collectors.toList());
 			
-			payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListSubID(listSubID);
+//			payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListSubID(listSubID);
 		}
 		
 		if (sysEmploymentHisAdapter.findSEmpHistBySid(cid, sid, GeneralDate.legacyDate(new Date())).isPresent()) {
@@ -158,15 +158,15 @@ public class FurikyuMngDataExtractionService {
 			// Step 取得したデータをチェック
 			if (!payoutManagementData.isEmpty() && !substitutionOfHDManagementData.isEmpty()) {
 				// Step ドメイン「振出振休紐付け管理」を取得する
-				List<String> listPayoutID = payoutManagementData.stream().map(x -> {
-					return x.getPayoutId();
+				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> {
+					return x.getPayoutDate().getDayoffDate().get();
 				}).collect(Collectors.toList());
-				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListPayoutID(listPayoutID);
+				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListDate(empId, listPayoutDate);
 
-				List<String> listSubID = substitutionOfHDManagementData.stream().map(x -> {
-					return x.getSubOfHDID();
+				List<GeneralDate> listSubDate = substitutionOfHDManagementData.stream().map(x -> {
+					return x.getHolidayDate().getDayoffDate().get();
 				}).collect(Collectors.toList());
-				payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListSubID(listSubID);
+				payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListDate(empId, listSubDate);
 			}
 			// Step 振休残数データ情報を作成
 			// TODO getRemainNumDtInfor

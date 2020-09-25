@@ -9,11 +9,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.remainingnumber.base.TargetSelectionAtr;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.ComDayOffManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.CompensatoryDayOffManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManaRepository;
-import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveComDayOffManagement;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaData;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManaDataRepository;
 import nts.uk.ctx.at.shared.dom.remainingnumber.subhdmana.LeaveManagementData;
@@ -72,8 +70,8 @@ public class LeaveManagementService {
 
 		if (response.isEmpty()) {
 
-			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository
-					.getBycomDayOffID(leaveManagementData.getComDayOffID());
+//			List<LeaveComDayOffManagement> leavesComDay = leaveComDayOffManaRepository
+//					.getBycomDayOffID(leaveManagementData.getComDayOffID());
 
 			List<LeaveManagementData> leaveManaUpdate = this.leaveManaDataRepository.getByComDayOffId(companyId,
 					leaveManagementData.getEmployeeId(), leaveManagementData.getComDayOffID());
@@ -82,32 +80,32 @@ public class LeaveManagementService {
 					.collect(Collectors.toList());
 
 			// delete List LeaveComDayOff
-			if (leavesComDay.size() >= 1) {
-				leaveComDayOffManaRepository.deleteByComDayOffID(leaveManagementData.getComDayOffID());
-			}
+//			if (leavesComDay.size() >= 1) {
+//				leaveComDayOffManaRepository.deleteByComDayOffID(leaveManagementData.getComDayOffID());
+//			}
 
 			// update Sub by current leave
 			Boolean check = false;
-			if (!currentLeaveMana.isEmpty()) {
-				for (String item : currentLeaveMana) {
-					List<LeaveComDayOffManagement> listLeaveCom = leaveComDayOffManaRepository.getByLeaveID(item);
-					if (listLeaveCom.isEmpty()) {
-						check = true;
-					}
-					leaveManaDataRepository.updateSubByLeaveId(item, check);
-					check = false;
-				}
-
-			}
+//			if (!currentLeaveMana.isEmpty()) {
+//				for (String item : currentLeaveMana) {
+//					List<LeaveComDayOffManagement> listLeaveCom = leaveComDayOffManaRepository.getByLeaveID(item);
+//					if (listLeaveCom.isEmpty()) {
+//						check = true;
+//					}
+//					leaveManaDataRepository.updateSubByLeaveId(item, check);
+//					check = false;
+//				}
+//
+//			}
 
 			// insert List LeaveComDayOff
 			List<LeavesManaData> leaveMana = leaveManagementData.getLeaveMana();
-			List<LeaveComDayOffManagement> entitiesLeave = leaveMana.stream()
-					.map(item -> new LeaveComDayOffManagement(item.getLeaveManaID(),
-							leaveManagementData.getComDayOffID(), new Double(item.getRemainDays()), 0,
-							TargetSelectionAtr.MANUAL.value))
-					.collect(Collectors.toList());
-			leaveComDayOffManaRepository.insertAll(entitiesLeave);
+//			List<LeaveComDayOffManagement> entitiesLeave = leaveMana.stream()
+//					.map(item -> new LeaveComDayOffManagement(item.getLeaveManaID(),
+//							leaveManagementData.getComDayOffID(), new Double(item.getRemainDays()), 0,
+//							TargetSelectionAtr.MANUAL.value))
+//					.collect(Collectors.toList());
+//			leaveComDayOffManaRepository.insertAll(entitiesLeave);
 
 			// update Sub by new Leave
 			List<String> listId = leaveMana.stream().map(LeavesManaData::getLeaveManaID).collect(Collectors.toList());

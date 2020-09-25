@@ -138,7 +138,7 @@ module nts.uk.at.view.kdm001.d.viewmodel {
                 closureId: self.closureId(),
                 holidayDate: moment.utc(self.holidayDate(), 'YYYY/MM/DD').toISOString(),
                 subDays: self.subDays(),
-                linkingDates: self.checkLinkingDates()
+                linkingDates: self.linkingDates()
             };
             
             service.save(data).done(result => {

@@ -31,6 +31,9 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 	private static final String QUERY_BY_LIST_COMID = String.join(" ", QUERY,
 			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate <= : endDate and  lc.krcmtLeaveDayOffManaPK.digestDate >= startDate");
 
+	private static final String QUERY_BY_LIST_DATE = String.join(" ", QUERY,
+			" WHERE lc.krcmtLeaveDayOffManaPK.sid = :sid and lc.krcmtLeaveDayOffManaPK.digestDate IN lstDate");
+
 	private static final String GET_LEAVE_COM  = "SELECT c FROM KrcmtLeaveDayOffMana c "
 			+ " WHERE c.krcmtLeaveDayOffManaPK.sid =:sid and cc.krcmtLeaveDayOffManaPK.occDate = :occDate";
 	
@@ -141,6 +144,14 @@ public class JpaLeaveComDayOffManaRepository extends JpaRepository implements Le
 					.setParameter("sid", sid)
 					.setParameter("startDate", period.start())
 					.setParameter("endDate", period.end())
+				.getList().stream().map(item->toDomain(item)).collect(Collectors.toList());
+	}
+	
+	@Override
+	public List<LeaveComDayOffManagement> getByListDate(String sid, List<GeneralDate> lstDate) {
+			return this.queryProxy().query(QUERY_BY_LIST_DATE,KrcmtLeaveDayOffMana.class)
+					.setParameter("sid", sid)
+					.setParameter("lstDate", lstDate)
 				.getList().stream().map(item->toDomain(item)).collect(Collectors.toList());
 	}
 

@@ -28,6 +28,7 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         itemListOptionSubHoliday: KnockoutObservableArray<model.ItemModel> = ko.observableArray(model.getNumberDays());
         selectedCodeOptionSubHoliday: KnockoutObservable<string> = ko.observable(null);
         closureId: KnockoutObservable<number> = ko.observable(0);
+        listLinkingDate: KnockoutObservableArray<string> = ko.observableArray([]);
         //RemaningDay
         numberHoliday: KnockoutObservable<string> = ko.observable('');
         numberSubHoliday: KnockoutObservable<string> = ko.observable('');
@@ -196,7 +197,8 @@ module nts.uk.at.view.kdm001.i.viewmodel {
                     dateOptionSubHoliday: moment.utc(self.dateOptionSubHoliday(), 'YYYY/MM/DD').toISOString(),
                     selectedCodeOptionSubHoliday: self.selectedCodeOptionSubHoliday(),
                     dayRemaining: Math.abs(parseFloat(self.dayRemaining())),
-                    closureId: self.closureId()
+                    closureId: self.closureId(),
+                    listLinkingDate: self.listLinkingDate()
                 };
                 if (!self.checkedSubHoliday()) {
                     data.selectedCodeSubHoliday = 0;
@@ -270,9 +272,11 @@ module nts.uk.at.view.kdm001.i.viewmodel {
         }
 
         public openKDL036() {
-            // TODO open kdl036
-            const vm = this;
-            vm.baseDate('2020/08/01');
+          // TODO open kdl036
+          const vm = this;
+          modal("/view/kdl/035/a/index.xhtml").onClosed(() => {});
+          let listParam = getShared("KDL036_SHAREPARAM");
+          vm.listLinkingDate(listParam);
         }
     }
 }

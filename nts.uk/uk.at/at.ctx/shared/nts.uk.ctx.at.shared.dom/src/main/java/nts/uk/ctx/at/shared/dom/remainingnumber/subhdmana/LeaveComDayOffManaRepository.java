@@ -15,6 +15,8 @@ public interface LeaveComDayOffManaRepository {
 	
 	List<LeaveComDayOffManagement> getByLeaveID(String sid, GeneralDate occDate);
 	
+	List<LeaveComDayOffManagement> getByListDate(String sid, List<GeneralDate> lstDate);
+	
 	List<LeaveComDayOffManagement> getBycomDayOffID(String sid,  GeneralDate digestDate);
 	
 	void insertAll(List<LeaveComDayOffManagement> entitiesLeave);

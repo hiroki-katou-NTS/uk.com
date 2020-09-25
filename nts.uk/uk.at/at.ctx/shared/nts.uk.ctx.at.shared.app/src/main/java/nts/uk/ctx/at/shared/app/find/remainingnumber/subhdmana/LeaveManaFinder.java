@@ -47,12 +47,12 @@ public class LeaveManaFinder {
 					leaveDataRemove.add(leaveManaDataFree);
 				}
 			}
-			List<LeaveComDayOffManagement> leaveComDayOffManagement = leaveComDayOffManaRepository.getByLeaveID(leaveManagementData.getLeaveManaID());
+			List<LeaveComDayOffManagement> leaveComDayOffManagement = leaveComDayOffManaRepository.getByLeaveID(leaveManagementData.getLeaveManaID(), leaveManagementData.getDateHoliday());
 			
 			if(leaveComDayOffManagement.size() == 2 && leaveManagementData.getNumberDay().equals("0.0")) {
 				leaveManagementData.setNumberDay("0.5");
 			} else if (leaveComDayOffManagement.size() == 1 && leaveManagementData.getNumberDay().equals("0.0")) {
-				leaveManagementData.setNumberDay(leaveComDayOffManagement.get(0).getUsedDays().v().toString());
+				leaveManagementData.setNumberDay(leaveComDayOffManagement.get(0).getAssocialInfo().getDateOfUse().toString());
 			}
 		}
 		resultLeaveFreeMana.removeAll(leaveDataRemove);

@@ -91,16 +91,16 @@ public class ExtraHolidayManagementService {
 			listCompensatoryData = comDayOffManaDataRepository.getAllData();
 		}
 		if (!listLeaveData.isEmpty()) {
-			List<String> listLeaveID = listLeaveData.stream().map(x -> {
-				return x.getID();
+			List<GeneralDate> lstDate = listLeaveData.stream().map(x -> {
+				return x.getComDayOffDate().getDayoffDate().get();
 			}).collect(Collectors.toList());
-			listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListComLeaveID(listLeaveID));
+			listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListDate(employeeId,lstDate));
 		}
 		if (!listCompensatoryData.isEmpty()) {
-			List<String> listComId = listCompensatoryData.stream().map(x -> {
-				return x.getComDayOffID();
+			List<GeneralDate> listDate = listCompensatoryData.stream().map(x -> {
+				return x.getDayOffDate().getDayoffDate().get();
 			}).collect(Collectors.toList());
-			listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListComId(listComId));
+			listLeaveComDayOffManagement.addAll(leaveComDayOffManaRepository.getByListDate(employeeId, listDate));
 		}
 		Optional<SEmpHistoryImport> sEmpHistoryImport = sysEmploymentHisAdapter.findSEmpHistBySid(cid, employeeId,
 				baseDate);

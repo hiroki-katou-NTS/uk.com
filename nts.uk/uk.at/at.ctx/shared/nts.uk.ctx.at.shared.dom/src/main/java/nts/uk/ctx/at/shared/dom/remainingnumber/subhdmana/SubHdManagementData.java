@@ -69,7 +69,11 @@ public class SubHdManagementData {
 
 	private int closureId;
 	
-	private List<String> lstLeaveId;
+	/**
+	 * List 発生日数
+	 */
+	private List<String> lstLinkingDate;
+	
 
 	/**
 	 * @param employeeId
@@ -88,7 +92,8 @@ public class SubHdManagementData {
 	public SubHdManagementData(String employeeId, Boolean checkedHoliday, GeneralDate dateHoliday,
 			Double selectedCodeHoliday, GeneralDate duedateHoliday, Boolean checkedSubHoliday,
 			GeneralDate dateSubHoliday, Double selectedCodeSubHoliday, Boolean checkedSplit,
-			GeneralDate dateOptionSubHoliday, Double selectedCodeOptionSubHoliday, Double dayRemaining, int closureId, List<String> lstLeaveId) {
+			GeneralDate dateOptionSubHoliday, Double selectedCodeOptionSubHoliday, Double dayRemaining,
+			int closureId, List<String> lstLinkingDate) {
 		super();
 		this.employeeId = employeeId;
 		this.checkedHoliday = checkedHoliday;
@@ -103,6 +108,6 @@ public class SubHdManagementData {
 		this.selectedCodeOptionSubHoliday = selectedCodeOptionSubHoliday;
 		this.dayRemaining = dayRemaining;
 		this.closureId = closureId;
-		this.lstLeaveId = lstLeaveId;
+		this.lstLinkingDate = lstLinkingDate;
 	}
 }
