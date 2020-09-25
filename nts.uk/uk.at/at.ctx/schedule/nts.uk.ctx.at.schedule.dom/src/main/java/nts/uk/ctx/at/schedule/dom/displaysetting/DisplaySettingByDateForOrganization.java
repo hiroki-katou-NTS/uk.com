@@ -13,12 +13,12 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
  */
 @Getter
 @RequiredArgsConstructor
-public class DisplaySettingByDateForOrg implements DomainAggregate {
+public class DisplaySettingByDateForOrganization implements DomainAggregate {
 	
-	// 対象組織
+	/** 対象組織 */
 	private final TargetOrgIdenInfor targetOrg;
 	
-	// 表示設定
+	/** 表示設定 */
 	private final DisplaySettingByDate dispSetting;
 	
 }

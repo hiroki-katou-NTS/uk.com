@@ -8,9 +8,10 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForOrg;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForOrganization;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForOrgRepository;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.KscmtDispsetBydateOrg;
+import nts.uk.ctx.at.schedule.infra.entity.displaysetting.KscmtDispsetBydateOrgPk;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 
 @Stateless
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.Target
 public class JpaDisplaySettingByDateForOrgRepository extends JpaRepository implements DisplaySettingByDateForOrgRepository {
 	
 	@Override
-	public Optional<DisplaySettingByDateForOrg> get (String companyId, TargetOrgIdenInfor targetOrg) {
+	public Optional<DisplaySettingByDateForOrganization> get (String companyId, TargetOrgIdenInfor targetOrg) {
 		
 		String sql = "SELECT * FROM KSCMT_DISPSET_BYDATE_ORG"
 				+ " WHERE CID = @companyId"
@@ -33,22 +34,24 @@ public class JpaDisplaySettingByDateForOrgRepository extends JpaRepository imple
 	}
 	
 	@Override
-	public void insert (String companyId, DisplaySettingByDateForOrg dispSetorg) {
+	public void insert (String companyId, DisplaySettingByDateForOrganization dispSetorg) {
 		this.commandProxy().insert(KscmtDispsetBydateOrg.of(companyId, dispSetorg));
 	}
 	
 	@Override
-	public void update (String companyId, DisplaySettingByDateForOrg dispSetorg) {
-		
-		KscmtDispsetBydateOrg entity = KscmtDispsetBydateOrg.of(companyId, dispSetorg);
+	public void update (String companyId, DisplaySettingByDateForOrganization dispSetorg) {
+		KscmtDispsetBydateOrgPk pk = new KscmtDispsetBydateOrgPk();
+		pk.companyId = companyId;
+		pk.targetUnit = dispSetorg.getTargetOrg().getUnit().value;
+		pk.targetId = dispSetorg.getTargetOrg().getTargetId();
 		
 		KscmtDispsetBydateOrg upData = this.queryProxy()
-				.find(entity.pk, KscmtDispsetBydateOrg.class)
+				.find(pk, KscmtDispsetBydateOrg.class)
 				.get();
 		
-		upData.setRangeAtr(dispSetorg.getDispSetting().getDispRange().value);
-		upData.setStartClock(dispSetorg.getDispSetting().getDispStart().v());
-		upData.setInitStartClock(dispSetorg.getDispSetting().getInitDispStart().v());
+		upData.rangeAtr = dispSetorg.getDispSetting().getDispRange().value;
+		upData.startClock = dispSetorg.getDispSetting().getDispStart().v();
+		upData.initStartClock = dispSetorg.getDispSetting().getInitDispStart().v();
 		
 		this.commandProxy().update(upData);
 	}

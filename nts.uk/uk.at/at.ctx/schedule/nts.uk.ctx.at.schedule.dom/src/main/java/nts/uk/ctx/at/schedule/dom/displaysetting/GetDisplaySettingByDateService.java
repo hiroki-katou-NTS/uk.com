@@ -19,12 +19,12 @@ public class GetDisplaySettingByDateService {
 	 * @return 
 	 */
 	public static DisplaySettingByDate get(Require require, TargetOrgIdenInfor targetOrg) {
-		Optional<DisplaySettingByDateForOrg> org = require.getOrg(targetOrg);
+		Optional<DisplaySettingByDateForOrganization> org = require.getOrg(targetOrg);
 		if (org.isPresent())
 			return org.get().getDispSetting();
 		
 		
-		Optional<DisplaySettingByDateForCmp> com = require.getCmp();
+		Optional<DisplaySettingByDateForCompany> com = require.getCmp();
 		if (com.isPresent())
 			return com.get().getDispSetting();
 		
@@ -41,12 +41,12 @@ public class GetDisplaySettingByDateService {
 		 * @param targetOrg
 		 * @return
 		 */
-		Optional<DisplaySettingByDateForOrg> getOrg(TargetOrgIdenInfor targetOrg);
+		Optional<DisplaySettingByDateForOrganization> getOrg(TargetOrgIdenInfor targetOrg);
 		
 		/**
 		 * 会社別設定を取得する
 		 * @return
 		 */
-		Optional<DisplaySettingByDateForCmp> getCmp();
+		Optional<DisplaySettingByDateForCompany> getCmp();
 	}
 }

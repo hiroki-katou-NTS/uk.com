@@ -12,9 +12,9 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @Getter
 @RequiredArgsConstructor
-public class DisplaySettingByDateForCmp implements DomainAggregate{
+public class DisplaySettingByDateForCompany implements DomainAggregate{
 	
-	// 表示設定
+	/** 表示設定 */
 	private final DisplaySettingByDate dispSetting;
 	
 }

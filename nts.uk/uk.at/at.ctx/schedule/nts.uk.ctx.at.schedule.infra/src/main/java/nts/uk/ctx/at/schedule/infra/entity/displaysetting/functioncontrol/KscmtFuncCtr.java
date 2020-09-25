@@ -25,7 +25,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @AllArgsConstructor
 @Entity
-@Setter
 @Table(name = "KSCMT_FUNC_CTR")
 public class KscmtFuncCtr extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

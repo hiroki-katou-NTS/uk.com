@@ -9,17 +9,17 @@ public interface DisplaySettingByDateForCmpRepository {
 	 * @param companyId
 	 * @return
 	 */
-	Optional<DisplaySettingByDateForCmp> get (String companyId);
+	Optional<DisplaySettingByDateForCompany> get (String companyId);
 	
 	/**
 	 * insert(会社別スケジュール修正日付別の表示設定)
 	 * @param dispSetcom
 	 */
-	void insert (String companyId, DisplaySettingByDateForCmp dispSetcom);
+	void insert (String companyId, DisplaySettingByDateForCompany dispSetcom);
 	
 	/**
 	 * update(会社別スケジュール修正日付別の表示設定)
 	 * @param dispSetcom
 	 */
-	void update (String companyId, DisplaySettingByDateForCmp dispSetcom);
+	void update (String companyId, DisplaySettingByDateForCompany dispSetcom);
 }

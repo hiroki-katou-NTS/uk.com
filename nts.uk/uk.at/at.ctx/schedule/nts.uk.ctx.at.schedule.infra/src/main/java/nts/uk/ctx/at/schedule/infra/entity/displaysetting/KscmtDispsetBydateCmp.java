@@ -14,7 +14,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplayRangeType;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDate;
-import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForCmp;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForCompany;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplayStartTime;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
@@ -26,7 +26,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Setter
 @Table(name = "KSCMT_DISPSET_BYDATE_CMP")
 public class KscmtDispsetBydateCmp extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -69,7 +68,7 @@ public class KscmtDispsetBydateCmp extends ContractUkJpaEntity implements Serial
 	 * @param domain
 	 * @return entity
 	 */
-	public static KscmtDispsetBydateCmp of (String companyId, DisplaySettingByDateForCmp domain) {
+	public static KscmtDispsetBydateCmp of (String companyId, DisplaySettingByDateForCompany domain) {
 		return new KscmtDispsetBydateCmp(
 				companyId,
 				domain.getDispSetting().getDispRange().value,
@@ -81,12 +80,12 @@ public class KscmtDispsetBydateCmp extends ContractUkJpaEntity implements Serial
 	 * convert to domain
 	 * @return domain
 	 */
-	public DisplaySettingByDateForCmp toDomain () {
+	public DisplaySettingByDateForCompany toDomain () {
 		val dipSet = new DisplaySettingByDate (
 				  DisplayRangeType.of(this.rangeAtr)
 				, new DisplayStartTime(this.startClock)
 				, new DisplayStartTime(this.initStartClock));
 		
-		return new DisplaySettingByDateForCmp (dipSet);
+		return new DisplaySettingByDateForCompany (dipSet);
 	}
 }

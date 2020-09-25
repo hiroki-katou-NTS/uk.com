@@ -24,7 +24,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Setter
 @Table(name = "KSCMT_AUTH_MODIFYDEADLINE")
 public class KscmtAuthModifyDadline extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -59,7 +58,8 @@ public class KscmtAuthModifyDadline extends ContractUkJpaEntity implements Seria
 	public static KscmtAuthModifyDadline of(String companyId, ScheAuthModifyDeadline domain) {
 		KscmtAuthModifyDadlinePk pk = new KscmtAuthModifyDadlinePk(companyId, domain.getRoleId());
 		
-		KscmtAuthModifyDadline entity = new KscmtAuthModifyDadline(pk
+		KscmtAuthModifyDadline entity = new KscmtAuthModifyDadline(
+				  pk
 				, domain.getUseAtr().value
 				, domain.getDeadLine().v());
 		

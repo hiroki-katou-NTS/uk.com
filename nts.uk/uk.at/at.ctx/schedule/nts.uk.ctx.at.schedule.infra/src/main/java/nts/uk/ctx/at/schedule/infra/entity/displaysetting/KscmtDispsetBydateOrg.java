@@ -15,7 +15,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplayRangeType;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDate;
-import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForOrg;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForOrganization;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplayStartTime;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
@@ -29,7 +29,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Setter
 @Table(name = "KSCMT_DISPSET_BYDATE_ORG")
 public class KscmtDispsetBydateOrg extends ContractUkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -68,7 +67,7 @@ public class KscmtDispsetBydateOrg extends ContractUkJpaEntity implements Serial
 	 * @param domain
 	 * @return entity
 	 */
-	public static KscmtDispsetBydateOrg of (String companyId, DisplaySettingByDateForOrg domain) {
+	public static KscmtDispsetBydateOrg of (String companyId, DisplaySettingByDateForOrganization domain) {
 
 		KscmtDispsetBydateOrgPk entPk = new KscmtDispsetBydateOrgPk(
 				companyId,
@@ -86,7 +85,7 @@ public class KscmtDispsetBydateOrg extends ContractUkJpaEntity implements Serial
 	 * convert to domain
 	 * @return domain
 	 */
-	public DisplaySettingByDateForOrg toDomain () {
+	public DisplaySettingByDateForOrganization toDomain () {
 		val targetOrg = new TargetOrgIdenInfor (
 				TargetOrganizationUnit.valueOf(this.pk.targetUnit),
 				Optional.ofNullable(this.pk.targetId),
@@ -97,6 +96,6 @@ public class KscmtDispsetBydateOrg extends ContractUkJpaEntity implements Serial
 				new DisplayStartTime(this.startClock), 
 				new DisplayStartTime(this.initStartClock));
 		
-		return new DisplaySettingByDateForOrg(targetOrg, dispDomain);
+		return new DisplaySettingByDateForOrganization(targetOrg, dispDomain);
 	}
 }

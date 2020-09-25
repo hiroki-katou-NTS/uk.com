@@ -8,7 +8,7 @@ import javax.ejb.TransactionAttributeType;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
-import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForCmp;
+import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForCompany;
 import nts.uk.ctx.at.schedule.dom.displaysetting.DisplaySettingByDateForCmpRepository;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.KscmtDispsetBydateCmp;
 
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.schedule.infra.entity.displaysetting.KscmtDispsetBydateCmp;
 public class JpaDisplaySettingByDateForCmpRepository extends JpaRepository implements DisplaySettingByDateForCmpRepository {
 	
 	@Override
-	public Optional<DisplaySettingByDateForCmp> get(String companyId){
+	public Optional<DisplaySettingByDateForCompany> get(String companyId){
 		
 		String sql = "SELECT * FROM KSCMT_DISPSET_BYDATE_CMP WHERE CID = @companyId";
 		
@@ -32,22 +32,20 @@ public class JpaDisplaySettingByDateForCmpRepository extends JpaRepository imple
 	}
 	
 	@Override
-	public void insert (String companyId, DisplaySettingByDateForCmp dispSetcmp) {
+	public void insert (String companyId, DisplaySettingByDateForCompany dispSetcmp) {
 		this.commandProxy().insert(KscmtDispsetBydateCmp.of(companyId, dispSetcmp));
 	}
 	
 	@Override
-	public void update (String companyId, DisplaySettingByDateForCmp dispSetcmp) {
-		
-		KscmtDispsetBydateCmp entity = KscmtDispsetBydateCmp.of(companyId, dispSetcmp);
+	public void update (String companyId, DisplaySettingByDateForCompany dispSetcmp) {
 		
 		KscmtDispsetBydateCmp upData = this.queryProxy()
-				.find(entity.companyId, KscmtDispsetBydateCmp.class)
+				.find(companyId, KscmtDispsetBydateCmp.class)
 				.get();
 		
-		upData.setRangeAtr(dispSetcmp.getDispSetting().getDispRange().value);
-		upData.setStartClock(dispSetcmp.getDispSetting().getDispStart().v());
-		upData.setInitStartClock(dispSetcmp.getDispSetting().getInitDispStart().v());
+		upData.rangeAtr = dispSetcmp.getDispSetting().getDispRange().value;
+		upData.startClock = dispSetcmp.getDispSetting().getDispStart().v();
+		upData.initStartClock = dispSetcmp.getDispSetting().getInitDispStart().v();
 		
 		this.commandProxy().update(upData);
 	}

@@ -11,14 +11,14 @@ public class Helper {
 		}
 		
 		public static class DispsetOrg {
-			public static DisplaySettingByDateForOrg create(DisplaySettingByDate dispset) {
-				return new DisplaySettingByDateForOrg(TargetOrg.DUMMY, dispset);
+			public static DisplaySettingByDateForOrganization create(DisplaySettingByDate dispset) {
+				return new DisplaySettingByDateForOrganization(TargetOrg.DUMMY, dispset);
 			}
 		}
 		
 		public static class DispsetCom {
-			public static  DisplaySettingByDateForCmp create(DisplaySettingByDate dispset) {
-				return new DisplaySettingByDateForCmp(dispset);
+			public static  DisplaySettingByDateForCompany create(DisplaySettingByDate dispset) {
+				return new DisplaySettingByDateForCompany(dispset);
 			}
 		}
 	}

@@ -41,13 +41,14 @@ public class JpaScheFunctionControlRepository extends JpaRepository implements S
 
 	@Override
 	public void update(String companyId, ScheFunctionControl funcCtrl) {
-		KscmtFuncCtr entiey = KscmtFuncCtr.of(companyId, funcCtrl);
-		KscmtFuncCtr up = this.queryProxy().find(entiey.companyId, KscmtFuncCtr.class).get();
+		KscmtFuncCtr up = this.queryProxy()
+				.find(companyId, KscmtFuncCtr.class)
+				.get();
 		
-		up.setChangeableFix(BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FIXED)));
-		up.setChangeableFlex(BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FLEX)));
-		up.setChangeableFluid(BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FLOW)));
-		up.setDisplayActual(BooleanUtils.toInteger(funcCtrl.isDisplayActual()));
+		up.changeableFix = BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FIXED));
+		up.changeableFlex = BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FLEX));
+		up.changeableFluid = BooleanUtils.toInteger(funcCtrl.isChangeableForm(WorkTimeForm.FLOW));
+		up.displayActual = BooleanUtils.toInteger(funcCtrl.isDisplayActual());
 		
 		this.commandProxy().update(up);
 	}

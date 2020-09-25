@@ -5,11 +5,13 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.infra.data.jdbc.NtsStatement;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadline;
 import nts.uk.ctx.at.schedule.dom.displaysetting.authcontrol.ScheAuthModifyDeadlineRepository;
 import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthModifyDadline;
+import nts.uk.ctx.at.schedule.infra.entity.displaysetting.authcontrol.KscmtAuthModifyDadlinePk;
 
 /**
  * 
@@ -27,23 +29,29 @@ public class JpaScheAuthModifyDeadlineRepository extends JpaRepository implement
 	
 	@Override
 	public void update (String companyId, ScheAuthModifyDeadline modifyDeadline) {
-		KscmtAuthModifyDadline entity = KscmtAuthModifyDadline.of(companyId, modifyDeadline);
+		val pk = new KscmtAuthModifyDadlinePk(companyId, modifyDeadline.getRoleId());
 		
 		KscmtAuthModifyDadline upData = this.queryProxy()
-				.find(entity.kscmtAuthModifyDadlinePk, KscmtAuthModifyDadline.class)
+				.find(pk, KscmtAuthModifyDadline.class)
 				.get();
 		
-		upData.setUseAtr(modifyDeadline.getUseAtr().value);
-		upData.setDeadLine(modifyDeadline.getDeadLine().v());
+		upData.useAtr = modifyDeadline.getUseAtr().value;
+		upData.deadLine = modifyDeadline.getDeadLine().v();
 		
 		this.commandProxy().update(upData);
 	}
 	
 	@Override
 	public void delete (String companyId, String roleId) {
+		val pk = new KscmtAuthModifyDadlinePk(companyId, roleId);		
+		this.commandProxy().remove(KscmtAuthModifyDadline.class, pk);
+		
+		
+		
+		
 		Optional<ScheAuthModifyDeadline> entity = this.get(companyId, roleId);
 		if (entity.isPresent()) {
-			this.commandProxy().remove(entity);
+			this.commandProxy().remove(entity.get());
 		}
 	}
 	

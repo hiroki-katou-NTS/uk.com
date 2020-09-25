@@ -11,17 +11,17 @@ public interface DisplaySettingByDateForOrgRepository {
 	 * @param targetOrg
 	 * @return
 	 */
-	Optional<DisplaySettingByDateForOrg> get (String companyId, TargetOrgIdenInfor targetOrg);
+	Optional<DisplaySettingByDateForOrganization> get (String companyId, TargetOrgIdenInfor targetOrg);
 	
 	/**
 	 * insert(組織別スケジュール修正日付別の表示設定)
 	 * @param dispSetorg
 	 */
-	void insert (String companyId, DisplaySettingByDateForOrg dispSetorg);
+	void insert (String companyId, DisplaySettingByDateForOrganization dispSetorg);
 	
 	/**
 	 * update(組織別スケジュール修正日付別の表示設定)
 	 * @param dispSetorg
 	 */
-	void update (String companyId, DisplaySettingByDateForOrg dispSetorg);
+	void update (String companyId, DisplaySettingByDateForOrganization dispSetorg);
 }
