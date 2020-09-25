@@ -1,10 +1,11 @@
-package nts.uk.screen.com.app.query;
+package nts.uk.screen.at.app.query.cmm024.approver36agrbycompany;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
 
 import java.util.List;
 

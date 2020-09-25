@@ -1,8 +1,9 @@
-package nts.uk.screen.com.ws.cmm024;
+package nts.uk.screen.at.ws.cmm024.screean_a;
+
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.screen.com.app.query.PerformInitialDisplaysByCompanyScreenDto;
-import nts.uk.screen.com.app.query.PerformInitialDisplaysByCompanyScreenQuery;
+import nts.uk.screen.at.app.query.cmm024.approver36agrbycompany.PerformInitialDisplaysByCompanyScreenDto;
+import nts.uk.screen.at.app.query.cmm024.approver36agrbycompany.PerformInitialDisplaysByCompanyScreenQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;

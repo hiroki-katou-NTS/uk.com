@@ -1,8 +1,8 @@
-package nts.uk.screen.com.ws.cmm024;
+package nts.uk.screen.at.ws.cmm024.screen_f;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.dom.workplace.group.domainservice.EmployeeInfoData;
-import nts.uk.screen.com.app.query.ShowEmployeesInSwapListScreenQuery;
+import nts.uk.screen.at.app.query.cmm024.showemployee.ShowEmployeesInSwapListScreenQuery;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
