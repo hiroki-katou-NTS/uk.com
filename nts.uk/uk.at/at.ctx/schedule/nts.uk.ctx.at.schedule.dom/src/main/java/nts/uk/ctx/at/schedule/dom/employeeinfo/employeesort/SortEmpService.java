@@ -79,7 +79,7 @@ public class SortEmpService {
 				compare2  = Comparator.comparing(EmployeeInfo::getScheduleTeamCd, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			case RANK:
-				compare2  = Comparator.comparing(EmployeeInfo::getEmplRankCode, Comparator.nullsLast(Comparator.naturalOrder()));
+				compare2  = Comparator.comparing(EmployeeInfo::getEmplRankPriority, Comparator.nullsLast(Comparator.naturalOrder()));
 				break;
 			case LISENCE_ATR:
 				compare2  = Comparator.comparing(EmployeeInfo::getOptLicenseClassification, Comparator.nullsLast(Comparator.naturalOrder()));
@@ -132,7 +132,7 @@ public class SortEmpService {
 						.filter(x -> x.getEmplRankCode() != null).collect(Collectors.toList());
 				listEmployeeRank.sort(Comparator.comparing(v-> empIDs.indexOf(v.getSID())));
 				listEmployeeRankDto = listEmployeeRank.stream().map(m -> {
-					return new EmployeeRankDto(m.getSID(), m.getEmplRankCode().toString());
+					return new EmployeeRankDto(m.getSID(), m.getEmplRankCode().toString(),0);
 				}).collect(Collectors.toList());
 				
 				Optional<RankPriority> rankPriority = require.getRankPriority();
@@ -148,6 +148,15 @@ public class SortEmpService {
 					List<EmployeeRankDto> listEmployeeRank2 = listEmployeeRankDto.stream().filter(i -> i.getEmplRankCode() == null).collect(Collectors.toList());
 					
 					listEmployeeRank1.sort(Comparator.comparing(v-> listRankCode.indexOf(v.getEmplRankCode())));
+					
+					listEmployeeRank1.forEach((EmployeeRankDto employeeRankDto) -> {
+							employeeRankDto.setPriority(listEmployeeRank1.indexOf(employeeRankDto));
+			        });
+					
+					listEmployeeRank2.forEach((EmployeeRankDto employeeRankDto) -> {
+						employeeRankDto.setPriority(null);
+					});
+							
 					listEmployeeRankResult.addAll(listEmployeeRank1);
 					listEmployeeRankResult.addAll(listEmployeeRank2);
 				}
@@ -198,7 +207,7 @@ public class SortEmpService {
 			EmployeeInfo employeeInfo = EmployeeInfo.builder()
 					.empId(sid)
 					.scheduleTeamCd(team.isPresent() ? team.get().getScheduleTeamCd().toString() : null)
-					.emplRankCode(rank.isPresent() ? (rank.get().getEmplRankCode() == null ? null : rank.get().getEmplRankCode().toString()) : null)
+					.emplRankPriority(rank.isPresent() ? (rank.get().priority == null ? null : rank.get().priority) : null)
 					.optLicenseClassification(empLicenseCls.isPresent() ? empLicenseCls.get().getOptLicenseClassification().get().value : null)
 					.jobtitleCode(employeePosition.isPresent() ? employeePosition.get().getJobtitleCode() : null)
 					.classificationCode(empClassifiImport.isPresent() ? empClassifiImport.get().getClassificationCode() : null)
