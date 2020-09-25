@@ -39,7 +39,7 @@
 				<!-- B1_1 -->
 				<button tabindex="1" data-bind="click: onNew, enable: !newMode()">#{i18n.getText('KWR002_30')}</button>
 				<!-- B1_2 -->
-				<button tabindex="2" data-bind="click: onRegister" class="proceed">#{i18n.getText('KWR002_31')}</button>
+				<button tabindex="2" data-bind="enable: $root.errors.isEmpty, click: onRegister" class="proceed">#{i18n.getText('KWR002_31')}</button>
 				<!-- B1_5 -->
 				<button tabindex="3" data-bind="click: openDialogF" >#{i18n.getText('KWR002_232')}</button>
 				<!-- B1_3 -->
@@ -173,7 +173,7 @@
 									<td colspan="2" class="th-col2">
 										<div>
 											<button style="min-width: 65px;" tabindex="10"
-												data-bind="click:openScreenC">#{i18n.getText('KWR002_48')}</button>
+												data-bind="click: openScreenC">#{i18n.getText('KWR002_48')}</button>
 										</div>
 									</td>
 								</tr>

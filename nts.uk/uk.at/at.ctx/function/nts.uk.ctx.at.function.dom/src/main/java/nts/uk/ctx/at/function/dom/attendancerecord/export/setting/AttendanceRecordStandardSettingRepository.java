@@ -25,4 +25,13 @@ public interface AttendanceRecordStandardSettingRepository {
      * @param compnayId
      */
     public Optional<AttendanceRecordStandardSetting> getStandardByCompanyId(String companyId);
+    
+    /**
+     * Get the domain model 「出勤簿の出力項目定型設定」 with companyId, layoutId and exportCd
+     * @param companyId 会社ID
+     * @param layoutId 出力レイアウトID
+     * @param exportCD 複製元コード
+     * @return the optional
+     */
+    public Optional<AttendanceRecordStandardSetting> getStandardWithLayoutId(String companyId, String layoutId, String exportCD);
 }

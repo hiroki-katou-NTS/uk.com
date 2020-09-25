@@ -36,7 +36,13 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			+ " WHERE out.cid = :companyId"
 			+ " AND out.itemSelType = :selectionType"
 			+ " AND out.exportCD = :code";
+	
+	
+	private static final String GET_STANDARD_SETTING_WITH_LAYOUTID = GET_STANDARD_SETTING_BY_CODE + " AND out.layoutId = :layoutId";
+			
 	private static final String GET_FREE_SETTING_BY_CODE = GET_STANDARD_SETTING_BY_CODE + " AND out.sid = :employeeId";
+	
+	private static final String GET_FREE_SETTING_WITH_LAYOUTID = GET_FREE_SETTING_BY_CODE + " AND out.layoutId = :layoutId";
 
 	private static final String GET_SETTING_BY_LAYOUT_ID = "SELECT out FROM KfnmtRptWkAtdOut out"
 			+ " WHERE out.layoutId = :layoutId";
@@ -46,7 +52,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			+ " AND out.itemSelType = :selectionType";
 	private static final String GET_FREE_SETTING = GET_STANDARD_SETTING + " AND out.sid = :employeeId";
 	private static final String GET_SEAL = "SELECT seal FROM KfnmtRptWkAtdOutseal seal WHERE seal.cid = :cid AND seal.layoutId = :layoutId ORDER BY seal.sealOrder ASC";
-
+	
 	@Override
 	public Optional<AttendanceRecordExportSetting> findByCode(ItemSelectionType selectionType
 			, String companyId
@@ -100,6 +106,8 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			
 			Optional<AttendanceRecordExportSetting> ares = this.findByLayoutId(subDomain.getLayoutId());
 			if (ares.isPresent()) {
+				entity.setDailyExportItem(ares.get().getDailyExportItem());
+				entity.setMonthlyExportItem(ares.get().getMonthlyExportItem());
 				// update
 				this.commandProxy().update(entity);
 			} else {
@@ -132,7 +140,27 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 		return Optional.of(AttendanceRecordStandardSetting.createFromMemento(mementoGetter));
 		
 	}
-
+	
+	@Override
+	public Optional<AttendanceRecordStandardSetting> getStandardWithLayoutId(String companyId, String layoutId, String exportCD) {
+		List<KfnmtRptWkAtdOut> kfnmtRptWkAtdOut = this.queryProxy()
+				.query(GET_STANDARD_SETTING_WITH_LAYOUTID, KfnmtRptWkAtdOut.class)
+				.setParameter("companyId", companyId)
+				.setParameter("selectionType", ItemSelectionType.STANDARD_SETTING.value)
+				.setParameter("layoutId", layoutId)
+				.setParameter("code", exportCD)
+				.getList();
+		
+		if (kfnmtRptWkAtdOut.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		JpaAttendanceRecordStandardSettingGetMemento mementoGetter = new JpaAttendanceRecordStandardSettingGetMemento(
+				kfnmtRptWkAtdOut, companyId, ItemSelectionType.STANDARD_SETTING.value);
+		
+		return Optional.of(AttendanceRecordStandardSetting.createFromMemento(mementoGetter));
+	}
+	
 	@Override
 	public void add(AttendanceRecordFreeSetting domain) {
 		for (AttendanceRecordExportSetting subDomain : domain.getAttendanceRecordExportSettings()) {
@@ -145,13 +173,14 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			
 			Optional<AttendanceRecordExportSetting> ares = this.findByLayoutId(subDomain.getLayoutId());
 			if (ares.isPresent()) {
+				entity.setDailyExportItem(ares.get().getDailyExportItem());
+				entity.setMonthlyExportItem(ares.get().getMonthlyExportItem());
 				// update
 				this.commandProxy().update(entity);
 			} else {
 				// insert
 				this.commandProxy().insert(entity);
 			}
-			
 			
 		}
 	}
@@ -177,6 +206,28 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 
 		JpaAttendanceRecordFreeSettingGetMemento mementoGetter = new JpaAttendanceRecordFreeSettingGetMemento(
 				kfnmtRptWkAtdOut, companyId, employeeId, ItemSelectionType.FREE_SETTING.value);
+		return Optional.of(AttendanceRecordFreeSetting.createFromMemento(mementoGetter));
+	}
+	
+	@Override
+	public Optional<AttendanceRecordFreeSetting> getFreeWithLayoutId(String companyId,
+			String employeeId, String layoutId, String exportCD) {
+		List<KfnmtRptWkAtdOut> kfnmtRptWkAtdOut = this.queryProxy()
+				.query(GET_FREE_SETTING_WITH_LAYOUTID, KfnmtRptWkAtdOut.class)
+				.setParameter("companyId", companyId)
+				.setParameter("selectionType", ItemSelectionType.FREE_SETTING.value)
+				.setParameter("employeeId", employeeId)
+				.setParameter("layoutId", layoutId)
+				.setParameter("code", exportCD)
+				.getList();
+		
+		if (kfnmtRptWkAtdOut.isEmpty()) {
+			return Optional.empty();
+		}
+		
+		JpaAttendanceRecordFreeSettingGetMemento mementoGetter = new JpaAttendanceRecordFreeSettingGetMemento(
+				kfnmtRptWkAtdOut, companyId, employeeId, ItemSelectionType.FREE_SETTING.value);
+		
 		return Optional.of(AttendanceRecordFreeSetting.createFromMemento(mementoGetter));
 	}
 

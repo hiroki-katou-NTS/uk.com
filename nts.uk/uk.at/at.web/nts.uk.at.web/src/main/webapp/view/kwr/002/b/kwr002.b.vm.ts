@@ -60,6 +60,8 @@ module nts.uk.com.view.kwr002.b {
                         if (_.isNil(self.currentARES().exportFontSize())) {
                             self.currentARES().exportFontSize(2);
                         }
+
+                        self.layoutId = aRESData.layoutId;
                         self.newMode(false);
                         newModeFlag = false;
                     })
@@ -314,32 +316,16 @@ module nts.uk.com.view.kwr002.b {
 
         public openDialogF() {
             let vm = this;
-            let data = new OpenDialogFParam(
-                vm.selectionType,
-                vm.currentARES().code(),
-                vm.currentARES().name(),
-                vm.layoutId);
-                
-        //       useSeal: getShared('useSeal'),
+            let data = new OpenDialogFParam({
+                itemSelectedType: vm.selectionType,
+                code: vm.currentARES().code(),
+                name: vm.currentARES().name(),
+                layoutId: vm.layoutId
+            });
 
-        //       isInvalid: function() {
-        //           return ((!_.isArray(this.attendanceRecExpDaily) && !_.isArray(this.attendanceRecExpMonthly))
-        //               || (!this.isListValid(this.attendanceRecExpDaily) && !this.isListValid(this.attendanceRecExpMonthly)));
-        //       },
-
-        //       isListValid: function(list) {
-        //           return _.find(list, (item: any) => !(_.isEmpty(item.upperPosition) && _.isEmpty(item.lowwerPosition)));
-        //       }
-        //   };
             setShared("dataFromScreenB", data, true);
             modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
-            //   let dataFromScreenF = getShared("dataFromScreenF")
-            //   currentData.code(dataFromScreenF.duplicateCode);
-            //   currentData.name(dataFromScreenF.duplicateName);
-            // let dataCoppy  = vm.createTransferData(currentData, rcdExport);
-            //   service.addARES(dataCoppy).done((data: any) =>{
-            //     nts.uk.ui.dialog.alertError({ messageId: "Msg_15" });
-            //   })
+            
             });
         }
 
@@ -549,12 +535,8 @@ module nts.uk.com.view.kwr002.b {
         layoutId: string;
         employeeId?: string;
 
-        constructor(itemSelectedType: number, code: string, name: string, layoutId: string, employeeId?: string) {
-            this.itemSelectedType = itemSelectedType;
-            this.code = code;
-            this.name = name;
-            this.layoutId = layoutId;
-            this.employeeId = employeeId;
+        constructor(init?: Partial<OpenDialogFParam>) {
+            $.extend(this, init);
       }
     }
 

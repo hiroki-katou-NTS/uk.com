@@ -7,6 +7,7 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.function.app.find.attendancerecord.duplicate.AttendanceRecordDuplicateDto;
 import nts.uk.ctx.at.function.app.find.attendancerecord.duplicate.AttendanceRecordDuplicateFinder;
+import nts.uk.ctx.at.function.app.find.attendancerecord.duplicate.DataInfoReturnDto;
 
 /**
  * Screen F - KWR 002 
@@ -21,15 +22,14 @@ public class AttendanceDuplicateRecordWebService {
 	
 	@Path("executeCopy")
 	@POST
-	public String executeCopy(AttendanceRecordDuplicateDto dto) {
+	public Boolean executeCopy(AttendanceRecordDuplicateDto dto) {
 		return this.attendanceRecordDuplicateFinder.executeCopy(dto);
 	}
 	
-//	@POST
-//	@Path("checkDuplicate")
-//	public void copyRegistionProcess() {
-//		attendanceRecordDuplicateFinder.copyRegistionProcess();
-//	}
-	
+	@POST
+	@Path("findCopyAttendance")
+	public DataInfoReturnDto findCopyAttendance(AttendanceRecordDuplicateDto dto) {
+		return this.attendanceRecordDuplicateFinder.findCopyAttendance(dto);
+	}
 	
 }

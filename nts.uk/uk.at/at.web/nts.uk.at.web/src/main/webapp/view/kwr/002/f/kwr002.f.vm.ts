@@ -1,13 +1,15 @@
-/// <reference path="../../../../lib/nittsu/viewcontext.d.ts" />
+/// <reference path='../../../../lib/nittsu/viewcontext.d.ts' />
 module nts.uk.com.view.kwr002.f {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import modal = nts.uk.ui.windows.sub.modal;
-    import windows = nts.uk.ui.windows;
-    import blockUI = nts.uk.ui.block;
+
+    const API = {
+        findCopyAttendance: 'com/function/attendancerecord/duplicate/findCopyAttendance',
+        executeCopy: 'com/function/attendancerecord/duplicate/executeCopy',
+    }
+
     @bean()
     export class KWR002FViewModel extends ko.ViewModel {
-        itemList: KnockoutObservableArray<ItemModel>;
         selectedCode: KnockoutObservable<string>;
         selectedName: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
@@ -17,77 +19,82 @@ module nts.uk.com.view.kwr002.f {
         layoutId: string;
         selectionType: string;
 
-        /**
-         * Constructor.
-         */
-        constructor() {
-            super();
-            var vm = this;
-            vm.itemList = ko.observableArray([]);
+        created() {
+            const vm = this;
             vm.selectedCode = ko.observable('');
             vm.isEnable = ko.observable(true);
-            vm.isEditable = ko.observable(true);
             vm.duplicateCode = ko.observable('');
             vm.duplicateName = ko.observable('');
-        }
+            vm.isEditable = ko.observable(true);
+            vm.selectedName  = ko.observable('');
 
-        created() {
-            let vm = this;
-            let dataFromScreenB = nts.uk.ui.windows.getShared("dataFromScreenB");
-            vm.selectedCode = ko.observable(dataFromScreenB.code);
-            vm.selectedName = ko.observable(dataFromScreenB.name);
+            let dataFromScreenB = getShared('dataFromScreenB');
             vm.selectionType = dataFromScreenB.itemSelectedType;
             vm.layoutId = dataFromScreenB.layoutId;
+
+            vm.$blockui('grayout');
+
+            const param = {
+                code: dataFromScreenB.code,
+                name: dataFromScreenB.name,
+                selectedType: dataFromScreenB.itemSelectedType,
+                layoutId: dataFromScreenB.layoutId
+            }
+
+            vm.$ajax('at',API.findCopyAttendance, param)
+                .then((response: DataInfoReturnDto) => {
+                    vm.selectedCode(response.code);
+                    vm.selectedName(response.name);
+                })
+                .always(() => vm.$blockui('hide'));
+
         }
 
         executeCopy() {
             let vm = this;
-            let dataCopy = new AttendanceDuplicateDto(vm.selectedCode()
-                                                    , vm.selectedName()
-                                                    , ''
-                                                    , vm.duplicateCode()
-                                                    , vm.duplicateName());
-            if (_.isEqual(vm.selectedCode, vm.duplicateCode())) {
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_355" });
+
+            if (!vm.duplicateCode() || !vm.duplicateName() || nts.uk.ui.errors.hasError()) {
                 return;
+            }
+            
+            let dataCopy = new AttendanceDuplicateDto({
+                code: vm.selectedCode(),
+                name: vm.selectedName(),
+                duplicateCode: vm.duplicateCode(),
+                duplicateName: vm.duplicateName(),
+                selectedType: vm.selectionType,
+                layoutId: vm.layoutId,
+            });
+            
+            if (_.isEqual(vm.selectedCode(), vm.duplicateCode())) {
+                return vm.$dialog.alert({ messageId: 'Msg_355' })
             }
 
             vm.$blockui('show');
 
-            service.executeCopy(dataCopy).done((data: any) => {
-              if(!data){
-                let shareData = {
-                  duplicateCode: vm.duplicateCode(),
-                  duplicateName: vm.duplicateName()
+            vm.$ajax('at', API.executeCopy, dataCopy).then(response => {
+                if (!!response) {
+                    vm.$dialog.info({ messageId: 'Msg_15' }).then(() => {
+                        // Set shared param to share with screen B
+                        setShared('duplicateItem', {
+                            code: vm.duplicateCode,
+                            name: vm.duplicateName,
+                            layoutId: vm.layoutId
+                        });
+                        // Close screen
+                        vm.$window.close()
+                    });
                 }
-                setShared("dataFromScreenF",shareData);
-                vm.closeDialog();
-              }
-              else {
-                vm.$dialog.alert(data);
-              }
-            }).fail(function(err) {
-                vm.$dialog.alert(err.messageId);
-            }).always(function() {
-                vm.$blockui('clear');
-            });
+            })
+            .fail(err => vm.$dialog.alert({ messageId: err.messageId }))
+            .always(() => vm.$blockui('hide'));
         }
 
         closeDialog() {
             let vm = this;
-            windows.close();
+            vm.$window.close();
         }
 
-    }
-
-    class ItemModel {
-        code: string;
-        name: string;
-
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
     }
 
     class AttendanceDuplicateDto {
@@ -95,21 +102,17 @@ module nts.uk.com.view.kwr002.f {
         name: string;
         duplicateCode: string;
         duplicateName: string;
-        selectedType: number;
+        selectedType: string;
         layoutId: string;
 
-
-        constructor(code: string
-            , name: string
-            , layoutId: string
-            , duplicateCode: string
-            , duplicateName: string) {
-            this.code = code;
-            this.name = name;
-            this.layoutId = layoutId;
-            this.duplicateCode = duplicateCode;
-            this.duplicateName = duplicateName;
+        constructor(init?: Partial<AttendanceDuplicateDto>) {
+            $.extend(this, init);
         }
+    }
+
+    class DataInfoReturnDto {
+        code: string;
+        name: string;
     }
 
 }
