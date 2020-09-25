@@ -9,12 +9,18 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.sys.assist.dom.datarestoration.DataRecoveryResultRepository;
 
+/**
+ * アルゴリズム「保存セット一覧表示」
+ */
 @Stateless
 public class DataRecoveryResultFinder {
 	@Inject
 	private DataRecoveryResultRepository dataRecoveryResultRepository;
 	
 	public List<SaveSetDto> getDataRecoveryResultByStartDatetime(GeneralDateTime from, GeneralDateTime to) {
+		/**
+		 * ドメインモデル「データ復旧の結果」から保存セットコードで集約して保存名称を取得する
+		 */
 		return dataRecoveryResultRepository.getDataRecoveryResultByStartDatetime(from, to)
 											.parallelStream()
 											.map(SaveSetDto::fromDomain)

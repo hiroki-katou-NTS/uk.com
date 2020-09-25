@@ -601,6 +601,7 @@ module nts.uk.com.view.cmf004.b.viewmodel {
             $('#E4_1').focus();
           } else {
             const arr: string[] = res.message.split("/");
+            console.log(arr);
             if (arr.length > 0) {
               setShared("CMF004lParams", {
                 fileId: arr[0],

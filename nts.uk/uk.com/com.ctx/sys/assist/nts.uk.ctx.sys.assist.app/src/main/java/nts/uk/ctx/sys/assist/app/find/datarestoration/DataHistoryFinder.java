@@ -23,6 +23,9 @@ import nts.uk.ctx.sys.assist.dom.storage.ResultOfSaving;
 import nts.uk.ctx.sys.assist.dom.storage.ResultOfSavingRepository;
 import nts.uk.ctx.sys.assist.dom.storage.SysEmployeeStorageAdapter;
 
+/**
+ * アルゴリズム「保存セットで検索する」
+ */
 @Stateless
 public class DataHistoryFinder {
 	private static final boolean FAKE_DATA = true;
@@ -60,6 +63,9 @@ public class DataHistoryFinder {
 					data.setPractitioner(sid + " " + businessName);
 				});
 			}
+			/**
+			 * 取得したデータを画面表示する
+			 */
 			return res.parallelStream()
 					.sorted(Comparator.comparing(DataHistoryDto::getStartDatetime))
 					.collect(Collectors.toList());
@@ -79,9 +85,20 @@ public class DataHistoryFinder {
 	}
 
 	private List<DataHistoryDto> findBySaveSetCodes(List<String> saveSetCodes) {
+		/**
+		 * 起動する時取得したList<データ保存の結果＞から絞り込みする。
+		 */
 		List<ResultOfSaving> rosList = resultOfSavingRepository.getResultOfSavingBySaveSetCode(saveSetCodes);
+		
+		/**
+		 * 起動する時取得したList<データ復旧の実行＞から絞り込みする。
+		 */
 		List<PerformDataRecovery> pdrList = performDataRecoveryRepository.getPerformDataRecoverByIds(
 				rosList.parallelStream().map(ResultOfSaving::getStoreProcessingId).collect(Collectors.toList()));
+		
+		/**
+		 * 起動する時取得したList<データ復旧の結果＞から絞り込みする。
+		 */
 		List<DataRecoveryResult> drrList = dataRecoveryResultRepository.getDataRecoveryResultsByIds(pdrList
 				.parallelStream().map(PerformDataRecovery::getDataRecoveryProcessId).collect(Collectors.toList()));
 		return pdrList
