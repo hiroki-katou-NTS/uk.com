@@ -71,7 +71,20 @@ export class CmmS45ComponentsApp3Component extends Vue {
         })
             .then((res: any) => {
                 vm.time = res.data.businessTripDto;
-                vm.table = res.data.businessTripDto.tripInfos;
+                vm.table = res.data.businessTripDto.tripInfos.map((item: any) => {
+                    const workTime = res.data.businessTripInfoOutputDto.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
+                    const workType = res.data.businessTripInfoOutputDto.infoBeforeChange.find((i: any) => i.date = item.date).workTypeDto;
+                    
+                    return {
+                        date: item.date,
+                        wkTypeCd: item.wkTypeCd,
+                        wkTimeCd: item.wkTimeCd,
+                        startWorkTime: item.startWorkTime,
+                        endWorkTime: item.endWorkTime,
+                        workTypeName: workType.name,
+                        workTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : null
+                    };
+                });
                 vm.params.appDetail = res.data;
                 //vm.dataFetch = res.data.
                 //vm.bindStart();

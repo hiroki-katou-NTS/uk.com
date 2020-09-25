@@ -61,32 +61,40 @@ export class KafS08A2Component extends KafS00ShrComponent {
 
     @Prop({ default: () => { } }) public readonly params!: any;
 
-    //public readonly params!: any;
-    public name: string = 'hello my dialog';
-    //public date: Date = new Date(2020,2,14);
-    public mtable = require('./mock_data.json');
-
     @Prop({ default: true })
     public readonly mode!: boolean;
 
     public user: any;
     public data: any;
     public hidden: boolean = false;
-    // vaii loan, laij khong dinh kieu????
-    public businessTripActualContent: [] = [];
-    public businessTripInfos: [] = [];
+    public businessTripActualContent: any[] = [];
     public appID: string = ' ';
-    public lstWorkDay: any[] = [];
+    // public lstWorkDay: any[] = [];
 
 
     public created() {
         const vm = this;
-        // if (vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo != null) {
-        //     vm.mode = false;
-        // }
-        console.log(vm.application);
-        console.log(vm.businessTripInfoOutput);
-        vm.fetchStart();
+        vm.data = vm.businessTripInfoOutput;
+        if (vm.mode) {
+            vm.fetchStart();
+        } else {
+            vm.businessTripActualContent = vm.data.businessTrip.tripInfos.map((item: any) => {
+                const workTime = vm.data.businessTripInfoOutput.appDispInfoStartup.appDispInfoWithDateOutput.opWorkTimeLst.find((i: any) => i.worktimeCode == item.wkTimeCd);
+                const workType = vm.data.businessTripInfoOutput.infoBeforeChange.find((i: any) => i.date = item.date).workTypeDto;
+                
+                return {
+                    date: item.date,
+                    opAchievementDetail: {
+                        workTypeCD: item.wkTypeCd,
+                        workTimeCD: item.wkTimeCd,
+                        opWorkTypeName: workType.name,
+                        opWorkTimeName: workTime ? workTime.workTimeDisplayName.workTimeName : null,
+                        opWorkTime: item.startWorkTime,
+                        opLeaveTime: item.endWorkTime
+                    }
+                };
+            });
+        }
     }
 
     public fetchStart() {
@@ -101,16 +109,15 @@ export class KafS08A2Component extends KafS00ShrComponent {
         }).then((loadData: any) => {
             if (loadData) {
                 return vm.$http.post('at', API.startKAFS08, {
-                    mode: true,
+                    mode: vm.mode,
                     companyId: vm.user.companyId,
                     employeeId: vm.user.employeeId,
                     listDates: vm.listDate,
-                    businessTripInfoOutput: vm.mode ? null : vm.data,
+                    businessTripInfoOutput: vm.data.businessTripInfoOutput,
+                    businessTrip: vm.data.businessTrip
                 }).then((res: any) => {
                     vm.data = res.data;
                     vm.businessTripActualContent = vm.data.businessTripInfoOutput.businessTripActualContent;
-                    vm.lstWorkDay = vm.data.businessTripInfoOutput.workdays;
-                    //console.log(vm.businessTripActualContent.length);
                 });
             }
 
@@ -125,8 +132,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public updateBusinessTrip() {
         const vm = this;
         let params = {
-            businessTrip: vm.businessTripInfoOutput.businessTrip,
-            businessTripInfoOutput: vm.businessTripInfoOutput.businessTripInfoOutput,
+            businessTrip: vm.data.businessTrip,
+            businessTripInfoOutput: vm.data.businessTripInfoOutput,
             application: vm.application,
         };
 
@@ -142,42 +149,47 @@ export class KafS08A2Component extends KafS00ShrComponent {
     //hàm xử lý gọi dialog
     public selectRowDate(rowDate) {
         const vm = this;
-        const { lstWorkDay, returnTime, derpartureTime } = vm;
         const { businessTripInfoOutput } = vm.data;
+        const { opWorkTime, opLeaveTime } = rowDate.opAchievementDetail;
 
         vm.$modal(KafS08DComponent, {
             rowDate,
-            lstWorkDay,
             businessTripInfoOutput,
-            derpartureTime,
-            returnTime
+            startWorkTime: opWorkTime,
+            endWorkTime: opLeaveTime
         }).then((model: {
-            derpartureTime: number;
-            returnTime: number;
             date: string,
             opWorkTypeName: '',
             opWorkTimeName: '',
-            opWorkTime: number,
-            opLeaveTime: number,
+            startWorkTime: number,
+            endWorkTime: number,
             workTypeCD: string,
             workTimeCD: string
         }) => {
-            //rowDate.opAchievementDetail.opWorkTime = model.opWorkTime;
-            //rowDate.opAchievementDetail.opLeaveTime = model.opLeaveTime;
-            console.log(model);
-            if (rowDate.date == model.date) {
-                    rowDate.opAchievementDetail.opWorkTypeName = model.opWorkTypeName ;
-                    rowDate.opAchievementDetail.opWorkTimeName = model.opWorkTimeName ;
-                    rowDate.opAchievementDetail.opWorkTime = model.derpartureTime;
-                    rowDate.opAchievementDetail.opLeaveTime = model.returnTime ;
-            }
-
-            vm.$emit('changeTime', model.derpartureTime, model.returnTime);
-
-
-            //opAchievementDetail.opWorkTime = model.opWorkTime;
-            //opAchievementDetail.opWorkTime = model.opLeaveTime;
-
+            if (model) {
+                vm.businessTripActualContent.forEach((i) => {
+                    if (i.date == model.date) {
+                        i.opAchievementDetail.opWorkTypeName = model.opWorkTypeName ;
+                        i.opAchievementDetail.opWorkTimeName = model.opWorkTimeName ;
+                        i.opAchievementDetail.workTypeCD = model.workTypeCD;
+                        i.opAchievementDetail.workTimeCD = model.workTimeCD;
+                        i.opAchievementDetail.opWorkTime = model.startWorkTime;
+                        i.opAchievementDetail.opLeaveTime = model.endWorkTime ;
+                    }
+                });
+                if (!vm.mode) {
+                    vm.data.businessTrip.tripInfos = vm.businessTripActualContent.map((item: any) => {
+                        return {
+                            date: item.date,
+                            wkTypeCd: item.opAchievementDetail.workTypeCD,
+                            wkTimeCd: item.opAchievementDetail.workTimeCD,
+                            startWorkTime: item.opAchievementDetail.opWorkTime,
+                            endWorkTime: item.opAchievementDetail.opLeaveTime
+                        };
+                    });
+                }
+                // vm.$emit('changeTime', model.derpartureTime, model.returnTime);
+            }           
         });
     }
 
