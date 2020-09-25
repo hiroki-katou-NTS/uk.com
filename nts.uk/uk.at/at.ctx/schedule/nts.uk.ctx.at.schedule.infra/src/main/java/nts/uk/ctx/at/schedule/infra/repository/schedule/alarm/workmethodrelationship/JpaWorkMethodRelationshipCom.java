@@ -18,6 +18,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMeth
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipComRepo;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmp;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpDtl;
+import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.workmethodrelationship.KscmtAlchkWorkContextCmpPk;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.SUPPORTS)
@@ -178,14 +179,14 @@ public class JpaWorkMethodRelationshipCom extends JpaRepository implements WorkM
 				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() : 
 					KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
 		
-		Optional<KscmtAlchkWorkContextCmp> workContext = 
-				new NtsStatement(SELECT_ONE_WORK_CONTEXT, this.jdbcProxy())
-				.paramString("companyId", companyId)
-				.paramInt("prevWorkMethod", prevWorkMethod.getWorkMethodClassification().value)
-				.paramString("prevWorkTimeCode", prevWorkTimeCode)
-				.getSingle(KscmtAlchkWorkContextCmp.mapper);
+		return this.queryProxy().find(
+				new KscmtAlchkWorkContextCmpPk(
+					companyId, 
+					prevWorkMethod.getWorkMethodClassification().value, 
+					prevWorkTimeCode), 
+				KscmtAlchkWorkContextCmp.class)
+			.isPresent();
 		
-		return workContext.isPresent();
 	}
 	
 	private List<WorkMethodRelationshipCom> toDomain(List<KscmtAlchkWorkContextCmp> workContextList, 
