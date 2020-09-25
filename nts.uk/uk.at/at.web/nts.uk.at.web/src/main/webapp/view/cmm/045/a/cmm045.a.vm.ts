@@ -2026,10 +2026,13 @@ module cmm045.a.viewmodel {
             lstApp.appLst = ko.toJS(self.items);
             lstApp.displaySet.startDateDisp = self.appListExtractConditionDto.periodStartDate;
             lstApp.displaySet.endDateDisp = self.appListExtractConditionDto.periodEndDate;
-
+			block.invisible();
             const command = { appListAtr: self.appListAtr, lstApp: lstApp, programName: programName }
-            service.print(command);
-            $('#daterangepicker .ntsEndDatePicker').focus();
+            service.print(command).always(() => { 
+				block.clear(); 
+				$('#daterangepicker .ntsEndDatePicker').focus();
+			});
+            
         }
 
         // getNtsFeatures(): Array<any> {
