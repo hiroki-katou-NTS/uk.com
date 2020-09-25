@@ -474,7 +474,7 @@ public class AsposeAttendanceRecordReportGenerator extends AsposeCellsReportGene
 
 			// fill data data
 			dailyRange.get(0, 0).setValue(data.getDate());
-			dailyRange.get(0, 1).setValue(data.getDayOfWeek());
+			dailyRange.get(0, 1).setValue(data.getDate().dayOfWeek());
 			List<AttendanceRecordReportColumnData> reportColumnDatas = data.getColumnDatas();
 			for (int k = 0, l = reportColumnDatas.size(); k < l; k++) {
 				dailyRange.get(0, 2 * (k + 1)).setValue(reportColumnDatas.get(k).getUper());

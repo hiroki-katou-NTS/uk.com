@@ -25,7 +25,7 @@ public class AttendanceRecordReportDailyData {
 	private GeneralDate date;
 	
 	//	上段/下段
-	private List<AttendanceRecordReportColumnData> position;
+	private List<AttendanceRecordReportColumnData> columnDatas;
 
 	//	列番号
 	private String columnIndex;
@@ -38,4 +38,6 @@ public class AttendanceRecordReportDailyData {
 
 	//	編集済み実績値
 	private String editedAchievementValue;
+	
+	private boolean secondCol;
 }
