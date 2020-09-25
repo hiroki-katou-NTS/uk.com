@@ -95,6 +95,7 @@ module nts.uk.com.view.cli002.a {
           vm.$dialog.alert({ messageId: "Msg_15" });
         })
         .always(() => vm.$blockui("clear"));
+        console.log(vm.dataSourceItem());
     }
 
     /**

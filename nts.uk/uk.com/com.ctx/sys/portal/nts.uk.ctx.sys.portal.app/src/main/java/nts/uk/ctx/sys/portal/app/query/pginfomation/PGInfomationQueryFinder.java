@@ -76,7 +76,9 @@ public class PGInfomationQueryFinder {
 		return standardMenus.stream()
 				.map((item) -> {
 					Optional<LogSetting> oLogSetting = logSettings.stream()
-							.filter(logSetting -> logSetting.getProgramId().equals(item.getProgramId()))
+							.filter(logSetting -> logSetting.getProgramId().equals(item.getProgramId())
+									&& logSetting.getProgramCd().equals(item.getCode().v())
+									&& logSetting.getMenuClassification().equals(item.getClassification()))
 							.findFirst();
 					
 					// Step ・機能名　＝　標準メニュー．表示名称
