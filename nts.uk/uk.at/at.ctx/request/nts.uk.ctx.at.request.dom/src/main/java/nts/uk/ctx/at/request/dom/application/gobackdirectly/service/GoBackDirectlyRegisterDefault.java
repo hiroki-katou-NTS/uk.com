@@ -634,7 +634,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 					Optional<AchievementDetail> opAchievementDetail = actualContentDisplay.getOpAchievementDetail();
 					if (opAchievementDetail.isPresent()) {
 						AchievementDetail achievementDetail = opAchievementDetail.get();
-						if (StringUtils.isNotBlank(achievementDetail.getWorkTimeCD())) {
+						if (StringUtils.isNotBlank(achievementDetail.getWorkTypeCD())) {
 							WorkTimeCode workTimeCode = null;
 							if (StringUtils.isNotBlank(achievementDetail.getWorkTimeCD())) {
 								workTimeCode = new WorkTimeCode(achievementDetail.getWorkTimeCD());
