@@ -8,7 +8,9 @@ import lombok.EqualsAndHashCode;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCom;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 
 @Embeddable
 @EqualsAndHashCode
@@ -40,6 +42,13 @@ public class KscmtAlchkWorkContextCmpPk {
 				domain.getCompanyId(), 
 				WorkMethodClassfication.HOLIDAY.value, 
 				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE);
+	}
+	
+	public WorkMethod toPrevWorkMethod() {
+		
+		return this.prevWorkMethod == WorkMethodClassfication.ATTENDANCE.value ?
+				new WorkMethodAttendance(new WorkTimeCode(this.prevWorkTimeCode)) : 
+					new WorkMethodHoliday();
 	}
 
 }

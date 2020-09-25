@@ -12,21 +12,23 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.RelationshipSpecifiedMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
-import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodContinuousWork;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipCom;
-import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
 import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 
 @Entity
 @Table(name = "KSCMT_ALCHK_WORK_CONTEXT_CMP")
 @AllArgsConstructor
 public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
+	
+	public static final Function<NtsResultRecord, KscmtAlchkWorkContextCmp> mapper = 
+			s -> new JpaEntityMapper<>(KscmtAlchkWorkContextCmp.class).toEntity(s);
 	
 	public static final String HOLIDAY_WORK_TIME_CODE = "000";
 	
@@ -44,15 +46,6 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 		return pk;
 	}
 	
-	public static Function<NtsResultRecord, KscmtAlchkWorkContextCmp> mapper = s -> 
-		new KscmtAlchkWorkContextCmp(
-				new KscmtAlchkWorkContextCmpPk(
-						s.getString("SID"), 
-						s.getInt("PREVIOUS_WORK_ATR"), 
-						s.getString("PREVIOUS_WKTM_CD")), 
-				s.getInt("PROHIBIT_ATR"), 
-				s.getInt("CURRENT_WORK_ATR"));
-	
 	public static KscmtAlchkWorkContextCmp fromDomain(WorkMethodRelationshipCom domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
@@ -68,16 +61,9 @@ public class KscmtAlchkWorkContextCmp  extends ContractUkJpaEntity {
 		
 		return new WorkMethodRelationshipCom(this.pk.companyId, 
 				WorkMethodRelationship.create(
-						this.toPrevWorkMethod(), 
+						this.pk.toPrevWorkMethod(), 
 						this.toCurrentWorkMethod(dtlList), 
 						RelationshipSpecifiedMethod.of(this.specifiedMethod)));
-	}
-	
-	private WorkMethod toPrevWorkMethod() {
-		
-		return this.pk.prevWorkMethod == WorkMethodClassfication.ATTENDANCE.value ?
-				new WorkMethodAttendance(new WorkTimeCode(this.pk.prevWorkTimeCode)) : 
-					new WorkMethodHoliday();
 	}
 	
 	private List<WorkMethod> toCurrentWorkMethod(List<KscmtAlchkWorkContextCmpDtl> dtlList) {

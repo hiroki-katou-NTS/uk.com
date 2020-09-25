@@ -12,6 +12,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.jdbc.NtsResultSet.NtsResultRecord;
+import nts.arc.layer.infra.data.jdbc.map.JpaEntityMapper;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
 import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationship;
@@ -25,6 +26,9 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
 @NoArgsConstructor
 public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 	
+	public static final Function<NtsResultRecord, KscmtAlchkWorkContextCmpDtl> mapper = 
+			s -> new JpaEntityMapper<>(KscmtAlchkWorkContextCmpDtl.class).toEntity(s);
+	
 	@EmbeddedId
 	public KscmtAlchkWorkContextCmpDtlPk pk;
 
@@ -33,14 +37,6 @@ public class KscmtAlchkWorkContextCmpDtl extends ContractUkJpaEntity{
 		return pk;
 	}
 	
-	public static Function<NtsResultRecord, KscmtAlchkWorkContextCmpDtl> mapper = s -> 
-			new KscmtAlchkWorkContextCmpDtl(
-					new KscmtAlchkWorkContextCmpDtlPk(
-							s.getString("CID"), 
-							s.getInt("PREVIOUS_WORK_ATR"), 
-							s.getString("PREVIOUS_WKTM_CD"), 
-							s.getString("TGT_WKTM_CD")));
-			
 	public static List<KscmtAlchkWorkContextCmpDtl> fromDomain(WorkMethodRelationshipCom domain) {
 		
 		WorkMethodRelationship relationship = domain.getWorkMethodRelationship();
