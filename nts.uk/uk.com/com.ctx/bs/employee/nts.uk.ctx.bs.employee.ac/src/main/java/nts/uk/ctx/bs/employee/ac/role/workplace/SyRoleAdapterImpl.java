@@ -61,5 +61,7 @@ public class SyRoleAdapterImpl implements SyRoleAdapter {
 		EmployeeReferenceRangeImport reuslt =  EmployeeReferenceRangeImport.valueOf(data.getAsInt());
 		return reuslt;
 	}
+	
+	
 
 }

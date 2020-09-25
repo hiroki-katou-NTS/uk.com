@@ -1,5 +1,7 @@
 package nts.uk.ctx.hr.shared.dom.personalinfo.perinfo.perinfohr.personalInfo;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -20,7 +22,9 @@ public class DeletePersonInfoHR {
 	@Inject
 	private PersonalInformationRepository repo;
 	
-	public void deletePersonalInfo(String histId) {
-		this.repo.delete(histId);
+	public void deletePersonalInfo(List<DeletePersonInfoHRInput> histIds) {
+		for (DeletePersonInfoHRInput deletePersonInfoHRInput : histIds) {
+			this.repo.delete(deletePersonInfoHRInput.getHistId());
+		}
 	}
 }

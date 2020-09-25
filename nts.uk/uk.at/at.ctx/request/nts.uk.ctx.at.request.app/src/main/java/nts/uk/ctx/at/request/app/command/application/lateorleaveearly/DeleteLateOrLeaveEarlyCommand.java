@@ -9,7 +9,7 @@ import lombok.Value;
  */
 @Value
 public class DeleteLateOrLeaveEarlyCommand {
-	private Long version;
+	private int version;
 	private String companyID;
 	private String appID;
 }

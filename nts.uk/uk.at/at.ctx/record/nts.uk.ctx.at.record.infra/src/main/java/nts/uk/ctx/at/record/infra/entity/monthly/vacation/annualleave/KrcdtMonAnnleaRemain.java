@@ -1,3 +1,4 @@
+
 package nts.uk.ctx.at.record.infra.entity.monthly.vacation.annualleave;
 
 import java.io.Serializable;
@@ -19,27 +20,28 @@ import lombok.val;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.ClosureStatus;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedDays;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.AttendanceRate;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.RealAnnualLeave;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
-import nts.uk.ctx.at.record.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
+import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.common.days.MonthlyDays;
 import nts.uk.ctx.at.shared.dom.common.days.YearlyDays;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.ClosureStatus;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnLeaRemNumEachMonth;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeave;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveAttdRateDays;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveGrant;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveMaxRemainingTime;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveRemainingDetail;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveRemainingNumber;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveUndigestedNumber;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveUsedDays;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AnnualLeaveUsedNumber;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.AttendanceRate;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.HalfDayAnnLeaRemainingNum;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.HalfDayAnnLeaUsedNum;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.HalfDayAnnualLeave;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.RealAnnualLeave;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.TimeAnnualLeaveUsedTime;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.UndigestedAnnualLeaveDays;
+import nts.uk.ctx.at.shared.dom.monthly.vacation.annualleave.UndigestedTimeAnnualLeaveTime;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveGrantDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveRemainingDayNumber;
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.grantremainingdata.daynumber.AnnualLeaveUsedDayNumber;
@@ -49,7 +51,6 @@ import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.Used
 import nts.uk.ctx.at.shared.dom.remainingnumber.annualleave.empinfo.maxdata.UsedTimes;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 import nts.uk.shr.com.time.calendar.date.ClosureDate;
-import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**

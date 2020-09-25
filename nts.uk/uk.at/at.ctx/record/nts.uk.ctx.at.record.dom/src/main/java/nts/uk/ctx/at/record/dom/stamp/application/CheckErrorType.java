@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.stamp.application;
 import java.util.Arrays;
 import java.util.List;
 
-import nts.uk.ctx.at.record.dom.workrecord.erroralarm.primitivevalue.ErrorAlarmWorkRecordCode;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.ErrorAlarmWorkRecordCode;
 
 /**
  * エラー種類

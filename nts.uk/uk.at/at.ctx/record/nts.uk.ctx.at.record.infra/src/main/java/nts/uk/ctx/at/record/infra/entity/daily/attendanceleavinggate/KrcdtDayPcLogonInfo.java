@@ -10,9 +10,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.LogOnInfo;
 import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnInfoOfDaily;
-import nts.uk.ctx.at.record.dom.daily.attendanceleavinggate.PCLogOnNo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.LogOnInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.entranceandexit.PCLogOnNo;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -50,7 +50,7 @@ public class KrcdtDayPcLogonInfo extends UkJpaEntity implements Serializable {
 	}
 
 	public static List<KrcdtDayPcLogonInfo> from(PCLogOnInfoOfDaily domain) {
-		return domain.getLogOnInfo().stream().map(c -> 
+		return domain.getTimeZone().getLogOnInfo().stream().map(c -> 
 	 							from(domain.getEmployeeId(), domain.getYmd(), c)
 		).collect(Collectors.toList());
 	}

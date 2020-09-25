@@ -1,0 +1,74 @@
+
+<div >
+	<div data-bind="component: { name: 'kaf000-b-component1', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput	
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component2', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component3', 
+								params: {
+									appType: appType,
+									approvalReason: approvalReason,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div class="table">
+		<div class="cell" style="width: 825px;" data-bind="component: { name: 'kaf000-b-component4',
+							params: {
+								appType: appType,
+								application: application,
+								appDispInfoStartupOutput: appDispInfoStartupOutput
+							} }"></div>
+       	<div class="cell" style="position: absolute;" data-bind="component: { name: 'kaf000-b-component9',
+							params: {
+								appType: appType,
+								application: application,
+								appDispInfoStartupOutput: $vm.appDispInfoStartupOutput
+							} }"></div>
+	</div>
+	<div data-bind="component: { name: 'kaf000-b-component5', 
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component6', 
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+
+	
+
+	<!-- C5 -->
+
+	<div class="label" data-bind="text: comment1().content, style: {color: comment1().color , margin:'10px', fontWeight: comment1().isBold ? 'bold' : 'normal'}" style="width: auto !important"></div>
+	<div style="display: block">
+		<!-- C6_1 -->
+		<div style="float: left; padding-top: 10px;" data-bind="ntsFormLabel: {}, text: $i18n('KAF002_17')"></div>
+		<!-- C6_2 -->
+		<div data-bind="if: isM">
+			<div 
+				data-bind="component: {name: 'kaf002-m', params: {mode: mode, reasonList: reasonList, selectedTab: selectedTab, tabs: tabs, dataSourceOb: dataSourceOb, tabMs: tabMs, isVisibleComlumn: isVisibleComlumn, isPreAtr: isPreAtr}}"
+				style="margin-left: 121px; width: 450px !important"></div>		
+		</div>
+	</div>
+	<div data-bind="text: comment2().content, style: {color: comment2().color , margin:'10px', fontWeight: comment2().isBold ? 'bold' : 'normal'}" class="label" style="width: auto !important"></div>
+		<div data-bind="component: { name: 'kaf000-b-component7', 
+								params: {
+									appType: appType,
+									application: application,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+	<div data-bind="component: { name: 'kaf000-b-component8', 
+								params: {
+									appType: appType,
+									appDispInfoStartupOutput: appDispInfoStartupOutput
+								} }"></div>
+
+</div>

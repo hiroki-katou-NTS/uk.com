@@ -1,4 +1,3 @@
-
 package nts.uk.file.at.app.export.alarm.checkcondition;
 
 import java.util.ArrayList;
@@ -16,8 +15,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceItemSetFinder;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.app.find.divergence.time.DivergenceAttendanceItemFinder;
+import nts.uk.ctx.at.record.dom.divergence.time.service.attendance.AttendanceNameDivergenceDto;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.ConditionAtr;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.enums.SingleValueCompareType;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.monthlycheckcondition.TypeCheckVacation;
@@ -54,7 +53,7 @@ public class AlarmCheckConditionExportImpl implements MasterListData {
 
 	// get attendance item name
 	@Inject
-	private DivergenceItemSetFinder divergenceItemSetFinder;
+	private DivergenceAttendanceItemFinder divergenceItemSetFinder;
 
 	@Override
 	public List<SheetData> extraSheets(MasterListExportQuery query) {

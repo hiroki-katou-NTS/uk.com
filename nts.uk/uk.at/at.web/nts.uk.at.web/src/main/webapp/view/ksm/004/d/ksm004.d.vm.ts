@@ -71,7 +71,7 @@ module ksm004.d.viewmodel {
             //list holiday
             self.listHoliday = ko.observableArray(null);
             self.itemHoliday = ko.observable(null);
-
+            $("#table-bottom").ntsFixedTable({ });
         }//end constructor
 
         /**

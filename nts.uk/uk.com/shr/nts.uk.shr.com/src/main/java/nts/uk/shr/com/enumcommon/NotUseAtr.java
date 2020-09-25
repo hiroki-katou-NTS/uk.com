@@ -17,7 +17,7 @@ public enum NotUseAtr {
 
 	/** The Constant values. */
 	private final static NotUseAtr[] values = NotUseAtr.values();
-
+	
 	/**
 	 * Instantiates a new rounding.
 	 *
