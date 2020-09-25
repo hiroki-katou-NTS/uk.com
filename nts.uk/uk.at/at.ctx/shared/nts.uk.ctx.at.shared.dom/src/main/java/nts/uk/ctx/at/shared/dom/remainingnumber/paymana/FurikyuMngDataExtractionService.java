@@ -125,8 +125,7 @@ public class FurikyuMngDataExtractionService {
 		String cid = AppContexts.user().companyId();
 		List<PayoutManagementData> payoutManagementData;
 		List<SubstitutionOfHDManagementData> substitutionOfHDManagementData;
-		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();
-		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToSub = new ArrayList<PayoutSubofHDManagement>();		
+		List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout = new ArrayList<PayoutSubofHDManagement>();	
 		double useDays;
 		ComSubstVacation comSubstVacation;
 		Integer closureId;
@@ -156,18 +155,22 @@ public class FurikyuMngDataExtractionService {
 				substitutionOfHDManagementData = substitutionOfHDManaDataRepository.getBySidRemainDayAndInPayout(empId);
 			}
 			// Step 取得したデータをチェック
-			if (!payoutManagementData.isEmpty() && !substitutionOfHDManagementData.isEmpty()) {
-				// Step ドメイン「振出振休紐付け管理」を取得する
+			if(payoutManagementData.isEmpty() && substitutionOfHDManagementData.isEmpty()) {
+				throw new BusinessException("Msg_726");
+			}
+			// Step ドメイン「振出振休紐付け管理」を取得する
+			if(substitutionOfHDManagementData.isEmpty()) {
 				List<GeneralDate> listPayoutDate = payoutManagementData.stream().map(x -> {
 					return x.getPayoutDate().getDayoffDate().get();
 				}).collect(Collectors.toList());
 				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListDate(empId, listPayoutDate);
-
+			}else {
 				List<GeneralDate> listSubDate = substitutionOfHDManagementData.stream().map(x -> {
 					return x.getHolidayDate().getDayoffDate().get();
 				}).collect(Collectors.toList());
-				payoutSubofHDManagementLinkToSub = payoutSubofHDManaRepository.getByListDate(empId, listSubDate);
+				payoutSubofHDManagementLinkToPayout = payoutSubofHDManaRepository.getByListDate(empId, listSubDate);
 			}
+			
 			// Step 振休残数データ情報を作成
 			// TODO getRemainNumDtInfor
 			// Step 月初の振休残数を取得
@@ -316,7 +319,36 @@ public class FurikyuMngDataExtractionService {
 				closureId = closureEmploymentRepository.findByEmploymentCD(cid, empCD).get().getClosureId();
 			}
 		}
-		
+		 
 		return closureId;
+	}
+	
+	// UKDesign.UniversalK.就業.KDM_残数管理 (Quản lý số dư).KDM001_残数管理データの登録 (Đăng ký dữ liệu quản lý số dư).Ａ：振休管理.アルゴリズム.Ａ：振休管理データ抽出処理.振休残数データ情報を作成.振休残数データ情報を作成
+	public List<RemainInfoData> getRemainInfoData(List<PayoutManagementData> payoutManagementData, List<SubstitutionOfHDManagementData> substitutionOfHDManagementData, 
+			List<PayoutSubofHDManagement> payoutSubofHDManagementLinkToPayout, String empId) {
+		// List＜残数データ情報＞を作成
+		List<RemainInfoData> lstRemainInfoData = new ArrayList<RemainInfoData>();
+		// Input．List<振出管理データ＞をループする
+		for (PayoutManagementData itemPayout : payoutManagementData) {
+			// Input.List＜振出振休紐付け管理＞を絞り込みする
+			List<PayoutSubofHDManagement> listPayoutSub = payoutSubofHDManagementLinkToPayout.stream()
+					.filter(item -> item.getAssocialInfo().getOutbreakDay() == itemPayout.getPayoutDate().getDayoffDate().get())
+					.collect(Collectors.toList());
+			if (!listPayoutSub.isEmpty()) {
+				List<GeneralDate> lstDateOfUse = listPayoutSub.stream().map(x -> {
+					return x.getAssocialInfo().getDateOfUse();
+				}).collect(Collectors.toList());
+				// Input．List＜振休管理データ＞を絞り込み
+				List<SubstitutionOfHDManagementData> listSubstitution = substitutionOfHDManagementData.stream()
+						.filter(item -> lstDateOfUse.contains(item.getHolidayDate().getDayoffDate().get()))
+						.collect(Collectors.toList());
+				if(listSubstitution.isEmpty()) {
+					// Step ドメインモデル「振休管理データ」を取得
+					listSubstitution = substitutionOfHDManaDataRepository
+							.getBySidListHoliday(empId, lstDateOfUse);
+				}
+			}
+		}
+		return lstRemainInfoData;
 	}
 }

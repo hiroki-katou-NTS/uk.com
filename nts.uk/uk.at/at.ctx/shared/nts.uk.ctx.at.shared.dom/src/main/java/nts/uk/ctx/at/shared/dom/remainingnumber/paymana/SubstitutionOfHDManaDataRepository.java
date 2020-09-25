@@ -43,6 +43,8 @@ public interface SubstitutionOfHDManaDataRepository {
 	
 	Optional<SubstitutionOfHDManagementData> find(String cID,String sID,GeneralDate holidayDate );
 	
+	List<SubstitutionOfHDManagementData> getBySidListHoliday (String sid, List<GeneralDate> holidayDate);
+	
 	// ドメイン「振休管理データ」より紐付け対象となるデータを取得する
 	List<SubstitutionOfHDManagementData> getBySidDatePeriod(String sid,String payoutID, Double remainDays);
 	

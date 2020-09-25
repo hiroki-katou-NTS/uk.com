@@ -175,7 +175,6 @@
             }
             if (!nts.uk.ui.errors.hasError()) {
                 service.getExtraHolidayData(searchCondition).done(function(result) {
-                    console.log(result);
                     
                     if (self.unknowEmployeeInfo){ 
                         if (result.wkHistory){
