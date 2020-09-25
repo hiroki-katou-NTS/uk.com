@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+<ui:composition template="base.xhtml">
+    <ui:define name="title">
+        <span class="title">#{i18n.getText('Com_Company')}</span>
+    </ui:define>
+
+    <ui:define name="table-content">
+        <tr>
+            <td>
+                <div id="H1_1" class=""
+                     data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM008_141')}</div>
+            </td>
+            <td>
+                <button id="H1_2">#{i18n.getText('KSM008_142')}</button>
+            </td>
+            <td>
+                <div class="labelWorkplace">
+                    <span class="label">abc</span>
+                    <span class="label">xyz</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div id="H3_1" class=""
+                     data-bind="ntsFormLabel: { constraint: 'LayoutCode', required: true }">#{i18n.getText('KSM008_143')}</div>
+            </td>
+            <td>
+                <input id="H2_2" class="validate_form" data-bind="ntsTextEditor: {value: simpleValue, constraint: constraint, required: true, enable: true, name:'#{i18n.getText('KSM008_144')}'}"/>
+            </td>
+            <td>
+                <div class="labelWorkplace">
+                    <span class="label">#{i18n.getText('KSM008_145')}</span>
+                </div>
+            </td>
+        </tr>
+    </ui:define>
+</ui:composition>
+</body>
+</html>
