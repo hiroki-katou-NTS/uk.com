@@ -360,14 +360,22 @@ export class CmmS45BComponent extends Vue {
                 }));
             }
         });
-        if (self.lstAppByEmp.length == 0) {
+        // count applicaiton
+        let count = 0;
+        _.forEach(self.lstAppByEmp, (e: AppByEmp) => {
+            _.forEach(e, (i: any) => {
+                count++;
+            });
+        });
+        if (count == 0) {
             self.displayB513 = 1;
-        } else if (data.appListInfoDto.appLst.length > data.appAllNumber) {
+        } else if (count > data.appAllNumber) {
             self.displayB513 = 2;
         } else {
             self.displayB513 = 0;
         }
     }
+
 
     // private getLstApp(appLst: ListOfApplication, sCD: string) {
     //     let self = this;
