@@ -292,7 +292,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItemsTotal = new ArrayList<>();
 
-		for (int i = 7; i <= 9; i++) {
+		for (int i = 7; i <= 13; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
 				KfnmtRptWkAtdOutframe item = new KfnmtRptWkAtdOutframe();
 				item.setId(new KfnmtRptWkAtdOutframePK());
@@ -343,7 +343,7 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		// query data
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItems = em.createQuery(criteriaQuery).getResultList();
 		List<KfnmtRptWkAtdOutframe> kfnstAttndRecItemsTotal = new ArrayList<>();
-		for (int i = 1; i <= 12; i++) {
+		for (int i = 1; i <= 16; i++) {
 			if (this.findIndexInList(i, kfnstAttndRecItems) == null) {
 				KfnmtRptWkAtdOutframe item = new KfnmtRptWkAtdOutframe();
 				item.setId(new KfnmtRptWkAtdOutframePK());
