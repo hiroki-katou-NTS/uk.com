@@ -12,11 +12,7 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @AllArgsConstructor
 public class MaxNumberDaysOfContinuousAttendanceCom implements DomainAggregate{
-	//会社ID
-	@Getter
-	private final String companyId;
-	
-	//日数
+	/** 日数 */
 	@Getter
 	private MaxNumberDaysOfContinuousAttendance numberOfDays;
 }

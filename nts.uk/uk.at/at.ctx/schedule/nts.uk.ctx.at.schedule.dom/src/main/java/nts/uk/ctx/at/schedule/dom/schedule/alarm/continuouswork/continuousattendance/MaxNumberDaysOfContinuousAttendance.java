@@ -11,7 +11,7 @@ import nts.uk.ctx.at.schedule.dom.schedule.alarm.continuouswork.NumberOfConsecut
  */
 @Value
 public class MaxNumberDaysOfContinuousAttendance implements DomainValue{
-	//日数
+	/** 日数 */
 	private NumberOfConsecutiveDays numberOfDays;
 
 }
