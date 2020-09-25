@@ -141,6 +141,10 @@ module nts.uk.at.view.kaf022.p.viewmodel {
                     dialog.alertError({ messageId: "Msg_3" });
                     return;
                 }
+                if (data.settingItems.length == 0) {
+                    dialog.alertError({ messageId: "Msg_1752" });
+                    return;
+                }
                 data.settingItems.forEach((obj, index) => {
                     obj['dispOrder'] = index + 1;
                 });
@@ -190,10 +194,15 @@ module nts.uk.at.view.kaf022.p.viewmodel {
     }
 
     class OptionalItemAppSet {
+        // コード
         code: KnockoutObservable<string>;
+        // 申請種類名
         name: KnockoutObservable<string>;
+        // 利用区分
         useAtr: KnockoutObservable<number>;
+        // 任意項目申請の説明文
         note: KnockoutObservable<string>;
+        // 任意項目
         settingItems: KnockoutObservableArray<any>;
 
         constructor(param?: IOptionalItemAppSet) {

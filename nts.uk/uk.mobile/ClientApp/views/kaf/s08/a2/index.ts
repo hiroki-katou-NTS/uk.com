@@ -40,9 +40,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
     @Prop({ default: () => [] }) public readonly table!: [];
 
     //A2 nhận về props params là một Object ITimes
-    @Prop({ default: () => 0 }) public readonly derpartureTime!: number;
+    @Prop({ default: () => 0 }) public derpartureTime!: number;
 
-    @Prop({ default: () => 0 }) public readonly returnTime!: number;
+    @Prop({ default: () => 0 }) public returnTime!: number;
 
     //A2 nhận về props comment là một Object comment
     @Prop({ default: {} }) public readonly comment!: Object;
@@ -65,7 +65,10 @@ export class KafS08A2Component extends KafS00ShrComponent {
     public name: string = 'hello my dialog';
     //public date: Date = new Date(2020,2,14);
     public mtable = require('./mock_data.json');
-    public mode: boolean = true;
+
+    @Prop({ default: true })
+    public readonly mode!: boolean;
+
     public user: any;
     public data: any;
     public hidden: boolean = false;
@@ -77,9 +80,9 @@ export class KafS08A2Component extends KafS00ShrComponent {
 
     public created() {
         const vm = this;
-        if (vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo != null) {
-            vm.mode = false;
-        }
+        // if (vm.businessTripInfoOutput.businessTripInfoOutput.appDispInfoStartup.appDetailScreenInfo != null) {
+        //     vm.mode = false;
+        // }
         console.log(vm.application);
         console.log(vm.businessTripInfoOutput);
         vm.fetchStart();
@@ -160,8 +163,8 @@ export class KafS08A2Component extends KafS00ShrComponent {
             if (rowDate.date == model.date) {
                 rowDate.opAchievementDetail.opWorkTypeName = model.opWorkTypeName;
                 rowDate.opAchievementDetail.opWorkTimeName = model.opWorkTimeName;
-                rowDate.opAchievementDetail.opWorkTime = model.opWorkTime;
-                rowDate.opAchievementDetail.opLeaveTime = model.opLeaveTime;
+                rowDate.opAchievementDetail.opWorkTime = model.derpartureTime;
+                rowDate.opAchievementDetail.opLeaveTime = model.returnTime;
             }
             vm.$emit('changeTime', model.derpartureTime, model.returnTime);
 

@@ -46,12 +46,17 @@ export class KafS08AComponent extends Vue {
     public listDate: any[] = [];
     public appReason: string = '';
     public startDate;
-    public mode: boolean;
+    public mode: boolean = true;
+    public data?: any = null;
 
 
     public created() {
-        const vm = this;
-        console.log(vm.params);
+        const vm= this;
+        if (vm.params) {
+            console.log(vm.params);
+            vm.mode = false;
+            vm.data = vm.params;
+        }
     }
 
     public handlerChangeTime(derpartureTime,retureTime) {
@@ -87,14 +92,9 @@ export class KafS08AComponent extends Vue {
         //nhan ve appReason tu A1
         vm.appReason = appReason;
 
-        vm.mode = mode;
+        // vm.mode = mode;
          //nhảy sang step A2 
         vm.step = 'KAFS08_11';
-
-        setTimeout(function () {
-            let focusElem = document.getElementById('table-a10');
-            (focusElem as HTMLElement).focus();
-        }, 100);
     }
 
     //thực hiện emit từ component con A2 đến C
@@ -121,5 +121,12 @@ export class KafS08AComponent extends Vue {
             }
             (focusElem as HTMLElement).focus();
         }, 100);
+    }
+
+    public backToStepOne(res: any) {
+        const vm = this;
+        vm.data = res;
+        vm.mode = false;
+        vm.step = 'KAFS08_10';
     }
 }
