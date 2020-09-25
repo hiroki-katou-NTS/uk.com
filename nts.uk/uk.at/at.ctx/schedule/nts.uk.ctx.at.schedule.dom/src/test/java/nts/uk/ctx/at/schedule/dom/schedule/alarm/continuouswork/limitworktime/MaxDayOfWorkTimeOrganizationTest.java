@@ -10,10 +10,10 @@ import nts.arc.testing.assertion.NtsAssert;
 import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
 
 @RunWith(JMockit.class)
-public class MaxNumberOfWorkingDayOfPeriodsOrgTest {
+public class MaxDayOfWorkTimeOrganizationTest {
 	@Test
 	public void getters() {
-		MaxNumberOfWorkingDayOfPeriodsOrg maxNumberOfWorkingDayOfPeriodsOrg = MaxNumberOfWorkingDayOfPeriodsHelper.DUMMY_ORG;
+		MaxDayOfWorkTimeOrganization maxNumberOfWorkingDayOfPeriodsOrg = MaxDayOfWorkTimeHelper.DUMMY_ORG;
 
 		NtsAssert.invokeGetters(maxNumberOfWorkingDayOfPeriodsOrg);
 
@@ -21,7 +21,7 @@ public class MaxNumberOfWorkingDayOfPeriodsOrgTest {
 	
 	@Test
 	public void create_maxNumberOfWorkingDayOfPeriodsCom_success() {
-		MaxNumberOfWorkingDayOfPeriodsOrg maxNumberOfWorkingDayOfPeriodsOrg = MaxNumberOfWorkingDayOfPeriodsHelper.DUMMY_ORG;
+		MaxDayOfWorkTimeOrganization maxNumberOfWorkingDayOfPeriodsOrg = MaxDayOfWorkTimeHelper.DUMMY_ORG;
 		
 		assertThat(maxNumberOfWorkingDayOfPeriodsOrg).extracting(
 			 org -> org.getTargeOrg().getUnit(),

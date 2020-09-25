@@ -9,8 +9,11 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  *
  */
 @Value
-public class MaxNumberOfWorkingDayOfPeriods implements DomainValue{
-	//勤務上限日数
-	private MaxNumberOfWorkingDay maxNumberOfWorkingDay;
+public class MaxDayOfWorkTime implements DomainValue{
+	
+	/**
+	 * 勤務上限日数 
+	 */
+	private MaxDay maxDay;
 
 }

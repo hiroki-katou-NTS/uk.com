@@ -8,10 +8,10 @@ import org.junit.runner.RunWith;
 import mockit.integration.junit4.JMockit;
 import nts.arc.testing.assertion.NtsAssert;
 @RunWith(JMockit.class)
-public class MaxNumberOfWorkingDayOfPeriodsComTest {
+public class MaxDayOfWorkTimeCompanyTest {
 	@Test
 	public void getters() {
-		MaxNumberOfWorkingDayOfPeriodsCom maxNumberOfWorkingDayOfPeriodsCom = MaxNumberOfWorkingDayOfPeriodsHelper.DUMMY;
+		MaxDayOfWorkTimeCompany maxNumberOfWorkingDayOfPeriodsCom = MaxDayOfWorkTimeHelper.DUMMY;
 
 		NtsAssert.invokeGetters(maxNumberOfWorkingDayOfPeriodsCom);
 
@@ -19,10 +19,9 @@ public class MaxNumberOfWorkingDayOfPeriodsComTest {
 	
 	@Test
 	public void create_maxNumberOfWorkingDayOfPeriodsCom_success() {
-		MaxNumberOfWorkingDayOfPeriodsCom maxNumberOfWorkingDayOfPeriodsCom = MaxNumberOfWorkingDayOfPeriodsHelper.DUMMY;
+		MaxDayOfWorkTimeCompany maxNumberOfWorkingDayOfPeriodsCom = MaxDayOfWorkTimeHelper.DUMMY;
 		
 		assertThat(maxNumberOfWorkingDayOfPeriodsCom).extracting(
-			 com -> com.getCompanyId(),
 			 com -> com.getCode().v(),
 			 com -> com.getName().v(),
 			 com -> com.getMaxNumberOfWorkingDayOfPeriods().getMaxNumberOfWorkingDay().v()

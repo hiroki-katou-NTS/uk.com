@@ -11,17 +11,20 @@ import nts.arc.layer.dom.objecttype.DomainAggregate;
  */
 @Getter
 @AllArgsConstructor
-public class MaxNumberOfWorkingDayOfPeriodsCom implements DomainAggregate{
+public class MaxDayOfWorkTimeCompany implements DomainAggregate{
 
-	//会社ID
-	private final String companyId;
+	/**
+	 * コード 
+	 */
+	private WorkTimeMaximumCode code;
 	
-	//コード
-	private WorkTimeUpperLimitCode code;
+	/**
+	 * 名称 
+	 */
+	private WorkTimeMaximumName name;
 	
-	//名称
-	private WorkTimeUpperLimitName name;
-	
-	//上限勤務
-	private MaxNumberOfWorkingDayOfPeriods maxNumberOfWorkingDayOfPeriods;
+	/**
+	 * 上限勤務
+	 */
+	private MaxDayOfWorkTime maxNumberOfWorkingDayOfPeriods;
 }

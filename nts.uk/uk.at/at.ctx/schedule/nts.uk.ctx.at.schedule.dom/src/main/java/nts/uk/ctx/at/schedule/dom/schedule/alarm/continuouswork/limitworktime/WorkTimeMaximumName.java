@@ -8,12 +8,12 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 @StringMaxLength(10)
-public class WorkTimeUpperLimitName extends StringPrimitiveValue<WorkTimeUpperLimitName>{
+public class WorkTimeMaximumName extends StringPrimitiveValue<WorkTimeMaximumName>{
 
 	/** serialVersionUID	 */
 	private static final long serialVersionUID = 1L;
 
-	public WorkTimeUpperLimitName(String rawValue) {
+	public WorkTimeMaximumName(String rawValue) {
 		super(rawValue);
 	}
 

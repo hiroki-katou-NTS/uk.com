@@ -11,14 +11,12 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
  */
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(3)
-public class WorkTimeUpperLimitCode extends CodePrimitiveValue<WorkTimeUpperLimitCode>{
-	/**
-	 * 
-	 */
+public class WorkTimeMaximumCode extends CodePrimitiveValue<WorkTimeMaximumCode>{
+
 	private static final long serialVersionUID = 1L;
 
 	
-	public WorkTimeUpperLimitCode(String rawValue) {
+	public WorkTimeMaximumCode(String rawValue) {
 		super(rawValue);
 	}
 

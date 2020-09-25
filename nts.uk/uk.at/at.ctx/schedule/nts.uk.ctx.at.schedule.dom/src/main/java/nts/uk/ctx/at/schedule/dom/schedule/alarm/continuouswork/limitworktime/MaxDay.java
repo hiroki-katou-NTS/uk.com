@@ -11,12 +11,12 @@ import nts.arc.primitive.constraint.IntegerRange;
  *
  */
 @IntegerRange(min = 1, max = 31)
-public class MaxNumberOfWorkingDay extends IntegerPrimitiveValue<MaxNumberOfWorkingDay>{
+public class MaxDay extends IntegerPrimitiveValue<MaxDay>{
 
 	/**	serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public MaxNumberOfWorkingDay(Integer rawValue) {
+	public MaxDay(Integer rawValue) {
 		super(rawValue);
 	}
 
