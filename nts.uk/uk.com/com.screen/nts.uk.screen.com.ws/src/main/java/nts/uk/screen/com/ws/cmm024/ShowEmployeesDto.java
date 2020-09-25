@@ -1,4 +1,4 @@
-package nts.uk.screen.at.ws.cmm024.screen_f;
+package nts.uk.screen.com.ws.cmm024;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
