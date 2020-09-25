@@ -49,7 +49,10 @@ public class KscdtSchShortTimeTsPK implements Serializable {
 	@NotNull
 	@Column(name = "FRAME_NO")
 	public int frameNo;
-	
-	
 
+	public KscdtSchShortTimeTsPK(String sid, GeneralDate ymd) {
+		super();
+		this.sid = sid;
+		this.ymd = ymd;
+	}
 }

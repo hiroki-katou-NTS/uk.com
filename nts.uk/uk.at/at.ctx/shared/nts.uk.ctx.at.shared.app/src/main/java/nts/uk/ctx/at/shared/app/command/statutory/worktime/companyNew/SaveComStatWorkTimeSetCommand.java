@@ -99,7 +99,6 @@ public class SaveComStatWorkTimeSetCommand{
 		
 		return flex;
 	}
-	
 	private MonthlyEstimateTime get(Optional<MonthlyUnitDto> data) {
 		
 		return data.map(c -> new MonthlyEstimateTime(c.getMonthlyTime()))

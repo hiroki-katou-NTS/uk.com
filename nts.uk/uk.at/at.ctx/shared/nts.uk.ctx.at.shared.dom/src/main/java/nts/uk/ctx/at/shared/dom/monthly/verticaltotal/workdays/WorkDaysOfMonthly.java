@@ -4,9 +4,6 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.val;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.monthly.WorkTypeDaysCountTable;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.leave.LeaveOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.specificdays.SpecificDaysOfMonthly;
@@ -21,6 +18,9 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.Temporar
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.TwoTimesWorkTimesOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkDaysDetailOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.workdays.workdays.WorkTimesOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.paytime.SpecificDateAttrOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.predset.PredetemineTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;

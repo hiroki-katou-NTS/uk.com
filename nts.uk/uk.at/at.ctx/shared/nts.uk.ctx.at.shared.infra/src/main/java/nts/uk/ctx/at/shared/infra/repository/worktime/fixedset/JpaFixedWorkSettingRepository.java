@@ -29,6 +29,8 @@ import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHalfRestSet
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSetPK_;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedHolRestSet_;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflect;
+import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedStampReflectPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSet;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK;
 import nts.uk.ctx.at.shared.infra.entity.worktime.fixedset.KshmtFixedWorkSetPK_;
@@ -62,7 +64,34 @@ public class JpaFixedWorkSettingRepository extends JpaRepository implements Fixe
 	 */
 	@Override
 	public void update(FixedWorkSetting domain) {
-		this.commandProxy().update(this.toEntity(domain));
+		KshmtFixedWorkSet entity = this.toEntity(domain);
+		this.commandProxy().update(entity);
+		
+		removeRefTimeNo2(entity);
+	}
+
+	private void removeRefTimeNo2(KshmtFixedWorkSet entity) {
+		// this algorithm for remove RefTimeNo2 if not Use
+		boolean notUseRefTimeNo2 = !entity.getLstKshmtFixedStampReflect().stream()
+				.filter(x -> x.getKshmtFixedStampReflectPK().getWorkNo() == 2).findAny().isPresent();
+		if (notUseRefTimeNo2) {
+			entity.getLstKshmtFixedStampReflect().stream().filter(x -> x.getKshmtFixedStampReflectPK().getWorkNo() == 1)
+					.findFirst().ifPresent(x -> {
+						KshmtFixedStampReflectPK pk = x.getKshmtFixedStampReflectPK();
+						String SEL_REF_TIME_NO_2 = "SELECT a FROM KshmtFixedStampReflect a WHERE "
+								+ "a.kshmtFixedStampReflectPK.cid= :cid "
+								+ "AND a.kshmtFixedStampReflectPK.worktimeCd = :worktimeCd "
+								+ "AND a.kshmtFixedStampReflectPK.workNo = 2";
+						// get No 2
+						List<KshmtFixedStampReflect> no2Items = this.queryProxy()
+								.query(SEL_REF_TIME_NO_2, KshmtFixedStampReflect.class).setParameter("cid", pk.getCid())
+								.setParameter("worktimeCd", pk.getWorktimeCd()).getList();
+
+						if (!no2Items.isEmpty()) {
+							this.commandProxy().removeAll(no2Items);
+						}
+					});
+		}
 	}
 
 	/*

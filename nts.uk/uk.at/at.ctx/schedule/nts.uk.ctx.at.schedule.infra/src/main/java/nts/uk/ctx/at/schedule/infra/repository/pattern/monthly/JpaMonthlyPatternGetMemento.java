@@ -61,4 +61,9 @@ public class JpaMonthlyPatternGetMemento implements MonthlyPatternGetMemento{
 		return new MonthlyPatternName(this.monthlyPattern.getMPatternName());
 	}
 
+	@Override
+	public String getContractCd() {
+		return this.monthlyPattern.getContractCd();
+	}
+
 }

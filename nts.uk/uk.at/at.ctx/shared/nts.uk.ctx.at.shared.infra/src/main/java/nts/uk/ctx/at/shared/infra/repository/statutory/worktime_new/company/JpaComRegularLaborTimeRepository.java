@@ -76,7 +76,6 @@ public class JpaComRegularLaborTimeRepository extends JpaRepository
 
 			return new NtsResultSet(stmt.executeQuery())
 					.getSingle(rec -> {
-						
 						return RegularLaborTimeCom.of(rec.getString("CID"),
 								new WeeklyUnit(new WeeklyTime(rec.getInt("WEEKLY_TIME"))), 
 								new DailyUnit(new TimeOfDay(rec.getInt("DAILY_TIME"))));

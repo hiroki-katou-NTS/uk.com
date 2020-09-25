@@ -31,7 +31,7 @@
 					data-bind=" click: saveData">#{i18n.getText('KSU001_105')}</button>
 				<button class="danger" tabindex="2"
 					data-bind="click: deletePatternItem, enable: isDeleteEnable">#{i18n.getText('KSU001_106')}</button>
-				<button tabindex="3" data-bind="click: openJD">#{i18n.getText('KSU001_107')}</button>
+				<button tabindex="3" data-bind="click: openJD, enable: isCopy">#{i18n.getText('KSU001_107')}</button>
 				<button tabindex="4" data-bind="click: closeDialog">#{i18n.getText('KSU001_108')}</button>
 			</div>
 			<div id="contents-area">

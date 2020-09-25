@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			
+			<script>
+				var dialogSize = {
+					width : 1170,
+					height : 520
+				};
+				
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			
+			<com:stylefile path="style.css" />			
+			<com:scriptfile path="kdl006.a.service.js" />
+			<com:scriptfile path="kdl006.a.vm.js" />
+			<com:scriptfile path="kdl006.a.start.js" />
+		</ui:define>
+	
+		<ui:define name="content">
+		
+			<div id="functions-area">
+				<button tabindex="2" data-bind="click: save" class="btnStyle top-button">#{i18n.getText('KDL006_2')}</button>
+				<button tabindex="3" data-bind="click: close" class="btnStyle top-button">#{i18n.getText('KDL006_3')}</button>
+			</div>
+				
+			<div id="contents-area">				
+				<table tabindex="1" id="grid-list">
+					<thead>
+						<tr>
+							<th class="header-workplace header-text">#{i18n.getText('KDL006_4')}</th>							
+							<th id="grid-data-header-1" class="header-closure">
+								<table class="inside-table">
+									<tr style="width: 100%;">
+										<td class="no-border"><div data-bind="visible: columnHeader1.visible, ntsCheckBox: { checked: columnHeader1.checked }"></div></td>
+										<td class="no-border header-text" style="width: 100%;"><span data-bind="visible: columnHeader1.visible, html: columnHeader1.text"></span></td>
+									</tr>
+								</table>				
+							</th>
+							<th id="grid-data-header-2" class="header-closure">
+								<table class="inside-table">
+									<tr style="width: 100%;">
+										<td class="no-border"><div data-bind="visible: columnHeader2.visible, ntsCheckBox: { checked: columnHeader2.checked }"></div></td>
+										<td class="no-border header-text" style="width: 100%;"><span data-bind="visible: columnHeader2.visible, html: columnHeader2.text"></span></td>
+									</tr>
+								</table>							
+							</th>
+							<th id="grid-data-header-3" class="header-closure">
+								<table class="inside-table">
+									<tr style="width: 100%;">
+										<td class="no-border"><div data-bind="visible: columnHeader3.visible, ntsCheckBox: { checked: columnHeader3.checked }"></div></td>
+										<td class="no-border header-text" style="width: 100%;"><span data-bind="visible: columnHeader3.visible, html: columnHeader3.text"></span></td>
+									</tr>
+								</table>		
+							</th>
+							<th id="grid-data-header-4" class="header-closure">
+								<table class="inside-table">
+									<tr style="width: 100%;">
+										<td class="no-border"><div data-bind="visible: columnHeader4.visible, ntsCheckBox: { checked: columnHeader4.checked }"></div></td>
+										<td class="no-border header-text" style="width: 100%;"><span data-bind="visible: columnHeader4.visible, html: columnHeader4.text"></span></td>
+									</tr>
+								</table>								
+							</th>
+							<th id="grid-data-header-5" class="header-closure">
+								<table class="inside-table">
+									<tr style="width: 100%;">
+										<td class="no-border"><div data-bind="visible: columnHeader5.visible, ntsCheckBox: { checked: columnHeader5.checked }"></div></td>
+										<td class="no-border header-text" style="width: 100%;"><span data-bind="visible: columnHeader5.visible, html: columnHeader5.text"></span></td>
+									</tr>
+								</table>	
+							</th>
+						</tr>
+					</thead>
+					<tbody id="grid-data-body"></tbody>					
+				</table>
+			</div>
+		
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

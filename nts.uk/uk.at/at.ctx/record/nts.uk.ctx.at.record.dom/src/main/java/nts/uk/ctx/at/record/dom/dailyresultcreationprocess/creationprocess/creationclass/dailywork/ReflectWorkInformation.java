@@ -4,15 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
-
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.imprint.changeworktohalfdayleave.ChangeWorkToHalfdayLeave;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.createdailyoneday.reflectcalcategory.ReflectCalCategory;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.reflectworktimestamp.ReflectWorkTimeStamp;
 import nts.uk.ctx.at.record.dom.dailyperformanceprocessing.repository.reflectworkinfor.updateifnotmanaged.UpdateIfNotManaged;
 import nts.uk.ctx.at.record.dom.workrecord.stampmanagement.stamp.Stamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.editstate.EditStateOfDailyAttd;
 import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.ErrorMessageInfo;
 
 /**
@@ -22,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.workrecord.workperfor.dailymonthlyprocessing.Err
  *
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class ReflectWorkInformation {
 	@Inject
 	private UpdateIfNotManaged updateIfNotManaged;
@@ -54,8 +57,10 @@ public class ReflectWorkInformation {
 			reflectWorkTimeStamp.reflectStamp(stamp.getRefActualResults().getWorkTimeCode().get(), integrationOfDaily);
 		}
 		// 計算区分に反映する
-		reflectCalCategory.reflect(stamp.getType().getChangeCalArt(), integrationOfDaily.getCalAttr(),
+		List<EditStateOfDailyAttd> reflects = reflectCalCategory.reflect(stamp.getType().getChangeCalArt(), integrationOfDaily.getCalAttr(),
 				integrationOfDaily.getEditState());
+		reflects.addAll(integrationOfDaily.getEditState());
+		integrationOfDaily.setEditState(reflects);
 		return listErrorMessageInfo;
 	}
 

@@ -6,10 +6,10 @@ import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryMidNightTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.premiumtarget.getvacationaddtime.AddSet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 
@@ -40,12 +40,7 @@ public class WorkTimeOfTimeSeries implements Serializable{
 	public WorkTimeOfTimeSeries(GeneralDate ymd){
 		
 		this.ymd = ymd;
-		this.legalTime = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-				new AttendanceTime(0),
-				new AttendanceTime(0),
-				new AttendanceTime(0),
-				new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-				new AttendanceTime(0));
+		this.legalTime = WithinStatutoryTimeOfDaily.defaultValue();
 		this.vacationAddTime = new AttendanceTime(0);
 		this.workType = null;
 	}

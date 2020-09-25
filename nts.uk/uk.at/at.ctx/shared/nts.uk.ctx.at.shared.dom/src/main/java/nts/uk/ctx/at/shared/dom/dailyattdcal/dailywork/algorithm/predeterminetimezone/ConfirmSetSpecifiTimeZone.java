@@ -9,11 +9,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.dom.calculationsetting.query.DetermineAutoSetFutureDayStamp;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.DetermineAutoStampCondSPR;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.DetermineClassifiByWorkInfoCond;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.DetermineClassifiByWorkInfoCond.AutoStampSetClassifi;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.workinfomation.WorkInfoOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingConditionItem;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.algorithm.JudgeHdSystemOneDayService;
@@ -58,12 +57,12 @@ public class ConfirmSetSpecifiTimeZone {
 			return new ConfirmSetSpecifiResult();
 		}
 
-		if (!attendanceLeave.isPresent())
-			return new ConfirmSetSpecifiResult();
-		// SPR連携の自動打刻条件を判断
-		boolean checkSpr = DetermineAutoStampCondSPR.determine(attendanceLeave.get());
-		if (!checkSpr)
-			return new ConfirmSetSpecifiResult();
+//		if (!attendanceLeave.isPresent())
+//			return new ConfirmSetSpecifiResult();
+//		// SPR連携の自動打刻条件を判断
+//		boolean checkSpr = DetermineAutoStampCondSPR.determine(attendanceLeave.get());
+//		if (!checkSpr)
+//			return new ConfirmSetSpecifiResult();
 
 		return new ConfirmSetSpecifiResult(true, Optional.of(autoStampClassifi));
 	}

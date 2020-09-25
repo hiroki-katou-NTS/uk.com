@@ -412,10 +412,6 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			return null;
 		}
 		for (CompanyApprovalRoot comRoot : lstComs) {
-			//TH don 36 bo qua
-			if(comRoot.isApplication() && comRoot.getApprRoot().getApplicationType().equals(ApplicationType.APPLICATION_36)){
-				continue;
-			}
 			//convert data
 			ApprovalForApplication comApprover = this.getApproval(comRoot, companyID, lstName);
 			comApproverRoots.add(comApprover);

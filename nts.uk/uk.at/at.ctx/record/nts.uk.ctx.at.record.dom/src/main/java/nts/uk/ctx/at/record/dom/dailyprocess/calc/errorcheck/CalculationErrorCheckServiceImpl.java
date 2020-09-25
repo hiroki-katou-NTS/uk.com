@@ -28,14 +28,16 @@ import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecord;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.ErrorAlarmWorkRecordRepository;
 import nts.uk.ctx.at.record.dom.workrecord.erroralarm.condition.service.ErAlCheckService;
 import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus;
+import nts.uk.ctx.at.shared.dom.attendance.MasterShareBus.MasterShareContainer;
 import nts.uk.ctx.at.shared.dom.common.TimeOfDay;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.CheckExcessAtr;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.enums.SystemFixedErrorAlarm;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.ManagePerPersonDailySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.ManagePerCompanySet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.CheckExcessAtr;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.enums.SystemFixedErrorAlarm;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.UsageUnitSetting;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.defor.DeforLaborTimeCom;
@@ -320,10 +322,17 @@ public class CalculationErrorCheckServiceImpl implements CalculationErrorCheckSe
 			if (dailyUnit == null || dailyUnit.getDailyTime() == null)
 				dailyUnit = new DailyUnit(new TimeOfDay(0));
 			else {
-				integrationOfDaily = errorCheckNew(integrationOfDaily,
-						factoryManagePerPersonDailySet.create(companyId, companyCommonSetting, 
-																		integrationOfDaily, nowWorkingItem.get().getValue()).get(),
+				if (companyCommonSetting.getShareContainer() == null) {
+					MasterShareContainer<String> shareContainer = MasterShareBus.open();
+					companyCommonSetting.setShareContainer(shareContainer);
+				}
+				Optional<ManagePerPersonDailySet> optManagePerPersonDailySet = factoryManagePerPersonDailySet.create(companyId, companyCommonSetting, 
+						integrationOfDaily, nowWorkingItem.get().getValue());
+				if(optManagePerPersonDailySet.isPresent()) {
+					integrationOfDaily = errorCheckNew(integrationOfDaily,
+						optManagePerPersonDailySet.get(),
 						companyCommonSetting, sysfixecategory);
+				}
 			}
 		}
 		return integrationOfDaily;

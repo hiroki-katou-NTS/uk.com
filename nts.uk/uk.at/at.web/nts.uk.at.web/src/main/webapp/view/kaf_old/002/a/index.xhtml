@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="../../000/a/kaf000.a.service.js" />
+				<com:scriptfile path="kaf002.a.start.js" />
+				<com:scriptfile path="kaf002.a.vm.js" />
+				<com:stylefile path="kaf002.a.main.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+					<button data-bind="click: performanceReference">実績参照</button>
+				</div>
+				<div id="contents-area">
+					<div class="label">#{i18n.getText('KAF002_1')}</div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(0); }">#{i18n.getText('KAF002_2')}</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(1); }">#{i18n.getText('KAF002_3')}</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(2); }">#{i18n.getText('KAF002_4')}</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(3); }">#{i18n.getText('KAF002_5')}</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(4); }">#{i18n.getText('KAF002_6')}</button></div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

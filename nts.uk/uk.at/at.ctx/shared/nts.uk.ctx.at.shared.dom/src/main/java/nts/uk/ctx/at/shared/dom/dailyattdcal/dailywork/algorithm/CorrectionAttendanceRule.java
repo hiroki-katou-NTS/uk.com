@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -7,11 +8,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.dom.attendance.util.item.ItemValue;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordConverter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.converter.DailyRecordToAttendanceItemConverter;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.aftercorrectatt.CorrectionAfterTimeChange;
 import nts.uk.ctx.at.shared.dom.dailyattdcal.dailywork.algorithm.aftercorrectwork.CorrectionAfterChangeWorkInfo;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.converter.DailyRecordToAttendanceItemConverter;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -43,7 +44,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 
 		// 補正前の状態を保持
 		// IntegrationOfDaily beforeDomain = converter.toDomain();
-		List<ItemValue> beforeItems = converter.convert(atendanceId);
+		List<ItemValue> beforeItems = atendanceId.isEmpty() ? new ArrayList<>() : converter.convert(atendanceId);
 
 		// 勤怠変更後の補正
 		/// TODO: 設計中 waiting design map
@@ -60,7 +61,7 @@ public class CorrectionAttendanceRule implements ICorrectionAttendanceRule {
 		// 手修正を基に戻す
 		DailyRecordToAttendanceItemConverter afterConverter = attendanceItemConvertFactory.createDailyConverter().setData(afterDomain)
 				.completed();
-		afterConverter.merge(beforeItems);
+		if(!beforeItems.isEmpty()) afterConverter.merge(beforeItems);
 
 		return afterConverter.toDomain();
 	}

@@ -52,8 +52,8 @@ import nts.uk.ctx.at.record.dom.worktime.TimeLeavingOfDailyPerformance;
 import nts.uk.ctx.at.record.dom.worktime.repository.TemporaryTimeOfDailyPerformanceRepository;
 import nts.uk.ctx.at.record.dom.worktime.repository.TimeLeavingOfDailyPerformanceRepository;
 import nts.uk.ctx.at.shared.dom.affiliationinformation.WorkTypeOfDailyPerformance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.dailyattendancework.IntegrationOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -193,7 +193,11 @@ public class DailyRecordAdUpServiceImpl implements DailyRecordAdUpService {
 	public void adUpTemporaryTime(Optional<TemporaryTimeOfDailyPerformance> tempTime) {
 		if (!tempTime.isPresent())
 			return;
-		temporaryTimrRepo.update(tempTime.get());
+		if(temporaryTimrRepo.findByKey(tempTime.get().getEmployeeId(), tempTime.get().getYmd()).isPresent()) {
+			temporaryTimrRepo.update(tempTime.get());
+		}else {
+			temporaryTimrRepo.add(tempTime.get());
+		}
 
 	}
 

@@ -15,8 +15,8 @@
 			<com:scriptfile path="cmf002.c.vm.js" />
 			<com:stylefile path="cmf002.c.style.css" />
 			<com:ValidatorScript>
-		        nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionCode
-		        nts.uk.ctx.exio.dom.exo.condset.ExternalOutputConditionName
+						nts.uk.ctx.exio.dom.exo.outputitem.OutputItemCode
+						nts.uk.ctx.exio.dom.exo.outputitem.OutputItemName
 		    </com:ValidatorScript>
 		</ui:define>
 
@@ -48,10 +48,10 @@
 						<table id="C7_2" tabindex="12"
 							data-bind="ntsGridList: {
 								rows: 15,
-								name: '#[CMF002_346]', 
+								name: '#[CMF002_346]',
 								multiple: false,
 								dataSource: $parent.listStandardOutputItemTemp,
-								primaryKey: 'dispOutputItemCode', 
+								primaryKey: 'dispOutputItemCode',
 								value: $parent.selectedStandardOutputItemCode,
 								columns: [
 					                { headerText: '#{i18n.getText('CMF002_60')}', key: 'dispOutputItemCode', width: 50, formatter: _.escape },
@@ -85,24 +85,24 @@
 								<tr>
 									<td>
 										<!--C4 項目コード/名称(ラベル)-->
-										<div data-bind="ntsFormLabel: {constraint: ['ExternalOutputConditionCode', 'ExternalOutputConditionName'], required: true }">#{i18n.getText('CMF002_80')}</div>
+										<div data-bind="ntsFormLabel: {constraint: ['OutputItemCode', 'OutputItemName'], required: true }">#{i18n.getText('CMF002_80')}</div>
 									</td>
 									<td>
-										<!--C4_1 項目コード--> 
+										<!--C4_1 項目コード-->
 										<input id="C4_1" tabindex="8" data-bind="ntsTextEditor: {
-			                                 name: '#[CMF002_81]',
-			                                 value: outItemCd,
-			                                 enable: $parent.isNewMode(),
-			                                 constraint: 'ExternalOutputConditionCode',
-			                                 required: true,
-			                                 option: {width: '30px'}}" />
-										<!--C4_2 項目名称--> 
+			                name: '#[CMF002_81]',
+											value: outItemCd,
+											enable: $parent.isNewMode(),
+											constraint: 'OutputItemCode',
+											required: true,
+											option: {width: '50px'}}" />
+										<!--C4_2 項目名称-->
 										<input id="C4_2" tabindex="9" data-bind="ntsTextEditor: {
-			                                 name: '#[CMF002_82]',
-			                                 value: outItemName,
-			                          		 constraint: 'ExternalOutputConditionName',
-			                          		 required: true,
-			                          		 option: {width: '200px'}}" />
+											name: '#[CMF002_82]',
+											value: outItemName,
+											constraint: 'OutputItemName',
+											required: true,
+											option: {width: '180px'}}" />
 									</td>
 									<td>
 										<!--C5 出力時編集(ラベル)-->
@@ -136,7 +136,7 @@
 										<div data-bind="ntsFormLabel: {}">#{i18n.getText('CMF002_86')}</div>
 									</td>
 									<td colspan="4">
-										<!--C6_1 計算式--> 
+										<!--C6_1 計算式-->
 										<input data-bind="ntsTextEditor: {
 											readonly: true,
 											enable: false,
@@ -159,7 +159,7 @@
 											comId: 'C8_3',
 											items: $parent.listExOutCateItemData,
 											selected:$parent.selectedExOutputCateItemDatas,
-											fields: ['dispItemNo', 'dispitemName'], 
+											fields: ['dispItemNo', 'dispitemName'],
 											mode: 'igGrid'
 											}" />
 								<table id="C8_3" tabindex="14"
@@ -192,7 +192,7 @@
 									<table id="C10_1"
 										data-bind="ntsGridList: {
 								rows: 5,
-								name: '#[CMF002_348]', 
+								name: '#[CMF002_348]',
 								multiple: true,
 								dataSource: $parent.categoryItems,
 								value: $parent.selectedCategoryItems,

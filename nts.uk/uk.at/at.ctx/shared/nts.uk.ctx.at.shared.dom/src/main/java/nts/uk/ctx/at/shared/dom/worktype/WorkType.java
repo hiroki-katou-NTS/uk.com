@@ -85,6 +85,7 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 	}
 	
+	
 	/** 取得したドメインモデル「勤務種類．一日の勤務．一日」をチェックする */
 	public boolean isWokingDay() {
 		if(dailyWork == null) { return false; }
@@ -533,5 +534,9 @@ public class WorkType extends AggregateRoot implements Cloneable, Serializable{
 		}
 		
 		return 0;
+	}
+
+	public void setWorkTypeCode(WorkTypeCode workTypeCode) {
+		this.workTypeCode = workTypeCode;
 	}
 }

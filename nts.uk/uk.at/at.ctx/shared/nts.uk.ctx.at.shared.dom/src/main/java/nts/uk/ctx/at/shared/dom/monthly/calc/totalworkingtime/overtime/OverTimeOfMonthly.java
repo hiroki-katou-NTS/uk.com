@@ -13,11 +13,6 @@ import nts.arc.time.calendar.period.DatePeriod;
 import nts.uk.ctx.at.shared.dom.WorkInformation;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTimeMonth;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.OverTimeFrameTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryMidNightTime;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailycalprocess.calculation.other.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.monthly.TimeMonthWithCalculation;
 import nts.uk.ctx.at.shared.dom.monthly.calc.MonthlyAggregateAtr;
 import nts.uk.ctx.at.shared.dom.monthly.calc.flex.FlexTime;
@@ -26,6 +21,11 @@ import nts.uk.ctx.at.shared.dom.monthlyaggrmethod.legaltransferorder.LegalOverTi
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrCompanySettings;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.MonAggrEmployeeSettings;
 import nts.uk.ctx.at.shared.dom.monthlyprocess.aggr.work.SettingRequiredByFlex;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeDivergenceWithCalculation;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailycalprocess.calculation.timezone.outsideworktime.OverTimeFrameTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryMidNightTime;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.ortherpackage.classfunction.WithinStatutoryTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.statutory.worktime.week.DailyUnit;
 import nts.uk.ctx.at.shared.dom.workingcondition.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.workrecord.monthcal.calcmethod.other.ExcessOutsideTimeSetReg;
@@ -257,12 +257,7 @@ public class OverTimeOfMonthly implements Cloneable, Serializable{
 		val totalWorkingTime = actualWorkingTimeOfDaily.getTotalWorkingTime();
 		WithinStatutoryTimeOfDaily legalTimeOfDaily = totalWorkingTime.getWithinStatutoryTimeOfDaily();
 		if (legalTimeOfDaily == null){
-			legalTimeOfDaily = WithinStatutoryTimeOfDaily.createWithinStatutoryTimeOfDaily(
-					new AttendanceTime(0),
-					new AttendanceTime(0),
-					new AttendanceTime(0),
-					new WithinStatutoryMidNightTime(TimeDivergenceWithCalculation.sameTime(new AttendanceTime(0))),
-					new AttendanceTime(0));
+			legalTimeOfDaily = WithinStatutoryTimeOfDaily.defaultValue();
 		}
 		
 		// 法定内残業にできる時間を計算する

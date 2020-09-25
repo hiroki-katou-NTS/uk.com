@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.attendancetime.TimeLeavingWork;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeOfDailyAttd;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.breakouting.OutingTimeSheet;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.TimeActualStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.ReasonTimeChange;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.TimeChangeMeans;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkStamp;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.common.timestamp.WorkTimeInformation;
 
 /**
  * @author ThanhNX
@@ -23,12 +27,7 @@ public class ReturnDirectTimeCorrection {
 		// 退勤が直行直帰の出退勤を取得する
 		// domain not map
 		List<TimeLeavingWork> lstTimeLeaving = attendanceLeave.getTimeLeavingWorks().stream().filter(x -> {
-			return x.getAttendanceStamp().isPresent() && x.getAttendanceStamp().get().getActualStamp().isPresent()
-					&& x.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getReasonTimeChange()
-							.getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
-					|| x.getAttendanceStamp().isPresent() && x.getAttendanceStamp().get().getActualStamp().isPresent()
-							&& x.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getReasonTimeChange()
-									.getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION;
+			return hasGoOutBack(x);
 		}).collect(Collectors.toList());
 
 		if (!outingTime.isPresent())
@@ -36,20 +35,10 @@ public class ReturnDirectTimeCorrection {
 
 		List<OutingTimeSheet> outingTimeSheets = outingTime.get().getOutingTimeSheets();
 		for (TimeLeavingWork leavWork : lstTimeLeaving) {
-			Integer timeAttendance = (leavWork.getAttendanceStamp().isPresent()
-					&& leavWork.getAttendanceStamp().get().getActualStamp().isPresent()
-					&& leavWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay()
-							.isPresent())
-									? leavWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay()
-											.getTimeWithDay().get().v()
-									: null;
-
-			Integer timeLeave = (leavWork.getLeaveStamp().isPresent()
-					&& leavWork.getLeaveStamp().get().getActualStamp().isPresent()
-					&& leavWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().isPresent())
-							? leavWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay().get()
-									.v()
-							: null;
+			Integer timeAttendance = leavWork.getAttendanceStamp().get().getActualStamp().get().getTimeDay()
+					.getTimeWithDay().get().v();
+			Integer timeLeave = leavWork.getLeaveStamp().get().getActualStamp().get().getTimeDay().getTimeWithDay()
+					.get().v();
 
 			// 出勤～退勤の中で一番最後の外出時間帯を取得
 			// 補正対象かどうか判断
@@ -64,16 +53,24 @@ public class ReturnDirectTimeCorrection {
 					.sorted((x, y) -> compareTime(x, y)).findFirst();
 
 			outingTimeSheet.ifPresent(x -> {
-				outingTimeSheets.remove(outingTimeSheet.get());
-				outingTimeSheets.add(setOutTimeSheet(x, leavWork));
+				//outingTimeSheets.set(index, setOutTimeSheet(x, leavWork));
+				//#111712
+				//戻り.打刻.時刻.時刻←退勤.打刻.時刻.時刻
+				//戻り.打刻.時刻.時刻変更理由.時刻変更手段←”自動セット”
+				WorkStamp stampLeav= leavWork.getLeaveStamp().map(y -> y.getStamp().orElse(null)).orElse(null);
+				x.setComeBack(Optional.of(new TimeActualStamp(null,
+						new WorkStamp(stampLeav == null ? null : stampLeav.getAfterRoundingTime(),
+								new WorkTimeInformation(new ReasonTimeChange(TimeChangeMeans.AUTOMATIC_SET, null),
+										stampLeav == null ? null
+												: stampLeav.getTimeDay().getTimeWithDay().orElse(null)),
+								Optional.empty()),
+						1)));
 			});
 		}
 		return Optional.ofNullable(outingTimeSheets.isEmpty() ? null : new OutingTimeOfDailyAttd(outingTimeSheets));
 	}
 
 	private static boolean inRange(Integer check, Integer min, Integer max) {
-		if (min == null || max == null)
-			return false;
 		return check >= min && check <= max;
 	}
 
@@ -82,9 +79,20 @@ public class ReturnDirectTimeCorrection {
 				- goOut1.getGoOut().get().getActualStamp().get().getTimeDay().getTimeWithDay().get().v();
 	}
 
-	private static OutingTimeSheet setOutTimeSheet(OutingTimeSheet oldValue, TimeLeavingWork leavWork) {
-		return new OutingTimeSheet(oldValue.getOutingFrameNo(), oldValue.getGoOut(),
-				oldValue.getOutingTimeCalculation(), oldValue.getOutingTime(), oldValue.getReasonForGoOut(),
-				leavWork.getLeaveStamp());
+	private static boolean hasActualStamp(TimeLeavingWork timeLeav) {
+		return timeLeav.getLeaveStamp().isPresent() && timeLeav.getLeaveStamp().get().getActualStamp().isPresent()
+				&& timeLeav.getAttendanceStamp().isPresent()
+				&& timeLeav.getAttendanceStamp().get().getActualStamp().isPresent();
+	}
+
+	private static boolean hasGoOutBack(TimeLeavingWork timeLeav) {
+		if (!hasActualStamp(timeLeav))
+			return false;
+		WorkTimeInformation workInfoLeav = timeLeav.getLeaveStamp().get().getActualStamp().get().getTimeDay();
+		WorkTimeInformation workInfoAtt = timeLeav.getAttendanceStamp().get().getActualStamp().get().getTimeDay();
+		return (workInfoLeav.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE
+				|| workInfoLeav.getReasonTimeChange().getTimeChangeMeans() == TimeChangeMeans.DIRECT_BOUNCE_APPLICATION)
+				&& workInfoLeav.getTimeWithDay().isPresent() && workInfoAtt.getTimeWithDay().isPresent();
+
 	}
 }

@@ -9,9 +9,6 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
-import nts.uk.ctx.at.shared.dom.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.HolidayUsageOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.actual.LaborTimeOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.attendanceleave.AttendanceLeaveGateTimeOfMonthly;
@@ -27,6 +24,9 @@ import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.premiumtime.Premi
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.reservation.ReservationOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.timevarience.BudgetTimeVarienceOfMonthly;
 import nts.uk.ctx.at.shared.dom.monthly.verticaltotal.worktime.toppage.TopPageDisplayOfMonthly;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.erroralarm.EmployeeDailyPerError;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.secondorder.medical.MedicalCareTimeOfDaily;
+import nts.uk.ctx.at.shared.dom.scherec.dailyattdcal.dailyattendance.worktime.AttendanceTimeOfDailyAttendance;
 import nts.uk.ctx.at.shared.dom.worktime.predset.WorkTimeNightShift;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
