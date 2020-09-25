@@ -36,7 +36,6 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     public readonly mode: boolean;
 
     public isVisible: boolean = false;
-    public isValidateAll: Boolean = true;
     public date: Date = null;
     public listDate: any[] = [];
     public hidden: boolean = false;
@@ -108,7 +107,7 @@ export class KAFS08A1Component extends KafS00ShrComponent {
     }
 
     public mounted() {
-
+        
     }
 
     public fetchStart() {
@@ -188,11 +187,13 @@ export class KAFS08A1Component extends KafS00ShrComponent {
                 validAll = false;
             }
         }
-        vm.isValidateAll = validAll;
+
         if (!validAll) {
             window.scrollTo(500, 0);
-
+            
             return;
+        } else {
+            vm.hidden = false;
         }
         //check date when press next
         if (vm.mode) {

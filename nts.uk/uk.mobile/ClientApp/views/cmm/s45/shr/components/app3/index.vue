@@ -36,7 +36,7 @@
           </td>
           <td class="px-1" v-else>{{ "" }}</td>
           <td class="px-1" v-if="data.workTimeName != null">
-            {{ data.wkTimeCd }}
+            {{ data.workTimeName }}
           </td>
           <td class="px-1" v-else>{{ "" }}</td>
           <td class="px-1" v-if="data.startWorkTime">
