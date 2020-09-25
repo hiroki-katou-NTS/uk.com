@@ -12,7 +12,7 @@
     </div>
     <div class="row my-2 mx-0">
       <span class="col-4 pr-0 pl-4">{{ "KAFS08_95" | i18n }}</span>
-      <span class="col-8" v-if="time.departureTime == null">{{ "" }}</span>
+      <span class="col-8" v-if="time.returnTime == null">{{ "" }}</span>
       <span class="col-8" v-else>{{ time.returnTime | timewd }}</span>
     </div>
     <!-- B10 -->
