@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.schedule.dom.displaysetting;
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import nts.arc.error.BusinessException;
@@ -13,7 +12,6 @@ import nts.arc.layer.dom.objecttype.DomainValue;
  *
  */
 @Value
-@Getter
 @RequiredArgsConstructor
 public class DisplaySettingByDate implements DomainValue{
 
