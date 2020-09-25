@@ -1,12 +1,21 @@
 package nts.uk.ctx.at.record.dom.monthly.agreement.approver;
 
 import lombok.val;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.arc.time.calendar.period.DatePeriod;
+import nts.uk.ctx.at.record.dom.monthly.agreement.monthlyresult.specialprovision.*;
+import nts.uk.ctx.at.shared.dom.common.Year;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneMonthTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.AgreementOneYearTime;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hourspermonth.ErrorTimeInMonth;
+import nts.uk.ctx.at.shared.dom.monthlyattdcal.agreementresult.hoursperyear.ErrorTimeInYear;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author khai.dh
@@ -64,5 +73,16 @@ public class Helper {
 			stringList.add(sample + i);
 		}
 		return stringList;
+	}
+
+	public static SpecialProvisionsOfAgreement createNewDomain() {
+		OneMonthTime oneMonthTime = new OneMonthTime(new ErrorTimeInMonth(new AgreementOneMonthTime(0), new AgreementOneMonthTime(0)), new YearMonth(0));
+		OneYearTime oneYearTime = new OneYearTime(new ErrorTimeInYear(new AgreementOneYearTime(0), new AgreementOneYearTime(0)), new Year(2020));
+
+		ApplicationTime applicationTime = new ApplicationTime(EnumAdaptor.valueOf(0, TypeAgreementApplication.class), Optional.of(oneMonthTime), Optional.of(oneYearTime));
+
+		List<String> listConfirmSID = Arrays.asList("confirmerSID");
+		return SpecialProvisionsOfAgreement.create("enteredPersonSID","applicantsSID",applicationTime,
+				new ReasonsForAgreement("reasonsForAgreement"),new ArrayList<>(),listConfirmSID,new ScreenDisplayInfo());
 	}
 }
