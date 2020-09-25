@@ -6,6 +6,15 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethod;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodAttendance;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodClassfication;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodHoliday;
+import nts.uk.ctx.at.schedule.dom.schedule.alarm.workmethodrelationship.WorkMethodRelationshipOrg;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrgIdenInfor;
+import nts.uk.ctx.at.shared.dom.workrule.organizationmanagement.workplace.TargetOrganizationUnit;
+import nts.uk.ctx.at.shared.dom.worktime.common.WorkTimeCode;
+import nts.uk.shr.com.context.AppContexts;
 
 @Embeddable
 @EqualsAndHashCode
@@ -27,5 +36,34 @@ public class KscmtAlchkWorkContextOrgPk {
 	
 	@Column(name = "PREVIOUS_WKTM_CD")
 	public String prevWorkTimeCode;
+	
+	public static KscmtAlchkWorkContextOrgPk fromDomain(WorkMethodRelationshipOrg domain) {
+		
+		WorkMethod prevWorkMethod = domain.getWorkMethodRelationship().getPrevWorkMethod();
+		String prevWorkTimeCode = prevWorkMethod.getWorkMethodClassification() == WorkMethodClassfication.ATTENDANCE ?
+				((WorkMethodAttendance) prevWorkMethod).getWorkTimeCode().v() :
+				KscmtAlchkWorkContextCmp.HOLIDAY_WORK_TIME_CODE;
+		
+		return new KscmtAlchkWorkContextOrgPk(
+				AppContexts.user().companyId(), 
+				domain.getTargetOrg().getUnit().value, 
+				domain.getTargetOrg().getTargetId(), 
+				prevWorkMethod.getWorkMethodClassification().value, 
+				prevWorkTimeCode);
+	}
+	
+	public TargetOrgIdenInfor toTargetOrgIdenInfor() {
+		
+		return this.targetUnit == TargetOrganizationUnit.WORKPLACE.value ?
+				TargetOrgIdenInfor.creatIdentifiWorkplace(this.targetId) : 
+				TargetOrgIdenInfor.creatIdentifiWorkplaceGroup(targetId);
+	}
+	
+	public WorkMethod toPrevWorkMethod() {
+		
+		return this.prevWorkMethod == WorkMethodClassfication.ATTENDANCE.value ?
+				new WorkMethodAttendance(new WorkTimeCode(this.prevWorkTimeCode)) :
+				new WorkMethodHoliday();
+	}
 	
 }
