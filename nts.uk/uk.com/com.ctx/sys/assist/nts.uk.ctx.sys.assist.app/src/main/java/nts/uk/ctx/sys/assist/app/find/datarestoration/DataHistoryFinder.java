@@ -10,6 +10,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -27,6 +29,7 @@ import nts.uk.ctx.sys.assist.dom.storage.SysEmployeeStorageAdapter;
  * アルゴリズム「保存セットで検索する」
  */
 @Stateless
+@TransactionAttribute(TransactionAttributeType.SUPPORTS)
 public class DataHistoryFinder {
 	private static final boolean FAKE_DATA = true;
 	
@@ -44,7 +47,7 @@ public class DataHistoryFinder {
 
 	public List<DataHistoryDto> findData(List<FindDataHistoryDto> list) {
 		if (!FAKE_DATA) {
-			List<String> saveSetCodes = list.parallelStream().map(FindDataHistoryDto::getPatternCode)
+			List<String> saveSetCodes = list.stream().map(FindDataHistoryDto::getPatternCode)
 					.filter(Objects::nonNull).collect(Collectors.toList());
 			List<DataHistoryDto> res = new ArrayList<DataHistoryDto>();
 			if (!saveSetCodes.isEmpty()) {
@@ -66,7 +69,7 @@ public class DataHistoryFinder {
 			/**
 			 * 取得したデータを画面表示する
 			 */
-			return res.parallelStream()
+			return res.stream()
 					.sorted(Comparator.comparing(DataHistoryDto::getStartDatetime))
 					.collect(Collectors.toList());
 		} else {
@@ -94,18 +97,18 @@ public class DataHistoryFinder {
 		 * 起動する時取得したList<データ復旧の実行＞から絞り込みする。
 		 */
 		List<PerformDataRecovery> pdrList = performDataRecoveryRepository.getPerformDataRecoverByIds(
-				rosList.parallelStream().map(ResultOfSaving::getStoreProcessingId).collect(Collectors.toList()));
+				rosList.stream().map(ResultOfSaving::getStoreProcessingId).collect(Collectors.toList()));
 		
 		/**
 		 * 起動する時取得したList<データ復旧の結果＞から絞り込みする。
 		 */
 		List<DataRecoveryResult> drrList = dataRecoveryResultRepository.getDataRecoveryResultsByIds(pdrList
-				.parallelStream().map(PerformDataRecovery::getDataRecoveryProcessId).collect(Collectors.toList()));
+				.stream().map(PerformDataRecovery::getDataRecoveryProcessId).collect(Collectors.toList()));
 		return pdrList
-				.parallelStream().map(
+				.stream().map(
 						pdr -> DataHistoryDto
 								.fromDomains(
-										rosList.parallelStream()
+										rosList.stream()
 												.filter(ros -> ros.getStoreProcessingId()
 														.equals(pdr.getSaveProcessId().get()))
 												.findFirst().get(),
