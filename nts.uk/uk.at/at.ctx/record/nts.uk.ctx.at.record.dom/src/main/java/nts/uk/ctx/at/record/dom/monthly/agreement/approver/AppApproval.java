@@ -75,12 +75,14 @@ public class AppApproval {
 							errorOneMonth = new ErrorOneMonth(errorTimeInMonth.getErrorTime().v());
 							alarmOneMonth = new AlarmOneMonth(errorTimeInMonth.getAlarmTime().v());
 						}
+
 						val newAgr36MonthSetting = new AgreementMonthSetting(
 								applicantID,
 								yearMonth,
 								errorOneMonth,
 								alarmOneMonth
 						);
+
 						require.addYearMonthSetting(newAgr36MonthSetting); // R5
 					}
 
@@ -97,8 +99,8 @@ public class AppApproval {
 						if (errorTimeInYear != null) {
 							errorOneYear = new ErrorOneYear(errorTimeInYear.getErrorTime().v());
 							alarmOneYear = new AlarmOneYear(errorTimeInYear.getAlarmTime().v());
-
 						}
+
 						val agr36YearSetting = new AgreementYearSetting(
 								applicantID,
 								year.v(),

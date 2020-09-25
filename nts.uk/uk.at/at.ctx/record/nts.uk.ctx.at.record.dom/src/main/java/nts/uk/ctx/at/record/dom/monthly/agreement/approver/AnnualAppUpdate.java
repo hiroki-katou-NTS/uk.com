@@ -33,7 +33,7 @@ public class AnnualAppUpdate {
 	 * @param reason 36協定申請理由
 	 * @return 申請作成結果
 	 */
-	public AppCreationResult create(Require require,
+	public static AppCreationResult create(Require require,
 									String cid,
 									String applicantId,
 									AgreementOneYearTime agrOneYearTime,
