@@ -16,8 +16,6 @@ public class PersonInfor {
 
     //社員ID
     private String employeeCode;
-    //社員ID
-    private String employeeId;
 
     //ビジネスネーム
     private String employeeName;

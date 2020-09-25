@@ -1,6 +1,6 @@
 package nts.uk.ctx.at.record.ac.personempbasic;
 
-import nts.uk.ctx.at.record.dom.adapter.personempbasic.EmployeeInfor;
+import lombok.val;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoAdapter;
 import nts.uk.ctx.at.record.dom.adapter.personempbasic.PersonEmpBasicInfoDto;
 import nts.uk.ctx.bs.employee.pub.employee.export.PersonEmpBasicInfoPub;
@@ -15,8 +15,8 @@ public class PersonBasicInfoAdapterImpl implements PersonEmpBasicInfoAdapter {
     @Inject
     private  PersonEmpBasicInfoPub personEmpBasicInfoPub;
     @Override
-    public List<EmployeeInfor> getPerEmpBasicInfo(List<String> employeeIds) {
-        return personEmpBasicInfoPub.getPerEmpBasicInfo(employeeIds).stream().map(e-> new EmployeeInfor(e.getPersonId(),e.getEmployeeId(),e.getBusinessName(),e.getEmployeeCode()))
+    public List<PersonEmpBasicInfoDto> getPerEmpBasicInfo(List<String> employeeIds) {
+        return personEmpBasicInfoPub.getPerEmpBasicInfo(employeeIds).stream().map(e-> new PersonEmpBasicInfoDto())
                 .collect(Collectors.toList());
     }
 }

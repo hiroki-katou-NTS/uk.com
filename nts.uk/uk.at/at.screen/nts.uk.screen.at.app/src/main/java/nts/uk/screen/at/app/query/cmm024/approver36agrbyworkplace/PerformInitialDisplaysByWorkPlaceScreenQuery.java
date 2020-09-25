@@ -82,15 +82,21 @@ public class PerformInitialDisplaysByWorkPlaceScreenQuery {
         if(listEmployIds.isEmpty()){
             return Collections.emptyList();
         }
-            val personInfo = personInfoAdapter.getListPersonInfo(listEmployIds);
+        // Get list Person by list employId;
+        val listPerson = infoAdapter.getPerEmpBasicInfo(listEmployIds);
+        if(!listPerson.isEmpty()){
+            List<String> listPersonId = listPerson.stream().map(PersonEmpBasicInfoDto::getPersonId).collect(Collectors.toList());
+            val personInfo = personInfoAdapter.getListPersonInfo(listPersonId);
             if(personInfo.isEmpty()){
                 return   Collections.emptyList();
             }
-            return personInfo.stream().map(e->new PersonInfor(e.getPId(),e.getEmployeeCode(),e.getEmployeeId(),e.getNamePerson())).collect(Collectors.toList());
+            return personInfo.stream().map(e->new PersonInfor(e.getPId(),e.getEmployeeCode(),e.getNamePerson())).collect(Collectors.toList());
         }
+        return Collections.emptyList();
 
-    private PersonInfor checkPersonInfor(List<PersonInfor> listPersonInfor,String employeeId){
-        val rs = listPersonInfor.stream().filter(e->e.getEmployeeId().equals(employeeId)).findFirst();
+    }
+    private PersonInfor checkPersonInfor(List<PersonInfor> listPersonInfor,String personId){
+        val rs = listPersonInfor.stream().filter(e->e.getPersonId().equals(personId)).findFirst();
         return rs.orElseGet(PersonInfor::new);
     }
 
