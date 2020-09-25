@@ -8,7 +8,7 @@ import nts.gul.text.IdentifierUtil;
 
 public class BanHolidayTogetherHelper {
 	/**
-	 * creat 稼働日カレンダー参照
+	 * 稼働日カレンダーの会社参照 を作成する
 	 * @param size
 	 * @return
 	 */
@@ -18,7 +18,7 @@ public class BanHolidayTogetherHelper {
 	}
 	
 	/**
-	 * creat 同日の休日取得を禁止する社員
+	 * 同日の休日取得を禁止する社員を作成する
 	 * @param size
 	 * @return
 	 */

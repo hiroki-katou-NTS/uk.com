@@ -21,7 +21,6 @@ public class BanHolidayTogetherTest {
 	
 	@Test
 	public void getters() {
-		
 		BanHolidayTogether banHdTogether = BanHolidayTogether.create(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("0001"), 
@@ -59,7 +58,6 @@ public class BanHolidayTogetherTest {
 	 */
 	@Test
 	public void check_inv1_sizeEquals1() {
-		
 		NtsAssert.businessException("Msg_1885", ()-> {
 			BanHolidayTogether.create(
 					TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
@@ -74,11 +72,11 @@ public class BanHolidayTogetherTest {
 	
 	/**
 	 * inv2: 最低限出勤すべき人数 <= 同日の休日取得を禁止する社員.size()
-	 * ケース: 同日の休日取得を禁止する社員.size()= 5, 最低限出勤すべき人数 = 10 ->Msg_1886
+	 * ケース1: 同日の休日取得を禁止する社員.size() == 最低限出勤すべき人数 -> create success
+	 * ケース2: 同日の休日取得を禁止する社員.size() < 最低限出勤すべき人数  ->Msg_1886
 	*/
 	@Test
 	public void check_inv2_empsCanNotSameHolidaysBeforeMinNumberOfEmployeeToWork() {
-		
         /** ケース: 同日の休日取得を禁止する社員.size() == 最低限出勤すべき人数  */
 		BanHolidayTogether.create(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
@@ -133,7 +131,6 @@ public class BanHolidayTogetherTest {
 	 */
 	@Test
 	public void create_banSameDayHolidayCompany_success() {
-		
 		val banHdCom = BanHolidayTogether.create(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("0001"),
@@ -152,7 +149,6 @@ public class BanHolidayTogetherTest {
 	 */
 	@Test
 	public void create_banSameDayHolidayWorkplace_success() {
-		
 		val banHdWorkplace = BanHolidayTogether.create(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("0001"),
@@ -172,7 +168,6 @@ public class BanHolidayTogetherTest {
 	 */
 	@Test
 	public void create_banHolidayTogetherClassification_success() {
-		
 		val banHolidayClass = BanHolidayTogether.create(
 				TargetOrgIdenInfor.creatIdentifiWorkplace("DUMMY"),
 				new BanHolidayTogetherCode("0001"), 
