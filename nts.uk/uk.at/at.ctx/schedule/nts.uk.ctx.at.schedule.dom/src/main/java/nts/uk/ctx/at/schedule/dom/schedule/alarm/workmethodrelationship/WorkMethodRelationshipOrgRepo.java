@@ -22,9 +22,9 @@ public interface WorkMethodRelationshipOrgRepo {
 	 * delete ( 会社ID, 対象組織, 勤務方法 )	
 	 * @param companyId
 	 * @param targetOrg
-	 * @param workMethod
+	 * @param prevWorkMethod
 	 */
-	public void deleteWorkMethod(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod workMethod);
+	public void deleteWorkMethod(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod prevWorkMethod);
 	
 	/**
 	 * getAll ( 会社ID, 対象組織 )	
@@ -38,27 +38,27 @@ public interface WorkMethodRelationshipOrgRepo {
 	 * get ( 会社ID, 対象組織, 勤務方法 )	
 	 * @param companyId
 	 * @param targetOrg
-	 * @param workMethod
+	 * @param prevWorkMethod
 	 * @return
 	 */
-	public Optional<WorkMethodRelationshipOrg> getWithWorkMethod(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod workMethod);
+	public Optional<WorkMethodRelationshipOrg> getWithWorkMethod(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod prevWorkMethod);
 	
 	/**
 	 * *get ( 会社ID, 対象組織, List<勤務方法> )
 	 * @param companyId
 	 * @param targetOrg
-	 * @param workMethodList
+	 * @param prevWorkMethodList
 	 * @return
 	 */
-	public List<WorkMethodRelationshipOrg> getWithWorkMethodList(String companyId, TargetOrgIdenInfor targetOrg, List<WorkMethod> workMethodList);
+	public List<WorkMethodRelationshipOrg> getWithWorkMethodList(String companyId, TargetOrgIdenInfor targetOrg, List<WorkMethod> prevWorkMethodList);
 	
 	/**
 	 * exists ( 会社ID, 対象組織, 勤務方法 )
 	 * @param companyId
 	 * @param targetOrg
-	 * @param workMethod
+	 * @param prevWorkMethod
 	 * @return
 	 */
-	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod workMethod);
+	public boolean exists(String companyId, TargetOrgIdenInfor targetOrg, WorkMethod prevWorkMethod);
 
 }
