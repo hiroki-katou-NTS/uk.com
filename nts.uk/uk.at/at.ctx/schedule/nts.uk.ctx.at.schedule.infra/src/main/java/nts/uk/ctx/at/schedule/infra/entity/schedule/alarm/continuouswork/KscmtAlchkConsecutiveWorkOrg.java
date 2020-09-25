@@ -27,7 +27,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
 @Entity
 @Table(name = "KSCMT_ALCHK_CONSECUTIVE_WORK_ORG")
 public class KscmtAlchkConsecutiveWorkOrg extends ContractUkJpaEntity implements Serializable {
@@ -59,10 +58,10 @@ public class KscmtAlchkConsecutiveWorkOrg extends ContractUkJpaEntity implements
 	 */
 	public static KscmtAlchkConsecutiveWorkOrg of (MaxNumberDaysOfContinuousAttendanceOrg domain, String companyId) {
 		val entity = new KscmtAlchkConsecutiveWorkOrg();
-		
 		entity.pk.companyId = companyId;
 		entity.pk.targetUnit = domain.getTargeOrg().getUnit().value;
 		entity.pk.targetId = domain.getTargeOrg().getTargetId();
+		entity.maxConsDays = domain.getNumberOfDays().getNumberOfDays().v();
 		return entity;
 	}
 	
@@ -71,14 +70,7 @@ public class KscmtAlchkConsecutiveWorkOrg extends ContractUkJpaEntity implements
 	 * @return
 	 */
 	public MaxNumberDaysOfContinuousAttendanceOrg toDomain () {
-		
-		Optional<String> wkpId = this.pk.targetUnit == 0 ? Optional.of(this.pk.targetId) : Optional.empty();
-		Optional<String> wkpGrpId = this.pk.targetUnit == 0 ? Optional.empty() : Optional.of(this.pk.targetId);
-		
-		val targetOrg = new TargetOrgIdenInfor(
-				  TargetOrganizationUnit.valueOf(this.pk.targetUnit)
-				, wkpId
-				, wkpGrpId);
+		val targetOrg = TargetOrgIdenInfor.createFromTargetUnit(TargetOrganizationUnit.valueOf(this.pk.targetUnit), this.pk.targetId);
 		
 		return new MaxNumberDaysOfContinuousAttendanceOrg(
 				  targetOrg

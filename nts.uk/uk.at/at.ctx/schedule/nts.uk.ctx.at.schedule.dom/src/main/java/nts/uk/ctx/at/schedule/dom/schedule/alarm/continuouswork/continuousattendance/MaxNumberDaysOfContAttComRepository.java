@@ -9,13 +9,37 @@ import java.util.Optional;
  */
 public interface MaxNumberDaysOfContAttComRepository {
 
-	void insert (MaxNumberDaysOfContinuousAttendanceCom maxContAttCom);
+	/**
+	 * insert(会社ID, 会社の連続出勤できる上限日数)
+	 * @param companyId
+	 * @param maxContAttCom
+	 */
+	void insert (String companyId, MaxNumberDaysOfContinuousAttendanceCom maxContAttCom);
 	
-	void update (MaxNumberDaysOfContinuousAttendanceCom maxContAttCom);
+	/**
+	 * update(会社ID, 会社の連続出勤できる上限日数)
+	 * @param companyId
+	 * @param maxContAttCom
+	 */
+	void update (String companyId, MaxNumberDaysOfContinuousAttendanceCom maxContAttCom);
 	
+	/**
+	 * delete(会社ID)
+	 * @param companyId
+	 */
 	void delete(String companyId);
 	
+	/**
+	 * exists(会社ID)
+	 * @param companyId
+	 * @return
+	 */
 	boolean exists(String companyId);
 	
+	/**
+	 * get
+	 * @param companyId
+	 * @return
+	 */
 	Optional<MaxNumberDaysOfContinuousAttendanceCom> get (String companyId);
 }

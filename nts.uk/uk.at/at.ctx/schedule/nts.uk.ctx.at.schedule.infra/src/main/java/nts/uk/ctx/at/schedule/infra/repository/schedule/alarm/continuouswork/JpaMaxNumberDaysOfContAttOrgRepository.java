@@ -36,7 +36,7 @@ public class JpaMaxNumberDaysOfContAttOrgRepository extends JpaRepository implem
 				.find(entity.pk, KscmtAlchkConsecutiveWorkOrg.class)
 				.get();
 		
-		updata.setMaxConsDays(maxContAttOrg.getNumberOfDays().getNumberOfDays().v());
+		updata.maxConsDays = maxContAttOrg.getNumberOfDays().getNumberOfDays().v();
 		
 		this.commandProxy().update(updata);
 	}

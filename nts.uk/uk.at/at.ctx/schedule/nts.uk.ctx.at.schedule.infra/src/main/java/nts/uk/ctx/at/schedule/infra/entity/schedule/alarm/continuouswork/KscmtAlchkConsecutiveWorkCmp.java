@@ -24,7 +24,6 @@ import nts.uk.shr.infra.data.entity.ContractUkJpaEntity;
  */
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
 @Entity
 @Table(name = "KSCMT_ALCHK_CONSECUTIVE_WORK_CMP")
 public class KscmtAlchkConsecutiveWorkCmp extends ContractUkJpaEntity implements Serializable {
@@ -55,9 +54,9 @@ public class KscmtAlchkConsecutiveWorkCmp extends ContractUkJpaEntity implements
 	 * @param domain
 	 * @return
 	 */
-	public static KscmtAlchkConsecutiveWorkCmp of (MaxNumberDaysOfContinuousAttendanceCom domain) {
+	public static KscmtAlchkConsecutiveWorkCmp of (String companyId, MaxNumberDaysOfContinuousAttendanceCom domain) {
 		val entity = new KscmtAlchkConsecutiveWorkCmp();
-		entity.companyId = domain.getCompanyId();
+		entity.companyId = companyId;
 		entity.maxConsDays = domain.getNumberOfDays().getNumberOfDays().v();
 		return entity;
 	}

@@ -22,19 +22,18 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.alarm.continuouswork.KscmtAl
 public class JpaMaxNumberDaysOfContAttComRepository extends JpaRepository implements MaxNumberDaysOfContAttComRepository {
 
 	@Override
-	public void insert(MaxNumberDaysOfContinuousAttendanceCom maxContAttCom) {
-		this.commandProxy().insert(KscmtAlchkConsecutiveWorkCmp.of(maxContAttCom));
+	public void insert(String companyId, MaxNumberDaysOfContinuousAttendanceCom maxContAttCom) {
+		this.commandProxy().insert(KscmtAlchkConsecutiveWorkCmp.of(companyId, maxContAttCom));
 	}
 
 	@Override
-	public void update(MaxNumberDaysOfContinuousAttendanceCom maxContAttCom) {
+	public void update(String companyId, MaxNumberDaysOfContinuousAttendanceCom maxContAttCom) {
 		
 		KscmtAlchkConsecutiveWorkCmp updata = this.queryProxy()
-				.find(maxContAttCom.getCompanyId(), KscmtAlchkConsecutiveWorkCmp.class)
+				.find(companyId, KscmtAlchkConsecutiveWorkCmp.class)
 				.get();
 		
-		updata.setCompanyId(maxContAttCom.getCompanyId());
-		updata.setMaxConsDays(maxContAttCom.getNumberOfDays().getNumberOfDays().v());
+		updata.maxConsDays = maxContAttCom.getNumberOfDays().getNumberOfDays().v();
 		
 		this.commandProxy().update(updata);
 	}
