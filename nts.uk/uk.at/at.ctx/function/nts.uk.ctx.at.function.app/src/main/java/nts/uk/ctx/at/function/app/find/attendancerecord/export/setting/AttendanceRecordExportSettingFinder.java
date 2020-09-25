@@ -136,6 +136,9 @@ public class AttendanceRecordExportSettingFinder {
 			dto.setExportFontSize(domain.getExportFontSize().value);
 			dto.setMonthlyConfirmedDisplay(domain.getMonthlyConfirmedDisplay().value);
 			dto.setItemSelType(selectionType);
+			dto.setSealStamp(domain.getSealStamp().stream()
+				.map(x -> x.v()).collect(Collectors.toList()));
+			
 			return dto;
 		}
 		return new AttendanceRecordExportSettingDto();

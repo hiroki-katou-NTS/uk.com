@@ -125,8 +125,15 @@ module nts.uk.com.view.kwr002.b {
             block.invisible();
             let self = this;
             let dfd = $.Deferred<any>();
-            service.getAllARES().done((data: any) => {
+            service.getAllARES().done((response: AttendanceRecordExportSettingWrapper) => {
                 block.clear();
+                let data: any;
+                if (!!response && response.isFreeSetting) {
+                    data = response.freeSettingLst;
+                } else {
+                    data = response.standardSettingLst;
+                }
+
                 if (data.length > 0) {
                     _.map(data, (item: any) => {
                         item.code = _.padStart(item.code, 2, '0');
@@ -158,9 +165,10 @@ module nts.uk.com.view.kwr002.b {
                 nameUseAtr: 1,
                 exportFontSize: 2,
                 itemSelType: self.selectionType,
-                layoutId: self.layoutId,
-                
+                layoutId: null,
+                sealStamp: []
             };
+            
             self.currentARES(new AttendanceRecordExportSetting(params));
             self.currentARESCode("");
             self.newMode(true);
@@ -184,8 +192,8 @@ module nts.uk.com.view.kwr002.b {
                 attendanceRecExpDaily: getShared('attendanceRecExpDaily'),//=9
                 attendanceRecExpMonthly: getShared('attendanceRecExpMonthly'),//>=9
                 attendanceRecItemList: getShared('attendanceRecItemList'),
-                sealStamp: getShared('sealStamp'),
-                useSeal: getShared('useSeal'),
+                sealStamp: _.isNil(getShared('sealStamp')) ? currentData.sealStamp : getShared('sealStamp'),
+                useSeal: _.isNil(getShared('useSeal')) ? currentData.sealUseAtr() : getShared('useSeal'),
 
                 isInvalid: function() {
                     return ((!_.isArray(this.attendanceRecExpDaily) && !_.isArray(this.attendanceRecExpMonthly))
@@ -228,17 +236,24 @@ module nts.uk.com.view.kwr002.b {
         };
 
         callGetAll(self, currentData) {
-            service.getAllARES().done((data) => {
+            service.getAllARES().done((response: AttendanceRecordExportSettingWrapper) => {
+                let data: any;
+                if (!!response && response.isFreeSetting) {
+                    data = response.freeSettingLst;
+                } else {
+                    data = response.standardSettingLst;
+                }
+
                 if (data.length > 0) {
                     _.map(data, (item: any) => {
                         item.code = _.padStart(item.code, 2, '0');
                     });
-                    data = _.orderBy(data, [e => e.code], ['asc']);
+                    data = _.orderBy(data, [(e: any) => e.code], ['asc']);
                     self.aRES(data);
                     if (currentData) {
                         self.currentARESCode(currentData.code());
                     } else {
-                        let firstData = _.first(data);
+                        let firstData: any = _.first(data);
                         self.currentARESCode(firstData.code);
                     }
                 } else {
@@ -274,7 +289,8 @@ module nts.uk.com.view.kwr002.b {
                 let columnIndex = Number(o.columnIndex);
                 if (_.isArray(timeItemIds)) {
                     let timeItems = _.map(timeItemIds, (item: any) => {
-                        let type = _.isEqual(_.trim(item.action), getText("KWR002_178")) ? 1 : 2; //KWR002_178
+                        const action = _.isEqual(_.trim(item.action), getText('KDL048_8')) ? getText('KWR002_178') : getText('KWR002_179');
+                        let type = _.isEqual(action, getText('KWR002_178')) ? 1 : 2; //KWR002_178
                         return new TimeItem(type, item.code);
                     });
 
@@ -298,10 +314,12 @@ module nts.uk.com.view.kwr002.b {
 
         public openDialogF() {
             let vm = this;
-            let data = new OpenDialogFParam(vm.selectionType
-                , vm.currentARES().code()
-                , vm.currentARES().name()
-                , vm.layoutId);
+            let data = new OpenDialogFParam(
+                vm.selectionType,
+                vm.currentARES().code(),
+                vm.currentARES().name(),
+                vm.layoutId);
+                
             setShared("dataFromScreenB", data, true);
             modal("/view/kwr/002/f/index.xhtml").onClosed(function(){
 
@@ -315,7 +333,7 @@ module nts.uk.com.view.kwr002.b {
             let dataFromScreenA = getShared("dataTranferScreenB");
             self.selectionType = dataFromScreenA.selectionType;
 
-            service.getAllARES().done((data: any) => {
+            service.getAllARES().done((data: AttendanceRecordExportSettingWrapper) => {
                 let lstItem = [];
                 if (self.selectionType === ItemSelectionType.FREE_SETTING) {
                     lstItem = data.freeSettingLst !== null ? data.freeSettingLst : [];
@@ -409,6 +427,15 @@ module nts.uk.com.view.kwr002.b {
         exportFontSize: number;
         layoutId: string;
         itemSelType: number;
+        sealStamp: any;
+    }
+
+    export class AttendanceRecordExportSettingWrapper {
+        isFreeSetting: boolean;
+
+        freeSettingLst: AttendanceRecordExportSetting[];
+
+        standardSettingLst: AttendanceRecordExportSetting[];
     }
 
     export class AttendanceRecordExportSetting {
@@ -417,8 +444,9 @@ module nts.uk.com.view.kwr002.b {
         sealUseAtr: KnockoutObservable<boolean>;
         nameUseAtr: KnockoutObservable<number>;
         exportFontSize: KnockoutObservable<number>;
-        layoutId: string;
+        layoutId: string | null;
         itemSelType: number;
+        sealStamp: any;
 
         constructor(param: IARES) {
             let self = this;
@@ -429,6 +457,7 @@ module nts.uk.com.view.kwr002.b {
             self.exportFontSize = ko.observable(param.exportFontSize);
             self.layoutId = param.layoutId;
             self.itemSelType = param.itemSelType;
+            self.sealStamp = param.sealStamp;
         };
 
 

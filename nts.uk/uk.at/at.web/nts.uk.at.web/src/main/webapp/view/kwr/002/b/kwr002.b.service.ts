@@ -1,5 +1,7 @@
 module nts.uk.com.view.kwr002.b.service {
-    import attendanceRecordExportSetting = nts.uk.com.view.kwr002.b.AttendanceRecordExportSetting
+    import AttendanceRecordExportSetting = nts.uk.com.view.kwr002.b.AttendanceRecordExportSetting;
+    import AttendanceRecordExportSettingWrapper = nts.uk.com.view.kwr002.b.AttendanceRecordExportSettingWrapper;
+
     const paths = {
         getAllARES: "com/function/attendancerecord/export/setting/getAllAttendanceRecExpSet",
         getARESByCode: "com/function/attendancerecord/export/setting/getAttendanceRecExpSet/",
@@ -7,11 +9,11 @@ module nts.uk.com.view.kwr002.b.service {
         delARES: "com/function/attendancerecord/export/setting/deteleAttendanceRecExpSet",
     };
 
-    export function getAllARES(): JQueryPromise<Array<attendanceRecordExportSetting>> {
+    export function getAllARES(): JQueryPromise<AttendanceRecordExportSettingWrapper> {
         return nts.uk.request.ajax("at", paths.getAllARES);
     }
 
-    export function getARESByCode(code: any, selectionType: number): JQueryPromise<attendanceRecordExportSetting> {
+    export function getARESByCode(code: any, selectionType: number): JQueryPromise<AttendanceRecordExportSetting> {
         return nts.uk.request.ajax("at", paths.getARESByCode + code + '/' + selectionType);
     }
 

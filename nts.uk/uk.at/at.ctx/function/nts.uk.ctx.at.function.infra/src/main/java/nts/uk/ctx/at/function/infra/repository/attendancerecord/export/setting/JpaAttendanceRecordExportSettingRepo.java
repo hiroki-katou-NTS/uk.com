@@ -45,7 +45,7 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			+ " WHERE out.cid = :companyId"
 			+ " AND out.itemSelType = :selectionType";
 	private static final String GET_FREE_SETTING = GET_STANDARD_SETTING + " AND out.sid = :employeeId";
-	private static final String GET_SEAL = "SELECT seal FROM KfnmtRptWkAtdOutseal seal WHERE seal.cid = :cid AND seal.layoutId = :layoutId";
+	private static final String GET_SEAL = "SELECT seal FROM KfnmtRptWkAtdOutseal seal WHERE seal.cid = :cid AND seal.layoutId = :layoutId ORDER BY seal.sealOrder ASC";
 
 	@Override
 	public Optional<AttendanceRecordExportSetting> findByCode(ItemSelectionType selectionType
@@ -91,8 +91,15 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			entity.setItemSelType(domain.getItemSelectionType().value);
 			subDomain.saveToMemento(entity);
 			this.deleteSealStamp(domain.getCid().v(), subDomain.getLayoutId());
-			// insert
-			this.commandProxy().insert(entity);
+			
+			Optional<AttendanceRecordExportSetting> ares = this.findByLayoutId(subDomain.getLayoutId());
+			if (ares.isPresent()) {
+				// update
+				this.commandProxy().update(entity);
+			} else {
+				// insert
+				this.commandProxy().insert(entity);
+			}
 		}
 	}
 
@@ -129,8 +136,17 @@ public class JpaAttendanceRecordExportSettingRepo extends JpaRepository
 			entity.setItemSelType(domain.getItemSelectionType().value);
 			entity.setSid(domain.getEmployeeId().v());
 			this.deleteSealStamp(domain.getCid().v(), subDomain.getLayoutId());
-			// insert
-			this.commandProxy().insert(entity);
+			
+			Optional<AttendanceRecordExportSetting> ares = this.findByLayoutId(subDomain.getLayoutId());
+			if (ares.isPresent()) {
+				// update
+				this.commandProxy().update(entity);
+			} else {
+				// insert
+				this.commandProxy().insert(entity);
+			}
+			
+			
 		}
 	}
 

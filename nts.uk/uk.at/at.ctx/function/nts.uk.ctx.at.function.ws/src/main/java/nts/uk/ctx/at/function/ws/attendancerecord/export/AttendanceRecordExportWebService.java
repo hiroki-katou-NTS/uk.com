@@ -155,7 +155,7 @@ public class AttendanceRecordExportWebService {
 	 */
 	@POST
 	@Path("getDailyAttendanceItems")
-	public List<AttributeOfAttendanceItemDto> getDailyAttendanceTtems() {
+	public List<AttributeOfAttendanceItemDto> getDailyAttendanceItems() {
 		return this.attendanceItemFinder.getDailyAttendanceItemAtrs();
 	}
 	
@@ -166,7 +166,7 @@ public class AttendanceRecordExportWebService {
 	 */
 	@POST
 	@Path("getMonthlyAttendanceItems")
-	public List<AttributeOfAttendanceItemDto> getMonthlyAttendanceTtems() {
+	public List<AttributeOfAttendanceItemDto> getMonthlyAttendanceItems() {
 		return this.attendanceItemFinder.getMonthlyAttendanceItemAtrs();
 	}
 }

@@ -19,7 +19,6 @@ import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.AttendanceRecordExport;
-import nts.uk.ctx.at.function.dom.attendancerecord.export.ExportAtr;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingGetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.AttendanceRecordExportSettingSetMemento;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportFontSize;
@@ -27,9 +26,7 @@ import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingC
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.ExportSettingName;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.MonthlyConfirmedDisplay;
 import nts.uk.ctx.at.function.dom.attendancerecord.export.setting.SealColumnName;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutframe;
 import nts.uk.ctx.at.function.infra.entity.attendancerecord.KfnmtRptWkAtdOutseal;
-import nts.uk.ctx.at.function.infra.entity.attendancerecord.item.KfnmtRptWkAtdOutatd;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -94,10 +91,6 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 
 	@OneToMany(cascade = CascadeType.ALL)
 	@JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID")
-	private List<KfnmtRptWkAtdOutatd> lstKfnmtRptWkAtdOutatd;
-
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "LAYOUT_ID", referencedColumnName = "LAYOUT_ID")
 	private List<KfnmtRptWkAtdOutseal> lstKfnmtRptWkAtdOutseal;
 
 	/* (non-Javadoc)
@@ -110,26 +103,12 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 
 	@Override
 	public void setDailyExportItem(List<AttendanceRecordExport> attendanceList) {
-		this.lstKfnmtRptWkAtdOutatd = attendanceList.stream()
-				.filter(r -> r.getExportAtr() == ExportAtr.DAILY)
-				.map(t -> {
-					KfnmtRptWkAtdOutatd kfnmtRptWkAtdOut = new KfnmtRptWkAtdOutatd();
-					kfnmtRptWkAtdOut.setCid(this.cid);
-					kfnmtRptWkAtdOut.setLayoutId(this.layoutId);
-					kfnmtRptWkAtdOut.setColumnIndex(t.getColumnIndex());
-					return kfnmtRptWkAtdOut;
-				}).collect(Collectors.toList());
+		
 	}
 
 	@Override
 	public void setMonthlyExportItem(List<AttendanceRecordExport> attendanceList) {
-		this.lstKfnmtRptWkAtdOutatd = attendanceList.stream()
-				.filter(r -> r.getExportAtr() == ExportAtr.MONTHLY)
-				.map(t -> {
-					KfnmtRptWkAtdOutatd kfnmtRptWkAtdOut = new KfnmtRptWkAtdOutatd();
-					// TODO
-					return kfnmtRptWkAtdOut;
-				}).collect(Collectors.toList());
+		
 	}
 
 	@Override
@@ -181,28 +160,12 @@ public class KfnmtRptWkAtdOut extends UkJpaEntity
 
 	@Override
 	public List<AttendanceRecordExport> getDailyExportItem() {
-		return this.lstKfnmtRptWkAtdOutatd != null
-			 ? this.lstKfnmtRptWkAtdOutatd.stream()
-				.filter(r -> r.getOutputAtr() == ExportAtr.DAILY.value)
-				.map(t -> {
-					AttendanceRecordExport atd = new AttendanceRecordExport();
-					// TODO
-					return atd;
-				}).collect(Collectors.toList())
-			 : new ArrayList<>();
+		return new ArrayList<AttendanceRecordExport>();
 	}
 
 	@Override
 	public List<AttendanceRecordExport> getMonthlyExportItem() {
-		return this.lstKfnmtRptWkAtdOutatd != null
-				 ? this.lstKfnmtRptWkAtdOutatd.stream()
-					.filter(r -> r.getOutputAtr() == ExportAtr.MONTHLY.value)
-					.map(t -> {
-						AttendanceRecordExport atd = new AttendanceRecordExport();
-						// TODO
-						return atd;
-					}).collect(Collectors.toList())
-				 : new ArrayList<>();
+		return new ArrayList<AttendanceRecordExport>();
 	}
 
 	@Override

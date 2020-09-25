@@ -163,6 +163,14 @@ public class JpaCalculateAttendanceRecordRepository extends JpaAttendanceRecordR
 		if (kfnstAttndRec.getId() == null) {
 			kfnstAttndRec.setId(kfnmtRptWkAtdOutframePK);
 		}
+		
+		if (kfnstAttndRec.getCid() == null) {
+			kfnstAttndRec.setCid(AppContexts.user().companyId());
+		}
+		
+		if (kfnstAttndRec.getContractCd() == null) {
+			kfnstAttndRec.setContractCd(AppContexts.user().contractCode());
+		}
 
 		// get listItemAdded, listItemSubtracted
 		List<KfnmtRptWkAtdOutatd> listKfnstAttndRecItemAdded = calculateAttendanceRecord.getAddedItem().stream()

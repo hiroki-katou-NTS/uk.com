@@ -40,6 +40,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         isSmallOrMedium: KnockoutObservable<boolean>;
         isSmall: KnockoutObservable<boolean>;
         useMonthApproverConfirm: KnockoutObservable<boolean>;
+        layoutId: KnockoutObservable<string> = ko.observable('');
 
         action = {
             ADDITION: getText('KWR002_178'),
@@ -159,12 +160,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                         else attendanceItemName = self.attendanceRecExpMonthly()[columnIndex].lowwerPosition();
                     attItem = self.attendanceRecExpMonthly()[columnIndex];
                 }
-                let attendanceItem: model.AttendanceItemShare = new model.AttendanceItemShare();
-                // アルゴリズム「出力項目画面設定」を実行する (Thực thi thuật toán Setting màn hình hạng mục output)
-                self.settingOutputScreen(attendanceItemName, columnIndex, position, exportAtr, positionText)
-                    .then(() => {
 
-                    });
+                // アルゴリズム「出力項目画面設定」を実行する (Thực thi thuật toán Setting màn hình hạng mục output)
+                self.settingOutputScreen(attendanceItemName, columnIndex, position, exportAtr, positionText);
                 
 
                 var link: string;
@@ -228,7 +226,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                                 attendanceItem.columnIndex,
                                 attendanceItem.position,
                                 attendanceItem.exportAtr,
-                                attendanceItem.attendanceId.map(item => new model.SelectedItem({action: item.operator, code: item.itemId})),
+                                _.map(attendanceItem.attendanceId, (item: any) => new model.SelectedItem({action: item.operator, code: item.itemId})),
                                 attendanceItem.attribute);
                         }
 
@@ -265,6 +263,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             attendanceItem.exportAtr = exportAtr;
 
             const attendanceRecordKey: model.AttendanceRecordKey = new model.AttendanceRecordKey({
+                layoutId: vm.layoutId(),
                 code: Number(vm.attendanceCode()),
                 columnIndex: columnIndex,
                 position: position,
@@ -283,13 +282,19 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 $.when(service.getDailyAttendanceItems(), service.getSingleAttendanceRecord(attendanceRecordKey))
                     .done((dailyAttendanceItems: Array<model.AttributeOfAttendanceItem>, singleAttendanceRecord: any) => {
 
-                        if (dailyAttendanceItems !== null) {
+                        if (!!dailyAttendanceItems) {
                             attendanceItem.attendanceItems = dailyAttendanceItems;
                         }
 
-                        if (singleAttendanceRecord !== null) {
+                        if (!!singleAttendanceRecord) {
                             attendanceItem.selectedTime = singleAttendanceRecord.itemId;
                             attendanceItem.attribute.selected = singleAttendanceRecord.attribute;
+                        }
+                        
+                        const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
+                        if (index >= 0) {
+                            attendanceItem.selectedTime = vm.attendanceRecItemList()[index].attendanceId;
+                            attendanceItem.attribute.selected = vm.attendanceRecItemList()[index].attribute;
                         }
 
                         setShared('attendanceItem', attendanceItem, true);
@@ -311,9 +316,9 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 $.when(service.getDailyAttendanceItems(), service.getCalculateAttendanceRecordDto(attendanceRecordKey))
                     .then((dailyAttendanceItems: Array<model.AttributeOfAttendanceItem>, calculateAttendanceRecord: any) => {
 
-                        if (dailyAttendanceItems !== null ) {
-                            attendanceItem.diligenceProjectList = dailyAttendanceItems
-                                .map(item => new model.DiligenceProject({
+                        if (!!dailyAttendanceItems) {
+                            attendanceItem.diligenceProjectList = _.map(dailyAttendanceItems,
+                                item => new model.DiligenceProject({
                                     id: item.attendanceItemId,
                                     name: item.attendanceItemName,
                                     attributes: item.attributes,
@@ -322,16 +327,24 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             );
                         }
 
-                        if (calculateAttendanceRecord !== null) {
+                        if (!!calculateAttendanceRecord) {
                             let calculateAttendanceRecordList: Array<model.SelectedTimeItem> = [];
                             calculateAttendanceRecord.addedItem.forEach(function(item) {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.ADDITION}));
                             });
+
                             calculateAttendanceRecord.subtractedItem.forEach(function(item) {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.SUBTRACTION}));
                             });
-                            calculateAttendanceRecordList.sort((a, b) => { return Number(a.itemId) - Number(b.itemId); });
+                            
                             attendanceItem.selectedTimeList = calculateAttendanceRecordList;
+                        }
+
+                        const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
+                        if (index >= 0) {
+                            attendanceItem.selectedTimeList = _.map(vm.attendanceRecItemList()[index].attendanceId,
+                                (item: any) => new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: item.action}));
+                            attendanceItem.attribute.selected = vm.attendanceRecItemList()[index].attribute;
                         }
 
                         setShared('attendanceItem', attendanceItem, true);
@@ -354,10 +367,10 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                 $.when(service.getMonthlyAttendanceItems(), service.getCalculateAttendanceRecordDto(attendanceRecordKey))
                     .then((monthlyAttendanceItems: Array<model.AttributeOfAttendanceItem>, calculateAttendanceRecord: any) => {
 
-                        if (monthlyAttendanceItems !== null ) {
+                        if (!!monthlyAttendanceItems) {
 
-                            attendanceItem.diligenceProjectList = monthlyAttendanceItems
-                                .map(item => new model.DiligenceProject({
+                            attendanceItem.diligenceProjectList = _.map(monthlyAttendanceItems,
+                                item => new model.DiligenceProject({
                                     id: item.attendanceItemId,
                                     name: item.attendanceItemName,
                                     attributes: item.attributes,
@@ -366,7 +379,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             );
                         }
 
-                        if (calculateAttendanceRecord !== null) {
+                        if (!!calculateAttendanceRecord) {
                             let calculateAttendanceRecordList: Array<model.SelectedTimeItem> = [];
                             calculateAttendanceRecord.addedItem.forEach(function(item) {
                                 calculateAttendanceRecordList.push(new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: vm.action.ADDITION}));
@@ -376,6 +389,13 @@ module nts.uk.com.view.kwr002.c.viewmodel {
                             });
                             calculateAttendanceRecordList.sort((a, b) => { return Number(a.itemId) - Number(b.itemId); });
                             attendanceItem.selectedTimeList = calculateAttendanceRecordList;
+                        }
+
+                        const index = vm.findAttendanceRecItem(new model.AttendanceRecItem('', 0, '', columnIndex, position, exportAtr, '', 0));
+                        if (index >= 0) {
+                            attendanceItem.selectedTimeList = _.map(vm.attendanceRecItemList()[index].attendanceId,
+                                (item: any) => new model.SelectedTimeItem({itemId: item.attendanceItemId, operator: item.action}));
+                            attendanceItem.attribute.selected = vm.attendanceRecItemList()[index].attribute;
                         }
 
                         setShared('attendanceItem', attendanceItem, true);
@@ -463,6 +483,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
             const fontSzie = getShared('exportFontSize');
             const selectionType = getShared('selectionType');
             const layoutId = getShared('layoutId');
+            self.layoutId(layoutId);
 
             // Update Ver25
             $.when(service.getApprovalProcessingUseSetting(), service.getAttendanceRecordExportSetting(attendanceRecExpSetCode, selectionType))
@@ -611,6 +632,7 @@ module nts.uk.com.view.kwr002.c.viewmodel {
         }
 
         export class AttendanceRecordKey {
+            layoutId: string;
             code: number;
             columnIndex: number;
             position: number;

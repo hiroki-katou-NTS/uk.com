@@ -40,8 +40,8 @@ public class NewAttendanceRecordExportSettingCommandHandler
      */
     @Override
     protected void handle(CommandHandlerContext<NewAttendanceRecordExportSettingCommand> context) {
-		String layoutId = UUID.randomUUID().toString();
 		NewAttendanceRecordExportSettingCommand command = context.getCommand();
+		String layoutId = command.getCmd().getLayoutId() == null ? UUID.randomUUID().toString() : command.getCmd().getLayoutId();
 		command.getCmd().setOnceUpdate(command.isOnceUpdate());
 		command.getCmd().setLayoutId(layoutId);
 		command.getItemCmd().setLayoutId(layoutId);
