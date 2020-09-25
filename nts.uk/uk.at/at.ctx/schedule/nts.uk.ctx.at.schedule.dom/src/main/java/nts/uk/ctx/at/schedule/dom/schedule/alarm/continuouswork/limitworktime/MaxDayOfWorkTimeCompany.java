@@ -26,5 +26,5 @@ public class MaxDayOfWorkTimeCompany implements DomainAggregate{
 	/**
 	 * 上限勤務
 	 */
-	private MaxDayOfWorkTime maxNumberOfWorkingDayOfPeriods;
+	private MaxDayOfWorkTime maxDayOfWorkTime;
 }

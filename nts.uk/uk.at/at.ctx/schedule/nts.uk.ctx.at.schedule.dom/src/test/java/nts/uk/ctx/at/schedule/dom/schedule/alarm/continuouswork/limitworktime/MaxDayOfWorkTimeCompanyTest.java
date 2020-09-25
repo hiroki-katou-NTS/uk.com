@@ -24,7 +24,7 @@ public class MaxDayOfWorkTimeCompanyTest {
 		assertThat(maxNumberOfWorkingDayOfPeriodsCom).extracting(
 			 com -> com.getCode().v(),
 			 com -> com.getName().v(),
-			 com -> com.getMaxNumberOfWorkingDayOfPeriods().getMaxNumberOfWorkingDay().v()
+			 com -> com.getMaxDayOfWorkTime().getMaxDay().v()
 			 ).containsExactly(
 					 "000000000000-0315",
 					 "003",
