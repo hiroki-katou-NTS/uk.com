@@ -10,9 +10,7 @@ module nts.uk.com.view.cli002.a {
   export class ScreenModel extends ko.ViewModel {
     $grid!: JQuery;
 
-    public systemList: KnockoutObservableArray<
-      SystemTypeModel
-    > = ko.observableArray([
+    public systemList: KnockoutObservableArray<SystemTypeModel> = ko.observableArray([
       new SystemTypeModel({
         index: 0,
         localizedName: this.$i18n("Enum_SystemType_PERSON_SYSTEM"),
@@ -31,9 +29,7 @@ module nts.uk.com.view.cli002.a {
       }),
     ]);
 
-    public dataSourceItem: KnockoutObservableArray<
-      PGInfomationModel
-    > = ko.observableArray([]);
+    public dataSourceItem: KnockoutObservableArray<PGInfomationModel> = ko.observableArray([]);
     public selectedSystemCode: KnockoutObservable<number> = ko.observable(0);
 
     public systemColumns = [
@@ -56,11 +52,11 @@ module nts.uk.com.view.cli002.a {
       vm.$grid = $("#item-list");
 
       vm.selectedSystemCode.subscribe((newValue) => {
-        if (vm.$grid.data("mGrid")) {
-          vm.$grid.mGrid("destroy");
+        if (vm.$grid.data("igGrid")) {
+          vm.$grid.ntsGrid("destroy");
         }
         // アルゴリズム「ログ設定画面表示」を実行する
-        vm.getData(newValue);
+        vm.$nextTick(() => vm.getData(newValue));
       });
       vm.selectedSystemCode.valueHasMutated();
     }
@@ -95,7 +91,6 @@ module nts.uk.com.view.cli002.a {
           vm.$dialog.alert({ messageId: "Msg_15" });
         })
         .always(() => vm.$blockui("clear"));
-        console.log(vm.dataSourceItem());
     }
 
     /**
@@ -109,19 +104,17 @@ module nts.uk.com.view.cli002.a {
         .then((response: PGListDto[]) => {
           const listPG: PGInfomationModel[] = _.map(
             response,
-            (item, index) =>
-              new PGInfomationModel({
-                rowNumber: index + 1,
-                functionName: item.functionName,
-                logLoginDisplay: item.loginHistoryRecord.usageCategory === 1,
-                logStartDisplay: item.bootHistoryRecord.usageCategory === 1,
-                logUpdateDisplay: item.editHistoryRecord.usageCategory === 1,
-                programId: item.programId,
-                menuClassification: item.menuClassification,
-                programCd: item.programCd,
-              })
+            (item, index) => new PGInfomationModel({
+              rowNumber: index + 1,
+              functionName: item.functionName,
+              logLoginDisplay: item.loginHistoryRecord.usageCategory === 1,
+              logStartDisplay: item.bootHistoryRecord.usageCategory === 1,
+              logUpdateDisplay: item.editHistoryRecord.usageCategory === 1,
+              programId: item.programId,
+              menuClassification: item.menuClassification,
+              programCd: item.programCd,
+            })
           );
-
           vm.dataSourceItem(listPG);
           vm.initGrid(response);
         })
@@ -130,8 +123,9 @@ module nts.uk.com.view.cli002.a {
 
     private initGrid(response: PGListDto[]) {
       const vm = this;
-      const statesTable = [];
+      const statesTable: CellStateModel[] = [];
       const { color } = (nts.uk.ui.jqueryExtentions as any).ntsGrid;
+      const stateDisabled = [color.Disable];
 
       response.forEach((item: PGListDto, index) => {
         // ※１ PG一覧．PG情報．ログイン履歴の記録．活性区分　＝　True
@@ -140,7 +134,7 @@ module nts.uk.com.view.cli002.a {
             new CellStateModel({
               rowId: index + 1,
               columnKey: "logLoginDisplay",
-              state: [color.Disable],
+              state: stateDisabled,
             })
           );
         }
@@ -150,7 +144,7 @@ module nts.uk.com.view.cli002.a {
             new CellStateModel({
               rowId: index + 1,
               columnKey: "logStartDisplay",
-              state: [color.Disable],
+              state: stateDisabled,
             })
           );
         }
@@ -160,7 +154,7 @@ module nts.uk.com.view.cli002.a {
             new CellStateModel({
               rowId: index + 1,
               columnKey: "logUpdateDisplay",
-              state: [color.Disable],
+              state: stateDisabled,
             })
           );
         }
@@ -217,7 +211,7 @@ module nts.uk.com.view.cli002.a {
             mode: "row",
             multipleSelection: false,
             activation: false,
-            rowSelectionChanged: function () {},
+            rowSelectionChanged: function () { },
           },
         ],
         ntsFeatures: [
